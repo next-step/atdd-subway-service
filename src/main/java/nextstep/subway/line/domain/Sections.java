@@ -1,7 +1,9 @@
 package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -23,15 +25,81 @@ public class Sections {
 		sections.add(section);
 	}
 
-	public void addSection(Section section) {
-		throw new RuntimeException("메소드 작성필요");
+	public List<Station> getStations() {
+		if (this.sections.isEmpty()) {
+			return Arrays.asList();
+		}
+
+		List<Station> stations = new ArrayList<>();
+		Station downStation = findUpStation();
+		stations.add(downStation);
+
+		while (downStation != null) {
+			Station finalDownStation = downStation;
+			Optional<Section> nextLineStation = this.sections.stream()
+				.filter(it -> it.getUpStation().equals(finalDownStation))
+				.findFirst();
+			if (!nextLineStation.isPresent()) {
+				break;
+			}
+			downStation = nextLineStation.get().getDownStation();
+			stations.add(downStation);
+		}
+
+		return stations;
 	}
 
-	public List<Station> getStations() {
-		throw new RuntimeException("메소드 작성 필요");
+	private Station findUpStation() {
+		Station downStation = this.sections.get(0).getUpStation();
+		while (downStation != null) {
+			Station finalDownStation = downStation;
+			Optional<Section> nextLineStation = this.sections.stream()
+				.filter(it -> it.getDownStation().equals(finalDownStation))
+				.findFirst();
+			if (!nextLineStation.isPresent()) {
+				break;
+			}
+			downStation = nextLineStation.get().getUpStation();
+		}
+
+		return downStation;
+	}
+
+	public void addSection(Section section) {
+		Station upStation = section.getUpStation();
+		Station downStation = section.getDownStation();
+
+		List<Station> stations = getStations();
+
+		boolean isUpStationExisted = stations.contains(upStation);
+		boolean isDownStationExisted = stations.contains(downStation);
+		AddSectionType addSectionType = AddSectionType.findAddSectionType(isUpStationExisted, isDownStationExisted);
+		addSectionType.addSection(section, this.sections);
 	}
 
 	public void removeLineStation(Line line, Station station) {
-		throw new RuntimeException("메소드 작성 필요");
+		validateBeforeRemove();
+		Optional<Section> upLineStation = this.sections.stream()
+			.filter(it -> it.getUpStation().equals(station))
+			.findFirst();
+		Optional<Section> downLineStation = this.sections.stream()
+			.filter(it -> it.getDownStation().equals(station))
+			.findFirst();
+
+		if (upLineStation.isPresent() && downLineStation.isPresent()) {
+			Station newUpStation = downLineStation.get().getUpStation();
+			Station newDownStation = upLineStation.get().getDownStation();
+			int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+			this.sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+		}
+
+		upLineStation.ifPresent(it -> this.sections.remove(it));
+		downLineStation.ifPresent(it -> this.sections.remove(it));
+	}
+
+	private void validateBeforeRemove() {
+		if (this.sections.size() <= 1) {
+			throw new RuntimeException();
+		}
 	}
 }

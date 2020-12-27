@@ -45,19 +45,15 @@ public class Line extends BaseEntity {
 		this.color = line.getColor();
 	}
 
-	public Long getId() {
-		return id;
+	public List<Station> getStations() {
+		return this.sections.getStations();
 	}
 
-	public String getName() {
-		return name;
+	public void addSection(Section section) {
+		this.sections.addSection(section);
 	}
 
-	public String getColor() {
-		return color;
-	}
-
-	public List<Section> getAllSection() {
-		return sections.getSections();
+	public void removeLineStation(Station targetStation) {
+		this.sections.removeLineStation(this, targetStation);
 	}
 }
