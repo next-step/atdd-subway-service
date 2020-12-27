@@ -60,7 +60,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 2. LineService -> Domain으로 옮길 로직 찾기
     - getStations, addSection, removeLineStation
 3. Domain에 추가될 로직에 대한 단위 테스트 작성
-5. LineService의 로직을 Domain으로 refactoring
-6. 테스트 확인 및 코드 점검
+4. LineService의 로직을 Domain으로 refactoring
+5. 테스트 확인 및 코드 점검
 
                     
