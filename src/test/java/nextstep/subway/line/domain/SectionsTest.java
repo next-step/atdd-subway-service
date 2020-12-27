@@ -10,6 +10,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.common.exception.AlreadyExistException;
+import nextstep.subway.common.exception.NotFoundException;
+import nextstep.subway.line.exception.MinimumSectionException;
+import nextstep.subway.line.exception.SectionDistanceException;
 import nextstep.subway.station.domain.Station;
 
 class SectionsTest {
@@ -80,21 +84,31 @@ class SectionsTest {
 		assertThat(stations).containsExactlyElementsOf(Arrays.asList(굴포천역(), 삼산체육관역(), 상동역(), 부천시청역()));
 	}
 
-	@DisplayName("addSection 상행역, 하행역 모두 이미 등록되어 있는 역으로 선택하고 등록하면 RuntimeException이 발생한다.")
+	@DisplayName("addSection 상행역, 하행역 모두 이미 등록되어 있는 역으로 선택하고 등록하면 AlreadyExistException이 발생한다.")
 	@Test
 	void addSectionThrow1() {
 
-		assertThatExceptionOfType(RuntimeException.class)
+		assertThatExceptionOfType(AlreadyExistException.class)
 			.isThrownBy(() -> {
 				sections.addSection(new Section(line, 굴포천역(), 삼산체육관역(), 100));
 			});
 	}
 
-	@DisplayName("addSection 역과 역사이의 거리보다 큰 거리를 입력하면 RuntimeException이 발생한다.")
+	@DisplayName("addSection 상행역, 하행역 모두 등록되어 있지 않은 역으로 선택하고 등록하면 NotFoundException이 발생한다.")
+	@Test
+	void addSectionThrow2() {
+
+		assertThatExceptionOfType(NotFoundException.class)
+			.isThrownBy(() -> {
+				sections.addSection(new Section(line, 부평구청역(), 장암역(), 100));
+			});
+	}
+
+	@DisplayName("addSection 역과 역사이의 거리보다 큰 거리를 입력하면 SectionDistanceException이 발생한다.")
 	@Test
 	void addSectionThrow3() {
 
-		assertThatExceptionOfType(RuntimeException.class)
+		assertThatExceptionOfType(SectionDistanceException.class)
 			.isThrownBy(() -> {
 				sections.addSection(new Section(line, 굴포천역(), 상동역(), 굴포천역_삼산체육관역_거리 + 1));
 			});
@@ -130,11 +144,11 @@ class SectionsTest {
 		assertThat(stations).containsExactlyElementsOf(Arrays.asList(굴포천역(), 부천시청역()));
 	}
 
-	@DisplayName("removeLineStation 두개역이 존재할때 역을 제거하게되면 RuntimeException이 발생한다.")
+	@DisplayName("removeLineStation 두개역이 존재할때 역을 제거하게되면 MinimumSectionException이 발생한다.")
 	@Test
 	void removeLineStationThrow() {
 
-		assertThatExceptionOfType(RuntimeException.class)
+		assertThatExceptionOfType(MinimumSectionException.class)
 			.isThrownBy(() -> {
 				sections.removeLineStation(line, 굴포천역());
 				sections.removeLineStation(line, 삼산체육관역());

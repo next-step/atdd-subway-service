@@ -11,6 +11,7 @@ import javax.persistence.OneToMany;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nextstep.subway.line.exception.MinimumSectionException;
 import nextstep.subway.station.domain.Station;
 
 @Getter
@@ -99,7 +100,7 @@ public class Sections {
 
 	private void validateBeforeRemove() {
 		if (this.sections.size() <= 1) {
-			throw new RuntimeException();
+			throw new MinimumSectionException("최소 1개 이상의 구간이 필요합니다.");
 		}
 	}
 }

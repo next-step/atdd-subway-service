@@ -6,17 +6,19 @@ import java.util.function.BiConsumer;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import nextstep.subway.common.exception.AlreadyExistException;
+import nextstep.subway.common.exception.NotFoundException;
 
 @Getter
 @RequiredArgsConstructor
 public enum AddSectionType {
 	BOTH_MATCH(true, true,
 		(targetSection, sections) -> {
-			throw new RuntimeException("이미 등록된 구간 입니다.");
+			throw new AlreadyExistException("이미 등록된 구간 입니다.");
 		}),
 	BOTH_NOT_MATCH(false, false,
 		(targetSection, sections) -> {
-			throw new RuntimeException("등록할 수 없는 구간 입니다.");
+			throw new NotFoundException("등록할 수 없는 구간 입니다.");
 		}),
 	UPSTATION_MATCH(true, false,
 		(targetSection, sections) -> {

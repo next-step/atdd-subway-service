@@ -198,7 +198,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> response = 지하철_구간을_등록_요청(신분당선, 판교역, 정자역, 3);
 
 		// then
-		지하철_노선에_지하철역_등록_실패됨(response);
+		지하철_노선에_발견되지_않은역으로_실패됨(response);
 	}
 
 	@DisplayName("구간관리 팝업화면: 기존에 등록되어 있는 역과 역사이의 거리보다 큰 거리를 입력하면 구간 등록이 실패한다.")
@@ -231,7 +231,11 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 	}
 
 	public static void 지하철_노선에_지하철역_등록_실패됨(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+	}
+
+	public static void 지하철_노선에_발견되지_않은역으로_실패됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
 	}
 
 	public static void 지하철_노선에_등록된_지하철역_순서_정렬됨(ExtractableResponse<Response> response,
@@ -261,6 +265,6 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 	}
 
 	public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 }
