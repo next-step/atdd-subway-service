@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +20,7 @@ import nextstep.subway.station.domain.Station;
 public class Sections {
 
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-	private List<Section> sections = new ArrayList<>();
+	private final List<Section> sections = new ArrayList<>();
 
 	public void initSection(Section section) {
 		sections.add(section);
@@ -28,7 +28,7 @@ public class Sections {
 
 	public List<Station> getStations() {
 		if (this.sections.isEmpty()) {
-			return Arrays.asList();
+			return Collections.emptyList();
 		}
 
 		List<Station> stations = new ArrayList<>();
@@ -94,13 +94,17 @@ public class Sections {
 			this.sections.add(new Section(line, newUpStation, newDownStation, newDistance));
 		}
 
-		upLineStation.ifPresent(it -> this.sections.remove(it));
-		downLineStation.ifPresent(it -> this.sections.remove(it));
+		upLineStation.ifPresent(this.sections::remove);
+		downLineStation.ifPresent(this.sections::remove);
 	}
 
 	private void validateBeforeRemove() {
-		if (this.sections.size() <= 1) {
+		if (isMinimumSection()) {
 			throw new MinimumSectionException("최소 1개 이상의 구간이 필요합니다.");
 		}
+	}
+
+	private boolean isMinimumSection() {
+		return this.sections.size() <= 1;
 	}
 }
