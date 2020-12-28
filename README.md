@@ -111,7 +111,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - 똑같은 지하철 구간 등록 요청
         - then
             - 지하철 구간 등록 실패
-    - [ ] Scenario7: 하나밖에 안남은 지하철 구간의 역을 삭제한다.  
+    - [X] Scenario7: 하나밖에 안남은 지하철 구간의 역을 삭제한다.  
         - when
             - 지하철 구간 삭제 요청
         - then

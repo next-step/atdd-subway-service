@@ -142,6 +142,19 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_실패됨(secondResponse);
     }
 
+    @DisplayName("시나리오7: 하나밖에 안남은 지하철 구간의 역을 삭제한다.")
+    @Test
+    void tryDeleteWhenLineHasJustOneSectionTest() {
+        // given
+        지하철_노선에_구간_하나밖에_없음(신분당선);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
+
+        // then
+        지하철_노선에_지하철역_등록_실패됨(response);
+    }
+
     @DisplayName("지하철 구간을 등록한다.")
     @Test
     void addLineSection() {
@@ -283,5 +296,11 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         StationResponse upEndStation = line.getStations().get(0);
 
         return 지하철_노선에_지하철역_등록_요청(lineResponse, newUpEndStation, upEndStation, distance);
+    }
+
+    public static void 지하철_노선에_구간_하나밖에_없음(LineResponse line) {
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(line);
+        LineResponse lineResponse = response.as(LineResponse.class);
+        assertThat(lineResponse.getStations()).hasSize(2);
     }
 }
