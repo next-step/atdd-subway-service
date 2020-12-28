@@ -61,7 +61,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - 지하철역 등록되어 있음
             - and 지하철 노선 등록되어 있음
             - and 지하철 노선에 지하철역 등록되어 있음
-    - Scenario1: 지하철 구간을 관리한다.
+    - [X] Scenario1: 지하철 구간을 관리한다.
         - when
             - 지하철 구간 등록 요청
         - then
@@ -82,27 +82,27 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - 삭제한 지하철 구간에 포함된 지하철 역 조회 요청
         - then
             - 구간이 삭제되도 속한 지하철 역은 조회됨
-    - Scenario2: 기존 지하철 노선의 종점간 거리보다 긴 종점 구간을 추가한다.
+    - [ ] Scenario2: 기존 지하철 노선의 종점간 거리보다 긴 종점 구간을 추가한다.
         - when
             - 기존 지하철 구간의 종점 사이의 종점감 거리보다 긴 거리를 가진 종점 구간을 추가 요청
         - then
             - 지하철 구간 등록 성공
-    - Scenario3: 기존 지하철 노선의 종점간 거리보다 긴 종점이 아닌 지하철 구간을 등록한다.
+    - [ ] Scenario3: 기존 지하철 노선의 종점간 거리보다 긴 종점이 아닌 지하철 구간을 등록한다.
         - when
             - 기존 지하철 구간의 종점 사이의 종점감 거리보다 긴 거리를 가진 종점이 아닌 구간을 추가 요청
         - then
             - 지하철 구간 등록 실패
-    - Scenario4: 실수로 등록되지 않은 지하철 역이 포함된 지하철 구간을 등록한다.
+    - [ ] Scenario4: 실수로 등록되지 않은 지하철 역이 포함된 지하철 구간을 등록한다.
         - when
             - 등록되지 않은 역이 포함된 지하철 구간 등록 요청
         - then
             - 지하철 구간 등록 실패
-    - Scenario5: 실수로 기존 지하철 노선과 전혀 연관없는 지하철 구간을 등록한다.
+    - [ ] Scenario5: 실수로 기존 지하철 노선과 전혀 연관없는 지하철 구간을 등록한다.
         - when
             - 기존 지하철 노선과 접점이 없는 지하철 구간 등록 요청
         - then
             - 지하철 구간 등록 실패
-    - Scenario6: 실수로 똑같은 지하철 구간을 두번 등록한다.
+    - [ ] Scenario6: 실수로 똑같은 지하철 구간을 두번 등록한다.
         - when
             - 지하철 구간 등록 요청
         - then
@@ -111,7 +111,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - 똑같은 지하철 구간 등록 요청
         - then
             - 지하철 구간 등록 실패
-    - Scenario7: 하나밖에 안남은 지하철 구간의 역을 삭제한다.  
+    - [ ] Scenario7: 하나밖에 안남은 지하철 구간의 역을 삭제한다.  
         - when
             - 지하철 구간 삭제 요청
         - then
@@ -121,7 +121,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - Background
         - given
             - 지하철역 등록되어 있음
-    - Scenario1: 지하철 노선을 관리한다. 
+    - [ ] Scenario1: 지하철 노선을 관리한다. 
         - when
             - 새로운 지하철 노선 등록 요청
         - then
@@ -138,7 +138,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - 등록한 지하철 노선 삭제 요청
         - then
             - 등록한 지하철 노선 삭제 성공역
-    - Scenario2: 서로 겹치는 환승역이 있는 지하철 노선을 등록한다.
+    - [ ] Scenario2: 서로 겹치는 환승역이 있는 지하철 노선을 등록한다.
         - given
             - 지하철 노선 등록됨
         - when
@@ -153,7 +153,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - 기존 지하철 노선에 등록된 역 목록 조회 요청
         - then
             - 새로 생성된 지하철 노선에 등록된 역과 겸치는 역 보임
-    - Scenario3: 실수로 같은 지하철 노선을 두번 등록한다.
+    - [ ] Scenario3: 실수로 같은 지하철 노선을 두번 등록한다.
         - when
             - 지하철 노선 등록 요청
         - then
@@ -162,12 +162,12 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - 실수로 한번더 같은 지하철 노선 등록 요청
         - then
             - 지하철 노선 등록 실패
-    - Scenario4: 실수로 종점역을 빠뜨린 채로 지하철 노선을 등록 요청한다.
+    - [ ] Scenario4: 실수로 종점역을 빠뜨린 채로 지하철 노선을 등록 요청한다.
         - when
             - 종점역이 빠진 채로 지하철 노선 등록 요청
         - then
             - 지하철 노선 등록 실패
-    - Scenario5: 실수로 등록한 적 없는 지하철 노선을 수정하거나 삭제한다.
+    - [ ] Scenario5: 실수로 등록한 적 없는 지하철 노선을 수정하거나 삭제한다.
         - when
             - 등록한 적 없는 지하철 노선 삭제 요청
         - then
@@ -178,7 +178,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - 지하철 노선 수정 실패
 
 - Feature: 지하철  관련 기능 
-    - Scenario1: 지하철 역을 관리한다.
+    - [ ] Scenario1: 지하철 역을 관리한다.
         - when
             - 새로운 지하철 역 등록 요청
         - then
@@ -195,7 +195,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - 등록한 역 노선 삭제 요청
         - then
             - 등록한 역 노선 삭제 성공역
-    - Scenario2: 실수로 같은 지하철 역을 두번 등록한다.
+    - [ ] Scenario2: 실수로 같은 지하철 역을 두번 등록한다.
         - when
             - 새로운 지하철 역 등록 요청
         - then
@@ -204,7 +204,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - 새로운 지하철 역 등록 요청
         - then
             - 새로운 지하철 역 등록 실패
-    - Scenario3: 실수로 지하철 노선에 등록된 지하철 역을 삭제한다.
+    - [ ] Scenario3: 실수로 지하철 노선에 등록된 지하철 역을 삭제한다.
         - given
             - 지하철 역 등록됨
             - and 지하철 노선 등록됨
@@ -212,7 +212,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - 지하철 노선에 등록된 지하철 역 삭제 요청
         - then
             - 지하철 역 삭제 실패
-    - Scenario4: 실수로 등록한 적 없는 지하철 노선을 삭제하거나 수정한다.
+    - [ ] Scenario4: 실수로 등록한 적 없는 지하철 노선을 삭제하거나 수정한다.
         - when
             - 등록한 적 없는 지하철 노선 삭제 요청
         - then

@@ -75,6 +75,18 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에서_삭제해도_역은_남아있음(stationsResponse, deleteTarget);
     }
 
+    @DisplayName("시나리오2: 기존 지하철 노선의 종점간 거리보다 긴 종점 구간을 추가한다.")
+    @Test
+    void addEndLineSectionWithTooLong() {
+        int tooLongDistance = 100;
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선에_상행종점역_추가_요청(신분당선, 정자역, tooLongDistance);
+
+        // then
+        지하철_노선에_지하철역_등록됨(response);
+    }
+
     @DisplayName("지하철 구간을 등록한다.")
     @Test
     void addLineSection() {
@@ -193,5 +205,15 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선에_상행종점역_추가_요청(
+            LineResponse lineResponse, StationResponse newUpEndStation, int distance
+    ) {
+        ExtractableResponse<Response> findResponse = 지하철_노선_조회_요청(lineResponse);
+        LineResponse line = findResponse.as(LineResponse.class);
+        StationResponse upEndStation = line.getStations().get(0);
+
+        return 지하철_노선에_지하철역_등록_요청(lineResponse, newUpEndStation, upEndStation, distance);
     }
 }
