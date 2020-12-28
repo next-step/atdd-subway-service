@@ -65,6 +65,19 @@ public class LineAcceptanceTest extends AcceptanceTest {
         두_노선에_겹치는_역이_존재함(createResponse, createResponse2);
     }
 
+    @DisplayName("시나리오3: 실수로 같은 지하철 노선을 두번 등록한다.")
+    @Test
+    void addLineTwiceTest() {
+        // given
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(lineRequest1);
+        지하철_노선_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> createSecondResponse = 지하철_노선_생성_요청(lineRequest1);
+
+        지하철_노선_생성_실패됨(createSecondResponse);
+    }
+
     @DisplayName("지하철 노선을 생성한다.")
     @Test
     void createLine() {

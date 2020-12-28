@@ -153,7 +153,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - 기존 지하철 노선에 등록된 역 목록 조회 요청
         - then
             - 새로 생성된 지하철 노선에 등록된 역과 겸치는 역 보임
-    - [ ] Scenario3: 실수로 같은 지하철 노선을 두번 등록한다.
+    - [X] Scenario3: 실수로 같은 지하철 노선을 두번 등록한다.
         - when
             - 지하철 노선 등록 요청
         - then
