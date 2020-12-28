@@ -57,7 +57,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철역_목록_응답됨(response);
-        지하철역_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
+        지하철_노선에서_삭제해도_역은_남아있음(response, Arrays.asList(createResponse1, createResponse2));
     }
 
     @DisplayName("지하철역을 제거한다.")
@@ -124,7 +124,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
+    public static void 지하철_노선에서_삭제해도_역은_남아있음(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
         List<Long> expectedLineIds = createdResponses.stream()
                 .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
                 .collect(Collectors.toList());
@@ -134,5 +134,15 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
+    }
+
+    public static void 지하철_노선에서_삭제해도_역은_남아있음(ExtractableResponse<Response> response, StationResponse stationResponse) {
+        Long expectedStationId = stationResponse.getId();
+
+        List<Long> resultStationIds = response.jsonPath().getList(".", StationResponse.class).stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+
+        assertThat(resultStationIds).contains(expectedStationId);
     }
 }
