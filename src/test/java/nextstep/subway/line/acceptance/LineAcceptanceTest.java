@@ -131,6 +131,24 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성_실패됨(response);
     }
 
+    @DisplayName("시나리오6: 실수로 등록한 적 없는 지하철 노선을 수정하거나 삭제한다.")
+    @Test
+    void deleteOrModifyNotExistLineTest() {
+        Long notExistLineId = 1000L;
+
+        // when
+        ExtractableResponse<Response> modifyResponse = 지하철_노선_수정_요청(notExistLineId, lineRequest1);
+
+        // then
+        지하철_노선_수정_실패됨(modifyResponse);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 지하철_노선_제거_요청(notExistLineId);
+
+        // then
+        지하철_노선_수정_실패됨(deleteResponse);
+    }
+
     @DisplayName("지하철 노선을 생성한다.")
     @Test
     void createLine() {
@@ -263,8 +281,30 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 지하철_노선_수정_요청(Long lineId, LineRequest params) {
+        String uri = "/lines/" + lineId;
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().put(uri)
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 지하철_노선_제거_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
+
+        return RestAssured
+                .given().log().all()
+                .when().delete(uri)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_제거_요청(Long lineId) {
+        String uri = "/lines/" + lineId;
 
         return RestAssured
                 .given().log().all()
@@ -279,6 +319,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 지하철_노선_수정_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 지하철_노선_제거_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
