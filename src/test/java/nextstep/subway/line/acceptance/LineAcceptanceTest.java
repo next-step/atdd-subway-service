@@ -75,7 +75,20 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> createSecondResponse = 지하철_노선_생성_요청(lineRequest1);
 
+        // then
         지하철_노선_생성_실패됨(createSecondResponse);
+    }
+
+    @DisplayName("시나리오4: 실수로 종점역을 빠뜨린 채로 지하철 노선을 등록 요청한다.")
+    @Test
+    void addLineWithoutEndStations() {
+        LineRequest mistakeRequest = new LineRequest("종점역이 없는 노선", "종점역이 없는 색", null, null, 10);
+
+        // when
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(mistakeRequest);
+
+        // then
+        지하철_노선_생성_실패됨(createResponse);
     }
 
     @DisplayName("지하철 노선을 생성한다.")

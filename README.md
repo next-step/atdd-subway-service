@@ -162,7 +162,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - 실수로 한번더 같은 지하철 노선 등록 요청
         - then
             - 지하철 노선 등록 실패
-    - [ ] Scenario4: 실수로 종점역을 빠뜨린 채로 지하철 노선을 등록 요청한다.
+    - [X] Scenario4: 실수로 종점역을 빠뜨린 채로 지하철 노선을 등록 요청한다.
         - when
             - 종점역이 빠진 채로 지하철 노선 등록 요청
         - then
