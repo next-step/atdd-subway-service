@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -94,6 +95,18 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, tooLongDistance);
+
+        // then
+        지하철_노선에_지하철역_등록_실패됨(response);
+    }
+
+    @DisplayName("시나리오4: 실수로 등록되지 않은 지하철 역이 포함된 지하철 구간을 등록한다.")
+    @Test
+    void addLineSectionWithNotExistStationTest() {
+        StationResponse 없는역 = new StationResponse(100L, "없는역", LocalDateTime.now(), null);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 없는역, 1);
 
         // then
         지하철_노선에_지하철역_등록_실패됨(response);
