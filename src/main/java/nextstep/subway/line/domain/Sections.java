@@ -38,7 +38,7 @@ public class Sections {
 		while (downStation != null) {
 			Station finalDownStation = downStation;
 			Optional<Section> nextLineStation = this.sections.stream()
-				.filter(it -> it.getUpStation().equals(finalDownStation))
+				.filter(it -> it.isEqualUpstation(finalDownStation))
 				.findFirst();
 			if (!nextLineStation.isPresent()) {
 				break;
@@ -55,7 +55,7 @@ public class Sections {
 		while (downStation != null) {
 			Station finalDownStation = downStation;
 			Optional<Section> nextLineStation = this.sections.stream()
-				.filter(it -> it.getDownStation().equals(finalDownStation))
+				.filter(it -> it.isEqualDownStation(finalDownStation))
 				.findFirst();
 			if (!nextLineStation.isPresent()) {
 				break;
@@ -81,10 +81,10 @@ public class Sections {
 	public void removeLineStation(Line line, Station station) {
 		validateBeforeRemove();
 		Optional<Section> upLineStation = this.sections.stream()
-			.filter(it -> it.getUpStation().equals(station))
+			.filter(it -> it.isEqualUpstation(station))
 			.findFirst();
 		Optional<Section> downLineStation = this.sections.stream()
-			.filter(it -> it.getDownStation().equals(station))
+			.filter(it -> it.isEqualDownStation(station))
 			.findFirst();
 
 		if (upLineStation.isPresent() && downLineStation.isPresent()) {
