@@ -33,6 +33,7 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
+        findById(id);
         stationRepository.deleteById(id);
     }
 

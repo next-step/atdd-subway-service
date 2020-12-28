@@ -79,6 +79,18 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_제거_실패(response);
     }
 
+    @DisplayName("시나리오4: 실수로 등록한 적 없는 지하철 역을 삭제한다.")
+    @Test
+    void tryDeleteNotExistStationTest() {
+        Long notExistStationId = 1000L;
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_제거_요청(notExistStationId);
+
+        // then
+        지하철역_제거_실패(response);
+    }
+
     @DisplayName("지하철역을 생성한다.")
     @Test
     void createStation() {
