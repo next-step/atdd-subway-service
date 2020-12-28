@@ -112,6 +112,22 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_실패됨(response);
     }
 
+    @DisplayName("시나리오5: 실수로 기존 지하철 노선과 접점이 없는 지하철 구간을 등록한다.")
+    @Test
+    void addLineSectionWithoutDuplicatedStationTest() {
+        StationResponse upStation = 양재역;
+        StationResponse downStation = 정자역;
+        // given
+        ExtractableResponse<Response> findResponse = 지하철_노선_조회_요청(신분당선);
+        지하철_노선에_지하철역_포함안됨(findResponse, Arrays.asList(upStation, downStation));
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, upStation, downStation, 1);
+
+        // then
+        지하철_노선에_지하철역_등록_실패됨(response);
+    }
+
     @DisplayName("지하철 구간을 등록한다.")
     @Test
     void addLineSection() {
@@ -214,6 +230,19 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+    }
+
+    public static void 지하철_노선에_지하철역_포함안됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
+        LineResponse line = response.as(LineResponse.class);
+        List<Long> stationIds = line.getStations().stream()
+                .map(it -> it.getId())
+                .collect(Collectors.toList());
+
+        List<Long> expectedStationIds = expectedStations.stream()
+                .map(it -> it.getId())
+                .collect(Collectors.toList());
+
+        assertThat(stationIds).doesNotContainAnyElementsOf(expectedStationIds);
     }
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
