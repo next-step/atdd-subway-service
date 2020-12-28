@@ -4,6 +4,9 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.line.acceptance.LineAcceptanceTest;
+import nextstep.subway.line.dto.LineRequest;
+import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +19,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
+import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록됨;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 관련 기능")
@@ -56,6 +62,21 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철역_생성_실패됨(secondCreateResponse);
+    }
+
+    @DisplayName("시나리오3: 실수로 지하철 노선에 등록된 지하철 역을 삭제한다.")
+    @Test
+    void tryDeleteStationInLineSectionTest() {
+        // given
+        StationResponse stationResponse1 = 지하철역_생성_요청(강남역).as(StationResponse.class);
+        StationResponse stationResponse2 = 지하철역_생성_요청(역삼역).as(StationResponse.class);
+        지하철_노선_등록되어_있음(new LineRequest("2호선", "초록색", stationResponse1.getId(), stationResponse2.getId(), 5)).as(LineResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse1.getId());
+
+        // then
+        지하철역_제거_실패(response);
     }
 
     @DisplayName("지하철역을 생성한다.")
@@ -141,6 +162,20 @@ public class StationAcceptanceTest extends AcceptanceTest {
                 .when().delete(uri)
                 .then().log().all()
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철역_제거_요청(Long stationId) {
+        String uri = "/stations/" + stationId;
+
+        return RestAssured
+                .given().log().all()
+                .when().delete(uri)
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 지하철역_제거_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 지하철역_생성됨(ExtractableResponse response) {
