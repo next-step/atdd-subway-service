@@ -145,4 +145,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         assertThat(resultStationIds).contains(expectedStationId);
     }
+
+    public static void 지하철_역_목록에_포함되지_않음(Long notExistStationId1, Long notExistStationId2) {
+        ExtractableResponse<Response> stationResponse = 지하철역_목록_조회_요청();
+        List<StationResponse> stations = stationResponse.jsonPath().getList(".", StationResponse.class);
+        List<Long> stationIds = stations.stream().map(StationResponse::getId).collect(Collectors.toList());
+        assertThat(stationIds).doesNotContain(notExistStationId1, notExistStationId2);
+    }
 }

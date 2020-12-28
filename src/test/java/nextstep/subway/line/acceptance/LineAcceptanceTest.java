@@ -19,6 +19,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.station.StationAcceptanceTest.지하철_역_목록에_포함되지_않음;
+import static nextstep.subway.station.StationAcceptanceTest.지하철역_목록_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관련 기능")
@@ -43,11 +45,33 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("시나리오1: 지하철 노선을 관리한다.")
     @Test
     void manageLineTest() {
+        LineRequest changeRequest = new LineRequest("changedName", lineRequest1.getColor(),
+                lineRequest1.getUpStationId(), lineRequest1.getDownStationId(), lineRequest1.getDistance());
+
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(lineRequest1);
 
         // then
-        지하철_노선_생성됨(response);
+        지하철_노선_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
+
+        // then
+        지하철_노선_목록_응답됨(response);
+        지하철_노선_목록_포함됨(response, Collections.singletonList(createResponse));
+
+        // when
+        ExtractableResponse<Response> modifyResponse = 지하철_노선_수정_요청(createResponse, changeRequest);
+
+        // then
+        지하철_노선_수정됨(modifyResponse);
+
+        // when
+        ExtractableResponse<Response> removeResponse = 지하철_노선_제거_요청(createResponse);
+
+        // then
+        지하철_노선_삭제됨(removeResponse);
     }
 
     @DisplayName("시나리오2: 서로 겹치는 환승역이 있는 지하철 노선을 등록한다.")
@@ -91,36 +115,30 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성_실패됨(createResponse);
     }
 
+    @DisplayName("시나리오5: 실수로 존재하지 않는 지하철역으로 지하철 노선 등록 요청한다.")
+    @Test
+    void addLineWithNotExistStation() {
+        Long notExistStationId1 = 100L;
+        Long notExistStationId2 = 1000L;
+
+        // given
+        지하철_역_목록에_포함되지_않음(notExistStationId1, notExistStationId2);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(new LineRequest("새노선", "좋은색", notExistStationId1, notExistStationId2, 3));
+
+        // then
+        지하철_노선_생성_실패됨(response);
+    }
+
     @DisplayName("지하철 노선을 생성한다.")
     @Test
     void createLine() {
-        LineRequest changeRequest = new LineRequest("changedName", lineRequest1.getColor(),
-                lineRequest1.getUpStationId(), lineRequest1.getDownStationId(), lineRequest1.getDistance());
-
         // when
-        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(lineRequest1);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
 
         // then
-        지하철_노선_생성됨(createResponse);
-
-        // when
-        ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
-
-        // then
-        지하철_노선_목록_응답됨(response);
-        지하철_노선_목록_포함됨(response, Collections.singletonList(createResponse));
-
-        // when
-        ExtractableResponse<Response> modifyResponse = 지하철_노선_수정_요청(createResponse, changeRequest);
-
-        // then
-        지하철_노선_수정됨(modifyResponse);
-
-        // when
-        ExtractableResponse<Response> removeResponse = 지하철_노선_제거_요청(createResponse);
-
-        // then
-        지하철_노선_삭제됨(removeResponse);
+        지하철_노선_생성됨(response);
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")

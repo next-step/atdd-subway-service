@@ -167,7 +167,12 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - 종점역이 빠진 채로 지하철 노선 등록 요청
         - then
             - 지하철 노선 등록 실패
-    - [ ] Scenario5: 실수로 등록한 적 없는 지하철 노선을 수정하거나 삭제한다.
+    - [X] Scenario5: 실수로 존재하지 않는 지하철역으로 지하철 노선 등록 요청한다.
+        - when
+            - 존재하지 않는 지하철역을 종점으로 지하철 노선 등록 요청
+        - then
+            - 지하철 노선 등록 실패
+    - [ ] Scenario6: 실수로 등록한 적 없는 지하철 노선을 수정하거나 삭제한다.
         - when
             - 등록한 적 없는 지하철 노선 삭제 요청
         - then
