@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,14 +40,46 @@ public class LineAcceptanceTest extends AcceptanceTest {
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
     }
 
-    @DisplayName("지하철 노선을 생성한다.")
+    @DisplayName("시나리오1: 지하철 노선을 관리한다.")
     @Test
-    void createLine() {
+    void manageLineTest() {
         // when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
 
         // then
         지하철_노선_생성됨(response);
+    }
+
+    @DisplayName("지하철 노선을 생성한다.")
+    @Test
+    void createLine() {
+        LineRequest changeRequest = new LineRequest("changedName", lineRequest1.getColor(),
+                lineRequest1.getUpStationId(), lineRequest1.getDownStationId(), lineRequest1.getDistance());
+
+        // when
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(lineRequest1);
+
+        // then
+        지하철_노선_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
+
+        // then
+        지하철_노선_목록_응답됨(response);
+        지하철_노선_목록_포함됨(response, Collections.singletonList(createResponse));
+
+        // when
+        ExtractableResponse<Response> modifyResponse = 지하철_노선_수정_요청(createResponse, changeRequest);
+
+        // then
+        지하철_노선_수정됨(modifyResponse);
+
+        // when
+        ExtractableResponse<Response> removeResponse = 지하철_노선_제거_요청(createResponse);
+
+        // then
+        지하철_노선_삭제됨(removeResponse);
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")

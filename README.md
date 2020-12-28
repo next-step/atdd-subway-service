@@ -121,7 +121,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - Background
         - given
             - 지하철역 등록되어 있음
-    - [ ] Scenario1: 지하철 노선을 관리한다. 
+    - [X] Scenario1: 지하철 노선을 관리한다. 
         - when
             - 새로운 지하철 노선 등록 요청
         - then
