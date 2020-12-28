@@ -50,6 +50,21 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성됨(response);
     }
 
+    @DisplayName("시나리오2: 서로 겹치는 환승역이 있는 지하철 노선을 등록한다.")
+    @Test
+    void addLineWithDuplicatedStation() {
+        // given
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(lineRequest1);
+        지하철_노선_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> createResponse2 = 지하철_노선_생성_요청(lineRequest2);
+        지하철_노선_생성됨(createResponse2);
+
+        // then
+        두_노선에_겹치는_역이_존재함(createResponse, createResponse2);
+    }
+
     @DisplayName("지하철 노선을 생성한다.")
     @Test
     void createLine() {
@@ -250,5 +265,22 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 두_노선에_겹치는_역이_존재함(
+            ExtractableResponse<Response> lineResponse1, ExtractableResponse<Response> lineResponse2
+    ) {
+        LineResponse line1 = lineResponse1.as(LineResponse.class);
+        LineResponse line2 = lineResponse2.as(LineResponse.class);
+
+        List<Long> line1StationIds = line1.getStations().stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+
+        List<Long> line2StationIds = line2.getStations().stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+
+        assertThat(line1StationIds).containsAnyElementsOf(line2StationIds);
     }
 }

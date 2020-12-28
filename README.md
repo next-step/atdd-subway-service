@@ -138,7 +138,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - 등록한 지하철 노선 삭제 요청
         - then
             - 등록한 지하철 노선 삭제 성공역
-    - [ ] Scenario2: 서로 겹치는 환승역이 있는 지하철 노선을 등록한다.
+    - [X] Scenario2: 서로 겹치는 환승역이 있는 지하철 노선을 등록한다.
         - given
             - 지하철 노선 등록됨
         - when
