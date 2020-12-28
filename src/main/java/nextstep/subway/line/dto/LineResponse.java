@@ -2,10 +2,19 @@ package nextstep.subway.line.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.dto.StationResponse;
 
+@Getter
+@NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LineResponse {
 	private Long id;
 	private String name;
@@ -14,10 +23,7 @@ public class LineResponse {
 	private LocalDateTime createdDate;
 	private LocalDateTime modifiedDate;
 
-	public LineResponse() {
-	}
-
-	public LineResponse(Long id, String name, String color, List<StationResponse> stations, LocalDateTime createdDate,
+	private LineResponse(Long id, String name, String color, List<StationResponse> stations, LocalDateTime createdDate,
 		LocalDateTime modifiedDate) {
 		this.id = id;
 		this.name = name;
@@ -27,32 +33,20 @@ public class LineResponse {
 		this.modifiedDate = modifiedDate;
 	}
 
-	public static LineResponse of(Line line, List<StationResponse> stations) {
+	public static LineResponse of(Line line) {
+		if (line == null) {
+			throw new NotFoundException("노선 정보를 찾을 수 없습니다.");
+		}
+		List<StationResponse> stations = convertStationToStationResponse(line);
 		return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(),
 			line.getModifiedDate());
 	}
 
-	public Long getId() {
-		return id;
+	private static List<StationResponse> convertStationToStationResponse(Line line) {
+		return line.getStations()
+			.stream()
+			.map(StationResponse::of)
+			.collect(Collectors.toList());
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public String getColor() {
-		return color;
-	}
-
-	public List<StationResponse> getStations() {
-		return stations;
-	}
-
-	public LocalDateTime getCreatedDate() {
-		return createdDate;
-	}
-
-	public LocalDateTime getModifiedDate() {
-		return modifiedDate;
-	}
 }
