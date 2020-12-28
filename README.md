@@ -63,4 +63,12 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 4. LineService의 로직을 Domain으로 refactoring
 5. 테스트 확인 및 코드 점검
 
-                    
+## Step2
+
+1. Step1 피드백 반영
+2. 최단 경로 조회 인수 테스트 만들기
+    - 테스트 픽스쳐 작성
+    - 성공 및 예외 인수테스트 작성
+3. 최단 경로 조회 기능 구현
+    - PathFinder 도메인 설계 후 도메인 테스트 작성 및 기능 구현
+    - 나머지 최단 경로 조회 기능 구현(Controller, Service)                 
