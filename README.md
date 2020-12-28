@@ -183,7 +183,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - 지하철 노선 수정 실패
 
 - Feature: 지하철  관련 기능 
-    - [ ] Scenario1: 지하철 역을 관리한다.
+    - [X] Scenario1: 지하철 역을 관리한다.
         - when
             - 새로운 지하철 역 등록 요청
         - then
@@ -192,10 +192,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - 지하철 역 조회 요청
         - then
             - 지하철 역 조회 성공
-        - when
-            - 지하철 역 이름 변경 요청
-        - then
-            - 지하철 역 이름 변경 성공
         - when
             - 등록한 역 노선 삭제 요청
         - then

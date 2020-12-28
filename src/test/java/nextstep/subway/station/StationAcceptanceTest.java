@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +22,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class StationAcceptanceTest extends AcceptanceTest {
     private static final String 강남역 = "강남역";
     private static final String 역삼역 = "역삼역";
+
+    @DisplayName("시나리오1: 지하철 역을 관리한다.")
+    @Test
+    void manageStationTest() {
+        // when
+        ExtractableResponse<Response> createResponse = 지하철역_생성_요청(강남역);
+        // then
+        지하철역_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> foundResponse = 지하철역_목록_조회_요청();
+        // then
+        지하철역_목록_응답됨(foundResponse);
+        지하철역_목록에_포함되어_있음(foundResponse, Collections.singletonList(createResponse));
+
+        // when
+        ExtractableResponse<Response> response = 지하철역_제거_요청(createResponse);
+
+        // then
+        지하철역_삭제됨(response);
+    }
 
     @DisplayName("지하철역을 생성한다.")
     @Test
@@ -35,7 +57,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
     @Test
     void createStationWithDuplicateName() {
-        //given
+        //givenㄴ
         지하철역_등록되어_있음(강남역);
 
         // when
@@ -57,7 +79,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철역_목록_응답됨(response);
-        지하철_노선에서_삭제해도_역은_남아있음(response, Arrays.asList(createResponse1, createResponse2));
+        지하철역_목록에_포함되어_있음(response, Arrays.asList(createResponse1, createResponse2));
     }
 
     @DisplayName("지하철역을 제거한다.")
@@ -124,16 +146,16 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public static void 지하철_노선에서_삭제해도_역은_남아있음(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
-        List<Long> expectedLineIds = createdResponses.stream()
+    public static void 지하철역_목록에_포함되어_있음(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
+        List<Long> expectedStationIds = createdResponses.stream()
                 .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
                 .collect(Collectors.toList());
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
+        List<Long> resultStationIds = response.jsonPath().getList(".", StationResponse.class).stream()
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());
 
-        assertThat(resultLineIds).containsAll(expectedLineIds);
+        assertThat(resultStationIds).containsAll(expectedStationIds);
     }
 
     public static void 지하철_노선에서_삭제해도_역은_남아있음(ExtractableResponse<Response> response, StationResponse stationResponse) {
