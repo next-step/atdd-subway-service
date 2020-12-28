@@ -44,6 +44,20 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_삭제됨(response);
     }
 
+    @DisplayName("시나리오2: 실수로 같은 지하철 역을 두번 등록한다.")
+    @Test
+    void registerStationTwiceTest() {
+        // given
+        ExtractableResponse<Response> createResponse = 지하철역_생성_요청(강남역);
+        지하철역_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> secondCreateResponse = 지하철역_생성_요청(강남역);
+
+        // then
+        지하철역_생성_실패됨(secondCreateResponse);
+    }
+
     @DisplayName("지하철역을 생성한다.")
     @Test
     void createStation() {
