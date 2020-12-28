@@ -87,6 +87,18 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록됨(response);
     }
 
+    @DisplayName("시나리오3: 기존 지하철 노선의 종점가 거리보다 긴 종점이 아닌 구간을 추가한다.")
+    @Test
+    void addLineSectionWithTooLongTest() {
+        int tooLongDistance = 100;
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, tooLongDistance);
+
+        // then
+        지하철_노선에_지하철역_등록_실패됨(response);
+    }
+
     @DisplayName("지하철 구간을 등록한다.")
     @Test
     void addLineSection() {
