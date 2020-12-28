@@ -128,6 +128,20 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_실패됨(response);
     }
 
+    @DisplayName("시나리오6: 실수로 똑같은 지하철 구간을 두번 등록한다.")
+    @Test
+    void addLineSectionTwiceTest() {
+        // given
+        ExtractableResponse<Response> firstResponse = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 1);
+        지하철_노선에_지하철역_등록됨(firstResponse);
+
+        // when
+        ExtractableResponse<Response> secondResponse = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 1);
+
+        // then
+        지하철_노선에_지하철역_등록_실패됨(secondResponse);
+    }
+
     @DisplayName("지하철 구간을 등록한다.")
     @Test
     void addLineSection() {

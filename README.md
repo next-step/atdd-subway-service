@@ -97,12 +97,12 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - 등록되지 않은 역이 포함된 지하철 구간 등록 요청
         - then
             - 지하철 구간 등록 실패
-    - [ ] Scenario5: 실수로 기존 지하철 노선과 접점이 없는 지하철 구간을 등록한다.
+    - [X] Scenario5: 실수로 기존 지하철 노선과 접점이 없는 지하철 구간을 등록한다.
         - when
             - 기존 지하철 노선과 접점이 없는 지하철 구간 등록 요청
         - then
             - 지하철 구간 등록 실패
-    - [ ] Scenario6: 실수로 똑같은 지하철 구간을 두번 등록한다.
+    - [X] Scenario6: 실수로 똑같은 지하철 구간을 두번 등록한다.
         - when
             - 지하철 구간 등록 요청
         - then
