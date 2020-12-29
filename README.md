@@ -207,7 +207,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - 새로운 지하철 역 등록 실패
     - [X] Scenario3: 실수로 지하철 노선에 등록된 지하철 역을 삭제한다.
         - given
-            - 지하철 역 등록됨
+            - 지하철 역 등록됨~~~~
             - and 지하철 노선 등록됨
         - when
             - 지하철 노선에 등록된 지하철 역 삭제 요청
@@ -218,4 +218,13 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - 등록한 적 없는 지하철 역 삭제 요청
         - then
             - 지하철 역 삭제 실패
-    
+
+## Step1 피드백 반영 요구사항
+- [ ] Line 추가 메서드에서 하부 메서드들의 결과값을 활용
+- [ ] Java Collection의 내장 add 메서드 결과를 활용
+- [ ] LineService에서 Line 삭제 관련 기능에 강제로 추가된 해당 Line 존재 확인 여부 부분 개선
+- [ ] Line 내 Section 제거 메서드의 validation 의도를 코드상에 더 잘 드러나도록 개선
+- [ ] Line 내 Section 이용 시 getter 사용 자제
+- [ ] Section의 distance 래핑
+- [ ] 컨트롤러에서 Spring Validation을 사용해서 기본적인 null 체크 하도록 변경
+- [ ] LineAcceptanceTest의 중복 제거
