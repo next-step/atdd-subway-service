@@ -63,20 +63,17 @@ public class Line extends BaseEntity {
         return sections;
     }
 
-    public Station findUpStation() {
-        Section theFirstSection = findFirstSection();
-        return theFirstSection.getUpStation();
-    }
-
     public List<Station> getStations() {
         if (sections.isEmpty()) {
             return Arrays.asList();
         }
 
-        List<Station> stations = new ArrayList<>();
-        stations.add(this.findUpStation());
+        LineSectionExplorer lineSectionExplorer = new LineSectionExplorer(sections);
 
-        Section currentSection = this.findFirstSection();
+        List<Station> stations = new ArrayList<>();
+        stations.add(lineSectionExplorer.findUpStation());
+
+        Section currentSection = lineSectionExplorer.findFirstSection();
 
         while (currentSection != null) {
             stations.add(currentSection.getDownStation());
@@ -112,25 +109,6 @@ public class Line extends BaseEntity {
                 .filter(it -> currentSection.getDownStation().equals(it.getUpStation()))
                 .findFirst()
                 .orElse(null);
-    }
-
-    private Section findFirstSection() {
-        return this.sections.stream().filter(it -> it.isUpStationBelongsTo(findEndStationsInSections()))
-                .findFirst()
-                .orElseThrow(() -> new ExploreSectionException("해당 노선의 첫번째 구간을 찾을 수 없습니다."));
-    }
-
-    private List<Station> findEndStationsInSections() {
-        List<Station> stations = sections.stream()
-                .flatMap(it -> it.getStations().stream())
-                .collect(Collectors.toList());
-
-        return stations.stream()
-                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
-                .entrySet().stream()
-                .filter(it -> it.getValue() == 1L)
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
     }
 
     private void validateAddSection(List<Station> stations, Station upStation, Station downStation) {
