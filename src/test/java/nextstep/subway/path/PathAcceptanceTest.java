@@ -79,7 +79,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	@Test
 	void shortestPathSameStation() {
 		// when
-		ExtractableResponse<Response> response = 최단_경로_검색_요청(강남역, 남부터미널역);
+		ExtractableResponse<Response> response = 최단_경로_검색_요청(강남역, 강남역);
 
 		// then
 		최단_경로_검색_실패됨(response);
@@ -97,30 +97,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 	@DisplayName("경로 검색 화면: 존재하지 않는 출발역을 조회하면 실패한다.")
 	@Test
-	void shortestPathNotFoundStartStation() {
+	void shortestPathWrongStartStation() {
 		// when
 		ExtractableResponse<Response> response = 최단_경로_검색_요청_by_id(존재하지않는_역_ID, 남부터미널역.getId());
 
 		// then
-		최단_경로_검색_발견되지_않은_역으로_실패됨(response);
+		최단_경로_검색_실패됨(response);
 	}
 
 	@DisplayName("경로 검색 화면: 존재하지 않는 도착역을 조회하면 실패한다.")
 	@Test
-	void shortestPathNotFoundDestStation() {
+	void shortestPathWrongDestStation() {
 		// when
 		ExtractableResponse<Response> response = 최단_경로_검색_요청_by_id(남부터미널역.getId(), 존재하지않는_역_ID);
 
 		// then
-		최단_경로_검색_발견되지_않은_역으로_실패됨(response);
+		최단_경로_검색_실패됨(response);
 	}
 
 	private void 최단_경로_검색_실패됨(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-	}
-
-	private void 최단_경로_검색_발견되지_않은_역으로_실패됨(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
 	}
 
 	private void 최단_경로_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
