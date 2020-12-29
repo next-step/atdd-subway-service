@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.line.domain.exceptions.CannotFindLineEndUpStationException;
+import nextstep.subway.line.domain.exceptions.ExploreSectionException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -63,10 +63,7 @@ public class Line extends BaseEntity {
     }
 
     public Station findUpStation() {
-        Section theFirstSection = this.sections.stream().filter(it -> it.isUpStationBelongsTo(findEndStationsInSections()))
-                .findFirst()
-                .orElseThrow(() -> new CannotFindLineEndUpStationException("해당 노선의 상행종점역을 찾을 수 없습니다."));
-
+        Section theFirstSection = findFirstSection();
         return theFirstSection.getUpStation();
     }
 
@@ -74,6 +71,9 @@ public class Line extends BaseEntity {
         if (sections.isEmpty()) {
             return Arrays.asList();
         }
+
+//        List<Station> stations = new ArrayList<>();
+//        Section firstSection = findup
 
         List<Station> stations = new ArrayList<>();
         Station downStation = this.findUpStation();
@@ -99,6 +99,12 @@ public class Line extends BaseEntity {
                 .filter(it -> currentSection.getDownStation().equals(it.getUpStation()))
                 .findFirst()
                 .orElse(null);
+    }
+
+    private Section findFirstSection() {
+        return this.sections.stream().filter(it -> it.isUpStationBelongsTo(findEndStationsInSections()))
+                .findFirst()
+                .orElseThrow(() -> new ExploreSectionException("해당 노선의 첫번째 구간을 찾을 수 없습니다."));
     }
 
     private List<Station> findEndStationsInSections() {

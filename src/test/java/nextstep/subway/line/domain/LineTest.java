@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.line.domain.exceptions.CannotFindLineEndUpStationException;
+import nextstep.subway.line.domain.exceptions.ExploreSectionException;
 import nextstep.subway.station.StationFixtures;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
@@ -34,8 +34,8 @@ class LineTest {
         Line line = new Line(name, color);
 
         assertThatThrownBy(line::findUpStation)
-                .isInstanceOf(CannotFindLineEndUpStationException.class)
-                .hasMessage("해당 노선의 상행종점역을 찾을 수 없습니다.");
+                .isInstanceOf(ExploreSectionException.class)
+                .hasMessage("해당 노선의 첫번째 구간을 찾을 수 없습니다.");
     }
 
     @DisplayName("구간 순서대로 정렬된 역 목록을 받을 수 있다.")
