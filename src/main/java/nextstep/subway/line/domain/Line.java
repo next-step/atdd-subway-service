@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.line.domain.exceptions.ExploreSectionException;
+import nextstep.subway.line.domain.exceptions.InvalidAddSectionException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -90,9 +91,7 @@ public class Line extends BaseEntity {
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
+        validateIsAlreadyExist(isUpStationExisted, isDownStationExisted);
 
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
                 stations.stream().noneMatch(it -> it == downStation)) {
@@ -147,5 +146,11 @@ public class Line extends BaseEntity {
                 .filter(it -> it.getValue() == 1L)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toList());
+    }
+
+    private void validateIsAlreadyExist(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new InvalidAddSectionException("이미 등록된 구간 입니다.");
+        }
     }
 }

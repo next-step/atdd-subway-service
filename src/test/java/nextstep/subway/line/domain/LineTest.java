@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.line.domain.exceptions.ExploreSectionException;
+import nextstep.subway.line.domain.exceptions.InvalidAddSectionException;
 import nextstep.subway.station.StationFixtures;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
@@ -88,5 +89,20 @@ class LineTest {
 
         assertThat(nextSection.getUpStation()).isEqualTo(secondSection.getUpStation());
         assertThat(nextSection.getDownStation()).isEqualTo(secondSection.getDownStation());
+    }
+
+    @DisplayName("지하철 노선에 이미 등록된 구간을 또 등록할 수 없다.")
+    @Test
+    void addSectionTwiceTest() {
+        String name = "2호선";
+        String color = "초록색";
+        Station upStation = StationFixtures.강남역;
+        Station downStation = StationFixtures.역삼역;
+
+        Line line = new Line(name, color, upStation, downStation, 5);
+
+        assertThatThrownBy(() -> line.addLineStation(upStation, downStation, 10))
+                .isInstanceOf(InvalidAddSectionException.class)
+                .hasMessage("이미 등록된 구간 입니다.");
     }
 }
