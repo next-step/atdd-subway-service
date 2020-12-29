@@ -5,10 +5,7 @@ import nextstep.subway.line.domain.exceptions.CannotFindLineEndUpStationExceptio
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -38,6 +35,12 @@ public class Line extends BaseEntity {
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
+    Line(String name, String color, List<Section> sections) {
+        this.name = name;
+        this.color = color;
+        this.sections = sections;
+    }
+
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
@@ -65,6 +68,30 @@ public class Line extends BaseEntity {
                 .orElseThrow(() -> new CannotFindLineEndUpStationException("해당 노선의 상행종점역을 찾을 수 없습니다."));
 
         return theFirstSection.getUpStation();
+    }
+
+    public List<Station> getStations() {
+        if (sections.isEmpty()) {
+            return Arrays.asList();
+        }
+
+        List<Station> stations = new ArrayList<>();
+        Station downStation = this.findUpStation();
+        stations.add(downStation);
+
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = sections.stream()
+                    .filter(it -> it.getUpStation() == finalDownStation)
+                    .findFirst();
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getDownStation();
+            stations.add(downStation);
+        }
+
+        return stations;
     }
 
     private List<Station> findEndStationsInSections() {

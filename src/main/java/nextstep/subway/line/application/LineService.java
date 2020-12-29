@@ -150,7 +150,7 @@ public class LineService {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation(line);
+        Station downStation = line.findUpStation();
         stations.add(downStation);
 
         while (downStation != null) {
@@ -166,9 +166,5 @@ public class LineService {
         }
 
         return stations;
-    }
-
-    private Station findUpStation(Line line) {
-        return line.findUpStation();
     }
 }
