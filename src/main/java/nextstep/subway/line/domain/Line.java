@@ -93,29 +93,18 @@ public class Line extends BaseEntity {
         validateAddSection(stations, upStation, downStation);
 
         if (stations.isEmpty()) {
-            this.getSections().add(new Section(this, upStation, downStation, distance));
-            return sections.size() == originalSize + 1;
+            return this.simpleAddSection(upStation, downStation, distance, originalSize);
         }
 
         if (isUpStationExisted(stations, upStation)) {
-            this.sections.stream()
-                    .filter(it -> it.getUpStation() == upStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, distance));
-
-            this.sections.add(new Section(this, upStation, downStation, distance));
+            return addSectionWithSameUp(upStation, downStation, distance, originalSize);
         }
 
         if (isDownStationExisted(stations, downStation)) {
-            this.sections.stream()
-                    .filter(it -> it.getDownStation() == downStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, distance));
-
-            this.sections.add(new Section(this, upStation, downStation, distance));
+            return addSectionWithSameDown(upStation, downStation, distance, originalSize);
         }
 
-        return sections.size() == originalSize + 1;
+        throw new InvalidAddSectionException("해당 구간을 추가할 수 없습니다.");
     }
 
     Section findNextSection(Section currentSection) {
@@ -168,5 +157,32 @@ public class Line extends BaseEntity {
 
     private boolean isDownStationExisted(List<Station> stations, Station downStation) {
         return stations.stream().anyMatch(it -> it == downStation);
+    }
+
+    private boolean simpleAddSection(Station upStation, Station downStation, int distance, int originalSize) {
+        this.getSections().add(new Section(this, upStation, downStation, distance));
+        return sections.size() == originalSize + 1;
+    }
+
+    private boolean addSectionWithSameUp(Station upStation, Station downStation, int distance, int originalSize) {
+        this.sections.stream()
+                .filter(it -> it.getUpStation() == upStation)
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(downStation, distance));
+
+        this.sections.add(new Section(this, upStation, downStation, distance));
+
+        return sections.size() == originalSize + 1;
+    }
+
+    private boolean addSectionWithSameDown(Station upStation, Station downStation, int distance, int originalSize) {
+        this.sections.stream()
+                .filter(it -> it.getDownStation() == downStation)
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(upStation, distance));
+
+        this.sections.add(new Section(this, upStation, downStation, distance));
+
+        return sections.size() == originalSize + 1;
     }
 }
