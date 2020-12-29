@@ -88,25 +88,22 @@ public class Line extends BaseEntity {
 
     public void addLineStation(Station upStation, Station downStation, int distance) {
         List<Station> stations = this.getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 
-        validateIsAlreadyExist(isUpStationExisted, isDownStationExisted);
-        validateIsNotMatchAny(stations, upStation, downStation);
+        validateAddSection(stations, upStation, downStation);
 
         if (stations.isEmpty()) {
             this.getSections().add(new Section(this, upStation, downStation, distance));
             return;
         }
 
-        if (isUpStationExisted) {
+        if (isUpStationExisted(stations, upStation)) {
             this.getSections().stream()
                     .filter(it -> it.getUpStation() == upStation)
                     .findFirst()
                     .ifPresent(it -> it.updateUpStation(downStation, distance));
 
             this.getSections().add(new Section(this, upStation, downStation, distance));
-        } else if (isDownStationExisted) {
+        } else if (isDownStationExisted(stations, downStation)) {
             this.getSections().stream()
                     .filter(it -> it.getDownStation() == downStation)
                     .findFirst()
@@ -144,8 +141,13 @@ public class Line extends BaseEntity {
                 .collect(Collectors.toList());
     }
 
-    private void validateIsAlreadyExist(boolean isUpStationExisted, boolean isDownStationExisted) {
-        if (isUpStationExisted && isDownStationExisted) {
+    private void validateAddSection(List<Station> stations, Station upStation, Station downStation) {
+        validateIsAlreadyExist(stations, upStation, downStation);
+        validateIsNotMatchAny(stations, upStation, downStation);
+    }
+
+    private void validateIsAlreadyExist(List<Station> stations, Station upStation, Station downStation) {
+        if (isUpStationExisted(stations, upStation) && isDownStationExisted(stations, downStation)) {
             throw new InvalidAddSectionException("이미 등록된 구간 입니다.");
         }
     }
@@ -155,5 +157,13 @@ public class Line extends BaseEntity {
                 stations.stream().noneMatch(it -> it == downStation)) {
             throw new InvalidAddSectionException("등록할 수 없는 구간 입니다.");
         }
+    }
+
+    private boolean isUpStationExisted(List<Station> stations, Station upStation) {
+        return stations.stream().anyMatch(it -> it == upStation);
+    }
+
+    private boolean isDownStationExisted(List<Station> stations, Station downStation) {
+        return stations.stream().anyMatch(it -> it == downStation);
     }
 }
