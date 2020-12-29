@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.line.domain.exceptions.ExploreSectionException;
 import nextstep.subway.station.domain.Station;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -12,7 +13,7 @@ public class LineSectionExplorer {
     private final List<Section> sections;
 
     public LineSectionExplorer(final List<Section> sections) {
-        this.sections = sections;
+        this.sections = new ArrayList<>(sections);
     }
 
     public Station findUpStation() {
