@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.domain.exceptions.CannotFindLineEndUpStationException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -56,18 +57,37 @@ public class Line extends BaseEntity {
     }
 
     public Station findUpStation() {
-        Station downStation = this.sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
+        validateNotEmptySections();
+
+        Section currentSection = this.sections.get(0);
+        Section theFirstSection = currentSection;
+
+        if (currentSection == null) {
+            throw new CannotFindLineEndUpStationException("해당 노선의 상행종점역을 찾을 수 없습니다.");
         }
 
-        return downStation;
+        while(currentSection != null) {
+            theFirstSection = currentSection;
+            currentSection = findPreviousSection(currentSection);
+        }
+
+        return theFirstSection.getUpStation();
+    }
+
+    private Section findPreviousSection(Section thatSection) {
+        return this.sections.stream()
+                .filter(it -> thatSection.getUpStation() == it.getDownStation())
+                .findFirst()
+                .orElse(null);
+    }
+
+    private boolean isEmptySections() {
+        return this.sections.size() == 0;
+    }
+
+    private void validateNotEmptySections() {
+        if (isEmptySections()) {
+            throw new CannotFindLineEndUpStationException("해당 노선의 상행종점역을 찾을 수 없습니다.");
+        }
     }
 }
