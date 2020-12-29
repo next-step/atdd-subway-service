@@ -36,12 +36,6 @@ public class Line extends BaseEntity {
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
-    Line(String name, String color, List<Section> sections) {
-        this.name = name;
-        this.color = color;
-        this.sections = sections;
-    }
-
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
@@ -64,23 +58,8 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getStations() {
-        if (sections.isEmpty()) {
-            return Arrays.asList();
-        }
-
         LineSectionExplorer lineSectionExplorer = new LineSectionExplorer(sections);
-
-        List<Station> stations = new ArrayList<>();
-        stations.add(lineSectionExplorer.findUpStation());
-
-        Section currentSection = lineSectionExplorer.findFirstSection();
-
-        while (currentSection != null) {
-            stations.add(currentSection.getDownStation());
-            currentSection = this.findNextSection(currentSection);
-        }
-
-        return stations;
+        return lineSectionExplorer.getStations();
     }
 
     public boolean addLineStation(Station upStation, Station downStation, int distance) {
@@ -102,13 +81,6 @@ public class Line extends BaseEntity {
         }
 
         throw new InvalidAddSectionException("해당 구간을 추가할 수 없습니다.");
-    }
-
-    Section findNextSection(Section currentSection) {
-        return this.sections.stream()
-                .filter(it -> currentSection.getDownStation().equals(it.getUpStation()))
-                .findFirst()
-                .orElse(null);
     }
 
     private void validateAddSection(List<Station> stations, Station upStation, Station downStation) {

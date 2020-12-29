@@ -18,58 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class LineTest {
-    @DisplayName("구간 순서대로 정렬된 역 목록을 받을 수 있다.")
-    @Test
-    void getStationsTest() {
-        String name = "2호선";
-        String color = "초록색";
-        Line line = new Line(name, color);
-        List<Section> sections = Arrays.asList(
-                new Section(line, StationFixtures.역삼역, StationFixtures.삼성역, 5),
-                new Section(line, StationFixtures.삼성역, StationFixtures.잠실역, 5),
-                new Section(line, StationFixtures.강남역, StationFixtures.역삼역, 5)
-        );
-        Line sectionAddedLine = new Line(name, color, sections);
-
-        List<Station> stations = sectionAddedLine.getStations();
-
-        assertThat(stations.get(0)).isEqualTo(StationFixtures.강남역);
-        assertThat(stations.get(stations.size() - 1)).isEqualTo(StationFixtures.잠실역);
-    }
-
-    @DisplayName("구간내 등록된 역이 없으면 역 목록 조회 시 빈 배열을 받는다.")
-    @Test
-    void getEmptyStationsTest() {
-        String name = "2호선";
-        String color = "초록색";
-        Line line = new Line(name, color);
-
-        List<Station> stations = line.getStations();
-
-        assertThat(stations).hasSize(0);
-    }
-
-    @DisplayName("다음 Section을 탐색할 수 있다.")
-    @Test
-    void findNextSectionTest() {
-        String name = "2호선";
-        String color = "초록색";
-        Line line = new Line(name, color);
-        Section firstSection = new Section(line, StationFixtures.강남역, StationFixtures.역삼역, 5);
-        Section secondSection = new Section(line, StationFixtures.역삼역, StationFixtures.삼성역, 5);
-        List<Section> sections = Arrays.asList(
-                secondSection,
-                new Section(line, StationFixtures.삼성역, StationFixtures.잠실역, 5),
-                firstSection
-        );
-        Line sectionAddedLine = new Line(name, color, sections);
-
-        Section nextSection = sectionAddedLine.findNextSection(firstSection);
-
-        assertThat(nextSection.getUpStation()).isEqualTo(secondSection.getUpStation());
-        assertThat(nextSection.getDownStation()).isEqualTo(secondSection.getDownStation());
-    }
-
     @DisplayName("지하철 노선에 이미 등록된 구간을 또 등록할 수 없다.")
     @Test
     void addSectionTwiceTest() {
