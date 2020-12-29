@@ -105,4 +105,17 @@ class LineTest {
                 .isInstanceOf(InvalidAddSectionException.class)
                 .hasMessage("이미 등록된 구간 입니다.");
     }
+
+    @DisplayName("접점이 아예 없는 구간은 추가할 수 없다.")
+    @Test
+    void addSectionWithoutAnyConnectionTest() {
+        String name = "2호선";
+        String color = "초록색";
+
+        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 5);
+
+        assertThatThrownBy(() -> line.addLineStation(StationFixtures.삼성역, StationFixtures.잠실역, 10))
+                .isInstanceOf(InvalidAddSectionException.class)
+                .hasMessage("등록할 수 없는 구간 입니다.");
+    }
 }
