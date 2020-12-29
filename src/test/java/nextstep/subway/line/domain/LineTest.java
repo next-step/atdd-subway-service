@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.line.domain.exceptions.ExploreSectionException;
 import nextstep.subway.line.domain.exceptions.InvalidAddSectionException;
+import nextstep.subway.line.domain.exceptions.InvalidRemoveSectionException;
 import nextstep.subway.station.StationFixtures;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
@@ -10,8 +10,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -76,6 +74,39 @@ class LineTest {
                 Arguments.of(StationFixtures.잠실역, StationFixtures.역삼역, 5),
                 Arguments.of(StationFixtures.강남역, StationFixtures.삼성역, 5),
                 Arguments.of(StationFixtures.삼성역, StationFixtures.강남역, 100)
+        );
+    }
+
+    @DisplayName("구간이 하나밖에 없는 지하철 노선의 구간을 제거할 수 없다.")
+    @Test
+    void removeSectionFailWhenLineHasJustOneSectionTest() {
+        String name = "2호선";
+        String color = "초록색";
+        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 5);
+
+        assertThatThrownBy(() -> line.removeLineStation(StationFixtures.강남역))
+                .isInstanceOf(InvalidRemoveSectionException.class)
+                .hasMessage("구간이 하나밖에 없는 지하철 노선의 구간을 제거할 수 없습니다.");
+    }
+
+    @DisplayName("지하철 노선의 구간을 제거할 수 있다.")
+    @ParameterizedTest
+    @MethodSource("removeSectionTestResource")
+    void removeSectionTest(Station removeTarget) {
+        String name = "2호선";
+        String color = "초록색";
+        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 5);
+        line.addLineStation(StationFixtures.역삼역, StationFixtures.삼성역, 5);
+
+        boolean result = line.removeLineStation(removeTarget);
+
+        assertThat(result).isTrue();
+    }
+    public static Stream<Arguments> removeSectionTestResource() {
+        return Stream.of(
+                Arguments.of(StationFixtures.강남역),
+                Arguments.of(StationFixtures.역삼역),
+                Arguments.of(StationFixtures.삼성역)
         );
     }
 }
