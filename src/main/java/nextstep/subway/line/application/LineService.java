@@ -10,6 +10,7 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.application.exceptions.EntityNotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,8 +76,11 @@ public class LineService {
     }
 
     public void deleteLineById(Long id) {
-        this.findLineById(id);
-        lineRepository.deleteById(id);
+        try {
+            lineRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new EntityNotFoundException("해당 지하철 노선이 존재하지 않습니다.");
+        }
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
