@@ -3,7 +3,6 @@ package nextstep.subway.line.domain;
 import nextstep.subway.line.domain.exceptions.CannotFindLineEndUpStationException;
 import nextstep.subway.station.StationFixtures;
 import nextstep.subway.station.domain.Station;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -56,5 +55,38 @@ class LineTest {
 
         assertThat(stations.get(0)).isEqualTo(StationFixtures.강남역);
         assertThat(stations.get(stations.size() - 1)).isEqualTo(StationFixtures.잠실역);
+    }
+
+    @DisplayName("구간내 등록된 역이 없으면 역 목록 조회 시 빈 배열을 받는다.")
+    @Test
+    void getEmptyStationsTest() {
+        String name = "2호선";
+        String color = "초록색";
+        Line line = new Line(name, color);
+
+        List<Station> stations = line.getStations();
+
+        assertThat(stations).hasSize(0);
+    }
+
+    @DisplayName("다음 Section을 탐색할 수 있다.")
+    @Test
+    void findNextSectionTest() {
+        String name = "2호선";
+        String color = "초록색";
+        Line line = new Line(name, color);
+        Section firstSection = new Section(line, StationFixtures.강남역, StationFixtures.역삼역, 5);
+        Section secondSection = new Section(line, StationFixtures.역삼역, StationFixtures.삼성역, 5);
+        List<Section> sections = Arrays.asList(
+                secondSection,
+                new Section(line, StationFixtures.삼성역, StationFixtures.잠실역, 5),
+                firstSection
+        );
+        Line sectionAddedLine = new Line(name, color, sections);
+
+        Section nextSection = sectionAddedLine.findNextSection(firstSection);
+
+        assertThat(nextSection.getUpStation()).isEqualTo(secondSection.getUpStation());
+        assertThat(nextSection.getDownStation()).isEqualTo(secondSection.getDownStation());
     }
 }

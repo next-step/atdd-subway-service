@@ -94,6 +94,13 @@ public class Line extends BaseEntity {
         return stations;
     }
 
+    Section findNextSection(Section currentSection) {
+        return this.sections.stream()
+                .filter(it -> currentSection.getDownStation().equals(it.getUpStation()))
+                .findFirst()
+                .orElse(null);
+    }
+
     private List<Station> findEndStationsInSections() {
         List<Station> stations = sections.stream()
                 .flatMap(it -> it.getStations().stream())
