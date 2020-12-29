@@ -52,7 +52,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 	@Test
 	void manageMyInfo() {
 		//given
-		ExtractableResponse<Response> memberResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+		회원_생성을_요청(EMAIL, PASSWORD, AGE);
 		TokenResponse tokenResponse = AuthAcceptanceTest.로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
 		String accessToken = tokenResponse.getAccessToken();
 
@@ -69,7 +69,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 		내_정보_수정됨(updateResponse);
 
 		//when
-		ExtractableResponse<Response> deleteResponse = 내_정보_삭제요청(accessToken);
+		TokenResponse reAuthTokenResponse = AuthAcceptanceTest.로그인_요청(NEW_EMAIL, NEW_PASSWORD).as(TokenResponse.class);
+		String newToken = reAuthTokenResponse.getAccessToken();
+		ExtractableResponse<Response> deleteResponse = 내_정보_삭제요청(newToken);
 
 		//then
 		내_정보_삭제됨(deleteResponse);
