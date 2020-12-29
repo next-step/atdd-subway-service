@@ -72,23 +72,14 @@ public class Line extends BaseEntity {
             return Arrays.asList();
         }
 
-//        List<Station> stations = new ArrayList<>();
-//        Section firstSection = findup
-
         List<Station> stations = new ArrayList<>();
-        Station downStation = this.findUpStation();
-        stations.add(downStation);
+        stations.add(this.findUpStation());
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        Section currentSection = this.findFirstSection();
+
+        while (currentSection != null) {
+            stations.add(currentSection.getDownStation());
+            currentSection = this.findNextSection(currentSection);
         }
 
         return stations;
