@@ -3,6 +3,8 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 public class Section {
@@ -70,7 +72,11 @@ public class Section {
         this.distance -= newDistance;
     }
 
-    boolean isThisSameWithDownStation(Station station) {
-        return this.downStation == station;
+    public List<Station> getStations() {
+        return Arrays.asList(this.upStation, this.downStation);
+    }
+
+    public boolean isUpStationBelongsTo(List<Station> stations) {
+        return stations.contains(this.upStation);
     }
 }

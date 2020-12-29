@@ -7,7 +7,10 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Entity
 public class Line extends BaseEntity {
@@ -57,37 +60,23 @@ public class Line extends BaseEntity {
     }
 
     public Station findUpStation() {
-        validateNotEmptySections();
-
-        Section currentSection = this.sections.get(0);
-        Section theFirstSection = currentSection;
-
-        if (currentSection == null) {
-            throw new CannotFindLineEndUpStationException("해당 노선의 상행종점역을 찾을 수 없습니다.");
-        }
-
-        while(currentSection != null) {
-            theFirstSection = currentSection;
-            currentSection = findPreviousSection(currentSection);
-        }
+        Section theFirstSection = this.sections.stream().filter(it -> it.isUpStationBelongsTo(findEndStationsInSections()))
+                .findFirst()
+                .orElseThrow(() -> new CannotFindLineEndUpStationException("해당 노선의 상행종점역을 찾을 수 없습니다."));
 
         return theFirstSection.getUpStation();
     }
 
-    private Section findPreviousSection(Section thatSection) {
-        return this.sections.stream()
-                .filter(it -> thatSection.getUpStation() == it.getDownStation())
-                .findFirst()
-                .orElse(null);
-    }
+    private List<Station> findEndStationsInSections() {
+        List<Station> stations = sections.stream()
+                .flatMap(it -> it.getStations().stream())
+                .collect(Collectors.toList());
 
-    private boolean isEmptySections() {
-        return this.sections.size() == 0;
-    }
-
-    private void validateNotEmptySections() {
-        if (isEmptySections()) {
-            throw new CannotFindLineEndUpStationException("해당 노선의 상행종점역을 찾을 수 없습니다.");
-        }
+        return stations.stream()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                .entrySet().stream()
+                .filter(it -> it.getValue() == 1L)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 }
