@@ -86,33 +86,36 @@ public class Line extends BaseEntity {
         return stations;
     }
 
-    public void addLineStation(Station upStation, Station downStation, int distance) {
+    public boolean addLineStation(Station upStation, Station downStation, int distance) {
         List<Station> stations = this.getStations();
+        int originalSize = sections.size();
 
         validateAddSection(stations, upStation, downStation);
 
         if (stations.isEmpty()) {
             this.getSections().add(new Section(this, upStation, downStation, distance));
-            return;
+            return sections.size() == originalSize + 1;
         }
 
         if (isUpStationExisted(stations, upStation)) {
-            this.getSections().stream()
+            this.sections.stream()
                     .filter(it -> it.getUpStation() == upStation)
                     .findFirst()
                     .ifPresent(it -> it.updateUpStation(downStation, distance));
 
-            this.getSections().add(new Section(this, upStation, downStation, distance));
-        } else if (isDownStationExisted(stations, downStation)) {
-            this.getSections().stream()
+            this.sections.add(new Section(this, upStation, downStation, distance));
+        }
+
+        if (isDownStationExisted(stations, downStation)) {
+            this.sections.stream()
                     .filter(it -> it.getDownStation() == downStation)
                     .findFirst()
                     .ifPresent(it -> it.updateDownStation(upStation, distance));
 
-            this.getSections().add(new Section(this, upStation, downStation, distance));
-        } else {
-            throw new RuntimeException();
+            this.sections.add(new Section(this, upStation, downStation, distance));
         }
+
+        return sections.size() == originalSize + 1;
     }
 
     Section findNextSection(Section currentSection) {
