@@ -12,7 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import nextstep.subway.AcceptanceTest;
+import nextstep.subway.BaseTest;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -24,7 +24,7 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 
-class FavoriteServiceTest extends AcceptanceTest {
+class FavoriteServiceTest extends BaseTest {
 
 	@Autowired
 	private MemberService memberService;

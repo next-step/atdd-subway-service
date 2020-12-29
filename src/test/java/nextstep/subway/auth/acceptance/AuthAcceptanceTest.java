@@ -13,14 +13,14 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.AcceptanceTest;
+import nextstep.subway.BaseTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.MemberAcceptanceTest;
 
 @DisplayName("로그인 기능")
-public class AuthAcceptanceTest extends AcceptanceTest {
+public class AuthAcceptanceTest extends BaseTest {
 	public static final String EMAIL = "test@test.com";
 	public static final String PASSWORD = "testpass";
 	public static final String WRONG_PASSWORD = "testpass1";

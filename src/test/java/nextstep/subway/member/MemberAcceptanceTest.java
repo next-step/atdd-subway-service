@@ -10,13 +10,13 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.AcceptanceTest;
+import nextstep.subway.BaseTest;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 
-public class MemberAcceptanceTest extends AcceptanceTest {
+public class MemberAcceptanceTest extends BaseTest {
 	public static final String EMAIL = "email@email.com";
 	public static final String PASSWORD = "password";
 	public static final String NEW_EMAIL = "newemail@email.com";
