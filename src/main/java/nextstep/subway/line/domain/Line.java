@@ -148,9 +148,7 @@ public class Line extends BaseEntity {
                 .findFirst()
                 .ifPresent(it -> it.updateUpStation(downStation, distance));
 
-        this.sections.add(new Section(this, upStation, downStation, distance));
-
-        return sections.size() == originalSize + 1;
+        return simpleAddSection(upStation, downStation, distance, originalSize);
     }
 
     private boolean addSectionWithSameDown(Station upStation, Station downStation, int distance, int originalSize) {
@@ -159,8 +157,6 @@ public class Line extends BaseEntity {
                 .findFirst()
                 .ifPresent(it -> it.updateDownStation(upStation, distance));
 
-        this.sections.add(new Section(this, upStation, downStation, distance));
-
-        return sections.size() == originalSize + 1;
+        return simpleAddSection(upStation, downStation, distance, originalSize);
     }
 }
