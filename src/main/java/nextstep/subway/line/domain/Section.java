@@ -25,16 +25,21 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
-    public Section() {
+    protected Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    public Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public Section(Line line, Station upStation, Station downStation, int distance) {
+        this(line, upStation, downStation, new Distance(distance));
     }
 
     public static Section mergeByTwoSections(Section upSection, Section downSection) {
@@ -48,7 +53,7 @@ public class Section {
 
         Station newUpStation = downSection.upStation;
         Station newDownStation = upSection.downStation;
-        int newDistance = upSection.distance + downSection.distance;
+        Distance newDistance = upSection.distance.plus(downSection.distance);
 
         return new Section(upSection.line, newUpStation, newDownStation, newDistance);
     }
@@ -61,24 +66,18 @@ public class Section {
         return downStation;
     }
 
-    int getDistance() {
+    Distance getDistance() {
         return distance;
     }
 
     void updateUpStation(Station station, int newDistance) {
-        if (this.distance < newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
         this.upStation = station;
-        this.distance -= newDistance;
+        this.distance = this.distance.minus(new Distance(newDistance));
     }
 
     void updateDownStation(Station station, int newDistance) {
-        if (this.distance < newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
         this.downStation = station;
-        this.distance -= newDistance;
+        this.distance = this.distance.minus(new Distance(newDistance));
     }
 
     List<Station> getStations() {

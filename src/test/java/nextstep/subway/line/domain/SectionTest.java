@@ -18,7 +18,7 @@ class SectionTest {
 
         assertThat(Section.mergeByTwoSections(section1, section2).getUpStation()).isEqualTo(StationFixtures.잠실역);
         assertThat(Section.mergeByTwoSections(section1, section2).getDownStation()).isEqualTo(StationFixtures.강남역);
-        assertThat(Section.mergeByTwoSections(section1, section2).getDistance()).isEqualTo(10);
+        assertThat(Section.mergeByTwoSections(section1, section2).getDistance()).isEqualTo(new Distance(10));
     }
 
     @DisplayName("서로 다른 라인에 속한 Section끼리 합칠 수 없다.")
