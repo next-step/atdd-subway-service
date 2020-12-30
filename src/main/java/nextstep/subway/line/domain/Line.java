@@ -63,7 +63,7 @@ public class Line extends BaseEntity {
         return lineSectionExplorer.getStations();
     }
 
-    public boolean addLineStation(Station upStation, Station downStation, int distance) {
+    public boolean addSection(Station upStation, Station downStation, int distance) {
         List<Station> stations = this.getStations();
 
         validateAddSection(stations, upStation, downStation);
@@ -83,29 +83,29 @@ public class Line extends BaseEntity {
         throw new InvalidAddSectionException("해당 구간을 추가할 수 없습니다.");
     }
 
-    public boolean removeLineStation(Station station) {
+    public boolean removeSection(Station station) {
         int originalSize = sections.size();
 
         if (originalSize <= MIN_SECTIONS_SIZE) {
             throw new InvalidRemoveSectionException("구간이 하나밖에 없는 지하철 노선의 구간을 제거할 수 없습니다.");
         }
 
-        Optional<Section> upLineStation = sections.stream()
+        Optional<Section> upSection = sections.stream()
                 .filter(it -> it.getUpStation() == station)
                 .findFirst();
-        Optional<Section> downLineStation = sections.stream()
+        Optional<Section> downSection = sections.stream()
                 .filter(it -> it.getDownStation() == station)
                 .findFirst();
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+        if (upSection.isPresent() && downSection.isPresent()) {
+            Station newUpStation = downSection.get().getUpStation();
+            Station newDownStation = upSection.get().getDownStation();
+            int newDistance = upSection.get().getDistance() + downSection.get().getDistance();
             sections.add(new Section(this, newUpStation, newDownStation, newDistance));
         }
 
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
+        upSection.ifPresent(it -> sections.remove(it));
+        downSection.ifPresent(it -> sections.remove(it));
 
         return sections.size() == originalSize - 1;
     }

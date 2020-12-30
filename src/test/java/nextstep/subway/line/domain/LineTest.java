@@ -26,7 +26,7 @@ class LineTest {
 
         Line line = new Line(name, color, upStation, downStation, 5);
 
-        assertThatThrownBy(() -> line.addLineStation(upStation, downStation, 10))
+        assertThatThrownBy(() -> line.addSection(upStation, downStation, 10))
                 .isInstanceOf(InvalidAddSectionException.class)
                 .hasMessage("이미 등록된 구간 입니다.");
     }
@@ -39,7 +39,7 @@ class LineTest {
 
         Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 5);
 
-        assertThatThrownBy(() -> line.addLineStation(StationFixtures.삼성역, StationFixtures.잠실역, 10))
+        assertThatThrownBy(() -> line.addSection(StationFixtures.삼성역, StationFixtures.잠실역, 10))
                 .isInstanceOf(InvalidAddSectionException.class)
                 .hasMessage("등록할 수 없는 구간 입니다.");
     }
@@ -51,7 +51,7 @@ class LineTest {
         String color = "초록색";
         Line line = new Line(name, color);
 
-        boolean result = line.addLineStation(StationFixtures.삼성역, StationFixtures.잠실역, 5);
+        boolean result = line.addSection(StationFixtures.삼성역, StationFixtures.잠실역, 5);
 
         assertThat(result).isTrue();
     }
@@ -64,7 +64,7 @@ class LineTest {
         String color = "초록색";
         Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 5);
 
-        boolean result = line.addLineStation(upStation, downStation, distance);
+        boolean result = line.addSection(upStation, downStation, distance);
 
         assertThat(result).isTrue();
     }
@@ -84,7 +84,7 @@ class LineTest {
         String color = "초록색";
         Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 5);
 
-        assertThatThrownBy(() -> line.removeLineStation(StationFixtures.강남역))
+        assertThatThrownBy(() -> line.removeSection(StationFixtures.강남역))
                 .isInstanceOf(InvalidRemoveSectionException.class)
                 .hasMessage("구간이 하나밖에 없는 지하철 노선의 구간을 제거할 수 없습니다.");
     }
@@ -96,9 +96,9 @@ class LineTest {
         String name = "2호선";
         String color = "초록색";
         Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 5);
-        line.addLineStation(StationFixtures.역삼역, StationFixtures.삼성역, 5);
+        line.addSection(StationFixtures.역삼역, StationFixtures.삼성역, 5);
 
-        boolean result = line.removeLineStation(removeTarget);
+        boolean result = line.removeSection(removeTarget);
 
         assertThat(result).isTrue();
     }
