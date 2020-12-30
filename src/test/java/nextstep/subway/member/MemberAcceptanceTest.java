@@ -23,6 +23,7 @@ public class MemberAcceptanceTest extends BaseTest {
 	public static final String NEW_PASSWORD = "newpassword";
 	public static final int AGE = 20;
 	public static final int NEW_AGE = 21;
+	public static final String 잘못된_토큰 = "abcdef";
 
 	@DisplayName("회원 정보를 관리한다.")
 	@Test
@@ -61,6 +62,10 @@ public class MemberAcceptanceTest extends BaseTest {
 
 		//then
 		내_정보_조회됨(getResponse);
+
+		//when
+		ExtractableResponse<Response> wrongResponse = 잘못된_토큰으로_내_정보_조회(잘못된_토큰);
+		정보_조회_거부됨(wrongResponse);
 
 		//when
 		ExtractableResponse<Response> updateResponse = 내_정보_수정요청(accessToken, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
@@ -152,6 +157,10 @@ public class MemberAcceptanceTest extends BaseTest {
 			.extract();
 	}
 
+	private ExtractableResponse<Response> 잘못된_토큰으로_내_정보_조회(String accessToken) {
+		return 내_정보_조회(accessToken);
+	}
+
 	private ExtractableResponse<Response> 내_정보_수정요청(String accessToken, String email, String password, int age) {
 		return RestAssured
 			.given().log().all().auth().oauth2(accessToken)
@@ -173,6 +182,10 @@ public class MemberAcceptanceTest extends BaseTest {
 
 	private void 내_정보_조회됨(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+	}
+
+	private void 정보_조회_거부됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 
 	private void 내_정보_수정됨(ExtractableResponse<Response> response) {
