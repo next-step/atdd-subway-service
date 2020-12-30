@@ -5,6 +5,7 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,8 +34,12 @@ public class StationService {
     }
 
     public void deleteStationById(Long id) {
-        findById(id);
-        stationRepository.deleteById(id);
+        try {
+            stationRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new EntityNotFoundException("존재하지 않는 역입니다.");
+        }
+
     }
 
     public Station findStationById(Long id) {
@@ -42,9 +47,6 @@ public class StationService {
     }
 
     public Station findById(Long id) {
-        if (id == null) {
-            throw new EntityNotFoundException("존재하지 않는 역입니다.");
-        }
         return stationRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 역입니다."));
     }
 }
