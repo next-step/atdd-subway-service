@@ -138,7 +138,7 @@ public class Line extends BaseEntity {
     }
 
     private boolean simpleAddSection(Station upStation, Station downStation, int distance) {
-        return this.getSections().add(new Section(this, upStation, downStation, distance));
+        return this.sections.add(new Section(this, upStation, downStation, distance));
     }
 
     private boolean addSectionWithSameUp(Station upStation, Station downStation, int distance) {
