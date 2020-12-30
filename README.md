@@ -231,7 +231,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ## Step1 2차 피드백 반영 요구사항
 - [X] 문서에 쓸모없는 오타 제거
-- [ ] Line 내의 불필요한 getter 제거
-- [ ] Line 내의 디미터 법칙 위반 부분 개선
-- [ ] Distance의 경계값 조정
-- [ ] Distance의 0 계산 별도 처리
+- [X] Line 내의 불필요한 getter 제거
+- [X] Line 내의 디미터 법칙 위반 부분 개선
+  - 이전 피드백에서 이미 개선되어 있음
+- [X] Distance의 경계값 조정
+- [ ] Distance 뺄셈의 0 계산 별도 처리

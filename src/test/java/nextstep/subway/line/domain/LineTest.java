@@ -62,7 +62,7 @@ class LineTest {
     void addSectionTest(Station upStation, Station downStation, int distance) {
         String name = "2호선";
         String color = "초록색";
-        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 5);
+        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 6);
 
         boolean result = line.addSection(upStation, downStation, distance);
 

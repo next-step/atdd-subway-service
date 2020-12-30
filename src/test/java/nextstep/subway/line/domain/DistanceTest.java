@@ -22,9 +22,9 @@ class DistanceTest {
         three = new Distance(3);
     }
 
-    @DisplayName("음수로 객체를 생성할 수 없다.")
+    @DisplayName("0이하의 값으로 객체를 생성할 수 없다.")
     @ParameterizedTest
-    @ValueSource(ints = { -1, -2 })
+    @ValueSource(ints = { 0, -1, -2 })
     void createFailByNegativeValueTest(int invalidValue) {
         assertThatThrownBy(() -> new Distance(invalidValue)).isInstanceOf(InvalidDistanceValueException.class);
     }

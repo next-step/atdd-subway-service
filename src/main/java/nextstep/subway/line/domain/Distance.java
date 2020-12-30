@@ -9,7 +9,7 @@ import java.util.Objects;
 @Embeddable
 public class Distance {
     @Transient
-    public static final int MIN_DISTANCE_VALUE = 0;
+    public static final int MIN_DISTANCE_VALUE = 1;
 
     private int distance;
 
@@ -31,7 +31,7 @@ public class Distance {
 
     private void validate(int distance) {
         if (distance < MIN_DISTANCE_VALUE) {
-            throw new InvalidDistanceValueException("거리는 음수가 될 수 없습니다.");
+            throw new InvalidDistanceValueException("거리는 1 이상이어야 합니다.");
         }
     }
 
