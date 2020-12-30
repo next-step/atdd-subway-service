@@ -104,4 +104,8 @@ public class Section {
     public boolean isSameWithDownStation(Station station) {
         return this.downStation.equals(station);
     }
+
+    public boolean isDownSameWithThatUp(Section thatSection) {
+        return this.downStation.equals(thatSection.upStation);
+    }
 }

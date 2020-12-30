@@ -63,7 +63,7 @@ public class LineSectionExplorer {
 
     Section findNextSection(Section currentSection) {
         return this.sections.stream()
-                .filter(it -> currentSection.getDownStation().equals(it.getUpStation()))
+                .filter(currentSection::isDownSameWithThatUp)
                 .findFirst()
                 .orElse(null);
     }
