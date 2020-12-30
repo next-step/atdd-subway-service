@@ -207,7 +207,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             - 새로운 지하철 역 등록 실패
     - [X] Scenario3: 실수로 지하철 노선에 등록된 지하철 역을 삭제한다.
         - given
-            - 지하철 역 등록됨~~~~
+            - 지하철 역 등록됨
             - and 지하철 노선 등록됨
         - when
             - 지하철 노선에 등록된 지하철 역 삭제 요청
