@@ -223,7 +223,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [X] Line 추가 메서드에서 하부 메서드들의 결과값을 활용
 - [X] Java Collection의 내장 add 메서드 결과를 활용
 - [X] LineService에서 Line 삭제 관련 기능에 강제로 추가된 해당 Line 존재 확인 여부 부분 개선
-- [ ] Line 내 Section 제거 메서드의 validation 의도를 코드상에 더 잘 드러나도록 개선
+- [X] Line 내 Section 제거 메서드의 validation 의도를 코드상에 더 잘 드러나도록 개선
 - [ ] Line 내 Section 이용 시 getter 사용 자제
 - [ ] Section의 distance 래핑
 - [ ] 컨트롤러에서 Spring Validation을 사용해서 기본적인 null 체크 하도록 변경

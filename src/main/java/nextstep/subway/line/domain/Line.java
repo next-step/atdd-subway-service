@@ -91,23 +91,24 @@ public class Line extends BaseEntity {
         }
 
         Optional<Section> upSection = sections.stream()
-                .filter(it -> it.getUpStation() == station)
+                .filter(it -> it.isSameWithUpStation(station))
                 .findFirst();
         Optional<Section> downSection = sections.stream()
-                .filter(it -> it.getDownStation() == station)
+                .filter(it -> it.isSameWithDownStation(station))
                 .findFirst();
 
         if (upSection.isPresent() && downSection.isPresent()) {
-            Station newUpStation = downSection.get().getUpStation();
-            Station newDownStation = upSection.get().getDownStation();
-            int newDistance = upSection.get().getDistance() + downSection.get().getDistance();
-            sections.add(new Section(this, newUpStation, newDownStation, newDistance));
+            sections.add(Section.mergeByTwoSections(upSection.get(), downSection.get()));
         }
 
         upSection.ifPresent(it -> sections.remove(it));
         downSection.ifPresent(it -> sections.remove(it));
 
         return sections.size() == originalSize - 1;
+    }
+
+    boolean isSameName(Line thatLine) {
+        return this.name.equals(thatLine.name);
     }
 
     private void validateAddSection(List<Station> stations, Station upStation, Station downStation) {
@@ -142,7 +143,7 @@ public class Line extends BaseEntity {
 
     private boolean addSectionWithSameUp(Station upStation, Station downStation, int distance) {
         this.sections.stream()
-                .filter(it -> it.getUpStation() == upStation)
+                .filter(it -> it.isSameWithUpStation(upStation))
                 .findFirst()
                 .ifPresent(it -> it.updateUpStation(downStation, distance));
 
@@ -151,7 +152,7 @@ public class Line extends BaseEntity {
 
     private boolean addSectionWithSameDown(Station upStation, Station downStation, int distance) {
         this.sections.stream()
-                .filter(it -> it.getDownStation() == downStation)
+                .filter(it -> it.isSameWithDownStation(downStation))
                 .findFirst()
                 .ifPresent(it -> it.updateDownStation(upStation, distance));
 

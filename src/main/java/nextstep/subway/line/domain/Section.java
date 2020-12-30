@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.domain.exceptions.InvalidMergeSectionException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -34,6 +35,22 @@ public class Section {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static Section mergeByTwoSections(Section upSection, Section downSection) {
+        if (!upSection.line.isSameName(downSection.line)) {
+            throw new InvalidMergeSectionException("서로 다른 노선에 있는 구간끼리 병합할 수 없습니다.");
+        }
+
+        if (upSection.upStation != downSection.downStation) {
+            throw new InvalidMergeSectionException("겹치는 역이 없는 구간끼리 병합할 수 없습니다.");
+        }
+
+        Station newUpStation = downSection.upStation;
+        Station newDownStation = upSection.downStation;
+        int newDistance = upSection.distance + downSection.distance;
+
+        return new Section(upSection.line, newUpStation, newDownStation, newDistance);
     }
 
     public Long getId() {
@@ -78,5 +95,13 @@ public class Section {
 
     public boolean isUpStationBelongsTo(List<Station> stations) {
         return stations.contains(this.upStation);
+    }
+
+    public boolean isSameWithUpStation(Station station) {
+        return this.upStation.equals(station);
+    }
+
+    public boolean isSameWithDownStation(Station station) {
+        return this.downStation.equals(station);
     }
 }
