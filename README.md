@@ -71,4 +71,12 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - 성공 및 예외 인수테스트 작성
 3. 최단 경로 조회 기능 구현
     - PathFinder 도메인 설계 후 도메인 테스트 작성 및 기능 구현
-    - 나머지 최단 경로 조회 기능 구현(Controller, Service)                 
+    - 나머지 최단 경로 조회 기능 구현(Controller, Service)       
+    
+## Step3
+
+1. 토큰 발급 기능 (로그인) 인수 테스트 만들기
+2. 내 정보 조회 기능 인수 테스트 만들기
+3. 내 정보 조회 기능 완성하기
+4. 즐겨찾기 기능 인수테스트 만들기
+5. 즐겨찾기 기능 단위테스트 및 기능구현

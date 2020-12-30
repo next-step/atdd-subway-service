@@ -15,7 +15,7 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.AcceptanceTest;
+import nextstep.subway.BaseTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -23,7 +23,7 @@ import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 구간 관련 기능")
-public class LineSectionAcceptanceTest extends AcceptanceTest {
+public class LineSectionAcceptanceTest extends BaseTest {
 	public static final int 신분당선_노선_길이 = 1000;
 	public static final int 강남역_양재역_사이_거리 = 10;
 	private LineResponse 신분당선;

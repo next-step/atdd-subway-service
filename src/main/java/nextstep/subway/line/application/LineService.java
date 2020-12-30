@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -42,7 +43,7 @@ public class LineService {
 	}
 
 	public Line findLineById(Long id) {
-		return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+		return lineRepository.findById(id).orElseThrow(() -> new NotFoundException("노선 정보를 찾을 수 없습니다."));
 	}
 
 	public LineResponse findLineResponseById(Long id) {
