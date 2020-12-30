@@ -1,8 +1,13 @@
 package nextstep.subway.line.dto;
 
+import javax.validation.constraints.NotNull;
+
 public class SectionRequest {
+    @NotNull(message = "상행역은 필수값입니다.")
     private Long upStationId;
+    @NotNull(message = "하행역은 필수값입니다.")
     private Long downStationId;
+    @NotNull(message = "역간 거리는 필수값입니다.")
     private int distance;
 
     public SectionRequest() {

@@ -1,8 +1,11 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.domain.exceptions.InvalidMergeSectionException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 public class Section {
@@ -22,51 +25,78 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
-    public Section() {
+    protected Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    public Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
 
-    public Long getId() {
-        return id;
+    public Section(Line line, Station upStation, Station downStation, int distance) {
+        this(line, upStation, downStation, new Distance(distance));
     }
 
-    public Line getLine() {
-        return line;
+    public static Section mergeByTwoSections(Section upSection, Section downSection) {
+        if (!upSection.line.isSameName(downSection.line)) {
+            throw new InvalidMergeSectionException("서로 다른 노선에 있는 구간끼리 병합할 수 없습니다.");
+        }
+
+        if (upSection.upStation != downSection.downStation) {
+            throw new InvalidMergeSectionException("겹치는 역이 없는 구간끼리 병합할 수 없습니다.");
+        }
+
+        Station newUpStation = downSection.upStation;
+        Station newDownStation = upSection.downStation;
+        Distance newDistance = upSection.distance.plus(downSection.distance);
+
+        return new Section(upSection.line, newUpStation, newDownStation, newDistance);
     }
 
-    public Station getUpStation() {
+    Station getUpStation() {
         return upStation;
     }
 
-    public Station getDownStation() {
+    Station getDownStation() {
         return downStation;
     }
 
-    public int getDistance() {
+    Distance getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance < newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+    void updateUpStation(Station station, int newDistance) {
         this.upStation = station;
-        this.distance -= newDistance;
+        this.distance = this.distance.minus(new Distance(newDistance));
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance < newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+    void updateDownStation(Station station, int newDistance) {
         this.downStation = station;
-        this.distance -= newDistance;
+        this.distance = this.distance.minus(new Distance(newDistance));
+    }
+
+    List<Station> getStations() {
+        return Arrays.asList(this.upStation, this.downStation);
+    }
+
+    boolean isUpStationBelongsTo(List<Station> stations) {
+        return stations.contains(this.upStation);
+    }
+
+    boolean isSameWithUpStation(Station station) {
+        return this.upStation.equals(station);
+    }
+
+    boolean isSameWithDownStation(Station station) {
+        return this.downStation.equals(station);
+    }
+
+    boolean isDownSameWithThatUp(Section thatSection) {
+        return this.downStation.equals(thatSection.upStation);
     }
 }

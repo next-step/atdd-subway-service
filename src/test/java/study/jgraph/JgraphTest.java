@@ -46,10 +46,9 @@ public class JgraphTest {
         List<GraphPath> paths = new KShortestPaths(graph, 100).getPaths(source, target);
 
         assertThat(paths).hasSize(2);
-        paths.stream()
-                .forEach(it -> {
+        paths.forEach(it -> {
                     assertThat(it.getVertexList()).startsWith(source);
                     assertThat(it.getVertexList()).endsWith(target);
-                });
+        });
     }
 }
