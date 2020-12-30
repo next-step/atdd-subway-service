@@ -53,27 +53,19 @@ public class Section {
         return new Section(upSection.line, newUpStation, newDownStation, newDistance);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Line getLine() {
-        return line;
-    }
-
-    public Station getUpStation() {
+    Station getUpStation() {
         return upStation;
     }
 
-    public Station getDownStation() {
+    Station getDownStation() {
         return downStation;
     }
 
-    public int getDistance() {
+    int getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
+    void updateUpStation(Station station, int newDistance) {
         if (this.distance < newDistance) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
@@ -81,7 +73,7 @@ public class Section {
         this.distance -= newDistance;
     }
 
-    public void updateDownStation(Station station, int newDistance) {
+    void updateDownStation(Station station, int newDistance) {
         if (this.distance < newDistance) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
@@ -89,23 +81,23 @@ public class Section {
         this.distance -= newDistance;
     }
 
-    public List<Station> getStations() {
+    List<Station> getStations() {
         return Arrays.asList(this.upStation, this.downStation);
     }
 
-    public boolean isUpStationBelongsTo(List<Station> stations) {
+    boolean isUpStationBelongsTo(List<Station> stations) {
         return stations.contains(this.upStation);
     }
 
-    public boolean isSameWithUpStation(Station station) {
+    boolean isSameWithUpStation(Station station) {
         return this.upStation.equals(station);
     }
 
-    public boolean isSameWithDownStation(Station station) {
+    boolean isSameWithDownStation(Station station) {
         return this.downStation.equals(station);
     }
 
-    public boolean isDownSameWithThatUp(Section thatSection) {
+    boolean isDownSameWithThatUp(Section thatSection) {
         return this.downStation.equals(thatSection.upStation);
     }
 }
