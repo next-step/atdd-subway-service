@@ -37,9 +37,7 @@ public class Sections {
 
 		while (downStation != null) {
 			Station finalDownStation = downStation;
-			Optional<Section> nextLineStation = this.sections.stream()
-				.filter(it -> it.getUpStation().equals(finalDownStation))
-				.findFirst();
+			Optional<Section> nextLineStation = findSectionEqualUpStation(finalDownStation);
 			if (!nextLineStation.isPresent()) {
 				break;
 			}
@@ -54,9 +52,7 @@ public class Sections {
 		Station downStation = this.sections.get(0).getUpStation();
 		while (downStation != null) {
 			Station finalDownStation = downStation;
-			Optional<Section> nextLineStation = this.sections.stream()
-				.filter(it -> it.getDownStation().equals(finalDownStation))
-				.findFirst();
+			Optional<Section> nextLineStation = findSectionEqualDownStation(finalDownStation);
 			if (!nextLineStation.isPresent()) {
 				break;
 			}
@@ -80,12 +76,8 @@ public class Sections {
 
 	public void removeLineStation(Line line, Station station) {
 		validateBeforeRemove();
-		Optional<Section> upLineStation = this.sections.stream()
-			.filter(it -> it.getUpStation().equals(station))
-			.findFirst();
-		Optional<Section> downLineStation = this.sections.stream()
-			.filter(it -> it.getDownStation().equals(station))
-			.findFirst();
+		Optional<Section> upLineStation = findSectionEqualUpStation(station);
+		Optional<Section> downLineStation = findSectionEqualDownStation(station);
 
 		if (upLineStation.isPresent() && downLineStation.isPresent()) {
 			Station newUpStation = downLineStation.get().getUpStation();
@@ -96,6 +88,18 @@ public class Sections {
 
 		upLineStation.ifPresent(this.sections::remove);
 		downLineStation.ifPresent(this.sections::remove);
+	}
+
+	private Optional<Section> findSectionEqualDownStation(Station station) {
+		return this.sections.stream()
+			.filter(it -> it.isEqualDownStation(station))
+			.findFirst();
+	}
+
+	private Optional<Section> findSectionEqualUpStation(Station station) {
+		return this.sections.stream()
+			.filter(it -> it.isEqualUpstation(station))
+			.findFirst();
 	}
 
 	private void validateBeforeRemove() {

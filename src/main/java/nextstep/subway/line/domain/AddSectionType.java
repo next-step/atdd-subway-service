@@ -23,7 +23,7 @@ public enum AddSectionType {
 	UPSTATION_MATCH(true, false,
 		(targetSection, sections) -> {
 			sections.stream()
-				.filter(it -> it.getUpStation().equals(targetSection.getUpStation()))
+				.filter(it -> it.isEqualUpstation(targetSection.getUpStation()))
 				.findFirst()
 				.ifPresent(it -> it.updateUpStation(targetSection.getDownStation(), targetSection.getDistance()));
 			sections.add(targetSection);
@@ -31,7 +31,7 @@ public enum AddSectionType {
 	DOWNSTATION_MATCH(false, true,
 		(targetSection, sections) -> {
 			sections.stream()
-				.filter(it -> it.getDownStation().equals(targetSection.getDownStation()))
+				.filter(it -> it.isEqualDownStation(targetSection.getDownStation()))
 				.findFirst()
 				.ifPresent(it -> it.updateDownStation(targetSection.getUpStation(), targetSection.getDistance()));
 			sections.add(targetSection);
