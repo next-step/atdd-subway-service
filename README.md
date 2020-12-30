@@ -235,4 +235,5 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [X] Line 내의 디미터 법칙 위반 부분 개선
   - 이전 피드백에서 이미 개선되어 있음
 - [X] Distance의 경계값 조정
-- [ ] Distance 뺄셈의 0 계산 별도 처리
+- [X] Distance 뺄셈의 0 계산 별도 처리
+    - 최소 경계값이 1로 상향되면서 0 계산할 일이 사라짐
