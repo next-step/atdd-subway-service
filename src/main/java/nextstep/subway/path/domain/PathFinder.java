@@ -1,7 +1,7 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.jgrapht.GraphPath;
@@ -9,7 +9,6 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.exception.NotConnectedStationException;
@@ -23,6 +22,7 @@ public class PathFinder {
 	private long startStationId;
 	private long destStationId;
 	private WeightedMultigraph<Long, DefaultWeightedEdge> distanceGraph;
+	private Map<Long, StationResponse> idToStation;
 
 	public PathFinder(List<Line> lines, long startStationId, long destStationId) {
 		validateStation(startStationId, destStationId);
@@ -30,6 +30,7 @@ public class PathFinder {
 		this.startStationId = startStationId;
 		this.destStationId = destStationId;
 		this.distanceGraph = generateGraphByDistance();
+		this.idToStation = getAllStationById();
 	}
 
 	public PathResponse getShortestPath() {
@@ -45,13 +46,10 @@ public class PathFinder {
 			this.distanceGraph)
 			.getPath(this.startStationId, this.destStationId);
 		validateGraph(graphPath);
-		List<Station> stations = graphPath.getVertexList()
-			.stream()
-			.map(this::findStationById)
-			.collect(Collectors.toList());
 
-		return stations.stream()
-			.map(StationResponse::of)
+		return graphPath.getVertexList()
+			.stream()
+			.map(id -> idToStation.get(id))
 			.collect(Collectors.toList());
 	}
 
@@ -95,17 +93,10 @@ public class PathFinder {
 		return graph;
 	}
 
-	private List<Station> getAllStation() {
+	private Map<Long, StationResponse> getAllStationById() {
 		return this.lines.stream()
 			.flatMap(line -> line.getStations().stream())
-			.collect(Collectors.toList());
-	}
-
-	private Station findStationById(Long stationId) {
-		return getAllStation().stream()
-			.filter(station -> Objects.equals(station.getId(), stationId))
-			.findFirst()
-			.orElseThrow(() -> new NotFoundException("역 정보를 찾을 수 없습니다."));
-
+			.map(StationResponse::of)
+			.collect(Collectors.toMap(StationResponse::getId, stationResponse -> stationResponse, (p1, p2) -> p1));
 	}
 }
