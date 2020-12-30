@@ -1,18 +1,18 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.line.domain.exceptions.ExploreSectionException;
 import nextstep.subway.line.domain.exceptions.InvalidAddSectionException;
 import nextstep.subway.line.domain.exceptions.InvalidRemoveSectionException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Entity
 public class Line extends BaseEntity {
+    @Transient
+    public static final int MIN_SECTIONS_SIZE = 1;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -86,7 +86,7 @@ public class Line extends BaseEntity {
     public boolean removeLineStation(Station station) {
         int originalSize = sections.size();
 
-        if (originalSize <= 1) {
+        if (originalSize <= MIN_SECTIONS_SIZE) {
             throw new InvalidRemoveSectionException("구간이 하나밖에 없는 지하철 노선의 구간을 제거할 수 없습니다.");
         }
 
