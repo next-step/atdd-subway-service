@@ -227,4 +227,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [X] Line 내 Section 이용 시 getter 사용 자제
 - [X] Section의 distance 래핑
 - [X] 컨트롤러에서 Spring Validation을 사용해서 기본적인 null 체크 하도록 변경
-- [ ] LineAcceptanceTest의 중복 제거
+- [X] LineAcceptanceTest의 중복 제거

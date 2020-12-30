@@ -78,12 +78,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineWithDuplicatedStation() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(lineRequest1);
-        지하철_노선_생성됨(createResponse);
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성되어_있음(lineRequest1);
 
         // when
-        ExtractableResponse<Response> createResponse2 = 지하철_노선_생성_요청(lineRequest2);
-        지하철_노선_생성됨(createResponse2);
+        ExtractableResponse<Response> createResponse2 = 지하철_노선_생성되어_있음(lineRequest2);
 
         // then
         두_노선에_겹치는_역이_존재함(createResponse, createResponse2);
@@ -93,8 +91,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineTwiceTest() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(lineRequest1);
-        지하철_노선_생성됨(createResponse);
+        지하철_노선_생성되어_있음(lineRequest1);
 
         // when
         ExtractableResponse<Response> createSecondResponse = 지하철_노선_생성_요청(lineRequest1);
@@ -238,6 +235,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
     public static void 지하철_노선_생성됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_생성되어_있음(LineRequest lineRequest) {
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(lineRequest);
+        지하철_노선_생성됨(createResponse);
+
+        return createResponse;
     }
 
     public static void 지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {
