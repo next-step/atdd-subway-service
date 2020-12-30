@@ -9,6 +9,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.exception.NotConnectedStationException;
@@ -104,7 +105,7 @@ public class PathFinder {
 		return getAllStation().stream()
 			.filter(station -> Objects.equals(station.getId(), stationId))
 			.findFirst()
-			.orElseThrow(RuntimeException::new);
+			.orElseThrow(() -> new NotFoundException("역 정보를 찾을 수 없습니다."));
 
 	}
 }
