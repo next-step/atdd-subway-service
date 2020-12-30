@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
@@ -22,13 +23,13 @@ public class MemberService {
 	}
 
 	public MemberResponse findMember(Long id) {
-		Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+		Member member = memberRepository.findById(id).orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다."));
 		return MemberResponse.of(member);
 	}
 
 	@Transactional
 	public void updateMember(Long id, MemberRequest param) {
-		Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+		Member member = memberRepository.findById(id).orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다."));
 		member.update(param.toMember());
 	}
 
@@ -38,6 +39,6 @@ public class MemberService {
 	}
 
 	public Member findById(Long id) {
-		return memberRepository.findById(id).orElseThrow(RuntimeException::new);
+		return memberRepository.findById(id).orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다."));
 	}
 }

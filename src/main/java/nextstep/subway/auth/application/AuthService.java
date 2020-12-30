@@ -8,6 +8,7 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 
@@ -32,7 +33,7 @@ public class AuthService {
 		}
 
 		String email = jwtTokenProvider.getPayload(credentials);
-		Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+		Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다."));
 		return new LoginMember(member.getId(), member.getEmail(), member.getAge());
 	}
 }
