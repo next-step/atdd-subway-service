@@ -1,5 +1,6 @@
 package nextstep.subway.auth.application;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,9 @@ public class AuthService {
 	}
 
 	public LoginMember findMemberByToken(String credentials) {
+		if (StringUtils.isEmpty(credentials)) {
+			return new LoginMember();
+		}
 		if (!jwtTokenProvider.validateToken(credentials)) {
 			throw new AuthorizationException();
 		}
