@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import org.jgrapht.graph.WeightedMultigraph;
+
 import java.util.Objects;
 
 public class SafeSectionInfo {
@@ -13,16 +15,8 @@ public class SafeSectionInfo {
         this.distance = distance;
     }
 
-    public Long getUpStationId() {
-        return upStationId;
-    }
-
-    public Long getDownStationId() {
-        return downStationId;
-    }
-
-    public int getDistance() {
-        return distance;
+    public void addToPath(WeightedMultigraph path) {
+        path.setEdgeWeight(path.addEdge(upStationId, downStationId), distance);
     }
 
     @Override

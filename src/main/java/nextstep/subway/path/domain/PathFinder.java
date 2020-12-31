@@ -15,8 +15,8 @@ public class PathFinder {
     public static PathFinder of(final List<Long> stationIds, final List<SafeSectionInfo> safeSectionInfos) {
         WeightedMultigraph path = new WeightedMultigraph(DefaultWeightedEdge.class);
         stationIds.forEach(path::addVertex);
-        safeSectionInfos.forEach(it -> path.setEdgeWeight(
-                path.addEdge(it.getUpStationId(), it.getDownStationId()), it.getDistance()));
+        safeSectionInfos.forEach(it -> it.addToPath(path));
+
         return new PathFinder(path);
     }
 
