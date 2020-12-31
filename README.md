@@ -80,3 +80,13 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 3. 내 정보 조회 기능 완성하기
 4. 즐겨찾기 기능 인수테스트 만들기
 5. 즐겨찾기 기능 단위테스트 및 기능구현
+
+## Step4
+
+1. 노선 정보에 추가 요금 필드 추가
+2. 최단 경로 조회 인수테스트에 요금 필드 추가
+3. PathFinder 및 PathResponse에 요금 필드와 요금 계산을 위한 LineResponse정보를 담도록 수정 및 PathFinder 단위 테스트 수정
+4. 요금계산 도메인 단위테스트 및 기능 구현
+    - 거리별 요금 정책 적용
+    - 노선별 추가요금 정책 적용
+    - 로그인 사용자의 연령별 요금할인 적용
