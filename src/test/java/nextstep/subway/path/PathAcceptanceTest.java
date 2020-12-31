@@ -84,7 +84,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void findShortestPathFailBySameSourceDestinationTest() {
         ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 교대역);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        최단_경로_조회_실패(response);
+    }
+
+    @DisplayName("시나리오3: 경로에 없는 역의 최단 경로를 조회")
+    @Test
+    void findShortestPathWithNotInLineStation() {
+        StationResponse 공사중인역 = 지하철역_등록되어_있음("공사중인역").as(StationResponse.class);
+
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 공사중인역);
+
+        최단_경로_조회_실패(response);
     }
 
     public static void 최단_경로_조회_성공(
@@ -101,5 +111,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());
         assertThat(stationIds).containsAll(expectedStationPathIds);
+    }
+
+    public static void 최단_경로_조회_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
