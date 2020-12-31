@@ -18,4 +18,15 @@ public class PathResponse {
 	private List<StationResponse> stations;
 
 	private double distance;
+
+	private int fee;
+
+	private PathResponse(List<StationResponse> stations, double distance) {
+		this.stations = stations;
+		this.distance = distance;
+	}
+
+	public static PathResponse of(List<StationResponse> stations, double distance) {
+		return new PathResponse(stations, distance);
+	}
 }
