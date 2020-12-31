@@ -66,13 +66,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("최단 경로를 조회할 수 있다.")
     @Test
     void findShortestPathTest() {
-        Long sourceId = 교대역.getId();
-        Long destinationId = 양재역.getId();
-
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .when().get("/paths?source=" + sourceId + "&target=" + destinationId)
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 양재역);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         PathResponse pathResponse = response.as(PathResponse.class);
@@ -81,5 +75,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .map(StationInPathResponse::getId)
                 .collect(Collectors.toList());
         assertThat(stationIds).containsAll(Arrays.asList(교대역.getId(), 남부터미널역.getId(), 양재역.getId()));
+    }
+
+    public static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source, StationResponse destination) {
+        return RestAssured.given().log().all()
+                .when().get("/paths?source=" + source.getId() + "&target=" + destination.getId())
+                .then().log().all()
+                .extract();
     }
 }
