@@ -27,6 +27,8 @@ public class PathFinder {
             return shortestPath.getPath(sourceId, destinationId).getVertexList();
         } catch (NullPointerException e) {
             throw new PathFindingException("경로가 존재하지 않습니다.");
+        } catch (IllegalArgumentException e) {
+            throw new PathFindingException("경로에 없는 역을 탐색 대상으로 지정할 수 없습니다.");
         }
     }
 }
