@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
@@ -16,5 +17,11 @@ public class PathFinder {
         WeightedMultigraph path = PathFactory.of(stationIds, safeSectionInfos);
 
         return new PathFinder(path);
+    }
+
+    public List<Long> findShortestPath(Long sourceId, Long destinationId) {
+        DijkstraShortestPath shortestPath = new DijkstraShortestPath(path);
+
+        return shortestPath.getPath(sourceId, destinationId).getVertexList();
     }
 }

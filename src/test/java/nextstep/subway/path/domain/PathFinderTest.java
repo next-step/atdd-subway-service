@@ -21,4 +21,29 @@ class PathFinderTest {
 
         assertThat(pathFinder).isNotNull();
     }
+
+    @DisplayName("최단 경로를 찾을 수 있다.")
+    @Test
+    void findShortestPathTest() {
+        /*
+            1 - 2 - 3
+                |
+                4
+        */
+        Long sourceId = 1L;
+        Long destinationId = 4L;
+        List<Long> stationIds = Arrays.asList(1L, 2L, 3L, 4L);
+        List<SafeSectionInfo> safeSectionInfos = Arrays.asList(
+                new SafeSectionInfo(1L, 2L, 3),
+                new SafeSectionInfo(2L, 3L, 4),
+                new SafeSectionInfo(2L, 4L, 5)
+        );
+        PathFinder pathFinder = PathFinder.of(stationIds, safeSectionInfos);
+
+        List<Long> shortestPath = pathFinder.findShortestPath(sourceId, destinationId);
+
+        assertThat(shortestPath.get(0)).isEqualTo(1L);
+        assertThat(shortestPath.get(1)).isEqualTo(2L);
+        assertThat(shortestPath.get(2)).isEqualTo(4L);
+    }
 }

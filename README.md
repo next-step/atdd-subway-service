@@ -255,10 +255,11 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [X] 전체 경로를 갖고 있는 graph를 인자로 갖는다.
     - [X] Station ID 컬렉션, SafeSectionInfo(upStationId, downStationId, distance) 컬렉션을 인자로 받아서 오브젝트를 생성한다.
         - [X] 두 컬렉션 중 하나라도 비어있거나 null일 경우 예외 발생
-    - [ ] 출발지, 목적지 역 ID를 인자로 받아서 최단 경로를 찾아낼 수 있다.
-        - [ ] 최단 경로 탐색이 불가능한 경우 도메인 예외를 발생시킨다.
+    - [X] 출발지, 목적지 역 ID를 인자로 받아서 최단 경로를 찾아낼 수 있다.
+        - [ ] 출발지나 목적지가 경로 내에 존재하지 않는 경우 도메인 에외를 발생시킨다.
+        - [ ] 갈 수 없는 경로의 경우 도메인 예외를 발생시킨다.
     - [ ] 최단 경로의 총 거리값을 알 수 있다.
-- [ ] PathFactory 구현
+- [X] PathFactory 구현
     - Path를 생성하는 것 자체가 꾀나 큰 책임이 됐기 때문에 별도의 클래스 분리
 - [ ] SafeLineAdapter 구현
     - SafeLine 구현체로 Path에 필요한 Line 정보를 안전하게 가져오는 역할을 수행한다.
