@@ -72,8 +72,8 @@ public class PathAcceptanceTest extends BaseTest {
 
 		// then
 		최단_경로_검색_정상_조회됨(response);
-		최단_경로_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 양재역, 남부터미널역));
 		최단_경로_요금_조회됨(response, 2250);
+		최단_경로_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 양재역, 남부터미널역));
 	}
 
 	@DisplayName("경로 검색 화면: 동일한 출발역, 도착역을 지정해서 조회하면 실패한다.")

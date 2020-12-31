@@ -22,6 +22,6 @@ public class PathService {
 
 		List<Line> lines = lineService.findAll();
 		PathFinder pathFinder = new PathFinder(lines, startStationId, destinationStationId);
-		return pathFinder.getShortestPath();
+		return pathFinder.getShortestPathResponse();
 	}
 }

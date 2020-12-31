@@ -84,4 +84,8 @@ public class Section {
 	public boolean isEqualDownStation(Station station) {
 		return this.downStation.equals(station);
 	}
+
+	public boolean isEqualUpstationAndDownStation(long upStationId, long downStationId) {
+		return this.upStation.isEqualId(upStationId) && this.downStation.isEqualId(downStationId);
+	}
 }
