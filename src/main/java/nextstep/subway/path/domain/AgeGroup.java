@@ -27,4 +27,14 @@ public enum AgeGroup {
 			.findFirst()
 			.orElse(ADULT);
 	}
+
+	public int discountFee(int result) {
+		if (this.equals(ADULT)) {
+			return result;
+		}
+		if (this.equals(BABY)) {
+			return 0;
+		}
+		return result - (int)Math.round((result - FeeCalculator.DEDUCTION_FEE) * this.discountRate);
+	}
 }

@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.domain.FeeCalculator;
 import nextstep.subway.station.dto.StationResponse;
 
 @Getter
@@ -35,9 +36,23 @@ public class PathResponse {
 		this.stations = stations;
 		this.distance = distance;
 		this.lines = lines;
+		this.fee = calculateFee();
 	}
 
 	public static PathResponse of(List<StationResponse> stations, int distance, List<LineResponse> lines) {
 		return new PathResponse(stations, distance, lines);
 	}
+
+	private int calculateFee() {
+		FeeCalculator feeCalculator = new FeeCalculator(this.distance, this.age, findMaxExtraFee(lines));
+		return feeCalculator.calculate();
+	}
+
+	private int findMaxExtraFee(List<LineResponse> lines) {
+		return lines.stream()
+			.mapToInt(LineResponse::getExtraFee)
+			.max()
+			.orElse(0);
+	}
+
 }
