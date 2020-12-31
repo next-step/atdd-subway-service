@@ -79,6 +79,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    @DisplayName("시나리오2: 출발역과 도착역이 같은 최단 경로 조회")
+    @Test
+    void findShortestPathFailBySameSourceDestinationTest() {
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 교대역);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     public static void 최단_경로_조회_성공(
             ExtractableResponse<Response> shortestPathResponse, List<StationResponse> expectedStationPath) {
         assertThat(shortestPathResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
