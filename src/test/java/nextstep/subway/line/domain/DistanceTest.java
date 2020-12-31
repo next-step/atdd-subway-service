@@ -5,7 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -22,9 +26,9 @@ class DistanceTest {
         three = new Distance(3);
     }
 
-    @DisplayName("음수로 객체를 생성할 수 없다.")
+    @DisplayName("0이하의 값으로 객체를 생성할 수 없다.")
     @ParameterizedTest
-    @ValueSource(ints = { -1, -2 })
+    @ValueSource(ints = { 0, -1, -2 })
     void createFailByNegativeValueTest(int invalidValue) {
         assertThatThrownBy(() -> new Distance(invalidValue)).isInstanceOf(InvalidDistanceValueException.class);
     }

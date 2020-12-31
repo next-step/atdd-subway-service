@@ -51,6 +51,11 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
+    public List<Line> findAllLines() {
+        return this.lineRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
     public Line findLineById(Long id) {
         return lineRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당 지하철 노선이 존재하지 않습니다."));

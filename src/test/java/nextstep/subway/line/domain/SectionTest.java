@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.line.domain.exceptions.InvalidMergeSectionException;
-import nextstep.subway.station.StationFixtures;
+import nextstep.subway.station.domain.StationFixtures;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

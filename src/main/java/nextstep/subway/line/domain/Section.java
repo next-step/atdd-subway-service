@@ -58,15 +58,15 @@ public class Section {
         return new Section(upSection.line, newUpStation, newDownStation, newDistance);
     }
 
-    Station getUpStation() {
+    public Station getUpStation() {
         return upStation;
     }
 
-    Station getDownStation() {
+    public Station getDownStation() {
         return downStation;
     }
 
-    Distance getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
