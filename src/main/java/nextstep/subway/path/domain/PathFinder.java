@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.path.domain.exceptions.PathFindingException;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -20,8 +21,12 @@ public class PathFinder {
     }
 
     public List<Long> findShortestPath(Long sourceId, Long destinationId) {
-        DijkstraShortestPath shortestPath = new DijkstraShortestPath(path);
+        try {
+            DijkstraShortestPath shortestPath = new DijkstraShortestPath(path);
 
-        return shortestPath.getPath(sourceId, destinationId).getVertexList();
+            return shortestPath.getPath(sourceId, destinationId).getVertexList();
+        } catch (NullPointerException e) {
+            throw new PathFindingException("경로가 존재하지 않습니다.");
+        }
     }
 }
