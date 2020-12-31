@@ -255,21 +255,22 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [X] 전체 경로를 갖고 있는 graph를 인자로 갖는다.
     - [X] Station ID 컬렉션, SafeSectionInfo(upStationId, downStationId, distance) 컬렉션을 인자로 받아서 오브젝트를 생성한다.
         - [X] 두 컬렉션 중 하나라도 비어있거나 null일 경우 예외 발생
-    - [ ] 출발지, 목적지 역 ID를 인자로 받아서 최단 경로를 찾아낼 수 있다.
-- [ ] ShortestPath 구현
+- [X] ShortestPath 구현
     - PathFinder에서 경로 탐색 후 거리값, 경로를 할 때마다 graph 탐색이 발생한다.
     - graph 탐색은 꾀나 비싼 연산일 수 있겠다는 생각이 들어서(전체 경로가 클수록) 한번만 계산할 수 있도록 별도의 오브젝트로 분리
-    - [ ] 최단 경로를 구할 수 있다.
-        - [ ] 출발지나 목적지가 경로 내에 존재하지 않는 경우 도메인 에외를 발생시킨다.
-        - [ ] 갈 수 없는 경로의 경우 도메인 예외를 발생시킨다.
-    - [ ] 최단 경로의 지하철 역 목록을 구할 수 있다.
-    - [ ] 최단 경로의 총 거리를 알 수 있다.
+    - [X] 최단 경로를 구할 수 있다.
+        - [X] 출발지나 목적지가 경로 내에 존재하지 않는 경우 도메인 에외를 발생시킨다.
+        - [X] 갈 수 없는 경로의 경우 도메인 예외를 발생시킨다.
+    - [X] 최단 경로의 지하철 역 목록을 구할 수 있다.
+    - [X] 최단 경로의 총 거리를 알 수 있다.
 - [X] PathFactory 구현
     - Path를 생성하는 것 자체가 꾀나 큰 책임이 됐기 때문에 별도의 클래스 분리
 - [ ] SafeLineAdapter 구현
     - SafeLine 구현체로 Path에 필요한 Line 정보를 안전하게 가져오는 역할을 수행한다.
     - [ ] 모든 Line의 모든 역 ID를 중복을 제거하고 가져올 수 있다.
     - [ ] 모든 Line의 구간 정보를 SafeSectionInfo로 바꿔서 가져올 수 있다.
+- [ ] SafeStationAdapter 구현
+    - Station ID에 맞는 역 정보들을 모두 불러올 수 있다.
 - [X] SafeSectionInfo
     - Line의 구간 정보 중 필요한 부분만 추려낸 오브젝트
     - [X] upStationId, downStationId, distance를 인자로 갖는다.

@@ -2,7 +2,7 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.line.domain.exceptions.InvalidAddSectionException;
 import nextstep.subway.line.domain.exceptions.InvalidRemoveSectionException;
-import nextstep.subway.station.StationFixtures;
+import nextstep.subway.station.domain.StationFixtures;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
