@@ -240,7 +240,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ## Step2. 경로 조회 기능
 ### Todo-list
-- [X] Jgrapht 학습 테스트 진행
+- [X] Jgraph 학습 테스트 진행
     - [X] 노선 한개짜리 그래프 생성해보기
     - [X] 노선 한개짜리 그래프 최단경로 탐색해보기
     - [X] 겹치는 역이 있는 노선 두개짜리 그래프 생성해보기
@@ -249,3 +249,19 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - JGraph 알고리즘이 간선 추가에 대한 방법을 제한적으로 공개했기 때문
     - [X] 겹치는 역이 없는 노선 두개짜리 그래프 생성해보기
     - [X] 겹치는 역이 없는 노선 두개짜리 그래프 최단경로 탐색해보기
+        - 겹치는 역이 없으면 반환값이고 뭐고 없다. => 그냥 바로 NPE 던져버림
+    
+- [ ] PathFinder 구현
+    - [ ] 전체 경로를 갖고 있는 graph를 인자로 갖는다.
+    - [ ] Station ID 컬렉션, SafeSectionInfo(upStationId, downStationId, distance) 컬렉션을 인자로 받아서 오브젝트를 생성한다.
+        - [ ] 두 컬렉션 중 하나라도 비어있거나 null일 경우 예외 발생
+    - [ ] 출발지, 목적지 역 ID를 인자로 받아서 최단 경로를 찾아낼 수 있다.
+        - [ ] 최단 경로 탐색이 불가능한 경우 도메인 예외를 발생시킨다.
+    - [ ] 최단 경로의 총 거리값을 알 수 있다.
+- [ ] SafeLineAdapter 구현
+    - SafeLine 구현체로 Path에 필요한 Line 정보를 안전하게 가져오는 역할을 수행한다.
+    - [ ] 모든 Line의 모든 역 ID를 중복을 제거하고 가져올 수 있다.
+    - [ ] 모든 Line의 구간 정보를 SafeSectionInfo로 바꿔서 가져올 수 있다.
+- [ ] SafeSectionInfo
+    - Line의 구간 정보 중 필요한 부분만 추려낸 오브젝트
+    - [ ] upStationId, downStationId, distance를 인자로 갖는다.
