@@ -1,8 +1,5 @@
 package study.jgraph;
 
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.station.StationFixtures;
-import org.jgrapht.EdgeFactory;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -13,11 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -135,34 +128,51 @@ public class JgraphTest {
 
         double pathWeight = dijkstraShortestPath.getPathWeight(station1, station5);
         assertThat(pathWeight).isEqualTo(6);
+    }
 
-        // 그래프를 나누고 통합하는 방향으로 구현해보려 했으나, edge를 더하는 방식에서 문제 발생
-//        WeightedMultigraph<String, DefaultWeightedEdge> lineNumberTwo = new WeightedMultigraph(DefaultWeightedEdge.class);
-//        lineNumberTwo.addVertex(station1);
-//        lineNumberTwo.addVertex(station2);
-//        lineNumberTwo.addVertex(station3);
-//        lineNumberTwo.setEdgeWeight(lineNumberTwo.addEdge(station1, station2), 1);
-//        lineNumberTwo.setEdgeWeight(lineNumberTwo.addEdge(station2, station3), 2);
-//
-//        WeightedMultigraph<String, DefaultWeightedEdge> lineBundang = new WeightedMultigraph(DefaultWeightedEdge.class);
-//        lineBundang.addVertex(station5);
-//        lineBundang.addVertex(station3);
-//        lineBundang.addVertex(station4);
-//        lineBundang.setEdgeWeight(lineBundang.addEdge(station5, station3), 3);
-//        lineBundang.setEdgeWeight(lineBundang.addEdge(station3, station4), 4);
-//
-//        Set<String> lineNumberTwoStations = lineNumberTwo.vertexSet();
-//        Set<String> lineBundangStations = lineBundang.vertexSet();
-//        Set<String> mergeStations = new HashSet<>(lineNumberTwoStations);
-//        mergeStations.addAll(lineBundangStations);
-//
-//        Set<DefaultWeightedEdge> lineNumberTwoEdges = lineNumberTwo.getAllEdges(station1, station3);
-//        Set<DefaultWeightedEdge> lineBundangAllEdges = lineBundang.getAllEdges(station5, station4);
-//        Set<DefaultWeightedEdge> mergeEdges = new HashSet<>(lineNumberTwoEdges);
-//        mergeEdges.addAll(lineBundangAllEdges);
-//
-//        WeightedMultigraph<String, DefaultWeightedEdge> allPaths = new WeightedMultigraph(DefaultWeightedEdge.class);
-//        mergeStations.stream().forEach(allPaths::addVertex);
-        // mergeEdges.stream().forEach(edge -> allPaths.addEdge());
+    @DisplayName("겹치는 역이 없는 노선 두개 생성하고 탐색해보기")
+    @Test
+    void twoLinesWithoutConnectionTest() {
+        /*
+            강남역 - 역삼역 - 선릉역
+
+            행당역 - 왕십리역 - 마장역
+        */
+
+        String station1 = "강남역";
+        String station2 = "역삼역";
+        String station3 = "선릉역";
+        String station4 = "행당역";
+        String station5 = "왕십리역";
+        String station6 = "마장역";
+
+        WeightedMultigraph<String, DefaultWeightedEdge> path = new WeightedMultigraph(DefaultWeightedEdge.class);
+
+        path.addVertex(station1);
+        path.addVertex(station2);
+        path.addVertex(station3);
+        path.addVertex(station4);
+        path.addVertex(station5);
+        path.addVertex(station6);
+
+        path.setEdgeWeight(path.addEdge(station1, station2), 3);
+        path.setEdgeWeight(path.addEdge(station2, station3), 3);
+        path.setEdgeWeight(path.addEdge(station4, station5), 3);
+        path.setEdgeWeight(path.addEdge(station5, station6), 3);
+
+        DijkstraShortestPath shortestPath = new DijkstraShortestPath(path);
+
+        // 존재하는 구간은 잘 찾는다.
+        List<String> stations = shortestPath.getPath(station1, station3).getVertexList();
+        assertThat(stations.get(0)).isEqualTo(station1);
+        assertThat(stations.get(1)).isEqualTo(station2);
+        assertThat(stations.get(2)).isEqualTo(station3);
+
+        // 존재하지 않는 구간은 반환값이고 뭐고 없이 그냥 예외 던져버린다.
+        try {
+            shortestPath.getPath(station1, station4);
+        } catch (Exception e) {
+            assertThat(e).isInstanceOf(NullPointerException.class);
+        }
     }
 }
