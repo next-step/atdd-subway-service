@@ -1,6 +1,6 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.path.domain.exceptions.InvalidPathFinderParameterException;
+import nextstep.subway.path.domain.exceptions.PathCreationException;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ class PathFactoryTest {
     @MethodSource("createFailTestResource")
     void createFailTest(List<Long> stationIds, List<SafeSectionInfo> safeSectionInfos) {
         assertThatThrownBy(() -> PathFactory.of(stationIds, safeSectionInfos))
-                .isInstanceOf(InvalidPathFinderParameterException.class);
+                .isInstanceOf(PathCreationException.class);
     }
     public static Stream<Arguments> createFailTestResource() {
         return Stream.of(
