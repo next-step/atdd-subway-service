@@ -242,7 +242,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ### 인수테스트 시나리오
 - 기능: 지하철 노선 내 두 역간 최단 거리를 조회할 수 있다.
     ```java
-    /**
+    /*
      * 교대역    --- *2호선* ---   강남역
      * |                        |
      * *3호선*                   *신분당선*
@@ -265,14 +265,14 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - 사용자가 실수로 출발역과 도착역이 같은 최단 경로 조회 요청
     - then
         - 최단 경로 조회 요청 실패
-- [ ] 시나리오3: 경로에 없는 역의 최단 경로를 조회
+- [X] 시나리오3: 경로에 없는 역의 최단 경로를 조회
     - given
         - 지하철 역 등록됨
     - when
         - 사용자가 경로에 없는 지하철역을 포함한 최단 경로 조회 요청
     -  then
         - 최단 경로 조회 요청 실패
-- [ ] 시나리오4: 갈 수 없는 경로의 최단 경로 조회
+- [X] 시나리오4: 갈 수 없는 경로의 최단 경로 조회
     - given
         - 지하철역 등록됨
         - and 기존 노선과 연결되지 않은 지하철 노선 등록됨
@@ -318,4 +318,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [X] upStationId, downStationId, distance를 인자로 갖는다.
 - [X] PathService 구현
     - 도메인 서비스와 도메인 객체를 잘 조합해서 최단 경로를 검색할 수 있도록 한다.
-- [ ] Controller와 인수 테스트 구현
+- [X] Controller와 인수 테스트 구현

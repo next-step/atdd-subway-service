@@ -67,33 +67,53 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("시나리오1: 최단 경로를 조회할 수 있다.")
     @Test
     void findShortestPathTest() {
+        // when
         ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 양재역);
 
+        // then
         최단_경로_조회_성공(response, Arrays.asList(교대역, 남부터미널역, 양재역));
-    }
-
-    public static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source, StationResponse destination) {
-        return RestAssured.given().log().all()
-                .when().get("/paths?source=" + source.getId() + "&target=" + destination.getId())
-                .then().log().all()
-                .extract();
     }
 
     @DisplayName("시나리오2: 출발역과 도착역이 같은 최단 경로 조회")
     @Test
     void findShortestPathFailBySameSourceDestinationTest() {
+        // when
         ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 교대역);
 
+        // then
         최단_경로_조회_실패(response);
     }
 
     @DisplayName("시나리오3: 경로에 없는 역의 최단 경로를 조회")
     @Test
     void findShortestPathWithNotInLineStation() {
+        // given
         StationResponse 공사중인역 = 지하철역_등록되어_있음("공사중인역").as(StationResponse.class);
 
+        // when
         ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 공사중인역);
 
+        // then
+        최단_경로_조회_실패(response);
+    }
+
+    @DisplayName("시나리오4: 갈 수 없는 경로의 최단 경로 조회")
+    @Test
+    void findShortestPathWithoutConnection() {
+        // given
+        /*
+         * 교대역    --- *2호선* ---   강남역               용인역
+         * |                        |                    |
+         * *3호선*                   *신분당선*              *경강선*
+         * |                        |                    |
+         * 남부터미널역  --- *3호선* ---   양재             에버랜드역
+        */
+        StationResponse 못가는역 = 기존_노선과_접점이_없는_지하철_노선_등록됨();
+
+        // when
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 못가는역);
+
+        // then
         최단_경로_조회_실패(response);
     }
 
@@ -115,5 +135,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static void 최단_경로_조회_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static StationResponse 기존_노선과_접점이_없는_지하철_노선_등록됨() {
+        StationResponse 용인역 = 지하철역_등록되어_있음("용인역").as(StationResponse.class);
+        StationResponse 에버랜드역 = 지하철역_등록되어_있음("에버랜드역").as(StationResponse.class);
+        지하철_노선_등록되어_있음(
+                new LineRequest("경강선", "bg-red-600", 용인역.getId(), 에버랜드역.getId(), 10))
+                .as(LineResponse.class);
+
+        return 용인역;
+    }
+
+    public static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source, StationResponse destination) {
+        return RestAssured.given().log().all()
+                .when().get("/paths?source=" + source.getId() + "&target=" + destination.getId())
+                .then().log().all()
+                .extract();
     }
 }
