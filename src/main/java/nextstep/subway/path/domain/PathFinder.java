@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.path.domain.exceptions.PathFindingException;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
@@ -19,6 +20,13 @@ public class PathFinder {
     }
 
     public ShortestPath findShortestPath(Long sourceId, Long destinationId) {
+        validate(sourceId, destinationId);
         return ShortestPath.of(this.path, sourceId, destinationId);
+    }
+
+    private void validate(Long sourceId, Long destinationId) {
+        if (sourceId.equals(destinationId)) {
+            throw new PathFindingException("출발지와 도착지는 달라야 합니다.");
+        }
     }
 }
