@@ -13,6 +13,18 @@ public class SafeSectionInfo {
         this.distance = distance;
     }
 
+    public Long getUpStationId() {
+        return upStationId;
+    }
+
+    public Long getDownStationId() {
+        return downStationId;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
