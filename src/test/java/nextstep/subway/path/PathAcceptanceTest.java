@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,18 +64,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
 
-    @DisplayName("최단 경로를 조회할 수 있다.")
+    @DisplayName("시나리오1: 최단 경로를 조회할 수 있다.")
     @Test
     void findShortestPathTest() {
         ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 양재역);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getDistance()).isEqualTo(10);
-        List<Long> stationIds = pathResponse.getStations().stream()
-                .map(StationInPathResponse::getId)
-                .collect(Collectors.toList());
-        assertThat(stationIds).containsAll(Arrays.asList(교대역.getId(), 남부터미널역.getId(), 양재역.getId()));
+        최단_경로_조회_성공(response, Arrays.asList(교대역, 남부터미널역, 양재역));
     }
 
     public static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source, StationResponse destination) {
@@ -82,5 +77,21 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .when().get("/paths?source=" + source.getId() + "&target=" + destination.getId())
                 .then().log().all()
                 .extract();
+    }
+
+    public static void 최단_경로_조회_성공(
+            ExtractableResponse<Response> shortestPathResponse, List<StationResponse> expectedStationPath) {
+        assertThat(shortestPathResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        PathResponse pathResponse = shortestPathResponse.as(PathResponse.class);
+
+        assertThat(pathResponse.getDistance()).isEqualTo(10);
+
+        List<Long> stationIds = pathResponse.getStations().stream()
+                .map(StationInPathResponse::getId)
+                .collect(Collectors.toList());
+        List<Long> expectedStationPathIds = expectedStationPath.stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+        assertThat(stationIds).containsAll(expectedStationPathIds);
     }
 }
