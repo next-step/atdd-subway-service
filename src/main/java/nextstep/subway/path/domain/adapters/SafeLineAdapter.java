@@ -29,6 +29,12 @@ public class SafeLineAdapter implements SafeLine {
 
     @Override
     public List<SafeSectionInfo> getAllSafeSectionInfos() {
-        return null;
+        List<Line> lines = lineService.findAllLines();
+
+        return lines.stream()
+                .flatMap(it -> it.getSections().stream())
+                .map(it -> new SafeSectionInfo(
+                        it.getUpStation().getId(), it.getDownStation().getId(), it.getDistance().value()))
+                .collect(Collectors.toList());
     }
 }

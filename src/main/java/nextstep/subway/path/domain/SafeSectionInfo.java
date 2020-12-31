@@ -9,7 +9,7 @@ public class SafeSectionInfo {
     private final Long downStationId;
     private final int distance;
 
-    public SafeSectionInfo(final Long upStationId, final Long downStationId, final int distance) {
+    public SafeSectionInfo(Long upStationId, Long downStationId, int distance) {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;

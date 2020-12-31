@@ -265,10 +265,10 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [X] 최단 경로의 총 거리를 알 수 있다.
 - [X] PathFactory 구현
     - Path를 생성하는 것 자체가 꾀나 큰 책임이 됐기 때문에 별도의 클래스 분리
-- [ ] SafeLineAdapter 구현
+- [X] SafeLineAdapter 구현
     - SafeLine 구현체로 Path에 필요한 Line 정보를 안전하게 가져오는 역할을 수행한다.
-    - [ ] 모든 Line의 모든 역 ID를 중복을 제거하고 가져올 수 있다.
-    - [ ] 모든 Line의 구간 정보를 SafeSectionInfo로 바꿔서 가져올 수 있다.
+    - [X] 모든 Line의 모든 역 ID를 중복을 제거하고 가져올 수 있다.
+    - [X] 모든 Line의 구간 정보를 SafeSectionInfo로 바꿔서 가져올 수 있다.
 - [ ] SafeStationAdapter 구현
     - Station ID에 맞는 역 정보들을 모두 불러올 수 있다.
 - [X] SafeSectionInfo
