@@ -72,8 +72,9 @@ public class PathAcceptanceTest extends BaseTest {
 
 		// then
 		최단_경로_검색_정상_조회됨(response);
-		최단_경로_요금_조회됨(response, 2250);
 		최단_경로_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 양재역, 남부터미널역));
+		최단_거리_조회됨(response, 12);
+		최단_경로_요금_조회됨(response, 2250);
 	}
 
 	@DisplayName("경로 검색 화면: 동일한 출발역, 도착역을 지정해서 조회하면 실패한다.")
@@ -132,6 +133,11 @@ public class PathAcceptanceTest extends BaseTest {
 
 		assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
 
+	}
+
+	private void 최단_거리_조회됨(ExtractableResponse<Response> response, int distance) {
+		PathResponse path = response.as(PathResponse.class);
+		assertThat(path.getDistance()).isEqualTo(distance);
 	}
 
 	private void 최단_경로_요금_조회됨(ExtractableResponse<Response> response, int fee) {
