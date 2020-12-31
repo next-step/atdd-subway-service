@@ -262,6 +262,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - SafeLine 구현체로 Path에 필요한 Line 정보를 안전하게 가져오는 역할을 수행한다.
     - [ ] 모든 Line의 모든 역 ID를 중복을 제거하고 가져올 수 있다.
     - [ ] 모든 Line의 구간 정보를 SafeSectionInfo로 바꿔서 가져올 수 있다.
-- [ ] SafeSectionInfo
+- [X] SafeSectionInfo
     - Line의 구간 정보 중 필요한 부분만 추려낸 오브젝트
-    - [ ] upStationId, downStationId, distance를 인자로 갖는다.
+    - [X] upStationId, downStationId, distance를 인자로 갖는다.
