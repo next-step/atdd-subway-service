@@ -51,7 +51,7 @@ class PathFinderTest {
 	@DisplayName("getShortestPath메서드는 최단거리 역목록과 거리 정보를 포함하는 PathResponse를 반환한다.")
 	@Test
 	void getShortestPath() {
-		PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선, 칠호선), 강남역.getId(), 남부터미널역.getId());
+		PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선, 칠호선), 강남역.getId(), 남부터미널역.getId(), 30);
 		PathResponse pathResponse = pathFinder.getShortestPathResponse();
 		List<String> stationNames = pathResponse.getStations()
 			.stream()
@@ -71,7 +71,7 @@ class PathFinderTest {
 	void sameStation() {
 		assertThatExceptionOfType(SameStationException.class)
 			.isThrownBy(() -> {
-				PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선, 칠호선), 강남역.getId(), 강남역.getId());
+				PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선, 칠호선), 강남역.getId(), 강남역.getId(), 30);
 				pathFinder.getShortestPathResponse();
 			});
 	}
@@ -81,7 +81,7 @@ class PathFinderTest {
 	void notConnectedStation() {
 		assertThatExceptionOfType(NotConnectedStationException.class)
 			.isThrownBy(() -> {
-				PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선, 칠호선), 강남역.getId(), 부평구청역.getId());
+				PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선, 칠호선), 강남역.getId(), 부평구청역.getId(), 30);
 				pathFinder.getShortestPathResponse();
 			});
 	}
@@ -91,7 +91,7 @@ class PathFinderTest {
 	void wrongStation() {
 		assertThatExceptionOfType(IllegalArgumentException.class)
 			.isThrownBy(() -> {
-				PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선, 칠호선), 존재하지_않는_역_ID, 부평구청역.getId());
+				PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선, 칠호선), 존재하지_않는_역_ID, 부평구청역.getId(), 30);
 				pathFinder.getShortestPathResponse();
 			});
 	}

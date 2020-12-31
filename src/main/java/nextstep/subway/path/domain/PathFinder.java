@@ -26,8 +26,9 @@ public class PathFinder {
 	private WeightedMultigraph<Long, CustomWeightedEdge> distanceGraph;
 	private GraphPath<Long, CustomWeightedEdge> shortestPath;
 	private Map<Long, StationResponse> stationIdToStation;
+	private Integer age;
 
-	public PathFinder(List<Line> lines, long startStationId, long destStationId) {
+	public PathFinder(List<Line> lines, long startStationId, long destStationId, Integer age) {
 		validateStation(startStationId, destStationId);
 		this.lines = lines;
 		this.startStationId = startStationId;
@@ -35,13 +36,21 @@ public class PathFinder {
 		this.distanceGraph = generateGraphByDistance();
 		this.shortestPath = getShortestPath();
 		this.stationIdToStation = getAllStationById();
+		this.age = age;
 	}
 
 	public PathResponse getShortestPathResponse() {
+		int shortestDistance = getShortestDistance();
+		List<StationResponse> shortestStations = getShortestPathStationsByDistance();
+		List<LineResponse> shortestLines = getShortestPathLinesByDistance();
+
+		FeeCalculator feeCalculator = new FeeCalculator(shortestDistance, age, shortestLines);
+		int shortestFee = feeCalculator.calculate();
+
 		return PathResponse.of(
-			getShortestPathStationsByDistance(),
-			getShortestDistance(),
-			getShortestPathLinesByDistance()
+			shortestStations,
+			shortestDistance,
+			shortestFee
 		);
 	}
 

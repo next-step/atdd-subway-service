@@ -2,13 +2,37 @@ package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.Arrays;
+import java.util.Collections;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-class FeeCalculatorTest {
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.station.domain.Station;
 
+class FeeCalculatorTest {
 	public static final Integer NO_LOGIN = null;
+
+	private Station 강남역;
+	private Station 양재역;
+	private Station 교대역;
+	private LineResponse 신분당선;
+	private LineResponse 이호선;
+	private LineResponse 삼호선;
+
+	@BeforeEach
+	void setup() {
+		강남역 = new Station(1L, "강남역");
+		양재역 = new Station(2L, "양재역");
+		교대역 = new Station(3L, "교대역");
+		신분당선 = LineResponse.of(new Line("신분당선", "bg-red-600", 강남역, 양재역, 10, 900));
+		이호선 = LineResponse.of(new Line("이호선", "bg-red-600", 교대역, 강남역, 10, 500));
+		삼호선 = LineResponse.of(new Line("삼호선", "bg-red-600", 교대역, 양재역, 5, 0));
+	}
 
 	@DisplayName("기본 운임 테스트")
 	@ParameterizedTest
@@ -39,7 +63,8 @@ class FeeCalculatorTest {
 		"74,2350",
 	})
 	void basicFee(int distance, int expectedFee) {
-		FeeCalculator feeCalculator = new FeeCalculator(distance, NO_LOGIN, 0);
+		FeeCalculator feeCalculator = new FeeCalculator(distance, NO_LOGIN, Collections.singletonList(삼호선));
+
 		int result = feeCalculator.calculate();
 		assertThat(result).isEqualTo(expectedFee);
 	}
@@ -47,14 +72,13 @@ class FeeCalculatorTest {
 	@DisplayName("추가 요금")
 	@ParameterizedTest
 	@CsvSource({
-		"1,0,1250",
-		"10,500,1750",
-		"15,1000,2350",
-		"20,1000,2450",
-		"51,2000,4150"
+		"1,2150",
+		"15,2250",
+		"20,2350",
+		"51,3050"
 	})
-	void extraFee(int distance, int extraFee, int expectedFee) {
-		FeeCalculator feeCalculator = new FeeCalculator(distance, NO_LOGIN, extraFee);
+	void extraFee(int distance, int expectedFee) {
+		FeeCalculator feeCalculator = new FeeCalculator(distance, NO_LOGIN, Arrays.asList(이호선, 삼호선, 신분당선));
 		int result = feeCalculator.calculate();
 		assertThat(result).isEqualTo(expectedFee);
 	}
@@ -87,7 +111,7 @@ class FeeCalculatorTest {
 		"74,100,2350",
 	})
 	void ageDiscount(int distance, int age, int expectedFee) {
-		FeeCalculator feeCalculator = new FeeCalculator(distance, age, 0);
+		FeeCalculator feeCalculator = new FeeCalculator(distance, age, Collections.singletonList(삼호선));
 		int result = feeCalculator.calculate();
 		assertThat(result).isEqualTo(expectedFee);
 	}

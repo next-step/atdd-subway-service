@@ -18,10 +18,10 @@ public class PathService {
 
 	private final LineService lineService;
 
-	public PathResponse getShortestPath(Long startStationId, Long destinationStationId) {
+	public PathResponse getShortestPath(Long startStationId, Long destinationStationId, Integer age) {
 
 		List<Line> lines = lineService.findAll();
-		PathFinder pathFinder = new PathFinder(lines, startStationId, destinationStationId);
+		PathFinder pathFinder = new PathFinder(lines, startStationId, destinationStationId, age);
 		return pathFinder.getShortestPathResponse();
 	}
 }
