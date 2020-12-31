@@ -7,9 +7,13 @@ import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.domain.adapters.SafeLineAdapter;
 import nextstep.subway.path.domain.adapters.SafeStationAdapter;
 import nextstep.subway.path.ui.dto.PathResponse;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Service
+@Transactional
 public class PathService {
     private final SafeLineAdapter safeLineAdapter;
     private final SafeStationAdapter safeStationAdapter;
@@ -19,6 +23,7 @@ public class PathService {
         this.safeStationAdapter = safeStationAdapter;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse findShortestPath(Long sourceId, Long destinationId) {
         List<Long> allStationIds = safeLineAdapter.getAllStationIds();
         List<SafeSectionInfo> allSafeSectionInfos = safeLineAdapter.getAllSafeSectionInfos();
