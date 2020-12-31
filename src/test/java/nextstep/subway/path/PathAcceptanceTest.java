@@ -56,10 +56,10 @@ public class PathAcceptanceTest extends BaseTest {
 		부평구청역 = StationAcceptanceTest.지하철역_등록되어_있음("부평구청역").as(StationResponse.class);
 		장암역 = StationAcceptanceTest.지하철역_등록되어_있음("장암역").as(StationResponse.class);
 
-		신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-		이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-		삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
-		칠호선 = 지하철_노선_등록되어_있음("칠호선", "bg-red-600", 부평구청역, 장암역, 100);
+		신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 900);
+		이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 500);
+		삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 0);
+		칠호선 = 지하철_노선_등록되어_있음("칠호선", "bg-red-600", 부평구청역, 장암역, 100, 0);
 
 		LineSectionAcceptanceTest.지하철_구간을_등록_요청(삼호선, 교대역, 남부터미널역, 3);
 	}
@@ -155,9 +155,10 @@ public class PathAcceptanceTest extends BaseTest {
 		String color,
 		StationResponse upStation,
 		StationResponse downStation,
-		int distance) {
+		int distance,
+		int extraFee) {
 
-		LineRequest lineRequest = new LineRequest(lineName, color, upStation.getId(), downStation.getId(), distance);
+		LineRequest lineRequest = LineRequest.of(lineName, color, upStation.getId(), downStation.getId(), distance, extraFee);
 		return LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
 
 	}

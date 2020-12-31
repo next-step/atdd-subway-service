@@ -41,9 +41,9 @@ public class FavoriteAcceptanceTest extends BaseTest {
 		교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
 		남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-		지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-		지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-		지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
+		지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 900);
+		지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 500);
+		지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 0);
 
 		MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, 20);
 
@@ -119,9 +119,10 @@ public class FavoriteAcceptanceTest extends BaseTest {
 		String color,
 		StationResponse upStation,
 		StationResponse downStation,
-		int distance) {
+		int distance,
+		int extraFee) {
 
-		LineRequest lineRequest = new LineRequest(lineName, color, upStation.getId(), downStation.getId(), distance);
+		LineRequest lineRequest = LineRequest.of(lineName, color, upStation.getId(), downStation.getId(), distance, extraFee);
 		return LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
 
 	}

@@ -49,8 +49,7 @@ public class LineSectionAcceptanceTest extends BaseTest {
 
 		//Background
 		//지하철노선 상행종점(강남역), 하행종점역(광교역)과 함께 등록되어 있음
-		LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(),
-			신분당선_노선_길이);
+		LineRequest lineRequest = LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 신분당선_노선_길이, 900);
 		신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
 
 		//Background

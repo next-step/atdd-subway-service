@@ -41,10 +41,10 @@ class PathFinderTest {
 		남부터미널역 = new Station(4L, "남부터미널역");
 		부평구청역 = new Station(5L, "부평구청역");
 		장암역 = new Station(6L, "장암역");
-		신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
-		이호선 = new Line("이호선", "bg-red-600", 교대역, 강남역, 10);
-		삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 5);
-		칠호선 = new Line("칠호선", "bg-red-600", 부평구청역, 장암역, 100);
+		신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10, 900);
+		이호선 = new Line("이호선", "bg-red-600", 교대역, 강남역, 10, 500);
+		삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 5, 0);
+		칠호선 = new Line("칠호선", "bg-red-600", 부평구청역, 장암역, 100, 0);
 		삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, 3));
 	}
 
