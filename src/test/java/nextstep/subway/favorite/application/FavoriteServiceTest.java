@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.favorite.application.exceptions.FavoriteEntityNotFoundException;
 import nextstep.subway.favorite.domain.FavoriteFixtures;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.domain.adapters.SafeStationForFavoriteAdapter;
@@ -12,11 +13,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class FavoriteServiceTest {
@@ -61,5 +65,26 @@ class FavoriteServiceTest {
 
         assertThatThrownBy(() -> favoriteService.saveFavorite(loginMember, favoriteRequest))
                 .isInstanceOf(FavoriteCreationException.class);
+    }
+
+    @DisplayName("등록된 즐겨찾기를 제거할 수 있다.")
+    @Test
+    void deleteFavoriteTest() {
+        Long deleteTarget = 1L;
+
+        favoriteService.deleteFavorite(deleteTarget);
+
+        verify(favoriteRepository).deleteById(deleteTarget);
+    }
+
+    @DisplayName("등록되지 않는 즐겨찾기 제거 시도 시 예외 발생")
+    @Test
+    void deleteFavoriteFailTest() {
+        Long deleteTarget = 1L;
+
+        doThrow(new EmptyResultDataAccessException(10)).when(favoriteRepository).deleteById(deleteTarget);
+
+        assertThatThrownBy(() -> favoriteService.deleteFavorite(deleteTarget))
+                .isInstanceOf(FavoriteEntityNotFoundException.class);
     }
 }

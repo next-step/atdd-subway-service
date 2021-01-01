@@ -1,11 +1,13 @@
 package nextstep.subway.favorite.application;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.favorite.application.exceptions.FavoriteEntityNotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.domain.adapters.SafeStationForFavoriteAdapter;
 import nextstep.subway.favorite.domain.excpetions.FavoriteCreationException;
 import nextstep.subway.favorite.ui.dto.FavoriteRequest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,6 +18,14 @@ public class FavoriteService {
     public FavoriteService(FavoriteRepository favoriteRepository, SafeStationForFavoriteAdapter safeStationAdapter) {
         this.favoriteRepository = favoriteRepository;
         this.safeStationAdapter = safeStationAdapter;
+    }
+
+    public void deleteFavorite(final Long deleteTarget) {
+        try {
+            favoriteRepository.deleteById(deleteTarget);
+        } catch (EmptyResultDataAccessException e) {
+            throw new FavoriteEntityNotFoundException("존재하지 않는 즐겨찾기입니다.");
+        }
     }
 
     public Long saveFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
