@@ -90,6 +90,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> getResponse = 즐겨찾기_목록_조회_요청(token);
         // then
         즐겨찾기_목록_조회_성공(getResponse, source, target);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(token, 1L);
+        // then
+        즐겨찾기_삭제_성공(deleteResponse);
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String token, Long id) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .when().delete("/favorites/" + id)
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 즐겨찾기_삭제_성공(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String token) {
