@@ -49,4 +49,18 @@ class LineTest {
                 .extracting("name")
                 .containsExactly("강남역","양재역", "정자역");
     }
+
+    @DisplayName("지하철 구간 삭제")
+    @Test
+    void removeSectionExpectedException() {
+        // given
+        Station 양재역 = new Station("양재역");
+        Station 정자역 = new Station("정자역");
+        Line 신분당선 = new Line("신분당선", "bg-red", 양재역, 정자역, 10);
+
+        // when then
+        assertThatThrownBy(() -> 신분당선.removeStation(정자역))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessageContaining("구간 삭제 실패됨");
+    }
 }

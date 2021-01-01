@@ -43,9 +43,6 @@ public class Sections {
     }
 
     public void removeStation(Station station) {
-        if (isRemovable()) {
-            throw new RuntimeException();
-        }
         Optional<Section> upLineStation = getSameUpStation(station);
         Optional<Section> downLineStation = getSameDownStation(station);
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
@@ -68,7 +65,7 @@ public class Sections {
                 .findFirst();
     }
 
-    private boolean isRemovable() {
+    public boolean isRemovable() {
         return this.sections.size() <= 1;
     }
 
@@ -82,27 +79,32 @@ public class Sections {
                 .ifPresent(it -> it.updateUpStation(section));
     }
 
+    public void create(Section section) {
+        this.sections.add(section);
+    }
+
     public void add(Section section) {
+        checkAddValidation(section);
         changeSameUpStation(section);
         changeSameDownStation(section);
         this.sections.add(section);
     }
 
-    public void create(Section section) {
-        this.sections.add(section);
-    }
-
-    public void checkAddValidation(Station upStation, Station downStation) {
-        if (isStationExisted(upStation) && isStationExisted(downStation)) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+    private void checkAddValidation(Section targetSection) {
+        if (this.sections.contains(targetSection)) {
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
 
-        if (!isEmpty() && !isStationExisted(upStation) && !isStationExisted(downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        if (checkConnectableSection(targetSection)) {
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
     }
 
-    private boolean isStationExisted(Station targetStation) {
+    private boolean checkConnectableSection(Section targetSection) {
+        return !hasStation(targetSection.getUpStation()) && !hasStation(targetSection.getDownStation());
+    }
+
+    private boolean hasStation(Station targetStation) {
         return this.getStations().contains(targetStation);
     }
 }

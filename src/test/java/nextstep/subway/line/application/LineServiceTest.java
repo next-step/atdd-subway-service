@@ -125,7 +125,8 @@ class LineServiceTest {
         when(stationService.findStationById(any())).thenReturn(정자역);
 
         // then
-        assertThatThrownBy(() -> lineService.removeLineStation(1L, 1L)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> lineService.removeLineStation(1L, 1L)).isInstanceOf(RuntimeException.class)
+        .hasMessageContaining("구간 삭제 실패됨");
     }
 
     private void addSection(Station upStation, Station downStation) {

@@ -63,11 +63,13 @@ public class Line extends BaseEntity {
     }
 
     public void add(Station upStation, Station downStation, int distance) {
-        section.checkAddValidation(upStation, downStation);
         section.add(new Section(this, upStation, downStation, distance));
     }
 
     public void removeStation(Station station) {
+        if (section.isRemovable()) {
+            throw new RuntimeException("구간 삭제 실패됨");
+        }
         section.removeStation(station);
     }
 }
