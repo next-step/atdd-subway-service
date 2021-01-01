@@ -94,6 +94,26 @@ class LineServiceTest {
                 .hasMessageContaining("등록할 수 없는 구간 입니다.");
     }
 
+    @DisplayName("구간 삭제")
+    @Test
+    void deleteSection() {
+        // given
+        Station 양재역 = new Station("양재역");
+        Station 정자역 = new Station("정자역");
+        Station 판교역 = new Station("판교역");
+        Line line = new Line("신분당선", "red", 양재역, 정자역, 10);
+        setLine(line);
+        addSection(판교역, 정자역);
+        when(stationService.findStationById(any())).thenReturn(판교역);
+
+        // when
+        lineService.removeLineStation(1L, 1L);
+
+        // then
+        assertThat(line.getStations()).extracting("name")
+                .containsExactly("양재역", "정자역");
+    }
+
     private void addSection(Station upStation, Station downStation) {
         when(stationService.findStationById(any())).thenReturn(upStation).thenReturn(downStation);
         // when
