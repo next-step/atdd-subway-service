@@ -1,10 +1,9 @@
 package nextstep.subway.favorite.application;
 
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteFixtures;
 import nextstep.subway.favorite.domain.FavoriteRepository;
-import nextstep.subway.favorite.domain.adapters.SafeStationAdapter;
+import nextstep.subway.favorite.domain.adapters.SafeStationForFavoriteAdapter;
 import nextstep.subway.favorite.domain.excpetions.FavoriteCreationException;
 import nextstep.subway.favorite.ui.dto.FavoriteRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +26,7 @@ class FavoriteServiceTest {
     private FavoriteRepository favoriteRepository;
 
     @Mock
-    private SafeStationAdapter safeStationAdapter;
+    private SafeStationForFavoriteAdapter safeStationAdapter;
 
     @BeforeEach
     void setup() {

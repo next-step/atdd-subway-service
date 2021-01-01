@@ -4,18 +4,14 @@ import nextstep.subway.station.application.StationService;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SafeStationAdapter implements SafeStation {
+public class SafeStationForFavoriteAdapter implements SafeStationForFavorite {
     private final StationService stationService;
 
-    public SafeStationAdapter(StationService stationService) {
+    public SafeStationForFavoriteAdapter(StationService stationService) {
         this.stationService = stationService;
     }
 
     @Override
-    public boolean isExistStation(final Long stationId) {
-        return stationService.isExistStation(stationId);
-    }
-
     public boolean isAllExists(Long source, Long target) {
         return stationService.isExistStation(source) && stationService.isExistStation(target);
     }

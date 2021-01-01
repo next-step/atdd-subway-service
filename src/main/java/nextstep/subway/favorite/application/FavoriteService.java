@@ -3,7 +3,7 @@ package nextstep.subway.favorite.application;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
-import nextstep.subway.favorite.domain.adapters.SafeStationAdapter;
+import nextstep.subway.favorite.domain.adapters.SafeStationForFavoriteAdapter;
 import nextstep.subway.favorite.domain.excpetions.FavoriteCreationException;
 import nextstep.subway.favorite.ui.dto.FavoriteRequest;
 import org.springframework.stereotype.Service;
@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
-    private final SafeStationAdapter safeStationAdapter;
+    private final SafeStationForFavoriteAdapter safeStationAdapter;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, SafeStationAdapter safeStationAdapter) {
+    public FavoriteService(FavoriteRepository favoriteRepository, SafeStationForFavoriteAdapter safeStationAdapter) {
         this.favoriteRepository = favoriteRepository;
         this.safeStationAdapter = safeStationAdapter;
     }
