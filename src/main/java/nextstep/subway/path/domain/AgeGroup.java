@@ -14,6 +14,7 @@ public enum AgeGroup {
 	CHILDREN("어린이", 6, 12, 0.5),
 	BABY("아기", 0, 5, 1);
 
+	public static final int DEDUCTION_FARE = 350;
 	private final String name;
 	private final int minAge;
 	private final int maxAge;
@@ -36,6 +37,6 @@ public enum AgeGroup {
 		if (this.equals(BABY)) {
 			return 0;
 		}
-		return fare - (int)Math.round((fare - FareCalculator.DEDUCTION_FARE) * this.discountRate);
+		return fare - (int)Math.round((fare - DEDUCTION_FARE) * this.discountRate);
 	}
 }
