@@ -22,24 +22,15 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         String email = "test@nextstep.com";
         String password = "password";
         Integer age = 30;
-        TokenRequest tokenRequest = new TokenRequest(email, password);
 
         // given
         회원_등록되어_있음(email, password, age);
 
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tokenRequest)
-                .when().post("/login/token")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = 로그인_요청(email, password);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        TokenResponse tokenResponse = response.as(TokenResponse.class);
-        String token = tokenResponse.getAccessToken();
-        assertThat(token).isNotEmpty();
+        로그인_요청_성공(response);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
@@ -52,4 +43,21 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithWrongBearerAuth() {
     }
 
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new TokenRequest(email, password))
+                .when().post("/login/token")
+                .then().log().all()
+                .extract();
+
+        return response;
+    }
+
+    public static void 로그인_요청_성공(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        TokenResponse tokenResponse = response.as(TokenResponse.class);
+        String token = tokenResponse.getAccessToken();
+        assertThat(token).isNotEmpty();
+    }
 }
