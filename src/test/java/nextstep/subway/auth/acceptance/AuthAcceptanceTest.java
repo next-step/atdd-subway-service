@@ -72,6 +72,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 내_정보_조회_요청(invalidToken);
 
+        잘못된_인증으로_실패(response);
+    }
+
+    public static void 잘못된_인증으로_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 

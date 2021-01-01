@@ -342,7 +342,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - 틀린 패스워드로 로그인 요청
     - then
         - 로그인 실패
-- [ ] 시나리오4: 잘못된 토큰으로 인가 기능 사용 (/members/me 구현 후 다시 추가)
+- [X] 시나리오4: 잘못된 토큰으로 인가 기능 사용
     - given
         - 회원 등록되어 있음
         - and 토큰 발급 받음
