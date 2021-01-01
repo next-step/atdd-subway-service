@@ -53,4 +53,9 @@ public class StationService {
     public List<Station> findAllStationsByIds(List<Long> stationIds) {
         return stationRepository.findAllById(stationIds);
     }
+
+    @Transactional(readOnly = true)
+    public boolean isExistStation(Long stationId) {
+        return stationRepository.existsById(stationId);
+    }
 }
