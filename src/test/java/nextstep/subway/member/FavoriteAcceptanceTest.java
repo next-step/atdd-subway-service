@@ -7,12 +7,16 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.member.dto.FavoriteRequest;
+import nextstep.subway.member.dto.FavoriteResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_됨;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
@@ -74,24 +78,49 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기를 관리한다.")
     @Test
     void manageFavoritesTest() {
-        Long source = 강남역.getId();
-        Long target = 남부터미널역.getId();
+        StationResponse source = 강남역;
+        StationResponse target = 남부터미널역;
 
         // when
         ExtractableResponse<Response> createResponse = 즐겨찾기_추가_요청(token, source, target);
         // then
         즐겨찾기_추가_요청_성공(createResponse);
+
+        // when
+        ExtractableResponse<Response> getResponse = 즐겨찾기_목록_조회_요청(token);
+        // then
+        즐겨찾기_목록_조회_성공(getResponse, source, target);
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String token) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 즐겨찾기_목록_조회_성공(
+            ExtractableResponse<Response> response, StationResponse source, StationResponse target
+    ) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        List<FavoriteResponse> favorites = response.jsonPath().getList(".", FavoriteResponse.class);
+        assertThat(favorites).hasSize(1);
+        assertThat(favorites.get(0).getSource().getName()).isEqualTo(source.getName());
+        assertThat(favorites.get(0).getTarget().getName()).isEqualTo(target.getName());
     }
 
     public static void 즐겨찾기_추가_요청_성공(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_추가_요청(String token, Long source, Long target) {
+    public static ExtractableResponse<Response> 즐겨찾기_추가_요청(
+            String token, StationResponse source, StationResponse target
+    ) {
         return RestAssured.given().log().all()
                 .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new FavoriteRequest(source, target))
+                .body(new FavoriteRequest(source.getId(), target.getId()))
                 .when().post("/favorites")
                 .then().log().all()
                 .extract();
