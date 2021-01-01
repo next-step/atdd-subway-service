@@ -46,6 +46,24 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인_요청_실패(response);
     }
 
+    @DisplayName("Bearer Auth 로그인 실패(패스워드 오타)")
+    @Test
+    void myInfoWithInvalidPassword() {
+        String email = "test@nextstep.com";
+        String password = "password";
+        Integer age = 30;
+        String invalidPassword = "wrongPassword";
+
+        // given
+        회원_등록되어_있음(email, password, age);
+
+        // when
+        ExtractableResponse<Response> response = 로그인_요청(email, invalidPassword);
+
+        // then
+        로그인_요청_실패(response);
+    }
+
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
