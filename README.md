@@ -401,6 +401,22 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ### Todo-list
 - [X] 인가 기능을 구현하기 위해 CustomResolver 등록
     - 이미 등록되어 있음
+    
+- [ ] Favorite
+    - [ ] memberId, favoritePaths를 속성으로 갖는다.
+- [ ] FavoritePaths
+    - FavoritePath를 관리하는 일급 컬렉션
+    - [ ] 새로운 FavoritePath를 추가할 수 있다.
+        - [ ] 이미 존재하는 FavoritePath를 또 추가할 수 없다.
+        - 위 기능을 repository나 service에서 처리하지 않도록 하기 위한 구현
+        - unique constraint으로 충분히 구현 가능하다.
+        - 이건 과연 도메인 로직인가?
+        - 오버 엔지니어링일 가능성이 높지만 일단 연습을 위해서 구현 진행
+    - [ ] FavoritePath를 제거할 수 있다.
+- [ ] FavoritePath
+    - [ ] sourceId, targetId를 속성으로 갖는다.
+- [ ] SafeStationAdapter
+    - 이전 Path에서 구현했던 내용과 거의 비슷하게 진행
 
 ### 고민사항
 - Favorite은 엔티티? VO?
