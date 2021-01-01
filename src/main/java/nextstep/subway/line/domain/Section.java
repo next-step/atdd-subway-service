@@ -69,4 +69,9 @@ public class Section {
         this.downStation = station;
         this.distance -= newDistance;
     }
+
+    public Section merge(Section section) {
+        int newDistance = this.distance + section.distance;
+        return new Section(this.line, section.upStation, this.downStation, newDistance);
+    }
 }

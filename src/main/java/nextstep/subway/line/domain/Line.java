@@ -68,9 +68,7 @@ public class Line extends BaseEntity {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
+            Optional<Section> nextLineStation = getSameUpStation(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -85,9 +83,7 @@ public class Line extends BaseEntity {
         Station downStation = this.sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
+            Optional<Section> nextLineStation = getSameDownStation(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -106,14 +102,10 @@ public class Line extends BaseEntity {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
 
-        this.sections.stream()
-                .filter(it -> it.getUpStation() == upStation)
-                .findFirst()
+        getSameUpStation(upStation)
                 .ifPresent(it -> it.updateUpStation(downStation, distance));
 
-        this.sections.stream()
-                .filter(it -> it.getDownStation() == downStation)
-                .findFirst()
+        getSameDownStation(downStation)
                 .ifPresent(it -> it.updateDownStation(upStation, distance));
 
         this.sections.add(new Section(this, upStation, downStation, distance));
@@ -121,5 +113,35 @@ public class Line extends BaseEntity {
 
     private boolean isStationExisted(Station targetStation) {
         return this.getStations().stream().anyMatch(it -> it == targetStation);
+    }
+
+    public void removeStation(Station station) {
+        if (isRemovable()) {
+            throw new RuntimeException();
+        }
+        Optional<Section> upLineStation = getSameUpStation(station);
+        Optional<Section> downLineStation = getSameDownStation(station);
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Section newSection = upLineStation.get().merge(downLineStation.get());
+            this.sections.add(newSection);
+        }
+        upLineStation.ifPresent(it -> this.sections.remove(it));
+        downLineStation.ifPresent(it -> this.sections.remove(it));
+    }
+
+    private Optional<Section> getSameDownStation(Station station) {
+        return this.sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+    }
+
+    private Optional<Section> getSameUpStation(Station station) {
+        return this.sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+    }
+
+    public boolean isRemovable() {
+        return this.sections.size() <= 1;
     }
 }

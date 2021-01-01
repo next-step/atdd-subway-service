@@ -114,6 +114,20 @@ class LineServiceTest {
                 .containsExactly("양재역", "정자역");
     }
 
+    @DisplayName("구간 삭제 예외 처리")
+    @Test
+    void deleteSectionExpectedException() {
+        // given
+        Station 양재역 = new Station("양재역");
+        Station 정자역 = new Station("정자역");
+        Line line = new Line("신분당선", "red", 양재역, 정자역, 10);
+        setLine(line);
+        when(stationService.findStationById(any())).thenReturn(정자역);
+
+        // then
+        assertThatThrownBy(() -> lineService.removeLineStation(1L, 1L)).isInstanceOf(RuntimeException.class);
+    }
+
     private void addSection(Station upStation, Station downStation) {
         when(stationService.findStationById(any())).thenReturn(upStation).thenReturn(downStation);
         // when
