@@ -384,7 +384,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - and 지하철 노선에 지하철역 등록되어 있음
         - and 회원등록되어 있음
         - and 로그인되어 있음
-- [ ] 시나리오: 사용자가 즐겨찾기를 관리한다.
+- [X] 시나리오: 사용자가 즐겨찾기를 관리한다.
     - when
         - 즐겨찾기 생성 요청
     - then
@@ -404,12 +404,12 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     
 - [X] Favorite
     - [X] memberId, sourceId, targetId를 속성으로 갖는다.
-- [ ] SafeStationAdapter DIP
+- [X] SafeStationAdapter DIP
     - 이전 Path에서 사용한 DIP와 거의 유사한 기능 구현
     - modifiedDate가 추가되는 차이점이 있다.
-- [ ] FavoriteService
-    - [ ] Favorite에 대한 기본적인 CRUD 가능
-    - [ ] 기존에 등록된 favorite 정보와 같은 정보는 또 등록할 수 없다.
+- [X] FavoriteService
+    - [X] Favorite에 대한 기본적인 CRUD 가능
+    - [X] 기존에 등록된 favorite 정보와 같은 정보는 또 등록할 수 없다.
 
 ### 고민사항
 - Favorite은 엔티티? VO?

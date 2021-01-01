@@ -83,7 +83,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> createResponse = 즐겨찾기_추가_요청(token, source, target);
         // then
-        즐겨찾기_추가_요청_성공(createResponse);
+        Long createdId = 즐겨찾기_추가_요청_성공(createResponse);
 
         // when
         ExtractableResponse<Response> getResponse = 즐겨찾기_목록_조회_요청(token);
@@ -91,7 +91,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_목록_조회_성공(getResponse, source, target);
 
         // when
-        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(token, 1L);
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(token, createdId);
         // then
         즐겨찾기_삭제_성공(deleteResponse);
     }
@@ -126,8 +126,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(favorites.get(0).getTarget().getName()).isEqualTo(target.getName());
     }
 
-    public static void 즐겨찾기_추가_요청_성공(final ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    public static Long 즐겨찾기_추가_요청_성공(final ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        return Long.parseLong(response.header("Location").split("/")[2]);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_추가_요청(

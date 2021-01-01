@@ -52,7 +52,7 @@ public class FavoriteService {
     public List<FavoriteResponse> getFavorites(LoginMember loginMember) {
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(loginMember.getId());
 
-        return favorites.stream().map(it -> new FavoriteResponse(
+        return favorites.stream().map(it -> FavoriteResponse.of(
                 it.getId(),
                 safeStationAdapter.getSafeStationInFavorite(it.getSourceId()),
                 safeStationAdapter.getSafeStationInFavorite(it.getTargetId()))
