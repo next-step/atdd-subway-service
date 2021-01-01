@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_됨;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -48,7 +49,24 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        String email = "test@nextstep.com";
+        String password = "password";
+        Integer age = 30;
 
+        // given
+        회원_등록되어_있음(email, password, age);
+        String token = 로그인_됨(email, password);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .when().get("/members/me")
+                .then()
+                .log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static void 회원_등록되어_있음(String email, String password, Integer age) {

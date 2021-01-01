@@ -350,3 +350,17 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - 잘못된 토큰으로 내 정보 조회 요청
     - then
         - 내 정보 조회 실패
+
+- 기능: 상태에서 내 정보를 관리한다.
+- [ ] 시나리오: 로그인한 상태에서 내 정보를 관리한다.
+    - given
+        - 회원가입 됨
+        - and 로그인 됨
+    - when
+        - 내 정보 조회 요청
+    - then
+        - 내 정보 조회 성공
+    
+### Todo-list
+- [X] 인가 기능을 구현하기 위해 CustomResolver 등록
+    - 이미 등록되어 있음
