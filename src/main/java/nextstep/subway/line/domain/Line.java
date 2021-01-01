@@ -58,44 +58,31 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
     public List<Station> getStations() {
         if (this.sections.isEmpty()) {
             return Collections.emptyList();
         }
+        return getNextStations(findFirstStation());
+    }
 
+    private List<Station> getNextStations(Station rootStation) {
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = getSameUpStation(finalDownStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        stations.add(rootStation);
+        Optional<Section> nextSection = getSameUpStation(rootStation);
+        while (nextSection.isPresent()) {
+            Station nextStation = nextSection.get().getDownStation();
+            stations.add(nextStation);
+            nextSection = getSameUpStation(nextStation);
         }
-
         return stations;
     }
 
-    private Station findUpStation() {
-        Station downStation = this.sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = getSameDownStation(finalDownStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
+    private Station findFirstStation() {
+        return this.sections.stream()
+                .map(Section::getUpStation)
+                .filter(station -> !getSameDownStation(station).isPresent())
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("첫번째 역을 찾을수 없습니다."));
     }
 
     public void add(Station upStation, Station downStation, int distance) {
