@@ -19,18 +19,18 @@ public class LineResponse {
 	private Long id;
 	private String name;
 	private String color;
-	private int extraFee;
+	private int extraFare;
 	private List<StationResponse> stations;
 	private LocalDateTime createdDate;
 	private LocalDateTime modifiedDate;
 
-	private LineResponse(Long id, String name, String color, int extraFee, List<StationResponse> stations,
+	private LineResponse(Long id, String name, String color, int extraFare, List<StationResponse> stations,
 		LocalDateTime createdDate,
 		LocalDateTime modifiedDate) {
 		this.id = id;
 		this.name = name;
 		this.color = color;
-		this.extraFee = extraFee;
+		this.extraFare = extraFare;
 		this.stations = stations;
 		this.createdDate = createdDate;
 		this.modifiedDate = modifiedDate;
@@ -45,7 +45,7 @@ public class LineResponse {
 			line.getId(),
 			line.getName(),
 			line.getColor(),
-			line.getExtraFee(),
+			line.getExtraFare(),
 			stations,
 			line.getCreatedDate(),
 			line.getModifiedDate()

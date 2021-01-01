@@ -61,7 +61,7 @@ class PathFinderTest {
 		assertAll(
 			() -> assertThat(stationNames).containsExactlyElementsOf(
 				Arrays.asList(강남역.getName(), 양재역.getName(), 남부터미널역.getName())),
-			() -> assertThat(pathResponse.getFee()).isEqualTo(2250),
+			() -> assertThat(pathResponse.getFare()).isEqualTo(2250),
 			() -> assertThat(pathResponse.getDistance()).isEqualTo(12)
 		);
 	}

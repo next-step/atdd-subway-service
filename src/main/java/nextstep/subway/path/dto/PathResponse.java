@@ -19,6 +19,6 @@ public class PathResponse {
 
 	private int distance;
 
-	private int fee;
+	private int fare;
 
 }

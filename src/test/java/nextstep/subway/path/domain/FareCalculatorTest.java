@@ -14,7 +14,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.domain.Station;
 
-class FeeCalculatorTest {
+class FareCalculatorTest {
 	public static final Integer NO_LOGIN = null;
 
 	private Station 강남역;
@@ -62,11 +62,11 @@ class FeeCalculatorTest {
 		"67,2350",
 		"74,2350",
 	})
-	void basicFee(int distance, int expectedFee) {
-		FeeCalculator feeCalculator = new FeeCalculator(distance, NO_LOGIN, Collections.singletonList(삼호선));
+	void basicFare(int distance, int expectedFare) {
+		FareCalculator fareCalculator = new FareCalculator(distance, NO_LOGIN, Collections.singletonList(삼호선));
 
-		int result = feeCalculator.calculate();
-		assertThat(result).isEqualTo(expectedFee);
+		int result = fareCalculator.calculate();
+		assertThat(result).isEqualTo(expectedFare);
 	}
 
 	@DisplayName("추가 요금")
@@ -77,10 +77,10 @@ class FeeCalculatorTest {
 		"20,2350",
 		"51,3050"
 	})
-	void extraFee(int distance, int expectedFee) {
-		FeeCalculator feeCalculator = new FeeCalculator(distance, NO_LOGIN, Arrays.asList(이호선, 삼호선, 신분당선));
-		int result = feeCalculator.calculate();
-		assertThat(result).isEqualTo(expectedFee);
+	void extraFare(int distance, int expectedFare) {
+		FareCalculator fareCalculator = new FareCalculator(distance, NO_LOGIN, Arrays.asList(이호선, 삼호선, 신분당선));
+		int result = fareCalculator.calculate();
+		assertThat(result).isEqualTo(expectedFare);
 	}
 
 	@DisplayName("연령별 요금 할인 적용")
@@ -110,10 +110,10 @@ class FeeCalculatorTest {
 		"74,19,2350",
 		"74,100,2350",
 	})
-	void ageDiscount(int distance, int age, int expectedFee) {
-		FeeCalculator feeCalculator = new FeeCalculator(distance, age, Collections.singletonList(삼호선));
-		int result = feeCalculator.calculate();
-		assertThat(result).isEqualTo(expectedFee);
+	void ageDiscount(int distance, int age, int expectedFare) {
+		FareCalculator fareCalculator = new FareCalculator(distance, age, Collections.singletonList(삼호선));
+		int result = fareCalculator.calculate();
+		assertThat(result).isEqualTo(expectedFare);
 	}
 
 }

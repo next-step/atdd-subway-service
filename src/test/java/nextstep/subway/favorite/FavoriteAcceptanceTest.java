@@ -120,9 +120,9 @@ public class FavoriteAcceptanceTest extends BaseTest {
 		StationResponse upStation,
 		StationResponse downStation,
 		int distance,
-		int extraFee) {
+		int extraFare) {
 
-		LineRequest lineRequest = LineRequest.of(lineName, color, upStation.getId(), downStation.getId(), distance, extraFee);
+		LineRequest lineRequest = LineRequest.of(lineName, color, upStation.getId(), downStation.getId(), distance, extraFare);
 		return LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
 
 	}

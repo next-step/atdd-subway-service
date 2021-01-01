@@ -140,9 +140,9 @@ public class PathAcceptanceTest extends BaseTest {
 		assertThat(path.getDistance()).isEqualTo(distance);
 	}
 
-	private void 최단_경로_요금_조회됨(ExtractableResponse<Response> response, int fee) {
+	private void 최단_경로_요금_조회됨(ExtractableResponse<Response> response, int fare) {
 		PathResponse path = response.as(PathResponse.class);
-		assertThat(path.getFee()).isEqualTo(fee);
+		assertThat(path.getFare()).isEqualTo(fare);
 	}
 
 	private void 최단_경로_검색_정상_조회됨(ExtractableResponse<Response> response) {
@@ -168,9 +168,9 @@ public class PathAcceptanceTest extends BaseTest {
 		StationResponse upStation,
 		StationResponse downStation,
 		int distance,
-		int extraFee) {
+		int extraFare) {
 
-		LineRequest lineRequest = LineRequest.of(lineName, color, upStation.getId(), downStation.getId(), distance, extraFee);
+		LineRequest lineRequest = LineRequest.of(lineName, color, upStation.getId(), downStation.getId(), distance, extraFare);
 		return LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
 
 	}

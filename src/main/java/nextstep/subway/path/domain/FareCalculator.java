@@ -4,27 +4,27 @@ import java.util.List;
 
 import nextstep.subway.line.dto.LineResponse;
 
-public class FeeCalculator {
-	public static final int DEDUCTION_FEE = 350;
-	public static final int BASIC_FEE = 1250;
+public class FareCalculator {
+	public static final int DEDUCTION_FARE = 350;
+	public static final int BASIC_FARE = 1250;
 	public static final int BASIC_DISTANCE = 10;
 	public static final int EXTRA_DISTANCE = 50;
 	private int distance;
 	private AgeGroup ageGroup;
-	private Integer extraFee;
+	private Integer extraFare;
 
-	public FeeCalculator(int distance, Integer age, List<LineResponse> lines) {
+	public FareCalculator(int distance, Integer age, List<LineResponse> lines) {
 		this.distance = distance;
 		this.ageGroup = AgeGroup.findAgeGroup(age);
-		this.extraFee = findMaxExtraFee(lines);
+		this.extraFare = findMaxExtraFare(lines);
 	}
 
 	public int calculate() {
-		int result = BASIC_FEE;
+		int result = BASIC_FARE;
 		result += calculateOver10Fare();
 		result += calculateOver50Fare();
-		result += extraFee;
-		return ageGroup.discountFee(result);
+		result += extraFare;
+		return ageGroup.discountFare(result);
 	}
 
 	private int calculateOver10Fare() {
@@ -46,9 +46,9 @@ public class FeeCalculator {
 		return (int)((Math.ceil((overDistance) / (double)8)) * 100);
 	}
 
-	private int findMaxExtraFee(List<LineResponse> lines) {
+	private int findMaxExtraFare(List<LineResponse> lines) {
 		return lines.stream()
-			.mapToInt(LineResponse::getExtraFee)
+			.mapToInt(LineResponse::getExtraFare)
 			.max()
 			.orElse(0);
 	}

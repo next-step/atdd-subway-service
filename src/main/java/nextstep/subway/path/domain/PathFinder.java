@@ -44,13 +44,13 @@ public class PathFinder {
 		List<StationResponse> shortestStations = getShortestPathStationsByDistance();
 		List<LineResponse> shortestLines = getShortestPathLinesByDistance();
 
-		FeeCalculator feeCalculator = new FeeCalculator(shortestDistance, age, shortestLines);
-		int shortestFee = feeCalculator.calculate();
+		FareCalculator fareCalculator = new FareCalculator(shortestDistance, age, shortestLines);
+		int shortestFare = fareCalculator.calculate();
 
 		return PathResponse.of(
 			shortestStations,
 			shortestDistance,
-			shortestFee
+			shortestFare
 		);
 	}
 
