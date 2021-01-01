@@ -1,7 +1,6 @@
 package nextstep.subway.favorite.domain.adapters;
 
-import nextstep.subway.favorite.domain.adapters.SafeStationForFavoriteAdapter;
-import nextstep.subway.favorite.domain.adapters.SafeStationInFavorite;
+import nextstep.subway.favorite.domain.excpetions.SafeStationInFavoriteException;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.StationFixtures;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,11 +13,10 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,19 +51,28 @@ public class SafeStationForFavoriteAdapterTest {
         );
     }
 
-    @DisplayName("존재하는 역들의 정보를 받아올 수 있다.")
+    @DisplayName("존재하는 역의 정보를 받아올 수 있다.")
     @Test
-    void getStationsTest() {
-        List<Long> stationIds = Arrays.asList(1L, 2L);
+    void getStationTest() {
+        Long targetId = 1L;
 
-        given(stationService.findAllStationsByIds(stationIds))
-                .willReturn(Arrays.asList(StationFixtures.강남역, StationFixtures.역삼역));
+        given(stationService.findStationById(targetId)).willReturn(StationFixtures.강남역);
 
-        List<SafeStationInFavorite> safeStationInFavorites = safeStationAdapter.getSafeStationsInFavorite(stationIds);
+        SafeStationInFavorite safeStationInFavorite = safeStationAdapter.getSafeStationInFavorite(targetId);
 
-        assertThat(safeStationInFavorites).contains(
-                new SafeStationInFavorite(1L, "강남역", null, null),
-                new SafeStationInFavorite(2L, "역삼역", null, null)
+        assertThat(safeStationInFavorite).isEqualTo(
+                new SafeStationInFavorite(1L, "강남역", null, null)
         );
+    }
+
+    @DisplayName("존재하지 않는 역 정보 요청 시 예외 발생")
+    @Test
+    void getStationFailTest() {
+        Long targetId = 1L;
+
+        given(stationService.findStationById(targetId)).willThrow(new RuntimeException());
+
+        assertThatThrownBy(() -> safeStationAdapter.getSafeStationInFavorite(targetId))
+                .isInstanceOf(SafeStationInFavoriteException.class);
     }
 }

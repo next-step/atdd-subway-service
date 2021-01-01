@@ -7,8 +7,13 @@ import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.domain.adapters.SafeStationForFavoriteAdapter;
 import nextstep.subway.favorite.domain.excpetions.FavoriteCreationException;
 import nextstep.subway.favorite.ui.dto.FavoriteRequest;
+import nextstep.subway.favorite.ui.dto.FavoriteResponse;
+import nextstep.subway.favorite.ui.dto.StationInFavoriteResponse;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class FavoriteService {
@@ -41,5 +46,11 @@ public class FavoriteService {
         if(!safeStationAdapter.isAllExists(favoriteRequest.getSource(), favoriteRequest.getTarget())) {
             throw new FavoriteCreationException("존재하지 않는 역으로 즐겨찾기를 생성할 수 없습니다.");
         }
+    }
+
+    public List<FavoriteResponse> getFavorites(LoginMember loginMember) {
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(loginMember.getId());
+
+        return Arrays.asList(new FavoriteResponse(1L, new StationInFavoriteResponse(1L, "hello", null, null), new StationInFavoriteResponse(1L, "hello", null, null)));
     }
 }

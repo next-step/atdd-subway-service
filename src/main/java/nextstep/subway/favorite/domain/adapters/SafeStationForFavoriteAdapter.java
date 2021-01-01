@@ -1,12 +1,9 @@
 package nextstep.subway.favorite.domain.adapters;
 
+import nextstep.subway.favorite.domain.excpetions.SafeStationInFavoriteException;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class SafeStationForFavoriteAdapter implements SafeStationForFavorite {
@@ -22,11 +19,12 @@ public class SafeStationForFavoriteAdapter implements SafeStationForFavorite {
     }
 
     @Override
-    public List<SafeStationInFavorite> getSafeStationsInFavorite(List<Long> stationIds) {
-        List<Station> stations = stationService.findAllStationsByIds(stationIds);
-
-        return stations.stream()
-                .map(SafeStationInFavorite::new)
-                .collect(Collectors.toList());
+    public SafeStationInFavorite getSafeStationInFavorite(Long stationId) {
+        try {
+            Station station = stationService.findStationById(stationId);
+            return new SafeStationInFavorite(station);
+        } catch (RuntimeException e) {
+            throw new SafeStationInFavoriteException("역 정보를 불러오는 중 오류가 발생했습니다.");
+        }
     }
 }

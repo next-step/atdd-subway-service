@@ -4,6 +4,8 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.favorite.domain.excpetions.FavoriteCreationException;
 
 import javax.persistence.*;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames={"member_id", "source_id", "target_id"}))
@@ -38,6 +40,10 @@ public class Favorite extends BaseEntity {
 
     public Long getId() {
         return id;
+    }
+
+    public List<Long> getStations() {
+        return Arrays.asList(sourceId, targetId);
     }
 
     private void validate(Long memberId, Long sourceId, Long targetId) {

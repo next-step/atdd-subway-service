@@ -7,6 +7,8 @@ import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.domain.adapters.SafeStationForFavoriteAdapter;
 import nextstep.subway.favorite.domain.excpetions.FavoriteCreationException;
 import nextstep.subway.favorite.ui.dto.FavoriteRequest;
+import nextstep.subway.favorite.ui.dto.FavoriteResponse;
+import nextstep.subway.favorite.ui.dto.StationInFavoriteResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.EmptyResultDataAccessException;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -86,5 +90,20 @@ class FavoriteServiceTest {
 
         assertThatThrownBy(() -> favoriteService.deleteFavorite(deleteTarget))
                 .isInstanceOf(FavoriteEntityNotFoundException.class);
+    }
+
+    @DisplayName("등록된 즐겨찾기 정보들을 받아올 수 있다.")
+    @Test
+    void getFavoritesTest() {
+        LoginMember loginMember = new LoginMember(1L, "test", 30);
+
+        List<FavoriteResponse> favoriteResponses = favoriteService.getFavorites(loginMember);
+
+        assertThat(favoriteResponses).hasSize(1);
+        assertThat(favoriteResponses).contains(new FavoriteResponse(
+                1L,
+                new StationInFavoriteResponse(1L, "강남역", null, null),
+                new StationInFavoriteResponse(2L, "역삼역", null, null)
+        ));
     }
 }
