@@ -12,7 +12,6 @@ import org.jgrapht.graph.WeightedMultigraph;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.CustomWeightedEdge;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.exception.NotConnectedStationException;
 import nextstep.subway.path.exception.SameStationException;
 import nextstep.subway.station.domain.Station;
@@ -26,9 +25,8 @@ public class PathFinder {
 	private WeightedMultigraph<Long, CustomWeightedEdge> distanceGraph;
 	private GraphPath<Long, CustomWeightedEdge> shortestPath;
 	private Map<Long, StationResponse> stationIdToStation;
-	private Integer age;
 
-	public PathFinder(List<Line> lines, long startStationId, long destStationId, Integer age) {
+	public PathFinder(List<Line> lines, long startStationId, long destStationId) {
 		validateStation(startStationId, destStationId);
 		this.lines = lines;
 		this.startStationId = startStationId;
@@ -36,22 +34,6 @@ public class PathFinder {
 		this.distanceGraph = generateGraphByDistance();
 		this.shortestPath = getShortestPath();
 		this.stationIdToStation = getAllStationById();
-		this.age = age;
-	}
-
-	public PathResponse getShortestPathResponse() {
-		int shortestDistance = getShortestDistance();
-		List<StationResponse> shortestStations = getShortestPathStationsByDistance();
-		List<LineResponse> shortestLines = getShortestPathLinesByDistance();
-
-		FareCalculator fareCalculator = new FareCalculator(shortestDistance, age, shortestLines);
-		int shortestFare = fareCalculator.calculate();
-
-		return PathResponse.of(
-			shortestStations,
-			shortestDistance,
-			shortestFare
-		);
 	}
 
 	private GraphPath<Long, CustomWeightedEdge> getShortestPath() {
@@ -62,18 +44,18 @@ public class PathFinder {
 		return path;
 	}
 
-	private int getShortestDistance() {
+	public int getShortestDistance() {
 		return (int)Math.round(this.shortestPath.getWeight());
 	}
 
-	private List<StationResponse> getShortestPathStationsByDistance() {
+	public List<StationResponse> getShortestPathStationsByDistance() {
 		return this.shortestPath.getVertexList()
 			.stream()
 			.map(id -> stationIdToStation.get(id))
 			.collect(Collectors.toList());
 	}
 
-	private List<LineResponse> getShortestPathLinesByDistance() {
+	public List<LineResponse> getShortestPathLinesByDistance() {
 		List<CustomWeightedEdge> edgeList = shortestPath.getEdgeList();
 		List<Line> shortedPathLines = new ArrayList<>();
 		for (CustomWeightedEdge edge : edgeList) {
