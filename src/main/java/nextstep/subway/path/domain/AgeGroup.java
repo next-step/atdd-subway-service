@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import nextstep.subway.common.exception.NotFoundException;
 
 @Getter
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public enum AgeGroup {
 		return Arrays.stream(AgeGroup.values())
 			.filter(ageGroup -> ageGroup.getMinAge() <= age && ageGroup.getMaxAge() >= age)
 			.findFirst()
-			.orElse(ADULT);
+			.orElseThrow(() -> new NotFoundException("나이에 맞는 나이그룹을 찾을 수 없습니다."));
 	}
 
 	public int discountFare(int result) {
