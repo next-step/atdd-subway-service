@@ -24,7 +24,7 @@ public class Favorite extends BaseEntity {
     protected Favorite() {
     }
 
-    private Favorite(Long id, Long memberId, Long sourceId, Long targetId) {
+    Favorite(Long id, Long memberId, Long sourceId, Long targetId) {
         validate(memberId, sourceId, targetId);
         this.id = id;
         this.memberId = memberId;
@@ -34,6 +34,10 @@ public class Favorite extends BaseEntity {
 
     public Favorite(Long memberId, Long sourceId, Long targetId) {
         this(null, memberId, sourceId, targetId);
+    }
+
+    public Long getId() {
+        return id;
     }
 
     private void validate(Long memberId, Long sourceId, Long targetId) {

@@ -15,4 +15,8 @@ public class SafeStationAdapter implements SafeStation {
     public boolean isExistStation(final Long stationId) {
         return stationService.isExistStation(stationId);
     }
+
+    public boolean isAllExists(Long source, Long target) {
+        return stationService.isExistStation(source) && stationService.isExistStation(target);
+    }
 }
