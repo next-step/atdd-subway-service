@@ -9,6 +9,8 @@ import nextstep.subway.favorite.domain.excpetions.FavoriteCreationException;
 import nextstep.subway.favorite.ui.dto.FavoriteRequest;
 import nextstep.subway.favorite.ui.dto.FavoriteResponse;
 import nextstep.subway.favorite.ui.dto.StationInFavoriteResponse;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -35,12 +37,16 @@ public class FavoriteService {
     }
 
     public Long saveFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
-        validateStationsExists(favoriteRequest);
+        try {
+            validateStationsExists(favoriteRequest);
 
-        Favorite saved = favoriteRepository.save(
-                new Favorite(loginMember.getId(), favoriteRequest.getSource(), favoriteRequest.getTarget()));
+            Favorite saved = favoriteRepository.save(
+                    new Favorite(loginMember.getId(), favoriteRequest.getSource(), favoriteRequest.getTarget()));
 
-        return saved.getId();
+            return saved.getId();
+        } catch (DataIntegrityViolationException e) {
+            throw new FavoriteCreationException("즐겨찾기를 중복해서 등록할 수 없습니다.");
+        }
     }
 
     private void validateStationsExists(final FavoriteRequest favoriteRequest) {

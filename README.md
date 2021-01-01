@@ -384,7 +384,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - and 지하철 노선에 지하철역 등록되어 있음
         - and 회원등록되어 있음
         - and 로그인되어 있음
-- [X] 시나리오: 사용자가 즐겨찾기를 관리한다.
+- [X] 시나리오1: 사용자가 즐겨찾기를 관리한다.
     - when
         - 즐겨찾기 생성 요청
     - then
@@ -397,6 +397,14 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - 즐겨찾기 삭제 요청
     - then
         - 즐겨찾기 삭제 성공
+    
+- [X] 시나리오2: 사용자가 실수로 똑같은 즐겨찾기를 두번 등록한다.
+    - given
+        - 즐겨찾기 등록되어 있음
+    - when
+        - 같은 정보로 즐겨찾기 등록 요청
+    - then
+        - 즐겨찾기 등록 실패
     
 ### Todo-list
 - [X] 인가 기능을 구현하기 위해 CustomResolver 등록

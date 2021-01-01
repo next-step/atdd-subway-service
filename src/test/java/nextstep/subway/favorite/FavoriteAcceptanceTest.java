@@ -95,6 +95,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         즐겨찾기_삭제_성공(deleteResponse);
     }
+    
+    @DisplayName("시나리오2: 사용자가 실수로 똑같은 즐겨찾기를 두번 등록한다.")
+    @Test
+    void addFavoriteTwiceTest() {
+        // given
+        즐겨찾기_추가되어_있음(token, 강남역, 남부터미널역);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_추가_요청(token, 강남역, 남부터미널역);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 
     public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String token, Long id) {
         return RestAssured.given().log().all()
@@ -124,6 +137,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(favorites).hasSize(1);
         assertThat(favorites.get(0).getSource().getName()).isEqualTo(source.getName());
         assertThat(favorites.get(0).getTarget().getName()).isEqualTo(target.getName());
+    }
+    
+    public static void 즐겨찾기_추가되어_있음(String token, StationResponse source, StationResponse target) {
+        ExtractableResponse<Response> response = 즐겨찾기_추가_요청(token, source, target);
+        즐겨찾기_추가_요청_성공(response);
     }
 
     public static Long 즐겨찾기_추가_요청_성공(final ExtractableResponse<Response> response) {
