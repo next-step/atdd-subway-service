@@ -33,9 +33,17 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인_요청_성공(response);
     }
 
-    @DisplayName("Bearer Auth 로그인 실패")
+    @DisplayName("Bearer Auth 로그인 실패(회원가입 안함)")
     @Test
     void myInfoWithBadBearerAuth() {
+        String email = "test@nextstep.com";
+        String password = "password";
+
+        // when
+        ExtractableResponse<Response> response = 로그인_요청(email, password);
+
+        // then
+        로그인_요청_실패(response);
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
@@ -59,5 +67,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         TokenResponse tokenResponse = response.as(TokenResponse.class);
         String token = tokenResponse.getAccessToken();
         assertThat(token).isNotEmpty();
+    }
+
+    public static void 로그인_요청_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

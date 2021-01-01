@@ -323,7 +323,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ## Step3. 인증을 통한 기능 구현
 ### 인수테스트 시나리오
 - 기능: 로그인(토큰 발급)
-- [ ] 시나리오1: 정상적으로 로그인
+- [X] 시나리오1: 정상적으로 로그인
     - given
         - 회원 등록되어 있음
     - when
