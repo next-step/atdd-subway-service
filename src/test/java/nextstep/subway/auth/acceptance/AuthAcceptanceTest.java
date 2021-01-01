@@ -98,4 +98,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     public static void 로그인_요청_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
+
+    public static void 로그인_실패함(String email, String password) {
+        ExtractableResponse<Response> response = 로그인_요청(email, password);
+        로그인_요청_실패(response);
+    }
 }

@@ -351,8 +351,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - then
         - 내 정보 조회 실패
 
-- 기능: 상태에서 내 정보를 관리한다.
-- [ ] 시나리오: 로그인한 상태에서 내 정보를 관리한다.
+- 기능: 로그인 된 상태에서 내 정보를 관리한다.
+- [X] 시나리오1: 로그인한 상태에서 내 정보를 관리한다.
     - given
         - 회원가입 됨
         - and 로그인 됨
@@ -360,6 +360,14 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - 내 정보 조회 요청
     - then
         - 내 정보 조회 성공
+    - when
+        - 내 정보 수정 요청(이름)
+    - then
+        - 내 정보 수정 성공
+    - when
+        - 회원 탈퇴
+    - then
+        - 회원 탈퇴 성공
     
 ### Todo-list
 - [X] 인가 기능을 구현하기 위해 CustomResolver 등록
