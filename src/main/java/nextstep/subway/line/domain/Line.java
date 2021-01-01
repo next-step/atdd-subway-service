@@ -96,4 +96,30 @@ public class Line extends BaseEntity {
 
         return downStation;
     }
+
+    public void add(Station upStation, Station downStation, int distance) {
+        if (isStationExisted(upStation) && isStationExisted(downStation)) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!this.getStations().isEmpty() && !isStationExisted(upStation) && !isStationExisted(downStation)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
+        this.sections.stream()
+                .filter(it -> it.getUpStation() == upStation)
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(downStation, distance));
+
+        this.sections.stream()
+                .filter(it -> it.getDownStation() == downStation)
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(upStation, distance));
+
+        this.sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    private boolean isStationExisted(Station targetStation) {
+        return this.getStations().stream().anyMatch(it -> it == targetStation);
+    }
 }
