@@ -375,7 +375,38 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - 내 정보 조회 요청
     - then
         - 내 정보 조회 실패
+
+- 기능: 즐겨찾기를 관리한다.
+- 기본 조건
+    - given
+        - 지하철역 등록되어 있음
+        - and 지하철 노선 등록되어 있음
+        - and 지하철 노선에 지하철역 등록되어 있음
+        - and 회원등록되어 있음
+        - and 로그인되어 있음
+- [ ] 시나리오: 사용자가 즐겨찾기를 관리한다.
+    - when
+        - 즐겨찾기 생성 요청
+    - then
+        - 즐겨찾기 생성 성공
+    - when
+        - 즐겨찾기 목록 조회 요청
+    - then
+        - 즐겨찾기 목록 조회 성공
+    - when
+        - 즐겨찾기 삭제 요청
+    - then
+        - 즐겨찾기 삭제 성공
     
 ### Todo-list
 - [X] 인가 기능을 구현하기 위해 CustomResolver 등록
     - 이미 등록되어 있음
+
+### 고민사항
+- Favorite은 엔티티? VO?
+    - Favorite 단일로 존재할 수 있는가? => X
+    - Member에 종속적되어 존재한다. = Member가 없으면 의미가 없다.
+    - Favorite은 별도의 식별자가 반드시 필요한가? => X
+    - MemberId, SourceId, TargetId 중 하나라도 다르면 전혀 다른 오브젝트로 구분이 가능하다.
+    => Member Aggregate에 종속된 VO로 간주.
+      
