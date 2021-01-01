@@ -34,7 +34,7 @@ class FareCalculatorTest {
 		삼호선 = LineResponse.of(new Line("삼호선", "bg-red-600", 교대역, 양재역, 5, 0));
 	}
 
-	@DisplayName("기본 운임 테스트")
+	@DisplayName("거리별 요금 정책 : 10km초과∼50km까지(5km마다 100원), 50km초과 시 (8km마다 100원)")
 	@ParameterizedTest
 	@CsvSource({
 		"1,1250",
@@ -69,7 +69,7 @@ class FareCalculatorTest {
 		assertThat(result).isEqualTo(expectedFare);
 	}
 
-	@DisplayName("추가 요금")
+	@DisplayName("추가 요금 정책 : 경로 중 추가요금이 있는 노선을 환승 하여 이용 할 경우 가장 높은 금액의 추가 요금만 적용")
 	@ParameterizedTest
 	@CsvSource({
 		"1,2150",
@@ -83,7 +83,7 @@ class FareCalculatorTest {
 		assertThat(result).isEqualTo(expectedFare);
 	}
 
-	@DisplayName("연령별 요금 할인 적용")
+	@DisplayName("연령별 요금 할인 적용: 청소년: 운임에서 350원을 공제한 금액의 20%할인, 어린이: 6세 이상~ 13세 미만")
 	@ParameterizedTest
 	@CsvSource({
 		"1,5,0",
