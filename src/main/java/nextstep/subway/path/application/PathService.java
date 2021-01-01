@@ -30,7 +30,7 @@ public class PathService {
 		List<StationResponse> shortestStations = pathFinder.getShortestPathStationsByDistance();
 		List<LineResponse> shortestLines = pathFinder.getShortestPathLinesByDistance();
 
-		FareCalculator fareCalculator = new FareCalculator(shortestDistance, age, shortestLines);
+		FareCalculator fareCalculator = new FareCalculator(shortestDistance, age, findMaxExtraFare(shortestLines));
 		int shortestFare = fareCalculator.calculate();
 
 		return PathResponse.of(
@@ -38,5 +38,12 @@ public class PathService {
 			shortestDistance,
 			shortestFare
 		);
+	}
+
+	private int findMaxExtraFare(List<LineResponse> lines) {
+		return lines.stream()
+			.mapToInt(LineResponse::getExtraFare)
+			.max()
+			.orElse(0);
 	}
 }

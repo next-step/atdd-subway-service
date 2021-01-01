@@ -1,9 +1,5 @@
 package nextstep.subway.path.domain;
 
-import java.util.List;
-
-import nextstep.subway.line.dto.LineResponse;
-
 public class FareCalculator {
 	public static final int BASIC_FARE = 1250;
 	public static final int BASIC_DISTANCE = 10;
@@ -12,10 +8,10 @@ public class FareCalculator {
 	private AgeGroup ageGroup;
 	private Integer extraFare;
 
-	public FareCalculator(int distance, Integer age, List<LineResponse> lines) {
+	public FareCalculator(int distance, Integer age, Integer extraFare) {
 		this.distance = distance;
 		this.ageGroup = AgeGroup.findAgeGroup(age);
-		this.extraFare = findMaxExtraFare(lines);
+		this.extraFare = extraFare;
 	}
 
 	public int calculate() {
@@ -43,13 +39,6 @@ public class FareCalculator {
 		}
 		int overDistance = distance - EXTRA_DISTANCE;
 		return (int)((Math.ceil((overDistance) / (double)8)) * 100);
-	}
-
-	private int findMaxExtraFare(List<LineResponse> lines) {
-		return lines.stream()
-			.mapToInt(LineResponse::getExtraFare)
-			.max()
-			.orElse(0);
 	}
 
 }

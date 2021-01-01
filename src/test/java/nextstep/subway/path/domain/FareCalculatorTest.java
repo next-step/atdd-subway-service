@@ -2,37 +2,13 @@ package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.Arrays;
-import java.util.Collections;
-
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.station.domain.Station;
-
 class FareCalculatorTest {
 	public static final Integer NO_LOGIN = null;
-
-	private Station 강남역;
-	private Station 양재역;
-	private Station 교대역;
-	private LineResponse 신분당선;
-	private LineResponse 이호선;
-	private LineResponse 삼호선;
-
-	@BeforeEach
-	void setup() {
-		강남역 = new Station(1L, "강남역");
-		양재역 = new Station(2L, "양재역");
-		교대역 = new Station(3L, "교대역");
-		신분당선 = LineResponse.of(new Line("신분당선", "bg-red-600", 강남역, 양재역, 10, 900));
-		이호선 = LineResponse.of(new Line("이호선", "bg-red-600", 교대역, 강남역, 10, 500));
-		삼호선 = LineResponse.of(new Line("삼호선", "bg-red-600", 교대역, 양재역, 5, 0));
-	}
+	public static final int 추가요금_없음 = 0;
 
 	@DisplayName("거리별 요금 정책 : 10km초과∼50km까지(5km마다 100원), 50km초과 시 (8km마다 100원)")
 	@ParameterizedTest
@@ -63,7 +39,7 @@ class FareCalculatorTest {
 		"74,2350",
 	})
 	void basicFare(int distance, int expectedFare) {
-		FareCalculator fareCalculator = new FareCalculator(distance, NO_LOGIN, Collections.singletonList(삼호선));
+		FareCalculator fareCalculator = new FareCalculator(distance, NO_LOGIN, 추가요금_없음);
 
 		int result = fareCalculator.calculate();
 		assertThat(result).isEqualTo(expectedFare);
@@ -72,13 +48,13 @@ class FareCalculatorTest {
 	@DisplayName("추가 요금 정책 : 경로 중 추가요금이 있는 노선을 환승 하여 이용 할 경우 가장 높은 금액의 추가 요금만 적용")
 	@ParameterizedTest
 	@CsvSource({
-		"1,2150",
-		"15,2250",
-		"20,2350",
-		"51,3050"
+		"1,0,1250",
+		"15,900,2250",
+		"20,1500,2950",
+		"51,3000,5150"
 	})
-	void extraFare(int distance, int expectedFare) {
-		FareCalculator fareCalculator = new FareCalculator(distance, NO_LOGIN, Arrays.asList(이호선, 삼호선, 신분당선));
+	void extraFare(int distance, int extraFare, int expectedFare) {
+		FareCalculator fareCalculator = new FareCalculator(distance, NO_LOGIN, extraFare);
 		int result = fareCalculator.calculate();
 		assertThat(result).isEqualTo(expectedFare);
 	}
@@ -111,7 +87,7 @@ class FareCalculatorTest {
 		"74,100,2350",
 	})
 	void ageDiscount(int distance, int age, int expectedFare) {
-		FareCalculator fareCalculator = new FareCalculator(distance, age, Collections.singletonList(삼호선));
+		FareCalculator fareCalculator = new FareCalculator(distance, age, 추가요금_없음);
 		int result = fareCalculator.calculate();
 		assertThat(result).isEqualTo(expectedFare);
 	}
