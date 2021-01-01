@@ -29,13 +29,13 @@ public enum AgeGroup {
 			.orElseThrow(() -> new NotFoundException("나이에 맞는 나이그룹을 찾을 수 없습니다."));
 	}
 
-	public int discountFare(int result) {
+	public int discountFare(int fare) {
 		if (this.equals(ADULT)) {
-			return result;
+			return fare;
 		}
 		if (this.equals(BABY)) {
 			return 0;
 		}
-		return result - (int)Math.round((result - FareCalculator.DEDUCTION_FARE) * this.discountRate);
+		return fare - (int)Math.round((fare - FareCalculator.DEDUCTION_FARE) * this.discountRate);
 	}
 }
