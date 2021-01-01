@@ -1,4 +1,4 @@
-package nextstep.subway.member.dto;
+package nextstep.subway.favorite.ui.dto;
 
 import java.util.Objects;
 

@@ -408,5 +408,10 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - Member에 종속적되어 존재한다. = Member가 없으면 의미가 없다.
     - Favorite은 별도의 식별자가 반드시 필요한가? => X
     - MemberId, SourceId, TargetId 중 하나라도 다르면 전혀 다른 오브젝트로 구분이 가능하다.
-    => Member Aggregate에 종속된 VO로 간주.
+    => ~~Member Aggregate에 종속된 VO로 간주.~~
+      
+- 이번 과제에서는 Favorite을 Entity로 취급
+    - 제시된 요구사항의 삭제가 ID를 기반으로 삭제가 진행됨
+    - Member의 VO 컬렉션으로 Favorite 구현시 Favorite의 ID를 통한 조회, 삭제는 VO의 의미가 퇴색됨
+    => Favorite을 엔티티로 간주한다.
       
