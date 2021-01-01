@@ -11,12 +11,12 @@
     <template slot="text">
       <v-form ref="lineForm" v-model="valid" @submit.prevent>
         <v-text-field
-          v-model="lineForm.name"
-          :rules="rules.line.name"
-          color="grey darken-1"
-          label="노선 이름"
-          placeholder="노선 이름"
-          outlined
+            v-model="lineForm.name"
+            :rules="rules.line.name"
+            color="grey darken-1"
+            label="노선 이름"
+            placeholder="노선 이름"
+            outlined
         ></v-text-field>
         <div class="d-flex">
           <v-select
@@ -53,17 +53,29 @@
               outlined
           ></v-text-field>
         </div>
+        <div class="d-flex">
+          <v-text-field
+              v-model="lineForm.extraFare"
+              :rules="rules.section.extraFare"
+              color="grey darken-1"
+              label="추가요금"
+              placeholder="추가요금"
+              outlined
+          ></v-text-field>
+        </div>
         <div>
-          <v-text-field v-model="lineForm.color" :rules="rules.line.color" :value="lineForm.color" label="노선 색상" filled disabled></v-text-field>
+          <v-text-field v-model="lineForm.color" :rules="rules.line.color" :value="lineForm.color" label="노선 색상" filled
+                        disabled></v-text-field>
           <p>
             노선의 색상을 아래 팔레트에서 선택해주세요.
           </p>
           <div class="d-flex">
             <div>
               <template v-for="(color, index) in lineColors">
-                <v-btn :key="index" small class="color-button ma-1" depressed :color="color" @click="setLineColor(color)"></v-btn>
+                <v-btn :key="index" small class="color-button ma-1" depressed :color="color"
+                       @click="setLineColor(color)"></v-btn>
                 <template v-if="index === 0"></template>
-                <br v-if="index === 8 || index % 9 === 8" />
+                <br v-if="index === 8 || index % 9 === 8"/>
               </template>
             </div>
           </div>
@@ -78,17 +90,17 @@
 
 <script>
 import Dialog from '@/components/dialogs/Dialog'
-import { LINE_COLORS, SNACKBAR_MESSAGES } from '@/utils/constants'
+import {LINE_COLORS, SNACKBAR_MESSAGES} from '@/utils/constants'
 import dialog from '@/mixins/dialog'
 import validator from '@/utils/validator'
 import {mapActions, mapGetters, mapMutations} from 'vuex'
-import { SHOW_SNACKBAR } from '@/store/shared/mutationTypes'
-import { CREATE_LINE, DELETE_LINE, EDIT_LINE, FETCH_LINES, FETCH_STATIONS } from '@/store/shared/actionTypes'
+import {SHOW_SNACKBAR} from '@/store/shared/mutationTypes'
+import {CREATE_LINE, DELETE_LINE, EDIT_LINE, FETCH_LINES, FETCH_STATIONS} from '@/store/shared/actionTypes'
 
 export default {
   name: 'LineCreateButton',
   mixins: [dialog],
-  components: { Dialog },
+  components: {Dialog},
   computed: {
     ...mapGetters(['stations'])
   },
@@ -141,7 +153,7 @@ export default {
   },
   data() {
     return {
-      rules: { ...validator },
+      rules: {...validator},
       isOption: true,
       lineForm: {
         name: '',
