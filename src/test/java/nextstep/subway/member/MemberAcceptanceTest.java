@@ -51,6 +51,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     }
 
+    public static void 회원_등록되어_있음(String email, String password, Integer age) {
+        ExtractableResponse<Response> response = 회원_생성을_요청(email, password, age);
+        회원_생성됨(response);
+    }
+
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
