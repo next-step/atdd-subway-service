@@ -77,14 +77,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         Long source = 강남역.getId();
         Long target = 남부터미널역.getId();
 
-        ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
+        // when
+        ExtractableResponse<Response> createResponse = 즐겨찾기_추가_요청(token, source, target);
+        // then
+        즐겨찾기_추가_요청_성공(createResponse);
+    }
+
+    public static void 즐겨찾기_추가_요청_성공(final ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_추가_요청(String token, Long source, Long target) {
+        return RestAssured.given().log().all()
                 .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(new FavoriteRequest(source, target))
                 .when().post("/favorites")
                 .then().log().all()
                 .extract();
-
-        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
