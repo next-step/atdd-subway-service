@@ -368,6 +368,13 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - 회원 탈퇴
     - then
         - 회원 탈퇴 성공
+- [X] 시나리오2: 로그인 안한 상태에서 내 정보를 조회한다.
+    - given
+        - 회원가입 됨
+    - when
+        - 내 정보 조회 요청
+    - then
+        - 내 정보 조회 실패
     
 ### Todo-list
 - [X] 인가 기능을 구현하기 위해 CustomResolver 등록

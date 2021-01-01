@@ -83,6 +83,27 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    @DisplayName("로그인하지 않고 내 정보를 조회한다.")
+    @Test
+    void getMyInfoWithoutLogin() {
+        String email = "test@nextstep.com";
+        String password = "password";
+        Integer age = 32;
+
+        // given
+        회원_등록되어_있음(email, password, age);
+
+        // when
+        ExtractableResponse<Response> response = 내_정보_조회_요청("");
+
+        // then
+        내_정보_조회_실패(response);
+    }
+
+    public static void 내_정보_조회_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     public static void 회원탈퇴_성공(ExtractableResponse<Response> response, String email, String password) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
         로그인_실패함(email, password);
