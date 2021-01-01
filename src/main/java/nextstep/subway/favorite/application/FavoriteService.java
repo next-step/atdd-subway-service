@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FavoriteService {
@@ -51,6 +52,10 @@ public class FavoriteService {
     public List<FavoriteResponse> getFavorites(LoginMember loginMember) {
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(loginMember.getId());
 
-        return Arrays.asList(new FavoriteResponse(1L, new StationInFavoriteResponse(1L, "hello", null, null), new StationInFavoriteResponse(1L, "hello", null, null)));
+        return favorites.stream().map(it -> new FavoriteResponse(
+                it.getId(),
+                safeStationAdapter.getSafeStationInFavorite(it.getSourceId()),
+                safeStationAdapter.getSafeStationInFavorite(it.getTargetId()))
+        ).collect(Collectors.toList());
     }
 }

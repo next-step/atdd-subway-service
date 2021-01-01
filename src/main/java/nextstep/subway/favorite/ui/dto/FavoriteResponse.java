@@ -1,5 +1,7 @@
 package nextstep.subway.favorite.ui.dto;
 
+import nextstep.subway.favorite.domain.adapters.SafeStationInFavorite;
+
 import java.util.Objects;
 
 public class FavoriteResponse {
@@ -7,10 +9,14 @@ public class FavoriteResponse {
     private final StationInFavoriteResponse source;
     private final StationInFavoriteResponse target;
 
-    public FavoriteResponse(final Long id, final StationInFavoriteResponse source, final StationInFavoriteResponse target) {
+    public FavoriteResponse(Long id, StationInFavoriteResponse source, StationInFavoriteResponse target) {
         this.id = id;
         this.source = source;
         this.target = target;
+    }
+
+    public FavoriteResponse(Long id, SafeStationInFavorite source, SafeStationInFavorite target) {
+        this(id, new StationInFavoriteResponse(source), new StationInFavoriteResponse(target));
     }
 
     public Long getId() {

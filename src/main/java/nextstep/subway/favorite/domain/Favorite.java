@@ -42,8 +42,12 @@ public class Favorite extends BaseEntity {
         return id;
     }
 
-    public List<Long> getStations() {
-        return Arrays.asList(sourceId, targetId);
+    public Long getSourceId() {
+        return sourceId;
+    }
+
+    public Long getTargetId() {
+        return targetId;
     }
 
     private void validate(Long memberId, Long sourceId, Long targetId) {

@@ -1,5 +1,7 @@
 package nextstep.subway.favorite.ui.dto;
 
+import nextstep.subway.favorite.domain.adapters.SafeStationInFavorite;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -9,11 +11,16 @@ public class StationInFavoriteResponse {
     private final LocalDateTime createdDate;
     private final LocalDateTime modifiedDate;
 
-    public StationInFavoriteResponse(final Long id, final String name, final LocalDateTime createdDate, final LocalDateTime modifiedDate) {
+    public StationInFavoriteResponse(Long id, String name, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.name = name;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
+    }
+
+    public StationInFavoriteResponse(SafeStationInFavorite safeStationInFavorite) {
+        this(safeStationInFavorite.getId(), safeStationInFavorite.getName(),
+                safeStationInFavorite.getCreatedDate(), safeStationInFavorite.getModifiedDate());
     }
 
     public Long getId() {
