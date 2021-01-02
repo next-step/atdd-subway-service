@@ -6,7 +6,7 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
-import nextstep.subway.station.application.exceptions.EntityNotFoundException;
+import nextstep.subway.exceptions.EntityNotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.dao.EmptyResultDataAccessException;

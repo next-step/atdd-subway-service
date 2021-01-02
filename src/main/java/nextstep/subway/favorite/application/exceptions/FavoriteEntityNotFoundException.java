@@ -1,6 +1,8 @@
 package nextstep.subway.favorite.application.exceptions;
 
-public class FavoriteEntityNotFoundException extends RuntimeException {
+import nextstep.subway.exceptions.EntityNotFoundException;
+
+public class FavoriteEntityNotFoundException extends EntityNotFoundException {
     public FavoriteEntityNotFoundException(final String message) {
         super(message);
     }
