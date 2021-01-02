@@ -13,6 +13,7 @@ import java.util.Optional;
 public class Line extends BaseEntity {
     private static final String ERR_TEXT_ALREADY_ADDED_SECTION = "이미 등록된 구간 입니다.";
     private static final String ERR_TEXT_CAN_NOT_ADD_SECTION = "등록할 수 없는 구간 입니다.";
+    private static final int MIN_LIMIT = 1;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -119,6 +120,29 @@ public class Line extends BaseEntity {
         } else {
             throw new RuntimeException();
         }
+    }
+
+    public void removeLineStation(final Station station) {
+        if (sections.size() <= MIN_LIMIT) {
+            throw new RuntimeException();
+        }
+
+        final Optional<Section> upLineStation = sections.stream()
+            .filter(it -> it.getUpStation() == station)
+            .findFirst();
+        final Optional<Section> downLineStation = sections.stream()
+            .filter(it -> it.getDownStation() == station)
+            .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            sections.add(new Section(this, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(sections::remove);
+        downLineStation.ifPresent(sections::remove);
     }
 
     public Long getId() {
