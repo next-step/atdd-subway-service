@@ -101,10 +101,10 @@ public class Sections {
     }
 
     private boolean checkConnectableSection(Section targetSection) {
-        return !hasStation(targetSection.getUpStation()) && !hasStation(targetSection.getDownStation());
+        return hasNotStation(targetSection.getUpStation()) && hasNotStation(targetSection.getDownStation());
     }
 
-    private boolean hasStation(Station targetStation) {
-        return this.getStations().contains(targetStation);
+    private boolean hasNotStation(Station targetStation) {
+        return !this.getStations().contains(targetStation);
     }
 }

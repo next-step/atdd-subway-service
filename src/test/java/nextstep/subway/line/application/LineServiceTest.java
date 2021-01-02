@@ -30,9 +30,20 @@ class LineServiceTest {
     private StationService stationService;
 
     private LineService lineService;
+    private Line 신분당선;
+    private Station 정자역;
+    private Station 양재역;
+    private Station 판교역;
+    private Station 강남역;
 
     @BeforeEach
     void setUp() {
+        정자역 = new Station("정자역");
+        양재역 = new Station("양재역");
+        판교역 = new Station("판교역");
+        강남역 = new Station("강남역");
+        신분당선 = new Line("신분당선", "red", 양재역, 정자역, 10);
+
         lineService = new LineService(lineRepository, stationService);
     }
 
@@ -40,10 +51,7 @@ class LineServiceTest {
     @Test
     void createLine() {
         // given
-        Station 양재역 = new Station("양재역");
-        Station 정자역 = new Station("정자역");
-        Line line = new Line("신분당선", "red", 양재역, 정자역, 10);
-        when(lineRepository.save(any())).thenReturn(line);
+        when(lineRepository.save(any())).thenReturn(신분당선);
 
         //when
         LineResponse lineResponse = lineService.saveLine(new LineRequest());
@@ -54,43 +62,31 @@ class LineServiceTest {
                 .containsExactly("양재역", "정자역");
     }
 
-    @DisplayName("지하철 구간 등록")
+    @DisplayName("지하철 구간을 등록하고 반환하는 역의 순서가 맞는지 확인한다.")
     @Test
     void addBetweenSection() {
         // given
-        Station 양재역 = new Station("양재역");
-        Station 정자역 = new Station("정자역");
-        Station 판교역 = new Station("판교역");
-        Line line = new Line("신분당선", "red", 양재역, 정자역, 10);
-        setLine(line);
+        givenLineByLineRepository(신분당선);
 
         // when
-        addSection(판교역, 정자역);
-        // then
-        assertThat(line.getStations()).extracting("name")
-                .containsExactly("양재역", "판교역", "정자역");
-    }
+        addLineStationByLineService(판교역, 정자역);
 
-    private void setLine(Line line) {
-        when(lineRepository.findById(any())).thenReturn(Optional.of(line));
+        // then
+        assertThat(신분당선.getStations()).extracting("name")
+                .containsExactly("양재역", "판교역", "정자역");
     }
 
     @DisplayName("구간 등록 예외 처리")
     @Test
     void addSectionExpectedException() {
         // given
-        Station 양재역 = new Station("양재역");
-        Station 정자역 = new Station("정자역");
-        Station 판교역 = new Station("판교역");
-        Station 강남역 = new Station("강남역");
-        Line line = new Line("신분당선", "red", 양재역, 정자역, 10);
-        setLine(line);
+        givenLineByLineRepository(신분당선);
 
         //when then
-        assertThatThrownBy(() -> addSection(정자역, 양재역)).isInstanceOf(RuntimeException.class)
+        assertThatThrownBy(() -> addLineStationByLineService(정자역, 양재역)).isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("이미 등록된 구간 입니다.");
 
-        assertThatThrownBy(() -> addSection(판교역, 강남역)).isInstanceOf(RuntimeException.class)
+        assertThatThrownBy(() -> addLineStationByLineService(판교역, 강남역)).isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("등록할 수 없는 구간 입니다.");
     }
 
@@ -98,19 +94,15 @@ class LineServiceTest {
     @Test
     void deleteSection() {
         // given
-        Station 양재역 = new Station("양재역");
-        Station 정자역 = new Station("정자역");
-        Station 판교역 = new Station("판교역");
-        Line line = new Line("신분당선", "red", 양재역, 정자역, 10);
-        setLine(line);
-        addSection(판교역, 정자역);
-        when(stationService.findStationById(any())).thenReturn(정자역);
+        givenLineByLineRepository(신분당선);
+        addLineStationByLineService(판교역, 정자역);
+        givenStationByStationService(정자역);
 
         // when
         lineService.removeLineStation(1L, 1L);
 
         // then
-        assertThat(line.getStations()).extracting("name")
+        assertThat(신분당선.getStations()).extracting("name")
                 .containsExactly("양재역", "판교역");
     }
 
@@ -118,18 +110,24 @@ class LineServiceTest {
     @Test
     void deleteSectionExpectedException() {
         // given
-        Station 양재역 = new Station("양재역");
-        Station 정자역 = new Station("정자역");
-        Line line = new Line("신분당선", "red", 양재역, 정자역, 10);
-        setLine(line);
-        when(stationService.findStationById(any())).thenReturn(정자역);
+        givenLineByLineRepository(신분당선);
+        givenStationByStationService(정자역);
 
-        // then
+        // when then
         assertThatThrownBy(() -> lineService.removeLineStation(1L, 1L)).isInstanceOf(RuntimeException.class)
-        .hasMessageContaining("구간 삭제 실패됨");
+                .hasMessageContaining("구간 삭제 실패됨");
     }
 
-    private void addSection(Station upStation, Station downStation) {
+    private void givenLineByLineRepository(Line line) {
+        when(lineRepository.findById(any())).thenReturn(Optional.of(line));
+    }
+
+    private void givenStationByStationService(Station targetStation) {
+        when(stationService.findStationById(any())).thenReturn(targetStation);
+    }
+
+    private void addLineStationByLineService(Station upStation, Station downStation) {
+        // given
         when(stationService.findStationById(any())).thenReturn(upStation).thenReturn(downStation);
         // when
         lineService.addLineStation(1L, new SectionRequest());
