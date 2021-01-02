@@ -2,7 +2,7 @@ package nextstep.subway.favorite.application;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.exceptions.FavoriteEntityNotFoundException;
-import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.favorite.application.exceptions.NotMyFavoriteException;
 import nextstep.subway.favorite.domain.FavoriteFixtures;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.domain.adapters.SafeStationForFavoriteAdapter;
@@ -18,11 +18,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.EmptyResultDataAccessException;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -79,21 +78,33 @@ class FavoriteServiceTest {
     @DisplayName("등록된 즐겨찾기를 제거할 수 있다.")
     @Test
     void deleteFavoriteTest() {
+        LoginMember loginMember = new LoginMember(1L, "test@nextstep.com", 30);
         Long deleteTarget = 1L;
+        given(favoriteRepository.findById(deleteTarget)).willReturn(Optional.of(FavoriteFixtures.FAVORITE_1));
 
-        favoriteService.deleteFavorite(deleteTarget);
+        favoriteService.deleteFavorite(loginMember, deleteTarget);
 
         verify(favoriteRepository).deleteById(deleteTarget);
+    }
+
+    @DisplayName("본인의 즐겨찾기가 아닌 즐겨찾기 항목을 제거할 수 없다.")
+    @Test
+    void deleteFavoriteFailWhenNotMineTest() {
+        LoginMember loginMember = new LoginMember(2L, "test@nextstep.com", 30);
+        Long deleteTarget = 1L;
+        given(favoriteRepository.findById(deleteTarget)).willReturn(Optional.of(FavoriteFixtures.FAVORITE_1));
+
+        assertThatThrownBy(() -> favoriteService.deleteFavorite(loginMember, deleteTarget))
+                .isInstanceOf(NotMyFavoriteException.class);
     }
 
     @DisplayName("등록되지 않는 즐겨찾기 제거 시도 시 예외 발생")
     @Test
     void deleteFavoriteFailTest() {
+        LoginMember loginMember = new LoginMember(1L, "test@nextstep.com", 30);
         Long deleteTarget = 1L;
 
-        doThrow(new EmptyResultDataAccessException(10)).when(favoriteRepository).deleteById(deleteTarget);
-
-        assertThatThrownBy(() -> favoriteService.deleteFavorite(deleteTarget))
+        assertThatThrownBy(() -> favoriteService.deleteFavorite(loginMember, deleteTarget))
                 .isInstanceOf(FavoriteEntityNotFoundException.class);
     }
 

@@ -50,6 +50,10 @@ public class Favorite extends BaseEntity {
         return targetId;
     }
 
+    public boolean isOwner(Long memberId) {
+        return this.memberId.equals(memberId);
+    }
+
     private void validate(Long memberId, Long sourceId, Long targetId) {
         if (memberId == null || sourceId == null || targetId == null) {
             throw new FavoriteCreationException("회원, 출발지, 도착지가 모두 필요합니다.");

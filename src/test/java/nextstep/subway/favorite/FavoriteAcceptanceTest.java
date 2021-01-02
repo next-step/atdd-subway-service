@@ -109,6 +109,24 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("시나리오3: 내 즐겨찾기가 아닌 즐겨찾기를 삭제할 수 없음")
+    @Test
+    void cannotDeleteFavoriteTest() {
+        String newUserEmail = "newuser@nextstep.com";
+        String newUserPassword = "password";
+        Integer newUserAge = 5;
+        // given
+        Long registeredFavoriteId = 즐겨찾기_추가되어_있음(token, 강남역, 남부터미널역);
+        회원_등록되어_있음(newUserEmail, newUserPassword, newUserAge);
+        String token2 = 로그인_됨(newUserEmail, newUserPassword);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(token2, registeredFavoriteId);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String token, Long id) {
         return RestAssured.given().log().all()
                 .auth().oauth2(token)
@@ -139,9 +157,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(favorites.get(0).getTarget().getName()).isEqualTo(target.getName());
     }
     
-    public static void 즐겨찾기_추가되어_있음(String token, StationResponse source, StationResponse target) {
+    public static Long 즐겨찾기_추가되어_있음(String token, StationResponse source, StationResponse target) {
         ExtractableResponse<Response> response = 즐겨찾기_추가_요청(token, source, target);
         즐겨찾기_추가_요청_성공(response);
+        return Long.parseLong(response.header("Location").split("/")[2]);
     }
 
     public static Long 즐겨찾기_추가_요청_성공(final ExtractableResponse<Response> response) {

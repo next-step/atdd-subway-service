@@ -434,4 +434,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ### Step3 피드백 반영 요구사항
 - [X] SafeStationInFavoriteAdapter의 예외 상황이 좀 더 의미가 잘 드러나도록 개선
-- [ ] 즐겨찾기 삭제 시도 시 해당 유저가 맞는지 확인하는 절차 필요
+- [X] 즐겨찾기 삭제 시도 시 해당 유저가 맞는지 확인하는 절차 필요
