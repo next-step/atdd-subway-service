@@ -464,7 +464,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - LineOfStationInPaths
         - LineInPath 일급 컬렉션
         - [X] 구성요소 중 두개 이상의 노선이 겹치는 부분을 찾아낼 수 있다.
-        - [ ] 각 요소의 다음 요소가 어떤 노선인지 알 수 있다.
+        - [X] 각 요소의 다음 요소가 어떤 노선인지 알 수 있다.
         - [ ] 노선이 겹치는 요소가 현재 경로에서 어떤 노선으로 환승했는지 알 수 있다.
     - SafeLineAdapter
         - [ ] 역 ID 컬렉션을 인자로 전달해서 어느 역에 속했는지를 불러올 수 있다.

@@ -7,13 +7,12 @@ import java.util.stream.Collectors;
 public class LineOfStationInPaths {
     private final List<LineOfStationInPath> lineOfStationInPaths;
 
-    public LineOfStationInPaths(final List<LineOfStationInPath> lineOfStationInPaths) {
+    public LineOfStationInPaths(List<LineOfStationInPath> lineOfStationInPaths) {
         this.lineOfStationInPaths = lineOfStationInPaths;
     }
 
-    LineOfStationInPath findNext(final LineOfStationInPath lineOfStationInPath) {
-        int index = this.lineOfStationInPaths.indexOf(lineOfStationInPath);
-        int targetIndex = index + 1;
+    LineOfStationInPath findNext(LineOfStationInPath lineOfStationInPath) {
+        int targetIndex = indexOf(lineOfStationInPath) + 1;
 
         if (targetIndex == this.lineOfStationInPaths.size()) {
             return new LineOfStationInPath(new ArrayList<>());
@@ -26,5 +25,9 @@ public class LineOfStationInPaths {
         return this.lineOfStationInPaths.stream()
                 .filter(LineOfStationInPath::isMultiLine)
                 .collect(Collectors.toList());
+    }
+
+    private int indexOf(LineOfStationInPath lineOfStationInPath) {
+        return this.lineOfStationInPaths.indexOf(lineOfStationInPath);
     }
 }
