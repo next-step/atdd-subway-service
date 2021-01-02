@@ -9,7 +9,9 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import nextstep.subway.auth.application.AuthService;
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
@@ -27,7 +29,12 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 	@Override
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
 		NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+		boolean isRequired = parameter.getParameterAnnotation(AuthenticationPrincipal.class).required();
 		String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
-		return authService.findMemberByToken(credentials);
+		LoginMember member = authService.findMemberByToken(credentials);
+		if (member.getId() == null && isRequired) {
+			throw new AuthorizationException();
+		}
+		return member;
 	}
 }

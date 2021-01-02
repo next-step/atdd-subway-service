@@ -17,5 +17,8 @@ public class PathResponse {
 
 	private List<StationResponse> stations;
 
-	private double distance;
+	private int distance;
+
+	private int fare;
+
 }

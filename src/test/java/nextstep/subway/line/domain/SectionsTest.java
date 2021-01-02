@@ -29,7 +29,8 @@ class SectionsTest {
 			"darken-orange",
 			굴포천역(),
 			부천시청역(),
-			10000
+			10000,
+			0
 		);
 		sections = line.getSections();
 		sections.addSection(new Section(line, 굴포천역(), 삼산체육관역(), 굴포천역_삼산체육관역_거리));
