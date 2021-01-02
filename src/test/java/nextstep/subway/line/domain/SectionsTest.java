@@ -59,7 +59,7 @@ class SectionsTest {
     void add() {
         // given
         Station 관악역 = new Station("관악역");
-        Section section = new Section(일호선, 신도림역, 관악역, 10);
+        Section section = new Section(일호선, 신도림역, 관악역, 5);
 
         // when
         sections.add(section);
