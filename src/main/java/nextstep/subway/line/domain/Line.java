@@ -6,6 +6,7 @@ import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -20,6 +21,9 @@ public class Line extends BaseEntity {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
+    @Embedded
+    private Sections newSections;
+
     public Line() {
     }
 
@@ -32,7 +36,9 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        Section section = new Section(this, upStation, downStation, distance);
+        sections.add(section);
+        this.newSections = new Sections(Arrays.asList(section));
     }
 
     public void update(Line line) {
@@ -54,5 +60,9 @@ public class Line extends BaseEntity {
 
     public List<Section> getSections() {
         return sections;
+    }
+
+    public List<Station> getOrderedStations() {
+        return newSections.getOrderedStations();
     }
 }
