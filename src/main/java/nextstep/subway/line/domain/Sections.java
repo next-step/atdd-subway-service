@@ -15,6 +15,7 @@ import static java.util.stream.Collectors.toList;
 public class Sections {
     private static final String ERR_TEXT_ALREADY_ADDED_SECTION = "이미 등록된 구간 입니다.";
     private static final String ERR_TEXT_CAN_NOT_ADD_SECTION = "등록할 수 없는 구간 입니다.";
+    private static final String ERR_TEXT_NOT_EXIST_DATA = "해당 데이터가 존재하지 않습니다.";
     private static final int MIN_LIMIT = 1;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
@@ -70,27 +71,36 @@ public class Sections {
         }
     }
 
-    public void removeSection(final Station station, final Line line) {
-        if (sections.size() <= MIN_LIMIT) {
-            throw new RuntimeException();
-        }
+    public void remove(final Station targetStation, final Line line) {
+        isConditionThatCanBeDeleted(targetStation);
 
-        final Optional<Section> upLineStation = sections.stream()
-            .filter(it -> it.getUpStation() == station)
-            .findFirst();
-        final Optional<Section> downLineStation = sections.stream()
-            .filter(it -> it.getDownStation() == station)
-            .findFirst();
+        final Optional<Section> upLineStation = findSection(section -> section.isMatchUpStation(targetStation));
+        final Optional<Section> downLineStation = findSection(section -> section.isMatchDownStation(targetStation));
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+            addSectionWhenRemoveStationsIsIncludedInMoreThanOne(line, upLineStation.get(), downLineStation.get());
         }
 
         upLineStation.ifPresent(sections::remove);
         downLineStation.ifPresent(sections::remove);
+    }
+
+    private void addSectionWhenRemoveStationsIsIncludedInMoreThanOne(final Line line, final Section upLineStation, final Section downLineStation) {
+        final Station newUpStation = downLineStation.getUpStation();
+        final Station newDownStation = upLineStation.getDownStation();
+        final int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
+        sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+    }
+
+    private void isConditionThatCanBeDeleted(final Station targetStation) {
+        if (sections.size() <= MIN_LIMIT) {
+            throw new RuntimeException();
+        }
+
+        final List<Station> stations = getStations();
+        if (!stations.contains(targetStation)) {
+            throw new IllegalArgumentException(ERR_TEXT_NOT_EXIST_DATA);
+        }
     }
 
     public List<Station> getStations() {

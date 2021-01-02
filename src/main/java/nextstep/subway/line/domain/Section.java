@@ -85,4 +85,12 @@ public class Section {
     public boolean isMatchDownAndDownStation(final Section section) {
         return this.downStation == section.getDownStation();
     }
+
+    public boolean isMatchUpStation(final Station targetStation) {
+        return this.upStation == targetStation;
+    }
+
+    public boolean isMatchDownStation(final Station targetStation) {
+        return this.downStation == targetStation;
+    }
 }
