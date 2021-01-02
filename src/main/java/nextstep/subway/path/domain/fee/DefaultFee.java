@@ -5,12 +5,12 @@ import nextstep.subway.path.domain.exceptions.InvalidFeeDistanceException;
 import java.math.BigDecimal;
 
 public class DefaultFee implements Fee {
-    private static final Double MIN_DISTANCE = 0d;
-    private static final Double MAX_DISTANCE = 10d;
+    private static final Integer MIN_DISTANCE = 0;
+    private static final Integer MAX_DISTANCE = 10;
 
-    private final Double distance;
+    private final Integer distance;
 
-    public DefaultFee(Double distance) {
+    public DefaultFee(Integer distance) {
         validate(distance);
         this.distance = distance;
     }
@@ -19,7 +19,7 @@ public class DefaultFee implements Fee {
         return BigDecimal.valueOf(1250L);
     }
 
-    private void validate(Double distance) {
+    private void validate(Integer distance) {
         if (distance < MIN_DISTANCE || distance > MAX_DISTANCE) {
             throw new InvalidFeeDistanceException("기본 요금은 0km 이상 ~ 10km 이하여야 합니다.");
         }
