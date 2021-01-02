@@ -4,8 +4,6 @@ import java.util.List;
 
 public class FareCalculator {
 	public static final int BASIC_FARE = 1250;
-	public static final int BASIC_DISTANCE = 10;
-	public static final int EXTRA_DISTANCE = 50;
 	private int distance;
 	private List<DistanceFarePolicy> distancePolicys;
 	private AgeGroup ageGroup;
