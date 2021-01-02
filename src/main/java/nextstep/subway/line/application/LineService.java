@@ -58,12 +58,12 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
-    public void addLineStation(final Long lineId, final SectionRequest request) {
+    public void addSection(final Long lineId, final SectionRequest request) {
         final Line line = findLineById(lineId);
         final Station upStation = stationService.findStationById(request.getUpStationId());
         final Station downStation = stationService.findStationById(request.getDownStationId());
 
-        line.addLineStation(upStation, downStation, request.getDistance());
+        line.addSection(upStation, downStation, request.getDistance());
     }
 
     public void removeLineStation(final Long lineId, final Long stationId) {

@@ -48,7 +48,7 @@ public class Line extends BaseEntity {
             return Collections.emptyList();
         }
 
-        List<Station> stations = new ArrayList<>();
+        final List<Station> stations = new ArrayList<>();
         Station downStation = findUpStation();
         stations.add(downStation);
 
@@ -83,7 +83,7 @@ public class Line extends BaseEntity {
         return downStation;
     }
 
-    public void addLineStation(final Station upStation, final Station downStation, final int distance) {
+    public void addSection(final Station upStation, final Station downStation, final int distance) {
         final List<Station> stations = getStations();
 
         final boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
