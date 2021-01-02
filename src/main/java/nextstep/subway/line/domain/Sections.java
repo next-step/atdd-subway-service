@@ -1,14 +1,15 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Predicate;
+
+import static java.util.stream.Collectors.toList;
 
 @Embeddable
 public class Sections {
@@ -24,6 +25,11 @@ public class Sections {
     }
 
     public void add(final Section newSection) {
+        if (this.sections.isEmpty()) {
+            sections.add(newSection);
+            return;
+        }
+
         final List<Station> stations = getStations();
 
         final boolean isUpStationExisted = stations.stream().anyMatch(it -> it == newSection.getUpStation());
@@ -36,11 +42,6 @@ public class Sections {
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == newSection.getUpStation()) &&
             stations.stream().noneMatch(it -> it == newSection.getDownStation())) {
             throw new RuntimeException(ERR_TEXT_CAN_NOT_ADD_SECTION);
-        }
-
-        if (stations.isEmpty()) {
-            sections.add(newSection);
-            return;
         }
 
         if (isUpStationExisted) {
@@ -94,38 +95,32 @@ public class Sections {
             return Collections.emptyList();
         }
 
-        final List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
+        final ArrayList<Station> stations = new ArrayList<>();
+        Section currentSection = findFirstSection().orElseThrow(NotFoundException::new);
+        stations.add(currentSection.getUpStation());
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                .filter(it -> it.getUpStation() == finalDownStation)
-                .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        while (currentSection != null) {
+            final Station currDownStation = currentSection.getDownStation();
+            stations.add(currDownStation);
+
+            currentSection = findSection(section -> Objects.equals(section.getUpStation(), currDownStation))
+                .orElse(null);
         }
 
         return stations;
     }
 
-    public Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                .filter(it -> it.getDownStation() == finalDownStation)
-                .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
+    private Optional<Section> findFirstSection() {
+        final List<Station> downStations = this.sections.stream()
+            .map(Section::getDownStation)
+            .collect(toList());
 
-        return downStation;
+        return findSection(section -> !downStations.contains(section.getUpStation()));
+    }
+
+    private Optional<Section> findSection(final Predicate<Section> predicate) {
+        return this.sections.stream()
+            .filter(predicate)
+            .findFirst();
     }
 }
