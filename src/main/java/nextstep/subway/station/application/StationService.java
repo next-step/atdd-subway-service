@@ -47,10 +47,6 @@ public class StationService {
         return stationRepository.findById(id).orElseThrow(() -> new StationEntityNotFoundException("존재하지 않는 역입니다."));
     }
 
-    public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(() -> new StationEntityNotFoundException("존재하지 않는 역입니다."));
-    }
-
     public List<Station> findAllStationsByIds(List<Long> stationIds) {
         return stationRepository.findAllById(stationIds);
     }
