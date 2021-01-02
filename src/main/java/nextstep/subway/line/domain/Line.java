@@ -122,7 +122,7 @@ public class Line extends BaseEntity {
         }
     }
 
-    public void removeLineStation(final Station station) {
+    public void removeSection(final Station station) {
         if (sections.size() <= MIN_LIMIT) {
             throw new RuntimeException();
         }
