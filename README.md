@@ -435,3 +435,26 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ### Step3 피드백 반영 요구사항
 - [X] SafeStationInFavoriteAdapter의 예외 상황이 좀 더 의미가 잘 드러나도록 개선
 - [X] 즐겨찾기 삭제 시도 시 해당 유저가 맞는지 확인하는 절차 필요
+
+## Step4. 요금 조회
+### Todo-list
+- [ ] 거리에 따른 추가 요금 계산
+    - Fee
+        - 요금을 다루는 인터페이스
+        - [X] 해당 거리의 요금을 계산하는 calculate 메서드를 추상화한다.
+    - DefaultFee
+        - Fee의 하부 타입 10km 이내 기본요금을 책임진다.
+        - [X] 언제나 1250원을 반환한다.
+    - LongFee
+        - 10km 초과 ~ 50km 이하 거리의 요금계산을 책임진다.
+        - [ ] 기본료로 1250원을 갖는다.
+        - [ ] 5km 마다 추가요금을 100원을 붙여서 계산한다.
+    - SuperLongFee
+        - 50km 초과의 요금계산을 책임진다.
+        - [ ] 기본료로 2250원을 갖는다.
+        - [ ] 8km 마다 추가요금을 100원 붙여서 계산한다.
+- [ ] 환승노선의 환승 비용에 따른 추가 요금 계산
+- [ ] 이용자 나이에 따른 할인 계산
+- FeeCalculator
+  - 요금을 계산할 수 있다.
+  - [ ] double 타입 거리를 인자로 받아 알맞는 요금을 계산할 수 있다.
