@@ -458,9 +458,10 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - 경로 중 환승한 노선만 찾아내는 책임을 수행한다.
         - [ ] ShortestPath를 인자로 주입받아 LineInPaths를 반환한다.
         - [ ] LineInPaths를 통해 환승한 노선들을 찾아낼 수 있다.
-    - LineInPath
-        - [ ] 경로 상에서 어떤 노선에 속해 있는지를 속성으로 갖는다. (List<Long>)
-    - LineInPaths
+    - LineOfStationInPath
+        - [X] 경로 상에서 어떤 노선에 속해 있는지를 속성으로 갖는다. (List<Long>)
+        - [X] 환승역인지(여러 노선이 겹치는 구간인지) 확인할 수 있다.
+    - LineOfStationInPaths
         - LineInPath 일급 컬렉션
         - [ ] 구성요소 중 두개 이상의 노선이 겹치는 부분을 찾아낼 수 있다.
         - [ ] 각 요소의 다음 요소가 어떤 노선인지 알 수 있다.
