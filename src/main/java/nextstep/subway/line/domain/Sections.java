@@ -46,11 +46,11 @@ public class Sections {
 
         if (isNotAddPossibleStation(section, stations, isUpStationExisted, isDownStationExisted)) return;
 
-        addExistedStation(section, isUpStationExisted, isDownStationExisted);
+        addPossibleStation(section, isUpStationExisted, isDownStationExisted);
     }
 
     public void removeStation(Line line, Station station) {
-        validatePossibleStation(station);
+        validateExistStation(station);
         removeStationExecution(line, station);
     }
 
@@ -113,7 +113,7 @@ public class Sections {
         return false;
     }
 
-    private void addExistedStation(Section section, boolean isUpStationExisted, boolean isDownStationExisted) {
+    private void addPossibleStation(Section section, boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted) {
             addUpStationExisted(section);
             return;
@@ -141,14 +141,13 @@ public class Sections {
         getSections().add(section);
     }
 
-    private void validatePossibleStation(Station station) {
+    private void validateExistStation(Station station) {
         if (getSections().size() <= 1) {
             throw new IllegalArgumentException("구간에서 역을 제거할 수 없습니다.");
         }
-        getStations().stream()
-                .filter(it -> it == station)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("제거 할 역이 노선에 없습니다."));
+        if (getStations().stream().noneMatch(it -> it == station)) {
+            throw new IllegalArgumentException("제거 할 역이 노선에 없습니다.");
+        }
     }
 
     private void removeStationExecution(Line line, Station station) {
