@@ -12,7 +12,7 @@ public class FareCalculator {
 	public FareCalculator(int distance, Integer age, Integer extraFare) {
 		this.distance = distance;
 		this.ageGroup = AgeGroup.findAgeGroup(age);
-		this.distancePolicys = DistanceFarePolicy.findDistanceGroup(distance);
+		this.distancePolicys = DistanceFarePolicy.findDistancePolicies(distance);
 		this.extraFare = extraFare;
 	}
 

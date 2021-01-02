@@ -21,7 +21,7 @@ public enum DistanceFarePolicy {
 	private final Integer min;
 	private final Integer max;
 
-	public static List<DistanceFarePolicy> findDistanceGroup(int distance) {
+	public static List<DistanceFarePolicy> findDistancePolicies(int distance) {
 		return Arrays.stream(DistanceFarePolicy.values())
 			.filter(distanceFarePolicy -> distanceFarePolicy.getMin() < distance)
 			.collect(Collectors.toList());
