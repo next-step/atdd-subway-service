@@ -431,4 +431,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - 제시된 요구사항의 삭제가 ID를 기반으로 삭제가 진행됨
     - Member의 VO 컬렉션으로 Favorite 구현시 Favorite의 ID를 통한 조회, 삭제는 VO의 의미가 퇴색됨
     => Favorite을 엔티티로 간주한다.
-      
+
+### Step3 피드백 반영 요구사항
+- [ ] SafeStationInFavoriteAdapter의 예외 상황이 좀 더 의미가 잘 드러나도록 개선
+- [ ] 즐겨찾기 삭제 시도 시 해당 유저가 맞는지 확인하는 절차 필요
