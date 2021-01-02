@@ -1,13 +1,11 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.path.domain.exceptions.InvalidLineInPathException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -25,14 +23,6 @@ class LineOfStationInPathTest {
         LineOfStationInPath lineOfStationInPath = new LineOfStationInPath(lineIds);
 
         assertThat(lineOfStationInPath).isEqualTo(new LineOfStationInPath(lineIds));
-    }
-
-    @DisplayName("길이가 0인 상태로 만들 수 없다.")
-    @Test
-    void createFailTest() {
-        assertThatThrownBy(() -> new LineOfStationInPath(new ArrayList<>()))
-                .isInstanceOf(InvalidLineInPathException.class)
-                .hasMessage("최소 한개 이상의 노선이 있어야 합니다.");
     }
 
     @DisplayName("서로 다른 노선의 교차점인지 확인할 수 있다.")

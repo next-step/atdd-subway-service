@@ -463,7 +463,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - [X] 환승역인지(여러 노선이 겹치는 구간인지) 확인할 수 있다.
     - LineOfStationInPaths
         - LineInPath 일급 컬렉션
-        - [ ] 구성요소 중 두개 이상의 노선이 겹치는 부분을 찾아낼 수 있다.
+        - [X] 구성요소 중 두개 이상의 노선이 겹치는 부분을 찾아낼 수 있다.
         - [ ] 각 요소의 다음 요소가 어떤 노선인지 알 수 있다.
         - [ ] 노선이 겹치는 요소가 현재 경로에서 어떤 노선으로 환승했는지 알 수 있다.
     - SafeLineAdapter

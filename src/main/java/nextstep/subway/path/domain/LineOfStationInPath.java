@@ -1,7 +1,5 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.path.domain.exceptions.InvalidLineInPathException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -12,14 +10,7 @@ public class LineOfStationInPath {
     private final List<Long> lineIds;
 
     public LineOfStationInPath(List<Long> lineIds) {
-        validate(lineIds);
         this.lineIds = new ArrayList<>(lineIds);
-    }
-
-    private void validate(List<Long> lineIds) {
-        if (lineIds.isEmpty()) {
-            throw new InvalidLineInPathException("최소 한개 이상의 노선이 있어야 합니다.");
-        }
     }
 
     public boolean isMultiLine() {

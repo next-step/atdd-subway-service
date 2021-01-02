@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,5 +27,37 @@ class LineOfStationInPathsTest {
         LineOfStationInPaths lineOfStationInPaths = new LineOfStationInPaths(values);
 
         assertThat(lineOfStationInPaths.findMultiLines()).isEqualTo(expectedValues);
+    }
+
+    @DisplayName("주어진 요소의 다음 요소를 찾아낼 수 있다.")
+    @Test
+    void findNextTest() {
+        List<LineOfStationInPath> values = Arrays.asList(
+                new LineOfStationInPath(Arrays.asList(1L)),
+                new LineOfStationInPath(Arrays.asList(1L)),
+                new LineOfStationInPath(Arrays.asList(1L, 2L)),
+                new LineOfStationInPath(Arrays.asList(2L)
+                ));
+
+        LineOfStationInPaths lineOfStationInPaths = new LineOfStationInPaths(values);
+
+        assertThat(lineOfStationInPaths.findNext(new LineOfStationInPath(Arrays.asList(1L, 2L))))
+                .isEqualTo(new LineOfStationInPath(Arrays.asList(2L)));
+    }
+
+    @DisplayName("마지막 요소의 다음 요소를 탐색 시도 시 빈 껍데기 오브젝트를 반환한다.")
+    @Test
+    void findNextOfLastTest() {
+        List<LineOfStationInPath> values = Arrays.asList(
+                new LineOfStationInPath(Arrays.asList(1L)),
+                new LineOfStationInPath(Arrays.asList(1L)),
+                new LineOfStationInPath(Arrays.asList(1L, 2L)),
+                new LineOfStationInPath(Arrays.asList(2L)
+                ));
+
+        LineOfStationInPaths lineOfStationInPaths = new LineOfStationInPaths(values);
+
+        assertThat(lineOfStationInPaths.findNext(new LineOfStationInPath(Arrays.asList(2L))))
+                .isEqualTo(new LineOfStationInPath(new ArrayList<>()));
     }
 }
