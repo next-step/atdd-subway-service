@@ -465,6 +465,12 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - [ ] 구성요소 중 두개 이상의 노선이 겹치는 부분을 찾아낼 수 있다.
         - [ ] 각 요소의 다음 요소가 어떤 노선인지 알 수 있다.
         - [ ] 노선이 겹치는 요소가 현재 경로에서 어떤 노선으로 환승했는지 알 수 있다.
+    - Station
+        - [ ] Lines를 통해 어떤 라인에 속해있는지 VO 컬렉션으로 관리한다.
+    - Line
+        - StationInLineAdapter
+            - [ ] Line에 Section이 추가되면 추가된 역의 속한 Line 정보를 업데이트한다.
+            - [ ] Line에 Section이 제거되면 제거된 역의 속한 Line 정보를 업데이트한다.
 - [ ] 이용자 나이에 따른 할인 계산
 - FeeCalculator
   - 요금을 계산할 수 있다.
