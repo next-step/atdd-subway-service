@@ -451,8 +451,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - [X] 5km 마다 추가요금을 100원을 붙여서 계산한다.
     - SuperLongFee
         - 50km 초과의 요금계산을 책임진다.
-        - [ ] 기본료로 2050원을 갖는다.
-        - [ ] 8km 마다 추가요금을 100원 붙여서 계산한다.
+        - [X] 기본료로 2050원을 갖는다.
+        - [X] 8km 마다 추가요금을 100원 붙여서 계산한다.
 - [ ] 환승노선의 환승 비용에 따른 추가 요금 계산
 - [ ] 이용자 나이에 따른 할인 계산
 - FeeCalculator
