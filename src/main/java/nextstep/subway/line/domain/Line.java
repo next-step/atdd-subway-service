@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import lombok.Builder;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
@@ -27,6 +28,7 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
+    @Builder
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
