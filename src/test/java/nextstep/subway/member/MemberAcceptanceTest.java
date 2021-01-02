@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_됨;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_실패함;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -48,7 +50,99 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        String email = "test@nextstep.com";
+        String password = "password";
+        String changeEmail = "modified@nextstep.com";
+        Integer age = 30;
 
+        // given
+        회원_등록되어_있음(email, password, age);
+        String token = 로그인_됨(email, password);
+
+        // when
+        ExtractableResponse<Response> getResponse = 내_정보_조회_요청(token);
+        // then
+        내_정보_조회_성공(getResponse, email);
+
+        // when
+        ExtractableResponse<Response> modifyResponse = 내_정보_수정_요청(token, changeEmail, password, age);
+        // then
+        내_정보_수정_성공(modifyResponse);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 회원탈퇴_요청(token);
+        // then
+        회원탈퇴_성공(deleteResponse, email, password);
+    }
+
+    public static ExtractableResponse<Response> 회원탈퇴_요청(String token) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .when().delete("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    @DisplayName("로그인하지 않고 내 정보를 조회한다.")
+    @Test
+    void getMyInfoWithoutLogin() {
+        String email = "test@nextstep.com";
+        String password = "password";
+        Integer age = 32;
+
+        // given
+        회원_등록되어_있음(email, password, age);
+
+        // when
+        ExtractableResponse<Response> response = 내_정보_조회_요청("");
+
+        // then
+        내_정보_조회_실패(response);
+    }
+
+    public static void 내_정보_조회_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    public static void 회원탈퇴_성공(ExtractableResponse<Response> response, String email, String password) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        로그인_실패함(email, password);
+    }
+
+    public static void 내_정보_수정_성공(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static ExtractableResponse<Response> 내_정보_수정_요청(
+            String token, String email, String password, Integer age
+    ) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new MemberRequest(email, password, age))
+                .when().put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_조회_요청(String token) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .when().get("/members/me")
+                .then()
+                .log().all()
+                .extract();
+    }
+
+    public static void 내_정보_조회_성공(ExtractableResponse<Response> response, String email) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        MemberResponse memberResponse = response.as(MemberResponse.class);
+        assertThat(memberResponse.getEmail()).isEqualTo(email);
+    }
+
+    public static void 회원_등록되어_있음(String email, String password, Integer age) {
+        ExtractableResponse<Response> response = 회원_생성을_요청(email, password, age);
+        회원_생성됨(response);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {

@@ -319,3 +319,119 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [X] PathService 구현
     - 도메인 서비스와 도메인 객체를 잘 조합해서 최단 경로를 검색할 수 있도록 한다.
 - [X] Controller와 인수 테스트 구현
+
+## Step3. 인증을 통한 기능 구현
+### 인수테스트 시나리오
+- 기능: 로그인(토큰 발급)
+- [X] 시나리오1: 정상적으로 로그인
+    - given
+        - 회원 등록되어 있음
+    - when
+        - 로그인 요청
+    - then
+        - 로그인 됨
+- [X] 시나리오2: 회원가입도 안하고 로그인부터 시도
+    - when
+        - 로그인 요청
+    - then
+        - 로그인 실패
+- [X] 시나리오3: 실수로 패스워드를 잘못 입력하고 로그인
+    - given
+        - 회원 등록되어 있음
+    - when
+        - 틀린 패스워드로 로그인 요청
+    - then
+        - 로그인 실패
+- [X] 시나리오4: 잘못된 토큰으로 인가 기능 사용
+    - given
+        - 회원 등록되어 있음
+        - and 토큰 발급 받음
+    - when
+        - 잘못된 토큰으로 내 정보 조회 요청
+    - then
+        - 내 정보 조회 실패
+
+- 기능: 로그인 된 상태에서 내 정보를 관리한다.
+- [X] 시나리오1: 로그인한 상태에서 내 정보를 관리한다.
+    - given
+        - 회원가입 됨
+        - and 로그인 됨
+    - when
+        - 내 정보 조회 요청
+    - then
+        - 내 정보 조회 성공
+    - when
+        - 내 정보 수정 요청(이름)
+    - then
+        - 내 정보 수정 성공
+    - when
+        - 회원 탈퇴
+    - then
+        - 회원 탈퇴 성공
+- [X] 시나리오2: 로그인 안한 상태에서 내 정보를 조회한다.
+    - given
+        - 회원가입 됨
+    - when
+        - 내 정보 조회 요청
+    - then
+        - 내 정보 조회 실패
+
+- 기능: 즐겨찾기를 관리한다.
+- 기본 조건
+    - given
+        - 지하철역 등록되어 있음
+        - and 지하철 노선 등록되어 있음
+        - and 지하철 노선에 지하철역 등록되어 있음
+        - and 회원등록되어 있음
+        - and 로그인되어 있음
+- [X] 시나리오1: 사용자가 즐겨찾기를 관리한다.
+    - when
+        - 즐겨찾기 생성 요청
+    - then
+        - 즐겨찾기 생성 성공
+    - when
+        - 즐겨찾기 목록 조회 요청
+    - then
+        - 즐겨찾기 목록 조회 성공
+    - when
+        - 즐겨찾기 삭제 요청
+    - then
+        - 즐겨찾기 삭제 성공
+    
+- [X] 시나리오2: 사용자가 실수로 똑같은 즐겨찾기를 두번 등록한다.
+    - given
+        - 즐겨찾기 등록되어 있음
+    - when
+        - 같은 정보로 즐겨찾기 등록 요청
+    - then
+        - 즐겨찾기 등록 실패
+    
+### Todo-list
+- [X] 인가 기능을 구현하기 위해 CustomResolver 등록
+    - 이미 등록되어 있음
+    
+- [X] Favorite
+    - [X] memberId, sourceId, targetId를 속성으로 갖는다.
+- [X] SafeStationAdapter DIP
+    - 이전 Path에서 사용한 DIP와 거의 유사한 기능 구현
+    - modifiedDate가 추가되는 차이점이 있다.
+- [X] FavoriteService
+    - [X] Favorite에 대한 기본적인 CRUD 가능
+    - [X] 기존에 등록된 favorite 정보와 같은 정보는 또 등록할 수 없다.
+
+### 고민사항
+- Favorite은 엔티티? VO?
+    - Favorite 단일로 존재할 수 있는가? => X
+    - Member에 종속적되어 존재한다. = Member가 없으면 의미가 없다.
+    - Favorite은 별도의 식별자가 반드시 필요한가? => X
+    - MemberId, SourceId, TargetId 중 하나라도 다르면 전혀 다른 오브젝트로 구분이 가능하다.
+    => ~~Member Aggregate에 종속된 VO로 간주.~~
+      
+- 이번 과제에서는 Favorite을 Entity로 취급
+    - 제시된 요구사항의 삭제가 ID를 기반으로 삭제가 진행됨
+    - Member의 VO 컬렉션으로 Favorite 구현시 Favorite의 ID를 통한 조회, 삭제는 VO의 의미가 퇴색됨
+    => Favorite을 엔티티로 간주한다.
+
+### Step3 피드백 반영 요구사항
+- [X] SafeStationInFavoriteAdapter의 예외 상황이 좀 더 의미가 잘 드러나도록 개선
+- [X] 즐겨찾기 삭제 시도 시 해당 유저가 맞는지 확인하는 절차 필요

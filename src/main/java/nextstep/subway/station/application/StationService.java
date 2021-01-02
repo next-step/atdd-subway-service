@@ -1,6 +1,7 @@
 package nextstep.subway.station.application;
 
-import nextstep.subway.station.application.exceptions.EntityNotFoundException;
+import nextstep.subway.exceptions.EntityNotFoundException;
+import nextstep.subway.station.application.exceptions.StationEntityNotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
@@ -43,14 +44,15 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
-    public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("존재하지 않는 역입니다."));
+        return stationRepository.findById(id).orElseThrow(() -> new StationEntityNotFoundException("존재하지 않는 역입니다."));
     }
 
     public List<Station> findAllStationsByIds(List<Long> stationIds) {
         return stationRepository.findAllById(stationIds);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isExistStation(Long stationId) {
+        return stationRepository.existsById(stationId);
     }
 }
