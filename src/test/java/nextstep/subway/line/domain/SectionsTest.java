@@ -34,10 +34,10 @@ class SectionsTest {
     @DisplayName("노선에 여러 구간을 등록하고 항상 정렬 된 목록을 받을 수 있다.")
     public void addManySectionAndAlwaysSortedList() throws Exception {
         // when
-        노선.addSection(잠실, 선릉, 10L);
-        노선.addSection(잠실, 잠실나루, 5L);
-        노선.addSection(선릉, 역삼, 10L);
-        노선.addSection(역삼, 강남, 10L);
+        노선.addLineStation(잠실, 선릉, 10);
+        노선.addLineStation(잠실, 잠실나루, 5);
+        노선.addLineStation(선릉, 역삼, 10);
+        노선.addLineStation(역삼, 강남, 10);
 
         // then
         List<Station> stations = 노선.getStations();
@@ -48,10 +48,10 @@ class SectionsTest {
     @DisplayName("노선에 역을 제거할 수 있다.")
     public void stationRemoveSuccess() throws Exception {
         // given
-        노선.addSection(잠실, 선릉, 10L);
-        노선.addSection(잠실, 잠실나루, 5L);
-        노선.addSection(선릉, 역삼, 10L);
-        노선.addSection(역삼, 강남, 10L);
+        노선.addLineStation(잠실, 선릉, 10);
+        노선.addLineStation(잠실, 잠실나루, 5);
+        노선.addLineStation(선릉, 역삼, 10);
+        노선.addLineStation(역삼, 강남, 10);
 
         // when
         노선.removeStation(잠실나루);
@@ -66,9 +66,9 @@ class SectionsTest {
     @DisplayName("노선에 등록되어 있지 않은 역을 제거할 때 제거할 수 없다.")
     public void canNotRemoveStationInOneSection() throws Exception {
         // given
-        노선.addSection(잠실, 선릉, 10L);
-        노선.addSection(잠실, 잠실나루, 5L);
-        노선.addSection(선릉, 역삼, 10L);
+        노선.addLineStation(잠실, 선릉, 10);
+        노선.addLineStation(잠실, 잠실나루, 5);
+        노선.addLineStation(선릉, 역삼, 10);
 
         // when then
         assertThatIllegalArgumentException()
@@ -80,12 +80,11 @@ class SectionsTest {
     @DisplayName("구간이 하나인 노선에서 마지막 구간을 제거할 때 제거할 수 없다.")
     public void canNotRemoveUnregisteredStation() throws Exception {
         // given
-        노선.addSection(잠실, 선릉, 10L);
+        노선.addLineStation(잠실, 선릉, 10);
 
         // when then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> 노선.removeStation(선릉))
                 .withMessageMatching("구간에서 역을 제거할 수 없습니다.");
     }
-
 }
