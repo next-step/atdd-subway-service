@@ -11,6 +11,8 @@ import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
+    private static final String ERR_TEXT_ALREADY_ADDED_SECTION = "이미 등록된 구간 입니다.";
+    private static final String ERR_TEXT_CAN_NOT_ADD_SECTION = "등록할 수 없는 구간 입니다.";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,7 +21,7 @@ public class Line extends BaseEntity {
     private String color;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    private final List<Section> sections = new ArrayList<>();
 
     public Line() {
     }
@@ -78,6 +80,45 @@ public class Line extends BaseEntity {
         }
 
         return downStation;
+    }
+
+    public void addLineStation(final Station upStation, final Station downStation, final int distance) {
+        final List<Station> stations = getStations();
+
+        final boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
+        final boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException(ERR_TEXT_ALREADY_ADDED_SECTION);
+        }
+
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
+            stations.stream().noneMatch(it -> it == downStation)) {
+            throw new RuntimeException(ERR_TEXT_CAN_NOT_ADD_SECTION);
+        }
+
+        if (stations.isEmpty()) {
+            sections.add(new Section(this, upStation, downStation, distance));
+            return;
+        }
+
+        if (isUpStationExisted) {
+            sections.stream()
+                .filter(it -> it.getUpStation() == upStation)
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(downStation, distance));
+
+            sections.add(new Section(this, upStation, downStation, distance));
+        } else if (isDownStationExisted) {
+            sections.stream()
+                .filter(it -> it.getDownStation() == downStation)
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(upStation, distance));
+
+            sections.add(new Section(this, upStation, downStation, distance));
+        } else {
+            throw new RuntimeException();
+        }
     }
 
     public Long getId() {
