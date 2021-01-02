@@ -86,10 +86,6 @@ public class Sections {
         downLineStation.ifPresent(sections::remove);
     }
 
-    public int size() {
-        return sections.size();
-    }
-
     public List<Station> getStations() {
         if (sections.isEmpty()) {
             return Collections.emptyList();
