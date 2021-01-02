@@ -32,34 +32,41 @@ public class Sections {
 
         final List<Station> stations = getStations();
 
-        final boolean isUpStationExisted = stations.stream().anyMatch(it -> it == newSection.getUpStation());
-        final boolean isDownStationExisted = stations.stream().anyMatch(it -> it == newSection.getDownStation());
+        final boolean isUpStationExisted = isExistStation(station -> station == newSection.getUpStation());
+        final boolean isDownStationExisted = isExistStation(station -> station == newSection.getDownStation());
 
+        validateStations(newSection, stations, isUpStationExisted, isDownStationExisted);
+
+        changeOriginSection(newSection, isUpStationExisted, isDownStationExisted);
+
+        sections.add(newSection);
+    }
+
+    private boolean isExistStation(final Predicate<Station> predicate) {
+        return getStations().stream().anyMatch(predicate);
+    }
+
+    private void validateStations(final Section newSection, final List<Station> stations,
+                                  final boolean isUpStationExisted, final boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
             throw new RuntimeException(ERR_TEXT_ALREADY_ADDED_SECTION);
         }
 
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == newSection.getUpStation()) &&
-            stations.stream().noneMatch(it -> it == newSection.getDownStation())) {
+        if (!stations.contains(newSection.getUpStation()) && !stations.contains(newSection.getDownStation())) {
             throw new RuntimeException(ERR_TEXT_CAN_NOT_ADD_SECTION);
         }
+    }
 
+    private void changeOriginSection(final Section newSection, final boolean isUpStationExisted, final boolean isDownStationExisted) {
         if (isUpStationExisted) {
-            sections.stream()
-                .filter(it -> it.getUpStation() == newSection.getUpStation())
-                .findFirst()
-                .ifPresent(it -> it.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
+            findSection(section -> section.isMatchUpAndUpStation(newSection))
+                .ifPresent(section -> section.updateUpStationByNewSection(newSection));
+            return;
+        }
 
-            sections.add(newSection);
-        } else if (isDownStationExisted) {
-            sections.stream()
-                .filter(it -> it.getDownStation() == newSection.getDownStation())
-                .findFirst()
-                .ifPresent(it -> it.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
-
-            sections.add(newSection);
-        } else {
-            throw new RuntimeException();
+        if (isDownStationExisted) {
+            findSection(section -> section.isMatchDownAndDownStation(newSection))
+                .ifPresent(section -> section.updateDownStationByNewSection(newSection));
         }
     }
 

@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 @Entity
 public class Section {
+    public static final String ERR_TEXT_NEED_TO_SHORT_DISTNACE_THAN_NOW = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -54,19 +55,34 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
+    public void updateUpStationByNewSection(final Section newSection) {
+        final int newDistance = validateNewDistance(newSection);
+
+        this.upStation = newSection.getDownStation();
         this.distance -= newDistance;
     }
 
-    public void updateDownStation(Station station, int newDistance) {
+    private int validateNewDistance(final Section newSection) {
+        final int newDistance = newSection.getDistance();
         if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new RuntimeException(ERR_TEXT_NEED_TO_SHORT_DISTNACE_THAN_NOW);
         }
-        this.downStation = station;
+
+        return newDistance;
+    }
+
+    public void updateDownStationByNewSection(final Section newSection) {
+        final int newDistance = validateNewDistance(newSection);
+
+        this.downStation = newSection.getUpStation();
         this.distance -= newDistance;
+    }
+
+    public boolean isMatchUpAndUpStation(final Section section) {
+        return this.upStation == section.getUpStation();
+    }
+
+    public boolean isMatchDownAndDownStation(final Section section) {
+        return this.downStation == section.getDownStation();
     }
 }
