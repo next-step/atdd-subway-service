@@ -49,12 +49,7 @@ public class LineService {
     }
 
     public LineResponse findLineResponseById(final Long id) {
-        final Line persistLine = findLineById(id);
-        final List<StationResponse> stations = persistLine.getStations().stream()
-            .map(StationResponse::of)
-            .collect(toList());
-
-        return LineResponse.of(persistLine, stations);
+        return LineResponse.of(findLineById(id));
     }
 
     public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
