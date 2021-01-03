@@ -19,9 +19,9 @@ public class PathFinder {
         this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         sections.forEach(section ->
                 this.addGraphVertex(
-                        section.getSource(),
-                        section.getTarget(),
-                        section.getWeight()));
+                        section.getDepartureStation(),
+                        section.getArrivalStation(),
+                        section.getDistance()));
     }
 
     private void addGraphVertex(PathStation source, PathStation target, double weight) {

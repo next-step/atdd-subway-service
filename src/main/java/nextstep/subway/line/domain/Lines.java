@@ -10,9 +10,6 @@ import java.util.stream.Collectors;
 public class Lines {
     private List<Line> lines;
 
-    public Lines() {
-    }
-
     public Lines(Line... lines) {
         this.lines = Arrays.asList(lines);
     }

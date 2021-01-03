@@ -18,14 +18,23 @@ public class PathService {
         this.lineRepository = lineRepository;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findPath(Long departureStationId, Long arrivalStationId) {
+        checkEqualsDepartureArrival(departureStationId, arrivalStationId);
+        Lines lines = findAllLine();
+        Station departureStation = lines.searchStationById(departureStationId);
+        Station arrivalStation = lines.searchStationById(arrivalStationId);
+        PathFinder pathFinder = new PathFinder(lines.allSection());
+        return pathFinder.ofPathResponse(departureStation, arrivalStation);
+    }
+
+    @Transactional(readOnly = true)
+    public Lines findAllLine() {
+        return new Lines(lineRepository.findAll());
+    }
+
+    private void checkEqualsDepartureArrival(Long source, Long target) {
         if (source.equals(target)) {
             throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
         }
-        Lines lines = new Lines(lineRepository.findAll());
-        Station sourceStation = lines.searchStationById(source);
-        Station targetStation = lines.searchStationById(target);
-        PathFinder pathFinder = new PathFinder(lines.allSection());
-        return pathFinder.ofPathResponse(sourceStation, targetStation);
     }
 }

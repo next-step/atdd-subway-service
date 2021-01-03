@@ -3,26 +3,26 @@ package nextstep.subway.path.dto;
 import nextstep.subway.line.domain.Section;
 
 public class PathSection {
-    private PathStation source;
-    private PathStation target;
-    private int weight;
+    private PathStation departureStation;
+    private PathStation arrivalStation;
+    private int distance;
 
-    public PathSection(PathStation source, PathStation target, int weight) {
-        this.source = source;
-        this.target = target;
-        this.weight = weight;
+    public PathSection(PathStation departureStation, PathStation arrivalStation, int distance) {
+        this.departureStation = departureStation;
+        this.arrivalStation = arrivalStation;
+        this.distance = distance;
     }
 
-    public PathStation getSource() {
-        return source;
+    public PathStation getDepartureStation() {
+        return departureStation;
     }
 
-    public PathStation getTarget() {
-        return target;
+    public PathStation getArrivalStation() {
+        return arrivalStation;
     }
 
-    public int getWeight() {
-        return weight;
+    public int getDistance() {
+        return distance;
     }
 
     public static PathSection of(Section section) {
