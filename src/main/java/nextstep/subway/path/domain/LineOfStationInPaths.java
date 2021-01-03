@@ -11,7 +11,7 @@ public class LineOfStationInPaths {
         this.lineOfStationInPaths = lineOfStationInPaths;
     }
 
-    public List<TransferCandidates> findTransferCandidates() {
+    List<TransferCandidates> findTransferCandidates() {
         List<LineOfStationInPath> multiLines = this.findMultiLines();
 
         return multiLines.stream().map(it -> {

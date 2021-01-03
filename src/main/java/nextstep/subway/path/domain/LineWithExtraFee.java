@@ -28,4 +28,12 @@ public class LineWithExtraFee {
     public int hashCode() {
         return Objects.hash(lineId, transferExtraFee);
     }
+
+    @Override
+    public String toString() {
+        return "LineWithExtraFee{" +
+                "lineId=" + lineId +
+                ", transferExtraFee=" + transferExtraFee +
+                '}';
+    }
 }

@@ -472,8 +472,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - LineWithExtraFee
         - 노선 ID와 노선의 환승금을 인자로 갖는 오브젝트
     - TransferCandidates
-        - [ ] LineWithExtraFee 일급 컬렉션
-        - [ ] 환승 노선을 확정할 수 있다.
+        - [X] LineWithExtraFee 일급 컬렉션
+        - [X] 환승 노선을 확정할 수 있다.
     - SafeLineAdapter
         - [ ] 역 ID 컬렉션을 인자로 전달해서 어느 역에 속했는지를 불러올 수 있다.
 - [ ] 이용자 나이에 따른 할인 계산
