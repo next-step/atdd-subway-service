@@ -8,7 +8,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,45 +24,46 @@ public class Sections {
 
     public List<Station> getOrderedStations() {
         if (sections.isEmpty()) {
-            return Arrays.asList();
+            return new ArrayList<>();
         }
-
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        addOrderedStations(stations, downStation);
-
+        Station upStation = findUpStation();
+        addOrderedStations(stations, upStation);
         return stations;
     }
 
     private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
+        return sections.stream()
+                .map(Section::getUpStation)
+                .filter(this::isUpStation)
+                .findFirst()
+                .orElseThrow(IllegalStateException::new);
     }
 
-    private void addOrderedStations(final List<Station> stations, Station downStation) {
-        stations.add(downStation);
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
+    private boolean isUpStation(final Station station) {
+        return sections.stream()
+                .noneMatch(section -> station == section.getDownStation());
+    }
+
+    private void addOrderedStations(final List<Station> stations, Station baseStation) {
+        stations.add(baseStation);
+        List<Section> targets = new ArrayList<>(sections);
+        Station next = baseStation;
+        while (targets.size() > 0) {
+            Section section = nextTarget(targets, next);
+            Station downStation = section.getDownStation();
             stations.add(downStation);
+            next = downStation;
         }
+    }
+
+    private Section nextTarget(final List<Section> targets, final Station next) {
+        Section section = targets.stream()
+                .filter(target -> next == target.getUpStation())
+                .findFirst()
+                .orElseThrow(IllegalStateException::new);
+        targets.remove(section);
+        return section;
     }
 
     public void add(final Section section) {
