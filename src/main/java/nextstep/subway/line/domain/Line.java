@@ -58,20 +58,15 @@ public class Line extends BaseEntity {
     }
 
     public List<Section> getSections() {
-        return sections.getSections();
+        return this.sections.getSections();
     }
 
     public List<Station> getStations() {
         return this.sections.getStations();
     }
 
-    public void setSection(List<Section> sections) {
-        this.sections = new LineSections(sections);
-    }
-
     public void addSection(Station upStation, Station downStation, int distance) {
-        Section newSection = new Section(this, upStation, downStation, distance);
-        this.sections.addSection(newSection);
+        this.sections.addSection(new Section(this, upStation, downStation, distance));
     }
 
     public void removeStation(Station station) {
