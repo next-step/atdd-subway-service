@@ -31,7 +31,7 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance(), BigDecimal.ZERO));
+        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance(), request.getExtraFee()));
         List<StationResponse> stations = persistLine.getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());

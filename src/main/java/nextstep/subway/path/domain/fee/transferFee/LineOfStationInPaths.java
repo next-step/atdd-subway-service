@@ -16,14 +16,14 @@ public class LineOfStationInPaths {
 
     public TransferLines findTransferLines() {
         if (isNotTransferred()) {
-            return new TransferLines(new ArrayList<>());
+            return TransferLines.of(new ArrayList<>(), isLastMulti());
         }
 
         List<LineWithExtraFee> transferLines = this.findTransferCandidatesOfPath().stream()
                 .map(TransferCandidates::confirmTransferLine)
                 .collect(Collectors.toList());
 
-        return new TransferLines(transferLines);
+        return TransferLines.of(transferLines, isLastMulti());
     }
 
     List<TransferCandidates> findTransferCandidatesOfPath() {
@@ -31,7 +31,7 @@ public class LineOfStationInPaths {
 
         return multiLines.stream().map(it -> {
             LineOfStationInPath next = findNext(it);
-            return next.findTransferCandidates(it);
+            return it.findTransferCandidates(next);
         }).filter(TransferCandidates::isValidCandidate).collect(Collectors.toList());
     }
 
@@ -65,6 +65,10 @@ public class LineOfStationInPaths {
 
     private boolean isNotTransferred() {
         return this.findMultiLines().size() == TRANSFER_BOUNDARY;
+    }
+
+    private boolean isLastMulti() {
+        return lineOfStationInPaths.get(size() - 1).isMultiLine();
     }
 
     @Override

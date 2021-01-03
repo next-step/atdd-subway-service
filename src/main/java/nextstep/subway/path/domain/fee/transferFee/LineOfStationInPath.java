@@ -24,10 +24,6 @@ public class LineOfStationInPath {
         return new TransferCandidates(transferCandidates);
     }
 
-    public TransferCandidates findFirstTransferCandidate() {
-        return new TransferCandidates(Collections.singletonList(lineWithExtraFees.get(0)));
-    }
-
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;

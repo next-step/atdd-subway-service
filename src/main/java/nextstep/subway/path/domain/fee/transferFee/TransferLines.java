@@ -3,6 +3,7 @@ package nextstep.subway.path.domain.fee.transferFee;
 import nextstep.subway.path.domain.exceptions.CannotFindTransferFeeException;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -12,8 +13,15 @@ public class TransferLines {
 
     private final List<LineWithExtraFee> transferLines;
 
-    public TransferLines(final List<LineWithExtraFee> transferLines) {
+    private TransferLines(List<LineWithExtraFee> transferLines) {
         this.transferLines = transferLines;
+    }
+
+    public static TransferLines of(List<LineWithExtraFee> transferLines, boolean isLastMulti) {
+        if (isLastMulti && transferLines.size() == 1) {
+            return new TransferLines(new ArrayList<>());
+        }
+        return new TransferLines(transferLines);
     }
 
     public BigDecimal calculateTransferFee() {
@@ -41,5 +49,12 @@ public class TransferLines {
     @Override
     public int hashCode() {
         return Objects.hash(transferLines);
+    }
+
+    @Override
+    public String toString() {
+        return "TransferLines{" +
+                "transferLines=" + transferLines +
+                '}';
     }
 }

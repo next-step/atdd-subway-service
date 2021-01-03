@@ -124,9 +124,23 @@ class LineOfStationInPathsTest {
 
         LineOfStationInPaths lineOfStationInPaths = new LineOfStationInPaths(values);
 
-        assertThat(lineOfStationInPaths.findTransferLines()).isEqualTo(new TransferLines(
-                Arrays.asList(lineWithExtraFee2, lineWithExtraFee3, lineWithExtraFee5)
+        assertThat(lineOfStationInPaths.findTransferLines()).isEqualTo(TransferLines.of(
+                Arrays.asList(lineWithExtraFee2, lineWithExtraFee3, lineWithExtraFee5), true
         ));
+    }
+
+    @DisplayName("경로 중 환승한 노선들의 정보를 알아낼 수 있다.")
+    @Test
+    void findTransferLinesTest2() {
+        List<LineOfStationInPath> values = Arrays.asList(
+                new LineOfStationInPath(Arrays.asList(lineWithExtraFee1, lineWithExtraFee1)),
+                new LineOfStationInPath(Arrays.asList(lineWithExtraFee1)),
+                new LineOfStationInPath(Arrays.asList(lineWithExtraFee1, lineWithExtraFee3))
+        );
+
+        LineOfStationInPaths lineOfStationInPaths = new LineOfStationInPaths(values);
+
+        assertThat(lineOfStationInPaths.findTransferLines()).isEqualTo(TransferLines.of(new ArrayList<>(), true));
     }
 
     @DisplayName("환승하지 않은 경우 빈 환승 노선을 찾는다.")
@@ -140,6 +154,6 @@ class LineOfStationInPathsTest {
 
         LineOfStationInPaths lineOfStationInPaths = new LineOfStationInPaths(values);
 
-        assertThat(lineOfStationInPaths.findTransferLines()).isEqualTo(new TransferLines(new ArrayList<>()));
+        assertThat(lineOfStationInPaths.findTransferLines()).isEqualTo(TransferLines.of(new ArrayList<>(), false));
     }
 }
