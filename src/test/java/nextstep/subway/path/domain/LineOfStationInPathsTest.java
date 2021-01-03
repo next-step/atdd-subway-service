@@ -100,9 +100,10 @@ class LineOfStationInPathsTest {
 
         LineOfStationInPaths lineOfStationInPaths = new LineOfStationInPaths(values);
 
-        assertThat(lineOfStationInPaths.findTransferLine()).isEqualTo(Arrays.asList(
-                Arrays.asList(lineWithExtraFee2), Arrays.asList(lineWithExtraFee3, lineWithExtraFee4),
-                Arrays.asList(lineWithExtraFee5), new ArrayList<>()
+        assertThat(lineOfStationInPaths.findTransferCandidates()).isEqualTo(Arrays.asList(
+                new TransferCandidates(Collections.singletonList(lineWithExtraFee2)),
+                new TransferCandidates(Arrays.asList(lineWithExtraFee3, lineWithExtraFee4)),
+                new TransferCandidates(Collections.singletonList(lineWithExtraFee5))
         ));
     }
 }

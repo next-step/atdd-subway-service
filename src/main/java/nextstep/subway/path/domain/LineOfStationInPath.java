@@ -1,9 +1,6 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.path.domain.exceptions.CannotFindMinExtraFeeLineException;
-
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -21,22 +18,12 @@ public class LineOfStationInPath {
         return this.lineWithExtraFees.size() > MULTI_LINE_BOUNDARY;
     }
 
-//    public LineWithExtraFee findTransferLine(LineOfStationInPath that) {
-//        return getSameLines(that).stream()
-//                .min(Comparator.comparing(LineWithExtraFee::getTransferExtraFee))
-//                .orElseThrow(() -> new CannotFindMinExtraFeeLineException("환승비가 제일 적은 노선을 찾을 수 없습니다."));
-//    }
-
-    public List<LineWithExtraFee> findTransferCandidates(LineOfStationInPath that) {
-        return that.lineWithExtraFees.stream()
+    public TransferCandidates findTransferCandidates(LineOfStationInPath that) {
+        List<LineWithExtraFee> transferCandidates = that.lineWithExtraFees.stream()
                 .filter(this.lineWithExtraFees::contains)
                 .collect(Collectors.toList());
-    }
 
-    public LineWithExtraFee findMinOfExtraFee() {
-        return lineWithExtraFees.stream()
-                .min(Comparator.comparing(LineWithExtraFee::getTransferExtraFee))
-                .orElseThrow(() -> new CannotFindMinExtraFeeLineException("환승비가 제일 적은 노선을 찾을 수 없습니다."));
+        return new TransferCandidates(transferCandidates);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package nextstep.subway.path.domain;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,13 +11,13 @@ public class LineOfStationInPaths {
         this.lineOfStationInPaths = lineOfStationInPaths;
     }
 
-    public List<List<LineWithExtraFee>> findTransferLine() {
+    public List<TransferCandidates> findTransferCandidates() {
         List<LineOfStationInPath> multiLines = this.findMultiLines();
 
         return multiLines.stream().map(it -> {
             LineOfStationInPath next = findNext(it);
             return next.findTransferCandidates(it);
-        }).collect(Collectors.toList());
+        }).filter(TransferCandidates::isValidCandidate).collect(Collectors.toList());
     }
 
     LineOfStationInPath findNext(LineOfStationInPath lineOfStationInPath) {
