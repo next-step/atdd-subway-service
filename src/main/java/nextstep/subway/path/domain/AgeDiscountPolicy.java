@@ -1,6 +1,6 @@
 package nextstep.subway.path.domain;
 
-public enum AgeDiscounter {
+public enum AgeDiscountPolicy {
     NONE,
     TEEN,
     KID;
@@ -10,13 +10,13 @@ public enum AgeDiscounter {
     private static final Integer MIN_TEEN = 12;
     private static final Integer MAX_TEEN = 19;
 
-    public static AgeDiscounter find(Integer age) {
+    public static AgeDiscountPolicy find(Integer age) {
         if (age > MIN_KID && age < MAX_KID) {
-            return AgeDiscounter.KID;
+            return AgeDiscountPolicy.KID;
         }
         if (age > MIN_TEEN && age < MAX_TEEN) {
-            return AgeDiscounter.TEEN;
+            return AgeDiscountPolicy.TEEN;
         }
-        return AgeDiscounter.NONE;
+        return AgeDiscountPolicy.NONE;
     }
 }
