@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,13 +53,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음(
-                new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10))
+                new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, BigDecimal.ZERO))
                 .as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(
-                new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10))
+                new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, BigDecimal.ZERO))
                 .as(LineResponse.class);
         삼호선 = 지하철_노선_등록되어_있음(
-                new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 10))
+                new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 10, BigDecimal.ZERO))
                 .as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
@@ -141,7 +142,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         StationResponse 용인역 = 지하철역_등록되어_있음("용인역").as(StationResponse.class);
         StationResponse 에버랜드역 = 지하철역_등록되어_있음("에버랜드역").as(StationResponse.class);
         지하철_노선_등록되어_있음(
-                new LineRequest("경강선", "bg-red-600", 용인역.getId(), 에버랜드역.getId(), 10))
+                new LineRequest("경강선", "bg-red-600", 용인역.getId(), 에버랜드역.getId(), 10, BigDecimal.ZERO))
                 .as(LineResponse.class);
 
         return 용인역;

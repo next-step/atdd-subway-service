@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class SectionsTest {
 
     @BeforeEach
     void setup() {
-        line = new Line("2호선", "초록색");
+        line = new Line("2호선", "초록색", BigDecimal.ZERO);
         station1 = new Station("강남역");
         station2 = new Station("서초역");
         station3 = new Station("잠실역");

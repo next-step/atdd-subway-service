@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -38,15 +39,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
+        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10, BigDecimal.ZERO);
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15, BigDecimal.ZERO);
     }
 
     @DisplayName("시나리오1: 지하철 노선을 관리한다.")
     @Test
     void manageLineTest() {
         LineRequest changeRequest = new LineRequest("changedName", lineRequest1.getColor(),
-                lineRequest1.getUpStationId(), lineRequest1.getDownStationId(), lineRequest1.getDistance());
+                lineRequest1.getUpStationId(), lineRequest1.getDownStationId(), lineRequest1.getDistance(), lineRequest1.getExtraFee());
 
         // when
         ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(lineRequest1);
@@ -103,7 +104,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("시나리오4: 실수로 종점역을 빠뜨린 채로 지하철 노선을 등록 요청한다.")
     @Test
     void addLineWithoutEndStations() {
-        LineRequest mistakeRequest = new LineRequest("종점역이 없는 노선", "종점역이 없는 색", null, null, 10);
+        LineRequest mistakeRequest = new LineRequest("종점역이 없는 노선", "종점역이 없는 색", null, null, 10, BigDecimal.ZERO);
 
         // when
         ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(mistakeRequest);
@@ -122,7 +123,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_역_목록에_포함되지_않음(notExistStationId1, notExistStationId2);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(new LineRequest("새노선", "좋은색", notExistStationId1, notExistStationId2, 3));
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(new LineRequest("새노선", "좋은색", notExistStationId1, notExistStationId2, 3, BigDecimal.ZERO));
 
         // then
         지하철_노선_생성_실패됨(response);

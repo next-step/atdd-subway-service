@@ -6,6 +6,7 @@ import nextstep.subway.line.domain.exceptions.InvalidRemoveSectionException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.*;
 
 @Entity
@@ -19,6 +20,7 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    private BigDecimal extraFee;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -26,9 +28,10 @@ public class Line extends BaseEntity {
     public Line() {
     }
 
-    public Line(String name, String color) {
+    public Line(String name, String color, BigDecimal extraFee) {
         this.name = name;
         this.color = color;
+        this.extraFee = extraFee;
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {

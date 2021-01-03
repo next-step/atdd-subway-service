@@ -10,6 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.math.BigDecimal;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,7 +50,7 @@ class LineTest {
     void addSectionToEmptyLine() {
         String name = "2호선";
         String color = "초록색";
-        Line line = new Line(name, color);
+        Line line = new Line(name, color, BigDecimal.ZERO);
 
         boolean result = line.addSection(StationFixtures.삼성역, StationFixtures.잠실역, 5);
 

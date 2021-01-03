@@ -73,7 +73,7 @@ public class LineService {
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("해당 라인이 존재하지 않습니다."));
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor(), lineUpdateRequest.getExtraFee()));
     }
 
     public void deleteLineById(Long id) {

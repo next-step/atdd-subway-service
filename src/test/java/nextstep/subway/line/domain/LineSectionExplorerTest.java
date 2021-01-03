@@ -6,6 +6,7 @@ import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +34,7 @@ class LineSectionExplorerTest {
     void findFirstStationFailTest() {
         String name = "2호선";
         String color = "초록색";
-        Line line = new Line(name, color);
+        Line line = new Line(name, color, BigDecimal.ZERO);
 
         LineSectionExplorer lineSectionExplorer = new LineSectionExplorer(line.getSections());
 
@@ -47,7 +48,7 @@ class LineSectionExplorerTest {
     void getStationsTest() {
         String name = "2호선";
         String color = "초록색";
-        Line line = new Line(name, color);
+        Line line = new Line(name, color, BigDecimal.ZERO);
         List<Section> sections = Arrays.asList(
                 new Section(line, StationFixtures.역삼역, StationFixtures.삼성역, 5),
                 new Section(line, StationFixtures.삼성역, StationFixtures.잠실역, 5),
@@ -77,7 +78,7 @@ class LineSectionExplorerTest {
     void findNextSectionTest() {
         String name = "2호선";
         String color = "초록색";
-        Line line = new Line(name, color);
+        Line line = new Line(name, color, BigDecimal.ZERO);
         Section firstSection = new Section(line, StationFixtures.강남역, StationFixtures.역삼역, 5);
         Section secondSection = new Section(line, StationFixtures.역삼역, StationFixtures.삼성역, 5);
         List<Section> sections = Arrays.asList(

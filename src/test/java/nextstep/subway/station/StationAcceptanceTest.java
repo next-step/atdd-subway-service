@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -70,7 +71,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         // given
         StationResponse stationResponse1 = 지하철역_생성_요청(강남역).as(StationResponse.class);
         StationResponse stationResponse2 = 지하철역_생성_요청(역삼역).as(StationResponse.class);
-        지하철_노선_등록되어_있음(new LineRequest("2호선", "초록색", stationResponse1.getId(), stationResponse2.getId(), 5)).as(LineResponse.class);
+        지하철_노선_등록되어_있음(new LineRequest("2호선", "초록색", stationResponse1.getId(), stationResponse2.getId(), 5, BigDecimal.ZERO)).as(LineResponse.class);
 
         // when
         ExtractableResponse<Response> response = 지하철역_제거_요청(stationResponse1.getId());
