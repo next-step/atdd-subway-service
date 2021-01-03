@@ -1,7 +1,6 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.path.domain.adapters.SafeLineAdapter;
-import nextstep.subway.path.domain.fee.distanceFee.DistanceFee;
 import nextstep.subway.path.domain.fee.transferFee.LineOfStationInPath;
 import nextstep.subway.path.domain.fee.transferFee.LineOfStationInPaths;
 import nextstep.subway.path.domain.fee.transferFee.LineWithExtraFee;

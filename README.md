@@ -438,7 +438,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ## Step4. 요금 조회
 ### Todo-list
-- [ ] 거리에 따른 추가 요금 계산
+- [X] 거리에 따른 추가 요금 계산
     - Fee
         - 요금을 다루는 인터페이스
         - [X] 해당 거리의 요금을 계산하는 calculate 메서드를 추상화한다.
@@ -453,7 +453,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - 50km 초과의 요금계산을 책임진다.
         - [X] 기본료로 2050원을 갖는다.
         - [X] 8km 마다 추가요금을 100원 붙여서 계산한다.
-- [ ] 환승노선의 환승 비용에 따른 추가 요금 계산
+- [X] 환승노선의 환승 비용에 따른 추가 요금 계산
     - LineOfStationInPath
         ~~- [X] 경로 상에서 어떤 노선에 속해 있는지를 속성으로 갖는다. (List<Long>)~~
         - [X] 환승역인지(여러 노선이 겹치는 구간인지) 확인할 수 있다.
@@ -480,6 +480,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - SafeLineAdapter
         - [X] 역 ID 컬렉션을 인자로 전달해서 LineOfStationInPaths를 반환받을 수 있다.
 - [ ] 이용자 나이에 따른 할인 계산
-- FeeCalculator
-  - 요금을 계산할 수 있다. (도메인 서비스)
-  - [ ] double 타입 거리를 인자로 받아 알맞는 요금을 계산할 수 있다.
+    - [ ] 로그인 시 비로그인 유저, 로그인한 유저를 구분할 수 있도록 기능 개선
+    - AgeDiscounter
+        - 나이에 따른 할인율이 적용된 금액을 계산해주는 Enum
+        - [ ] 비회원과 성인은 할인되지 않는다.
+        - [ ] 청소년은 전체 금액의 350원을 제외하고 그 금액에서 20%를 할인해준다.
+        - [ ] 어린이는 전체 금액의 350원을 제외하고 그 금액에서 50%를 추가로 할인해준다.
