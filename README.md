@@ -476,8 +476,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - [X] 환승 노선을 확정할 수 있다.
     - TransferLines
         - LineWithExtraFee 일급 컬렉션
-        - [ ] 환승한 노선 정보들을 찾아낼 수 있다.
-        - [ ] 환승한 노선들의 최종 추가금을 구할 수 있다.
+        - [X] 환승한 노선들의 최종 추가금을 구할 수 있다.
+            - [X] 환승한 노선이 없는 경우 추가금은 없다.
+            - [X] 환승한 노선이 여러개인 경우 가장 비싼 추가금만 부과된다.
     - SafeLineAdapter
         - [ ] 역 ID 컬렉션을 인자로 전달해서 어느 역에 속했는지를 불러올 수 있다.
 - [ ] 이용자 나이에 따른 할인 계산

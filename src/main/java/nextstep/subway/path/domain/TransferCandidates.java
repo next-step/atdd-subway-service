@@ -1,6 +1,6 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.path.domain.exceptions.CannotFindMinExtraFeeLineException;
+import nextstep.subway.path.domain.exceptions.CannotFindTransferFeeException;
 
 import java.util.Comparator;
 import java.util.List;
@@ -22,7 +22,7 @@ public class TransferCandidates {
     public LineWithExtraFee confirmTransferLine() {
         return this.transferCandidates.stream()
                 .min(Comparator.comparing(LineWithExtraFee::getTransferExtraFee))
-                .orElseThrow(() -> new CannotFindMinExtraFeeLineException("최소 금액을 찾을 수 없습니다."));
+                .orElseThrow(() -> new CannotFindTransferFeeException("최소 금액을 찾을 수 없습니다."));
     }
 
     @Override
