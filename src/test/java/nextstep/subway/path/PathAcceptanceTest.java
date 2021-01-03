@@ -15,13 +15,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_됨;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_등록되어_있음;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,6 +36,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private String 청소년;
+    private String 아동;
+    private String 성인;
 
     /**
      * 교대역    --- *2호선*(10m) ---   강남역
@@ -53,33 +57,55 @@ public class PathAcceptanceTest extends AcceptanceTest {
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음(
-                new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, BigDecimal.ZERO))
+                new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, BigDecimal.valueOf(100)))
                 .as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(
-                new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, BigDecimal.ZERO))
+                new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, BigDecimal.valueOf(200)))
                 .as(LineResponse.class);
         삼호선 = 지하철_노선_등록되어_있음(
-                new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 10, BigDecimal.ZERO))
+                new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 10, BigDecimal.valueOf(300)))
                 .as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+
+        String teenEmail = "test@nextstep.com";
+        String teenPassword = "password";
+        Integer teenAge = 15;
+
+        String kidEmail = "test2@nextstep.com";
+        String kidPassword = "password";
+        Integer kidAge = 8;
+
+        String adultEmail = "test3@nextstep.com";
+        String adultPassword = "password";
+        Integer adultAge = 32;
+
+        회원_등록되어_있음(teenEmail, teenPassword, teenAge);
+        청소년 = 로그인_됨(teenEmail, teenPassword);
+
+        회원_등록되어_있음(kidEmail, kidPassword, kidAge);
+        아동 = 로그인_됨(kidEmail, kidPassword);
+
+        회원_등록되어_있음(adultEmail, adultPassword, adultAge);
+        성인 = 로그인_됨(adultEmail, adultPassword);
     }
 
     @DisplayName("시나리오1: 최단 경로를 조회할 수 있다.")
     @Test
     void findShortestPathTest() {
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 양재역, 청소년);
 
         // then
         최단_경로_조회_성공(response, Arrays.asList(교대역, 남부터미널역, 양재역));
+        요금이_정상적으로_계산됨(response, BigDecimal.valueOf(720));
     }
 
     @DisplayName("시나리오2: 출발역과 도착역이 같은 최단 경로 조회")
     @Test
     void findShortestPathFailBySameSourceDestinationTest() {
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 교대역);
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 교대역, 청소년);
 
         // then
         최단_경로_조회_실패(response);
@@ -92,7 +118,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         StationResponse 공사중인역 = 지하철역_등록되어_있음("공사중인역").as(StationResponse.class);
 
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 공사중인역);
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 공사중인역, 청소년);
 
         // then
         최단_경로_조회_실패(response);
@@ -112,10 +138,37 @@ public class PathAcceptanceTest extends AcceptanceTest {
         StationResponse 못가는역 = 기존_노선과_접점이_없는_지하철_노선_등록됨();
 
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 못가는역);
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 못가는역, 청소년);
 
         // then
         최단_경로_조회_실패(response);
+    }
+
+    @DisplayName("시나리오5: 연령별로 요금 할인이 다르게 적용된다.")
+    @Test
+    void discountByAgeTest() {
+        // when
+        ExtractableResponse<Response> adultResponse = 최단_경로_조회_요청(교대역, 양재역, 성인);
+        // then
+        최단_경로_조회_성공(adultResponse, Arrays.asList(교대역, 남부터미널역, 양재역));
+        요금이_정상적으로_계산됨(adultResponse, BigDecimal.valueOf(1250));
+
+        // when
+        ExtractableResponse<Response> teenResponse = 최단_경로_조회_요청(교대역, 양재역, 청소년);
+        // then
+        최단_경로_조회_성공(teenResponse, Arrays.asList(교대역, 남부터미널역, 양재역));
+        요금이_정상적으로_계산됨(teenResponse, BigDecimal.valueOf(720));
+
+        // when
+        ExtractableResponse<Response> kidResponse = 최단_경로_조회_요청(교대역, 양재역, 아동);
+        // then
+        최단_경로_조회_성공(kidResponse, Arrays.asList(교대역, 남부터미널역, 양재역));
+        요금이_정상적으로_계산됨(kidResponse, BigDecimal.valueOf(450));
+    }
+
+    public static void 요금이_정상적으로_계산됨(ExtractableResponse<Response> response, BigDecimal expected) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFee()).isEqualTo(expected);
     }
 
     public static void 최단_경로_조회_성공(
@@ -148,8 +201,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return 용인역;
     }
 
-    public static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source, StationResponse destination) {
+    public static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source, StationResponse destination, String token) {
         return RestAssured.given().log().all()
+                .auth().oauth2(token)
                 .when().get("/paths?source=" + source.getId() + "&target=" + destination.getId())
                 .then().log().all()
                 .extract();

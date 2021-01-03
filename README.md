@@ -485,3 +485,10 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - [X] 성인은 할인되지 않는다.
         - [X] 청소년은 전체 금액의 350원을 제외하고 그 금액에서 20%를 할인해준다.
         - [X] 어린이는 전체 금액의 350원을 제외하고 그 금액에서 50%를 추가로 할인해준다.
+    
+### 경로탐색 인수테스트 수정
+- [X] 기본 조건(Background)에 조건 추가
+    - given
+        - and 회원가입됨
+        - and 로그인 됨
+- [X] 경로 탐색 시 로그인 토큰 전달
