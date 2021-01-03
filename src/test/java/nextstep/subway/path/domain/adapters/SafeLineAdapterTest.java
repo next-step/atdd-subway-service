@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,8 +34,8 @@ class SafeLineAdapterTest {
     @Test
     void getAllStationIdsTest() {
         List<Line> mockLines = Arrays.asList(
-                new Line("2호선", "초록색", StationFixtures.강남역, StationFixtures.삼성역, 5),
-                new Line("3호선", "퍼런색", StationFixtures.역삼역, StationFixtures.잠실역, 5)
+                new Line("2호선", "초록색", StationFixtures.강남역, StationFixtures.삼성역, 5, BigDecimal.ZERO),
+                new Line("3호선", "퍼런색", StationFixtures.역삼역, StationFixtures.잠실역, 5, BigDecimal.ZERO)
         );
         given(lineService.findAllLines()).willReturn(mockLines);
 
@@ -47,8 +48,8 @@ class SafeLineAdapterTest {
     @Test
     void getAllSafeSectionInfosTest() {
         List<Line> mockLines = Arrays.asList(
-                new Line("2호선", "초록색", StationFixtures.강남역, StationFixtures.삼성역, 5),
-                new Line("3호선", "퍼런색", StationFixtures.역삼역, StationFixtures.잠실역, 5)
+                new Line("2호선", "초록색", StationFixtures.강남역, StationFixtures.삼성역, 5, BigDecimal.ZERO),
+                new Line("3호선", "퍼런색", StationFixtures.역삼역, StationFixtures.잠실역, 5, BigDecimal.ZERO)
         );
         given(lineService.findAllLines()).willReturn(mockLines);
 
@@ -58,5 +59,11 @@ class SafeLineAdapterTest {
                 new SafeSectionInfo(1L, 4L, 5),
                 new SafeSectionInfo(2L, 3L, 5)
         );
+    }
+
+    @DisplayName("역 ID 목록으로부터 LineOfStationInPaths를 찾아낼 수 있다.")
+    @Test
+    void getLineOfStationInPathsTest() {
+
     }
 }

@@ -482,7 +482,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - Line
         - [X] 환승 추가금 항목 추가
     - SafeLineAdapter
-        - [ ] 역 ID 컬렉션을 인자로 전달해서 어느 역에 속했는지를 불러올 수 있다.
+        - [ ] 역 ID 컬렉션을 인자로 전달해서 LineOfStationInPaths를 반환받을 수 있다.
 - [ ] 이용자 나이에 따른 할인 계산
 - FeeCalculator
   - 요금을 계산할 수 있다.

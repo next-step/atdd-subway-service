@@ -25,7 +25,7 @@ class LineTest {
         Station upStation = StationFixtures.강남역;
         Station downStation = StationFixtures.역삼역;
 
-        Line line = new Line(name, color, upStation, downStation, 5);
+        Line line = new Line(name, color, upStation, downStation, 5, BigDecimal.ZERO);
 
         assertThatThrownBy(() -> line.addSection(upStation, downStation, 10))
                 .isInstanceOf(InvalidAddSectionException.class)
@@ -38,7 +38,7 @@ class LineTest {
         String name = "2호선";
         String color = "초록색";
 
-        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 5);
+        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 5, BigDecimal.ZERO);
 
         assertThatThrownBy(() -> line.addSection(StationFixtures.삼성역, StationFixtures.잠실역, 10))
                 .isInstanceOf(InvalidAddSectionException.class)
@@ -63,7 +63,7 @@ class LineTest {
     void addSectionTest(Station upStation, Station downStation, int distance) {
         String name = "2호선";
         String color = "초록색";
-        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 6);
+        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 6, BigDecimal.ZERO);
 
         boolean result = line.addSection(upStation, downStation, distance);
 
@@ -83,7 +83,7 @@ class LineTest {
     void removeSectionFailWhenLineHasJustOneSectionTest() {
         String name = "2호선";
         String color = "초록색";
-        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 5);
+        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 5, BigDecimal.ZERO);
 
         assertThatThrownBy(() -> line.removeSection(StationFixtures.강남역))
                 .isInstanceOf(InvalidRemoveSectionException.class)
@@ -96,7 +96,7 @@ class LineTest {
     void removeSectionTest(Station removeTarget) {
         String name = "2호선";
         String color = "초록색";
-        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 5);
+        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 5, BigDecimal.ZERO);
         line.addSection(StationFixtures.역삼역, StationFixtures.삼성역, 5);
 
         boolean result = line.removeSection(removeTarget);

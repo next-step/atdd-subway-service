@@ -3,6 +3,7 @@ package nextstep.subway.path.domain.adapters;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.SafeSectionInfo;
+import nextstep.subway.path.domain.fee.transferFee.LineOfStationInPaths;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Component;
 
@@ -36,5 +37,10 @@ public class SafeLineAdapter implements SafeLine {
                 .map(it -> new SafeSectionInfo(
                         it.getUpStation().getId(), it.getDownStation().getId(), it.getDistance().value()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public LineOfStationInPaths getLineOfStationInPaths(List<Long> stationIds) {
+        return null;
     }
 }

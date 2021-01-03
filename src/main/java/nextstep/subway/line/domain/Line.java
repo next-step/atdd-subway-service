@@ -34,9 +34,10 @@ public class Line extends BaseEntity {
         this.extraFee = extraFee;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public Line(String name, String color, Station upStation, Station downStation, int distance, BigDecimal extraFee) {
         this.name = name;
         this.color = color;
+        this.extraFee = extraFee;
         sections.add(new Section(this, upStation, downStation, distance));
     }
 

@@ -21,7 +21,7 @@ class LineSectionExplorerTest {
         String name = "2호선";
         String color = "초록색";
         int distance = 3;
-        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.잠실역, distance);
+        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.잠실역, distance, BigDecimal.ZERO);
         LineSectionExplorer lineSectionExplorer = new LineSectionExplorer(line.getSections());
 
         Station firstStation = lineSectionExplorer.findUpStation();
@@ -29,7 +29,7 @@ class LineSectionExplorerTest {
         assertThat(firstStation.getName()).isEqualTo(StationFixtures.강남역.getName());
     }
 
-    @DisplayName("등록된 구간이 없는 Line의 상행종점역을 찾으면 예외 발생")
+    @DisplayName("등록된 구간이 없는 ¢Line의 상행종점역을 찾으면 예외 발생")
     @Test
     void findFirstStationFailTest() {
         String name = "2호선";
