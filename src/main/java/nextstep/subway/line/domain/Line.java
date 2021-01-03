@@ -8,6 +8,7 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 public class Line extends BaseEntity {
@@ -62,9 +63,18 @@ public class Line extends BaseEntity {
         return sections;
     }
 
+    public BigDecimal getExtraFee() {
+        return extraFee;
+    }
+
     public List<Station> getStations() {
         LineSectionExplorer lineSectionExplorer = new LineSectionExplorer(sections);
         return lineSectionExplorer.getStations();
+    }
+
+    public boolean isBelongedStation(Long stationId) {
+        List<Long> stationIds = getStations().stream().map(Station::getId).collect(Collectors.toList());
+        return stationIds.contains(stationId);
     }
 
     public boolean addSection(Station upStation, Station downStation, int distance) {

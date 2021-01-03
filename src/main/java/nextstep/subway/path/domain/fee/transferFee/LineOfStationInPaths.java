@@ -2,6 +2,7 @@ package nextstep.subway.path.domain.fee.transferFee;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class LineOfStationInPaths {
@@ -64,5 +65,18 @@ public class LineOfStationInPaths {
 
     private boolean isNotTransferred() {
         return this.findMultiLines().size() == TRANSFER_BOUNDARY;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final LineOfStationInPaths that = (LineOfStationInPaths) o;
+        return this.lineOfStationInPaths.equals(that.lineOfStationInPaths);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(lineOfStationInPaths);
     }
 }
