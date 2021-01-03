@@ -22,19 +22,18 @@ class SectionsTest {
     @BeforeEach
     void setUp() {
         // given
-        노선 = new Line("2호선", "green");
         강남 = new Station("강남");
         역삼 = new Station("역삼");
         선릉 = new Station("선릉");
         잠실나루 = new Station("잠실나루");
         잠실 = new Station("잠실");
+        노선 = new Line("2호선", "green", 잠실, 선릉, 10);
     }
 
     @Test
     @DisplayName("노선에 여러 구간을 등록하고 항상 정렬 된 목록을 받을 수 있다.")
     public void addManySectionAndAlwaysSortedList() throws Exception {
         // when
-        노선.addLineStation(잠실, 선릉, 10);
         노선.addLineStation(잠실, 잠실나루, 5);
         노선.addLineStation(선릉, 역삼, 10);
         노선.addLineStation(역삼, 강남, 10);
@@ -48,7 +47,6 @@ class SectionsTest {
     @DisplayName("노선에 역을 제거할 수 있다.")
     public void stationRemoveSuccess() throws Exception {
         // given
-        노선.addLineStation(잠실, 선릉, 10);
         노선.addLineStation(잠실, 잠실나루, 5);
         노선.addLineStation(선릉, 역삼, 10);
         노선.addLineStation(역삼, 강남, 10);
@@ -66,7 +64,6 @@ class SectionsTest {
     @DisplayName("노선에 등록되어 있지 않은 역을 제거할 때 제거할 수 없다.")
     public void canNotRemoveStationInOneSection() throws Exception {
         // given
-        노선.addLineStation(잠실, 선릉, 10);
         노선.addLineStation(잠실, 잠실나루, 5);
         노선.addLineStation(선릉, 역삼, 10);
 
@@ -79,9 +76,6 @@ class SectionsTest {
     @Test
     @DisplayName("구간이 하나인 노선에서 마지막 구간을 제거할 때 제거할 수 없다.")
     public void canNotRemoveUnregisteredStation() throws Exception {
-        // given
-        노선.addLineStation(잠실, 선릉, 10);
-
         // when then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> 노선.removeStation(선릉))
