@@ -10,6 +10,9 @@ import nextstep.subway.station.domain.Station;
 public class LineSections {
 	List<SectionNew> sections = new ArrayList<>();
 
+	protected LineSections() {
+	}
+
 	public LineSections(List<SectionNew> sections) {
 		this.sections.addAll(sections);
 	}
@@ -27,11 +30,7 @@ public class LineSections {
 			addSectionBasedUpStation(newSection);
 			return;
 		}
-		if (isDownStationExisted) {
-			addSectionBasedDownStation(newSection);
-			return;
-		}
-		throw new RuntimeException();
+		addSectionBasedDownStation(newSection);
 	}
 
 	public void addSectionBasedUpStation(SectionNew newSection) {

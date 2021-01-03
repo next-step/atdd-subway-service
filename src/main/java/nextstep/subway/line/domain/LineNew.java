@@ -10,7 +10,7 @@ public class LineNew {
     private String color;
     private LineSections sections;
 
-    public LineNew() {
+    protected LineNew() {
     }
 
     public LineNew(String name, String color) {

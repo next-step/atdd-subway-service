@@ -7,16 +7,16 @@ public class SectionNew {
     private Station upStation;
     private Station downStation;
 
-    private int distance;
+    private Distance distance;
 
-    public SectionNew() {
+    protected SectionNew() {
     }
 
     public SectionNew(LineNew line, Station upStation, Station downStation, int distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = new Distance(distance);
     }
 
     public LineNew getLine() {
@@ -32,22 +32,16 @@ public class SectionNew {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.get();
     }
 
     public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+        this.distance.calculateDistanceForAdd(newDistance);
         this.upStation = station;
-        this.distance -= newDistance;
     }
 
     public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+        this.distance.calculateDistanceForAdd(newDistance);
         this.downStation = station;
-        this.distance -= newDistance;
     }
 }
