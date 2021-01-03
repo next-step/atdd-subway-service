@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.domain.adapters.SafeLineAdapter;
 import nextstep.subway.path.domain.fee.distanceFee.*;
 import nextstep.subway.path.domain.fee.transferFee.LineOfStationInPaths;
@@ -17,11 +18,14 @@ public class FeeCalculatorService {
         this.safeLineAdapter = safeLineAdapter;
     }
 
-    public BigDecimal calculateExtraFee(ShortestPath shortestPath) {
+    public BigDecimal calculateExtraFee(ShortestPath shortestPath, LoginMember loginMember) {
         BigDecimal distanceFee = calculateDistanceFee(shortestPath);
         BigDecimal transferFee = calculateTransferFee(shortestPath);
+        BigDecimal extraFee = distanceFee.add(transferFee);
 
-        return distanceFee.add(transferFee);
+        AgeDiscountPolicy discountPolicy = AgeDiscountPolicy.find(loginMember.getAge());
+
+        return discountPolicy.applyDiscount(extraFee);
     }
 
     BigDecimal calculateDistanceFee(ShortestPath shortestPath) {

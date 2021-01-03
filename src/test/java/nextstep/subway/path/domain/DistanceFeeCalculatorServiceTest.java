@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.domain.adapters.SafeLineAdapter;
 import nextstep.subway.path.domain.fee.transferFee.LineOfStationInPath;
 import nextstep.subway.path.domain.fee.transferFee.LineOfStationInPaths;
@@ -62,12 +63,13 @@ class DistanceFeeCalculatorServiceTest {
         );
     }
 
-    @DisplayName("거리, 환승여부에 따른 요금을 계산할 수 있다.")
+    @DisplayName("거리, 환승여부에 따른 요금을 계산하고 할인율을 적용할 수 있다.")
     @Test
     void calculateExtraFeeTest() {
         Long source = 1L;
         Long target = 3L;
-        BigDecimal expectedFee = BigDecimal.valueOf(1360);
+        LoginMember loginMember = new LoginMember(1L, "test@nextstep.com", 15);
+        BigDecimal expectedFee = BigDecimal.valueOf(808);
 
         List<Long> stationIds = Arrays.asList(1L, 2L, 3L, 4L);
         List<SafeSectionInfo> safeSectionInfos = Arrays.asList(
@@ -87,7 +89,7 @@ class DistanceFeeCalculatorServiceTest {
 
         given(safeLineAdapter.getLineOfStationInPaths(Arrays.asList(1L, 2L, 3L))).willReturn(transferOnce);
 
-        BigDecimal extraFee = feeCalculatorService.calculateExtraFee(shortestPath);
+        BigDecimal extraFee = feeCalculatorService.calculateExtraFee(shortestPath, loginMember);
 
         assertThat(extraFee).isEqualTo(expectedFee);
     }
