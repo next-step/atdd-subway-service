@@ -461,8 +461,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - LineOfStationInPath
         ~~- [X] 경로 상에서 어떤 노선에 속해 있는지를 속성으로 갖는다. (List<Long>)~~
         - [X] 환승역인지(여러 노선이 겹치는 구간인지) 확인할 수 있다.
-        - [ ] TransferLineCandidate 컬렉션을 속성으로 갖는다.
-        - [ ] 갖고 있는 환승 노선 후보들 중 가장 환승 추가금이 적은 노선으로 환승 노선을 확정지을 수 있다.
+        - [X] TransferLineCandidate 컬렉션을 속성으로 갖는다.
+        - [X] 갖고 있는 환승 노선 후보들 중 가장 환승 추가금이 적은 노선으로 환승 노선을 확정지을 수 있다.
     - LineOfStationInPaths
         - LineInPath 일급 컬렉션
         - [X] 구성요소 중 두개 이상의 노선이 겹치는 부분을 찾아낼 수 있다.

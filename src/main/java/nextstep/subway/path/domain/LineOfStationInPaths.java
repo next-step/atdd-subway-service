@@ -12,12 +12,14 @@ public class LineOfStationInPaths {
     }
 
     public List<List<Long>> findTransferLineCandidates() {
-        List<LineOfStationInPath> multiLines = this.findMultiLines();
-
-        return multiLines.stream().map(it -> {
-            LineOfStationInPath next = findNext(it);
-            return next.getSameLines(it);
-        }).collect(Collectors.toList());
+        // TODO: TransferLineCandidate로 수정 필요
+//        List<LineOfStationInPath> multiLines = this.findMultiLines();
+//
+//        return multiLines.stream().map(it -> {
+//            LineOfStationInPath next = findNext(it);
+//            return next.getSameLines(it);
+//        }).collect(Collectors.toList());
+        return null;
     }
 
     LineOfStationInPath findNext(LineOfStationInPath lineOfStationInPath) {
