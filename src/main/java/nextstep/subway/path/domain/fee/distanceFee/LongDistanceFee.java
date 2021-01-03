@@ -5,8 +5,8 @@ import nextstep.subway.path.domain.exceptions.InvalidFeeDistanceException;
 import java.math.BigDecimal;
 
 public class LongDistanceFee implements DistanceFee {
-    private static final Integer MIN_DISTANCE = 10;
-    private static final Integer MAX_DISTANCE = 51;
+    static final Integer MIN_DISTANCE = 10;
+    static final Integer MAX_DISTANCE = 51;
     private static final BigDecimal DEFAULT_FEE = BigDecimal.valueOf(1250);
 
     private final Integer distance;
