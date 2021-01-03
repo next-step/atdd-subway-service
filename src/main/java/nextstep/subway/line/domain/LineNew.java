@@ -2,7 +2,9 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class LineNew {
     private Long id;
@@ -28,7 +30,7 @@ public class LineNew {
     public LineNew(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.add(new SectionNew(this, upStation, downStation, distance));
+        this.sections = new LineSections(Arrays.asList(new SectionNew(this, upStation, downStation, distance)));
     }
 
     public void update(Line line) {
@@ -63,5 +65,28 @@ public class LineNew {
     public void addSection(Station upStation, Station downStation, int distance) {
         SectionNew newSection = new SectionNew(this, upStation, downStation, distance);
         this.sections.addSection(newSection);
+    }
+
+    public void removeStation(Station station) {
+        if (this.getSections().size() <= 1) {
+            throw new RuntimeException();
+        }
+
+        Optional<SectionNew> upLineStation = this.getSections().stream()
+            .filter(it -> it.getUpStation() == station)
+            .findFirst();
+        Optional<SectionNew> downLineStation = this.getSections().stream()
+            .filter(it -> it.getDownStation() == station)
+            .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            this.getSections().add(new SectionNew(this, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> this.getSections().remove(it));
+        downLineStation.ifPresent(it -> this.getSections().remove(it));
     }
 }

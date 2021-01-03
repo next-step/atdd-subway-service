@@ -19,10 +19,12 @@ public class LineTest {
 	private Station originMiddleDownStation;
 	private Station originEndDownEndStation;
 
-	private static final int DEFAULT_DISTANCE = 10;
+	private static final int END_UP_DISTANCE = 10;
+	private static final int MIDDLE_DISTANCE = 12;
+	private static final int END_DOWN_DISTANCE = 8;
 	private static final int ORIGIN_SECTION_SIZE = 3;
 	private static final int ORIGIN_STATION_SIZE = 4;
-	private static final int ORIGIN_TOTAL_DISTANCE = DEFAULT_DISTANCE * ORIGIN_SECTION_SIZE;
+	private static final int ORIGIN_TOTAL_DISTANCE = END_UP_DISTANCE + MIDDLE_DISTANCE + END_DOWN_DISTANCE;
 	private SectionNew originSection1;
 	private SectionNew originSection2;
 	private SectionNew originSection3;
@@ -37,9 +39,9 @@ public class LineTest {
 		originMiddleUpStation = new Station("문래역");
 		originMiddleDownStation = new Station("사당역");
 		originEndDownEndStation = new Station("잠실역");
-		originSection1 = new SectionNew(lineNew, originEndUpStation, originMiddleUpStation, DEFAULT_DISTANCE);
-		originSection2 = new SectionNew(lineNew, originMiddleUpStation, originMiddleDownStation, DEFAULT_DISTANCE);
-		originSection3 = new SectionNew(lineNew, originMiddleDownStation, originEndDownEndStation, DEFAULT_DISTANCE);
+		originSection1 = new SectionNew(lineNew, originEndUpStation, originMiddleUpStation, END_UP_DISTANCE);
+		originSection2 = new SectionNew(lineNew, originMiddleUpStation, originMiddleDownStation, MIDDLE_DISTANCE);
+		originSection3 = new SectionNew(lineNew, originMiddleDownStation, originEndDownEndStation, END_DOWN_DISTANCE);
 		lineNew.setSection(Arrays.asList(originSection1, originSection2, originSection3));
 	}
 
@@ -70,7 +72,7 @@ public class LineTest {
 		//기존 하행역의 상행역이 새로운 역으로 변경되어야한다.
 		assertThat(originDownSection.getUpStation()).isEqualTo(newStation);
 		//기존 하행역과 새로운역의 거리는 기존 거리에서 신규 구간 거리를 뺀 값과 같아야한다.
-		assertThat(originDownSection.getDistance()).isEqualTo(DEFAULT_DISTANCE - newDistance);
+		assertThat(originDownSection.getDistance()).isEqualTo(MIDDLE_DISTANCE - newDistance);
 		//상행종점부터 하행종점까지 추가한 역을 포함하여 정렬되어야한다.
 		assertThat(stations).containsExactly(expectedSortedStations);
 		//전체 구간의 길이는 변하지 않아야 한다.
@@ -104,7 +106,7 @@ public class LineTest {
 		//상행역의 하행역이 새로운 역으로 변경되어야한다.
 		assertThat(originUpSection.getDownStation()).isEqualTo(newStation);
 		//기존 하행역과 새로운역의 거리는 기존 거리에서 신규 구간 거리를 뺀 값과 같아야한다.
-		assertThat(originUpSection.getDistance()).isEqualTo(DEFAULT_DISTANCE - newDistance);
+		assertThat(originUpSection.getDistance()).isEqualTo(MIDDLE_DISTANCE - newDistance);
 		//상행종점부터 하행종점까지 추가한 역을 포함하여 정렬되어야한다.
 		assertThat(stations).containsExactly(expectedSortedStations);
 		//전체 구간의 길이는 변하지 않아야 한다.
@@ -170,7 +172,7 @@ public class LineTest {
 	void addSectionEqualsOriginDistance() {
 		//given
 		newStation = new Station("신도림역");
-		int newDistance = DEFAULT_DISTANCE;
+		int newDistance = MIDDLE_DISTANCE;
 
 		//when/then
 		assertThatThrownBy(() -> lineNew.addSection(originMiddleUpStation, newStation, newDistance))
@@ -182,7 +184,7 @@ public class LineTest {
 	void addSectionGreaterThanOriginDistance() {
 		//given
 		newStation = new Station("신도림역");
-		int newDistance = DEFAULT_DISTANCE + 1;
+		int newDistance = MIDDLE_DISTANCE + 1;
 
 		//when/then
 		assertThatThrownBy(() -> lineNew.addSection(originMiddleUpStation, newStation, newDistance))
@@ -206,6 +208,110 @@ public class LineTest {
 
 		//when/then
 		assertThatThrownBy(() -> lineNew.addSection(newStation, newStation2, 4))
+			.isInstanceOf(RuntimeException.class);
+	}
+
+	@Test
+	@DisplayName("중간의 역을 제거할 경우, 구간이 정상적으로 제거되어야한다.")
+	void removeMiddleStation() {
+		//given
+		Station[] expectedSortedStations = {originEndUpStation, originMiddleDownStation, originEndDownEndStation};
+
+		//when
+		lineNew.removeStation(originMiddleUpStation);
+
+		//then
+		List<SectionNew> sections = lineNew.getSections();
+		SectionNew originDownSection = sections.stream()
+			.filter(section -> section.getDownStation().equals(originMiddleDownStation))
+			.findFirst().get();
+		int totalDistance = sections.stream()
+			.mapToInt(SectionNew::getDistance)
+			.sum();
+		List<Station> stations = lineNew.getStations();
+
+		//구간이 제거 되어야한다.
+		assertThat(sections.size()).isEqualTo(ORIGIN_SECTION_SIZE - 1);
+		assertThat(stations.size()).isEqualTo(ORIGIN_STATION_SIZE - 1);
+		//제거된 구간을 제외하고 이전 노선의 순서대로 정렬되어야한다.
+		assertThat(stations).containsExactly(expectedSortedStations);
+		//제거되는 역이 상행역인 구간의 상행역은 제거되는 역이 하행역인 구간의 상행역으로 변경해야한다.
+		assertThat(originDownSection.getUpStation()).isEqualTo(originEndUpStation);
+		//제거되는 역이 상행역인 구간의 거리는 제거되는 역이 하행역인 구간의 거리와 더해진 값이어야 한다.
+		assertThat(originDownSection.getDistance()).isEqualTo(END_UP_DISTANCE + MIDDLE_DISTANCE);
+		//전체 구간의 길이는 달라지지 않아야한다.
+		assertThat(totalDistance).isEqualTo(ORIGIN_TOTAL_DISTANCE);
+	}
+
+	@Test
+	@DisplayName("상행종점을 제거할 경우, 구간이 정상적으로 제거되어야한다.")
+	void removeEndUpStation() {
+		//given
+		Station[] expectedSortedStations = {originMiddleUpStation, originMiddleDownStation, originEndDownEndStation};
+
+		//when
+		lineNew.removeStation(originEndUpStation);
+
+		//then
+		List<SectionNew> sections = lineNew.getSections();
+		int totalDistance = sections.stream()
+			.mapToInt(SectionNew::getDistance)
+			.sum();
+		List<Station> stations = lineNew.getStations();
+
+		//구간이 제거 되어야한다.
+		assertThat(sections.size()).isEqualTo(ORIGIN_SECTION_SIZE - 1);
+		assertThat(stations.size()).isEqualTo(ORIGIN_STATION_SIZE - 1);
+		//기존 상행종점을 제외하고 이전 노선의 순서대로 정렬되어야한다.
+		assertThat(stations).containsExactly(expectedSortedStations);
+		//전체 구간의 길이는 상행종점을 포함한 구간의 길이만큼 짧아져야한다.
+		assertThat(totalDistance).isEqualTo(ORIGIN_TOTAL_DISTANCE - END_UP_DISTANCE);
+	}
+
+	@Test
+	@DisplayName("하행종점을 제거할 경우, 구간이 정상적으로 제거되어야한다.")
+	void removeEndDownStation() {
+		//given
+		Station[] expectedSortedStations = {originEndUpStation, originMiddleUpStation, originMiddleDownStation};
+
+		//when
+		lineNew.removeStation(originEndDownEndStation);
+
+		//then
+		List<SectionNew> sections = lineNew.getSections();
+		int totalDistance = sections.stream()
+			.mapToInt(SectionNew::getDistance)
+			.sum();
+		List<Station> stations = lineNew.getStations();
+
+		//구간이 제거 되어야한다.
+		assertThat(sections.size()).isEqualTo(ORIGIN_SECTION_SIZE - 1);
+		assertThat(stations.size()).isEqualTo(ORIGIN_STATION_SIZE - 1);
+		//기존 상행종점을 제외하고 이전 노선의 순서대로 정렬되어야한다.
+		assertThat(stations).containsExactly(expectedSortedStations);
+		//전체 구간의 길이는 상행종점을 포함한 구간의 길이만큼 짧아져야한다.
+		assertThat(totalDistance).isEqualTo(ORIGIN_TOTAL_DISTANCE - END_DOWN_DISTANCE);
+	}
+
+	@Test
+	@DisplayName("구간이 하나인 노선에서 마지막 구간을 제거하려 할 때 RuntimeException 을 Throw 해야한다.")
+	void removeStationExistOneSection() {
+		//given
+		LineNew newLineHavingOneSection = new LineNew("2호선", "green", originEndUpStation, originEndDownEndStation, END_UP_DISTANCE);
+
+		//when/then
+		assertThatThrownBy(() -> newLineHavingOneSection.removeStation(originEndUpStation))
+			.isInstanceOf(RuntimeException.class);
+	}
+
+	@Test
+	@DisplayName("노선에 등록되어있지 않은 역을 제거하려 할 때, RuntimeException 을 Throw 해야한다.")
+	void removeStationNotExist() {
+		//given
+		LineNew newLineHavingOneSection = new LineNew("2호선", "green", originEndUpStation, originEndDownEndStation, END_UP_DISTANCE);
+
+		//when/then
+		assertThatThrownBy(() -> newLineHavingOneSection.removeStation(originMiddleDownStation))
 			.isInstanceOf(RuntimeException.class);
 	}
 }
