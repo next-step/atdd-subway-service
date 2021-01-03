@@ -18,6 +18,10 @@ public class Sections {
         return sections.isEmpty();
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
     public List<Station> getStations() {
         return getNextStations(findFirstStation());
     }
