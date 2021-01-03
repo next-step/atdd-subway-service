@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,10 +34,15 @@ class PathFinderTest {
     @DisplayName("경로를 조회하고 순서가 일치하는지 확인한다.")
     @Test
     void getShortestPath() {
+        // given
         PathFinder pathFinder = new PathFinder(lines.allSection());
 
-        assertThat(pathFinder.getWeight(교대역, 양재역)).isEqualTo(10);
-        assertThat(pathFinder.getPath(교대역, 양재역))
+        // when
+        PathResponse pathResponse = pathFinder.ofPathResponse(교대역, 양재역);
+
+        // then
+        assertThat(pathResponse.getDistance()).isEqualTo(10);
+        assertThat(pathResponse.getStations())
                 .extracting("name")
                 .containsExactly("교대역", "강남역", "양재역");
     }

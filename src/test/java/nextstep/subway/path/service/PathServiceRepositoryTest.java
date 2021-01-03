@@ -50,6 +50,7 @@ public class PathServiceRepositoryTest {
 
         Line 신분당선 = new Line("신분당선", "orange", 강남역, 양재역, 5);
         Line 삼호선 = new Line("3호선", "orange", 교대역, 남부터미널, 1);
+        삼호선.add(남부터미널, 양재역, 1);
         Line 이호선 = new Line("2호선", "orange", 교대역, 강남역, 5);
 
         lineRepository.saveAll(Arrays.asList(신분당선, 삼호선, 이호선));
@@ -67,13 +68,13 @@ public class PathServiceRepositoryTest {
     void findPath() {
         PathResponse pathResponse = pathService.findPath(교대역.getId(), 양재역.getId());
 
-        assertThat(pathResponse.getDistance()).isEqualTo(10);
+        assertThat(pathResponse.getDistance()).isEqualTo(2);
         assertThat(pathResponse.getStations())
                 .extracting("name")
-                .containsExactly("교대역", "강남역", "양재역");
+                .containsExactly("교대역", "남부터미널", "양재역");
     }
 
-    @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우\n")
+    @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우")
     @Test
     void findPathWhenNotExistStation() {
         // given

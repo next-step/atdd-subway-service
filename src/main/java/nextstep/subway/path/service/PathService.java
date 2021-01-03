@@ -23,6 +23,6 @@ public class PathService {
         Station sourceStation = lines.searchStationById(source);
         Station targetStation = lines.searchStationById(target);
         PathFinder pathFinder = new PathFinder(lines.allSection());
-        return PathResponse.of(pathFinder.getPath(sourceStation, targetStation), pathFinder.getWeight(sourceStation, targetStation));
+        return pathFinder.ofPathResponse(sourceStation, targetStation);
     }
 }

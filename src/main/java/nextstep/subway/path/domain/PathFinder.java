@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathSection;
 import nextstep.subway.path.dto.PathStation;
 import nextstep.subway.station.domain.Station;
@@ -27,16 +28,21 @@ public class PathFinder {
         graph.setEdgeWeight(graph.addEdge(source, target), weight);
     }
 
-    public int getWeight(Station source, Station target) {
-        return (int) getGraphPath(PathStation.of(source), PathStation.of(target)).getWeight();
+    private int getWeight(PathStation source, PathStation target) {
+        return (int) getGraphPath(source, target).getWeight();
     }
 
-    public List<PathStation> getPath(Station source, Station target) {
-        return getGraphPath(PathStation.of(source), PathStation.of(target)).getVertexList();
+    private List<PathStation> getPath(PathStation source, PathStation target) {
+        return getGraphPath(source, target).getVertexList();
     }
 
     private GraphPath<PathStation, DefaultWeightedEdge> getGraphPath(PathStation source, PathStation target) {
         return new DijkstraShortestPath<>(graph).getPath(source, target);
     }
 
+    public PathResponse ofPathResponse(Station sourceStation, Station targetStation) {
+        PathStation source = PathStation.of(sourceStation);
+        PathStation target = PathStation.of(targetStation);
+        return PathResponse.of(getPath(source, target), getWeight(source, target));
+    }
 }
