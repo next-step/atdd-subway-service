@@ -1,5 +1,7 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.path.domain.FeeCalculatorService;
 import nextstep.subway.path.domain.SafeSectionInfo;
 import nextstep.subway.path.domain.SafeStationInfo;
 import nextstep.subway.path.domain.adapters.SafeLineAdapter;
@@ -13,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,9 +32,12 @@ class PathServiceTest {
     @Mock
     private SafeStationAdapter safeStationAdapter;
 
+    @Mock
+    private FeeCalculatorService feeCalculatorService;
+
     @BeforeEach
     void setup() {
-        pathService = new PathService(safeLineAdapter, safeStationAdapter);
+        pathService = new PathService(safeLineAdapter, safeStationAdapter, feeCalculatorService);
     }
 
     @DisplayName("최단 경로를 찾아서 응답할 수 있다.")
@@ -39,6 +45,7 @@ class PathServiceTest {
     void findShortestPathTest() {
         Long sourceId = 1L;
         Long destinationId = 4L;
+        LoginMember loginMember = new LoginMember(1L, "test@nextstep.com", 30);
 
         given(safeLineAdapter.getAllStationIds()).willReturn(Arrays.asList(1L, 2L, 3L, 4L));
         given(safeLineAdapter.getAllSafeSectionInfos()).willReturn(Arrays.asList(
@@ -51,8 +58,9 @@ class PathServiceTest {
                 new SafeStationInfo(2L, "역삼역", null),
                 new SafeStationInfo(4L, "삼성역", null)
         ));
+        given(feeCalculatorService.calculateExtraFee(any(), any())).willReturn(BigDecimal.valueOf(1000));
 
-        PathResponse pathResponse = pathService.findShortestPath(sourceId, destinationId);
+        PathResponse pathResponse = pathService.findShortestPath(sourceId, destinationId, loginMember);
 
         assertThat(pathResponse.getStations()).contains(
                 new StationInPathResponse(1L, "강남역", null),
