@@ -11,7 +11,7 @@ public class LineNew {
     private Long id;
     private String name;
     private String color;
-    private List<SectionNew> sections = new ArrayList<>();
+    private LineSections sections;
 
     public LineNew() {
     }
@@ -25,7 +25,7 @@ public class LineNew {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.sections = sections;
+        this.sections = new LineSections(sections);
     }
 
     public LineNew(String name, String color, Station upStation, Station downStation, int distance) {
@@ -52,7 +52,7 @@ public class LineNew {
     }
 
     public List<SectionNew> getSections() {
-        return sections;
+        return sections.getSections();
     }
 
     public List<Station> getStations() {
@@ -66,9 +66,7 @@ public class LineNew {
 
         while (downStation != null) {
             Station finalUpStation = downStation;
-            Optional<SectionNew> nextLineStation = this.sections.stream()
-                .filter(it -> it.getUpStation() == finalUpStation)
-                .findFirst();
+            Optional<SectionNew> nextLineStation = this.sections.findByUpStation(finalUpStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -80,7 +78,7 @@ public class LineNew {
     }
 
     public void setSection(List<SectionNew> sections) {
-        this.sections.addAll(sections);
+        this.sections = new LineSections(sections);
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {
@@ -103,16 +101,12 @@ public class LineNew {
         }
 
         if (isUpStationExisted) {
-            this.sections.stream()
-                .filter(it -> it.getUpStation() == upStation)
-                .findFirst()
+            this.sections.findByUpStation(upStation)
                 .ifPresent(it -> it.updateUpStation(downStation, distance));
             SectionNew newSection = new SectionNew(this, upStation, downStation, distance);
             this.sections.add(newSection);
         } else if (isDownStationExisted) {
-            this.sections.stream()
-                .filter(it -> it.getDownStation() == downStation)
-                .findFirst()
+            this.sections.findByDownStation(downStation)
                 .ifPresent(it -> it.updateDownStation(upStation, distance));
 
             this.sections.add(new SectionNew(this, upStation, downStation, distance));
@@ -122,12 +116,10 @@ public class LineNew {
     }
 
     private Station findUpStation() {
-        Station upStation = this.sections.get(0).getUpStation();
+        Station upStation = this.sections.findFirstUpstation();
         while (upStation != null) {
             Station finalDownStation = upStation;
-            Optional<SectionNew> nextLineStation = this.sections.stream()
-                .filter(it -> it.getDownStation() == finalDownStation)
-                .findFirst();
+            Optional<SectionNew> nextLineStation = this.sections.findByDownStation(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
