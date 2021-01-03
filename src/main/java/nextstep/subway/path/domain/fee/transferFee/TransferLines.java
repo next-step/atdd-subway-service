@@ -13,15 +13,12 @@ public class TransferLines {
 
     private final List<LineWithExtraFee> transferLines;
 
-    private TransferLines(List<LineWithExtraFee> transferLines) {
+    public TransferLines(List<LineWithExtraFee> transferLines) {
         this.transferLines = transferLines;
     }
 
-    public static TransferLines of(List<LineWithExtraFee> transferLines, boolean isLastMulti) {
-        if (isLastMulti && transferLines.size() == 1) {
-            return new TransferLines(new ArrayList<>());
-        }
-        return new TransferLines(transferLines);
+    public static TransferLines emptyTransferLines() {
+        return new TransferLines(new ArrayList<>());
     }
 
     public BigDecimal calculateTransferFee() {

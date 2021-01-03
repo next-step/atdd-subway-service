@@ -1,6 +1,5 @@
 package nextstep.subway.path.domain.fee.transferFee;
 
-import nextstep.subway.path.domain.fee.transferFee.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -124,8 +123,8 @@ class LineOfStationInPathsTest {
 
         LineOfStationInPaths lineOfStationInPaths = new LineOfStationInPaths(values);
 
-        assertThat(lineOfStationInPaths.findTransferLines()).isEqualTo(TransferLines.of(
-                Arrays.asList(lineWithExtraFee2, lineWithExtraFee3, lineWithExtraFee5), true
+        assertThat(lineOfStationInPaths.findTransferLines()).isEqualTo(new TransferLines(
+                Arrays.asList(lineWithExtraFee2, lineWithExtraFee3, lineWithExtraFee5)
         ));
     }
 
@@ -140,7 +139,7 @@ class LineOfStationInPathsTest {
 
         LineOfStationInPaths lineOfStationInPaths = new LineOfStationInPaths(values);
 
-        assertThat(lineOfStationInPaths.findTransferLines()).isEqualTo(TransferLines.of(new ArrayList<>(), true));
+        assertThat(lineOfStationInPaths.findTransferLines()).isEqualTo(new TransferLines(new ArrayList<>()));
     }
 
     @DisplayName("환승하지 않은 경우 빈 환승 노선을 찾는다.")
@@ -154,6 +153,6 @@ class LineOfStationInPathsTest {
 
         LineOfStationInPaths lineOfStationInPaths = new LineOfStationInPaths(values);
 
-        assertThat(lineOfStationInPaths.findTransferLines()).isEqualTo(TransferLines.of(new ArrayList<>(), false));
+        assertThat(lineOfStationInPaths.findTransferLines()).isEqualTo(new TransferLines(new ArrayList<>()));
     }
 }

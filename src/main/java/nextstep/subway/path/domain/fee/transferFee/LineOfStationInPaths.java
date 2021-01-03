@@ -16,14 +16,18 @@ public class LineOfStationInPaths {
 
     public TransferLines findTransferLines() {
         if (isNotTransferred()) {
-            return TransferLines.of(new ArrayList<>(), isLastMulti());
+            return new TransferLines(new ArrayList<>());
         }
 
         List<LineWithExtraFee> transferLines = this.findTransferCandidatesOfPath().stream()
                 .map(TransferCandidates::confirmTransferLine)
                 .collect(Collectors.toList());
 
-        return TransferLines.of(transferLines, isLastMulti());
+        if (transferLines.size() == 1 && isLastMulti()) {
+            return TransferLines.emptyTransferLines();
+        }
+
+        return new TransferLines(transferLines);
     }
 
     List<TransferCandidates> findTransferCandidatesOfPath() {

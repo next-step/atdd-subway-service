@@ -18,7 +18,7 @@ class TransferLinesTest {
     @DisplayName("환승한 노선이 없는 경우 환승 추가금을 구할 수 있다")
     @Test
     void calculateTransferFeeWhenNotTransferredTest() {
-        TransferLines transferLines = TransferLines.of(new ArrayList<>(), false);
+        TransferLines transferLines = new TransferLines(new ArrayList<>());
 
         BigDecimal transferFee = transferLines.calculateTransferFee();
 
@@ -36,24 +36,24 @@ class TransferLinesTest {
     public static Stream<Arguments> calculateTransferFeeTestResource() {
         return Stream.of(
                 Arguments.of(
-                        TransferLines.of(Arrays.asList(
+                        new TransferLines(Arrays.asList(
                                 new LineWithExtraFee(1L, BigDecimal.ZERO),
                                 new LineWithExtraFee(2L, BigDecimal.ONE),
                                 new LineWithExtraFee(3L, BigDecimal.TEN)
-                        ), false),
+                        )),
                         BigDecimal.TEN
                 ),
                 Arguments.of(
-                        TransferLines.of(Collections.singletonList(
+                        new TransferLines(Collections.singletonList(
                                 new LineWithExtraFee(1L, BigDecimal.ZERO)
-                        ), false),
+                        )),
                         BigDecimal.ZERO
                 ),
                 Arguments.of(
-                        TransferLines.of(Arrays.asList(
+                        new TransferLines(Arrays.asList(
                                 new LineWithExtraFee(1L, BigDecimal.ZERO),
                                 new LineWithExtraFee(2L, BigDecimal.ZERO)
-                        ), false),
+                        )),
                         BigDecimal.ZERO
                 )
         );
