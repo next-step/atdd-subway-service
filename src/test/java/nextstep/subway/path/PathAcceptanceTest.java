@@ -32,20 +32,23 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
+    private LineResponse srt;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private StationResponse 용산역;
+    private StationResponse 천안역;
     private String 청소년;
     private String 아동;
     private String 성인;
 
-    /**
-     * 교대역    --- *2호선*(10m) ---   강남역
-     * |                               |
-     * *3호선(3m)*                      *신분당선*(10m)
-     * |                               |
-     * 남부터미널역  --- *3호선*(7m) ---   양재
+    /*
+     * 교대역    --- *2호선*(10m) ---   강남역                    용산역
+     * |                               |                       |
+     * *3호선(3m)*                      *신분당선*(15m)           *SRT*(100m)
+     * |                               |                       |
+     * 남부터미널역  --- *3호선*(7m) ---   양재                     천안역
      */
     @BeforeEach
     public void setUp() {
@@ -55,15 +58,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        용산역 = 지하철역_등록되어_있음("용산역").as(StationResponse.class);
+        천안역 = 지하철역_등록되어_있음("천안역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음(
-                new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, BigDecimal.valueOf(100)))
+                new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 15, BigDecimal.valueOf(100)))
                 .as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(
                 new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, BigDecimal.valueOf(200)))
                 .as(LineResponse.class);
         삼호선 = 지하철_노선_등록되어_있음(
                 new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 10, BigDecimal.valueOf(300)))
+                .as(LineResponse.class);
+        srt = 지하철_노선_등록되어_있음(
+                new LineRequest("srt", "bg-red-600", 용산역.getId(), 천안역.getId(), 100, BigDecimal.valueOf(1000)))
                 .as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
@@ -164,6 +172,25 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         최단_경로_조회_성공(kidResponse, Arrays.asList(교대역, 남부터미널역, 양재역));
         요금이_정상적으로_계산됨(kidResponse, BigDecimal.valueOf(450));
+    }
+
+    @DisplayName("시나리오6: 거리에 따라 요금이 차등 부과 된다.")
+    @Test
+    void chargeByDistanceTest() {
+        // when
+        ExtractableResponse<Response> shortDistanceResponse = 최단_경로_조회_요청(교대역, 양재역, 성인);
+        // then
+        요금이_정상적으로_계산됨(shortDistanceResponse, BigDecimal.valueOf(1250));
+
+        // when
+        ExtractableResponse<Response> longDistanceResponse = 최단_경로_조회_요청(강남역, 양재역, 성인);
+        // then
+        요금이_정상적으로_계산됨(longDistanceResponse, BigDecimal.valueOf(1350));
+
+        // when
+        ExtractableResponse<Response> tooLongDistanceResponse = 최단_경로_조회_요청(용산역, 천안역, 성인);
+        // then
+        요금이_정상적으로_계산됨(tooLongDistanceResponse, BigDecimal.valueOf(2750));
     }
 
     public static void 요금이_정상적으로_계산됨(ExtractableResponse<Response> response, BigDecimal expected) {
