@@ -202,14 +202,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> transferResponse = 최단_경로_조회_요청(교대역, 용산역, 성인);
 
         // then
-        PathResponse response1 = notTransferResponse.as(PathResponse.class);
-        PathResponse response2 = transferResponse.as(PathResponse.class);
-        assertThat(response1.getDistance()).isEqualTo(response2.getDistance());
-
-        최단_경로_조회_성공(notTransferResponse, Arrays.asList(천안역, 용산역), 100);
+        두_경로의_이동거리가_같다(notTransferResponse, transferResponse);
         요금이_정상적으로_계산됨(notTransferResponse, BigDecimal.valueOf(2750));
-        최단_경로_조회_성공(transferResponse, Arrays.asList(교대역, 강남역, 용산역), 100);
         요금이_정상적으로_계산됨(transferResponse, BigDecimal.valueOf(3750));
+    }
+
+    public static void 두_경로의_이동거리가_같다(ExtractableResponse<Response> response1, ExtractableResponse<Response> response2) {
+        PathResponse path1 = response1.as(PathResponse.class);
+        PathResponse path2 = response2.as(PathResponse.class);
+        assertThat(path1.getDistance()).isEqualTo(path2.getDistance());
     }
 
     public static void 요금이_정상적으로_계산됨(ExtractableResponse<Response> response, BigDecimal expected) {
