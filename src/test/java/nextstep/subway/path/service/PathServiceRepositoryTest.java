@@ -65,7 +65,7 @@ public class PathServiceRepositoryTest {
         stationRepository.deleteAllInBatch();
     }
 
-    @DisplayName("최단 경로 조회")
+    @DisplayName("지하철 경로를 조회하고 순서, 거리가 일치하는지 확인한다.")
     @Test
     void findPath() {
         PathResponse pathResponse = pathService.findPath(교대역.getId(), 양재역.getId());

@@ -18,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
@@ -52,7 +51,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록되어_있음(삼호선, 남부터미널역, 양재역, 3);
     }
 
-    @DisplayName("지하철 경로를 조회하고 순서가 일치하는지 확인한다.")
+    @DisplayName("지하철 경로를 조회하고 순서, 거리가 일치하는지 확인한다.")
     @Test
     void findPath() {
         // 지하철 경로 조회 요청

@@ -13,9 +13,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class PathFinder {
-    private final WeightedMultigraph<PathStation, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private final WeightedMultigraph<PathStation, DefaultWeightedEdge> graph;
 
     public PathFinder(List<PathSection> sections) {
+        this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         sections.forEach(section ->
                 this.addGraphVertex(
                         section.getSource(),
@@ -24,9 +25,9 @@ public class PathFinder {
     }
 
     private void addGraphVertex(PathStation source, PathStation target, double weight) {
-        graph.addVertex(source);
-        graph.addVertex(target);
-        graph.setEdgeWeight(graph.addEdge(source, target), weight);
+        this.graph.addVertex(source);
+        this.graph.addVertex(target);
+        this.graph.setEdgeWeight(this.graph.addEdge(source, target), weight);
     }
 
     private int getWeight(PathStation source, PathStation target) {
@@ -38,7 +39,7 @@ public class PathFinder {
     }
 
     private GraphPath<PathStation, DefaultWeightedEdge> getGraphPath(PathStation source, PathStation target) {
-        return Optional.ofNullable(new DijkstraShortestPath<>(graph)
+        return Optional.ofNullable(new DijkstraShortestPath<>(this.graph)
                 .getPath(source, target))
                 .orElseThrow(() -> new IllegalArgumentException("출발역과 도착역이 연결 되어 있지 않습니다."));
     }
