@@ -1,5 +1,6 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.domain.fee.transferFee;
 
+import nextstep.subway.path.domain.fee.transferFee.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

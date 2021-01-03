@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.domain.fee.transferFee;
 
 import nextstep.subway.path.domain.exceptions.CannotFindTransferFeeException;
 

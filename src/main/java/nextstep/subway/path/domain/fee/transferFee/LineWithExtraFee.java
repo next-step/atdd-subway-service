@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.domain.fee.transferFee;
 
 import java.math.BigDecimal;
 import java.util.Objects;

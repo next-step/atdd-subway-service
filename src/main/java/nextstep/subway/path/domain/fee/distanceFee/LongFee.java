@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain.fee;
+package nextstep.subway.path.domain.fee.distanceFee;
 
 import nextstep.subway.path.domain.exceptions.InvalidFeeDistanceException;
 

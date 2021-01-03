@@ -1,6 +1,8 @@
-package nextstep.subway.path.domain.fee;
+package nextstep.subway.path.domain.fee.distanceFee;
 
 import nextstep.subway.path.domain.exceptions.InvalidFeeDistanceException;
+import nextstep.subway.path.domain.fee.distanceFee.DefaultFee;
+import nextstep.subway.path.domain.fee.distanceFee.Fee;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
