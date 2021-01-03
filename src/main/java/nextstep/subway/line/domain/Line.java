@@ -17,10 +17,9 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
     @Embedded
-    private Sections sections = new Sections();
+    private Sections sections;
 
-    public Line() {
-    }
+    protected Line() {}
 
     public Line(String name, String color) {
         this.name = name;
@@ -30,12 +29,24 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        this.sections = Sections.of(this, upStation, downStation, distance);
+    }
+
+    public void addLineStation(Station upStation, Station downStation, int distance) {
+        sections.addStation(new Section(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+    }
+
+    public void removeStation(Station station) {
+        sections.removeStation(this, station);
+    }
+
+    public List<Station> getStations() {
+        return sections.getStations();
     }
 
     public Long getId() {
@@ -48,23 +59,5 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
-    }
-
-    public List<Station> getStations() {
-        return sections.getStations();
-    }
-
-    public List<StationResponse> ofStationResponse() {
-        return getStations().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-    }
-
-    public void addLineStation(Station upStation, Station downStation, int distance) {
-        sections.addStation(new Section(this, upStation, downStation, distance));
-    }
-
-    public void removeStation(Station station) {
-        sections.removeStation(this, station);
     }
 }
