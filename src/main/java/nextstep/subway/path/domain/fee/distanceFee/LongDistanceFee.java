@@ -4,14 +4,14 @@ import nextstep.subway.path.domain.exceptions.InvalidFeeDistanceException;
 
 import java.math.BigDecimal;
 
-public class LongFee implements Fee {
+public class LongDistanceFee implements DistanceFee {
     private static final Integer MIN_DISTANCE = 10;
     private static final Integer MAX_DISTANCE = 51;
     private static final BigDecimal DEFAULT_FEE = BigDecimal.valueOf(1250);
 
     private final Integer distance;
 
-    public LongFee(final Integer distance) {
+    public LongDistanceFee(final Integer distance) {
         validate(distance);
         this.distance = distance;
     }

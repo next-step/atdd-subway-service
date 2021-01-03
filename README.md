@@ -454,10 +454,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - [X] 기본료로 2050원을 갖는다.
         - [X] 8km 마다 추가요금을 100원 붙여서 계산한다.
 - [ ] 환승노선의 환승 비용에 따른 추가 요금 계산
-    - TransferFinder
-        - 경로 중 환승한 노선만 찾아내는 책임을 수행한다.
-        - [ ] ShortestPath를 인자로 주입받아 LineInPaths를 반환한다.
-        - [ ] LineInPaths를 통해 환승한 노선들을 찾아낼 수 있다.
     - LineOfStationInPath
         ~~- [X] 경로 상에서 어떤 노선에 속해 있는지를 속성으로 갖는다. (List<Long>)~~
         - [X] 환승역인지(여러 노선이 겹치는 구간인지) 확인할 수 있다.
@@ -482,8 +478,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - Line
         - [X] 환승 추가금 항목 추가
     - SafeLineAdapter
-        - [ ] 역 ID 컬렉션을 인자로 전달해서 LineOfStationInPaths를 반환받을 수 있다.
+        - [X] 역 ID 컬렉션을 인자로 전달해서 LineOfStationInPaths를 반환받을 수 있다.
 - [ ] 이용자 나이에 따른 할인 계산
 - FeeCalculator
-  - 요금을 계산할 수 있다.
+  - 요금을 계산할 수 있다. (도메인 서비스)
   - [ ] double 타입 거리를 인자로 받아 알맞는 요금을 계산할 수 있다.
