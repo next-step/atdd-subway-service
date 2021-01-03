@@ -23,7 +23,7 @@ public class LineOfStationInPaths {
                 .map(TransferCandidates::confirmTransferLine)
                 .collect(Collectors.toList());
 
-        if (transferLines.size() == 1 && isLastMulti()) {
+        if (isOnlyLastLineOfStationIsTransfer(transferLines)) {
             return TransferLines.emptyTransferLines();
         }
 
@@ -53,6 +53,10 @@ public class LineOfStationInPaths {
         return this.lineOfStationInPaths.stream()
                 .filter(LineOfStationInPath::isMultiLine)
                 .collect(Collectors.toList());
+    }
+
+    private boolean isOnlyLastLineOfStationIsTransfer(List<LineWithExtraFee> transferLines) {
+        return transferLines.size() == 1 && isLastMulti();
     }
 
     private LineOfStationInPath get(int index) {
