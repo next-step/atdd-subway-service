@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
@@ -29,6 +30,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
     private StationResponse 판교역;
+    private StationResponse 사당역;
+    private StationResponse 이수역;
 
     @BeforeEach
     public void setUp() {
@@ -39,6 +42,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
         판교역 = StationAcceptanceTest.지하철역_등록되어_있음("판교역").as(StationResponse.class);
+        사당역 = StationAcceptanceTest.지하철역_등록되어_있음("사당역").as(StationResponse.class);
+        이수역 = StationAcceptanceTest.지하철역_등록되어_있음("이수역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
@@ -47,7 +52,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록되어_있음(삼호선, 남부터미널역, 양재역, 3);
     }
 
-    @DisplayName("경로 조회")
+    @DisplayName("지하철 경로를 조회하고 순서가 일치하는지 확인한다.")
     @Test
     void findPath() {
         // 지하철 경로 조회 요청
@@ -75,12 +80,24 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우")
+    @DisplayName("출발역과 도착역이 같은 경우")
     @Test
     void failFindPathEqualsStation() {
         // 지하철 경로 조회 요청
         // when
         ExtractableResponse<Response> response = 지하철_경로_조회_요청(교대역.getId(),교대역.getId());
+
+        // 지하철 경로 조회 실패됨
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
+    @Test
+    void findPathWhenNotConnectedStation() {
+        // 지하철 경로 조회 요청
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(교대역.getId(),사당역.getId());
 
         // 지하철 경로 조회 실패됨
         // then

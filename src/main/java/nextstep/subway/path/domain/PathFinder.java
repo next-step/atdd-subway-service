@@ -10,6 +10,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
+import java.util.Optional;
 
 public class PathFinder {
     private final WeightedMultigraph<PathStation, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
@@ -37,7 +38,9 @@ public class PathFinder {
     }
 
     private GraphPath<PathStation, DefaultWeightedEdge> getGraphPath(PathStation source, PathStation target) {
-        return new DijkstraShortestPath<>(graph).getPath(source, target);
+        return Optional.ofNullable(new DijkstraShortestPath<>(graph)
+                .getPath(source, target))
+                .orElseThrow(() -> new IllegalArgumentException("출발역과 도착역이 연결 되어 있지 않습니다."));
     }
 
     public PathResponse ofPathResponse(Station sourceStation, Station targetStation) {
