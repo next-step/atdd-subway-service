@@ -45,6 +45,22 @@ public class LineSections {
 		this.sections.add(newSection);
 	}
 
+	public void removeStation(LineNew line, Station station) {
+		Optional<SectionNew> upLineStation = this.findByUpStation(station);
+		Optional<SectionNew> downLineStation = this.findByDownStation(station);
+
+		if (upLineStation.isPresent() && downLineStation.isPresent()) {
+			removeMiddleStation(line, upLineStation.get(), downLineStation.get());
+		}
+
+		upLineStation.ifPresent(it -> this.getSections().remove(it));
+		downLineStation.ifPresent(it -> this.getSections().remove(it));
+	}
+
+	public boolean isRemovable() {
+		return this.sections.size() > 1;
+	}
+
 	public List<SectionNew> getSections() {
 		return this.sections;
 	}
@@ -110,5 +126,12 @@ public class LineSections {
 		if (!isUpStationExisted && !isDownStationExisted) {
 			throw new RuntimeException("등록할 수 없는 구간 입니다.");
 		}
+	}
+
+	private void removeMiddleStation(LineNew line, SectionNew upStationSection, SectionNew downStationSection) {
+		Station newUpStation = downStationSection.getUpStation();
+		Station newDownStation = upStationSection.getDownStation();
+		int newDistance = upStationSection.getDistance() + downStationSection.getDistance();
+		add(new SectionNew(line, newUpStation, newDownStation, newDistance));
 	}
 }

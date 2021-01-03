@@ -68,25 +68,10 @@ public class LineNew {
     }
 
     public void removeStation(Station station) {
-        if (this.getSections().size() <= 1) {
+        if (!this.sections.isRemovable()) {
             throw new RuntimeException();
         }
 
-        Optional<SectionNew> upLineStation = this.getSections().stream()
-            .filter(it -> it.getUpStation() == station)
-            .findFirst();
-        Optional<SectionNew> downLineStation = this.getSections().stream()
-            .filter(it -> it.getDownStation() == station)
-            .findFirst();
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            this.getSections().add(new SectionNew(this, newUpStation, newDownStation, newDistance));
-        }
-
-        upLineStation.ifPresent(it -> this.getSections().remove(it));
-        downLineStation.ifPresent(it -> this.getSections().remove(it));
+        this.sections.removeStation(this, station);
     }
 }
