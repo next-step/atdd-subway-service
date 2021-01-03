@@ -480,9 +480,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - SafeLineAdapter
         - [X] 역 ID 컬렉션을 인자로 전달해서 LineOfStationInPaths를 반환받을 수 있다.
 - [ ] 이용자 나이에 따른 할인 계산
-    - [ ] 로그인 시 비로그인 유저, 로그인한 유저를 구분할 수 있도록 기능 개선
     - AgeDiscounter
         - 나이에 따른 할인율이 적용된 금액을 계산해주는 Enum
-        - [ ] 비회원과 성인은 할인되지 않는다.
+        - [ ] 성인은 할인되지 않는다.
         - [ ] 청소년은 전체 금액의 350원을 제외하고 그 금액에서 20%를 할인해준다.
         - [ ] 어린이는 전체 금액의 350원을 제외하고 그 금액에서 50%를 추가로 할인해준다.
