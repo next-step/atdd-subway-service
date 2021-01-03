@@ -75,6 +75,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우")
+    @Test
+    void failFindPathEqualsStation() {
+        // 지하철 경로 조회 요청
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(교대역.getId(),교대역.getId());
+
+        // 지하철 경로 조회 실패됨
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     private ExtractableResponse<Response> 지하철_경로_조회_요청(long source, long target) {
         return RestAssured.given().log().all().
                 param("source", source).

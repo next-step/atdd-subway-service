@@ -19,6 +19,9 @@ public class PathService {
     }
 
     public PathResponse findPath(Long source, Long target) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
+        }
         Lines lines = new Lines(lineRepository.findAll());
         Station sourceStation = lines.searchStationById(source);
         Station targetStation = lines.searchStationById(target);

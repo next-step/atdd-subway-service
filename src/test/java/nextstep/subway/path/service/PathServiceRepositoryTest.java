@@ -74,7 +74,7 @@ public class PathServiceRepositoryTest {
                 .containsExactly("교대역", "남부터미널", "양재역");
     }
 
-    @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우")
+    @DisplayName("경로 조회시 존재하지 않은 출발역이나 도착역을 조회 할 경우")
     @Test
     void findPathWhenNotExistStation() {
         // given
@@ -84,5 +84,14 @@ public class PathServiceRepositoryTest {
         assertThatThrownBy(() -> pathService.findPath(교대역.getId(), 사당역.getId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("존재하지 않은 출발역이나 도착역입니다.");
+    }
+
+    @DisplayName("경로 조회시 출발역과 도착역이 같은 경우")
+    @Test
+    void findPathWhenEqualStation() {
+        // when then
+        assertThatThrownBy(() -> pathService.findPath(교대역.getId(), 교대역.getId()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("출발역과 도착역이 같습니다.");
     }
 }
