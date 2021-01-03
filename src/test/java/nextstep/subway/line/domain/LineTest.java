@@ -115,7 +115,7 @@ public class LineTest {
 	@DisplayName("상행종점에 새로운 역을 등록할 경우, 신규 구간이 정상적으로 등록되어야한다.")
 	void addSectionEndUpStation() {
 		//given
-		newStation = new Station("당산역");
+		newStation = new Station("홍대입구역");
 		int newDistance = 2;
 		Station[] expectedSortedStations = {newStation, originEndUpStation, originMiddleUpStation, originMiddleDownStation, originEndDownEndStation};
 
