@@ -4,7 +4,8 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+
+import java.util.Arrays;
 import java.util.List;
 
 @Entity
@@ -16,8 +17,8 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private LineSections sections = new LineSections();
 
     public Line() {
     }
@@ -30,7 +31,13 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        this.sections = new LineSections(Arrays.asList(new Section(this, upStation, downStation, distance)));
+    }
+
+    public Line(String name, String color, List<Section> sections) {
+        this.name = name;
+        this.color = color;
+        this.sections = new LineSections(sections);
     }
 
     public void update(Line line) {
@@ -51,6 +58,27 @@ public class Line extends BaseEntity {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return sections.getSections();
+    }
+
+    public List<Station> getStations() {
+        return this.sections.getStations();
+    }
+
+    public void setSection(List<Section> sections) {
+        this.sections = new LineSections(sections);
+    }
+
+    public void addSection(Station upStation, Station downStation, int distance) {
+        Section newSection = new Section(this, upStation, downStation, distance);
+        this.sections.addSection(newSection);
+    }
+
+    public void removeStation(Station station) {
+        if (!this.sections.isRemovable()) {
+            throw new RuntimeException();
+        }
+
+        this.sections.removeStation(this, station);
     }
 }

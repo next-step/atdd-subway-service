@@ -5,23 +5,30 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Embeddable;
+import javax.persistence.OneToMany;
+
 import nextstep.subway.station.domain.Station;
 
+@Embeddable
 public class LineSections {
-	List<SectionNew> sections = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+	private List<Section> sections = new ArrayList<>();
 
 	protected LineSections() {
 	}
 
-	public LineSections(List<SectionNew> sections) {
+	public LineSections(List<Section> sections) {
 		this.sections.addAll(sections);
 	}
 
-	public void add(SectionNew section) {
+	public void add(Section section) {
 		this.sections.add(section);
 	}
 
-	public void addSection(SectionNew newSection) {
+	public void addSection(Section newSection) {
 		boolean isUpStationExisted = isContainStation(newSection.getUpStation());
 		boolean isDownStationExisted = isContainStation(newSection.getDownStation());
 		validateSection(isUpStationExisted, isDownStationExisted);
@@ -33,21 +40,21 @@ public class LineSections {
 		addSectionBasedDownStation(newSection);
 	}
 
-	public void addSectionBasedUpStation(SectionNew newSection) {
+	public void addSectionBasedUpStation(Section newSection) {
 		findByUpStation(newSection.getUpStation())
 			.ifPresent(it -> it.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
 		this.sections.add(newSection);
 	}
 
-	public void addSectionBasedDownStation(SectionNew newSection) {
+	public void addSectionBasedDownStation(Section newSection) {
 		findByDownStation(newSection.getDownStation())
 			.ifPresent(it -> it.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
 		this.sections.add(newSection);
 	}
 
-	public void removeStation(LineNew line, Station station) {
-		Optional<SectionNew> upLineStation = this.findByUpStation(station);
-		Optional<SectionNew> downLineStation = this.findByDownStation(station);
+	public void removeStation(Line line, Station station) {
+		Optional<Section> upLineStation = this.findByUpStation(station);
+		Optional<Section> downLineStation = this.findByDownStation(station);
 
 		if (upLineStation.isPresent() && downLineStation.isPresent()) {
 			removeMiddleStation(line, upLineStation.get(), downLineStation.get());
@@ -61,7 +68,7 @@ public class LineSections {
 		return this.sections.size() > 1;
 	}
 
-	public List<SectionNew> getSections() {
+	public List<Section> getSections() {
 		return this.sections;
 	}
 
@@ -76,7 +83,7 @@ public class LineSections {
 
 		while (downStation != null) {
 			Station finalUpStation = downStation;
-			Optional<SectionNew> nextLineStation = findByUpStation(finalUpStation);
+			Optional<Section> nextLineStation = findByUpStation(finalUpStation);
 			if (!nextLineStation.isPresent()) {
 				break;
 			}
@@ -92,13 +99,13 @@ public class LineSections {
 			.anyMatch(st -> st.equals(station));
 	}
 
-	private Optional<SectionNew> findByUpStation(Station upStation) {
+	private Optional<Section> findByUpStation(Station upStation) {
 		return this.sections.stream()
 			.filter(it -> it.getUpStation() == upStation)
 			.findFirst();
 	}
 
-	private Optional<SectionNew> findByDownStation(Station downStation) {
+	private Optional<Section> findByDownStation(Station downStation) {
 		return this.sections.stream()
 			.filter(it -> it.getDownStation() == downStation)
 			.findFirst();
@@ -108,7 +115,7 @@ public class LineSections {
 		Station upStation = this.sections.get(0).getUpStation();
 		while (upStation != null) {
 			Station finalDownStation = upStation;
-			Optional<SectionNew> nextLineStation = findByDownStation(finalDownStation);
+			Optional<Section> nextLineStation = findByDownStation(finalDownStation);
 			if (!nextLineStation.isPresent()) {
 				break;
 			}
@@ -128,10 +135,10 @@ public class LineSections {
 		}
 	}
 
-	private void removeMiddleStation(LineNew line, SectionNew upStationSection, SectionNew downStationSection) {
+	private void removeMiddleStation(Line line, Section upStationSection, Section downStationSection) {
 		Station newUpStation = downStationSection.getUpStation();
 		Station newDownStation = upStationSection.getDownStation();
 		int newDistance = upStationSection.getDistance() + downStationSection.getDistance();
-		add(new SectionNew(line, newUpStation, newDownStation, newDistance));
+		add(new Section(line, newUpStation, newDownStation, newDistance));
 	}
 }

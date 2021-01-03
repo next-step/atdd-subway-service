@@ -64,16 +64,4 @@ public class LineController {
     public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
         return ResponseEntity.badRequest().build();
     }
-
-    @PostMapping("/{lineId}/sections/new")
-    public ResponseEntity addLineStationNew(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
-        lineService.addLineStation(lineId, sectionRequest);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{lineId}/sections/new")
-    public ResponseEntity removeLineStationNew(@PathVariable Long lineId, @RequestParam Long stationId) {
-        lineService.removeLineStation(lineId, stationId);
-        return ResponseEntity.ok().build();
-    }
 }

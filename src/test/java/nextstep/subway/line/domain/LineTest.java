@@ -13,7 +13,7 @@ import nextstep.subway.station.domain.Station;
 
 public class LineTest {
 
-	private LineNew lineNew;
+	private Line line;
 	private Station originEndUpStation;
 	private Station originMiddleUpStation;
 	private Station originMiddleDownStation;
@@ -25,24 +25,23 @@ public class LineTest {
 	private static final int ORIGIN_SECTION_SIZE = 3;
 	private static final int ORIGIN_STATION_SIZE = 4;
 	private static final int ORIGIN_TOTAL_DISTANCE = END_UP_DISTANCE + MIDDLE_DISTANCE + END_DOWN_DISTANCE;
-	private SectionNew originSection1;
-	private SectionNew originSection2;
-	private SectionNew originSection3;
+	private Section originSection1;
+	private Section originSection2;
+	private Section originSection3;
 
 	Station newStation;
 
 	@BeforeEach
 	void setUp() {
 		//given
-		lineNew = new LineNew("2호선", "green");
 		originEndUpStation = new Station("당산역");
 		originMiddleUpStation = new Station("문래역");
 		originMiddleDownStation = new Station("사당역");
 		originEndDownEndStation = new Station("잠실역");
-		originSection1 = new SectionNew(lineNew, originEndUpStation, originMiddleUpStation, END_UP_DISTANCE);
-		originSection2 = new SectionNew(lineNew, originMiddleUpStation, originMiddleDownStation, MIDDLE_DISTANCE);
-		originSection3 = new SectionNew(lineNew, originMiddleDownStation, originEndDownEndStation, END_DOWN_DISTANCE);
-		lineNew.setSection(Arrays.asList(originSection1, originSection2, originSection3));
+		originSection1 = new Section(line, originEndUpStation, originMiddleUpStation, END_UP_DISTANCE);
+		originSection2 = new Section(line, originMiddleUpStation, originMiddleDownStation, MIDDLE_DISTANCE);
+		originSection3 = new Section(line, originMiddleDownStation, originEndDownEndStation, END_DOWN_DISTANCE);
+		line = new Line("2호선", "green", Arrays.asList(originSection1, originSection2, originSection3));
 	}
 
 	@Test
@@ -54,17 +53,17 @@ public class LineTest {
 		Station[] expectedSortedStations = {originEndUpStation, originMiddleUpStation, newStation, originMiddleDownStation, originEndDownEndStation};
 
 		//when
-		lineNew.addSection(originMiddleUpStation, newStation, newDistance);
+		line.addSection(originMiddleUpStation, newStation, newDistance);
 
 		//then
-		List<SectionNew> sections = lineNew.getSections();
-		SectionNew originDownSection = sections.stream()
+		List<Section> sections = line.getSections();
+		Section originDownSection = sections.stream()
 			.filter(section -> section.getDownStation().equals(originMiddleDownStation))
 			.findFirst().get();
 		int totalDistance = sections.stream()
-			.mapToInt(SectionNew::getDistance)
+			.mapToInt(Section::getDistance)
 			.sum();
-		List<Station> stations = lineNew.getStations();
+		List<Station> stations = line.getStations();
 
 		//새 구간이 추가되어야한다
 		assertThat(sections.size()).isEqualTo(ORIGIN_SECTION_SIZE + 1);
@@ -88,17 +87,17 @@ public class LineTest {
 		Station[] expectedSortedStations = {originEndUpStation, originMiddleUpStation, newStation, originMiddleDownStation, originEndDownEndStation};
 
 		//when
-		lineNew.addSection(newStation, originMiddleDownStation, newDistance);
+		line.addSection(newStation, originMiddleDownStation, newDistance);
 
 		//then
-		List<SectionNew> sections = lineNew.getSections();
-		SectionNew originUpSection = sections.stream()
+		List<Section> sections = line.getSections();
+		Section originUpSection = sections.stream()
 			.filter(section -> section.getUpStation().equals(originMiddleUpStation))
 			.findFirst().get();
 		int totalDistance = sections.stream()
-			.mapToInt(SectionNew::getDistance)
+			.mapToInt(Section::getDistance)
 			.sum();
-		List<Station> stations = lineNew.getStations();
+		List<Station> stations = line.getStations();
 
 		//새 구간이 추가되어야한다
 		assertThat(sections.size()).isEqualTo(ORIGIN_SECTION_SIZE + 1);
@@ -122,14 +121,14 @@ public class LineTest {
 		Station[] expectedSortedStations = {newStation, originEndUpStation, originMiddleUpStation, originMiddleDownStation, originEndDownEndStation};
 
 		//when
-		lineNew.addSection(newStation, originEndUpStation, newDistance);
+		line.addSection(newStation, originEndUpStation, newDistance);
 
 		//then
-		List<SectionNew> sections = lineNew.getSections();
+		List<Section> sections = line.getSections();
 		int totalDistance = sections.stream()
-			.mapToInt(SectionNew::getDistance)
+			.mapToInt(Section::getDistance)
 			.sum();
-		List<Station> stations = lineNew.getStations();
+		List<Station> stations = line.getStations();
 
 		//새 구간이 추가되어야한다
 		assertThat(sections.size()).isEqualTo(ORIGIN_SECTION_SIZE + 1);
@@ -149,14 +148,14 @@ public class LineTest {
 		Station[] expectedSortedStations = {originEndUpStation, originMiddleUpStation, originMiddleDownStation, originEndDownEndStation, newStation};
 
 		//when
-		lineNew.addSection(originEndDownEndStation, newStation, newDistance);
+		line.addSection(originEndDownEndStation, newStation, newDistance);
 
 		//then
-		List<SectionNew> sections = lineNew.getSections();
+		List<Section> sections = line.getSections();
 		int totalDistance = sections.stream()
-			.mapToInt(SectionNew::getDistance)
+			.mapToInt(Section::getDistance)
 			.sum();
-		List<Station> stations = lineNew.getStations();
+		List<Station> stations = line.getStations();
 
 		//새 구간이 추가되어야한다
 		assertThat(sections.size()).isEqualTo(ORIGIN_SECTION_SIZE + 1);
@@ -172,10 +171,9 @@ public class LineTest {
 	void addSectionEqualsOriginDistance() {
 		//given
 		newStation = new Station("신도림역");
-		int newDistance = MIDDLE_DISTANCE;
 
 		//when/then
-		assertThatThrownBy(() -> lineNew.addSection(originMiddleUpStation, newStation, newDistance))
+		assertThatThrownBy(() -> line.addSection(originMiddleUpStation, newStation, MIDDLE_DISTANCE))
 			.isInstanceOf(RuntimeException.class);
 	}
 
@@ -187,7 +185,7 @@ public class LineTest {
 		int newDistance = MIDDLE_DISTANCE + 1;
 
 		//when/then
-		assertThatThrownBy(() -> lineNew.addSection(originMiddleUpStation, newStation, newDistance))
+		assertThatThrownBy(() -> line.addSection(originMiddleUpStation, newStation, newDistance))
 			.isInstanceOf(RuntimeException.class);
 	}
 
@@ -195,7 +193,7 @@ public class LineTest {
 	@DisplayName("새로운 구간의 상행역과 하행역이 이미 노선에 모두 등록되어 있다면 RuntimeException 을 Throw 해야한다.")
 	void addSectionAlreadyExist() {
 		//when/then
-		assertThatThrownBy(() -> lineNew.addSection(originMiddleUpStation, originMiddleDownStation, 4))
+		assertThatThrownBy(() -> line.addSection(originMiddleUpStation, originMiddleDownStation, 4))
 			.isInstanceOf(RuntimeException.class);
 	}
 
@@ -207,7 +205,7 @@ public class LineTest {
 		Station newStation2 = new Station("이대역");
 
 		//when/then
-		assertThatThrownBy(() -> lineNew.addSection(newStation, newStation2, 4))
+		assertThatThrownBy(() -> line.addSection(newStation, newStation2, 4))
 			.isInstanceOf(RuntimeException.class);
 	}
 
@@ -218,17 +216,17 @@ public class LineTest {
 		Station[] expectedSortedStations = {originEndUpStation, originMiddleDownStation, originEndDownEndStation};
 
 		//when
-		lineNew.removeStation(originMiddleUpStation);
+		line.removeStation(originMiddleUpStation);
 
 		//then
-		List<SectionNew> sections = lineNew.getSections();
-		SectionNew originDownSection = sections.stream()
+		List<Section> sections = line.getSections();
+		Section originDownSection = sections.stream()
 			.filter(section -> section.getDownStation().equals(originMiddleDownStation))
 			.findFirst().get();
 		int totalDistance = sections.stream()
-			.mapToInt(SectionNew::getDistance)
+			.mapToInt(Section::getDistance)
 			.sum();
-		List<Station> stations = lineNew.getStations();
+		List<Station> stations = line.getStations();
 
 		//구간이 제거 되어야한다.
 		assertThat(sections.size()).isEqualTo(ORIGIN_SECTION_SIZE - 1);
@@ -250,14 +248,14 @@ public class LineTest {
 		Station[] expectedSortedStations = {originMiddleUpStation, originMiddleDownStation, originEndDownEndStation};
 
 		//when
-		lineNew.removeStation(originEndUpStation);
+		line.removeStation(originEndUpStation);
 
 		//then
-		List<SectionNew> sections = lineNew.getSections();
+		List<Section> sections = line.getSections();
 		int totalDistance = sections.stream()
-			.mapToInt(SectionNew::getDistance)
+			.mapToInt(Section::getDistance)
 			.sum();
-		List<Station> stations = lineNew.getStations();
+		List<Station> stations = line.getStations();
 
 		//구간이 제거 되어야한다.
 		assertThat(sections.size()).isEqualTo(ORIGIN_SECTION_SIZE - 1);
@@ -275,14 +273,14 @@ public class LineTest {
 		Station[] expectedSortedStations = {originEndUpStation, originMiddleUpStation, originMiddleDownStation};
 
 		//when
-		lineNew.removeStation(originEndDownEndStation);
+		line.removeStation(originEndDownEndStation);
 
 		//then
-		List<SectionNew> sections = lineNew.getSections();
+		List<Section> sections = line.getSections();
 		int totalDistance = sections.stream()
-			.mapToInt(SectionNew::getDistance)
+			.mapToInt(Section::getDistance)
 			.sum();
-		List<Station> stations = lineNew.getStations();
+		List<Station> stations = line.getStations();
 
 		//구간이 제거 되어야한다.
 		assertThat(sections.size()).isEqualTo(ORIGIN_SECTION_SIZE - 1);
@@ -297,7 +295,7 @@ public class LineTest {
 	@DisplayName("구간이 하나인 노선에서 마지막 구간을 제거하려 할 때 RuntimeException 을 Throw 해야한다.")
 	void removeStationExistOneSection() {
 		//given
-		LineNew newLineHavingOneSection = new LineNew("2호선", "green", originEndUpStation, originEndDownEndStation, END_UP_DISTANCE);
+		Line newLineHavingOneSection = new Line("2호선", "green", originEndUpStation, originEndDownEndStation, END_UP_DISTANCE);
 
 		//when/then
 		assertThatThrownBy(() -> newLineHavingOneSection.removeStation(originEndUpStation))
@@ -308,7 +306,7 @@ public class LineTest {
 	@DisplayName("노선에 등록되어있지 않은 역을 제거하려 할 때, RuntimeException 을 Throw 해야한다.")
 	void removeStationNotExist() {
 		//given
-		LineNew newLineHavingOneSection = new LineNew("2호선", "green", originEndUpStation, originEndDownEndStation, END_UP_DISTANCE);
+		Line newLineHavingOneSection = new Line("2호선", "green", originEndUpStation, originEndDownEndStation, END_UP_DISTANCE);
 
 		//when/then
 		assertThatThrownBy(() -> newLineHavingOneSection.removeStation(originMiddleDownStation))
