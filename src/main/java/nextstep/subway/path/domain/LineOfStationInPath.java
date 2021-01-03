@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class LineOfStationInPath {
     private static final int MULTI_LINE_BOUNDARY = 1;
@@ -15,6 +16,12 @@ public class LineOfStationInPath {
 
     public boolean isMultiLine() {
         return this.lineIds.size() > MULTI_LINE_BOUNDARY;
+    }
+
+    public List<Long> getSameLines(final LineOfStationInPath that) {
+        return that.lineIds.stream()
+                .filter(this.lineIds::contains)
+                .collect(Collectors.toList());
     }
 
     @Override

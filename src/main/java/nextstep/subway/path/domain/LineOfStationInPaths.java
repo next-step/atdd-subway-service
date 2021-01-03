@@ -11,20 +11,37 @@ public class LineOfStationInPaths {
         this.lineOfStationInPaths = lineOfStationInPaths;
     }
 
-    LineOfStationInPath findNext(LineOfStationInPath lineOfStationInPath) {
-        int targetIndex = indexOf(lineOfStationInPath) + 1;
+    public List<List<Long>> findTransferLineCandidates() {
+        List<LineOfStationInPath> multiLines = this.findMultiLines();
 
-        if (targetIndex == this.lineOfStationInPaths.size()) {
+        return multiLines.stream().map(it -> {
+            LineOfStationInPath next = findNext(it);
+            return next.getSameLines(it);
+        }).collect(Collectors.toList());
+    }
+
+    LineOfStationInPath findNext(LineOfStationInPath lineOfStationInPath) {
+        int targetIndex = this.indexOf(lineOfStationInPath) + 1;
+
+        if (targetIndex == this.size()) {
             return new LineOfStationInPath(new ArrayList<>());
         }
 
-        return this.lineOfStationInPaths.get(targetIndex);
+        return this.get(targetIndex);
     }
 
     List<LineOfStationInPath> findMultiLines() {
         return this.lineOfStationInPaths.stream()
                 .filter(LineOfStationInPath::isMultiLine)
                 .collect(Collectors.toList());
+    }
+
+    private LineOfStationInPath get(int index) {
+        return this.lineOfStationInPaths.get(index);
+    }
+
+    private int size() {
+        return this.lineOfStationInPaths.size();
     }
 
     private int indexOf(LineOfStationInPath lineOfStationInPath) {

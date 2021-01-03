@@ -17,8 +17,8 @@ class LineOfStationInPathsTest {
                 new LineOfStationInPath(Arrays.asList(1L)),
                 new LineOfStationInPath(Arrays.asList(1L)),
                 new LineOfStationInPath(Arrays.asList(1L, 2L)),
-                new LineOfStationInPath(Arrays.asList(2L, 3L)
-        ));
+                new LineOfStationInPath(Arrays.asList(2L, 3L))
+        );
 
         List<LineOfStationInPath> expectedValues = Arrays.asList(
                 new LineOfStationInPath(Arrays.asList(1L, 2L)),
@@ -36,8 +36,8 @@ class LineOfStationInPathsTest {
                 new LineOfStationInPath(Arrays.asList(1L)),
                 new LineOfStationInPath(Arrays.asList(1L)),
                 new LineOfStationInPath(Arrays.asList(1L, 2L)),
-                new LineOfStationInPath(Arrays.asList(2L)
-                ));
+                new LineOfStationInPath(Arrays.asList(2L))
+        );
 
         LineOfStationInPaths lineOfStationInPaths = new LineOfStationInPaths(values);
 
@@ -52,12 +52,33 @@ class LineOfStationInPathsTest {
                 new LineOfStationInPath(Arrays.asList(1L)),
                 new LineOfStationInPath(Arrays.asList(1L)),
                 new LineOfStationInPath(Arrays.asList(1L, 2L)),
-                new LineOfStationInPath(Arrays.asList(2L)
-                ));
+                new LineOfStationInPath(Arrays.asList(2L))
+        );
 
         LineOfStationInPaths lineOfStationInPaths = new LineOfStationInPaths(values);
 
         assertThat(lineOfStationInPaths.findNext(new LineOfStationInPath(Arrays.asList(2L))))
                 .isEqualTo(new LineOfStationInPath(new ArrayList<>()));
+    }
+
+    @DisplayName("환승한 노선 정보들을 알아낼 수 있다.")
+    @Test
+    void findTransferLines() {
+        List<LineOfStationInPath> values = Arrays.asList(
+                new LineOfStationInPath(Arrays.asList(1L)),
+                new LineOfStationInPath(Arrays.asList(1L)),
+                new LineOfStationInPath(Arrays.asList(1L, 2L, 3L)),
+                new LineOfStationInPath(Arrays.asList(2L)),
+                new LineOfStationInPath(Arrays.asList(2L)),
+                new LineOfStationInPath(Arrays.asList(2L, 3L, 4L)),
+                new LineOfStationInPath(Arrays.asList(3L, 4L, 5L)),
+                new LineOfStationInPath(Arrays.asList(5L, 6L))
+        );
+
+        LineOfStationInPaths lineOfStationInPaths = new LineOfStationInPaths(values);
+
+        assertThat(lineOfStationInPaths.findTransferLineCandidates()).isEqualTo(Arrays.asList(
+                Arrays.asList(2L), Arrays.asList(3L, 4L), Arrays.asList(5L), new ArrayList<>()
+        ));
     }
 }
