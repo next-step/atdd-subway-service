@@ -21,7 +21,13 @@ public class LineOfStationInPath {
         return this.lineWithExtraFees.size() > MULTI_LINE_BOUNDARY;
     }
 
-    public List<LineWithExtraFee> getSameLines(final LineOfStationInPath that) {
+//    public LineWithExtraFee findTransferLine(LineOfStationInPath that) {
+//        return getSameLines(that).stream()
+//                .min(Comparator.comparing(LineWithExtraFee::getTransferExtraFee))
+//                .orElseThrow(() -> new CannotFindMinExtraFeeLineException("환승비가 제일 적은 노선을 찾을 수 없습니다."));
+//    }
+
+    public List<LineWithExtraFee> findTransferCandidates(LineOfStationInPath that) {
         return that.lineWithExtraFees.stream()
                 .filter(this.lineWithExtraFees::contains)
                 .collect(Collectors.toList());
