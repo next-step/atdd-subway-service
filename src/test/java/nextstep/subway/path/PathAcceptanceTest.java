@@ -9,25 +9,15 @@ import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.path.service.PathService;
-import nextstep.subway.path.ui.PathController;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.Collections;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
@@ -38,6 +28,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private StationResponse 판교역;
 
     @BeforeEach
     public void setUp() {
@@ -47,6 +38,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        판교역 = StationAcceptanceTest.지하철역_등록되어_있음("판교역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
@@ -60,22 +52,39 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void findPath() {
         // 지하철 경로 조회 요청
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all().
-                param("source", 교대역.getId()).
-                param("target", 양재역.getId()).
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(교대역.getId(),양재역.getId());
+
+        // 지하철 경로 조회됨
+        // then
+        PathResponse as = response.as(PathResponse.class);
+        assertThat(as.getStations()).extracting("name")
+                .containsExactly("교대역", "남부터미널역", "양재역");
+        assertThat(as.getDistance()).isEqualTo(8);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우")
+    @Test
+    void failFindPathNotExistStation() {
+        // 지하철 경로 조회 요청
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(교대역.getId(),판교역.getId());
+
+        // 지하철 경로 조회 실패됨
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private ExtractableResponse<Response> 지하철_경로_조회_요청(long source, long target) {
+        return RestAssured.given().log().all().
+                param("source", source).
+                param("target", target).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 when().
                 get("/paths").
                 then().
                 log().all().
                 extract();
-        // 지하철 경로 조회됨
-        // then
-        PathResponse as = response.as(PathResponse.class);
-        assertThat(as.getStations()).hasSize(0);
-        assertThat(as.getDistance()).isEqualTo(0);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-
     }
 
     private LineResponse 지하철_노선_등록되어_있음(String lineName, String color, StationResponse upStation, StationResponse downStation, int distance) {
