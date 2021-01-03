@@ -5,13 +5,27 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class LineOfStationInPaths {
+    private static final Integer TRANSFER_BOUNDARY = 0;
+
     private final List<LineOfStationInPath> lineOfStationInPaths;
 
     public LineOfStationInPaths(List<LineOfStationInPath> lineOfStationInPaths) {
         this.lineOfStationInPaths = lineOfStationInPaths;
     }
 
-    List<TransferCandidates> findTransferCandidates() {
+    public TransferLines findTransferLines() {
+        if (isNotTransferred()) {
+            return new TransferLines(new ArrayList<>());
+        }
+
+        List<LineWithExtraFee> transferLines = this.findTransferCandidatesOfPath().stream()
+                .map(TransferCandidates::confirmTransferLine)
+                .collect(Collectors.toList());
+
+        return new TransferLines(transferLines);
+    }
+
+    List<TransferCandidates> findTransferCandidatesOfPath() {
         List<LineOfStationInPath> multiLines = this.findMultiLines();
 
         return multiLines.stream().map(it -> {
@@ -46,5 +60,9 @@ public class LineOfStationInPaths {
 
     private int indexOf(LineOfStationInPath lineOfStationInPath) {
         return this.lineOfStationInPaths.indexOf(lineOfStationInPath);
+    }
+
+    private boolean isNotTransferred() {
+        return this.findMultiLines().size() == TRANSFER_BOUNDARY;
     }
 }

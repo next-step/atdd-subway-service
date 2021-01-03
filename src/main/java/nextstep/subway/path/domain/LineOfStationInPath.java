@@ -1,8 +1,6 @@
 package nextstep.subway.path.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class LineOfStationInPath {
@@ -24,6 +22,10 @@ public class LineOfStationInPath {
                 .collect(Collectors.toList());
 
         return new TransferCandidates(transferCandidates);
+    }
+
+    public TransferCandidates findFirstTransferCandidate() {
+        return new TransferCandidates(Collections.singletonList(lineWithExtraFees.get(0)));
     }
 
     @Override
