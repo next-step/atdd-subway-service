@@ -17,10 +17,18 @@ public class FeeCalculatorService {
         this.safeLineAdapter = safeLineAdapter;
     }
 
-    DistanceFee calculateDistanceFee(ShortestPath shortestPath) {
-        int distance = (int) shortestPath.calculateTotalDistance();
+    public BigDecimal calculateExtraFee(ShortestPath shortestPath) {
+        BigDecimal distanceFee = calculateDistanceFee(shortestPath);
+        BigDecimal transferFee = calculateTransferFee(shortestPath);
 
-        return DistanceFeeSelector.select(distance);
+        return distanceFee.add(transferFee);
+    }
+
+    BigDecimal calculateDistanceFee(ShortestPath shortestPath) {
+        int distance = (int) shortestPath.calculateTotalDistance();
+        DistanceFee distanceFee = DistanceFeeSelector.select(distance);
+
+        return distanceFee.calculate();
     }
 
     BigDecimal calculateTransferFee(ShortestPath shortestPath) {

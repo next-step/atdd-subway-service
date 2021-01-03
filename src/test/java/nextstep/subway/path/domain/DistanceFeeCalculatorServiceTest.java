@@ -51,9 +51,9 @@ class DistanceFeeCalculatorServiceTest {
         PathFinder pathFinder = PathFinder.of(stationIds, safeSectionInfos);
         ShortestPath shortestPath = pathFinder.findShortestPath(source, target);
 
-        DistanceFee distanceFee = feeCalculatorService.calculateDistanceFee(shortestPath);
+        BigDecimal distanceFee = feeCalculatorService.calculateDistanceFee(shortestPath);
 
-        assertThat(distanceFee.calculate()).isEqualTo(expected);
+        assertThat(distanceFee).isEqualTo(expected);
     }
     public static Stream<Arguments> calculateByDistanceTestResource() {
         return Stream.of(
@@ -63,11 +63,12 @@ class DistanceFeeCalculatorServiceTest {
         );
     }
 
-    @DisplayName("환승 노선에 따른 추가금을 계산할 수 있다.")
+    @DisplayName("거리, 환승여부에 따른 요금을 계산할 수 있다.")
     @Test
-    void calculateTransferFeeTest() {
+    void calculateExtraFeeTest() {
         Long source = 1L;
         Long target = 3L;
+        BigDecimal expectedFee = BigDecimal.valueOf(1360);
 
         List<Long> stationIds = Arrays.asList(1L, 2L, 3L, 4L);
         List<SafeSectionInfo> safeSectionInfos = Arrays.asList(
@@ -87,8 +88,8 @@ class DistanceFeeCalculatorServiceTest {
 
         given(safeLineAdapter.getLineOfStationInPaths(Arrays.asList(1L, 2L, 3L))).willReturn(transferOnce);
 
-        BigDecimal transferFee = feeCalculatorService.calculateTransferFee(shortestPath);
+        BigDecimal extraFee = feeCalculatorService.calculateExtraFee(shortestPath);
 
-        assertThat(transferFee).isEqualTo(BigDecimal.valueOf(10));
+        assertThat(extraFee).isEqualTo(expectedFee);
     }
 }
