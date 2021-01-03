@@ -459,14 +459,18 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - [ ] ShortestPath를 인자로 주입받아 LineInPaths를 반환한다.
         - [ ] LineInPaths를 통해 환승한 노선들을 찾아낼 수 있다.
     - LineOfStationInPath
-        - [X] 경로 상에서 어떤 노선에 속해 있는지를 속성으로 갖는다. (List<Long>)
+        ~~- [X] 경로 상에서 어떤 노선에 속해 있는지를 속성으로 갖는다. (List<Long>)~~
         - [X] 환승역인지(여러 노선이 겹치는 구간인지) 확인할 수 있다.
+        - [ ] TransferLineCandidate 컬렉션을 속성으로 갖는다.
+        - [ ] 갖고 있는 환승 노선 후보들 중 가장 환승 추가금이 적은 노선으로 환승 노선을 확정지을 수 있다.
     - LineOfStationInPaths
         - LineInPath 일급 컬렉션
         - [X] 구성요소 중 두개 이상의 노선이 겹치는 부분을 찾아낼 수 있다.
         - [X] 각 요소의 다음 요소가 어떤 노선인지 알 수 있다.
         - [X] 노선이 겹치는 요소가 현재 경로에서 어떤 노선으로 환승했는지 환승 후보들을 찾아낼 수 있다.
         - [ ] 환승 금액에 의해 환승 후보들을 확정할 수 있다.
+    - TransferLineCandidate
+        - 노선 ID와 노선의 환승금을 인자로 갖는 오브젝트
     - SafeLineAdapter
         - [ ] 역 ID 컬렉션을 인자로 전달해서 어느 역에 속했는지를 불러올 수 있다.
 - [ ] 이용자 나이에 따른 할인 계산
