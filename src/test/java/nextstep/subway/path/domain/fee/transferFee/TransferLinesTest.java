@@ -1,7 +1,5 @@
 package nextstep.subway.path.domain.fee.transferFee;
 
-import nextstep.subway.path.domain.fee.transferFee.LineWithExtraFee;
-import nextstep.subway.path.domain.fee.transferFee.TransferLines;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

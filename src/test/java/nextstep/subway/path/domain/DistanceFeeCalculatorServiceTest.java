@@ -89,7 +89,7 @@ class DistanceFeeCalculatorServiceTest {
 
         given(safeLineAdapter.getLineOfStationInPaths(Arrays.asList(1L, 2L, 3L))).willReturn(transferOnce);
 
-        BigDecimal extraFee = feeCalculatorService.calculateExtraFee(shortestPath, loginMember);
+        BigDecimal extraFee = feeCalculatorService.calculateFee(shortestPath, loginMember);
 
         assertThat(extraFee).isEqualTo(expectedFee);
     }

@@ -58,7 +58,7 @@ class PathServiceTest {
                 new SafeStationInfo(2L, "역삼역", null),
                 new SafeStationInfo(4L, "삼성역", null)
         ));
-        given(feeCalculatorService.calculateExtraFee(any(), any())).willReturn(BigDecimal.valueOf(1000));
+        given(feeCalculatorService.calculateFee(any(), any())).willReturn(BigDecimal.valueOf(1000));
 
         PathResponse pathResponse = pathService.findShortestPath(sourceId, destinationId, loginMember);
 

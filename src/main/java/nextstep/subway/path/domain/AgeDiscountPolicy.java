@@ -4,13 +4,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public enum AgeDiscountPolicy {
-    NONE(extraFee -> extraFee.setScale(0, RoundingMode.FLOOR)),
-    TEEN(extraFee -> {
-        BigDecimal discountConstantValue = extraFee.subtract(BigDecimal.valueOf(350));
+    NONE(fee -> fee.setScale(0, RoundingMode.FLOOR)),
+    TEEN(fee -> {
+        BigDecimal discountConstantValue = fee.subtract(BigDecimal.valueOf(350));
         return discountConstantValue.multiply(BigDecimal.valueOf(0.8)).setScale(0, RoundingMode.FLOOR);
     }),
-    KID(extraFee -> {
-        BigDecimal discountConstantValue = extraFee.subtract(BigDecimal.valueOf(350));
+    KID(fee -> {
+        BigDecimal discountConstantValue = fee.subtract(BigDecimal.valueOf(350));
         return discountConstantValue.multiply(BigDecimal.valueOf(0.5)).setScale(0, RoundingMode.FLOOR);
     });
 
@@ -35,7 +35,7 @@ public enum AgeDiscountPolicy {
         return AgeDiscountPolicy.NONE;
     }
 
-    public BigDecimal applyDiscount(BigDecimal extraFee) {
-        return this.ageDiscount.apply(extraFee);
+    public BigDecimal applyDiscount(BigDecimal fee) {
+        return this.ageDiscount.apply(fee);
     }
 }

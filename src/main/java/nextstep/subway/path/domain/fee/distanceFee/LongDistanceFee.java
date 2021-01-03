@@ -18,8 +18,8 @@ public class LongDistanceFee implements DistanceFee {
 
     @Override
     public BigDecimal calculate() {
-        Integer extraFee = (int) (Math.ceil((distance - MIN_DISTANCE - 1) / 5) + 1) * 100;
-        return DEFAULT_FEE.add(BigDecimal.valueOf(extraFee));
+        Integer fee = (int) (Math.ceil((distance - MIN_DISTANCE - 1) / 5) + 1) * 100;
+        return DEFAULT_FEE.add(BigDecimal.valueOf(fee));
     }
 
     private void validate(Integer distance) {
