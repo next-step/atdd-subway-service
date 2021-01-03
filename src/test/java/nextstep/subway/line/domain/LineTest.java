@@ -45,7 +45,7 @@ public class LineTest {
 	}
 
 	@Test
-	@DisplayName("상행역 기준으로 중간에 새로운 역을 등록하는 경우, 신규 구간이 정상적으로 등록되어야한다.")
+	@DisplayName("신규 구간 등록 (중간 상행역기준) : A-B-C-D 에서 B-NEW 추가 -> A-B-NEW-C-D")
 	void addSectionBasedMiddleUpStation() {
 		//given
 		newStation = new Station("신도림역");
@@ -79,7 +79,7 @@ public class LineTest {
 	}
 
 	@Test
-	@DisplayName("하행역 기준으로 중간에 새로운 역을 등록하는 경우, 신규 구간이 정상적으로 등록되어야한다.")
+	@DisplayName("신규 구간 등록 (중간 하행역기준) : A-B-C-D 에서 NEW-C 추가 -> A-B-NEW-C-D")
 	void addSectionBasedMiddleDownStation() {
 		//given
 		newStation = new Station("서울대입구역");
@@ -113,7 +113,7 @@ public class LineTest {
 	}
 
 	@Test
-	@DisplayName("상행종점에 새로운 역을 등록할 경우, 신규 구간이 정상적으로 등록되어야한다.")
+	@DisplayName("신규 구간 등록 (상행종점) : A-B-C-D 에서 NEW-A 추가 -> NEW-A-B-C-D")
 	void addSectionEndUpStation() {
 		//given
 		newStation = new Station("홍대입구역");
@@ -140,7 +140,7 @@ public class LineTest {
 	}
 
 	@Test
-	@DisplayName("하행종점에 새로운 역을 등록할 경우, 신규 구간이 정상적으로 등록되어야한다.")
+	@DisplayName("신규 구간 등록 (하행종점) : A-B-C-D 에서 D-NEW 추가 -> A-B-C-D-NEW")
 	void addSectionEndDownStation() {
 		//given
 		newStation = new Station("건대입구역");
@@ -210,7 +210,7 @@ public class LineTest {
 	}
 
 	@Test
-	@DisplayName("중간의 역을 제거할 경우, 구간이 정상적으로 제거되어야한다.")
+	@DisplayName("구간 제거 (중간역) : A-B-C-D 에서 B 제거 -> A-C-D")
 	void removeMiddleStation() {
 		//given
 		Station[] expectedSortedStations = {originEndUpStation, originMiddleDownStation, originEndDownEndStation};
@@ -242,7 +242,7 @@ public class LineTest {
 	}
 
 	@Test
-	@DisplayName("상행종점을 제거할 경우, 구간이 정상적으로 제거되어야한다.")
+	@DisplayName("구간 제거 (상행종점) : A-B-C-D 에서 A 제거 -> B-C-D")
 	void removeEndUpStation() {
 		//given
 		Station[] expectedSortedStations = {originMiddleUpStation, originMiddleDownStation, originEndDownEndStation};
@@ -267,7 +267,7 @@ public class LineTest {
 	}
 
 	@Test
-	@DisplayName("하행종점을 제거할 경우, 구간이 정상적으로 제거되어야한다.")
+	@DisplayName("구간 제거 (하행종점) : A-B-C-D 에서 D 제거 -> A-B-C")
 	void removeEndDownStation() {
 		//given
 		Station[] expectedSortedStations = {originEndUpStation, originMiddleUpStation, originMiddleDownStation};
