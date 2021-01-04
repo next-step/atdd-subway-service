@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_됨;
@@ -59,13 +60,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음(
-                new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10))
+                new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, BigDecimal.ZERO))
                 .as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(
-                new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10))
+                new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, BigDecimal.ZERO))
                 .as(LineResponse.class);
         삼호선 = 지하철_노선_등록되어_있음(
-                new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 10))
+                new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 10, BigDecimal.ZERO))
                 .as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);

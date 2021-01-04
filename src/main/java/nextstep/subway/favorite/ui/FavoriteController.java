@@ -5,13 +5,10 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.ui.dto.FavoriteRequest;
 import nextstep.subway.favorite.ui.dto.FavoriteResponse;
-import nextstep.subway.favorite.ui.dto.StationInFavoriteResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController

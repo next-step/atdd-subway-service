@@ -2,6 +2,7 @@ package nextstep.subway.path.ui.dto;
 
 import nextstep.subway.path.domain.SafeStationInfo;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -9,18 +10,20 @@ import java.util.stream.Collectors;
 public class PathResponse {
     private final List<StationInPathResponse> stations;
     private final double distance;
+    private final BigDecimal fee;
 
-    public PathResponse(List<StationInPathResponse> stations, double distance) {
+    public PathResponse(List<StationInPathResponse> stations, double distance, BigDecimal fee) {
         this.stations = stations;
         this.distance = distance;
+        this.fee = fee;
     }
 
-    public static PathResponse of(List<SafeStationInfo> safeStationInfos, double distance) {
+    public static PathResponse of(List<SafeStationInfo> safeStationInfos, double distance, BigDecimal fee) {
         List<StationInPathResponse> stations = safeStationInfos.stream()
                 .map(StationInPathResponse::new)
                 .collect(Collectors.toList());
 
-        return new PathResponse(stations, distance);
+        return new PathResponse(stations, distance, fee);
     }
 
     public List<StationInPathResponse> getStations() {
@@ -29,6 +32,10 @@ public class PathResponse {
 
     public double getDistance() {
         return distance;
+    }
+
+    public BigDecimal getFee() {
+        return fee;
     }
 
     @Override

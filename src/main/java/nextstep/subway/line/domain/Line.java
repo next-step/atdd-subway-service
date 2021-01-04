@@ -6,7 +6,9 @@ import nextstep.subway.line.domain.exceptions.InvalidRemoveSectionException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 public class Line extends BaseEntity {
@@ -19,6 +21,8 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    @Embedded
+    private ExtraFee extraFee;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -26,14 +30,16 @@ public class Line extends BaseEntity {
     public Line() {
     }
 
-    public Line(String name, String color) {
+    public Line(String name, String color, BigDecimal extraFee) {
         this.name = name;
         this.color = color;
+        this.extraFee = ExtraFee.of(extraFee);
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public Line(String name, String color, Station upStation, Station downStation, int distance, BigDecimal extraFee) {
         this.name = name;
         this.color = color;
+        this.extraFee = ExtraFee.of(extraFee);
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
@@ -58,9 +64,18 @@ public class Line extends BaseEntity {
         return sections;
     }
 
+    public ExtraFee getExtraFee() {
+        return extraFee;
+    }
+
     public List<Station> getStations() {
         LineSectionExplorer lineSectionExplorer = new LineSectionExplorer(sections);
         return lineSectionExplorer.getStations();
+    }
+
+    public boolean isBelongedStation(Long stationId) {
+        List<Long> stationIds = getStations().stream().map(Station::getId).collect(Collectors.toList());
+        return stationIds.contains(stationId);
     }
 
     public boolean addSection(Station upStation, Station downStation, int distance) {

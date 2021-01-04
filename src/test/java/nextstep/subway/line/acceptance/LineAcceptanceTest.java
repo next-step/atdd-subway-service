@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +47,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void manageLineTest() {
         LineRequest changeRequest = new LineRequest("changedName", lineRequest1.getColor(),
-                lineRequest1.getUpStationId(), lineRequest1.getDownStationId(), lineRequest1.getDistance());
+                lineRequest1.getUpStationId(), lineRequest1.getDownStationId(), lineRequest1.getDistance(), lineRequest1.getExtraFee());
 
         // when
         ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(lineRequest1);

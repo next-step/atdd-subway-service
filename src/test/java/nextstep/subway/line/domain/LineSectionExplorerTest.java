@@ -6,6 +6,7 @@ import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +21,7 @@ class LineSectionExplorerTest {
         String name = "2호선";
         String color = "초록색";
         int distance = 3;
-        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.잠실역, distance);
+        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.잠실역, distance, BigDecimal.ZERO);
         LineSectionExplorer lineSectionExplorer = new LineSectionExplorer(line.getSections());
 
         Station firstStation = lineSectionExplorer.findUpStation();
@@ -28,12 +29,12 @@ class LineSectionExplorerTest {
         assertThat(firstStation.getName()).isEqualTo(StationFixtures.강남역.getName());
     }
 
-    @DisplayName("등록된 구간이 없는 Line의 상행종점역을 찾으면 예외 발생")
+    @DisplayName("등록된 구간이 없는 ¢Line의 상행종점역을 찾으면 예외 발생")
     @Test
     void findFirstStationFailTest() {
         String name = "2호선";
         String color = "초록색";
-        Line line = new Line(name, color);
+        Line line = new Line(name, color, BigDecimal.ZERO);
 
         LineSectionExplorer lineSectionExplorer = new LineSectionExplorer(line.getSections());
 
@@ -47,7 +48,7 @@ class LineSectionExplorerTest {
     void getStationsTest() {
         String name = "2호선";
         String color = "초록색";
-        Line line = new Line(name, color);
+        Line line = new Line(name, color, BigDecimal.ZERO);
         List<Section> sections = Arrays.asList(
                 new Section(line, StationFixtures.역삼역, StationFixtures.삼성역, 5),
                 new Section(line, StationFixtures.삼성역, StationFixtures.잠실역, 5),
@@ -77,7 +78,7 @@ class LineSectionExplorerTest {
     void findNextSectionTest() {
         String name = "2호선";
         String color = "초록색";
-        Line line = new Line(name, color);
+        Line line = new Line(name, color, BigDecimal.ZERO);
         Section firstSection = new Section(line, StationFixtures.강남역, StationFixtures.역삼역, 5);
         Section secondSection = new Section(line, StationFixtures.역삼역, StationFixtures.삼성역, 5);
         List<Section> sections = Arrays.asList(

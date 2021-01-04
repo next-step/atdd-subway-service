@@ -10,6 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.math.BigDecimal;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,7 +25,7 @@ class LineTest {
         Station upStation = StationFixtures.강남역;
         Station downStation = StationFixtures.역삼역;
 
-        Line line = new Line(name, color, upStation, downStation, 5);
+        Line line = new Line(name, color, upStation, downStation, 5, BigDecimal.ZERO);
 
         assertThatThrownBy(() -> line.addSection(upStation, downStation, 10))
                 .isInstanceOf(InvalidAddSectionException.class)
@@ -37,7 +38,7 @@ class LineTest {
         String name = "2호선";
         String color = "초록색";
 
-        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 5);
+        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 5, BigDecimal.ZERO);
 
         assertThatThrownBy(() -> line.addSection(StationFixtures.삼성역, StationFixtures.잠실역, 10))
                 .isInstanceOf(InvalidAddSectionException.class)
@@ -49,7 +50,7 @@ class LineTest {
     void addSectionToEmptyLine() {
         String name = "2호선";
         String color = "초록색";
-        Line line = new Line(name, color);
+        Line line = new Line(name, color, BigDecimal.ZERO);
 
         boolean result = line.addSection(StationFixtures.삼성역, StationFixtures.잠실역, 5);
 
@@ -62,7 +63,7 @@ class LineTest {
     void addSectionTest(Station upStation, Station downStation, int distance) {
         String name = "2호선";
         String color = "초록색";
-        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 6);
+        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 6, BigDecimal.ZERO);
 
         boolean result = line.addSection(upStation, downStation, distance);
 
@@ -82,7 +83,7 @@ class LineTest {
     void removeSectionFailWhenLineHasJustOneSectionTest() {
         String name = "2호선";
         String color = "초록색";
-        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 5);
+        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 5, BigDecimal.ZERO);
 
         assertThatThrownBy(() -> line.removeSection(StationFixtures.강남역))
                 .isInstanceOf(InvalidRemoveSectionException.class)
@@ -95,7 +96,7 @@ class LineTest {
     void removeSectionTest(Station removeTarget) {
         String name = "2호선";
         String color = "초록색";
-        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 5);
+        Line line = new Line(name, color, StationFixtures.강남역, StationFixtures.역삼역, 5, BigDecimal.ZERO);
         line.addSection(StationFixtures.역삼역, StationFixtures.삼성역, 5);
 
         boolean result = line.removeSection(removeTarget);

@@ -1,10 +1,16 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.domain.exceptions.PathFindingException;
+import nextstep.subway.path.domain.fee.distanceFee.DistanceFee;
+import nextstep.subway.path.domain.fee.distanceFee.DistanceFeeSelector;
+import nextstep.subway.path.domain.fee.transferFee.LineOfStationInPaths;
+import nextstep.subway.path.domain.fee.transferFee.TransferLines;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class ShortestPath {
@@ -38,5 +44,27 @@ public class ShortestPath {
         } catch (NullPointerException e) {
             throw new PathFindingException("경로가 존재하지 않습니다.");
         }
+    }
+
+    public Fee calculateFee(LineOfStationInPaths lineOfStationInPaths, LoginMember loginMember) {
+        BigDecimal distanceFee = this.calculateDistanceFee();
+        BigDecimal transferFee = this.calculateTransferFee(lineOfStationInPaths);
+        BigDecimal totalFee = distanceFee.add(transferFee);
+
+        AgeDiscountPolicy discountPolicy = AgeDiscountPolicy.find(loginMember.getAge());
+
+        return new Fee(totalFee, discountPolicy);
+    }
+
+    private BigDecimal calculateDistanceFee() {
+        DistanceFee distanceFee = DistanceFeeSelector.select((int) this.calculateTotalDistance());
+
+        return distanceFee.calculate();
+    }
+
+    private BigDecimal calculateTransferFee(LineOfStationInPaths lineOfStationInPaths) {
+        TransferLines transferLines = lineOfStationInPaths.findTransferLines();
+
+        return transferLines.calculateTransferFee();
     }
 }

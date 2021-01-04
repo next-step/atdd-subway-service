@@ -435,3 +435,74 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ### Step3 피드백 반영 요구사항
 - [X] SafeStationInFavoriteAdapter의 예외 상황이 좀 더 의미가 잘 드러나도록 개선
 - [X] 즐겨찾기 삭제 시도 시 해당 유저가 맞는지 확인하는 절차 필요
+
+## Step4. 요금 조회
+### Todo-list
+- [X] 거리에 따른 추가 요금 계산
+    - Fee
+        - 요금을 다루는 인터페이스
+        - [X] 해당 거리의 요금을 계산하는 calculate 메서드를 추상화한다.
+    - DefaultFee
+        - Fee의 하부 타입 10km 이내 기본요금을 책임진다.
+        - [X] 언제나 1250원을 반환한다.
+    - LongFee
+        - 10km 초과 ~ 50km 이하 거리의 요금계산을 책임진다.
+        - [X] 기본료로 1250원을 갖는다.
+        - [X] 5km 마다 추가요금을 100원을 붙여서 계산한다.
+    - SuperLongFee
+        - 50km 초과의 요금계산을 책임진다.
+        - [X] 기본료로 2050원을 갖는다.
+        - [X] 8km 마다 추가요금을 100원 붙여서 계산한다.
+- [X] 환승노선의 환승 비용에 따른 추가 요금 계산
+    - LineOfStationInPath
+        ~~- [X] 경로 상에서 어떤 노선에 속해 있는지를 속성으로 갖는다. (List<Long>)~~
+        - [X] 환승역인지(여러 노선이 겹치는 구간인지) 확인할 수 있다.
+        - [X] TransferLineCandidate 컬렉션을 속성으로 갖는다.
+        - [X] 갖고 있는 환승 노선 후보들 중 가장 환승 추가금이 적은 노선으로 환승 노선을 확정지을 수 있다.
+    - LineOfStationInPaths
+        - LineInPath 일급 컬렉션
+        - [X] 구성요소 중 두개 이상의 노선이 겹치는 부분을 찾아낼 수 있다.
+        - [X] 각 요소의 다음 요소가 어떤 노선인지 알 수 있다.
+        - [X] 노선이 겹치는 요소가 현재 경로에서 어떤 노선으로 환승했는지 환승 후보들을 찾아낼 수 있다.
+        - [X] 환승 금액에 의해 환승 노선들을 확정할 수 있다.
+    - LineWithExtraFee
+        - 노선 ID와 노선의 환승금을 인자로 갖는 오브젝트
+    - TransferCandidates
+        - LineWithExtraFee 일급 컬렉션
+        - [X] 환승 노선을 확정할 수 있다.
+    - TransferLines
+        - LineWithExtraFee 일급 컬렉션
+        - [X] 환승한 노선들의 최종 추가금을 구할 수 있다.
+            - [X] 환승한 노선이 없는 경우 추가금은 없다.
+            - [X] 환승한 노선이 여러개인 경우 가장 비싼 추가금만 부과된다.
+    - Line
+        - [X] 환승 추가금 항목 추가
+    - SafeLineAdapter
+        - [X] 역 ID 컬렉션을 인자로 전달해서 LineOfStationInPaths를 반환받을 수 있다.
+- [X] 이용자 나이에 따른 할인 계산
+    - AgeDiscountPolicy
+        - 나이에 따른 할인율이 적용된 금액을 계산해주는 Enum
+        - [X] 성인은 할인되지 않는다.
+        - [X] 청소년은 전체 금액의 350원을 제외하고 그 금액에서 20%를 할인해준다.
+        - [X] 어린이는 전체 금액의 350원을 제외하고 그 금액에서 50%를 추가로 할인해준다.
+    
+### 경로탐색 인수테스트 수정
+- [X] 기본 조건(Background)에 조건 추가
+    - given
+        - and 회원가입됨
+        - and 로그인 됨
+- [X] 경로 탐색 시 로그인 토큰 전달
+
+### Step4. 피드백 반영
+- [X] AgeDiscountPolicy의 매직넘버 제거
+- [X] AgeDiscountPolicy 메서드의 가독성 높이기
+- [X] SuperLongDistanceFee의 매직넘버 제거
+- [X] DefaultDistanceFee의 매직넘버 제거
+~~- [ ] DistanceFee Enum 변환~~
+  - 같은 인자의 반복 사용으로 일단 남겨 놓기로 결정
+- [X] Line의 extraFee 래핑하기
+- [X] 래핑된 extraFee의 디폴트 생성값을 0으로 지정하기
+- [X] FeeCalculatorService의 Fee 오브젝트화 시키기
+~~- [ ] 경로탐색 도메인 서비스 추출~~
+- [X] 도메인 서비스 대신 ShortestPath로 도메인 로직 넣기
+- [X] 지나치게 장황한 스트림 구문 정리하기
