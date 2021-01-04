@@ -4,6 +4,9 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.domain.*;
 import nextstep.subway.path.domain.adapters.SafeLineAdapter;
 import nextstep.subway.path.domain.adapters.SafeStationAdapter;
+import nextstep.subway.path.domain.fee.transferFee.LineOfStationInPath;
+import nextstep.subway.path.domain.fee.transferFee.LineOfStationInPaths;
+import nextstep.subway.path.domain.fee.transferFee.LineWithExtraFee;
 import nextstep.subway.path.ui.dto.PathResponse;
 import nextstep.subway.path.ui.dto.StationInPathResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,12 +34,9 @@ class PathServiceTest {
     @Mock
     private SafeStationAdapter safeStationAdapter;
 
-    @Mock
-    private FeeCalculatorService feeCalculatorService;
-
     @BeforeEach
     void setup() {
-        pathService = new PathService(safeLineAdapter, safeStationAdapter, feeCalculatorService);
+        pathService = new PathService(safeLineAdapter, safeStationAdapter);
     }
 
     @DisplayName("최단 경로를 찾아서 응답할 수 있다.")
@@ -44,6 +45,12 @@ class PathServiceTest {
         Long sourceId = 1L;
         Long destinationId = 4L;
         LoginMember loginMember = new LoginMember(1L, "test@nextstep.com", 30);
+
+        LineOfStationInPaths transferOnce = new LineOfStationInPaths(Arrays.asList(
+                new LineOfStationInPath(Collections.singletonList(new LineWithExtraFee(1L, BigDecimal.ZERO))),
+                new LineOfStationInPath(Arrays.asList(new LineWithExtraFee(1L, BigDecimal.ZERO), new LineWithExtraFee(2L, BigDecimal.TEN))),
+                new LineOfStationInPath(Collections.singletonList(new LineWithExtraFee(2L, BigDecimal.TEN)))
+        ));
 
         given(safeLineAdapter.getAllStationIds()).willReturn(Arrays.asList(1L, 2L, 3L, 4L));
         given(safeLineAdapter.getAllSafeSectionInfos()).willReturn(Arrays.asList(
@@ -56,8 +63,7 @@ class PathServiceTest {
                 new SafeStationInfo(2L, "역삼역", null),
                 new SafeStationInfo(4L, "삼성역", null)
         ));
-        given(feeCalculatorService.calculateFee(any(), any()))
-                .willReturn(new Fee(BigDecimal.valueOf(1000), AgeDiscountPolicy.NONE));
+        given(safeLineAdapter.getLineOfStationInPaths(any())).willReturn(transferOnce);
 
         PathResponse pathResponse = pathService.findShortestPath(sourceId, destinationId, loginMember);
 
