@@ -65,7 +65,7 @@ public class Section {
     private int validateNewDistance(final Section newSection) {
         final int newDistance = newSection.getDistance();
         if (this.distance <= newDistance) {
-            throw new RuntimeException(ERR_TEXT_NEED_TO_SHORT_DISTANCE_THAN_NOW);
+            throw new IllegalArgumentException(ERR_TEXT_NEED_TO_SHORT_DISTANCE_THAN_NOW);
         }
 
         return newDistance;
