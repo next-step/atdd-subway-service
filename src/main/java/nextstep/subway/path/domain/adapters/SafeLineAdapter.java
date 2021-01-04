@@ -59,7 +59,7 @@ public class SafeLineAdapter implements SafeLine {
                 .collect(Collectors.toList());
 
         List<LineWithExtraFee> lineWithExtraFees = belongedLines.stream()
-                .map(belongedLine -> new LineWithExtraFee(belongedLine.getId(), belongedLine.getExtraFee()))
+                .map(belongedLine -> new LineWithExtraFee(belongedLine.getId(), belongedLine.getExtraFee().getValue()))
                 .collect(Collectors.toList());
 
         return new LineOfStationInPath(lineWithExtraFees);

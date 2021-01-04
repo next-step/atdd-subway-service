@@ -35,6 +35,10 @@ public class ExtraFee {
         }
     }
 
+    public BigDecimal getValue() {
+        return this.extraFee;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;

@@ -21,7 +21,8 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
-    private BigDecimal extraFee;
+    @Embedded
+    private ExtraFee extraFee;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -32,13 +33,13 @@ public class Line extends BaseEntity {
     public Line(String name, String color, BigDecimal extraFee) {
         this.name = name;
         this.color = color;
-        this.extraFee = extraFee;
+        this.extraFee = ExtraFee.of(extraFee);
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance, BigDecimal extraFee) {
         this.name = name;
         this.color = color;
-        this.extraFee = extraFee;
+        this.extraFee = ExtraFee.of(extraFee);
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
@@ -63,7 +64,7 @@ public class Line extends BaseEntity {
         return sections;
     }
 
-    public BigDecimal getExtraFee() {
+    public ExtraFee getExtraFee() {
         return extraFee;
     }
 

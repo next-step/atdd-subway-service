@@ -16,10 +16,13 @@ public class LineRequest {
     private Long downStationId;
     @NotNull(message = "종점역 간 거리는 필수값입니다.")
     private int distance;
-    @NotNull(message = "환승 추가금은 필수값입니다.")
     private BigDecimal extraFee;
 
     public LineRequest() {
+    }
+
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+        this(name, color, upStationId, downStationId, distance, null);
     }
 
     public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, BigDecimal extraFee) {
