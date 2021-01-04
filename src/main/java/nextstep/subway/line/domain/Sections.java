@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.exception.InvalidAddSectionException;
+import nextstep.subway.line.exception.InvalidRemoveSectionException;
 import nextstep.subway.line.exception.SectionNotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -27,11 +29,11 @@ public class Sections {
         boolean isDownStationExisted = isExistStation(section.getDownStation());
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new InvalidAddSectionException("이미 등록된 구간 입니다.");
         }
 
         if (!isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new InvalidAddSectionException("등록할 수 없는 구간 입니다.");
         }
 
         if (isUpStationExisted) {
@@ -55,7 +57,7 @@ public class Sections {
 
     public void removeSection(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new InvalidRemoveSectionException("지하철역이 2개 등록되어 있어서 역을 제거할 수 없습니다.");
         }
 
         Optional<Section> upLineStation = sections.stream()
