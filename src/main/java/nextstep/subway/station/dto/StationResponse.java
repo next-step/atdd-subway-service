@@ -16,7 +16,7 @@ public class StationResponse {
         return new StationResponse(station.getId(), station.getName(), station.getCreatedDate(), station.getModifiedDate());
     }
 
-    public static List<StationResponse> ofStationResponses(List<Station> stations) {
+    public static List<StationResponse> of(List<Station> stations) {
         return stations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
