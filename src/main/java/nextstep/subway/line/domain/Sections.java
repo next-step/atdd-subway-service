@@ -16,6 +16,7 @@ public class Sections {
     private static final String ERR_TEXT_ALREADY_ADDED_SECTION = "이미 등록된 구간 입니다.";
     private static final String ERR_TEXT_CAN_NOT_ADD_SECTION = "등록할 수 없는 구간 입니다.";
     private static final String ERR_TEXT_NOT_EXIST_DATA = "해당 데이터가 존재하지 않습니다.";
+    private static final String ERR_TEXT_CAN_NOT_DELETE_WHEN_NOT_EXIST_SECTION = "존재하는 구간이 없어 삭제할 수 없습니다.";
     private static final int MIN_LIMIT = 1;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
@@ -50,11 +51,11 @@ public class Sections {
     private void validateStations(final Section newSection, final List<Station> stations,
                                   final boolean isUpStationExisted, final boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException(ERR_TEXT_ALREADY_ADDED_SECTION);
+            throw new IllegalArgumentException(ERR_TEXT_ALREADY_ADDED_SECTION);
         }
 
         if (!stations.contains(newSection.getUpStation()) && !stations.contains(newSection.getDownStation())) {
-            throw new RuntimeException(ERR_TEXT_CAN_NOT_ADD_SECTION);
+            throw new IllegalArgumentException(ERR_TEXT_CAN_NOT_ADD_SECTION);
         }
     }
 
@@ -94,7 +95,7 @@ public class Sections {
 
     private void isConditionThatCanBeDeleted(final Station targetStation) {
         if (sections.size() <= MIN_LIMIT) {
-            throw new RuntimeException();
+            throw new IllegalArgumentException(ERR_TEXT_CAN_NOT_DELETE_WHEN_NOT_EXIST_SECTION);
         }
 
         final List<Station> stations = getStations();
