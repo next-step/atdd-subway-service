@@ -492,3 +492,14 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - and 회원가입됨
         - and 로그인 됨
 - [X] 경로 탐색 시 로그인 토큰 전달
+
+### Step4. 피드백 반영
+- [ ] AgeDiscountPolicy의 매직넘버 제거
+- [ ] AgeDiscountPolicy Enum 변환
+- [ ] SuperLongDistanceFee의 매직넘버 제거
+- [ ] DefaultDistanceFee의 매직넘버 제거
+- [ ] Line의 extraFee 래핑하기
+- [ ] 래핑된 extraFee의 디폴트 생성값을 0으로 지정하기
+- [ ] FeeCalculatorService의 Fee 오브젝트 시키기
+- [ ] 경로탐색 도메인 서비스 추출
+- [ ] 지나치게 장황상 스트림 구문 정리하기
