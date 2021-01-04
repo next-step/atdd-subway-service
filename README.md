@@ -111,4 +111,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [ ] 경로 구간들의 지하철역의 목록을 조화할 수 있다.
     
 - `경로 구간(PathSection)`
-    - [ ] 경로 구간의 지하철역을 조회할 수 있다.
+    - [X] 경로 구간의 지하철역을 조회할 수 있다.
