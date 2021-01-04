@@ -139,4 +139,30 @@ public class Line extends BaseEntity {
             throw new RuntimeException();
         }
     }
+
+    public void deleteStation(Station station) {
+        // 노선에 1개 이상의 구간이 존재해야합니다.
+        if (this.getSections().size() <= 1) {
+            throw new RuntimeException();
+        }
+
+        // 제거할 Station이 포함된 하나로 합칠 Section 2개 검색
+        Optional<Section> upLineStation = this.getSections().stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+        Optional<Section> downLineStation = this.getSections().stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        // 제거할 Station이 포함된 하나로 합칠 Section 2개가 존재하는 경우
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            this.getSections().add(new Section(this, newUpStation, newDownStation, newDistance));
+        }
+        // 합치고 난 후, 필요없는 Section 제거
+        upLineStation.ifPresent(it -> this.getSections().remove(it));
+        downLineStation.ifPresent(it -> this.getSections().remove(it));
+    }
 }

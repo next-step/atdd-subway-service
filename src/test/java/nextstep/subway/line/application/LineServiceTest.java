@@ -99,4 +99,19 @@ class LineServiceTest {
                 .hasMessageContaining("등록할 수 없는 구간 입니다.");
     }
 
+    @DisplayName("노선에서 `Station` 삭제")
+    @Test
+    void deleteStationInLine() {
+        // Given
+        when(lineRepository.findById(any())).thenReturn(Optional.of(_2호선));
+        when(stationService.findStationById(any())).thenReturn(잠실새내역).thenReturn(잠실역);
+        lineService.addLineStation(1L, new SectionRequest());
+        when(stationService.findStationById(any())).thenReturn(잠실새내역);
+        // When
+        lineService.removeLineStation(1L, 1L);
+        // Then
+        assertThat(_2호선.getStations())
+                .extracting("name")
+                .containsExactly("삼성역", "잠실역");
+    }
 }
