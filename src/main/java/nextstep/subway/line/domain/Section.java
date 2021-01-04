@@ -39,6 +39,15 @@ public class Section {
         this.distance = distance;
     }
 
+    public static Section of(Section section) {
+        return Section.builder()
+                .line(section.getLine())
+                .upStation(section.getUpStation())
+                .downStation(section.getDownStation())
+                .distance(section.getDistance())
+                .build();
+    }
+
     public void updateUpStation(Station station, Distance newDistance) {
         this.distance = distance.minusDistance(newDistance);
         this.upStation = station;

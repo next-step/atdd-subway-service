@@ -26,34 +26,13 @@ public class Sections {
             return;
         }
 
-        boolean isUpStationExisted = isExistStation(section.getUpStation());
-        boolean isDownStationExisted = isExistStation(section.getDownStation());
+        checkExistSection(section);
+        checkContainAnyStation(section);
 
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new InvalidAddSectionException("이미 등록된 구간 입니다.");
-        }
+        addSectionUpToUp(section);
+        addSectionDownToDown(section);
 
-        if (!isUpStationExisted && !isDownStationExisted) {
-            throw new InvalidAddSectionException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (isUpStationExisted) {
-            sections.stream()
-                    .filter(it -> it.getUpStation() == section.getUpStation())
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-
-            sections.add(new Section(section.getLine(), section.getUpStation(), section.getDownStation(), section.getDistance()));
-        } else if (isDownStationExisted) {
-            sections.stream()
-                    .filter(it -> it.getDownStation() == section.getDownStation())
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
-
-            sections.add(new Section(section.getLine(), section.getUpStation(), section.getDownStation(), section.getDistance()));
-        } else {
-            throw new RuntimeException();
-        }
+        sections.add(Section.of(section));
     }
 
     public void removeSection(Station station) {
@@ -65,10 +44,9 @@ public class Sections {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Section preSection = downLineStation.get();
             Section nextSection= upLineStation.get();
-            Line line = upLineStation.get().getLine();
 
             sections.add(Section.builder()
-                    .line(line)
+                    .line(preSection.getLine())
                     .upStation(preSection.getUpStation())
                     .downStation(nextSection.getDownStation())
                     .distance(plusDistance(preSection, nextSection))
@@ -98,18 +76,40 @@ public class Sections {
                 .collect(Collectors.toList());
     }
 
+    private void checkExistSection(Section section) {
+        if (isExistStation(section.getUpStation()) && isExistStation(section.getDownStation())) {
+            throw new InvalidAddSectionException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    private void checkContainAnyStation(Section section) {
+        if (!isExistStation(section.getUpStation()) && !isExistStation(section.getDownStation())) {
+            throw new InvalidAddSectionException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
     private boolean isExistStation(Station station) {
         return getStations().contains(station);
     }
 
-    private boolean isNotNull(Section section) {
-        return section != null;
+    private void addSectionUpToUp(Section section) {
+        findSection(it -> it.getUpStation() == section.getUpStation())
+                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+    }
+
+    private void addSectionDownToDown(Section section) {
+        findSection(it -> it.getDownStation() == section.getDownStation())
+                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
     }
 
     private void checkSectionsSize() {
         if (sections.size() <= 1) {
             throw new InvalidRemoveSectionException("지하철역이 2개 등록되어 있어서 역을 제거할 수 없습니다.");
         }
+    }
+
+    private boolean isNotNull(Section section) {
+        return section != null;
     }
 
     private Section findFirstSection() {
