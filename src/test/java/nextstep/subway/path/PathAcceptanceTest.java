@@ -26,30 +26,36 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
+    private LineResponse 일호선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
+    private StationResponse 청량리역;
+    private StationResponse 신도림역;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
 
     /**
-     * 교대역    --- *2호선* ---   강남역
-     * |                        |
-     * *3호선*                   *신분당선*
-     * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
+     * 교대역    --- *2호선* ---   강남역          청량리역
+     * |                        |               ㅣ
+     * *3호선*                   *신분당선*       *1호선*
+     * |                        |               ㅣ
+     * 남부터미널역  --- *3호선* --- 양재역          신도림역
      */
     @BeforeEach
     public void setUp() {
         super.setUp();
 
+        청량리역 = StationAcceptanceTest.지하철역_등록되어_있음("청량리역").as(StationResponse.class);
+        신도림역 = StationAcceptanceTest.지하철역_등록되어_있음("신도림역").as(StationResponse.class);
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
+        일호선 = 지하철_노선_등록되어_있음("일호선", "bg-blue-600", 청량리역, 신도림역, 7);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
 
@@ -65,6 +71,45 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         지하철_최단경로_응답됨(response, 강남역.getId(), 양재역.getId(), 남부터미널역.getId());
     }
+
+    @DisplayName("출발역과 도착역이 같은 경우")
+    @Test
+    void sameStation() {
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(강남역.getId(), 강남역.getId());
+
+        // then
+        지하철_최단경로_응답_실패됨(response);
+    }
+
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
+    @Test
+    void notConnectedStation() {
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(강남역.getId(), 신도림역.getId());
+
+        // then
+        지하철_최단경로_응답_실패됨(response);
+    }
+
+    @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우 예외처리 한다.")
+    @Test
+    void notExistedStation() {
+        // given
+        StationResponse 당정역 = StationAcceptanceTest.지하철역_등록되어_있음("당정역").as(StationResponse.class);
+        StationResponse 금정역 = StationAcceptanceTest.지하철역_등록되어_있음("금정역").as(StationResponse.class);
+
+        // when
+        ExtractableResponse<Response> response1 = 지하철_경로_조회_요청(당정역.getId(), 강남역.getId());
+        ExtractableResponse<Response> response2 = 지하철_경로_조회_요청(강남역.getId(), 당정역.getId());
+        ExtractableResponse<Response> response3 = 지하철_경로_조회_요청(금정역.getId(), 당정역.getId());
+
+        // then
+        지하철_최단경로_응답_실패됨(response1);
+        지하철_최단경로_응답_실패됨(response2);
+        지하철_최단경로_응답_실패됨(response3);
+    }
+
 
     private LineResponse 지하철_노선_등록되어_있음(final String name, final String color, final StationResponse upStation,
                                         final StationResponse downStation, final int distance) {
@@ -92,5 +137,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .map(PathResponse.StationResponse::getId)
                 .collect(Collectors.toList());
         assertThat(actualStationIds).containsExactly(expectedStationIds);
+    }
+
+    private void 지하철_최단경로_응답_실패됨(final ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
