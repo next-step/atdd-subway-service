@@ -92,10 +92,23 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [X] 출발역과 도착역이 연결이 되어 있지 않은 경우를 확인한다.
 - [X] 존재하지 않은 출발역이나 도착역을 조회 할 경우를 확인한다.
 
-### 도메인 to-do
+### 도메인 to-do 리스트
+
+- `경로 저장소(PathRepository)`
+    - [ ] 모든 경로 구간들을 조회할 수 있다.
+    - [ ] 경로 지하철역 id로 경로 지하철역을 조회할 수 있다.
+    
 - `경로 탐색기(PathFinder)`
-    -[ ] 출발역과 도착역의 id를 입력받아 최단거리의 경로를 찾을 수 있다.
+    - [ ] 구간과 출발역, 도착역을 입력받아 최단 경로를 구할 수 있다.
+    
 - `경로(Path)`
     - 경로 지하철역 리스트와 총 거리로 구성.
+    
 - `경로 지하철역(PathStation)`
     - 지하철역의 id, name, createAt로 구성.
+
+- `경로 구간들(PathSections)`
+    - [ ] 경로 구간들의 지하철역의 목록을 조화할 수 있다.
+    
+- `경로 구간(PathSection)`
+    - [ ] 경로 구간의 지하철역을 조회할 수 있다.
