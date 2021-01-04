@@ -495,6 +495,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ### Step4. 피드백 반영
 - [X] AgeDiscountPolicy의 매직넘버 제거
+- [X] AgeDiscountPolicy 메서드의 가독성 높이기
 - [ ] SuperLongDistanceFee의 매직넘버 제거
 - [ ] DefaultDistanceFee의 매직넘버 제거
 - [ ] DistanceFee Enum 변환

@@ -23,10 +23,10 @@ public enum AgeDiscountPolicy {
     }
 
     public static AgeDiscountPolicy find(Integer age) {
-        if (age > MIN_KID && age < MAX_KID) {
+        if (AgeDiscountPolicy.isKid(age)) {
             return AgeDiscountPolicy.KID;
         }
-        if (age > MIN_TEEN && age < MAX_TEEN) {
+        if (AgeDiscountPolicy.isTeen(age)) {
             return AgeDiscountPolicy.TEEN;
         }
         return AgeDiscountPolicy.NONE;
@@ -37,6 +37,14 @@ public enum AgeDiscountPolicy {
             return this.roundingFloor(this.calculateRemainAfterDiscounting(fee));
         }
         return this.roundingFloor(fee);
+    }
+
+    private static boolean isKid(Integer age) {
+        return age > MIN_KID && age < MAX_KID;
+    }
+
+    private static boolean isTeen(Integer age) {
+        return age > MIN_TEEN && age < MAX_TEEN;
     }
 
     private BigDecimal roundingFloor(BigDecimal value) {
