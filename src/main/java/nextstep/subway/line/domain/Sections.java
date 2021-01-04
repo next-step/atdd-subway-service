@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Embeddable
@@ -56,23 +57,22 @@ public class Sections {
     }
 
     public void removeSection(Station station) {
-        if (sections.size() <= 1) {
-            throw new InvalidRemoveSectionException("지하철역이 2개 등록되어 있어서 역을 제거할 수 없습니다.");
-        }
+        checkSectionsSize();
 
-        Optional<Section> upLineStation = sections.stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = sections.stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
+        Optional<Section> upLineStation = findSection(section -> section.getUpStation() == station);
+        Optional<Section> downLineStation = findSection(section -> section.getDownStation() == station);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Section preSection = downLineStation.get();
+            Section nextSection= upLineStation.get();
             Line line = upLineStation.get().getLine();
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance().getDistance() + downLineStation.get().getDistance().getDistance();
-            sections.add(new Section(line, newUpStation, newDownStation, new Distance(newDistance)));
+
+            sections.add(Section.builder()
+                    .line(line)
+                    .upStation(preSection.getUpStation())
+                    .downStation(nextSection.getDownStation())
+                    .distance(plusDistance(preSection, nextSection))
+                    .build());
         }
 
         upLineStation.ifPresent(it -> sections.remove(it));
@@ -98,29 +98,34 @@ public class Sections {
                 .collect(Collectors.toList());
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
     private boolean isExistStation(Station station) {
         return getStations().contains(station);
-    }
-
-    private Section findFirstSection() {
-        List<Station> downStations = getDownStations();
-        return sections.stream()
-                .filter(section -> !downStations.contains(section.getUpStation()))
-                .findFirst()
-                .orElseThrow(() -> new SectionNotFoundException("첫번째 Section을 찾을 수가 없습니다."));
     }
 
     private boolean isNotNull(Section section) {
         return section != null;
     }
 
+    private void checkSectionsSize() {
+        if (sections.size() <= 1) {
+            throw new InvalidRemoveSectionException("지하철역이 2개 등록되어 있어서 역을 제거할 수 없습니다.");
+        }
+    }
+
+    private Section findFirstSection() {
+        List<Station> downStations = getDownStations();
+
+        return findSection(section -> !downStations.contains(section.getUpStation()))
+                .orElseThrow(() -> new SectionNotFoundException("첫번째 Section을 찾을 수가 없습니다."));
+    }
+
     private Optional<Section> findNextSection(Station downStation) {
+        return findSection(section -> section.getUpStation().equals(downStation));
+    }
+
+    private Optional<Section> findSection(Predicate<Section> predicate) {
         return sections.stream()
-                .filter(it -> it.getUpStation().equals(downStation))
+                .filter(predicate)
                 .findFirst();
     }
 
@@ -128,5 +133,9 @@ public class Sections {
         return sections.stream()
                 .map(Section::getDownStation)
                 .collect(Collectors.toList());
+    }
+
+    private Distance plusDistance(Section preSection, Section nextSection) {
+        return preSection.getDistance().plusDistance(nextSection.getDistance());
     }
 }

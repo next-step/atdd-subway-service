@@ -1,19 +1,25 @@
 package nextstep.subway.line.domain;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nextstep.subway.line.exception.InvalidDistanceException;
 
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Embeddable
 public class Distance {
     private int distance;
 
-    protected Distance() {
-    }
-
     public Distance(int distance) {
         this.distance = distance;
+    }
+
+    public Distance plusDistance(Distance newDistance) {
+        return new Distance(this.distance + newDistance.getDistance());
     }
 
     public Distance minusDistance(Distance newDistance) {
@@ -25,14 +31,6 @@ public class Distance {
 
     private boolean isLessOrEqual(Distance newDistance) {
         return this.distance <= newDistance.getDistance();
-    }
-
-    public int getDistance() {
-        return distance;
-    }
-
-    public void setDistance(int distance) {
-        this.distance = distance;
     }
 
     @Override

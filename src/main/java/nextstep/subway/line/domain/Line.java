@@ -1,5 +1,8 @@
 package nextstep.subway.line.domain;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -7,6 +10,8 @@ import nextstep.subway.station.dto.StationResponse;
 import javax.persistence.*;
 import java.util.List;
 
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Line extends BaseEntity {
     @Id
@@ -19,9 +24,6 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
-    public Line() {
-    }
-
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
@@ -30,7 +32,12 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.addSection(new Section(this, upStation, downStation, new Distance(distance)));
+        sections.addSection(Section.builder()
+                .line(this)
+                .upStation(upStation)
+                .downStation(downStation)
+                .distance(new Distance(distance))
+                .build());
     }
 
     public void update(Line line) {
@@ -52,21 +59,5 @@ public class Line extends BaseEntity {
 
     public List<StationResponse> getStationResponses() {
         return sections.getStationResponses();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public Sections getSections() {
-        return sections;
     }
 }
