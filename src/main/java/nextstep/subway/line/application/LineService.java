@@ -16,11 +16,11 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class NewLineService {
+public class LineService {
     private LineRepository lineRepository;
     private StationService stationService;
 
-    public NewLineService(LineRepository lineRepository, StationService stationService) {
+    public LineService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
     }

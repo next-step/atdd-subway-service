@@ -1,7 +1,7 @@
 package study.unit;
 
 import com.google.common.collect.Lists;
-import nextstep.subway.line.application.NewLineService;
+import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineResponse;
@@ -24,7 +24,7 @@ public class MockitoTest {
         StationService stationService = mock(StationService.class);
 
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
-        NewLineService lineService = new NewLineService(lineRepository, stationService);
+        LineService lineService = new LineService(lineRepository, stationService);
 
         // when
         List<LineResponse> responses = lineService.findLines();
