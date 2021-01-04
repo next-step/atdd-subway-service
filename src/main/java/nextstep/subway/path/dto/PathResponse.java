@@ -2,10 +2,12 @@ package nextstep.subway.path.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.subway.station.domain.Station;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathStation;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
@@ -17,6 +19,10 @@ public class PathResponse {
     public PathResponse(final List<StationResponse> stations, final int distance) {
         this.stations = stations;
         this.distance = distance;
+    }
+
+    public static PathResponse of(final Path path) {
+        return new PathResponse(StationResponse.ofList(path.getPathStations()), path.getDistance());
     }
 
     @Getter
@@ -33,8 +39,14 @@ public class PathResponse {
             this.createdAt = createdAt;
         }
 
-        public static StationResponse of(final Station station) {
-            return new StationResponse(station.getId(), station.getName(), station.getCreatedDate());
+        public static StationResponse of(final PathStation pathStation) {
+            return new StationResponse(pathStation.getId(), pathStation.getName(), pathStation.getCreatedAt());
+        }
+
+        public static List<StationResponse> ofList(final List<PathStation> pathStations) {
+            return pathStations.stream()
+                    .map(StationResponse::of)
+                    .collect(Collectors.toList());
         }
     }
 }
