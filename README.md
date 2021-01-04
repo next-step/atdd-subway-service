@@ -95,8 +95,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ### 도메인 to-do 리스트
 
 - `경로 저장소(PathRepository)`
-    - [ ] 모든 경로 구간들을 조회할 수 있다.
-    - [ ] 경로 지하철역 id로 경로 지하철역을 조회할 수 있다.
+    - [X] 모든 경로 구간들을 조회할 수 있다.
+    - [X] 경로 지하철역 id로 경로 지하철역을 조회할 수 있다.
     
 - `경로 탐색기(PathFinder)`
     - [ ] 구간과 출발역, 도착역을 입력받아 최단 경로를 구할 수 있다.
