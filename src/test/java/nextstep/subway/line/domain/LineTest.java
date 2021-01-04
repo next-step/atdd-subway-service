@@ -32,7 +32,7 @@ class LineTest {
     @Test
     void addSection1() {
         // when
-        신분당선.addSection(new Section(신분당선, 양재역, 광교역, 3));
+        신분당선.addSection(new Section(신분당선, 양재역, 광교역, new Distance(3)));
 
         //then
         assertThat(신분당선.getStations()).containsExactlyElementsOf(Arrays.asList(강남역, 양재역, 광교역));
@@ -42,7 +42,7 @@ class LineTest {
     @Test
     void addSection2() {
         // when
-        신분당선.addSection(new Section(신분당선, 광교역, 양재역, 3));
+        신분당선.addSection(new Section(신분당선, 광교역, 양재역, new Distance(3)));
 
         //then
         assertThat(신분당선.getStations()).containsExactlyElementsOf(Arrays.asList(강남역, 광교역, 양재역));
@@ -51,7 +51,7 @@ class LineTest {
     @DisplayName("이미 등록되어 있는 역은 추가하지 못한다.")
     @Test
     void addSection3() {
-        assertThatThrownBy(() -> 신분당선.addSection(new Section(신분당선, 강남역, 광교역, 3)))
+        assertThatThrownBy(() -> 신분당선.addSection(new Section(신분당선, 강남역, 광교역, new Distance(3))))
                 .isInstanceOf(InvalidAddSectionException.class)
                 .hasMessage("이미 등록된 구간 입니다.");
     }
@@ -60,7 +60,7 @@ class LineTest {
     @Test
     void removeSection1() {
         // given
-        신분당선.addSection(new Section(신분당선, 양재역, 광교역, 3));
+        신분당선.addSection(new Section(신분당선, 양재역, 광교역, new Distance(3)));
 
         // when
         신분당선.removeSection(양재역);
