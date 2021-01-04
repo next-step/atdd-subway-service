@@ -503,5 +503,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [X] Line의 extraFee 래핑하기
 - [X] 래핑된 extraFee의 디폴트 생성값을 0으로 지정하기
 - [X] FeeCalculatorService의 Fee 오브젝트화 시키기
-- [ ] 경로탐색 도메인 서비스 추출
-- [ ] 지나치게 장황한 스트림 구문 정리하기
+~~- [ ] 경로탐색 도메인 서비스 추출~~
+- [X] 도메인 서비스 대신 ShortestPath로 도메인 로직 넣기
+- [X] 지나치게 장황한 스트림 구문 정리하기

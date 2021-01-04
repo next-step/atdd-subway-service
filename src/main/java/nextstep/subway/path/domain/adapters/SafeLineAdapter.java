@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.collectingAndThen;
+
 @Component
 public class SafeLineAdapter implements SafeLine {
     private final LineService lineService;
@@ -46,22 +48,15 @@ public class SafeLineAdapter implements SafeLine {
     public LineOfStationInPaths getLineOfStationInPaths(List<Long> stationIds) {
         List<Line> lines = lineService.findAllLines();
 
-        List<LineOfStationInPath> lineOfStationInPaths = stationIds.stream()
+        return stationIds.stream()
                 .map(it -> parseLineToLineOfStationInPath(lines, it))
-                .collect(Collectors.toList());
-
-        return new LineOfStationInPaths(lineOfStationInPaths);
+                .collect(collectingAndThen(Collectors.toList(), LineOfStationInPaths::new));
     }
 
     private LineOfStationInPath parseLineToLineOfStationInPath(List<Line> lines, Long stationId) {
-        List<Line> belongedLines = lines.stream()
+        return lines.stream()
                 .filter(line -> line.isBelongedStation(stationId))
-                .collect(Collectors.toList());
-
-        List<LineWithExtraFee> lineWithExtraFees = belongedLines.stream()
                 .map(belongedLine -> new LineWithExtraFee(belongedLine.getId(), belongedLine.getExtraFee().getValue()))
-                .collect(Collectors.toList());
-
-        return new LineOfStationInPath(lineWithExtraFees);
+                .collect(collectingAndThen(Collectors.toList(), LineOfStationInPath::new));
     }
 }
