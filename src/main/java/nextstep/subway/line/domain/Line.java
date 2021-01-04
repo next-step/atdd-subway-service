@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -94,5 +95,48 @@ public class Line extends BaseEntity {
         }
 
         return downStation;
+    }
+
+    public void addSection(Station upStation, Station downStation, int distance) {
+        List<Station> stations = getStations();
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+
+        // 이미 등록되어있다.
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        // 등록의 기준이 되는 station이 없어서 등록이 불가능하다.
+        if (!stations.isEmpty() &&
+                stations.stream().noneMatch(it -> it == upStation) &&
+                stations.stream().noneMatch(it -> it == downStation)
+        ) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
+        // 역에 대한 정보가 없는 경우에는 Section을 등록한다.
+        if (stations.isEmpty()) {
+            this.getSections().add(new Section(this, upStation, downStation, distance));
+            return;
+        }
+
+        if (isUpStationExisted) {// 기존의 section 사이에 구간 추가, 기준은 upStation
+            this.getSections().stream()
+                    .filter(it -> it.getUpStation() == upStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(downStation, distance));
+
+            this.getSections().add(new Section(this, upStation, downStation, distance));
+        } else if (isDownStationExisted) {// 기존의 section 사이에 구간 추가, 기준은 downStation
+            this.getSections().stream()
+                    .filter(it -> it.getDownStation() == downStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(upStation, distance));
+
+            this.getSections().add(new Section(this, upStation, downStation, distance));
+        } else {
+            throw new RuntimeException();
+        }
     }
 }
