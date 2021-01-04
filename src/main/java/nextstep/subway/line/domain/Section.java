@@ -22,7 +22,8 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
@@ -31,7 +32,7 @@ public class Section {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = Distance.of(distance);
     }
 
     public Long getId() {
@@ -51,22 +52,32 @@ public class Section {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.getDistance();
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
+    public void updateUpStationByNewSection(final Section newSection) {
+        this.upStation = newSection.getDownStation();
+        distance = distance.minus(newSection.getDistance());
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
+    public void updateDownStationByNewSection(final Section newSection) {
+        this.downStation = newSection.getUpStation();
+        distance = distance.minus(newSection.getDistance());
+    }
+
+    public boolean isMatchUpAndUpStation(final Section section) {
+        return this.upStation == section.getUpStation();
+    }
+
+    public boolean isMatchDownAndDownStation(final Section section) {
+        return this.downStation == section.getDownStation();
+    }
+
+    public boolean isMatchUpStation(final Station targetStation) {
+        return this.upStation == targetStation;
+    }
+
+    public boolean isMatchDownStation(final Station targetStation) {
+        return this.downStation == targetStation;
     }
 }
