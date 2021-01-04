@@ -502,6 +502,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - 같은 인자의 반복 사용으로 일단 남겨 놓기로 결정
 - [X] Line의 extraFee 래핑하기
 - [X] 래핑된 extraFee의 디폴트 생성값을 0으로 지정하기
-- [ ] FeeCalculatorService의 Fee 오브젝트화 시키기
+- [X] FeeCalculatorService의 Fee 오브젝트화 시키기
 - [ ] 경로탐색 도메인 서비스 추출
 - [ ] 지나치게 장황한 스트림 구문 정리하기

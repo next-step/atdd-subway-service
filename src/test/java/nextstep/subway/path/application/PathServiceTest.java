@@ -1,9 +1,7 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.path.domain.FeeCalculatorService;
-import nextstep.subway.path.domain.SafeSectionInfo;
-import nextstep.subway.path.domain.SafeStationInfo;
+import nextstep.subway.path.domain.*;
 import nextstep.subway.path.domain.adapters.SafeLineAdapter;
 import nextstep.subway.path.domain.adapters.SafeStationAdapter;
 import nextstep.subway.path.ui.dto.PathResponse;
@@ -58,7 +56,8 @@ class PathServiceTest {
                 new SafeStationInfo(2L, "역삼역", null),
                 new SafeStationInfo(4L, "삼성역", null)
         ));
-        given(feeCalculatorService.calculateFee(any(), any())).willReturn(BigDecimal.valueOf(1000));
+        given(feeCalculatorService.calculateFee(any(), any()))
+                .willReturn(new Fee(BigDecimal.valueOf(1000), AgeDiscountPolicy.NONE));
 
         PathResponse pathResponse = pathService.findShortestPath(sourceId, destinationId, loginMember);
 

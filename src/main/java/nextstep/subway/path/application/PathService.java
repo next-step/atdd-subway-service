@@ -35,8 +35,8 @@ public class PathService {
         List<Long> pathStations = shortestPath.getPathStations();
         List<SafeStationInfo> safeStationInfos = safeStationAdapter.findStationsById(pathStations);
 
-        BigDecimal fee = feeCalculatorService.calculateFee(shortestPath, loginMember);
+        Fee fee = feeCalculatorService.calculateFee(shortestPath, loginMember);
 
-        return PathResponse.of(safeStationInfos, shortestPath.calculateTotalDistance(), fee);
+        return PathResponse.of(safeStationInfos, shortestPath.calculateTotalDistance(), fee.calculate());
     }
 }

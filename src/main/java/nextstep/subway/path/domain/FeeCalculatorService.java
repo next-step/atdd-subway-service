@@ -18,14 +18,14 @@ public class FeeCalculatorService {
         this.safeLineAdapter = safeLineAdapter;
     }
 
-    public BigDecimal calculateFee(ShortestPath shortestPath, LoginMember loginMember) {
+    public Fee calculateFee(ShortestPath shortestPath, LoginMember loginMember) {
         BigDecimal distanceFee = calculateDistanceFee(shortestPath);
         BigDecimal transferFee = calculateTransferFee(shortestPath);
-        BigDecimal fee = distanceFee.add(transferFee);
+        BigDecimal totalFee = distanceFee.add(transferFee);
 
         AgeDiscountPolicy discountPolicy = AgeDiscountPolicy.find(loginMember.getAge());
 
-        return discountPolicy.applyDiscount(fee);
+        return new Fee(totalFee, discountPolicy);
     }
 
     BigDecimal calculateDistanceFee(ShortestPath shortestPath) {
