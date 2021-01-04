@@ -496,9 +496,10 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ### Step4. 피드백 반영
 - [X] AgeDiscountPolicy의 매직넘버 제거
 - [X] AgeDiscountPolicy 메서드의 가독성 높이기
-- [ ] SuperLongDistanceFee의 매직넘버 제거
-- [ ] DefaultDistanceFee의 매직넘버 제거
-- [ ] DistanceFee Enum 변환
+- [X] SuperLongDistanceFee의 매직넘버 제거
+- [X] DefaultDistanceFee의 매직넘버 제거
+~~- [ ] DistanceFee Enum 변환~~
+  - 같은 인자의 반복 사용으로 일단 남겨 놓기로 결정
 - [ ] Line의 extraFee 래핑하기
 - [ ] 래핑된 extraFee의 디폴트 생성값을 0으로 지정하기
 - [ ] FeeCalculatorService의 Fee 오브젝트 시키기
