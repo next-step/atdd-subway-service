@@ -23,25 +23,30 @@ class LineSections {
 	}
 
 	List<Station> getStations() {
-		if (this.sections.isEmpty()) {
-			return Arrays.asList();
+		Optional<Station> downStation = findUpStation();
+		if (!downStation.isPresent()) {
+			return Collections.emptyList();
 		}
 
 		List<Station> stations = new ArrayList<>();
-		Station downStation = findUpStation();
-		stations.add(downStation);
+		while (downStation.isPresent()) {
+			stations.add(downStation.get());
+			downStation = findUpStationEqual(downStation.get())
+					.map(Section::getDownStation);
+		}
+		return stations;
+	}
 
-		while (downStation != null) {
-			Station finalDownStation = downStation;
-			Optional<Section> nextLineStation = findUpStationEqual(finalDownStation);
-			if (!nextLineStation.isPresent()) {
-				break;
-			}
-			downStation = nextLineStation.get().getDownStation();
-			stations.add(downStation);
+	private Optional<Station> findUpStation() {
+		Optional<Section> nextSection = this.sections.stream().findFirst();
+		Optional<Section> firstSection = nextSection;
+
+		while (nextSection.isPresent()) {
+			firstSection = nextSection;
+			nextSection = findDownStationEqual(nextSection.get().getUpStation());
 		}
 
-		return stations;
+		return firstSection.map(Section::getUpStation);
 	}
 
 	void addLineStation(Section section) {
@@ -76,20 +81,6 @@ class LineSections {
 		} else {
 			throw new RuntimeException();
 		}
-	}
-
-	private Station findUpStation() {
-		Station downStation = this.sections.get(0).getUpStation();
-	    while (downStation != null) {
-	        Station finalDownStation = downStation;
-	        Optional<Section> nextLineStation = findDownStationEqual(finalDownStation);
-	        if (!nextLineStation.isPresent()) {
-	            break;
-	        }
-	        downStation = nextLineStation.get().getUpStation();
-	    }
-
-	    return downStation;
 	}
 
 	void removeLineStation(Station station) {
