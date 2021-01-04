@@ -3,6 +3,7 @@ package nextstep.subway.line.application;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.SectionRepository;
+import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -93,6 +94,21 @@ public class LineServiceRepositoryTest {
         // when then
         assertThatThrownBy(() -> addSection(신분당선, 양재역, 광교역, 5))
                 .isInstanceOf(IllegalArgumentException.class).hasMessageContaining("이미 등록된 구간 입니다.");
+    }
+
+    @DisplayName("지하철 노선을 수정한다.")
+    @Test
+    void updateLine() {
+        // given
+        Station 양재역 = new Station("양재역");
+        Station 광교역 = new Station("광교역");
+        Line 신분당선 = lineRepository.save(new Line("신분당선", "red lighten-1", 양재역, 광교역, 10));
+
+        // when
+        lineService.updateLine(신분당선.getId(), new LineRequest("3호선", "green lighten-1"));
+
+        // then
+        assertThat(lineService.findLineResponseById(신분당선.getId()).getName()).isEqualTo("3호선");
     }
 
     @DisplayName("구간 역을 삭제한다.")
