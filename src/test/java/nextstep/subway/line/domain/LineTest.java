@@ -38,9 +38,19 @@ class LineTest {
         assertThat(신분당선.getStations()).containsExactlyElementsOf(Arrays.asList(강남역, 양재역, 광교역));
     }
 
-    @DisplayName("이미 등록되어 있는 역은 추가하지 못한다.")
+    @DisplayName("새로운 종점을 추가한다.")
     @Test
     void addSection2() {
+        // when
+        신분당선.addSection(new Section(신분당선, 광교역, 양재역, 3));
+
+        //then
+        assertThat(신분당선.getStations()).containsExactlyElementsOf(Arrays.asList(강남역, 광교역, 양재역));
+    }
+
+    @DisplayName("이미 등록되어 있는 역은 추가하지 못한다.")
+    @Test
+    void addSection3() {
         assertThatThrownBy(() -> 신분당선.addSection(new Section(신분당선, 강남역, 광교역, 3)))
                 .isInstanceOf(InvalidAddSectionException.class)
                 .hasMessage("이미 등록된 구간 입니다.");
