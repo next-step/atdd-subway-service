@@ -49,11 +49,6 @@ class LineSections {
 		return stations;
 	}
 
-	public List<Section> getSections() {
-		// TODO : REMOVE
-		return this.sections;
-	}
-
 	void addLineStation(Section section) {
 		List<Station> stations = this.getStations();
 		boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
