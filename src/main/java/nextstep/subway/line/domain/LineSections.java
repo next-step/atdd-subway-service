@@ -5,10 +5,7 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Embeddable
 class LineSections {
@@ -96,22 +93,22 @@ class LineSections {
 	}
 
 	void removeLineStation(Station station) {
-	    if (this.sections.size() <= 1) {
-	        throw new RuntimeException();
-	    }
+		if (this.sections.size() <= 1) {
+			throw new RuntimeException();
+		}
 
-	    Optional<Section> upLineStation = findUpStationEqual(station);
-	    Optional<Section> downLineStation = findDownStationEqual(station);
+		Optional<Section> upLineStation = findUpStationEqual(station);
+		Optional<Section> downLineStation = findDownStationEqual(station);
 
-	    if (upLineStation.isPresent() && downLineStation.isPresent()) {
-	        Station newUpStation = downLineStation.get().getUpStation();
-	        Station newDownStation = upLineStation.get().getDownStation();
-	        int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-	        this.sections.add(new Section(upLineStation.get().getLine(), newUpStation, newDownStation, newDistance));
-	    }
+		if (upLineStation.isPresent() && downLineStation.isPresent()) {
+			Station newUpStation = downLineStation.get().getUpStation();
+			Station newDownStation = upLineStation.get().getDownStation();
+			int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+			this.sections.add(new Section(upLineStation.get().getLine(), newUpStation, newDownStation, newDistance));
+		}
 
-	    upLineStation.ifPresent(it -> this.sections.remove(it));
-	    downLineStation.ifPresent(it -> this.sections.remove(it));
+		upLineStation.ifPresent(it -> this.sections.remove(it));
+		downLineStation.ifPresent(it -> this.sections.remove(it));
 	}
 
 	private Optional<Section> findUpStationEqual(Station station) {
