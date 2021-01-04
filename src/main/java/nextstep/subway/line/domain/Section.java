@@ -6,7 +6,6 @@ import javax.persistence.*;
 
 @Entity
 public class Section {
-    public static final String ERR_TEXT_NEED_TO_SHORT_DISTANCE_THAN_NOW = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,7 +22,8 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
@@ -32,7 +32,7 @@ public class Section {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = Distance.of(distance);
     }
 
     public Long getId() {
@@ -52,30 +52,17 @@ public class Section {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.getDistance();
     }
 
     public void updateUpStationByNewSection(final Section newSection) {
-        final int newDistance = validateNewDistance(newSection);
-
         this.upStation = newSection.getDownStation();
-        this.distance -= newDistance;
-    }
-
-    private int validateNewDistance(final Section newSection) {
-        final int newDistance = newSection.getDistance();
-        if (this.distance <= newDistance) {
-            throw new IllegalArgumentException(ERR_TEXT_NEED_TO_SHORT_DISTANCE_THAN_NOW);
-        }
-
-        return newDistance;
+        distance = distance.minus(newSection.getDistance());
     }
 
     public void updateDownStationByNewSection(final Section newSection) {
-        final int newDistance = validateNewDistance(newSection);
-
         this.downStation = newSection.getUpStation();
-        this.distance -= newDistance;
+        distance = distance.minus(newSection.getDistance());
     }
 
     public boolean isMatchUpAndUpStation(final Section section) {
