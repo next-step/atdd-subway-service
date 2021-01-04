@@ -116,11 +116,15 @@ public class Sections {
             final Station currDownStation = currentSection.getDownStation();
             stations.add(currDownStation);
 
-            currentSection = findSection(section -> Objects.equals(section.getUpStation(), currDownStation))
-                .orElse(null);
+            currentSection = findNextSectionByDownStation(currDownStation);
         }
 
         return stations;
+    }
+
+    private Section findNextSectionByDownStation(final Station currDownStation) {
+        return findSection(section -> Objects.equals(section.getUpStation(), currDownStation))
+            .orElse(null);
     }
 
     private Optional<Section> findFirstSection() {
