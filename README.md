@@ -494,7 +494,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [X] 경로 탐색 시 로그인 토큰 전달
 
 ### Step4. 피드백 반영
-- [ ] AgeDiscountPolicy의 매직넘버 제거
+- [X] AgeDiscountPolicy의 매직넘버 제거
 - [ ] SuperLongDistanceFee의 매직넘버 제거
 - [ ] DefaultDistanceFee의 매직넘버 제거
 - [ ] DistanceFee Enum 변환
