@@ -22,6 +22,10 @@ public class Sections {
         return new Sections(new Section(line,upStation, downStation, distance));
     }
 
+    public static Sections of() {
+        return new Sections();
+    }
+
     public List<Section> getSections() {
         return sections;
     }
