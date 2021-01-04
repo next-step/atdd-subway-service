@@ -3,9 +3,9 @@ package nextstep.subway.path.dto;
 import nextstep.subway.line.domain.Section;
 
 public class PathSection {
-    private PathStation departureStation;
-    private PathStation arrivalStation;
-    private int distance;
+    private final PathStation departureStation;
+    private final PathStation arrivalStation;
+    private final int distance;
 
     public PathSection(PathStation departureStation, PathStation arrivalStation, int distance) {
         this.departureStation = departureStation;
