@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 public class SuperLongDistanceFee implements DistanceFee {
     private static final Integer MIN_DISTANCE = 51;
-    private static final BigDecimal DEFAULT_FEE = BigDecimal.valueOf(2050);
+    private static final BigDecimal MAX_LONG_DISTANCE_FEE = BigDecimal.valueOf(2050);
 
     private final Integer distance;
 
@@ -18,7 +18,7 @@ public class SuperLongDistanceFee implements DistanceFee {
     @Override
     public BigDecimal calculate() {
         Integer fee = (int) (Math.ceil((distance - MIN_DISTANCE - 1) / 8) + 1) * 100;
-        return DEFAULT_FEE.add(BigDecimal.valueOf(fee));
+        return MAX_LONG_DISTANCE_FEE.add(BigDecimal.valueOf(fee));
     }
 
     private void validate(Integer distance) {

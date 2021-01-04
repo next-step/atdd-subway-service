@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 public class DefaultDistanceFee implements DistanceFee {
     private static final Integer MIN_DISTANCE = 0;
     private static final Integer MAX_DISTANCE = 10;
+    private static final BigDecimal DEFAULT_FEE = BigDecimal.valueOf(1250L);
 
     private final Integer distance;
 
@@ -16,7 +17,7 @@ public class DefaultDistanceFee implements DistanceFee {
     }
     @Override
     public BigDecimal calculate() {
-        return BigDecimal.valueOf(1250L);
+        return DEFAULT_FEE;
     }
 
     private void validate(Integer distance) {
