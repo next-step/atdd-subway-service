@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 public class Section {
-    public static final String ERR_TEXT_NEED_TO_SHORT_DISTNACE_THAN_NOW = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
+    public static final String ERR_TEXT_NEED_TO_SHORT_DISTANCE_THAN_NOW = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -65,7 +65,7 @@ public class Section {
     private int validateNewDistance(final Section newSection) {
         final int newDistance = newSection.getDistance();
         if (this.distance <= newDistance) {
-            throw new RuntimeException(ERR_TEXT_NEED_TO_SHORT_DISTNACE_THAN_NOW);
+            throw new RuntimeException(ERR_TEXT_NEED_TO_SHORT_DISTANCE_THAN_NOW);
         }
 
         return newDistance;
