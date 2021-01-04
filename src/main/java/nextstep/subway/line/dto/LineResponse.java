@@ -30,6 +30,11 @@ public class LineResponse {
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
     }
 
+    public static LineResponse of(Line line) {
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getStationResponses(),
+                line.getCreatedDate(), line.getModifiedDate());
+    }
+
     public Long getId() {
         return id;
     }
