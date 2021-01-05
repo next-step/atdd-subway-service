@@ -8,21 +8,14 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class PathFinder {
-    private final WeightedMultigraph<PathStation, DefaultWeightedEdge> graph;
-
-    public PathFinder(List<PathSection> sections) {
-        this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        sections.forEach(section ->
-                this.addGraphVertex(
-                        section.getDepartureStation(),
-                        section.getArrivalStation(),
-                        section.getDistance()));
-    }
+    private WeightedMultigraph<PathStation, DefaultWeightedEdge> graph;
 
     private void addGraphVertex(PathStation source, PathStation target, double weight) {
         this.graph.addVertex(source);
@@ -44,7 +37,13 @@ public class PathFinder {
                 .orElseThrow(() -> new IllegalArgumentException("출발역과 도착역이 연결 되어 있지 않습니다."));
     }
 
-    public PathResponse ofPathResponse(Station sourceStation, Station targetStation) {
+    public PathResponse ofPathResponse(List<PathSection> sections, Station sourceStation, Station targetStation) {
+        this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        sections.forEach(section ->
+                this.addGraphVertex(
+                        section.getDepartureStation(),
+                        section.getArrivalStation(),
+                        section.getDistance()));
         PathStation source = PathStation.of(sourceStation);
         PathStation target = PathStation.of(targetStation);
         return PathResponse.of(getPath(source, target), getWeight(source, target));
