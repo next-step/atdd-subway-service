@@ -52,3 +52,10 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+## 1단계 - 인수 테스트 기반 리팩터링 TO-DO list
+
+- [ ] LineSectionAcceptanceTest 흐름을 검증하는 테스트 작성
+- [ ] LineSectionAcceptanceTest 리팩터링
+- [ ] LineService 세부기능 단위 테스트 작성
+- [ ] LineService 리팩터링
