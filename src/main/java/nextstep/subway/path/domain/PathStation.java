@@ -1,12 +1,8 @@
 package nextstep.subway.path.domain;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-@EqualsAndHashCode(of = {"id","name"})
-@Getter
 public class PathStation {
 
     private final Long id;
@@ -19,5 +15,31 @@ public class PathStation {
         this.id = id;
         this.name = name;
         this.createdAt = createdAt;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PathStation)) return false;
+        final PathStation that = (PathStation) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 }

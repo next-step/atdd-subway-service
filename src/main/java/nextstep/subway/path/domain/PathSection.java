@@ -1,13 +1,9 @@
 package nextstep.subway.path.domain;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
-@EqualsAndHashCode(of = {"upStation", "downStation"})
-@Getter
 public class PathSection {
 
     private final PathStation upStation;
@@ -24,5 +20,31 @@ public class PathSection {
 
     public List<PathStation> getStations() {
         return Arrays.asList(upStation, downStation);
+    }
+
+    public PathStation getUpStation() {
+        return upStation;
+    }
+
+    public PathStation getDownStation() {
+        return downStation;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PathSection)) return false;
+        final PathSection that = (PathSection) o;
+        return Objects.equals(upStation, that.upStation) &&
+                Objects.equals(downStation, that.downStation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(upStation, downStation);
     }
 }

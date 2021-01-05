@@ -1,12 +1,9 @@
 package nextstep.subway.path.domain;
 
-import lombok.Getter;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Getter
 public class PathSections {
 
     private final List<PathSection> pathSections;
@@ -20,5 +17,9 @@ public class PathSections {
                 .flatMap(pathSection -> pathSection.getStations().stream())
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    public List<PathSection> getPathSections() {
+        return pathSections;
     }
 }
