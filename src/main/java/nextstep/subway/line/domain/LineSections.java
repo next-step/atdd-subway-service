@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.application.ValidationException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -62,11 +63,11 @@ class LineSections {
 		boolean isDownStationExisted = stations.stream().anyMatch(section::downStationEquals);
 
 		if (isUpStationExisted && isDownStationExisted) {
-			throw new RuntimeException("이미 등록된 구간 입니다.");
+			throw new ValidationException("이미 등록된 구간 입니다.");
 		}
 
 		if (!(isUpStationExisted || isDownStationExisted)) {
-			throw new RuntimeException("등록할 수 없는 구간 입니다.");
+			throw new ValidationException("등록할 수 없는 구간 입니다.");
 		}
 
 		if (isUpStationExisted) {
@@ -81,7 +82,7 @@ class LineSections {
 
 	void removeLineStation(Station station) {
 		if (this.sections.size() <= MINIMUM_SECTION_SIZE) {
-			throw new RuntimeException();
+			throw new ValidationException("최소 구간 사이즈일때 구간 삭제가 불가능합니다.");
 		}
 
 		Optional<Section> upSection = findUpStationEqual(station);

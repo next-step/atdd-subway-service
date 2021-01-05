@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.application.ValidationException;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;
@@ -16,7 +18,7 @@ public class Distance {
 
 	public Distance(int distance) {
 		if (distance < 0) {
-			throw new IllegalArgumentException("distance cannot be low than zero");
+			throw new ValidationException("거리는 0보다 낮을 수 없습니다.");
 		}
 		this.distance = distance;
 	}

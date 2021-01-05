@@ -48,7 +48,7 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id).orElseThrow(() -> new NotFoundException("id 로 노선 찾기에 실패했습니다."));
     }
 
     public LineResponse findLineResponseById(Long id) {
@@ -60,7 +60,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = lineRepository.findById(id).orElseThrow(() -> new NotFoundException("id 로 노선 찾기에 실패했습니다."));
         persistLine.update(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
     }
 
