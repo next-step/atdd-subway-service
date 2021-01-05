@@ -125,7 +125,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - 인증 - 즐겨 찾기 기능 완성하기
 
 ### 토큰 발급 기능 인수테스트
-- [ ] 올바른 로그인 기능 사용 (해피패스)
+- [X] 올바른 로그인 기능 사용 (해피패스)
 - [ ] 로그인 시 아이디 또는 비밀번호가 틀린 경우
 - [ ] 인증되지 않은 토큰으로 내 정보 조회 기능을 사용할 경우
 
