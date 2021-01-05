@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.exception.DuplicateSectionException;
+import nextstep.subway.line.exception.NotFoundSectionException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,8 +44,7 @@ public class LineTest {
     void alreadyRegisterSection() {
         assertThatThrownBy(() -> {
             line.addSection(gangnam, yangjae, 5);
-        }).isInstanceOf(RuntimeException.class)
-                .hasMessageMatching("이미 등록된 구간 입니다.");
+        }).isInstanceOf(DuplicateSectionException.class);
     }
 
     @DisplayName("예외처리 테스트: 등록되지않은 구간")
@@ -51,8 +52,7 @@ public class LineTest {
     void notYetRegisterSection() {
         assertThatThrownBy(() -> {
             line.addSection(hongdae, gyodae, 5);
-        }).isInstanceOf(RuntimeException.class)
-                .hasMessageMatching("등록할 수 없는 구간 입니다.");
+        }).isInstanceOf(NotFoundSectionException.class);
     }
 
     @DisplayName("구간 등록 test: 기존상행-새로운하행")

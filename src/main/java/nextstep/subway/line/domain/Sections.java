@@ -1,5 +1,8 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.exception.DuplicateSectionException;
+import nextstep.subway.line.exception.MinimumSectionException;
+import nextstep.subway.line.exception.NotFoundSectionException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -34,8 +37,11 @@ public class Sections {
 
     public List<Station> getStations() {
         List<Station> stations = new ArrayList<>();
-        Station downStation = findFirstStation();
-        stations.add(downStation);
+        Station downStation = new Station();
+        if (sections.size() > 0) {
+            downStation = findFirstStation();
+            stations.add(downStation);
+        }
 
         while (downStation != null) {
             Station finalDownStation = downStation;
@@ -63,14 +69,63 @@ public class Sections {
     }
 
     public void addSection(Section section) {
-        sections.add(section);
+        Station upStation = section.getUpStation();
+        Station downStation = section.getDownStation();
+        int distance = section.getDistance();
+        List<Station> stations = getStations();
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+        boolean isMatchedStationNotExisted = stations.stream().noneMatch(it -> it == upStation) &&
+                stations.stream().noneMatch(it -> it == downStation);
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new DuplicateSectionException();
+        }
+
+        if (!stations.isEmpty() && isMatchedStationNotExisted) {
+            throw new NotFoundSectionException();
+        }
+
+        if (stations.isEmpty()) {
+            sections.add(section);
+            return;
+        }
+
+        if (isUpStationExisted) {
+            findSectionWithUpStation(upStation)
+                    .ifPresent(it -> it.updateUpStation(downStation, distance));
+
+            sections.add(section);
+            return;
+        }
+
+        if (isDownStationExisted) {
+            findSectionWithDownStation(downStation)
+                    .ifPresent(it -> it.updateDownStation(upStation, distance));
+
+            sections.add(section);
+            return;
+        }
     }
 
-    public void removeSection(Section section) {
-        sections.remove(section);
+    public void removeStation(Station station, Line line) {
+        if (sections.size() <= 1) {
+            throw new MinimumSectionException();
+        }
+
+        Optional<Section> upLineStation = findSectionWithUpStation(station);
+        Optional<Section> downLineStation = findSectionWithDownStation(station);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(sections::remove);
+        downLineStation.ifPresent(sections::remove);
     }
 
-    public boolean isNotRemovable() {
-        return sections.size() <= 1;
-    }
+
 }
