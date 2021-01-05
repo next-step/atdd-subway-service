@@ -10,6 +10,8 @@ import java.util.*;
 @Embeddable
 class LineSections {
 
+	private static final int MINIMUM_SECTION_SIZE = 1;
+
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private List<Section> sections;
 
@@ -78,22 +80,25 @@ class LineSections {
 	}
 
 	void removeLineStation(Station station) {
-		if (this.sections.size() <= 1) {
+		if (this.sections.size() <= MINIMUM_SECTION_SIZE) {
 			throw new RuntimeException();
 		}
 
-		Optional<Section> upLineStation = findUpStationEqual(station);
-		Optional<Section> downLineStation = findDownStationEqual(station);
-
-		if (upLineStation.isPresent() && downLineStation.isPresent()) {
-			Station newUpStation = downLineStation.get().getUpStation();
-			Station newDownStation = upLineStation.get().getDownStation();
-			Distance newDistance = upLineStation.get().getDistance().plus(downLineStation.get().getDistance());
-			this.sections.add(new Section(upLineStation.get().getLine(), newUpStation, newDownStation, newDistance));
+		Optional<Section> upSection = findUpStationEqual(station);
+		Optional<Section> downSection = findDownStationEqual(station);
+		if (upSection.isPresent() && downSection.isPresent()) {
+			this.sections.add(merge(upSection.get(), downSection.get()));
 		}
 
-		upLineStation.ifPresent(it -> this.sections.remove(it));
-		downLineStation.ifPresent(it -> this.sections.remove(it));
+		upSection.ifPresent(it -> this.sections.remove(it));
+		downSection.ifPresent(it -> this.sections.remove(it));
+	}
+
+	private Section merge(Section upSection, Section downSection) {
+		Station newUpStation = downSection.getUpStation();
+		Station newDownStation = upSection.getDownStation();
+		Distance newDistance = upSection.getDistance().plus(downSection.getDistance());
+		return new Section(upSection.getLine(), newUpStation, newDownStation, newDistance);
 	}
 
 	private Optional<Section> findUpStationEqual(Station station) {
