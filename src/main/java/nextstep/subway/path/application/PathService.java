@@ -3,6 +3,7 @@ package nextstep.subway.path.application;
 import lombok.RequiredArgsConstructor;
 import nextstep.subway.path.domain.*;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.infra.JgraphtPathFinder;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -11,7 +12,7 @@ public class PathService {
 
     private final PathRepository pathRepository;
 
-    private final PathFinder pathFinder;
+    private final PathFinder pathFinder = JgraphtPathFinder.getInstance();
 
     public PathResponse findShortest(final long sourceId, final long targetId) {
         PathSections allSections = pathRepository.findAllSections();

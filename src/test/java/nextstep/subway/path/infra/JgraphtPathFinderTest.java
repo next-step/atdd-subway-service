@@ -24,7 +24,7 @@ class JgraphtPathFinderTest {
 
     @BeforeEach
     void setUp() {
-        pathFinder = new JgraphtPathFinder();
+        pathFinder = JgraphtPathFinder.getInstance();
         교대역 = new PathStation(1L, "교대역", LocalDateTime.now());
         강남역 = new PathStation(2L, "강남역", LocalDateTime.now());
         남부터미널역 = new PathStation(3L, "남부터미널역", LocalDateTime.now());

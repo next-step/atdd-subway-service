@@ -1,6 +1,5 @@
 package nextstep.subway.path.infra;
 
-import lombok.RequiredArgsConstructor;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.PathSections;
@@ -9,13 +8,17 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
-@RequiredArgsConstructor
-@Component
 public class JgraphtPathFinder implements PathFinder {
+
+    private JgraphtPathFinder() {
+    }
+
+    public static PathFinder getInstance() {
+        return LazyHolder.INSTANCE;
+    }
 
     @Override
     public Path findShortest(final PathSections pathSections, final PathStation source, final PathStation target) {
@@ -54,5 +57,10 @@ public class JgraphtPathFinder implements PathFinder {
                         pathSection.getDistance())
                 );
         return new DijkstraShortestPath<>(graph);
+    }
+
+    private static final class LazyHolder {
+
+        private static final PathFinder INSTANCE = new JgraphtPathFinder();
     }
 }
