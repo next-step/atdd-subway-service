@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,11 +47,11 @@ public class LineSectionTest {
 	void addLineSectionEmptySections() {
 		//given
 		Line line = new Line("2호선", "green");
-		LineSection lineSection = new LineSection(line, stationMap.get("강남역"),
-			  stationMap.get("역삼역"));
+		LineSection lineSection = new LineSection(line);
 
 		//when
-		lineSection.addLineStation(5);
+		lineSection.addLineStation(stationMap.get("강남역"),
+			  stationMap.get("역삼역"), 5);
 
 		//then
 		assertThat(line.getSections()).hasSize(1);
@@ -60,11 +61,11 @@ public class LineSectionTest {
 	@Test
 	void addLineSectionFinalUpStation() {
 		//given
-		LineSection lineSection = new LineSection(line, stationMap.get("교대역"),
-			  stationMap.get("강남역"));
+		LineSection lineSection = new LineSection(line);
 
 		//when
-		lineSection.addLineStation(5);
+		lineSection.addLineStation(stationMap.get("교대역"),
+			  stationMap.get("강남역"), 5);
 
 		//then
 		assertThat(line.getStations())
@@ -75,11 +76,11 @@ public class LineSectionTest {
 	@Test
 	void addLineSectionFinalDownStation() {
 		//given
-		LineSection lineSection = new LineSection(line, stationMap.get("역삼역"),
-			  stationMap.get("선릉역"));
+		LineSection lineSection = new LineSection(line);
 
 		//when
-		lineSection.addLineStation(5);
+		lineSection.addLineStation(stationMap.get("역삼역"),
+			  stationMap.get("선릉역"), 5);
 
 		//then
 		assertThat(line.getStations())
@@ -90,11 +91,11 @@ public class LineSectionTest {
 	@Test
 	void addLineSectionMiddleStation() {
 		//given
-		LineSection lineSection = new LineSection(line, stationMap.get("강남역"),
-			  stationMap.get("선릉역"));
+		LineSection lineSection = new LineSection(line);
 
 		//when
-		lineSection.addLineStation(4);
+		lineSection.addLineStation(stationMap.get("강남역"),
+			  stationMap.get("선릉역"), 4);
 
 		//then
 		assertThat(line.getStations())
@@ -105,11 +106,11 @@ public class LineSectionTest {
 	@Test
 	void addLineSectionMiddleStationTooLongDistance() {
 		//given
-		LineSection lineSection = new LineSection(line, stationMap.get("강남역"),
-			  stationMap.get("선릉역"));
+		LineSection lineSection = new LineSection(line);
 
 		//when, then
-		assertThatThrownBy(() ->lineSection.addLineStation(10))
+		assertThatThrownBy(() ->lineSection.addLineStation(stationMap.get("강남역"),
+			  stationMap.get("선릉역"), 10))
 			  .isInstanceOf(RuntimeException.class)
 			  .hasMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
 	}
@@ -118,11 +119,11 @@ public class LineSectionTest {
 	@Test
 	void addLineSectionAlreadyIncludeStations() {
 		//given
-		LineSection lineSection = new LineSection(line, stationMap.get("강남역"),
-			  stationMap.get("역삼역"));
+		LineSection lineSection = new LineSection(line);
 
 		//when
-		assertThatThrownBy(() -> lineSection.addLineStation(1))
+		assertThatThrownBy(() -> lineSection.addLineStation(stationMap.get("강남역"),
+			  stationMap.get("역삼역"), 1))
 			  .isInstanceOf(RuntimeException.class)
 			  .hasMessage("이미 등록된 구간 입니다.");
 	}
@@ -131,12 +132,44 @@ public class LineSectionTest {
 	@Test
 	void addLineSectionNotIncludeStations() {
 		//given
-		LineSection lineSection = new LineSection(line, stationMap.get("교대역"),
-			  stationMap.get("선릉역"));
+		LineSection lineSection = new LineSection(line);
 
 		//when
-		assertThatThrownBy(() -> lineSection.addLineStation(1))
+		assertThatThrownBy(() -> lineSection.addLineStation(stationMap.get("교대역"),
+			  stationMap.get("선릉역"), 1))
 			  .isInstanceOf(RuntimeException.class)
 			  .hasMessage("등록할 수 없는 구간 입니다.");
+	}
+
+	@DisplayName("구간에 등록되어 있는 역 삭제")
+	@Test
+	void removeSection() {
+		//given
+		LineSection lineSection = new LineSection(line);
+		lineSection.addLineStation(stationMap.get("역삼역"),
+			  stationMap.get("선릉역"), 5);
+
+		int expectedDistance = line.getSections().stream()
+			  .mapToInt(Section::getDistance)
+			  .sum();
+
+		//when
+		lineSection.removeStation(stationMap.get("역삼역"));
+
+		//then
+		List<Section> sections = line.getSections();
+		assertThat(sections).hasSize(1);
+		assertThat(sections.get(0).getDistance()).isEqualTo(expectedDistance);
+	}
+
+	@DisplayName("구간이 하나만 등록되어 있는 경우 삭제할 수 없다.")
+	@Test
+	void removeHasOneSection() {
+		//given
+		LineSection lineSection = new LineSection(line);
+
+		//when
+		assertThatThrownBy(() -> lineSection.removeStation(stationMap.get("교대역")))
+			  .isInstanceOf(RuntimeException.class);
 	}
 }

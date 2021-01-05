@@ -1,21 +1,18 @@
 package nextstep.subway.line.domain;
 
 import java.util.List;
+import java.util.Optional;
 import nextstep.subway.station.domain.Station;
 
 public class LineSection {
 
 	private Line line;
-	private Station upStation;
-	private Station downStation;
 
-	public LineSection(Line line, Station upStation, Station downStation) {
+	public LineSection(Line line) {
 		this.line = line;
-		this.upStation = upStation;
-		this.downStation = downStation;
 	}
 
-	public void addLineStation(int distance) {
+	public void addLineStation(Station upStation, Station downStation, int distance) {
 		List<Station> stations = line.getStations();
 
 		boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
@@ -28,14 +25,33 @@ public class LineSection {
 		}
 
 		if (isUpStationExisted) {
-			updateUpStation(distance);
+			updateUpStation(upStation, downStation, distance);
 			return;
 		}
 
 		if (isDownStationExisted) {
-			updateDownStation(distance);
+			updateDownStation(upStation, downStation, distance);
 			return;
 		}
+	}
+
+	public void removeStation(Station station) {
+		if (line.emptyOrHasOneSection()) {
+			throw new RuntimeException();
+		}
+
+		Optional<Section> upLineStation = line.upLineStation(station);
+		Optional<Section> downLineStation = line.downLineStation(station);
+
+		if (upLineStation.isPresent() && downLineStation.isPresent()) {
+			Station newUpStation = downLineStation.get().getUpStation();
+			Station newDownStation = upLineStation.get().getDownStation();
+			int newDistance = upLineStation.get().sumDistance(downLineStation.get());
+			line.addSection(newUpStation, newDownStation, newDistance);
+		}
+
+		upLineStation.ifPresent(it -> line.removeSection(it));
+		downLineStation.ifPresent(it -> line.removeSection(it));
 	}
 
 	private void validate(List<Station> stations, boolean isUpStationExisted,
@@ -50,11 +66,11 @@ public class LineSection {
 		}
 	}
 
-	private void updateUpStation(int distance) {
+	private void updateUpStation(Station upStation, Station downStation, int distance) {
 		line.updateUpStation(upStation, downStation, distance);
 	}
 
-	private void updateDownStation(int distance) {
+	private void updateDownStation(Station upStation, Station downStation, int distance) {
 		line.updateDownStation(upStation, downStation, distance);
 	}
 }
