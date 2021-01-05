@@ -71,7 +71,7 @@ class LineSections {
 		}
 
 		if (isUpStationExisted) {
-			findUpStationEqual(section.getUpStation()).ifPresent(if_section -> if_section.updateUpStation(section));
+			findUpStationEqual(section.getUpStation()).ifPresent(ifSection -> ifSection.updateUpStation(section));
 			sections.add(section);
 			return;
 		}
