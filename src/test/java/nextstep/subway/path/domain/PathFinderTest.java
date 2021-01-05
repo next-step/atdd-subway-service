@@ -77,11 +77,9 @@ class PathFinderTest {
 
         Station 사당역 = new Station("사당역");
 
-        Path path = pathFinder.findPath(lines, 교대역, 사당역);
-
-        assertThatThrownBy(() -> path.getPathStations())
-                .isInstanceOf(NotConnectedPathException.class)
-                .hasMessageContaining("연결되지 않은 구간입니다.");
+        assertThatThrownBy(() -> pathFinder.findPath(lines, 교대역, 사당역))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("graph must contain the sink vertex");
     }
 
 }

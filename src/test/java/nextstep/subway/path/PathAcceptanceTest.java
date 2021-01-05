@@ -35,9 +35,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     /**
      * 교대역    --- *2호선* ---   강남역
-     * |                        |
      * *3호선*                   *신분당선*
-     * |                        |
      * 남부터미널역  --- *3호선* ---   양재
      */
 
@@ -54,24 +52,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
         이호선 = LineRestHelper.지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
         삼호선 = LineRestHelper.지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
 
-        ExtractableResponse<Response> response = LineSectionRestHelper.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+        ExtractableResponse<Response> response = LineSectionRestHelper
+                .지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
 
     /**
      * 사당역
      *
      * 교대역    --- *2호선* ---   강남역
-     * |                        |
      * *3호선*                   *신분당선*
-     * |                        |
      * 남부터미널역  --- *3호선* ---   양재
      */
     @DisplayName("등록되지 않은 역 경로 조회")
     @Test
     public void notRegisteredStation() {
-        StationResponse 사당역 = StationRestHelper.지하철역_등록되어_있음("사당역").as(StationResponse.class);
-
-        ExtractableResponse<Response> response = PathRestHelper.지하철_경로_탐색_요청(사당역.getId(), 강남역.getId());
+        ExtractableResponse<Response> response = PathRestHelper
+                .지하철_경로_탐색_요청(1000L, 강남역.getId());
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
@@ -80,9 +76,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * 남성역    --- *7호선* ---   이수역
      *
      * 교대역    --- *2호선* ---   강남역
-     * |                        |
      * *3호선*                   *신분당선*
-     * |                        |
      * 남부터미널역  --- *3호선* ---   양재
      */
     @DisplayName("연결되지 않은 역 경로 조회")
@@ -92,7 +86,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         StationResponse 이수역 = StationRestHelper.지하철역_등록되어_있음("이수역").as(StationResponse.class);
         LineRestHelper.지하철_노선_등록되어_있음("칠호선", "bg-red-600", 남성역, 이수역, 10);
 
-        ExtractableResponse<Response> response = PathRestHelper.지하철_경로_탐색_요청(남성역.getId(), 강남역.getId());
+        ExtractableResponse<Response> response = PathRestHelper
+                .지하철_경로_탐색_요청(남성역.getId(), 강남역.getId());
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
@@ -100,12 +95,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     /**
      * 교대역    --- *2호선* ---   강남역
-     * |                        |
      * *3호선*                   *신분당선*
-     * |                        |
      * 남부터미널역  --- *3호선* ---   양재
      */
-    @DisplayName("연결되지 않은 역 경로 조회")
+    @DisplayName("지하철 역 경로 조회")
     @Test
     public void pathsTest() {
         StationResponse 남성역 = StationRestHelper.지하철역_등록되어_있음("남성역").as(StationResponse.class);
@@ -117,10 +110,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         List<StationResponse> stations = pathResponse.getStations();
         assertThat(stations.get(0).getName()).isEqualTo("교대역");
-        assertThat(stations.get(0).getName()).isEqualTo("남부터미널역");
-        assertThat(stations.get(0).getName()).isEqualTo("양재역");
+        assertThat(stations.get(1).getName()).isEqualTo("남부터미널역");
+        assertThat(stations.get(2).getName()).isEqualTo("양재역");
         assertThat(pathResponse.getDistance()).isEqualTo(5);
 
     }
 
+    @DisplayName("같은 역 경로 조회")
+    @Test
+    public void requestSameStation() {
+        ExtractableResponse<Response> response = PathRestHelper.지하철_경로_탐색_요청(교대역.getId(), 교대역.getId());
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 }
