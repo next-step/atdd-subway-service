@@ -1,8 +1,13 @@
 package nextstep.subway.line.domain;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import nextstep.subway.station.domain.Station;
-
-import javax.persistence.*;
 
 @Entity
 public class Section {
@@ -34,6 +39,34 @@ public class Section {
         this.distance = distance;
     }
 
+    public void updateUpStation(Station station, int newDistance) {
+        if (this.distance <= newDistance) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.upStation = station;
+        this.distance -= newDistance;
+    }
+
+    public void updateDownStation(Station station, int newDistance) {
+        if (this.distance <= newDistance) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.downStation = station;
+        this.distance -= newDistance;
+    }
+
+    public boolean isUpStationEquals(Station station) {
+        return this.upStation.equals(station);
+    }
+
+    public boolean isDownStationEquals(Station station) {
+        return this.downStation.equals(station);
+    }
+
+    public int sumDistance(Section downLineStation) {
+        return this.distance + downLineStation.distance;
+    }
+
     public Long getId() {
         return id;
     }
@@ -52,21 +85,5 @@ public class Section {
 
     public int getDistance() {
         return distance;
-    }
-
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
     }
 }
