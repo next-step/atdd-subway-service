@@ -29,4 +29,8 @@ public class Lines {
                 .flatMap(line -> line.getSections().stream())
                 .collect(Collectors.toList());
     }
+
+    public boolean contains(Station station) {
+        return getStations().contains(station);
+    }
 }

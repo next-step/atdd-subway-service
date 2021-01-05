@@ -2,7 +2,7 @@ package nextstep.subway.path.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import nextstep.subway.station.domain.Station;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.dto.StationResponse;
 
 /**
@@ -16,16 +16,16 @@ public class PathResponse {
 
     private final List<StationResponse> stations;
 
-    private PathResponse(int distance, List<StationResponse> stations) {
+    protected PathResponse(int distance, List<StationResponse> stations) {
         this.distance = distance;
         this.stations = stations;
     }
 
-    public static PathResponse of(int distance, List<Station> stations) {
-        List<StationResponse> stationResponses = stations.stream()
+    public static PathResponse of(Path path) {
+        List<StationResponse> stationResponses = path.getPathStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
-        return new PathResponse(distance, stationResponses);
+        return new PathResponse(path.getDistance(), stationResponses);
     }
 
     public int getDistance() {

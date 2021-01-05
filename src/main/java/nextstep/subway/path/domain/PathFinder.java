@@ -6,12 +6,14 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 
 /**
  * @author : leesangbae
  * @project : subway
  * @since : 2021-01-06
  */
+@Component
 public class PathFinder {
 
     public Path findPath(Lines lines, Station sourceStation, Station targetStation) {
@@ -38,7 +40,7 @@ public class PathFinder {
 
         GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(sourceStation, targetStation);
 
-        return Path.of(path.getVertexList(), (int) path.getWeight());
+        return Path.of(path);
     }
 
 }
