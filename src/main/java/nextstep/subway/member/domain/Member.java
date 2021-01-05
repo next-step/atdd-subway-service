@@ -1,5 +1,6 @@
 package nextstep.subway.member.domain;
 
+import lombok.Getter;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
 import org.apache.commons.lang3.StringUtils;

@@ -56,14 +56,14 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_순서_정렬됨(addListResponse, Arrays.asList(강남역, 양재역, 광교역));
 
         // When 지하철 구간 삭제 요청
-        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 광교역);
         // Then 지하철 구간 삭제됨
         지하철_노선에_지하철역_제외됨(removeResponse);
 
         // When 지하철 노선에 등록된 역 목록 조회 요청
         ExtractableResponse<Response> removeListResponse = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
         // Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
-        지하철_노선에_지하철역_순서_정렬됨(removeListResponse, Arrays.asList(강남역, 광교역));
+        지하철_노선에_지하철역_순서_정렬됨(removeListResponse, Arrays.asList(강남역, 양재역));
     }
 
     @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
