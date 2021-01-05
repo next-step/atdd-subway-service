@@ -94,7 +94,9 @@ public class Sections {
         return stations;
     }
 
-
+    public List<Section> getSections() {
+        return sections;
+    }
 
     private Station findUpStation() {
         Station downStation = this.sections.get(0).getUpStation();
