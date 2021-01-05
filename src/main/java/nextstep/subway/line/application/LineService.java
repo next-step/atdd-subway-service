@@ -62,7 +62,7 @@ public class LineService {
 
     private Line findLine(Long id) {
         return lineRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new RuntimeException("해당 역을 찾을수 없습니다."));
     }
 
     public void deleteLineById(Long id) {
