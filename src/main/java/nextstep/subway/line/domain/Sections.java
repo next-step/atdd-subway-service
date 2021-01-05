@@ -5,10 +5,7 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Embeddable
 public class Sections {
@@ -27,42 +24,33 @@ public class Sections {
     }
 
     public List<Station> getStations() {
-        if (sections.isEmpty()) {
-            return Collections.emptyList();
+        Station station = findFirstUpStation();
+        List<Station> result = new ArrayList<>(Collections.singletonList(station));
+        Optional<Section> nextSection = findNextSection(station);
+        while (nextSection.isPresent()) {
+            Station nextStation = nextSection.get().getDownStation();
+            result.add(nextStation);
+            nextSection = findNextSection(nextStation);
         }
-
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.getSections().stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
-
-        return stations;
+        return result;
     }
 
-    private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
+    private Station findFirstUpStation() {
+        return this.sections.stream()
+                .map(Section::getUpStation)
+                .filter(this::matchUpStation)
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("상행역이 존재하지 않습니다."));
+    }
 
-        return downStation;
+    private boolean matchUpStation(Station upStation) {
+        return sections.stream()
+                .noneMatch(section -> section.getDownStation() == upStation);
+    }
+
+    private Optional<Section> findNextSection(Station station) {
+        return sections.stream()
+                .filter(s -> s.getUpStation() == station)
+                .findAny();
     }
 }
