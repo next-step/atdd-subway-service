@@ -76,7 +76,7 @@ class LineSections {
 			return;
 		}
 
-		findDownStationEqual(section.getDownStation()).ifPresent(if_section -> if_section.updateDownStation(section));
+		findDownStationEqual(section.getDownStation()).ifPresent(ifSection -> ifSection.updateDownStation(section));
 		sections.add(section);
 	}
 
