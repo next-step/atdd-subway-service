@@ -19,7 +19,7 @@ class LineSections {
 
 	LineSections(Section section) {
 		this();
-		this.sections.add(section);
+		addLineStation(section);
 	}
 
 	List<Station> getStations() {
@@ -50,6 +50,11 @@ class LineSections {
 	}
 
 	void addLineStation(Section section) {
+		if (this.sections.isEmpty()) {
+			this.sections.add(section);
+			return;
+		}
+
 		List<Station> stations = this.getStations();
 		boolean isUpStationExisted = stations.stream().anyMatch(section::upStationEquals);
 		boolean isDownStationExisted = stations.stream().anyMatch(section::downStationEquals);
@@ -58,29 +63,18 @@ class LineSections {
 			throw new RuntimeException("이미 등록된 구간 입니다.");
 		}
 
-		if (!stations.isEmpty() && stations.stream().noneMatch(section::upStationEquals) &&
-				stations.stream().noneMatch(section::downStationEquals)) {
+		if (!(isUpStationExisted || isDownStationExisted)) {
 			throw new RuntimeException("등록할 수 없는 구간 입니다.");
 		}
 
-		if (stations.isEmpty()) {
-			this.sections.add(section);
+		if (isUpStationExisted) {
+			findUpStationEqual(section.getUpStation()).ifPresent(if_section -> if_section.updateUpStation(section));
+			sections.add(section);
 			return;
 		}
 
-		if (isUpStationExisted) {
-			findUpStationEqual(section.getUpStation())
-					.ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-
-			this.sections.add(section);
-		} else if (isDownStationExisted) {
-			findDownStationEqual(section.getDownStation())
-					.ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
-
-			this.sections.add(section);
-		} else {
-			throw new RuntimeException();
-		}
+		findDownStationEqual(section.getDownStation()).ifPresent(if_section -> if_section.updateDownStation(section));
+		sections.add(section);
 	}
 
 	void removeLineStation(Station station) {
