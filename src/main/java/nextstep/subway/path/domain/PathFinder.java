@@ -27,21 +27,30 @@ public class PathFinder {
         return new Distance((int)createGraphPath(source, target).getWeight());
     }
 
-    private void addAllSections(List<Section> sections) {
-        sections.forEach(this::addVertexEdge);
-    }
-
-    private void addVertexEdge(Section section) {
-        graph.addVertex(PathStation.of(section.getUpStation()));
-        graph.addVertex(PathStation.of(section.getDownStation()));
-        graph.setEdgeWeight(graph.addEdge(PathStation.of(section.getUpStation()), PathStation.of(section.getDownStation())), section.getDistance());
-    }
-
     private GraphPath<PathStation, DefaultWeightedEdge> createGraphPath(PathStation source, PathStation target) {
         if (source.equals(target)) {
             throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
         }
         return Optional.ofNullable(new DijkstraShortestPath(graph).getPath(source, target))
                 .orElseThrow(() -> new IllegalArgumentException("출발역과 도착역이 연결이 되어 있지 않습니다."));
+    }
+
+    private void addAllSections(List<Section> sections) {
+        sections.forEach(this::addVertexEdge);
+    }
+
+    private void addVertexEdge(Section section) {
+        createVertex(section);
+        createEdgeWeight(section);
+    }
+
+    private void createVertex(Section section) {
+        graph.addVertex(PathStation.of(section.getUpStation()));
+        graph.addVertex(PathStation.of(section.getDownStation()));
+    }
+
+    private void createEdgeWeight(Section section) {
+        DefaultWeightedEdge edge = graph.addEdge(PathStation.of(section.getUpStation()), PathStation.of(section.getDownStation()));
+        graph.setEdgeWeight(edge, section.getDistance());
     }
 }

@@ -12,7 +12,6 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 @SpringBootTest
 class PathServiceTest {
-    // given
     private Line 삼호선;
     private Station 양재역;
     private Station 교대역;
@@ -21,16 +20,8 @@ class PathServiceTest {
     @Autowired
     private PathService pathService;
 
-    /**
-     * 교대역    --- *2호선* ---   강남역
-     * |                        |
-     * *3호선*                   *신분당선*
-     * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
-     */
     @BeforeEach
     void setUp() {
-        // given
         양재역 = new Station("양재역");
         교대역 = new Station("교대역");
         남부터미널역 = new Station("남부터미널역");
