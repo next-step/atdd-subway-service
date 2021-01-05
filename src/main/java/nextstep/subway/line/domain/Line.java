@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import java.util.Arrays;
+import java.util.Optional;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
@@ -38,6 +40,46 @@ public class Line extends BaseEntity {
         this.color = line.getColor();
     }
 
+    public List<Station> getStations() {
+        if (sections.isEmpty()) {
+            return Arrays.asList();
+        }
+
+        List<Station> stations = new ArrayList<>();
+        Station downStation = findUpStation();
+        stations.add(downStation);
+
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = this.sections.stream()
+                  .filter(it -> it.getUpStation() == finalDownStation)
+                  .findFirst();
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getDownStation();
+            stations.add(downStation);
+        }
+
+        return stations;
+    }
+
+    private Station findUpStation() {
+        Station downStation = this.sections.get(0).getUpStation();
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = this.sections.stream()
+                  .filter(it -> it.getDownStation() == finalDownStation)
+                  .findFirst();
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getUpStation();
+        }
+
+        return downStation;
+    }
+
     public Long getId() {
         return id;
     }
@@ -52,5 +94,23 @@ public class Line extends BaseEntity {
 
     public List<Section> getSections() {
         return sections;
+    }
+
+    public void updateUpStation(Station upStation, Station downStation, int distance) {
+        this.sections.stream()
+              .filter(it -> it.getUpStation() == upStation)
+              .findFirst()
+              .ifPresent(it -> it.updateUpStation(downStation, distance));
+
+        this.sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public void updateDownStation(Station upStation, Station downStation, int distance) {
+        this.sections.stream()
+              .filter(it -> it.getDownStation() == downStation)
+              .findFirst()
+              .ifPresent(it -> it.updateDownStation(upStation, distance));
+
+        this.sections.add(new Section(this, upStation, downStation, distance));
     }
 }
