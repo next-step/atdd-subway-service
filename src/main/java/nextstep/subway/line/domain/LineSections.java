@@ -88,7 +88,7 @@ class LineSections {
 		if (upLineStation.isPresent() && downLineStation.isPresent()) {
 			Station newUpStation = downLineStation.get().getUpStation();
 			Station newDownStation = upLineStation.get().getDownStation();
-			int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+			Distance newDistance = upLineStation.get().getDistance().plus(downLineStation.get().getDistance());
 			this.sections.add(new Section(upLineStation.get().getLine(), newUpStation, newDownStation, newDistance));
 		}
 

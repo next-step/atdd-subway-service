@@ -22,12 +22,16 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    private Distance distance;
 
     public Section() {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
+        this(line, upStation, downStation, new Distance(distance));
+    }
+
+    public Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -50,24 +54,18 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
     public void updateUpStation(Section section) {
-        if (this.distance <= section.getDistance()) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
         this.upStation = section.getDownStation();
-        this.distance -= section.getDistance();
+        this.distance = this.distance.minus(section.getDistance());
     }
 
     public void updateDownStation(Section section) {
-        if (this.distance <= section.getDistance()) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
         this.downStation = section.getUpStation();
-        this.distance -= section.getDistance();
+        this.distance = this.distance.minus(section.getDistance());
     }
 
     public boolean upStationEquals(Station station) {
