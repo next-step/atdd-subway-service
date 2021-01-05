@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.application.ValidationException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,14 +41,14 @@ class LineTest {
 	@Test
 	void addLineStation_이미등록됨() {
 		assertThatThrownBy(() -> 이호선.addLineStation(삼성역, 잠실역, 20))
-				.isInstanceOf(RuntimeException.class)
+				.isInstanceOf(ValidationException.class)
 				.hasMessageContaining("이미 등록된 구간");
 	}
 
 	@Test
 	void addLineStation_등록불가() {
 		assertThatThrownBy(() -> 이호선.addLineStation(종합운동장역, 선릉역, 20))
-				.isInstanceOf(RuntimeException.class)
+				.isInstanceOf(ValidationException.class)
 				.hasMessageContaining("등록할 수 없는 구간");
 	}
 
@@ -62,7 +63,7 @@ class LineTest {
 
 	@Test
 	void removeLineStation_제거가능역없음() {
-		assertThatThrownBy(() -> 이호선.removeLineStation(잠실역)).isInstanceOf(RuntimeException.class);
+		assertThatThrownBy(() -> 이호선.removeLineStation(잠실역)).isInstanceOf(ValidationException.class);
 	}
 
 	@Test
