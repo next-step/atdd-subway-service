@@ -11,6 +11,7 @@ import nextstep.subway.path.domain.PathStation;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +20,7 @@ import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
-@Component
+@Repository
 public class DefaultPathRepository implements PathRepository {
 
     private final LineRepository lineRepository;

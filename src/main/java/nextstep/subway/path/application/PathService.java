@@ -13,7 +13,7 @@ public class PathService {
 
     private final PathFinder pathFinder;
 
-    public PathResponse findShortest(final Long sourceId, final Long targetId) {
+    public PathResponse findShortest(final long sourceId, final long targetId) {
         PathSections allSections = pathRepository.findAllSections();
         PathStation source = findById(sourceId);
         PathStation target = findById(targetId);
@@ -21,7 +21,7 @@ public class PathService {
         return PathResponse.of(shortest);
     }
 
-    private PathStation findById(final Long targetId) {
+    private PathStation findById(final long targetId) {
         return pathRepository.findById(targetId)
                 .orElseThrow(IllegalArgumentException::new);
     }
