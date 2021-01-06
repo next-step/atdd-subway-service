@@ -1,16 +1,36 @@
 package nextstep.subway.favorites.service;
 
 import nextstep.subway.favorites.domain.Favorite;
+import nextstep.subway.favorites.domain.FavoritesRepository;
 import nextstep.subway.favorites.dto.FavoritesRequest;
 import nextstep.subway.favorites.dto.FavoritesResponse;
+import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.dto.MemberResponse;
+import nextstep.subway.station.application.StationService;
+import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 public class FavoritesService {
 
-    public Favorite createFavorite(FavoritesRequest favoriteRequest) {
+    private final FavoritesRepository favoritesRepository;
+    private final StationService stationService;
+    private final MemberService memberService;
 
-        return new Favorite();
+    public FavoritesService(FavoritesRepository favoritesRepository, StationService stationService, MemberService memberService) {
+        this.favoritesRepository = favoritesRepository;
+        this.stationService = stationService;
+        this.memberService = memberService;
+    }
+
+    public Favorite createFavorite(FavoritesRequest favoriteRequest, Long memberId) {
+        Member member = memberService.findById(memberId);
+        Station sourceStation = stationService.findStationById(favoriteRequest.getSource());
+        Station targetStation = stationService.findStationById(favoriteRequest.getTarget());
+        return favoritesRepository.save(new Favorite(sourceStation, targetStation, member));
     }
 
     public FavoritesResponse findAll() {
