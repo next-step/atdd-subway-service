@@ -1,6 +1,7 @@
 package nextstep.subway.error;
 
 import java.net.BindException;
+import nextstep.subway.member.exception.PermissionDeniedException;
 import nextstep.subway.path.exception.NotConnectedPathException;
 import nextstep.subway.path.exception.StationNotFoundException;
 import nextstep.subway.path.exception.StationNotRegisteredException;
@@ -38,21 +39,18 @@ public class ErrorAdviceController {
         return ResponseEntity.badRequest().build();
     }
 
-
-    @ExceptionHandler(NotConnectedPathException.class)
-    public ResponseEntity<?> handleNotConnectedPathException(NotConnectedPathException e) {
+    @ExceptionHandler({
+            StationNotFoundException.class,
+            NotConnectedPathException.class,
+            StationNotRegisteredException.class
+    })
+    public ResponseEntity<?> handleNotFoundException(RuntimeException e) {
         return ResponseEntity.notFound().build();
     }
 
-    @ExceptionHandler(StationNotFoundException.class)
-    public ResponseEntity<?> handleStationNotFoundException(StationNotFoundException e) {
-        return ResponseEntity.notFound().build();
+    @ExceptionHandler(PermissionDeniedException.class)
+    public ResponseEntity<?> handleUserNotFoundException(PermissionDeniedException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
-
-    @ExceptionHandler(StationNotRegisteredException.class)
-    public ResponseEntity<?> handleStationNotRegisteredException(StationNotRegisteredException e) {
-        return ResponseEntity.notFound().build();
-    }
-
 
 }
