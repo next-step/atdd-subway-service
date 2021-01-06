@@ -4,10 +4,9 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 @Entity
 public class Line extends BaseEntity {
@@ -32,7 +31,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        addNewSection(upStation, downStation, distance);
     }
 
     public Line(Long id, String name, String color, Station upStation, Station downStation, int distance) {
@@ -78,8 +77,8 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getStations() {
-        if (getSections().isEmpty()) {
-            return Arrays.asList();
+        if (sections.isEmpty()) {
+            return Collections.emptyList();
         }
 
         List<Station> stations = new ArrayList<>();
@@ -88,7 +87,7 @@ public class Line extends BaseEntity {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = getSections().stream()
+            Optional<Section> nextLineStation = sections.stream()
                     .filter(it -> it.getUpStation() == finalDownStation)
                     .findFirst();
             if (!nextLineStation.isPresent()) {
@@ -103,40 +102,16 @@ public class Line extends BaseEntity {
 
     public void addLineStation(Station upStation, Station downStation, int distance) {
         List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
+        verifyAddLineStation(upStation, downStation, stations);
 
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (stations.isEmpty()) {
-            getSections().add(new Section(this, upStation, downStation, distance));
+        if (addLineStationIfEmpty(upStation, downStation, distance, stations))
             return;
-        }
 
-        if (isUpStationExisted) {
-            getSections().stream()
-                    .filter(it -> it.getUpStation() == upStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, distance));
+        updateUpStation(upStation, downStation, distance, stations);
+        updateDownStation(upStation, downStation, distance, stations);
 
-            getSections().add(new Section(this, upStation, downStation, distance));
-        } else if (isDownStationExisted) {
-            getSections().stream()
-                    .filter(it -> it.getDownStation() == downStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, distance));
-
-            getSections().add(new Section(this, upStation, downStation, distance));
-        } else {
-            throw new RuntimeException();
-        }
+        addNewSection(upStation, downStation, distance);
     }
 
     public void removeLineStation(Station station) {
@@ -160,5 +135,58 @@ public class Line extends BaseEntity {
 
         upLineStation.ifPresent(it -> getSections().remove(it));
         downLineStation.ifPresent(it -> getSections().remove(it));
+    }
+
+    private void verifyAddLineStation(Station upStation, Station downStation, List<Station> stations) {
+        boolean isUpStationExisted = isStationExisted(upStation, stations);
+        boolean isDownStationExisted = isStationExisted(downStation, stations);
+
+        verifyAlreadyExistSection(isUpStationExisted, isDownStationExisted);
+        verifyNotMatchStations(isUpStationExisted, isDownStationExisted);
+    }
+
+    private void verifyNotMatchStations(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (!isUpStationExisted && !isDownStationExisted) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void verifyAlreadyExistSection(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    private void updateUpStation(Station upStation, Station downStation, int distance, List<Station> stations) {
+        if (isStationExisted(upStation, stations))
+            updateStation(it -> it.getUpStation() == upStation, it -> it.updateUpStation(downStation, distance));
+    }
+
+    private void updateDownStation(Station upStation, Station downStation, int distance, List<Station> stations) {
+        if (isStationExisted(downStation, stations))
+            updateStation(it -> it.getDownStation() == downStation, it -> it.updateDownStation(upStation, distance));
+    }
+
+    private void updateStation(Predicate<Section> sectionPredicate, Consumer<Section> sectionConsumer) {
+        sections.stream()
+                .filter(sectionPredicate)
+                .findFirst()
+                .ifPresent(sectionConsumer);
+    }
+
+    private boolean addLineStationIfEmpty(Station upStation, Station downStation, int distance, List<Station> stations) {
+        if (stations.isEmpty()) {
+            addNewSection(upStation, downStation, distance);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isStationExisted(Station station, List<Station> stations) {
+        return stations.stream().anyMatch(it -> it == station);
+    }
+
+    private void addNewSection(Station upStation, Station downStation, int distance) {
+        sections.add(new Section(this, upStation, downStation, distance));
     }
 }
