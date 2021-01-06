@@ -46,7 +46,7 @@ public class FavoritesIntegrationTest {
     private FavoritesService favoritesService;
     private Station 양재역;
     private Station 광교역;
-    private Member member;
+    private Member 사용자;
 
 
     @AfterEach
@@ -66,35 +66,41 @@ public class FavoritesIntegrationTest {
         Line line = lineRepository.save(new Line("신분당선", "red lighten-1", 양재역, 광교역, 10));
         lineService.addLineStation(line.getId(), new SectionRequest(양재역.getId(), 강남역.getId(), 5));
 
-        member = new Member("hglee", "1234", 30);
-        memberRepository.save(member);
+        사용자 = new Member("hglee", "1234", 30);
+        memberRepository.save(사용자);
     }
 
     @DisplayName("즐겨찾기 생성 요청")
     @Test
     void createFavorites() {
         // when
-        Favorites favorites = favoritesService.createFavorite(new FavoritesRequest(양재역.getId(), 광교역.getId()), member.getId());
+        Favorites favorites = favoritesService.createFavorite(getFavoriteRequest(양재역, 광교역), 사용자.getId());
 
         // then
         assertThat(favorites.getDeparture()).isEqualTo(양재역);
         assertThat(favorites.getArrival()).isEqualTo(광교역);
-        assertThat(favorites.getMember()).isEqualTo(member);
+        assertThat(favorites.getMember()).isEqualTo(사용자);
     }
 
     @DisplayName("즐겨찾기 조회 요청")
     @Test
     void findAllFavorites() {
         // given
-        Favorites favorites = favoritesService.createFavorite(new FavoritesRequest(양재역.getId(), 광교역.getId()), member.getId());
-        Favorites favorites1 = favoritesService.createFavorite(new FavoritesRequest(양재역.getId(), 광교역.getId()), member.getId());
+        Favorites favorites = favoritesService.createFavorite(getFavoriteRequest(양재역, 광교역), 사용자.getId());
+        Favorites favorites1 = favoritesService.createFavorite(getFavoriteRequest(양재역, 광교역), 사용자.getId());
 
         // when
-        List<FavoritesResponse> favoritesResponses = favoritesService.findAll(member.getId());
+        List<FavoritesResponse> favoritesResponses = favoritesService.findAll(사용자.getId());
 
         // then
         assertThat(favoritesResponses)
                 .extracting("id")
                 .contains(favorites.getId(), favorites1.getId());
     }
+
+    private FavoritesRequest getFavoriteRequest(Station source, Station target) {
+        return new FavoritesRequest(source.getId(), target.getId());
+    }
+
+
 }

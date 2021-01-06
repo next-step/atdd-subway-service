@@ -9,9 +9,7 @@ import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorites.dto.FavoritesResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
-import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.member.MemberAcceptanceTest;
-import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.assertj.core.api.Assertions;
@@ -21,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +35,7 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 광교역;
     private StationResponse 고속터미널;
-    private String tokenResponse;
+    private String 사용자;
 
     @Override
     @BeforeEach
@@ -58,23 +55,23 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
         // 회원 등록되어 있음
         MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, 30);
         // 로그인 되어있음
-        tokenResponse = AuthAcceptanceTest.토큰_발급_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
+        사용자 = AuthAcceptanceTest.토큰_발급_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
     }
 
     @DisplayName("즐겨찾기 생성 요청")
     @Test
     void addFavorite() {
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(양재역.getId(), 광교역.getId(), tokenResponse);
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(양재역, 광교역, 사용자);
 
         // then
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_생성_요청(Long source, Long target, String token) {
+    private ExtractableResponse<Response> 즐겨찾기_생성_요청(StationResponse source, StationResponse target, String token) {
         Map<String, String> params = new HashMap<>();
-        params.put("source", source + "");
-        params.put("target", target + "");
+        params.put("source", source.getId() + "");
+        params.put("target", target.getId() + "");
         return RestAssured.given().auth().oauth2(token).log().all().
                 body(params).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -90,11 +87,11 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
     void findAllFavorite() {
         // given
         // 즐겨찾기 생성됨
-        ExtractableResponse<Response> responseFavorite1 = 즐겨찾기_생성_요청(양재역.getId(), 광교역.getId(), tokenResponse);
-        ExtractableResponse<Response> responseFavorite2 = 즐겨찾기_생성_요청(양재역.getId(), 고속터미널.getId(), tokenResponse);
+        ExtractableResponse<Response> responseFavorite1 = 즐겨찾기_생성_요청(양재역, 광교역, 사용자);
+        ExtractableResponse<Response> responseFavorite2 = 즐겨찾기_생성_요청(양재역, 고속터미널, 사용자);
 
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(tokenResponse);
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(사용자);
 
         // then
         List<Long> expectedFavoritesIds = expectedFavoritesIds(responseFavorite1, responseFavorite2);
@@ -134,7 +131,7 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(favoriteId);
 
         // then
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 
     }
 
