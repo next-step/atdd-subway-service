@@ -25,18 +25,6 @@ class LineTest {
         신분당선 = new Line(1L, "신분당선", "bg-red-600", 강남역, 역삼역, 10);
     }
 
-    @DisplayName("상행 종점역을 조회함")
-    @Test
-    void findUpStation() {
-        //given
-        신분당선.addLineStation(강남역, 잠실역, 4);
-        //when
-        Station upStation = 신분당선.findUpStation();
-        //then
-        assertThat(upStation.getId()).isEqualTo(1L);
-        assertThat(upStation.getName()).isEqualTo("강남역");
-    }
-
     @DisplayName("지하철 노선에 속한 역들 조회(순서별)")
     @Test
     void getStations() {
