@@ -47,6 +47,7 @@ public class FavoritesIntegrationTest {
     private Station 양재역;
     private Station 광교역;
     private Member 사용자;
+    private Station 강남역;
 
 
     @AfterEach
@@ -62,7 +63,7 @@ public class FavoritesIntegrationTest {
     void setUp() {
         양재역 = new Station("양재역");
         광교역 = new Station("광교역");
-        Station 강남역 = stationRepository.save(new Station("강남역"));
+        강남역 = stationRepository.save(new Station("강남역"));
         Line line = lineRepository.save(new Line("신분당선", "red lighten-1", 양재역, 광교역, 10));
         lineService.addLineStation(line.getId(), new SectionRequest(양재역.getId(), 강남역.getId(), 5));
 
@@ -86,8 +87,8 @@ public class FavoritesIntegrationTest {
     @Test
     void findAllFavorites() {
         // given
-        Favorites favorites = favoritesService.createFavorite(getFavoriteRequest(양재역, 광교역), 사용자.getId());
         Favorites favorites1 = favoritesService.createFavorite(getFavoriteRequest(양재역, 광교역), 사용자.getId());
+        Favorites favorites2 = favoritesService.createFavorite(getFavoriteRequest(양재역, 강남역), 사용자.getId());
 
         // when
         List<FavoritesResponse> favoritesResponses = favoritesService.findAll(사용자.getId());
@@ -95,7 +96,21 @@ public class FavoritesIntegrationTest {
         // then
         assertThat(favoritesResponses)
                 .extracting("id")
-                .contains(favorites.getId(), favorites1.getId());
+                .contains(favorites1.getId(), favorites2.getId());
+    }
+
+    @DisplayName("즐겨찾기 삭제 요청")
+    @Test
+    void deleteFavorites() {
+        // given
+        Favorites favorites1 = favoritesService.createFavorite(getFavoriteRequest(양재역, 광교역), 사용자.getId());
+
+        // when
+        favoritesService.delete(favorites1.getId());
+
+        // then
+        List<FavoritesResponse> favoritesResponses = favoritesService.findAll(사용자.getId());
+        assertThat(favoritesResponses).isEmpty();
     }
 
     private FavoritesRequest getFavoriteRequest(Station source, Station target) {

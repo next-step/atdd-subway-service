@@ -68,20 +68,6 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_생성_요청(StationResponse source, StationResponse target, String token) {
-        Map<String, String> params = new HashMap<>();
-        params.put("source", source.getId() + "");
-        params.put("target", target.getId() + "");
-        return RestAssured.given().auth().oauth2(token).log().all().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                post("/favorites").
-                then().
-                log().all().
-                extract();
-    }
-
     @DisplayName("즐겨찾기 목록 조회 요청")
     @Test
     void findAllFavorite() {
@@ -101,16 +87,51 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
         assertThat(resultFavoritesIds).containsAll(expectedFavoritesIds);
     }
 
+    @DisplayName("즐겨찾기 삭제 요청")
+    @Test
+    void removeFavorite() {
+        // given
+        ExtractableResponse<Response> responseFavorite = 즐겨찾기_생성_요청(양재역, 광교역, 사용자);
+        long favoriteId = getIdByResponse(responseFavorite);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(favoriteId);
+
+        // then
+        ExtractableResponse<Response> responseFindAll = 즐겨찾기_목록_조회_요청(사용자);
+
+        assertThat(findFavoritesIds(responseFindAll)).isEmpty();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_생성_요청(StationResponse source, StationResponse target, String token) {
+        Map<String, String> params = new HashMap<>();
+        params.put("source", source.getId() + "");
+        params.put("target", target.getId() + "");
+        return RestAssured.given().auth().oauth2(token).log().all().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/favorites").
+                then().
+                log().all().
+                extract();
+    }
+
     private List<Long> findFavoritesIds(ExtractableResponse<Response> response) {
         return response.jsonPath().getList(".", FavoritesResponse.class).stream()
                 .map(FavoritesResponse::getId)
                 .collect(Collectors.toList());
     }
 
-    private List<Long> expectedFavoritesIds(ExtractableResponse<Response> responseFavorite1, ExtractableResponse<Response> responseFavorite2) {
-        return Stream.of(responseFavorite1, responseFavorite2)
-                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
+    private List<Long> expectedFavoritesIds(ExtractableResponse<Response>... response) {
+        return Stream.of(response)
+                .map(this::getIdByResponse)
                 .collect(Collectors.toList());
+    }
+
+    private Long getIdByResponse(ExtractableResponse<Response> response) {
+        return Long.parseLong(response.header("Location").split("/")[2]);
     }
 
     private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String token) {
@@ -121,18 +142,6 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
                 then().
                 log().all().
                 extract();
-    }
-
-    @DisplayName("즐겨찾기 삭제 요청")
-    @Test
-    void removeFavorite() {
-        // when
-        long favoriteId = 1L;
-        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(favoriteId);
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-
     }
 
     private ExtractableResponse<Response> 즐겨찾기_삭제_요청(long favoriteId) {
