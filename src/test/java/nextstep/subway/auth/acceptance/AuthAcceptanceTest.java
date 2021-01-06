@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
 
-    @DisplayName("올바른 로그인 기능 사용 (해피패스)")
+    @DisplayName("토큰 발급 성공")
     @Test
     void myInfoWithBearerAuth() {
         // given
@@ -34,16 +34,28 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인_성공됨(response);
     }
 
-    @DisplayName("Bearer Auth 로그인 실패")
+    @DisplayName("토근 발급 실패: 아이디 또는 비밀번호가 틀린 경우")
     @Test
     void myInfoWithBadBearerAuth() {
-    }
+        // given
+        String email = "yohan@email.com";
+        String wrongEamil = "wrong@email.com";
+        String password = "password";
+        String wrongPassword = "wrong";
+        int age = 29;
+        회원_등록되어_있음(email, password, age);
 
-    @DisplayName("Bearer Auth 유효하지 않은 토큰")
-    @Test
-    void myInfoWithWrongBearerAuth() {
-    }
+        TokenRequest wrongEmailRequest = new TokenRequest(wrongEamil, password);
+        TokenRequest wrongPasswordRequest = new TokenRequest(email, wrongPassword);
 
+        // when
+        ExtractableResponse<Response> response1 = 로그인_요청(wrongEmailRequest);
+        ExtractableResponse<Response> response2 = 로그인_요청(wrongPasswordRequest);
+
+        // then
+        로그인_실패됨(response1);
+        로그인_실패됨(response2);
+    }
 
     private void 회원_등록되어_있음(final String email, final String password, final Integer age) {
         ExtractableResponse<Response> response = 회원_생성을_요청(email, password, age);
@@ -65,5 +77,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         String accessToken = response.jsonPath().get("accessToken");
         assertThat(accessToken).isNotNull();
+    }
+
+    private void 로그인_실패됨(final ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
