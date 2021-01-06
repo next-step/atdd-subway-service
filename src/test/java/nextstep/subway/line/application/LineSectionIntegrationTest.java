@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ActiveProfiles("test")
 @SpringBootTest
-public class LineServiceRepositoryTest {
+public class LineSectionIntegrationTest {
     @Autowired
     LineService lineService;
 
