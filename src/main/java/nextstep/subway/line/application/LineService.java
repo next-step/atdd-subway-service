@@ -73,8 +73,8 @@ public class LineService {
         line.removeLineStation(station);
     }
 
-    private List<StationResponse> convertStationResponse(Line persistLine) {
-        return persistLine.getStations().stream()
+    private List<StationResponse> convertStationResponse(Line line) {
+        return line.getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }

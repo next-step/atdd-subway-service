@@ -1,0 +1,74 @@
+package nextstep.subway.line.domain;
+
+import nextstep.subway.station.domain.Station;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
+class LineTest {
+    private Station 강남역;
+    private Station 역삼역;
+    private Station 잠실역;
+    private Line 신분당선;
+
+    @BeforeEach
+    void setUp() {
+        강남역 = new Station(1L, "강남역");
+        역삼역 = new Station(2L, "역삼역");
+        잠실역 = new Station(3L, "잠실역");
+
+        신분당선 = new Line(1L, "신분당선", "bg-red-600", 강남역, 역삼역, 10);
+    }
+
+    @DisplayName("종점역을 조회함 - Top upStation")
+    @Test
+    void findUpStation() {
+        //given
+        신분당선.addLineStation(강남역, 잠실역, 4);
+        //when
+        Station upStation = 신분당선.findUpStation();
+        //then
+        assertThat(upStation.getId()).isEqualTo(1L);
+        assertThat(upStation.getName()).isEqualTo("강남역");
+    }
+
+    @DisplayName("지하철 노선에 속한 역들 조회(순서별)")
+    @Test
+    void getStations() {
+        //given
+        //when
+        List<Station> stations = 신분당선.getStations();
+        //then
+        assertThat(stations).containsExactly(강남역, 역삼역);
+    }
+
+    @DisplayName("한 노선에 역 추가")
+    @Test
+    void addLineStation() {
+        //given
+        //when
+        신분당선.addLineStation(강남역, 잠실역, 4);
+
+        //then
+        List<Station> stations = 신분당선.getStations();
+        assertThat(stations).containsExactly(강남역, 잠실역, 역삼역);
+    }
+
+    @DisplayName("한 노선에 역 삭제")
+    @Test
+    void removeLineStation() {
+        //given
+        신분당선.addLineStation(강남역, 잠실역, 4);
+
+        //when
+        신분당선.removeLineStation(강남역);
+        //then
+        List<Station> stations = 신분당선.getStations();
+        assertThat(stations).containsExactly(잠실역, 역삼역);
+    }
+}
