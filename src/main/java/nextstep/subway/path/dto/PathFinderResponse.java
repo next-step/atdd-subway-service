@@ -6,6 +6,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -28,7 +29,7 @@ public class PathFinderResponse {
     }
 
     public List<StationResponse> getStations() {
-        return stations;
+        return Collections.unmodifiableList(stations);
     }
 
     public double getDistance() {
