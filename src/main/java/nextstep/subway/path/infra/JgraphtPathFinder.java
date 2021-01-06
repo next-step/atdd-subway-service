@@ -47,8 +47,7 @@ public class JgraphtPathFinder implements PathFinder {
     private DijkstraShortestPath<PathStation, DefaultWeightedEdge> initGraph(
             final WeightedMultigraph<PathStation, DefaultWeightedEdge> graph,
             final PathSections pathSections) {
-        pathSections.getPathStations()
-                .forEach(graph::addVertex);
+        pathSections.forEach(graph::addVertex);
 
         pathSections.getPathSections()
                 .forEach(pathSection -> graph.setEdgeWeight(graph.addEdge(
