@@ -1,7 +1,6 @@
 package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,13 +40,13 @@ public class LineSections {
 	}
 
 	public void addSectionBasedUpStation(Section newSection) {
-		findByUpStation(newSection.getUpStation())
+		findSectionByUpStation(newSection.getUpStation())
 			.ifPresent(it -> it.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
 		this.sections.add(newSection);
 	}
 
 	public void addSectionBasedDownStation(Section newSection) {
-		findByDownStation(newSection.getDownStation())
+		findSectionByDownStation(newSection.getDownStation())
 			.ifPresent(it -> it.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
 		this.sections.add(newSection);
 	}
@@ -57,8 +56,8 @@ public class LineSections {
 			throw new RuntimeException();
 		}
 
-		Optional<Section> upLineStation = this.findByUpStation(station);
-		Optional<Section> downLineStation = this.findByDownStation(station);
+		Optional<Section> upLineStation = this.findSectionByUpStation(station);
+		Optional<Section> downLineStation = this.findSectionByDownStation(station);
 
 		if (upLineStation.isPresent() && downLineStation.isPresent()) {
 			removeMiddleStation(line, upLineStation.get(), downLineStation.get());
@@ -77,25 +76,27 @@ public class LineSections {
 	}
 
 	public List<Station> getStations() {
-		if (this.sections.isEmpty()) {
-			return Arrays.asList();
-		}
-
 		List<Station> stations = new ArrayList<>();
-		Station downStation = findUpStation();
-		stations.add(downStation);
+		Station baseStation = findUpEndStation();
 
-		while (downStation != null) {
-			Station finalUpStation = downStation;
-			Optional<Section> nextLineStation = findByUpStation(finalUpStation);
-			if (!nextLineStation.isPresent()) {
+		while (baseStation != null) {
+			stations.add(baseStation);
+			Optional<Station> nextSection = findNextStation(baseStation);
+			if (!nextSection.isPresent()) {
 				break;
 			}
-			downStation = nextLineStation.get().getDownStation();
-			stations.add(downStation);
+			baseStation = nextSection.get();
 		}
-
 		return stations;
+	}
+
+	private Optional<Station> findNextStation(Station baseStation) {
+		Station upStationInNextSection = baseStation;
+		Optional<Section> nextSection = findSectionByUpStation(upStationInNextSection);
+		if (!nextSection.isPresent()) {
+			return Optional.empty();
+		}
+		return Optional.of(nextSection.get().getDownStation());
 	}
 
 	private boolean isContainStation(Station station) {
@@ -103,23 +104,23 @@ public class LineSections {
 			.anyMatch(st -> st.equals(station));
 	}
 
-	private Optional<Section> findByUpStation(Station upStation) {
+	private Optional<Section> findSectionByUpStation(Station upStation) {
 		return this.sections.stream()
 			.filter(it -> it.getUpStation() == upStation)
 			.findFirst();
 	}
 
-	private Optional<Section> findByDownStation(Station downStation) {
+	private Optional<Section> findSectionByDownStation(Station downStation) {
 		return this.sections.stream()
 			.filter(it -> it.getDownStation() == downStation)
 			.findFirst();
 	}
 
-	private Station findUpStation() {
+	private Station findUpEndStation() {
 		Station upStation = this.sections.get(0).getUpStation();
 		while (upStation != null) {
 			Station finalDownStation = upStation;
-			Optional<Section> nextLineStation = findByDownStation(finalDownStation);
+			Optional<Section> nextLineStation = findSectionByDownStation(finalDownStation);
 			if (!nextLineStation.isPresent()) {
 				break;
 			}
