@@ -163,3 +163,25 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - 나의 정보 삭제 요청
     - then
         - 나의 정보 삭제됨
+
+### 즐겨찾기 기능
+- 인수테스트
+- [ ] 즐겨찾기를 관리한다.
+    - given
+        - 지하철역 등록되어 있음
+        - and 지하철 노선 등록되어 있음
+        - and 지하철 노선에 지하철역 등록되어 있음
+        - and 회원 등록되어 있음
+        - and 로그인 되어있음
+    - when 
+        - 즐겨찾기 생성을 요청
+    - then 
+        - 즐겨찾기 생성됨
+    - when 
+        - 즐겨찾기 목록 조회 요청
+    - then 
+        - 즐겨찾기 목록 조회됨
+    - when 
+        - 즐겨찾기 삭제 요청
+    - then 
+        - 즐겨찾기 삭제됨
