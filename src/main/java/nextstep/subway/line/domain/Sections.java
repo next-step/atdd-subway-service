@@ -49,22 +49,6 @@ public class Sections {
     return stations;
   }
 
-  private Station findUpStation() {
-    Station downStation = this.getSections().get(0).getUpStation();
-    while (downStation != null) {
-      Station finalDownStation = downStation;
-      Optional<Section> nextLineStation = this.getSections().stream()
-          .filter(it -> it.getDownStation() == finalDownStation)
-          .findFirst();
-      if (!nextLineStation.isPresent()) {
-        break;
-      }
-      downStation = nextLineStation.get().getUpStation();
-    }
-
-    return downStation;
-  }
-
   public void add(Section section) {
     List<Station> stations = getOrderedStations();
     Station upStation = section.getUpStation();
@@ -107,7 +91,7 @@ public class Sections {
 
   }
 
-  public void remove(Station station, Line line) {
+  public void remove(Station station) {
     if (this.sections.size() <= 1) {
       throw new RuntimeException();
     }
@@ -123,10 +107,27 @@ public class Sections {
       Station newUpStation = downLineStation.get().getUpStation();
       Station newDownStation = upLineStation.get().getDownStation();
       int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-      this.sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+      this.sections.add(new Section(upLineStation.get().getLine(), newUpStation, newDownStation, newDistance));
     }
 
     upLineStation.ifPresent(it -> this.sections.remove(it));
     downLineStation.ifPresent(it -> this.sections.remove(it));
   }
+
+  private Station findUpStation() {
+    Station downStation = this.getSections().get(0).getUpStation();
+    while (downStation != null) {
+      Station finalDownStation = downStation;
+      Optional<Section> nextLineStation = this.getSections().stream()
+          .filter(it -> it.getDownStation() == finalDownStation)
+          .findFirst();
+      if (!nextLineStation.isPresent()) {
+        break;
+      }
+      downStation = nextLineStation.get().getUpStation();
+    }
+
+    return downStation;
+  }
+
 }

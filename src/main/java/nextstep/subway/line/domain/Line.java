@@ -21,7 +21,7 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
-    private Sections sections;
+    private Sections sections = new Sections();
 
     public Line(String name, String color) {
         this.name = name;
@@ -48,7 +48,7 @@ public class Line extends BaseEntity {
         this.sections.add(section);
     }
 
-    public void removeStation(Station station, Line line) {
-        this.sections.remove(station, line);
+    public void removeStation(Station station) {
+        this.sections.remove(station);
     }
 }
