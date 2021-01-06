@@ -36,6 +36,14 @@ public class Section {
         this.distance = distance;
     }
 
+    public boolean isEqualWithUpStation(Station station) {
+        return this.upStation.equals(station);
+    }
+
+    public boolean isEqualWithDownStation(Station station) {
+        return this.downStation.equals(station);
+    }
+
     public void updateUpStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
