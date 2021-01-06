@@ -6,11 +6,13 @@ import nextstep.subway.favorites.dto.FavoritesRequest;
 import nextstep.subway.favorites.dto.FavoritesResponse;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -33,8 +35,11 @@ public class FavoritesService {
         return favoritesRepository.save(new Favorite(sourceStation, targetStation, member));
     }
 
-    public FavoritesResponse findAll() {
-        return new FavoritesResponse();
+    @Transactional(readOnly = true)
+    public List<FavoritesResponse> findAll(Long memberId) {
+        return favoritesRepository.findAllByMember_Id(memberId).stream()
+                .map(FavoritesResponse::of)
+                .collect(Collectors.toList());
     }
 
     public void delete(Long id) {

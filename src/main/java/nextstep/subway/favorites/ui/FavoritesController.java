@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 public class FavoritesController {
@@ -33,8 +34,8 @@ public class FavoritesController {
     }
 
     @GetMapping(value = "/favorites")
-    public ResponseEntity<FavoritesResponse> findFavorites(@AuthenticationPrincipal LoginMember loginMember) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<List<FavoritesResponse>> findFavorites(@AuthenticationPrincipal LoginMember loginMember) {
+        return ResponseEntity.ok(favoritesService.findAll(loginMember.getId()));
     }
 
     @DeleteMapping("/favorites/{id}")
