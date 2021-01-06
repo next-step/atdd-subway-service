@@ -1,6 +1,11 @@
 package nextstep.subway.favorite.dto;
 
+import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.station.domain.Station;
+
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class FavoriteResponse {
 
@@ -11,10 +16,23 @@ public class FavoriteResponse {
     public FavoriteResponse() {
     }
 
-    public FavoriteResponse(final Long id, final StationResponse source, final StationResponse target) {
+    private FavoriteResponse(final Long id, final StationResponse source, final StationResponse target) {
         this.id = id;
         this.source = source;
         this.target = target;
+    }
+
+    public static FavoriteResponse of(final Favorite favorite) {
+        StationResponse source = StationResponse.of(favorite.getSourceStation());
+        StationResponse target = StationResponse.of(favorite.getTargetStation());
+        return new FavoriteResponse(favorite.getId(), source, target);
+    }
+
+
+    public static List<FavoriteResponse> ofList(final List<Favorite> favorites) {
+        return favorites.stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
     }
 
     public Long getId() {
@@ -38,10 +56,14 @@ public class FavoriteResponse {
         public StationResponse() {
         }
 
-        public StationResponse(final String name, final LocalDateTime createdDate, final LocalDateTime modifiedDate) {
+        private StationResponse(final String name, final LocalDateTime createdDate, final LocalDateTime modifiedDate) {
             this.name = name;
             this.createdDate = createdDate;
             this.modifiedDate = modifiedDate;
+        }
+
+        public static StationResponse of(Station station) {
+            return new StationResponse(station.getName(), station.getCreatedDate(), station.getModifiedDate());
         }
 
         public String getName() {
