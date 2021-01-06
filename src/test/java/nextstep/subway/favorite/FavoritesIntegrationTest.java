@@ -1,6 +1,6 @@
 package nextstep.subway.favorite;
 
-import nextstep.subway.favorites.domain.Favorite;
+import nextstep.subway.favorites.domain.Favorites;
 import nextstep.subway.favorites.domain.FavoritesRepository;
 import nextstep.subway.favorites.dto.FavoritesRequest;
 import nextstep.subway.favorites.dto.FavoritesResponse;
@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -75,27 +74,27 @@ public class FavoritesIntegrationTest {
     @Test
     void createFavorites() {
         // when
-        Favorite favorite = favoritesService.createFavorite(new FavoritesRequest(양재역.getId(), 광교역.getId()), member.getId());
+        Favorites favorites = favoritesService.createFavorite(new FavoritesRequest(양재역.getId(), 광교역.getId()), member.getId());
 
         // then
-        assertThat(favorite.getDeparture()).isEqualTo(양재역);
-        assertThat(favorite.getArrival()).isEqualTo(광교역);
-        assertThat(favorite.getMember()).isEqualTo(member);
+        assertThat(favorites.getDeparture()).isEqualTo(양재역);
+        assertThat(favorites.getArrival()).isEqualTo(광교역);
+        assertThat(favorites.getMember()).isEqualTo(member);
     }
 
     @DisplayName("즐겨찾기 조회 요청")
     @Test
     void findAllFavorites() {
         // given
-        Favorite favorite = favoritesService.createFavorite(new FavoritesRequest(양재역.getId(), 광교역.getId()), member.getId());
-        Favorite favorite1 = favoritesService.createFavorite(new FavoritesRequest(양재역.getId(), 광교역.getId()), member.getId());
+        Favorites favorites = favoritesService.createFavorite(new FavoritesRequest(양재역.getId(), 광교역.getId()), member.getId());
+        Favorites favorites1 = favoritesService.createFavorite(new FavoritesRequest(양재역.getId(), 광교역.getId()), member.getId());
 
         // when
-        List<FavoritesResponse> favorites = favoritesService.findAll(member.getId());
+        List<FavoritesResponse> favoritesResponses = favoritesService.findAll(member.getId());
 
         // then
-        assertThat(favorites)
+        assertThat(favoritesResponses)
                 .extracting("id")
-                .contains(favorite.getId(),favorite1.getId());
+                .contains(favorites.getId(), favorites1.getId());
     }
 }

@@ -1,6 +1,6 @@
 package nextstep.subway.favorites.service;
 
-import nextstep.subway.favorites.domain.Favorite;
+import nextstep.subway.favorites.domain.Favorites;
 import nextstep.subway.favorites.domain.FavoritesRepository;
 import nextstep.subway.favorites.dto.FavoritesRequest;
 import nextstep.subway.favorites.dto.FavoritesResponse;
@@ -28,11 +28,11 @@ public class FavoritesService {
         this.memberService = memberService;
     }
 
-    public Favorite createFavorite(FavoritesRequest favoriteRequest, Long memberId) {
+    public Favorites createFavorite(FavoritesRequest favoriteRequest, Long memberId) {
         Member member = memberService.findById(memberId);
         Station sourceStation = stationService.findStationById(favoriteRequest.getSource());
         Station targetStation = stationService.findStationById(favoriteRequest.getTarget());
-        return favoritesRepository.save(new Favorite(sourceStation, targetStation, member));
+        return favoritesRepository.save(new Favorites(sourceStation, targetStation, member));
     }
 
     @Transactional(readOnly = true)

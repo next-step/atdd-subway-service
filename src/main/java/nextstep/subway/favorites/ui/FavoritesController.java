@@ -2,7 +2,7 @@ package nextstep.subway.favorites.ui;
 
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.favorites.domain.Favorite;
+import nextstep.subway.favorites.domain.Favorites;
 import nextstep.subway.favorites.dto.FavoritesRequest;
 import nextstep.subway.favorites.dto.FavoritesResponse;
 import nextstep.subway.favorites.service.FavoritesService;
@@ -29,8 +29,8 @@ public class FavoritesController {
 
     @PostMapping(value = "/favorites", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoritesRequest favoritesRequest) {
-        Favorite favorite = favoritesService.createFavorite(favoritesRequest, loginMember.getId());
-        return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
+        Favorites favorites = favoritesService.createFavorite(favoritesRequest, loginMember.getId());
+        return ResponseEntity.created(URI.create("/favorites/" + favorites.getId())).build();
     }
 
     @GetMapping(value = "/favorites")

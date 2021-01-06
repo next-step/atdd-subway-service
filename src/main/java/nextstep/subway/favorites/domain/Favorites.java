@@ -12,7 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class Favorite {
+public class Favorites {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,10 +46,10 @@ public class Favorite {
         return member;
     }
 
-    public Favorite() {
+    public Favorites() {
     }
 
-    public Favorite(Station departure, Station arrival, Member member) {
+    public Favorites(Station departure, Station arrival, Member member) {
         this.departure = departure;
         this.arrival = arrival;
         this.member = member;
