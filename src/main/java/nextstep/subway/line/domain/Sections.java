@@ -69,6 +69,10 @@ public class Sections {
                 .findFirst();
     }
 
+    public boolean isEmpty() {
+        return sections.isEmpty();
+    }
+
     private void validateSection(Section section) {
         List<Station> stations = getStations();
         if (isAlreadyRegistered(section, stations)) {

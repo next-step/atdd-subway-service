@@ -4,6 +4,7 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -16,7 +17,7 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
-    private Sections sections;
+    private Sections sections = new Sections();
 
     public Line() {
     }
@@ -58,6 +59,9 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getStations() {
+        if(sections.isEmpty()) {
+            return Collections.emptyList();
+        }
         return sections.getStations();
     }
 
