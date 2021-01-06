@@ -4,7 +4,10 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -64,9 +67,7 @@ public class Line extends BaseEntity {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
+            Optional<Section> nextLineStation = getSectionByDownStation(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -87,9 +88,7 @@ public class Line extends BaseEntity {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
+            Optional<Section> nextLineStation = getSectionByUpStation(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -115,26 +114,47 @@ public class Line extends BaseEntity {
     }
 
     public void removeLineStation(Station station) {
-        if (getSections().size() <= 1) {
+        verifyCannotRemove();
+
+        Optional<Section> upLineStation = getSectionByUpStation(station);
+        Optional<Section> downLineStation = getSectionByDownStation(station);
+
+        replaceSectionByRemove(upLineStation, downLineStation);
+        removeSection(upLineStation, downLineStation);
+    }
+
+    private void verifyCannotRemove() {
+        if (sections.size() <= 1) {
             throw new RuntimeException();
         }
+    }
 
-        Optional<Section> upLineStation = getSections().stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = getSections().stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
-
+    private void replaceSectionByRemove(Optional<Section> upLineStation, Optional<Section> downLineStation) {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
             int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            getSections().add(new Section(this, newUpStation, newDownStation, newDistance));
+            sections.add(new Section(this, newUpStation, newDownStation, newDistance));
         }
+    }
 
+    private void removeSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
         upLineStation.ifPresent(it -> getSections().remove(it));
         downLineStation.ifPresent(it -> getSections().remove(it));
+    }
+
+    private Optional<Section> getSectionByUpStation(Station station) {
+        return getSection(it -> it.getUpStation() == station);
+    }
+
+    private Optional<Section> getSectionByDownStation(Station station) {
+        return getSection(it -> it.getDownStation() == station);
+    }
+
+    private Optional<Section> getSection(Predicate<Section> sectionPredicate) {
+        return sections.stream()
+                .filter(sectionPredicate)
+                .findFirst();
     }
 
     private void verifyAddLineStation(Station upStation, Station downStation, List<Station> stations) {
