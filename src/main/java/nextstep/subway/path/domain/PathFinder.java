@@ -1,6 +1,6 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -10,6 +10,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public final class PathFinder {
     private static final int EMPTY = 0;
@@ -18,17 +19,27 @@ public final class PathFinder {
     private static final String ERR_TEXT_CAN_NOT_MOVE_THIS_PATH = "출발역에서 도착역으로 이동할 수 없습니다.";
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graphByDistance;
 
-    private PathFinder(final List<Line> subwayLines) {
+    private PathFinder(final List<Section> sections) {
         this.graphByDistance = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        subwayLines.forEach(line -> line.addToPath(graphByDistance));
+        sections.forEach(section -> section.addToPath(addToPathGraph()));
     }
 
-    public static PathFinder of(final List<Line> subwayLines) {
-        if (subwayLines.size() <= EMPTY) {
+    private Consumer<Section> addToPathGraph() {
+        return section -> {
+            final Station upStation = section.getUpStation();
+            final Station downStation = section.getDownStation();
+            graphByDistance.addVertex(upStation);
+            graphByDistance.addVertex(downStation);
+            graphByDistance.setEdgeWeight(graphByDistance.addEdge(upStation, downStation), section.getDistance());
+        };
+    }
+
+    public static PathFinder of(final List<Section> sections) {
+        if (sections.size() <= EMPTY) {
             throw new IllegalArgumentException(ERR_TEXT_INVALID_LINE_DATA);
         }
 
-        return new PathFinder(subwayLines);
+        return new PathFinder(sections);
     }
 
     public GraphPath<Station, DefaultWeightedEdge> findShortestPath(final Station departure, final Station arrival) {

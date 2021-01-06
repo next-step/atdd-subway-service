@@ -1,8 +1,7 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.exception.NotFoundException;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathFinderResponse;
 import nextstep.subway.station.domain.Station;
@@ -12,25 +11,22 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 public class PathService {
-    private final LineRepository lineRepository;
     private final StationRepository stationRepository;
+    private final SectionRepository sectionRepository;
 
-    public PathService(final LineRepository lineRepository, final StationRepository stationRepository) {
-        this.lineRepository = lineRepository;
+    public PathService(final StationRepository stationRepository, final SectionRepository sectionRepository) {
         this.stationRepository = stationRepository;
+        this.sectionRepository = sectionRepository;
     }
 
     @Transactional(readOnly = true)
     public PathFinderResponse findShortestPath(final long departureId, final long arrivalId) {
         final Station departureStation = stationRepository.findById(departureId).orElseThrow(NotFoundException::new);
         final Station arrivalStation = stationRepository.findById(arrivalId).orElseThrow(NotFoundException::new);
-        final List<Line> allLines = lineRepository.findAll();
 
-        final PathFinder pathFinder = PathFinder.of(allLines);
+        final PathFinder pathFinder = PathFinder.of(sectionRepository.findAll());
 
         final GraphPath<Station, DefaultWeightedEdge> shortestPath = pathFinder.findShortestPath(departureStation, arrivalStation);
         return PathFinderResponse.of(shortestPath);

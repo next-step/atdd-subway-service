@@ -1,11 +1,13 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.function.Consumer;
 
 @Entity
-public class Section {
+public class Section extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -79,5 +81,9 @@ public class Section {
 
     public boolean isMatchDownStation(final Station targetStation) {
         return this.downStation == targetStation;
+    }
+
+    public void addToPath(final Consumer<Section> consumer) {
+        consumer.accept(this);
     }
 }

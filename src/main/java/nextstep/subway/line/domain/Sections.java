@@ -2,14 +2,11 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
@@ -143,19 +140,5 @@ public class Sections {
         return this.sections.stream()
             .filter(predicate)
             .findFirst();
-    }
-
-    public void addToPath(final WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        this.sections.forEach(addToPathGraph(graph));
-    }
-
-    private Consumer<Section> addToPathGraph(final WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        return section -> {
-            final Station upStation = section.getUpStation();
-            final Station downStation = section.getDownStation();
-            graph.addVertex(upStation);
-            graph.addVertex(downStation);
-            graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance());
-        };
     }
 }
