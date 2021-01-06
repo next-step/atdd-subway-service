@@ -17,6 +17,10 @@
 
 <br>
 
+## 1단계 요구사항
+* LineSectionAcceptanceTest 리팩터링
+* LineService 리팩터링
+
 ## 🚀 Getting Started
 
 ### Install
