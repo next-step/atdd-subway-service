@@ -50,7 +50,7 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getStations() {
-        if (Objects.isNull(this.sections)) {
+        if (sections.getStations().isEmpty()) {
             return Collections.emptyList();
         }
         return this.sections.getStations();

@@ -56,16 +56,20 @@ public class Sections {
         return stations;
     }
 
-    public Optional<Section> findSectionWithUpStation(Station station) {
+    Optional<Section> findSectionWithUpStation(Station station) {
         return sections.stream()
-                .filter(it -> it.getUpStation() == station)
+                .filter(it -> it.getUpStation().equals(station))
                 .findFirst();
     }
 
-    public Optional<Section> findSectionWithDownStation(Station station) {
+    Optional<Section> findSectionWithDownStation(Station station) {
         return sections.stream()
-                .filter(it -> it.getDownStation() == station)
+                .filter(it -> it.getDownStation().equals(station))
                 .findFirst();
+    }
+
+    private boolean isExistStation(Station station) {
+        return getStations().stream().anyMatch(it -> it.equals(station));
     }
 
     public void addSection(Section section) {
@@ -73,17 +77,9 @@ public class Sections {
         Station downStation = section.getDownStation();
         int distance = section.getDistance();
         List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
-        boolean isMatchedStationNotExisted = stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation);
 
-        if (isUpStationExisted && isDownStationExisted) {
+        if (isExistStation(upStation) && isExistStation(downStation)) {
             throw new DuplicateSectionException();
-        }
-
-        if (!stations.isEmpty() && isMatchedStationNotExisted) {
-            throw new NotFoundSectionException();
         }
 
         if (stations.isEmpty()) {
@@ -91,21 +87,24 @@ public class Sections {
             return;
         }
 
-        if (isUpStationExisted) {
+        if (!isExistStation(upStation) && !isExistStation(downStation) ) {
+            throw new NotFoundSectionException();
+        }
+
+        if (isExistStation(upStation)) {
             findSectionWithUpStation(upStation)
                     .ifPresent(it -> it.updateUpStation(downStation, distance));
-
             sections.add(section);
             return;
         }
 
-        if (isDownStationExisted) {
+        if (isExistStation(downStation)) {
             findSectionWithDownStation(downStation)
                     .ifPresent(it -> it.updateDownStation(upStation, distance));
-
             sections.add(section);
             return;
         }
+        sections.add(section);
     }
 
     public void removeStation(Station station, Line line) {
