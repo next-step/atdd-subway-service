@@ -143,7 +143,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ### 내 정보 조회 기능 
 - 인수테스트
-- [ ] 나의 정보를 관리한다.
+- [X] 나의 정보를 관리한다.
     - given
         - 회원 등록되어 있음
         - and 회원 로그인되어 있음

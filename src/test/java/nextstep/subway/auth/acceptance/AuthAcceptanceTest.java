@@ -5,13 +5,12 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.member.MemberAcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성됨;
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
@@ -23,7 +22,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         String email = "yohan@email.com";
         String password = "password";
         int age = 29;
-        회원_등록되어_있음(email, password, age);
+        MemberAcceptanceTest.회원_등록되어_있음(email, password, age);
 
         TokenRequest tokenRequest = new TokenRequest(email, password);
 
@@ -43,7 +42,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         String password = "password";
         String wrongPassword = "wrong";
         int age = 29;
-        회원_등록되어_있음(email, password, age);
+        MemberAcceptanceTest.회원_등록되어_있음(email, password, age);
 
         TokenRequest wrongEmailRequest = new TokenRequest(wrongEamil, password);
         TokenRequest wrongPasswordRequest = new TokenRequest(email, wrongPassword);
@@ -57,12 +56,14 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인_실패됨(response2);
     }
 
-    private void 회원_등록되어_있음(final String email, final String password, final Integer age) {
-        ExtractableResponse<Response> response = 회원_생성을_요청(email, password, age);
-        회원_생성됨(response);
+    public static String 회원_로그인되어_있음(final String email, final String password) {
+        TokenRequest tokenRequest = new TokenRequest(email, password);
+        ExtractableResponse<Response> response = 로그인_요청(tokenRequest);
+        로그인_성공됨(response);
+        return response.jsonPath().get("accessToken");
     }
 
-    private ExtractableResponse<Response> 로그인_요청(final TokenRequest tokenRequest) {
+    private static ExtractableResponse<Response> 로그인_요청(final TokenRequest tokenRequest) {
         return RestAssured.given().log().all()
                 .body(tokenRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -73,13 +74,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 로그인_성공됨(final ExtractableResponse<Response> response) {
+    private static void 로그인_성공됨(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         String accessToken = response.jsonPath().get("accessToken");
         assertThat(accessToken).isNotNull();
     }
 
-    private void 로그인_실패됨(final ExtractableResponse<Response> response) {
+    private static void 로그인_실패됨(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
