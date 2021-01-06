@@ -35,8 +35,41 @@ public class Sections {
         return result;
     }
 
+    public void deleteStation(Station station) {
+        if (isDeletable()) {
+            throw new IllegalStateException("구간이 1개이면 역을 삭제할 수 없습니다.");
+        }
+        Optional<Section> upSection = findDownSectionBy(station);
+        Optional<Section> downSection = findUpSectionBy(station);
+        if (upSection.isPresent() && downSection.isPresent()) {
+            sections.add(upSection.get().merge(downSection.get()));
+        }
+        upSection.ifPresent(this::remove);
+        downSection.ifPresent(this::remove);
+    }
+
+    public Optional<Section> findDownSectionBy(Station baseStation) {
+        return sections.stream()
+                .filter(it -> it.getUpStation() == baseStation)
+                .findFirst();
+    }
+
+    public Optional<Section> findUpSectionBy(Station baseStation) {
+        return sections.stream()
+                .filter(it -> it.getDownStation() == baseStation)
+                .findFirst();
+    }
+
+    private boolean isDeletable() {
+        return sections.size() <= 1;
+    }
+
+    private void remove(Section section) {
+        sections.remove(section);
+    }
+
     private Station findFirstUpStation() {
-        return this.sections.stream()
+        return sections.stream()
                 .map(Section::getUpStation)
                 .filter(this::matchUpStation)
                 .findFirst()
