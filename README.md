@@ -166,7 +166,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ### 즐겨찾기 기능
 - 인수테스트
-- [ ] 즐겨찾기를 관리한다.
+- [X] 즐겨찾기를 관리한다.
     - given
         - 지하철역 등록되어 있음
         - and 지하철 노선 등록되어 있음
