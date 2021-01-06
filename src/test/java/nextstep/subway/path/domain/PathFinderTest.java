@@ -2,21 +2,28 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathStation;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+@DataJpaTest
 class PathFinderTest {
+
+    @Autowired
+    StationRepository stationRepository;
+
     // given
     private Line 신분당선;
     private Line 이호선;
@@ -46,6 +53,7 @@ class PathFinderTest {
         남부터미널역 = new Station("남부터미널역");
         용산역 = new Station("용산역");
         공덕역 = new Station("공덕역");
+        stationRepository.saveAll(Arrays.asList(강남역, 양재역, 교대역, 남부터미널역, 용산역, 공덕역));
 
         신분당선 = new Line("신분당선", "green", 강남역, 양재역, 10);
         이호선 = new Line("2호선", "green", 교대역, 강남역, 10);
@@ -55,7 +63,7 @@ class PathFinderTest {
         삼호선.addLineStation(교대역, 남부터미널역, 3);
 
         List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선, 경의중앙선);
-        List<Section> sections = findSectionsInLines(lines);
+        Sections sections = findSectionsInLines(lines);
         pathFinder = new PathFinder(sections);
     }
 
@@ -97,9 +105,11 @@ class PathFinderTest {
                 .withMessageMatching("출발역과 도착역이 연결이 되어 있지 않습니다.");
     }
 
-    private List<Section> findSectionsInLines(List<Line> lines) {
-        return lines.stream()
+    private Sections findSectionsInLines(List<Line> lines) {
+        Sections sections = Sections.of();
+        lines.stream()
                 .flatMap(line -> line.getSections().stream())
-                .collect(Collectors.toList());
+                .forEach(sections::add);
+        return sections;
     }
 }
