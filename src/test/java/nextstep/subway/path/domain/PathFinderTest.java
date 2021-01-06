@@ -1,6 +1,5 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -19,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("경로를 찾아주는 패스파인더 테스트")
-class PathFinderTest extends AcceptanceTest {
+class PathFinderTest {
     private Station 김포공항역;    // 5호선, 공항철도
     private Station 까치산역;      // 2호선, 5호선
     private Station 교대역;        // 2호선, 3호선
