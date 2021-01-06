@@ -30,7 +30,7 @@ public class PathService {
 
     @Transactional(readOnly = true)
     public Lines findAllLine() {
-        return new Lines(lineRepository.findAll());
+        return new Lines(lineRepository.findAllJoinFetch());
     }
 
     private void checkEqualsDepartureArrival(Long source, Long target) {
