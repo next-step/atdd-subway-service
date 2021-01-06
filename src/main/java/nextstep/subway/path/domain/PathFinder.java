@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathStation;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -12,11 +13,13 @@ import java.util.List;
 import java.util.Optional;
 
 public class PathFinder {
-    private static WeightedMultigraph<PathStation, DefaultWeightedEdge> graph;
+    private final WeightedMultigraph<PathStation, DefaultWeightedEdge> graph;
+    private final DijkstraShortestPath<PathStation, DefaultWeightedEdge> dijkstraShortestPath;
 
-    public PathFinder(List<Section> sections) {
-        graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        addAllSections(sections);
+    public PathFinder(Sections sections) {
+        graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        addAllSections(sections.getSections());
     }
 
     public List<PathStation> findPath(PathStation source, PathStation target) {
@@ -24,14 +27,15 @@ public class PathFinder {
     }
 
     public Distance findShortestDistance(PathStation source, PathStation target) {
-        return new Distance((int)createGraphPath(source, target).getWeight());
+        double weight = createGraphPath(source, target).getWeight();
+        return new Distance((int) weight);
     }
 
     private GraphPath<PathStation, DefaultWeightedEdge> createGraphPath(PathStation source, PathStation target) {
         if (source.equals(target)) {
             throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
         }
-        return Optional.ofNullable(new DijkstraShortestPath(graph).getPath(source, target))
+        return Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
                 .orElseThrow(() -> new IllegalArgumentException("출발역과 도착역이 연결이 되어 있지 않습니다."));
     }
 
