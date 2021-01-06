@@ -39,6 +39,22 @@ public class Section {
         return new Section(this.line, section.upStation, this.downStation, section.distance + this.distance);
     }
 
+    public void updateUpStation(Section section) {
+        if (this.distance <= section.distance) {
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.upStation = section.downStation;
+        this.distance -= section.distance;
+    }
+
+    public void updateDownStation(Section section) {
+        if (this.distance <= section.distance) {
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.downStation = section.upStation;
+        this.distance -= section.distance;
+    }
+
     public Long getId() {
         return id;
     }
@@ -57,21 +73,5 @@ public class Section {
 
     public int getDistance() {
         return distance;
-    }
-
-    public void updateUpStation(Section section) {
-        if (this.distance <= section.distance) {
-            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = section.downStation;
-        this.distance -= section.distance;
-    }
-
-    public void updateDownStation(Section section) {
-        if (this.distance <= section.distance) {
-            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = section.upStation;
-        this.distance -= section.distance;
     }
 }

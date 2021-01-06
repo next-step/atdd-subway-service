@@ -32,10 +32,6 @@ public class Sections {
         sections.add(section);
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
     public List<Station> getStations() {
         Station station = findFirstUpStation();
         List<Station> result = new ArrayList<>(Collections.singletonList(station));
