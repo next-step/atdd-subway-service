@@ -13,9 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class PathService {
 
     private final LineRepository lineRepository;
+    private final PathFinder pathFinder;
 
-    public PathService(LineRepository lineRepository) {
+    public PathService(LineRepository lineRepository, PathFinder pathFinder) {
         this.lineRepository = lineRepository;
+        this.pathFinder = pathFinder;
     }
 
     public PathResponse findPath(Long departureStationId, Long arrivalStationId) {
@@ -23,13 +25,12 @@ public class PathService {
         Lines lines = findAllLine();
         Station departureStation = lines.searchStationById(departureStationId);
         Station arrivalStation = lines.searchStationById(arrivalStationId);
-        PathFinder pathFinder = new PathFinder(lines.allSection());
-        return pathFinder.ofPathResponse(departureStation, arrivalStation);
+        return pathFinder.ofPathResponse(lines.allSection(), departureStation, arrivalStation);
     }
 
     @Transactional(readOnly = true)
     public Lines findAllLine() {
-        return new Lines(lineRepository.findAll());
+        return new Lines(lineRepository.findAllJoinFetch());
     }
 
     private void checkEqualsDepartureArrival(Long source, Long target) {

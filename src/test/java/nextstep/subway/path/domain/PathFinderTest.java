@@ -17,7 +17,7 @@ class PathFinderTest {
     private Station 교대역;
     private Station 양재역;
     private Station 사당역;
-    private PathFinder pathFinder;
+    private Lines lines;
 
     @BeforeEach
     void setUp() {
@@ -33,15 +33,14 @@ class PathFinderTest {
         Line 이호선 = new Line("2호선", "orange", 교대역, 강남역, 5);
         Line 사호선 = new Line("사호선", "orange", 사당역, 이수역, 5);
 
-        Lines lines = new Lines(삼호선, 이호선, 신분당선, 사호선);
-        pathFinder = new PathFinder(lines.allSection());
+        lines = new Lines(삼호선, 이호선, 신분당선, 사호선);
     }
 
     @DisplayName("경로를 조회하고 순서가 일치하는지 확인한다.")
     @Test
     void getShortestPath() {
         // when
-        PathResponse pathResponse = pathFinder.ofPathResponse(교대역, 양재역);
+        PathResponse pathResponse = new PathFinder().ofPathResponse(lines.allSection(), 교대역, 양재역);
 
         // then
         assertThat(pathResponse.getDistance()).isEqualTo(10);
@@ -54,7 +53,7 @@ class PathFinderTest {
     @Test
     void findPathWhenNotConnectedStation() {
         // when then
-        assertThatThrownBy(() -> pathFinder.ofPathResponse(교대역, 사당역))
+        assertThatThrownBy(() -> new PathFinder().ofPathResponse(lines.allSection(), 교대역, 사당역))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("출발역과 도착역이 연결 되어 있지 않습니다.");
     }

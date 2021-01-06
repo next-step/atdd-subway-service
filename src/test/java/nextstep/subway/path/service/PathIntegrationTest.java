@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ActiveProfiles("test")
 @SpringBootTest
-public class PathServiceRepositoryTest {
+public class PathIntegrationTest {
 
     @Autowired
     PathService pathService;

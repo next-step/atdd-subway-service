@@ -9,10 +9,11 @@ import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 public class AuthService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
@@ -20,20 +21,26 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(AuthorizationException::new);
+        Member member = findMemberByEmail(request.getEmail());
         member.checkPassword(request.getPassword());
 
         String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);
     }
 
+    @Transactional(readOnly = true)
+    public Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new AuthorizationException("사용자를 찾을수 없습니다."));
+    }
+
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            throw new AuthorizationException("유효하지 않은 토큰입니다.");
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Member member = findMemberByEmail(email);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }

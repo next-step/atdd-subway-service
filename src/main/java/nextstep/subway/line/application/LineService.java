@@ -32,8 +32,8 @@ public class LineService {
     private Line createPersistLineOfRequest(LineRequest request) {
         return new Line(request.getName(),
                 request.getColor(),
-                stationService.findById(request.getUpStationId()),
-                stationService.findById(request.getDownStationId()),
+                stationService.findStationById(request.getUpStationId()),
+                stationService.findStationById(request.getDownStationId()),
                 request.getDistance());
     }
 
@@ -62,7 +62,7 @@ public class LineService {
 
     private Line findLine(Long id) {
         return lineRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("해당 역을 찾을수 없습니다."));
+                .orElseThrow(() -> new RuntimeException(String.format("id: {%s} 노선을 찾을수 없습니다.", id)));
     }
 
     public void deleteLineById(Long id) {

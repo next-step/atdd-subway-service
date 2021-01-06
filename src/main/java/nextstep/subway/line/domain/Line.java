@@ -68,7 +68,7 @@ public class Line extends BaseEntity {
 
     public void removeStation(Station station) {
         if (section.isRemovable()) {
-            throw new RuntimeException("구간 삭제 실패됨");
+            throw new IllegalArgumentException("구간 삭제 실패됨");
         }
         section.removeStation(station);
     }
