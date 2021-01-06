@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class LineTest {
     private Station 강남역;
@@ -95,6 +95,30 @@ class LineTest {
         assertThat(stations).containsExactly(강남역, 역삼역, 잠실역);
     }
 
+    @DisplayName("노선에 역 추가 - 노선에 이미 등록되어있는 역을 등록한다.")
+    @Test
+    void addLineSectionWithSameStation() {
+        //given
+        신분당선.addLineStation(역삼역, 잠실역, 4);
+
+        //when
+        //then
+        assertThatThrownBy(() -> {
+            신분당선.addLineStation(역삼역, 잠실역, 4);
+        }).isInstanceOf(RuntimeException.class);
+    }
+
+    @DisplayName("노선에 역 추가 - 노선에 등록되지 않은 역을 기준으로 등록한다.")
+    @Test
+    void addLineSectionWithNoStation() {
+        //when
+        //then
+        Station 선릉역 = new Station(4L, "선릉역");
+        assertThatThrownBy(() -> {
+            신분당선.addLineStation(잠실역, 선릉역, 4);
+        }).isInstanceOf(RuntimeException.class);
+    }
+
     @DisplayName("노선에 역 삭제 - 최 상행역 삭제 ")
     @Test
     void removeLineStation1() {
@@ -132,5 +156,15 @@ class LineTest {
         //then
         List<Station> stations = 신분당선.getStations();
         assertThat(stations).containsExactly(강남역, 잠실역);
+    }
+
+    @DisplayName("노선에 역 삭제 - 구간이 하나인 노선에서 마지막 구간을 제거할 때")
+    @Test
+    void removeLineSectionWhenTwoStationRemain() {
+        //given
+        //when
+        assertThatThrownBy(() -> {
+            신분당선.removeLineStation(강남역);
+        }).isInstanceOf(RuntimeException.class);
     }
 }

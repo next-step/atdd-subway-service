@@ -56,8 +56,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ## 1단계 - 인수 테스트 기반 리팩터링 TO-DO list
 
 - [x] LineSectionAcceptanceTest 시나리오 테스트 작성
-- [ ] LineSectionAcceptanceTest 케이스별 시나리오 테스트 작성
 - [x] LineService 세부기능 단위 테스트 작성
-- [ ] Section 세부기능 단위 테스트 작성
-- [ ] LineSectionAcceptanceTest 리팩터링
-- [ ] LineService 리팩터링
+- [x] Line 세부기능 단위 테스트 작성
+- [x] LineService 리팩터링
+- [ ] Line 리팩터링
