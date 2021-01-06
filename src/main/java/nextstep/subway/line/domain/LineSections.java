@@ -53,6 +53,10 @@ public class LineSections {
 	}
 
 	public void removeStation(Line line, Station station) {
+		if (!isRemovable()) {
+			throw new RuntimeException();
+		}
+
 		Optional<Section> upLineStation = this.findByUpStation(station);
 		Optional<Section> downLineStation = this.findByDownStation(station);
 

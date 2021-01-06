@@ -70,10 +70,6 @@ public class Line extends BaseEntity {
     }
 
     public void removeStation(Station station) {
-        if (!this.sections.isRemovable()) {
-            throw new RuntimeException();
-        }
-
         this.sections.removeStation(this, station);
     }
 }
