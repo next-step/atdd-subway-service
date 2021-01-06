@@ -57,15 +57,9 @@ class LineServiceTest {
     @DisplayName("`Line`에 구간 `Section` 추가")
     @Test
     void addSectionInLine() {
-        // given
-        when(lineRepository.findById(any()))
-                .thenReturn(Optional.of(_2호선));
-        when(stationService.findStationById(any()))
-                .thenReturn(삼성역)
-                .thenReturn(잠실새내역);
-        // when
-        lineService.addLineStation(1L, new SectionRequest());
-        // then
+        // When
+        addLineStation(_2호선, 삼성역, 잠실새내역);
+        // Then
         assertThat(_2호선.getStations())
                 .extracting("name")
                 .containsExactly("삼성역", "잠실새내역", "잠실역");
@@ -76,12 +70,9 @@ class LineServiceTest {
     void checkExceptionToAddSection() {
         // Given
         Line line = new Line("2호선", "GREEN", 삼성역, 잠실새내역, 1150);
-        when(lineRepository.findById(any())).thenReturn(Optional.of(line));
         // When&Then
-        assertThatThrownBy(() -> {
-            when(stationService.findStationById(any())).thenReturn(삼성역).thenReturn(잠실새내역);
-            lineService.addLineStation(1L, new SectionRequest());
-        }).isInstanceOf(RuntimeException.class)
+        assertThatThrownBy(() -> addLineStation(line, 삼성역, 잠실새내역))
+                .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("이미 등록된 구간 입니다.");
     }
 
@@ -90,12 +81,9 @@ class LineServiceTest {
     void checkExceptionToAddSection2() {
         // Given
         Line line = new Line("2호선", "GREEN", 삼성역, 잠실새내역, 1150);
-        when(lineRepository.findById(any())).thenReturn(Optional.of(line));
         // When&Then
-        assertThatThrownBy(() -> {
-            when(stationService.findStationById(any())).thenReturn(잠실역).thenReturn(잠실나루역);
-            lineService.addLineStation(1L, new SectionRequest());
-        }).isInstanceOf(RuntimeException.class)
+        assertThatThrownBy(() -> addLineStation(line, 잠실역, 잠실나루역))
+                .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("등록할 수 없는 구간 입니다.");
     }
 
@@ -103,12 +91,9 @@ class LineServiceTest {
     @Test
     void deleteStationInLine() {
         // Given
-        when(lineRepository.findById(any())).thenReturn(Optional.of(_2호선));
-        when(stationService.findStationById(any())).thenReturn(잠실새내역).thenReturn(잠실역);
-        lineService.addLineStation(1L, new SectionRequest());
-        when(stationService.findStationById(any())).thenReturn(잠실새내역);
+        addLineStation(_2호선, 잠실새내역, 잠실역);
         // When
-        lineService.removeLineStation(1L, 1L);
+        removeLineStation(잠실새내역);
         // Then
         assertThat(_2호선.getStations())
                 .extracting("name")
@@ -129,5 +114,11 @@ class LineServiceTest {
     private void removeLineStation(Station station) {
         when(stationService.findStationById(any())).thenReturn(station);
         lineService.removeLineStation(1L, 1L);
+    }
+
+    private void addLineStation(Line line, Station upStation, Station downStation) {
+        when(lineRepository.findById(any())).thenReturn(Optional.of(line));
+        when(stationService.findStationById(any())).thenReturn(upStation).thenReturn(downStation);
+        lineService.addLineStation(1L, new SectionRequest());
     }
 }
