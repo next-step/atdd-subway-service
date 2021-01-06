@@ -68,3 +68,12 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         * Then 지하철 구간 삭제됨
         * When 지하철 노선에 등록된 역 목록 조회 요청
         * Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+
+* Feature: 지하철 경로 조회 기능
+    * Background
+        * Given 지하철역 등록되어 있음
+        * And 지하철 노선 등록되어 있음
+        * And 지하철 노선에 지하철역 등록되어 있음
+    * Scenario: 지하철 경로 조회
+        * When 지하철 경로를 조회한다
+        * Then 지하철 경로가 조회된다
