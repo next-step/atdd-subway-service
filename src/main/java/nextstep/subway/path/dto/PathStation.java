@@ -6,11 +6,11 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class PathStation {
-    private Long id;
-    private String name;
-    private LocalDateTime createdAt;
+    private final long id;
+    private final String name;
+    private final LocalDateTime createdAt;
 
-    public PathStation(Long id, String name, LocalDateTime createdAt) {
+    private PathStation(long id, String name, LocalDateTime createdAt) {
         this.id = id;
         this.name = name;
         this.createdAt = createdAt;
