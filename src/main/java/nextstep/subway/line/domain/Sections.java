@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -17,7 +18,8 @@ import nextstep.subway.station.domain.Station;
 @Embeddable
 public class Sections {
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST,
+            CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
     public void add(Section section) {
@@ -32,19 +34,17 @@ public class Sections {
         validate(isUpStationExisted, isDownStationExisted);
 
         if (isUpStationExisted) {
-            this.sections.stream()
-                    .filter(it -> it.getUpStation() == section.getUpStation())
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+            findFirstSection(it -> it.getUpStation() == section.getUpStation())
+                    .ifPresent(it -> it.updateUpStation(section.getDownStation(),
+                            section.getDistance()));
             this.sections.add(section);
             return;
         }
 
         if (isDownStationExisted) {
-            this.sections.stream()
-                    .filter(it -> it.getDownStation() == section.getDownStation())
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+            findFirstSection(it -> it.getDownStation() == section.getDownStation())
+                    .ifPresent(it -> it.updateDownStation(section.getUpStation(),
+                            section.getDistance()));
             this.sections.add(section);
             return;
         }
@@ -52,19 +52,14 @@ public class Sections {
         throw new RuntimeException();
     }
 
-
     public void remove(Line line, Station station) {
 
         if (this.sections.size() <= 1) {
             throw new RuntimeException();
         }
 
-        Optional<Section> upLineStation = this.sections.stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = this.sections.stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
+        Optional<Section> upLineStation = findFirstSection(it -> it.getUpStation() == station);
+        Optional<Section> downLineStation = findFirstSection(it -> it.getDownStation() == station);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
@@ -77,7 +72,6 @@ public class Sections {
         downLineStation.ifPresent(it -> this.sections.remove(it));
     }
 
-
     public List<Station> getStations() {
         if (this.sections.isEmpty()) {
             return Arrays.asList();
@@ -89,9 +83,7 @@ public class Sections {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
+            Optional<Section> nextLineStation = findFirstSection(it -> it.getUpStation() == finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -102,13 +94,16 @@ public class Sections {
         return stations;
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
     private Station findUpStation() {
         Station downStation = this.sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
+
+            Optional<Section> nextLineStation = findFirstSection(it -> it.getDownStation() == finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -116,6 +111,10 @@ public class Sections {
         }
 
         return downStation;
+    }
+
+    private Optional<Section> findFirstSection(Predicate<Section> predicate) {
+        return this.sections.stream().filter(predicate).findFirst();
     }
 
     private boolean contains(Station station) {
