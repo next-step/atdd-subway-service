@@ -42,6 +42,31 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
+    @DisplayName("시나리오: 지하철 구간 관리")
+    @Test
+    void scenarioTest() {
+        // when
+        ExtractableResponse<Response> createResponse = 지하철_노선에_지하철역_등록_요청(신분당선, 광교역, 정자역, 15);
+        // then
+        지하철_노선에_지하철역_등록됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> findResponse1 = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+        // then
+        지하철_노선에_지하철역_등록됨(findResponse1);
+        지하철_노선에_지하철역_순서_정렬됨(findResponse1, Arrays.asList(강남역, 광교역, 정자역));
+
+        // when
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 광교역);
+        // then
+        지하철_노선에_지하철역_제외됨(removeResponse);
+
+        // when
+        ExtractableResponse<Response> findResponse2 = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+        // then
+        지하철_노선에_지하철역_순서_정렬됨(findResponse2, Arrays.asList(강남역, 정자역));
+    }
+
     @DisplayName("지하철 구간을 등록한다.")
     @Test
     void addLineSection() {
@@ -136,11 +161,11 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
         LineResponse line = response.as(LineResponse.class);
         List<Long> stationIds = line.getStations().stream()
-                .map(it -> it.getId())
+                .map(StationResponse::getId)
                 .collect(Collectors.toList());
 
         List<Long> expectedStationIds = expectedStations.stream()
-                .map(it -> it.getId())
+                .map(StationResponse::getId)
                 .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
