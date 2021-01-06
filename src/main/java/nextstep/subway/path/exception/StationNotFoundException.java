@@ -7,10 +7,7 @@ package nextstep.subway.path.exception;
  */
 public class StationNotFoundException extends RuntimeException {
 
-    public StationNotFoundException() {
-    }
-
-    public StationNotFoundException(String message) {
-        super(message);
+    public StationNotFoundException(long stationId) {
+        super("존재하지 않는 지하철 역입니다. id : " + stationId);
     }
 }

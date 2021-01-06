@@ -3,6 +3,7 @@ package nextstep.subway.error;
 import java.net.BindException;
 import nextstep.subway.path.exception.NotConnectedPathException;
 import nextstep.subway.path.exception.StationNotFoundException;
+import nextstep.subway.path.exception.StationNotRegisteredException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,4 +48,11 @@ public class ErrorAdviceController {
     public ResponseEntity<?> handleStationNotFoundException(StationNotFoundException e) {
         return ResponseEntity.notFound().build();
     }
+
+    @ExceptionHandler(StationNotRegisteredException.class)
+    public ResponseEntity<?> handleStationNotRegisteredException(StationNotRegisteredException e) {
+        return ResponseEntity.notFound().build();
+    }
+
+
 }
