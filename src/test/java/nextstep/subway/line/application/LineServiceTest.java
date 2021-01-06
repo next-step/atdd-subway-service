@@ -114,4 +114,20 @@ class LineServiceTest {
                 .extracting("name")
                 .containsExactly("삼성역", "잠실역");
     }
+
+    @DisplayName("노선에서 `Station` 삭제시 예외 확인 - 구간이 1개이면 삭제 불가")
+    @Test
+    void checkExceptionToDeleteStationInLine() {
+        // Given
+        when(lineRepository.findById(any())).thenReturn(Optional.of(_2호선));
+        // When&Then
+        assertThatThrownBy(() -> removeLineStation(잠실역))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("구간이 1개이면 역을 삭제할 수 없습니다.");
+    }
+
+    private void removeLineStation(Station station) {
+        when(stationService.findStationById(any())).thenReturn(station);
+        lineService.removeLineStation(1L, 1L);
+    }
 }
