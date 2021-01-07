@@ -2,18 +2,22 @@ package nextstep.subway.auth.acceptance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.MemberRestHelper;
+import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class AuthAcceptanceTest extends AcceptanceTest {
@@ -36,11 +40,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBearerAuth() {
 
-        ExtractableResponse<Response> findResponse = AuthRestHelper.회원_로그인_요청(email, password);
-        TokenResponse tokenResponse = findResponse.as(TokenResponse.class);
-        String accessToken = tokenResponse.getAccessToken();
+        String accessToken = AuthRestHelper.토큰_구하기(email, password);
 
-        assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(accessToken).isNotBlank();
         assertThat(jwtTokenProvider.validateToken(accessToken)).isTrue();
 
@@ -55,9 +56,14 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
-        ExtractableResponse<Response> findResponse = AuthRestHelper.회원_로그인_요청(email, "");
-
-        assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        TokenRequest request = new TokenRequest(email, "");
+        RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post("/login/token")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")

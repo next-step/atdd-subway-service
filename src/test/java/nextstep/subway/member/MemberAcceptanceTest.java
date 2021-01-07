@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthRestHelper;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +14,7 @@ import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings("NonAsciiCharacters")
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
@@ -48,9 +50,54 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // when
+        ExtractableResponse<Response> createResponse = MemberRestHelper.회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        // then
+        회원_생성됨(createResponse);
+
+        String accessToken = AuthRestHelper.토큰_구하기(EMAIL, PASSWORD);
+
+        // when
+        ExtractableResponse<Response> findResponse = MemberRestHelper.내_정보_조회(accessToken);
+        // then
+        회원_정보_조회됨(findResponse, EMAIL, AGE);
+
+        // when
+        MemberRequest memberRequest = new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        ExtractableResponse<Response> updateResponse = MemberRestHelper.내_정보_수정(memberRequest, accessToken);
+        // then
+        회원_정보_수정됨(updateResponse);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = MemberRestHelper.내_정보_삭제(accessToken);
+        // then
+        회원_삭제됨(deleteResponse);
 
     }
 
+    @DisplayName("잘못된 토큰으로 나의 정보를 관리")
+    @Test
+    void shouldBeExceptionWhenManageMyInfo() {
+
+        String accessToken = "BAD_TOKEN";
+
+        // when
+        ExtractableResponse<Response> findResponse = MemberRestHelper.내_정보_조회(accessToken);
+        // then
+        assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+
+        // when
+        MemberRequest memberRequest = new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        ExtractableResponse<Response> updateResponse = MemberRestHelper.내_정보_수정(memberRequest, accessToken);
+        // then
+        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+
+        // when
+        ExtractableResponse<Response> deleteResponse = MemberRestHelper.내_정보_삭제(accessToken);
+        // then
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+
+    }
 
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
