@@ -1,6 +1,7 @@
 package nextstep.subway.station.dto;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import nextstep.subway.station.domain.Station;
 
@@ -32,5 +33,22 @@ public class PathStationResponse {
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof PathStationResponse))
+            return false;
+        PathStationResponse that = (PathStationResponse)o;
+        return Objects.equals(id, that.id) &&
+            Objects.equals(name, that.name) &&
+            Objects.equals(createdDate, that.createdDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, createdDate);
     }
 }

@@ -11,13 +11,16 @@ import nextstep.subway.station.domain.Station;
 public class SectionTest {
 
 	private static final int ORIGIN_DISTANCE_VALUE = 12;
-	private Line originLine = new Line("2호선", "green");
-	private Station originUpStation = new Station("문래역");
-	private Station originDownStation = new Station("잠실역");
+	private Line originLine;
+	private Station originUpStation;
+	private Station originDownStation;
 	private Section originSection;
 
 	@BeforeEach
 	void setUp() {
+		originLine = new Line("2호선", "green");
+		originUpStation = new Station("문래역");
+		originDownStation = new Station("잠실역");
 		originSection = new Section(originLine, originUpStation, originDownStation, ORIGIN_DISTANCE_VALUE);
 	}
 
