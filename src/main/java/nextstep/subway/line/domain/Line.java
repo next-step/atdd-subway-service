@@ -18,6 +18,51 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
+    public static class Builder {
+        private Long id;
+        private String name;
+        private String color;
+        Station upStation;
+        Station downStation;
+        int distance;
+
+        public Builder(Long id, String name, String color) {
+            this.id = id;
+            this.name = name;
+            this.color = color;
+        }
+
+        public Builder(String name, String color) {
+            this(null, name, color);
+        }
+
+        public Builder upStation(Station val) {
+            upStation = val;
+            return this;
+        }
+
+        public Builder downStation(Station val) {
+            downStation = val;
+            return this;
+        }
+
+        public Builder distance(int val) {
+            distance = val;
+            return this;
+        }
+
+        public Line build() {
+            return new Line(this);
+        }
+    }
+
+    private Line(Builder builder) {
+        this.id = builder.id;
+        this.name = builder.name;
+        this.color = builder.color;
+        sections.addSection(this, builder.upStation, builder.downStation, builder.distance);
+    }
+
     public Line() {
     }
 

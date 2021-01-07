@@ -24,7 +24,11 @@ class LineTest {
         역삼역 = new Station(2L, "역삼역");
         잠실역 = new Station(3L, "잠실역");
 
-        신분당선 = new Line(1L, "신분당선", "bg-red-600", 강남역, 역삼역, 10);
+        신분당선 = new Line.Builder(1L, "신분당선", "bg-red-600")
+                .upStation(강남역)
+                .downStation(역삼역)
+                .distance(10)
+                .build();
     }
 
     @DisplayName("지하철 노선에 속한 역들 조회(순서별)")
