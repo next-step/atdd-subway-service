@@ -51,9 +51,7 @@ public class Line extends BaseEntity {
     }
 
     public Iterator<Section> getSections() {
-	    // TODO : complete
-//    	return this.sections.iterator();
-	    throw new NotImplementedException("");
+    	return this.sections.iterator();
     }
 
     public Long getId() {
