@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -48,7 +49,66 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // given
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        String token = AuthAcceptanceTest.회원_로그인되어_있음(EMAIL, PASSWORD);
 
+        // when
+        ExtractableResponse<Response> wrongResponse = 나의_정보_조회_요청("wrongToken");
+
+        // then
+        나의_정보_조회_실패됨(wrongResponse);
+
+        // when
+        ExtractableResponse<Response> findResponse = 나의_정보_조회_요청(token);
+
+        // then
+        회원_정보_조회됨(findResponse, EMAIL, AGE);
+
+        // when
+        ExtractableResponse<Response> updateResponse = 나의_정보_수정_요청(token, EMAIL, PASSWORD, AGE);
+
+        // then
+        회원_정보_수정됨(updateResponse);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 나의_정보_삭제_요청(token);
+
+        // then
+        회원_삭제됨(deleteResponse);
+    }
+
+    private ExtractableResponse<Response> 나의_정보_조회_요청(final String token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 나의_정보_수정_요청(final String token, final String email, final String password, final int age) {
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+        return RestAssured
+                .given().log().all().auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 나의_정보_삭제_요청(final String token) {
+        return RestAssured
+                .given().log().all().auth().oauth2(token)
+                .when().delete("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 회원_등록되어_있음(final String email, final String password, final int age) {
+        ExtractableResponse<Response> response = 회원_생성을_요청(email, password, age);
+        회원_생성됨(response);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -113,5 +173,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 나의_정보_조회_실패됨(final ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

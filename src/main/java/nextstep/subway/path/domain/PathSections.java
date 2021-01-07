@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class PathSections {
@@ -10,6 +11,10 @@ public class PathSections {
 
     public PathSections(final List<PathSection> pathSections) {
         this.pathSections = Collections.unmodifiableList(pathSections);
+    }
+
+    public void forEach(Consumer<PathStation> consumer) {
+        getPathStations().forEach(consumer);
     }
 
     public List<PathStation> getPathStations() {
