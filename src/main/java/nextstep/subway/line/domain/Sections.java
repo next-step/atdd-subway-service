@@ -22,7 +22,7 @@ public class Sections {
         return sections;
     }
 
-    public void addNewSection(Line line, Station upStation, Station downStation, int distance) {
+    public void addSection(Line line, Station upStation, Station downStation, int distance) {
         sections.add(new Section(line, upStation, downStation, distance));
     }
 
@@ -74,7 +74,7 @@ public class Sections {
         updateUpStation(upStation, downStation, distance, stations);
         updateDownStation(upStation, downStation, distance, stations);
 
-        addNewSection(line, upStation, downStation, distance);
+        addSection(line, upStation, downStation, distance);
     }
 
     public void removeLineStation(Line line, Station station) {
@@ -104,7 +104,7 @@ public class Sections {
     private boolean addLineStationIfEmpty(Line line, Station upStation, Station downStation, int distance,
                                           List<Station> stations) {
         if (stations.isEmpty()) {
-            addNewSection(line, upStation, downStation, distance);
+            addSection(line, upStation, downStation, distance);
             return true;
         }
         return false;
@@ -136,7 +136,7 @@ public class Sections {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
             int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            addNewSection(line, newUpStation, newDownStation, newDistance);
+            addSection(line, newUpStation, newDownStation, newDistance);
         }
     }
 
