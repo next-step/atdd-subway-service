@@ -73,7 +73,7 @@ public class PathServiceTest {
 		when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
 		when(stationRepository.findById(교대역.getId())).thenReturn(Optional.of(교대역));
 		when(stationRepository.findById(양재역.getId())).thenReturn(Optional.of(양재역));
-		when(pathFinder.findShortestPath(any(), any())).thenReturn(new ShortestPath(Arrays.asList(교대역, 남부터미널역, 양재역), 5L));
+		when(pathFinder.findShortestPath(any(), any(), any())).thenReturn(new ShortestPath(Arrays.asList(교대역, 남부터미널역, 양재역), 5L));
 
 		//when
 		PathResponse response = pathService.findShortestPath(교대역.getId(), 양재역.getId());

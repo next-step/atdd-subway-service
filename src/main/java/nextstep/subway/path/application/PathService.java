@@ -29,9 +29,8 @@ public class PathService {
 		List<Line> lines = lineRepository.findAll();
 		Station sourceStation = stationRepository.findById(source).get();
 		Station targetStation = stationRepository.findById(target).get();
-		pathFinder.registerLines(lines);
 
-		ShortestPath shortestPath = pathFinder.findShortestPath(sourceStation, targetStation);
+		ShortestPath shortestPath = pathFinder.findShortestPath(lines, sourceStation, targetStation);
 		return PathResponse.of(shortestPath);
 	}
 }
