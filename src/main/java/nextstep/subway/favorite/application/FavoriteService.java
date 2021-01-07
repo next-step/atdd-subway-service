@@ -35,7 +35,7 @@ public class FavoriteService {
 
     public List<FavoriteResponse> findFavorites(Long memberId) {
         List<Favorite> favorites = favoriteRepository.findByMemberId(memberId);
-        List<Long> stationIds = findStationIds(favorites);
+        List<Long> stationIds = findStationIdsFromFavorites(favorites);
         List<StationResponse> stations = stationService.findAllByIds(stationIds);
         return ofFavoriteResponse(favorites, stations);
     }
@@ -44,7 +44,7 @@ public class FavoriteService {
         favoriteRepository.deleteById(id);
     }
 
-    private List<Long> findStationIds(List<Favorite> favorites) {
+    private List<Long> findStationIdsFromFavorites(List<Favorite> favorites) {
         return favorites.stream()
                 .flatMap(favorite -> Stream.of(favorite.getSource(), favorite.getTarget()))
                 .collect(Collectors.toList());
