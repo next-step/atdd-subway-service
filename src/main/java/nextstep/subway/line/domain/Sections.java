@@ -4,7 +4,6 @@ import nextstep.subway.line.exception.InvalidAddSectionException;
 import nextstep.subway.line.exception.InvalidRemoveSectionException;
 import nextstep.subway.line.exception.SectionNotFoundException;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -38,8 +37,8 @@ public class Sections {
     public void removeSection(Station station) {
         checkSectionsSize();
 
-        Optional<Section> upLineStation = findSection(section -> section.getUpStation() == station);
-        Optional<Section> downLineStation = findSection(section -> section.getDownStation() == station);
+        Optional<Section> upLineStation = findSection(section -> section.isEqualUpStationTo(station));
+        Optional<Section> downLineStation = findSection(section -> section.isEqualDownStationTo(station));
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Section preSection = downLineStation.get();
@@ -70,12 +69,6 @@ public class Sections {
         return stations;
     }
 
-    public List<StationResponse> getStationResponses() {
-        return getStations().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-    }
-
     private void checkExistSection(Section section) {
         if (isExistStation(section.getUpStation()) && isExistStation(section.getDownStation())) {
             throw new InvalidAddSectionException("이미 등록된 구간 입니다.");
@@ -93,12 +86,12 @@ public class Sections {
     }
 
     private void addSectionUpToUp(Section section) {
-        findSection(it -> it.getUpStation() == section.getUpStation())
+        findSection(it -> it.isEqualUpStation(section))
                 .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
     }
 
     private void addSectionDownToDown(Section section) {
-        findSection(it -> it.getDownStation() == section.getDownStation())
+        findSection(it -> it.isEqualDownStation(section))
                 .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
     }
 
@@ -120,7 +113,7 @@ public class Sections {
     }
 
     private Optional<Section> findNextSection(Station downStation) {
-        return findSection(section -> section.getUpStation().equals(downStation));
+        return findSection(section -> section.isEqualUpStationTo(downStation));
     }
 
     private Optional<Section> findSection(Predicate<Section> predicate) {
