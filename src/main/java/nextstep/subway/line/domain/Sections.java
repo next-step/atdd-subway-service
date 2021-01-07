@@ -15,6 +15,8 @@ import java.util.function.Predicate;
 @Embeddable
 public class Sections {
 
+    private static final int MINIMUM_STATION_COUNT = 1;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
@@ -168,7 +170,7 @@ public class Sections {
     }
 
     private void verifyCannotRemove() {
-        if (sections.size() <= 1) {
+        if (sections.size() <= MINIMUM_STATION_COUNT) {
             throw new RuntimeException();
         }
     }
