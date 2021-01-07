@@ -1,9 +1,11 @@
 package nextstep.subway.line.domain;
 
+import lombok.Getter;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 
+@Getter
 @Entity
 public class Section {
     @Id
@@ -32,26 +34,6 @@ public class Section {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Line getLine() {
-        return line;
-    }
-
-    public Station getUpStation() {
-        return upStation;
-    }
-
-    public Station getDownStation() {
-        return downStation;
-    }
-
-    public int getDistance() {
-        return distance;
     }
 
     public void updateUpStation(Station station, int newDistance) {
