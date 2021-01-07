@@ -64,4 +64,12 @@ public class Section {
         this.distance.calculateNewDistance(newDistance);
         this.downStation = station;
     }
+
+    public boolean isUpStation(Station station) {
+        return this.upStation.equals(station);
+    }
+
+    public boolean isDownStation(Station station) {
+        return this.downStation.equals(station);
+    }
 }

@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,6 +77,10 @@ public class LineSections {
 	}
 
 	public List<Station> getStations() {
+		if (this.sections.isEmpty()) {
+			return Arrays.asList();
+		}
+
 		List<Station> stations = new ArrayList<>();
 		Station baseStation = findUpEndStation();
 
@@ -91,12 +96,8 @@ public class LineSections {
 	}
 
 	private Optional<Station> findNextStation(Station baseStation) {
-		Station upStationInNextSection = baseStation;
-		Optional<Section> nextSection = findSectionByUpStation(upStationInNextSection);
-		if (!nextSection.isPresent()) {
-			return Optional.empty();
-		}
-		return Optional.of(nextSection.get().getDownStation());
+		Optional<Section> nextSection = findSectionByUpStation(baseStation);
+		return nextSection.map(Section::getDownStation);
 	}
 
 	private boolean isContainStation(Station station) {
@@ -106,13 +107,13 @@ public class LineSections {
 
 	private Optional<Section> findSectionByUpStation(Station upStation) {
 		return this.sections.stream()
-			.filter(it -> it.getUpStation() == upStation)
+			.filter(section -> section.isUpStation(upStation))
 			.findFirst();
 	}
 
 	private Optional<Section> findSectionByDownStation(Station downStation) {
 		return this.sections.stream()
-			.filter(it -> it.getDownStation() == downStation)
+			.filter(section -> section.isDownStation(downStation))
 			.findFirst();
 	}
 
