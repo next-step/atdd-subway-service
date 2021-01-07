@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.exception.AlreadyExistSectionException;
+import nextstep.subway.line.exception.NoMatchStationsException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -93,7 +95,7 @@ class LineTest {
         //then
         assertThatThrownBy(() -> {
             신분당선.addLineStation(역삼역, 잠실역, 4);
-        }).isInstanceOf(RuntimeException.class);
+        }).isInstanceOf(AlreadyExistSectionException.class);
     }
 
     @DisplayName("노선에 역 추가 - 노선에 등록되지 않은 역을 기준으로 등록한다.")
@@ -104,7 +106,7 @@ class LineTest {
         Station 선릉역 = new Station(4L, "선릉역");
         assertThatThrownBy(() -> {
             신분당선.addLineStation(잠실역, 선릉역, 4);
-        }).isInstanceOf(RuntimeException.class);
+        }).isInstanceOf(NoMatchStationsException.class);
     }
 
     @DisplayName("노선에 역 삭제 - 최 상행역 삭제 ")
@@ -153,6 +155,6 @@ class LineTest {
         //when
         assertThatThrownBy(() -> {
             신분당선.removeLineStation(강남역);
-        }).isInstanceOf(RuntimeException.class);
+        }).isInstanceOf(CannotRemoveSectionException.class);
     }
 }

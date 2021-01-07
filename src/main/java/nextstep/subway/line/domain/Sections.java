@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.exception.AlreadyExistSectionException;
+import nextstep.subway.line.exception.NoMatchStationsException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -154,24 +156,24 @@ public class Sections {
         boolean isDownStationExisted = isStationExisted(downStation, stations);
 
         verifyAlreadyExistSection(isUpStationExisted, isDownStationExisted);
-        verifyNotMatchStations(isUpStationExisted, isDownStationExisted);
+        verifyNoMatchStations(isUpStationExisted, isDownStationExisted);
     }
 
-    private void verifyNotMatchStations(boolean isUpStationExisted, boolean isDownStationExisted) {
+    private void verifyNoMatchStations(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (!isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new NoMatchStationsException("등록할 수 없는 구간 입니다.");
         }
     }
 
     private void verifyAlreadyExistSection(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new AlreadyExistSectionException("이미 등록된 구간 입니다.");
         }
     }
 
     private void verifyCannotRemove() {
         if (sections.size() <= MINIMUM_STATION_COUNT) {
-            throw new RuntimeException();
+            throw new CannotRemoveSectionException("마지막 구간을 제거할 수 없습니다.");
         }
     }
 }
