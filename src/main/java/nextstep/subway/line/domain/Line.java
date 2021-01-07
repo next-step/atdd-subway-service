@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import lombok.Builder;
 import nextstep.subway.BaseEntity;
+import nextstep.subway.common.Money;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -16,6 +17,7 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    private Money surcharge;
 
     @Embedded
     private Sections sections;
@@ -28,12 +30,17 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    @Builder
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
+        this(name, color, upStation, downStation, distance, 0);
+    }
+
+    @Builder
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int surcharge) {
         this.name = name;
         this.color = color;
         Section section = new Section(this, upStation, downStation, distance);
         this.sections = new Sections(Arrays.asList(section));
+        this.surcharge = Money.valueOf(surcharge);
     }
 
     public void update(Line line) {

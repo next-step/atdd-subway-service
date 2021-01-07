@@ -214,7 +214,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [X] 8km 마다 100원의 추가운임이 부과된다. (50km 초과 시) 
 
 - 노선별 추가 요금 정책
-- [ ] 노선(Line)에 추가 요금(Money) 필드 추가
+- [X] 노선(Line)에 추가 요금(Money) 필드 추가
 - [ ] 노선의 추가 요금을 계산하는 노선 요금(LineFee) 도메인 서비스 구현
     - [ ] 추가 요금이 있는 노선을 이용 할 경우 측정된 요금에 추가한다.
     - [ ] 경로 중 추가요금이 있는 노선을 환승 하여 이용 할 경우 가장 높은 금액의 추가 요금만 적용한다.
