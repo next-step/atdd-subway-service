@@ -2,7 +2,6 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
-import org.apache.commons.lang3.NotImplementedException;
 
 import javax.persistence.*;
 import java.util.Iterator;
