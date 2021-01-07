@@ -33,9 +33,7 @@ public class LineService {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
-        List<StationResponse> stations = getStations(persistLine).stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+        List<StationResponse> stations = extractStationToStationResponse(persistLine);
         return LineResponse.of(persistLine, stations);
     }
 
@@ -47,9 +45,7 @@ public class LineService {
     }
 
     private LineResponse lineToLineResponse(Line line) {
-        List<StationResponse> stations = getStations(line).stream()
-            .map(StationResponse::of)
-            .collect(Collectors.toList());
+        List<StationResponse> stations = extractStationToStationResponse(line);
         return LineResponse.of(line, stations);
     }
 
@@ -60,10 +56,14 @@ public class LineService {
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        List<StationResponse> stations = getStations(persistLine).stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+        List<StationResponse> stations = extractStationToStationResponse(persistLine);
         return LineResponse.of(persistLine, stations);
+    }
+
+    private List<StationResponse> extractStationToStationResponse(Line persistLine) {
+        return getStations(persistLine).stream()
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
