@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.TotalLines;
 import nextstep.subway.station.domain.Station;
 
 public class PathFinderTest {
@@ -52,7 +53,7 @@ public class PathFinderTest {
 	@DisplayName("최단거리를 구하면 최단거리 구간의 역 목록과 최단거리가 계산되어야 한다.")
 	void registerGraph() {
 		//when
-		ShortestPath path = pathFinder.findShortestPath(Arrays.asList(신분당선, 이호선, 삼호선), 잠실역, 남부터미널역);
+		ShortestPath path = pathFinder.findShortestPath(new TotalLines(Arrays.asList(신분당선, 이호선, 삼호선)), 잠실역, 남부터미널역);
 
 		//then
 		assertThat(path.getStations()).containsExactly(잠실역, 강남역, 양재역, 남부터미널역);
