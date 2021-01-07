@@ -1,42 +1,39 @@
 package nextstep.subway.common;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Objects;
 
 public class Money {
 
-    private static final BigDecimal MIN_VALUE = BigDecimal.ZERO;
+    private static final int MIN_VALUE = 0;
 
-    private final BigDecimal amount;
+    private final int amount;
 
-    private Money(final BigDecimal amount) {
-        if (isNegative(amount)) {
+    private Money(final int amount) {
+        if (amount < MIN_VALUE) {
             throw new IllegalArgumentException("금액은 음수를 허용하지 않습니다.");
         }
         this.amount = amount;
     }
 
-    private boolean isNegative(final BigDecimal amount) {
-        return amount.compareTo(MIN_VALUE) < 0;
-    }
-
     public static Money valueOf(final int value) {
-        return new Money(BigDecimal.valueOf(value));
+        return new Money(value);
     }
 
     public Money add(final Money other) {
-        return new Money(amount.add(other.amount));
+        return new Money(amount + other.amount);
     }
 
     public Money subtract(final Money other) {
-        return new Money(amount.subtract(other.amount));
+        return new Money(amount - other.amount);
     }
 
     public Money multiply(final double value) {
-        BigDecimal multiply = amount.multiply(new BigDecimal(value))
-                .setScale(0, RoundingMode.FLOOR);
-        return new Money(multiply);
+        double multiply = amount * value;
+        return new Money((int) multiply);
+    }
+
+    public int getAmount() {
+        return amount;
     }
 
     @Override
