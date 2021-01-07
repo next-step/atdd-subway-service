@@ -35,6 +35,14 @@ public class Section {
         this.distance = distance;
     }
 
+    public static Section combine(Section upLineStation, Section downLineStation) {
+        return new Section(
+                upLineStation.getLine(),
+                downLineStation.getUpStation(),
+                upLineStation.getDownStation(),
+                upLineStation.getDistance() + downLineStation.getDistance());
+    }
+
     public void updateUpStation(Station station, int newDistance) {
         checkDistance(newDistance);
 

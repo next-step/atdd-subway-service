@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 @Getter
 @NoArgsConstructor
@@ -56,33 +57,21 @@ public class Line extends BaseEntity {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
 
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation)) {
+        if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
 
-        if (stations.isEmpty()) {
-            sections.add(new Section(this, upStation, downStation, distance));
-            return;
+        if (isUpStationExisted || isDownStationExisted) {
+            for (Section section : sections) {
+                AddSectionType addSectionType = AddSectionType.valueOf(section, upStation, downStation);
+                if (addSectionType != AddSectionType.NONE) {
+                    addSectionType.updateStation(section, upStation, downStation, distance);
+                    break;
+                }
+            }
         }
 
-        if (isUpStationExisted) {
-            sections.stream()
-                    .filter(it -> it.getUpStation() == upStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, distance));
-
-            sections.add(new Section(this, upStation, downStation, distance));
-        } else if (isDownStationExisted) {
-            sections.stream()
-                    .filter(it -> it.getDownStation() == downStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, distance));
-
-            sections.add(new Section(this, upStation, downStation, distance));
-        } else {
-            throw new RuntimeException();
-        }
+        sections.add(new Section(this, upStation, downStation, distance));
     }
 
     public List<Station> getStations() {
@@ -96,9 +85,7 @@ public class Line extends BaseEntity {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
+            Optional<Section> nextLineStation = findSection(section -> section.getUpStation() == finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -109,13 +96,27 @@ public class Line extends BaseEntity {
         return stations;
     }
 
+    public void removeLineStation(Station station) {
+        if (sections.size() <= 1) {
+            throw new RuntimeException();
+        }
+
+        Optional<Section> upLineStation = findSection(section -> section.getUpStation() == station);
+        Optional<Section> downLineStation = findSection(section -> section.getDownStation() == station);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            sections.add(Section.combine(upLineStation.get(), downLineStation.get()));
+        }
+
+        upLineStation.ifPresent(sections::remove);
+        downLineStation.ifPresent(sections::remove);
+    }
+
     private Station findUpStation() {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
+            Optional<Section> nextLineStation = findSection(section -> section.getDownStation() == finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -123,5 +124,11 @@ public class Line extends BaseEntity {
         }
 
         return downStation;
+    }
+
+    private Optional<Section> findSection(Predicate<Section> sectionPredicate) {
+        return sections.stream()
+                .filter(sectionPredicate)
+                .findFirst();
     }
 }
