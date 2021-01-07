@@ -6,9 +6,13 @@ public class Path {
 
     private final List<PathStation> pathStations;
 
-    private final int distance;
+    private final Distance distance;
 
     public Path(final List<PathStation> pathStations, final int distance) {
+        this(pathStations, Distance.valueOf(distance));
+    }
+
+    public Path(final List<PathStation> pathStations, final Distance distance) {
         this.pathStations = pathStations;
         this.distance = distance;
     }
@@ -18,6 +22,6 @@ public class Path {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.getValue();
     }
 }

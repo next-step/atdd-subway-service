@@ -206,9 +206,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [X] 금액을 곱할 수 있다.
 
 - 거리별 요금 정책
-- [ ] 경로(Path) 도메인에 요금(Money) 필드 추가
-- [ ] 거리(Distance) 래핑 타입 추가
-    - [ ] 0 이상의 거리 값만을 허용한다.
+- [X] 거리(Distance) 래핑 타입 추가
+    - [X] 0 이상의 거리 값만을 허용한다.
 - [ ] 경로의 요금을 계산하는 거리별 요금(DistanceFee) 도메인 서비스 구현
     - [ ] 10km 이내의 기본운임 비용은 1,250원이다.
     - [ ] 5km 마다 100원의 추가운임이 부과된다. (10km 초과 ∼ 50km 이하)
