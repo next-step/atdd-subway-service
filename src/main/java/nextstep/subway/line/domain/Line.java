@@ -98,7 +98,7 @@ public class Line extends BaseEntity {
         return stations;
     }
 
-    public void removeLineStation(Station station) {
+    public void removeSection(Station station) {
         if (sections.size() <= 1) {
             throw new RemoveLineException("Cannot delete a single section");
         }

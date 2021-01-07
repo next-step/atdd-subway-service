@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
 public class MemberNotFoundException extends SubwayException {
-
     public MemberNotFoundException(Object arg) {
         super(arg);
     }
