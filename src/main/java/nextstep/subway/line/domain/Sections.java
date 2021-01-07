@@ -88,11 +88,11 @@ public class Sections {
     }
 
     private Optional<Section> getSectionByUpStation(Station station) {
-        return getSection(it -> it.getUpStation() == station);
+        return getSection(it -> it.sameUpStation(station));
     }
 
     private Optional<Section> getSectionByDownStation(Station station) {
-        return getSection(it -> it.getDownStation() == station);
+        return getSection(it -> it.sameDownStation(station));
     }
 
     private Optional<Section> getSection(Predicate<Section> sectionPredicate) {
@@ -112,12 +112,12 @@ public class Sections {
 
     private void updateUpStation(Station upStation, Station downStation, int distance, List<Station> stations) {
         if (isStationExisted(upStation, stations))
-            updateStation(it -> it.getUpStation() == upStation, it -> it.updateUpStation(downStation, distance));
+            updateStation(it -> it.sameUpStation(upStation), it -> it.updateUpStation(downStation, distance));
     }
 
     private void updateDownStation(Station upStation, Station downStation, int distance, List<Station> stations) {
         if (isStationExisted(downStation, stations))
-            updateStation(it -> it.getDownStation() == downStation, it -> it.updateDownStation(upStation, distance));
+            updateStation(it -> it.sameDownStation(downStation), it -> it.updateDownStation(upStation, distance));
     }
 
     private boolean isStationExisted(Station station, List<Station> stations) {
