@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -22,6 +23,7 @@ public class Sections {
     private static final String ALREADY_EXIST_SECTION = "이미 등록된 구간 입니다.";
     private static final String CANNOT_ADD_SECTION = "등록할 수 없는 구간 입니다.";
     private static final String THIS_IS_LAST_SECTION = "마지막 구간입니다.";
+    private static final String NOT_FOUND = "데이터를 찾을 수 없습니다.";
     private static final int SECTION_LIST_MINIMUM_SIZE = 1;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
@@ -32,26 +34,19 @@ public class Sections {
     }
 
     public List<Station> getOrderedStations() {
-        if (this.getSections().isEmpty()) {
+        if (this.sections.isEmpty()) {
             return Collections.emptyList();
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
+        Section firstSection = findFirstSection();
+        stations.add(firstSection.getUpStation());
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.getSections().stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        Section nextSection = firstSection;
+        while (nextSection != null) {
+            stations.add(nextSection.getDownStation());
+            nextSection = findNextSection(nextSection.getDownStation()).orElse(null);
         }
-
         return stations;
     }
 
@@ -114,27 +109,24 @@ public class Sections {
                 .findFirst();
     }
 
-    private void validateSectionSize() {
-        if (this.sections.size() <= SECTION_LIST_MINIMUM_SIZE) {
-            throw new SectionsException(THIS_IS_LAST_SECTION);
-        }
+
+    private Optional<Section> findNextSection(Station downStation) {
+        return sections.stream()
+                .filter(section -> section.isEqualWithUpStation(downStation))
+                .findFirst();
     }
 
-    private Station findUpStation() {
-        Station downStation = this.getSections().get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.getSections().stream()
-                    .filter(it -> it.isEqualWithDownStation(finalDownStation))
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
+    private Section findFirstSection() {
+        List<Station> downStations = this.sections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
 
-        return downStation;
+        return this.sections.stream()
+                .filter(section -> !downStations.contains(section.getUpStation()))
+                .findFirst()
+                .orElseThrow(() -> new SectionsException(NOT_FOUND));
     }
+
 
     private void updateSectionDownStation(Section section, Station upStation, Station downStation) {
         findMathWithDownStation(downStation)
@@ -144,6 +136,12 @@ public class Sections {
     private void updateSectionUpStation(Section section, Station upStation, Station downStation) {
         findMatchWithUpStation(upStation)
                 .ifPresent(it -> it.updateUpStation(downStation, section.getDistance()));
+    }
+
+    private void validateSectionSize() {
+        if (this.sections.size() <= SECTION_LIST_MINIMUM_SIZE) {
+            throw new SectionsException(THIS_IS_LAST_SECTION);
+        }
     }
 
     private void validationAlreadyExist(boolean isUpStationExisted, boolean isDownStationExisted) {
@@ -157,5 +155,4 @@ public class Sections {
             throw new SectionsException(CANNOT_ADD_SECTION);
         }
     }
-
 }
