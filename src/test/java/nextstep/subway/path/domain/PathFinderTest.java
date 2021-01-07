@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,7 +41,7 @@ class PathFinderTest {
     @Test
     void getShortestPath() {
         // when
-        PathResponse pathResponse = new PathFinder().ofPathResponse(lines.allSection(), 교대역, 양재역);
+        PathResponse pathResponse = new PathFinder().ofPathResponse(new PathRequest(lines.allSection(), 교대역, 양재역));
 
         // then
         assertThat(pathResponse.getDistance()).isEqualTo(10);
@@ -53,7 +54,7 @@ class PathFinderTest {
     @Test
     void findPathWhenNotConnectedStation() {
         // when then
-        assertThatThrownBy(() -> new PathFinder().ofPathResponse(lines.allSection(), 교대역, 사당역))
+        assertThatThrownBy(() -> new PathFinder().ofPathResponse(new PathRequest(lines.allSection(), 교대역, 사당역)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("출발역과 도착역이 연결 되어 있지 않습니다.");
     }

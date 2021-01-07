@@ -3,6 +3,7 @@ package nextstep.subway.path.service;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class PathService {
         Lines lines = findAllLine();
         Station departureStation = lines.searchStationById(departureStationId);
         Station arrivalStation = lines.searchStationById(arrivalStationId);
-        return pathFinder.ofPathResponse(lines.allSection(), departureStation, arrivalStation);
+        return pathFinder.ofPathResponse(new PathRequest(lines.allSection(), departureStation, arrivalStation));
     }
 
     @Transactional(readOnly = true)
