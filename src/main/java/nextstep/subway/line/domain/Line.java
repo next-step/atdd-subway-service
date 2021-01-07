@@ -24,6 +24,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
+        this.sections = Sections.of();
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
@@ -47,6 +48,10 @@ public class Line extends BaseEntity {
 
     public List<Station> getStations() {
         return sections.getStations();
+    }
+
+    public List<Section> getSections() {
+        return sections.getSections();
     }
 
     public Long getId() {
