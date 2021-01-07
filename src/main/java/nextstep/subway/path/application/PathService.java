@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.TotalLines;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -22,10 +23,10 @@ public class PathService {
 		this.pathFinder = pathFinder;
 	}
 
-	public PathResponse findShortestPath(Long source, Long target) {
+	public PathResponse findShortestPath(PathRequest request) {
 		TotalLines lines = new TotalLines(lineRepository.findAll());
-		Station sourceStation = stationRepository.findById(source).get();
-		Station targetStation = stationRepository.findById(target).get();
+		Station sourceStation = stationRepository.findById(request.getSource()).get();
+		Station targetStation = stationRepository.findById(request.getTarget()).get();
 
 		return PathResponse.of(pathFinder.findShortestPath(lines, sourceStation, targetStation));
 	}
