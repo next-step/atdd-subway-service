@@ -7,9 +7,12 @@ import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceSupport;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,7 +39,16 @@ public class PathAcceptanceSupport {
 				.then().log().all().extract();
 	}
 
-	public static void 지하철_경로_조회됨(ExtractableResponse<Response> response) {
+	public static void 지하철_경로_조회됨(ExtractableResponse<Response> response, List<String> stations) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+		List<StationResponse> stationResponses = response.body().as(PathResponse.class).getStations();
+		assertThat(stationResponses)
+				.map(StationResponse::getName)
+				.asList()
+				.containsAll(stations);
+	}
+
+	public static void 지하철_경로_조회_실패함(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 }
