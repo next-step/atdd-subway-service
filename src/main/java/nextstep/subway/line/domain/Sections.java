@@ -52,10 +52,12 @@ public class Sections {
 
     public void add(Section section) {
         List<Station> stations = getOrderedStations();
-        if (stations.isEmpty()) {
+
+        if (this.sections.isEmpty()) {
             sections.add(section);
             return;
         }
+
         Station upStation = section.getUpStation();
         Station downStation = section.getDownStation();
 
