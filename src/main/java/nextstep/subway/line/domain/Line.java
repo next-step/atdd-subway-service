@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
@@ -55,22 +56,10 @@ public class Line extends BaseEntity {
         boolean isUpStationExisted = stations.contains(upStation);
         boolean isDownStationExisted = stations.contains(downStation);
 
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new AddLineException("이미 등록된 구간 입니다.");
-        }
-
-        if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
-            throw new AddLineException("등록할 수 없는 구간 입니다.");
-        }
+        checkLineStationAddable(stations, isUpStationExisted, isDownStationExisted);
 
         if (isUpStationExisted || isDownStationExisted) {
-            for (Section section : sections) {
-                AddSectionType addSectionType = AddSectionType.valueOf(section, upStation, downStation);
-                if (addSectionType != AddSectionType.NONE) {
-                    addSectionType.updateStation(section, upStation, downStation, distance);
-                    break;
-                }
-            }
+            updateSection(upStation, downStation, distance);
         }
 
         sections.add(new Section(this, upStation, downStation, distance));
@@ -87,7 +76,7 @@ public class Line extends BaseEntity {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = findSection(section -> section.getUpStation() == finalDownStation);
+            Optional<Section> nextLineStation = findSection(section -> section.matchUpStation(finalDownStation));
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -99,12 +88,10 @@ public class Line extends BaseEntity {
     }
 
     public void removeSection(Station station) {
-        if (sections.size() <= 1) {
-            throw new RemoveLineException("Cannot delete a single section");
-        }
+        checkSectionSizeOneOrZero();
 
-        Optional<Section> upLineStation = findSection(section -> section.getUpStation() == station);
-        Optional<Section> downLineStation = findSection(section -> section.getDownStation() == station);
+        Optional<Section> upLineStation = findSection(section -> section.matchUpStation(station));
+        Optional<Section> downLineStation = findSection(section -> section.matchDownStation(station));
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             sections.add(Section.combine(upLineStation.get(), downLineStation.get()));
@@ -114,18 +101,42 @@ public class Line extends BaseEntity {
         downLineStation.ifPresent(sections::remove);
     }
 
-    private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = findSection(section -> section.getDownStation() == finalDownStation);
-            if (!nextLineStation.isPresent()) {
+    private void updateSection(Station upStation, Station downStation, int distance) {
+        for (Section section : sections) {
+            UpdateSectionType updateSectionType = UpdateSectionType.valueOf(section, upStation, downStation);
+            if (updateSectionType != UpdateSectionType.NONE) {
+                updateSectionType.updateSection(section, upStation, downStation, distance);
                 break;
             }
-            downStation = nextLineStation.get().getUpStation();
+        }
+    }
+
+    private void checkLineStationAddable(List<Station> stations,
+                                         boolean isUpStationExisted,
+                                         boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new AddLineException("이미 등록된 구간 입니다.");
         }
 
-        return downStation;
+        if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
+            throw new AddLineException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void checkSectionSizeOneOrZero() {
+        if (sections.size() <= 1) {
+            throw new RemoveLineException("Cannot delete a single section");
+        }
+    }
+
+    private Station findUpStation() {
+        List<Station> downStations = sections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
+
+        return findSection(section -> !downStations.contains(section.getUpStation()))
+                .map(Section::getUpStation)
+                .orElseThrow(IllegalStateException::new);
     }
 
     private Optional<Section> findSection(Predicate<Section> sectionPredicate) {

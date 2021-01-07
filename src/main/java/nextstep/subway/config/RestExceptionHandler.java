@@ -8,7 +8,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class RestExceptionHandler {
 
-    @ExceptionHandler({DataIntegrityViolationException.class, IllegalArgumentException.class})
+    @ExceptionHandler({
+            DataIntegrityViolationException.class,
+            IllegalArgumentException.class,
+            IllegalStateException.class
+    })
     public ResponseEntity<?> handleBadRequestException(RuntimeException e) {
         return ResponseEntity.badRequest().build();
     }

@@ -57,6 +57,14 @@ public class Section {
         this.distance -= newDistance;
     }
 
+    public boolean matchUpStation(Station station) {
+        return upStation == station;
+    }
+
+    public boolean matchDownStation(Station station) {
+        return downStation == station;
+    }
+
     private void checkDistance(int newDistance) {
         if (this.distance <= newDistance) {
             throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
