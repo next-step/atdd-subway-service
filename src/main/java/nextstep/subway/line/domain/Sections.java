@@ -10,13 +10,43 @@ import java.util.*;
 @Embeddable
 public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections;
+    private List<Section> sections = new ArrayList<>();
+
+    public Sections(){}
 
     public Sections(List<Section> sections) {
         this.sections = sections;
     }
 
     public boolean add(Section section) {
+        Stations stations = new Stations(getStations());
+        if (stations.isEmpty()) {
+            return sections.add(section);
+        }
+
+        boolean isUpStationExisted = stations.contains(section.getUpStation());
+        boolean isDownStationExisted = stations.contains(section.getDownStation());
+
+        if (!isUpStationExisted && !isDownStationExisted) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (isUpStationExisted) {
+            sections.stream()
+                    .filter(it -> it.getUpStation() == section.getUpStation())
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+            return sections.add(section);
+        }
+
+        sections.stream()
+                .filter(it -> it.getDownStation() == section.getDownStation())
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
         return sections.add(section);
     }
 
