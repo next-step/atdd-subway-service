@@ -8,6 +8,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Path {
 
@@ -44,7 +45,7 @@ public class Path {
 	}
 
 	private void validateCalculate(Station source, Station target) {
-		if (source.equals(target)) {
+		if (Objects.equals(source, target)) {
 			throw new PathCalculateException("출발지와 도착지가 같습니다.");
 		}
 	}
