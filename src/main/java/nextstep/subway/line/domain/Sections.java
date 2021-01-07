@@ -7,10 +7,7 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -31,18 +28,10 @@ public class Sections {
     }
 
     public Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
+        Section firstSection = getFirstSection();
+        Station downStation = firstSection.getUpStation();
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = getSectionByDownStation(finalDownStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
+        return findUpStation(downStation);
     }
 
     public List<Station> getStations() {
@@ -50,21 +39,7 @@ public class Sections {
             return Collections.emptyList();
         }
 
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = getSectionByUpStation(finalDownStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
-
-        return stations;
+        return getStations(findUpStation());
     }
 
     public void addLineStation(Line line, Station upStation, Station downStation, int distance) {
@@ -175,5 +150,40 @@ public class Sections {
         if (sections.size() <= MINIMUM_STATION_COUNT) {
             throw new CannotRemoveSectionException("마지막 구간을 제거할 수 없습니다.");
         }
+    }
+
+    private Section getFirstSection() {
+        if (sections.isEmpty())
+            throw new NoSuchElementException();
+
+        return sections.get(0);
+    }
+
+    private Station findUpStation(Station downStation) {
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = getSectionByDownStation(finalDownStation);
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getUpStation();
+        }
+        return downStation;
+    }
+
+    private List<Station> getStations(Station downStation) {
+        List<Station> stations = new ArrayList<>();
+        stations.add(downStation);
+
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = getSectionByUpStation(finalDownStation);
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getDownStation();
+            stations.add(downStation);
+        }
+        return stations;
     }
 }
