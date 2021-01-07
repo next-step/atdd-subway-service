@@ -4,6 +4,7 @@ import lombok.NoArgsConstructor;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathStation;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,10 +14,16 @@ public class PathResponse {
 
     private List<StationResponse> stations;
     private int distance;
+    private BigDecimal fee;
 
     public PathResponse(final List<StationResponse> stations, final int distance) {
+        this(stations, distance, null);
+    }
+
+    public PathResponse(final List<StationResponse> stations, final int distance, final BigDecimal fee) {
         this.stations = stations;
         this.distance = distance;
+        this.fee = fee;
     }
 
     public static PathResponse of(final Path path) {
@@ -29,6 +36,10 @@ public class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public BigDecimal getFee() {
+        return fee;
     }
 
     @NoArgsConstructor

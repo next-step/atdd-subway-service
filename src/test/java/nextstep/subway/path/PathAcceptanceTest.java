@@ -4,10 +4,12 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -17,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,6 +63,34 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+    }
+
+    @DisplayName("로그인 시 경로 조회 시 최단거리와 함께 기준 지하철 이용 요금이 응답됨.")
+    @Test
+    void findShortestPathWithFee() {
+        // given
+        String email = "yohan@test.com";
+        String password = "password";
+        MemberAcceptanceTest.회원_등록되어_있음(email, password, 29);
+        String token = AuthAcceptanceTest.회원_로그인되어_있음(email, password);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(강남역.getId(), 남부터미널역.getId(), token);
+
+        // then
+        지하철_최단경로_응답됨(response, 강남역.getId(), 양재역.getId(), 남부터미널역.getId());
+        지하철_이용요금_응답됨(response);
+    }
+
+    @DisplayName("비로그인 시 경로 조회 시 최단거리 기준 지하철 이용 요금이 응답되지 않음.")
+    @Test
+    void findShortestPathWithoutFee() {
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(강남역.getId(), 남부터미널역.getId());
+
+        // then
+        지하철_최단경로_응답됨(response, 강남역.getId(), 양재역.getId(), 남부터미널역.getId());
+        지하철_이용요금_응답되지않음(response);
     }
 
     @DisplayName("지하철 구간의 최단 경로를 찾는다.")
@@ -130,6 +161,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return response;
     }
 
+    private ExtractableResponse<Response> 지하철_경로_조회_요청(final Long source, final Long target, final String token) {
+        String path = String.format("/paths?source=%d&target=%d", source, target);
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all().auth().oauth2(token)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get(path)
+                .then()
+                .log().all()
+                .extract();
+        return response;
+    }
+
     private void 지하철_최단경로_응답됨(final ExtractableResponse<Response> response, final Long... expectedStationIds) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         List<Long> actualStationIds = response.jsonPath()
@@ -141,5 +186,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 지하철_최단경로_응답_실패됨(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private void 지하철_이용요금_응답됨(final ExtractableResponse<Response> response) {
+        Integer fee = response.jsonPath().get("fee");
+        assertThat(fee).isNotNull();
+    }
+
+    private void 지하철_이용요금_응답되지않음(final ExtractableResponse<Response> response) {
+        Long fee = response.jsonPath().get("fee");
+        assertThat(fee).isNull();
     }
 }
