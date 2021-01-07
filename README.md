@@ -78,6 +78,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ### 요구사항
 - [X] 토큰 발급 기능 (로그인) 인수 테스트 만들기
 - [X] 인증 - 내 정보 조회 기능 완성하기
-- [ ] 인증 - 즐겨 찾기 기능 완성하기
+- [X] 인증 - 즐겨 찾기 기능 완성하기
     - [X] 인수 테스트 작성
-    - [ ] 기능 구현
+    - [X] 기능 구현
