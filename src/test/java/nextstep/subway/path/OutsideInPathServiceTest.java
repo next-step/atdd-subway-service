@@ -4,6 +4,7 @@ import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.application.PathCalculateException;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
@@ -24,6 +25,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -123,5 +126,17 @@ class OutsideInPathServiceTest {
 		assertThat(pathResponse.getStations())
 				.map(StationResponse::getName)
 				.containsExactly("강남역", "교대역", "남부터미널역");
+	}
+
+	@Test
+	void calculatePath_NotExistStation() {
+		// given
+		given(stations.findById(anyLong())).willReturn(Optional.empty());
+
+		// when
+		PathRequest pathRequest = new PathRequest(1L, 2L);
+		assertThatThrownBy(() -> pathService.calculatePath(pathRequest))
+				.isInstanceOf(PathCalculateException.class)
+				.hasMessageContaining("존재하지 않는");
 	}
 }
