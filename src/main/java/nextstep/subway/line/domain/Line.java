@@ -3,6 +3,8 @@ package nextstep.subway.line.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.application.AddLineException;
+import nextstep.subway.line.application.RemoveLineException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -54,11 +56,11 @@ public class Line extends BaseEntity {
         boolean isDownStationExisted = stations.contains(downStation);
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new AddLineException("이미 등록된 구간 입니다.");
         }
 
         if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new AddLineException("등록할 수 없는 구간 입니다.");
         }
 
         if (isUpStationExisted || isDownStationExisted) {
@@ -98,7 +100,7 @@ public class Line extends BaseEntity {
 
     public void removeLineStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new RemoveLineException("Cannot delete a single section");
         }
 
         Optional<Section> upLineStation = findSection(section -> section.getUpStation() == station);
