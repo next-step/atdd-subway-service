@@ -80,11 +80,11 @@ public class Sections {
     public void removeLineStation(Line line, Station station) {
         verifyCannotRemove();
 
-        Optional<Section> upLineStation = getSectionByUpStation(station);
-        Optional<Section> downLineStation = getSectionByDownStation(station);
+        Optional<Section> upLineSection = getSectionByUpStation(station);
+        Optional<Section> downLineSection = getSectionByDownStation(station);
 
-        replaceSectionByRemove(line, upLineStation, downLineStation);
-        removeSection(upLineStation, downLineStation);
+        replaceSectionByRemove(line, upLineSection, downLineSection);
+        removeSection(upLineSection, downLineSection);
     }
 
     private Optional<Section> getSectionByUpStation(Station station) {
@@ -131,18 +131,20 @@ public class Sections {
                 .ifPresent(sectionConsumer);
     }
 
-    private void replaceSectionByRemove(Line line, Optional<Section> upLineStation, Optional<Section> downLineStation) {
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            addSection(line, newUpStation, newDownStation, newDistance);
+    private void replaceSectionByRemove(Line line,
+                                        Optional<Section> upLineOptSection, Optional<Section> downLineOptSection) {
+        if (upLineOptSection.isPresent() && downLineOptSection.isPresent()) {
+            Section downLineSection = downLineOptSection.get();
+            Section upLineSection = upLineOptSection.get();
+
+            addSection(line, downLineSection.getUpStation(), upLineSection.getDownStation(),
+                    upLineSection.getDistance() + downLineSection.getDistance());
         }
     }
 
-    private void removeSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
-        upLineStation.ifPresent(it -> getSections().remove(it));
-        downLineStation.ifPresent(it -> getSections().remove(it));
+    private void removeSection(Optional<Section> upLineSection, Optional<Section> downLineSection) {
+        upLineSection.ifPresent(it -> getSections().remove(it));
+        downLineSection.ifPresent(it -> getSections().remove(it));
     }
 
     private void verifyAddLineStation(Station upStation, Station downStation, List<Station> stations) {
