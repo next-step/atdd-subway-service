@@ -57,7 +57,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(jwtTokenProvider.validateToken(accessToken)).isTrue();
 
         // when
-        ExtractableResponse<Response> myInfoResponse = 내정보_조회(accessToken);
+        ExtractableResponse<Response> myInfoResponse = 내정보_조회_요청(accessToken);
         MemberResponse memberResponse = myInfoResponse.as(MemberResponse.class);
 
         //then
@@ -83,7 +83,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         String failedToken = "failed token";
 
         // when
-        ExtractableResponse<Response> myInfoResponse = 내정보_조회(failedToken);
+        ExtractableResponse<Response> myInfoResponse = 내정보_조회_요청(failedToken);
 
         //then
         내정보_조회_실패됨(myInfoResponse);
@@ -118,7 +118,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public void 회원_로그인_됨(ExtractableResponse<Response> response) {
+    public static void 회원_로그인_됨(ExtractableResponse<Response> response) {
         assertThat(HttpStatus.OK.value()).isEqualTo(response.statusCode());
 
         TokenResponse tokenResponse = response.as(TokenResponse.class);
@@ -127,11 +127,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(accessToken).isNotBlank();
     }
 
-    public void 회원_로그인_실패됨(ExtractableResponse<Response> response) {
+    public static void 회원_로그인_실패됨(ExtractableResponse<Response> response) {
         assertThat(HttpStatus.UNAUTHORIZED.value()).isEqualTo(response.statusCode());
     }
 
-    public ExtractableResponse<Response> 내정보_조회(String accessToken) {
+    public static ExtractableResponse<Response> 내정보_조회_요청(String accessToken) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
@@ -141,11 +141,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public void 내정보_조회됨(ExtractableResponse<Response> response) {
+    public static void 내정보_조회됨(ExtractableResponse<Response> response) {
         assertThat(HttpStatus.OK.value()).isEqualTo(response.statusCode());
     }
 
-    public void 내정보_조회_실패됨(ExtractableResponse<Response> response) {
+    public static void 내정보_조회_실패됨(ExtractableResponse<Response> response) {
         assertThat(HttpStatus.UNAUTHORIZED.value()).isEqualTo(response.statusCode());
     }
 }
