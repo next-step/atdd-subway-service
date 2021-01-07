@@ -31,6 +31,24 @@ public class JgraphTest {
     }
 
     @Test
+    public void getDijkstraShortestPathNotConnected() {
+        String source = "v3";
+        String target = "v1";
+        WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        graph.addVertex("v1");
+        graph.addVertex("v2");
+        graph.addVertex("v3");
+        graph.addVertex("v4");
+        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
+        graph.setEdgeWeight(graph.addEdge("v4", "v3"), 2);
+
+        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        GraphPath shortestPath = dijkstraShortestPath.getPath(source, target);
+
+        assertThat(shortestPath).isNull();
+    }
+
+    @Test
     public void getKShortestPaths() {
         String source = "v3";
         String target = "v1";

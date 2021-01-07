@@ -55,10 +55,10 @@ public class PathServiceTest {
 
 	@BeforeEach
 	public void setUp() {
-		강남역 = new Station("강남역");
-		양재역 = new Station("양재역");
-		교대역 = new Station("교대역");
-		남부터미널역 = new Station("남부터미널역");
+		강남역 = new Station(1L, "강남역");
+		양재역 = new Station(2L, "양재역");
+		교대역 = new Station(3L, "교대역");
+		남부터미널역 = new Station(4L, "남부터미널역");
 
 		신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
 		이호선 = new Line("이호선", "bg-red-600", 교대역, 강남역, 10);
@@ -84,5 +84,40 @@ public class PathServiceTest {
 			PathStationResponse.of(남부터미널역),
 			PathStationResponse.of(양재역));
 		assertThat(response.getDistance()).isEqualTo(5L);
+	}
+
+	@Test
+	@DisplayName("출발역과 도착역이 같은 경우 IllegalArgumentException을 throw 해야한다.")
+	void sameSourceAndTarget() {
+		//when/then
+		assertThatThrownBy(() -> pathService.findShortestPath(new PathRequest(1L, 1L)))
+			.isInstanceOf(IllegalArgumentException.class);
+	}
+
+	@Test
+	@DisplayName("존재하지 않은 출발역을 조회 할 경우 IllegalArgumentException을 throw 해야한다.")
+	void notExistSource() {
+		//given
+		Long 없는_출발역ID = 100L;
+		when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
+		when(stationRepository.findById(없는_출발역ID)).thenReturn(Optional.empty());
+
+		//when/then
+		assertThatThrownBy(() -> pathService.findShortestPath(new PathRequest(없는_출발역ID, 양재역.getId())))
+			.isInstanceOf(IllegalArgumentException.class);
+	}
+
+	@Test
+	@DisplayName("존재하지 않은 도착역을 조회 할 경우 IllegalArgumentException을 throw 해야한다.")
+	void notExistTarget() {
+		//given
+		Long 없는_도착역ID = 100L;
+		when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
+		when(stationRepository.findById(교대역.getId())).thenReturn(Optional.of(교대역));
+		when(stationRepository.findById(없는_도착역ID)).thenReturn(Optional.empty());
+
+		//when/then
+		assertThatThrownBy(() -> pathService.findShortestPath(new PathRequest(교대역.getId(), 없는_도착역ID)))
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 }

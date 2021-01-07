@@ -17,6 +17,10 @@ public class PathFinder {
 		DijkstraShortestPath dijkstraShortestPath = this.findDijkstraShortestPath(lines);
 		GraphPath path = dijkstraShortestPath.getPath(sourceStation, targetStation);
 
+		if (path == null) {
+			throw new IllegalArgumentException("출발역과 도착역이 연결되어있지 않은 경우, 최단 경로를 조회할 수 없습니다.");
+		}
+
 		return new ShortestPath(path.getVertexList(), Math.round(path.getWeight()));
 	}
 

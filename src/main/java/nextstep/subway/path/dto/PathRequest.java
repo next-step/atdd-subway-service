@@ -12,6 +12,10 @@ public class PathRequest {
 		this.target = target;
 	}
 
+	public boolean isSourceEqualToTarget() {
+		return this.source.equals(this.target);
+	}
+
 	public Long getSource() {
 		return this.source;
 	}

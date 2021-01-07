@@ -59,4 +59,17 @@ public class PathFinderTest {
 		assertThat(path.getStations()).containsExactly(잠실역, 강남역, 양재역, 남부터미널역);
 		assertThat(path.getDistance()).isEqualTo(17);
 	}
+
+	@Test
+	@DisplayName("출발역과 도착역이 연결되지 않은 경우 IllegalArgumentException을 throw 해야한다.")
+	void notConnectedSourceAndTarget() {
+		//given
+		Station 연결안된_역1 = new Station(100L, "연결안된_역1");
+		Station 연결안된_역2 = new Station(200L, "연결안된_역2");
+		Line 신규노선 = new Line("연결안된노선", "rainbow", 연결안된_역1, 연결안된_역2, 10);
+
+		//when/then
+		assertThatThrownBy(() -> pathFinder.findShortestPath(new TotalLines(Arrays.asList(신분당선, 이호선, 삼호선, 신규노선)), 교대역, 연결안된_역1))
+			.isInstanceOf(IllegalArgumentException.class);
+	}
 }
