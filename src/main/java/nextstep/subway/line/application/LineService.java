@@ -5,12 +5,15 @@ import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.LineSection;
+import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,10 +23,20 @@ public class LineService {
 
 	private LineRepository lineRepository;
 	private StationService stationService;
+	private SectionRepository sectionRepository;
 
-	public LineService(LineRepository lineRepository, StationService stationService) {
+	public LineService(LineRepository lineRepository,
+		  StationService stationService) {
+		this(lineRepository, stationService, null);
+	}
+
+	@Autowired
+	public LineService(LineRepository lineRepository,
+		  StationService stationService,
+		  SectionRepository sectionRepository) {
 		this.lineRepository = lineRepository;
 		this.stationService = stationService;
+		this.sectionRepository = sectionRepository;
 	}
 
 	public LineResponse saveLine(LineRequest request) {
@@ -87,5 +100,9 @@ public class LineService {
 
 		LineSection lineSection = new LineSection(line);
 		lineSection.removeStation(station);
+	}
+
+	public List<Section> findAllSections() {
+		return sectionRepository.findAll();
 	}
 }
