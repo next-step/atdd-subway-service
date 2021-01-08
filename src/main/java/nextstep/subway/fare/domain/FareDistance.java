@@ -10,11 +10,11 @@ public class FareDistance extends OverCharge {
 
         private static final int BASIC_FARE = 1250;
         private final int distance;
-        private final int per;
+        private final int eachDistance;
 
-        Policy(int distance, int per) {
+        Policy(int distance, int eachDistance) {
             this.distance = distance;
-            this.per = per;
+            this.eachDistance = eachDistance;
         }
 
         public int getDistance() {
@@ -31,7 +31,7 @@ public class FareDistance extends OverCharge {
         }
 
         private static int overFare(int distance, Policy fareDistance) {
-            return (int) ((Math.ceil((distance - 1) / fareDistance.per) + 1) * 100);
+            return (int) ((Math.ceil((distance - 1) / fareDistance.eachDistance) + 1) * 100);
         }
 
     }

@@ -1,16 +1,16 @@
 package nextstep.subway.path.service;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.domain.Fare;
-import nextstep.subway.fare.domain.FareAge;
-import nextstep.subway.fare.domain.FareDistance;
 import nextstep.subway.fare.domain.FareLine;
-import nextstep.subway.fare.domain.OverCharge;
-import nextstep.subway.fare.domain.OverCharges;
 import nextstep.subway.fare.dto.FareRequest;
+import nextstep.subway.fare.dto.PathWithFareResponse;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.SectionRepository;
+import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -44,12 +44,16 @@ public class PathIntegrationTest {
     @Autowired
     SectionRepository sectionRepository;
 
+    @Autowired
+    MemberRepository memberRepository;
+
     private Station 교대역;
     private Station 양재역;
     private Station 사당역;
     private Station 양재시민의숲;
     private Lines lineGroup;
     private Line 신분당선;
+    private Member adult;
 
     @BeforeEach
     void setUp() {
@@ -72,6 +76,7 @@ public class PathIntegrationTest {
         List<Line> lines = Arrays.asList(신분당선, 삼호선, 이호선, 사호선);
         lineRepository.saveAll(lines);
         lineGroup = new Lines(lines);
+        adult = memberRepository.save(new Member("adult", "adult@adult", 19));
     }
 
     @AfterEach
@@ -79,12 +84,13 @@ public class PathIntegrationTest {
         sectionRepository.deleteAllInBatch();
         lineRepository.deleteAllInBatch();
         stationRepository.deleteAllInBatch();
+        memberRepository.deleteAllInBatch();
     }
 
     @DisplayName("지하철 경로를 조회하고 순서, 거리가 일치하는지 확인한다.")
     @Test
     void findPath() {
-        PathResponse pathResponse = pathService.findPath(교대역.getId(), 양재역.getId());
+        PathWithFareResponse pathResponse = findPath(adult, 교대역, 양재역);
 
         assertThat(pathResponse.getDistance()).isEqualTo(11);
         assertThat(pathResponse.getStations())
@@ -96,8 +102,8 @@ public class PathIntegrationTest {
     @Test
     void findPathExchangeLine() {
         // given
-        PathResponse pathResponse = pathService.findPath(교대역.getId(), 양재시민의숲.getId());
-        PathResponse pathResponseReverse = pathService.findPath(양재시민의숲.getId(), 교대역.getId());
+        PathWithFareResponse pathResponse = findPath(adult, 교대역, 양재시민의숲);
+        PathWithFareResponse pathResponseReverse = findPath(adult, 양재시민의숲, 교대역);
 
         // when then
         FareLine fareLine = new FareLine(lineGroup.getLines());
@@ -110,19 +116,20 @@ public class PathIntegrationTest {
     @Test
     void findPathOverCharge() {
         // given
-        PathResponse pathResponse = pathService.findPath(교대역.getId(), 양재시민의숲.getId());
+        Member children = memberRepository.save(new Member("children", "children@children", 7));
+        Member teenager = memberRepository.save(new Member("teenager", "teenager@teenager", 14));
+
 
         // when
-        Fare 성인_요금 = new Fare(new FareRequest(pathResponse.getStations(), lineGroup.getLines(), pathResponse.getDistance(), 19));
-        Fare 청소년_요금 = new Fare(new FareRequest(pathResponse.getStations(), lineGroup.getLines(), pathResponse.getDistance(), 14));
-        Fare 어린이_요금 = new Fare(new FareRequest(pathResponse.getStations(), lineGroup.getLines(), pathResponse.getDistance(), 7));
-        Fare 나이정보_없는_요금 = new Fare(new FareRequest(pathResponse.getStations(), lineGroup.getLines(), pathResponse.getDistance()));
-
         // then
-        assertThat(성인_요금.getTotalFare()).isEqualTo(3650);
-        assertThat(나이정보_없는_요금.getTotalFare()).isEqualTo(3650);
-        assertThat(청소년_요금.getTotalFare()).isEqualTo(2640);
-        assertThat(어린이_요금.getTotalFare()).isEqualTo(1650);
+        assertThat(findPath(adult, 교대역, 양재시민의숲).getFare()).isEqualTo(3650);
+        assertThat(findPath(new Member(), 교대역, 양재시민의숲).getFare()).isEqualTo(3650);
+        assertThat(findPath(teenager, 교대역, 양재시민의숲).getFare()).isEqualTo(2640);
+        assertThat(findPath(children, 교대역, 양재시민의숲).getFare()).isEqualTo(1650);
+    }
+
+    private PathWithFareResponse findPath(Member member, Station source, Station target) {
+        return pathService.findPath(new LoginMember(member.getId(), member.getEmail(), member.getAge()), source.getId(), target.getId());
     }
 
     @DisplayName("경로 조회시 존재하지 않은 출발역이나 도착역을 조회 할 경우")
@@ -132,7 +139,7 @@ public class PathIntegrationTest {
         Station 서울역 = stationRepository.save(new Station("서울역"));
 
         // when then
-        assertThatThrownBy(() -> pathService.findPath(교대역.getId(), 서울역.getId()))
+        assertThatThrownBy(() -> findPath(adult, 교대역, 서울역))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("존재하지 않은 출발역이나 도착역입니다.");
     }
@@ -141,7 +148,7 @@ public class PathIntegrationTest {
     @Test
     void findPathWhenEqualStation() {
         // when then
-        assertThatThrownBy(() -> pathService.findPath(교대역.getId(), 교대역.getId()))
+        assertThatThrownBy(() -> findPath(adult, 교대역, 교대역))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("출발역과 도착역이 같습니다.");
     }
@@ -150,7 +157,7 @@ public class PathIntegrationTest {
     @Test
     void findPathWhenNotConnectedStation() {
         // when then
-        assertThatThrownBy(() -> pathService.findPath(사당역.getId(), 교대역.getId()))
+        assertThatThrownBy(() -> findPath(adult, 사당역, 교대역))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("출발역과 도착역이 연결 되어 있지 않습니다.");
     }

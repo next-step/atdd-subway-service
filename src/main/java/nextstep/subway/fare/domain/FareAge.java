@@ -9,6 +9,7 @@ public class FareAge {
         TEENAGER(13, 350, 0.2),
         ADULT(19, 0, 0);
 
+        private static final int ZERO_AMOUNT = 0;
         private final int age;
         private final int basicAmount;
         private final double discount;
@@ -29,7 +30,7 @@ public class FareAge {
                     .filter(agePolicy -> agePolicy.age <= age)
                     .findFirst()
                     .map(fareDistance -> discountAmount(fare, fareDistance))
-                    .orElse(0);
+                    .orElse(ZERO_AMOUNT);
         }
 
         private static int discountAmount(int fare, Policy policy) {

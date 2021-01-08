@@ -26,14 +26,6 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(Long departureStationId, Long arrivalStationId) {
-        checkEqualsDepartureArrival(departureStationId, arrivalStationId);
-        Lines lines = findAllLine();
-        Station departureStation = lines.searchStationById(departureStationId);
-        Station arrivalStation = lines.searchStationById(arrivalStationId);
-        return getPathResponse(lines, departureStation, arrivalStation);
-    }
-
     public PathWithFareResponse findPath(LoginMember member, Long departureStationId, Long arrivalStationId) {
         checkEqualsDepartureArrival(departureStationId, arrivalStationId);
         Lines lines = findAllLine();
