@@ -28,7 +28,7 @@ public class LineService {
         Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
 
-        Stations stations = new Stations(new Sections(persistLine.getSections()).getStations());
+        Stations stations = new Stations(persistLine.getSections().getStations());
         return LineResponse.of(persistLine, stations.toResponses());
     }
 
@@ -36,7 +36,7 @@ public class LineService {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
                 .map(line -> {
-                    Stations stations = new Stations(new Sections(line.getSections()).getStations());
+                    Stations stations = new Stations(line.getSections().getStations());
                     return LineResponse.of(line, stations.toResponses());
                 })
                 .collect(Collectors.toList());
@@ -48,7 +48,7 @@ public class LineService {
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        Stations stations = new Stations(new Sections(persistLine.getSections()).getStations());
+        Stations stations = new Stations(persistLine.getSections().getStations());
         return LineResponse.of(persistLine, stations.toResponses());
     }
 
@@ -65,14 +65,14 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        Sections sections = new Sections(line.getSections());
+        Sections sections = line.getSections();
         sections.add(new Section(line, upStation, downStation, request.getDistance()));
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
-        Sections sections = new Sections(line.getSections());
+        Sections sections = line.getSections();
         sections.removeStation(station);
     }
 }
