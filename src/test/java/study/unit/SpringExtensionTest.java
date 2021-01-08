@@ -6,6 +6,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.application.StationService;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,15 @@ public class SpringExtensionTest {
     @Test
     void findAllLines() {
         // given
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
+        Line line = Line.builder()
+                .name("팔호선")
+                .color("pink")
+                .upStation(new Station("천호역"))
+                .downStation(new Station("산성역"))
+                .distance(30)
+                .build();
+
+        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(line));
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when

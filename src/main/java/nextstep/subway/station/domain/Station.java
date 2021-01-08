@@ -1,10 +1,13 @@
 package nextstep.subway.station.domain;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import nextstep.subway.BaseEntity;
 
 import javax.persistence.*;
 import java.util.Objects;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Station extends BaseEntity {
     @Id
@@ -12,9 +15,6 @@ public class Station extends BaseEntity {
     private Long id;
     @Column(unique = true)
     private String name;
-
-    public Station() {
-    }
 
     public Station(String name) {
         this.name = name;
