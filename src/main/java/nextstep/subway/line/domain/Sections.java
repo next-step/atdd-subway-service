@@ -34,6 +34,9 @@ public class Sections {
 
         return downStation;
     }
+    public List<Section> getSections() {
+        return sections;
+    }
 
     public List<Station> getStations() {
         List<Station> stations = new ArrayList<>();
