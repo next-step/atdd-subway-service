@@ -98,7 +98,6 @@ public class Sections {
         if (sections.size() <= 1) {
             throw new RuntimeException();
         }
-        Line line = sections.get(0).getLine();
         Optional<Section> downLineStation = sections.stream()
                 .filter(it -> it.equalsUpstation(station))
                 .findFirst();
@@ -110,11 +109,14 @@ public class Sections {
         downLineStation.ifPresent(this::remove);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Section upSection = upLineStation.get();
-            Section downSection = downLineStation.get();
-
-            int newDistance = upSection.getDistance() + downSection.getDistance();
-            add(new Section(line, upSection.getUpStation(), downSection.getDownStation(), newDistance));
+            mergeSection(upLineStation.get(), downLineStation.get());
         }
+    }
+
+    private void mergeSection(Section upSection, Section downSection) {
+        Line line = sections.get(0).getLine();
+
+        int newDistance = upSection.getDistance() + downSection.getDistance();
+        add(new Section(line, upSection.getUpStation(), downSection.getDownStation(), newDistance));
     }
 }
