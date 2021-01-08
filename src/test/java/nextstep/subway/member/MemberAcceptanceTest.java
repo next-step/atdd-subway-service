@@ -65,7 +65,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> 회원_정보_수정_요청_응답 = 회원_정보_수정_요청(생성_요청_응답, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
         assertThat(회원_정보_수정_요청_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        final ExtractableResponse<Response> 개인정보_수정_후_조회_응답 = 토큰으로_개인정보_조회(액세스_토큰);
+        final ExtractableResponse<Response> 로그인_재요청_응답 = 로그인_요청(NEW_EMAIL, NEW_PASSWORD);
+        final String 재발급된_액세스_토큰 = 로그인_재요청_응답.as(TokenResponse.class).getAccessToken();
+
+        final ExtractableResponse<Response> 개인정보_수정_후_조회_응답 = 토큰으로_개인정보_조회(재발급된_액세스_토큰);
         final MemberResponse 수정_후_조회된_내정보 = 개인정보_수정_후_조회_응답.as(MemberResponse.class);
 
         assertThat(회원_정보_수정_요청_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -74,6 +77,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         final ExtractableResponse<Response> 회원_삭제_요청_응답 = 회원_삭제_요청(생성_요청_응답);
         assertThat(회원_삭제_요청_응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+
+        final ExtractableResponse<Response> 삭제_후_개인정보_조회 = 토큰으로_개인정보_조회(액세스_토큰);
+        assertThat(삭제_후_개인정보_조회.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     public static ExtractableResponse<Response> 토큰으로_개인정보_조회(final String 토큰) {
@@ -89,23 +95,23 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().post("/members")
-                .then().log().all()
-                .extract();
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(memberRequest)
+            .when().post("/members")
+            .then().log().all()
+            .extract();
     }
 
     public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
 
         return RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(uri)
-                .then().log().all()
-                .extract();
+            .given().log().all()
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get(uri)
+            .then().log().all()
+            .extract();
     }
 
     public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
@@ -113,21 +119,21 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().put(uri)
-                .then().log().all()
-                .extract();
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(memberRequest)
+            .when().put(uri)
+            .then().log().all()
+            .extract();
     }
 
     public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
         return RestAssured
-                .given().log().all()
-                .when().delete(uri)
-                .then().log().all()
-                .extract();
+            .given().log().all()
+            .when().delete(uri)
+            .then().log().all()
+            .extract();
     }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
