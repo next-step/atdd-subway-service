@@ -72,7 +72,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    private static ExtractableResponse<Response> 로그인_요청(final String email, final String password) {
+    public static ExtractableResponse<Response> 로그인_요청(final String email, final String password) {
         final Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);

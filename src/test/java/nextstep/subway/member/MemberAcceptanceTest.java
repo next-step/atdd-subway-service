@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -48,7 +50,30 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        final ExtractableResponse<Response> 생성_요청_응답 = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(생성_요청_응답);
 
+        final ExtractableResponse<Response> 로그인_요청_응답 = 로그인_요청(EMAIL, PASSWORD);
+        final String 액세스_토큰 = 로그인_요청_응답.as(TokenResponse.class).getAccessToken();
+
+        final ExtractableResponse<Response> 개인정보_조회_응답 = 토큰으로_개인정보_조회(액세스_토큰);
+        final MemberResponse 조회된_내정보 = 개인정보_조회_응답.as(MemberResponse.class);
+
+        assertThat(조회된_내정보.getEmail()).isEqualTo(EMAIL);
+        assertThat(조회된_내정보.getAge()).isEqualTo(AGE);
+
+        final ExtractableResponse<Response> 회원_정보_수정_요청_응답 = 회원_정보_수정_요청(생성_요청_응답, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        assertThat(회원_정보_수정_요청_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        final ExtractableResponse<Response> 개인정보_수정_후_조회_응답 = 토큰으로_개인정보_조회(액세스_토큰);
+        final MemberResponse 수정_후_조회된_내정보 = 개인정보_수정_후_조회_응답.as(MemberResponse.class);
+
+        assertThat(회원_정보_수정_요청_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(수정_후_조회된_내정보.getEmail()).isEqualTo(NEW_EMAIL);
+        assertThat(수정_후_조회된_내정보.getAge()).isEqualTo(NEW_AGE);
+
+        final ExtractableResponse<Response> 회원_삭제_요청_응답 = 회원_삭제_요청(생성_요청_응답);
+        assertThat(회원_삭제_요청_응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     public static ExtractableResponse<Response> 토큰으로_개인정보_조회(final String 토큰) {
