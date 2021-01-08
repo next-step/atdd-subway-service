@@ -1,10 +1,10 @@
 package nextstep.subway.auth.acceptance;
 
 import io.restassured.RestAssured;
-import io.restassured.http.Header;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.member.MemberAcceptanceSupport;
 import nextstep.subway.member.dto.MemberRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -42,18 +42,8 @@ public class AuthAcceptanceSupport {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 
-	public static ExtractableResponse<Response> 회원기능_요청(String token) {
-		return RestAssured
-				.given().log().all()
-				.header(createTokenHeader(token))
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.when().get("/members/me")
-				.then().log().all().
-						extract();
-	}
-
-	private static Header createTokenHeader(String token) {
-		return new Header("authorization", String.format("Bearer %s", token));
+	public static ExtractableResponse<Response> 회원기능_요청(String accessToken) {
+		return MemberAcceptanceSupport.내_정보_조회_요청(accessToken);
 	}
 
 	public static void 인증_실패함(ExtractableResponse<Response> response) {
