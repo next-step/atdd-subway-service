@@ -16,13 +16,17 @@ public class Distance {
     private int distance;
 
     public Distance(int distance) {
-        validateInitDistance(distance);
+        validateDistance(distance);
         this.distance = distance;
     }
 
-    private void validateInitDistance(int distance) {
-        if (distance < MIN_DISTANCE) {
-            throw new IllegalArgumentException("거리는 음수가 될 수 없습니다.");
+    private void validateDistance(int newDistance) {
+        if (newDistance <= MIN_DISTANCE) {
+            throw new IllegalArgumentException("거리는 0 또는 음수가 될 수 없습니다.");
+        }
+
+        if (this.distance <= newDistance) {
+            throw new IllegalArgumentException("구간을 등록할 경우 기존 역 사이 길이보다 크거나 같으면 등록을 할 수 없습니다.");
         }
     }
 
@@ -31,14 +35,7 @@ public class Distance {
     }
 
     public Distance minusDistance(Distance newDistance) {
-        validateDistance(newDistance.distance);
         return new Distance(this.distance -= newDistance.distance);
-    }
-
-    private void validateDistance(int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new IllegalArgumentException("구간을 등록할 경우 기존 역 사이 길이보다 크거나 같으면 등록을 할 수 없습니다.");
-        }
     }
 
     public int get() {
