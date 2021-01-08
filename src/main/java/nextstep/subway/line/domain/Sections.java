@@ -51,13 +51,11 @@ public class Sections {
     }
 
     public void add(Section section) {
-        List<Station> stations = getOrderedStations();
-
         if (this.sections.isEmpty()) {
             sections.add(section);
             return;
         }
-
+        List<Station> stations = getOrderedStations();
         Station upStation = section.getUpStation();
         Station downStation = section.getDownStation();
 
