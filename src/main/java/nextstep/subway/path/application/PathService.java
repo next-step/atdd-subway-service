@@ -16,21 +16,21 @@ import java.util.List;
 @Transactional
 public class PathService {
 
-	private final LineRepository lines;
-	private final StationRepository stations;
+	private final LineRepository lineRepository;
+	private final StationRepository stationRepository;
 
-	public PathService(LineRepository lines, StationRepository stations) {
-		this.lines = lines;
-		this.stations = stations;
+	public PathService(LineRepository lines, StationRepository stationRepository) {
+		this.lineRepository = lines;
+		this.stationRepository = stationRepository;
 	}
 
 	public PathResponse calculatePath(PathCalculateRequest pathCalculateRequest) {
-		Station source = stations.findById(pathCalculateRequest.getSourceStationId())
+		Station source = stationRepository.findById(pathCalculateRequest.getSourceStationId())
 				.orElseThrow(() -> new PathCalculateException("존재하지 않는 출발역입니다."));
-		Station target = stations.findById(pathCalculateRequest.getTargetStationId())
+		Station target = stationRepository.findById(pathCalculateRequest.getTargetStationId())
 				.orElseThrow(() -> new PathCalculateException("존재하지 않는 도착역입니다."));
 
-		List<Line> allLines = lines.findAll();
+		List<Line> allLines = lineRepository.findAll();
 		Path path = new Path(allLines);
 		return PathResponse.of(path.calculate(source, target));
 	}

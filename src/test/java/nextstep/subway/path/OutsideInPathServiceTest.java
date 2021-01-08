@@ -39,10 +39,10 @@ class OutsideInPathServiceTest {
 	private PathService pathService;
 
 	@Mock
-	private LineRepository lines;
+	private LineRepository lineRepository;
 
 	@Mock
-	private StationRepository stations;
+	private StationRepository stationRepository;
 
 	/**
 	 *              거리 5
@@ -75,11 +75,11 @@ class OutsideInPathServiceTest {
 		삼호선 = mockLine("삼호선", Arrays.asList(
 				mockSection(교대역, 남부터미널역, 3), mockSection(남부터미널역, 양재역, 2)));
 
-		given(lines.findAll()).willReturn(Arrays.asList(신분당선, 이호선, 삼호선));
-		given(stations.findById(강남역.getId())).willReturn(Optional.of(강남역));
-		given(stations.findById(양재역.getId())).willReturn(Optional.of(양재역));
-		given(stations.findById(남부터미널역.getId())).willReturn(Optional.of(남부터미널역));
-		given(stations.findById(교대역.getId())).willReturn(Optional.of(교대역));
+		given(lineRepository.findAll()).willReturn(Arrays.asList(신분당선, 이호선, 삼호선));
+		given(stationRepository.findById(강남역.getId())).willReturn(Optional.of(강남역));
+		given(stationRepository.findById(양재역.getId())).willReturn(Optional.of(양재역));
+		given(stationRepository.findById(남부터미널역.getId())).willReturn(Optional.of(남부터미널역));
+		given(stationRepository.findById(교대역.getId())).willReturn(Optional.of(교대역));
 	}
 
 	private Station mockStation(Long id, String name) {
@@ -131,7 +131,7 @@ class OutsideInPathServiceTest {
 	@Test
 	void calculatePath_NotExistStation() {
 		// given
-		given(stations.findById(anyLong())).willReturn(Optional.empty());
+		given(stationRepository.findById(anyLong())).willReturn(Optional.empty());
 
 		// when
 		PathRequest pathRequest = new PathRequest(1L, 2L);
