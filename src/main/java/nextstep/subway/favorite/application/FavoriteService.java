@@ -5,11 +5,16 @@ import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class FavoriteService {
@@ -31,5 +36,13 @@ public class FavoriteService {
         final Favorite savedFavorite = favoriteRepository.save(Favorite.of(member, source, target));
 
         return savedFavorite.getId();
+    }
+
+    public List<FavoriteResponse> findAllFavorites(final LoginMember loginMember) {
+        final Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(NotFoundException::new);
+
+        return member.getFavorites().stream()
+            .map(FavoriteResponse::new)
+            .collect(toList());
     }
 }

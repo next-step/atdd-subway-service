@@ -4,6 +4,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Embeddable
@@ -16,5 +17,9 @@ public class Favorites {
 
     public static Favorites createInstance() {
         return new Favorites();
+    }
+
+    public List<Favorite> getFavorites() {
+        return Collections.unmodifiableList(favorites);
     }
 }

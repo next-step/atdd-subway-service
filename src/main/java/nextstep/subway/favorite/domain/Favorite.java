@@ -41,7 +41,7 @@ public class Favorite extends BaseEntity {
             throw new IllegalArgumentException(ERR_TEXT_INVALID_MEMBER);
         }
 
-        if (source == null || target == null) {
+        if (source == null || target == null || source == target) {
             throw new IllegalArgumentException(ERR_TEXT_INVALID_STATIONS);
         }
 
@@ -50,5 +50,13 @@ public class Favorite extends BaseEntity {
 
     public Long getId() {
         return id;
+    }
+
+    public Station getSource() {
+        return source;
+    }
+
+    public Station getTarget() {
+        return target;
     }
 }

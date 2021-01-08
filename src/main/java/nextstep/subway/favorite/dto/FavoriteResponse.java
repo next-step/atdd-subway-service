@@ -3,6 +3,7 @@ package nextstep.subway.favorite.dto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.station.dto.StationResponse;
 
 @Getter
@@ -16,5 +17,11 @@ public class FavoriteResponse {
         this.id = id;
         this.source = source;
         this.target = target;
+    }
+
+    public FavoriteResponse(final Favorite favorite) {
+        this.id = favorite.getId();
+        this.source = StationResponse.of(favorite.getSource());
+        this.target = StationResponse.of(favorite.getTarget());
     }
 }
