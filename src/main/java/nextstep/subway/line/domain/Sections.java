@@ -36,23 +36,6 @@ public class Sections {
         return sections.add(section);
     }
 
-    private void updateUpStationInSections(Section section) {
-        updateStationInSections(it -> it.equalsUpStation(section.getUpStation()),
-                it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-    }
-
-    private void updateDownStationInSections(Section section) {
-        updateStationInSections(it -> it.equalsDownStation(section.getDownStation()),
-                it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
-    }
-
-    private void updateStationInSections(Predicate<Section> filter, Consumer<Section> updater) {
-        sections.stream()
-                .filter(filter)
-                .findFirst()
-                .ifPresent(updater);
-    }
-
     public boolean remove(Section section) {
         return sections.remove(section);
     }
@@ -79,22 +62,6 @@ public class Sections {
             stations.add(downStation);
         }
         return stations;
-    }
-
-    private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
     }
 
     public void removeStation(Station station) {
@@ -129,10 +96,43 @@ public class Sections {
         }
     }
 
+    private void updateUpStationInSections(Section section) {
+        updateStationInSections(it -> it.equalsUpStation(section.getUpStation()),
+                it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+    }
+
+    private void updateDownStationInSections(Section section) {
+        updateStationInSections(it -> it.equalsDownStation(section.getDownStation()),
+                it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+    }
+
+    private void updateStationInSections(Predicate<Section> filter, Consumer<Section> updater) {
+        sections.stream()
+                .filter(filter)
+                .findFirst()
+                .ifPresent(updater);
+    }
+
     private void mergeSection(Section upSection, Section downSection) {
         Line line = sections.get(0).getLine();
 
         int newDistance = upSection.getDistance() + downSection.getDistance();
         add(new Section(line, upSection.getUpStation(), downSection.getDownStation(), newDistance));
+    }
+
+    private Station findUpStation() {
+        Station downStation = sections.get(0).getUpStation();
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = sections.stream()
+                    .filter(it -> it.getDownStation() == finalDownStation)
+                    .findFirst();
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getUpStation();
+        }
+
+        return downStation;
     }
 }
