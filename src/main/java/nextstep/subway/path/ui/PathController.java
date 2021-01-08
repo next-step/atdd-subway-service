@@ -19,7 +19,7 @@ public class PathController {
     }
 
     @GetMapping(value = "/paths", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<PathWithFareResponse> findPath(@AuthenticationPrincipal LoginMember loginMember,
+    public ResponseEntity<PathWithFareResponse> findPath(@AuthenticationPrincipal(required = false) LoginMember loginMember,
                                                          @RequestParam Long source,
                                                          @RequestParam Long target) {
         return ResponseEntity.ok().body(pathService.findPath(loginMember, source, target));

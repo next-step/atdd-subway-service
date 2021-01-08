@@ -14,8 +14,8 @@ public class LoginMember {
         this.age = age;
     }
 
-    public boolean isValid() {
-        return id != null && email != null && age != null;
+    public boolean isEmpty() {
+        return id == null && email == null && age == null;
     }
 
     public Long getId() {
@@ -27,7 +27,7 @@ public class LoginMember {
     }
 
     public Integer getAge() {
-        if (!isValid()) {
+        if (isEmpty()) {
             return 0;
         }
         return age;
