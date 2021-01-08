@@ -1,6 +1,12 @@
 package nextstep.subway.path.service;
 
+import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.fare.domain.FareAge;
+import nextstep.subway.fare.domain.FareDistance;
 import nextstep.subway.fare.domain.FareLine;
+import nextstep.subway.fare.domain.OverCharge;
+import nextstep.subway.fare.domain.OverCharges;
+import nextstep.subway.fare.dto.FareRequest;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
@@ -56,9 +62,9 @@ public class PathIntegrationTest {
         사당역 = new Station("이수역");
         Station 이수역 = new Station("사당역");
 
-        신분당선 = new Line("신분당선", "orange", 강남역, 양재역, 5,2000);
+        신분당선 = new Line("신분당선", "orange", 강남역, 양재역, 10, 2000);
         신분당선.add(양재역, 양재시민의숲, 5);
-        Line 삼호선 = new Line("3호선", "orange", 교대역, 남부터미널, 1,1000);
+        Line 삼호선 = new Line("3호선", "orange", 교대역, 남부터미널, 10, 1000);
         삼호선.add(남부터미널, 양재역, 1);
         Line 이호선 = new Line("2호선", "orange", 교대역, 강남역, 5);
         Line 사호선 = new Line("사호선", "orange", 사당역, 이수역, 5);
@@ -98,6 +104,25 @@ public class PathIntegrationTest {
         assertThat(fareLine.getAmountFare(pathResponse.getStations())).isEqualTo(2000);
         assertThat(fareLine.getAmountFare(pathResponse.getStations()))
                 .isEqualTo(fareLine.getAmountFare(pathResponseReverse.getStations()));
+    }
+
+    @DisplayName("경로의 모든 추가 요금을 반환한다.")
+    @Test
+    void findPathOverCharge() {
+        // given
+        PathResponse pathResponse = pathService.findPath(교대역.getId(), 양재시민의숲.getId());
+
+        // when
+        Fare 성인_요금 = new Fare(new FareRequest(pathResponse.getStations(), lineGroup.getLines(), pathResponse.getDistance(), 19));
+        Fare 청소년_요금 = new Fare(new FareRequest(pathResponse.getStations(), lineGroup.getLines(), pathResponse.getDistance(), 14));
+        Fare 어린이_요금 = new Fare(new FareRequest(pathResponse.getStations(), lineGroup.getLines(), pathResponse.getDistance(), 7));
+        Fare 나이정보_없는_요금 = new Fare(new FareRequest(pathResponse.getStations(), lineGroup.getLines(), pathResponse.getDistance()));
+
+        // then
+        assertThat(성인_요금.getTotalFare()).isEqualTo(3650);
+        assertThat(나이정보_없는_요금.getTotalFare()).isEqualTo(3650);
+        assertThat(청소년_요금.getTotalFare()).isEqualTo(2640);
+        assertThat(어린이_요금.getTotalFare()).isEqualTo(1650);
     }
 
     @DisplayName("경로 조회시 존재하지 않은 출발역이나 도착역을 조회 할 경우")
