@@ -111,8 +111,8 @@ public class Sections {
     private void mergeSection(Section upSection, Section downSection) {
         Line line = sections.get(0).getLine();
 
-        int newDistance = upSection.getDistance() + downSection.getDistance();
-        add(new Section(line, upSection.getUpStation(), downSection.getDownStation(), newDistance));
+        Distance newDistance = upSection.getDistance().plus(downSection.getDistance());
+        add(new Section(line, upSection.getUpStation(), downSection.getDownStation(), newDistance.value()));
     }
 
     private Section findLastUpSection() {
