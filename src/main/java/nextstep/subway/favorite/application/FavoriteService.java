@@ -11,6 +11,7 @@ import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ public class FavoriteService {
         this.favoriteRepository = favoriteRepository;
     }
 
+    @Transactional
     public Long createFavorite(final LoginMember loginMember, final FavoriteRequest favoriteRequest) {
         final Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(NotFoundException::new);
         final Station source = stationRepository.findById(favoriteRequest.getSource()).orElseThrow(NotFoundException::new);
@@ -38,11 +40,18 @@ public class FavoriteService {
         return savedFavorite.getId();
     }
 
+    @Transactional
     public List<FavoriteResponse> findAllFavorites(final LoginMember loginMember) {
         final Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(NotFoundException::new);
 
         return member.getFavorites().stream()
             .map(FavoriteResponse::new)
             .collect(toList());
+    }
+
+    @Transactional
+    public void deleteFavorite(final LoginMember loginMember, final Long id) {
+        final Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(NotFoundException::new);
+        favoriteRepository.findById(id).ifPresent((member::removeFavorite));
     }
 }

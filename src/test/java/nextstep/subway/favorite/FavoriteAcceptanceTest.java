@@ -60,11 +60,27 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성됨(두번째_즐겨찾기_생성을_요청_응답);
 
         final ExtractableResponse<Response> 즐겨찾기_전체_조회_요청_응답 = 즐겨찾기_전체_조회_요청(사용자_토큰);
-        assertThat(즐겨찾기_전체_조회_요청_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
         final List<Long> 즐겨찾기_전체_아이디_목록 = 즐겨찾기_아이디_목록으로_변경(즐겨찾기_전체_조회_요청_응답);
 
-        assertThat(즐겨찾기_전체_아이디_목록.get(0)).isEqualTo(첫번째_즐겨찾기_아이디);
-        assertThat(즐겨찾기_전체_아이디_목록.get(1)).isEqualTo(두번째_즐겨찾기_아이디);
+        즐겨찾기_잘_가져옴(첫번째_즐겨찾기_아이디, 두번째_즐겨찾기_아이디, 즐겨찾기_전체_조회_요청_응답, 즐겨찾기_전체_아이디_목록);
+
+        final ExtractableResponse<Response> 즐겨찾기_삭제_요청_응답 = 즐겨찾기_삭제_요청(사용자_토큰, 즐겨찾기_전체_아이디_목록.get(0));
+        final List<Long> 삭제_후_남은_즐겨찾기_아이디_목록 = 즐겨찾기_아이디_목록으로_변경(즐겨찾기_전체_조회_요청(사용자_토큰));
+
+        즐겨찾기_잘_삭제됨(즐겨찾기_삭제_요청_응답, 삭제_후_남은_즐겨찾기_아이디_목록);
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(final String 사용자_토큰, final Long 삭제할_즐겨찾기_아이디) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(사용자_토큰)
+            .accept(MediaType.ALL_VALUE)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .delete("/favorites/" + 삭제할_즐겨찾기_아이디)
+            .then()
+            .log().all()
+            .extract();
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(final String 사용자_토큰,
@@ -113,5 +129,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             .stream()
             .map(FavoriteResponse::getId)
             .collect(Collectors.toList());
+    }
+
+    private void 즐겨찾기_잘_가져옴(final Long 첫번째_즐겨찾기_아이디, final Long 두번째_즐겨찾기_아이디,
+                            final ExtractableResponse<Response> 즐겨찾기_전체_조회_요청_응답, final List<Long> 즐겨찾기_전체_아이디_목록) {
+        assertThat(즐겨찾기_전체_조회_요청_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(즐겨찾기_전체_아이디_목록.get(0)).isEqualTo(첫번째_즐겨찾기_아이디);
+        assertThat(즐겨찾기_전체_아이디_목록.get(1)).isEqualTo(두번째_즐겨찾기_아이디);
+    }
+
+    private void 즐겨찾기_잘_삭제됨(final ExtractableResponse<Response> 즐겨찾기_삭제_요청_응답, final List<Long> 삭제_후_남은_즐겨찾기_아이디_목록) {
+        assertThat(즐겨찾기_삭제_요청_응답.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(삭제_후_남은_즐겨찾기_아이디_목록.size()).isEqualTo(1);
+        assertThat(삭제_후_남은_즐겨찾기_아이디_목록.get(0)).isEqualTo(2);
     }
 }
