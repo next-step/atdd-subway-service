@@ -18,10 +18,6 @@ public class FavoriteResponse {
         return new FavoriteResponse(id, StationResponse.of(source), StationResponse.of(target));
     }
 
-    public static FavoriteResponse of(long id, StationResponse source, StationResponse target) {
-        return new FavoriteResponse(id, source, target);
-    }
-
     public long getId() {
         return id;
     }
