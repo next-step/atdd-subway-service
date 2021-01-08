@@ -63,7 +63,7 @@ public class SectionsTest {
 
         Sections sections = new Sections();
         sections.add(section);
-        assertThat(sections.getStations()).contains(upStation, downStation);
+        assertThat(sections.getStations()).containsExactly(upStation, downStation);
     }
 
     @DisplayName("구간 등록")
@@ -88,6 +88,31 @@ public class SectionsTest {
         sections.add(section3);
         sections.add(section4);
 
-        assertThat(sections.getStations()).contains(sindorim, dorimcheon, yangcheon, sinjeong, kkachisan);
+        assertThat(sections.getStations()).containsExactly(sindorim, dorimcheon, yangcheon, sinjeong, kkachisan);
+    }
+
+    @DisplayName("구간에서 역 삭제")
+    @Test
+    void removeStation() {
+        Line line = new Line("2호선", "bg-green-600");
+
+        Station sindorim = new Station("신도림역");
+        Station dorimcheon = new Station("도림천역");
+        Station yangcheon = new Station("양천구청역");
+        Station sinjeong = new Station("신정네거리역");
+        Station kkachisan = new Station("까치산역");
+
+        Section section1 = new Section(line, dorimcheon, sinjeong, 10);
+        Section section2 = new Section(line, dorimcheon, yangcheon, 5);
+        Section section3 = new Section(line, sindorim, dorimcheon, 5);
+        Section section4 = new Section(line, sinjeong, kkachisan, 5);
+
+        Sections sections = new Sections(new ArrayList<>(Arrays.asList(section1, section2, section3, section4)));
+
+        sections.removeStation(sindorim);
+        sections.removeStation(kkachisan);
+        sections.removeStation(yangcheon);
+
+        assertThat(sections.getStations()).containsExactly(dorimcheon, sinjeong);
     }
 }
