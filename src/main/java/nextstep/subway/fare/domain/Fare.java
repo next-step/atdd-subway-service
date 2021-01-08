@@ -1,6 +1,7 @@
 package nextstep.subway.fare.domain;
 
 import nextstep.subway.fare.dto.FareRequest;
+import nextstep.subway.fare.dto.FareResponse;
 
 public class Fare {
 
@@ -23,6 +24,11 @@ public class Fare {
         }
 
         return amount;
+    }
+
+    public static FareResponse ofResponse(FareRequest request) {
+        int totalFare = new Fare(request).getTotalFare();
+        return new FareResponse(totalFare);
     }
 
     private int getAgeDiscount(int amount) {

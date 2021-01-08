@@ -1,5 +1,10 @@
 package nextstep.subway.path.service;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.fare.dto.FareRequest;
+import nextstep.subway.fare.dto.FareResponse;
+import nextstep.subway.fare.dto.PathWithFareResponse;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.PathFinder;
@@ -26,7 +31,25 @@ public class PathService {
         Lines lines = findAllLine();
         Station departureStation = lines.searchStationById(departureStationId);
         Station arrivalStation = lines.searchStationById(arrivalStationId);
+        return getPathResponse(lines, departureStation, arrivalStation);
+    }
+
+    public PathWithFareResponse findPath(LoginMember member, Long departureStationId, Long arrivalStationId) {
+        checkEqualsDepartureArrival(departureStationId, arrivalStationId);
+        Lines lines = findAllLine();
+        Station departureStation = lines.searchStationById(departureStationId);
+        Station arrivalStation = lines.searchStationById(arrivalStationId);
+        PathResponse pathResponse = getPathResponse(lines, departureStation, arrivalStation);
+        FareResponse fareResponse = getFareResponse(member, lines, pathResponse);
+        return PathWithFareResponse.ofResponse(pathResponse.getStations(), pathResponse.getDistance(), fareResponse.getFare());
+    }
+
+    private PathResponse getPathResponse(Lines lines, Station departureStation, Station arrivalStation) {
         return pathFinder.ofPathResponse(new PathRequest(lines.allSection(), departureStation, arrivalStation));
+    }
+
+    private FareResponse getFareResponse(LoginMember member, Lines lines, PathResponse pathResponse) {
+        return Fare.ofResponse(new FareRequest(pathResponse.getStations(), lines.getLines(), pathResponse.getDistance(), member.getAge()));
     }
 
     @Transactional(readOnly = true)

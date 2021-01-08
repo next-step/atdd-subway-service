@@ -86,7 +86,7 @@ public class PathIntegrationTest {
     void findPath() {
         PathResponse pathResponse = pathService.findPath(교대역.getId(), 양재역.getId());
 
-        assertThat(pathResponse.getDistance()).isEqualTo(2);
+        assertThat(pathResponse.getDistance()).isEqualTo(11);
         assertThat(pathResponse.getStations())
                 .extracting("name")
                 .containsExactly("교대역", "남부터미널", "양재역");

@@ -11,10 +11,10 @@ public class FareTest {
     @DisplayName("이용 거리초과 시 추가운임 부과")
     @Test
     void calculateDistanceFare() {
-        assertThat(new FareDistance(10).getAmountFare()).isZero();
-        assertThat(new FareDistance(11).getAmountFare()).isEqualTo(300);
-        assertThat(new FareDistance(20).getAmountFare()).isEqualTo(400);
-        assertThat(new FareDistance(51).getAmountFare()).isEqualTo(700);
+        assertThat(new FareDistance(10).getAmountFare()).isEqualTo(1250);
+        assertThat(new FareDistance(11).getAmountFare()).isEqualTo(1550);
+        assertThat(new FareDistance(20).getAmountFare()).isEqualTo(1650);
+        assertThat(new FareDistance(51).getAmountFare()).isEqualTo(1950);
     }
 
     @DisplayName("연령별 요금 할인")
