@@ -75,7 +75,6 @@ public class Sections {
             downStation = nextLineStation.get().getDownStation();
             stations.add(downStation);
         }
-
         return stations;
     }
 
@@ -99,12 +98,11 @@ public class Sections {
         if (sections.size() <= 1) {
             throw new RuntimeException();
         }
-
         Line line = sections.get(0).getLine();
-        Optional<Section> upLineStation = sections.stream()
+        Optional<Section> downLineStation = sections.stream()
                 .filter(it -> it.equalsUpstation(station))
                 .findFirst();
-        Optional<Section> downLineStation = sections.stream()
+        Optional<Section> upLineStation = sections.stream()
                 .filter(it -> it.equalsDownStation(station))
                 .findFirst();
 
@@ -116,7 +114,7 @@ public class Sections {
             Section downSection = downLineStation.get();
 
             int newDistance = upSection.getDistance() + downSection.getDistance();
-            add(new Section(line, upSection.getDownStation(), downSection.getUpStation(), newDistance));
+            add(new Section(line, upSection.getUpStation(), downSection.getDownStation(), newDistance));
         }
     }
 }
