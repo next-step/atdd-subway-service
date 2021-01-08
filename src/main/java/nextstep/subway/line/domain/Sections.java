@@ -23,19 +23,9 @@ public class Sections {
         if (stations.isEmpty()) {
             return sections.add(section);
         }
+        validateSection(stations, section);
 
-        boolean isUpStationExisted = stations.contains(section.getUpStation());
-        boolean isDownStationExisted = stations.contains(section.getDownStation());
-
-        if (!isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (isUpStationExisted) {
+        if (stations.contains(section.getUpStation())) {
             sections.stream()
                     .filter(it -> it.getUpStation() == section.getUpStation())
                     .findFirst()
@@ -110,6 +100,19 @@ public class Sections {
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             mergeSection(upLineStation.get(), downLineStation.get());
+        }
+    }
+
+    private void validateSection(Stations stations, Section section) {
+        boolean isUpStationExisted = stations.contains(section.getUpStation());
+        boolean isDownStationExisted = stations.contains(section.getDownStation());
+
+        if (!isUpStationExisted && !isDownStationExisted) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
         }
     }
 
