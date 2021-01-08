@@ -1,9 +1,14 @@
 package nextstep.subway.line.domain;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
 public class Section {
     @Id
@@ -24,9 +29,6 @@ public class Section {
 
     private int distance;
 
-    public Section() {
-    }
-
     public Section(Line line, Station upStation, Station downStation, int distance) {
         this.line = line;
         this.upStation = upStation;
@@ -34,24 +36,12 @@ public class Section {
         this.distance = distance;
     }
 
-    public Long getId() {
-        return id;
+    public boolean isEqualWithUpStation(Station station) {
+        return this.upStation.equals(station);
     }
 
-    public Line getLine() {
-        return line;
-    }
-
-    public Station getUpStation() {
-        return upStation;
-    }
-
-    public Station getDownStation() {
-        return downStation;
-    }
-
-    public int getDistance() {
-        return distance;
+    public boolean isEqualWithDownStation(Station station) {
+        return this.downStation.equals(station);
     }
 
     public void updateUpStation(Station station, int newDistance) {

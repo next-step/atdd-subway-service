@@ -1,12 +1,17 @@
 package nextstep.subway.line.domain;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
 public class Line extends BaseEntity {
     @Id
@@ -16,11 +21,8 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
-
-    public Line() {
-    }
+    @Embedded
+    private Sections sections = new Sections();
 
     public Line(String name, String color) {
         this.name = name;
@@ -30,7 +32,8 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        Section section = new Section(this, upStation, downStation, distance);
+        this.sections = new Sections(Collections.singletonList(section));
     }
 
     public void update(Line line) {
@@ -38,19 +41,15 @@ public class Line extends BaseEntity {
         this.color = line.getColor();
     }
 
-    public Long getId() {
-        return id;
+    public List<Station> getStations() {
+        return this.sections.getOrderedStations();
     }
 
-    public String getName() {
-        return name;
+    public void addSection(Section section) {
+        this.sections.add(section);
     }
 
-    public String getColor() {
-        return color;
-    }
-
-    public List<Section> getSections() {
-        return sections;
+    public void removeStation(Station station) {
+        this.sections.remove(station);
     }
 }
