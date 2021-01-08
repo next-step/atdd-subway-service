@@ -51,11 +51,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기를 관리한다.")
     @Test
     void manageMember() {
-        final ExtractableResponse<Response> 첫번째_즐겨찾기_생성_요청_응답 = 즐겨찾기_생성을_요청(사용자_토큰, 출발지_강남역, 도착지_정자역);
+        final ExtractableResponse<Response> 첫번째_즐겨찾기_생성_요청_응답 = 즐겨찾기_생성_요청(사용자_토큰, 출발지_강남역, 도착지_정자역);
         final Long 첫번째_즐겨찾기_아이디 = 즐겨찾기_아이디_가져오기(첫번째_즐겨찾기_생성_요청_응답);
         즐겨찾기_생성됨(첫번째_즐겨찾기_생성_요청_응답);
 
-        final ExtractableResponse<Response> 두번째_즐겨찾기_생성을_요청_응답 = 즐겨찾기_생성을_요청(사용자_토큰, 출발지_까치산역, 도착지_신도림역);
+        final ExtractableResponse<Response> 두번째_즐겨찾기_생성을_요청_응답 = 즐겨찾기_생성_요청(사용자_토큰, 출발지_까치산역, 도착지_신도림역);
         final Long 두번째_즐겨찾기_아이디 = 즐겨찾기_아이디_가져오기(두번째_즐겨찾기_생성을_요청_응답);
         즐겨찾기_생성됨(두번째_즐겨찾기_생성을_요청_응답);
 
@@ -67,8 +67,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(즐겨찾기_전체_아이디_목록.get(1)).isEqualTo(두번째_즐겨찾기_아이디);
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(final String 사용자_토큰,
-                                                            final StationResponse 출발지_강남역, final StationResponse 도착지_정자역) {
+    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(final String 사용자_토큰,
+                                                           final StationResponse 출발지_강남역, final StationResponse 도착지_정자역) {
         final Map<String, String> 요청_파라미터 = new HashMap<>();
         요청_파라미터.put("source", 출발지_강남역.getId().toString());
         요청_파라미터.put("target", 도착지_정자역.getId().toString());
