@@ -8,6 +8,7 @@ import javax.persistence.OneToMany;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
@@ -47,7 +48,7 @@ public class Sections {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
+        Station downStation = findLastUpStation();
         stations.add(downStation);
 
         while (downStation != null) {
@@ -120,19 +121,15 @@ public class Sections {
         add(new Section(line, upSection.getUpStation(), downSection.getDownStation(), newDistance));
     }
 
-    private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
+    private Station findLastUpStation() {
+        final Set<Station> downStations = sections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toSet());
 
-        return downStation;
+        return sections.stream()
+                .map(Section::getUpStation)
+                .filter(upStation -> !downStations.contains(upStation))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Line is invalid"));
     }
 }
