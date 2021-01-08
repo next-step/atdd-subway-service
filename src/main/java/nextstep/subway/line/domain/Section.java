@@ -45,24 +45,21 @@ public class Section {
 		this.distance = distance;
 	}
 
+	public static Section of(Section upSection, Section downSection) {
+		return new Section(upSection.getLine(),
+			downSection.getUpStation(),
+			upSection.getDownStation(),
+			upSection.getDistance() + downSection.getDistance());
+	}
+
 	public void updateUpStation(Section target) {
-		this.updateUpStation(target.getDownStation(), getDistance());
+		this.updateDistance(target);
+		this.upStation = target.getDownStation();
 	}
 
 	public void updateDownStation(Section target) {
-		this.updateDownStation(target.getUpStation(), target.getDistance());
-	}
-
-	public void updateUpStation(Station station, int newDistance) {
-		validateDistance(newDistance);
-		this.upStation = station;
-		this.distance -= newDistance;
-	}
-
-	public void updateDownStation(Station station, int newDistance) {
-		validateDistance(newDistance);
-		this.downStation = station;
-		this.distance -= newDistance;
+		updateDistance(target);
+		this.downStation = target.getUpStation();
 	}
 
 	public List<Station> getStations() {
@@ -85,5 +82,10 @@ public class Section {
 		if (this.distance <= newDistance) {
 			throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
 		}
+	}
+
+	private void updateDistance(Section section) {
+		validateDistance(section.getDistance());
+		this.distance -= section.getDistance();
 	}
 }
