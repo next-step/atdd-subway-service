@@ -54,7 +54,7 @@ public class Section {
         return distance;
     }
 
-    public boolean equalsUpstation(Station station) {
+    public boolean equalsUpStation(Station station) {
         return upStation == station;
     }
 

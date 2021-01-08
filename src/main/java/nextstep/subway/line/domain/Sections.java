@@ -6,6 +6,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 @Embeddable
 public class Sections {
@@ -26,18 +28,29 @@ public class Sections {
         validateSection(stations, section);
 
         if (stations.contains(section.getUpStation())) {
-            sections.stream()
-                    .filter(it -> it.getUpStation() == section.getUpStation())
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+            updateUpStationInSections(section);
             return sections.add(section);
         }
 
-        sections.stream()
-                .filter(it -> it.getDownStation() == section.getDownStation())
-                .findFirst()
-                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+        updateDownStationInSections(section);
         return sections.add(section);
+    }
+
+    private void updateUpStationInSections(Section section) {
+        updateStationInSections(it -> it.equalsUpStation(section.getUpStation()),
+                it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+    }
+
+    private void updateDownStationInSections(Section section) {
+        updateStationInSections(it -> it.equalsDownStation(section.getDownStation()),
+                it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+    }
+
+    private void updateStationInSections(Predicate<Section> filter, Consumer<Section> updater) {
+        sections.stream()
+                .filter(filter)
+                .findFirst()
+                .ifPresent(updater);
     }
 
     public boolean remove(Section section) {
@@ -89,7 +102,7 @@ public class Sections {
             throw new RuntimeException();
         }
         Optional<Section> downLineStation = sections.stream()
-                .filter(it -> it.equalsUpstation(station))
+                .filter(it -> it.equalsUpStation(station))
                 .findFirst();
         Optional<Section> upLineStation = sections.stream()
                 .filter(it -> it.equalsDownStation(station))
