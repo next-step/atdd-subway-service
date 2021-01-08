@@ -28,6 +28,10 @@ public class Station extends BaseEntity {
         return name;
     }
 
+    public boolean isEquals(Long targetId) {
+        return this.id.equals(targetId);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

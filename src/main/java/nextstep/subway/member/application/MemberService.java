@@ -5,32 +5,37 @@ import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
 
-    public MemberService(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
-    }
+	private MemberRepository memberRepository;
 
-    public MemberResponse createMember(MemberRequest request) {
-        Member member = memberRepository.save(request.toMember());
-        return MemberResponse.of(member);
-    }
+	public MemberService(MemberRepository memberRepository) {
+		this.memberRepository = memberRepository;
+	}
 
-    public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        return MemberResponse.of(member);
-    }
+	public MemberResponse createMember(MemberRequest request) {
+		Member member = memberRepository.save(request.toMember());
+		return MemberResponse.of(member);
+	}
 
-    public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        member.update(param.toMember());
-    }
+	public MemberResponse findMember(Long id) {
+		Member member = getMember(id);
+		return MemberResponse.of(member);
+	}
 
-    public void deleteMember(Long id) {
-        memberRepository.deleteById(id);
-    }
+	public void updateMember(Long id, MemberRequest param) {
+		Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+		member.update(param.toMember());
+	}
+
+	public void deleteMember(Long id) {
+		memberRepository.deleteById(id);
+	}
+
+	public Member getMember(Long id) {
+		return memberRepository.findById(id).orElseThrow(RuntimeException::new);
+	}
+
 }
