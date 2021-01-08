@@ -167,7 +167,7 @@ public class SectionsTest {
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             sections.addSection(newSection);
-        }).withMessageMatching("구간을 등록할 경우 기존 역 사이 길이보다 크거나 같으면 등록을 할 수 없습니다.");
+        }).withMessageMatching("거리는 0 또는 음수가 될 수 없습니다.");
     }
 
     @DisplayName("하행역 기준, 새로운 역을 등록할 경우 기존 역 사이 길이보다 크거나 같으면 등록을 할 수 없음")
@@ -178,7 +178,6 @@ public class SectionsTest {
         Station 송파역 = new Station("송파역");
         Section newSection = Section.builder().line(팔호선)
                 .upStation(송파역)
-                .upStation(송파역)
                 .downStation(StationFixtures.산성역)
                 .distance(new Distance(distance))
                 .build();
@@ -186,7 +185,7 @@ public class SectionsTest {
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             sections.addSection(newSection);
-        }).withMessageMatching("구간을 등록할 경우 기존 역 사이 길이보다 크거나 같으면 등록을 할 수 없습니다.");
+        }).withMessageMatching("거리는 0 또는 음수가 될 수 없습니다.");
     }
 
     @DisplayName("상행역과 하행역이 이미 노선에 모두 등록되어 있다면 추가할 수 없음")
