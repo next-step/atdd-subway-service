@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class MemberService {
+    private static final String EXCEPTION_CANNOT_FIND_MEMBER = "cannot find id matched member";
     private MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
@@ -23,12 +24,12 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(AuthorizationException::new);
+        Member member = memberRepository.findById(id).orElseThrow(() -> new AuthorizationException(EXCEPTION_CANNOT_FIND_MEMBER));
         return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(AuthorizationException::new);
+        Member member = memberRepository.findById(id).orElseThrow(() -> new AuthorizationException(EXCEPTION_CANNOT_FIND_MEMBER));
         member.update(param.toMember());
     }
 
