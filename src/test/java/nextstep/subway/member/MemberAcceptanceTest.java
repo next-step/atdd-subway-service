@@ -51,6 +51,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     }
 
+    public static ExtractableResponse<Response> 토큰으로_개인정보_조회(final String 토큰) {
+        return RestAssured.given().log().all()
+            .auth().oauth2(토큰)
+            .when().get("/members/me")
+            .then()
+            .log().all()
+            .extract();
+    }
+
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
