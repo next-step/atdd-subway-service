@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 
 @Getter
 @EqualsAndHashCode(callSuper = false)
@@ -24,5 +25,13 @@ public class Station extends BaseEntity {
 
     public Station(String name) {
         this.name = name;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return super.createdDate;
+    }
+
+    public LocalDateTime getModifiedDate() {
+        return super.modifiedDate;
     }
 }

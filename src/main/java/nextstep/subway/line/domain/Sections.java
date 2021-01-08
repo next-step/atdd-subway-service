@@ -5,12 +5,12 @@ import lombok.NoArgsConstructor;
 import nextstep.subway.line.application.AddLineException;
 import nextstep.subway.line.application.RemoveLineException;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -25,7 +25,7 @@ public class Sections {
     private final List<Section> sections = new ArrayList<>();
 
     public void add(Section section) {
-        List<Station> stations = getStations();
+        Stations stations = getStations();
         boolean isUpStationExisted = stations.contains(section.getUpStation());
         boolean isDownStationExisted = stations.contains(section.getDownStation());
 
@@ -38,23 +38,20 @@ public class Sections {
         sections.add(section);
     }
 
-    public List<Station> getStations() {
+    public Stations getStations() {
         if (sections.isEmpty()) {
-            return Collections.emptyList();
+            return Stations.emptyStations();
         }
 
-        List<Station> stations = new ArrayList<>();
+        Stations stations = new Stations();
         Station downStation = findUpStation();
-        stations.add(downStation);
 
         while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = findSection(section -> section.matchUpStation(finalDownStation));
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
             stations.add(downStation);
+            Station finalDownStation = downStation;
+            downStation = findSection(section -> section.matchUpStation(finalDownStation))
+                    .map(Section::getDownStation)
+                    .orElse(null);
         }
 
         return stations;
@@ -76,15 +73,12 @@ public class Sections {
 
     private void updateSection(Station upStation, Station downStation, int distance) {
         for (Section section : sections) {
-            UpdateSectionType updateSectionType = UpdateSectionType.valueOf(section, upStation, downStation);
-            if (updateSectionType != UpdateSectionType.NONE) {
-                updateSectionType.updateSection(section, upStation, downStation, distance);
-                break;
-            }
+            UpdateSectionType.valueOf(section, upStation, downStation)
+                    .updateSection(section, upStation, downStation, distance);
         }
     }
 
-    private void checkLineStationAddable(List<Station> stations,
+    private void checkLineStationAddable(Stations stations,
                                          boolean isUpStationExisted,
                                          boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {

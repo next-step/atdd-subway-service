@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -11,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -25,7 +27,7 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
-    private final Sections sections = new Sections();
+    private Sections sections;
 
     public Line(String name, String color) {
         this.name = name;
@@ -35,6 +37,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
+        initializeSection();
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
@@ -44,14 +47,31 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {
+        initializeSection();
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
-    public List<Station> getStations() {
+    public Stations getStations() {
+        initializeSection();
         return sections.getStations();
     }
 
     public void removeSection(Station station) {
+        initializeSection();
         sections.removeSection(station);
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return super.createdDate;
+    }
+
+    public LocalDateTime getModifiedDate() {
+        return super.modifiedDate;
+    }
+
+    private void initializeSection() {
+        if (sections == null) {
+            sections = new Sections();
+        }
     }
 }
