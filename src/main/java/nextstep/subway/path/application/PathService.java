@@ -8,6 +8,7 @@ import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.exception.StationNotFoundException;
+import nextstep.subway.path.exception.StationNotRegisteredException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,7 @@ public class PathService {
         Optional<Station> sourceStation = stationRepository.findById(request.getSource());
         Optional<Station> targetStation = stationRepository.findById(request.getTarget());
 
-        validateContains(lines, sourceStation, targetStation);
+        validateContains(lines, sourceStation, targetStation, request);
 
         Path path = pathFinder.findPath(lines, sourceStation.get(), targetStation.get());
 
@@ -56,13 +57,17 @@ public class PathService {
         }
     }
 
-    private void validateContains(Lines lines, Optional<Station> sourceStation, Optional<Station> targetStation) {
-        if (!sourceStation.isPresent() || !targetStation.isPresent()) {
-            throw new StationNotFoundException("존재하지 않는 지하철 역입니다.");
-        }
+    private void validateContains(Lines lines, Optional<Station> sourceStation, Optional<Station> targetStation, PathRequest request) {
+        sourceStation.orElseThrow(() ->
+                new StationNotFoundException(request.getSource()));
+        targetStation.orElseThrow(() ->
+                new StationNotFoundException(request.getTarget()));
 
-        if (!lines.contains(sourceStation.get()) || !lines.contains(targetStation.get())) {
-            throw new StationNotFoundException("등록되지 않은 지하철 역입니다.");
+        if (!lines.contains(sourceStation.get())) {
+            throw new StationNotRegisteredException(request.getSource());
+        }
+        if (!lines.contains(targetStation.get())) {
+            throw new StationNotRegisteredException(request.getTarget());
         }
     }
 

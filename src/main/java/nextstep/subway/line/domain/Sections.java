@@ -35,16 +35,14 @@ public class Sections {
 
         if (isUpStationExisted) {
             findFirstSection(it -> it.getUpStation() == section.getUpStation())
-                    .ifPresent(it -> it.updateUpStation(section.getDownStation(),
-                            section.getDistance()));
+                    .ifPresent(it -> it.updateUpStation(section));
             this.sections.add(section);
             return;
         }
 
         if (isDownStationExisted) {
             findFirstSection(it -> it.getDownStation() == section.getDownStation())
-                    .ifPresent(it -> it.updateDownStation(section.getUpStation(),
-                            section.getDistance()));
+                    .ifPresent(it -> it.updateDownStation(section));
             this.sections.add(section);
             return;
         }
@@ -114,7 +112,9 @@ public class Sections {
     }
 
     private Optional<Section> findFirstSection(Predicate<Section> predicate) {
-        return this.sections.stream().filter(predicate).findFirst();
+        return this.sections.stream()
+                .filter(predicate)
+                .findFirst();
     }
 
     private boolean contains(Station station) {
