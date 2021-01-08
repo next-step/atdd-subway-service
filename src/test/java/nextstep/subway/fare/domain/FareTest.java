@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("거리별 추가 요금 정보")
+@DisplayName("거리별 추가 할인 정보")
 public class FareTest {
 
     @DisplayName("이용 거리초과 시 추가운임 부과")

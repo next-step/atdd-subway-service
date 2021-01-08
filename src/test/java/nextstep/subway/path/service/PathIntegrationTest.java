@@ -119,9 +119,7 @@ public class PathIntegrationTest {
         Member children = memberRepository.save(new Member("children", "children@children", 7));
         Member teenager = memberRepository.save(new Member("teenager", "teenager@teenager", 14));
 
-
-        // when
-        // then
+        // when then
         assertThat(findPath(adult, 교대역, 양재시민의숲).getFare()).isEqualTo(3650);
         assertThat(findPath(new Member(), 교대역, 양재시민의숲).getFare()).isEqualTo(3650);
         assertThat(findPath(teenager, 교대역, 양재시민의숲).getFare()).isEqualTo(2640);

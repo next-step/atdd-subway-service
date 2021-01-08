@@ -9,13 +9,7 @@ public class FareRequest {
     private final List<PathStation> pathStations;
     private final List<Line> lines;
     private final int distance;
-    private int age;
-
-    public FareRequest(List<PathStation> pathStations, List<Line> lines, int distance) {
-        this.pathStations = pathStations;
-        this.lines = lines;
-        this.distance = distance;
-    }
+    private final int age;
 
     public FareRequest(List<PathStation> pathStations, List<Line> lines, int distance, int age) {
         this.pathStations = pathStations;
