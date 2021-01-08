@@ -26,6 +26,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -106,6 +107,9 @@ class OutsideInPathServiceTest {
 
 	@Test
 	void calculatePath1() {
+		// given
+		given(stationRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(강남역, 양재역));
+
 		// when
 		PathRequest pathRequest = new PathRequest(강남역.getId(), 양재역.getId());
 		PathResponse pathResponse = pathService.calculatePath(pathRequest);
@@ -118,6 +122,9 @@ class OutsideInPathServiceTest {
 
 	@Test
 	void calculatePath2() {
+		// given
+		given(stationRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(강남역, 남부터미널역));
+
 		// when
 		PathRequest pathRequest = new PathRequest(강남역.getId(), 남부터미널역.getId());
 		PathResponse pathResponse = pathService.calculatePath(pathRequest);
