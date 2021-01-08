@@ -75,13 +75,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    @DisplayName("지하철 경로를 조회하고 요금이 일치하는지 확인한다.")
+    @DisplayName("지하철 경로를 조회하고 회원 요금이 일치하는지 확인한다.")
     @Test
-    void findPathThanContainsTotalFare() {
+    void findPathThanContainsTotalFareMember() {
         ExtractableResponse<Response> response = 지하철_경로_조회_요청(교대역.getId(), 양재역.getId(), accessToken);
         PathWithFareResponse as = response.as(PathWithFareResponse.class);
 
         assertThat(as.getFare()).isEqualTo(2320);
+    }
+
+    @DisplayName("지하철 경로를 조회하고 비회원 요금이 일치하는지 확인한다.")
+    @Test
+    void findPathThanContainsTotalFareNotMember() {
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(교대역.getId(), 양재역.getId());
+        PathWithFareResponse as = response.as(PathWithFareResponse.class);
+
+        assertThat(as.getFare()).isEqualTo(3250);
     }
 
     @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우")
