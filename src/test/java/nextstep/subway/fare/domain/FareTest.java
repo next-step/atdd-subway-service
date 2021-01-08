@@ -16,4 +16,13 @@ public class FareTest {
         assertThat(new FareDistance(20).getAmountFare()).isEqualTo(400);
         assertThat(new FareDistance(51).getAmountFare()).isEqualTo(700);
     }
+
+    @DisplayName("연령별 요금 할인")
+    @Test
+    void calculateAgeFare() {
+        assertThat(new FareAge(5).getAmount(2000)).isZero();
+        assertThat(new FareAge(7).getAmount(2000)).isEqualTo(1175);
+        assertThat(new FareAge(13).getAmount(2000)).isEqualTo(680);
+        assertThat(new FareAge(21).getAmount(2000)).isZero();
+    }
 }
