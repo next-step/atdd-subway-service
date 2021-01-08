@@ -8,27 +8,11 @@ import java.util.stream.IntStream;
 
 public class FareLine extends OverCharge {
     private final List<Line> lines;
-    private List<PathStation> stations;
-
-    public FareLine(List<Line> lines) {
-        this.lines = lines;
-    }
+    private final List<PathStation> stations;
 
     public FareLine(List<Line> lines, List<PathStation> stations) {
         this.lines = lines;
         this.stations = stations;
-    }
-
-    public int getAmountFare(List<PathStation> stations) {
-        return findExchangeLine(stations);
-    }
-
-    private int findExchangeLine(List<PathStation> stations) {
-        return IntStream.range(1, stations.size())
-                .mapToObj(index -> findLineOverFare(stations.get(index - 1).getId(), stations.get(index).getId()))
-                .mapToInt(v -> v)
-                .max()
-                .orElse(0);
     }
 
     private int findExchangeLine() {

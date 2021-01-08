@@ -106,10 +106,9 @@ public class PathIntegrationTest {
         PathWithFareResponse pathResponseReverse = findPath(adult, 양재시민의숲, 교대역);
 
         // when then
-        FareLine fareLine = new FareLine(lineGroup.getLines());
-        assertThat(fareLine.getAmountFare(pathResponse.getStations())).isEqualTo(2000);
-        assertThat(fareLine.getAmountFare(pathResponse.getStations()))
-                .isEqualTo(fareLine.getAmountFare(pathResponseReverse.getStations()));
+        assertThat(pathResponse.getFare()).isEqualTo(3650);
+        assertThat(pathResponse.getFare())
+                .isEqualTo(pathResponseReverse.getFare());
     }
 
     @DisplayName("경로의 모든 추가 요금을 반환한다.")
