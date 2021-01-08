@@ -1,72 +1,91 @@
 package nextstep.subway.line.domain;
 
+import java.util.Arrays;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nextstep.subway.station.domain.Station;
 
-import javax.persistence.*;
-
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
 public class Section {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "line_id")
-    private Line line;
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "line_id")
+	private Line line;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "up_station_id")
-    private Station upStation;
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "up_station_id")
+	private Station upStation;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "down_station_id")
-    private Station downStation;
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "down_station_id")
+	private Station downStation;
 
-    private int distance;
+	private int distance;
 
-    public Section() {
-    }
+	public Section(Line line, Station upStation, Station downStation, int distance) {
+		this.line = line;
+		this.upStation = upStation;
+		this.downStation = downStation;
+		this.distance = distance;
+	}
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
-        this.line = line;
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = distance;
-    }
+	public static Section of(Section upSection, Section downSection) {
+		return new Section(upSection.getLine(),
+			downSection.getUpStation(),
+			upSection.getDownStation(),
+			upSection.getDistance() + downSection.getDistance());
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public void updateUpStation(Section target) {
+		this.updateDistance(target);
+		this.upStation = target.getDownStation();
+	}
 
-    public Line getLine() {
-        return line;
-    }
+	public void updateDownStation(Section target) {
+		updateDistance(target);
+		this.downStation = target.getUpStation();
+	}
 
-    public Station getUpStation() {
-        return upStation;
-    }
+	public List<Station> getStations() {
+		return Arrays.asList(upStation, downStation);
+	}
 
-    public Station getDownStation() {
-        return downStation;
-    }
+	public boolean contains(Station target) {
+		return getStations().contains(target);
+	}
 
-    public int getDistance() {
-        return distance;
-    }
+	public boolean isUpStation(Section target) {
+		return this.upStation.equals(target.getUpStation());
+	}
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
-    }
+	public boolean isDownStation(Section target) {
+		return this.downStation.equals(target.getDownStation());
+	}
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
-    }
+	private void validateDistance(int newDistance) {
+		if (this.distance <= newDistance) {
+			throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+		}
+	}
+
+	private void updateDistance(Section section) {
+		validateDistance(section.getDistance());
+		this.distance -= section.getDistance();
+	}
 }
