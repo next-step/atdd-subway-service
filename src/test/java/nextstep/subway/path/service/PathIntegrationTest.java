@@ -1,7 +1,9 @@
 package nextstep.subway.path.service;
 
+import nextstep.subway.fare.domain.FareLine;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -15,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -38,24 +41,31 @@ public class PathIntegrationTest {
     private Station 교대역;
     private Station 양재역;
     private Station 사당역;
+    private Station 양재시민의숲;
+    private Lines lineGroup;
+    private Line 신분당선;
 
     @BeforeEach
     void setUp() {
         // given
         교대역 = new Station("교대역");
         양재역 = new Station("양재역");
+        양재시민의숲 = new Station("양재시민의숲");
         Station 남부터미널 = new Station("남부터미널");
         Station 강남역 = new Station("강남역");
         사당역 = new Station("이수역");
         Station 이수역 = new Station("사당역");
 
-        Line 신분당선 = new Line("신분당선", "orange", 강남역, 양재역, 5);
-        Line 삼호선 = new Line("3호선", "orange", 교대역, 남부터미널, 1);
+        신분당선 = new Line("신분당선", "orange", 강남역, 양재역, 5,2000);
+        신분당선.add(양재역, 양재시민의숲, 5);
+        Line 삼호선 = new Line("3호선", "orange", 교대역, 남부터미널, 1,1000);
         삼호선.add(남부터미널, 양재역, 1);
         Line 이호선 = new Line("2호선", "orange", 교대역, 강남역, 5);
         Line 사호선 = new Line("사호선", "orange", 사당역, 이수역, 5);
 
-        lineRepository.saveAll(Arrays.asList(신분당선, 삼호선, 이호선, 사호선));
+        List<Line> lines = Arrays.asList(신분당선, 삼호선, 이호선, 사호선);
+        lineRepository.saveAll(lines);
+        lineGroup = new Lines(lines);
     }
 
     @AfterEach
@@ -74,6 +84,20 @@ public class PathIntegrationTest {
         assertThat(pathResponse.getStations())
                 .extracting("name")
                 .containsExactly("교대역", "남부터미널", "양재역");
+    }
+
+    @DisplayName("지하철 경로를 조회하고 순서, 환승 노선의 추가요금을 반환한다.")
+    @Test
+    void findPathExchangeLine() {
+        // given
+        PathResponse pathResponse = pathService.findPath(교대역.getId(), 양재시민의숲.getId());
+        PathResponse pathResponseReverse = pathService.findPath(양재시민의숲.getId(), 교대역.getId());
+
+        // when then
+        FareLine fareLine = new FareLine(lineGroup.getLines());
+        assertThat(fareLine.getAmountFare(pathResponse.getStations())).isEqualTo(2000);
+        assertThat(fareLine.getAmountFare(pathResponse.getStations()))
+                .isEqualTo(fareLine.getAmountFare(pathResponseReverse.getStations()));
     }
 
     @DisplayName("경로 조회시 존재하지 않은 출발역이나 도착역을 조회 할 경우")

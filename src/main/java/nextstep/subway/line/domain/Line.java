@@ -20,6 +20,7 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    private int overFare;
 
     @Embedded
     private Sections section = new Sections();
@@ -38,6 +39,13 @@ public class Line extends BaseEntity {
         this.section.create(new Section(this, upStation, downStation, distance));
     }
 
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int overFare) {
+        this.name = name;
+        this.color = color;
+        this.overFare = overFare;
+        this.section.create(new Section(this, upStation, downStation, distance));
+    }
+
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
@@ -53,6 +61,10 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public int getOverFare() {
+        return overFare;
     }
 
     public List<Station> getStations() {
@@ -75,5 +87,9 @@ public class Line extends BaseEntity {
 
     public List<Section> getSection() {
         return this.section.getSections();
+    }
+
+    public boolean hasSection(long source, long target) {
+        return this.section.hasSection(source, target);
     }
 }

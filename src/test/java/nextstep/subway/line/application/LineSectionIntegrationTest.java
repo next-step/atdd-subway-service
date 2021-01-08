@@ -2,6 +2,7 @@ package nextstep.subway.line.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.SectionRequest;
@@ -141,6 +142,18 @@ public class LineSectionIntegrationTest {
         // when
         assertThatThrownBy(() -> lineService.removeLineStation(신분당선.getId(), 양재역.getId())).isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("구간 삭제 실패됨");
+    }
+
+    @DisplayName("지하철역 아이디로 해당 노선에 포함되는지 확인하고 노선의 추가 요금을 가져온다.")
+    @Test
+    void containsSection() {
+        // given
+        Station 양재역 = new Station("양재역");
+        Station 광교역 = new Station("광교역");
+        Line 신분당선 = lineRepository.save(new Line("신분당선", "red lighten-1", 양재역, 광교역, 10, 800));
+
+        // when then
+        assertThat(신분당선.hasSection(양재역.getId(), 광교역.getId())).isTrue();
     }
 
     private List<StationResponse> getStationsByLine(Line line) {

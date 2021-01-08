@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Lines {
-    private List<Line> lines;
+    private final List<Line> lines;
 
     public Lines(Line... lines) {
         this.lines = Arrays.asList(lines);
@@ -33,6 +33,10 @@ public class Lines {
                 .filter(station -> station.getId().equals(source))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않은 출발역이나 도착역입니다."));
+    }
+
+    public List<Line> getLines() {
+        return lines;
     }
 }
 
