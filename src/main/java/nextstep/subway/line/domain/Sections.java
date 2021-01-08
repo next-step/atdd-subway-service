@@ -44,23 +44,17 @@ public class Sections {
 
     public List<Station> getStations() {
         if (sections.isEmpty()) {
-            return Collections.emptyList();
+            return new ArrayList<>();
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findLastUpStation();
-        stations.add(downStation);
+        Station station = findLastUpSection().getUpStation();
+        stations.add(station);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        int size = sections.size();
+        for (int idx = 0 ; idx < size ; idx ++) {
+            station = getNextStation(station);
+            stations.add(station);
         }
         return stations;
     }
@@ -121,15 +115,22 @@ public class Sections {
         add(new Section(line, upSection.getUpStation(), downSection.getDownStation(), newDistance));
     }
 
-    private Station findLastUpStation() {
+    private Section findLastUpSection() {
         final Set<Station> downStations = sections.stream()
                 .map(Section::getDownStation)
                 .collect(Collectors.toSet());
 
         return sections.stream()
-                .map(Section::getUpStation)
-                .filter(upStation -> !downStations.contains(upStation))
+                .filter(it -> !downStations.contains(it.getUpStation()))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Line is invalid"));
+    }
+
+    private Station getNextStation(Station currentUpStation) {
+        return sections.stream()
+                .filter(it -> it.equalsUpStation(currentUpStation))
+                .findFirst()
+                .map(Section::getDownStation)
+                .orElseThrow(() -> new RuntimeException("invalid section count"));
     }
 }
