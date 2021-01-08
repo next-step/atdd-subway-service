@@ -4,9 +4,11 @@ import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nextstep.subway.station.domain.Station;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class StationResponse {
 	private Long id;
