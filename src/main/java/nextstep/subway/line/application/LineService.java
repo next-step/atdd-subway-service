@@ -1,7 +1,6 @@
 package nextstep.subway.line.application;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -9,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -19,8 +17,8 @@ import nextstep.subway.station.domain.Station;
 @Service
 @Transactional
 public class LineService {
-	private LineRepository lineRepository;
-	private StationService stationService;
+	private final LineRepository lineRepository;
+	private final StationService stationService;
 
 	public LineService(LineRepository lineRepository, StationService stationService) {
 		this.lineRepository = lineRepository;
@@ -28,10 +26,9 @@ public class LineService {
 	}
 
 	public LineResponse saveLine(LineRequest request) {
-		Station upStation = stationService.findById(request.getUpStationId());
-		Station downStation = stationService.findById(request.getDownStationId());
-		Line persistLine = lineRepository.save(
-			new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+		Station upStation = findStationById(request.getUpStationId());
+		Station downStation = findStationById(request.getDownStationId());
+		Line persistLine = lineRepository.save(request.toLine(upStation, downStation));
 		return LineResponse.of(persistLine);
 	}
 
@@ -55,77 +52,35 @@ public class LineService {
 		return LineResponse.of(persistLine);
 	}
 
+	@Transactional
 	public void deleteLineById(Long id) {
-		lineRepository.deleteById(id);
+		Line persistLine = findLineById(id);
+		lineRepository.delete(persistLine);
 	}
 
-	public void addLineStation(Long lineId, SectionRequest request) {
+	@Transactional
+	public LineResponse addLineStation(Long lineId, SectionRequest request) {
 		Line line = findLineById(lineId);
-		Station upStation = stationService.findStationById(request.getUpStationId());
-		Station downStation = stationService.findStationById(request.getDownStationId());
-		List<Station> stations = getStations(line);
-		boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-		boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+		Station upStation = findStationById(request.getUpStationId());
+		Station downStation = findStationById(request.getDownStationId());
 
-		if (isUpStationExisted && isDownStationExisted) {
-			throw new RuntimeException("이미 등록된 구간 입니다.");
-		}
-
-		if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-			stations.stream().noneMatch(it -> it == downStation)) {
-			throw new RuntimeException("등록할 수 없는 구간 입니다.");
-		}
-
-		if (stations.isEmpty()) {
-			line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
-			return;
-		}
-
-		if (isUpStationExisted) {
-			line.getSections().stream()
-				.filter(it -> it.getUpStation() == upStation)
-				.findFirst()
-				.ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
-
-			line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
-		} else if (isDownStationExisted) {
-			line.getSections().stream()
-				.filter(it -> it.getDownStation() == downStation)
-				.findFirst()
-				.ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
-
-			line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
-		} else {
-			throw new RuntimeException();
-		}
+		line.addSection(upStation, downStation, request.getDistance());
+		Line persistLine = lineRepository.save(line);
+		return LineResponse.of(persistLine);
 	}
 
 	public void removeLineStation(Long lineId, Long stationId) {
 		Line line = findLineById(lineId);
-		Station station = stationService.findStationById(stationId);
-		if (line.getSections().size() <= 1) {
-			throw new RuntimeException();
-		}
+		Station station = findStationById(stationId);
 
-		Optional<Section> upLineStation = line.getSections().stream()
-			.filter(it -> it.getUpStation() == station)
-			.findFirst();
-		Optional<Section> downLineStation = line.getSections().stream()
-			.filter(it -> it.getDownStation() == station)
-			.findFirst();
-
-		if (upLineStation.isPresent() && downLineStation.isPresent()) {
-			Station newUpStation = downLineStation.get().getUpStation();
-			Station newDownStation = upLineStation.get().getDownStation();
-			int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-			line.getSections().add(new Section(line, newUpStation, newDownStation, newDistance));
-		}
-
-		upLineStation.ifPresent(it -> line.getSections().remove(it));
-		downLineStation.ifPresent(it -> line.getSections().remove(it));
+		line.deleteSection(station);
 	}
 
-	private Line findLineById(Long id) {
-		return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+	private Line findLineById(Long LindId) {
+		return lineRepository.findById(LindId).orElseThrow(RuntimeException::new);
+	}
+
+	private Station findStationById(Long stationId) {
+		return stationService.findById(stationId);
 	}
 }
