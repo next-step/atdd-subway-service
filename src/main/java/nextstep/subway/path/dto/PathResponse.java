@@ -13,7 +13,7 @@ public class PathResponse {
     public PathResponse() {
     }
 
-    public PathResponse(List<StationResponse> stations, int distance) {
+    private PathResponse(List<StationResponse> stations, int distance) {
         this.stations = stations;
         this.distance = distance;
     }
