@@ -22,8 +22,8 @@ public class Line extends BaseEntity {
         private Long id;
         private String name;
         private String color;
-        Station upStation;
-        Station downStation;
+        private Station upStation;
+        private Station downStation;
         int distance;
 
         public Builder(Long id, String name, String color) {
