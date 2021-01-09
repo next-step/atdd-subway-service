@@ -3,10 +3,12 @@ package nextstep.subway.path.infra;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.Money;
 import nextstep.subway.path.domain.MemberDiscount;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.function.Function;
 
+@Component
 public class AgeDiscount implements MemberDiscount {
 
     private static final Money BASIC_DEDUCTION = Money.valueOf(350);
@@ -17,7 +19,7 @@ public class AgeDiscount implements MemberDiscount {
         return age.discount(fee);
     }
 
-    public enum Age {
+    private enum Age {
         KIDS(6, 12, fee -> fee.subtract(BASIC_DEDUCTION).multiply(0.5)),
         TEENAGER(13, 18, fee -> fee.subtract(BASIC_DEDUCTION).multiply(0.2)),
         ETC(0, 0, fee -> Money.zero());

@@ -23,7 +23,7 @@ public class PathController {
                                                          @RequestParam long target) {
 
         PathResponse pathResponse = Objects.isNull(loginMember) ?
-                pathService.findShortest(source, target) : pathService.findShortestWithFee(source, target);
+                pathService.findShortest(source, target) : pathService.findShortestWithFee(source, target, loginMember);
         return ResponseEntity.ok(pathResponse);
     }
 
