@@ -8,11 +8,10 @@ public class Fee {
 
     private int fee;
 
-    protected Fee() {
-        fee = DEFAULT_FEE;
-    }
+    protected Fee() {}
 
     private Fee(int fee) {
+        validate(fee);
         this.fee = fee;
     }
 
@@ -21,12 +20,12 @@ public class Fee {
         this.fee = defaultFee + overFare;
     }
 
-    public static Fee ofWithOverFare(int overFare) {
-        return new Fee(DEFAULT_FEE, overFare);
-    }
-    
     public static Fee of(int fee) {
         return new Fee(fee);
+    }
+
+    public static Fee ofWithOverFare(int overFare) {
+        return new Fee(DEFAULT_FEE, overFare);
     }
 
     public Fee calculateBasicFee(Distance distance) {
@@ -53,7 +52,7 @@ public class Fee {
 
     private void validate(int fee) {
         if (fee < 0) {
-            throw new IllegalArgumentException("추가요금은 0보다 작을 수 없습니다.");
+            throw new IllegalArgumentException("요금에 대한 금액은 0보다 작을 수 없습니다.");
         }
     }
 

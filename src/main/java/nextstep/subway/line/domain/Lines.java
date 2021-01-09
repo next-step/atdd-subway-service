@@ -49,10 +49,6 @@ public class Lines {
         return fee;
     }
 
-    public List<Line> get() {
-        return lines;
-    }
-
     private Fee findMaxFee() {
         Optional<Fee> max = lines.stream().map(Line::getFee)
                 .max(Comparator.comparingInt(Fee::get));
