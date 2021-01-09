@@ -32,6 +32,13 @@ public class Line extends BaseEntity {
         sections.addSection(new Section(this, upStation, downStation, distance));
     }
 
+    public Line(Long id, String name, String color, Station upStation, Station downStation, int distance) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        sections.addSection(new Section(this, upStation, downStation, distance));
+    }
+
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
@@ -49,10 +56,15 @@ public class Line extends BaseEntity {
         return color;
     }
 
+    public Sections getSections() {
+        return sections;
+    }
+
+    public List<Section> getSectionList() {
+        return this.sections.getSections();
+    }
+
     public List<Station> getStations() {
-        if (Objects.isNull(this.sections)) {
-            return Collections.emptyList();
-        }
         return this.sections.getStations();
     }
 
