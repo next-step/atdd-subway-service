@@ -1,5 +1,6 @@
 package nextstep.subway.member.application;
 
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
@@ -8,7 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class MemberService {
+    private static final String EXCEPTION_CANNOT_FIND_MEMBER = "cannot find id matched member";
     private MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
@@ -21,12 +24,12 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(id).orElseThrow(() -> new AuthorizationException(EXCEPTION_CANNOT_FIND_MEMBER));
         return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(id).orElseThrow(() -> new AuthorizationException(EXCEPTION_CANNOT_FIND_MEMBER));
         member.update(param.toMember());
     }
 
