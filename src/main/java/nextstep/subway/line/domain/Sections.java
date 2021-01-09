@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Embeddable
 public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    private final List<Section> sections = new ArrayList<>();
 
     public void addSection(Section section) {
         if (sections.isEmpty()) {
@@ -52,8 +52,8 @@ public class Sections {
                     .build());
         }
 
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
+        upLineStation.ifPresent(sections::remove);
+        downLineStation.ifPresent(sections::remove);
     }
 
     public List<Station> getStations() {
@@ -67,6 +67,10 @@ public class Sections {
             nextSection = findNextSection(nextSection.getDownStation()).orElse(null);
         }
         return stations;
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 
     private void checkExistSection(Section section) {

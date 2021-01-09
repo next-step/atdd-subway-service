@@ -1,14 +1,64 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.exception.InvalidFindShortestPathException;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-public class PathFinder {
-    private WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+import java.util.List;
 
-    public PathFinder(Lines lines, Station source, Station target) {
-        graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+public class PathFinder {
+    private final WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph;
+    private final DijkstraShortestPath dijkstraShortestPath;
+
+    public PathFinder(Lines lines) {
+        stationGraph = new WeightedMultigraph(DefaultWeightedEdge.class);
+
+        generateStationGraph(lines);
+
+        dijkstraShortestPath = new DijkstraShortestPath(stationGraph);
+    }
+
+    public PathResponse findShortestPath(Station source, Station target) {
+        validate(source, target);
+
+        List<Station> shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
+        //GraphPath<Station, DefaultWeightedEdge> f = dijkstraShortestPath.getPath(source, target);
+        //f.getWeight();
+        return new PathResponse();
+    }
+
+    private void generateStationGraph(Lines lines) {
+        addVertex(lines);
+        setEdgeWeight(lines);
+    }
+
+    private void addVertex(Lines lines) {
+        lines.getAllStations().forEach(station -> stationGraph.addVertex(station));
+    }
+
+    private void setEdgeWeight(Lines lines) {
+        lines.getAllSections().forEach(section -> {
+            Station upStation = section.getUpStation();
+            Station downStation = section.getDownStation();
+            int distance = section.getDistance().getDistance();
+
+            stationGraph.setEdgeWeight(stationGraph.addEdge(upStation, downStation), distance);
+        });
+    }
+
+    private void validate(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new InvalidFindShortestPathException("출발역과 도착역이 같으면 조회 불가능합니다.");
+        }
+        if (!stationGraph.containsVertex(source) || !stationGraph.containsVertex(target)) {
+            throw new InvalidFindShortestPathException("출발역이나 도착역이 존재하지 않습니다.");
+        }
+        if (dijkstraShortestPath.getPath(source, target) == null) {
+            throw new InvalidFindShortestPathException("출발역과 도착역이 연결이 되어 있지 않습니다.");
+        }
     }
 }
