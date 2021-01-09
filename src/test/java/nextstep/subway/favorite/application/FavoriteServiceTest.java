@@ -2,14 +2,18 @@ package nextstep.subway.favorite.application;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
@@ -23,6 +27,14 @@ class FavoriteServiceTest {
 	private EntityManager em;
 
 	@Autowired
+	private FavoriteRepository favoriteRepository;
+
+	@Autowired
+	private StationRepository stationRepository;
+
+	@Autowired
+	private MemberRepository memberRepository;
+
 	private FavoriteService favoriteService;
 
 	private Station 역1;
@@ -34,7 +46,9 @@ class FavoriteServiceTest {
 	private LoginMember 다른사람;
 
 	@BeforeEach
+	@Transactional
 	void setUp() {
+		favoriteService = new FavoriteService(favoriteRepository, stationRepository, memberRepository);
 		주인Member = new Member("2mail", "e", 30);
 		다른사람Member = new Member("email", "d", 50);
 		역1 = new Station("역1");
@@ -45,6 +59,7 @@ class FavoriteServiceTest {
 		em.persist(역2);
 		주인 = new LoginMember(주인Member.getId(), 주인Member.getEmail(), 주인Member.getAge());
 		다른사람 = new LoginMember(다른사람Member.getId(), 다른사람Member.getEmail(), 다른사람Member.getAge());
+		em.clear();
 	}
 
 	@Test
