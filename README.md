@@ -15,6 +15,23 @@
 # 지하철 노선도 미션
 [ATDD 강의](https://edu.nextstep.camp/c/R89PYi5H) 실습을 위한 지하철 노선도 애플리케이션
 
+### 테스트 시나리오
+####Feature: 지하철 구간 관련 기능
+Background
+- Given 지하철역 등록되어 있음
+- And 지하철 노선 등록되어 있음
+- And 지하철 노선에 지하철역 등록되어 있음
+
+Scenario: 지하철 구간을 관리  
+- When 지하철 구간 등록 요청  
+  Then 지하철 구간 등록됨
+- When 지하철 노선에 등록된 역 목록 조회 요청  
+Then 등록한 지하철 구간이 반영된 역 목록이 조회됨
+- When 지하철 구간 삭제 요청  
+Then 지하철 구간 삭제됨
+- When 지하철 노선에 등록된 역 목록 조회 요청  
+Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+
 <br>
 
 ## 🚀 Getting Started
