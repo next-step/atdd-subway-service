@@ -19,14 +19,11 @@ public class Path {
         this.distance = distance;
     }
 
-    public Money settle(final DistanceFee distanceFee, final LineFee lineFee) {
-        Money settledDistanceFee = distanceFee.settle(distance);
-        List<Long> lineIds = getLineIds();
-        Money settledLineFee = lineFee.settle(lineIds);
-        return settledDistanceFee.add(settledLineFee);
+    public Money settle(final DistanceFee distanceFee) {
+        return distanceFee.settle(distance);
     }
 
-    private List<Long> getLineIds() {
+    public List<Long> getLineIds() {
         return pathSections.getLineIds();
     }
 

@@ -3,16 +3,22 @@ package nextstep.subway.path.application;
 import lombok.RequiredArgsConstructor;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.Money;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.*;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.infra.JgraphtPathFinder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
 public class PathService {
 
     private final PathRepository pathRepository;
+
+    private final LineRepository lineRepository;
 
     private final PathFinder pathFinder = JgraphtPathFinder.getInstance();
 
@@ -41,9 +47,16 @@ public class PathService {
     }
 
     private Money settleFee(final Path path, final LoginMember loginMember) {
-        Money fee = path.settle(distanceFee, lineFee);
-        Money discount = memberDiscount.discount(loginMember, fee);
-        return fee.subtract(discount);
+        Money settledDistanceFee = path.settle(distanceFee);
+        Money settledLineFee = settleLineFee(path);
+        Money totalFee = settledDistanceFee.add(settledLineFee);
+        Money discount = memberDiscount.discount(loginMember, totalFee);
+        return totalFee.subtract(discount);
+    }
+
+    private Money settleLineFee(final Path path) {
+        List<Line> lines = lineRepository.findAllByIds(path.getLineIds());
+        return lineFee.settle(lines);
     }
 
     private PathStation findById(final long targetId) {
