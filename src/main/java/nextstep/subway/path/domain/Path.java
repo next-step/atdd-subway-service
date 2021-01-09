@@ -4,21 +4,21 @@ import java.util.List;
 
 public class Path {
 
-    private final List<PathStation> pathStations;
+    private final PathSections pathSections;
 
     private final Distance distance;
 
-    public Path(final List<PathStation> pathStations, final int distance) {
-        this(pathStations, Distance.valueOf(distance));
+    public Path(final PathSections pathSections, final int distance) {
+        this(pathSections, Distance.valueOf(distance));
     }
 
-    public Path(final List<PathStation> pathStations, final Distance distance) {
-        this.pathStations = pathStations;
+    public Path(final PathSections pathSections, final Distance distance) {
+        this.pathSections = pathSections;
         this.distance = distance;
     }
 
     public List<PathStation> getPathStations() {
-        return pathStations;
+        return pathSections.getPathStations();
     }
 
     public int getDistance() {

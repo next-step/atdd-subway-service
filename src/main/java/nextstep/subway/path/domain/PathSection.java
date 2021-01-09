@@ -6,6 +6,8 @@ import java.util.Objects;
 
 public class PathSection {
 
+    private final Long lineId;
+
     private final PathStation upStation;
 
     private final PathStation downStation;
@@ -13,9 +15,30 @@ public class PathSection {
     private final int distance;
 
     public PathSection(final PathStation upStation, final PathStation downStation, final int distance) {
+        this(null, upStation, downStation, distance);
+    }
+
+    public PathSection(final Long lineId, final PathStation upStation, final PathStation downStation, final int distance) {
+        this.lineId = lineId;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public PathSection reverse() {
+        return new PathSection(lineId, downStation, upStation, distance);
+    }
+
+    public boolean contains(final PathStation source, final PathStation target) {
+        return hasSameStations(source, target) || hasReverseStations(source, target);
+    }
+
+    private boolean hasSameStations(final PathStation source, final PathStation target) {
+        return upStation.equals(source) && downStation.equals(target);
+    }
+
+    public boolean hasReverseStations(final PathStation source, final PathStation target) {
+        return upStation.equals(target) && downStation.equals(source);
     }
 
     public List<PathStation> getStations() {

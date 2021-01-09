@@ -215,6 +215,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 - 노선별 추가 요금 정책
 - [X] 노선(Line)에 추가 요금(Money) 필드 추가
+- [X] 경로 구간에 lineId 추가
+- [X] 경로 구간들에서 특정 지하철역들에 대한 구간들을 찾을 수 있다.
+- [X] 경로가 최단거리 경로들(PathSections)를 가지도록 변경 
 - [ ] 노선의 추가 요금을 계산하는 노선 요금(LineFee) 도메인 서비스 구현
     - [ ] 추가 요금이 있는 노선을 이용 할 경우 측정된 요금에 추가한다.
     - [ ] 경로 중 추가요금이 있는 노선을 환승 하여 이용 할 경우 가장 높은 금액의 추가 요금만 적용한다.

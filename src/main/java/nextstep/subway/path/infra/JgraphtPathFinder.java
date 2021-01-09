@@ -9,6 +9,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import java.util.List;
 import java.util.Objects;
 
 public class JgraphtPathFinder implements PathFinder {
@@ -31,7 +32,10 @@ public class JgraphtPathFinder implements PathFinder {
             throw new IllegalArgumentException("연결되지 않은 지하철역 입니다.");
         }
 
-        return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight());
+        List<PathStation> shortestPathStations = shortestPath.getVertexList();
+        PathSections shortestPathSections = pathSections.findSections(shortestPathStations);
+        double weight = shortestPath.getWeight();
+        return new Path(shortestPathSections, (int) weight);
     }
 
     private void validate(final PathStation source, final PathStation target) {
