@@ -41,11 +41,11 @@ public class FavoriteAcceptanceSupport {
 	public static void 즐겨찾기_목록_검사(ExtractableResponse<Response> 즐겨찾기_목록_조회_결과, int size, List<String> sourceStationNames) {
 		List<FavoriteResponse> favoriteResponses =
 				즐겨찾기_목록_조회_결과.body().jsonPath().getList("", FavoriteResponse.class);
-//		assertThat(favoriteResponses)
-//				.hasSize(size)
-//				.map(favoriteResponse -> favoriteResponse.getSource().getName())
-//				.asList()
-//				.containsExactly(sourceStationNames);
+		assertThat(favoriteResponses)
+				.hasSize(size)
+				.map(favoriteResponse -> favoriteResponse.getSource().getName())
+				.asList()
+				.containsExactly(sourceStationNames.toArray());
 	}
 
 	public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, ExtractableResponse<Response> 즐겨찾기_생성_결과) {
@@ -60,5 +60,9 @@ public class FavoriteAcceptanceSupport {
 
 	public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> 즐겨찾기_삭제_결과) {
 		assertThat(즐겨찾기_삭제_결과.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+	}
+
+	public static void 즐겨찾기_삭제_실패함(ExtractableResponse<Response> 즐겨찾기_삭제_결과) {
+		assertThat(즐겨찾기_삭제_결과.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 }

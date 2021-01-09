@@ -24,6 +24,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	private StationResponse 건대역;
 	private LineResponse 이호선;
 	private String accessToken;
+	private String otherAccessToken;
 
 	@Override
 	@BeforeEach
@@ -39,6 +40,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 		MemberAcceptanceSupport.회원_생성을_요청("any", "any", 50);
 		accessToken = MemberAcceptanceSupport.회원_로그인_요청("any", "any");
+
+		MemberAcceptanceSupport.회원_생성을_요청("any2", "any2", 50);
+		otherAccessToken = MemberAcceptanceSupport.회원_로그인_요청("any2", "any2");
 	}
 
 	@DisplayName("즐겨찾기를 관리한다.")
@@ -58,5 +62,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> 즐겨찾기_삭제_결과 = FavoriteAcceptanceSupport.즐겨찾기_삭제_요청(accessToken, 즐겨찾기_잠실역_생성_결과);
 		FavoriteAcceptanceSupport.즐겨찾기_삭제됨(즐겨찾기_삭제_결과);
 		FavoriteAcceptanceSupport.즐겨찾기_목록_검사(FavoriteAcceptanceSupport.즐겨찾기_목록_조회_요청(accessToken), 1, Arrays.asList("건대역"));
+	}
+
+	@DisplayName("다른사람의 즐겨찾기는 공개가 되지 않아 삭제할 수 없다.")
+	@Test
+	void deleteByOther() {
+		// 즐겨찾기 생성
+		ExtractableResponse<Response> 즐겨찾기_잠실역_생성_결과 = FavoriteAcceptanceSupport.즐겨찾기_생성_요청(otherAccessToken, 잠실역, 선릉역);
+		FavoriteAcceptanceSupport.즐겨찾기_생성됨(즐겨찾기_잠실역_생성_결과);
+
+		// 즐겨찾기 삭제
+		ExtractableResponse<Response> 즐겨찾기_삭제_결과 = FavoriteAcceptanceSupport.즐겨찾기_삭제_요청(accessToken, 즐겨찾기_잠실역_생성_결과);
+		FavoriteAcceptanceSupport.즐겨찾기_삭제_실패함(즐겨찾기_삭제_결과);
 	}
 }
