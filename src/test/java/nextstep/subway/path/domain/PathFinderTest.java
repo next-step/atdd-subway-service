@@ -4,7 +4,6 @@ import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.exception.InvalidFindShortestPathException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PathFinderTest {
@@ -53,7 +53,9 @@ class PathFinderTest {
 
     @Test
     void findShortestPath() {
-        PathResponse pathResponse = pathFinder.findShortestPath(교대역, 양재역);
+        Path path = pathFinder.findShortestPath(교대역, 양재역);
+        assertThat(path.getStations()).containsExactlyElementsOf(Arrays.asList(교대역, 남부터미널역, 양재역));
+        assertThat(path.getDistance()).isEqualTo(5);
     }
 
     @DisplayName("출발역과 도착역이 같은 경우 조회하지 못한다.")
