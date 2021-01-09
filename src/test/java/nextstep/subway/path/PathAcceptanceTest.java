@@ -1,5 +1,8 @@
 package nextstep.subway.path;
 
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -7,9 +10,13 @@ import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @DisplayName("지하철 경로 조회")
@@ -27,7 +34,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * |                        |
      * *3호선*                   *신분당선*
      * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
+     * 남부터미널역  --- *3호선* --- 양재역
      */
     @BeforeEach
     public void setUp() {
@@ -46,5 +53,37 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+    }
+
+    @DisplayName("출발역부터 도착역까지 최단경로를 조회한다.")
+    @Test
+    void findShortestPath() {
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        // 거리 경로 확인
+        // 거리 길이 확인
+    }
+
+    @DisplayName("출발역과 도착역이 같은 경우 조회하지 못한다.")
+    @Test
+    void findShortestPathException1() {
+    }
+
+    @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우, 조회하지 못한다.")
+    @Test
+    void findShortestPathException2() {
+    }
+
+    @DisplayName("존재하지 않은 출발역이나 도착역을 조회할 경우, 조회하지 못한다.")
+    @Test
+    void findShortestPathException3() {
+    }
+
+    private ExtractableResponse<Response> 최단_경로_조회_요청(Long sourceId, Long targetId) {
+        return RestAssured.given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={sourceId}&target={targetId}", sourceId, targetId)
+                .then().log().all()
+                .extract();
     }
 }
