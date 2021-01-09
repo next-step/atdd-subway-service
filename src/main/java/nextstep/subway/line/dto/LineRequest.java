@@ -48,6 +48,10 @@ public class LineRequest {
         return distance;
     }
 
+    public int getSurcharge() {
+        return surcharge;
+    }
+
     public Line toLine() {
         return new Line(name, color);
     }

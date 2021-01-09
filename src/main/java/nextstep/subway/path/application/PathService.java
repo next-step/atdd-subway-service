@@ -17,6 +17,8 @@ public class PathService {
 
     private final DistanceFee distanceFee;
 
+    private final LineFee lineFee;
+
     public PathResponse findShortest(final long sourceId, final long targetId) {
         PathSections allSections = pathRepository.findAllSections();
         PathStation source = findById(sourceId);
@@ -30,8 +32,9 @@ public class PathService {
         PathStation source = findById(sourceId);
         PathStation target = findById(targetId);
         Path shortest = pathFinder.findShortest(allSections, source, target);
-        Money distanceFee = shortest.settle(this.distanceFee);
-        return PathResponse.of(shortest, distanceFee);
+
+        Money fee = shortest.settle(distanceFee, lineFee);
+        return PathResponse.of(shortest, fee);
     }
 
     private PathStation findById(final long targetId) {

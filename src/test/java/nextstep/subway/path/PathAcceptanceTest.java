@@ -73,12 +73,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         MemberAcceptanceTest.회원_등록되어_있음(email, password, 29);
         String token = AuthAcceptanceTest.회원_로그인되어_있음(email, password);
 
-        // when
+        // when 12Km, 3호선 600원
         ExtractableResponse<Response> response = 지하철_경로_조회_요청(강남역.getId(), 남부터미널역.getId(), token);
 
         // then
         지하철_최단경로_응답됨(response, 강남역.getId(), 양재역.getId(), 남부터미널역.getId());
-        지하철_이용요금_응답됨(response);
+        지하철_이용요금_응답됨(response,1850);
     }
 
     @DisplayName("비로그인 시 경로 조회 시 최단거리 기준 지하철 이용 요금이 응답되지 않음.")
@@ -187,9 +187,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private void 지하철_이용요금_응답됨(final ExtractableResponse<Response> response) {
+    private void 지하철_이용요금_응답됨(final ExtractableResponse<Response> response, final int expectedFee) {
         Integer fee = response.jsonPath().get("fee");
         assertThat(fee).isNotNull();
+        assertThat(fee).isEqualTo(expectedFee);
     }
 
     private void 지하철_이용요금_응답되지않음(final ExtractableResponse<Response> response) {

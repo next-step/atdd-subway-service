@@ -41,6 +41,10 @@ public class PathSection {
         return upStation.equals(target) && downStation.equals(source);
     }
 
+    public Long getLineId() {
+        return lineId;
+    }
+
     public List<PathStation> getStations() {
         return Arrays.asList(upStation, downStation);
     }

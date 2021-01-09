@@ -50,4 +50,11 @@ public class PathSections {
     public List<PathSection> getPathSections() {
         return pathSections;
     }
+
+    public List<Long> getLineIds() {
+        return pathSections.stream()
+                .map(PathSection::getLineId)
+                .distinct()
+                .collect(Collectors.toList());
+    }
 }
