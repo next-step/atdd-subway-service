@@ -22,7 +22,7 @@ public class Sections {
     }
 
     public boolean add(Section section) {
-        Stations stations = new Stations(getStations());
+        List<Station> stations = getStations();
         if (stations.isEmpty()) {
             return sections.add(section);
         }
@@ -78,7 +78,7 @@ public class Sections {
         }
     }
 
-    private void validateSection(Stations stations, Section section) {
+    private void validateSection(List<Station> stations, Section section) {
         boolean isUpStationExisted = stations.contains(section.getUpStation());
         boolean isDownStationExisted = stations.contains(section.getDownStation());
 
