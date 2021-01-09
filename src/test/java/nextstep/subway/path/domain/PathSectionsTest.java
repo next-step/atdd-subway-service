@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class PathSectionsTest {
 
@@ -65,7 +64,8 @@ class PathSectionsTest {
         PathSections pathSections = new PathSections(Arrays.asList(pathSection1, pathSection2));
 
         // when
-        PathSections actual = pathSections.findSections(Arrays.asList(교대역, 잠실역));
+        PathStations pathStations = new PathStations(Arrays.asList(교대역, 잠실역));
+        PathSections actual = pathSections.findSections(pathStations);
 
         // then
         assertThat(actual.getPathStations()).containsExactly(교대역, 잠실역);
@@ -85,7 +85,8 @@ class PathSectionsTest {
         PathSections pathSections = new PathSections(Arrays.asList(pathSection1, pathSection2));
 
         // when
-        PathSections actual = pathSections.findSections(Arrays.asList(잠실역, 교대역));
+        PathStations pathStations = new PathStations(Arrays.asList(잠실역, 교대역));
+        PathSections actual = pathSections.findSections(pathStations);
 
         // then
         assertThat(actual.getPathSections()).containsExactly(new PathSection(잠실역, 교대역, 10));
