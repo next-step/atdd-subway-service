@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -41,19 +40,11 @@ public class Sections {
 		validateAddSection(upStationExistStatus, downStationExistStatus);
 
 		if (upStationExistStatus) {
-			this.sections.stream()
-				.filter(section -> section.isUpStation(target))
-				.findFirst()
-				.ifPresent(section -> section.updateUpStation(target));
-			this.sections.add(target);
+			addDownStation(target);
 		}
 
 		if (downStationExistStatus) {
-			this.sections.stream()
-				.filter(section -> section.isDownStation(target))
-				.findFirst()
-				.ifPresent(section -> section.updateDownStation(target));
-			this.sections.add(target);
+			addUpStation(target);
 		}
 	}
 
@@ -87,13 +78,11 @@ public class Sections {
 
 		while (downStation != null) {
 			Station finalDownStation = downStation;
-			Optional<Section> nextLineStation = this.sections.stream()
-				.filter(it -> it.getUpStation() == finalDownStation)
-				.findFirst();
-			if (!nextLineStation.isPresent()) {
+			Section nextLineSection = findUpSection(finalDownStation);
+			if (nextLineSection == null) {
 				break;
 			}
-			downStation = nextLineStation.get().getDownStation();
+			downStation = nextLineSection.getDownStation();
 			stations.add(downStation);
 		}
 
@@ -104,13 +93,11 @@ public class Sections {
 		Station downStation = this.sections.get(0).getUpStation();
 		while (downStation != null) {
 			Station finalDownStation = downStation;
-			Optional<Section> nextLineStation = this.sections.stream()
-				.filter(it -> it.getDownStation() == finalDownStation)
-				.findFirst();
-			if (!nextLineStation.isPresent()) {
+			Section nextLineSection = findDownSection(finalDownStation);
+			if (nextLineSection == null) {
 				break;
 			}
-			downStation = nextLineStation.get().getUpStation();
+			downStation = nextLineSection.getUpStation();
 		}
 
 		return downStation;
@@ -148,5 +135,21 @@ public class Sections {
 			.filter(section -> section.getDownStation().equals(target))
 			.findFirst()
 			.orElse(null);
+	}
+
+	private void addUpStation(Section target) {
+		this.sections.stream()
+			.filter(section -> section.isDownStation(target))
+			.findFirst()
+			.ifPresent(section -> section.updateDownStation(target));
+		this.sections.add(target);
+	}
+
+	private void addDownStation(Section target) {
+		this.sections.stream()
+			.filter(section -> section.isUpStation(target))
+			.findFirst()
+			.ifPresent(section -> section.updateUpStation(target));
+		this.sections.add(target);
 	}
 }
