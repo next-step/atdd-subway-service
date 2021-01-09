@@ -68,6 +68,10 @@ public class Line extends BaseEntity {
         return sections.getOrderedStations();
     }
 
+    public Money getSurcharge() {
+        return surcharge;
+    }
+
     public void add(final Section section) {
         sections.add(section);
     }

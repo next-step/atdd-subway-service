@@ -2,7 +2,7 @@ package nextstep.subway.common;
 
 import java.util.Objects;
 
-public class Money {
+public class Money implements Comparable<Money> {
 
     private static final int MIN_VALUE = 0;
 
@@ -17,6 +17,10 @@ public class Money {
 
     public static Money valueOf(final int value) {
         return new Money(value);
+    }
+
+    public static Money zero() {
+        return valueOf(MIN_VALUE);
     }
 
     public Money add(final Money other) {
@@ -47,5 +51,10 @@ public class Money {
     @Override
     public int hashCode() {
         return Objects.hash(amount);
+    }
+
+    @Override
+    public int compareTo(final Money other) {
+        return Integer.compare(amount, other.amount);
     }
 }
