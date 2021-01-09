@@ -4,6 +4,7 @@ import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.exception.InvalidSectionException;
 import nextstep.subway.exception.NotFoundSectionException;
 import nextstep.subway.exception.NotFoundStationException;
+import nextstep.subway.path.domain.PathSelector;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -26,20 +27,25 @@ public class Sections {
         this.sections = sections;
     }
 
-    public boolean add(Section section) {
+    public List<Section> getSections() {
+        return sections;
+    }
+
+    public void add(Section section) {
         List<Station> stations = getStations();
         if (stations.isEmpty()) {
-            return sections.add(section);
+            finallyAdd(section);
+            return;
         }
         validateSection(stations, section);
 
         if (stations.contains(section.getUpStation())) {
             updateUpStationInSections(section);
-            return sections.add(section);
+            finallyAdd(section);
+            return;
         }
-
         updateDownStationInSections(section);
-        return sections.add(section);
+        finallyAdd(section);
     }
 
     public void addAll(Section ... sections) {
@@ -52,8 +58,9 @@ public class Sections {
         }
     }
 
-    public boolean remove(Section section) {
-        return sections.remove(section);
+    public void remove(Section section) {
+        sections.remove(section);
+        PathSelector.remove(section);
     }
 
 
@@ -103,6 +110,11 @@ public class Sections {
         for (Station station : stations) {
             removeStation(station);
         }
+    }
+
+    private void finallyAdd(Section section) {
+        sections.add(section);
+        PathSelector.add(section);
     }
 
     private void validateSection(List<Station> stations, Section section) {

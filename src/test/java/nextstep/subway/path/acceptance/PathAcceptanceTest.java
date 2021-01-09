@@ -8,6 +8,7 @@ import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.domain.PathSelector;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -19,6 +20,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.Arrays;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -27,6 +29,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
+    private static final int DEFAULT_DISTANCE = 10;
+
     private static StationResponse 신도림;
     private static StationResponse 문래;
     private static StationResponse 영등포구청;
@@ -44,41 +48,41 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        int defaultDistance = 10;
+        PathSelector.clear();
 
         신도림 = StationAcceptanceTest.지하철역_등록되어_있음("신도림").as(StationResponse.class);
         문래 = StationAcceptanceTest.지하철역_등록되어_있음("문래").as(StationResponse.class);
         영등포구청 = StationAcceptanceTest.지하철역_등록되어_있음("영등포구청").as(StationResponse.class);
         당산 = StationAcceptanceTest.지하철역_등록되어_있음("당산").as(StationResponse.class);
 
-        LineResponse 이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("2호선", "bg-green-600", 신도림.getId(), 문래.getId(), defaultDistance))
+        LineResponse 이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("2호선", "bg-green-600", 신도림.getId(), 문래.getId(), DEFAULT_DISTANCE))
                 .as(LineResponse.class);
 
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 문래, 영등포구청, defaultDistance);
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 영등포구청, 당산, defaultDistance);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 문래, 영등포구청, DEFAULT_DISTANCE);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 영등포구청, 당산, DEFAULT_DISTANCE);
 
         국회의사당 = StationAcceptanceTest.지하철역_등록되어_있음("국회의사당").as(StationResponse.class);
         여의도 = StationAcceptanceTest.지하철역_등록되어_있음("여의도").as(StationResponse.class);
         샛강 = StationAcceptanceTest.지하철역_등록되어_있음("샛강").as(StationResponse.class);
         노량진 = StationAcceptanceTest.지하철역_등록되어_있음("노량진").as(StationResponse.class);
 
-        LineResponse 구호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("9호선", "bg-brown-600", 당산.getId(), 국회의사당.getId(), defaultDistance))
+        LineResponse 구호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("9호선", "bg-brown-600", 당산.getId(), 국회의사당.getId(), DEFAULT_DISTANCE))
                 .as(LineResponse.class);
 
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(구호선, 국회의사당, 여의도, defaultDistance);
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(구호선, 여의도, 샛강, defaultDistance);
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(구호선, 샛강, 노량진, defaultDistance);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(구호선, 국회의사당, 여의도, DEFAULT_DISTANCE);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(구호선, 여의도, 샛강, DEFAULT_DISTANCE);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(구호선, 샛강, 노량진, DEFAULT_DISTANCE);
 
         영등포 = StationAcceptanceTest.지하철역_등록되어_있음("영등포").as(StationResponse.class);
         신길 = StationAcceptanceTest.지하철역_등록되어_있음("신길").as(StationResponse.class);
         대방 = StationAcceptanceTest.지하철역_등록되어_있음("대방").as(StationResponse.class);
 
-        LineResponse 일호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("1호선", "bg-blue-600", 신도림.getId(), 영등포.getId(), defaultDistance))
+        LineResponse 일호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("1호선", "bg-blue-600", 신도림.getId(), 영등포.getId(), DEFAULT_DISTANCE))
                 .as(LineResponse.class);
 
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 영등포, 신길, defaultDistance);
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 신길, 대방, defaultDistance);
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 대방, 노량진, defaultDistance);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 영등포, 신길, DEFAULT_DISTANCE);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 신길, 대방, DEFAULT_DISTANCE);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 대방, 노량진, DEFAULT_DISTANCE);
     }
 
     @DisplayName("최단거리 역 목록 조회")
@@ -92,7 +96,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 최단거리_역_목록_조회_요청(source.getId(), target.getId());
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         PathResponse pathResponse = response.as(PathResponse.class);
+
         assertThat(pathResponse.getStations()).containsExactly(expected);
+        assertThat(pathResponse.getDistance()).isEqualTo((pathResponse.getStations().size() - 1) * DEFAULT_DISTANCE);
     }
 
     private static Stream<Arguments> selectPath() {
