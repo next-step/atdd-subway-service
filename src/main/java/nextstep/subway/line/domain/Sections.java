@@ -47,8 +47,9 @@ public class Sections {
 
         verifyAddLineStation(upStation, downStation, stations);
 
-        if (addLineStationIfEmpty(line, upStation, downStation, distance, stations))
+        if (addLineStationIfEmpty(line, upStation, downStation, distance, stations)) {
             return;
+        }
 
         updateUpStation(upStation, downStation, distance, stations);
         updateDownStation(upStation, downStation, distance, stations);
@@ -115,9 +116,7 @@ public class Sections {
         if (upLineOptSection.isPresent() && downLineOptSection.isPresent()) {
             Section downLineSection = downLineOptSection.get();
             Section upLineSection = upLineOptSection.get();
-
-            addSection(line, downLineSection.getUpStation(), upLineSection.getDownStation(),
-                    upLineSection.getDistance() + downLineSection.getDistance());
+            sections.add(new Section(line, upLineSection, downLineSection));
         }
     }
 
