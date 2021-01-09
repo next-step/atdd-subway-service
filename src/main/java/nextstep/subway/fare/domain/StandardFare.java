@@ -37,13 +37,11 @@ public class StandardFare implements Fare {
 	}
 
 	private int calculateStep1Fare(int distance) {
-		return (distance / STEP1_FARE_STANDARD_DISTANCE + distance % STEP1_FARE_STANDARD_DISTANCE)
-			  * OVER_FARE;
+		return (int) ((Math.ceil((distance - 1) / STEP1_FARE_STANDARD_DISTANCE) + 1) * OVER_FARE);
 	}
 
 	private int calculateStep2Fare(int distance) {
-		return (distance / STEP2_FARE_STANDARD_DISTANCE + distance % STEP2_FARE_STANDARD_DISTANCE)
-			  * OVER_FARE;
+		return (int) ((Math.ceil((distance - 1) / STEP2_FARE_STANDARD_DISTANCE) + 1) * OVER_FARE);
 	}
 
 	private int calculateAdditionalFare(List<Station> shortestPath, List<Section> sections) {

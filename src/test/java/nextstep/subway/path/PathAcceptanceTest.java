@@ -8,10 +8,12 @@ import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.Map;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionTestAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathResponseDto;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -60,18 +62,55 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		params.put("target", 남부터미널역.getId());
 
 		//when
-		ExtractableResponse<Response> response = RestAssured.given().log().all()
-			  .contentType(MediaType.APPLICATION_JSON_VALUE)
-			  .params(params)
-			  .when().get("/paths")
-			  .then().log().all()
-			  .extract();
+		ExtractableResponse<Response> response = 경로_조회를_요청한다(params);
 
 		//then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 		PathResponseDto responseBody = response.body().as(PathResponseDto.class);
 		assertThat(responseBody.getStations()).hasSize(3);
 		assertThat(responseBody.getDistance()).isEqualTo(12);
+		assertThat(responseBody.getDistance()).isEqualTo(12);
+		assertThat(responseBody.getFare()).isEqualTo(1_350);
+	}
+
+	@DisplayName("청소년 회원 경로 요금 조회")
+	@Test
+	void pathsWithTeenAger() {
+		//로그인이 되어 있다.
+		String accessToken = 로그인_되어_있음(13);
+		Map<String, Long> params = new HashMap<>();
+		params.put("source", 강남역.getId());
+		params.put("target", 남부터미널역.getId());
+
+		//when
+		ExtractableResponse<Response> response = 로그인한_회원이_경로_조회를_요청한다(
+			  accessToken, params);
+
+		//then
+		PathResponseDto responseBody = response.body().as(PathResponseDto.class);
+		assertThat(responseBody.getStations()).hasSize(3);
+		assertThat(responseBody.getDistance()).isEqualTo(12);
+		assertThat(responseBody.getFare()).isEqualTo(800);
+	}
+
+	@DisplayName("어린이 회원 경로 요금 조회")
+	@Test
+	void pathsWithChild() {
+		//로그인이 되어 있다.
+		String accessToken = 로그인_되어_있음(12);
+		Map<String, Long> params = new HashMap<>();
+		params.put("source", 강남역.getId());
+		params.put("target", 남부터미널역.getId());
+
+		//when
+		ExtractableResponse<Response> response = 로그인한_회원이_경로_조회를_요청한다(
+			  accessToken, params);
+
+		//then
+		PathResponseDto responseBody = response.body().as(PathResponseDto.class);
+		assertThat(responseBody.getStations()).hasSize(3);
+		assertThat(responseBody.getDistance()).isEqualTo(12);
+		assertThat(responseBody.getFare()).isEqualTo(500);
 	}
 
 	@DisplayName("구간에 등록되지 않은 지하철 최적경로를 조회힌다.")
@@ -83,12 +122,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		params.put("target", 고매역.getId());
 
 		//when
-		ExtractableResponse<Response> response = RestAssured.given().log().all()
-			  .contentType(MediaType.APPLICATION_JSON_VALUE)
-			  .params(params)
-			  .when().get("/paths")
-			  .then().log().all()
-			  .extract();
+		ExtractableResponse<Response> response = 경로_조회를_요청한다(params);
 
 		//then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -107,6 +141,35 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		  StationResponse downStation, int distance) {
 		LineSectionTestAcceptanceTest
 			  .지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
+	}
+
+	private String 로그인_되어_있음(int age) {
+		String email = "test@dev.com";
+		String password = "1234";
+		MemberAcceptanceTest.회원_생성을_요청(email, password, age);
+		return AuthAcceptanceTest.접근권한_토큰값을_가져온다(email, password);
+	}
+
+	private ExtractableResponse<Response> 경로_조회를_요청한다(Map<String, Long> params) {
+		return RestAssured.given().log().all()
+			  .contentType(MediaType.APPLICATION_JSON_VALUE)
+			  .params(params)
+			  .when().get("/paths")
+			  .then().log().all()
+			  .extract();
+	}
+
+	private ExtractableResponse<Response> 로그인한_회원이_경로_조회를_요청한다(String accessToken,
+		  Map<String, Long> params) {
+		ExtractableResponse<Response> response = RestAssured.given().log().all()
+			  .auth().oauth2(accessToken)
+			  .contentType(MediaType.APPLICATION_JSON_VALUE)
+			  .params(params)
+			  .when().get("/paths")
+			  .then().log().all()
+			  .statusCode(HttpStatus.OK.value())
+			  .extract();
+		return response;
 	}
 }
 

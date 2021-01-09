@@ -86,4 +86,8 @@ public class Section {
     public int getDistance() {
         return distance;
     }
+
+    public int getAdditionalFare() {
+        return this.line.getAdditionalFare();
+    }
 }

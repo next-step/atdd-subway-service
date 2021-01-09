@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResponseDto;
 import nextstep.subway.station.domain.Station;
@@ -14,14 +15,17 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class Paths {
+
+	private List<Section> sections;
 	private Set<Station> stations;
 	private DijkstraShortestPath dijkstraShortestPath;
 
 	public Paths(List<Section> sections) {
+		this.sections = registerSections(sections);
 		this.dijkstraShortestPath = build(sections);
 	}
 
-	public PathResponseDto getPath(Station source, Station target) {
+	public PathResponseDto getPath(Station source, Station target, Fare fare) {
 		validate(source, target);
 
 		GraphPath graphPath = dijkstraShortestPath.getPath(source, target);
@@ -33,7 +37,10 @@ public class Paths {
 		List<StationResponse> paths = shortestPath.stream()
 			  .map(StationResponse::of)
 			  .collect(Collectors.toList());
-		return new PathResponseDto(paths, (int) graphPath.getWeight());
+		int distance = (int) graphPath.getWeight();
+
+		fare.calculateFare(shortestPath, sections, distance);
+		return new PathResponseDto(paths, distance, fare.getFare());
 	}
 
 	private void validate(Station source, Station target) {
@@ -44,6 +51,14 @@ public class Paths {
 		if (source.equals(target)) {
 			throw new RuntimeException("출발역과 도착역이 같습니다.");
 		}
+	}
+
+	private List<Section> registerSections(List<Section> sections) {
+		if (sections == null || sections.isEmpty()) {
+			throw new RuntimeException();
+		}
+
+		return sections;
 	}
 
 	private DijkstraShortestPath build(List<Section> sections) {
