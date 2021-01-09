@@ -2,11 +2,9 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 public class Line extends BaseEntity {
@@ -18,6 +16,8 @@ public class Line extends BaseEntity {
     private String color;
     @Embedded
     private Sections sections;
+    @Embedded
+    private Fee fee;
 
     protected Line() {}
 
@@ -31,6 +31,14 @@ public class Line extends BaseEntity {
         this.name = name;
         this.color = color;
         this.sections = Sections.of(this, upStation, downStation, distance);
+        this.fee = Fee.ofWithOverFare(0);
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int overFare) {
+        this.name = name;
+        this.color = color;
+        this.sections = Sections.of(this, upStation, downStation, distance);
+        this.fee = Fee.ofWithOverFare(overFare);
     }
 
     public void addLineStation(Station upStation, Station downStation, int distance) {
@@ -64,5 +72,9 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public Fee getFee() {
+        return fee;
     }
 }
