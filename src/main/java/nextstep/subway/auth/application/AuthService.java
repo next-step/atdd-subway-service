@@ -27,7 +27,10 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
+    public LoginMember findMemberByToken(String credentials, boolean skipException) {
+        if (isSkipRequest(credentials, skipException)) {
+            return null;
+        }
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException();
         }
@@ -35,5 +38,9 @@ public class AuthService {
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+    }
+
+    private boolean isSkipRequest(String credentials, boolean skipException) {
+        return !jwtTokenProvider.validateToken(credentials) && skipException;
     }
 }
