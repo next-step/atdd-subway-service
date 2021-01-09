@@ -14,21 +14,9 @@ import nextstep.subway.line.dto.LineResponse;
 @RestControllerAdvice
 public class Advice {
 
-	@ExceptionHandler(NothingException.class)
+	@ExceptionHandler({NothingException.class, RuntimeException.class, IllegalArgumentException.class})
 	public ResponseEntity<LineResponse> handleLineNotFoundException(NothingException e) {
-		log.error("Target NotFoundException: " + e.getMessage());
-		return ResponseEntity.badRequest().build();
-	}
-
-	@ExceptionHandler(RuntimeException.class)
-	public ResponseEntity<?> handleRuntimeException(RuntimeException e) {
-		log.error("RuntimeException: " + e.getMessage());
-		return ResponseEntity.badRequest().build();
-	}
-
-	@ExceptionHandler(IllegalArgumentException.class)
-	public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException e) {
-		log.error("IllegalArgumentException: " + e.getMessage());
+		log.error("Bad request Error: " + e.getMessage());
 		return ResponseEntity.badRequest().build();
 	}
 
