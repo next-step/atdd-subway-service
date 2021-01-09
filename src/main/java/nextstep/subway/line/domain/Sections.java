@@ -79,7 +79,9 @@ public class Sections {
         downLineStation.ifPresent(this::remove);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            mergeSection(upLineStation.get(), downLineStation.get());
+            Section upSection = upLineStation.get();
+            Section downSection = downLineStation.get();
+            add(upSection.merge(downSection));
         }
     }
 
@@ -111,13 +113,6 @@ public class Sections {
                 .filter(filter)
                 .findFirst()
                 .ifPresent(updater);
-    }
-
-    private void mergeSection(Section upSection, Section downSection) {
-        Line line = sections.get(0).getLine();
-
-        Distance newDistance = upSection.getDistance().plus(downSection.getDistance());
-        add(new Section(line, upSection.getUpStation(), downSection.getDownStation(), newDistance.value()));
     }
 
     private Section findLastUpSection() {
