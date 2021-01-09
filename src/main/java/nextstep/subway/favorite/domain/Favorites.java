@@ -22,8 +22,4 @@ public class Favorites {
     public List<Favorite> getFavorites() {
         return Collections.unmodifiableList(favorites);
     }
-
-    public void remove(final Favorite favorite) {
-        favorites.remove(favorite);
-    }
 }

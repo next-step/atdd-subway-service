@@ -19,7 +19,7 @@ public class Member extends BaseEntity {
     private Integer age;
 
     @Embedded
-    private Favorites favorites = Favorites.createInstance();
+    private final Favorites favorites = Favorites.createInstance();
 
     public Member() {
     }
@@ -60,9 +60,5 @@ public class Member extends BaseEntity {
 
     public List<Favorite> getFavorites() {
         return favorites.getFavorites();
-    }
-
-    public void removeFavorite(final Favorite favorite) {
-        favorites.remove(favorite);
     }
 }
