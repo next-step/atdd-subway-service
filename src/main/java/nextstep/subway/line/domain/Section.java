@@ -56,11 +56,11 @@ public class Section {
     }
 
     public boolean equalsUpStation(Station station) {
-        return upStation == station;
+        return upStation.equals(station);
     }
 
     public boolean equalsDownStation(Station station) {
-        return downStation == station;
+        return downStation.equals(station);
     }
 
     public void updateUpStation(Station station, Distance newDistance) {
