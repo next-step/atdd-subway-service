@@ -19,9 +19,4 @@ public class PathController {
     public ResponseEntity<PathResponse> findPath(@RequestParam Long source, @RequestParam Long target) {
         return ResponseEntity.ok(pathService.findPathByIds(source, target));
     }
-
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity handleIllegalArgsException(RuntimeException e) {
-        return ResponseEntity.badRequest().build();
-    }
 }
