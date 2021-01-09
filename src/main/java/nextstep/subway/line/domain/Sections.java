@@ -111,4 +111,9 @@ public class Sections {
     private boolean hasNotStation(Station targetStation) {
         return !this.getStations().contains(targetStation);
     }
+
+    public boolean hasSection(long source, long target) {
+        return this.sections.stream()
+                .anyMatch(section -> section.equalsById(source, target));
+    }
 }

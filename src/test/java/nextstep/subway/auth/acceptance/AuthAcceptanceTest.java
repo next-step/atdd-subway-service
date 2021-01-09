@@ -89,4 +89,19 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 extract();
     }
 
+    public static void 회원_등록되어_있음(String email, String password, int age) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+        params.put("age", age + "");
+        RestAssured.given().log().all().
+                body(params).
+                contentType(MediaType.APPLICATION_JSON_VALUE).
+                when().
+                post("/members").
+                then().
+                log().all().
+                extract();
+    }
+
 }

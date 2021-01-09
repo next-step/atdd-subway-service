@@ -78,6 +78,11 @@ public class Section {
         return new Section(this.line, section.upStation, this.downStation, this.distance);
     }
 
+    public boolean equalsById(long source, long target) {
+        return (upStation.isSameId(source) && downStation.isSameId(target)) ||
+                (upStation.isSameId(target) && downStation.isSameId(source));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

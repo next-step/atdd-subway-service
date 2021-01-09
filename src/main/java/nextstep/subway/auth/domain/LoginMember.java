@@ -14,6 +14,10 @@ public class LoginMember {
         this.age = age;
     }
 
+    public boolean isEmpty() {
+        return id == null && email == null && age == null;
+    }
+
     public Long getId() {
         return id;
     }
@@ -23,6 +27,9 @@ public class LoginMember {
     }
 
     public Integer getAge() {
+        if (isEmpty()) {
+            return 0;
+        }
         return age;
     }
 }

@@ -34,7 +34,8 @@ public class LineService {
                 request.getColor(),
                 stationService.findStationById(request.getUpStationId()),
                 stationService.findStationById(request.getDownStationId()),
-                request.getDistance());
+                request.getDistance(),
+                request.getOverFare());
     }
 
     @Transactional(readOnly = true)
