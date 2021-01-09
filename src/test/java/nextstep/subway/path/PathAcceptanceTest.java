@@ -45,39 +45,41 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
+        int defaultDistance = 10;
+
         신도림 = StationAcceptanceTest.지하철역_등록되어_있음("신도림").as(StationResponse.class);
         문래 = StationAcceptanceTest.지하철역_등록되어_있음("문래").as(StationResponse.class);
         영등포구청 = StationAcceptanceTest.지하철역_등록되어_있음("영등포구청").as(StationResponse.class);
         당산 = StationAcceptanceTest.지하철역_등록되어_있음("당산").as(StationResponse.class);
 
-        LineResponse 이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("2호선", "bg-green-600", 신도림.getId(), 문래.getId(), 1))
+        LineResponse 이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("2호선", "bg-green-600", 신도림.getId(), 문래.getId(), defaultDistance))
                 .as(LineResponse.class);
 
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 문래, 영등포구청, 1);
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 영등포구청, 당산, 1);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 문래, 영등포구청, defaultDistance);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 영등포구청, 당산, defaultDistance);
 
         국회의사당 = StationAcceptanceTest.지하철역_등록되어_있음("국회의사당").as(StationResponse.class);
         여의도 = StationAcceptanceTest.지하철역_등록되어_있음("여의도").as(StationResponse.class);
         샛강 = StationAcceptanceTest.지하철역_등록되어_있음("샛강").as(StationResponse.class);
         노량진 = StationAcceptanceTest.지하철역_등록되어_있음("노량진").as(StationResponse.class);
 
-        LineResponse 구호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("9호선", "bg-brown-600", 당산.getId(), 국회의사당.getId(), 1))
+        LineResponse 구호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("9호선", "bg-brown-600", 당산.getId(), 국회의사당.getId(), defaultDistance))
                 .as(LineResponse.class);
 
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(구호선, 국회의사당, 여의도, 1);
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(구호선, 여의도, 샛강, 1);
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(구호선, 샛강, 노량진, 1);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(구호선, 국회의사당, 여의도, defaultDistance);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(구호선, 여의도, 샛강, defaultDistance);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(구호선, 샛강, 노량진, defaultDistance);
 
         영등포 = StationAcceptanceTest.지하철역_등록되어_있음("영등포").as(StationResponse.class);
         신길 = StationAcceptanceTest.지하철역_등록되어_있음("신길").as(StationResponse.class);
         대방 = StationAcceptanceTest.지하철역_등록되어_있음("대방").as(StationResponse.class);
 
-        LineResponse 일호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("1호선", "bg-blue-600", 신도림.getId(), 영등포.getId(), 1))
+        LineResponse 일호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("1호선", "bg-blue-600", 신도림.getId(), 영등포.getId(), defaultDistance))
                 .as(LineResponse.class);
 
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 영등포, 신길, 1);
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 신길, 대방, 1);
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 대방, 노량진, 1);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 영등포, 신길, defaultDistance);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 신길, 대방, defaultDistance);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 대방, 노량진, defaultDistance);
     }
 
     @DisplayName("최단거리 역 목록 조회")
