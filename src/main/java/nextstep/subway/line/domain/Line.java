@@ -38,6 +38,14 @@ public class Line extends BaseEntity {
         this.color = line.getColor();
     }
 
+    public void addSection(Section section) {
+        sections.add(section);
+    }
+
+    public void removeStation(Station station) {
+        sections.removeStation(station);
+    }
+
     public Long getId() {
         return id;
     }
