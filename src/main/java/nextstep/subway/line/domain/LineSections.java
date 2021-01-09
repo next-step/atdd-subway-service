@@ -9,12 +9,17 @@ import javax.persistence.OneToMany;
 import java.util.*;
 
 @Embeddable
-class LineSections {
+class LineSections implements Iterable<Section> {
 
 	private static final int MINIMUM_SECTION_SIZE = 1;
 
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private List<Section> sections;
+
+	@Override
+	public Iterator<Section> iterator() {
+		return this.sections.iterator();
+	}
 
 	LineSections() {
 		sections = new ArrayList<>();

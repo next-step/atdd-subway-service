@@ -4,6 +4,7 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Iterator;
 import java.util.List;
 
 @Entity
@@ -46,6 +47,10 @@ public class Line extends BaseEntity {
     public void update(String name, String color) {
         this.name = name;
         this.color = color;
+    }
+
+    public Iterator<Section> getSections() {
+    	return this.sections.iterator();
     }
 
     public Long getId() {

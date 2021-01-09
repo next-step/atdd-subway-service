@@ -50,4 +50,8 @@ public class Distance {
 	public Distance plus(Distance secondOperand) {
 		return new Distance(this.distance + secondOperand.distance);
 	}
+
+	public double getWeight() {
+		return this.distance;
+	}
 }
