@@ -57,4 +57,29 @@ class LineTest {
         // then
         assertThrows(RuntimeException.class, () -> line.addSection(정자, 양재, 3));
     }
+
+    @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
+    @Test
+    void removeLineSection1() {
+        // given
+        line.addSection(강남, 양재, 2);
+        line.addSection(양재, 정자, 2);
+
+        // when
+        line.removeLineStation(양재);
+
+        // then
+        List<Station> stations = line.getStations();
+        assertThat(stations).containsExactlyElementsOf(Arrays.asList(강남, 정자));
+    }
+
+    @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
+    @Test
+    void removeLineSection2() {
+        // when
+        line.addSection(강남, 양재, 2);
+
+        // then
+        assertThrows(RuntimeException.class, () -> line.removeLineStation(양재));
+    }
 }
