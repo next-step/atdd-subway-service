@@ -1,4 +1,4 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -9,9 +9,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
-public class TotalLinesTest {
+public class SubwayMapTest {
 	private Station 강남역;
 	private Station 양재역;
 	private Station 교대역;
@@ -37,7 +39,7 @@ public class TotalLinesTest {
 		Section section1 = new Section(신분당선, 강남역, 양재역, 10);
 		Section section2 = new Section(이호선, 교대역, 강남역, 10);
 		Section section3 = new Section(삼호선, 교대역, 양재역, 5);
-		TotalLines lines = new TotalLines(Arrays.asList(신분당선, 이호선, 삼호선));
+		SubwayMap lines = new SubwayMap(Arrays.asList(신분당선, 이호선, 삼호선));
 
 		//when
 		List<Section> allSections = lines.allSections();

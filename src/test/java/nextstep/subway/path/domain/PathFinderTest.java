@@ -9,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.TotalLines;
 import nextstep.subway.station.domain.Station;
 
 public class PathFinderTest {
@@ -53,7 +52,7 @@ public class PathFinderTest {
 	@DisplayName("최단거리를 구하면 최단거리 구간의 역 목록과 최단거리가 계산되어야 한다.")
 	void registerGraph() {
 		//when
-		ShortestPath path = pathFinder.findShortestPath(new TotalLines(Arrays.asList(신분당선, 이호선, 삼호선)), 잠실역, 남부터미널역);
+		ShortestPath path = pathFinder.findShortestPath(new SubwayMap(Arrays.asList(신분당선, 이호선, 삼호선)), 잠실역, 남부터미널역);
 
 		//then
 		assertThat(path.getStations()).containsExactly(잠실역, 강남역, 양재역, 남부터미널역);
@@ -69,7 +68,7 @@ public class PathFinderTest {
 		Line 신규노선 = new Line("연결안된노선", "rainbow", 연결안된_역1, 연결안된_역2, 10);
 
 		//when/then
-		assertThatThrownBy(() -> pathFinder.findShortestPath(new TotalLines(Arrays.asList(신분당선, 이호선, 삼호선, 신규노선)), 교대역, 연결안된_역1))
+		assertThatThrownBy(() -> pathFinder.findShortestPath(new SubwayMap(Arrays.asList(신분당선, 이호선, 삼호선, 신규노선)), 교대역, 연결안된_역1))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 }

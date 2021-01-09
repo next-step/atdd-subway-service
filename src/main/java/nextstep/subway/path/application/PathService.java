@@ -3,7 +3,7 @@ package nextstep.subway.path.application;
 import org.springframework.stereotype.Service;
 
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.TotalLines;
+import nextstep.subway.path.domain.SubwayMap;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
@@ -27,7 +27,7 @@ public class PathService {
 		if (request.isSourceEqualToTarget()) {
 			throw new IllegalArgumentException("출발역과 도착역이 같은 경우, 최단 경로를 조회할 수 없습니다.");
 		}
-		TotalLines lines = new TotalLines(lineRepository.findAll());
+		SubwayMap lines = new SubwayMap(lineRepository.findAll());
 		Station sourceStation = stationRepository.findById(request.getSource())
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 출발역입니다."));
 		Station targetStation = stationRepository.findById(request.getTarget())
