@@ -84,10 +84,7 @@ public class SectionsTest {
         Section section4 = new Section(line, sinjeong, kkachisan, 5);
 
         Sections sections = new Sections();
-        sections.add(section1);
-        sections.add(section2);
-        sections.add(section3);
-        sections.add(section4);
+        sections.addAll(section1, section2, section3, section4);
 
         assertThat(sections.getStations()).containsExactly(sindorim, dorimcheon, yangcheon, sinjeong, kkachisan);
     }
@@ -109,10 +106,7 @@ public class SectionsTest {
         Section section4 = new Section(line, sinjeong, kkachisan, 5);
 
         Sections sections = new Sections(new ArrayList<>(Arrays.asList(section1, section2, section3, section4)));
-
-        sections.removeStation(sindorim);
-        sections.removeStation(kkachisan);
-        sections.removeStation(yangcheon);
+        sections.removeAllStation(sindorim, kkachisan,yangcheon);
 
         assertThat(sections.getStations()).containsExactly(dorimcheon, sinjeong);
     }

@@ -42,6 +42,16 @@ public class Sections {
         return sections.add(section);
     }
 
+    public void addAll(Section ... sections) {
+        addAll(Arrays.asList(sections));
+    }
+
+    public void addAll(Collection<Section> sections) {
+        for ( Section section : sections ) {
+            add(section);
+        }
+    }
+
     public boolean remove(Section section) {
         return sections.remove(section);
     }
@@ -82,6 +92,16 @@ public class Sections {
             Section upSection = upLineStation.get();
             Section downSection = downLineStation.get();
             add(upSection.merge(downSection));
+        }
+    }
+
+    public void removeAllStation(Station ... stations) {
+        removeAllStation(Arrays.asList(stations));
+    }
+
+    public void removeAllStation(Collection<Station> stations) {
+        for (Station station : stations) {
+            removeStation(station);
         }
     }
 
