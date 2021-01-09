@@ -1,7 +1,5 @@
 package nextstep.subway.path.dto;
 
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -25,10 +23,10 @@ public class PathResponse {
         return distance;
     }
 
-    public static PathResponse of(List<Station> stations, Long distance) {
+    public static PathResponse of(List<Station> stations, double distance) {
         List<StationResponse> stationResponsess = stations.stream()
-                .map(it -> StationResponse.of(it))
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
-        return new PathResponse(stationResponsess, distance);
+        return new PathResponse(stationResponsess, (long) distance);
     }
 }

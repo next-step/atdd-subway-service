@@ -6,15 +6,17 @@ import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
+import org.jgrapht.GraphPath;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class PathService {
-    private StationRepository stationRepository;
-    private LineRepository lineRepository;
-    private PathFinder pathFinder;
+    private final StationRepository stationRepository;
+    private final LineRepository lineRepository;
 
     public PathService(StationRepository stationRepository, LineRepository lineRepository) {
         this.stationRepository = stationRepository;
@@ -22,11 +24,21 @@ public class PathService {
     }
 
     public PathResponse findPathByIds(Long sourceId, Long targetId) {
+        if(sourceId == targetId) {
+            throw new IllegalArgumentException();
+        }
         List<Line> lines = lineRepository.findAll();
-        this.pathFinder = PathFinder.initialPathFinder(lines);;
+        PathFinder pathFinder = PathFinder.initialPathFinder(lines);
+        GraphPath path = pathFinder.getShortestPath(sourceId, targetId);
+        if(Objects.isNull(path)) {
+            throw new IllegalArgumentException();
+        }
+        return PathResponse.of(getStationsById(path.getVertexList()), path.getWeight());
+    }
 
-        Station sourceStation = stationRepository.findById(sourceId).orElseThrow(RuntimeException::new);
-        Station targetStation = stationRepository.findById(targetId).orElseThrow(RuntimeException::new);
-        return pathFinder.getShortestPath(sourceStation, targetStation);
+    public List<Station> getStationsById(List<Long> ids) {
+        return ids.stream()
+                .map(id -> stationRepository.findById(id).orElseThrow(IllegalArgumentException::new))
+                .collect(Collectors.toList());
     }
 }
