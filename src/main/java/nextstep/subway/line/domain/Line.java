@@ -60,10 +60,11 @@ public class Line extends BaseEntity {
         return sections;
     }
 
+    public List<Section> getSectionList() {
+        return this.sections.getSections();
+    }
+
     public List<Station> getStations() {
-        if (sections.getStations().isEmpty()) {
-            return Collections.emptyList();
-        }
         return this.sections.getStations();
     }
 

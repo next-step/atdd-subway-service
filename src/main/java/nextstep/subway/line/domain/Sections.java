@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,20 +22,10 @@ public class Sections {
         sections = new ArrayList<>();
     }
 
-    private Station findFirstStation() {
-        Station downStation = this.sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = findSectionWithDownStation(finalDownStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
-    }
     public List<Section> getSections() {
+        if (sections.isEmpty()) {
+            return Collections.emptyList();
+        }
         return sections;
     }
 
@@ -59,6 +50,20 @@ public class Sections {
         return stations;
     }
 
+    private Station findFirstStation() {
+        Station downStation = this.sections.get(0).getUpStation();
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = findSectionWithDownStation(finalDownStation);
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getUpStation();
+        }
+
+        return downStation;
+    }
+
     Optional<Section> findSectionWithUpStation(Station station) {
         return sections.stream()
                 .filter(it -> it.getUpStation().equals(station))
@@ -71,43 +76,45 @@ public class Sections {
                 .findFirst();
     }
 
-    private boolean isExistStation(Station station) {
-        return getStations().stream().anyMatch(it -> it.equals(station));
-    }
-
     public void addSection(Section section) {
-        Station upStation = section.getUpStation();
-        Station downStation = section.getDownStation();
-        int distance = section.getDistance();
-        List<Station> stations = getStations();
-
-        if (isExistStation(upStation) && isExistStation(downStation)) {
-            throw new DuplicateSectionException();
-        }
-
-        if (stations.isEmpty()) {
+        if (getStations().isEmpty()) {
             sections.add(section);
             return;
         }
 
-        if (!isExistStation(upStation) && !isExistStation(downStation) ) {
+        Station upStation = section.getUpStation();
+        Station downStation = section.getDownStation();
+        int distance = section.getDistance();
+        boolean isUpStationExist = isExistStation(upStation);
+        boolean isDownStationExist = isExistStation(downStation);
+
+        if (isUpStationExist && isDownStationExist) {
+            throw new DuplicateSectionException();
+        }
+
+        if (!isUpStationExist && !isDownStationExist) {
             throw new NotFoundSectionException();
         }
 
-        if (isExistStation(upStation)) {
+        if (isUpStationExist) {
             findSectionWithUpStation(upStation)
                     .ifPresent(it -> it.updateUpStation(downStation, distance));
             sections.add(section);
             return;
         }
 
-        if (isExistStation(downStation)) {
+        if (isDownStationExist) {
             findSectionWithDownStation(downStation)
                     .ifPresent(it -> it.updateDownStation(upStation, distance));
             sections.add(section);
             return;
         }
         sections.add(section);
+    }
+
+    private boolean isExistStation(Station station) {
+        return getStations().stream()
+                .anyMatch(it -> it.equals(station));
     }
 
     public void removeStation(Station station, Line line) {
