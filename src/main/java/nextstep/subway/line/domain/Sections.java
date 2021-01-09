@@ -141,4 +141,8 @@ public class Sections {
             .filter(predicate)
             .findFirst();
     }
+
+    public List<Section> getSections() {
+        return Collections.unmodifiableList(this.sections);
+    }
 }
