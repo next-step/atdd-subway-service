@@ -3,10 +3,12 @@ package nextstep.subway.path.infra;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.Money;
 import nextstep.subway.path.domain.MemberDiscount;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.function.Function;
 
+@Component
 public class AgeDiscount implements MemberDiscount {
 
     private static final Money BASIC_DEDUCTION = Money.valueOf(350);

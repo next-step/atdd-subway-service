@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.Money;
 import nextstep.subway.path.domain.*;
 import nextstep.subway.path.dto.PathResponse;
@@ -19,6 +20,8 @@ public class PathService {
 
     private final LineFee lineFee;
 
+    private final MemberDiscount memberDiscount;
+
     public PathResponse findShortest(final long sourceId, final long targetId) {
         PathSections allSections = pathRepository.findAllSections();
         PathStation source = findById(sourceId);
@@ -27,14 +30,19 @@ public class PathService {
         return PathResponse.of(shortest);
     }
 
-    public PathResponse findShortestWithFee(final long sourceId, final long targetId) {
+    public PathResponse findShortestWithFee(final long sourceId, final long targetId, final LoginMember loginMember) {
         PathSections allSections = pathRepository.findAllSections();
         PathStation source = findById(sourceId);
         PathStation target = findById(targetId);
         Path shortest = pathFinder.findShortest(allSections, source, target);
-
-        Money fee = shortest.settle(distanceFee, lineFee);
+        Money fee = settleFee(shortest, loginMember);
         return PathResponse.of(shortest, fee);
+    }
+
+    private Money settleFee(final Path path, final LoginMember loginMember) {
+        Money fee = path.settle(distanceFee, lineFee);
+        Money discount = memberDiscount.discount(loginMember, fee);
+        return fee.subtract(discount);
     }
 
     private PathStation findById(final long targetId) {

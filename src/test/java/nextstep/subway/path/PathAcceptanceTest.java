@@ -70,15 +70,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // given
         String email = "yohan@test.com";
         String password = "password";
-        MemberAcceptanceTest.회원_등록되어_있음(email, password, 29);
+        MemberAcceptanceTest.회원_등록되어_있음(email, password, 10);
         String token = AuthAcceptanceTest.회원_로그인되어_있음(email, password);
 
-        // when 12Km, 3호선 600원
+        // when
         ExtractableResponse<Response> response = 지하철_경로_조회_요청(강남역.getId(), 남부터미널역.getId(), token);
 
-        // then
+        // then 1250원(12Km) + 600원(3호선) -  750원(어린이할인) = 1100원
         지하철_최단경로_응답됨(response, 강남역.getId(), 양재역.getId(), 남부터미널역.getId());
-        지하철_이용요금_응답됨(response,1850);
+        지하철_이용요금_응답됨(response,1100);
     }
 
     @DisplayName("비로그인 시 경로 조회 시 최단거리 기준 지하철 이용 요금이 응답되지 않음.")
