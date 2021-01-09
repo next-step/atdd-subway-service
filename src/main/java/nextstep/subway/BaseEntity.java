@@ -12,16 +12,8 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class BaseEntity {
     @CreatedDate
-    private LocalDateTime createdDate;
+    protected LocalDateTime createdDate;
 
     @LastModifiedDate
-    private LocalDateTime modifiedDate;
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
-    public LocalDateTime getModifiedDate() {
-        return modifiedDate;
-    }
+    protected LocalDateTime modifiedDate;
 }

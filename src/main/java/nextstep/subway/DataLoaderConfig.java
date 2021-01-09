@@ -1,6 +1,7 @@
 package nextstep.subway;
 
 import com.google.common.collect.Lists;
+import lombok.RequiredArgsConstructor;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.member.domain.Member;
@@ -10,16 +11,12 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+@RequiredArgsConstructor
 @Component
 @Profile("!test")
 public class DataLoaderConfig implements CommandLineRunner {
-    private LineRepository lineRepository;
-    private MemberRepository memberRepository;
-
-    public DataLoaderConfig(LineRepository lineRepository, MemberRepository memberRepository) {
-        this.lineRepository = lineRepository;
-        this.memberRepository = memberRepository;
-    }
+    private final LineRepository lineRepository;
+    private final MemberRepository memberRepository;
 
     @Override
     public void run(String... args) throws Exception {
