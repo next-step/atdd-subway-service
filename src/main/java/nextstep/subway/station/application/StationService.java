@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import nextstep.subway.common.exception.NothingException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
@@ -27,7 +28,7 @@ public class StationService {
 		List<Station> stations = stationRepository.findAll();
 
 		return stations.stream()
-			.map(station -> StationResponse.of(station))
+			.map(StationResponse::of)
 			.collect(Collectors.toList());
 	}
 
@@ -36,10 +37,10 @@ public class StationService {
 	}
 
 	public Station findStationById(Long id) {
-		return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+		return stationRepository.findById(id).orElseThrow(NothingException::new);
 	}
 
 	public Station findById(Long id) {
-		return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+		return stationRepository.findById(id).orElseThrow(NothingException::new);
 	}
 }

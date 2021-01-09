@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.common.exception.NothingException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
@@ -15,7 +16,7 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class LineService {
 	private final LineRepository lineRepository;
 	private final StationService stationService;
@@ -32,7 +33,6 @@ public class LineService {
 		return LineResponse.of(persistLine);
 	}
 
-	@Transactional(readOnly = true)
 	public List<LineResponse> findLines() {
 		List<Line> persistLines = lineRepository.findAll();
 		return persistLines.stream()
@@ -40,7 +40,6 @@ public class LineService {
 			.collect(Collectors.toList());
 	}
 
-	@Transactional(readOnly = true)
 	public LineResponse findLineResponseById(Long id) {
 		return LineResponse.of(findLineById(id));
 	}
@@ -69,6 +68,7 @@ public class LineService {
 		return LineResponse.of(persistLine);
 	}
 
+	@Transactional
 	public void removeLineStation(Long lineId, Long stationId) {
 		Line line = findLineById(lineId);
 		Station station = findStationById(stationId);
@@ -76,8 +76,8 @@ public class LineService {
 		line.deleteSection(station);
 	}
 
-	private Line findLineById(Long LindId) {
-		return lineRepository.findById(LindId).orElseThrow(RuntimeException::new);
+	private Line findLineById(Long lineId) {
+		return lineRepository.findById(lineId).orElseThrow(NothingException::new);
 	}
 
 	private Station findStationById(Long stationId) {
