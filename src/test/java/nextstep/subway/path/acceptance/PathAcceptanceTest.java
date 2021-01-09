@@ -14,6 +14,7 @@ import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -44,6 +45,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private static StationResponse 영등포;
     private static StationResponse 신길;
     private static StationResponse 대방;
+
+    private static StationResponse 서울;
 
     @BeforeEach
     public void setUp() {
@@ -83,6 +86,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 영등포, 신길, DEFAULT_DISTANCE);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 신길, 대방, DEFAULT_DISTANCE);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 대방, 노량진, DEFAULT_DISTANCE);
+
+        서울 = StationAcceptanceTest.지하철역_등록되어_있음("서울").as(StationResponse.class);
     }
 
     @DisplayName("최단거리 역 목록 조회")
@@ -99,6 +104,30 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertThat(pathResponse.getStations()).containsExactly(expected);
         assertThat(pathResponse.getDistance()).isEqualTo((pathResponse.getStations().size() - 1) * DEFAULT_DISTANCE);
+    }
+
+    @DisplayName("출발역과 도착역이 같은 경우")
+    @Test
+    void selectSameStation() {
+        ExtractableResponse<Response> response = 최단거리_역_목록_조회_요청(신도림.getId(), 신도림.getId());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
+    @Test
+    void selectNotRelatedStation() {
+        ExtractableResponse<Response> response = 최단거리_역_목록_조회_요청(신도림.getId(), 서울.getId());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("출발역이나 도착역이 존재하지 않을 경우")
+    @Test
+    void selectNotExistsStation() {
+        ExtractableResponse<Response> response = 최단거리_역_목록_조회_요청(신도림.getId(), 99L);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+        ExtractableResponse<Response> response2 = 최단거리_역_목록_조회_요청(99L, 신도림.getId());
+        assertThat(response2.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private static Stream<Arguments> selectPath() {

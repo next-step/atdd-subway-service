@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -25,7 +26,11 @@ public class PathSelector {
     }
 
     public static PathResult select(Station source, Station target) {
-        return new PathResult(path.getPath(source, target));
+        try {
+            return new PathResult(path.getPath(source, target));
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("연결되지 않은 역은 조회 할 수 없습니다.");
+        }
     }
 
     public static void clear() {

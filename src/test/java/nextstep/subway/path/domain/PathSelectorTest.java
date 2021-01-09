@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.domain.Line;
@@ -22,6 +23,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 
 @DisplayName("구간 탐색 기능 테스트")
@@ -77,6 +79,14 @@ public class PathSelectorTest {
 
         assertThat(result.getStations()).containsExactly(expected);
         assertThat(result.getTotalDistance()).isEqualTo((expected.length - 1) * DEFAULT_DISTANCE);
+    }
+
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
+    @Test
+    void selectNotRelatedStation() {
+        assertThatExceptionOfType(BadRequestException.class)
+                .isThrownBy(() -> PathSelector.select(신도림, new Station("서울")))
+                .withMessage("연결되지 않은 역은 조회 할 수 없습니다.");
     }
 
     private static Stream<Arguments> selectShortestPath() {
