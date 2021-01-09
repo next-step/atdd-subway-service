@@ -9,6 +9,7 @@ import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.exception.StationNotFoundException;
 import nextstep.subway.path.exception.StationNotRegisteredException;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
@@ -24,14 +25,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class PathService {
 
     private final LineRepository lineRepository;
-    private final StationRepository stationRepository;
+    private final StationService stationService;
     private final PathFinder pathFinder;
 
     public PathService(LineRepository lineRepository,
-            StationRepository stationRepository,
+            StationService stationService,
             PathFinder pathFinder) {
         this.lineRepository = lineRepository;
-        this.stationRepository = stationRepository;
+        this.stationService = stationService;
         this.pathFinder = pathFinder;
     }
 
@@ -41,12 +42,12 @@ public class PathService {
         validateRequest(request);
 
         Lines lines = new Lines(lineRepository.findAll());
-        Optional<Station> sourceStation = stationRepository.findById(request.getSource());
-        Optional<Station> targetStation = stationRepository.findById(request.getTarget());
+        Station sourceStation = stationService.findById(request.getSource());
+        Station targetStation = stationService.findById(request.getTarget());
 
         validateContains(lines, sourceStation, targetStation, request);
 
-        Path path = pathFinder.findPath(lines, sourceStation.get(), targetStation.get());
+        Path path = pathFinder.findPath(lines, sourceStation, targetStation);
 
         return PathResponse.of(path);
     }
@@ -57,16 +58,11 @@ public class PathService {
         }
     }
 
-    private void validateContains(Lines lines, Optional<Station> sourceStation, Optional<Station> targetStation, PathRequest request) {
-        sourceStation.orElseThrow(() ->
-                new StationNotFoundException(request.getSource()));
-        targetStation.orElseThrow(() ->
-                new StationNotFoundException(request.getTarget()));
-
-        if (!lines.contains(sourceStation.get())) {
+    private void validateContains(Lines lines, Station sourceStation, Station targetStation, PathRequest request) {
+        if (!lines.contains(sourceStation)) {
             throw new StationNotRegisteredException(request.getSource());
         }
-        if (!lines.contains(targetStation.get())) {
+        if (!lines.contains(targetStation)) {
             throw new StationNotRegisteredException(request.getTarget());
         }
     }
