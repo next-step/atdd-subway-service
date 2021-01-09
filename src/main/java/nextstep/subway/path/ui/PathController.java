@@ -17,7 +17,7 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity<PathResponse> findShortestPath(@RequestParam Long source, @RequestParam Long target) {
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(pathService.findShortestPath(source, target));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
