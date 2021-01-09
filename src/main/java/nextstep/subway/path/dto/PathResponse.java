@@ -1,10 +1,10 @@
 package nextstep.subway.path.dto;
 
 import lombok.NoArgsConstructor;
+import nextstep.subway.common.Money;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathStation;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,20 +14,20 @@ public class PathResponse {
 
     private List<StationResponse> stations;
     private int distance;
-    private BigDecimal fee;
+    private Integer fee;
 
-    public PathResponse(final List<StationResponse> stations, final int distance) {
-        this(stations, distance, null);
-    }
-
-    public PathResponse(final List<StationResponse> stations, final int distance, final BigDecimal fee) {
+    public PathResponse(final List<StationResponse> stations, final int distance, final Integer fee) {
         this.stations = stations;
         this.distance = distance;
         this.fee = fee;
     }
 
     public static PathResponse of(final Path path) {
-        return new PathResponse(StationResponse.ofList(path.getPathStations()), path.getDistance());
+        return new PathResponse(StationResponse.ofList(path.getPathStations()), path.getDistance(), null);
+    }
+
+    public static PathResponse of(final Path path, final Money fee) {
+        return new PathResponse(StationResponse.ofList(path.getPathStations()), path.getDistance(), fee.getAmount());
     }
 
     public List<StationResponse> getStations() {
@@ -38,7 +38,7 @@ public class PathResponse {
         return distance;
     }
 
-    public BigDecimal getFee() {
+    public Integer getFee() {
         return fee;
     }
 

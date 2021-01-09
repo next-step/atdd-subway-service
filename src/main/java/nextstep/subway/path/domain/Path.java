@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.common.Money;
+
 import java.util.List;
 
 public class Path {
@@ -23,5 +25,9 @@ public class Path {
 
     public int getDistance() {
         return distance.getValue();
+    }
+
+    public Money settle(final DistanceFee distanceFee) {
+        return distanceFee.settle(distance);
     }
 }

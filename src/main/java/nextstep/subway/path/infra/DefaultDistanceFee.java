@@ -3,10 +3,12 @@ package nextstep.subway.path.infra;
 import nextstep.subway.common.Money;
 import nextstep.subway.path.domain.Distance;
 import nextstep.subway.path.domain.DistanceFee;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.function.Function;
 
+@Component
 public class DefaultDistanceFee implements DistanceFee {
     public static final int BASIC_FEE = 1250;
     public static final int ADD_FEE = 100;
