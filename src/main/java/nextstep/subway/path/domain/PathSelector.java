@@ -1,17 +1,27 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.exception.BadRequestException;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+
+import java.util.List;
 
 public class PathSelector {
     private static WeightedMultigraph<Station, DefaultWeightedEdge> graph
             = new WeightedMultigraph<>(DefaultWeightedEdge.class);
     private static DijkstraShortestPath<Station, DefaultWeightedEdge> path
             = new DijkstraShortestPath<>(graph);
+
+    public static void init(List<Line> lines) {
+        for (Line line : lines) {
+            addSections(line.getSections());
+        }
+    }
 
     public static void add(Section section) {
         Station upStation = section.getUpStation();
@@ -36,5 +46,11 @@ public class PathSelector {
     public static void clear() {
         graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         path = new DijkstraShortestPath<>(graph);
+    }
+
+    private static void addSections(Sections sections) {
+        for (Section section : sections.getSections()) {
+            add(section);
+        }
     }
 }

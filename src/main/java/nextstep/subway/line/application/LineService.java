@@ -5,6 +5,7 @@ import nextstep.subway.line.domain.*;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.path.domain.PathSelector;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class LineService {
     public LineService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
+        PathSelector.init(lineRepository.findAll());
     }
 
     public LineResponse saveLine(LineRequest request) {
