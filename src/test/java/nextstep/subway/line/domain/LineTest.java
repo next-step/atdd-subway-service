@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.line.exception.AlreadyExistSectionException;
+import nextstep.subway.line.exception.CannotRemoveSectionException;
 import nextstep.subway.line.exception.NoMatchStationsException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
