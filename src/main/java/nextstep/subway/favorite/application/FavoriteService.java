@@ -31,7 +31,7 @@ public class FavoriteService {
 
     @Transactional
     public Long createFavorite(final LoginMember loginMember, final FavoriteRequest favoriteRequest) {
-        final Member member = memberRepository.findByEmail(loginMember.getEmail()).orElseThrow(NotFoundException::new);
+        final Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundException::new);
         final Station source = stationRepository.findById(favoriteRequest.getSource()).orElseThrow(NotFoundException::new);
         final Station target = stationRepository.findById(favoriteRequest.getTarget()).orElseThrow(NotFoundException::new);
 
