@@ -2,6 +2,7 @@ package nextstep.subway.path.infra;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.Money;
+import nextstep.subway.path.domain.AgeDiscount;
 import nextstep.subway.path.domain.MemberDiscount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

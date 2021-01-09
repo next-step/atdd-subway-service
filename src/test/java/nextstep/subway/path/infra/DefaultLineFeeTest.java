@@ -12,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -37,9 +36,12 @@ class DefaultLineFeeTest {
         Long 일호선 = 1L;
         Long 이호선 = 2L;
         Long 삼호선 = 3L;
-        when(lineRepository.findById(일호선)).thenReturn(Optional.of(Line.builder().surcharge(100).build()));
-        when(lineRepository.findById(이호선)).thenReturn(Optional.of(Line.builder().surcharge(200).build()));
-        when(lineRepository.findById(삼호선)).thenReturn(Optional.of(Line.builder().surcharge(300).build()));
+        when(lineRepository.findAllByIds(Arrays.asList(1L, 2L, 3L)))
+                .thenReturn(Arrays.asList(
+                        Line.builder().surcharge(100).build(),
+                        Line.builder().surcharge(200).build(),
+                        Line.builder().surcharge(300).build()
+                ));
 
         // when
         Money settle = lineFee.settle(Arrays.asList(일호선, 이호선, 삼호선));

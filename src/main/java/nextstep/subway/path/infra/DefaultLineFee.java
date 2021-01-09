@@ -1,6 +1,7 @@
 package nextstep.subway.path.infra;
 
 import nextstep.subway.common.Money;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.LineFee;
 import org.springframework.stereotype.Component;
@@ -18,15 +19,14 @@ public class DefaultLineFee implements LineFee {
 
     @Override
     public Money settle(final List<Long> lineIds) {
-        return lineIds.stream()
-                .map(this::toLineSurcharge)
+        return findAllLines(lineIds)
+                .stream()
+                .map(Line::getSurcharge)
                 .max(Money::compareTo)
                 .orElse(Money.zero());
     }
 
-    private Money toLineSurcharge(final Long lineId) {
-        return lineRepository.findById(lineId)
-                .orElseThrow(() -> new IllegalStateException(String.format("%d에 해당하는 지하철 노선이 없습니다.", lineId)))
-                .getSurcharge();
+    private List<Line> findAllLines(final List<Long> lineIds) {
+        return lineRepository.findAllByIds(lineIds);
     }
 }

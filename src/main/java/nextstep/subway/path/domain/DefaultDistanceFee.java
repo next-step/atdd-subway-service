@@ -1,8 +1,6 @@
-package nextstep.subway.path.infra;
+package nextstep.subway.path.domain;
 
 import nextstep.subway.common.Money;
-import nextstep.subway.path.domain.Distance;
-import nextstep.subway.path.domain.DistanceFee;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;

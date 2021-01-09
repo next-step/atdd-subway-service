@@ -23,20 +23,21 @@ public class PathService {
     private final MemberDiscount memberDiscount;
 
     public PathResponse findShortest(final long sourceId, final long targetId) {
-        PathSections allSections = pathRepository.findAllSections();
-        PathStation source = findById(sourceId);
-        PathStation target = findById(targetId);
-        Path shortest = pathFinder.findShortest(allSections, source, target);
+        Path shortest = findShortestPath(sourceId, targetId);
         return PathResponse.of(shortest);
     }
 
     public PathResponse findShortestWithFee(final long sourceId, final long targetId, final LoginMember loginMember) {
+        Path shortest = findShortestPath(sourceId, targetId);
+        Money fee = settleFee(shortest, loginMember);
+        return PathResponse.of(shortest, fee);
+    }
+
+    private Path findShortestPath(final long sourceId, final long targetId) {
         PathSections allSections = pathRepository.findAllSections();
         PathStation source = findById(sourceId);
         PathStation target = findById(targetId);
-        Path shortest = pathFinder.findShortest(allSections, source, target);
-        Money fee = settleFee(shortest, loginMember);
-        return PathResponse.of(shortest, fee);
+        return pathFinder.findShortest(allSections, source, target);
     }
 
     private Money settleFee(final Path path, final LoginMember loginMember) {

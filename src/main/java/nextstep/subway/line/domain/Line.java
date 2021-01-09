@@ -11,12 +11,19 @@ import java.util.List;
 
 @Entity
 public class Line extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
-    @Column(unique = true)
+
+    @Column(name = "name", unique = true)
     private String name;
+
+    @Column(name = "color")
     private String color;
+
+    @Column(name = "surcharge")
     private Money surcharge;
 
     @Embedded

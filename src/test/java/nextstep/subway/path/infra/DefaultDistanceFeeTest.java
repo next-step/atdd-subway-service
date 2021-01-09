@@ -1,6 +1,7 @@
 package nextstep.subway.path.infra;
 
 import nextstep.subway.common.Money;
+import nextstep.subway.path.domain.DefaultDistanceFee;
 import nextstep.subway.path.domain.Distance;
 import nextstep.subway.path.domain.DistanceFee;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,8 +10,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static nextstep.subway.path.infra.DefaultDistanceFee.ADD_FEE;
-import static nextstep.subway.path.infra.DefaultDistanceFee.BASIC_FEE;
+import static nextstep.subway.path.domain.DefaultDistanceFee.ADD_FEE;
+import static nextstep.subway.path.domain.DefaultDistanceFee.BASIC_FEE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DefaultDistanceFeeTest {
