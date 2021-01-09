@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.InvalidSectionException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ public class SectionsTest {
         Section section = new Section(line, new Station("신도림역"), new Station("까치산역"), 10);
 
         Sections sections = new Sections(new ArrayList<>(Collections.singletonList(section)));
-        assertThatExceptionOfType(RuntimeException.class)
+        assertThatExceptionOfType(InvalidSectionException.class)
                 .isThrownBy(() -> sections.add(section))
                 .withMessage("이미 등록된 구간 입니다.");
     }
@@ -48,7 +49,7 @@ public class SectionsTest {
         Section otherSection = new Section(line, new Station("양천구청역"), new Station("신정네거리역"), 5);
 
         Sections sections = new Sections(new ArrayList<>(Collections.singletonList(section)));
-        assertThatExceptionOfType(RuntimeException.class)
+        assertThatExceptionOfType(InvalidSectionException.class)
                 .isThrownBy(() -> sections.add(otherSection))
                 .withMessage("등록할 수 없는 구간 입니다.");
     }

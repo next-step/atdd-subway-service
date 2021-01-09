@@ -1,5 +1,9 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.BadRequestException;
+import nextstep.subway.exception.InvalidSectionException;
+import nextstep.subway.exception.NotFoundSectionException;
+import nextstep.subway.exception.NotFoundStationException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -12,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
+    private static final int SECTION_MINIMUM_COUNT = 1;
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
@@ -60,8 +65,8 @@ public class Sections {
     }
 
     public void removeStation(Station station) {
-        if (sections.size() <= 1) {
-            throw new RuntimeException();
+        if (sections.size() <= SECTION_MINIMUM_COUNT) {
+            throw new BadRequestException("한 노선에는 반드시 하나 이상의 구간이 필요합니다.");
         }
         Optional<Section> downLineStation = sections.stream()
                 .filter(it -> it.equalsUpStation(station))
@@ -83,11 +88,11 @@ public class Sections {
         boolean isDownStationExisted = stations.contains(section.getDownStation());
 
         if (!isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new InvalidSectionException("등록할 수 없는 구간 입니다.");
         }
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new InvalidSectionException("이미 등록된 구간 입니다.");
         }
     }
 
@@ -123,7 +128,7 @@ public class Sections {
         return sections.stream()
                 .filter(it -> !downStations.contains(it.getUpStation()))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Line is invalid"));
+                .orElseThrow(() -> new NotFoundSectionException("종점 구간을 찾을 수 없습니다."));
     }
 
     private Station getNextStation(Station currentUpStation) {
@@ -131,6 +136,6 @@ public class Sections {
                 .filter(it -> it.equalsUpStation(currentUpStation))
                 .findFirst()
                 .map(Section::getDownStation)
-                .orElseThrow(() -> new RuntimeException("invalid section count"));
+                .orElseThrow(() -> new NotFoundStationException(currentUpStation.getName() + " 다음 역을 찾을 수 없습니다."));
     }
 }
