@@ -12,16 +12,16 @@ import java.util.Optional;
 
 public class ShortestPathFinder {
 
-	public static Optional<GraphPath<Station, DefaultWeightedEdge>> findShortestPath(
-		Sections sections, Stations stations, Station sourceStation, Station targetStation) {
-		WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    public static Optional<GraphPath<Station, DefaultWeightedEdge>> findShortestPath(
+        Sections sections, Stations stations, Station sourceStation, Station targetStation) {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
-		stations.forEach(graph::addVertex);
-		sections.forEach(section -> graph.setEdgeWeight(
-			graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance()));
+        stations.forEach(graph::addVertex);
+        sections.forEach(section -> graph.setEdgeWeight(
+            graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance()));
 
-		DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
-		return Optional.ofNullable(dijkstraShortestPath.getPath(sourceStation, targetStation));
-	}
+        return Optional.ofNullable(dijkstraShortestPath.getPath(sourceStation, targetStation));
+    }
 }

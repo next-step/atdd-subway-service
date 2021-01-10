@@ -15,15 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/paths")
 public class PathController {
-	private final PathService pathService;
-	private final StationService stationService;
+    private final PathService pathService;
+    private final StationService stationService;
 
-	@GetMapping
-	public ResponseEntity<PathResponse> findShortestPath(@RequestParam Long source,
-														 @RequestParam Long target) {
-		Station sourceStation = stationService.findStationById(source);
-		Station targetStation = stationService.findStationById(target);
-		PathResponse pathResponse = pathService.findShortestPath(sourceStation, targetStation);
-		return ResponseEntity.ok(pathResponse);
-	}
+    @GetMapping
+    public ResponseEntity<PathResponse> findShortestPath(@RequestParam Long source,
+                                                         @RequestParam Long target) {
+        Station sourceStation = stationService.findStationById(source);
+        Station targetStation = stationService.findStationById(target);
+        PathResponse pathResponse = pathService.findShortestPath(sourceStation, targetStation);
+        return ResponseEntity.ok(pathResponse);
+    }
 }

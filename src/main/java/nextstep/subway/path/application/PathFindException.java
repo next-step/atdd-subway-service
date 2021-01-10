@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class PathFindException extends SubwayException {
-	public PathFindException(Object arg) {
-		super(arg);
-	}
+    public PathFindException(Object arg) {
+        super(arg);
+    }
 }
