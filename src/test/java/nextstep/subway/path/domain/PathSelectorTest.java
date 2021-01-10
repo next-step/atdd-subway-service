@@ -1,23 +1,14 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.exception.BadRequestException;
-import nextstep.subway.line.acceptance.LineAcceptanceTest;
-import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.dto.LineRequest;
-import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.path.acceptance.PathAcceptanceTest;
-import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -27,7 +18,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 
 @DisplayName("구간 탐색 기능 테스트")
-@ExtendWith(SpringExtension.class)
 public class PathSelectorTest {
     private static final int DEFAULT_DISTANCE = 10;
 
