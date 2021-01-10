@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import nextstep.subway.fare.domain.StandardFare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResponseDto;
@@ -49,7 +50,7 @@ class PathsTest {
 		Paths paths = new Paths(sections);
 
 		//when
-		PathResponseDto path = paths.getPath(stationMap.get("교대역"), stationMap.get("양재역"));
+		PathResponseDto path = paths.getPath(stationMap.get("교대역"), stationMap.get("양재역"), new StandardFare());
 
 		//then
 		assertThat(path.getStations()).containsExactly(
@@ -67,7 +68,7 @@ class PathsTest {
 		Paths paths = new Paths(sections);
 
 		//when
-		assertThatThrownBy(() -> paths.getPath(stationMap.get("교대역"), stationMap.get("고매역")))
+		assertThatThrownBy(() -> paths.getPath(stationMap.get("교대역"), stationMap.get("고매역"), new StandardFare()))
 			  .isInstanceOf(RuntimeException.class)
 			  .hasMessage("구간정보에 등록된 출발역(도착역)이 없습니다.");
 	}
@@ -80,7 +81,7 @@ class PathsTest {
 		Paths paths = new Paths(sections);
 
 		//when
-		assertThatThrownBy(() -> paths.getPath(stationMap.get("교대역"), stationMap.get("교대역")))
+		assertThatThrownBy(() -> paths.getPath(stationMap.get("교대역"), stationMap.get("교대역"), new StandardFare()))
 			  .isInstanceOf(RuntimeException.class)
 			  .hasMessage("출발역과 도착역이 같습니다.");
 	}
@@ -93,7 +94,7 @@ class PathsTest {
 		Paths paths = new Paths(sections);
 
 		//when
-		assertThatThrownBy(() -> paths.getPath(stationMap.get("교대역"), stationMap.get("삼성역")))
+		assertThatThrownBy(() -> paths.getPath(stationMap.get("교대역"), stationMap.get("삼성역"), new StandardFare()))
 			  .isInstanceOf(RuntimeException.class)
 			  .hasMessage("경로가 존재하지 않습니다.");
 	}
@@ -134,8 +135,8 @@ class PathsTest {
 		ReflectionTestUtils.setField(삼호선, "id", 12L);
 
 		lineMap.put("신분당선", 신분당선);
-		lineMap.put("신분당선", 이호선);
-		lineMap.put("신분당선", 삼호선);
+		lineMap.put("이호선", 이호선);
+		lineMap.put("삼호선", 삼호선);
 		이호선.addSection(stationMap.get("선릉역"), stationMap.get("삼성역"), 3);
 		삼호선.addSection(stationMap.get("교대역"), stationMap.get("남부터미널역"), 3);
 

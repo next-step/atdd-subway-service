@@ -75,5 +75,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         * And 지하철 노선 등록되어 있음
         * And 지하철 노선에 지하철역 등록되어 있음
     * Scenario: 지하철 경로 조회
-        * When 지하철 경로를 조회한다
-        * Then 지하철 경로가 조회된다
+        * When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+        * Then 최단 거리 경로를 응답
+        * And 총 거리도 함께 응답함
+        * And ** 지하철 이용 요금도 함께 응답함 **
