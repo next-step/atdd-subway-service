@@ -1,7 +1,7 @@
 package nextstep.subway.favorite.ui;
 
 import nextstep.subway.auth.application.AuthorizationException;
-import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMemberPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.application.FavoriteValidationException;
@@ -25,19 +25,19 @@ public class FavoriteController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
+	public ResponseEntity<List<FavoriteResponse>> getFavorites(@LoginMemberPrincipal LoginMember loginMember) {
 		return ResponseEntity.ok(favoriteService.getFavorites(loginMember));
 	}
 
 	@PostMapping
-	public ResponseEntity postFavorites(@AuthenticationPrincipal LoginMember loginMember,
+	public ResponseEntity postFavorites(@LoginMemberPrincipal LoginMember loginMember,
 	                                    @RequestBody FavoriteRequest favoriteRequest) {
 		FavoriteResponse favoriteResponse = favoriteService.createFavorite(loginMember, favoriteRequest);
 		return ResponseEntity.created(URI.create("/favorites/" + favoriteResponse.getId())).build();
 	}
 
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity deleteFavorite(@AuthenticationPrincipal LoginMember loginMember,
+	public ResponseEntity deleteFavorite(@LoginMemberPrincipal LoginMember loginMember,
 	                                     @PathVariable(value = "id") Long favoriteId) {
 		favoriteService.deleteFavoriteById(loginMember, favoriteId);
 		return ResponseEntity.noContent().build();

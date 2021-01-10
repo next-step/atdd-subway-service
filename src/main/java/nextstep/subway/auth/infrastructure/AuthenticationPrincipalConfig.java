@@ -1,7 +1,7 @@
 package nextstep.subway.auth.infrastructure;
 
 import nextstep.subway.auth.application.AuthService;
-import nextstep.subway.auth.ui.AuthenticationPrincipalArgumentResolver;
+import nextstep.subway.auth.ui.LoginMemberPrincipalArgumentResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -22,7 +22,7 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public AuthenticationPrincipalArgumentResolver createAuthenticationPrincipalArgumentResolver() {
-        return new AuthenticationPrincipalArgumentResolver(authService);
+    public LoginMemberPrincipalArgumentResolver createAuthenticationPrincipalArgumentResolver() {
+        return new LoginMemberPrincipalArgumentResolver(authService);
     }
 }
