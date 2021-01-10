@@ -105,6 +105,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(pathResponse.getDistance()).isEqualTo((pathResponse.getStations().size() - 1) * DEFAULT_DISTANCE);
     }
 
+    private static Stream<Arguments> selectPath() {
+        return Stream.of(
+                Arguments.of(supply(()->신도림), supply(() ->당산), supply(() -> new StationResponse[]{신도림, 문래, 영등포구청, 당산})),
+                Arguments.of(supply(()->영등포구청), supply(() ->노량진), supply(() -> new StationResponse[]{영등포구청, 당산, 국회의사당, 여의도, 샛강, 노량진})),
+                Arguments.of(supply(()->문래), supply(() ->노량진), supply(() -> new StationResponse[]{문래, 신도림, 영등포, 신길, 대방, 노량진}))
+        );
+    }
+
     @DisplayName("출발역과 도착역이 같은 경우")
     @Test
     void selectSameStation() {
@@ -127,14 +135,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response2 = 최단거리_역_목록_조회_요청(99L, 신도림.getId());
         assertThat(response2.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    private static Stream<Arguments> selectPath() {
-        return Stream.of(
-                Arguments.of(supply(()->신도림), supply(() ->당산), supply(() -> new StationResponse[]{신도림, 문래, 영등포구청, 당산})),
-                Arguments.of(supply(()->영등포구청), supply(() ->노량진), supply(() -> new StationResponse[]{영등포구청, 당산, 국회의사당, 여의도, 샛강, 노량진})),
-                Arguments.of(supply(()->문래), supply(() ->노량진), supply(() -> new StationResponse[]{문래, 신도림, 영등포, 신길, 대방, 노량진}))
-        );
     }
 
     private ExtractableResponse<Response> 최단거리_역_목록_조회_요청(Long sourceStationId, Long targetStationId) {
