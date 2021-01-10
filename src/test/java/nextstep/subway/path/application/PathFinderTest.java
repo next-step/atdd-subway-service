@@ -1,19 +1,13 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.dto.LineRequest;
-import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.StationAcceptanceTest;
-import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
@@ -21,21 +15,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
-import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 @ExtendWith(MockitoExtension.class)
 class PathFinderTest {
-
-    @Mock
-    LineRepository lineRepository;
-
-    @Mock
-    StationService stationService;
 
     private Line 신분당선;
     private Line 이호선;
@@ -66,17 +51,14 @@ class PathFinderTest {
         삼호선.addLineStation(교대역, 남부터미널역, 3);
     }
 
+    @DisplayName("정상 경로 조회")
     @Test
     void getPath() {
         //given
-        PathFinder pathFinder = new PathFinder(lineRepository, stationService);
-        when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
-        when(stationService.findStationById(교대역.getId())).thenReturn(교대역);
-        when(stationService.findStationById(양재역.getId())).thenReturn(양재역);
+        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
 
         //when
-        PathRequest pathRequest = new PathRequest(교대역.getId(),양재역.getId());
-        PathResponse pathResponse = pathFinder.getPath(pathRequest);
+        PathResponse pathResponse = pathFinder.getPath(교대역, 양재역);
 
         //then
         List<String> stationNames = pathResponse.getStations().stream()
@@ -88,5 +70,57 @@ class PathFinderTest {
                         .collect(Collectors.toList())
         );
         assertThat(pathResponse.getDistance()).isEqualTo(5);
+    }
+
+    @DisplayName("출발역과 도착역이 같은 경우")
+    @Test
+    void getPathSameSourceTarget() {
+        //given
+        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
+
+        //when
+        //then
+        assertThatThrownBy(() -> {
+            PathResponse pathResponse = pathFinder.getPath(교대역, 교대역);
+        }).isInstanceOf(RuntimeException.class);
+    }
+
+
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
+    @Test
+    void getPathNoLink() {
+        //given
+        Station 도봉산역 = new Station("도봉산역");
+        Station 망월사역 = new Station("망월사역");
+        Line 일호선 = new Line("일호선", "bg-red-600", 망월사역, 도봉산역, 15);
+        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선, 일호선));
+
+        //when
+        //then
+        assertThatThrownBy(() -> {
+            pathFinder.getPath(교대역, 망월사역);
+        }).isInstanceOf(RuntimeException.class);
+
+        assertThatThrownBy(() -> {
+            pathFinder.getPath(망월사역, 교대역);
+        }).isInstanceOf(RuntimeException.class);
+    }
+
+
+    @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우")
+    @Test
+    void getPathNoStation() {
+        //given
+        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
+
+        //when
+        //then
+        assertThatThrownBy(() -> {
+            pathFinder.getPath(교대역, new Station("사당역"));
+        }).isInstanceOf(RuntimeException.class);
+
+        assertThatThrownBy(() -> {
+            pathFinder.getPath(new Station("사당역"), 교대역);
+        }).isInstanceOf(RuntimeException.class);
     }
 }

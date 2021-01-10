@@ -67,7 +67,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [x] 최단 경로 조회 인수 테스트 만들기
 - [x] 최단 경로 조회 기능 단위 테스트
 - [x] 최단 경로 조회 기능 구현
-- [ ] 예외 상황 테스트
+- [x] 예외 상황 테스트
 - [ ] 예외 상황 구현
     - 출발역과 도착역이 같은 경우
     - 출발역과 도착역이 연결이 되어 있지 않은 경우

@@ -1,6 +1,6 @@
 package nextstep.subway.path.ui;
 
-import nextstep.subway.path.application.PathFinder;
+import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import org.springframework.http.ResponseEntity;
@@ -13,17 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/paths")
 public class PathController {
 
-    private final PathFinder pathFinder;
+    private final PathService pathService;
 
-    public PathController(PathFinder pathFinder) {
-        this.pathFinder = pathFinder;
+    public PathController(PathService pathService) {
+        this.pathService = pathService;
     }
 
     @GetMapping
     public ResponseEntity getPath(@ModelAttribute PathRequest pathRequest) {
-
-        PathResponse pathResponse = pathFinder.getPath(pathRequest);
-
+        PathResponse pathResponse = pathService.getPath(pathRequest);
         return ResponseEntity.ok().body(pathResponse);
     }
 }

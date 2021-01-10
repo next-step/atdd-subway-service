@@ -1,43 +1,28 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
 public class PathFinder {
 
-    private final LineRepository lineRepository;
+    private WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
-    private final StationService stationService;
-
-    public PathFinder(LineRepository lineRepository, StationService stationService) {
-        this.lineRepository = lineRepository;
-        this.stationService = stationService;
+    public PathFinder(List<Line> lines) {
+        graph = buildGraph(lines);
     }
 
-    public PathResponse getPath(PathRequest pathRequest) {
-        List<Line> lines = lineRepository.findAll();
-
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = buildGraph(lines);
-
-        Station sourceStation = stationService.findStationById(pathRequest.getSource());
-        Station targetStation = stationService.findStationById(pathRequest.getTarget());
-
-        GraphPath shortestPath = getShortestPath(graph, sourceStation, targetStation);
+    public PathResponse getPath(Station sourceStation, Station targetStation) {
+        GraphPath shortestPath = getShortestPath(sourceStation, targetStation);
 
         List<Station> stations = shortestPath.getVertexList();
         return new PathResponse(stations.stream()
@@ -45,10 +30,9 @@ public class PathFinder {
                 .collect(Collectors.toList()), (int) shortestPath.getWeight());
     }
 
-    private GraphPath getShortestPath(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Station sourceStation, Station targetStation) {
+    private GraphPath getShortestPath(Station sourceStation, Station targetStation) {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath shortestPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
-        return shortestPath;
+        return dijkstraShortestPath.getPath(sourceStation, targetStation);
     }
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> buildGraph(List<Line> lines) {
