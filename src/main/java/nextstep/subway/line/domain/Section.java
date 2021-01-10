@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -56,11 +57,11 @@ public class Section {
     }
 
     public boolean equalsUpStation(Station station) {
-        return upStation == station;
+        return upStation.equals(station);
     }
 
     public boolean equalsDownStation(Station station) {
-        return downStation == station;
+        return downStation.equals(station);
     }
 
     public void updateUpStation(Station station, Distance newDistance) {
@@ -71,5 +72,18 @@ public class Section {
     public void updateDownStation(Station station, Distance newDistance) {
         this.downStation = station;
         this.distance = this.distance.minus(newDistance);
+    }
+
+    public Section merge(Section downSection) {
+        if (!line.equals(downSection.line)) {
+            throw new BadRequestException("다른 노선의 구간은 합칠 수 없습니다.");
+        }
+
+        if (!this.downStation.equals(downSection.upStation)) {
+            throw new BadRequestException("합칠 수 없는 구간입니다.");
+        }
+
+        Distance newDistance = this.distance.plus(downSection.distance);
+        return new Section(line, this.upStation, downSection.downStation, newDistance.value());
     }
 }
