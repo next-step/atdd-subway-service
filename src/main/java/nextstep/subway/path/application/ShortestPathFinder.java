@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 import org.jgrapht.GraphPath;
@@ -8,11 +9,9 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-import java.util.Optional;
-
 public class ShortestPathFinder {
 
-    public static Optional<GraphPath<Station, DefaultWeightedEdge>> findShortestPath(
+    public static Path findShortestPath(
         Sections sections, Stations stations, Station sourceStation, Station targetStation) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
@@ -21,7 +20,15 @@ public class ShortestPathFinder {
             graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance()));
 
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
+        checkPathIsNull(shortestPath);
 
-        return Optional.ofNullable(dijkstraShortestPath.getPath(sourceStation, targetStation));
+        return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight());
+    }
+
+    private static void checkPathIsNull(GraphPath<Station, DefaultWeightedEdge> shortestPath) {
+        if (shortestPath == null) {
+            throw new PathFindException("source station is not connected to target station");
+        }
     }
 }

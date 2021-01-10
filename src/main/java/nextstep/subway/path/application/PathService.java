@@ -3,11 +3,10 @@ package nextstep.subway.path.application;
 import lombok.RequiredArgsConstructor;
 import nextstep.subway.line.application.SectionRepository;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -23,9 +22,7 @@ public class PathService {
         checkStationIsInSections(sourceStation, stations);
         checkStationIsInSections(targetStation, stations);
 
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = ShortestPathFinder
-            .findShortestPath(sections, stations, sourceStation, targetStation)
-            .orElseThrow(() -> new PathFindException("source station is not connected to target station"));
+        Path shortestPath = ShortestPathFinder.findShortestPath(sections, stations, sourceStation, targetStation);
 
         return PathResponse.of(shortestPath);
     }
