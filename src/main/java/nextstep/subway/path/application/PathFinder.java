@@ -19,18 +19,18 @@ public class PathFinder {
     private WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
     public PathFinder(List<Line> lines) {
-        graph = buildGraph(lines);
+        buildGraph(lines);
     }
 
     public PathResponse getPath(Station sourceStation, Station targetStation) {
         verifySameSourceTargetStation(sourceStation, targetStation);
 
-        GraphPath shortestPath = getShortestPath(sourceStation, targetStation);
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = getShortestPath(sourceStation, targetStation);
         verifyNoLinkPath(shortestPath);
 
         List<Station> stations = shortestPath.getVertexList();
         return new PathResponse(stations.stream()
-                .map(station -> StationResponse.of(station))
+                .map(StationResponse::of)
                 .collect(Collectors.toList()), (int) shortestPath.getWeight());
     }
 
@@ -42,34 +42,33 @@ public class PathFinder {
         }
     }
 
-    private void verifyNoLinkPath(GraphPath shortestPath) {
+    private void verifyNoLinkPath(GraphPath<Station, DefaultWeightedEdge> shortestPath) {
         if (shortestPath == null) {
             throw new NoLinkPathException("출발역과 도착역이 연결되어 있지 않습니다.");
         }
     }
 
-    private GraphPath getShortestPath(Station sourceStation, Station targetStation) {
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+    private GraphPath<Station, DefaultWeightedEdge> getShortestPath(Station sourceStation, Station targetStation) {
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         return dijkstraShortestPath.getPath(sourceStation, targetStation);
     }
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> buildGraph(List<Line> lines) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+    private void buildGraph(List<Line> lines) {
+        graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         for (Line line : lines) {
-            buildGraphVertex(graph, line);
-            buildGraphEdges(graph, line);
+            buildGraphVertex(line);
+            buildGraphEdges(line);
         }
-        return graph;
     }
 
-    private void buildGraphVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
+    private void buildGraphVertex(Line line) {
         List<Station> stations = line.getStations();
         for (Station station : stations) {
             graph.addVertex(station);
         }
     }
 
-    private void buildGraphEdges(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
+    private void buildGraphEdges(Line line) {
         List<Section> sections = line.getSections();
         for (Section section : sections) {
             int distance = section.getDistance();
