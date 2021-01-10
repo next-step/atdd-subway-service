@@ -28,8 +28,7 @@ class SectionsTest {
         //given
         신분당선.addLineStation(강남역, 잠실역, 4);
         //when
-        Sections sections = 신분당선.getSections();
-        Station upStation = sections.findUpStation();
+        Station upStation = 신분당선.findUpStation();
         //then
         assertThat(upStation.getId()).isEqualTo(1L);
         assertThat(upStation.getName()).isEqualTo("강남역");

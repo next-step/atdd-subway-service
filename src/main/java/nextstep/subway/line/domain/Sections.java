@@ -122,8 +122,8 @@ public class Sections {
     }
 
     private void removeSection(Optional<Section> upLineSection, Optional<Section> downLineSection) {
-        upLineSection.ifPresent(it -> getSections().remove(it));
-        downLineSection.ifPresent(it -> getSections().remove(it));
+        upLineSection.ifPresent(it -> sections.remove(it));
+        downLineSection.ifPresent(it -> sections.remove(it));
     }
 
     private void verifyAddLineStation(Station upStation, Station downStation, List<Station> stations) {

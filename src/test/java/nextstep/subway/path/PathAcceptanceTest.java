@@ -82,7 +82,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.contentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
 
         PathResponse pathResponse = response.body().as(PathResponse.class);
-        최단_경로_찾기_검증(pathResponse, Arrays.asList(교대역, 남부터미널역, 양재역), 10);
+        최단_경로_찾기_검증(pathResponse, Arrays.asList(교대역, 남부터미널역, 양재역), 5);
     }
 
     public static ExtractableResponse<Response> 최단_경로_조회_요청(Long sourceId, Long targetId) {
@@ -98,7 +98,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
         return response;
     }
-    
+
     public static void 최단_경로_찾기_검증(PathResponse pathResponse, List<StationResponse> expectedStations, int distance) {
         List<Long> stationIds = pathResponse.getStations().stream()
                 .map(it -> it.getId())

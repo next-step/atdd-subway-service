@@ -99,8 +99,12 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public Sections getSections() {
-        return sections;
+    public List<Section> getSections() {
+        return sections.getSections();
+    }
+
+    public Station findUpStation() {
+        return sections.findUpStation();
     }
 
     public List<Station> getStations() {
