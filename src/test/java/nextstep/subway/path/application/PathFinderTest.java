@@ -2,6 +2,7 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.exception.NoLinkPathException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -81,8 +82,8 @@ class PathFinderTest {
         //when
         //then
         assertThatThrownBy(() -> {
-            PathResponse pathResponse = pathFinder.getPath(교대역, 교대역);
-        }).isInstanceOf(RuntimeException.class);
+            pathFinder.getPath(교대역, 교대역);
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 
 
@@ -99,11 +100,11 @@ class PathFinderTest {
         //then
         assertThatThrownBy(() -> {
             pathFinder.getPath(교대역, 망월사역);
-        }).isInstanceOf(RuntimeException.class);
+        }).isInstanceOf(NoLinkPathException.class);
 
         assertThatThrownBy(() -> {
             pathFinder.getPath(망월사역, 교대역);
-        }).isInstanceOf(RuntimeException.class);
+        }).isInstanceOf(NoLinkPathException.class);
     }
 
 
@@ -117,10 +118,10 @@ class PathFinderTest {
         //then
         assertThatThrownBy(() -> {
             pathFinder.getPath(교대역, new Station("사당역"));
-        }).isInstanceOf(RuntimeException.class);
+        }).isInstanceOf(IllegalArgumentException.class);
 
         assertThatThrownBy(() -> {
             pathFinder.getPath(new Station("사당역"), 교대역);
-        }).isInstanceOf(RuntimeException.class);
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 }
