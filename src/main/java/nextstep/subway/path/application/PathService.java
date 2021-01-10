@@ -3,6 +3,7 @@ package nextstep.subway.path.application;
 import lombok.RequiredArgsConstructor;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -38,20 +39,9 @@ public class PathService {
 
         List<Line> lines = lineRepository.findAll();
 
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        lines.forEach(line -> initGraph(graph, line));
-
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph).getPath(source, target);
-        return PathResponse.of(shortestPath.getVertexList(), (int) shortestPath.getWeight());
-    }
-
-    private void initGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
-        line.getSections().forEach(section -> {
-            graph.addVertex(section.getUpStation());
-            graph.addVertex(section.getDownStation());
-            DefaultWeightedEdge edge = graph.addEdge(section.getUpStation(), section.getDownStation());
-            graph.setEdgeWeight(edge, section.getDistanceWeight());
-        });
+        Path path = Path.of(lines);
+        path.findShortestPath(source, target);
+        return PathResponse.of(path.findShortestPath(source, target), path.findPathDistance());
     }
 
     private List<Station> findAllByIdIn(PathRequest pathRequest) {
