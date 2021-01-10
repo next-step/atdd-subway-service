@@ -54,4 +54,12 @@ public class Distance {
 	public double getWeight() {
 		return this.distance;
 	}
+
+	public int floorDiv(Distance distance) {
+		return Math.floorDiv(this.distance, distance.distance);
+	}
+
+	public boolean isGreaterThan(Distance distance) {
+		return this.distance > distance.distance;
+	}
 }
