@@ -4,8 +4,11 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import org.apache.http.HttpHeaders;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -45,10 +48,41 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
+    @DisplayName("나의 정보를 조회한다.")
+    @Test
+    void selectMyInfo() {
+        //given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> loginResponse = AuthAcceptanceTest.로그인_요청(EMAIL, PASSWORD);
+        //when
+        ExtractableResponse<Response> selectResponse = 내_정보_조회_요청(loginResponse.as(TokenResponse.class));
+        //then
+        회원_정보_조회됨(selectResponse, EMAIL, AGE);
+    }
+
+    @DisplayName("Bearer Auth 유효하지 않은 토큰")
+    @Test
+    void myInfoWithWrongBearerAuth() {
+        //when
+        ExtractableResponse<Response> selectResponse = 내_정보_조회_요청(new TokenResponse("invalid"));
+        //then
+        회원_정보_조회_실패함(selectResponse);
+    }
+
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
 
+    }
+
+    public static ExtractableResponse<Response> 내_정보_조회_요청(TokenResponse tokenResponse) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().log().all()
+                .get("/members/me")
+                .then().log().all()
+                .extract();
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -105,6 +139,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse.getId()).isNotNull();
         assertThat(memberResponse.getEmail()).isEqualTo(email);
         assertThat(memberResponse.getAge()).isEqualTo(age);
+    }
+
+    public static void 회원_정보_조회_실패함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
