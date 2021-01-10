@@ -1,5 +1,7 @@
 package nextstep.subway.path;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.domain.OptionalLoginMember;
 import nextstep.subway.common.Fare;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
@@ -13,6 +15,7 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -108,29 +111,36 @@ class OutsideInPathServiceTest {
 		return section;
 	}
 
+	@DisplayName("로그인 된 사용자로 경로를 구할시 나이를 사용하여 요금을 구한다.")
 	@Test
-	void calculatePath1() {
+	void calculatePath_로그인사용자() {
 		// given
 		given(stationRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(강남역, 양재역));
+		LoginMember loginMember = mock(LoginMember.class);
+		given(loginMember.getAge()).willReturn(22);
+		OptionalLoginMember optionalLoginMember = new OptionalLoginMember(loginMember);
 
 		// when
 		PathRequest pathRequest = new PathRequest(강남역.getId(), 양재역.getId());
-		PathResponse pathResponse = pathService.calculatePath(pathRequest);
+		PathResponse pathResponse = pathService.calculatePath(optionalLoginMember, pathRequest);
 
 		// then
 		assertThat(pathResponse.getStations())
 				.map(StationResponse::getName)
 				.containsExactly("강남역", "양재역");
+		verify(loginMember, times(1)).getAge();
 	}
 
+	@DisplayName("로그인 되지 않은 상태로도 경로를 구할 수 있다.")
 	@Test
-	void calculatePath2() {
+	void calculatePath_비로그인사용자() {
 		// given
 		given(stationRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(강남역, 남부터미널역));
+		OptionalLoginMember optionalLoginMember = new OptionalLoginMember(null);
 
 		// when
 		PathRequest pathRequest = new PathRequest(강남역.getId(), 남부터미널역.getId());
-		PathResponse pathResponse = pathService.calculatePath(pathRequest);
+		PathResponse pathResponse = pathService.calculatePath(optionalLoginMember, pathRequest);
 
 		// then
 		assertThat(pathResponse.getStations())
@@ -138,14 +148,16 @@ class OutsideInPathServiceTest {
 				.containsExactly("강남역", "교대역", "남부터미널역");
 	}
 
+	@DisplayName("존재하지 않는 역으로 경로를 구하면 예외가 발생한다.")
 	@Test
 	void calculatePath_NotExistStation() {
 		// given
 		given(stationRepository.findById(anyLong())).willReturn(Optional.empty());
+		final OptionalLoginMember optionalLoginMember = new OptionalLoginMember(null);
 
 		// when
 		PathRequest pathRequest = new PathRequest(1L, 2L);
-		assertThatThrownBy(() -> pathService.calculatePath(pathRequest))
+		assertThatThrownBy(() -> pathService.calculatePath(optionalLoginMember, pathRequest))
 				.isInstanceOf(PathCalculateException.class)
 				.hasMessageContaining("존재하지 않는");
 	}

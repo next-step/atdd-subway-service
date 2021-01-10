@@ -61,4 +61,8 @@ public class Fare implements Comparable<Fare> {
 	public int compareTo(Fare fare) {
 		return Integer.compare(this.fare, fare.fare);
 	}
+
+	public int getValue() {
+		return fare;
+	}
 }

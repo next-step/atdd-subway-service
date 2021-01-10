@@ -1,5 +1,8 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.domain.OptionalLoginMember;
+import nextstep.subway.common.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.LineMap;
@@ -13,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -26,7 +30,15 @@ public class PathService {
 		this.stationRepository = stationRepository;
 	}
 
-	public PathResponse calculatePath(PathCalculateRequest pathCalculateRequest) {
+	public PathResponse calculatePath(OptionalLoginMember optionalLoginMember,
+	                                  PathCalculateRequest pathCalculateRequest) {
+		Path path = getPath(pathCalculateRequest);
+		Optional<Integer> age = optionalLoginMember.optional().map(LoginMember::getAge);
+		Fare fare = (age.isPresent()) ? path.getFare(age.get()) : path.getFare();
+		return PathResponse.of(path.getStations(), path.getDistance(), fare);
+	}
+
+	private Path getPath(PathCalculateRequest pathCalculateRequest) {
 		List<Station> findResult = stationRepository.findAllByIdIn(
 				Arrays.asList(pathCalculateRequest.getSourceStationId(), pathCalculateRequest.getTargetStationId()));
 
@@ -40,7 +52,6 @@ public class PathService {
 				.orElseThrow(() -> new PathCalculateException("존재하지 않는 도착역입니다."));
 
 		List<Line> allLines = lineRepository.findAll();
-		Path path = new LineMap(allLines).calculate(source, target);
-		return PathResponse.of(path.getStations());
+		return new LineMap(allLines).calculate(source, target);
 	}
 }

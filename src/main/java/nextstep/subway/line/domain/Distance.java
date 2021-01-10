@@ -62,4 +62,8 @@ public class Distance {
 	public boolean isGreaterThan(Distance distance) {
 		return this.distance > distance.distance;
 	}
+
+	public int getValue() {
+		return distance;
+	}
 }

@@ -23,7 +23,7 @@ public class PathController {
 	@GetMapping("")
 	public ResponseEntity<PathResponse> showPath(@OptionalLoginMemberPrincipal OptionalLoginMember optionalLoginMember,
 	                                             @ModelAttribute PathRequest pathRequest) {
-		return ResponseEntity.ok(pathService.calculatePath(pathRequest));
+		return ResponseEntity.ok(pathService.calculatePath(optionalLoginMember, pathRequest));
 	}
 
 	@ExceptionHandler(PathCalculateException.class)
