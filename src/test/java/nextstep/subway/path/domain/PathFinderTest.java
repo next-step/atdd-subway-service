@@ -2,7 +2,6 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.exception.InvalidFindShortestPathException;
 import nextstep.subway.station.domain.Station;
@@ -48,7 +47,7 @@ class PathFinderTest {
         Line 삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 5);
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, new Distance(3)));
 
-        pathFinder = new PathFinder(new Lines(Arrays.asList(신분당선, 일호선, 이호선, 삼호선)));
+        pathFinder = new PathFinder(new SubwayMap(Arrays.asList(신분당선, 일호선, 이호선, 삼호선)));
     }
 
     @Test

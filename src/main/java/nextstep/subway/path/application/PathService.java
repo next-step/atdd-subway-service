@@ -1,7 +1,7 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.line.application.LineService;
-import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.domain.SubwayMap;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
@@ -23,11 +23,11 @@ public class PathService {
 
     @Transactional(readOnly = true)
     public PathResponse findShortestPath(Long sourceId, Long targetId) {
-        Lines lines = new Lines(lineService.findLines());
+        SubwayMap subwayMap = new SubwayMap(lineService.findLines());
         Station source = stationService.findById(sourceId);
         Station target = stationService.findById(targetId);
 
-        Path path = new PathFinder(lines).findShortestPath(source, target);
+        Path path = new PathFinder(subwayMap).findShortestPath(source, target);
         return PathResponse.of(path);
     }
 }

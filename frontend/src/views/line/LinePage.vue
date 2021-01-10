@@ -12,7 +12,7 @@
           <v-divider />
           <div class="mt-4 overflow-y-auto">
             <v-list-item-group v-model="line" color="grey darken-3">
-              <v-list-item v-for="line in lines" :key="line.name">
+              <v-list-item v-for="line in subwayMap" :key="line.name">
                 <v-list-item-content>
                   <v-list-item-title @click="setLineDetail(line)">
                     <v-avatar :color="line.color" size="10" class="relative bottom-1" left />
@@ -46,7 +46,7 @@ export default {
     this.fetchLines()
   },
   computed: {
-    ...mapGetters(['lines'])
+    ...mapGetters(['subwayMap'])
   },
   methods: {
     ...mapActions([FETCH_LINES]),

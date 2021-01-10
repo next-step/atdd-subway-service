@@ -1,6 +1,5 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.exception.InvalidFindShortestPathException;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -13,10 +12,10 @@ public class PathFinder {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph;
     private final DijkstraShortestPath dijkstraShortestPath;
 
-    public PathFinder(Lines lines) {
+    public PathFinder(SubwayMap subwayMap) {
         stationGraph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
-        generateStationGraph(lines);
+        generateStationGraph(subwayMap);
 
         dijkstraShortestPath = new DijkstraShortestPath(stationGraph);
     }
@@ -29,17 +28,17 @@ public class PathFinder {
         return new Path(shortestPath, distance);
     }
 
-    private void generateStationGraph(Lines lines) {
-        addVertex(lines);
-        setEdgeWeight(lines);
+    private void generateStationGraph(SubwayMap subwayMap) {
+        addVertex(subwayMap);
+        setEdgeWeight(subwayMap);
     }
 
-    private void addVertex(Lines lines) {
-        lines.getAllStations().forEach(station -> stationGraph.addVertex(station));
+    private void addVertex(SubwayMap subwayMap) {
+        subwayMap.getAllStations().forEach(stationGraph::addVertex);
     }
 
-    private void setEdgeWeight(Lines lines) {
-        lines.getAllSections().forEach(section -> {
+    private void setEdgeWeight(SubwayMap subwayMap) {
+        subwayMap.getAllSections().forEach(section -> {
             Station upStation = section.getUpStation();
             Station downStation = section.getDownStation();
             int distance = section.getDistance().getDistance();

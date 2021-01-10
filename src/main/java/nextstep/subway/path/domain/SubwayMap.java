@@ -1,14 +1,16 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Lines {
+public class SubwayMap {
     private final List<Line> lines;
 
-    public Lines(List<Line> lines) {
+    public SubwayMap(List<Line> lines) {
         this.lines = lines;
     }
 
