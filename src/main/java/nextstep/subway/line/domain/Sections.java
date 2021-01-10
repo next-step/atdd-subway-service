@@ -1,7 +1,6 @@
 package nextstep.subway.line.domain;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import nextstep.subway.line.application.AddLineException;
 import nextstep.subway.line.application.RemoveLineException;
 import nextstep.subway.station.domain.Station;
@@ -11,21 +10,31 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Getter
-@NoArgsConstructor
 @Embeddable
-public class Sections {
+public class Sections implements Iterable<Section> {
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private final List<Section> sections = new ArrayList<>();
+    private final List<Section> sections;
+
+    public Sections() {
+        sections = new ArrayList<>();
+    }
+
+    public Sections(List<Section> sections) {
+        this.sections = sections;
+    }
 
     public void add(Section section) {
-        Stations stations = getStations();
+        Stations stations = getStationsRelativeOrder();
         boolean isUpStationExisted = stations.contains(section.getUpStation());
         boolean isDownStationExisted = stations.contains(section.getDownStation());
 
@@ -38,7 +47,7 @@ public class Sections {
         sections.add(section);
     }
 
-    public Stations getStations() {
+    public Stations getStationsRelativeOrder() {
         if (sections.isEmpty()) {
             return Stations.emptyStations();
         }
@@ -53,6 +62,21 @@ public class Sections {
                     .map(Section::getDownStation)
                     .orElse(null);
         }
+
+        return stations;
+    }
+
+    public Stations getStations() {
+        if (sections.isEmpty()) {
+            return Stations.emptyStations();
+        }
+
+        Stations stations = new Stations();
+
+        sections.stream()
+            .flatMap(section -> Stream.of(section.getUpStation(), section.getDownStation()))
+            .distinct()
+            .forEach(stations::add);
 
         return stations;
     }
@@ -110,5 +134,15 @@ public class Sections {
         return sections.stream()
                 .filter(sectionPredicate)
                 .findFirst();
+    }
+
+    @Override
+    public Iterator<Section> iterator() {
+        return sections.iterator();
+    }
+
+    @Override
+    public void forEach(Consumer<? super Section> action) {
+        sections.forEach(action);
     }
 }
