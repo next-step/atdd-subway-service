@@ -16,7 +16,7 @@ public class PathService {
 	private final SectionRepository sectionRepository;
 
 	public PathResponse findShortestPath(Station sourceStation, Station targetStation) {
-		checkStationsAreSame(sourceStation, targetStation);
+		checkStationsAreNotSame(sourceStation, targetStation);
 
 		Sections sections = new Sections(sectionRepository.findAll());
 		Stations stations = sections.getStations();
@@ -30,7 +30,7 @@ public class PathService {
 		return PathResponse.of(shortestPath.getVertexList(), (int) shortestPath.getWeight());
 	}
 
-	private void checkStationsAreSame(Station sourceStation, Station targetStation) {
+	private void checkStationsAreNotSame(Station sourceStation, Station targetStation) {
 		if (sourceStation == targetStation) {
 			throw new PathFindException("source station and target station are the same");
 		}
