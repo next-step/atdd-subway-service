@@ -3,8 +3,8 @@ package nextstep.subway.path.application;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -38,7 +38,7 @@ public class PathServiceTest {
     private PathService pathService;
 
     @Mock
-    private StationRepository stationRepository;
+    private StationService stationService;
     @Mock
     private LineRepository lineRepository;
 
@@ -57,18 +57,17 @@ public class PathServiceTest {
         lines.add(line);
         lines.add(line2);
         lines.add(line3);
-        pathService = new PathService(stationRepository, lineRepository);
+        pathService = new PathService(stationService, lineRepository);
     }
 
     @Test
     @DisplayName("경로찾기 테스트")
     void findPath() {
         when(lineRepository.findAll()).thenReturn(lines);
-        when(stationRepository.findById(gangnam.getId())).thenReturn(java.util.Optional.ofNullable(gangnam));
-        when(stationRepository.findById(yangjae.getId())).thenReturn(java.util.Optional.ofNullable(yangjae));
-        when(stationRepository.findById(gyodae.getId())).thenReturn(java.util.Optional.ofNullable(gyodae));
-        when(stationRepository.findById(hongdae.getId())).thenReturn(java.util.Optional.ofNullable(hongdae));
-
+        when(stationService.findStationById(gangnam.getId())).thenReturn(gangnam);
+        when(stationService.findStationById(yangjae.getId())).thenReturn(yangjae);
+        when(stationService.findStationById(gyodae.getId())).thenReturn(gyodae);
+        when(stationService.findStationById(hongdae.getId())).thenReturn(hongdae);
         PathResponse pathResponse = pathService.findPathByIds(gangnam.getId(), hongdae.getId());
 
         assertThat(pathResponse).isNotNull();
