@@ -65,16 +65,16 @@ class FavoriteServiceTest {
 	@Test
 	void getFavorites() {
 		// given
-		Favorite 즐겨찾기1 = new Favorite(주인Member, 역1, 역2);
-		Favorite 즐겨찾기2 = new Favorite(주인Member, 역2, 역1);
-		em.persist(즐겨찾기1);
-		em.persist(즐겨찾기2);
+		final FavoriteRequest favoriteRequest1 = new FavoriteRequest(역1.getId(), 역2.getId());
+		final FavoriteRequest favoriteRequest2 = new FavoriteRequest(역2.getId(), 역1.getId());
+		favoriteService.createFavorite(주인, favoriteRequest1);
+		favoriteService.createFavorite(주인, favoriteRequest2);
 
 		// when then
 		assertThat(favoriteService.getFavorites(주인))
 				.hasSize(2)
-				.map(favoriteResponse -> favoriteResponse.getSource().getName())
-				.containsExactly(즐겨찾기1.getSource().getName(), 즐겨찾기2.getSource().getName());
+				.map(favoriteResponse -> favoriteResponse.getSource().getId())
+				.containsExactly(favoriteRequest1.getSource(), favoriteRequest2.getSource());
 		assertThat(favoriteService.getFavorites(다른사람))
 				.hasSize(0);
 	}
