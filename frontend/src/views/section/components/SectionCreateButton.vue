@@ -77,14 +77,14 @@ export default {
   mixins: [dialog],
   components: { Dialog },
   computed: {
-    ...mapGetters(['lines', 'stations'])
+    ...mapGetters(['subwayMap', 'stations'])
   },
   methods: {
     ...mapMutations([SHOW_SNACKBAR]),
     ...mapActions([FETCH_LINES, CREATE_LINE, DELETE_LINE, EDIT_LINE, FETCH_LINE, FETCH_STATIONS, CREATE_SECTION]),
     initLineView() {
-      if (this.lines.length > 0) {
-        this.lineNameViews = this.lines.map(line => {
+      if (this.subwayMap.length > 0) {
+        this.lineNameViews = this.subwayMap.map(line => {
           return {
             text: line.name,
             value: line.id

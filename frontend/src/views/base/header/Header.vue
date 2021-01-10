@@ -58,7 +58,7 @@ export default {
         },
         {
           _id: 2,
-          link: '/lines',
+          link: '/subwayMap',
           text: '노선 관리'
         },
         {

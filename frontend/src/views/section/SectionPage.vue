@@ -70,7 +70,7 @@ export default {
     this.initLinesView()
   },
   computed: {
-    ...mapGetters(['line', 'lines'])
+    ...mapGetters(['line', 'subwayMap'])
   },
   watch: {
     line() {
@@ -85,8 +85,8 @@ export default {
     async initLinesView() {
       try {
         await this.fetchLines()
-        if (this.lines.length > 0) {
-          this.lineNamesViews = this.lines.map(line => {
+        if (this.subwayMap.length > 0) {
+          this.lineNamesViews = this.subwayMap.map(line => {
             return {
               text: line.name,
               value: line.id
