@@ -5,6 +5,7 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.domain.Money;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +25,7 @@ public class MockitoTest {
         LineRepository lineRepository = mock(LineRepository.class);
         StationService stationService = mock(StationService.class);
 
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line("2호선", "green")));
+        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line("2호선", "green", Money.won(0L))));
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when

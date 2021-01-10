@@ -3,7 +3,6 @@ package nextstep.subway.line.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
@@ -31,9 +30,9 @@ public class LineRestHelper {
     }
 
     public static LineResponse 지하철_노선_등록되어_있음(String line, String color, StationResponse upStation,
-            StationResponse downStation, int distance) {
+            StationResponse downStation, int distance, int additionalFare) {
         LineRequest request = new LineRequest(line, color, upStation.getId(),
-                downStation.getId(), distance);
+                downStation.getId(), distance, additionalFare);
         return LineRestHelper.지하철_노선_생성_요청(request).as(LineResponse.class);
     }
 
