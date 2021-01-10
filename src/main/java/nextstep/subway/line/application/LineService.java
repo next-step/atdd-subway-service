@@ -85,27 +85,19 @@ public class LineService {
 		validateLineStation(stations, upStation, downStation);
 
 		if (stations.isEmpty()) {
-			line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+			line.addSection(line, upStation, downStation, request.getDistance());
 			return;
 		}
 
 		if (upStation.isExisted(stations)) {
-			line.getSections().stream()
-				.filter(it -> it.getUpStation() == upStation)
-				.findFirst()
-				.ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
-
-			line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+			line.updateUpStation(upStation, downStation, request.getDistance());
 		} else if (downStation.isExisted(stations)) {
-			line.getSections().stream()
-				.filter(it -> it.getDownStation() == downStation)
-				.findFirst()
-				.ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
-
-			line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+			line.updateDownStation(upStation, downStation, request.getDistance());
 		} else {
 			throw new RuntimeException();
 		}
+
+		line.addSection(line, upStation, downStation, request.getDistance());
 	}
 
 	private void validateLineStation(List<Station> stations, Station upStation, Station downStation) {

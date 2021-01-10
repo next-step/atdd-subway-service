@@ -53,4 +53,22 @@ public class Line extends BaseEntity {
     public List<Section> getSections() {
         return sections;
     }
+
+    public void updateUpStation(Station upStation, Station downStation, int distance) {
+        getSections().stream()
+            .filter(it -> it.getUpStation() == upStation)
+            .findFirst()
+            .ifPresent(it -> it.updateUpStation(downStation, distance));
+    }
+
+    public void updateDownStation(Station upStation, Station downStation, int distance) {
+        getSections().stream()
+            .filter(it -> it.getDownStation() == downStation)
+            .findFirst()
+            .ifPresent(it -> it.updateDownStation(upStation, distance));
+    }
+
+    public void addSection(Line line, Station upStation, Station downStation, int distance) {
+        getSections().add(new Section(line, upStation, downStation, distance));
+    }
 }
