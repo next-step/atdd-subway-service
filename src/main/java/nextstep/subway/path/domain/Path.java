@@ -29,9 +29,17 @@ public class Path {
 	}
 
 	public Fare getFare(int age) {
+		return getFare(DiscountPolicy.find(age));
+	}
+
+	public Fare getFare() {
+		return getFare(DiscountPolicy.STANDARD);
+	}
+
+	private Fare getFare(DiscountPolicy discountPolicy) {
 		final Fare allFare = DEFAULT_FARE.plus(getDistanceFare())
 				.plus(getMaxLineFare());
-		final Fare discount = DiscountPolicy.find(age).calculateDiscount(allFare);
+		final Fare discount = discountPolicy.calculateDiscount(allFare);
 		return allFare.minus(discount);
 	}
 

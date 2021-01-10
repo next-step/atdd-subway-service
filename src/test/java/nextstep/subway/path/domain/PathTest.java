@@ -71,6 +71,12 @@ class PathTest {
 		assertThat(교대_양재.getFare(age)).isEqualTo(new Fare(fare));
 	}
 
+	@Test
+	@DisplayName("연령 미기재시 지하철 이용금액은 성인의 경우와 같다.")
+	void getFare_EqualToAdult() {
+		assertThat(교대_양재.getFare(19)).isEqualTo(교대_양재.getFare());
+	}
+
 	@DisplayName("연령별 할인된 금액(지하철거리 10KM 초과시)")
 	@ParameterizedTest
 	@CsvSource(value = {"6,1150", "13,1630", "19,1950"})
