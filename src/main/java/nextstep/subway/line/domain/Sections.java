@@ -30,7 +30,7 @@ public class Sections {
     private List<Section> sections = new ArrayList<>();
 
     public Sections(List<Section> section) {
-        this.sections = section;
+        this.sections = new ArrayList<>(section);
     }
 
     public List<Station> getOrderedStations() {
@@ -73,7 +73,7 @@ public class Sections {
             updateSectionDownStation(section, upStation, downStation);
         }
 
-        sections.add(section);
+        this.sections.add(section);
     }
 
     public void remove(Station station) {

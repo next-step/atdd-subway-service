@@ -31,6 +31,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private StationResponse 테스트역;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -48,6 +49,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        테스트역 = StationAcceptanceTest.지하철역_등록되어_있음("테스트역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
@@ -65,13 +67,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         params.put("target", 남부터미널역.getId());
 
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .params(params)
-                .when().get("/paths")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(params);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -79,6 +75,31 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathResponse pathResponse = response.body().as(PathResponse.class);
         assertThat(pathResponse.getStations().size()).isEqualTo(3);
         assertThat(pathResponse.getDistance()).isEqualTo(12);
+    }
+
+    @DisplayName("최단 경로 조회를 조회할 수 없다.")
+    @Test
+    void findPathsWithException() {
+        // given
+        Map<String, Long> params = new HashMap<>();
+        params.put("source", 강남역.getId());
+        params.put("target", 테스트역.getId());
+
+        // when
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(params);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    private ExtractableResponse<Response> 최단_경로_조회_요청(Map<String, Long> params) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .params(params)
+                .when().get("/paths")
+                .then().log().all()
+                .extract();
     }
 
     private LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
