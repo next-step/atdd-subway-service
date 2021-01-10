@@ -1,10 +1,7 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
-import nextstep.subway.path.exception.NotConnectedPathException;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 /**
  * @author : leesangbae
@@ -17,16 +14,16 @@ public class Path {
 
     private final int distance;
 
-    private Path(List<Station> pathStations, int distance) {
+    private final Money maxAdditionalFare;
+
+    private Path(List<Station> pathStations, int distance, Money maxAdditionalFare) {
         this.pathStations = pathStations;
         this.distance = distance;
+        this.maxAdditionalFare = maxAdditionalFare;
     }
 
-    public static Path of(GraphPath<Station, DefaultWeightedEdge> path) {
-        if (path == null || path.getVertexList().isEmpty()) {
-            throw new NotConnectedPathException("연결되지 않은 구간입니다.");
-        }
-        return new Path(path.getVertexList(), (int) path.getWeight());
+    public static Path of(List<Station> pathStations, int distance, Money maxAdditionalFare) {
+        return new Path(pathStations, distance, maxAdditionalFare);
     }
 
     public List<Station> getPathStations() {
@@ -35,5 +32,9 @@ public class Path {
 
     public int getDistance() {
         return distance;
+    }
+
+    public Money getMaxAdditionalFare() {
+        return maxAdditionalFare;
     }
 }
