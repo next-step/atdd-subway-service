@@ -1,5 +1,6 @@
 package nextstep.subway.path;
 
+import nextstep.subway.common.Fare;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -71,9 +72,9 @@ class OutsideInPathServiceTest {
 		양재역 = mockStation(3L, "양재역");
 		교대역 = mockStation(4L, "교대역");
 
-		신분당선 = mockLine("신분당선", Arrays.asList(mockSection(강남역, 양재역, 10)));
-		이호선 = mockLine("이호선", Arrays.asList(mockSection(교대역, 강남역, 5)));
-		삼호선 = mockLine("삼호선", Arrays.asList(
+		신분당선 = mockLine("신분당선", 1000, Arrays.asList(mockSection(강남역, 양재역, 10)));
+		이호선 = mockLine("이호선", 0, Arrays.asList(mockSection(교대역, 강남역, 5)));
+		삼호선 = mockLine("삼호선", 200, Arrays.asList(
 				mockSection(교대역, 남부터미널역, 3), mockSection(남부터미널역, 양재역, 2)));
 
 		given(lineRepository.findAll()).willReturn(Arrays.asList(신분당선, 이호선, 삼호선));
@@ -90,10 +91,12 @@ class OutsideInPathServiceTest {
 		return station;
 	}
 
-	private Line mockLine(String name, List<Section> sections) {
+	private Line mockLine(String name, int fare, List<Section> sections) {
 		Line line = mock(Line.class);
 		given(line.getName()).willReturn(name);
+		given(line.getFare()).willReturn(new Fare(fare));
 		given(line.getSections()).willReturn(sections.iterator());
+		sections.forEach(section -> given(section.getLine()).willReturn(line));
 		return line;
 	}
 
