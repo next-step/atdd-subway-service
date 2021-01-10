@@ -21,7 +21,8 @@ public class PathAcceptanceSupport {
 	}
 
 	public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int additionalFee) {
-		ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest(name, color, upStation.getId(), downStation.getId(), distance));
+		final LineRequest params = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, additionalFee);
+		ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_생성_요청(params);
 		return response.body().as(LineResponse.class);
 	}
 

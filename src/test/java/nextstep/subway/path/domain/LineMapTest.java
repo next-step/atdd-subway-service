@@ -39,7 +39,7 @@ class LineMapTest {
 		양재역 = new Station("양재역");
 		노원역 = new Station("노원역");
 
-		이호선 = new Line("이호선", "초록", 양재역, 강남역, 5);
+		이호선 = new Line("이호선", "초록", 양재역, 강남역, 5, 0);
 		lineMap = new LineMap(Arrays.asList(이호선));
 	}
 

@@ -52,11 +52,11 @@ class PathTest {
 		건대입구역 = new Station("건대입구역");
 		시청역 = new Station("시청역");
 
-		신분당선 = new Line("신분당선", "노랑", 강남역, 양재역, 10);
-		이호선 = new Line("이호선", "초록", 교대역, 강남역, 4);
+		신분당선 = new Line("신분당선", "노랑", 강남역, 양재역, 10, 1000);
+		이호선 = new Line("이호선", "초록", 교대역, 강남역, 4, 0);
 		이호선.addLineStation(강남역, 건대입구역, 20);
 		이호선.addLineStation(건대입구역, 시청역, 34);
-		삼호선 = new Line("삼호선", "주황", 교대역, 남부터미널역, 3);
+		삼호선 = new Line("삼호선", "주황", 교대역, 남부터미널역, 3, 200);
 		삼호선.addLineStation(남부터미널역, 양재역, 4);
 		lineMap = new LineMap(Arrays.asList(신분당선, 이호선, 삼호선));
 		교대_양재 = lineMap.calculate(교대역, 양재역);
