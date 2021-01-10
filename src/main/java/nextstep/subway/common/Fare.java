@@ -1,7 +1,5 @@
 package nextstep.subway.common;
 
-import nextstep.subway.line.application.ValidationException;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;

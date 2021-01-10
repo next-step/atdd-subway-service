@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.line.application.ValidationException;
+import nextstep.subway.common.ValidationException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
