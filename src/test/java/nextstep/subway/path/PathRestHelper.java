@@ -12,14 +12,16 @@ import org.springframework.http.MediaType;
  * @project : subway
  * @since : 2021-01-02
  */
+@SuppressWarnings("NonAsciiCharacters")
 public class PathRestHelper {
 
-    public static ExtractableResponse<Response> 지하철_경로_탐색_요청(long sourceId, long targetId) {
+    public static ExtractableResponse<Response> 지하철_경로_탐색_요청(long sourceId, long targetId, String accessToken) {
         Map<String, String> params = new HashMap<>();
         params.put("source", String.valueOf(sourceId));
         params.put("target", String.valueOf(targetId));
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().get("/paths")
