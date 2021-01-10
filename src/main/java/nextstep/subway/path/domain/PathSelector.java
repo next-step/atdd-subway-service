@@ -27,7 +27,7 @@ public class PathSelector {
         Station downStation = section.getDownStation();
         graph.addVertex(upStation);
         graph.addVertex(downStation);
-        graph.setEdgeWeight(graph.addEdge(upStation,downStation), section.getDistance().value());
+        graph.setEdgeWeight(graph.addEdge(upStation,downStation), section.getDistance());
     }
 
     public static void remove(Section section) {

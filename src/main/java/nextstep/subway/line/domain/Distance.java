@@ -22,14 +22,14 @@ public class Distance {
         return distance;
     }
 
-    public Distance plus(Distance other) {
-        return new Distance(this.distance + other.distance);
+    public Distance plus(int distance) {
+        return new Distance(this.distance + distance);
     }
 
-    public Distance minus(Distance other) {
-        if (this.distance <= other.distance) {
+    public Distance minus(int distance) {
+        if (this.distance <= distance) {
             throw new InvalidDistanceException("기존의 역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        return new Distance(this.distance - other.distance);
+        return new Distance(this.distance - distance);
     }
 }
