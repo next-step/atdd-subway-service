@@ -29,7 +29,8 @@ public class Path {
 	}
 
 	public Fare getFare(int age) {
-		final Fare allFare = DEFAULT_FARE.plus(getDistanceFare());
+		final Fare allFare = DEFAULT_FARE.plus(getDistanceFare())
+				.plus(getMaxLineFare());
 		final Fare discount = DiscountPolicy.find(age).calculateDiscount(allFare);
 		return allFare.minus(discount);
 	}
@@ -47,6 +48,13 @@ public class Path {
 		}
 
 		return FARE_FREE;
+	}
+
+	private Fare getMaxLineFare() {
+		return path.getEdgeList().stream()
+				.map(LineEdge::getLineFare)
+				.max(Fare::compareTo)
+				.orElse(FARE_FREE);
 	}
 
 	public Distance getDistance() {

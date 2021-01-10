@@ -30,7 +30,7 @@ public class LineMap {
 		line.getSections().forEachRemaining(section -> {
 			graph.addVertex(section.getUpStation());
 			graph.addVertex(section.getDownStation());
-			LineEdge lineEdge = new LineEdge(section.getUpStation(), section.getDownStation(), section.getDistance());
+			LineEdge lineEdge = LineEdge.of(section);
 			graph.addEdge(section.getUpStation(), section.getDownStation(), lineEdge);
 		});
 	}

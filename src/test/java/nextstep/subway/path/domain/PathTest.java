@@ -66,21 +66,21 @@ class PathTest {
 
 	@DisplayName("연령에 따라 할인이 적용되어 지하철 이용 금액이 다르다.")
 	@ParameterizedTest
-	@CsvSource(value = {"6,800", "13,1070", "19,1250"})
+	@CsvSource(value = {"6,900", "13,1230", "19,1450"})
 	void getFare(int age, int fare) {
 		assertThat(교대_양재.getFare(age)).isEqualTo(new Fare(fare));
 	}
 
 	@DisplayName("연령별 할인된 금액(지하철거리 10KM 초과시)")
 	@ParameterizedTest
-	@CsvSource(value = {"6,1050", "13,1470", "19,1750"})
+	@CsvSource(value = {"6,1150", "13,1630", "19,1950"})
 	void getFare_10KM초과(int age, int fare) {
 		assertThat(남부터미널_건대입구.getFare(age)).isEqualTo(new Fare(fare));
 	}
 
 	@DisplayName("연령별 할인된 금액(지하철거리 50KM 초과시)")
 	@ParameterizedTest
-	@CsvSource(value = {"6,1200", "13,1710", "19,2050"})
+	@CsvSource(value = {"6,1700", "13,2510", "19,3050"})
 	void getFare_50KM초과(int age, int fare) {
 		assertThat(양재_시청.getFare(age)).isEqualTo(new Fare(fare));
 	}
