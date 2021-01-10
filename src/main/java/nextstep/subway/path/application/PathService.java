@@ -1,6 +1,5 @@
 package nextstep.subway.path.application;
 
-import java.util.Optional;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
@@ -10,11 +9,9 @@ import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.calcurator.Discount;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.path.exception.StationNotFoundException;
 import nextstep.subway.path.exception.StationNotRegisteredException;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
