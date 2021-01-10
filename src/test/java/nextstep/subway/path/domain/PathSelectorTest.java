@@ -60,15 +60,19 @@ public class PathSelectorTest {
     @DisplayName("최단거리 탐색")
     @ParameterizedTest
     @MethodSource
-    void selectShortestPath(ArgumentSupplier<Station> sourceSupplier, ArgumentSupplier<Station> targetSupplier, ArgumentSupplier<Station[]> expectedSupplier) {
-        Station source = sourceSupplier.get();
-        Station target = targetSupplier.get();
-        Station[] expected = expectedSupplier.get();
-
+    void selectShortestPath(Station source, Station target, Station[] expected) {
         PathResult result = PathSelector.select(source, target);
 
         assertThat(result.getStations()).containsExactly(expected);
         assertThat(result.getTotalDistance()).isEqualTo((expected.length - 1) * DEFAULT_DISTANCE);
+    }
+
+    private static Stream<Arguments> selectShortestPath() {
+        return Stream.of(
+                Arguments.of(신도림, 당산, new Station[]{신도림, 문래, 영등포구청, 당산}),
+                Arguments.of(영등포구청, 노량진, new Station[]{영등포구청, 당산, 국회의사당, 여의도, 샛강, 노량진}),
+                Arguments.of(문래, 노량진, new Station[]{문래, 신도림, 영등포, 신길, 대방, 노량진})
+        );
     }
 
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
@@ -77,29 +81,5 @@ public class PathSelectorTest {
         assertThatExceptionOfType(BadRequestException.class)
                 .isThrownBy(() -> PathSelector.select(신도림, new Station("서울")))
                 .withMessage("연결되지 않은 역은 조회 할 수 없습니다.");
-    }
-
-    private static Stream<Arguments> selectShortestPath() {
-        return Stream.of(
-                Arguments.of(supply(()->신도림), supply(() ->당산), supply(() -> new Station[]{신도림, 문래, 영등포구청, 당산})),
-                Arguments.of(supply(()->영등포구청), supply(() ->노량진), supply(() -> new Station[]{영등포구청, 당산, 국회의사당, 여의도, 샛강, 노량진})),
-                Arguments.of(supply(()->문래), supply(() ->노량진), supply(() -> new Station[]{문래, 신도림, 영등포, 신길, 대방, 노량진}))
-        );
-    }
-
-    private static <T> ArgumentSupplier<T> supply(Supplier<T> supplier) {
-        return new ArgumentSupplier<>(supplier);
-    }
-
-    private static class ArgumentSupplier<T> {
-        private Supplier<T> supplier;
-
-        public ArgumentSupplier(Supplier<T> supplier) {
-            this.supplier = supplier;
-        }
-
-        public T get() {
-            return supplier.get();
-        }
     }
 }
