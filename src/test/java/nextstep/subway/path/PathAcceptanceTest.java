@@ -17,14 +17,16 @@ import java.util.Arrays;
 class PathAcceptanceTest extends AcceptanceTest {
 
 	/**
-	 *              거리 4
-	 * 교대역    --- *2호선* ---   강남역
+	 * [지하철 노선도]
+	 * 
+	 *              거리 4                  거리 20                 거리 34
+	 * 교대역    --- *2호선* ---   강남역  --- *2호선* --- 건대입구역 --- *2호선 --- 시청역
 	 * |                        |
 	 * *3호선*                   *신분당선*
 	 * 거리 3                     거리 10
 	 * |                        |
 	 * 남부터미널역  --- *3호선* --- 양재
-	 *                거리 2
+	 *                거리 4
 	 */
 
 	private StationResponse 강남역;
@@ -32,6 +34,8 @@ class PathAcceptanceTest extends AcceptanceTest {
 	private StationResponse 양재역;
 	private StationResponse 교대역;
 	private StationResponse 노원역;
+	private StationResponse 건대입구역;
+	private StationResponse 시청역;
 	private LineResponse 신분당선;
 	private LineResponse 이호선;
 	private LineResponse 삼호선;
@@ -45,12 +49,16 @@ class PathAcceptanceTest extends AcceptanceTest {
 		교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
 		남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 		노원역 = StationAcceptanceTest.지하철역_등록되어_있음("노원역").as(StationResponse.class);
+		건대입구역 = StationAcceptanceTest.지하철역_등록되어_있음("건대입구역").as(StationResponse.class);
+		시청역 = StationAcceptanceTest.지하철역_등록되어_있음("시청역").as(StationResponse.class);
 
 		신분당선 = PathAcceptanceSupport.지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
 		이호선 = PathAcceptanceSupport.지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 4);
-		삼호선 = PathAcceptanceSupport.지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
+		삼호선 = PathAcceptanceSupport.지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 7);
 
 		PathAcceptanceSupport.지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+		PathAcceptanceSupport.지하철_노선에_지하철역_등록되어_있음(이호선, 강남역, 건대입구역, 20);
+		PathAcceptanceSupport.지하철_노선에_지하철역_등록되어_있음(이호선, 건대입구역, 시청역, 34);
 	}
 
 	@DisplayName("경로를 조회한다.")
