@@ -17,6 +17,10 @@ public class PathResponse {
         this.distance = distance;
     }
 
+    public static PathResponse of(List<Station> shortestPath, double shortestWeight) {
+        return new PathResponse(shortestPath, (int) shortestWeight);
+    }
+
     public List<Station> getStations() {
         return stations;
     }
