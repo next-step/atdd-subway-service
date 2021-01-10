@@ -56,7 +56,7 @@ public class PathAcceptanceSupport {
 				.map(StationResponse::getName)
 				.asList()
 				.containsAll(stations);
-//		assertThat(pathResponse.getDistance()).isEqualTo(distance);
+		assertThat(pathResponse.getDistance()).isEqualTo(distance);
 		assertThat(pathResponse.getFare()).isEqualTo(fare);
 	}
 
