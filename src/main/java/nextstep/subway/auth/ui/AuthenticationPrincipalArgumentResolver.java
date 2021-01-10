@@ -1,6 +1,7 @@
 package nextstep.subway.auth.ui;
 
 import nextstep.subway.auth.application.AuthService;
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
 import org.springframework.core.MethodParameter;
@@ -25,7 +26,23 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
+        HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
+        String credentials = AuthorizationExtractor.extract(request);
+        if (isPathUri(request.getRequestURI())) {
+            return tokenOrNull(credentials);
+        }
         return authService.findMemberByToken(credentials);
+    }
+
+    private Object tokenOrNull(final String credentials) {
+        try {
+            return authService.findMemberByToken(credentials);
+        } catch (AuthorizationException e) {
+            return null;
+        }
+    }
+
+    private boolean isPathUri(final String uri) {
+        return "/paths".equals(uri);
     }
 }

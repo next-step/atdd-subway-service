@@ -17,6 +17,11 @@ public class PathSections {
         getPathStations().forEach(consumer);
     }
 
+    public PathSections findSections(final PathStations shortestPathStations) {
+        return shortestPathStations.toPathSections(pathSections);
+
+    }
+
     public List<PathStation> getPathStations() {
         return pathSections.stream()
                 .flatMap(pathSection -> pathSection.getStations().stream())
@@ -26,5 +31,12 @@ public class PathSections {
 
     public List<PathSection> getPathSections() {
         return pathSections;
+    }
+
+    public List<Long> getLineIds() {
+        return pathSections.stream()
+                .map(PathSection::getLineId)
+                .distinct()
+                .collect(Collectors.toList());
     }
 }

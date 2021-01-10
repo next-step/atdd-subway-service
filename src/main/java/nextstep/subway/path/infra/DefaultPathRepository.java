@@ -36,7 +36,8 @@ public class DefaultPathRepository implements PathRepository {
     }
 
     private PathSection toPathSection(final Section section) {
-        return new PathSection(toPathStation(section.getUpStation()),
+        return new PathSection(section.getLine().getId(),
+                toPathStation(section.getUpStation()),
                 toPathStation(section.getDownStation()),
                 section.getDistance());
     }

@@ -1,6 +1,7 @@
 package nextstep.subway.path.dto;
 
 import lombok.NoArgsConstructor;
+import nextstep.subway.common.Money;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathStation;
 
@@ -13,14 +14,20 @@ public class PathResponse {
 
     private List<StationResponse> stations;
     private int distance;
+    private Integer fee;
 
-    public PathResponse(final List<StationResponse> stations, final int distance) {
+    public PathResponse(final List<StationResponse> stations, final int distance, final Integer fee) {
         this.stations = stations;
         this.distance = distance;
+        this.fee = fee;
     }
 
     public static PathResponse of(final Path path) {
-        return new PathResponse(StationResponse.ofList(path.getPathStations()), path.getDistance());
+        return new PathResponse(StationResponse.ofList(path.getPathStations()), path.getDistance(), null);
+    }
+
+    public static PathResponse of(final Path path, final Money fee) {
+        return new PathResponse(StationResponse.ofList(path.getPathStations()), path.getDistance(), fee.getAmount());
     }
 
     public List<StationResponse> getStations() {
@@ -29,6 +36,10 @@ public class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public Integer getFee() {
+        return fee;
     }
 
     @NoArgsConstructor

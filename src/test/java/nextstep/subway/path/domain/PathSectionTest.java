@@ -39,4 +39,20 @@ class PathSectionTest {
         assertThat(stations.size()).isEqualTo(2);
         assertThat(stations).contains(강남역, 교대역);
     }
+
+    @DisplayName("지하철 구간을 반대로 재생성한다.")
+    @Test
+    void reverse() {
+        // given
+        PathStation 강남역 = new PathStation(1L, "강남역", LocalDateTime.now());
+        PathStation 교대역 = new PathStation(2L, "교대역", LocalDateTime.now());
+
+        PathSection pathSection = new PathSection(강남역, 교대역, 10);
+
+        // when
+        PathSection reverse = pathSection.reverse();
+
+        // then
+        assertThat(reverse.getStations()).containsExactly(교대역, 강남역);
+    }
 }
