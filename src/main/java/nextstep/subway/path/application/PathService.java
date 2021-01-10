@@ -2,6 +2,7 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.LineMap;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathCalculateRequest;
 import nextstep.subway.path.dto.PathResponse;
@@ -39,7 +40,7 @@ public class PathService {
 				.orElseThrow(() -> new PathCalculateException("존재하지 않는 도착역입니다."));
 
 		List<Line> allLines = lineRepository.findAll();
-		Path path = new Path(allLines);
-		return PathResponse.of(path.calculate(source, target));
+		Path path = new LineMap(allLines).calculate(source, target);
+		return PathResponse.of(path.getStations());
 	}
 }

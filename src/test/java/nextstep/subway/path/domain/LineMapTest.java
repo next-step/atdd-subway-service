@@ -1,8 +1,7 @@
-package nextstep.subway.path;
+package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.application.PathCalculateException;
-import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SuppressWarnings("NonAsciiCharacters")
-class PathTest {
+class LineMapTest {
 
 	/**
 	 *              거리 5
@@ -36,7 +35,7 @@ class PathTest {
 	private Line 신분당선;
 	private Line 이호선;
 	private Line 삼호선;
-	private Path path;
+	private LineMap lineMap;
 
 	@BeforeEach
 	void setUp() {
@@ -50,16 +49,16 @@ class PathTest {
 		이호선 = new Line("이호선", "초록", 교대역, 강남역, 5);
 		삼호선 = new Line("삼호선", "주황", 교대역, 남부터미널역, 3);
 		삼호선.addLineStation(남부터미널역, 양재역, 2);
-		path = new Path(Arrays.asList(신분당선, 이호선, 삼호선));
+		lineMap = new LineMap(Arrays.asList(신분당선, 이호선, 삼호선));
 	}
 
 	@Test
 	void calculate1() {
 		// when
-		List<Station> stations = path.calculate(강남역, 양재역);
+		Path path = lineMap.calculate(강남역, 양재역);
 
 		// then
-		assertThat(stations)
+		assertThat(path.getStations())
 				.map(Station::getName)
 				.containsExactly("강남역", "양재역");
 	}
@@ -67,10 +66,10 @@ class PathTest {
 	@Test
 	void calculate2() {
 		// when
-		List<Station> stations = path.calculate(강남역, 남부터미널역);
+		Path path = lineMap.calculate(강남역, 남부터미널역);
 
 		// then
-		assertThat(stations)
+		assertThat(path.getStations())
 				.map(Station::getName)
 				.containsExactly("강남역", "교대역", "남부터미널역");
 	}
@@ -79,7 +78,7 @@ class PathTest {
 	@Test
 	void calculate_NotIncluded() {
 		// when
-		assertThatThrownBy(() -> path.calculate(강남역, 노원역))
+		assertThatThrownBy(() -> lineMap.calculate(강남역, 노원역))
 				.isInstanceOf(PathCalculateException.class)
 				.hasMessageContaining("경로에 포함되어 있지 않은 역");
 	}
@@ -88,7 +87,7 @@ class PathTest {
 	@Test
 	void calculate_SameStation() {
 		// when
-		assertThatThrownBy(() -> path.calculate(강남역, 강남역))
+		assertThatThrownBy(() -> lineMap.calculate(강남역, 강남역))
 				.isInstanceOf(PathCalculateException.class)
 				.hasMessageContaining("출발지와 도착지가 같습니다.");
 	}
