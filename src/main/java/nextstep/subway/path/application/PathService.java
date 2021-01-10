@@ -27,7 +27,7 @@ public class PathService {
 			.findShortestPath(sections, stations, sourceStation, targetStation)
 			.orElseThrow(() -> new PathFindException("source station is not connected to target station"));
 
-		return PathResponse.of(shortestPath.getVertexList(), (int) shortestPath.getWeight());
+		return PathResponse.of(shortestPath);
 	}
 
 	private void checkStationsAreNotSame(Station sourceStation, Station targetStation) {
