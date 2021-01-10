@@ -4,15 +4,14 @@ import nextstep.subway.common.Fare;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.List;
 
 public class Path {
 
-	private final GraphPath<Station, DefaultWeightedEdge> path;
+	private final GraphPath<Station, LineEdge> path;
 
-	public Path(GraphPath<Station, DefaultWeightedEdge> path) {
+	public Path(GraphPath<Station, LineEdge> path) {
 		this.path = path;
 	}
 
@@ -25,6 +24,9 @@ public class Path {
 	}
 
 	public Distance getDistance() {
-		return null;
+		return path.getEdgeList().stream()
+				.map(LineEdge::getDistance)
+				.reduce(Distance::plus)
+				.orElseGet(() -> new Distance(0));
 	}
 }
