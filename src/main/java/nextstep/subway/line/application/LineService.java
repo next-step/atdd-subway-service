@@ -119,18 +119,15 @@ public class LineService {
 			throw new RuntimeException();
 		}
 
-		Optional<Section> upLineStation = line.getSections().stream()
-			.filter(it -> it.getUpStation() == station)
-			.findFirst();
-		Optional<Section> downLineStation = line.getSections().stream()
-			.filter(it -> it.getDownStation() == station)
-			.findFirst();
+
+		Optional<Section> upLineStation = line.getContainUpStation(station);
+		Optional<Section> downLineStation = line.getContainDownStation(station);
 
 		if (upLineStation.isPresent() && downLineStation.isPresent()) {
 			Station newUpStation = downLineStation.get().getUpStation();
 			Station newDownStation = upLineStation.get().getDownStation();
 			int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-			line.getSections().add(new Section(line, newUpStation, newDownStation, newDistance));
+			line.addSection(line, newUpStation, newDownStation, newDistance);
 		}
 
 		upLineStation.ifPresent(it -> line.getSections().remove(it));
@@ -148,9 +145,7 @@ public class LineService {
 
 		while (downStation != null) {
 			Station finalDownStation = downStation;
-			Optional<Section> nextLineStation = line.getSections().stream()
-				.filter(it -> it.getUpStation() == finalDownStation)
-				.findFirst();
+			Optional<Section> nextLineStation = line.getContainUpStation(finalDownStation);
 			if (!nextLineStation.isPresent()) {
 				break;
 			}
@@ -165,9 +160,7 @@ public class LineService {
 		Station downStation = line.getSections().get(0).getUpStation();
 		while (downStation != null) {
 			Station finalDownStation = downStation;
-			Optional<Section> nextLineStation = line.getSections().stream()
-				.filter(it -> it.getDownStation() == finalDownStation)
-				.findFirst();
+			Optional<Section> nextLineStation = line.getContainDownStation(finalDownStation);
 			if (!nextLineStation.isPresent()) {
 				break;
 			}
