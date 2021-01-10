@@ -3,7 +3,6 @@ package nextstep.subway.path.domain;
 import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -48,8 +47,8 @@ public class PathSelector {
         path = new DijkstraShortestPath<>(graph);
     }
 
-    private static void addSections(Sections sections) {
-        for (Section section : sections.getSections()) {
+    private static void addSections(List<Section> sections) {
+        for (Section section : sections) {
             add(section);
         }
     }
