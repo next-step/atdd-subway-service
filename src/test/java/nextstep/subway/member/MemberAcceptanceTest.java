@@ -4,6 +4,9 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -48,7 +51,75 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        TokenResponse tokenResponse = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
+        
+        //내 정보 조회
+        ExtractableResponse<Response> findResponse = 내_정보_조회_요청(tokenResponse);
 
+        내_정보_조회됨(findResponse, EMAIL, AGE);
+
+        //내 정보 수정
+        ExtractableResponse<Response> updateResponse = 내_정보_수정_요청(tokenResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+
+        내_정보_수정됨(updateResponse);
+
+        //내 정보 삭제
+        ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(tokenResponse);
+
+        내_정보_삭제됨(deleteResponse);
+
+        ExtractableResponse<Response> findResponse3 = 내_정보_조회_요청(tokenResponse);
+
+        내_정보_조회_실패됨(findResponse3);
+    }
+
+    private ExtractableResponse<Response> 내_정보_조회_요청(TokenResponse tokenResponse) {
+        return RestAssured
+                .given().log().all().auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 내_정보_수정_요청(TokenResponse tokenResponse, String email, String password, int age) {
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+
+        return RestAssured
+                .given().log().all().auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 내_정보_삭제_요청(TokenResponse tokenResponse) {
+        return RestAssured
+                .given().log().all().auth().oauth2(tokenResponse.getAccessToken())
+                .when().delete("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    private void 내_정보_조회됨(ExtractableResponse<Response> response, String email, int age) { ;
+        MemberResponse memberResponse = response.as(MemberResponse.class);
+        assertThat(memberResponse.getId()).isNotNull();
+        assertThat(memberResponse.getEmail()).isEqualTo(email);
+        assertThat(memberResponse.getAge()).isEqualTo(age);
+    }
+
+    public static void 내_정보_수정됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 내_정보_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 내_정보_조회_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -113,5 +184,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
+        TokenRequest tokenRequest = new TokenRequest(email, password);
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(tokenRequest)
+                .when().post("/login/token")
+                .then().log().all().
+                        extract();
     }
 }
