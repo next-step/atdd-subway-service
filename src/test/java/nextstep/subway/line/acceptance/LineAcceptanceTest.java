@@ -62,6 +62,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_생성_실패됨(response);
     }
 
+    @DisplayName("이용금액이 마이너스인 노선을 생성 요청하면 실패한다.")
+    @Test
+    void createLineWithWrongFare() {
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(new LineRequest("고대분당선", "붉은색", 강남역.getId(), 광교역.getId(),
+                10, -500));
+
+        // then
+        지하철_노선_생성_실패됨(response);
+    }
+
     @DisplayName("지하철 노선 목록을 조회한다.")
     @Test
     void getLines() {
