@@ -20,7 +20,7 @@ public class PathAcceptanceSupport {
 	private PathAcceptanceSupport() {
 	}
 
-	public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
+	public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int additionalFee) {
 		ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest(name, color, upStation.getId(), downStation.getId(), distance));
 		return response.body().as(LineResponse.class);
 	}
@@ -39,13 +39,25 @@ public class PathAcceptanceSupport {
 				.then().log().all().extract();
 	}
 
-	public static void 지하철_경로_조회됨(ExtractableResponse<Response> response, List<String> stations) {
+	public static ExtractableResponse<Response> 지하철_경로_조회_요청_회원용(String accessToken, StationResponse source, StationResponse target) {
+		return RestAssured
+				.given().log().all().auth().oauth2(accessToken)
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.queryParam("source", source.getId())
+				.queryParam("target", target.getId())
+				.when().get("/paths")
+				.then().log().all().extract();
+	}
+
+	public static void 지하철_경로_조회됨(ExtractableResponse<Response> response, List<String> stations, int distance, int fare) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-		List<StationResponse> stationResponses = response.body().as(PathResponse.class).getStations();
-		assertThat(stationResponses)
+		PathResponse pathResponse = response.body().as(PathResponse.class);
+		assertThat(pathResponse.getStations())
 				.map(StationResponse::getName)
 				.asList()
 				.containsAll(stations);
+//		assertThat(pathResponse.getDistance()).isEqualTo(distance);
+		assertThat(pathResponse.getFare()).isEqualTo(fare);
 	}
 
 	public static void 지하철_경로_조회_실패함(ExtractableResponse<Response> response) {
