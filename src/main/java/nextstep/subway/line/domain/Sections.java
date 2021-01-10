@@ -120,13 +120,13 @@ public class Sections {
 
     private Optional<Section> findByUpStation(Station station) {
         return sections.stream()
-                .filter(it -> it.getUpStation() == station)
+                .filter(section -> section.isMatchUpStation(station))
                 .findFirst();
     }
 
-    private Optional<Section> findByDownStation(final Station station) {
+    private Optional<Section> findByDownStation(Station station) {
         return sections.stream()
-                .filter(it -> it.getDownStation() == station)
+                .filter(section -> section.isMatchDownStation(station))
                 .findFirst();
     }
 

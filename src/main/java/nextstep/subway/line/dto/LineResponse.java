@@ -31,7 +31,7 @@ public class LineResponse {
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
     }
 
-    public static LineResponse of(final Line line) {
+    public static LineResponse of(Line line) {
         List<StationResponse> stations = line.getStations()
                 .stream()
                 .map(StationResponse::of)
@@ -39,7 +39,7 @@ public class LineResponse {
         return of(line, stations);
     }
 
-    public static List<LineResponse> ofList(final List<Line> lines) {
+    public static List<LineResponse> ofList(List<Line> lines) {
         return lines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());

@@ -45,7 +45,7 @@ public class LineRequest {
         return new Line(name, color);
     }
 
-    public Line toLine(final Station upStation, final Station downStation) {
+    public Line toLine(Station upStation, Station downStation) {
         return Line.builder()
                 .name(name)
                 .color(color)

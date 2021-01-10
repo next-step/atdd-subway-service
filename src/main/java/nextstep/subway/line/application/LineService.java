@@ -32,7 +32,7 @@ public class LineService {
 
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
-        return Line.ofList(persistLines);
+        return LineResponse.ofList(persistLines);
     }
 
     public Line findLineById(Long id) {

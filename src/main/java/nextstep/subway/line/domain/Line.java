@@ -4,13 +4,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import nextstep.subway.BaseEntity;
-import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -39,12 +37,6 @@ public class Line extends BaseEntity {
                 .downStation(downStation)
                 .distance(new Distance(distance))
                 .build()));
-    }
-
-    public static List<LineResponse> ofList(List<Line> lines) {
-        return lines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
     }
 
     public void update(Line line) {

@@ -37,6 +37,14 @@ public class Section {
         this.distance = distance;
     }
 
+    public boolean isMatchUpStation(Station station) {
+        return this.upStation == station;
+    }
+
+    public boolean isMatchDownStation(Station station) {
+        return this.downStation == station;
+    }
+
     public Long getId() {
         return id;
     }
@@ -55,6 +63,10 @@ public class Section {
 
     public Distance getDistance() {
         return distance;
+    }
+
+    public int getDistanceWeight() {
+        return distance.get();
     }
 
     public void updateUpStation(Station station, Distance newDistance) {

@@ -41,6 +41,6 @@ class DistanceTest {
         // when & then
         assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
             Distance distance = new Distance(invalidValue);
-        }).withMessageMatching("거리는 음수가 될 수 없습니다.");
+        }).withMessageMatching("거리는 0 또는 음수가 될 수 없습니다.");
     }
 }
