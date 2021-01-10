@@ -3,6 +3,8 @@ package nextstep.subway.line.dto;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.dto.StationResponse;
 
+import static java.util.stream.Collectors.*;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,6 +30,12 @@ public class LineResponse {
 
     public static LineResponse of(Line line, List<StationResponse> stations) {
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
+    }
+
+    public static List<LineResponse> ofList(List<Line> lines) {
+        return lines.stream()
+                .map(line -> LineResponse.of(line, StationResponse.ofList(line.getStations())))
+                .collect(toList());
     }
 
     public Long getId() {
