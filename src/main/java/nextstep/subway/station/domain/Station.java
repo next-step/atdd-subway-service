@@ -10,6 +10,7 @@ public class Station extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String name;
 
@@ -17,6 +18,11 @@ public class Station extends BaseEntity {
     }
 
     public Station(String name) {
+        this.name = name;
+    }
+
+    public Station(Long id, String name) {
+        this.id = id;
         this.name = name;
     }
 

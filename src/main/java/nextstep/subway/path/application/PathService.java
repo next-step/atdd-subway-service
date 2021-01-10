@@ -1,10 +1,13 @@
 package nextstep.subway.path.application;
 
 import java.util.Optional;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.domain.Money;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.calcurator.Discount;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.exception.StationNotFoundException;
@@ -37,7 +40,7 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse getShortestPath(PathRequest request) {
+    public PathResponse getShortestPath(PathRequest request, LoginMember loginMember) {
 
         validateRequest(request);
 
@@ -49,7 +52,11 @@ public class PathService {
 
         Path path = pathFinder.findPath(lines, sourceStation, targetStation);
 
-        return PathResponse.of(path);
+        Money money = Discount.discountCalculate(path.getDistance(),
+                path.getMaxAdditionalFare(),
+                loginMember.getAge());
+
+        return PathResponse.of(path, money);
     }
 
     private void validateRequest(PathRequest request) {

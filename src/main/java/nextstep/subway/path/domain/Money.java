@@ -25,6 +25,11 @@ public class Money {
         return new Money(BigDecimal.valueOf(amount));
     }
 
+    public static Money max(Money a, Money b) {
+        long max = Long.max(a.getAmountLongValue(), b.getAmountLongValue());
+        return Money.won(max);
+    }
+
     public Money plus(Money money) {
         return new Money(this.amount.add(money.amount));
     }
@@ -44,6 +49,7 @@ public class Money {
     public boolean isLessThen(Money otherMoney) {
         return amount.compareTo(otherMoney.amount) < 0;
     }
+
 
     @Override
     public boolean equals(Object o) {
