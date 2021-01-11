@@ -103,12 +103,8 @@ public class Sections {
             return;
         }
 
-        if (isDownStationExist) {
-            findSectionWithDownStation(downStation)
-                    .ifPresent(it -> it.updateDownStation(upStation, distance));
-            sections.add(section);
-            return;
-        }
+        findSectionWithDownStation(downStation)
+                .ifPresent(it -> it.updateDownStation(upStation, distance));
         sections.add(section);
     }
 

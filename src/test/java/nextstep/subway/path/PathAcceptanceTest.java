@@ -130,11 +130,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private ExtractableResponse<Response> 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
+    public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
         return 지하철_노선_생성_요청(new LineRequest(name, color, upStation.getId(), downStation.getId(), distance));
     }
 
-    private ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest lineRequest) {
+    private static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest lineRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -144,11 +144,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
                         extract();
     }
 
-    private ExtractableResponse<Response> 지하철_노선에_지하철역_등록되어_있음(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록되어_있음(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         return 지하철_노선에_지하철역_등록_요청(line, new SectionRequest(upStation.getId(), downStation.getId(), distance));
     }
 
-    private ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, SectionRequest sectionRequest) {
+    private static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, SectionRequest sectionRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

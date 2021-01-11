@@ -2,12 +2,13 @@ package nextstep.subway.member.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.member.exception.NotFoundFavoriteException;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Member extends BaseEntity {
@@ -17,6 +18,9 @@ public class Member extends BaseEntity {
     private String email;
     private String password;
     private Integer age;
+
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private List<Favorite> favorites = new ArrayList<>();
 
     public Member() {
     }
@@ -43,10 +47,25 @@ public class Member extends BaseEntity {
         return age;
     }
 
+    public List<Favorite> getFavorites() {
+        return favorites;
+    }
+
     public void update(Member member) {
         this.email = member.email;
         this.password = member.password;
         this.age = member.age;
+    }
+
+    public void addFavorite(Favorite favorite) {
+        favorites.add(favorite);
+    }
+
+    public void removeFavorite(Favorite favorite) {
+        if(!favorites.contains(favorite)) {
+            throw new NotFoundFavoriteException("즐겨찾기를 찾을 수 없습니다.");
+        }
+        favorites.remove(favorite);
     }
 
     public void checkPassword(String password) {
