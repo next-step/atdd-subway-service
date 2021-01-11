@@ -17,12 +17,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("로그인 기능")
 public class AuthAcceptanceTest extends AcceptanceTest {
-    private String memberUri;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        memberUri = 회원_생성을_요청(EMAIL, PASSWORD, AGE).header("Location");
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
     }
 
     @DisplayName("Bearer Auth")
@@ -49,7 +48,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithWrongBearerAuth() {
         // when
-        ExtractableResponse<Response> response = 회원_정보_조회_요청("a.b.c", memberUri);
+        ExtractableResponse<Response> response = 내_정보_조회("a.b.c");
 
         // then
         유효하지_않은_토큰(response);
@@ -66,12 +65,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_조회_요청(String token, String memberUri) {
+    public static ExtractableResponse<Response> 내_정보_조회(String token) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(memberUri)
+                .when().get("/members/me")
                 .then().log().all()
                 .extract();
     }
@@ -82,10 +81,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 로그인_실패(ExtractableResponse<Response> tokenResponse) {
-        assertThat(tokenResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(tokenResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     public static void 유효하지_않은_토큰(ExtractableResponse<Response> tokenResponse) {
-        assertThat(tokenResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(tokenResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
