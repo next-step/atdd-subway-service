@@ -25,6 +25,6 @@ public class PathService {
         List<Section> sections = lineService.findAllSections();
 
         Paths paths = new Paths(sections);
-        return paths.getPaths(sourceStation, targetStation);
+        return paths.getShortestPath(sourceStation, targetStation);
     }
 }

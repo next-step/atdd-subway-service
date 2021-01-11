@@ -13,7 +13,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 class PathsTest {
 
@@ -66,7 +65,7 @@ class PathsTest {
     void getPath() {
         // when
         Paths paths = new Paths(sections);
-        PathResponse response = paths.getPaths(강남역, 남부터미널역);
+        PathResponse response = paths.getShortestPath(강남역, 남부터미널역);
 
         // then
         assertThat(response.getStations().size()).isEqualTo(3);
@@ -79,7 +78,7 @@ class PathsTest {
         // then
         Paths paths = new Paths(sections);
         assertThatThrownBy(() -> {
-            PathResponse response = paths.getPaths(강남역, 강남역);
+            PathResponse response = paths.getShortestPath(강남역, 강남역);
         }).isInstanceOf(SectionsException.class);
     }
 
@@ -89,7 +88,7 @@ class PathsTest {
         // when, then
         Paths paths = new Paths(sections);
         assertThatThrownBy(() -> {
-            PathResponse response = paths.getPaths(교대역, 신림역);
+            PathResponse response = paths.getShortestPath(교대역, 신림역);
         }).isInstanceOf(SectionsException.class);
     }
 
@@ -99,7 +98,7 @@ class PathsTest {
         // then
         Paths paths = new Paths(sections);
         assertThatThrownBy(() -> {
-            PathResponse response = paths.getPaths(강남역, new Station("청계산입구역"));
+            PathResponse response = paths.getShortestPath(강남역, new Station("청계산입구역"));
         }).isInstanceOf(SectionsException.class);
     }
 }

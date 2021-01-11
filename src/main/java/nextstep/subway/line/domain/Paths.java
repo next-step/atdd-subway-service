@@ -25,7 +25,7 @@ public class Paths {
         this.dijkstraShortestPath = build(sections);
     }
 
-    public PathResponse getPaths(Station sourceStation, Station targetStation) {
+    public PathResponse getShortestPath(Station sourceStation, Station targetStation) {
         validate(sourceStation, targetStation);
         GraphPath shortPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
         if (shortPath == null) {
