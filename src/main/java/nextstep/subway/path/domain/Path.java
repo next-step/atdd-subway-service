@@ -24,14 +24,13 @@ public class Path {
         return new Path(lines);
     }
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> initGraph(List<Line> lines) {
+    private void initGraph(List<Line> lines) {
         for (Line line : lines) {
-            addLineToGraph(graph, line);
+            addLineToGraph(line);
         }
-        return graph;
     }
 
-    private void addLineToGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
+    private void addLineToGraph(Line line) {
         line.getSections().forEach(section -> {
             graph.addVertex(section.getUpStation());
             graph.addVertex(section.getDownStation());
