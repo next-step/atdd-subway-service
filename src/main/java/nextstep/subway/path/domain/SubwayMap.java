@@ -1,7 +1,9 @@
 package nextstep.subway.path.domain;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -46,8 +48,9 @@ public class SubwayMap {
 	}
 
 	public List<Section> allSections() {
-		List<Section> sections = new ArrayList<>();
-		lines.forEach(line -> sections.addAll(line.getSections()));
-		return sections;
+		return this.lines.stream()
+			.map(Line::getSections)
+			.flatMap(Collection::stream)
+			.collect(Collectors.toList());
 	}
 }
