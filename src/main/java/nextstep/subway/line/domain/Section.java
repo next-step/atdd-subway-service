@@ -1,8 +1,14 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.station.domain.Station;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
-import javax.persistence.*;
+import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Section {
