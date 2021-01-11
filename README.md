@@ -93,6 +93,45 @@ Scenario: 지하철 구간을 관리
   * Outside-in 으로 구현 (추 후 inside-out 개별 학습)
 * 예외사항 단위테스트 작성하여 처리확인
 
+## [STEP3] 인증을 통한 기능 구현
+* 토큰 발급 기능 (로그인) 완성하기
+  * 인수 테스트 만들기 (AuthAcceptanceTest)
+  * 이메일과 패스워드를 이용하여 요청 시 access token을 응답하는 기능을 구현하기
+* 내 정보 조회 기능 완성하기
+  * MemberAcceptanceTest 클래스의 manageMyInfo메서드에 인수 테스트를 추가
+  * 내 정보 조회 인수테스트 만들기
+  * 내 정보 조회 기능 구현
+  * 내 정보 수정 인수테스트 만들기
+  * 내 정보 수정 기능 구현
+  * 내 정보 삭제 인수테스트 만들기
+  * 내 정보 삭제 구현
+    * 로그인 후 발급 받은 토큰을 포함해서 요청 하기 
+    * @AuthenticationPrincipal과 AuthenticationPrincipalArgumentResolver을 활용
+    * 유효하지 않은 토큰으로 /members/me 요청을 보낼 경우에 대한 예외 처리
+* 즐겨 찾기 기능 완성하기
+  * 즐겨찾기 생성 인수테스트 만들기
+  * 즐겨찾기 생성 기능 구현
+  * 즐겨찾기 목록 조회 인수테스트 만들기
+  * 즐겨찾기 목록 조회 기능 구현
+  * 즐겨찾기 삭제 인수테스트 만들기
+  * 즐겨찾기 삭제 기능 구현
+```
+Feature: 즐겨찾기를 관리한다.
+  Background 
+    Given 지하철역 등록되어 있음
+    And 지하철 노선 등록되어 있음
+    And 지하철 노선에 지하철역 등록되어 있음
+    And 회원 등록되어 있음
+    And 로그인 되어있음
+
+  Scenario: 즐겨찾기를 관리
+    When 즐겨찾기 생성을 요청
+    Then 즐겨찾기 생성됨
+    When 즐겨찾기 목록 조회 요청
+    Then 즐겨찾기 목록 조회됨
+    When 즐겨찾기 삭제 요청
+    Then 즐겨찾기 삭제됨
+```
 <br>
 
 ## 🚀 Getting Started
