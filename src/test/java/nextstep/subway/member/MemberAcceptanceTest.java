@@ -115,8 +115,13 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public static ExtractableResponse<Response> 나의_정보_조회(String accesstoken) {
-        // TODO 토큰으로 나의정보 조회
-        return null;
+    public static ExtractableResponse<Response> 나의_정보_조회(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
     }
 }
