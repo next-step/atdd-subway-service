@@ -1,8 +1,10 @@
 package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -14,12 +16,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import nextstep.subway.common.exception.NothingException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.path.application.PathService;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -34,41 +36,101 @@ class PathFinderTest {
 	@Autowired
 	private StationRepository stationRepository;
 	private LineService lineService;
-	private PathService pathService;
 
 	private LineResponse line1;
 	private LineResponse line2;
 
 	private Station 인천역;
 	private Station 소요산역;
+	private Station 시청역;
+	private Station 강남역;
 
 	@BeforeEach
 	void setUp() {
 		lineService = new LineService(lineRepository, new StationService(stationRepository));
-		pathService = new PathService(lineService);
 
 		인천역 = 전철역_생성("인천역");
 		소요산역 = 전철역_생성("소요산역");
+		시청역 = 전철역_생성("시청역");
+		강남역 = 전철역_생성("강남역");
 
 		line1 = 라인_생성("1호선", "blue", 인천역.getId(), 소요산역.getId(), 500);
-		line2 = 라인_생성("2호선", "green", "시청역", "강남역", 300);
+		line2 = 라인_생성("2호선", "green", 시청역.getId(), 강남역.getId(), 300);
+
+		구간_1호선_생성();
 	}
 
-	@DisplayName("모든 라인 가져오기 테스트")
+	@DisplayName("PathFinder 경로검색 테스트")
 	@Test
-	void findAllLinesTest() {
-		// given // when
+	void createPathFinderTest() {
+		// given
 		List<Line> lines = lineService.findLineAll();
+		PathFinder finder = new PathFinder(lines);
+
+		// when
+		finder.selectShortPath(인천역, 소요산역);
 
 		// then
-		assertThat(lines).hasSize(2);
+		assertAll(
+			() -> assertThat(finder.stations()).isNotNull(),
+			() -> assertThat(finder.stations()).hasSize(6),
+			() -> assertThat(finder.distance()).isEqualTo(500)
+		);
+	}
+
+	@DisplayName("PathFinder 예외 케이스 테스트")
+	@Test
+	void exceptionPathFinderTest() {
+		// given
+		List<Line> lines = lineService.findLineAll();
+
+		// when
+		PathFinder finder = new PathFinder(lines);
+
+		// then
+		assertAll(
+			() -> assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> finder.selectShortPath(인천역, 인천역)),
+			() -> assertThatExceptionOfType(NothingException.class).isThrownBy(() -> finder.selectShortPath(인천역, 강남역))
+		);
+	}
+
+	@DisplayName("PathFinder 객체 생성 테스트(jGraph 초기화 완료)")
+	@Test
+	void initPathFinderTest() {
+		// given
+		List<Line> lines = lineService.findLineAll();
+
+		// when
+		PathFinder finder = new PathFinder(lines);
+
+		// then
+		assertAll(
+			() -> assertThat(finder).isNotNull()
+		);
+	}
+
+	@DisplayName("모든 라인의 지하철 가져오기 테스트")
+	@Test
+	void getAllStationsTest() {
+		// given
+		List<Line> lines = lineService.findLineAll();
+
+		// when
+		List<Station> stations = lines.stream()
+			.flatMap(it -> it.stations().stream())
+			.collect(Collectors.toList());
+
+		// then
+		assertAll(
+			() -> assertThat(stations).isNotNull(),
+			() -> assertThat(stations).hasSize(8)
+		);
 	}
 
 	@DisplayName("1호선 경로 그래프 넣기")
 	@Test
 	void addGraphLineTest() {
 		// given
-		구간_1호선_생성();
 		Line line1 = lineService.findLineAll().get(0);
 		WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
@@ -117,12 +179,6 @@ class PathFinderTest {
 
 	private Station 전철역_생성(String stationName) {
 		return stationRepository.save(new Station(stationName));
-	}
-
-	private LineResponse 라인_생성(String name, String color, String upStationName, String downStationName, int distance) {
-		Station upStation = 전철역_생성(upStationName);
-		Station downStation = 전철역_생성(downStationName);
-		return 라인_생성(name, color, upStation.getId(), downStation.getId(), distance);
 	}
 
 	private LineResponse 라인_생성(String name, String color, Long upId, Long downId, int distance) {
