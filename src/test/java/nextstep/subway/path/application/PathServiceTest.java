@@ -3,6 +3,8 @@ package nextstep.subway.path.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -74,8 +76,9 @@ class PathServiceTest {
 	@Test
 	void notFoundPathTest() {
 		// given
+		when(lineService.findLineAll()).thenReturn(Arrays.asList(line1, line2));
 		when(lineService.findStationById(1L)).thenReturn(시청역);
-		when(lineService.findStationById(1L)).thenReturn(인천역);
+		when(lineService.findStationById(3L)).thenReturn(인천역);
 		PathRequest request = new PathRequest(시청역.getId(), 인천역.getId());
 
 		// when // then
