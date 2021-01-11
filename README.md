@@ -99,12 +99,6 @@ Scenario: 지하철 구간을 관리
   * 이메일과 패스워드를 이용하여 요청 시 access token을 응답하는 기능을 구현하기
 * 내 정보 조회 기능 완성하기
   * MemberAcceptanceTest 클래스의 manageMyInfo메서드에 인수 테스트를 추가
-  * 내 정보 조회 인수테스트 만들기
-  * 내 정보 조회 기능 구현
-  * 내 정보 수정 인수테스트 만들기
-  * 내 정보 수정 기능 구현
-  * 내 정보 삭제 인수테스트 만들기
-  * 내 정보 삭제 구현
     * 로그인 후 발급 받은 토큰을 포함해서 요청 하기 
     * @AuthenticationPrincipal과 AuthenticationPrincipalArgumentResolver을 활용
     * 유효하지 않은 토큰으로 /members/me 요청을 보낼 경우에 대한 예외 처리
