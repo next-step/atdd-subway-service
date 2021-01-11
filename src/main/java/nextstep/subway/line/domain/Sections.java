@@ -71,14 +71,10 @@ public class Sections implements Iterable<Section> {
             return Stations.emptyStations();
         }
 
-        Stations stations = new Stations();
-
-        sections.stream()
-            .flatMap(section -> Stream.of(section.getUpStation(), section.getDownStation()))
-            .distinct()
-            .forEach(stations::add);
-
-        return stations;
+        return sections.stream()
+                .flatMap(section -> Stream.of(section.getUpStation(), section.getDownStation()))
+                .distinct()
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Stations::new));
     }
 
     public void removeSection(Station station) {

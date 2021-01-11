@@ -15,6 +15,10 @@ public class Stations implements Iterable<Station> {
         stations = new ArrayList<>();
     }
 
+    public Stations(List<Station> stations) {
+        this.stations = stations;
+    }
+
     public void add(Station station) {
         stations.add(station);
     }
