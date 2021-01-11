@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,6 +41,52 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
         LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
+    }
+
+    @Test
+    @DisplayName("레스트어슈어드 임시 테스트")
+    void tempTest() {
+        System.out.println("========= Hello");
+    }
+
+    @Test
+    @DisplayName("지하철 구간 관련 기능 통합 테스트 : 지하철 구간을 관리")
+    public void managementSection() {
+        // when
+        // 지하철 구간 등록 요청
+        ExtractableResponse<Response> 지하철_노선에_지하철역_등록_응답
+                = this.지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
+
+        // then
+        // 지하철 구간 등록됨
+        this.지하철_노선에_지하철역_등록됨(지하철_노선에_지하철역_등록_응답);
+
+        // when
+        // 지하철 노선에 등록된 역 목록 조회 요청
+        ExtractableResponse<Response> 지하철_노선_조회_응답 = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+
+        // then
+        // 등록한 지하철 구간이 반영된 역 목록이 조회됨
+        지하철_노선에_지하철역_순서_정렬됨(지하철_노선_조회_응답, Arrays.asList(강남역, 양재역, 광교역));
+
+
+        // when
+        // 지하철 구간 삭제 요청
+        ExtractableResponse<Response> 지하철_노선에_지하철역_제외_응답
+                = this.지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+
+        // then
+        // 지하철 구간 삭제됨
+        this.지하철_노선에_지하철역_제외됨(지하철_노선에_지하철역_제외_응답);
+
+        // when
+        // 지하철 노선에 등록된 역 목록 조회 요청
+        ExtractableResponse<Response> 지하철_역_삭제_후_노선_조회_응답
+                = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+
+        // then
+        // 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+        this.지하철_노선에_지하철역_순서_정렬됨(지하철_역_삭제_후_노선_조회_응답, Arrays.asList(강남역, 광교역));
     }
 
     @DisplayName("지하철 구간을 등록한다.")
