@@ -75,8 +75,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ## 3단계 - 인증을 통한 기능 구현 TO-DO list
 
-- [ ] 토큰 발급 기능 (로그인) 인수 테스트 만들기
-- [ ] 토큰 발급 기능 (로그인) 기능 작성
+- [x] 토큰 발급 기능 (로그인) 인수 테스트 만들기
 - [ ] 유효하지 않은 토큰 인수 테스트
 - [ ] 유효하지 않은 토큰 예외 처리 작성
 - [ ] 인증 - 내 정보 조회 기능 완성하기
