@@ -22,8 +22,10 @@ public class ShortestPathFinder {
         Sections sections, Stations stations, Station sourceStation, Station targetStation) {
 
         stations.forEach(graph::addVertex);
-        sections.forEach(section -> graph.setEdgeWeight(
-            graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance()));
+        sections.forEach(section -> {
+            DefaultWeightedEdge edge = graph.addEdge(section.getUpStation(), section.getDownStation());
+            graph.setEdgeWeight(edge, section.getDistance());
+        });
 
         GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
         checkPathIsNull(shortestPath);
