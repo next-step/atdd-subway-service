@@ -139,4 +139,33 @@ public class Line extends BaseEntity {
         int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
         addSection(this, newUpStation, newDownStation, newDistance);
     }
+
+    public void addSection(Line line, List<Station> stations, Station upStation, Station downStation, int distance) {
+        validateSections(stations, upStation, downStation);
+        if (stations.isEmpty()) {
+            addSection(line, upStation, downStation, distance);
+            return;
+        }
+
+        if (upStation.isExisted(stations)) {
+            updateUpStation(upStation, downStation, distance);
+        } else if (downStation.isExisted(stations)) {
+            updateDownStation(upStation, downStation, distance);
+        } else {
+            throw new RuntimeException();
+        }
+
+        addSection(line, upStation, downStation, distance);
+    }
+
+    private void validateSections(List<Station> stations, Station upStation, Station downStation) {
+        if (upStation.isExisted(stations) && downStation.isExisted(stations)) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
+            stations.stream().noneMatch(it -> it == downStation)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
 }
