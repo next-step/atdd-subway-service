@@ -44,12 +44,6 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("레스트어슈어드 임시 테스트")
-    void tempTest() {
-        System.out.println("========= Hello");
-    }
-
-    @Test
     @DisplayName("지하철 구간 관련 기능 통합 테스트 : 지하철 구간을 관리")
     public void managementSection() {
         // when
