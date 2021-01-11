@@ -53,9 +53,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void selectMyInfo() {
         //given
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        ExtractableResponse<Response> loginResponse = AuthAcceptanceTest.로그인_요청(EMAIL, PASSWORD);
+        TokenResponse tokenResponse = AuthAcceptanceTest.로그인_요청(EMAIL, PASSWORD)
+                .as(TokenResponse.class);
         //when
-        ExtractableResponse<Response> selectResponse = 내_정보_조회_요청(loginResponse.as(TokenResponse.class));
+        ExtractableResponse<Response> selectResponse = 내_정보_조회_요청(tokenResponse.getAccessToken());
         //then
         회원_정보_조회됨(selectResponse, EMAIL, AGE);
     }
@@ -64,7 +65,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithWrongBearerAuth() {
         //when
-        ExtractableResponse<Response> selectResponse = 내_정보_조회_요청(new TokenResponse("invalid"));
+        ExtractableResponse<Response> selectResponse = 내_정보_조회_요청("invalid");
         //then
         회원_정보_조회_실패함(selectResponse);
     }
@@ -72,19 +73,62 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // when
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        // then
+        회원_생성됨(createResponse);
 
+        // when
+        TokenResponse tokenResponse = AuthAcceptanceTest.로그인_요청(EMAIL, PASSWORD)
+                .as(TokenResponse.class);
+        ExtractableResponse<Response> findResponse = 내_정보_조회_요청(tokenResponse.getAccessToken());
+        // then
+        회원_정보_조회됨(findResponse, EMAIL, AGE);
+
+        // when
+        ExtractableResponse<Response> updateResponse = 내_정보_수정_요청(tokenResponse.getAccessToken(), NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        // then
+        회원_정보_수정됨(updateResponse);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(tokenResponse.getAccessToken());
+        // then
+        회원_삭제됨(deleteResponse);
     }
 
-    public static ExtractableResponse<Response> 내_정보_조회_요청(TokenResponse tokenResponse) {
+    public static ExtractableResponse<Response> 내_정보_조회_요청(String token) {
         return RestAssured.given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken())
-                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().log().all()
                 .get("/members/me")
                 .then().log().all()
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 내_정보_수정_요청(String token, String email, String password, Integer age ) {
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .body(memberRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().log().all()
+                .put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+
+    public static ExtractableResponse<Response> 내_정보_삭제_요청(String token) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().log().all()
+                .delete("/members/me")
+                .then().log().all()
+                .extract();
+    }
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
