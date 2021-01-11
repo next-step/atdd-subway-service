@@ -3,6 +3,8 @@ package nextstep.subway.line.domain;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Arrays;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +24,7 @@ class LineTest {
 
 	@BeforeEach
 	void setUp() {
+		// given
 		강남역 = new Station("강남역");
 		광교역 = new Station("광교역");
 		판교역 = new Station("판교역");
@@ -38,5 +41,16 @@ class LineTest {
 		assertThat(actual.getColor()).isEqualTo("red");
 	}
 
+	@DisplayName("노선_생성시_상행역과_하행역_구간_생성")
+	@Test
+	void createLineWithUpStationAndDownStation(){
+		// when
+		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8);
+
+		// then
+		assertThat(actual.getName()).isEqualTo("신분당선");
+		assertThat(actual.getColor()).isEqualTo("red");
+		assertThat(actual.getStations()).containsAll(Arrays.asList(강남역, 광교역));
+	}
 
 }
