@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
@@ -16,6 +17,7 @@ import nextstep.subway.common.exception.NothingException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathRequest;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 
 @DisplayName("First Outside In Test")
@@ -84,5 +86,25 @@ class PathServiceTest {
 		// when // then
 		assertThatExceptionOfType(NothingException.class)
 			.isThrownBy(() -> pathService.findPath(request));
+	}
+
+	@DisplayName("경로찾기: 최단거리를 검색한다.")
+	@Test
+	void findPathTest() {
+		// given
+		when(lineService.findLineAll()).thenReturn(Arrays.asList(line1, line2));
+		when(lineService.findStationById(3L)).thenReturn(인천역);
+		when(lineService.findStationById(4L)).thenReturn(주안역);
+		PathRequest request = new PathRequest(인천역.getId(), 주안역.getId());
+
+		// when
+		PathResponse finder = pathService.findPath(request);
+
+		// then
+		assertAll(
+			() -> assertThat(finder.getStations()).isNotNull(),
+			() -> assertThat(finder.getStations()).hasSize(2),
+			() -> assertThat(finder.getDistance()).isEqualTo(50)
+		);
 	}
 }

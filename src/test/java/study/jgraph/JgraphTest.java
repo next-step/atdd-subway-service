@@ -15,7 +15,7 @@ public class JgraphTest {
 
 	@Test
 	public void exceptionPath() {
-		String source = "v6";
+		String source = "v5";
 		String target = "v1";
 		WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 		graph.addVertex("v1");
