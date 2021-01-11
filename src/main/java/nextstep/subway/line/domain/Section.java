@@ -34,6 +34,11 @@ public class Section {
         this.distance = distance;
     }
 
+    public Section(Line line, Section upLineSection, Section downLineSection) {
+        this(line, downLineSection.getUpStation(), upLineSection.getDownStation(),
+                upLineSection.getDistance() + downLineSection.getDistance());
+    }
+
     public Long getId() {
         return id;
     }
@@ -71,10 +76,10 @@ public class Section {
     }
 
     public boolean sameUpStation(Station station) {
-        return getUpStation() == station;
+        return this.upStation == station;
     }
 
     public boolean sameDownStation(Station station) {
-        return getDownStation() == station;
+        return this.downStation == station;
     }
 }

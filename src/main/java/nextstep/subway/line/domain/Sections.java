@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.line.exception.AlreadyExistSectionException;
+import nextstep.subway.line.exception.CannotRemoveSectionException;
 import nextstep.subway.line.exception.NoMatchStationsException;
 import nextstep.subway.station.domain.Station;
 
@@ -47,8 +48,9 @@ public class Sections {
 
         verifyAddLineStation(upStation, downStation, stations);
 
-        if (addLineStationIfEmpty(line, upStation, downStation, distance, stations))
+        if (addLineStationIfEmpty(line, upStation, downStation, distance, stations)) {
             return;
+        }
 
         updateUpStation(upStation, downStation, distance, stations);
         updateDownStation(upStation, downStation, distance, stations);
@@ -115,15 +117,13 @@ public class Sections {
         if (upLineOptSection.isPresent() && downLineOptSection.isPresent()) {
             Section downLineSection = downLineOptSection.get();
             Section upLineSection = upLineOptSection.get();
-
-            addSection(line, downLineSection.getUpStation(), upLineSection.getDownStation(),
-                    upLineSection.getDistance() + downLineSection.getDistance());
+            sections.add(new Section(line, upLineSection, downLineSection));
         }
     }
 
     private void removeSection(Optional<Section> upLineSection, Optional<Section> downLineSection) {
-        upLineSection.ifPresent(it -> getSections().remove(it));
-        downLineSection.ifPresent(it -> getSections().remove(it));
+        upLineSection.ifPresent(it -> sections.remove(it));
+        downLineSection.ifPresent(it -> sections.remove(it));
     }
 
     private void verifyAddLineStation(Station upStation, Station downStation, List<Station> stations) {
