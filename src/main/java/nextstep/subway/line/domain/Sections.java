@@ -27,10 +27,6 @@ public class Sections {
         return sections;
     }
 
-    public void add(Line line, Station upStation, Station downStation, int distance) {
-        this.add(new Section(line, upStation, downStation, distance));
-    }
-
     /**
      * 구간을 추가합니다.
      * @param section
@@ -49,42 +45,56 @@ public class Sections {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
+        Station downStation = findEndUpStation();
 
         while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.getSections().stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
             stations.add(downStation);
+            downStation = this.getNextStation(downStation);
         }
 
         return stations;
     }
 
     /**
+     * 다음 지하철역을 구합니다.
+     * : 현재 하행역과 같은 상행역을 가지고 있는 구간의 하행역.
+     * @param downStation
+     * @return
+     */
+    private Station getNextStation(Station downStation) {
+        Optional<Section> nextSection = this.getSections().stream()
+                .filter(it -> it.getUpStation() == downStation)
+                .findFirst();
+        return nextSection.map(Section::getDownStation).orElse(null);
+    }
+
+    /**
      * 상행종점역을 찾습니다.
      * @return 상행종점역
      */
-    private Station findUpStation() {
-        Station downStation = this.getSections().get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.getSections().stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
+    private Station findEndUpStation() {
+        Station upStation = this.getSections().get(0).getUpStation();
+        while (upStation != null) {
+            Optional<Station> previousStation = this.getPreviousStation(upStation);
+            if (!previousStation.isPresent()) {
                 break;
             }
-            downStation = nextLineStation.get().getUpStation();
+            upStation = previousStation.get();
         }
 
-        return downStation;
+        return upStation;
+    }
+
+    /**
+     * 이전 지하철역을 구합니다.
+     * @param upStation
+     * @return
+     */
+    private Optional<Station> getPreviousStation(Station upStation) {
+        Optional<Section> previousSection = this.getSections().stream()
+                .filter(it -> it.getDownStation() == upStation)
+                .findFirst();
+        return previousSection.map(Section::getUpStation);
     }
 
     /**
@@ -104,7 +114,7 @@ public class Sections {
         this.cannotRegisterStation(upStation, downStation, stations);
 
         if (stations.isEmpty()) {
-            this.add(line, upStation, downStation, distance);
+            this.add(new Section(line, upStation, downStation, distance));
             return;
         }
 
@@ -219,7 +229,7 @@ public class Sections {
      */
     private void validateSectionsSize() {
         if (this.getSections().size() <= 1) {
-            throw new RuntimeException();
+            throw new IllegalArgumentException("구간은 반드시 1개 이상 있어야합니다.");
         }
     }
 
