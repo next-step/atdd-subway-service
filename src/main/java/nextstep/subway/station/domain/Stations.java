@@ -1,16 +1,22 @@
 package nextstep.subway.station.domain;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-public class Stations {
+public class Stations implements Iterable<Station> {
     public static final Stations EMPTY_STATIONS = new Stations();
 
     private final List<Station> stations;
 
     public Stations() {
         stations = new ArrayList<>();
+    }
+
+    public Stations(List<Station> stations) {
+        this.stations = stations;
     }
 
     public void add(Station station) {
@@ -31,5 +37,15 @@ public class Stations {
 
     public boolean isEmpty() {
         return stations.isEmpty();
+    }
+
+    @Override
+    public Iterator<Station> iterator() {
+        return stations.iterator();
+    }
+
+    @Override
+    public void forEach(Consumer<? super Station> action) {
+        stations.forEach(action);
     }
 }
