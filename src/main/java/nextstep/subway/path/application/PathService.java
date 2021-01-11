@@ -5,16 +5,23 @@ import nextstep.subway.line.application.SectionRepository;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class PathService {
     private final SectionRepository sectionRepository;
+    private final StationService stationService;
 
-    public PathResponse findShortestPath(Station sourceStation, Station targetStation) {
+    public PathResponse findShortestPath(Long sourceStationId, Long targetStationId) {
+        Station sourceStation = stationService.findStationById(sourceStationId);
+        Station targetStation = stationService.findStationById(targetStationId);
         checkStationsAreNotSame(sourceStation, targetStation);
 
         Sections sections = new Sections(sectionRepository.findAll());
