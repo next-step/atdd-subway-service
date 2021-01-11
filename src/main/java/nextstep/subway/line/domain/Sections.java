@@ -51,8 +51,8 @@ public class Sections {
 	public void delete(Station target) {
 		validateDeleteSection(target);
 
-		Section upSection = findUpSection(target);
-		Section downSection = findDownSection(target);
+		Section upSection = findUpStation(target);
+		Section downSection = findDownStation(target);
 
 		this.sections.remove(upSection);
 		this.sections.remove(downSection);
@@ -73,12 +73,12 @@ public class Sections {
 		}
 
 		Set<Station> stations = new LinkedHashSet<>();
-		Station downStation = findUpStation();
+		Station downStation = findStartStation();
 		stations.add(downStation);
 
 		while (downStation != null) {
 			Station finalDownStation = downStation;
-			Section nextLineSection = findUpSection(finalDownStation);
+			Section nextLineSection = findUpStation(finalDownStation);
 			if (nextLineSection == null) {
 				break;
 			}
@@ -89,11 +89,11 @@ public class Sections {
 		return new ArrayList<>(stations);
 	}
 
-	private Station findUpStation() {
+	public Station findStartStation() {
 		Station downStation = this.sections.get(0).getUpStation();
 		while (downStation != null) {
 			Station finalDownStation = downStation;
-			Section nextLineSection = findDownSection(finalDownStation);
+			Section nextLineSection = findDownStation(finalDownStation);
 			if (nextLineSection == null) {
 				break;
 			}
@@ -123,14 +123,14 @@ public class Sections {
 		}
 	}
 
-	private Section findUpSection(Station target) {
+	private Section findUpStation(Station target) {
 		return this.sections.stream()
 			.filter(section -> section.getUpStation().equals(target))
 			.findFirst()
 			.orElse(null);
 	}
 
-	private Section findDownSection(Station target) {
+	private Section findDownStation(Station target) {
 		return this.sections.stream()
 			.filter(section -> section.getDownStation().equals(target))
 			.findFirst()
