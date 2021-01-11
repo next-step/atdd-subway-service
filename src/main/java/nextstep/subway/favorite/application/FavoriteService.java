@@ -1,11 +1,11 @@
 package nextstep.subway.favorite.application;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
+import nextstep.subway.favorite.domain.Favorites;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.path.exception.StationNotFoundException;
@@ -45,12 +45,12 @@ public class FavoriteService {
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findAllFavorite(Long memberId) {
-        List<Favorite> favorites = favoriteRepository.findByMemberId(memberId);
-        Set<Long> stationIds = extractionIds(favorites);
+        Favorites favorites = Favorites.of(favoriteRepository.findByMemberId(memberId));
+        Set<Long> stationIds = favorites.extractionIds();
         List<Station> stations = stationService.findByIds(stationIds);
 
         return favorites.stream()
-                .map(it -> favoriteIoResponse(stations, it))
+                .map(it -> favoriteToResponse(stations, it))
                 .collect(Collectors.toList());
     }
 
@@ -58,16 +58,7 @@ public class FavoriteService {
         favoriteRepository.deleteById(favoriteId);
     }
 
-    private Set<Long> extractionIds(List<Favorite> favorites) {
-        Set<Long> stationIds = new HashSet<>();
-        favorites.forEach(it -> {
-            stationIds.add(it.getSource());
-            stationIds.add(it.getTarget());
-        });
-        return stationIds;
-    }
-
-    private FavoriteResponse favoriteIoResponse(List<Station> stations, Favorite favorite) {
+    private FavoriteResponse favoriteToResponse(List<Station> stations, Favorite favorite) {
         return FavoriteResponse.of(
                 favorite.getId(),
                 findFirst(stations, favorite.getSource()),

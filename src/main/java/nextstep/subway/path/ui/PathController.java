@@ -1,6 +1,8 @@
 package nextstep.subway.path.ui;
 
 import javax.validation.Valid;
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
@@ -24,8 +26,10 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<?> paths(@RequestBody @Valid PathRequest request) {
-        PathResponse shortestPath = pathService.getShortestPath(request);
+    public ResponseEntity<?> paths(
+            @AuthenticationPrincipal LoginMember loginMember,
+            @RequestBody @Valid PathRequest request) {
+        PathResponse shortestPath = pathService.getShortestPath(request, loginMember);
         return ResponseEntity.ok(shortestPath);
     }
 

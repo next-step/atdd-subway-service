@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+import nextstep.subway.path.domain.Money;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +21,7 @@ class SectionsTest {
 
     private Sections sections;
 
-    private Line line = new Line("2호선", "yellow");
+    private Line line = new Line("2호선", "yellow", Money.won(0L));
     private Station 강남역 = new Station("강남역");
     private Station 사당역 = new Station("사당역");
 
