@@ -103,11 +103,9 @@ Scenario: 지하철 구간을 관리
     * @AuthenticationPrincipal과 AuthenticationPrincipalArgumentResolver을 활용
     * 유효하지 않은 토큰으로 /members/me 요청을 보낼 경우에 대한 예외 처리
 * 즐겨 찾기 기능 완성하기
-  * 즐겨찾기 생성 인수테스트 만들기
+  * 즐겨찾기 생성 / 목록 조회 / 삭제 통합 인수테스트 만들기
   * 즐겨찾기 생성 기능 구현
-  * 즐겨찾기 목록 조회 인수테스트 만들기
   * 즐겨찾기 목록 조회 기능 구현
-  * 즐겨찾기 삭제 인수테스트 만들기
   * 즐겨찾기 삭제 기능 구현
 ```
 Feature: 즐겨찾기를 관리한다.

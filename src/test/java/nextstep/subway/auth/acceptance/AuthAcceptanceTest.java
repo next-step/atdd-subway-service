@@ -95,7 +95,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    public static TokenResponse 로그인_되어있음 (String email, String password) {
-        return 로그인_요청(email, password).as(TokenResponse.class);
+    public static ExtractableResponse<Response> 로그인_되어있음 (String email, String password) {
+        return 로그인_요청(email, password);
     }
 }

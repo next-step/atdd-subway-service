@@ -52,7 +52,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void manageMyInfo() {
         //given
         회원_등록_되어있음(EMAIL, PASSWORD, AGE);
-        TokenResponse tokenResponse = AuthAcceptanceTest.로그인_되어있음(EMAIL, PASSWORD);
+        TokenResponse tokenResponse = AuthAcceptanceTest.로그인_되어있음(EMAIL, PASSWORD).as(TokenResponse.class);
         // when
         ExtractableResponse<Response> findResponse = 내_정보_조회_요청(tokenResponse);
         // then
@@ -69,7 +69,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         AuthAcceptanceTest.토큰_인증_실패(findResponseAfterUpdate);
 
         //given
-        TokenResponse tokenResponseReLogin = AuthAcceptanceTest.로그인_되어있음(NEW_EMAIL, NEW_PASSWORD);
+        TokenResponse tokenResponseReLogin = AuthAcceptanceTest.로그인_되어있음(NEW_EMAIL, NEW_PASSWORD).as(TokenResponse.class);
         // when
         ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(tokenResponseReLogin);
         // then

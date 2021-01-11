@@ -45,7 +45,6 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        checkAuthorized(loginMember);
         MemberResponse member = memberService.findMember(loginMember.getId());
         return ResponseEntity.ok().body(member);
     }
@@ -53,21 +52,13 @@ public class MemberController {
     @PutMapping("/members/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember
         , @RequestBody MemberRequest param) {
-        checkAuthorized(loginMember);
         memberService.updateMember(loginMember.getId(), param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        checkAuthorized(loginMember);
         memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
-    }
-
-    private void checkAuthorized(LoginMember loginMember) {
-        if (loginMember.getId() == null){
-            throw new AuthorizationException("유효하지 않은 인증 정보 입니다.");
-        }
     }
 }
