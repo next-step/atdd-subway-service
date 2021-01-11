@@ -75,9 +75,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 로그인_성공(ExtractableResponse<Response> tokenResponse) {
+    public static String 로그인_성공(ExtractableResponse<Response> tokenResponse) {
         assertThat(tokenResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(tokenResponse.as(TokenResponse.class).getAccessToken()).isNotBlank();
+        String accessToken = tokenResponse.as(TokenResponse.class).getAccessToken();
+        assertThat(accessToken).isNotBlank();
+        return accessToken;
     }
 
     public static void 로그인_실패(ExtractableResponse<Response> tokenResponse) {
