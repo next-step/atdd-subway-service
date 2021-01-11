@@ -44,6 +44,7 @@ public class Path {
 	}
 
 	private Fare getDistanceFare() {
+		// Note: 까다로운 조건부터 분기해야 한다.
 		Distance pathDistance = getDistance();
 		if (pathDistance.isGreaterThan(DISTANCE_50KM)) {
 			int multiplier = pathDistance.floorDiv(DISTANCE_8KM);

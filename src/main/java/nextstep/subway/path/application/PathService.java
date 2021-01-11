@@ -34,7 +34,7 @@ public class PathService {
 	                                  PathCalculateRequest pathCalculateRequest) {
 		Path path = getPath(pathCalculateRequest);
 		Optional<Integer> age = optionalLoginMember.optional().map(LoginMember::getAge);
-		Fare fare = (age.isPresent()) ? path.getFare(age.get()) : path.getFare();
+		Fare fare = age.isPresent() ? path.getFare(age.get()) : path.getFare();
 		return PathResponse.of(path.getStations(), path.getDistance(), fare);
 	}
 
