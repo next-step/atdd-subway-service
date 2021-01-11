@@ -51,7 +51,7 @@ public class PathTest {
     @Test
     void findShortestPath() {
         // when
-        List<Station> stations = path.findShortestPath(StationFixtures.강남역, StationFixtures.남부터미널역);
+        List<Station> stations = path.findShortestPath(StationFixtures.강남역, StationFixtures.남부터미널역).getVertexList();
 
         // then
         assertThat(stations)

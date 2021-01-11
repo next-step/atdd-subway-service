@@ -8,6 +8,8 @@ import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
+import org.jgrapht.GraphPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -36,8 +38,8 @@ public class PathService {
         List<Line> lines = lineRepository.findAll();
 
         Path path = Path.of(lines);
-        path.findShortestPath(source, target);
-        return PathResponse.of(path.findShortestPath(source, target), path.findPathDistance());
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = path.findShortestPath(source, target);
+        return PathResponse.of(shortestPath.getVertexList(), (int) shortestPath.getWeight());
     }
 
     private List<Station> findAllByIdIn(PathRequest pathRequest) {
