@@ -6,6 +6,7 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.*;
 
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"source_id", "target_id"}))
 public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

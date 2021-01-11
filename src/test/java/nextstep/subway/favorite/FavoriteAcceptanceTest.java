@@ -61,20 +61,54 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 정보를 관리한다")
     @Test
     public void manageFavorite() {
-        ExtractableResponse<Response> createdResponse = 즐겨찾기_생성을_요청(tokenResponse.getAccessToken(), 신도림, 양천구청);
+        ExtractableResponse<Response> createdResponse = 즐겨찾기_생성을_요청(tokenResponse.getAccessToken(), 신도림.getId(), 양천구청.getId());
         즐겨찾기_생성됨(createdResponse);
         ExtractableResponse<Response> selectedResponse = 즐겨찾기_목록_조회_요청(tokenResponse.getAccessToken());
         즐겨찾기_목록_조회됨(selectedResponse, 신도림, 양천구청);
-        ExtractableResponse<Response> deletedResponse = 즐겨찾기_삭제_요청(tokenResponse.getAccessToken(), createdResponse.as(FavoriteResponse.class));
+        FavoriteResponse favoriteResponse = createdResponse.as(FavoriteResponse.class);
+        ExtractableResponse<Response> deletedResponse = 즐겨찾기_삭제_요청(tokenResponse.getAccessToken(), favoriteResponse.getId());
         즐겨찾기_삭제됨(deletedResponse);
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(String token, StationResponse source, StationResponse target) {
+    @DisplayName("중복 된 즐겨찾기 정보를 등록한다")
+    @Test
+    public void createFavoriteDuplicate() {
+        즐겨찾기_생성을_요청(tokenResponse.getAccessToken(), 신도림.getId(), 양천구청.getId());
+        ExtractableResponse<Response> createdResponse = 즐겨찾기_생성을_요청(tokenResponse.getAccessToken(), 신도림.getId(), 양천구청.getId());
+        즐겨찾기_생성_실패됨(createdResponse);
+    }
+
+    @DisplayName("등록되지 않은 역 id로 즐겨찾기 정보를 등록한다")
+    @Test
+    public void createInvalidStationId() {
+        ExtractableResponse<Response> createdResponse = 즐겨찾기_생성을_요청(tokenResponse.getAccessToken(), 신도림.getId(), 99L);
+        즐겨찾기_생성_실패됨(createdResponse);
+    }
+
+    @DisplayName("인증되지 않은 토큰으로 즐겨찾기 정보를 조회한다")
+    @Test
+    public void findAllInvalidToken() {
+        ExtractableResponse<Response> createdResponse = 즐겨찾기_생성을_요청(tokenResponse.getAccessToken(), 신도림.getId(), 양천구청.getId());
+        즐겨찾기_생성됨(createdResponse);
+        ExtractableResponse<Response> selectedResponse = 즐겨찾기_목록_조회_요청("invalid");
+        즐겨찾기_조회_실패됨(selectedResponse);
+    }
+
+    @DisplayName("인증정보 없이 즐겨찾기 정보를 조회한다")
+    @Test
+    public void findAllWithoutAuth() {
+        ExtractableResponse<Response> createdResponse = 즐겨찾기_생성을_요청(tokenResponse.getAccessToken(), 신도림.getId(), 양천구청.getId());
+        즐겨찾기_생성됨(createdResponse);
+        ExtractableResponse<Response> selectedResponse = 인증없이_즐겨찾기_목록_조회_요청();
+        즐겨찾기_조회_실패됨(selectedResponse);
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(String token, Long source, Long target) {
         return RestAssured.given().log().all()
                 .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().log().all()
-                .post("/favorites?source={source}&target={target}", source.getId(), target.getId())
+                .post("/favorites?source={source}&target={target}", source, target)
                 .then().log().all()
                 .extract();
     }
@@ -97,6 +131,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 인증없이_즐겨찾기_목록_조회_요청() {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().log().all()
+                .get("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
     public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> selectedResponse, StationResponse source, StationResponse target) {
         assertThat(selectedResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         List<FavoriteResponse> favoriteResponses = Arrays.asList(selectedResponse.as(FavoriteResponse[].class));
@@ -110,21 +153,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String token, FavoriteResponse favorite) {
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String token, Long id) {
         return RestAssured.given().log().all()
                 .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().log().all()
-                .delete("/favorites/{id}", favorite.getId())
+                .delete("/favorites/{id}", id)
                 .then().log().all()
                 .extract();
     }
 
     public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> deletedResponse) {
         assertThat(deletedResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    public static void 즐겨찾기_삭제_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
