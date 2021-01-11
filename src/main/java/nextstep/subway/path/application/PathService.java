@@ -21,10 +21,10 @@ public class PathService {
 	public PathResponse findPath(PathRequest request) {
 		Station source = lineService.findStationById(request.getSource());
 		Station target = lineService.findStationById(request.getTarget());
-
 		PathFinder finder = new PathFinder(lineService.findLineAll());
 
 		finder.selectShortPath(source, target);
-		return null;
+
+		return PathResponse.of(finder.stations(), finder.distance());
 	}
 }

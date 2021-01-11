@@ -22,7 +22,7 @@ public class Advice {
 			IllegalArgumentException.class,
 			DataIntegrityViolationException.class
 		})
-	public ResponseEntity<LineResponse> handleLineNotFoundException(NothingException e) {
+	public ResponseEntity<LineResponse> handleBadRequestException(Exception e) {
 		log.error("Bad request Error: " + e.getMessage());
 		return ResponseEntity.badRequest().build();
 	}

@@ -17,6 +17,8 @@ public class PathFinder {
 	private final DijkstraShortestPath<Station, DefaultWeightedEdge> path;
 	private final List<Line> lines;
 
+	private GraphPath<Station, DefaultWeightedEdge> resultPath;
+
 	public PathFinder(List<Line> lines) {
 		this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 		this.lines = lines;
@@ -26,6 +28,15 @@ public class PathFinder {
 
 	public void selectShortPath(Station source, Station target) {
 		validateStation(source, target);
+		this.resultPath = path.getPath(source, target);
+	}
+
+	public List<Station> stations() {
+		return resultPath.getVertexList();
+	}
+
+	public int distance() {
+		return (int)resultPath.getWeight();
 	}
 
 	private void generateStationGraph() {
