@@ -1,6 +1,5 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.domain.OptionalLoginMember;
 import nextstep.subway.common.Fare;
 import nextstep.subway.line.domain.Line;
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -30,11 +28,10 @@ public class PathService {
 		this.stationRepository = stationRepository;
 	}
 
-	public PathResponse calculatePath(OptionalLoginMember optionalLoginMember,
+	public PathResponse calculatePath(OptionalLoginMember loginMember,
 	                                  PathCalculateRequest pathCalculateRequest) {
 		Path path = getPath(pathCalculateRequest);
-		Optional<Integer> age = optionalLoginMember.optional().map(LoginMember::getAge);
-		Fare fare = age.isPresent() ? path.getFare(age.get()) : path.getFare();
+		Fare fare = loginMember.isPresent() ? path.getFare(loginMember.orElseAuthenticationThrow().getAge()) : path.getFare();
 		return PathResponse.of(path.getStations(), path.getDistance(), fare);
 	}
 

@@ -136,7 +136,7 @@ class OutsideInPathServiceTest {
 	void calculatePath_비로그인사용자() {
 		// given
 		given(stationRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(강남역, 남부터미널역));
-		OptionalLoginMember optionalLoginMember = new OptionalLoginMember(null);
+		OptionalLoginMember optionalLoginMember = OptionalLoginMember.notFound();
 
 		// when
 		PathRequest pathRequest = new PathRequest(강남역.getId(), 남부터미널역.getId());
@@ -153,7 +153,7 @@ class OutsideInPathServiceTest {
 	void calculatePath_NotExistStation() {
 		// given
 		given(stationRepository.findById(anyLong())).willReturn(Optional.empty());
-		final OptionalLoginMember optionalLoginMember = new OptionalLoginMember(null);
+		final OptionalLoginMember optionalLoginMember = OptionalLoginMember.notFound();
 
 		// when
 		PathRequest pathRequest = new PathRequest(1L, 2L);

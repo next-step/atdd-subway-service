@@ -3,7 +3,7 @@ package nextstep.subway.auth.ui;
 import nextstep.subway.auth.application.AuthService;
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.OptionalLoginMember;
-import nextstep.subway.auth.domain.OptionalLoginMemberPrincipal;
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -13,16 +13,16 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class OptionalLoginMemberPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
+public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private AuthService authService;
 
-    public OptionalLoginMemberPrincipalArgumentResolver(AuthService authService) {
+    public AuthenticationPrincipalArgumentResolver(AuthService authService) {
         this.authService = authService;
     }
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(OptionalLoginMemberPrincipal.class);
+        return parameter.hasParameterAnnotation(AuthenticationPrincipal.class);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class OptionalLoginMemberPrincipalArgumentResolver implements HandlerMeth
         try {
             return new OptionalLoginMember(authService.findMemberByToken(credentials));
         } catch (AuthorizationException e) {
-            return new OptionalLoginMember(null);
+            return OptionalLoginMember.notFound();
         }
     }
 }

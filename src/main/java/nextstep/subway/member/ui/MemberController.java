@@ -1,7 +1,7 @@
 package nextstep.subway.member.ui;
 
-import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.auth.domain.LoginMemberPrincipal;
+import nextstep.subway.auth.domain.OptionalLoginMember;
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
@@ -43,20 +43,20 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@LoginMemberPrincipal LoginMember loginMember) {
-        MemberResponse member = memberService.findMember(loginMember.getId());
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal OptionalLoginMember loginMember) {
+        MemberResponse member = memberService.findMember(loginMember.orElseAuthenticationThrow().getId());
         return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@LoginMemberPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
-        memberService.updateMember(loginMember.getId(), param);
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal OptionalLoginMember loginMember, @RequestBody MemberRequest param) {
+        memberService.updateMember(loginMember.orElseAuthenticationThrow().getId(), param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(@LoginMemberPrincipal LoginMember loginMember) {
-        memberService.deleteMember(loginMember.getId());
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal OptionalLoginMember loginMember) {
+        memberService.deleteMember(loginMember.orElseAuthenticationThrow().getId());
         return ResponseEntity.noContent().build();
     }
 }
