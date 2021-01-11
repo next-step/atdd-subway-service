@@ -47,4 +47,14 @@ public class FavoriteService {
 			.map(FavoriteResponse::of)
 			.collect(Collectors.toList());
 	}
+
+	public void removeFavoriteByIdAndMember(Long id, Long memberId) {
+		Favorite favorite = favoriteRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("등록되지 않은 즐겨찾기 입니다."));
+
+		if (!favorite.belongTo(memberId)) {
+			throw new IllegalArgumentException("해당 회원에게 등록되지 않은 즐겨찾기 입니다.");
+		}
+		favoriteRepository.deleteById(id);
+	}
 }

@@ -28,13 +28,6 @@ public class Favorite extends BaseEntity {
 	protected Favorite() {
 	}
 
-	public Favorite(Long id, Member member, Station sourceStation, Station targetStation) {
-		this.id = id;
-		this.member = member;
-		this.sourceStation = sourceStation;
-		this.targetStation = targetStation;
-	}
-
 	public Favorite(Member member, Station sourceStation, Station targetStation) {
 		this.member = member;
 		this.sourceStation = sourceStation;
@@ -45,11 +38,22 @@ public class Favorite extends BaseEntity {
 		return id;
 	}
 
+	public Member getMember() {
+		return member;
+	}
+
 	public Station getSourceStation() {
 		return sourceStation;
 	}
 
 	public Station getTargetStation() {
 		return targetStation;
+	}
+
+	public boolean belongTo(Long memberId) {
+		if (this.member == null) {
+			return false;
+		}
+		return this.member.getId().equals(memberId);
 	}
 }

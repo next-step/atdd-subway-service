@@ -38,12 +38,12 @@ public class FavoriteController {
 
 	@GetMapping(value = "/favorites", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<FavoriteResponse>> showStations(@AuthenticationPrincipal LoginMember loginMember) {
-		List<FavoriteResponse> favorites = favoriteService.findAllFavoritesByMember(loginMember.getId());
-		return ResponseEntity.ok().body(favorites);
+		return ResponseEntity.ok().body(favoriteService.findAllFavoritesByMember(loginMember.getId()));
 	}
 
 	@DeleteMapping("/favorites/{id}")
-	public ResponseEntity deleteStation(@PathVariable Long id) {
+	public ResponseEntity deleteStation(@PathVariable Long id, @AuthenticationPrincipal LoginMember loginMember) {
+		favoriteService.removeFavoriteByIdAndMember(id, loginMember.getId());
 		return ResponseEntity.noContent().build();
 	}
 
