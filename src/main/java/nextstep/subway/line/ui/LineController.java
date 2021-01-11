@@ -5,10 +5,8 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -70,10 +68,5 @@ public class LineController {
 	public ResponseEntity<?> removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
 		lineService.removeLineStation(lineId, stationId);
 		return ResponseEntity.ok().build();
-	}
-
-	@ExceptionHandler(DataIntegrityViolationException.class)
-	public ResponseEntity<?> handleIllegalArgsException(DataIntegrityViolationException e) {
-		return ResponseEntity.badRequest().build();
 	}
 }

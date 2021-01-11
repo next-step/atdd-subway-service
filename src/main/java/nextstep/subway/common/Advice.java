@@ -1,5 +1,6 @@
 package nextstep.subway.common;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,21 +15,15 @@ import nextstep.subway.line.dto.LineResponse;
 @RestControllerAdvice
 public class Advice {
 
-	@ExceptionHandler(NothingException.class)
-	public ResponseEntity<LineResponse> handleLineNotFoundException(NothingException e) {
-		log.error("Target NotFoundException: " + e.getMessage());
-		return ResponseEntity.badRequest().build();
-	}
-
-	@ExceptionHandler(RuntimeException.class)
-	public ResponseEntity<?> handleRuntimeException(RuntimeException e) {
-		log.error("RuntimeException: " + e.getMessage());
-		return ResponseEntity.badRequest().build();
-	}
-
-	@ExceptionHandler(IllegalArgumentException.class)
-	public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException e) {
-		log.error("IllegalArgumentException: " + e.getMessage());
+	@ExceptionHandler(
+		{
+			NothingException.class,
+			RuntimeException.class,
+			IllegalArgumentException.class,
+			DataIntegrityViolationException.class
+		})
+	public ResponseEntity<LineResponse> handleBadRequestException(Exception e) {
+		log.error("Bad request Error: " + e.getMessage());
 		return ResponseEntity.badRequest().build();
 	}
 

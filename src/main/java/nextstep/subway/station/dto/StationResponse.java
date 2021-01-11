@@ -13,11 +13,9 @@ import nextstep.subway.station.domain.Station;
 public class StationResponse {
 	private Long id;
 	private String name;
-	private LocalDateTime createdDate;
-	private LocalDateTime modifiedDate;
+	private LocalDateTime createdAt;
 
 	public static StationResponse of(Station station) {
-		return new StationResponse(station.getId(), station.getName(), station.getCreatedDate(),
-			station.getModifiedDate());
+		return new StationResponse(station.getId(), station.getName(), station.getCreatedDate());
 	}
 }

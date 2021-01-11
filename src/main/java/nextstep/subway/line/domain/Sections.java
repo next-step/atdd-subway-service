@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -41,27 +40,19 @@ public class Sections {
 		validateAddSection(upStationExistStatus, downStationExistStatus);
 
 		if (upStationExistStatus) {
-			this.sections.stream()
-				.filter(section -> section.isUpStation(target))
-				.findFirst()
-				.ifPresent(section -> section.updateUpStation(target));
-			this.sections.add(target);
+			addDownStation(target);
 		}
 
 		if (downStationExistStatus) {
-			this.sections.stream()
-				.filter(section -> section.isDownStation(target))
-				.findFirst()
-				.ifPresent(section -> section.updateDownStation(target));
-			this.sections.add(target);
+			addUpStation(target);
 		}
 	}
 
 	public void delete(Station target) {
 		validateDeleteSection(target);
 
-		Section upSection = findUpSection(target);
-		Section downSection = findDownSection(target);
+		Section upSection = findUpStation(target);
+		Section downSection = findDownStation(target);
 
 		this.sections.remove(upSection);
 		this.sections.remove(downSection);
@@ -82,35 +73,31 @@ public class Sections {
 		}
 
 		Set<Station> stations = new LinkedHashSet<>();
-		Station downStation = findUpStation();
+		Station downStation = findStartStation();
 		stations.add(downStation);
 
 		while (downStation != null) {
 			Station finalDownStation = downStation;
-			Optional<Section> nextLineStation = this.sections.stream()
-				.filter(it -> it.getUpStation() == finalDownStation)
-				.findFirst();
-			if (!nextLineStation.isPresent()) {
+			Section nextLineSection = findUpStation(finalDownStation);
+			if (nextLineSection == null) {
 				break;
 			}
-			downStation = nextLineStation.get().getDownStation();
+			downStation = nextLineSection.getDownStation();
 			stations.add(downStation);
 		}
 
 		return new ArrayList<>(stations);
 	}
 
-	private Station findUpStation() {
+	public Station findStartStation() {
 		Station downStation = this.sections.get(0).getUpStation();
 		while (downStation != null) {
 			Station finalDownStation = downStation;
-			Optional<Section> nextLineStation = this.sections.stream()
-				.filter(it -> it.getDownStation() == finalDownStation)
-				.findFirst();
-			if (!nextLineStation.isPresent()) {
+			Section nextLineSection = findDownStation(finalDownStation);
+			if (nextLineSection == null) {
 				break;
 			}
-			downStation = nextLineStation.get().getUpStation();
+			downStation = nextLineSection.getUpStation();
 		}
 
 		return downStation;
@@ -136,17 +123,33 @@ public class Sections {
 		}
 	}
 
-	private Section findUpSection(Station target) {
+	private Section findUpStation(Station target) {
 		return this.sections.stream()
 			.filter(section -> section.getUpStation().equals(target))
 			.findFirst()
 			.orElse(null);
 	}
 
-	private Section findDownSection(Station target) {
+	private Section findDownStation(Station target) {
 		return this.sections.stream()
 			.filter(section -> section.getDownStation().equals(target))
 			.findFirst()
 			.orElse(null);
+	}
+
+	private void addUpStation(Section target) {
+		this.sections.stream()
+			.filter(section -> section.isDownStation(target))
+			.findFirst()
+			.ifPresent(section -> section.updateDownStation(target));
+		this.sections.add(target);
+	}
+
+	private void addDownStation(Section target) {
+		this.sections.stream()
+			.filter(section -> section.isUpStation(target))
+			.findFirst()
+			.ifPresent(section -> section.updateUpStation(target));
+		this.sections.add(target);
 	}
 }
