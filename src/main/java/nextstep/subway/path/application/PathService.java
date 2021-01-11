@@ -25,21 +25,21 @@ public class PathService {
     public PathResponse findShortestPath(PathRequest pathRequest) {
         List<Station> findResult = findAllByIdIn(pathRequest);
 
-        Station source = findResult.stream()
-                .filter(station -> station.isSameStation(pathRequest.getSourceStationId()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 출발역입니다."));
-
-        Station target = findResult.stream()
-                .filter(station -> station.getId().equals(pathRequest.getTargetStationId()))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 도착역입니다."));
+        Station source = getStation(findResult, pathRequest.getSourceStationId());
+        Station target = getStation(findResult, pathRequest.getTargetStationId());
 
         List<Line> lines = lineRepository.findAll();
 
         Path path = Path.of(lines);
         GraphPath<Station, DefaultWeightedEdge> shortestPath = path.findShortestPath(source, target);
         return PathResponse.of(shortestPath.getVertexList(), (int) shortestPath.getWeight());
+    }
+
+    private Station getStation(List<Station> findResult, Long stationId) {
+        return findResult.stream()
+                .filter(station -> station.isSameStation(stationId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 출발역입니다."));
     }
 
     private List<Station> findAllByIdIn(PathRequest pathRequest) {
