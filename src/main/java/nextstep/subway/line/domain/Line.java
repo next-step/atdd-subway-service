@@ -35,23 +35,23 @@ public class Line extends BaseEntity {
 		this.color = line.getColor();
 	}
 
-	public void updateUpStation(Station upStation, Station downStation, int distance) {
+	private void updateUpStation(Station upStation, Station downStation, int distance) {
 		sections.updateUpStation(upStation, downStation, distance);
 	}
 
-	public void updateDownStation(Station upStation, Station downStation, int distance) {
+	private void updateDownStation(Station upStation, Station downStation, int distance) {
 		sections.updateDownStation(upStation, downStation, distance);
 	}
+/*
+	public void addSection(Station upStation, Station downStation, int distance) {
+		addSection(sections.getStations(), upStation, downStation, distance);
+	}*/
 
-	public void addSection(Line line, Station upStation, Station downStation, int distance) {
-		sections.addSection(line, upStation, downStation, distance);
-	}
-
-	public Section getSectionEqualUpStation(Station station) {
+	private Section getSectionEqualUpStation(Station station) {
 		return sections.getSectionEqualUpStation(station);
 	}
 
-	public Section getSectionEqualDownStation(Station station) {
+	private Section getSectionEqualDownStation(Station station) {
 		return sections.getSectionEqualDownStation(station);
 	}
 
@@ -71,18 +71,19 @@ public class Line extends BaseEntity {
 		Station newUpStation = downLineStation.getUpStation();
 		Station newDownStation = upLineStation.getDownStation();
 		int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
-		addSection(this, newUpStation, newDownStation, newDistance);
+		sections.addSection(this, newUpStation, newDownStation, newDistance);
 	}
 
-	public void addSection(Line line, List<Station> stations, Station upStation, Station downStation, int distance) {
+	public void addSection(Station upStation, Station downStation, int distance) {
+		List<Station> stations = getStations();
 		validateSections(stations, upStation, downStation);
 		if (stations.isEmpty()) {
-			addSection(line, upStation, downStation, distance);
+			sections.addSection(this, upStation, downStation, distance);
 			return;
 		}
 
 		updateStation(stations, upStation, downStation, distance);
-		addSection(line, upStation, downStation, distance);
+		sections.addSection(this, upStation, downStation, distance);
 	}
 
 	private void updateStation(List<Station> stations, Station upStation, Station downStation, int distance) {

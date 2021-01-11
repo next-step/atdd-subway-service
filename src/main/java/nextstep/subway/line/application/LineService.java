@@ -76,8 +76,7 @@ public class LineService {
 		Line line = findLineById(lineId);
 		Station upStation = stationService.findStationById(request.getUpStationId());
 		Station downStation = stationService.findStationById(request.getDownStationId());
-		List<Station> stations = line.getStations();
-		line.addSection(line, stations, upStation, downStation, request.getDistance());
+		line.addSection(upStation, downStation, request.getDistance());
 	}
 
 
