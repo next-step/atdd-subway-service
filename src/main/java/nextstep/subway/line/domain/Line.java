@@ -18,8 +18,8 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Sections sections = new Sections();
 
     public Line(String name, String color) {
         this.name = name;
@@ -29,7 +29,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        sections.getSections().add(new Section(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {
@@ -38,36 +38,36 @@ public class Line extends BaseEntity {
     }
 
     public void updateUpStation(Station upStation, Station downStation, int distance) {
-        sections.stream()
+        sections.getSections().stream()
             .filter(it -> it.getUpStation() == upStation)
             .findFirst()
             .ifPresent(it -> it.updateUpStation(downStation, distance));
     }
 
     public void updateDownStation(Station upStation, Station downStation, int distance) {
-        sections.stream()
+        sections.getSections().stream()
             .filter(it -> it.getDownStation() == downStation)
             .findFirst()
             .ifPresent(it -> it.updateDownStation(upStation, distance));
     }
 
     public void addSection(Line line, Station upStation, Station downStation, int distance) {
-        sections.add(new Section(line, upStation, downStation, distance));
+        sections.getSections().add(new Section(line, upStation, downStation, distance));
     }
 
     public Optional<Section> getContainUpStation(Station station) {
-        return sections.stream()
+        return sections.getSections().stream()
             .filter(it -> it.getUpStation() == station)
             .findFirst();
     }
     public Optional<Section> getContainDownStation(Station station) {
-        return sections.stream()
+        return sections.getSections().stream()
             .filter(it -> it.getDownStation() == station)
             .findFirst();
     }
 
     public List<Station> getStations() {
-        if (sections.isEmpty()) {
+        if (sections.getSections().isEmpty()) {
             return Arrays.asList();
         }
 
@@ -89,7 +89,7 @@ public class Line extends BaseEntity {
     }
 
     private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
+        Station downStation = sections.getSections().get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = getContainDownStation(finalDownStation);
@@ -110,8 +110,8 @@ public class Line extends BaseEntity {
             addMergedSection(upLineStation, downLineStation);
         }
 
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
+        upLineStation.ifPresent(it -> sections.getSections().remove(it));
+        downLineStation.ifPresent(it -> sections.getSections().remove(it));
     }
 
     private void addMergedSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
@@ -150,7 +150,7 @@ public class Line extends BaseEntity {
         }
     }
 
-    protected Line() {
+    public Line() {
 
     }
     public Long getId() {
@@ -166,6 +166,6 @@ public class Line extends BaseEntity {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return sections.getSections();
     }
 }
