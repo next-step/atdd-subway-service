@@ -155,4 +155,49 @@ class LineTest {
 		}).isInstanceOf(RuntimeException.class)
 			.hasMessageContaining("등록할 수 없는 구간 입니다.");
 	}
+
+	@DisplayName("노선내_상행_종점_삭제")
+	@Test
+	void remoteStationStart(){
+		// given
+		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8);
+		actual.addSection(강남역, 판교역, 3);
+
+		// when
+		actual.removeLineStation(강남역);
+
+		// then
+		assertThat(actual.getStations()).containsExactly(판교역, 광교역);
+
+	}
+
+	@DisplayName("노선내_하행_종점_삭제")
+	@Test
+	void remoteStationEnd(){
+		// given
+		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8);
+		actual.addSection(강남역, 판교역, 3);
+
+		// when
+		actual.removeLineStation(광교역);
+
+		// then
+		assertThat(actual.getStations()).containsExactly(강남역, 판교역);
+
+	}
+
+	@DisplayName("노선내_중간역_삭제")
+	@Test
+	void remoteStationMiddle(){
+		// given
+		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8);
+		actual.addSection(강남역, 판교역, 3);
+
+		// when
+		actual.removeLineStation(판교역);
+
+		// then
+		assertThat(actual.getStations()).containsExactly(강남역, 광교역);
+
+	}
 }
