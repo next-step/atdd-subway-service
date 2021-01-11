@@ -38,36 +38,36 @@ public class Line extends BaseEntity {
     }
 
     public void updateUpStation(Station upStation, Station downStation, int distance) {
-        getSections().stream()
+        sections.stream()
             .filter(it -> it.getUpStation() == upStation)
             .findFirst()
             .ifPresent(it -> it.updateUpStation(downStation, distance));
     }
 
     public void updateDownStation(Station upStation, Station downStation, int distance) {
-        getSections().stream()
+        sections.stream()
             .filter(it -> it.getDownStation() == downStation)
             .findFirst()
             .ifPresent(it -> it.updateDownStation(upStation, distance));
     }
 
     public void addSection(Line line, Station upStation, Station downStation, int distance) {
-        getSections().add(new Section(line, upStation, downStation, distance));
+        sections.add(new Section(line, upStation, downStation, distance));
     }
 
     public Optional<Section> getContainUpStation(Station station) {
-        return getSections().stream()
+        return sections.stream()
             .filter(it -> it.getUpStation() == station)
             .findFirst();
     }
     public Optional<Section> getContainDownStation(Station station) {
-        return getSections().stream()
+        return sections.stream()
             .filter(it -> it.getDownStation() == station)
             .findFirst();
     }
 
     public List<Station> getStations() {
-        if (getSections().isEmpty()) {
+        if (sections.isEmpty()) {
             return Arrays.asList();
         }
 
@@ -89,7 +89,7 @@ public class Line extends BaseEntity {
     }
 
     private Station findUpStation() {
-        Station downStation = getSections().get(0).getUpStation();
+        Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = getContainDownStation(finalDownStation);
@@ -110,8 +110,8 @@ public class Line extends BaseEntity {
             addMergedSection(upLineStation, downLineStation);
         }
 
-        upLineStation.ifPresent(it -> getSections().remove(it));
-        downLineStation.ifPresent(it -> getSections().remove(it));
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
     }
 
     private void addMergedSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
