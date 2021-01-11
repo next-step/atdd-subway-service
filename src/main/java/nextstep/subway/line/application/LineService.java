@@ -34,7 +34,7 @@ public class LineService {
 	}
 
 	public List<LineResponse> findLines() {
-		List<Line> persistLines = lineRepository.findAll();
+		List<Line> persistLines = findLineAll();
 		return persistLines.stream()
 			.map(LineResponse::of)
 			.collect(Collectors.toList());
@@ -76,11 +76,15 @@ public class LineService {
 		line.deleteSection(station);
 	}
 
-	private Line findLineById(Long lineId) {
-		return lineRepository.findById(lineId).orElseThrow(NothingException::new);
+	public Station findStationById(Long stationId) {
+		return stationService.findById(stationId);
 	}
 
-	private Station findStationById(Long stationId) {
-		return stationService.findById(stationId);
+	public List<Line> findLineAll() {
+		return lineRepository.findAll();
+	}
+
+	private Line findLineById(Long lineId) {
+		return lineRepository.findById(lineId).orElseThrow(NothingException::new);
 	}
 }
