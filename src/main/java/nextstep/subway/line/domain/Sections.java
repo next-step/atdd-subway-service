@@ -27,6 +27,10 @@ public class Sections {
         return sections;
     }
 
+    public void add(Line line, Station upStation, Station downStation, int distance) {
+        this.add(new Section(line, upStation, downStation, distance));
+    }
+
     /**
      * 구간을 추가합니다.
      * @param section
@@ -100,27 +104,19 @@ public class Sections {
         this.cannotRegisterStation(upStation, downStation, stations);
 
         if (stations.isEmpty()) {
-            this.add(new Section(line, upStation, downStation, distance));
+            this.add(line, upStation, downStation, distance);
             return;
         }
 
-        if (isUpStationExisted) {
-            this.getSections().stream()
-                    .filter(it -> it.getUpStation() == upStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, distance));
-
-            this.add(new Section(line, upStation, downStation, distance));
-        } else if (isDownStationExisted) {
-            this.getSections().stream()
-                    .filter(it -> it.getDownStation() == downStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, distance));
-
-            this.add(new Section(line, upStation, downStation, distance));
-        } else {
-            throw new RuntimeException();
+        if(this.addExistedUpStation(isUpStationExisted, line, upStation, downStation, distance)) {
+            return;
         }
+
+        if(this.addExistedUpStation(isDownStationExisted, line, upStation, downStation, distance)) {
+            return;
+        }
+
+        throw new RuntimeException();
     }
 
     /**
@@ -150,6 +146,51 @@ public class Sections {
         }
     }
 
+    /**
+     * 상행선이 있는 경우
+     * @param isUpStationExisted
+     * @param line
+     * @param upStation
+     * @param downStation
+     * @param distance
+     * @return 구간 추가 여부
+     */
+    private boolean addExistedUpStation(boolean isUpStationExisted, Line line
+            , Station upStation, Station downStation, int distance) {
+        if (isUpStationExisted) {
+            this.getSections().stream()
+                    .filter(it -> it.getUpStation() == upStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(downStation, distance));
+
+            this.add(new Section(line, upStation, downStation, distance));
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param isDownStationExisted
+     * @param line
+     * @param upStation
+     * @param downStation
+     * @param distance
+     * @return 구간 추가 여부
+     */
+    private boolean addExistedDownStation(boolean isDownStationExisted, Line line
+            , Station upStation, Station downStation, int distance) {
+        if (isDownStationExisted) {
+            this.getSections().stream()
+                    .filter(it -> it.getDownStation() == downStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(upStation, distance));
+
+            this.add(new Section(line, upStation, downStation, distance));
+            return true;
+        }
+        return false;
+    }
 
     /**
      * 해당 역이 있는 구간을 삭제합니다.
