@@ -21,9 +21,6 @@ public class Line extends BaseEntity {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
-    public Line() {
-    }
-
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
@@ -38,22 +35,6 @@ public class Line extends BaseEntity {
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public List<Section> getSections() {
-        return sections;
     }
 
     public void updateUpStation(Station upStation, Station downStation, int distance) {
@@ -167,5 +148,24 @@ public class Line extends BaseEntity {
             stations.stream().noneMatch(it -> it == downStation)) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
+    }
+
+    protected Line() {
+
+    }
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 }
