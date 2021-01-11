@@ -124,4 +124,35 @@ class LineTest {
 		assertThat(actual.getStations()).containsExactly(강남역, 광교역, 호매실역);
 
 	}
+
+	@DisplayName("기존_노선과_동일한_구간_오류")
+	@Test
+	void addStationDuplicateException(){
+		// given
+		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8);
+
+		// when
+		// then
+		assertThatThrownBy(() -> {
+			actual.addSection(강남역, 광교역, 3);
+		}).isInstanceOf(RuntimeException.class)
+			.hasMessageContaining("이미 등록된 구간 입니다.");
+	}
+
+	@DisplayName("기존_노선과_일치하는_지하철역_없음")
+	@Test
+	void addStationMustContainExistStationException(){
+		// given
+		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8);
+
+		// when
+		Station 서울역 = new Station("서울역");
+		Station 양재역 = new Station("양재역");
+
+		// then
+		assertThatThrownBy(() -> {
+			actual.addSection(서울역, 양재역, 3);
+		}).isInstanceOf(RuntimeException.class)
+			.hasMessageContaining("등록할 수 없는 구간 입니다.");
+	}
 }

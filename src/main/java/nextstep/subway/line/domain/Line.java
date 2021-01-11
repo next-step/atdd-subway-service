@@ -42,10 +42,6 @@ public class Line extends BaseEntity {
 	private void updateDownStation(Station upStation, Station downStation, int distance) {
 		sections.updateDownStation(upStation, downStation, distance);
 	}
-/*
-	public void addSection(Station upStation, Station downStation, int distance) {
-		addSection(sections.getStations(), upStation, downStation, distance);
-	}*/
 
 	private Section getSectionEqualUpStation(Station station) {
 		return sections.getSectionEqualUpStation(station);
