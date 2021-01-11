@@ -119,17 +119,6 @@ public class LineService {
 			throw new RuntimeException();
 		}
 
-		Optional<Section> upLineStation = line.getContainUpStation(station);
-		Optional<Section> downLineStation = line.getContainDownStation(station);
-
-		if (upLineStation.isPresent() && downLineStation.isPresent()) {
-			Station newUpStation = downLineStation.get().getUpStation();
-			Station newDownStation = upLineStation.get().getDownStation();
-			int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-			line.addSection(line, newUpStation, newDownStation, newDistance);
-		}
-
-		upLineStation.ifPresent(it -> line.getSections().remove(it));
-		downLineStation.ifPresent(it -> line.getSections().remove(it));
+		line.removeLineStation(station);
 	}
 }
