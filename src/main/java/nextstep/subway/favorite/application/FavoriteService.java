@@ -28,12 +28,16 @@ public class FavoriteService {
 	}
 
 	public FavoriteResponse saveFavorite(FavoriteRequest favoriteRequest, Long memberId) {
-		Station sourceStation = stationRepository.findById(favoriteRequest.getSourceId())
+		Station sourceStation = stationRepository.findById(favoriteRequest.getSource())
 			.orElseThrow(() -> new IllegalArgumentException("즐겨찾기를 등록할 수 없는 지하철 역 입니다."));
-		Station targetStation = stationRepository.findById(favoriteRequest.getTargetId())
+		Station targetStation = stationRepository.findById(favoriteRequest.getTarget())
 			.orElseThrow(() -> new IllegalArgumentException("즐겨찾기를 등록할 수 없는 지하철 역 입니다."));
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new IllegalArgumentException("등록되지 않은 회원 입니다."));
+
+		if (favoriteRepository.existsByMemberAndSourceStationAndTargetStation(member, sourceStation, targetStation)) {
+			throw new IllegalArgumentException("이미 등록된 즐겨찾기 입니다.");
+		}
 
 		Favorite favorite = favoriteRepository.save(new Favorite(member, sourceStation, targetStation));
 		return FavoriteResponse.of(favorite);
