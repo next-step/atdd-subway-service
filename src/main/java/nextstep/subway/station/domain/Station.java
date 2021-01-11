@@ -30,6 +30,10 @@ public class Station extends BaseEntity {
         return name;
     }
 
+    public boolean isExisted(List<Station> stations) {
+        return stations.stream().anyMatch(it -> it.equals(this));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -44,7 +48,4 @@ public class Station extends BaseEntity {
         return Objects.hash(id, name);
     }
 
-    public boolean isExisted(List<Station> stations) {
-        return stations.stream().anyMatch(it -> it.equals(this));
-    }
 }
