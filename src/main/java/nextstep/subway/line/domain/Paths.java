@@ -11,6 +11,10 @@ import org.jgrapht.graph.WeightedMultigraph;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 public class Paths {
 
@@ -56,10 +60,10 @@ public class Paths {
 
     private Set<Station> getStations(List<Section> sections) {
         Set<Station> stationSet = new HashSet<>();
-        sections.forEach(section -> {
-            stationSet.add(section.getUpStation());
-            stationSet.add(section.getDownStation());
-        });
+        sections.stream()
+                .flatMap(section -> Stream.of(section.getUpStation(), section.getDownStation()))
+                .distinct()
+                .collect(Collectors.collectingAndThen(toList(), stationSet::addAll));
         return stationSet;
     }
 
