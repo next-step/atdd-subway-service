@@ -127,7 +127,7 @@ npm run dev
       * /members/me 요청 시 토큰을 확인하여 로그인 정보를 받아올 수 있도록 하기
       * @AuthenticationPrincipal과 AuthenticationPrincipalArgumentResolver을 활용하기
 
-- [ ] 즐겨 찾기 기능 완성하기
+- [X] 즐겨 찾기 기능 완성하기
       * 인증을 포함하여 전체 ATDD 사이클을 경험할 수 있도록 기능을 구현하기
 
 
