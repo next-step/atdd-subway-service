@@ -25,7 +25,7 @@ public class Sections {
     }
 
     public void addSection(Line line, Station upStation, Station downStation, int distance) {
-        sections.add(new Section(line, upStation, downStation, distance));
+        sections.add(new Section(line, upStation, downStation, Distance.valueOf(distance)));
     }
 
     public Station findUpStation() {
@@ -93,12 +93,12 @@ public class Sections {
 
     private void updateUpStation(Station upStation, Station downStation, int distance, List<Station> stations) {
         if (isStationExisted(upStation, stations))
-            updateStation(it -> it.sameUpStation(upStation), it -> it.updateUpStation(downStation, distance));
+            updateStation(it -> it.sameUpStation(upStation), it -> it.updateUpStation(downStation, Distance.valueOf(distance)));
     }
 
     private void updateDownStation(Station upStation, Station downStation, int distance, List<Station> stations) {
         if (isStationExisted(downStation, stations))
-            updateStation(it -> it.sameDownStation(downStation), it -> it.updateDownStation(upStation, distance));
+            updateStation(it -> it.sameDownStation(downStation), it -> it.updateDownStation(upStation, Distance.valueOf(distance)));
     }
 
     private boolean isStationExisted(Station station, List<Station> stations) {

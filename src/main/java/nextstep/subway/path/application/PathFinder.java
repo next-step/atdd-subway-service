@@ -22,6 +22,29 @@ public class PathFinder {
         buildGraph(lines);
     }
 
+    private void buildGraph(List<Line> lines) {
+        graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        for (Line line : lines) {
+            buildGraphVertex(line);
+            buildGraphEdges(line);
+        }
+    }
+
+    private void buildGraphVertex(Line line) {
+        List<Station> stations = line.getStations();
+        for (Station station : stations) {
+            graph.addVertex(station);
+        }
+    }
+
+    private void buildGraphEdges(Line line) {
+        List<Section> sections = line.getSections();
+        for (Section section : sections) {
+            int distance = section.getDistance();
+            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), distance);
+        }
+    }
+
     public PathResponse getPath(Station sourceStation, Station targetStation) {
         verifySameSourceTargetStation(sourceStation, targetStation);
 
@@ -53,26 +76,4 @@ public class PathFinder {
         return dijkstraShortestPath.getPath(sourceStation, targetStation);
     }
 
-    private void buildGraph(List<Line> lines) {
-        graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        for (Line line : lines) {
-            buildGraphVertex(line);
-            buildGraphEdges(line);
-        }
-    }
-
-    private void buildGraphVertex(Line line) {
-        List<Station> stations = line.getStations();
-        for (Station station : stations) {
-            graph.addVertex(station);
-        }
-    }
-
-    private void buildGraphEdges(Line line) {
-        List<Section> sections = line.getSections();
-        for (Section section : sections) {
-            int distance = section.getDistance();
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), distance);
-        }
-    }
 }
