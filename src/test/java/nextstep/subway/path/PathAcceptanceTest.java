@@ -74,10 +74,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void exceptionToSearchPathOfSameStation() {
         // When
         ExtractableResponse<Response> response = 지하철_노선_경로탐색_요청(교대역, 교대역);
-
         // Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
+
+	@DisplayName("예외 상황 - 출발역과 도착역이 연결이 되어 있지 않은 경우")
+	@Test
+	void exceptionToSearchPathOfUnconnectedStation() {
+		// When
+		ExtractableResponse<Response> response = 지하철_노선_경로탐색_요청(교대역, 인천역);
+		// Then
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+	}
 
     private ExtractableResponse<Response> 지하철_노선_경로탐색_요청(StationResponse source, StationResponse target) {
         return RestAssured

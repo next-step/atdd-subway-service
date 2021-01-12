@@ -66,9 +66,23 @@ class PathFinderTest {
     @DisplayName("예외 상황 - 출발역과 도착역이 같은 경우")
     @Test
     void exceptionToFindShortestPathOfSameSourceAndTarget() {
-        // When & then
+        // When & Then
         assertThatThrownBy(() -> pathFinder.findShortestPath(교대역, 교대역))
                 .isInstanceOf(CustomException.class)
                 .hasMessage("출발역과 도착역이 동일합니다.");
+    }
+
+    @DisplayName("예외 상황 - 출발역과 도착역이 연결이 되어 있지 않은 경우")
+    @Test
+    void exceptionToFindShortestPathOfUnconnectedSourceAndTarget() {
+        // Given
+        Station 광교역 = new Station("광교역");
+        Station 정자역 = new Station("정자역");
+        Line 신분당선 = new Line("신분당선", "bg-red-200", 광교역, 정자역, 1000L);
+        pathFinder = new PathFinder(Arrays.asList(이호선, 삼호선, 신분당선));
+        // When & Then
+        assertThatThrownBy(() -> pathFinder.findShortestPath(교대역, 광교역))
+                .isInstanceOf(CustomException.class)
+                .hasMessage("출발역과 도착역이 연결이 되어 있지 않습니다.");
     }
 }

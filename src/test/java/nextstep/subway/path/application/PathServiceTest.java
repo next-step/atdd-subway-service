@@ -83,4 +83,19 @@ class PathServiceTest {
                 .isInstanceOf(CustomException.class)
                 .hasMessage("출발역과 도착역이 동일합니다.");
     }
+
+    @DisplayName("예외 상황 - 출발역과 도착역이 연결이 되어 있지 않은 경우")
+    @Test
+    void exceptionToFindShortestPathOfUnconnectedSourceAndTarget() {
+        // Given
+        Station 광교역 = new Station("광교역");
+        Station 정자역 = new Station("정자역");
+        신분당선 = new Line("신분당선", "bg-red-200", 광교역, 정자역, 1000L);
+        given(lineService.findAllLines()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
+        given(stationService.findById(any())).willReturn(교대역).willReturn(광교역);
+        // When & Then
+        assertThatThrownBy(() -> pathService.findPath(new PathRequest(교대역.getId(), 광교역.getId())))
+                .isInstanceOf(CustomException.class)
+                .hasMessage("출발역과 도착역이 연결이 되어 있지 않습니다.");
+    }
 }
