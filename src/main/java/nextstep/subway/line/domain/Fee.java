@@ -17,17 +17,12 @@ public class Fee {
         this.fee = fee;
     }
 
-    private Fee(int defaultFee, int overFare) {
-        validate(overFare);
-        this.fee = defaultFee + overFare;
-    }
-
     public static Fee of(int fee) {
         return new Fee(fee);
     }
 
     public static Fee ofWithOverFare(int overFare) {
-        return new Fee(DEFAULT_FEE, overFare);
+        return new Fee(DEFAULT_FEE + overFare);
     }
 
     public Fee calculateBasicFee(Distance distance) {
