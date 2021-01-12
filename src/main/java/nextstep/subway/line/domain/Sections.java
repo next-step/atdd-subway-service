@@ -55,6 +55,10 @@ public class Sections {
         return sections.isEmpty();
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
     private Optional<Section> findDownSectionBy(Station station) {
         return findSectionBy(s -> s.hasDownSection(station));
     }

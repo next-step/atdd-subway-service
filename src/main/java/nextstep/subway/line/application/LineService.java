@@ -29,17 +29,15 @@ public class LineService {
         return LineResponse.of(lineRepository.save(createLineOf(request)));
     }
 
-    private Line createLineOf(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
-        return new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance());
-    }
-
     public List<LineResponse> findLines() {
-        return lineRepository.findAll()
+        return findAllLines()
                 .stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public List<Line> findAllLines() {
+        return lineRepository.findAll();
     }
 
     public Line findLineById(Long id) {
@@ -69,5 +67,11 @@ public class LineService {
     public void removeLineStation(Long lineId, Long stationId) {
         Station station = stationService.findStationById(stationId);
         findLineById(lineId).deleteStation(station);
+    }
+
+    private Line createLineOf(LineRequest request) {
+        Station upStation = stationService.findById(request.getUpStationId());
+        Station downStation = stationService.findById(request.getDownStationId());
+        return new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance());
     }
 }
