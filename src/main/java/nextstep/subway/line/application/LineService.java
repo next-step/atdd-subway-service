@@ -28,9 +28,23 @@ public class LineService {
 	public LineResponse saveLine(LineRequest request) {
 		Station upStation = stationService.findById(request.getUpStationId());
 		Station downStation = stationService.findById(request.getDownStationId());
-		Line persistLine = lineRepository.save(
-			new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+		Line persistLine = saveLineRequest(request, upStation, downStation);
 		return LineResponse.of(persistLine);
+	}
+
+	private Line saveLineRequest(LineRequest request, Station upStation, Station downStation) {
+		Line saveLineTarget = saveLineRequestToLine(request, upStation, downStation);
+		Line persistLine = lineRepository.save(saveLineTarget);
+		return persistLine;
+	}
+
+	private Line saveLineRequestToLine(LineRequest request, Station upStation, Station downStation) {
+		return Line.builder().name(request.getName())
+			.color(request.getColor())
+			.upStation(upStation)
+			.downStation(downStation)
+			.distance(request.getDistance())
+			.build();
 	}
 
 	public List<LineResponse> findLines() {
