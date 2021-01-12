@@ -37,6 +37,29 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 		로그인_토큰_조회됨(response);
 	}
 
+	@DisplayName("Bearer Auth 로그인 실패")
+	@Test
+	void myInfoWithBadBearerAuth() {
+		// when
+		ExtractableResponse<Response> passwordFailResponse = 로그인_토큰_요청(EMAIL, "123456");
+		ExtractableResponse<Response> emailFailResponse = 로그인_토큰_요청("email@gmail.com", PASSWORD);
+
+		//then
+		로그인_토큰_실패됨(passwordFailResponse);
+		로그인_토큰_실패됨(emailFailResponse);
+	}
+
+	private void 로그인_토큰_실패됨(ExtractableResponse<Response> response) {
+		assertAll(
+			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value())
+		);
+	}
+
+	@DisplayName("Bearer Auth 유효하지 않은 토큰")
+	@Test
+	void myInfoWithWrongBearerAuth() {
+	}
+
 	private void 로그인_토큰_조회됨(ExtractableResponse<Response> response) {
 		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -52,15 +75,4 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 			.when().post("/login/token")
 			.then().log().all().extract();
 	}
-
-	@DisplayName("Bearer Auth 로그인 실패")
-	@Test
-	void myInfoWithBadBearerAuth() {
-	}
-
-	@DisplayName("Bearer Auth 유효하지 않은 토큰")
-	@Test
-	void myInfoWithWrongBearerAuth() {
-	}
-
 }
