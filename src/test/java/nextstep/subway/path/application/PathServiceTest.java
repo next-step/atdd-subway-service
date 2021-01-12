@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -97,5 +98,18 @@ class PathServiceTest {
         assertThatThrownBy(() -> pathService.findPath(new PathRequest(교대역.getId(), 광교역.getId())))
                 .isInstanceOf(CustomException.class)
                 .hasMessage("출발역과 도착역이 연결이 되어 있지 않습니다.");
+    }
+
+    @DisplayName("예외 상황 - 존재하지 않은 출발역이나 도착역을 조회 할 경우")
+    @Test
+    void exceptionToFindNotExistingSourceAndTarget() {
+        // Given
+        String exceptionMessage = "Station id: 2 존재하지않습니다.";
+        given(lineService.findAllLines()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
+        given(stationService.findById(any())).willReturn(교대역).willThrow(new NoSuchElementException(exceptionMessage));
+        // When & Then
+        assertThatThrownBy(() -> pathService.findPath(new PathRequest(교대역.getId(), Long.MAX_VALUE)))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage(exceptionMessage);
     }
 }

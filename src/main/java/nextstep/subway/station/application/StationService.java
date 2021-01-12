@@ -7,6 +7,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,6 +40,6 @@ public class StationService {
     }
 
     public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+        return stationRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Station id:" + id + " 존재하지않습니다."));
     }
 }

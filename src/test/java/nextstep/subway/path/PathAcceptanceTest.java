@@ -17,6 +17,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -83,6 +85,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	void exceptionToSearchPathOfUnconnectedStation() {
 		// When
 		ExtractableResponse<Response> response = 지하철_노선_경로탐색_요청(교대역, 인천역);
+		// Then
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+	}
+
+	@DisplayName("예외 상황 - 존재하지 않은 출발역이나 도착역을 조회 할 경우")
+	@Test
+	void exceptionToSearchPathOfNotExistedStation() {
+		// Given
+		StationResponse 홍대역 = new StationResponse(5L, "홍대역", LocalDateTime.now(), LocalDateTime.now());
+		// When
+		ExtractableResponse<Response> response = 지하철_노선_경로탐색_요청(교대역, 홍대역);
 		// Then
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
