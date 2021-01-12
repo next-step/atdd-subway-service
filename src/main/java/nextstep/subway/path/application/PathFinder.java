@@ -23,7 +23,7 @@ public class PathFinder {
     }
 
     private void buildGraph(List<Line> lines) {
-        graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         for (Line line : lines) {
             buildGraphVertex(line);
             buildGraphEdges(line);
@@ -40,8 +40,10 @@ public class PathFinder {
     private void buildGraphEdges(Line line) {
         List<Section> sections = line.getSections();
         for (Section section : sections) {
-            int distance = section.getDistance();
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), distance);
+            graph.setEdgeWeight(
+                    graph.addEdge(section.getUpStation(), section.getDownStation()),
+                    section.getDistance()
+            );
         }
     }
 
