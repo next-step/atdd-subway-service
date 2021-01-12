@@ -49,15 +49,24 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 		로그인_토큰_실패됨(emailFailResponse);
 	}
 
-	private void 로그인_토큰_실패됨(ExtractableResponse<Response> response) {
-		assertAll(
-			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value())
-		);
-	}
-
 	@DisplayName("Bearer Auth 유효하지 않은 토큰")
 	@Test
 	void myInfoWithWrongBearerAuth() {
+		// given
+		TokenResponse tokenResponse = 로그인_토큰_요청(EMAIL, PASSWORD).as(TokenResponse.class);
+
+		// then
+	}
+
+	public static ExtractableResponse<Response> 로그인_토큰_요청(String email, String password) {
+		return RestAssured
+			.given().log().all()
+			.auth().preemptive().basic(email, password)
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.body(new TokenRequest(email, password))
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.when().post("/login/token")
+			.then().log().all().extract();
 	}
 
 	private void 로그인_토큰_조회됨(ExtractableResponse<Response> response) {
@@ -67,12 +76,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 		);
 	}
 
-	private ExtractableResponse<Response> 로그인_토큰_요청(String email, String password) {
-		return RestAssured
-			.given().log().all()
-			.body(new TokenRequest(email, password))
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.when().post("/login/token")
-			.then().log().all().extract();
+	private void 로그인_토큰_실패됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 }
