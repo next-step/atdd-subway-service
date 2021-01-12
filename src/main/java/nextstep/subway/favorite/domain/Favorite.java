@@ -12,12 +12,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Getter
 @NoArgsConstructor
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"member_id", "source_station_id", "target_station_id"}))
 public class Favorite extends BaseEntity {
 
     @Id

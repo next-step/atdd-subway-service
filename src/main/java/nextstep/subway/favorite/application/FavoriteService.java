@@ -9,11 +9,13 @@ import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
