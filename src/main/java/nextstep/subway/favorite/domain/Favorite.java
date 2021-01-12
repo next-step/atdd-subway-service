@@ -12,12 +12,15 @@ public class Favorite {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne
+    @JoinColumn(name = "source_id")
     private Station source;
 
     @ManyToOne
+    @JoinColumn(name = "target_id")
     private Station target;
 
     protected Favorite() {

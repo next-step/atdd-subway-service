@@ -24,8 +24,8 @@ public class FavoriteController {
     public ResponseEntity createFavorite(@AuthenticationPrincipal LoginMember loginMember,
                                          @RequestBody FavoriteRequest request) {
 
-        FavoriteResponse favorite = favoriteService.createFavorite(loginMember.getId(), request);
-        return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
+        Long favoriteId = favoriteService.createFavorite(loginMember.getId(), request);
+        return ResponseEntity.created(URI.create("/favorites/" + favoriteId)).build();
     }
 
     @GetMapping("/favorites")

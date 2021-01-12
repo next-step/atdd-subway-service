@@ -4,8 +4,8 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import nextstep.subway.member.exception.NoRegisteredMember;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberService {
@@ -21,16 +21,15 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        return MemberResponse.of(member);
+        return MemberResponse.of(findMemberById(id));
     }
 
     public Member findMemberById(Long id) {
-        return memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        return memberRepository.findById(id).orElseThrow(NoRegisteredMember::new);
     }
 
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = findMemberById(id);
         member.update(param.toMember());
     }
 
