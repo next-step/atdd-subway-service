@@ -59,13 +59,13 @@ public class LineService {
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
+        Station upStation = stationService.findById(request.getUpStationId());
+        Station downStation = stationService.findById(request.getDownStationId());
         findLineById(lineId).addSection(upStation, downStation, request.getDistance());
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Station station = stationService.findStationById(stationId);
+        Station station = stationService.findById(stationId);
         findLineById(lineId).deleteStation(station);
     }
 

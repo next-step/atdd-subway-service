@@ -114,13 +114,13 @@ class LineServiceTest {
     }
 
     private void removeLineStation(Station station) {
-        when(stationService.findStationById(any())).thenReturn(station);
+        when(stationService.findById(any())).thenReturn(station);
         lineService.removeLineStation(1L, 1L);
     }
 
     private void addLineStation(Line line, Station upStation, Station downStation) {
         when(lineRepository.findById(any())).thenReturn(Optional.of(line));
-        when(stationService.findStationById(any())).thenReturn(upStation).thenReturn(downStation);
+        when(stationService.findById(any())).thenReturn(upStation).thenReturn(downStation);
         lineService.addLineStation(1L, new SectionRequest());
     }
 }
