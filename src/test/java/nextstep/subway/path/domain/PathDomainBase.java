@@ -4,16 +4,20 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.function.Supplier;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class PathDomainBase {
     protected static final int DEFAULT_DISTANCE = 10;
+    protected static final int LINE_CHARGE_900 = 900;
+    protected static final int LINE_CHARGE_500 = 500;
 
-    protected static Line 이호선 = new Line("2호선", "green");
+    protected static Line 이호선 = new Line("2호선", "green", 0);
     @Mock
     protected static Station 신도림;
     @Mock
@@ -23,7 +27,7 @@ public class PathDomainBase {
     @Mock
     protected static Station 당산;
 
-    protected static Line 구호선 = new Line("9호선", "brown");
+    protected static Line 구호선 = new Line("9호선", "brown", LINE_CHARGE_900);
     @Mock
     protected static Station 국회의사당;
     @Mock
@@ -33,7 +37,7 @@ public class PathDomainBase {
     @Mock
     protected static Station 노량진;
 
-    protected static Line 일호선 = new Line("1호선", "blue");
+    protected static Line 일호선 = new Line("1호선", "blue", LINE_CHARGE_500);
     @Mock
     protected static Station 영등포;
     @Mock
@@ -43,19 +47,24 @@ public class PathDomainBase {
 
     public PathDomainBase() {
         MockitoAnnotations.openMocks(this);
-        when(신도림.getId()).thenReturn(1L);
-        when(문래.getId()).thenReturn(2L);
-        when(영등포구청.getId()).thenReturn(3L);
-        when(당산.getId()).thenReturn(4L);
+        mockStation(신도림, 1L);
+        mockStation(문래, 2L);
+        mockStation(영등포구청, 3L);
+        mockStation(당산, 4L);
 
-        when(국회의사당.getId()).thenReturn(5L);
-        when(여의도.getId()).thenReturn(6L);
-        when(샛강.getId()).thenReturn(7L);
-        when(노량진.getId()).thenReturn(8L);
+        mockStation(국회의사당, 5L);
+        mockStation(여의도, 6L);
+        mockStation(샛강, 7L);
+        mockStation(노량진, 8L);
 
-        when(영등포.getId()).thenReturn(9L);
-        when(신길.getId()).thenReturn(10L);
-        when(대방.getId()).thenReturn(11L);
+        mockStation(영등포, 9L);
+        mockStation(신길, 10L);
+        mockStation(대방, 11L);
+    }
+
+    private void mockStation(Station station, long id) {
+        when(station.getId()).thenReturn(id);
+        when(station.equalsId(any())).thenCallRealMethod();
     }
 
     protected static <T> ArgumentSupplier<T> supply(Supplier<T> supplier) {

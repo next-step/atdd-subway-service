@@ -24,12 +24,6 @@ public class PaymentCalculator {
     }
 
     private enum DistanceCharge {
-        SHORT {
-            @Override
-            protected int calculate(int distance) {
-                return DEFAULT_CHARGE;
-            }
-        },
         MIDDLE(10, 5),
         LONG(50, 8)
         ;
@@ -37,10 +31,8 @@ public class PaymentCalculator {
         private static final int DEFAULT_DISTANCE = 10;
         private static final int CHARGE_PER_INTERVAL = 100;
 
-        private int threshold;
-        private int interval;
-
-        DistanceCharge(){}
+        private final int threshold;
+        private final int interval;
 
         DistanceCharge(int threshold, int interval) {
             this.threshold = threshold;
@@ -48,14 +40,13 @@ public class PaymentCalculator {
         }
 
         public static int calculateCharge(int distance) {
-            DistanceCharge distanceCharge = SHORT;
             if (LONG.checkDistance(distance)) {
-                distanceCharge = LONG;
+                return LONG.calculate(distance);
             }
             if (MIDDLE.checkDistance(distance)) {
-                distanceCharge = MIDDLE;
+                return MIDDLE.calculate(distance);
             }
-            return distanceCharge.calculate(distance);
+            return DEFAULT_CHARGE;
         }
 
         private boolean checkDistance(int distance) {

@@ -29,7 +29,7 @@ public class Station extends BaseEntity {
     }
 
     public boolean equalsId(Long id) {
-        return this.id.equals(id);
+        return getId().equals(id);
     }
 
     @Override
