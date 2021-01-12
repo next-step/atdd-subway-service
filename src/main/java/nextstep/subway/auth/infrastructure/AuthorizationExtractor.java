@@ -1,7 +1,8 @@
 package nextstep.subway.auth.infrastructure;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
+
+import javax.servlet.http.HttpServletRequest;
 
 public class AuthorizationExtractor {
     public static final String AUTHORIZATION = "Authorization";

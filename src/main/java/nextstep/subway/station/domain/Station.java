@@ -1,9 +1,16 @@
 package nextstep.subway.station.domain;
 
-import nextstep.subway.BaseEntity;
-
-import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import nextstep.subway.BaseEntity;
+import nextstep.subway.line.domain.Section;
 
 @Entity
 public class Station extends BaseEntity {
@@ -28,6 +35,10 @@ public class Station extends BaseEntity {
         return name;
     }
 
+    public boolean isExisted(List<Station> stations) {
+        return stations.stream().anyMatch(it -> it.equals(this));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -41,4 +52,5 @@ public class Station extends BaseEntity {
     public int hashCode() {
         return Objects.hash(id, name);
     }
+
 }

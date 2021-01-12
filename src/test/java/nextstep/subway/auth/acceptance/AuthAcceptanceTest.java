@@ -1,8 +1,9 @@
 package nextstep.subway.auth.acceptance;
 
-import nextstep.subway.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import nextstep.subway.AcceptanceTest;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
 
