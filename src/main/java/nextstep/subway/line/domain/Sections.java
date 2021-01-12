@@ -26,28 +26,28 @@ public class Sections {
 
 	public void updateUpStation(Station upStation, Station downStation, int distance) {
 		sections.stream()
-			.filter(it -> it.getUpStation() == upStation)
+			.filter(it -> it.isEqualUpStation(upStation))
 			.findFirst()
 			.ifPresent(it -> it.updateUpStation(downStation, distance));
 	}
 
 	public void updateDownStation(Station upStation, Station downStation, int distance) {
 		sections.stream()
-			.filter(it -> it.getDownStation() == downStation)
+			.filter(it -> it.isEqualDownStation(downStation))
 			.findFirst()
 			.ifPresent(it -> it.updateDownStation(upStation, distance));
 	}
 
 	public Section getSectionEqualUpStation(Station station) {
 		return sections.stream()
-			.filter(it -> it.getUpStation() == station)
+			.filter(it -> it.isEqualUpStation(station))
 			.findFirst()
 			.orElse(null);
 	}
 
 	public Section getSectionEqualDownStation(Station station) {
 		return sections.stream()
-			.filter(it -> it.getDownStation() == station)
+			.filter(it -> it.isEqualDownStation(station))
 			.findFirst()
 			.orElse(null);
 	}
