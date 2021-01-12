@@ -149,5 +149,9 @@ public class Sections {
     private boolean isStationExisted(Station station, List<Station> stations) {
         return stations.stream().anyMatch(it -> it == station);
     }
+
+    public List<Section> getSections() {
+        return sections;
+    }
 }
 

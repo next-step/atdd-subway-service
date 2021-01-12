@@ -2,15 +2,20 @@ package nextstep.subway.line.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,6 +41,15 @@ public class LineService {
         return persistLines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public List<Section> getAllSections() {
+        List<Line> lines = lineRepository.findAll();
+        List<Section> results = new ArrayList<>();
+        lines.stream()
+                .map(Line::getSections)
+                .forEach(results::addAll);
+        return results;
     }
 
     public Line findLineById(Long id) {
@@ -71,4 +85,13 @@ public class LineService {
         line.removeLineStation(station);
     }
 
+    public Set<Station> getAllStations() {
+        List<Section> sections = getAllSections();
+        Set<Station> stations = new HashSet<>();
+        sections.forEach(it -> {
+                stations.add(it.getUpStation());
+                stations.add(it.getDownStation());
+        });
+        return stations;
+    }
 }
