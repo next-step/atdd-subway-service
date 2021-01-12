@@ -92,11 +92,15 @@ public class Sections {
 
 	private Station findUpStation() {
 		Station downStation = getFirstUpStation();
-		Section nextLineStation = sections.stream()
-			.filter(section -> isSectionsContainDownStation(downStation))
+		return findUpStationSectionContainDownStation(downStation);
+	}
+
+	private Station findUpStationSectionContainDownStation(Station station) {
+		return sections.stream()
+			.filter(section -> isSectionsContainDownStation(station))
 			.findFirst()
+			.map(Section::getUpStation)
 			.orElseThrow(() -> new RuntimeException("지하철역 정보가 올바르지 않습니다."));
-		return nextLineStation.getUpStation();
 	}
 
 	private boolean isSectionsContainDownStation(Station station) {
