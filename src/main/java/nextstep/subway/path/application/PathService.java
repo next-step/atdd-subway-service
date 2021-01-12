@@ -1,13 +1,11 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.exception.NotFoundStationException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.domain.PathResult;
-import nextstep.subway.path.domain.PathSelector;
-import nextstep.subway.path.domain.PaymentCalculator;
-import nextstep.subway.path.domain.ThroughLineSelector;
+import nextstep.subway.path.domain.*;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -30,15 +28,15 @@ public class PathService {
         this.lineRepository = lineRepository;
     }
 
-    public PathResponse findShortestPath(Long source, Long target) {
+    public PathResponse findShortestPath(LoginMember loginMember, Long source, Long target) {
         PathResult result = selectPath(source, target);
 
         List<Long> stationIds = result.getStationIds();
         List<StationResponse> shortestStations = toStationResponses(stationIds);
         int totalDistance = result.getTotalDistance();
         int payment = calculatePayment(stationIds, totalDistance);
-
-        return new PathResponse(shortestStations, totalDistance, payment);
+        Discount discount = Discount.select(loginMember.getAge());
+        return new PathResponse(shortestStations, totalDistance, discount.accept(payment));
     }
 
     private int calculatePayment(List<Long> stationIds, int distance) {
