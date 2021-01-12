@@ -92,7 +92,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("최단거리 역 목록 조회")
     @ParameterizedTest
     @MethodSource
-    void selectPath(ArgumentSupplier<StationResponse> sourceSupplier, ArgumentSupplier<StationResponse> targetSupplier, ArgumentSupplier<StationResponse[]> expectedSupplier) {
+    void selectPath(ArgumentSupplier<StationResponse> sourceSupplier, ArgumentSupplier<StationResponse> targetSupplier, ArgumentSupplier<StationResponse[]> expectedSupplier, int expectedPayment) {
         StationResponse source = sourceSupplier.get();
         StationResponse target = targetSupplier.get();
         StationResponse[] expected = expectedSupplier.get();
@@ -103,13 +103,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertThat(pathResponse.getStations()).containsExactly(expected);
         assertThat(pathResponse.getDistance()).isEqualTo((pathResponse.getStations().size() - 1) * DEFAULT_DISTANCE);
+        assertThat(pathResponse.getPayment()).isEqualTo(expectedPayment);
     }
 
     private static Stream<Arguments> selectPath() {
         return Stream.of(
-                Arguments.of(supply(()->신도림), supply(() ->당산), supply(() -> new StationResponse[]{신도림, 문래, 영등포구청, 당산})),
-                Arguments.of(supply(()->영등포구청), supply(() ->노량진), supply(() -> new StationResponse[]{영등포구청, 당산, 국회의사당, 여의도, 샛강, 노량진})),
-                Arguments.of(supply(()->문래), supply(() ->노량진), supply(() -> new StationResponse[]{문래, 신도림, 영등포, 신길, 대방, 노량진}))
+                Arguments.of(supply(()->신도림), supply(() ->당산), supply(() -> new StationResponse[]{신도림, 문래, 영등포구청, 당산}), 1_250 + 400),
+                Arguments.of(supply(()->영등포구청), supply(() ->노량진), supply(() -> new StationResponse[]{영등포구청, 당산, 국회의사당, 여의도, 샛강, 노량진}), 1_250 + 900 + 1_000),
+                Arguments.of(supply(()->문래), supply(() ->노량진), supply(() -> new StationResponse[]{문래, 신도림, 영등포, 신길, 대방, 노량진}), 1_250 + 500 + 1_000)
         );
     }
 

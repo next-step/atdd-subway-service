@@ -7,6 +7,7 @@ import java.util.List;
 public class PathResponse {
     private List<StationResponse> stations;
     private int distance;
+    private int payment;
 
     public PathResponse(List<StationResponse> stations, int distance) {
         this.stations = stations;
@@ -19,5 +20,9 @@ public class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getPayment() {
+        return payment;
     }
 }
