@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 
 import static java.util.Collections.*;
@@ -33,17 +34,19 @@ public class PathFinder {
         }
     }
 
-    public List<Station> findPath(Station source, Station target) {
+    public PathResponse findPath(Station source, Station target) {
         List<Station> result = emptyList();
+        double weight = 0;
         try {
             result = dijkstraShortestPath.getPath(source, target).getVertexList();
+            weight = dijkstraShortestPath.getPath(source, target).getWeight();
             checkSourceAndTarget(result.size());
         } catch (IllegalArgumentException e) {
             throw new NoSuchElementException("노선에 존재하지 않는 역으로 경로를 찾을 수 없습니다");
         } catch (NullPointerException e) {
             throw new IllegalStateException("도달할 수 없는 경로를 조회하셨습니다");
         }
-        return result;
+        return PathResponse.of(result, weight);
     }
 
     private void checkSourceAndTarget(int size) {

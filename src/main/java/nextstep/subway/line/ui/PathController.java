@@ -2,11 +2,9 @@ package nextstep.subway.line.ui;
 
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.PathFinder;
+import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
-
-import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,11 +26,11 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<List<StationResponse>> findPath(@RequestParam("source") Long sourceId, @RequestParam("target") Long targetId) {
+    public ResponseEntity<PathResponse> findPath(@RequestParam("source") Long sourceId, @RequestParam("target") Long targetId) {
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
         PathFinder pathFinder = new PathFinder(lineService.findAllLines());
-        return ResponseEntity.ok(StationResponse.ofList(pathFinder.findPath(source, target)));
+        return ResponseEntity.ok(pathFinder.findPath(source, target));
     }
 
     @ExceptionHandler(Exception.class)
