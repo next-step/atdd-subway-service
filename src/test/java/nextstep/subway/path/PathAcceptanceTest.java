@@ -8,6 +8,7 @@ import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,8 +50,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         인천역 = StationAcceptanceTest.지하철역_등록되어_있음("인천역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 1000L);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 1000L);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 500L);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-green-200", 교대역.getId(), 강남역.getId(), 1000L);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-yellow-300", 교대역.getId(), 양재역.getId(), 500L);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 300L);
     }
@@ -66,6 +67,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.as(PathResponse.class).getStations()).hasSize(3),
                 () -> assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(500L)
         );
+    }
+
+    @DisplayName("예외 상황 - 출발역과 도착역이 같은 경우")
+    @Test
+    void exceptionToSearchPathOfSameStation() {
+        // When
+        ExtractableResponse<Response> response = 지하철_노선_경로탐색_요청(교대역, 교대역);
+
+        // Then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private ExtractableResponse<Response> 지하철_노선_경로탐색_요청(StationResponse source, StationResponse target) {

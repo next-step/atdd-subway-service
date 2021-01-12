@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.common.exception.CustomException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,9 +8,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("경로 찾기에 관련한 기능")
@@ -21,6 +22,7 @@ class PathFinderTest {
     private Line 이호선;
     private Line 신분당선;
     private Line 삼호선;
+    private PathFinder pathFinder;
 
     @BeforeEach
     void beforeEach() {
@@ -32,6 +34,8 @@ class PathFinderTest {
         삼호선 = new Line("3호선", "bg-yellow-200", 교대역, 양재역, 500L);
         삼호선.addSection(교대역, 남부터미널, 300L);
         신분당선 = new Line("신분당선", "bg-red-200", 강남역, 양재역, 1000L);
+
+        pathFinder = new PathFinder(Arrays.asList(이호선, 삼호선, 신분당선));
     }
 
     @DisplayName("PathFinder 객체 생성")
@@ -46,9 +50,6 @@ class PathFinderTest {
     @DisplayName("가장 짧은 거리인 경로를 찾는다")
     @Test
     void findShortestPath() {
-        // Given
-        List<Line> lines = Arrays.asList(이호선, 삼호선, 신분당선);
-        PathFinder pathFinder = new PathFinder(lines);
         // When
         pathFinder.findShortestPath(교대역, 양재역);
         // Then
@@ -60,5 +61,14 @@ class PathFinderTest {
                         .containsExactly("교대역", "남부터미널", "양재역"),
                 () -> assertThat(pathFinder.getDistanceInShortestPath()).isEqualTo(500L)
         );
+    }
+
+    @DisplayName("예외 상황 - 출발역과 도착역이 같은 경우")
+    @Test
+    void exceptionToFindShortestPathOfSameSourceAndTarget() {
+        // When & then
+        assertThatThrownBy(() -> pathFinder.findShortestPath(교대역, 교대역))
+                .isInstanceOf(CustomException.class)
+                .hasMessage("출발역과 도착역이 동일합니다.");
     }
 }

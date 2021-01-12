@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.common.exception.CustomException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathRequest;
@@ -17,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -68,5 +70,17 @@ class PathServiceTest {
                         .containsExactly("교대역", "남부터미널", "양재역"),
                 () -> assertThat(shortestPath.getDistance()).isEqualTo(500L)
         );
+    }
+
+    @DisplayName("예외 상황 - 출발역과 도착역이 같은 경우")
+    @Test
+    void exceptionToFindShortestPathOfSameSourceAndTarget() {
+        // Given
+        given(lineService.findAllLines()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
+        given(stationService.findById(any())).willReturn(교대역).willReturn(교대역);
+        // When & Then
+        assertThatThrownBy(() -> pathService.findPath(new PathRequest(교대역.getId(), 교대역.getId())))
+                .isInstanceOf(CustomException.class)
+                .hasMessage("출발역과 도착역이 동일합니다.");
     }
 }

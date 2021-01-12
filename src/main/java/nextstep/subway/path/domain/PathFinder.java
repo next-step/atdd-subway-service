@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.common.exception.CustomException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -24,6 +25,7 @@ public class PathFinder {
     }
 
     public void findShortestPath(Station source, Station target) {
+        validateStation(source, target);
         this.resultPath = path.getPath(source, target);
     }
 
@@ -62,5 +64,11 @@ public class PathFinder {
 
     private DefaultWeightedEdge createEdge(nextstep.subway.line.domain.Section section) {
         return graph.addEdge(section.getUpStation(), section.getDownStation());
+    }
+
+    private void validateStation(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new CustomException("출발역과 도착역이 동일합니다.");
+        }
     }
 }
