@@ -67,7 +67,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
-        MemberRequest memberRequest = new MemberRequest(email, password, age);
+        MemberRequest memberRequest = MemberRequest.builder()
+                .email(email)
+                .password(password)
+                .age(age)
+                .build();
 
         return RestAssured
                 .given().log().all()
@@ -91,7 +95,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
         String uri = response.header("Location");
-        MemberRequest memberRequest = new MemberRequest(email, password, age);
+        MemberRequest memberRequest = MemberRequest.builder()
+                .email(email)
+                .password(password)
+                .age(age)
+                .build();
 
         return RestAssured
                 .given().log().all()
@@ -131,7 +139,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static String 회원_로그인_요청(String email, String password) {
-        TokenRequest tokenRequest = new TokenRequest(email, password);
+        TokenRequest tokenRequest = TokenRequest.builder()
+                .email(email)
+                .password(password)
+                .build();
 
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
@@ -161,7 +172,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 내_정보_수정_요청(String accessToken, String newEmail, String newPassword, int newAge) {
-        MemberRequest memberRequest = new MemberRequest(newEmail, newPassword, newAge);
+        MemberRequest memberRequest = MemberRequest.builder()
+                .email(newEmail)
+                .password(newPassword)
+                .age(newAge)
+                .build();
 
         return RestAssured
                 .given().log().all()
