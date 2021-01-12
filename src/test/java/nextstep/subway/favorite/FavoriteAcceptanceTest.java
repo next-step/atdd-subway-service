@@ -7,6 +7,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.favorite.dto.FavoriteReuqest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
@@ -62,13 +63,27 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> listResponse = 즐겨찾기_목록조회_요청(accessToken);
         // then
-        즐겨찾기_목록조회_됨(listResponse);
+        즐겨찾기_목록조회_됨(listResponse, 2);
 
         // when
         Long createdId = Long.parseLong(createResponse2.header("Location").split("/")[2]);
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, createdId);
         // then
         즐겨찾기_삭제_됨(deleteResponse);
+    }
+
+    @DisplayName("즐겨찾기 추가 예외 -출발과 도착역이 같으면 즐겨찾기를 추가할 수 없다.")
+    @Test
+    void create_exception() {
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, 강남역.getId(), 강남역.getId());
+
+        // then
+        요청_실패_됨(response);
+    }
+
+    private void 요청_실패_됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, Long source, Long target) {
@@ -106,8 +121,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(createResponse1.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    private void 즐겨찾기_목록조회_됨(ExtractableResponse<Response> listResponse) {
+    private void 즐겨찾기_목록조회_됨(ExtractableResponse<Response> listResponse, int size) {
         assertThat(listResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(listResponse.jsonPath().getList(".", FavoriteResponse.class)).hasSize(size);
     }
 
     private void 즐겨찾기_삭제_됨(ExtractableResponse<Response> deleteResponse) {
