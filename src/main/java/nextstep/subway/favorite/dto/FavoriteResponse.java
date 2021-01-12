@@ -6,9 +6,9 @@ import nextstep.subway.station.dto.StationResponse;
 
 @AllArgsConstructor
 public class FavoriteResponse {
-    private Long id;
-    private StationResponse source;
-    private StationResponse target;
+    private final Long id;
+    private final StationResponse source;
+    private final StationResponse target;
 
     public Long getId() {
         return id;

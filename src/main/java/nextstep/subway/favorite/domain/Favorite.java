@@ -28,15 +28,15 @@ public class Favorite extends BaseEntity {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "source_station_id")
+    @JoinColumn(name = "source_station_id", nullable = false)
     private Station sourceStation;
 
     @ManyToOne
-    @JoinColumn(name = "target_station_id")
+    @JoinColumn(name = "target_station_id", nullable = false)
     private Station targetStation;
 
     public Favorite(Member member, Station sourceStation, Station targetStation) {
