@@ -71,6 +71,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성_실패됨(createResponse);
     }
 
+    @DisplayName("기존에 존재하는 즐겨찾기 항목으로 즐겨찾기를 등록한다")
+    @Test
+    void createFavoriteWithDuplicateStations() {
+        // given
+        즐겨찾기_생성을_요청(accessToken, 강남역, 양재역);
+        // when
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(accessToken, 강남역, 양재역);
+        // then
+        즐겨찾기_생성_실패됨(createResponse);
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(String accessToken, StationResponse source, StationResponse target) {
         FavoriteRequest favoriteRequest = new FavoriteRequest(source.getId(), target.getId());
 
