@@ -1,6 +1,9 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.exception.NotFoundException;
+import nextstep.subway.fare.Fare;
+import nextstep.subway.fare.LineFare;
+import nextstep.subway.fare.Passenger;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.PathFinder;
@@ -26,7 +29,7 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathFinderResponse findShortestPath(final long departureId, final long arrivalId) {
+    public PathFinderResponse findShortestPath(final Passenger passenger, final long departureId, final long arrivalId) {
         final Station departureStation = stationRepository.findById(departureId).orElseThrow(NotFoundException::new);
         final Station arrivalStation = stationRepository.findById(arrivalId).orElseThrow(NotFoundException::new);
 
@@ -36,6 +39,36 @@ public class PathService {
         final PathFinder pathFinder = PathFinder.of(allSections);
         final GraphPath<Station, DefaultWeightedEdge> shortestPath = pathFinder.findShortestPath(departureStation, arrivalStation);
 
-        return PathFinderResponse.of(shortestPath);
+        final Fare fare = getFare(passenger, allSections, shortestPath);
+
+        return PathFinderResponse.of(shortestPath, fare.getFare());
+    }
+
+    private Fare getFare(final Passenger passenger, final List<Section> allSections, final GraphPath<Station, DefaultWeightedEdge> shortestPath) {
+        final int travelDistance = (int) shortestPath.getWeight();
+        final List<Station> stations = shortestPath.getVertexList();
+
+        final int lineFare = LineFare.calculateLineFare(travelDistance).getFare();
+        final int highestFareByLineFare = findHighestFareByLine(allSections, stations).getFare();
+
+        final Fare finalFare = Fare.createBaseFare()
+            .plus(lineFare)
+            .plus(highestFareByLineFare);
+
+        return passenger.discountByPassengerType(finalFare);
+    }
+
+    private Fare findHighestFareByLine(final List<Section> sections, final List<Station> stations) {
+        final List<Section> foundSections = sections.stream()
+            .filter(section -> section.findMatchingSection(stations))
+            .collect(Collectors.toList());
+
+        final int maxFare = foundSections.stream()
+            .map(Section::getAdditionalFareLine)
+            .mapToInt(fare -> fare)
+            .max()
+            .orElseThrow(NotFoundException::new);
+
+        return Fare.of(maxFare);
     }
 }

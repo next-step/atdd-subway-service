@@ -1,6 +1,7 @@
 package nextstep.subway.path.dto;
 
 import lombok.NoArgsConstructor;
+import nextstep.subway.fare.Fare;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.jgrapht.GraphPath;
@@ -15,17 +16,19 @@ import static java.util.stream.Collectors.toList;
 public class PathFinderResponse {
     private List<StationResponse> stations;
     private double distance;
+    private int fare;
 
-    private PathFinderResponse(final GraphPath<Station, DefaultWeightedEdge> shortestPath) {
+    private PathFinderResponse(final GraphPath<Station, DefaultWeightedEdge> shortestPath, final int fare) {
         distance = shortestPath.getWeight();
         stations = shortestPath.getVertexList()
             .stream()
             .map(StationResponse::of)
             .collect(toList());
+        this.fare = fare;
     }
 
-    public static PathFinderResponse of(final GraphPath<Station, DefaultWeightedEdge> shortestPath) {
-        return new PathFinderResponse(shortestPath);
+    public static PathFinderResponse of(final GraphPath<Station, DefaultWeightedEdge> shortestPath, final int fare) {
+        return new PathFinderResponse(shortestPath, fare);
     }
 
     public List<StationResponse> getStations() {
@@ -34,5 +37,9 @@ public class PathFinderResponse {
 
     public double getDistance() {
         return distance;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }
