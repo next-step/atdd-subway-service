@@ -46,8 +46,6 @@ public class PathServiceTest {
     private StationService stationService;
     @Mock
     private LineRepository lineRepository;
-    @Mock
-    private MemberService memberService;
 
     @BeforeEach
     public void setUp() {
@@ -67,7 +65,7 @@ public class PathServiceTest {
         teenager = new Member(1L, "email@email.com", "password", 15);
         child = new Member(2L, "email@email.com", "password", 7);
         member = new Member(3L, "email@email.com", "password", 20);
-        pathService = new PathService(stationService, lineRepository, memberService);
+        pathService = new PathService(stationService, lineRepository);
     }
 
     @Test
@@ -78,7 +76,6 @@ public class PathServiceTest {
         mockStation(yangjae);
         mockStation(gyodae);
         mockStation(hongdae);
-        mockMember(member);
 
         PathResponse pathResponse = findPath(member, gangnam, hongdae);
 
@@ -93,9 +90,6 @@ public class PathServiceTest {
         mockStation(yangjae);
         mockStation(gyodae);
         mockStation(hongdae);
-        mockMember(teenager);
-        mockMember(child);
-        mockMember(member);
 
         PathResponse pathResponse1 = findPath(teenager, gangnam, hongdae);
         PathResponse pathResponse2 = findPath(child, gangnam, hongdae);
@@ -110,7 +104,7 @@ public class PathServiceTest {
     @DisplayName("경로찾기 예외처리: 동일한 역을 조회했을 경우")
     void findSameStationsPath() {
         assertThatThrownBy(() -> {
-            pathService.findPathByIds(member.getId(), gangnam.getId(), gangnam.getId());
+            pathService.findPathByIds(member.getAge(), gangnam.getId(), gangnam.getId());
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -118,7 +112,7 @@ public class PathServiceTest {
     @DisplayName("경로찾기 예외처리: 연결되지 않은 역을 조회했을 경우")
     void findNotConnectedPath() {
         assertThatThrownBy(() -> {
-            pathService.findPathByIds(member.getId(), gangnam.getId(), gongduck.getId());
+            pathService.findPathByIds(member.getAge(), gangnam.getId(), gongduck.getId());
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -126,7 +120,7 @@ public class PathServiceTest {
     @DisplayName("경로찾기 예외처리: 존재하지 않은 역을 조회했을 경우")
     void findNotExistStationPath() {
         assertThatThrownBy(() -> {
-            pathService.findPathByIds(member.getId(),20L, gongduck.getId());
+            pathService.findPathByIds(member.getAge(),20L, gongduck.getId());
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -170,7 +164,7 @@ public class PathServiceTest {
     }
 
     private PathResponse findPath(Member member, Station source, Station target) {
-        return pathService.findPathByIds(member.getId(), source.getId(), target.getId());
+        return pathService.findPathByIds(member.getAge(), source.getId(), target.getId());
     }
 
     private void mockLine(List<Line> lines) {
@@ -180,9 +174,4 @@ public class PathServiceTest {
     private void mockStation(Station station) {
         when(stationService.findStationById(station.getId())).thenReturn(station);
     }
-
-    private void mockMember(Member member) {
-        when(memberService.getMember(member.getId())).thenReturn(member);
-    }
-
 }

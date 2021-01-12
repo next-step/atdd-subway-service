@@ -1,14 +1,25 @@
 package nextstep.subway.path.domain;
 
-public class Fare {
-    private final long INITIAL_FEE = 1250;
-    private final Integer TEENAGER_START = 13;
-    private final Integer TEENAGER_END = 19;
-    private final Integer CHILDHOOD_START = 6;
-    private long fare;
+import nextstep.subway.line.domain.Line;
 
-    public Fare() {
+import java.util.List;
+
+public class Fare {
+    private static final long INITIAL_FEE = 1250;
+    private long fare;
+    private static long additionalFare = 0L;
+
+    private Fare() {
         this.fare = INITIAL_FEE;
+    }
+    
+    public static Fare initialFare(List<Line> lines) {
+        Fare fare = new Fare();
+        lines.forEach(line -> 
+                additionalFare = line.getAdditionalFare() > additionalFare ?
+                        line.getAdditionalFare() : additionalFare
+        );
+        return fare;
     }
 
     public long getFare() {
@@ -20,11 +31,25 @@ public class Fare {
     }
 
     public void discountPerAge(Integer age) {
-        if(TEENAGER_START <= age && age < TEENAGER_END) {
+        if(Passenger.TEENAGER.equals(Passenger.checkAge(age))) {
             fare = (long) fare - ((fare - 350) * 20 / 100);
         }
-        if(CHILDHOOD_START <= age && age < TEENAGER_START) {
+        if(Passenger.CHILD.equals(Passenger.checkAge(age))) {
             fare = (long) fare - ((fare - 350) * 50 / 100);
         }
+    }
+    
+    public void calculateFare(double distance) {
+        addFee(additionalFare);
+        if(distance - 10 > 0) {
+            addFee(excessFare((int) distance - 10));
+        }
+    }
+
+    private long excessFare(int distance) {
+        if(distance > 40) {
+            return (long) ((Math.ceil((distance - 1) / 8) + 1) * 100);
+        }
+        return (long) ((Math.ceil((distance - 1) / 5) + 1) * 100);
     }
 }
