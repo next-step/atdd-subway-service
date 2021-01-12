@@ -1,8 +1,8 @@
 package nextstep.subway.favorite.ui;
 
 import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.auth.domain.OptionalLoginMember;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.application.FavoriteValidationException;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -25,21 +25,21 @@ public class FavoriteController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
-		return ResponseEntity.ok(favoriteService.getFavorites(loginMember));
+	public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal OptionalLoginMember loginMember) {
+		return ResponseEntity.ok(favoriteService.getFavorites(loginMember.orElseAuthenticationThrow()));
 	}
 
 	@PostMapping
-	public ResponseEntity postFavorites(@AuthenticationPrincipal LoginMember loginMember,
+	public ResponseEntity postFavorites(@AuthenticationPrincipal OptionalLoginMember loginMember,
 	                                    @RequestBody FavoriteRequest favoriteRequest) {
-		FavoriteResponse favoriteResponse = favoriteService.createFavorite(loginMember, favoriteRequest);
+		FavoriteResponse favoriteResponse = favoriteService.createFavorite(loginMember.orElseAuthenticationThrow(), favoriteRequest);
 		return ResponseEntity.created(URI.create("/favorites/" + favoriteResponse.getId())).build();
 	}
 
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity deleteFavorite(@AuthenticationPrincipal LoginMember loginMember,
+	public ResponseEntity deleteFavorite(@AuthenticationPrincipal OptionalLoginMember loginMember,
 	                                     @PathVariable(value = "id") Long favoriteId) {
-		favoriteService.deleteFavoriteById(loginMember, favoriteId);
+		favoriteService.deleteFavoriteById(loginMember.orElseAuthenticationThrow(), favoriteId);
 		return ResponseEntity.noContent().build();
 	}
 

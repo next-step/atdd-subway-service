@@ -1,52 +1,75 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.application.PathCalculateException;
+import nextstep.subway.common.Fare;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
+import org.jgrapht.GraphPath;
 
 import java.util.List;
-import java.util.Objects;
 
 public class Path {
 
-	private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+	private static final Fare DEFAULT_FARE = new Fare(1250);
+	private static final Fare FARE_PER_DISTANCE = new Fare(100);
+	private static final Fare FARE_FREE = new Fare(0);
+	private static final Distance DISTANCE_50KM = new Distance(50);
+	private static final Distance DISTANCE_10KM = new Distance(10);
+	private static final Distance DISTANCE_8KM = new Distance(8);
+	private static final Distance DISTANCE_5KM = new Distance(5);
+	private static final Distance DISTANCE_ZERO = new Distance(0);
 
-	public Path(List<Line> lines) {
-		this.graph = initGraph(lines);
+	private final GraphPath<Station, LineEdge> path;
+
+	public Path(GraphPath<Station, LineEdge> path) {
+		this.path = path;
 	}
 
-	private WeightedMultigraph<Station, DefaultWeightedEdge> initGraph(List<Line> lines) {
-		WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-		for (Line line : lines) {
-			addLine(graph, line);
+	public List<Station> getStations() {
+		return path.getVertexList();
+	}
+
+	public Fare getFare(int age) {
+		return getFare(DiscountPolicy.find(age));
+	}
+
+	public Fare getFare() {
+		return getFare(DiscountPolicy.STANDARD);
+	}
+
+	private Fare getFare(DiscountPolicy discountPolicy) {
+		final Fare allFare = DEFAULT_FARE.plus(getDistanceFare())
+				.plus(getMaxLineFare());
+		final Fare discount = discountPolicy.calculateDiscount(allFare);
+		return allFare.minus(discount);
+	}
+
+	private Fare getDistanceFare() {
+		// Note: 까다로운 조건부터 분기해야 한다.
+		Distance pathDistance = getDistance();
+		if (pathDistance.isGreaterThan(DISTANCE_50KM)) {
+			int multiplier = pathDistance.floorDiv(DISTANCE_8KM);
+			return FARE_PER_DISTANCE.multiply(multiplier);
 		}
-		return graph;
-	}
 
-	private void addLine(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
-		line.getSections().forEachRemaining(section -> {
-			graph.addVertex(section.getUpStation());
-			graph.addVertex(section.getDownStation());
-			DefaultWeightedEdge edge = graph.addEdge(section.getUpStation(), section.getDownStation());
-			graph.setEdgeWeight(edge, section.getDistance().getWeight());
-		});
-	}
-
-	public List<Station> calculate(Station source, Station target) {
-		validateCalculate(source, target);
-		try {
-			return new DijkstraShortestPath<>(graph).getPath(source, target).getVertexList();
-		} catch (IllegalArgumentException e) {
-			throw new PathCalculateException("경로에 포함되어 있지 않은 역입니다.");
+		if (pathDistance.isGreaterThan(DISTANCE_10KM)) {
+			int multiplier = pathDistance.floorDiv(DISTANCE_5KM);
+			return FARE_PER_DISTANCE.multiply(multiplier);
 		}
+
+		return FARE_FREE;
 	}
 
-	private void validateCalculate(Station source, Station target) {
-		if (Objects.equals(source, target)) {
-			throw new PathCalculateException("출발지와 도착지가 같습니다.");
-		}
+	private Fare getMaxLineFare() {
+		return path.getEdgeList().stream()
+				.map(LineEdge::getLineFare)
+				.max(Fare::compareTo)
+				.orElse(FARE_FREE);
+	}
+
+	public Distance getDistance() {
+		return path.getEdgeList().stream()
+				.map(LineEdge::getDistance)
+				.reduce(Distance::plus)
+				.orElse(DISTANCE_ZERO);
 	}
 }

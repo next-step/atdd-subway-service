@@ -1,5 +1,7 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.auth.domain.OptionalLoginMember;
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.path.application.PathCalculateException;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathRequest;
@@ -19,8 +21,9 @@ public class PathController {
 	}
 
 	@GetMapping("")
-	public ResponseEntity<PathResponse> showPath(@ModelAttribute PathRequest pathRequest) {
-		return ResponseEntity.ok(pathService.calculatePath(pathRequest));
+	public ResponseEntity<PathResponse> showPath(@AuthenticationPrincipal OptionalLoginMember loginMember,
+	                                             @ModelAttribute PathRequest pathRequest) {
+		return ResponseEntity.ok(pathService.calculatePath(loginMember, pathRequest));
 	}
 
 	@ExceptionHandler(PathCalculateException.class)

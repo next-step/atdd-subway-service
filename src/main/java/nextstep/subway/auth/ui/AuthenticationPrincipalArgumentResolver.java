@@ -1,6 +1,8 @@
 package nextstep.subway.auth.ui;
 
 import nextstep.subway.auth.application.AuthService;
+import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.auth.domain.OptionalLoginMember;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
 import org.springframework.core.MethodParameter;
@@ -24,8 +26,12 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+    public OptionalLoginMember resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
-        return authService.findMemberByToken(credentials);
+        try {
+            return new OptionalLoginMember(authService.findMemberByToken(credentials));
+        } catch (AuthorizationException e) {
+            return OptionalLoginMember.notFound();
+        }
     }
 }

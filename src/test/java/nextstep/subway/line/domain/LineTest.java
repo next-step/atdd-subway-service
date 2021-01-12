@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.line.application.ValidationException;
+import nextstep.subway.common.ValidationException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ class LineTest {
 		잠실역 = new Station("잠실역");
 		종합운동장역 = new Station("종합운동장역");
 		선릉역 = new Station("선릉역");
-		이호선 = new Line("이호선", "green", 삼성역, 잠실역, 50);
+		이호선 = new Line("이호선", "green", 삼성역, 잠실역, 50, 0);
 	}
 
 	@Test

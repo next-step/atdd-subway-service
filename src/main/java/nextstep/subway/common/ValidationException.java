@@ -1,4 +1,4 @@
-package nextstep.subway.line.application;
+package nextstep.subway.common;
 
 public class ValidationException extends RuntimeException {
 	public ValidationException() {

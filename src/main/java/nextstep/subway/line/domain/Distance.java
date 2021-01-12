@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.line.application.ValidationException;
+import nextstep.subway.common.ValidationException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -53,5 +53,17 @@ public class Distance {
 
 	public double getWeight() {
 		return this.distance;
+	}
+
+	public int floorDiv(Distance distance) {
+		return Math.floorDiv(this.distance, distance.distance);
+	}
+
+	public boolean isGreaterThan(Distance distance) {
+		return this.distance > distance.distance;
+	}
+
+	public int getValue() {
+		return distance;
 	}
 }

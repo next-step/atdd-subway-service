@@ -35,8 +35,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
+        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10, 0);
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15, 0);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -57,6 +57,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+
+        // then
+        지하철_노선_생성_실패됨(response);
+    }
+
+    @DisplayName("이용금액이 마이너스인 노선을 생성 요청하면 실패한다.")
+    @Test
+    void createLineWithWrongFare() {
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(new LineRequest("고대분당선", "붉은색", 강남역.getId(), 광교역.getId(),
+                10, -500));
 
         // then
         지하철_노선_생성_실패됨(response);

@@ -1,7 +1,10 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.OptionalLoginMember;
+import nextstep.subway.common.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.LineMap;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathCalculateRequest;
 import nextstep.subway.path.dto.PathResponse;
@@ -25,7 +28,14 @@ public class PathService {
 		this.stationRepository = stationRepository;
 	}
 
-	public PathResponse calculatePath(PathCalculateRequest pathCalculateRequest) {
+	public PathResponse calculatePath(OptionalLoginMember loginMember,
+	                                  PathCalculateRequest pathCalculateRequest) {
+		Path path = getPath(pathCalculateRequest);
+		Fare fare = loginMember.isPresent() ? path.getFare(loginMember.orElseAuthenticationThrow().getAge()) : path.getFare();
+		return PathResponse.of(path.getStations(), path.getDistance(), fare);
+	}
+
+	private Path getPath(PathCalculateRequest pathCalculateRequest) {
 		List<Station> findResult = stationRepository.findAllByIdIn(
 				Arrays.asList(pathCalculateRequest.getSourceStationId(), pathCalculateRequest.getTargetStationId()));
 
@@ -39,7 +49,6 @@ public class PathService {
 				.orElseThrow(() -> new PathCalculateException("존재하지 않는 도착역입니다."));
 
 		List<Line> allLines = lineRepository.findAll();
-		Path path = new Path(allLines);
-		return PathResponse.of(path.calculate(source, target));
+		return new LineMap(allLines).calculate(source, target);
 	}
 }
