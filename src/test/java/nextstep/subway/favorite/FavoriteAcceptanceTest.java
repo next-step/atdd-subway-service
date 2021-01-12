@@ -88,7 +88,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_조회됨(findResponse, 1);
     }
 
-
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, FavoriteRequest favoriteRequest) {
         return RestAssured
                 .given().log().all()
