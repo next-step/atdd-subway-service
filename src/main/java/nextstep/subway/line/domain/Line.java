@@ -64,7 +64,7 @@ public class Line extends BaseEntity {
                 .collect(Collectors.toList());
     }
 
-    private List<Station> getStations() {
+    public List<Station> getStations() {
         if (this.getSections().isEmpty()) {
             return Arrays.asList();
         }
