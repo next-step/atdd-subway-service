@@ -29,7 +29,7 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials, boolean skipException) {
         if (isSkipRequest(credentials, skipException)) {
-            return null;
+            return new LoginMember();
         }
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException();

@@ -36,7 +36,7 @@ public class Lines {
     public Fee calculatedFee(LoginMember loginMember, Distance distance) {
         Fee maxFee = findMaxFee();
         Fee fee = maxFee.calculateBasicFee(distance);
-        if (isEmpty(loginMember)) {
+        if (loginMember.isEmpty()) {
             return fee;
         }
         return fee.calculateAgeFee(loginMember);
@@ -46,9 +46,5 @@ public class Lines {
         Optional<Fee> max = lines.stream().map(Line::getFee)
                 .max(Comparator.comparingInt(Fee::get));
         return max.orElseGet(() -> Fee.ofWithOverFare(0));
-    }
-
-    private boolean isEmpty(LoginMember loginMember) {
-        return loginMember == null;
     }
 }
