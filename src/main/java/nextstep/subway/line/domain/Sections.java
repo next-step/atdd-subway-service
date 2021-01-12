@@ -1,11 +1,13 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.common.exception.CustomException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
+import java.util.function.Predicate;
 
 @Embeddable
 public class Sections {
@@ -24,14 +26,6 @@ public class Sections {
         updateSection(section);
     }
 
-    private void updateSection(Section section) {
-        findDownSectionBy(section.getUpStation())
-                .ifPresent(it -> it.updateUpStation(section));
-        findUpSectionBy(section.getDownStation())
-                .ifPresent(it -> it.updateDownStation(section));
-        sections.add(section);
-    }
-
     public List<Station> getStations() {
         Station station = findFirstUpStation();
         List<Station> result = new ArrayList<>(Collections.singletonList(station));
@@ -45,11 +39,11 @@ public class Sections {
     }
 
     public void deleteStation(Station station) {
-        if (isDeletable()) {
-            throw new IllegalStateException("구간이 1개이면 역을 삭제할 수 없습니다.");
+        if (hasOneOrEmptySection()) {
+            throw new CustomException("구간이 1개이면 역을 삭제할 수 없습니다.");
         }
-        Optional<Section> upSection = findDownSectionBy(station);
-        Optional<Section> downSection = findUpSectionBy(station);
+        Optional<Section> upSection = findUpSectionBy(station);
+        Optional<Section> downSection = findDownSectionBy(station);
         if (upSection.isPresent() && downSection.isPresent()) {
             sections.add(upSection.get().merge(downSection.get()));
         }
@@ -57,29 +51,39 @@ public class Sections {
         downSection.ifPresent(this::remove);
     }
 
-    public Optional<Section> findDownSectionBy(Station baseStation) {
-        return sections.stream()
-                .filter(it -> it.getUpStation() == baseStation)
-                .findFirst();
-    }
-
-    public Optional<Section> findUpSectionBy(Station baseStation) {
-        return sections.stream()
-                .filter(it -> it.getDownStation() == baseStation)
-                .findFirst();
-    }
-
     public boolean isEmpty() {
         return sections.isEmpty();
+    }
+
+    private Optional<Section> findDownSectionBy(Station station) {
+        return findSectionBy(s -> s.hasDownSection(station));
+    }
+
+    private Optional<Section> findUpSectionBy(Station station) {
+        return findSectionBy(s -> s.hasUpSection(station));
+    }
+
+    private Optional<Section> findSectionBy(Predicate<Section> predicate) {
+        return sections.stream()
+                .filter(predicate)
+                .findFirst();
+    }
+
+    private void updateSection(Section section) {
+        findDownSectionBy(section.getUpStation())
+                .ifPresent(it -> it.updateUpStation(section));
+        findUpSectionBy(section.getDownStation())
+                .ifPresent(it -> it.updateDownStation(section));
+        sections.add(section);
     }
 
     private void validateSection(Section section) {
         List<Station> stations = getStations();
         if (isAlreadyRegistered(section, stations)) {
-            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
+            throw new CustomException("이미 등록된 구간 입니다.");
         }
         if (isNotRegistered(section)) {
-            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
+            throw new CustomException("등록할 수 없는 구간 입니다.");
         }
     }
 
@@ -92,7 +96,7 @@ public class Sections {
         return !stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation());
     }
 
-    private boolean isDeletable() {
+    private boolean hasOneOrEmptySection() {
         return sections.size() <= 1;
     }
 
