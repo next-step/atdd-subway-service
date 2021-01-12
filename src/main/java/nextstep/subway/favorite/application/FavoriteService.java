@@ -35,6 +35,7 @@ public class FavoriteService {
         return FavoriteResponse.of(favorite);
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> findByMember(Long memberId) {
         List<Favorite> favorites = favoriteRepository.findByMemberId(memberId);
         return favorites.stream()
