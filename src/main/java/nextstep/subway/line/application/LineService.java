@@ -13,7 +13,6 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 
 @Service
 @Transactional
@@ -31,20 +30,14 @@ public class LineService {
 		Station downStation = stationService.findById(request.getDownStationId());
 		Line persistLine = lineRepository.save(
 			new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
-		List<StationResponse> stations = extractStationToStationResponse(persistLine);
-		return LineResponse.of(persistLine, stations);
+		return LineResponse.of(persistLine);
 	}
 
 	public List<LineResponse> findLines() {
 		List<Line> persistLines = lineRepository.findAll();
 		return persistLines.stream()
-			.map(line -> lineToLineResponse(line))
+			.map(LineResponse::of)
 			.collect(Collectors.toList());
-	}
-
-	private LineResponse lineToLineResponse(Line line) {
-		List<StationResponse> stations = extractStationToStationResponse(line);
-		return LineResponse.of(line, stations);
 	}
 
 	public Line findLineById(Long id) {
@@ -53,14 +46,7 @@ public class LineService {
 
 	public LineResponse findLineResponseById(Long id) {
 		Line persistLine = findLineById(id);
-		List<StationResponse> stations = extractStationToStationResponse(persistLine);
-		return LineResponse.of(persistLine, stations);
-	}
-
-	private List<StationResponse> extractStationToStationResponse(Line persistLine) {
-		return persistLine.getStations().stream()
-			.map(StationResponse::of)
-			.collect(Collectors.toList());
+		return LineResponse.of(persistLine);
 	}
 
 	public void updateLine(Long id, LineRequest lineUpdateRequest) {
@@ -78,7 +64,6 @@ public class LineService {
 		Station downStation = stationService.findStationById(request.getDownStationId());
 		line.addSection(upStation, downStation, request.getDistance());
 	}
-
 
 	public void removeLineStation(Long lineId, Long stationId) {
 		Line line = findLineById(lineId);
