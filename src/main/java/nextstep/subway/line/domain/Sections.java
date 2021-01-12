@@ -73,32 +73,35 @@ public class Sections {
 
 		List<Station> stations = new ArrayList<>();
 		Station downStation = findUpStation();
-		stations.add(downStation);
 
 		while (downStation != null) {
-			Station finalDownStation = downStation;
-			Section nextLineStation = getSectionEqualUpStation(finalDownStation);
-			if (nextLineStation == null) {
-				break;
-			}
-			downStation = nextLineStation.getDownStation();
 			stations.add(downStation);
+			Station finalDownStation = downStation;
+			downStation = findDownStationSectionContainUpStation(finalDownStation);
 		}
-
 		return stations;
+	}
+
+	private Station findDownStationSectionContainUpStation(Station station) {
+		return sections.stream()
+			.filter(section -> section.isEqualUpStation(station))
+			.findFirst()
+			.map(Section::getDownStation)
+			.orElse(null);
 	}
 
 	private Station findUpStation() {
 		Station downStation = getFirstUpStation();
-		while (downStation != null) {
-			Station finalDownStation = downStation;
-			Section nextLineStation = getSectionEqualDownStation(finalDownStation);
-			if (nextLineStation == null) {
-				break;
-			}
-			downStation = nextLineStation.getUpStation();
-		}
-
-		return downStation;
+		Section nextLineStation = sections.stream()
+			.filter(section -> isSectionsContainDownStation(downStation))
+			.findFirst()
+			.orElseThrow(() -> new RuntimeException("지하철역 정보가 올바르지 않습니다."));
+		return nextLineStation.getUpStation();
 	}
+
+	private boolean isSectionsContainDownStation(Station station) {
+		return sections.stream()
+			.noneMatch(it -> it.isEqualDownStation(station));
+	}
+
 }
