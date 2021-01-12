@@ -1,12 +1,14 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.OneToMany;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
@@ -87,5 +89,11 @@ public class Sections {
                 .filter(it -> it.getDownStation() == downStation)
                 .findFirst()
                 .orElse(null);
+    }
+
+    public List<StationResponse> getStationResponses() {
+        return getStations().stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
     }
 }
