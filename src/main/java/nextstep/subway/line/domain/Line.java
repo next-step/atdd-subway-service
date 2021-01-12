@@ -5,7 +5,9 @@ import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
@@ -53,4 +55,73 @@ public class Line extends BaseEntity {
     public List<Section> getSections() {
         return sections;
     }
+
+    public List<Station> getStations() {
+        Section startSection = findStartSection(sections.get(0));
+        List<Station> stations = new ArrayList<>();
+        stations.add(startSection.getUpStation());
+        Station nextStation = startSection.getDownStation();
+        while (nextStation != null) {
+            stations.add(nextStation);
+            nextStation = findDownStation(nextStation);
+        }
+        return stations;
+    }
+
+    public void addSection(Station upStation, Station downStation, int distance) {
+        List<Station> stations = this.getStations();
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
+                stations.stream().noneMatch(it -> it == downStation)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
+        if (stations.isEmpty()) {
+            sections.add(new Section(this, upStation, downStation, distance));
+            return;
+        }
+
+        if (isUpStationExisted) {
+            sections.stream()
+                    .filter(it -> it.getUpStation() == upStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(downStation, distance));
+
+            sections.add(new Section(this, upStation, downStation, distance));
+        } else if (isDownStationExisted) {
+            sections.stream()
+                    .filter(it -> it.getDownStation() == downStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(upStation, distance));
+
+            sections.add(new Section(this, upStation, downStation, distance));
+        } else {
+            throw new RuntimeException();
+        }
+    }
+
+    private Station findDownStation(Station station) {
+        return this.sections.stream()
+                .filter(it -> it.getUpStation().equals(station))
+                .findFirst()
+                .map(Section::getDownStation)
+                .orElse(null);
+    }
+
+    private Section findStartSection(Section section) {
+        Optional<Section> optionalSection = sections.stream()
+                .filter(it -> it.getDownStation().equals(section.getUpStation()))
+                .findFirst();
+        if (!optionalSection.isPresent()) {
+            return section;
+        }
+        return findStartSection(optionalSection.get());
+    }
+
 }
