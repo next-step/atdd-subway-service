@@ -82,10 +82,9 @@ public class LineService {
 	public void removeLineStation(Long lineId, Long stationId) {
 		Line line = findLineById(lineId);
 		Station station = stationService.findStationById(stationId);
-		if (line.getSections().size() <= 1) {
-			throw new RuntimeException();
+		if (!line.isSectionsExists()) {
+			throw new RuntimeException("노선이 존재하지 않습니다.");
 		}
-
 		line.removeLineStation(station);
 	}
 }
