@@ -26,6 +26,8 @@ public class PathFindService {
     }
 
     public PathResponse findShortestPath(Station start, Station end) {
+        validate(start, end);
+
         Set<Station> stations = lineService.getAllStations();
         stations.forEach(graph::addVertex);
 
@@ -35,6 +37,19 @@ public class PathFindService {
         }
         GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(start, end);
 
+        if(path == null) throw new NotConnectedExeption(start, end);
+
         return new PathResponse(path.getVertexList(), (int) path.getWeight());
+    }
+
+    private void validate(Station start, Station end) {
+        if(start == null || end == null) {
+            throw new NoSuchStationException("존재하지 않는 역입니다.");
+        }
+
+        if(start == end) {
+            throw new SameStartAndEndException(start);
+        }
+
     }
 }

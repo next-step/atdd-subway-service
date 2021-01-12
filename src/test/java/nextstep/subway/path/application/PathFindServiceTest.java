@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -51,5 +52,60 @@ class PathFindServiceTest {
         assertThat(shortestPath.getDistance()).isEqualTo(15);
         assertThat(shortestPath.getStations())
                 .containsExactly(StationResponse.of(강남),StationResponse.of(양재),StationResponse.of(광교));
+    }
+
+    @DisplayName("출발역과 도착역이 같은 경우")
+    @Test
+    void sameStartEnd() {
+        Station 강남 = new Station("강남");
+        Station 광교 = new Station("광교");
+        Set<Station> stations = new HashSet<>(Arrays.asList(강남, 광교));
+        Line orange = new Line("3호선", "orange");
+        Section 강남광교구간 = new Section(orange, 강남, 광교, 50);
+        List<Section> sections = Arrays.asList(강남광교구간);
+        when(mockLineService.getAllStations()).thenReturn(stations);
+        when(mockLineService.getAllSections()).thenReturn(sections);
+
+        assertThatThrownBy(() -> pathFindService.findShortestPath(강남, 강남))
+                .isInstanceOf(SameStartAndEndException.class)
+                .hasMessage("출발역과 도착역이 같습니다. 역: 강남");
+    }
+
+    @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우")
+    @Test
+    void noExistsStation() {
+        Station 강남 = new Station("강남");
+        Station 광교 = new Station("광교");
+        Set<Station> stations = new HashSet<>(Arrays.asList(강남, 광교));
+        Line orange = new Line("3호선", "orange");
+        Section 강남광교구간 = new Section(orange, 강남, 광교, 50);
+        List<Section> sections = Arrays.asList(강남광교구간);
+        when(mockLineService.getAllStations()).thenReturn(stations);
+        when(mockLineService.getAllSections()).thenReturn(sections);
+
+        assertThatThrownBy(() -> pathFindService.findShortestPath(null, 강남))
+                .isInstanceOf(NoSuchStationException.class)
+                .hasMessage("존재하지 않는 역입니다.");
+    }
+
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
+    @Test
+    void notConntected() {
+        Station 강남 = new Station("강남");
+        Station 광교 = new Station("광교");
+        Station 교대 = new Station("교대");
+        Station 양재 = new Station("양재");
+        Set<Station> stations = new HashSet<>(Arrays.asList(강남, 광교, 교대, 양재));
+        Line orange = new Line("3호선", "orange");
+        Line red = new Line("분당선", "red");
+        Section 강남광교구간 = new Section(orange, 강남, 광교, 5);
+        Section 양재교대구간 = new Section(red, 양재, 교대, 5);
+        List<Section> sections = Arrays.asList(강남광교구간, 양재교대구간);
+        when(mockLineService.getAllStations()).thenReturn(stations);
+        when(mockLineService.getAllSections()).thenReturn(sections);
+
+        assertThatThrownBy(() -> pathFindService.findShortestPath(양재, 강남))
+                .isInstanceOf(NotConnectedExeption.class)
+                .hasMessage("연결되어 있지 않는 역입니다. 출발역: 양재 도착역: 강남");
     }
 }
