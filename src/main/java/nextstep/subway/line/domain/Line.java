@@ -2,7 +2,6 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.advice.exception.SectionBadRequestException;
-import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -71,15 +70,11 @@ public class Line extends BaseEntity {
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new SectionBadRequestException("이미 등록된 구간 입니다", upStation, downStation, distance);
-        }
+        validateSection(upStation, downStation, distance, stations, isUpStationExisted, isDownStationExisted);
+        addSection(upStation, downStation, distance, stations, isUpStationExisted, isDownStationExisted);
+    }
 
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation)) {
-            throw new SectionBadRequestException("등록할 수 없는 구간 입니다", upStation, downStation, distance);
-        }
-
+    private void addSection(Station upStation, Station downStation, int distance, List<Station> stations, boolean isUpStationExisted, boolean isDownStationExisted) {
         if (stations.isEmpty()) {
             this.getSections().add(new Section(this, upStation, downStation, distance));
             return;
@@ -101,6 +96,17 @@ public class Line extends BaseEntity {
             this.getSections().add(new Section(this, upStation, downStation, distance));
         } else {
             throw new RuntimeException();
+        }
+    }
+
+    private void validateSection(Station upStation, Station downStation, int distance, List<Station> stations, boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new SectionBadRequestException("이미 등록된 구간 입니다", upStation, downStation, distance);
+        }
+
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
+                stations.stream().noneMatch(it -> it == downStation)) {
+            throw new SectionBadRequestException("등록할 수 없는 구간 입니다", upStation, downStation, distance);
         }
     }
 
