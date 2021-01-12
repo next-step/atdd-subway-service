@@ -52,3 +52,15 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+
+# 1단계
+인수테스트 기반 리팩토링
+- Domain으로 옮기기
+    - addLineStation, removeLineStation, getStations Line.java로 옮기기
+    
+- Domain의 단위 테스트를 작성하기
+    - SectionsTest, LineTest
+    
+- 로직을 옮기기
+    - newAddLineStation, newRemoveLineStation, newgetStation 한벌 새로 만들어서 작업
