@@ -18,6 +18,8 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
+    private Long additionalFare;
+
     public Line() {
     }
 
@@ -29,13 +31,22 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
+        this.additionalFare = 0L;
         sections.addSection(new Section(this, upStation, downStation, distance));
     }
 
-    public Line(Long id, String name, String color, Station upStation, Station downStation, int distance) {
+    public Line(String name, String color, Station upStation, Station downStation, Long additionalFare, int distance) {
+        this.name = name;
+        this.color = color;
+        this.additionalFare = additionalFare;
+        sections.addSection(new Section(this, upStation, downStation, distance));
+    }
+
+    public Line(Long id, String name, String color, Station upStation, Station downStation, Long additionalFare, int distance) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.additionalFare = additionalFare;
         sections.addSection(new Section(this, upStation, downStation, distance));
     }
 
@@ -58,6 +69,10 @@ public class Line extends BaseEntity {
 
     public Sections getSections() {
         return sections;
+    }
+
+    public Long getAdditionalFare() {
+        return additionalFare;
     }
 
     public List<Section> getSectionList() {
