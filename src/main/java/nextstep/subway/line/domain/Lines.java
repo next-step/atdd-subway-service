@@ -40,13 +40,7 @@ public class Lines {
         if (isEmpty(loginMember)) {
             return fee;
         }
-        if (loginMember.isChild()) {
-            return fee.calculateChildFee();
-        }
-        if (loginMember.isTeenager()) {
-            return fee.calculateTeenagerFee();
-        }
-        return fee;
+        return fee.calculateAgeFee(loginMember);
     }
 
     private Fee findMaxFee() {

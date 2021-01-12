@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
+
 import javax.persistence.Embeddable;
 
 @Embeddable
@@ -38,12 +40,14 @@ public class Fee {
         return of(DEFAULT_FEE);
     }
 
-    public Fee calculateChildFee() {
-        return of((int) ((fee - 350) * 0.5));
-    }
-
-    public Fee calculateTeenagerFee() {
-        return of((int) ((fee - 350) * 0.8));
+    public Fee calculateAgeFee(LoginMember loginMember) {
+        if (isChild(loginMember)) {
+            return calculateChildFee();
+        }
+        if (isTeenager(loginMember)) {
+            return calculateTeenagerFee();
+        }
+        return this;
     }
 
     public int get() {
@@ -71,4 +75,21 @@ public class Fee {
     private int calculateEightOverFare(int distance) {
         return (int) ((Math.ceil((distance - 1) / 8) + 1) * 100);
     }
+
+    private boolean isChild(LoginMember loginMember) {
+        return loginMember.getAge() >= 6 && loginMember.getAge() < 13;
+    }
+
+    private boolean isTeenager(LoginMember loginMember) {
+        return loginMember.getAge() >= 13 && loginMember.getAge() < 19;
+    }
+
+    private Fee calculateChildFee() {
+        return of((int) ((fee - 350) * 0.5));
+    }
+
+    private Fee calculateTeenagerFee() {
+        return of((int) ((fee - 350) * 0.8));
+    }
+
 }
