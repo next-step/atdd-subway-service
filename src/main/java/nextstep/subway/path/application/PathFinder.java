@@ -55,15 +55,12 @@ public class PathFinder {
         verifyNoLinkPath(shortestPath);
 
         List<Station> stations = shortestPath.getVertexList();
-        int distance = (int) shortestPath.getWeight();
-        int fare = FareCalculator.calculateFare(distance);
 
         return new PathResponse(
                 stations.stream()
                         .map(StationResponse::of)
                         .collect(Collectors.toList()),
-                distance,
-                fare
+                (int) shortestPath.getWeight()
         );
     }
 

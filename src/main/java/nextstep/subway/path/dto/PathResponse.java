@@ -13,8 +13,8 @@ public class PathResponse {
     protected PathResponse() {
     }
 
-    public PathResponse(List<StationResponse> stations) {
-        this.stations = stations;
+    public PathResponse(List<StationResponse> stations, int distance) {
+        this(stations, distance, 0);
     }
 
     public PathResponse(List<StationResponse> stations, int distance, int fare) {
@@ -33,5 +33,9 @@ public class PathResponse {
 
     public int getFare() {
         return fare;
+    }
+
+    public void setFare(int fare) {
+        this.fare = fare;
     }
 }

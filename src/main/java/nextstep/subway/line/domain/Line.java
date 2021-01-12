@@ -14,6 +14,7 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    private Integer overFare;
 
     @Embedded
     private Sections sections = new Sections();
@@ -24,7 +25,8 @@ public class Line extends BaseEntity {
         private String color;
         private Station upStation;
         private Station downStation;
-        int distance;
+        private int distance;
+        private int overFare;
 
         public Builder(Long id, String name, String color) {
             this.id = id;
@@ -51,6 +53,11 @@ public class Line extends BaseEntity {
             return this;
         }
 
+        public Builder overFare(int val) {
+            overFare = val;
+            return this;
+        }
+
         public Line build() {
             return new Line(this);
         }
@@ -60,6 +67,7 @@ public class Line extends BaseEntity {
         this.id = builder.id;
         this.name = builder.name;
         this.color = builder.color;
+        this.overFare = builder.overFare;
         sections.addSection(this, builder.upStation, builder.downStation, builder.distance);
     }
 
@@ -72,13 +80,23 @@ public class Line extends BaseEntity {
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
+        this(name, color, upStation, downStation, distance, 0);
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int overFare) {
         this.name = name;
         this.color = color;
+        this.overFare = overFare;
         sections.addSection(this, upStation, downStation, distance);
     }
 
     public Line(Long id, String name, String color, Station upStation, Station downStation, int distance) {
         this(name, color, upStation, downStation, distance);
+        this.id = id;
+    }
+
+    public Line(Long id, String name, String color, Station upStation, Station downStation, int distance, int overFare) {
+        this(name, color, upStation, downStation, distance, overFare);
         this.id = id;
     }
 
@@ -103,6 +121,10 @@ public class Line extends BaseEntity {
         return sections.getSections();
     }
 
+    public Integer getOverFare() {
+        return overFare;
+    }
+
     public Station findUpStation() {
         return sections.findUpStation();
     }
@@ -117,6 +139,11 @@ public class Line extends BaseEntity {
 
     public void removeLineStation(Station station) {
         sections.removeLineStation(this, station);
+    }
+
+    public boolean containsAnyStation(List<Station> stations) {
+        return stations.stream()
+                .anyMatch(station -> getStations().contains(station));
     }
 
 }

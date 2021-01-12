@@ -41,7 +41,7 @@ class LineServiceTest {
     void setUp() {
         강남역 = new Station(1L, "강남역");
         역삼역 = new Station(2L, "역삼역");
-        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 역삼역, 10);
+        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 역삼역, 10, 0);
     }
 
     @Test

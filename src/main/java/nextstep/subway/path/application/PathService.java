@@ -2,6 +2,7 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.application.fare.FareCalculator;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -17,9 +18,12 @@ public class PathService {
 
     private final StationService stationService;
 
-    public PathService(LineRepository lineRepository, StationService stationService) {
+    private final FareCalculator fareCalculator;
+
+    public PathService(LineRepository lineRepository, StationService stationService, FareCalculator fareCalculator) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
+        this.fareCalculator = fareCalculator;
     }
 
     public PathResponse getPath(PathRequest pathRequest) {
@@ -29,6 +33,8 @@ public class PathService {
         Station targetStation = stationService.findStationById(pathRequest.getTarget());
 
         PathFinder pathFinder = new PathFinder(lines);
-        return pathFinder.getPath(sourceStation, targetStation);
+        PathResponse pathResponse = pathFinder.getPath(sourceStation, targetStation);
+        pathResponse.setFare(fareCalculator.calculateFare(pathResponse.getDistance()));
+        return pathResponse;
     }
 }
