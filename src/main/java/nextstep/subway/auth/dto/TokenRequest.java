@@ -1,22 +1,15 @@
 package nextstep.subway.auth.dto;
 
+import javax.validation.constraints.NotNull;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
 public class TokenRequest {
-	private String email;
-	private String password;
-
-	public TokenRequest() {
-	}
-
-	public TokenRequest(String email, String password) {
-		this.email = email;
-		this.password = password;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public String getPassword() {
-		return password;
-	}
+	@NotNull
+	private final String email;
+	@NotNull
+	private final String password;
 }
