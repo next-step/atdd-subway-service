@@ -69,7 +69,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(favoriteRequest)
                 .when().post("/favorites")
                 .then().log().all()
@@ -92,7 +92,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete(uri)
                 .then().log().all()
                 .extract();
