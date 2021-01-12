@@ -27,16 +27,20 @@ public class PathService {
     public PathResponse findShortestPath(Long source, Long target) {
         PathResult result = selectPath(source, target);
 
+        List<StationResponse> shortestStations = toStationResponses(result.getStationIds());
+        int totalDistance = result.getTotalDistance();
+
+        return new PathResponse(shortestStations, totalDistance);
+    }
+
+    private List<StationResponse> toStationResponses(List<Long> stationIds) {
         final Map<Long,Station> stations = stationRepository.findAll().stream()
                 .collect(Collectors.toMap(Station::getId, it -> it));
 
-        List<Long> shortestStationIds = result.getStationIds();
-        int totalDistance = result.getTotalDistance();
-
-        List<StationResponse> shortestStations = shortestStationIds.stream()
-                .map(id -> StationResponse.of(stations.get(id)))
+        return stationIds.stream()
+                .map(stations::get)
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
-        return new PathResponse(shortestStations, totalDistance);
     }
 
     private PathResult selectPath(Long source, Long target) {
