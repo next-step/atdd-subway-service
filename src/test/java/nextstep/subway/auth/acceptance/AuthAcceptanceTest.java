@@ -63,7 +63,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         // when
         String accessToken = "wrong-token";
         Map<String, String> params = new HashMap<>();
-        ExtractableResponse<Response> response = 내_정보_조회_요청(accessToken, params);
+        ExtractableResponse<Response> response = MemberAcceptanceTest.내_회원정보_조회_요청(accessToken);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
@@ -83,16 +83,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         return response;
     }
 
-    public ExtractableResponse<Response> 내_정보_조회_요청(String accessToken, Map<String, String> params) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all().extract();
-    }
-
     private void 토큰_인증_성공_검증(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.contentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
@@ -103,5 +93,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private void 토큰_인증_실패_검증(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
         assertThat(response.contentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
+    }
+
+    public static String getAccessToken(ExtractableResponse<Response> response) {
+        return response.body().jsonPath().getString("accessToken");
     }
 }
