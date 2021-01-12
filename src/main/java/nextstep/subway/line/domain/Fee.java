@@ -26,23 +26,13 @@ public class Fee {
     }
 
     public Fee calculateBasicFee(Distance distance) {
-        if (isTenToFifty(distance)) {
-            return of(fee + calculateFiveOverFare(distance.get()-10));
-        }
-        if (isMoreThanFifty(distance)) {
-            return of(fee + calculateEightOverFare(distance.get()-10));
-        }
-        return of(DEFAULT_FEE);
+        DistanceSurchargePolicy surchargePolicy = DistanceSurchargePolicy.of(distance);
+        return surchargePolicy.calculate(this, distance);
     }
 
     public Fee calculateAgeFee(LoginMember loginMember) {
-        if (isChild(loginMember)) {
-            return calculateChildFee();
-        }
-        if (isTeenager(loginMember)) {
-            return calculateTeenagerFee();
-        }
-        return this;
+        AgeDiscountPolicy discountPolicy = AgeDiscountPolicy.of(loginMember.getAge());
+        return discountPolicy.calculate(this);
     }
 
     public int get() {
@@ -70,21 +60,4 @@ public class Fee {
     private int calculateEightOverFare(int distance) {
         return (int) ((Math.ceil((distance - 1d) / 8) + 1) * 100);
     }
-
-    private boolean isChild(LoginMember loginMember) {
-        return loginMember.getAge() >= 6 && loginMember.getAge() < 13;
-    }
-
-    private boolean isTeenager(LoginMember loginMember) {
-        return loginMember.getAge() >= 13 && loginMember.getAge() < 19;
-    }
-
-    private Fee calculateChildFee() {
-        return of((int) ((fee - 350) * 0.5));
-    }
-
-    private Fee calculateTeenagerFee() {
-        return of((int) ((fee - 350) * 0.8));
-    }
-
 }
