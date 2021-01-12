@@ -24,7 +24,7 @@ public class Sections {
     public Sections(){}
 
     public Sections(List<Section> sections) {
-        this.sections = sections;
+        addAll(sections);
     }
 
     public List<Section> getSections() {

@@ -52,8 +52,8 @@ public class Section {
         return downStation;
     }
 
-    public Distance getDistance() {
-        return distance;
+    public int getDistance() {
+        return distance.value();
     }
 
     public boolean equalsUpStation(Station station) {
@@ -64,12 +64,12 @@ public class Section {
         return downStation.equals(station);
     }
 
-    public void updateUpStation(Station station, Distance newDistance) {
+    public void updateUpStation(Station station, int newDistance) {
         this.upStation = station;
         this.distance = this.distance.minus(newDistance);
     }
 
-    public void updateDownStation(Station station, Distance newDistance) {
+    public void updateDownStation(Station station, int newDistance) {
         this.downStation = station;
         this.distance = this.distance.minus(newDistance);
     }
@@ -83,7 +83,7 @@ public class Section {
             throw new BadRequestException("합칠 수 없는 구간입니다.");
         }
 
-        Distance newDistance = this.distance.plus(downSection.distance);
+        Distance newDistance = this.distance.plus(downSection.getDistance());
         return new Section(line, this.upStation, downSection.downStation, newDistance.value());
     }
 }

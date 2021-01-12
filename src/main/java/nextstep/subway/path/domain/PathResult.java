@@ -1,19 +1,18 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.List;
 
 public class PathResult {
-    private GraphPath<Station, DefaultWeightedEdge> result;
+    private GraphPath<Long, DefaultWeightedEdge> result;
 
-    public PathResult(GraphPath<Station, DefaultWeightedEdge> result) {
+    public PathResult(GraphPath<Long, DefaultWeightedEdge> result) {
         this.result = result;
     }
 
-    public List<Station> getStations() {
+    public List<Long> getStationIds() {
         return result.getVertexList();
     }
 

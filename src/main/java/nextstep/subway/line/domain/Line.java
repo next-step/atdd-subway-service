@@ -59,27 +59,11 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public Sections getSections() {
-        return sections;
+    public List<Section> getSections() {
+        return sections.getSections();
     }
 
     public List<Station> getStations() {
         return sections.getStations();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Line)) return false;
-        Line line = (Line) o;
-        return Objects.equals(id, line.id) &&
-                Objects.equals(name, line.name) &&
-                Objects.equals(color, line.color) &&
-                Objects.equals(sections, line.sections);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, color, sections);
     }
 }
