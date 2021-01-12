@@ -25,15 +25,7 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(Long source, Long target) {
-        if (source.equals(target)) {
-            throw new BadRequestException("출발역과 도착역은 달라야 합니다");
-        }
-
-        Station sourceStation = stationRepository.findById(source)
-                .orElseThrow(NotFoundStationException::new);
-        Station targetStation = stationRepository.findById(target)
-                .orElseThrow(NotFoundStationException::new);
-        PathResult result = PathSelector.select(sourceStation, targetStation);
+        PathResult result = selectPath(source, target);
 
         final Map<Long,Station> stations = stationRepository.findAll().stream()
                 .collect(Collectors.toMap(Station::getId, it -> it));
@@ -45,5 +37,15 @@ public class PathService {
                 .map(id -> StationResponse.of(stations.get(id)))
                 .collect(Collectors.toList());
         return new PathResponse(shortestStations, totalDistance);
+    }
+
+    private PathResult selectPath(Long source, Long target) {
+        if (source.equals(target)) {
+            throw new BadRequestException("출발역과 도착역은 달라야 합니다");
+        }
+
+        Station sourceStation = stationRepository.getOne(source);
+        Station targetStation = stationRepository.getOne(target);
+        return PathSelector.select(sourceStation, targetStation);
     }
 }
