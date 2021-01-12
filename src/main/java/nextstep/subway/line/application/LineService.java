@@ -74,6 +74,10 @@ public class LineService {
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
+        line.removeStation(station);
+    }
+
+    private void removeStation(Line line, Station station) {
         if (line.getSections().size() <= 1) {
             throw new RuntimeException();
         }

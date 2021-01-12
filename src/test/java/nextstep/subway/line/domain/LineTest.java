@@ -90,6 +90,27 @@ class LineTest {
         }).isInstanceOf(SectionBadRequestException.class);
     }
 
+    @DisplayName("역을 삭제한다 : 교대역-강남역-역삼역에서 강남역을 삭제")
+    @Test
+    void removeStation() {
+        이호선.addSection(교대역, 강남역, 교대역_강남역_거리);
+
+        이호선.removeStation(강남역);
+
+        List<StationResponse> 구간_목록 = 이호선.getStationResponse();
+        List<String> 구간_역이름_목록 = 구간_역이름_목록_조회(구간_목록);
+
+        assertThat(구간_역이름_목록).containsExactlyElementsOf(Arrays.asList("교대역", "역삼역"));
+    }
+
+    @DisplayName("역을 삭제한다 : 구간이 1개만 있다면 익셉션 발생")
+    @Test
+    void removeStationSizeException() {
+        assertThatThrownBy(()-> {
+            이호선.removeStation(강남역);
+        }).isInstanceOf(SectionBadRequestException.class);
+    }
+
     private List<String> 구간_역이름_목록_조회(List<StationResponse> stationResponses) {
         List<String> stationNames = stationResponses.stream()
                 .map(response -> response.getName())

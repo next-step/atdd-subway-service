@@ -74,6 +74,22 @@ public class Line extends BaseEntity {
         addSection(upStation, downStation, distance, stations, isUpStationExisted, isDownStationExisted);
     }
 
+    public void removeStation(Station station) {
+        if (this.getSections().size() <= 1) {
+            throw new SectionBadRequestException("구간이 1개이하이면 삭제할 수 없습니다", station);
+        }
+
+        Optional<Section> upLineStation = this.getSections().stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+        Optional<Section> downLineStation = this.getSections().stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        removeStation(upLineStation, downLineStation);
+    }
+
+
     private void addSection(Station upStation, Station downStation, int distance, List<Station> stations, boolean isUpStationExisted, boolean isDownStationExisted) {
         if (stations.isEmpty()) {
             this.getSections().add(new Section(this, upStation, downStation, distance));
@@ -97,6 +113,18 @@ public class Line extends BaseEntity {
         } else {
             throw new RuntimeException();
         }
+    }
+
+    private void removeStation(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            this.getSections().add(new Section(this, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> this.getSections().remove(it));
+        downLineStation.ifPresent(it -> this.getSections().remove(it));
     }
 
     private void validateSection(Station upStation, Station downStation, int distance, List<Station> stations, boolean isUpStationExisted, boolean isDownStationExisted) {
