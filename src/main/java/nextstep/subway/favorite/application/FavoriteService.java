@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class FavoriteService {
-    private MemberRepository memberRepository;
-    private StationRepository stationRepository;
-    private FavoriteRepository favoriteRepository;
+    private final MemberRepository memberRepository;
+    private final StationRepository stationRepository;
+    private final FavoriteRepository favoriteRepository;
 
     public FavoriteService(MemberRepository memberRepository, StationRepository stationRepository, FavoriteRepository favoriteRepository) {
         this.memberRepository = memberRepository;
