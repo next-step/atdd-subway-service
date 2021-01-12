@@ -30,6 +30,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
     private static final int DEFAULT_DISTANCE = 10;
+    private static final int LINE_CHARGE_500 = 500;
+    private static final int LINE_CHARGE_900 = 900;
 
     private static StationResponse 신도림;
     private static StationResponse 문래;
@@ -68,7 +70,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         샛강 = StationAcceptanceTest.지하철역_등록되어_있음("샛강").as(StationResponse.class);
         노량진 = StationAcceptanceTest.지하철역_등록되어_있음("노량진").as(StationResponse.class);
 
-        LineResponse 구호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("9호선", "bg-brown-600", 당산.getId(), 국회의사당.getId(), DEFAULT_DISTANCE))
+        LineResponse 구호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("9호선", "bg-brown-600", 당산.getId(), 국회의사당.getId(), DEFAULT_DISTANCE, LINE_CHARGE_900))
                 .as(LineResponse.class);
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(구호선, 국회의사당, 여의도, DEFAULT_DISTANCE);
@@ -79,7 +81,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         신길 = StationAcceptanceTest.지하철역_등록되어_있음("신길").as(StationResponse.class);
         대방 = StationAcceptanceTest.지하철역_등록되어_있음("대방").as(StationResponse.class);
 
-        LineResponse 일호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("1호선", "bg-blue-600", 신도림.getId(), 영등포.getId(), DEFAULT_DISTANCE))
+        LineResponse 일호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("1호선", "bg-blue-600", 신도림.getId(), 영등포.getId(), DEFAULT_DISTANCE, LINE_CHARGE_500))
                 .as(LineResponse.class);
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 영등포, 신길, DEFAULT_DISTANCE);
@@ -109,8 +111,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private static Stream<Arguments> selectPath() {
         return Stream.of(
                 Arguments.of(supply(()->신도림), supply(() ->당산), supply(() -> new StationResponse[]{신도림, 문래, 영등포구청, 당산}), 1_250 + 400),
-                Arguments.of(supply(()->영등포구청), supply(() ->노량진), supply(() -> new StationResponse[]{영등포구청, 당산, 국회의사당, 여의도, 샛강, 노량진}), 1_250 + 900 + 1_000),
-                Arguments.of(supply(()->문래), supply(() ->노량진), supply(() -> new StationResponse[]{문래, 신도림, 영등포, 신길, 대방, 노량진}), 1_250 + 500 + 1_000)
+                Arguments.of(supply(()->영등포구청), supply(() ->노량진), supply(() -> new StationResponse[]{영등포구청, 당산, 국회의사당, 여의도, 샛강, 노량진}), 1_250 + LINE_CHARGE_900 + 800),
+                Arguments.of(supply(()->문래), supply(() ->노량진), supply(() -> new StationResponse[]{문래, 신도림, 영등포, 신길, 대방, 노량진}), 1_250 + LINE_CHARGE_500 + 800)
         );
     }
 

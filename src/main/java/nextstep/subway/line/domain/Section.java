@@ -74,6 +74,16 @@ public class Section {
         this.distance = this.distance.minus(newDistance);
     }
 
+    public boolean equalsSection(Long departureId, Long destinationId) {
+        return equalsUpAndDownStationId(departureId, destinationId)
+                || equalsUpAndDownStationId(destinationId, departureId);
+    }
+
+    private boolean equalsUpAndDownStationId(Long upStationId, Long downStationId) {
+        return upStation.equalsId(upStationId) && downStation.equalsId(downStationId);
+    }
+
+
     public Section merge(Section downSection) {
         if (!line.equals(downSection.line)) {
             throw new BadRequestException("다른 노선의 구간은 합칠 수 없습니다.");

@@ -112,6 +112,11 @@ public class Sections {
         }
     }
 
+    public boolean containsSection(Long departureId, Long destinationId) {
+        return sections.stream()
+                .anyMatch(section -> section.equalsSection(departureId, destinationId));
+    }
+
     private void finallyAdd(Section section) {
         sections.add(section);
         PathSelector.add(section);
