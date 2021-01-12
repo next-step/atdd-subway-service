@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.common.exception.CustomException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
@@ -46,6 +47,7 @@ class LineServiceTest {
     void createLine() {
         // Given
         when(lineRepository.save(any())).thenReturn(_2호선);
+        when(stationService.findById(any())).thenReturn(삼성역).thenReturn(잠실역);
         // When
         LineResponse lineResponse = lineService.saveLine(new LineRequest());
         // Then
@@ -107,7 +109,7 @@ class LineServiceTest {
         when(lineRepository.findById(any())).thenReturn(Optional.of(_2호선));
         // When&Then
         assertThatThrownBy(() -> removeLineStation(잠실역))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(CustomException.class)
                 .hasMessageContaining("구간이 1개이면 역을 삭제할 수 없습니다.");
     }
 
