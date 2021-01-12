@@ -84,7 +84,7 @@ public class Sections {
 			downStation = nextLineStation.getDownStation();
 			stations.add(downStation);
 		}
-		stations.forEach(station -> System.out.println(station.getName()));
+
 		return stations;
 	}
 
