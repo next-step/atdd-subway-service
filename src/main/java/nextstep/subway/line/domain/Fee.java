@@ -64,11 +64,11 @@ public class Fee {
     }
 
     private int calculateFiveOverFare(int distance) {
-        return (int) ((Math.ceil((distance - 1) / 5) + 1) * 100);
+        return (int) ((Math.ceil((distance - 1d) / 5) + 1) * 100);
     }
 
     private int calculateEightOverFare(int distance) {
-        return (int) ((Math.ceil((distance - 1) / 8) + 1) * 100);
+        return (int) ((Math.ceil((distance - 1d) / 8) + 1) * 100);
     }
 
     private boolean isChild(LoginMember loginMember) {

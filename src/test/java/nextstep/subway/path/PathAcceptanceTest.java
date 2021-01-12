@@ -84,7 +84,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         List<StationResponse> stationResponses = Arrays.asList(남부터미널역, 양재역, 강남역);
         지하철_최단경로_응답됨(response, stationResponses, 12);
-        지하철_이용요금_응답됨(response, 2_250); // 1250(기본요금) + 100(거리요금) + 900(노선요금) == 2250
+        지하철_이용요금_응답됨(response, 2_350); // 1250(기본요금) + 200(거리요금) + 900(노선요금) == 2350
     }
 
     @Test
@@ -111,7 +111,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         List<StationResponse> stationResponses = Arrays.asList(남부터미널역, 양재역, 강남역);
         지하철_최단경로_응답됨(response, stationResponses, 12);
-        지하철_이용요금_응답됨(response, 950); // 1250(기본요금) + 100(거리요금) + 900(노선요금) == (2250 - 350) * 0.5
+        지하철_이용요금_응답됨(response, 1_000); // 1250(기본요금) + 200(거리요금) + 900(노선요금) == (2350 - 350) * 0.5 == 1000
     }
 
     @Test
@@ -138,7 +138,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         List<StationResponse> stationResponses = Arrays.asList(남부터미널역, 양재역, 강남역);
         지하철_최단경로_응답됨(response, stationResponses, 12);
-        지하철_이용요금_응답됨(response, 1_520); // 1250(기본요금) + 100(거리요금) + 900(노선요금) == (2250 - 350) * 0.8 == 1520
+        지하철_이용요금_응답됨(response, 1_600); // 1250(기본요금) + 200(거리요금) + 900(노선요금) == (2350 - 350) * 0.8 == 1600
     }
 
     @Test

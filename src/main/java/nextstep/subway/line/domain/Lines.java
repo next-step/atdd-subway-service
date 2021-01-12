@@ -6,6 +6,7 @@ import nextstep.subway.station.domain.Station;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Lines {
     private List<Line> lines;
@@ -19,17 +20,15 @@ public class Lines {
     }
 
     public Sections findSections() {
-        Sections sections = Sections.of();
-        lines.stream()
-                .flatMap(line -> line.getSections().stream())
-                .forEach(sections::add);
-        return sections;
+        return lines.stream()
+                .flatMap(Line::getSectionsStream)
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Sections::new));
     }
 
     public Station findStation(Long stationId) {
         return lines.stream()
                 .flatMap(line -> line.getStations().stream())
-                .filter(station -> station.getId().equals(stationId))
+                .filter(station -> station.isEqualToId(stationId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않은 출발역이나 도착역입니다."));
     }

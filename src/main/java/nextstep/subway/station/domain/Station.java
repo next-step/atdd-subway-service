@@ -20,16 +20,20 @@ public class Station extends BaseEntity {
         this.name = name;
     }
 
+    public boolean isEqualTo(Station station) {
+        return this.equals(station);
+    }
+
+    public boolean isEqualToId(Long stationId) {
+        return this.id.equals(stationId);
+    }
+
     public Long getId() {
         return id;
     }
 
     public String getName() {
         return name;
-    }
-
-    public boolean isEqualTo(Station station) {
-        return this.equals(station);
     }
 
     @Override
