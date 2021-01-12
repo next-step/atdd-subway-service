@@ -9,7 +9,6 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -82,7 +81,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.contentType()).isEqualTo(MediaType.APPLICATION_JSON_VALUE);
 
         PathResponse pathResponse = response.body().as(PathResponse.class);
-        최단_경로_찾기_검증(pathResponse, Arrays.asList(교대역, 남부터미널역, 양재역), 5);
+        최단_경로_찾기_검증(pathResponse, Arrays.asList(교대역, 남부터미널역, 양재역), 5, 1250);
     }
 
     public static ExtractableResponse<Response> 최단_경로_조회_요청(Long sourceId, Long targetId) {
@@ -99,7 +98,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return response;
     }
 
-    public static void 최단_경로_찾기_검증(PathResponse pathResponse, List<StationResponse> expectedStations, int distance) {
+    public static void 최단_경로_찾기_검증(PathResponse pathResponse, List<StationResponse> expectedStations,
+                                   int distance, int cost) {
         List<Long> stationIds = pathResponse.getStations().stream()
                 .map(it -> it.getId())
                 .collect(Collectors.toList());
@@ -110,5 +110,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
         assertThat(pathResponse.getDistance()).isEqualTo(distance);
+        assertThat(pathResponse.getFare()).isEqualTo(cost);
     }
 }

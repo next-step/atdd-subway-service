@@ -2,6 +2,7 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.application.fare.FareCalculator;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.exception.NoLinkPathException;
 import nextstep.subway.station.domain.Station;
@@ -54,9 +55,16 @@ public class PathFinder {
         verifyNoLinkPath(shortestPath);
 
         List<Station> stations = shortestPath.getVertexList();
-        return new PathResponse(stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList()), (int) shortestPath.getWeight());
+        int distance = (int) shortestPath.getWeight();
+        int fare = FareCalculator.calculateFare(distance);
+
+        return new PathResponse(
+                stations.stream()
+                        .map(StationResponse::of)
+                        .collect(Collectors.toList()),
+                distance,
+                fare
+        );
     }
 
     private void verifySameSourceTargetStation(Station sourceStation, Station targetStation) {
