@@ -39,6 +39,7 @@ public class LineTest {
     public void test1() {
         Line line = new Line("2호선", "green", 교대역, 강남역, 10);
         assertThat(line.getStations().size()).isEqualTo(2);
+        
         assertThat(line.getSections().getSections().size()).isEqualTo(1);
         assertThat(line.getStations().get(0)).isEqualTo(교대역);
         assertThat(line.getStations().get(1)).isEqualTo(강남역);
