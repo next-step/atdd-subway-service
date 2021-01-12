@@ -60,7 +60,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, createResponse);
         // then
         즐겨찾기_삭제됨(deleteResponse);
+    }
 
+    @DisplayName("출발역과 종료역을 같게 하여 즐겨찾기 생성한다")
+    @Test
+    void createFavoriteWithSameStation() {
+        // when
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(accessToken, 강남역, 강남역);
+        // then
+        즐겨찾기_생성_실패됨(createResponse);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(String accessToken, StationResponse source, StationResponse target) {
@@ -107,5 +115,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> deleteResponse) {
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 즐겨찾기_생성_실패됨(ExtractableResponse<Response> createResponse) {
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
