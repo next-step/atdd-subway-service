@@ -9,11 +9,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Line extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -110,26 +115,9 @@ public class Line extends BaseEntity {
 		}
 	}
 
-	public Line() {
-
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getColor() {
-		return color;
-	}
-
 	public List<Section> getSections() {
 		return sections.getSections();
 	}
-
 	public List<Station> getStations() {
 		return sections.getStations();
 	}
