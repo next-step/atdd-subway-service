@@ -3,6 +3,8 @@ package nextstep.subway.favorite.ui;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
+import nextstep.subway.favorite.dto.FavoriteCreateRequest;
+import nextstep.subway.favorite.dto.FavoriteDeleteRequest;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +25,8 @@ public class FavoriteController {
     @PostMapping
     public ResponseEntity createFavorite(@RequestBody FavoriteRequest request,
                                          @AuthenticationPrincipal LoginMember loginMember) {
-        FavoriteResponse favorite = favoriteService.createFavorite(loginMember.getId(), request.getSource(), request.getTarget());
+        FavoriteCreateRequest favoriteCreateRequest = new FavoriteCreateRequest(loginMember.getId(), request.getSource(), request.getTarget());
+        FavoriteResponse favorite = favoriteService.createFavorite(favoriteCreateRequest);
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
     }
 
@@ -35,7 +38,8 @@ public class FavoriteController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteFavorite(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id) {
-        favoriteService.deleteFavorite(loginMember.getId(), id);
+        FavoriteDeleteRequest favoriteDeleteRequest = new FavoriteDeleteRequest(loginMember.getId(), id);
+        favoriteService.deleteFavorite(favoriteDeleteRequest);
         return ResponseEntity.noContent().build();
     }
 
