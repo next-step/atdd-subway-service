@@ -38,6 +38,11 @@ public class LineService {
         return LineResponse.ofList(persistLines);
     }
 
+    @Transactional(readOnly = true)
+    public List<Line> findAllLines() {
+        return lineRepository.findAll();
+    }
+
     private Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
