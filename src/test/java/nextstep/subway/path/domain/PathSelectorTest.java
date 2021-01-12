@@ -1,85 +1,32 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.exception.BadRequestException;
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.when;
 
 
 @DisplayName("구간 탐색 기능 테스트")
-public class PathSelectorTest {
-    private static final int DEFAULT_DISTANCE = 10;
-
-    @Mock
-    private static Station 신도림;
-    @Mock
-    private static Station 문래;
-    @Mock
-    private static Station 영등포구청;
-    @Mock
-    private static Station 당산;
-
-    @Mock
-    private static Station 국회의사당;
-    @Mock
-    private static Station 여의도;
-    @Mock
-    private static Station 샛강;
-    @Mock
-    private static Station 노량진;
-
-    @Mock
-    private static Station 영등포;
-    @Mock
-    private static Station 신길;
-    @Mock
-    private static Station 대방;
+public class PathSelectorTest extends PathDomainBase {
 
     public PathSelectorTest() {
-        MockitoAnnotations.openMocks(this);
-        when(신도림.getId()).thenReturn(1L);
-        when(문래.getId()).thenReturn(2L);
-        when(영등포구청.getId()).thenReturn(3L);
-        when(당산.getId()).thenReturn(4L);
-
-        when(국회의사당.getId()).thenReturn(5L);
-        when(여의도.getId()).thenReturn(6L);
-        when(샛강.getId()).thenReturn(7L);
-        when(노량진.getId()).thenReturn(8L);
-
-        when(영등포.getId()).thenReturn(9L);
-        when(신길.getId()).thenReturn(10L);
-        when(대방.getId()).thenReturn(11L);
-
-        Line 이호선 = new Line("2호선", "green");
-
         PathSelector.add(new Section(이호선, 신도림, 문래, DEFAULT_DISTANCE));
         PathSelector.add(new Section(이호선, 문래, 영등포구청, DEFAULT_DISTANCE));
         PathSelector.add(new Section(이호선, 영등포구청, 당산, DEFAULT_DISTANCE));
-
-        Line 구호선 = new Line("9호선", "brown");
 
         PathSelector.add(new Section(구호선, 당산, 국회의사당, DEFAULT_DISTANCE));
         PathSelector.add(new Section(구호선, 국회의사당, 여의도, DEFAULT_DISTANCE));
         PathSelector.add(new Section(구호선, 여의도, 샛강, DEFAULT_DISTANCE));
         PathSelector.add(new Section(구호선, 샛강, 노량진, DEFAULT_DISTANCE));
-
-        Line 일호선 = new Line("1호선", "blue");
 
         PathSelector.add(new Section(일호선, 신도림, 영등포, DEFAULT_DISTANCE));
         PathSelector.add(new Section(일호선, 영등포, 신길, DEFAULT_DISTANCE));
@@ -115,21 +62,5 @@ public class PathSelectorTest {
         assertThatExceptionOfType(BadRequestException.class)
                 .isThrownBy(() -> PathSelector.select(신도림, new Station("서울")))
                 .withMessage("연결되지 않은 역은 조회 할 수 없습니다.");
-    }
-
-    private static <T> ArgumentSupplier<T> supply(Supplier<T> supplier) {
-        return new ArgumentSupplier<>(supplier);
-    }
-
-    private static class ArgumentSupplier<T> {
-        private Supplier<T> supplier;
-
-        public ArgumentSupplier(Supplier<T> supplier) {
-            this.supplier = supplier;
-        }
-
-        public T get() {
-            return supplier.get();
-        }
     }
 }
