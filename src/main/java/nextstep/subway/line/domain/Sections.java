@@ -18,6 +18,10 @@ public class Sections {
         sections.add(section);
     }
 
+    public Sections(List<Section> sections) {
+        this.sections = sections;
+    }
+
     public static Sections of(Line line, Station upStation, Station downStation, int distance) {
         return new Sections(new Section(line,upStation, downStation, distance));
     }
