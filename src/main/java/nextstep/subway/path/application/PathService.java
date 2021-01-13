@@ -50,7 +50,8 @@ public class PathService {
     }
 
     private List<StationResponse> toStationResponses(List<Long> stationIds) {
-        final Map<Long,Station> stations = stationRepository.findAll().stream()
+        final Map<Long,Station> stations = stationRepository.findByIdIn(stationIds)
+                .stream()
                 .collect(Collectors.toMap(Station::getId, it -> it));
 
         return stationIds.stream()
