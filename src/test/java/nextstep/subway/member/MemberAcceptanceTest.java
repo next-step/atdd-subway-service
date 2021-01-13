@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.토큰_발급됨;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_됨;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -55,7 +55,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void manageMyInfo() {
         // given
         회원_등록되어_있음(new MemberRequest(EMAIL, PASSWORD, AGE));
-        TokenResponse tokenResponse = 토큰_발급됨(new TokenRequest(EMAIL, PASSWORD));
+        TokenResponse tokenResponse = 로그인_됨(new TokenRequest(EMAIL, PASSWORD)).as(TokenResponse.class);
 
         // when
         ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(tokenResponse.getAccessToken());
@@ -69,7 +69,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_정보_수정됨(updateResponse);
 
         //given
-        tokenResponse = 토큰_발급됨(new TokenRequest(NEW_EMAIL, NEW_PASSWORD));
+        tokenResponse = 로그인_됨(new TokenRequest(NEW_EMAIL, NEW_PASSWORD)).as(TokenResponse.class);
         // when
         ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(tokenResponse.getAccessToken());
         // then

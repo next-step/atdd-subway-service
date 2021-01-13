@@ -53,8 +53,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회_실패됨(response);
     }
 
-    public static TokenResponse 토큰_발급됨(TokenRequest tokenRequest) {
-        return 로그인_요청(tokenRequest).as(TokenResponse.class);
+    public static ExtractableResponse<Response> 로그인_됨(TokenRequest tokenRequest) {
+        return 로그인_요청(tokenRequest);
     }
 
     private static ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
