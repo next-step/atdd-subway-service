@@ -4,6 +4,7 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.function.Consumer;
 
 @Entity
@@ -37,26 +38,6 @@ public class Section extends BaseEntity {
         this.distance = Distance.of(distance);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Line getLine() {
-        return line;
-    }
-
-    public Station getUpStation() {
-        return upStation;
-    }
-
-    public Station getDownStation() {
-        return downStation;
-    }
-
-    public int getDistance() {
-        return distance.getDistance();
-    }
-
     public void updateUpStationByNewSection(final Section newSection) {
         this.upStation = newSection.getDownStation();
         distance = distance.minus(newSection.getDistance());
@@ -85,5 +66,42 @@ public class Section extends BaseEntity {
 
     public void addToPath(final Consumer<Section> consumer) {
         consumer.accept(this);
+    }
+
+    public boolean newFindMatchingSection(final List<Station> vertexList) {
+        for (int i = 1; i <= vertexList.size() - 1; i++) {
+            final Station upStation = vertexList.get(i - 1);
+            final Station downStation = vertexList.get(i);
+
+            if (isMatchUpStation(upStation) && isMatchDownStation(downStation)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Line getLine() {
+        return line;
+    }
+
+    public Station getUpStation() {
+        return upStation;
+    }
+
+    public Station getDownStation() {
+        return downStation;
+    }
+
+    public int getDistance() {
+        return distance.getDistance();
+    }
+
+    public int getAdditionalFareLine() {
+        return this.line.getAdditionalFare();
     }
 }

@@ -1,0 +1,44 @@
+package nextstep.subway.fare;
+
+import java.util.Arrays;
+import java.util.function.Function;
+
+public enum FarePolicyByDistance {
+    BASIC(0, 9, (distance) -> {
+        return Fare.createBaseFare();
+    }),
+    SHORT_DISTANCE(10, 49, (distance) -> {
+        return Fare.of(calculateAdditionalFareByDistance(distance, 5));
+    }),
+    LONG_DISTANCE(50, Integer.MAX_VALUE, (distance) -> {
+        return Fare.of(calculateAdditionalFareByDistance(distance, 8));
+    });
+
+    private static final int ADDITIONAL_FARE = 100;
+    private final int staringDistance;
+    private final int endingDistance;
+    private final Function<Integer, Fare> lineFareExpression;
+
+    FarePolicyByDistance(final int staringDistance, final int endingDistance, final Function<Integer, Fare> lineFareExpression) {
+        this.staringDistance = staringDistance;
+        this.endingDistance = endingDistance;
+        this.lineFareExpression = lineFareExpression;
+    }
+
+    private static int calculateAdditionalFareByDistance(final int distance, final int baseDistance) {
+        final int divided = (distance - 1) / baseDistance;
+        return (int) ((Math.ceil(divided) + 1) * ADDITIONAL_FARE);
+    }
+
+    private static FarePolicyByDistance getDistanceFareType(final int distance) {
+        return Arrays.stream(values())
+            .filter(farePolicyByDistance -> farePolicyByDistance.staringDistance <= distance)
+            .filter(farePolicyByDistance -> farePolicyByDistance.endingDistance >= distance)
+            .findFirst()
+            .orElseThrow(IllegalArgumentException::new);
+    }
+
+    public static Fare getAdditionalFareByDistance(final int distance) {
+        return getDistanceFareType(distance).lineFareExpression.apply(distance);
+    }
+}
