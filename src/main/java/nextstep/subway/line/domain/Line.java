@@ -58,12 +58,6 @@ public class Line extends BaseEntity {
         return sections.getSections();
     }
 
-    public List<StationResponse> getStationResponse() {
-        return getStations().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-    }
-
     public void addSection(Station upStation, Station downStation, int distance) {
         sections.addSection(upStation, downStation, distance, this.getStations(), this);
     }
@@ -72,7 +66,7 @@ public class Line extends BaseEntity {
         sections.remove(station, this);
     }
 
-    private List<Station> getStations() {
+    public List<Station> getStations() {
         if (this.getSections().isEmpty()) {
             return Arrays.asList();
         }

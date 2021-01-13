@@ -47,7 +47,7 @@ class LineTest {
     @DisplayName("역의 구간 목록을 순서대로 가져온다")
     @Test
     void getStations() {
-        List<StationResponse> 구간_목록 = 이호선.getStationResponse();
+        List<StationResponse> 구간_목록 = getStationResponse(이호선);
         List<String> 구간_역이름_목록 = 구간_역이름_목록_조회(구간_목록);
 
         assertThat(구간_역이름_목록).containsExactlyElementsOf(Arrays.asList("교대역", "역삼역"));
@@ -58,7 +58,7 @@ class LineTest {
     void addSection() {
         이호선.addSection(교대역, 강남역, 교대역_강남역_거리);
 
-        List<StationResponse> 구간_목록 = 이호선.getStationResponse();
+        List<StationResponse> 구간_목록 = getStationResponse(이호선);
         List<String> 구간_역이름_목록 = 구간_역이름_목록_조회(구간_목록);
 
         assertThat(구간_역이름_목록).containsExactlyElementsOf(Arrays.asList("교대역", "강남역", "역삼역"));
@@ -69,7 +69,7 @@ class LineTest {
     void addSectionDistanceException() {
         교대역_강남역_거리 = 10;
 
-        assertThatThrownBy(()-> {
+        assertThatThrownBy(() -> {
             이호선.addSection(교대역, 강남역, 교대역_강남역_거리);
         }).isInstanceOf(SectionBadRequestException.class);
     }
@@ -77,7 +77,7 @@ class LineTest {
     @DisplayName("역의 구간을 추가한다 : 겹치는 역이 없으면 익셉션 발생")
     @Test
     void addSectionAllNotEqualException() {
-        assertThatThrownBy(()-> {
+        assertThatThrownBy(() -> {
             이호선.addSection(강남역, 잠실역, 강남역_잠실역_거리);
         }).isInstanceOf(SectionBadRequestException.class);
     }
@@ -85,7 +85,7 @@ class LineTest {
     @DisplayName("역의 구간을 추가한다 : 이미 존재하는 구간이면 익셉션 발생")
     @Test
     void addSectionExistException() {
-        assertThatThrownBy(()-> {
+        assertThatThrownBy(() -> {
             이호선.addSection(교대역, 역삼역, 교대역_역삼역_거리);
         }).isInstanceOf(SectionBadRequestException.class);
     }
@@ -97,7 +97,7 @@ class LineTest {
 
         이호선.removeStation(강남역);
 
-        List<StationResponse> 구간_목록 = 이호선.getStationResponse();
+        List<StationResponse> 구간_목록 = getStationResponse(이호선);
         List<String> 구간_역이름_목록 = 구간_역이름_목록_조회(구간_목록);
 
         assertThat(구간_역이름_목록).containsExactlyElementsOf(Arrays.asList("교대역", "역삼역"));
@@ -106,7 +106,7 @@ class LineTest {
     @DisplayName("역을 삭제한다 : 구간이 1개만 있다면 익셉션 발생")
     @Test
     void removeStationSizeException() {
-        assertThatThrownBy(()-> {
+        assertThatThrownBy(() -> {
             이호선.removeStation(강남역);
         }).isInstanceOf(SectionBadRequestException.class);
     }
@@ -116,5 +116,11 @@ class LineTest {
                 .map(response -> response.getName())
                 .collect(Collectors.toList());
         return stationNames;
+    }
+
+    public List<StationResponse> getStationResponse(Line line) {
+        return line.getStations().stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
     }
 }
