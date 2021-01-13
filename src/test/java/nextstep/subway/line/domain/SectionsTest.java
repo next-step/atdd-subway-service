@@ -77,4 +77,36 @@ class SectionsTest {
             이호선.addSection(new Section(이호선, 강남역, 역삼역, 11));
         }).isInstanceOf(RuntimeException.class);
     }
+
+    @DisplayName("구간 삭제 - 하행 종점역 삭제")
+    @Test
+    void removeSection() {
+
+        이호선.addSection(new Section(이호선, 강남역, 역삼역, 7));
+        이호선.removeSection(잠실역);
+
+        assertThat(이호선.getSections().getStations()).containsExactly(강남역, 역삼역);
+    }
+
+    @DisplayName("구간 삭제 - 역 사이 삭제")
+    @Test
+    void removeSection2() {
+        이호선.addSection(new Section(이호선, 강남역, 역삼역, 7));
+        이호선.removeSection(역삼역);
+
+        assertThat(이호선.getSections().getStations()).containsExactly(강남역, 잠실역);
+    }
+
+    @DisplayName("구간 삭제 - 상행 종점역 삭제")
+    @Test
+    void removeSection3() {
+        // given
+        이호선.addSection(new Section(이호선, 강남역, 역삼역, 7));
+        // when
+        이호선.removeSection(강남역);
+        // then
+        assertThat(이호선.getSections().getStations()).containsExactly(역삼역, 잠실역);
+    }
+
+
 }

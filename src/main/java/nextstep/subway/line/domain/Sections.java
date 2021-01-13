@@ -42,7 +42,7 @@ public class Sections {
 
     private void validateExist(Section section) {
         List<Station> stations = getStations();
-        if (stations.containsAll(Arrays.asList(section.getUpStation(), section.getDownStation()))) {
+        if (sections.stream().anyMatch(it -> it.isSameUpStation(section.getUpStation()) && it.isSameDownStation(section.getDownStation()))) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
 
@@ -95,5 +95,33 @@ public class Sections {
         return getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public void remove(Station station) {
+        if (sections.size() <= 1) {
+            throw new RuntimeException();
+        }
+
+        Optional<Section> upLineStation = sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+        Optional<Section> downLineStation = sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            addSectionAfterRemove(upLineStation.get(), downLineStation.get());
+        }
+
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
+    private void addSectionAfterRemove(Section upSection, Section downSection) {
+        Station newUpStation = downSection.getUpStation();
+        Station newDownStation = upSection.getDownStation();
+        Line line = upSection.getLine();
+        int newDistance = upSection.getDistance() + downSection.getDistance();
+        sections.add(new Section(line, newUpStation, newDownStation, newDistance));
     }
 }
