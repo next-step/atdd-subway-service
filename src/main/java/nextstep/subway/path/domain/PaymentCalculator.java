@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 
 public class PaymentCalculator {
     private static final int DEFAULT_PAYMENT = 1_250;
@@ -24,15 +25,23 @@ public class PaymentCalculator {
     }
 
     private enum DistanceCharge {
+        LONG(50, 8),
         MIDDLE(10, 5),
-        LONG(50, 8)
+        DEFAULT {
+            @Override
+            protected int calculate(int distance) {
+                return DEFAULT_CHARGE;
+            }
+        }
         ;
 
         private static final int DEFAULT_DISTANCE = 10;
         private static final int CHARGE_PER_INTERVAL = 100;
 
-        private final int threshold;
-        private final int interval;
+        private int threshold;
+        private int interval;
+
+        DistanceCharge(){}
 
         DistanceCharge(int threshold, int interval) {
             this.threshold = threshold;
@@ -40,13 +49,11 @@ public class PaymentCalculator {
         }
 
         public static int calculateCharge(int distance) {
-            if (LONG.checkDistance(distance)) {
-                return LONG.calculate(distance);
-            }
-            if (MIDDLE.checkDistance(distance)) {
-                return MIDDLE.calculate(distance);
-            }
-            return DEFAULT_CHARGE;
+            return Stream.of(DistanceCharge.values())
+                    .filter(it -> it.checkDistance(distance))
+                    .findFirst()
+                    .orElse(DEFAULT)
+                    .calculate(distance);
         }
 
         private boolean checkDistance(int distance) {
