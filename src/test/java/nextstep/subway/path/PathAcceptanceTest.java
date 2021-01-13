@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.fares.domain.Fare;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -20,8 +21,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 경로 조회")
@@ -134,12 +138,24 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인한 청소년은 할인이 적용된다")
     @Test
     void findShortestPathWithExtraChargeMax() {
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, 15);
+
+        String accessToken = 로그인_요청(EMAIL, PASSWORD)
+                .as(TokenResponse.class)
+                .getAccessToken();
+
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(양재역, 양재시민의숲역);
+        ExtractableResponse<Response> response = 로그인하여_최단_경로_조회_요청(양재역, 양재시민의숲역, accessToken);
 
         // then
         최단_경로_조회됨(response, Arrays.asList(양재역, 양재시민의숲역), 10);
-        지하철_이용_요금_응답함(response, 1250 + 100 + 1000);
+        Fare fare = new Fare();
+        fare.add(1250);
+        fare.add(1000);
+        fare.minus(350);
+        fare.discount(0.2);
+        지하철_이용_요금_응답함(response, fare.getFare());
     }
 
     @DisplayName("출발역과 도착역을 동일하게 하여 최단 경로를 조회한다")
@@ -175,6 +191,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse sourceStation,
                                                             StationResponse targetStation) {
         return RestAssured.given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .queryParam("source", sourceStation.getId())
+                .queryParam("target", targetStation.getId())
+                .when().get("/paths")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 로그인하여_최단_경로_조회_요청(StationResponse sourceStation,
+                                                                  StationResponse targetStation,
+                                                                  String accessToken) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .queryParam("source", sourceStation.getId())
                 .queryParam("target", targetStation.getId())
