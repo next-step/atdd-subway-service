@@ -29,11 +29,9 @@ public class LineTest {
         강남역 = new Station(1L, "강남역");
         교대역 = new Station(2L, "교대역");
         서초역 = new Station(3L, "서초역");
-
         삼성역 = new Station(4L, "삼성역");
         역삼역 = new Station(5L, "역삼역");
         신림역 = new Station(6L, "신림역");
-
     }
 
     @DisplayName("생성 테스트")
@@ -41,9 +39,7 @@ public class LineTest {
     public void test1() {
         Line line = new Line("2호선", "green", 교대역, 강남역, 10);
         assertThat(line.getStations().size()).isEqualTo(2);
-
         assertThat(line.getSections().getSections().size()).isEqualTo(1);
-
         assertThat(line.getStations().get(0)).isEqualTo(교대역);
         assertThat(line.getStations().get(1)).isEqualTo(강남역);
     }
@@ -54,9 +50,7 @@ public class LineTest {
         Line line = new Line("2호선", "green", 교대역, 강남역, 10);
         line.addSection(서초역, 교대역, 10);
         assertThat(line.getStations().size()).isEqualTo(3);
-
         assertThat(line.getSections().getSections().size()).isEqualTo(2);
-
         assertThat(line.getStations().get(0)).isEqualTo(서초역);
         assertThat(line.getStations().get(1)).isEqualTo(교대역);
         assertThat(line.getStations().get(2)).isEqualTo(강남역);
@@ -70,7 +64,6 @@ public class LineTest {
         Station 역삼역 = new Station(5L, "역삼역");
         Station 신림역 = new Station(6L, "신림역");
 
-
         Line line = new Line("2호선", "green", 교대역, 강남역, 10);
         line.addSection(신림역, 교대역, 10);
         line.addSection(강남역, 삼성역, 10);
@@ -79,6 +72,7 @@ public class LineTest {
         assertThat(line.getStations().size()).isEqualTo(6);
 
         assertThat(line.getSections().getSections().size()).isEqualTo(5);
+
 
         assertThat(line.getStations().get(0)).isEqualTo(신림역);
         assertThat(line.getStations().get(1)).isEqualTo(서초역);
