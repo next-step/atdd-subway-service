@@ -3,7 +3,9 @@ package nextstep.subway.path.application;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.Fare;
+import nextstep.subway.path.domain.FareCalculator;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.PersonGroup;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -31,9 +33,10 @@ public class PathService {
         PathFinder pathFinder = PathFinder.initialPathFinder(lines);
         GraphPath path = pathFinder.getShortestPath(sourceId, targetId);
 
-        Fare fare = Fare.initialFare(lines);
-        fare.calculateFare(path.getWeight());
-        fare.discountPerAge(userAge);
+        Fare fare = new Fare();
+        fare.addFare(FareCalculator.additionalLineFare(lines));
+        fare.addFare(FareCalculator.additionalDistanceFare(path.getWeight()));
+        fare.minusFare(PersonGroup.discountFarePerAge(userAge, fare.getFare()));
 
         return PathResponse.of(getStationsById(path.getVertexList()), path.getWeight(), fare.getFare());
     }
