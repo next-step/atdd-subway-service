@@ -37,6 +37,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 선정릉역;
     private StationResponse 선릉역;
     private StationResponse 역삼역;
+    private StationResponse 양재시민의숲역;
+    private StationResponse 청계산입구역;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -56,6 +58,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         선정릉역 = StationAcceptanceTest.지하철역_등록되어_있음("선정릉역").as(StationResponse.class);
         선릉역 = StationAcceptanceTest.지하철역_등록되어_있음("선릉역").as(StationResponse.class);
         역삼역 = StationAcceptanceTest.지하철역_등록되어_있음("역삼역").as(StationResponse.class);
+        양재시민의숲역 = StationAcceptanceTest.지하철역_등록되어_있음("양재시민의숲역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10))
             .as(LineResponse.class);
@@ -67,9 +70,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
             .as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+        지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 양재시민의숲역, 10);
+        지하철_노선에_지하철역_등록_요청(신분당선, 양재시민의숲역, 청계산입구역, 50);
     }
 
-    @DisplayName("최단 경로를 조회한다")
+    @DisplayName("10km 이내의 최단 경로를 조회한다")
     @Test
     void findShortestPath() {
         // when
@@ -77,6 +82,29 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단_경로_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 5);
+        지하철_이용_요금_응답함(response, 1250);
+    }
+
+    @DisplayName("10km ~ 50km 사이의 지하철 경로를 검색한다")
+    @Test
+    void findShortestPathWithBetween10kmAnd50km() {
+        // when
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 양재시민의숲역);
+
+        // then
+        최단_경로_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역, 양재시민의숲역), 15);
+        지하철_이용_요금_응답함(response, 1250 + 100);
+    }
+
+    @DisplayName("50km 초과 경로의 지하철 경로를 검색한다")
+    @Test
+    void findShortestPathWithOver50km() {
+        // when
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 청계산입구역);
+
+        // then
+        최단_경로_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역, 양재시민의숲역, 청계산입구역), 65);
+        지하철_이용_요금_응답함(response, 1250 + 800 + 100);
     }
 
     @DisplayName("출발역과 도착역을 동일하게 하여 최단 경로를 조회한다")
@@ -133,6 +161,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
         assertThat(path.getDistance()).isEqualTo(distance);
+    }
+
+    private void 지하철_이용_요금_응답함(ExtractableResponse<Response> response, int fares) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFares()).isEqualTo(fares);
     }
 
     public static void 최단_경로_조회_실패됨(ExtractableResponse<Response> response) {
