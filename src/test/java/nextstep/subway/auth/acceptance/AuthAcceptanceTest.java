@@ -5,6 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.dto.MemberRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +26,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        회원_등록되어_있음(new MemberRequest(EMAIL, PASSWORD, AGE));
     }
 
     @DisplayName("Bearer Auth")
@@ -51,11 +53,15 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회_실패됨(response);
     }
 
-    public static ExtractableResponse<Response> 로그인_요청(TokenRequest params) {
+    public static TokenResponse 토큰_발급됨(TokenRequest tokenRequest) {
+        return 로그인_요청(tokenRequest).as(TokenResponse.class);
+    }
+
+    private static ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
+                .body(tokenRequest)
                 .when().post("/login/token")
                 .then().log().all()
                 .extract();
