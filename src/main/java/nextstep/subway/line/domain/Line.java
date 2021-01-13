@@ -59,7 +59,7 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {
-        sections.addSection(upStation, downStation, distance, this.getStations(), this);
+        sections.addSection(new Section(this, upStation, downStation, distance), this.getStations());
     }
 
     public void removeStation(Station station) {

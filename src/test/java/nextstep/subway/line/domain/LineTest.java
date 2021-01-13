@@ -50,7 +50,7 @@ class LineTest {
         List<StationResponse> 구간_목록 = getStationResponse(이호선);
         List<String> 구간_역이름_목록 = 구간_역이름_목록_조회(구간_목록);
 
-        assertThat(구간_역이름_목록).containsExactlyElementsOf(Arrays.asList("교대역", "역삼역"));
+        assertThat(구간_역이름_목록).containsExactly("교대역", "역삼역");
     }
 
     @DisplayName("역의 구간을 추가한다 : 교대-강남을 추가하여 교대역-강남역-역삼역 순서대로 출력")
@@ -61,7 +61,7 @@ class LineTest {
         List<StationResponse> 구간_목록 = getStationResponse(이호선);
         List<String> 구간_역이름_목록 = 구간_역이름_목록_조회(구간_목록);
 
-        assertThat(구간_역이름_목록).containsExactlyElementsOf(Arrays.asList("교대역", "강남역", "역삼역"));
+        assertThat(구간_역이름_목록).containsExactly("교대역", "강남역", "역삼역");
     }
 
     @DisplayName("역의 구간을 추가한다 : 추가하려는 구간의 길이가 더 길면 익셉션 발생")
@@ -100,7 +100,7 @@ class LineTest {
         List<StationResponse> 구간_목록 = getStationResponse(이호선);
         List<String> 구간_역이름_목록 = 구간_역이름_목록_조회(구간_목록);
 
-        assertThat(구간_역이름_목록).containsExactlyElementsOf(Arrays.asList("교대역", "역삼역"));
+        assertThat(구간_역이름_목록).containsExactly("교대역", "역삼역");
     }
 
     @DisplayName("역을 삭제한다 : 구간이 1개만 있다면 익셉션 발생")
@@ -113,7 +113,7 @@ class LineTest {
 
     private List<String> 구간_역이름_목록_조회(List<StationResponse> stationResponses) {
         List<String> stationNames = stationResponses.stream()
-                .map(response -> response.getName())
+                .map(StationResponse::getName)
                 .collect(Collectors.toList());
         return stationNames;
     }
