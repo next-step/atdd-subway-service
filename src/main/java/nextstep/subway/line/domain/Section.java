@@ -68,12 +68,17 @@ public class Section extends BaseEntity {
         consumer.accept(this);
     }
 
-    public boolean findMatchingSection(final List<Station> stations) {
-        if (stations.stream().noneMatch(this::isMatchUpStation)) {
-            return false;
+    public boolean newFindMatchingSection(final List<Station> vertexList) {
+        for (int i = 1; i <= vertexList.size() - 1; i++) {
+            final Station upStation = vertexList.get(i - 1);
+            final Station downStation = vertexList.get(i);
+
+            if (isMatchUpStation(upStation) && isMatchDownStation(downStation)) {
+                return true;
+            }
         }
 
-        return stations.stream().anyMatch(this::isMatchDownStation);
+        return false;
     }
 
     public Long getId() {
