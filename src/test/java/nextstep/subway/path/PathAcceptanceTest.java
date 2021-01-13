@@ -108,6 +108,28 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_이용_요금_응답함(response, 1250 + 800 + 100);
     }
 
+    @DisplayName("추가 요금이 있는 노선이 존재하는 지하철 경로를 검색한다")
+    @Test
+    void findShortestPathWithExtraCharge() {
+        // when
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 강남역);
+
+        // then
+        최단_경로_조회됨(response, Arrays.asList(교대역, 강남역), 10);
+        지하철_이용_요금_응답함(response, 1250 + 900);
+    }
+
+    @DisplayName("여러 추가 요금이 있는 노선이 존재하는 지하철 경로를 검색한다")
+    @Test
+    void findShortestPathWithExtraChargeMax() {
+        // when
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 양재시민의숲역);
+
+        // then
+        최단_경로_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역, 양재시민의숲역), 15);
+        지하철_이용_요금_응답함(response, 1250 + 1000);
+    }
+
     @DisplayName("출발역과 도착역을 동일하게 하여 최단 경로를 조회한다")
     @Test
     void findShortestPathWithSameStation() {
