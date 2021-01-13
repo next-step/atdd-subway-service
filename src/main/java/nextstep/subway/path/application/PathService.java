@@ -48,7 +48,7 @@ public class PathService {
         final int travelDistance = (int) shortestPath.getWeight();
         final List<Station> stations = shortestPath.getVertexList();
 
-        final int lineFare = FarePolicyByDistance.calculateLineFare(travelDistance).getFare();
+        final int lineFare = FarePolicyByDistance.getAdditionalFareByDistance(travelDistance).getFare();
         final int highestFareByLineFare = findHighestFareByLine(allSections, stations).getFare();
 
         final Fare finalFare = Fare.createBaseFare()

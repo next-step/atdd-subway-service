@@ -38,7 +38,7 @@ public enum FarePolicyByDistance {
             .orElseThrow(IllegalArgumentException::new);
     }
 
-    public static Fare calculateLineFare(final int distance) {
+    public static Fare getAdditionalFareByDistance(final int distance) {
         return getDistanceFareType(distance).lineFareExpression.apply(distance);
     }
 }
