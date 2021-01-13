@@ -12,6 +12,14 @@ public class Fare {
         this.fare += fare;
     }
 
+    public void minus(int fare) {
+        this.fare -= fare;
+    }
+
+    public void discount(double rate) {
+        fare *= (1 - rate);
+    }
+
     public int getFare() {
         return fare;
     }

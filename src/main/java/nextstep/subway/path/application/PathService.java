@@ -1,6 +1,8 @@
 package nextstep.subway.path.application;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fares.domain.Fare;
 import nextstep.subway.fares.policy.FarePolicies;
 import nextstep.subway.line.application.SectionRepository;
@@ -22,7 +24,7 @@ public class PathService {
     private final StationService stationService;
     private final FarePolicies farePolicies = new FarePolicies();
 
-    public PathResponse findShortestPath(Long sourceStationId, Long targetStationId) {
+    public PathResponse findShortestPath(Long sourceStationId, Long targetStationId, LoginMember loginMember) {
         Station sourceStation = stationService.findStationById(sourceStationId);
         Station targetStation = stationService.findStationById(targetStationId);
         checkStationsAreNotSame(sourceStation, targetStation);
@@ -33,7 +35,7 @@ public class PathService {
         checkStationIsInSections(targetStation, stations);
 
         Path shortestPath = ShortestPathFinder.findShortestPath(sections, stations, sourceStation, targetStation);
-        Fare fare = farePolicies.calculateFare(shortestPath);
+        Fare fare = farePolicies.calculateFare(shortestPath, loginMember);
 
         return PathResponse.of(shortestPath, fare);
     }

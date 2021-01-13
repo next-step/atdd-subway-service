@@ -1,5 +1,6 @@
 package nextstep.subway.fares.policy;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fares.domain.Fare;
 import nextstep.subway.path.domain.Distance;
 import nextstep.subway.path.domain.Path;
@@ -20,7 +21,7 @@ public class FarePoliciesTest {
         FarePolicies farePolicies = new FarePolicies();
         Path path = new Path(Collections.emptyList(), new Distance(10), 0);
         // when
-        Fare fare = farePolicies.calculateFare(path);
+        Fare fare = farePolicies.calculateFare(path, LoginMember.createAnonymousMember());
         // then
         assertThat(fare.getFare()).isEqualTo(1250);
     }
@@ -32,7 +33,7 @@ public class FarePoliciesTest {
         FarePolicies farePolicies = new FarePolicies();
         Path path = new Path(Collections.emptyList(), new Distance(15), 0);
         // when
-        Fare fare = farePolicies.calculateFare(path);
+        Fare fare = farePolicies.calculateFare(path, LoginMember.createAnonymousMember());
         // then
         assertThat(fare.getFare()).isEqualTo(1350);
     }
@@ -44,7 +45,7 @@ public class FarePoliciesTest {
         FarePolicies farePolicies = new FarePolicies();
         Path path = new Path(Collections.emptyList(), new Distance(65), 0);
         // when
-        Fare fare = farePolicies.calculateFare(path);
+        Fare fare = farePolicies.calculateFare(path, LoginMember.createAnonymousMember());
         // then
         assertThat(fare.getFare()).isEqualTo(2150);
     }
