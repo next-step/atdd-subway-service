@@ -1,7 +1,9 @@
 package nextstep.subway.path.application.fare;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.application.PathFinder;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -23,6 +25,7 @@ class FareCalculatorTest {
     private Station 교대역;
     private Station 남부터미널역;
     private PathFinder pathFinder;
+    private LoginMember loginMember;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -43,15 +46,18 @@ class FareCalculatorTest {
         삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 5, 300);
         삼호선.addLineStation(교대역, 남부터미널역, 3);
         pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
+
+        loginMember = new LoginMember();
     }
 
     @DisplayName("기본운임(10㎞ 이내)")
     @Test
     void calculateDistanceFare1() {
         //given
+        GraphPath<Station, Section> path = pathFinder.getPath(강남역, 교대역);
         int distance = 10;
         //when
-        int fare = new FareCalculator().calculateFare(distance);
+        int fare = new FareCalculator().calculateFare(distance, path.getEdgeList(), loginMember);
 
         //then
         assertThat(fare).isEqualTo(1250);
@@ -61,10 +67,11 @@ class FareCalculatorTest {
     @Test
     void calculateDistanceFare2() {
         //given
+        GraphPath<Station, Section> path = pathFinder.getPath(강남역, 교대역);
         int distance = 30;
 
         //when
-        int fare = new FareCalculator().calculateFare(distance);
+        int fare = new FareCalculator().calculateFare(distance, path.getEdgeList(), loginMember);
 
         //then - fare = 1250 + 600(100 * 6)
         assertThat(fare).isEqualTo(1850);
@@ -74,10 +81,11 @@ class FareCalculatorTest {
     @Test
     void calculateDistanceFare3() {
         //given
+        GraphPath<Station, Section> path = pathFinder.getPath(강남역, 교대역);
         int distance = 80;
 
         //when
-        int fare = new FareCalculator().calculateFare(distance);
+        int fare = new FareCalculator().calculateFare(distance, path.getEdgeList(), loginMember);
 
         //then - fare = 1250 + 1000(100 * 10)
         assertThat(fare).isEqualTo(2250);
@@ -90,7 +98,7 @@ class FareCalculatorTest {
         GraphPath<Station, Section> path = pathFinder.getPath(강남역, 남부터미널역);
 
         //when
-        int fare = new FareCalculator().calculateFare(8, path.getEdgeList(), 20);
+        int fare = new FareCalculator().calculateFare(8, path.getEdgeList(), new LoginMember());
 
         //then - fare = 1250 + 900
         assertThat(fare).isEqualTo(2150);
@@ -102,7 +110,7 @@ class FareCalculatorTest {
         //given
         GraphPath<Station, Section> path = pathFinder.getPath(강남역, 남부터미널역);
         //when
-        int fare = new FareCalculator().calculateFare(12, path.getEdgeList(), 20);
+        int fare = new FareCalculator().calculateFare(12, path.getEdgeList(), loginMember);
 
         //then - fare = 1250 + 300(100 * 3) + 900
         assertThat(fare).isEqualTo(2450);
@@ -114,7 +122,8 @@ class FareCalculatorTest {
         //given
         GraphPath<Station, Section> path = pathFinder.getPath(강남역, 교대역);
         //when
-        int fare = new FareCalculator().calculateFare(10, path.getEdgeList(), 13);
+        int fare = new FareCalculator().calculateFare(10, path.getEdgeList(),
+                loginMember = new LoginMember(1L, MemberAcceptanceTest.EMAIL, 13));
 
         //then: fare = 1250 - ((1250 - 350) * 0.2) = 1070
         assertThat(fare).isEqualTo(1070);
@@ -127,7 +136,8 @@ class FareCalculatorTest {
         GraphPath<Station, Section> path = pathFinder.getPath(강남역, 교대역);
 
         //when
-        int fare = new FareCalculator().calculateFare(10, path.getEdgeList(), 12);
+        int fare = new FareCalculator().calculateFare(10, path.getEdgeList(),
+                loginMember = new LoginMember(1L, MemberAcceptanceTest.EMAIL, 12));
 
         //then fare = 1250 - ((1250 - 350) * 0.5) = 800
         assertThat(fare).isEqualTo(800);

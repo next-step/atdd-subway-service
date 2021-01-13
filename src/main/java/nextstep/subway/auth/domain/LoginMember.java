@@ -1,5 +1,7 @@
 package nextstep.subway.auth.domain;
 
+import nextstep.subway.auth.application.AuthorizationException;
+
 public class LoginMember {
     private Long id;
     private String email;
@@ -24,5 +26,15 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
+    }
+
+    public boolean isAuthorized() {
+        return id != null;
+    }
+
+    public void validAuthorized() {
+        if (id == null) {
+            throw new AuthorizationException();
+        }
     }
 }

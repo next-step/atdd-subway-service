@@ -1,5 +1,6 @@
 package nextstep.subway.path.application.fare;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Section;
 import org.springframework.stereotype.Service;
 
@@ -15,18 +16,21 @@ public class FareCalculator {
                 + getDistanceFarePolicy(distance).calculateOverFare(distance);
     }
 
-    public int calculateFare(int distance, List<Section> sections) {
-        return BASIC_FARE
-                + getDistanceFarePolicy(distance).calculateOverFare(distance)
-                + getMaxLineOverFare(sections);
-    }
-
-    public int calculateFare(int distance, List<Section> sections, int age) {
+    public int calculateFare(int distance, List<Section> sections, LoginMember loginMember) {
         int fare = BASIC_FARE
                 + getDistanceFarePolicy(distance).calculateOverFare(distance)
                 + getMaxLineOverFare(sections);
 
-        return fare - getAgeOverFarePolicy(age).calculateDrawbackFare(fare);
+        return applyDrawbackFare(loginMember, fare);
+    }
+
+    private int applyDrawbackFare(LoginMember loginMember, int fare) {
+        if(loginMember.isAuthorized()) {
+            AgeDrawbackFarePolicy ageOverFarePolicy = getAgeOverFarePolicy(loginMember.getAge());
+            return fare - ageOverFarePolicy.calculateDrawbackFare(fare);
+        }
+
+        return fare;
     }
 
     private AgeDrawbackFarePolicy getAgeOverFarePolicy(int age) {

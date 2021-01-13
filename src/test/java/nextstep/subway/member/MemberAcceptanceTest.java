@@ -52,7 +52,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
 
         ExtractableResponse<Response> accessTokenResponse = AuthAcceptanceTest.bearer_토큰_인증_요청(EMAIL, PASSWORD);
         String accessToken = AuthAcceptanceTest.getAccessToken(accessTokenResponse);
@@ -116,6 +116,14 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 내_회원정보_조회_요청() {
+        return RestAssured
+                .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
                 .then().log().all().extract();
