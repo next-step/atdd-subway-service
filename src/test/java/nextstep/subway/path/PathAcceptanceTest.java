@@ -59,6 +59,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         선릉역 = StationAcceptanceTest.지하철역_등록되어_있음("선릉역").as(StationResponse.class);
         역삼역 = StationAcceptanceTest.지하철역_등록되어_있음("역삼역").as(StationResponse.class);
         양재시민의숲역 = StationAcceptanceTest.지하철역_등록되어_있음("양재시민의숲역").as(StationResponse.class);
+        청계산입구역 = StationAcceptanceTest.지하철역_등록되어_있음("청계산입구역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10))
             .as(LineResponse.class);
@@ -165,7 +166,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 지하철_이용_요금_응답함(ExtractableResponse<Response> response, int fares) {
         PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getFares()).isEqualTo(fares);
+        assertThat(pathResponse.getFare()).isEqualTo(fares);
     }
 
     public static void 최단_경로_조회_실패됨(ExtractableResponse<Response> response) {

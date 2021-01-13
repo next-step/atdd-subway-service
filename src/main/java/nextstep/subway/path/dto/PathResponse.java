@@ -3,6 +3,7 @@ package nextstep.subway.path.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nextstep.subway.fares.domain.Fare;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -16,12 +17,13 @@ public class PathResponse {
 
     private List<StationResponse> stations;
     private int distance;
+    private int fare;
 
-    public static PathResponse of(Path shortestPath) {
+    public static PathResponse of(Path shortestPath, Fare fare) {
         List<StationResponse> stationResponses = shortestPath.getStations()
             .stream()
             .map(StationResponse::of)
             .collect(Collectors.toList());
-        return new PathResponse(stationResponses, shortestPath.getDistance());
+        return new PathResponse(stationResponses, shortestPath.getDistance().getValue(), fare.getFare());
     }
 }

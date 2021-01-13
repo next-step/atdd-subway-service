@@ -1,6 +1,8 @@
 package nextstep.subway.path.application;
 
 import lombok.RequiredArgsConstructor;
+import nextstep.subway.fares.domain.Fare;
+import nextstep.subway.fares.policy.FarePolicies;
 import nextstep.subway.line.application.SectionRepository;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.Path;
@@ -11,6 +13,7 @@ import nextstep.subway.station.domain.Stations;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 
 @RequiredArgsConstructor
 @Transactional
@@ -18,6 +21,7 @@ import javax.transaction.Transactional;
 public class PathService {
     private final SectionRepository sectionRepository;
     private final StationService stationService;
+    private final FarePolicies farePolicies = new FarePolicies();
 
     public PathResponse findShortestPath(Long sourceStationId, Long targetStationId) {
         Station sourceStation = stationService.findStationById(sourceStationId);
@@ -30,8 +34,9 @@ public class PathService {
         checkStationIsInSections(targetStation, stations);
 
         Path shortestPath = ShortestPathFinder.findShortestPath(sections, stations, sourceStation, targetStation);
+        Fare fare = farePolicies.calculateFare(shortestPath, Collections.emptyList());
 
-        return PathResponse.of(shortestPath);
+        return PathResponse.of(shortestPath, fare);
     }
 
     private void checkStationsAreNotSame(Station sourceStation, Station targetStation) {
