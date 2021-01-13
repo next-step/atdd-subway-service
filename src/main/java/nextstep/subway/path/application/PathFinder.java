@@ -27,7 +27,7 @@ public class PathFinder {
     public PathFinder(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
-        this.graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        this.graph = new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class);
     }
 
     /**
@@ -54,11 +54,25 @@ public class PathFinder {
      * @return 최단 경로
      */
     public PathResponse getShortestPath(Station sourceStation, Station targetStation) {
+        this.equalsSourceAndTargetOccurredException(sourceStation, targetStation);
+
         this.addGraphAllLines();
-        GraphPath shortestPath = new DijkstraShortestPath(this.graph)
-                .getPath(sourceStation, targetStation);
+        GraphPath<Station, DefaultWeightedEdge> shortestPath
+                = new DijkstraShortestPath<Station, DefaultWeightedEdge>(this.graph)
+                    .getPath(sourceStation, targetStation);
 
         return new PathResponse(shortestPath.getVertexList(), (int) shortestPath.getWeight());
+    }
+
+    /**
+     * 주어진 두 지하철 역이 같은 경우 최단 경로를 구하지 않고 예외를 발생합니다.
+     * @param sourceStation
+     * @param targetStation
+     */
+    private void equalsSourceAndTargetOccurredException(Station sourceStation, Station targetStation) {
+        if(sourceStation.equals(targetStation)) {
+            throw new IllegalArgumentException("출발역과 도착역이 같은 경우 경로를 구할 수 없습니다.");
+        }
     }
 
     /**

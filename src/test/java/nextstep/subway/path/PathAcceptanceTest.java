@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -78,5 +79,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getStations().size()).isEqualTo(3);
         assertThat(pathResponse.getDistance()).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("최단 경로를 구할 때, 출발역과 도착역이 같은 경우 예외 발생")
+    public void getShortestSameStationPathOccurredException() {
+        // given
+        // 경로의 출발지 - 도착지
+        Long 출발역 = 교대역.getId();
+        Long 도착역 = 교대역.getId();
+
+        // when
+        ExtractableResponse<Response> response = PathAcceptanceTestSupport.최단경로_조회_요청(출발역, 도착역);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }
