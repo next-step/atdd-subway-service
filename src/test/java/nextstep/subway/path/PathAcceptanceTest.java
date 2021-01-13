@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.fares.domain.Fare;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
@@ -119,14 +120,25 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_이용_요금_응답함(response, 1250 + 900);
     }
 
-    @DisplayName("여러 추가 요금이 있는 노선이 존재하는 지하철 경로를 검색한다")
+    @DisplayName("로그인 하지 않은 청소년은 요금 할인이 적용안된다")
+    @Test
+    void findShortestPathWithAnonymous() {
+        // when
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(양재역, 양재시민의숲역);
+
+        // then
+        최단_경로_조회됨(response, Arrays.asList(양재역, 양재시민의숲역), 10);
+        지하철_이용_요금_응답함(response, 1250 + 1000);
+    }
+
+    @DisplayName("로그인한 청소년은 할인이 적용된다")
     @Test
     void findShortestPathWithExtraChargeMax() {
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 양재시민의숲역);
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(양재역, 양재시민의숲역);
 
         // then
-        최단_경로_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역, 양재시민의숲역), 15);
+        최단_경로_조회됨(response, Arrays.asList(양재역, 양재시민의숲역), 10);
         지하철_이용_요금_응답함(response, 1250 + 100 + 1000);
     }
 
