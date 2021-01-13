@@ -7,9 +7,16 @@ import javax.persistence.Id;
 
 import org.apache.commons.lang3.StringUtils;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
 
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
 public class Member extends BaseEntity {
 	@Id
@@ -19,31 +26,12 @@ public class Member extends BaseEntity {
 	private String password;
 	private Integer age;
 
-	public Member() {
-	}
-
 	public Member(String email, String password, Integer age) {
 		this.email = email;
 		this.password = password;
 		this.age = age;
 	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public Integer getAge() {
-		return age;
-	}
-
+	
 	public void update(Member member) {
 		this.email = member.email;
 		this.password = member.password;
@@ -52,7 +40,7 @@ public class Member extends BaseEntity {
 
 	public void checkPassword(String password) {
 		if (!StringUtils.equals(this.password, password)) {
-			throw new AuthorizationException();
+			throw new AuthorizationException("비밀번호가 틀렸습니다.");
 		}
 	}
 }

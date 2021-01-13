@@ -1,34 +1,19 @@
 package nextstep.subway.member.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nextstep.subway.member.domain.Member;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 public class MemberResponse {
 	private Long id;
 	private String email;
 	private Integer age;
 
-	public MemberResponse() {
-	}
-
-	public MemberResponse(Long id, String email, Integer age) {
-		this.id = id;
-		this.email = email;
-		this.age = age;
-	}
-
 	public static MemberResponse of(Member member) {
 		return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public Integer getAge() {
-		return age;
 	}
 }

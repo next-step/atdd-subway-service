@@ -2,7 +2,7 @@ package nextstep.subway.path.application;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
 
@@ -53,10 +53,12 @@ class PathServiceTest {
 	@Test
 	void foundPathSameStationTest() {
 		// given
-		when(lineService.findStationById(1L)).thenReturn(시청역);
+		given(lineService.findStationById(1L)).willReturn(시청역);
+
+		// when 
 		PathRequest request = new PathRequest(시청역.getId(), 시청역.getId());
 
-		// when // then
+		// then
 		assertThatExceptionOfType(RuntimeException.class)
 			.isThrownBy(() -> pathService.findPath(request));
 	}
@@ -65,11 +67,13 @@ class PathServiceTest {
 	@Test
 	void notFoundStationTest() {
 		// given
-		when(lineService.findStationById(1L)).thenReturn(시청역);
-		when(lineService.findStationById(3L)).thenThrow(NothingException.class);
+		given(lineService.findStationById(1L)).willReturn(시청역);
+		given(lineService.findStationById(3L)).willThrow(NothingException.class);
+
+		// when 
 		PathRequest request = new PathRequest(시청역.getId(), 3L);
 
-		// when // then
+		// then
 		assertThatExceptionOfType(NothingException.class)
 			.isThrownBy(() -> pathService.findPath(request));
 	}
@@ -78,12 +82,14 @@ class PathServiceTest {
 	@Test
 	void notFoundPathTest() {
 		// given
-		when(lineService.findLineAll()).thenReturn(Arrays.asList(line1, line2));
-		when(lineService.findStationById(1L)).thenReturn(시청역);
-		when(lineService.findStationById(3L)).thenReturn(인천역);
+		given(lineService.findLineAll()).willReturn(Arrays.asList(line1, line2));
+		given(lineService.findStationById(1L)).willReturn(시청역);
+		given(lineService.findStationById(3L)).willReturn(인천역);
+
+		// when
 		PathRequest request = new PathRequest(시청역.getId(), 인천역.getId());
 
-		// when // then
+		// then
 		assertThatExceptionOfType(NothingException.class)
 			.isThrownBy(() -> pathService.findPath(request));
 	}
@@ -92,9 +98,9 @@ class PathServiceTest {
 	@Test
 	void findPathTest() {
 		// given
-		when(lineService.findLineAll()).thenReturn(Arrays.asList(line1, line2));
-		when(lineService.findStationById(3L)).thenReturn(인천역);
-		when(lineService.findStationById(4L)).thenReturn(주안역);
+		given(lineService.findLineAll()).willReturn(Arrays.asList(line1, line2));
+		given(lineService.findStationById(3L)).willReturn(인천역);
+		given(lineService.findStationById(4L)).willReturn(주안역);
 		PathRequest request = new PathRequest(인천역.getId(), 주안역.getId());
 
 		// when

@@ -17,7 +17,6 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
-import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -52,11 +51,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 		인천역 = StationAcceptanceTest.지하철역_등록되어_있음("인천역").as(StationResponse.class);
 
-		신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10);
-		이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10);
-		삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5);
+		신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10);
+		이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10);
+		삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5);
 
-		지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역);
+		LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
 	}
 
 	@DisplayName("지하철역 교대역 -> 양재역 최단경로를 구한다.")
@@ -114,15 +113,5 @@ public class PathAcceptanceTest extends AcceptanceTest {
 			.when().get("/paths?source={sourceId}&target={targetId}", source.getId(), target.getId())
 			.then().log().all().extract();
 		return response;
-	}
-
-	private void 지하철_노선에_지하철역_등록되어_있음(LineResponse line, StationResponse upStation, StationResponse downStation) {
-		LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(line, upStation, downStation, 3);
-	}
-
-	private LineResponse 지하철_노선_등록되어_있음(String line, String color, Long upId, Long downId, int distance) {
-
-		return LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest(line, color, upId, downId, distance))
-			.as(LineResponse.class);
 	}
 }

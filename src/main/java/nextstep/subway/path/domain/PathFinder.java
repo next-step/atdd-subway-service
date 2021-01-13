@@ -13,17 +13,12 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
 public class PathFinder {
-	private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 	private final DijkstraShortestPath<Station, DefaultWeightedEdge> path;
-	private final List<Line> lines;
 
 	private GraphPath<Station, DefaultWeightedEdge> resultPath;
 
 	public PathFinder(List<Line> lines) {
-		this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-		this.lines = lines;
-		generateStationGraph();
-		this.path = new DijkstraShortestPath<>(graph);
+		this.path = new DijkstraShortestPath<>(generateStationGraph(lines));
 	}
 
 	public void selectShortPath(Station source, Station target) {
@@ -39,29 +34,21 @@ public class PathFinder {
 		return (int)resultPath.getWeight();
 	}
 
-	private void generateStationGraph() {
-		generateStationVertex();
-		generateStationEdgeWeight();
-	}
+	private WeightedMultigraph<Station, DefaultWeightedEdge> generateStationGraph(List<Line> lines) {
+		WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
-	private void generateStationVertex() {
-		getStationsAll().forEach(graph::addVertex);
-	}
+		getStationsAll(lines).forEach(graph::addVertex);
+		lines.forEach(line -> line.sections().forEach(
+			it -> graph.setEdgeWeight(graph.addEdge(it.getUpStation(), it.getDownStation()), it.getDistance())
+		));
 
-	private List<Station> getStationsAll() {
+		return graph;
+	}
+	
+	private List<Station> getStationsAll(List<Line> lines) {
 		return lines.stream()
 			.flatMap(it -> it.stations().stream())
 			.collect(Collectors.toList());
-	}
-
-	private void generateStationEdgeWeight() {
-		lines.forEach(this::addStationEdgeWeight);
-	}
-
-	private void addStationEdgeWeight(Line line) {
-		line.sections().forEach(
-			it -> graph.setEdgeWeight(graph.addEdge(it.getUpStation(), it.getDownStation()), it.getDistance())
-		);
 	}
 
 	private void validateStation(Station source, Station target) {

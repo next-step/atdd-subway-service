@@ -13,7 +13,7 @@ import nextstep.subway.station.domain.Station;
 public class StationResponse {
 	private Long id;
 	private String name;
-	private LocalDateTime createdAt;
+	private LocalDateTime createdDate;
 
 	public static StationResponse of(Station station) {
 		return new StationResponse(station.getId(), station.getName(), station.getCreatedDate());
