@@ -71,7 +71,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 	@DisplayName("지하철 즐겨찾기 등록 요청을 함")
 	@Test
-	void crateFavoriteTest() {
+	void createFavoriteTest() {
 		// given // when
 		ExtractableResponse<Response> response = 즐겨찾기_생성_요청(로그인_토큰, 교대역.getId(), 양재역.getId());
 
@@ -79,10 +79,29 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		즐겨찾기_생성_확인됨(response);
 	}
 
+	@DisplayName("지하철 즐겨찾기 동일한 등록 요청을 함")
+	@Test
+	void sameFavoriteTest() {
+		// given 
+		즐겨찾기_생성_요청(로그인_토큰, 교대역.getId(), 양재역.getId());
+
+		// when
+		ExtractableResponse<Response> response = 즐겨찾기_생성_요청(로그인_토큰, 교대역.getId(), 양재역.getId());
+
+		// then
+		즐겨찾기_생성_실패됨(response);
+	}
+
 	@DisplayName("지하철 즐겨찾기 목록 조회 요청함")
 	@Test
 	void showFavoriteTest() {
-		// given // when
+		// given
+		즐겨찾기_생성_요청(로그인_토큰, 교대역.getId(), 양재역.getId());
+		즐겨찾기_생성_요청(로그인_토큰, 강남역.getId(), 양재역.getId());
+		즐겨찾기_생성_요청(로그인_토큰, 강남역.getId(), 교대역.getId());
+		즐겨찾기_생성_요청(로그인_토큰, 양재역.getId(), 인천역.getId());
+
+		// when
 		ExtractableResponse<Response> response = 즐겨찾기_조회_요청(로그인_토큰);
 
 		// then
@@ -117,6 +136,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 	private void 즐겨찾기_생성_확인됨(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+	}
+
+	private void 즐겨찾기_생성_실패됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 
 	private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
