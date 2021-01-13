@@ -30,7 +30,7 @@ public enum FarePolicyByDistance {
         return (int) ((Math.ceil(divided) + 1) * ADDITIONAL_FARE);
     }
 
-    private static FarePolicyByDistance getLineFareType(final int distance) {
+    private static FarePolicyByDistance getDistanceFareType(final int distance) {
         return Arrays.stream(values())
             .filter(farePolicyByDistance -> farePolicyByDistance.staringDistance <= distance)
             .filter(farePolicyByDistance -> farePolicyByDistance.endingDistance >= distance)
@@ -39,6 +39,6 @@ public enum FarePolicyByDistance {
     }
 
     public static Fare calculateLineFare(final int distance) {
-        return getLineFareType(distance).lineFareExpression.apply(distance);
+        return getDistanceFareType(distance).lineFareExpression.apply(distance);
     }
 }
