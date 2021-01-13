@@ -29,7 +29,7 @@ public class AuthService {
 
 	public LoginMember findMemberByToken(String credentials) {
 		if (!jwtTokenProvider.validateToken(credentials)) {
-			return new LoginMember();
+			throw new AuthorizationException("잘못된 로그인 토큰 정보입니다.");
 		}
 
 		String email = jwtTokenProvider.getPayload(credentials);

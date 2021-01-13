@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -38,24 +40,24 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	}
 
 	@DisplayName("Bearer Auth 로그인 실패")
-	@Test
-	void myInfoWithBadBearerAuth() {
-		// when
-		ExtractableResponse<Response> passwordFailResponse = 로그인_토큰_요청(EMAIL, "123456");
-		ExtractableResponse<Response> emailFailResponse = 로그인_토큰_요청("email@gmail.com", PASSWORD);
+	@ParameterizedTest
+	@CsvSource(value = {"email@email.com:123456", "failEmail@email.com:password"}, delimiter = ':')
+	void myInfoWithBadBearerAuth(String email, String password) {
+		// given // when
+		ExtractableResponse<Response> response = 로그인_토큰_요청(email, password);
 
 		//then
-		로그인_토큰_실패됨(passwordFailResponse);
-		로그인_토큰_실패됨(emailFailResponse);
+		로그인_토큰_실패됨(response);
 	}
 
 	@DisplayName("Bearer Auth 유효하지 않은 토큰")
 	@Test
 	void myInfoWithWrongBearerAuth() {
-		// given
-		TokenResponse tokenResponse = 로그인_토큰_요청(EMAIL, PASSWORD).as(TokenResponse.class);
+		// given // when
+		ExtractableResponse<Response> response = MemberAcceptanceTest.회원_내정보_조회_요청("bad-access-token");
 
 		// then
+		로그인_토큰_실패됨(response);
 	}
 
 	public static ExtractableResponse<Response> 로그인_토큰_요청(String email, String password) {
