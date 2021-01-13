@@ -95,4 +95,42 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
+
+    @Test
+    @DisplayName("최단 경로를 구할 때, 출발역과 도착역이 연결되어 있지 않은 경우 예외 발생")
+    public void getShortestDisconnectedStationOccurredException() {
+        // given
+
+        StationResponse 산본역 = StationAcceptanceTest.지하철역_등록되어_있음("산본역")
+                .as(StationResponse.class);
+        StationResponse 수리산역 = StationAcceptanceTest.지하철역_등록되어_있음("수리산역")
+                .as(StationResponse.class);
+
+        LineResponse 사호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
+                new LineRequest("사호선", "bg-blue-400", 산본역.getId(), 수리산역.getId(), 5))
+                .as(LineResponse.class);
+
+        Long 출발역 = 교대역.getId();
+        Long 도착역 = 산본역.getId();
+
+        // when
+        ExtractableResponse<Response> response = PathAcceptanceTestSupport.최단경로_조회_요청(출발역, 도착역);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    @Test
+    @DisplayName("최단 경로를 구할 때, 해당 역이 없는 경우 예외 발생")
+    public void getShortestNotExistStationOccurredException() {
+        // given
+        Long 출발역 = 교대역.getId();
+        Long 도착역 = 100L;
+
+        // when
+        ExtractableResponse<Response> response = PathAcceptanceTestSupport.최단경로_조회_요청(출발역, 도착역);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
 }
