@@ -5,10 +5,7 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
@@ -68,7 +65,7 @@ public class Line extends BaseEntity {
 
     public List<Station> getStations() {
         if (this.getSections().isEmpty()) {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
         List<Station> stations = new ArrayList<>();
