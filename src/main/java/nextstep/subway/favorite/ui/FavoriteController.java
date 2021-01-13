@@ -3,16 +3,14 @@ package nextstep.subway.favorite.ui;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
-import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/favorites")
@@ -26,7 +24,24 @@ public class FavoriteController {
     @PostMapping
     public ResponseEntity<FavoriteResponse> createFavorite(@AuthenticationPrincipal LoginMember loginMember,
                                                            @RequestBody FavoriteRequest favoriteRequest) {
-        Favorite favorite = favoriteService.saveFavorite(loginMember.getId(), favoriteRequest);
-        return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
+        Long favoriteId = favoriteService.saveFavorite(loginMember.getId(), favoriteRequest);
+        return ResponseEntity.created(URI.create("/favorites/" + favoriteId)).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<FavoriteResponse>> findAllFavorites(@AuthenticationPrincipal LoginMember loginMember) {
+        return ResponseEntity.ok(favoriteService.findFavorites(loginMember.getId()));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<FavoriteResponse> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember,
+                                                           @PathVariable Long id) {
+        favoriteService.deleteFavorite(loginMember.getId(), id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<FavoriteResponse> handleIllegalArgsException(DataIntegrityViolationException e) {
+        return ResponseEntity.badRequest().build();
     }
 }

@@ -58,20 +58,20 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         TokenResponse tokenResponse = 로그인_됨(new TokenRequest(EMAIL, PASSWORD)).as(TokenResponse.class);
 
         // when
-        ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(tokenResponse.getAccessToken());
+        ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(tokenResponse);
         // then
         회원_정보_조회됨(findResponse, EMAIL, AGE);
 
         // when
         ExtractableResponse<Response> updateResponse =
-                회원_정보_수정_요청(tokenResponse.getAccessToken(), new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE));
+                회원_정보_수정_요청(tokenResponse, new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE));
         // then
         회원_정보_수정됨(updateResponse);
 
         //given
         tokenResponse = 로그인_됨(new TokenRequest(NEW_EMAIL, NEW_PASSWORD)).as(TokenResponse.class);
         // when
-        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(tokenResponse.getAccessToken());
+        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(tokenResponse);
         // then
         회원_삭제됨(deleteResponse);
     }
@@ -122,32 +122,32 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_조회_요청(String accessToken) {
+    public static ExtractableResponse<Response> 회원_정보_조회_요청(TokenResponse tokenResponse) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(accessToken)
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .when().get(MEMBERS_ME_URI)
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(String accessToken, MemberRequest memberRequest) {
+    public static ExtractableResponse<Response> 회원_정보_수정_요청(TokenResponse tokenResponse, MemberRequest memberRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(accessToken)
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .body(memberRequest)
                 .when().put(MEMBERS_ME_URI)
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_삭제_요청(String accessToken) {
+    public static ExtractableResponse<Response> 회원_삭제_요청(TokenResponse tokenResponse) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(accessToken)
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .when().delete(MEMBERS_ME_URI)
                 .then().log().all()
                 .extract();

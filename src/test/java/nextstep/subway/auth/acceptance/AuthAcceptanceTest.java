@@ -48,7 +48,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰으로 회원 정보 조회한다.")
     @Test
     void myInfoWithWrongBearerAuth() {
-        ExtractableResponse<Response> response = 회원_정보_조회_요청("wrongToken");
+        ExtractableResponse<Response> response = 회원_정보_조회_요청(new TokenResponse("wrongToken"));
 
         회원_정보_조회_실패됨(response);
     }

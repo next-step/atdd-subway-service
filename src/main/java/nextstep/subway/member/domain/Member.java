@@ -4,6 +4,7 @@ import lombok.Getter;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.favorite.exception.NotFoundFavoriteException;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
@@ -20,11 +21,10 @@ public class Member extends BaseEntity {
     private String password;
     private Integer age;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "member_id")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "member")
     private final List<Favorite> favorites = new ArrayList<>();
 
-    public Member() {
+    protected Member() {
     }
 
     public Member(String email, String password, Integer age) {
@@ -45,7 +45,15 @@ public class Member extends BaseEntity {
         }
     }
 
-    public void addFavorite(Favorite favorite) {
-        favorites.add(favorite);
+    public void deleteFavorite(Long favoriteId) {
+        Favorite favorite = findFavorite(favoriteId);
+        favorites.remove(favorite);
+    }
+
+    private Favorite findFavorite(Long favoriteId) {
+        return favorites.stream()
+                .filter(favorite -> favorite.isEqualId(favoriteId))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundFavoriteException("해당 Favorite이 없습니다."));
     }
 }
