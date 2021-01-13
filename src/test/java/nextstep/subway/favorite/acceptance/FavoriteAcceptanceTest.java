@@ -3,6 +3,8 @@ package nextstep.subway.favorite.acceptance;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +17,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
@@ -105,14 +108,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> response = 즐겨찾기_조회_요청(로그인_토큰);
 
 		// then
-		즐겨찾기_목록_조회됨(response);
+		즐겨찾기_목록_조회됨(response, 4);
 	}
 
 	@DisplayName("지하철 즐겨찾기 목록 삭제 요청함")
 	@Test
 	void deleteFavoriteTest() {
-		// given // when
+		// given
+		FavoriteResponse response1 = 즐겨찾기_생성_요청(로그인_토큰, 교대역.getId(), 양재역.getId()).as(FavoriteResponse.class);
+		FavoriteResponse response2 = 즐겨찾기_생성_요청(로그인_토큰, 강남역.getId(), 양재역.getId()).as(FavoriteResponse.class);
 
+		// when
+		ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(로그인_토큰, response1.getId());
+
+		// then
+		즐겨찾기_삭제_성공됨(response);
 	}
 
 	private ExtractableResponse<Response> 즐겨찾기_생성_요청(String token, Long sourceId, Long targetId) {
@@ -134,6 +144,25 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 			.then().log().all().extract();
 	}
 
+	private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String token, long id) {
+		return RestAssured
+			.given().log().all()
+			.auth().oauth2(token)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.when().delete("/favorites/" + id)
+			.then().log().all().extract();
+	}
+
+	private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, int responseLength) {
+
+		List<Object> favoriteResponses = response.jsonPath().getList(".");
+
+		assertAll(
+			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+			() -> assertThat(favoriteResponses).hasSize(responseLength)
+		);
+	}
+
 	private void 즐겨찾기_생성_확인됨(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 	}
@@ -142,9 +171,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 
-	private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
-		assertAll(
-			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
-		);
+	private void 즐겨찾기_삭제_성공됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 	}
 }
