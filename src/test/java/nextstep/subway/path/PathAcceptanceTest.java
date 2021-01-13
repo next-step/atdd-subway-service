@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.*;
@@ -17,7 +18,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
@@ -55,6 +55,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 경로_조회_요청(남부터미널역.getId(), 선릉역.getId());
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.as(PathResponse.class).getStations()).extracting(StationResponse::getName).containsExactly("남부터미널역", "양재역", "강남역", "선릉역");
+        assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(9.0);
     }
 
     public static ExtractableResponse<Response> 경로_조회_요청(Long source, Long target) {

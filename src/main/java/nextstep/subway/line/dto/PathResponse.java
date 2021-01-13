@@ -9,6 +9,9 @@ public class PathResponse {
     private List<StationResponse> stations;
     private double distance;
 
+    public PathResponse() {
+    }
+
     public PathResponse(List<Station> stations, double distance) {
         this.stations = StationResponse.ofList(stations);
         this.distance = distance;
