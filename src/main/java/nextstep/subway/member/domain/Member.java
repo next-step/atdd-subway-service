@@ -1,15 +1,19 @@
 package nextstep.subway.member.domain;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.favorite.domain.Favorite;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
 public class Member extends BaseEntity {
     @Id
@@ -19,29 +23,13 @@ public class Member extends BaseEntity {
     private String password;
     private Integer age;
 
-    public Member() {
-    }
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Favorite> favorites = new ArrayList<>();
 
     public Member(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
         this.age = age;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Integer getAge() {
-        return age;
     }
 
     public void update(Member member) {
@@ -54,5 +42,17 @@ public class Member extends BaseEntity {
         if (!StringUtils.equals(this.password, password)) {
             throw new AuthorizationException();
         }
+    }
+
+    public void addFavorite(Favorite favorite) {
+        this.favorites.add(favorite);
+    }
+
+    public void deleteFavorite(Long favoriteId) {
+        Favorite removeTarget = this.favorites.stream()
+                .filter(favorite -> favorite.isEqualToId(favoriteId))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+        this.favorites.remove(removeTarget);
     }
 }
