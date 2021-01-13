@@ -25,7 +25,6 @@ import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요�
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.*;
-import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 경로 조회")
@@ -44,6 +43,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 역삼역;
     private StationResponse 양재시민의숲역;
     private StationResponse 청계산입구역;
+    private final int 교대역_강남역_추가요금 = 900;
+    private final int 교대역_남부터미널역_추가요금 = 500;
+    private final int 양재역_양재시민의숲역_추가요금 = 1000;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -68,15 +70,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10))
             .as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, 900))
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, 교대역_강남역_추가요금))
             .as(LineResponse.class);
         삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5))
             .as(LineResponse.class);
         수인분당선 = 지하철_노선_등록되어_있음(new LineRequest("수인분당선", "bg-red-600", 선정릉역.getId(), 선릉역.getId(), 5))
             .as(LineResponse.class);
 
-        지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3, 500);
-        지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 양재시민의숲역, 10, 1000);
+        지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3, 교대역_남부터미널역_추가요금);
+        지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 양재시민의숲역, 10, 양재역_양재시민의숲역_추가요금);
         지하철_노선에_지하철역_등록_요청(신분당선, 양재시민의숲역, 청계산입구역, 50, 0);
     }
 
@@ -88,7 +90,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단_경로_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 5);
-        지하철_이용_요금_응답함(response, 1250 + 500);
+        지하철_이용_요금_응답함(response, 1250 + 교대역_남부터미널역_추가요금);
     }
 
     @DisplayName("10km ~ 50km 사이의 지하철 경로를 검색한다")
@@ -99,7 +101,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단_경로_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역, 양재시민의숲역), 15);
-        지하철_이용_요금_응답함(response, 1250 + 100 + 1000);
+        지하철_이용_요금_응답함(response, 1250 + 100 + 양재역_양재시민의숲역_추가요금);
     }
 
     @DisplayName("50km 초과 경로의 지하철 경로를 검색한다")
@@ -110,7 +112,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단_경로_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역, 양재시민의숲역, 청계산입구역), 65);
-        지하철_이용_요금_응답함(response, 1250 + 800 + 100 + 1000);
+        지하철_이용_요금_응답함(response, 1250 + 800 + 100 + 양재역_양재시민의숲역_추가요금);
     }
 
     @DisplayName("추가 요금이 있는 노선이 존재하는 지하철 경로를 검색한다")
@@ -121,7 +123,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단_경로_조회됨(response, Arrays.asList(교대역, 강남역), 10);
-        지하철_이용_요금_응답함(response, 1250 + 900);
+        지하철_이용_요금_응답함(response, 1250 + 교대역_강남역_추가요금);
     }
 
     @DisplayName("로그인 하지 않은 청소년은 요금 할인이 적용안된다")
@@ -132,7 +134,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단_경로_조회됨(response, Arrays.asList(양재역, 양재시민의숲역), 10);
-        지하철_이용_요금_응답함(response, 1250 + 1000);
+        지하철_이용_요금_응답함(response, 1250 + 양재역_양재시민의숲역_추가요금);
     }
 
     @DisplayName("로그인한 청소년은 할인이 적용된다")
@@ -152,7 +154,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회됨(response, Arrays.asList(양재역, 양재시민의숲역), 10);
         Fare fare = new Fare();
         fare.add(1250);
-        fare.add(1000);
+        fare.add(양재역_양재시민의숲역_추가요금);
         fare.minus(350);
         fare.discount(0.2);
         지하철_이용_요금_응답함(response, fare.getFare());

@@ -1,7 +1,6 @@
 package nextstep.subway.path.application;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fares.domain.Fare;
 import nextstep.subway.fares.policy.FarePolicies;
