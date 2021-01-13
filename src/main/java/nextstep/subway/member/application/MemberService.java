@@ -22,7 +22,7 @@ public class MemberService {
 	}
 
 	public MemberResponse findMember(Long id) {
-		Member member = memberRepository.findById(id).orElseThrow(NothingException::new);
+		Member member = findMemberById(id);
 		return MemberResponse.of(member);
 	}
 
@@ -33,5 +33,9 @@ public class MemberService {
 
 	public void deleteMember(Long id) {
 		memberRepository.deleteById(id);
+	}
+
+	public Member findMemberById(Long id) {
+		return memberRepository.findById(id).orElseThrow(NothingException::new);
 	}
 }

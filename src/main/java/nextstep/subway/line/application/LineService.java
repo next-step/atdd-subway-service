@@ -77,7 +77,7 @@ public class LineService {
 	}
 
 	public Station findStationById(Long stationId) {
-		return stationService.findById(stationId);
+		return stationService.findStationById(stationId);
 	}
 
 	public List<Line> findLineAll() {
