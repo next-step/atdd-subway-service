@@ -5,7 +5,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.StationFixtures;
 import nextstep.subway.station.domain.Station;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -26,16 +26,13 @@ public class PathTest {
      * 남부터미널역  --- *3호선* --- 양재역
      *              거리 2
      */
-    private Line 이호선;
-    private Line 삼호선;
-    private Line 신분당선;
-    private Path path;
+    public static Path path;
 
-    @BeforeEach
-    void setUp() {
-        이호선 = new Line("이호선", "bg-green-600", StationFixtures.교대역, StationFixtures.강남역, 10);
-        삼호선 = new Line("삼호선", "bg-orange-600", StationFixtures.교대역, StationFixtures.남부터미널역, 3);
-        신분당선 = new Line("신분당선", "bg-red-600", StationFixtures.강남역, StationFixtures.양재역, 10);
+    @BeforeAll
+    static void setUp() {
+        Line 이호선 = new Line("이호선", "bg-green-600", StationFixtures.교대역, StationFixtures.강남역, 10);
+        Line 삼호선 = new Line("삼호선", "bg-orange-600", StationFixtures.교대역, StationFixtures.남부터미널역, 3);
+        Line 신분당선 = new Line("신분당선", "bg-red-600", StationFixtures.강남역, StationFixtures.양재역, 10);
 
         Section 남부터미널역_양재역 = Section.builder().line(삼호선)
                 .upStation(StationFixtures.남부터미널역)
@@ -51,7 +48,7 @@ public class PathTest {
     @Test
     void findShortestPath() {
         // when
-        List<Station> stations = path.findShortestPath(StationFixtures.강남역, StationFixtures.남부터미널역);
+        List<Station> stations = path.findShortestPath(StationFixtures.강남역, StationFixtures.남부터미널역).getVertexList();
 
         // then
         assertThat(stations)

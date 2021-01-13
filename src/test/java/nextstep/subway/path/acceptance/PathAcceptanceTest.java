@@ -12,9 +12,7 @@ import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.StationFixtures;
 import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -23,7 +21,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
 
@@ -52,7 +50,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * 몽촌토성역  --- *3호선* --- 잠실역
      */
 
-    @BeforeEach
+    @BeforeAll
     public void setUp() {
         super.setUp();
 

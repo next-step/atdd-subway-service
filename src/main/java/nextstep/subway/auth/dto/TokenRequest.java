@@ -1,12 +1,15 @@
 package nextstep.subway.auth.dto;
 
+import lombok.Builder;
+
 public class TokenRequest {
     private String email;
     private String password;
 
-    public TokenRequest() {
+    private TokenRequest() {
     }
 
+    @Builder
     public TokenRequest(String email, String password) {
         this.email = email;
         this.password = password;

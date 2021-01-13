@@ -103,6 +103,34 @@ npm run dev
     * 출발역과 도착역이 연결이 되어 있지 않은 경우
     * 존재하지 않은 출발역이나 도착역을 조회 할 경우
 
+
+## [STEP3] 인증을 통한 기능 구현
+
+### 요구사항
+- [X] 토큰 발급 기능 (로그인) 인수 테스트 만들기
+    * 이메일과 패스워드를 이용하여 요청 시 access token을 응답하는 기능을 구현
+    
+    * 토큰 발급 성공
+      * 회원 등록되어 있음
+      * 로그인 요청
+      * 로그인 성공
+        
+    * 토큰 발급 실패
+      * 유효하지 않은 토큰으로 요청을 보낼 경우
+    
+- [X] 내 정보 조회 기능 완성하기
+    * 인수 테스트
+      * 내 정보 조회, 수정, 삭제 기능을 /members/me 라는 URI 요청으로 동작하도록 검증
+      * 로그인 후 발급 받은 토큰을 포함해서 요청 하기
+    
+    * 토큰을 통한 인증
+      * /members/me 요청 시 토큰을 확인하여 로그인 정보를 받아올 수 있도록 하기
+      * @AuthenticationPrincipal과 AuthenticationPrincipalArgumentResolver을 활용하기
+
+- [X] 즐겨 찾기 기능 완성하기
+      * 인증을 포함하여 전체 ATDD 사이클을 경험할 수 있도록 기능을 구현하기
+
+
 ## ✏️ Code Review Process
 [텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
 

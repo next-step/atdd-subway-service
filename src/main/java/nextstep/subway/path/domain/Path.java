@@ -24,14 +24,13 @@ public class Path {
         return new Path(lines);
     }
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> initGraph(List<Line> lines) {
+    private void initGraph(List<Line> lines) {
         for (Line line : lines) {
-            addLineToGraph(graph, line);
+            addLineToGraph(line);
         }
-        return graph;
     }
 
-    private void addLineToGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
+    private void addLineToGraph(Line line) {
         line.getSections().forEach(section -> {
             graph.addVertex(section.getUpStation());
             graph.addVertex(section.getDownStation());
@@ -40,18 +39,13 @@ public class Path {
         });
     }
 
-    public List<Station> findShortestPath(Station source, Station target) {
+    public GraphPath<Station, DefaultWeightedEdge> findShortestPath(Station source, Station target) {
         validateSection(source, target);
         try {
-            path = new DijkstraShortestPath<>(graph).getPath(source, target);
-            return path.getVertexList();
+            return new DijkstraShortestPath<>(graph).getPath(source, target);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("경로에 포함되어 있지 않은 역입니다.");
         }
-    }
-
-    public int findPathDistance() {
-        return (int) path.getWeight();
     }
 
     private void validateSection(Station source, Station target) {
