@@ -10,6 +10,7 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -59,8 +60,9 @@ public class LineService {
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+        List<Station> stations = stationService.findByIdIn(Arrays.asList(request.getUpStationId(), request.getDownStationId()));
+        Station upStation = extractStation(stations, request.getUpStationId());
+        Station downStation = extractStation(stations, request.getDownStationId());
         findLineById(lineId).addSection(upStation, downStation, request.getDistance());
     }
 
@@ -70,8 +72,16 @@ public class LineService {
     }
 
     private Line createLineOf(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+        List<Station> stations = stationService.findByIdIn(Arrays.asList(request.getUpStationId(), request.getDownStationId()));
+        Station upStation = extractStation(stations, request.getUpStationId());
+        Station downStation = extractStation(stations, request.getDownStationId());
         return new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance());
+    }
+
+    private Station extractStation(List<Station> stations, Long stationId) {
+        return stations.stream()
+                .filter(s -> s.isSameId(stationId))
+                .findAny()
+                .orElseThrow(() -> new NoSuchElementException("Station id:" + stationId + " 존재하지않습니다."));
     }
 }

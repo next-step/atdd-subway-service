@@ -38,4 +38,8 @@ public class StationService {
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Station id:" + id + " 존재하지않습니다."));
     }
+
+    public List<Station> findByIdIn(List<Long> ids) {
+        return stationRepository.findByIdIn(ids);
+    }
 }

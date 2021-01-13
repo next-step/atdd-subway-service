@@ -16,8 +16,17 @@ public class Station extends BaseEntity {
     public Station() {
     }
 
+    public Station(Long id, String name) {
+        this(name);
+        this.id = id;
+    }
+
     public Station(String name) {
         this.name = name;
+    }
+
+    public boolean isSameId(Long id) {
+        return this.id.equals(id);
     }
 
     public Long getId() {

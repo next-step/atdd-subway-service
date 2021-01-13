@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,10 +31,10 @@ class LineServiceTest {
     private StationService stationService;
     private LineService lineService;
 
-    Station 삼성역 = new Station("삼성역");
-    Station 잠실역 = new Station("잠실역");
-    Station 잠실새내역 = new Station("잠실새내역");
-    Station 잠실나루역 = new Station("잠실나루역");
+    Station 삼성역 = new Station(1L, "삼성역");
+    Station 잠실역 = new Station(2L, "잠실역");
+    Station 잠실새내역 = new Station(3L, "잠실새내역");
+    Station 잠실나루역 = new Station(4L, "잠실나루역");
 
     Line _2호선 = new Line("2호선", "GREEN", 삼성역, 잠실역, 1150);
 
@@ -47,9 +48,9 @@ class LineServiceTest {
     void createLine() {
         // Given
         when(lineRepository.save(any())).thenReturn(_2호선);
-        when(stationService.findById(any())).thenReturn(삼성역).thenReturn(잠실역);
+        when(stationService.findByIdIn(any())).thenReturn(Arrays.asList(삼성역, 잠실역));
         // When
-        LineResponse lineResponse = lineService.saveLine(new LineRequest());
+        LineResponse lineResponse = lineService.saveLine(new LineRequest("2호선", "GREEN", 삼성역.getId(), 잠실역.getId(), 100L));
         // Then
         assertThat(lineResponse.getStations())
                 .extracting("name")
@@ -120,7 +121,7 @@ class LineServiceTest {
 
     private void addLineStation(Line line, Station upStation, Station downStation) {
         when(lineRepository.findById(any())).thenReturn(Optional.of(line));
-        when(stationService.findById(any())).thenReturn(upStation).thenReturn(downStation);
-        lineService.addLineStation(1L, new SectionRequest());
+        when(stationService.findByIdIn(any())).thenReturn(Arrays.asList(upStation, downStation));
+        lineService.addLineStation(1L, new SectionRequest(upStation.getId(), downStation.getId(), 1000L));
     }
 }
