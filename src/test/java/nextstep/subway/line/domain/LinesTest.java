@@ -1,8 +1,6 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.line.domain;
 
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Section;
-import org.junit.jupiter.api.BeforeAll;
+import nextstep.subway.path.domain.PathDomainBase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,15 +9,16 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("경로상 사용하는 노선을 찾는 기능 테스트")
-public class ThroughLineSelectorTest extends PathDomainBase {
+public class LinesTest extends PathDomainBase {
 
-    public ThroughLineSelectorTest() {
+    public LinesTest() {
         이호선.addSection(new Section(이호선, 신도림, 문래, DEFAULT_DISTANCE));
         이호선.addSection(new Section(이호선, 문래, 영등포구청, DEFAULT_DISTANCE));
         이호선.addSection(new Section(이호선, 영등포구청, 당산, DEFAULT_DISTANCE));
@@ -39,12 +38,11 @@ public class ThroughLineSelectorTest extends PathDomainBase {
     @ParameterizedTest
     @MethodSource
     void findThroughLine(ArgumentSupplier<List<Long>> stationIdsSupplier, ArgumentSupplier<Line[]> expectedSupplier) {
-        List<Line> lines = Arrays.asList(일호선, 이호선, 구호선);
-        List<Long> stationdIds = stationIdsSupplier.get();
+        Lines lines = new Lines(Arrays.asList(일호선, 이호선, 구호선));
+        List<Long> stationIds = stationIdsSupplier.get();
         Line[] expected = expectedSupplier.get();
 
-        ThroughLineSelector throughLineSelector = new ThroughLineSelector(lines, stationdIds);
-        List<Line> throughLines = throughLineSelector.find();
+        Set<Line> throughLines = lines.findThroughLines(stationIds);
 
         assertThat(throughLines).contains(expected);
     }

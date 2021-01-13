@@ -82,4 +82,17 @@ public class Line extends BaseEntity {
     public boolean containsSection(Long departureId, Long destinationId) {
         return sections.containsSection(departureId, destinationId);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Line)) return false;
+        Line line = (Line) o;
+        return Objects.equals(id, line.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

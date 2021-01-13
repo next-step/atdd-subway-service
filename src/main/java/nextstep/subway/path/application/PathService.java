@@ -2,10 +2,13 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.BadRequestException;
-import nextstep.subway.exception.NotFoundStationException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.domain.*;
+import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.domain.Discount;
+import nextstep.subway.path.domain.PathResult;
+import nextstep.subway.path.domain.PathSelector;
+import nextstep.subway.path.domain.PaymentCalculator;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -15,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,10 +47,9 @@ public class PathService {
         return PaymentCalculator.calculatePayment(findThroughLines(stationIds), distance);
     }
 
-    private List<Line> findThroughLines(List<Long> stationIds) {
-        List<Line> lines = lineRepository.findAll();
-        ThroughLineSelector throughLineSelector = new ThroughLineSelector(lines, stationIds);
-        return throughLineSelector.find();
+    private Set<Line> findThroughLines(List<Long> stationIds) {
+        Lines lines = new Lines(lineRepository.findAll());
+        return lines.findThroughLines(stationIds);
     }
 
     private List<StationResponse> toStationResponses(List<Long> stationIds) {

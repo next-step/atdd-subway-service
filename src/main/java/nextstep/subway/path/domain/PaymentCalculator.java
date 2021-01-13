@@ -2,13 +2,13 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
 
-import java.util.List;
+import java.util.Collection;
 
 public class PaymentCalculator {
     private static final int DEFAULT_PAYMENT = 1_250;
     private static final int DEFAULT_CHARGE = 0;
 
-    public static int calculatePayment(List<Line> lines, int distance) {
+    public static int calculatePayment(Collection<Line> lines, int distance) {
         return DEFAULT_PAYMENT + calculateLineCharge(lines) + calculateDistanceCharge(distance);
     }
 
@@ -16,7 +16,7 @@ public class PaymentCalculator {
         return DistanceCharge.calculateCharge(distance);
     }
 
-    private static int calculateLineCharge(List<Line> lines) {
+    private static int calculateLineCharge(Collection<Line> lines) {
         return lines.stream()
                 .mapToInt(Line::getCharge)
                 .max()
