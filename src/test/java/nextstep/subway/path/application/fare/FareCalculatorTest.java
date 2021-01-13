@@ -1,7 +1,10 @@
 package nextstep.subway.path.application.fare;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.application.PathFinder;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +22,7 @@ class FareCalculatorTest {
     private Station 양재역;
     private Station 교대역;
     private Station 남부터미널역;
+    private PathFinder pathFinder;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -38,14 +42,14 @@ class FareCalculatorTest {
         이호선 = new Line("이호선", "bg-red-600", 교대역, 강남역, 10, 0);
         삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 5, 300);
         삼호선.addLineStation(교대역, 남부터미널역, 3);
+        pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
     }
 
     @DisplayName("기본운임(10㎞ 이내)")
     @Test
     void calculateDistanceFare1() {
         //given
-        int distance = 8;
-
+        int distance = 10;
         //when
         int fare = new FareCalculator().calculateFare(distance);
 
@@ -82,24 +86,50 @@ class FareCalculatorTest {
     @DisplayName("900원 추가 요금이 있는 노선 8km 이용 시")
     @Test
     void calculateLineFare1() {
+        //given
+        GraphPath<Station, Section> path = pathFinder.getPath(강남역, 남부터미널역);
+
         //when
-        int fare = new FareCalculator().calculateFare(7,
-                Arrays.asList(신분당선, 이호선, 삼호선),
-                Arrays.asList(강남역, 양재역, 남부터미널역));
+        int fare = new FareCalculator().calculateFare(8, path.getEdgeList(), 20);
 
         //then - fare = 1250 + 900
         assertThat(fare).isEqualTo(2150);
     }
 
-    @DisplayName("900원 추가 요금이 있는 노선 8km 이용 시")
+    @DisplayName("900원 추가 요금이 있는 노선 12km 이용 시")
     @Test
     void calculateLineFare2() {
+        //given
+        GraphPath<Station, Section> path = pathFinder.getPath(강남역, 남부터미널역);
         //when
-        int fare = new FareCalculator().calculateFare(12,
-                Arrays.asList(신분당선, 이호선, 삼호선),
-                Arrays.asList(강남역, 양재역, 남부터미널역));
+        int fare = new FareCalculator().calculateFare(12, path.getEdgeList(), 20);
 
         //then - fare = 1250 + 300(100 * 3) + 900
         assertThat(fare).isEqualTo(2450);
+    }
+
+    @DisplayName("청소년(13세 이상~19세 미만): 운임에서 350원을 공제한 금액의 20%할인")
+    @Test
+    void calculateAgeFare1() {
+        //given
+        GraphPath<Station, Section> path = pathFinder.getPath(강남역, 교대역);
+        //when
+        int fare = new FareCalculator().calculateFare(10, path.getEdgeList(), 13);
+
+        //then: fare = 1250 - ((1250 - 350) * 0.2) = 1070
+        assertThat(fare).isEqualTo(1070);
+    }
+
+    @DisplayName("어린이(6세 이상~ 13세 미만): 운임에서 350원을 공제한 금액의 50%할인")
+    @Test
+    void calculateAgeFare2() {
+        //given
+        GraphPath<Station, Section> path = pathFinder.getPath(강남역, 교대역);
+
+        //when
+        int fare = new FareCalculator().calculateFare(10, path.getEdgeList(), 12);
+
+        //then fare = 1250 - ((1250 - 350) * 0.5) = 800
+        assertThat(fare).isEqualTo(800);
     }
 }

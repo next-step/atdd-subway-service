@@ -2,7 +2,7 @@ package nextstep.subway.path.application.fare;
 
 import java.util.Arrays;
 
-public enum DistanceFarePolicy {
+public enum DistanceOverFarePolicy {
     BASIC_DISTANCE_COST(0, 10, 0, 0),
     MIDDLE_DISTANCE_COST(10, 50, 100, 5),
     FAR_DISTANCE_COST(50, Integer.MAX_VALUE, 100, 8);
@@ -12,15 +12,15 @@ public enum DistanceFarePolicy {
     private final int extraChargePerUnit;
     private final int unitOfDistance;
 
-    DistanceFarePolicy(int min_distance, int max_distance, int extraChargePerUnit, int unitOfDistance) {
+    DistanceOverFarePolicy(int min_distance, int max_distance, int extraChargePerUnit, int unitOfDistance) {
         this.min_distance = min_distance;
         this.max_distance = max_distance;
         this.extraChargePerUnit = extraChargePerUnit;
         this.unitOfDistance = unitOfDistance;
     }
 
-    public static DistanceFarePolicy valueOf(int distance) {
-        return Arrays.stream(DistanceFarePolicy.values())
+    public static DistanceOverFarePolicy valueOf(int distance) {
+        return Arrays.stream(DistanceOverFarePolicy.values())
                 .filter(filteredRank -> filteredRank.valid(distance))
                 .findFirst()
                 .orElse(BASIC_DISTANCE_COST);

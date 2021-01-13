@@ -1,8 +1,12 @@
 package nextstep.subway.path.dto;
 
+import nextstep.subway.line.domain.Section;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
+import org.jgrapht.GraphPath;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class PathResponse {
@@ -35,7 +39,15 @@ public class PathResponse {
         return fare;
     }
 
-    public void setFare(int fare) {
-        this.fare = fare;
+    public static PathResponse of(GraphPath<Station, Section> path, int fare) {
+        List<StationResponse> stationResponses = path.getVertexList().stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
+
+        return new PathResponse(
+                stationResponses,
+                (int) path.getWeight(),
+                fare
+        );
     }
 }

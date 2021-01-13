@@ -2,14 +2,18 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.application.fare.FareCalculator;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
+import org.jgrapht.GraphPath;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PathService {
@@ -33,8 +37,9 @@ public class PathService {
         Station targetStation = stationService.findStationById(pathRequest.getTarget());
 
         PathFinder pathFinder = new PathFinder(lines);
-        PathResponse pathResponse = pathFinder.getPath(sourceStation, targetStation);
-        pathResponse.setFare(fareCalculator.calculateFare(pathResponse.getDistance()));
-        return pathResponse;
+        GraphPath<Station, Section> path = pathFinder.getPath(sourceStation, targetStation);
+
+        int fare = fareCalculator.calculateFare((int) path.getWeight(), path.getEdgeList());
+        return PathResponse.of(path, fare);
     }
 }

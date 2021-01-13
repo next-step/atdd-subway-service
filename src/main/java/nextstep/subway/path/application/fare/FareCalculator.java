@@ -1,10 +1,9 @@
 package nextstep.subway.path.application.fare;
 
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.station.domain.Station;
+import nextstep.subway.line.domain.Section;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
-import java.util.OptionalInt;
 
 @Service
 public class FareCalculator {
@@ -13,19 +12,34 @@ public class FareCalculator {
 
     public int calculateFare(int distance) {
         return BASIC_FARE
-                + DistanceFarePolicy.valueOf(distance).calculateOverFare(distance);
+                + getDistanceFarePolicy(distance).calculateOverFare(distance);
     }
 
-    public int calculateFare(int distance, List<Line> lines, List<Station> stations) {
+    public int calculateFare(int distance, List<Section> sections) {
         return BASIC_FARE
-                + DistanceFarePolicy.valueOf(distance).calculateOverFare(distance)
-                + getMaxLineOverFare(lines, stations);
+                + getDistanceFarePolicy(distance).calculateOverFare(distance)
+                + getMaxLineOverFare(sections);
     }
 
-    private int getMaxLineOverFare(List<Line> lines, List<Station> stations) {
-        return lines.stream()
-                .filter(line -> line.containsAnyStation(stations))
-                .mapToInt(Line::getOverFare)
+    public int calculateFare(int distance, List<Section> sections, int age) {
+        int fare = BASIC_FARE
+                + getDistanceFarePolicy(distance).calculateOverFare(distance)
+                + getMaxLineOverFare(sections);
+
+        return fare - getAgeOverFarePolicy(age).calculateDrawbackFare(fare);
+    }
+
+    private AgeDrawbackFarePolicy getAgeOverFarePolicy(int age) {
+        return AgeDrawbackFarePolicy.valueOf(age);
+    }
+
+    private DistanceOverFarePolicy getDistanceFarePolicy(int distance) {
+        return DistanceOverFarePolicy.valueOf(distance);
+    }
+
+    private int getMaxLineOverFare(List<Section> sections) {
+        return sections.stream()
+                .mapToInt(section -> section.getLine().getOverFare())
                 .max().orElse(0);
     }
 }

@@ -88,5 +88,5 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [x] 경로 조회 시 거리 기준 요금 정보 포함 코드 작성
 - [x] 노선별 추가 요금 정책 테스트 작성
 - [x] 노선별 추가 요금 정책 코드 작성
-- [ ] 연령별 할인 정책 테스트 작성
-- [ ] 연령별 할인 정책 코드 작성
+- [x] 연령별 할인 정책 테스트 작성
+- [x] 연령별 할인 정책 코드 작성

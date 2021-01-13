@@ -1,11 +1,12 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
 
 import javax.persistence.*;
 
 @Entity
-public class Section {
+public class Section extends DefaultWeightedEdge {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -78,4 +79,9 @@ public class Section {
     public boolean sameDownStation(Station station) {
         return this.downStation == station;
     }
+
+    protected double getWeight() {
+        return this.getDistance();
+    }
+
 }
