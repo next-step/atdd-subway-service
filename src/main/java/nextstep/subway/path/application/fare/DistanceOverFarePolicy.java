@@ -7,14 +7,14 @@ public enum DistanceOverFarePolicy {
     MIDDLE_DISTANCE_COST(10, 50, 100, 5),
     FAR_DISTANCE_COST(50, Integer.MAX_VALUE, 100, 8);
 
-    private final int min_distance;
-    private final int max_distance;
+    private final int minDistance;
+    private final int maxDistance;
     private final int extraChargePerUnit;
     private final int unitOfDistance;
 
-    DistanceOverFarePolicy(int min_distance, int max_distance, int extraChargePerUnit, int unitOfDistance) {
-        this.min_distance = min_distance;
-        this.max_distance = max_distance;
+    DistanceOverFarePolicy(int minDistance, int maxDistance, int extraChargePerUnit, int unitOfDistance) {
+        this.minDistance = minDistance;
+        this.maxDistance = maxDistance;
         this.extraChargePerUnit = extraChargePerUnit;
         this.unitOfDistance = unitOfDistance;
     }
@@ -27,7 +27,7 @@ public enum DistanceOverFarePolicy {
     }
 
     private boolean valid(int distance) {
-        return distance > min_distance && distance <= max_distance;
+        return distance > minDistance && distance <= maxDistance;
     }
 
     public int calculateOverFare(int distance) {

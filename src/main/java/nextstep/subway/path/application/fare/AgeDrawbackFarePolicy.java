@@ -9,14 +9,14 @@ public enum AgeDrawbackFarePolicy {
 
     private final int drawbackAmout;
     private final double drawbackPercent;
-    private final int min_age;
-    private final int max_age;
+    private final int minAge;
+    private final int maxAge;
 
-    AgeDrawbackFarePolicy(int drawbackAmout, double drawbackPercent, int min_age, int max_age) {
+    AgeDrawbackFarePolicy(int drawbackAmout, double drawbackPercent, int minAge, int maxAge) {
         this.drawbackAmout = drawbackAmout;
         this.drawbackPercent = drawbackPercent;
-        this.min_age = min_age;
-        this.max_age = max_age;
+        this.minAge = minAge;
+        this.maxAge = maxAge;
     }
 
     public static AgeDrawbackFarePolicy valueOf(int age) {
@@ -27,7 +27,7 @@ public enum AgeDrawbackFarePolicy {
     }
 
     private boolean valid(int age) {
-        return age >= min_age && age < max_age;
+        return age >= minAge && age < maxAge;
     }
 
     public int calculateDrawbackFare(int fare) {

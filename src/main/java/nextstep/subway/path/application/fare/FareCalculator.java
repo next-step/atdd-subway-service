@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public class FareCalculator {
 
-    private static final int BASIC_FARE = 1250;
+    private static final int BASIC_FARE = 1_250;
 
     private DistanceOverFarePolicy getDistanceFarePolicy(int distance) {
         return DistanceOverFarePolicy.valueOf(distance);
