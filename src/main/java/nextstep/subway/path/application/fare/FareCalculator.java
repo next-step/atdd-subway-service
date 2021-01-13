@@ -2,35 +2,38 @@ package nextstep.subway.path.application.fare;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
-import org.springframework.stereotype.Service;
+import nextstep.subway.path.application.fare.policy.DistanceOverFarePolicy;
+import nextstep.subway.path.application.fare.policy.MaxLineOverFarePolicy;
 
+import java.util.Collections;
 import java.util.List;
 
-@Service
+
 public class FareCalculator {
 
-    private static final int BASIC_FARE = 1_250;
+    private final int distance;
+    private final List<Section> sections;
+    private final LoginMember loginMember;
+    private final MaxLineOverFarePolicy maxLineOverFarePolicy;
 
-    private DistanceOverFarePolicy getDistanceFarePolicy(int distance) {
-        return DistanceOverFarePolicy.valueOf(distance);
+    public FareCalculator(int distance) {
+        this(distance, Collections.emptyList(), new LoginMember());
     }
 
-    private int getMaxLineOverFare(List<Section> sections) {
-        return sections.stream()
-                .mapToInt(section -> section.getLine().getOverFare())
-                .max().orElse(0);
+    public FareCalculator(int distance, List<Section> sections) {
+        this(distance, sections, new LoginMember());
     }
 
-    public int calculateFare(GraphPath<Station, Section> path, LoginMember loginMember) {
-        int distance = (int) path.getWeight();
-        DistanceOverFarePolicy distanceFarePolicy = getDistanceFarePolicy(distance);
+    public FareCalculator(int distance, List<Section> sections, LoginMember loginMember) {
+        this.distance = distance;
+        this.sections = sections;
+        this.loginMember = loginMember;
+        maxLineOverFarePolicy = new MaxLineOverFarePolicy(sections);
+    }
 
-        int fare = BASIC_FARE
-                + distanceFarePolicy.calculateOverFare(distance)
-                + getMaxLineOverFare(path.getEdgeList());
-
-        return fare - loginMember.getDrawbackFare(fare);
+    public int calculateFare() {
+        int fare = DistanceOverFarePolicy.calculateFare(distance);
+        fare = maxLineOverFarePolicy.calculateFare(fare);
+        return loginMember.calculateFare(fare);
     }
 }

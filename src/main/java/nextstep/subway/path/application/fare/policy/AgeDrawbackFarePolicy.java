@@ -1,4 +1,4 @@
-package nextstep.subway.path.application.fare;
+package nextstep.subway.path.application.fare.policy;
 
 import java.util.Arrays;
 
@@ -30,7 +30,11 @@ public enum AgeDrawbackFarePolicy {
         return age >= minAge && age < maxAge;
     }
 
-    public int calculateDrawbackFare(int fare) {
-        return (int) ((fare - drawbackAmout) * drawbackPercent);
+    private int calculateDrawbackFare(int fare) {
+        return (int) ((fare - drawbackAmout) * drawbackPercent) + drawbackAmout;
+    }
+
+    public int calculateFare(int fare) {
+        return fare - calculateDrawbackFare(fare);
     }
 }

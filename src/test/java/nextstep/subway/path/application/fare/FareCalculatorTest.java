@@ -27,7 +27,9 @@ class FareCalculatorTest {
     private Station 선릉역;
     private Station 방배역;
     private PathFinder pathFinder;
-    private LoginMember loginMember;
+    private LoginMember 비회원;
+    private LoginMember 어린이;
+    private LoginMember 청소년;
 
     /**
      * 교대역    --- *2호선* ---   강남역 --- *2호선* ---   선릉역 --- *2호선* ---   방배역
@@ -53,17 +55,17 @@ class FareCalculatorTest {
         이호선.addLineStation(선릉역, 방배역, 50);
         pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
 
-        loginMember = new LoginMember();
+        비회원 = new LoginMember();
+        어린이 = new LoginMember(1L, MemberAcceptanceTest.EMAIL, 12);
+        청소년 = new LoginMember(2L, MemberAcceptanceTest.EMAIL, 13);
     }
 
     @DisplayName("기본운임(10㎞ 이내)")
     @Test
     void calculateDistanceFare1() {
         //given
-        GraphPath<Station, Section> path = pathFinder.getPath(교대역, 강남역);
-
         //when
-        int fare = new FareCalculator().calculateFare(path, loginMember);
+        int fare = new FareCalculator(8).calculateFare();
 
         //then
         assertThat(fare).isEqualTo(1250);
@@ -72,27 +74,23 @@ class FareCalculatorTest {
     @DisplayName("10km 초과 ∼ 50km 까지 (5km마다 100원)")
     @Test
     void calculateDistanceFare2() {
-        //given - distance = 30
-        GraphPath<Station, Section> path = pathFinder.getPath(교대역, 선릉역);
-
+        //given
         //when
-        int fare = new FareCalculator().calculateFare(path, loginMember);
+        int fare = new FareCalculator(30).calculateFare();
 
-        //then - fare = 1250 + 600(100 * 6)
-        assertThat(fare).isEqualTo(1850);
+        //then - fare = 1250{10km 구간} + 400(100 * 4) {10km~50km 구간 20km요금}
+        assertThat(fare).isEqualTo(1650);
     }
 
     @DisplayName("50km 초과 시 (8km마다 100원)")
     @Test
     void calculateDistanceFare3() {
         //given - distance = 80
-        GraphPath<Station, Section> path = pathFinder.getPath(교대역, 방배역);
-
         //when
-        int fare = new FareCalculator().calculateFare(path, loginMember);
+        int fare = new FareCalculator(80).calculateFare();
 
-        //then - fare = 1250 + 1000(100 * 10)
-        assertThat(fare).isEqualTo(2250);
+        //then - fare = 1250 + 800(100 * 8) {10km~50km 구간 20km요금} + 400(100 * 4) {50km~80km 구간 30km요금}
+        assertThat(fare).isEqualTo(2450);
     }
 
     @DisplayName("900원 추가 요금이 있는 노선 10km 이용 시")
@@ -102,22 +100,24 @@ class FareCalculatorTest {
         GraphPath<Station, Section> path = pathFinder.getPath(강남역, 양재역);
 
         //when
-        int fare = new FareCalculator().calculateFare(path, new LoginMember());
+        int fare = new FareCalculator((int)path.getWeight(), path.getEdgeList()).calculateFare();
 
         //then - fare = 1250 + 900
         assertThat(fare).isEqualTo(2150);
     }
 
-    @DisplayName("900원 추가 요금이 있는 노선 30km 이용 시")
+    @DisplayName("900원 추가 요금이 있는 노선 12km 이용 시")
     @Test
     void calculateLineFare2() {
         //given
         GraphPath<Station, Section> path = pathFinder.getPath(강남역, 남부터미널역);
-        //when
-        int fare = new FareCalculator().calculateFare(path, loginMember);
+        FareCalculator fareCalculator = new FareCalculator(12, path.getEdgeList());
 
-        //then - fare = 1250 + 300(100 * 3) + 900
-        assertThat(fare).isEqualTo(2450);
+        //when
+        int fare = fareCalculator.calculateFare();
+
+        //then - fare = 1250 + 100(100 * 1) + 900
+        assertThat(fare).isEqualTo(2250);
     }
 
     @DisplayName("청소년(13세 이상~19세 미만): 운임에서 350원을 공제한 금액의 20%할인")
@@ -126,11 +126,11 @@ class FareCalculatorTest {
         //given
         GraphPath<Station, Section> path = pathFinder.getPath(강남역, 교대역);
         //when
-        int fare = new FareCalculator().calculateFare(path,
-                loginMember = new LoginMember(1L, MemberAcceptanceTest.EMAIL, 13));
 
-        //then: fare = 1250 - ((1250 - 350) * 0.2) = 1070
-        assertThat(fare).isEqualTo(1070);
+        int fare = new FareCalculator((int)path.getWeight(), path.getEdgeList(), 청소년).calculateFare();
+
+        //then: fare = 1250 - 350 - ((1250 - 350) * 0.2) = 720
+        assertThat(fare).isEqualTo(720);
     }
 
     @DisplayName("어린이(6세 이상~ 13세 미만): 운임에서 350원을 공제한 금액의 50%할인")
@@ -140,10 +140,9 @@ class FareCalculatorTest {
         GraphPath<Station, Section> path = pathFinder.getPath(강남역, 교대역);
 
         //when
-        int fare = new FareCalculator().calculateFare(path,
-                loginMember = new LoginMember(1L, MemberAcceptanceTest.EMAIL, 12));
+        int fare = new FareCalculator((int)path.getWeight(), path.getEdgeList(), 어린이).calculateFare();
 
-        //then fare = 1250 - ((1250 - 350) * 0.5) = 800
-        assertThat(fare).isEqualTo(800);
+        //then fare = 1250 - 350 - ((1250 - 350) * 0.5) = 800
+        assertThat(fare).isEqualTo(450);
     }
 }

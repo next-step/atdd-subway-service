@@ -1,7 +1,7 @@
 package nextstep.subway.auth.domain;
 
 import nextstep.subway.auth.application.AuthorizationException;
-import nextstep.subway.path.application.fare.AgeDrawbackFarePolicy;
+import nextstep.subway.path.application.fare.policy.AgeDrawbackFarePolicy;
 
 public class LoginMember {
     private Long id;
@@ -39,13 +39,13 @@ public class LoginMember {
         }
     }
 
-    public int getDrawbackFare(int fare) {
+    public int calculateFare(int fare) {
         if(this.isAuthorized()) {
             AgeDrawbackFarePolicy ageOverFarePolicy = getAgeOverFarePolicy(this.age);
-            return ageOverFarePolicy.calculateDrawbackFare(fare);
+            return ageOverFarePolicy.calculateFare(fare);
         }
 
-        return 0;
+        return fare;
     }
 
     private AgeDrawbackFarePolicy getAgeOverFarePolicy(int age) {

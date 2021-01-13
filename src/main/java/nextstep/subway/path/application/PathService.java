@@ -21,12 +21,9 @@ public class PathService {
 
     private final StationService stationService;
 
-    private final FareCalculator fareCalculator;
-
-    public PathService(LineRepository lineRepository, StationService stationService, FareCalculator fareCalculator) {
+    public PathService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
-        this.fareCalculator = fareCalculator;
     }
 
     public PathResponse getPath(PathRequest pathRequest, LoginMember loginMember) {
@@ -38,6 +35,7 @@ public class PathService {
         PathFinder pathFinder = new PathFinder(lines);
         GraphPath<Station, Section> path = pathFinder.getPath(sourceStation, targetStation);
 
-        return PathResponse.of(path, fareCalculator.calculateFare(path, loginMember));
+        FareCalculator fareCalculator = new FareCalculator((int)path.getWeight(), path.getEdgeList(), loginMember);
+        return PathResponse.of(path, fareCalculator.calculateFare());
     }
 }
