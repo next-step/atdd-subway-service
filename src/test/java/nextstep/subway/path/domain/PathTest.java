@@ -10,7 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -48,10 +47,10 @@ public class PathTest {
     @Test
     void findShortestPath() {
         // when
-        List<Station> stations = path.findShortestPath(StationFixtures.강남역, StationFixtures.남부터미널역).getVertexList();
+        ShortestPath shortestPath = path.findShortestPath(StationFixtures.강남역, StationFixtures.남부터미널역);
 
         // then
-        assertThat(stations)
+        assertThat(shortestPath.getStations())
                 .map(Station::getName)
                 .containsExactly("강남역", "양재역", "남부터미널역");
     }

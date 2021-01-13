@@ -39,10 +39,11 @@ public class Path {
         });
     }
 
-    public GraphPath<Station, DefaultWeightedEdge> findShortestPath(Station source, Station target) {
+    public ShortestPath findShortestPath(Station source, Station target) {
         validateSection(source, target);
         try {
-            return new DijkstraShortestPath<>(graph).getPath(source, target);
+            GraphPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph).getPath(source, target);
+            return ShortestPath.of(path.getVertexList(), (int) path.getWeight());
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("경로에 포함되어 있지 않은 역입니다.");
         }
