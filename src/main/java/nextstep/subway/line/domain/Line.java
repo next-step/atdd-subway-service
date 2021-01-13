@@ -82,26 +82,24 @@ public class Line extends BaseEntity {
     }
 
     public void removeStation(Station station) {
-        if (sections.size() <= 1) {
-            throw new RuntimeException();
-        }
-
+        checkValidation(station);
         Optional<Section> upLineStation = sections.stream()
                 .filter(it -> it.getUpStation() == station)
                 .findFirst();
         Optional<Section> downLineStation = sections.stream()
                 .filter(it -> it.getDownStation() == station)
                 .findFirst();
-
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            sections.add(new Section(this, newUpStation, newDownStation, newDistance));
+            sections.add(createNewSection(upLineStation.get(), downLineStation.get()));
         }
-
         upLineStation.ifPresent(it -> sections.remove(it));
         downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
+    private void checkValidation(Station station) {
+        if (sections.size() <= 1 || !getStations().contains(station)) {
+            throw new RuntimeException();
+        }
     }
 
     private Station findDownStation(Station station) {
@@ -138,6 +136,13 @@ public class Line extends BaseEntity {
                 .filter(it -> it.getDownStation() == downStation)
                 .findFirst();
         section.ifPresent(value -> value.updateDownStation(upStation, distance));
+    }
+
+    private Section createNewSection(Section upLineSection, Section downLineSection) {
+        Station newUpStation = downLineSection.getUpStation();
+        Station newDownStation = upLineSection.getDownStation();
+        int newDistance = upLineSection.getDistance() + downLineSection.getDistance();
+        return new Section(this, newUpStation, newDownStation, newDistance);
     }
 
 }

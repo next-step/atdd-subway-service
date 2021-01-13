@@ -90,4 +90,25 @@ public class LineTest {
             line.addSection(신림역, 교대역, 10);
         }).isInstanceOf(RuntimeException.class);
     }
+
+    @DisplayName("역 삭제 테스트")
+    @Test
+    public void test6() {
+        Line line = new Line("2호선", "green", 교대역, 강남역, 10);
+        line.addSection(신림역, 교대역, 10);
+        line.removeStation(교대역);
+        assertThat(line.getStations().size()).isEqualTo(2);
+        assertThat(line.getStations().get(0)).isEqualTo(신림역);
+        assertThat(line.getStations().get(1)).isEqualTo(강남역);
+    }
+
+    @DisplayName("역 삭제 불가 케이스 - 등록 안된 역인경우")
+    @Test
+    public void test7() {
+        Line line = new Line("2호선", "green", 교대역, 강남역, 10);
+        line.addSection(신림역, 교대역, 10);
+        assertThatThrownBy(() -> {
+            line.removeStation(삼성역);
+        }).isInstanceOf(RuntimeException.class);
+    }
 }
