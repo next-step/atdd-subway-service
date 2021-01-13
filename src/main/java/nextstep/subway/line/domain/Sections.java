@@ -112,9 +112,9 @@ public class Sections {
         }
     }
 
-    public boolean containsSection(Long departureId, Long destinationId) {
+    public boolean containsSection(Station departure, Station destination) {
         return sections.stream()
-                .anyMatch(section -> section.equalsSection(departureId, destinationId));
+                .anyMatch(section -> section.matchSection(departure, destination));
     }
 
     private void finallyAdd(Section section) {

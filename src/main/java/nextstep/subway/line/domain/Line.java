@@ -79,8 +79,8 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
 
-    public boolean containsSection(Long departureId, Long destinationId) {
-        return sections.containsSection(departureId, destinationId);
+    public boolean containsSection(Station departure, Station destination) {
+        return sections.containsSection(departure, destination);
     }
 
     @Override

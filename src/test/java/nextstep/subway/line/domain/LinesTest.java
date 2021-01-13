@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.path.domain.PathDomainBase;
+import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,23 +38,23 @@ public class LinesTest extends PathDomainBase {
     @DisplayName("경로상 사용하는 노선을 찾는 기능")
     @ParameterizedTest
     @MethodSource
-    void findThroughLine(ArgumentSupplier<List<Long>> stationIdsSupplier, ArgumentSupplier<Line[]> expectedSupplier) {
+    void findThroughLine(ArgumentSupplier<List<Station>> stationsSupplier, ArgumentSupplier<Line[]> expectedSupplier) {
         Lines lines = new Lines(Arrays.asList(일호선, 이호선, 구호선));
-        List<Long> stationIds = stationIdsSupplier.get();
+        List<Station> stations = stationsSupplier.get();
         Line[] expected = expectedSupplier.get();
 
-        Set<Line> throughLines = lines.findThroughLines(stationIds);
+        Set<Line> throughLines = lines.findThroughLines(stations);
 
         assertThat(throughLines).contains(expected);
     }
 
     private static Stream<Arguments> findThroughLine() {
         return Stream.of(
-                Arguments.of(supply(() -> Arrays.asList(신도림.getId(), 문래.getId(), 영등포구청.getId(), 당산.getId())), supply(() -> new Line[]{이호선})),
-                Arguments.of(supply(() -> Arrays.asList(신도림.getId(), 영등포.getId(), 신길.getId())), supply(() -> new Line[]{일호선})),
-                Arguments.of(supply(() -> Arrays.asList(당산.getId(), 국회의사당.getId(), 여의도.getId())), supply(() -> new Line[]{구호선})),
-                Arguments.of(supply(() -> Arrays.asList(영등포구청.getId(), 당산.getId(), 국회의사당.getId())), supply(() -> new Line[]{이호선,구호선})),
-                Arguments.of(supply(() -> Arrays.asList(영등포구청.getId(), 당산.getId(), 국회의사당.getId(), 여의도.getId(), 샛강.getId(), 노량진.getId(), 대방.getId())), supply(() -> new Line[]{일호선, 이호선,구호선}))
+                Arguments.of(supply(() -> Arrays.asList(신도림, 문래, 영등포구청, 당산)), supply(() -> new Line[]{이호선})),
+                Arguments.of(supply(() -> Arrays.asList(신도림, 영등포, 신길)), supply(() -> new Line[]{일호선})),
+                Arguments.of(supply(() -> Arrays.asList(당산, 국회의사당, 여의도)), supply(() -> new Line[]{구호선})),
+                Arguments.of(supply(() -> Arrays.asList(영등포구청, 당산, 국회의사당)), supply(() -> new Line[]{이호선,구호선})),
+                Arguments.of(supply(() -> Arrays.asList(영등포구청, 당산, 국회의사당, 여의도, 샛강, 노량진, 대방)), supply(() -> new Line[]{일호선, 이호선,구호선}))
         );
     }
 

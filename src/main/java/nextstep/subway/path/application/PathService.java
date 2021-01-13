@@ -35,31 +35,29 @@ public class PathService {
     public PathResponse findShortestPath(LoginMember loginMember, Long source, Long target) {
         PathResult result = selectPath(source, target);
 
-        List<Long> stationIds = result.getStationIds();
-        List<StationResponse> shortestStations = toStationResponses(stationIds);
+        List<Station> shortestStations = toStations(result.getStationIds());
         int totalDistance = result.getTotalDistance();
-        int payment = calculatePayment(stationIds, totalDistance);
+        int payment = calculatePayment(shortestStations, totalDistance);
         Discount discount = Discount.select(loginMember.getAge());
-        return new PathResponse(shortestStations, totalDistance, discount.accept(payment));
+        return PathResponse.create(shortestStations, totalDistance, discount.accept(payment));
     }
 
-    private int calculatePayment(List<Long> stationIds, int distance) {
-        return PaymentCalculator.calculatePayment(findThroughLines(stationIds), distance);
+    private int calculatePayment(List<Station> stations, int distance) {
+        return PaymentCalculator.calculatePayment(findThroughLines(stations), distance);
     }
 
-    private Set<Line> findThroughLines(List<Long> stationIds) {
+    private Set<Line> findThroughLines(List<Station> stations) {
         Lines lines = new Lines(lineRepository.findAll());
-        return lines.findThroughLines(stationIds);
+        return lines.findThroughLines(stations);
     }
 
-    private List<StationResponse> toStationResponses(List<Long> stationIds) {
+    private List<Station> toStations(List<Long> stationIds) {
         final Map<Long,Station> stations = stationRepository.findByIdIn(stationIds)
                 .stream()
                 .collect(Collectors.toMap(Station::getId, it -> it));
 
         return stationIds.stream()
                 .map(stations::get)
-                .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 

@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.exception.BadRequestException;
+import nextstep.subway.station.domain.Station;
 
 import java.util.HashSet;
 import java.util.List;
@@ -16,31 +17,31 @@ public class Lines {
         this.lines = lines;
     }
 
-    public Set<Line> findThroughLines(List<Long> stationIds) {
+    public Set<Line> findThroughLines(List<Station> stations) {
         Set<Line> throughLines = new HashSet<>();
-        int size = stationIds.size() - PADDING;
+        int size = stations.size() - PADDING;
         Line foundLine = null;
 
         for ( int idx = LOOP_START_IDX ; idx < size ; idx ++ ) {
-            Long departureId = stationIds.get(idx);
-            Long destinationId = stationIds.get(idx + PADDING);
-            foundLine = findThroughLine(departureId, destinationId, foundLine);
+            Station departure = stations.get(idx);
+            Station destination = stations.get(idx + PADDING);
+            foundLine = findThroughLine(departure, destination, foundLine);
             throughLines.add(foundLine);
         }
         return throughLines;
     }
 
-    private Line findThroughLine(Long departureId, Long destinationId, Line prevFindLine) {
-        if (prevFindLine == null || !prevFindLine.containsSection(departureId, destinationId)) {
-            return findThroughLine(departureId, destinationId);
+    private Line findThroughLine(Station departure, Station destination, Line prevFindLine) {
+        if (prevFindLine == null || !prevFindLine.containsSection(departure, destination)) {
+            return findThroughLine(departure, destination);
         }
         return prevFindLine;
     }
 
-    private Line findThroughLine(Long departureId, Long destinationId) {
+    private Line findThroughLine(Station departure, Station destination) {
         return lines.stream()
-                .filter(it -> it.containsSection(departureId, destinationId))
+                .filter(it -> it.containsSection(departure, destination))
                 .findFirst()
-                .orElseThrow(() -> new BadRequestException("해당 구간은 존재하지 않습니다 (" + departureId + "->" + destinationId + ")"));
+                .orElseThrow(() -> new BadRequestException("해당 구간은 존재하지 않습니다 (" + departure.getName() + "->" + destination.getName() + ")"));
     }
 }

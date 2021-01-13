@@ -10,6 +10,7 @@ import org.mockito.MockitoAnnotations;
 import java.util.function.Supplier;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyObject;
 import static org.mockito.Mockito.when;
 
 public class PathDomainBase {
@@ -64,7 +65,6 @@ public class PathDomainBase {
 
     private void mockStation(Station station, long id) {
         when(station.getId()).thenReturn(id);
-        when(station.equalsId(any())).thenCallRealMethod();
     }
 
     protected static <T> ArgumentSupplier<T> supply(Supplier<T> supplier) {

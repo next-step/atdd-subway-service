@@ -74,15 +74,14 @@ public class Section {
         this.distance = this.distance.minus(newDistance);
     }
 
-    public boolean equalsSection(Long departureId, Long destinationId) {
-        return equalsUpAndDownStationId(departureId, destinationId)
-                || equalsUpAndDownStationId(destinationId, departureId);
+    public boolean matchSection(Station departure, Station destination) {
+        return equalsUpAndDownStation(departure, destination)
+                || equalsUpAndDownStation(destination, departure);
     }
 
-    private boolean equalsUpAndDownStationId(Long upStationId, Long downStationId) {
-        return upStation.equalsId(upStationId) && downStation.equalsId(downStationId);
+    private boolean equalsUpAndDownStation(Station upStation, Station downStation) {
+        return this.upStation.equals(upStation) && this.downStation.equals(downStation);
     }
-
 
     public Section merge(Section downSection) {
         if (!line.equals(downSection.line)) {
