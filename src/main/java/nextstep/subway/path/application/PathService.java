@@ -2,7 +2,7 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.fare.Fare;
-import nextstep.subway.fare.LineFare;
+import nextstep.subway.fare.FarePolicyByDistance;
 import nextstep.subway.fare.FarePolicyByPassenger;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -48,7 +48,7 @@ public class PathService {
         final int travelDistance = (int) shortestPath.getWeight();
         final List<Station> stations = shortestPath.getVertexList();
 
-        final int lineFare = LineFare.calculateLineFare(travelDistance).getFare();
+        final int lineFare = FarePolicyByDistance.calculateLineFare(travelDistance).getFare();
         final int highestFareByLineFare = findHighestFareByLine(allSections, stations).getFare();
 
         final Fare finalFare = Fare.createBaseFare()

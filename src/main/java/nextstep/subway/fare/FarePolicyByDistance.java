@@ -3,7 +3,7 @@ package nextstep.subway.fare;
 import java.util.Arrays;
 import java.util.function.Function;
 
-public enum LineFare {
+public enum FarePolicyByDistance {
     BASIC(0, 9, (distance) -> {
         return Fare.createBaseFare();
     }),
@@ -19,7 +19,7 @@ public enum LineFare {
     private final int endingDistance;
     private final Function<Integer, Fare> lineFareExpression;
 
-    LineFare(final int staringDistance, final int endingDistance, final Function<Integer, Fare> lineFareExpression) {
+    FarePolicyByDistance(final int staringDistance, final int endingDistance, final Function<Integer, Fare> lineFareExpression) {
         this.staringDistance = staringDistance;
         this.endingDistance = endingDistance;
         this.lineFareExpression = lineFareExpression;
@@ -30,10 +30,10 @@ public enum LineFare {
         return (int) ((Math.ceil(divided) + 1) * ADDITIONAL_FARE);
     }
 
-    private static LineFare getLineFareType(final int distance) {
+    private static FarePolicyByDistance getLineFareType(final int distance) {
         return Arrays.stream(values())
-            .filter(lineFare -> lineFare.staringDistance <= distance)
-            .filter(lineFare -> lineFare.endingDistance >= distance)
+            .filter(farePolicyByDistance -> farePolicyByDistance.staringDistance <= distance)
+            .filter(farePolicyByDistance -> farePolicyByDistance.endingDistance >= distance)
             .findFirst()
             .orElseThrow(IllegalArgumentException::new);
     }
