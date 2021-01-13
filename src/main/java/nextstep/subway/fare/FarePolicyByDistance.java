@@ -8,10 +8,10 @@ public enum FarePolicyByDistance {
         return Fare.createBaseFare();
     }),
     SHORT_DISTANCE(10, 49, (distance) -> {
-        return Fare.of(calculateLineFare(distance, 5));
+        return Fare.of(calculateAdditionalFareByDistance(distance, 5));
     }),
     LONG_DISTANCE(50, Integer.MAX_VALUE, (distance) -> {
-        return Fare.of(calculateLineFare(distance, 8));
+        return Fare.of(calculateAdditionalFareByDistance(distance, 8));
     });
 
     private static final int ADDITIONAL_FARE = 100;
@@ -25,7 +25,7 @@ public enum FarePolicyByDistance {
         this.lineFareExpression = lineFareExpression;
     }
 
-    private static int calculateLineFare(final int distance, final int baseDistance) {
+    private static int calculateAdditionalFareByDistance(final int distance, final int baseDistance) {
         final int divided = (distance - 1) / baseDistance;
         return (int) ((Math.ceil(divided) + 1) * ADDITIONAL_FARE);
     }
