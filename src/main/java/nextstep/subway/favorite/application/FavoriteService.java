@@ -48,7 +48,11 @@ public class FavoriteService {
         Station source = getStation(findResult, favoriteRequest.getSource());
         Station target = getStation(findResult, favoriteRequest.getTarget());
 
-        return new Favorite(member, source, target);
+        return Favorite.builder()
+                .member(member)
+                .source(source)
+                .target(target)
+                .build();
     }
 
     private Member getMember(LoginMember loginMember) {
