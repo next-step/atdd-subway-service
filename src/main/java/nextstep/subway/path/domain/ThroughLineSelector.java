@@ -10,10 +10,7 @@ public class ThroughLineSelector {
     private final List<Line> lines;
     private final List<Long> stationIds;
 
-    private final List<Line> throughLines = new ArrayList<>();
     private Line prevFindLine = null;
-
-    private boolean found = false;
 
     public ThroughLineSelector(List<Line> lines, List<Long> stationIds) {
         this.lines = lines;
@@ -21,20 +18,17 @@ public class ThroughLineSelector {
     }
 
     public List<Line> find() {
-        if (found) {
-            return throughLines;
-        }
+        List<Line> throughLines = new ArrayList<>();
         int size = stationIds.size() - 1;
         for ( int idx = 0 ; idx < size ; idx ++ ) {
             Long departureId = stationIds.get(idx);
             Long destinationId = stationIds.get(idx + 1);
-            searchAndAdd(departureId, destinationId);
+            searchAndAdd(departureId, destinationId, throughLines);
         }
-        found = true;
         return throughLines;
     }
 
-    private void searchAndAdd(Long departureId, Long destinationId) {
+    private void searchAndAdd(Long departureId, Long destinationId, List<Line> throughLines) {
         if (prevFindLine == null || !prevFindLine.containsSection(departureId, destinationId)) {
             prevFindLine = findThroughLine(departureId, destinationId);
             throughLines.add(prevFindLine);
