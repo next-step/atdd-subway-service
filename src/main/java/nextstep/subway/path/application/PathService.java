@@ -13,7 +13,6 @@ import org.jgrapht.GraphPath;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PathService {
@@ -39,7 +38,6 @@ public class PathService {
         PathFinder pathFinder = new PathFinder(lines);
         GraphPath<Station, Section> path = pathFinder.getPath(sourceStation, targetStation);
 
-        int fare = fareCalculator.calculateFare((int) path.getWeight(), path.getEdgeList(), loginMember);
-        return PathResponse.of(path, fare);
+        return PathResponse.of(path, fareCalculator.calculateFare(path, loginMember));
     }
 }

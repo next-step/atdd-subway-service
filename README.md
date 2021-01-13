@@ -91,3 +91,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [x] 연령별 할인 정책 테스트 작성
 - [x] 연령별 할인 정책 코드 작성
 - [x] 연령별 할인 controller 단 적용
+- [x] 요금정보 전체 리펙토링
