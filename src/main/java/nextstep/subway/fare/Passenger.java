@@ -12,13 +12,13 @@ public enum Passenger {
     private static final int BASE_DEDUCTION_AMOUNT = 350;
     private final int startingAgeRange;
     private final int endingAgeRange;
-    private final int deduction_percentage;
+    private final int deductionPercentage;
     private final Function<Fare, Fare> fareExpression;
 
-    Passenger(final int startingAgeRange, final int endingAgeRange, final int deduction_percentage, final Function<Fare, Fare> fareExpression) {
+    Passenger(final int startingAgeRange, final int endingAgeRange, final int deductionPercentage, final Function<Fare, Fare> fareExpression) {
         this.startingAgeRange = startingAgeRange;
         this.endingAgeRange = endingAgeRange;
-        this.deduction_percentage = deduction_percentage;
+        this.deductionPercentage = deductionPercentage;
         this.fareExpression = fareExpression;
     }
 
@@ -35,6 +35,6 @@ public enum Passenger {
     }
 
     public Fare discountByPassengerType(final Fare fare) {
-        return this.fareExpression.apply(fare).discountByPercentage(this.deduction_percentage);
+        return this.fareExpression.apply(fare).discountByPercentage(this.deductionPercentage);
     }
 }
