@@ -3,7 +3,7 @@ package nextstep.subway.path.application;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.fare.Fare;
 import nextstep.subway.fare.LineFare;
-import nextstep.subway.fare.Passenger;
+import nextstep.subway.fare.FarePolicyByPassenger;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.PathFinder;
@@ -29,7 +29,7 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathFinderResponse findShortestPath(final Passenger passenger, final long departureId, final long arrivalId) {
+    public PathFinderResponse findShortestPath(final FarePolicyByPassenger farePolicyByPassenger, final long departureId, final long arrivalId) {
         final Station departureStation = stationRepository.findById(departureId).orElseThrow(NotFoundException::new);
         final Station arrivalStation = stationRepository.findById(arrivalId).orElseThrow(NotFoundException::new);
 
@@ -39,12 +39,12 @@ public class PathService {
         final PathFinder pathFinder = PathFinder.of(allSections);
         final GraphPath<Station, DefaultWeightedEdge> shortestPath = pathFinder.findShortestPath(departureStation, arrivalStation);
 
-        final Fare fare = getFare(passenger, allSections, shortestPath);
+        final Fare fare = getFare(farePolicyByPassenger, allSections, shortestPath);
 
         return PathFinderResponse.of(shortestPath, fare.getFare());
     }
 
-    private Fare getFare(final Passenger passenger, final List<Section> allSections, final GraphPath<Station, DefaultWeightedEdge> shortestPath) {
+    private Fare getFare(final FarePolicyByPassenger farePolicyByPassenger, final List<Section> allSections, final GraphPath<Station, DefaultWeightedEdge> shortestPath) {
         final int travelDistance = (int) shortestPath.getWeight();
         final List<Station> stations = shortestPath.getVertexList();
 
@@ -55,7 +55,7 @@ public class PathService {
             .plus(lineFare)
             .plus(highestFareByLineFare);
 
-        return passenger.discountByPassengerType(finalFare);
+        return farePolicyByPassenger.discountByPassengerType(finalFare);
     }
 
     private Fare findHighestFareByLine(final List<Section> sections, final List<Station> stations) {

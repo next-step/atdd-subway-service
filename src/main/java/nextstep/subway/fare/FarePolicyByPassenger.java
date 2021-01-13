@@ -3,10 +3,10 @@ package nextstep.subway.fare;
 import java.util.Arrays;
 import java.util.function.Function;
 
-public enum Passenger {
+public enum FarePolicyByPassenger {
     INFANT(0, 5, 100, fare -> Fare.of(0)),
-    CHILD(6, 12, 50, Passenger::fareMinusBaseDeduction),
-    ADOLESCENT(13, 18, 20, Passenger::fareMinusBaseDeduction),
+    CHILD(6, 12, 50, FarePolicyByPassenger::fareMinusBaseDeduction),
+    ADOLESCENT(13, 18, 20, FarePolicyByPassenger::fareMinusBaseDeduction),
     ADULT(19, 200, 0, fare -> fare);
 
     private static final int BASE_DEDUCTION_AMOUNT = 350;
@@ -15,23 +15,23 @@ public enum Passenger {
     private final int deductionPercentage;
     private final Function<Fare, Fare> fareExpression;
 
-    Passenger(final int startingAgeRange, final int endingAgeRange, final int deductionPercentage, final Function<Fare, Fare> fareExpression) {
+    FarePolicyByPassenger(final int startingAgeRange, final int endingAgeRange, final int deductionPercentage, final Function<Fare, Fare> fareExpression) {
         this.startingAgeRange = startingAgeRange;
         this.endingAgeRange = endingAgeRange;
         this.deductionPercentage = deductionPercentage;
         this.fareExpression = fareExpression;
     }
 
-    public static Passenger getPassengerType(final int passengerAge) {
+    public static FarePolicyByPassenger getPassengerType(final int passengerAge) {
         return Arrays.stream(values()).sorted()
-            .filter(passenger -> passenger.startingAgeRange <= passengerAge)
-            .filter(passenger -> passenger.endingAgeRange >= passengerAge)
+            .filter(farePolicyByPassenger -> farePolicyByPassenger.startingAgeRange <= passengerAge)
+            .filter(farePolicyByPassenger -> farePolicyByPassenger.endingAgeRange >= passengerAge)
             .findFirst()
             .orElseThrow(IllegalArgumentException::new);
     }
 
     private static Fare fareMinusBaseDeduction(final Fare fare) {
-        return fare.minus(Passenger.BASE_DEDUCTION_AMOUNT);
+        return fare.minus(FarePolicyByPassenger.BASE_DEDUCTION_AMOUNT);
     }
 
     public Fare discountByPassengerType(final Fare fare) {
