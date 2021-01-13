@@ -1,11 +1,8 @@
 package nextstep.subway.fares.policy;
 
 import nextstep.subway.fares.domain.Fare;
-import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.domain.Distance;
-
-import java.util.List;
+import nextstep.subway.path.domain.Path;
 
 public interface FarePolicy {
-    void calculateFare(Fare fare, Distance distance, List<Section> sections);
+    void calculateFare(Fare fare, Path path);
 }

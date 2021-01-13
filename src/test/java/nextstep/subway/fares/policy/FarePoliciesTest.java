@@ -18,9 +18,9 @@ public class FarePoliciesTest {
     void calculateFareWithLessThan10km() {
         // given
         FarePolicies farePolicies = new FarePolicies();
-        Path path = new Path(Collections.emptyList(), new Distance(10));
+        Path path = new Path(Collections.emptyList(), new Distance(10), 0);
         // when
-        Fare fare = farePolicies.calculateFare(path, Collections.emptyList());
+        Fare fare = farePolicies.calculateFare(path);
         // then
         assertThat(fare.getFare()).isEqualTo(1250);
     }
@@ -30,9 +30,9 @@ public class FarePoliciesTest {
     void calculateFareWithOver10kmLessThan50km() {
         // given
         FarePolicies farePolicies = new FarePolicies();
-        Path path = new Path(Collections.emptyList(), new Distance(15));
+        Path path = new Path(Collections.emptyList(), new Distance(15), 0);
         // when
-        Fare fare = farePolicies.calculateFare(path, Collections.emptyList());
+        Fare fare = farePolicies.calculateFare(path);
         // then
         assertThat(fare.getFare()).isEqualTo(1350);
     }
@@ -42,9 +42,9 @@ public class FarePoliciesTest {
     void calculateFareWithOver50km() {
         // given
         FarePolicies farePolicies = new FarePolicies();
-        Path path = new Path(Collections.emptyList(), new Distance(65));
+        Path path = new Path(Collections.emptyList(), new Distance(65), 0);
         // when
-        Fare fare = farePolicies.calculateFare(path, Collections.emptyList());
+        Fare fare = farePolicies.calculateFare(path);
         // then
         assertThat(fare.getFare()).isEqualTo(2150);
     }

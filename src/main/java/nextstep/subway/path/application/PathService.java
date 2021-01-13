@@ -13,7 +13,6 @@ import nextstep.subway.station.domain.Stations;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Collections;
 
 @RequiredArgsConstructor
 @Transactional
@@ -34,7 +33,7 @@ public class PathService {
         checkStationIsInSections(targetStation, stations);
 
         Path shortestPath = ShortestPathFinder.findShortestPath(sections, stations, sourceStation, targetStation);
-        Fare fare = farePolicies.calculateFare(shortestPath, Collections.emptyList());
+        Fare fare = farePolicies.calculateFare(shortestPath);
 
         return PathResponse.of(shortestPath, fare);
     }

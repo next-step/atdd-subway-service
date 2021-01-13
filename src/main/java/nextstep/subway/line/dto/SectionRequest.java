@@ -17,4 +17,12 @@ public class SectionRequest {
     private Long downStationId;
     @Min(1)
     private int distance;
+    @Min(0)
+    private int extraCharge;
+
+    public SectionRequest(Long upStationId, Long downStationId, int distance) {
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
+        this.distance = distance;
+    }
 }

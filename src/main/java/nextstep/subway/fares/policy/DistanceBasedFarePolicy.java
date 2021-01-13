@@ -1,8 +1,8 @@
 package nextstep.subway.fares.policy;
 
 import nextstep.subway.fares.domain.Fare;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.Distance;
+import nextstep.subway.path.domain.Path;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +19,10 @@ public class DistanceBasedFarePolicy implements FarePolicy {
     }
 
     @Override
-    public void calculateFare(Fare fare, Distance distance, List<Section> sections) {
+    public void calculateFare(Fare fare, Path path) {
         Distance currDistance = new Distance();
         for (DistanceBasedFarePolicyDetails policy : policies) {
-            policy.calculateFareByDistance(currDistance, fare, distance);
+            policy.calculateFareByDistance(currDistance, fare, path.getDistance());
         }
     }
 }

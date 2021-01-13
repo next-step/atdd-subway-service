@@ -1,7 +1,6 @@
 package nextstep.subway.fares.policy;
 
 import nextstep.subway.fares.domain.Fare;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.Path;
 
 import java.util.ArrayList;
@@ -14,12 +13,13 @@ public class FarePolicies {
     public FarePolicies() {
         farePolicies = new ArrayList<>();
         farePolicies.add(new DistanceBasedFarePolicy());
+        farePolicies.add(new SectionExtraChargeFarePolicy());
     }
 
-    public Fare calculateFare(Path path, List<Section> sections) {
+    public Fare calculateFare(Path path) {
         Fare fare = new Fare();
         for (FarePolicy farePolicy : farePolicies) {
-            farePolicy.calculateFare(fare, path.getDistance(), sections);
+            farePolicy.calculateFare(fare, path);
         }
         return fare;
     }

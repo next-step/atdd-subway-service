@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.Distance;
 import nextstep.subway.path.domain.Path;
@@ -10,33 +11,52 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class ShortestPathFinder {
-    private static final WeightedMultigraph<Station, DefaultWeightedEdge> GRAPH;
-    private static final DijkstraShortestPath<Station, DefaultWeightedEdge> DIJKSTRA_SHORTEST_PATH;
+    private static final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+    private static final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
+    private static final Map<DefaultWeightedEdge, Section> sectionByEdge;
 
     static {
-        GRAPH = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        DIJKSTRA_SHORTEST_PATH = new DijkstraShortestPath<>(GRAPH);
+        graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        sectionByEdge = new HashMap<>();
     }
 
     public static Path findShortestPath(
         Sections sections, Stations stations, Station sourceStation, Station targetStation) {
 
-        stations.forEach(GRAPH::addVertex);
+        stations.forEach(graph::addVertex);
         sections.forEach(section -> {
-            DefaultWeightedEdge edge = GRAPH.addEdge(section.getUpStation(), section.getDownStation());
-            GRAPH.setEdgeWeight(edge, section.getDistance());
+            DefaultWeightedEdge edge = graph.addEdge(section.getUpStation(), section.getDownStation());
+            graph.setEdgeWeight(edge, section.getDistance());
+            sectionByEdge.put(edge, section);
         });
 
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = DIJKSTRA_SHORTEST_PATH.getPath(sourceStation, targetStation);
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
         checkPathIsNull(shortestPath);
 
-        return new Path(shortestPath.getVertexList(), new Distance((int) shortestPath.getWeight()));
+        int maxExtraCharge = getMaxExtraCharge(shortestPath.getEdgeList());
+
+        return new Path(shortestPath.getVertexList(), new Distance((int) shortestPath.getWeight()), maxExtraCharge);
     }
 
     private static void checkPathIsNull(GraphPath<Station, DefaultWeightedEdge> shortestPath) {
         if (shortestPath == null) {
             throw new PathFindException("source station is not connected to target station");
         }
+    }
+
+    private static int getMaxExtraCharge(List<DefaultWeightedEdge> edgeList) {
+        return edgeList
+                .stream()
+                .map(sectionByEdge::get)
+                .max(Comparator.comparingInt(Section::getExtraCharge))
+                .map(Section::getExtraCharge)
+                .orElse(0);
     }
 }

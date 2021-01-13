@@ -12,4 +12,5 @@ public class Path {
 
     private final List<Station> stations;
     private final Distance distance;
+    private final int maxExtraCharge;
 }
