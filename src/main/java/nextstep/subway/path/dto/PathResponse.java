@@ -1,8 +1,5 @@
 package nextstep.subway.path.dto;
 
-import nextstep.subway.path.domain.PathVertexStation;
-import nextstep.subway.station.domain.Station;
-
 import java.util.List;
 
 public class PathResponse {
