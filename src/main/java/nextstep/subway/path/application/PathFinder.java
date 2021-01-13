@@ -3,6 +3,7 @@ package nextstep.subway.path.application;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.PathVertexStation;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -61,7 +63,9 @@ public class PathFinder {
                 = new DijkstraShortestPath<Station, DefaultWeightedEdge>(this.graph)
                     .getPath(sourceStation, targetStation);
 
-        return new PathResponse(shortestPath.getVertexList(), (int) shortestPath.getWeight());
+        return new PathResponse(shortestPath.getVertexList().stream()
+                                    .map(PathVertexStation::of).collect(Collectors.toList())
+                                , (int) shortestPath.getWeight());
     }
 
     /**
