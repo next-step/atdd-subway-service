@@ -3,7 +3,6 @@ package nextstep.subway.path.ui;
 import nextstep.subway.path.application.PathFindService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
-import nextstep.subway.station.domain.Station;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,9 +21,7 @@ public class PathController {
     @GetMapping(value = "/paths")
     public ResponseEntity<PathResponse> getDijkstraShortestPath(@RequestParam Long source,
                                                                 @RequestParam Long target) {
-        Station start = stationService.findById(source);
-        Station end = stationService.findById(target);
-        PathResponse response = pathFindService.findShortestPath(start, end);
+        PathResponse response = pathFindService.findShortestPath(source, target);
         return ResponseEntity.ok(response);
     }
 }
