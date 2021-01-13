@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -56,10 +57,6 @@ public class Sections {
 		sections.add(new Section(line, upStation, downStation, distance));
 	}
 
-	public Station getFirstUpStation() {
-		return sections.get(0).getUpStation();
-	}
-
 	public void remove(Section section) {
 		if (section != null) {
 			sections.remove(section);
@@ -91,15 +88,10 @@ public class Sections {
 	}
 
 	private Station findUpStation() {
-		Station downStation = getFirstUpStation();
-		return findUpStationSectionContainDownStation(downStation);
-	}
-
-	private Station findUpStationSectionContainDownStation(Station station) {
 		return sections.stream()
-			.filter(section -> isSectionsContainDownStation(station))
+			.map(section -> section.getUpStation())
+			.filter(this::isSectionsContainDownStation)
 			.findFirst()
-			.map(Section::getUpStation)
 			.orElseThrow(() -> new RuntimeException("지하철역 정보가 올바르지 않습니다."));
 	}
 
