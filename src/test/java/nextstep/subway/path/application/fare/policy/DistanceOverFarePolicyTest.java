@@ -13,7 +13,7 @@ class DistanceOverFarePolicyTest {
     void calculateFare(int distance, int expectedFare) {
         //given
         //when
-        int fare = DistanceOverFarePolicy.calculateFare(distance);
+        int fare = DistanceOverFarePolicy.valueOf(distance).calculateFare(distance);
         //then
         assertThat(fare).isEqualTo(expectedFare);
     }
