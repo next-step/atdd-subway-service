@@ -70,4 +70,15 @@ public class Section {
         this.downStation = station;
         this.distance -= newDistance;
     }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "id=" + id +
+                ", line=" + line +
+                ", upStation=" + upStation +
+                ", downStation=" + downStation +
+                ", distance=" + distance +
+                '}';
+    }
 }
