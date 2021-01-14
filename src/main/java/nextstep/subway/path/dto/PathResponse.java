@@ -24,4 +24,6 @@ public class PathResponse {
     public int getDistance() {
         return distance;
     }
+
+
 }
