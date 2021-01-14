@@ -10,6 +10,7 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -29,17 +30,15 @@ public class LineService {
         return LineResponse.of(lineRepository.save(createLineOf(request)));
     }
 
-    private Line createLineOf(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
-        return new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance());
-    }
-
     public List<LineResponse> findLines() {
-        return lineRepository.findAll()
+        return findAllLines()
                 .stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public List<Line> findAllLines() {
+        return lineRepository.findAll();
     }
 
     public Line findLineById(Long id) {
@@ -61,13 +60,28 @@ public class LineService {
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
+        List<Station> stations = stationService.findByIdIn(Arrays.asList(request.getUpStationId(), request.getDownStationId()));
+        Station upStation = extractStation(stations, request.getUpStationId());
+        Station downStation = extractStation(stations, request.getDownStationId());
         findLineById(lineId).addSection(upStation, downStation, request.getDistance());
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Station station = stationService.findStationById(stationId);
+        Station station = stationService.findById(stationId);
         findLineById(lineId).deleteStation(station);
+    }
+
+    private Line createLineOf(LineRequest request) {
+        List<Station> stations = stationService.findByIdIn(Arrays.asList(request.getUpStationId(), request.getDownStationId()));
+        Station upStation = extractStation(stations, request.getUpStationId());
+        Station downStation = extractStation(stations, request.getDownStationId());
+        return new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance());
+    }
+
+    private Station extractStation(List<Station> stations, Long stationId) {
+        return stations.stream()
+                .filter(s -> s.isSameId(stationId))
+                .findAny()
+                .orElseThrow(() -> new NoSuchElementException("Station id:" + stationId + " 존재하지않습니다."));
     }
 }

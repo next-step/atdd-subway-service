@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.common.exception.CustomException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,16 +48,16 @@ class LineTest {
         _2호선.deleteStation(잠실새내역);
         // Then
         assertThat(_2호선.getStations())
-                .extracting("name")
+                .extracting(Station::getName)
                 .containsExactly("잠실역", "삼성역", "종합운동장역");
     }
 
-    @DisplayName("노선의 지하철역 `Station` 삭제 예외 발생 확")
+    @DisplayName("노선의 지하철역 `Station` 삭제 예외 발생 확인")
     @Test
     void checkExceptionToDeleteStationInLine() {
         // When & Then
         assertThatThrownBy(() -> _2호선.deleteStation(종합운동장역))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(CustomException.class)
                 .hasMessageContaining("구간이 1개이면 역을 삭제할 수 없습니다.");
     }
 }
