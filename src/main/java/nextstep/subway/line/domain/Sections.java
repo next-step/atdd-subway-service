@@ -112,6 +112,11 @@ public class Sections {
         }
     }
 
+    public boolean containsSection(Station departure, Station destination) {
+        return sections.stream()
+                .anyMatch(section -> section.matchSection(departure, destination));
+    }
+
     private void finallyAdd(Section section) {
         sections.add(section);
         PathSelector.add(section);
