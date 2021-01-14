@@ -4,9 +4,11 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -25,10 +27,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
-    //최단경로 조회 인수테스트
-
-    //given
-    // 여러 역이 등록되어 있는 라인들
+    public static final String EMAIL = "email@email.com";
+    public static final String PASSWORD = "password";
+    public static final int AGE = 20;
 
     private LineResponse 신분당선;
     private LineResponse 이호선;
@@ -40,6 +41,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
     private StationResponse 왕십리역;
     private StationResponse 군자역;
+    private TokenResponse 사용자;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -59,10 +61,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         왕십리역 = StationAcceptanceTest.지하철역_등록되어_있음("왕십리역").as(StationResponse.class);
         군자역 = StationAcceptanceTest.지하철역_등록되어_있음("군자역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 20).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 양재역, 남부터미널역, 5).as(LineResponse.class);
-        오호선 = 지하철_노선_등록되어_있음("오호선", "bg-red-600", 왕십리역, 군자역, 5).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 1200L, 10).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 300L, 20).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 양재역, 남부터미널역, 100L, 5).as(LineResponse.class);
+        오호선 = 지하철_노선_등록되어_있음("오호선", "bg-red-600", 왕십리역, 군자역, 600L, 5).as(LineResponse.class);
+        MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        사용자 = MemberAcceptanceTest.로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 남부터미널역, 교대역, 3);
     }
@@ -71,27 +75,33 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void manageSubwayPath() {
         //when
-        ExtractableResponse<Response> findResponse = 지하철_최단경로_조회_요청(강남역.getId(), 교대역.getId());
+        ExtractableResponse<Response> findResponse = 지하철_최단경로_조회_요청(강남역.getId(), 교대역.getId(), 사용자);
         //then
         지하철_최단경로_조회됨(findResponse);
         지하철_최단경로_순서_정렬됨(findResponse, Arrays.asList(강남역, 양재역, 남부터미널역, 교대역));
         지하철_최단경로_거리_확인됨(findResponse, 18L);
+        지하철_이용요금_응답됨(findResponse, 2650L);
 
         //when 최단경로조회(예외상황1) : 동일한 출발역과 도착역을 전달했을 경우 => id 값 비교로 알 수 있음
-        ExtractableResponse<Response> findResponse2 = 지하철_최단경로_조회_요청(양재역.getId(), 양재역.getId());
+        ExtractableResponse<Response> findResponse2 = 지하철_최단경로_조회_요청(양재역.getId(), 양재역.getId(), 사용자);
         //then
         지하철_최단경로_조회_실패됨(findResponse2);
 
         //when 최단경로조회(예외상황2) : 연결되어 있지 않은 출발, 도착역일 경우 => 경로찾기 알고리즘을 도입했을 경우에 찾을 수 있음
-        ExtractableResponse<Response> findResponse3 = 지하철_최단경로_조회_요청(왕십리역.getId(), 양재역.getId());
+        ExtractableResponse<Response> findResponse3 = 지하철_최단경로_조회_요청(왕십리역.getId(), 양재역.getId(), 사용자);
         //then
         지하철_최단경로_조회_실패됨(findResponse3);
 
         //when 최단경로조회(예외상황3) : 존재하지 않은 출발역 또는 도착역을 조회할 경우 => station 조회하면 알 수 있음.
-        ExtractableResponse<Response> findResponse4 = 지하철_최단경로_조회_요청(10L, 양재역.getId());
+        ExtractableResponse<Response> findResponse4 = 지하철_최단경로_조회_요청(10L, 양재역.getId(), 사용자);
         //then
         지하철_최단경로_조회_실패됨(findResponse4);
 
+    }
+
+    private void 지하철_이용요금_응답됨(ExtractableResponse<Response> findResponse, long expectedFare) {
+        PathResponse path = findResponse.as(PathResponse.class);
+        assertThat(path.getFare()).isEqualTo(expectedFare);
     }
 
     private void 지하철_최단경로_거리_확인됨(ExtractableResponse<Response> findResponse, long expectedDistance) {
@@ -120,9 +130,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private ExtractableResponse<Response> 지하철_최단경로_조회_요청(Long sourceId, Long targetId) {
+    private ExtractableResponse<Response> 지하철_최단경로_조회_요청(Long sourceId, Long targetId, TokenResponse user) {
         return  RestAssured.
-                given().log().all().
+                given().log().all().auth().oauth2(user.getAccessToken()).
                 contentType(MediaType.APPLICATION_JSON_VALUE).
                 when().get("/paths?source={sourceId}&target={targetID}", sourceId, targetId).
                 then().log().all().
@@ -130,8 +140,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
 
-    public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        return 지하철_노선_생성_요청(new LineRequest(name, color, upStation.getId(), downStation.getId(), distance));
+    public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, Long additionalFee, int distance) {
+        return 지하철_노선_생성_요청(new LineRequest(name, color, upStation.getId(), downStation.getId(), additionalFee, distance));
     }
 
     private static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest lineRequest) {

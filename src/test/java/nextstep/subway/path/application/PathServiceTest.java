@@ -2,6 +2,8 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -34,6 +36,9 @@ public class PathServiceTest {
     private Line line;
     private Line line2;
     private Line line3;
+    private Member teenager;
+    private Member child;
+    private Member member;
     private List<Line> lines = new ArrayList<>();
     private PathService pathService;
 
@@ -50,36 +55,56 @@ public class PathServiceTest {
         hongdae = new Station(4L, "홍대역");
         gongduck = new Station(5L, "공덕역");
         itaewon = new Station(6L, "이태원역");
-        line = new Line(1L,"2호선", "green", gangnam, yangjae, 10);
-        line2 = new Line(2L,"3호선", "orange", yangjae, hongdae, 10);
-        line3 = new Line(3L,"6호선", "orange", gongduck, itaewon, 10);
+        line = new Line(1L,"2호선", "green", gangnam, yangjae, 0L, 10);
+        line2 = new Line(2L,"3호선", "orange", yangjae, hongdae, 600L,10);
+        line3 = new Line(3L,"6호선", "orange", gongduck, itaewon, 880L,10);
         line.addSection(gangnam, gyodae, 5);
         lines.add(line);
         lines.add(line2);
         lines.add(line3);
+        teenager = new Member(1L, "email@email.com", "password", 15);
+        child = new Member(2L, "email@email.com", "password", 7);
+        member = new Member(3L, "email@email.com", "password", 20);
         pathService = new PathService(stationService, lineRepository);
     }
 
     @Test
     @DisplayName("경로찾기 테스트")
     void findPath() {
-        when(lineRepository.findAll()).thenReturn(lines);
-        when(stationService.findStationById(gangnam.getId())).thenReturn(gangnam);
-        when(stationService.findStationById(yangjae.getId())).thenReturn(yangjae);
-        when(stationService.findStationById(gyodae.getId())).thenReturn(gyodae);
-        when(stationService.findStationById(hongdae.getId())).thenReturn(hongdae);
-        PathResponse pathResponse = pathService.findPathByIds(gangnam.getId(), hongdae.getId());
+        mockLine(lines);
+        mockStation(gangnam);
+        mockStation(yangjae);
+        mockStation(gyodae);
+        mockStation(hongdae);
 
-        assertThat(pathResponse).isNotNull();
-        assertThat(pathResponse.getDistance()).isNotNull();
-        assertThat(pathResponse.getDistance()).isEqualTo(20L);
+        PathResponse pathResponse = findPath(member, gangnam, hongdae);
+
+        checkDistance(pathResponse, 20L);
+    }
+
+    @Test
+    @DisplayName("요금구하기 테스트")
+    void findFare() {
+        mockLine(lines);
+        mockStation(gangnam);
+        mockStation(yangjae);
+        mockStation(gyodae);
+        mockStation(hongdae);
+
+        PathResponse pathResponse1 = findPath(teenager, gangnam, hongdae);
+        PathResponse pathResponse2 = findPath(child, gangnam, hongdae);
+        PathResponse pathResponse3 = findPath(member, gangnam, hongdae);
+
+        checkFare(pathResponse1, 1934L);
+        checkFare(pathResponse2, 1340L);
+        checkFare(pathResponse3, 2330L);
     }
 
     @Test
     @DisplayName("경로찾기 예외처리: 동일한 역을 조회했을 경우")
     void findSameStationsPath() {
         assertThatThrownBy(() -> {
-            pathService.findPathByIds(gangnam.getId(), gangnam.getId());
+            pathService.findPathByIds(member.getAge(), gangnam.getId(), gangnam.getId());
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -87,7 +112,7 @@ public class PathServiceTest {
     @DisplayName("경로찾기 예외처리: 연결되지 않은 역을 조회했을 경우")
     void findNotConnectedPath() {
         assertThatThrownBy(() -> {
-            pathService.findPathByIds(gangnam.getId(), gongduck.getId());
+            pathService.findPathByIds(member.getAge(), gangnam.getId(), gongduck.getId());
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -95,7 +120,7 @@ public class PathServiceTest {
     @DisplayName("경로찾기 예외처리: 존재하지 않은 역을 조회했을 경우")
     void findNotExistStationPath() {
         assertThatThrownBy(() -> {
-            pathService.findPathByIds(20L, gongduck.getId());
+            pathService.findPathByIds(member.getAge(),20L, gongduck.getId());
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -125,4 +150,28 @@ public class PathServiceTest {
         assertThat(shortestPath.size()).isEqualTo(3);
     }
 
+
+    private void checkDistance(PathResponse pathResponse, Long expectedDistance) {
+        assertThat(pathResponse).isNotNull();
+        assertThat(pathResponse.getDistance()).isNotNull();
+        assertThat(pathResponse.getDistance()).isEqualTo(expectedDistance);
+    }
+
+    private void checkFare(PathResponse pathResponse, Long expectedFare) {
+        assertThat(pathResponse).isNotNull();
+        assertThat(pathResponse.getFare()).isNotNull();
+        assertThat(pathResponse.getFare()).isEqualTo(expectedFare);
+    }
+
+    private PathResponse findPath(Member member, Station source, Station target) {
+        return pathService.findPathByIds(member.getAge(), source.getId(), target.getId());
+    }
+
+    private void mockLine(List<Line> lines) {
+        when(lineRepository.findAll()).thenReturn(lines);
+    }
+
+    private void mockStation(Station station) {
+        when(stationService.findStationById(station.getId())).thenReturn(station);
+    }
 }

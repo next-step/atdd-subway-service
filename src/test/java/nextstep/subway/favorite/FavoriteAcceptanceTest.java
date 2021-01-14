@@ -4,7 +4,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
@@ -49,8 +48,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        신분당선 = PathAcceptanceTest.지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10).as(LineResponse.class);
-        이호선 = PathAcceptanceTest.지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 20).as(LineResponse.class);
+        신분당선 = PathAcceptanceTest.지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 0L, 10).as(LineResponse.class);
+        이호선 = PathAcceptanceTest.지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 0L, 20).as(LineResponse.class);
 
         PathAcceptanceTest.지하철_노선에_지하철역_등록되어_있음(신분당선, 양재역, 교대역, 3);
         PathAcceptanceTest.지하철_노선에_지하철역_등록되어_있음(이호선, 강남역, 남부터미널역, 3);
@@ -75,6 +74,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(사용자, createResponse);
         //then
         즐겨찾기_삭제됨(deleteResponse);
+
+        //when
+        ExtractableResponse<Response> findResponse2 = 즐겨찾기_목록_조회_요청(사용자);
+        //then
+        즐겨찾기_목록_조회됨(findResponse2);
+        즐겨찾기_목록_확인_실패됨(findResponse2, createResponse);
     }
 
     private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
@@ -87,6 +92,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .map(FavoriteResponse::getId)
                 .collect(Collectors.toList());
         assertThat(favoriteIds).contains(expectedFavoriteId);
+    }
+
+    private void 즐겨찾기_목록_확인_실패됨(ExtractableResponse<Response> response, ExtractableResponse<Response> createResponse) {
+        Long expectedFavoriteId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+        List<Long> favoriteIds = response.jsonPath().getList(".", FavoriteResponse.class).stream()
+                .map(FavoriteResponse::getId)
+                .collect(Collectors.toList());
+        assertThat(favoriteIds).doesNotContain(expectedFavoriteId);
     }
 
     private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
@@ -125,7 +138,4 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
     }
-
-
-
 }

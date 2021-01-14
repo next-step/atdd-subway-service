@@ -2,11 +2,13 @@ package nextstep.subway.favorite.application;
 
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
+import nextstep.subway.favorite.dto.FavoriteCreateRequest;
+import nextstep.subway.favorite.dto.FavoriteDeleteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,18 +18,18 @@ import java.util.stream.Collectors;
 public class FavoriteService {
     private FavoriteRepository favoriteRepository;
     private MemberRepository memberRepository;
-    private StationRepository stationRepository;
+    private StationService stationService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, MemberRepository memberRepository, StationRepository stationRepository) {
+    public FavoriteService(FavoriteRepository favoriteRepository, MemberRepository memberRepository, StationService stationService) {
         this.favoriteRepository = favoriteRepository;
         this.memberRepository = memberRepository;
-        this.stationRepository = stationRepository;
+        this.stationService = stationService;
     }
 
-    public FavoriteResponse createFavorite(Long memberId, Long sourceStationId, Long targetStationId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new);
-        Station source = stationRepository.findById(sourceStationId).orElseThrow(IllegalArgumentException::new);
-        Station target = stationRepository.findById(targetStationId).orElseThrow(IllegalArgumentException::new);
+    public FavoriteResponse createFavorite(FavoriteCreateRequest request) {
+        Member member = memberRepository.findById(request.getUserId()).orElseThrow(IllegalArgumentException::new);
+        Station source = stationService.findStationById(request.getSourceStationId());
+        Station target = stationService.findStationById(request.getTargetStationId());
         Favorite favorite = favoriteRepository.save(new Favorite(member, source, target));
         return FavoriteResponse.of(favorite);
     }
@@ -40,9 +42,10 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteFavorite(Long memberId, Long favoriteId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new);
-        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(IllegalArgumentException::new);
+    public void deleteFavorite(FavoriteDeleteRequest request) {
+        Member member = memberRepository.findById(request.getUserId()).orElseThrow(IllegalArgumentException::new);
+        Favorite favorite = favoriteRepository.findById(request.getFavoriteId()).orElseThrow(IllegalArgumentException::new);
         member.removeFavorite(favorite);
+        favoriteRepository.deleteById(request.getFavoriteId());
     }
 }

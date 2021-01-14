@@ -1,8 +1,9 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,8 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findPath(@RequestParam Long source, @RequestParam Long target) {
-        return ResponseEntity.ok(pathService.findPathByIds(source, target));
+    public ResponseEntity<PathResponse> findPath(@AuthenticationPrincipal LoginMember loginMember,
+                                                 @RequestParam Long source, @RequestParam Long target) {
+        return ResponseEntity.ok(pathService.findPathByIds(loginMember.getAge(), source, target));
     }
 }
