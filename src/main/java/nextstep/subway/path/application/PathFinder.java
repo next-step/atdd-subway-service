@@ -22,14 +22,12 @@ import java.util.stream.Collectors;
 @Transactional
 public class PathFinder {
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
 
     public PathFinder(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
-        this.graph = new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class);
     }
 
     /**
@@ -58,9 +56,13 @@ public class PathFinder {
     public PathResponse getShortestPath(Station sourceStation, Station targetStation) {
         this.equalsSourceAndTargetOccurredException(sourceStation, targetStation);
 
-        this.addGraphAllLines();
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph
+                = new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class);;
+
+        this.addGraphAllLines(graph);
+
         GraphPath<Station, DefaultWeightedEdge> shortestPath
-                = new DijkstraShortestPath<Station, DefaultWeightedEdge>(this.graph)
+                = new DijkstraShortestPath<Station, DefaultWeightedEdge>(graph)
                     .getPath(sourceStation, targetStation);
 
         return new PathResponse(shortestPath.getVertexList().stream()
@@ -81,31 +83,33 @@ public class PathFinder {
 
     /**
      * 저장된 모든 노선의 구간 정보를 추가합니다.
+     * @param graph
      */
-    private void addGraphAllLines() {
+    private void addGraphAllLines(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         List<Line> persistLines = lineRepository.findAll();
 
         persistLines.stream().map(Line::getSections)
-                .forEach(sections -> sections.forEach(this::addGraph));
+                .forEach(sections -> sections
+                        .forEach(section -> this.addGraph(graph, section)));
     }
 
     /**
      * 구간정보와 역 정보를 추가합니다.
      * @param section
      */
-    private void addGraph(Section section) {
-        this.graph.addVertex(section.getUpStation());
-        this.graph.addVertex(section.getDownStation());
-        this.addEdgeWeight(section);
+    private void addGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Section section) {
+        graph.addVertex(section.getUpStation());
+        graph.addVertex(section.getDownStation());
+        this.addEdgeWeight(graph, section);
     }
 
     /**
      * 구간 정보를 추가합니다.
      * @param section
      */
-    private void addEdgeWeight(Section section) {
-        this.graph.setEdgeWeight(
-                this.graph.addEdge(section.getUpStation(), section.getDownStation())
+    private void addEdgeWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Section section) {
+        graph.setEdgeWeight(
+                graph.addEdge(section.getUpStation(), section.getDownStation())
                 , section.getDistance());
     }
 }
