@@ -40,7 +40,7 @@ public class PathService {
     }
 
     private void checkStationsAreNotSame(Station sourceStation, Station targetStation) {
-        if (sourceStation == targetStation) {
+        if (sourceStation.equals(targetStation)) {
             throw new PathFindException("source station and target station are the same");
         }
     }
