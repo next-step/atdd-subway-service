@@ -1,5 +1,8 @@
 package nextstep.subway.auth.domain;
 
+import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.path.application.fare.policy.AgeDrawbackFarePolicy;
+
 public class LoginMember {
     private Long id;
     private String email;
@@ -24,5 +27,28 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
+    }
+
+    public boolean isAuthorized() {
+        return id != null;
+    }
+
+    public void validAuthorized() {
+        if (id == null) {
+            throw new AuthorizationException("accessToken이 유효하지 않습니다.");
+        }
+    }
+
+    public int calculateFare(int fare) {
+        if(this.isAuthorized()) {
+            AgeDrawbackFarePolicy ageOverFarePolicy = getAgeOverFarePolicy(this.age);
+            return ageOverFarePolicy.calculateFare(fare);
+        }
+
+        return fare;
+    }
+
+    private AgeDrawbackFarePolicy getAgeOverFarePolicy(int age) {
+        return AgeDrawbackFarePolicy.valueOf(age);
     }
 }

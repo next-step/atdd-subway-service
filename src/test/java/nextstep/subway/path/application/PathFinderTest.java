@@ -1,10 +1,10 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.exception.NoLinkPathException;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
+import org.jgrapht.GraphPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,18 +59,19 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
 
         //when
-        PathResponse pathResponse = pathFinder.getPath(교대역, 양재역);
+        GraphPath<Station, Section> path = pathFinder.getPath(교대역, 양재역);
+        List<Station> stations = path.getVertexList();
 
         //then
-        List<String> stationNames = pathResponse.getStations().stream()
-                .map(StationResponse::getName)
+        List<String> stationNames = stations.stream()
+                .map(Station::getName)
                 .collect(Collectors.toList());
         assertThat(stationNames).containsExactlyElementsOf(
                 Stream.of(교대역, 남부터미널역, 양재역)
                         .map(Station::getName)
                         .collect(Collectors.toList())
         );
-        assertThat(pathResponse.getDistance()).isEqualTo(5);
+        assertThat((int)path.getWeight()).isEqualTo(5);
     }
 
     @DisplayName("출발역과 도착역이 같은 경우")
@@ -85,8 +86,7 @@ class PathFinderTest {
             pathFinder.getPath(교대역, 교대역);
         }).isInstanceOf(IllegalArgumentException.class);
     }
-
-
+    
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
     @Test
     void getPathNoLink() {

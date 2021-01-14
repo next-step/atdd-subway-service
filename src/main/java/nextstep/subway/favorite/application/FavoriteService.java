@@ -30,14 +30,15 @@ public class FavoriteService {
         this.stationService = stationService;
     }
 
-    public FavoriteResponse createFavorite(Long memberId, FavoriteRequest request) {
+    public Long createFavorite(Long memberId, FavoriteRequest request) {
         Member member = memberService.findMemberById(memberId);
 
         Station sourceStation = stationService.findStationById(request.getSource());
         Station targetStation = stationService.findStationById(request.getTarget());
 
         Favorite favorite = new Favorite(member, sourceStation, targetStation);
-        return FavoriteResponse.of(favoriteRepository.save(favorite));
+        Favorite savedFavorite = favoriteRepository.save(favorite);
+        return savedFavorite.getId();
     }
 
     @Transactional(readOnly = true)

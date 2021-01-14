@@ -51,6 +51,22 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         토큰_인증_실패_검증(response);
     }
 
+    @DisplayName("Bearer Auth 토큰 입력하지 않음")
+    @Test
+    void myInfoWithNoBearerAuth() {
+
+        // given
+        bearer_토큰_인증_요청(
+                MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD
+        );
+
+        // when
+        ExtractableResponse<Response> response = MemberAcceptanceTest.내_회원정보_조회_요청();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
@@ -62,7 +78,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         // when
         String accessToken = "wrong-token";
-        Map<String, String> params = new HashMap<>();
         ExtractableResponse<Response> response = MemberAcceptanceTest.내_회원정보_조회_요청(accessToken);
 
         // then
