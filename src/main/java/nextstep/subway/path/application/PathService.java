@@ -10,7 +10,6 @@ import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.Stations;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -29,11 +28,11 @@ public class PathService {
         checkStationsAreNotSame(sourceStation, targetStation);
 
         Sections sections = new Sections(sectionRepository.findAll());
-        Stations stations = sections.getStations();
-        checkStationIsInSections(sourceStation, stations);
-        checkStationIsInSections(targetStation, stations);
 
-        Path shortestPath = ShortestPathFinder.findShortestPath(sections, stations, sourceStation, targetStation);
+        checkStationIsInSections(sections, sourceStation);
+        checkStationIsInSections(sections, targetStation);
+
+        Path shortestPath = ShortestPathFinder.findShortestPath(sections, sourceStation, targetStation);
         Fare fare = farePolicies.calculateFare(shortestPath, loginMember);
 
         return PathResponse.of(shortestPath, fare);
@@ -45,8 +44,8 @@ public class PathService {
         }
     }
 
-    private void checkStationIsInSections(Station sourceStation, Stations stations) {
-        if (!stations.contains(sourceStation)) {
+    private void checkStationIsInSections(Sections sections, Station sourceStation) {
+        if (!sections.containsStation(sourceStation)) {
             throw new PathFindException("the station is not in the sections: " + sourceStation);
         }
     }

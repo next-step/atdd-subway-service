@@ -27,8 +27,8 @@ public class ShortestPathFinder {
         sectionByEdge = new HashMap<>();
     }
 
-    public static Path findShortestPath(
-        Sections sections, Stations stations, Station sourceStation, Station targetStation) {
+    public static Path findShortestPath(Sections sections, Station sourceStation, Station targetStation) {
+        Stations stations = sections.getStations();
 
         stations.forEach(graph::addVertex);
         sections.forEach(section -> {
