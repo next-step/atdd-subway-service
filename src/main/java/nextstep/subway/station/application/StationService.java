@@ -42,4 +42,8 @@ public class StationService {
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
+
+    public List<Station> findAllByIdIn(List<Long> stationIds) {
+        return stationRepository.findAllByIdIn(stationIds);
+    }
 }

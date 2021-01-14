@@ -2,7 +2,7 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.line.dto.ExistedStationValue;
-import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 
 @Entity
 public class Line extends BaseEntity {
-
 	private static final int MIN_STATION_SIZE = 1;
 
 	@Id
@@ -28,7 +27,7 @@ public class Line extends BaseEntity {
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private List<Section> sections = new ArrayList<>();
 
-	public Line() {
+	protected Line() {
 	}
 
 	public Line(String name, String color) {
@@ -40,6 +39,12 @@ public class Line extends BaseEntity {
 		this.name = name;
 		this.color = color;
 		sections.add(new Section(this, upStation, downStation, distance));
+	}
+
+	public Line(LineRequest request, List<Station> findStations) {
+		this.name = request.getName();
+		this.color = request.getColor();
+		sections.add(new Section(this, findStations.get(0), findStations.get(1), request.getDistance()));
 	}
 
 	public void update(Line line) {
@@ -183,4 +188,5 @@ public class Line extends BaseEntity {
 		downLineStation.ifPresent(it -> this.getSections().remove(it));
 
 	}
+
 }
