@@ -5,6 +5,7 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.path.dto.PathRequest;
+import nextstep.subway.path.dto.PathResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +24,7 @@ public class PathController {
 
 
     @GetMapping
-    public ResponseEntity<LineResponse> findPath(PathRequest pathRequest) {
-        System.out.println(pathRequest.getSource());
+    public ResponseEntity<PathResponse> findPath(PathRequest pathRequest) {
         return ResponseEntity.ok().build();
     }
 
