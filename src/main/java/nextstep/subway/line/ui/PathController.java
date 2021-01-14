@@ -6,6 +6,13 @@ import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 
+import static java.util.Arrays.*;
+import static java.util.stream.Collectors.*;
+
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.function.Function;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,14 +34,20 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity<PathResponse> findPath(@RequestParam("source") Long sourceId, @RequestParam("target") Long targetId) {
-        Station source = stationService.findStationById(sourceId);
-        Station target = stationService.findStationById(targetId);
+        Map<Long, Station> stations = stationService.findByIds(asList(sourceId, targetId))
+                .stream()
+                .collect(toMap(Station::getId, Function.identity()));
         PathFinder pathFinder = new PathFinder(lineService.findAllLines());
-        return ResponseEntity.ok(pathFinder.findPath(source, target));
+        return ResponseEntity.ok(pathFinder.findPath(stations.get(sourceId), stations.get(targetId)));
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleException(Exception e) {
+    @ExceptionHandler({NoSuchElementException.class, IllegalStateException.class})
+    public ResponseEntity<String> handleIllegalException(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+    }
+
+    @ExceptionHandler({RuntimeException.class})
+    public ResponseEntity<String> handleRuntimeException(Exception e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 }

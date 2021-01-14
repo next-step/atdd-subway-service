@@ -4,11 +4,12 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
 
 @Service
 public class StationService {
@@ -41,5 +42,9 @@ public class StationService {
 
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+    }
+
+    public List<Station> findByIds(Collection<Long> ids) {
+        return stationRepository.findByIdIn(ids);
     }
 }
