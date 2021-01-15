@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.line.exceptions.SectionsException;
 import nextstep.subway.station.domain.Station;
@@ -37,7 +38,10 @@ public class Paths {
         }
         List<Station> shortestPath = shortPath.getVertexList();
         double shortestWeight = shortPath.getWeight();
-        return PathResponse.of(shortestPath, shortestWeight);
+
+        Fare fare = new Fare();
+        fare.calculateFare((int) shortestWeight);
+        return PathResponse.of(shortestPath, shortestWeight, fare.getFare());
     }
 
     private DijkstraShortestPath build(List<Section> sections) {

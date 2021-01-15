@@ -77,6 +77,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(pathResponse.getDistance()).isEqualTo(12);
     }
 
+    @DisplayName("최단 경로 조회 시 거리 기준 요금 정보 포함한다.")
+    @Test
+    void findPathsWithFare() {
+        // given
+        Map<String, Long> params = new HashMap<>();
+        params.put("source", 강남역.getId());
+        params.put("target", 남부터미널역.getId());
+
+        // when
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(params);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        PathResponse pathResponse = response.body().as(PathResponse.class);
+        assertThat(pathResponse.getStations().size()).isEqualTo(3);
+        assertThat(pathResponse.getDistance()).isEqualTo(12);
+        assertThat(pathResponse.getFare()).isEqualTo(1350);
+    }
+
     @DisplayName("최단 경로 조회를 조회할 수 없다.")
     @Test
     void findPathsWithException() {
