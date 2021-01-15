@@ -10,6 +10,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 
+import nextstep.subway.common.exception.NotConnectedLineException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathStationResponse;
@@ -36,7 +37,7 @@ public class PathFinder {
 		try{
 			graphPathResult = dijkstraShortestPath.getPath(sourceStation, targetStation);
 		}catch (IllegalArgumentException e){
-			throw new RuntimeException("출발역과 도착역이 연결이 되어 있지 않습니다.");
+			throw new NotConnectedLineException();
 		}
 
 		List<Station> shortestPath = graphPathResult.getVertexList();

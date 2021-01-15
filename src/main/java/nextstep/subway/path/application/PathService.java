@@ -6,6 +6,9 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import nextstep.subway.common.exception.DuplicateSourceAndTargetException;
+import nextstep.subway.common.exception.NoSourceStationException;
+import nextstep.subway.common.exception.NoTargetStationException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathResponse;
@@ -33,8 +36,8 @@ public class PathService {
 
 	public PathResponse findShortestPath(Long sourceId, Long targetId) {
 		List<Line> allLines = lineRepository.findAll();
-		Station sourceStation = stationRepository.findById(sourceId).orElseThrow(() -> new RuntimeException());
-		Station targetStation = stationRepository.findById(targetId).orElseThrow(() -> new RuntimeException());
+		Station sourceStation = stationRepository.findById(sourceId).orElseThrow(() -> new NoSourceStationException());
+		Station targetStation = stationRepository.findById(targetId).orElseThrow(() -> new NoTargetStationException());
 
 		validateFindShortestPathCondition(sourceStation, targetStation);
 		return pathFinder.getDijkstraShortestPath(allLines, sourceStation, targetStation);
@@ -42,7 +45,7 @@ public class PathService {
 
 	private void validateFindShortestPathCondition(Station sourceStation, Station targetStation) {
 		if(sourceStation.equals(targetStation)){
-			throw new RuntimeException();
+			throw new DuplicateSourceAndTargetException();
 		}
 	}
 

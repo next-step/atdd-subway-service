@@ -36,13 +36,12 @@ class PathServiceTest {
 	@Mock
 	private PathFinder pathFinder;
 
+	private Station 강남역 = new Station(1L, "강남역");
+	private Station 양재역 = new Station(2L, "양재역");
+	private Station 교대역 = new Station(3L, "교대역");
+	private Station 남부터미널역 = new Station(4L, "남부터미널역");
 
-	private Station 강남역 = new Station(1L,"강남역");
-	private Station 양재역 = new Station(2L,"양재역");
-	private Station 교대역 = new Station(3L,"교대역");
-	private Station 남부터미널역 = new Station(4L,"남부터미널역");
-
-	private Line 신분당선 = new Line(11L,"신분당선", "bg-red-600", 강남역, 양재역, 10);
+	private Line 신분당선 = new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10);
 	private Line 이호선 = new Line(12L, "이호선", "bg-red-600", 교대역, 강남역, 10);
 	private Line 삼호선 = new Line(13L, "삼호선", "bg-red-600", 교대역, 양재역, 5);
 
@@ -76,14 +75,16 @@ class PathServiceTest {
 		when(lineRepository.findAll()).thenReturn(신분당선_mock);
 		when(stationRepository.findById(sourceId)).thenReturn(교대역_mock);
 		when(stationRepository.findById(targetId)).thenReturn(양재역_mock);
-		when(pathFinder.getDijkstraShortestPath(신분당선_mock, 교대역_mock.get(), 양재역_mock.get())).thenReturn(PathResponse.of(pathStationResponses, distance_mock));
+		when(pathFinder.getDijkstraShortestPath(신분당선_mock, 교대역_mock.get(), 양재역_mock.get())).thenReturn(
+			PathResponse.of(pathStationResponses, distance_mock));
 
 		// when
 		PathService pathService = new PathService(lineRepository, stationRepository, pathFinder);
 		PathResponse pathResponse = pathService.findShortestPath(sourceId, targetId);
 
 		// then
-		assertThat(pathResponse.getStations()).containsExactly(PathStationResponse.of(교대역), PathStationResponse.of(남부터미널역), PathStationResponse.of(양재역));
+		assertThat(pathResponse.getStations()).containsExactly(PathStationResponse.of(교대역),
+			PathStationResponse.of(남부터미널역), PathStationResponse.of(양재역));
 		assertThat(pathResponse.getDistance()).isEqualTo(distance_mock);
 	}
 
