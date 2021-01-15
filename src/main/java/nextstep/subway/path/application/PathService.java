@@ -25,11 +25,7 @@ public class PathService {
         this.lineService = lineService;
     }
 
-    public PathResponse findPath(Long source, Long target) {
-        return getDijkstraSortestPath(source, target);
-    }
-
-    public PathResponse getDijkstraSortestPath(Long source, Long target) {
+    public PathResponse findDijkstraPath(Long source, Long target) {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(createGraph());
         Station startStation = stationService.findById(source);
         Station endStation = stationService.findById(target);
