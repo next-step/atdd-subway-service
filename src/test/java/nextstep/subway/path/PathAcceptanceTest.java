@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +18,7 @@ import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노�
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 
 @DisplayName("지하철 경로 조회")
@@ -62,8 +64,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestPath() {
         ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
+        PathResponse pathResponse = response.as(PathResponse.class);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(pathResponse.getStations().get(0)).isEqualTo(교대역),
+                () -> assertThat(pathResponse.getStations().get(1)).isEqualTo(남부터미널역),
+                () -> assertThat(pathResponse.getStations().get(2)).isEqualTo(양재역),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(5)
+        );
     }
 
     @DisplayName("출발역과 도착역이 같은 경우 조회하지 못한다.")

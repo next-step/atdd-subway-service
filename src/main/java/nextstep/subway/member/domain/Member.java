@@ -1,14 +1,17 @@
 package nextstep.subway.member.domain;
 
+import lombok.Getter;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.favorite.exception.NotFoundFavoriteException;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
+@Getter
 @Entity
 public class Member extends BaseEntity {
     @Id
@@ -18,29 +21,16 @@ public class Member extends BaseEntity {
     private String password;
     private Integer age;
 
-    public Member() {
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "member")
+    private final List<Favorite> favorites = new ArrayList<>();
+
+    protected Member() {
     }
 
     public Member(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
         this.age = age;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Integer getAge() {
-        return age;
     }
 
     public void update(Member member) {
@@ -53,5 +43,17 @@ public class Member extends BaseEntity {
         if (!StringUtils.equals(this.password, password)) {
             throw new AuthorizationException();
         }
+    }
+
+    public void deleteFavorite(Long favoriteId) {
+        Favorite favorite = findFavorite(favoriteId);
+        favorites.remove(favorite);
+    }
+
+    private Favorite findFavorite(Long favoriteId) {
+        return favorites.stream()
+                .filter(favorite -> favorite.isEqualId(favoriteId))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundFavoriteException("해당 Favorite이 없습니다."));
     }
 }

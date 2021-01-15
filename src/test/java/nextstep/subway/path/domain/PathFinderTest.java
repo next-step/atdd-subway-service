@@ -14,14 +14,14 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class SubwayMapTest {
+class PathFinderTest {
     private Station 강남역;
     private Station 양재역;
     private Station 교대역;
     private Station 남부터미널역;
     private Station 신도림역;
     private Station 영등포역;
-    private SubwayMap subwayMap;
+    private PathFinder pathFinder;
 
     /**
      * 신도림역 ---- *1호선* ---- 영등포역
@@ -47,12 +47,13 @@ class SubwayMapTest {
         Line 삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 5);
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, new Distance(3)));
 
-        subwayMap = new SubwayMap(Arrays.asList(신분당선, 일호선, 이호선, 삼호선));
+        SubwayMap subwayMap = new SubwayMap(Arrays.asList(신분당선, 일호선, 이호선, 삼호선));
+        pathFinder = new PathFinder(subwayMap.generateStationGraph());
     }
 
     @Test
     void findShortestPath() {
-        Path path = subwayMap.findShortestPath(교대역, 양재역);
+        Path path = pathFinder.findShortestPath(교대역, 양재역);
         assertThat(path.getStations()).containsExactlyElementsOf(Arrays.asList(교대역, 남부터미널역, 양재역));
         assertThat(path.getDistance()).isEqualTo(5);
     }
@@ -60,7 +61,7 @@ class SubwayMapTest {
     @DisplayName("출발역과 도착역이 같은 경우 조회하지 못한다.")
     @Test
     void findShortestPathException1() {
-        assertThatThrownBy(() -> subwayMap.findShortestPath(교대역, 교대역))
+        assertThatThrownBy(() -> pathFinder.findShortestPath(교대역, 교대역))
                 .isInstanceOf(InvalidFindShortestPathException.class)
                 .hasMessage("출발역과 도착역이 같으면 조회 불가능합니다.");
     }
@@ -68,7 +69,7 @@ class SubwayMapTest {
     @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우, 조회하지 못한다.")
     @Test
     void findShortestPathException2() {
-        assertThatThrownBy(() -> subwayMap.findShortestPath(교대역, 신도림역))
+        assertThatThrownBy(() -> pathFinder.findShortestPath(교대역, 신도림역))
                 .isInstanceOf(InvalidFindShortestPathException.class)
                 .hasMessage("출발역과 도착역이 연결이 되어 있지 않습니다.");
     }
@@ -76,7 +77,7 @@ class SubwayMapTest {
     @DisplayName("존재하지 않은 출발역이나 도착역을 조회할 경우, 조회하지 못한다.")
     @Test
     void findShortestPathException3() {
-        assertThatThrownBy(() -> subwayMap.findShortestPath(교대역, new Station("노량진역")))
+        assertThatThrownBy(() -> pathFinder.findShortestPath(교대역, new Station("노량진역")))
                 .isInstanceOf(InvalidFindShortestPathException.class)
                 .hasMessage("출발역이나 도착역이 존재하지 않습니다.");
     }
