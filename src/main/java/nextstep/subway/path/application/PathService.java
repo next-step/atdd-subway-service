@@ -26,7 +26,6 @@ public class PathService {
     }
 
     public PathResponse findPath(PathRequest pathRequest) {
-        List<StationResponse> stations = stationService.findAllStations();
         Station source = stationService.findById(pathRequest.getSource());
         Station target = stationService.findById(pathRequest.getTarget());
         List<Line> lines = lineRepository.findAll();
