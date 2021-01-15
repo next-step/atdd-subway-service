@@ -16,10 +16,6 @@ public class PathFinder {
         this.dijkstraShortestPath = createPath(stations, sections);
     }
 
-    public DijkstraShortestPath findDijkstraPath() {
-       return this.dijkstraShortestPath;
-    }
-
     public List<Station> findShortestPathStations(Station startStation, Station endStation) {
         return this.dijkstraShortestPath.getPath(startStation, endStation).getVertexList();
     }
