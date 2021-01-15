@@ -9,12 +9,14 @@ import nextstep.subway.utils.PathTestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
-
+@ExtendWith(MockitoExtension.class)
 class PathServiceTest extends PathTestUtils {
 
     @Mock
@@ -28,7 +30,7 @@ class PathServiceTest extends PathTestUtils {
 
 
     /**
-     *              (10)
+     * (10)
      * 교대역    --- *2호선* ---       강남역
      * |                                |
      * *3호선*(3)                    *신분당선*(10)
