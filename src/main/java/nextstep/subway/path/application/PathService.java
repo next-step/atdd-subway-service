@@ -2,6 +2,7 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -18,38 +19,23 @@ import java.util.stream.Collectors;
 public class PathService {
 
     private final StationService stationService;
-    private final LineService lineService;
+    private final PathFinder pathFinder;
 
-    public PathService(final StationService stationService, final LineService lineService) {
+    public PathService(final StationService stationService, final PathFinder pathFinder) {
         this.stationService = stationService;
-        this.lineService = lineService;
+        this.pathFinder = pathFinder;
     }
 
     public PathResponse findDijkstraPath(Long source, Long target) {
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(createGraph());
         Station startStation = stationService.findById(source);
         Station endStation = stationService.findById(target);
 
-        List<Station> stations = dijkstraShortestPath.getPath(startStation, endStation).getVertexList();
-        int distance = (int) dijkstraShortestPath.getPathWeight(startStation, endStation);
+        DijkstraShortestPath shortestPath = pathFinder.findDijkstraPath();
 
-        return getPathResponse(stations, distance);
-    }
+        List<Station> pathStations = pathFinder.findShortestPathStations(shortestPath, startStation, endStation);
+        int distance = pathFinder.findShortestPathDistance(shortestPath, startStation, endStation);
 
-    WeightedMultigraph<Station, DefaultWeightedEdge> createGraph() {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        List<Station> stations = stationService.findAll();
-        List<Section> sections = lineService.findAllSection();
-
-        for (Station station : stations) {
-            graph.addVertex(station);
-        }
-
-        for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
-        }
-
-        return graph;
+        return getPathResponse(pathStations, distance);
     }
 
     private PathResponse getPathResponse(List<Station> stations, int distance) {
