@@ -48,7 +48,6 @@ public class PathService {
         List<Station> stations = stationService.findAll();
         List<Section> sections = lineService.findAllSection();
 
-        PathFinder pathFinder = new PathFinder(stations, sections);
-        return pathFinder;
+        return new PathFinder(stations, sections);
     }
 }
