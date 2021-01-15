@@ -29,6 +29,6 @@ public class LoginMember {
     }
 
     public AgePolicy getAgePolicy() {
-        return AgePolicy.of(this.age);
+        return AgePolicy.of(this.age == null ? 0 : this.age);
     }
 }

@@ -44,7 +44,6 @@ public class Fare {
                 calculateOverFare(distance - OVER_DISTANCE, OVER_FARE_STANDARD_2) + additionalFare;
     }
 
-    // 5km 마다 100원 추가 로직
     private int calculateOverFare(int distance, int eachStandard) {
         return (int) ((Math.ceil((distance - 1) / eachStandard) + 1) * 100);
     }
