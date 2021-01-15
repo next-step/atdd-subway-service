@@ -1,6 +1,9 @@
 package nextstep.subway.path.dto;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
+
+import nextstep.subway.station.domain.Station;
 
 /**
  * @author : byungkyu
@@ -18,6 +21,11 @@ public class PathStationResponse {
 		this.createdAt = createdAt;
 	}
 
+
+	public static PathStationResponse of(Station station) {
+		return new PathStationResponse(station.getId(), station.getName(), station.getCreatedDate());
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -28,5 +36,21 @@ public class PathStationResponse {
 
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+		PathStationResponse that = (PathStationResponse)o;
+		return Objects.equals(getId(), that.getId()) && Objects.equals(getName(), that.getName())
+			&& Objects.equals(getCreatedAt(), that.getCreatedAt());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getId(), getName(), getCreatedAt());
 	}
 }

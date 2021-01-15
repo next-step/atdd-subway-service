@@ -73,7 +73,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 	}
 
-	private LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation,
+	public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation,
 		StationResponse downStation, int distance) {
 		LineRequest lineRequest = LineRequest.builder()
 			.name(name)

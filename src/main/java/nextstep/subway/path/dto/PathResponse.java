@@ -22,6 +22,10 @@ public class PathResponse {
 	public PathResponse() {
 	}
 
+	public static PathResponse of(List<PathStationResponse> pathStationResponses, int distance) {
+		return new PathResponse(pathStationResponses, distance);
+	}
+
 	public List<PathStationResponse> getStations() {
 		return stations;
 	}

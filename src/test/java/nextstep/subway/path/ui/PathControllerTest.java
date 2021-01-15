@@ -32,7 +32,7 @@ public class PathControllerTest {
 	void findShortestPath() {
 		//given
 		Long sourceId = 1L;
-		Long targetId = 1L;
+		Long targetId = 2L;
 
 		PathResponse mockPathResponse = PathResponse.builder()
 			.stations(Arrays.asList(new PathStationResponse(1L, "교대역", LocalDateTime.now()),
