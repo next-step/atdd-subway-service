@@ -1,5 +1,6 @@
 package nextstep.subway.line.dto;
 
+import lombok.Builder;
 import nextstep.subway.line.domain.Line;
 
 public class LineRequest {
@@ -12,6 +13,7 @@ public class LineRequest {
     public LineRequest() {
     }
 
+    @Builder
     public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
         this.name = name;
         this.color = color;
