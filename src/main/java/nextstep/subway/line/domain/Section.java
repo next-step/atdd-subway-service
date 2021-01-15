@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -36,29 +37,30 @@ public class Section {
 	@JoinColumn(name = "down_station_id")
 	private Station downStation;
 
-	private int distance;
+	@Embedded
+	private Distance distance;
 
 	public Section(Line line, Station upStation, Station downStation, int distance) {
 		this.line = line;
 		this.upStation = upStation;
 		this.downStation = downStation;
-		this.distance = distance;
+		this.distance = new Distance(distance);
 	}
 
 	public static Section of(Section upSection, Section downSection) {
 		return new Section(upSection.getLine(),
 			downSection.getUpStation(),
 			upSection.getDownStation(),
-			upSection.getDistance() + downSection.getDistance());
+			upSection.distance() + downSection.distance());
 	}
 
 	public void updateUpStation(Section target) {
-		this.updateDistance(target);
+		this.distance.update(target.distance());
 		this.upStation = target.getDownStation();
 	}
 
 	public void updateDownStation(Section target) {
-		updateDistance(target);
+		this.distance.update(target.distance());
 		this.downStation = target.getUpStation();
 	}
 
@@ -78,14 +80,7 @@ public class Section {
 		return this.downStation.equals(target.getDownStation());
 	}
 
-	private void validateDistance(int newDistance) {
-		if (this.distance <= newDistance) {
-			throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-		}
-	}
-
-	private void updateDistance(Section section) {
-		validateDistance(section.getDistance());
-		this.distance -= section.getDistance();
+	public int distance() {
+		return this.distance.getDistance();
 	}
 }

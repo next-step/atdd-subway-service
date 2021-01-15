@@ -119,7 +119,7 @@ class PathFinderTest {
 				Station downStation = section.getDownStation();
 				graph.addVertex(upStation);
 				graph.addVertex(downStation);
-				graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance());
+				graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.distance());
 			});
 		DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
 		GraphPath result = dijkstraShortestPath.getPath(인천역, 소요산역);

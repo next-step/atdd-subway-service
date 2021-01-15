@@ -8,13 +8,14 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import lombok.Getter;
 import nextstep.subway.common.exception.NothingException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
+@Getter
 public class PathFinder {
 	private final DijkstraShortestPath<Station, DefaultWeightedEdge> path;
-
 	private GraphPath<Station, DefaultWeightedEdge> resultPath;
 
 	public PathFinder(List<Line> lines) {
@@ -39,12 +40,12 @@ public class PathFinder {
 
 		getStationsAll(lines).forEach(graph::addVertex);
 		lines.forEach(line -> line.sections().forEach(
-			it -> graph.setEdgeWeight(graph.addEdge(it.getUpStation(), it.getDownStation()), it.getDistance())
+			it -> graph.setEdgeWeight(graph.addEdge(it.getUpStation(), it.getDownStation()), it.distance())
 		));
 
 		return graph;
 	}
-	
+
 	private List<Station> getStationsAll(List<Line> lines) {
 		return lines.stream()
 			.flatMap(it -> it.stations().stream())
