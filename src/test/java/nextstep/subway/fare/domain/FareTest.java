@@ -77,11 +77,33 @@ class FareTest {
         assertThat(fare.getFare()).isEqualTo(1850);
     }
 
-    @DisplayName("연령별 요금 할인을 적용한다.")
+    @DisplayName("연령별 요금 할인을 적용한다. - 어린이(운임에서 350원을 공제한 금액의 50%할인)")
     @Test
-    void calculateFareWithAge() {
+    void calculateFareWithAgeChild() {
+        // given
+        List<Station> paths = Arrays.asList(강남역, 양재역);
+        List<Section> sections = Arrays.asList(sectionList.get(0));
 
+        // when
+        Fare fare = new Fare(AgePolicy.CHILD);
+        fare.calculateFare(paths, sections,12);
+
+        // then (1350-350)의 50프로 할인
+        assertThat(fare.getFare()).isEqualTo(500);
     }
 
+    @DisplayName("연령별 요금 할인을 적용한다. - 청소년(운임에서 350원을 공제한 금액의 20%할인)")
+    @Test
+    void calculateFareWithAgeTeenager() {
+        // given
+        List<Station> paths = Arrays.asList(강남역, 양재역);
+        List<Section> sections = Arrays.asList(sectionList.get(0));
 
+        // when
+        Fare fare = new Fare(AgePolicy.TEENAGER);
+        fare.calculateFare(paths, sections,12);
+
+        // then (1350-350)의 20프로 할인
+        assertThat(fare.getFare()).isEqualTo(800);
+    }
 }

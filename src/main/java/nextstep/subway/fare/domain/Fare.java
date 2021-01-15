@@ -14,9 +14,19 @@ public class Fare {
     public static final int OVER_FARE_STANDARD_2 = 8;
 
     private int fare;
+    private AgePolicy agePolicy;
 
-    public void calculateFare(int distance) {
-        this.fare = calculateStandardFare(distance);
+    public Fare() {
+        this.agePolicy = AgePolicy.STANDARD;
+    }
+
+    public Fare(AgePolicy agePolicy) {
+        this.agePolicy = agePolicy;
+    }
+
+    public void calculateFare(List<Station> path, List<Section> sections, int distance) {
+        int standardFare = calculateStandardFare(path, sections, distance);
+        this.fare = (standardFare - agePolicy.getDeductionAmount()) * agePolicy.getDiscountRate() / 100;
     }
 
     private int calculateStandardFare(List<Station> path, List<Section> sections, int distance) {
