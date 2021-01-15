@@ -19,7 +19,7 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity<PathResponse> findPath(Long source, Long target) { ;
-        return ResponseEntity.ok(pathService.findPath(source, target));
+        return ResponseEntity.ok(pathService.findDijkstraPath(source, target));
     }
 
 }
