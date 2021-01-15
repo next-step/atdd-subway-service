@@ -1,4 +1,4 @@
-package nextstep.subway.fare.domain;
+package nextstep.subway.path.domain.fare;
 
 import nextstep.subway.line.domain.Distance;
 
