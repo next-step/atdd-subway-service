@@ -40,6 +40,7 @@ public class LineRequest {
         return distance;
     }
 
+
     public Line toLine() {
         return new Line(name, color);
     }
