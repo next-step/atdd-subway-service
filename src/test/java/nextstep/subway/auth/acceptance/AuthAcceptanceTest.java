@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestSupport.로그인_요청;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestSupport.로그인_되어_있음;
 import static nextstep.subway.member.MemberAcceptanceTestSupport.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -84,11 +85,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithWrongBearerAuth() {
         // given
         // 회원 로그인 되어 있음
-        회원_생성을_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD
-                , MemberAcceptanceTest.AGE);
-        TokenRequest tokenRequest = new TokenRequest(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD);
-        String accessToken = 로그인_요청(tokenRequest)
-                .as(TokenResponse.class).getAccessToken();
+        String accessToken = 로그인_되어_있음();
 
         // when
         // 잘못된 토큰으로 나의 정보 요청

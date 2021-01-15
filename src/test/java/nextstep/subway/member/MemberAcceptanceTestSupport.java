@@ -88,4 +88,27 @@ public class MemberAcceptanceTestSupport extends AcceptanceTest {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 나의_정보_수정_요청(String token, MemberRequest memberRequest) {
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(ContentType.JSON)
+                .auth().oauth2(token)
+                .body(memberRequest)
+                .when().put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 나의_정보_삭제_요청(String token) {
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(ContentType.JSON)
+                .auth().oauth2(token)
+                .when().delete("/members/me")
+                .then().log().all()
+                .extract();
+    }
 }
