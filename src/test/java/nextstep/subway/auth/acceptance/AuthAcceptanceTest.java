@@ -12,6 +12,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestSupport.로그인_요청;
+import static nextstep.subway.member.MemberAcceptanceTestSupport.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
@@ -21,13 +23,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void login() {
         // given
         // 회원 등록되어 있음
-        MemberAcceptanceTest.회원_생성을_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD
+        회원_생성을_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD
                 , MemberAcceptanceTest.AGE);
         TokenRequest tokenRequest = new TokenRequest(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD);
 
         // when
         // 로그인 요청
-        ExtractableResponse<Response> response = AuthAcceptanceTestSupport.로그인_요청(tokenRequest);
+        ExtractableResponse<Response> response = 로그인_요청(tokenRequest);
         TokenResponse tokenResponse = response.as(TokenResponse.class);
 
         // then
@@ -41,10 +43,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithBearerAuth() {
         // given
         // 회원 로그인 되어 있음
-        MemberAcceptanceTest.회원_생성을_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD
+        회원_생성을_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD
                 , MemberAcceptanceTest.AGE);
         TokenRequest tokenRequest = new TokenRequest(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD);
-        String accessToken = AuthAcceptanceTestSupport.로그인_요청(tokenRequest)
+        String accessToken = 로그인_요청(tokenRequest)
                 .as(TokenResponse.class).getAccessToken();
 
         // when
@@ -64,13 +66,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithBadBearerAuth() {
         // given
         // 회원 등록되어 있음
-        MemberAcceptanceTest.회원_생성을_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD
+        회원_생성을_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD
                 , MemberAcceptanceTest.AGE);
 
         // when
         // 잘못된 비밀번호로 로그인 요청
         TokenRequest tokenRequest = new TokenRequest(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.NEW_PASSWORD);
-        ExtractableResponse<Response> response = AuthAcceptanceTestSupport.로그인_요청(tokenRequest);
+        ExtractableResponse<Response> response = 로그인_요청(tokenRequest);
 
         // then
         // 로그인 인증 안됨
@@ -82,10 +84,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithWrongBearerAuth() {
         // given
         // 회원 로그인 되어 있음
-        MemberAcceptanceTest.회원_생성을_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD
+        회원_생성을_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD
                 , MemberAcceptanceTest.AGE);
         TokenRequest tokenRequest = new TokenRequest(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD);
-        String accessToken = AuthAcceptanceTestSupport.로그인_요청(tokenRequest)
+        String accessToken = 로그인_요청(tokenRequest)
                 .as(TokenResponse.class).getAccessToken();
 
         // when
