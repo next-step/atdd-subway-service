@@ -21,9 +21,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void login() {
         // given
         // 회원 등록되어 있음
-        MemberAcceptanceTest.회원_생성을_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.NEW_PASSWORD
+        MemberAcceptanceTest.회원_생성을_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD
                 , MemberAcceptanceTest.AGE);
-        TokenRequest tokenRequest = new TokenRequest(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.NEW_PASSWORD);
+        TokenRequest tokenRequest = new TokenRequest(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD);
 
         // when
         // 로그인 요청
@@ -41,9 +41,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithBearerAuth() {
         // given
         // 회원 로그인 되어 있음
-        MemberAcceptanceTest.회원_생성을_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.NEW_PASSWORD
+        MemberAcceptanceTest.회원_생성을_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD
                 , MemberAcceptanceTest.AGE);
-        TokenRequest tokenRequest = new TokenRequest(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.NEW_PASSWORD);
+        TokenRequest tokenRequest = new TokenRequest(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD);
         String accessToken = AuthAcceptanceTestSupport.로그인_요청(tokenRequest)
                 .as(TokenResponse.class).getAccessToken();
 
@@ -59,14 +59,43 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse.getEmail()).isEqualTo(tokenRequest.getEmail());
     }
 
-    @DisplayName("Bearer Auth 로그인 실패")
+    @DisplayName("잘못된 비밀번로로 로그인 시도 할 경우 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
+        // given
+        // 회원 등록되어 있음
+        MemberAcceptanceTest.회원_생성을_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD
+                , MemberAcceptanceTest.AGE);
+
+        // when
+        // 잘못된 비밀번호로 로그인 요청
+        TokenRequest tokenRequest = new TokenRequest(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.NEW_PASSWORD);
+        ExtractableResponse<Response> response = AuthAcceptanceTestSupport.로그인_요청(tokenRequest);
+
+        // then
+        // 로그인 인증 안됨
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    @DisplayName("Bearer Auth 유효하지 않은 토큰")
+    @DisplayName("유효하지 않은 토큰으로 내정보 조회 시 오류")
     @Test
     void myInfoWithWrongBearerAuth() {
+        // given
+        // 회원 로그인 되어 있음
+        MemberAcceptanceTest.회원_생성을_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD
+                , MemberAcceptanceTest.AGE);
+        TokenRequest tokenRequest = new TokenRequest(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD);
+        String accessToken = AuthAcceptanceTestSupport.로그인_요청(tokenRequest)
+                .as(TokenResponse.class).getAccessToken();
+
+        // when
+        // 잘못된 토큰으로 나의 정보 요청
+        String wrongAccessToken = accessToken + "test";
+        ExtractableResponse<Response> myInfoResponse = MemberAcceptanceTestSupport.나의_정보_요청(wrongAccessToken);
+
+        // then
+        // 내 정보 조회 안됨
+        assertThat(myInfoResponse.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
 }
