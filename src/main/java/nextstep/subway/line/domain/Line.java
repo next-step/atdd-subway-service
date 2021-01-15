@@ -130,6 +130,6 @@ public class Line extends BaseEntity {
 	}
 
 	public boolean isSectionsExists() {
-		return getSections().size() <= 1;
+		return getSections().size() > 1;
 	}
 }
