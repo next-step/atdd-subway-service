@@ -27,11 +27,33 @@ public class PathFinder {
 		Station sourceStation, Station targetStation) {
 		WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
-		lines.stream()
-			.map(line -> line.getStations())
-			.flatMap(Collection::stream)
-			.forEach(station -> graph.addVertex(station));
+		generateVertex(lines, graph);
+		generateEdgeWeight(lines, graph);
 
+		DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+
+		GraphPath graphPathResult;
+		try{
+			graphPathResult = dijkstraShortestPath.getPath(sourceStation, targetStation);
+		}catch (IllegalArgumentException e){
+			throw new RuntimeException("출발역과 도착역이 연결이 되어 있지 않습니다.");
+		}
+
+		List<Station> shortestPath = graphPathResult.getVertexList();
+		int distance = (int) graphPathResult.getWeight();
+		List<PathStationResponse> pathStationResponses = shortestPathResultToPathStationResponses(shortestPath);
+
+		return PathResponse.of(pathStationResponses, distance);
+	}
+
+	private List<PathStationResponse> shortestPathResultToPathStationResponses(List<Station> shortestPath) {
+		List<PathStationResponse> pathStationResponses = shortestPath.stream()
+			.map(station -> PathStationResponse.of(station))
+			.collect(Collectors.toList());
+		return pathStationResponses;
+	}
+
+	private void generateEdgeWeight(List<Line> lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
 		lines.stream()
 			.map(line -> line.getSections())
 			.flatMap(Collection::stream)
@@ -39,26 +61,12 @@ public class PathFinder {
 				graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
 					section.getDistance());
 			});
+	}
 
-		/*
-
-		graph.addVertex("v1");
-		graph.addVertex("v2");
-		graph.addVertex("v3");
-		graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
-		graph.setEdgeWeight(graph.addEdge("v2", "v3"), 2);
-		graph.setEdgeWeight(graph.addEdge("v1", "v3"), 100);*/
-
-		DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-		GraphPath graphPathResult = dijkstraShortestPath.getPath(sourceStation, targetStation);
-		List<Station> shortestPath = graphPathResult.getVertexList();
-		int distance = (int) graphPathResult.getWeight();
-
-		List<PathStationResponse> pathStationResponses = shortestPath.stream()
-			.map(station -> PathStationResponse.of(station))
-			.collect(Collectors.toList());
-
-		//assertThat(shortestPath.size()).isEqualTo(3);
-		return PathResponse.of(pathStationResponses, distance);
+	private void generateVertex(List<Line> lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+		lines.stream()
+			.map(line -> line.getStations())
+			.flatMap(Collection::stream)
+			.forEach(station -> graph.addVertex(station));
 	}
 }

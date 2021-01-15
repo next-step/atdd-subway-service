@@ -15,9 +15,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathStationResponse;
+import nextstep.subway.station.StationAcceptanceTest;
+import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 
 /**
  * @author : byungkyu
@@ -28,11 +34,6 @@ import nextstep.subway.path.dto.PathStationResponse;
 public class PathControllerTest {
 	@Mock
 	private PathService pathService;
-
-	@BeforeEach
-	void setUp() {
-
-	}
 
 	@Test
 	void findShortestPath() {
@@ -61,14 +62,41 @@ public class PathControllerTest {
 	@Test
 	void sameSourceAndTargetException() {
 		//given
-
-		when(pathService.findShortestPath(any(), any())).thenThrow(new RuntimeException("??1"));
-		PathController pathController = new PathController(pathService);
+		Long sourceId = 1L;
+		Long targetId = 1L;
 
 		// when
+		when(pathService.findShortestPath(sourceId, targetId)).thenThrow(new RuntimeException());
+		PathController pathController = new PathController(pathService);
+
+		// then
 		assertThatThrownBy(() -> {
-		pathController.findShortestPath(any(), any());
+		pathController.findShortestPath(sourceId, targetId);
 
 		}).isInstanceOf(RuntimeException.class);
+	}
+
+	@DisplayName("출발역과 도착역이 연결되어 있지 않은 경우")
+	@Test
+	void sourceStationAndTargetStationNotConnectedException(){
+		//given
+		Station 강남역 = new Station(1L,"강남역");
+		Station 양재역 = new Station(2L,"양재역");
+		Station 교대역 = new Station(3L,"교대역");
+		Station 남부터미널역 = new Station(4L,"남부터미널역");
+
+		Line 신분당선 = new Line(11L,"신분당선", "bg-red-600", 강남역, 양재역, 10);
+		Line 이호선 = new Line(12L, "이호선", "bg-red-600", 교대역, 강남역, 10);
+
+		//when
+		when(pathService.findShortestPath(강남역.getId(), 남부터미널역.getId())).thenThrow(new RuntimeException());
+		PathController pathController = new PathController(pathService);
+
+		// then
+		assertThatThrownBy(() -> {
+			pathController.findShortestPath(강남역.getId(), 남부터미널역.getId());
+
+		}).isInstanceOf(RuntimeException.class);
+
 	}
 }

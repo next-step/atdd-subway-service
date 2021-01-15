@@ -73,6 +73,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		출발역과_도착역_동일_에러(response);
 	}
 
+
+	@DisplayName("출발역과 도착역이 연결되어 있지 않은 경우")
+	@Test
+	void sourceStationAndTargetStationNotConnectedException(){
+		StationResponse 서울역 = StationAcceptanceTest.지하철역_등록되어_있음("서울역").as(StationResponse.class);
+		ExtractableResponse<Response> response = 최단경로_조회(교대역, 서울역);
+
+		출발역과_도착역_연결되어있지_않음(response);
+	}
+
 	private void 출발역과_도착역_연결되어있지_않음(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	}
