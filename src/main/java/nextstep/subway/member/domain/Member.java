@@ -52,7 +52,7 @@ public class Member extends BaseEntity {
         Favorite removeTarget = this.favorites.stream()
                 .filter(favorite -> favorite.isEqualToId(favoriteId))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(IllegalArgumentException::new);
         this.favorites.remove(removeTarget);
     }
 }
