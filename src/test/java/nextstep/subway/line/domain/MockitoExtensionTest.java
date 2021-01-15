@@ -1,4 +1,4 @@
-package study.unit;
+package nextstep.subway.line.domain;
 
 import com.google.common.collect.Lists;
 import nextstep.subway.line.application.LineService;
