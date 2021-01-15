@@ -65,6 +65,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		최단경로_조회_확인(response, 교대역, 남부터미널역, 양재역);
 	}
 
+	@DisplayName("출발역과 도착역이 같은 경우")
+	@Test
+	void sameSourceAndTarget(){
+		ExtractableResponse<Response> response = 최단경로_조회(교대역, 교대역);
+
+		출발역과_도착역_동일_에러(response);
+	}
+
+	private void 출발역과_도착역_연결되어있지_않음(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	}
+
+	private void 출발역과_도착역_동일_에러(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	}
+
 	private void 최단경로_조회_확인(ExtractableResponse<Response> response, StationResponse... stationResponses) {
 		List<Long> actualStationIds = response.jsonPath().getList("stations", PathStationResponse.class).stream()
 			.map(PathStationResponse::getId)
@@ -78,16 +94,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	}
 
 	private ExtractableResponse<Response> 최단경로_조회(StationResponse sourceStation, StationResponse targetStation) {
-		// when
 		ExtractableResponse<Response> response = RestAssured
 		        .given().log().all()
 				.accept(MediaType.APPLICATION_JSON_VALUE)
 		        .when().get("/paths?source=" + sourceStation.getId() + " &target=" +  targetStation.getId())
 		        .then().log().all().extract();
-
-		// then
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-
 		return response;
 
 	}

@@ -35,6 +35,15 @@ public class PathService {
 		List<Line> allLines = lineRepository.findAll();
 		Station sourceStation = stationRepository.findById(sourceId).orElseThrow(() -> new RuntimeException());
 		Station targetStation = stationRepository.findById(targetId).orElseThrow(() -> new RuntimeException());
+
+		validateFindShortestPathCondition(sourceStation, targetStation);
 		return pathFinder.getDijkstraShortestPath(allLines, sourceStation, targetStation);
 	}
+
+	private void validateFindShortestPathCondition(Station sourceStation, Station targetStation) {
+		if(sourceStation.equals(targetStation)){
+			throw new RuntimeException();
+		}
+	}
+
 }

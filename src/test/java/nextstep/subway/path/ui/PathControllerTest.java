@@ -6,6 +6,8 @@ import static org.mockito.Mockito.*;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -26,6 +28,11 @@ import nextstep.subway.path.dto.PathStationResponse;
 public class PathControllerTest {
 	@Mock
 	private PathService pathService;
+
+	@BeforeEach
+	void setUp() {
+
+	}
 
 	@Test
 	void findShortestPath() {
@@ -48,5 +55,20 @@ public class PathControllerTest {
 		//then
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
+	}
+
+	@DisplayName("출발역과 도착역이 같은 경우")
+	@Test
+	void sameSourceAndTargetException() {
+		//given
+
+		when(pathService.findShortestPath(any(), any())).thenThrow(new RuntimeException("??1"));
+		PathController pathController = new PathController(pathService);
+
+		// when
+		assertThatThrownBy(() -> {
+		pathController.findShortestPath(any(), any());
+
+		}).isInstanceOf(RuntimeException.class);
 	}
 }
