@@ -42,7 +42,7 @@ class PathFinderTest extends PathTestUtils {
 
     @Test
     @DisplayName("시작역과 도착역의 최단거리를 구하는 도메인 단위 테스트 : 교대역에서 양재역까지 최단거리")
-    void getDijkstraSortestPath() {
+    void getDijkstraShortestPath() {
         // given
         Station 시작점 = 교대역;
         Station 도착점 = 양재역;
