@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathStationResponse;
-import nextstep.subway.station.dto.StationResponse;
 
 /**
  * @author : byungkyu

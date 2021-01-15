@@ -1,6 +1,11 @@
 package nextstep.subway.path;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +20,7 @@ import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathStationResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -55,7 +61,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	@Test
 	void findShortestPath(){
 		ExtractableResponse<Response> response = 최단경로_조회(교대역, 양재역);
+		
+		최단경로_조회_확인(response, 교대역, 남부터미널역, 양재역);
+	}
 
+	private void 최단경로_조회_확인(ExtractableResponse<Response> response, StationResponse... stationResponses) {
+		List<Long> actualStationIds = response.jsonPath().getList("stations", PathStationResponse.class).stream()
+			.map(PathStationResponse::getId)
+			.collect(Collectors.toList());
+
+		List<Long> expectedStationIds = Arrays.stream(stationResponses)
+			.map(stationResponse -> stationResponse.getId())
+			.collect(Collectors.toList());
+
+		assertThat(actualStationIds).containsAll(expectedStationIds);
 	}
 
 	private ExtractableResponse<Response> 최단경로_조회(StationResponse sourceStation, StationResponse targetStation) {
@@ -67,7 +86,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		        .then().log().all().extract();
 
 		// then
-		Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
 		return response;
 

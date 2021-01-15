@@ -26,6 +26,9 @@ public class PathStationResponse {
 		return new PathStationResponse(station.getId(), station.getName(), station.getCreatedDate());
 	}
 
+	public PathStationResponse() {
+	}
+
 	public Long getId() {
 		return id;
 	}

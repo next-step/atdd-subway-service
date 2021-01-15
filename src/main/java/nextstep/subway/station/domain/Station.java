@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.line.domain.Section;
 
 @Entity
 public class Station extends BaseEntity {
