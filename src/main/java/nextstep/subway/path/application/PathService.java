@@ -1,5 +1,7 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -15,18 +17,22 @@ import java.util.stream.Collectors;
 public class PathService {
 
     private final StationService stationService;
-    private final PathFinder pathFinder;
+    private final LineService lineService;
 
-    public PathService(final StationService stationService, final PathFinder pathFinder) {
+    public PathService(final StationService stationService, final LineService lineService) {
         this.stationService = stationService;
-        this.pathFinder = pathFinder;
+        this.lineService = lineService;
     }
 
     public PathResponse findDijkstraPath(Long source, Long target) {
+        List<Station> stations = stationService.findAll();
+        List<Section> sections = lineService.findAllSection();
+
+        PathFinder pathFinder = new PathFinder(stations, sections);
+        DijkstraShortestPath shortestPath = pathFinder.findDijkstraPath();
+
         Station startStation = stationService.findById(source);
         Station endStation = stationService.findById(target);
-
-        DijkstraShortestPath shortestPath = pathFinder.findDijkstraPath();
 
         List<Station> pathStations = pathFinder.findShortestPathStations(shortestPath, startStation, endStation);
         int distance = pathFinder.findShortestPathDistance(shortestPath, startStation, endStation);

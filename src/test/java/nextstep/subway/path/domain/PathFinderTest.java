@@ -1,30 +1,18 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.line.application.LineService;
-import nextstep.subway.station.application.StationService;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.utils.PathTestUtils;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
 
-@ExtendWith(MockitoExtension.class)
 class PathFinderTest extends PathTestUtils {
-
-    @Mock
-    private StationService stationService;
-
-    @Mock
-    private LineService lineService;
 
     private PathFinder pathFinder;
 
@@ -40,7 +28,9 @@ class PathFinderTest extends PathTestUtils {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        pathFinder = new PathFinder(stationService, lineService);
+        List<Station> stations = stationRepository.findAll();
+        List<Section> sections = sectionRepository.findAll();
+        pathFinder = new PathFinder(stations, sections);
     }
 
     @Test
@@ -49,8 +39,6 @@ class PathFinderTest extends PathTestUtils {
         // given
         Station 시작점 = 교대역;
         Station 도착점 = 양재역;
-        given(stationService.findAll()).willReturn(stationRepository.findAll());
-        given(lineService.findAllSection()).willReturn(sectionRepository.findAll());
 
         // when
         DijkstraShortestPath shortestPath = pathFinder.findDijkstraPath();

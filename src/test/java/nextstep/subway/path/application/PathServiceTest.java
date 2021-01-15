@@ -1,7 +1,6 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.line.application.LineService;
-import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -26,7 +25,6 @@ class PathServiceTest extends PathTestUtils {
     private LineService lineService;
 
     private PathService pathService;
-    private PathFinder pathFinder;
 
 
     /**
@@ -41,8 +39,7 @@ class PathServiceTest extends PathTestUtils {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        pathFinder = new PathFinder(stationService, lineService);
-        pathService = new PathService(stationService, pathFinder);
+        pathService = new PathService(stationService, lineService);
     }
 
     @Test
