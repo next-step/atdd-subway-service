@@ -1,35 +1,34 @@
 package nextstep.subway.path.ui;
 
-import nextstep.subway.line.application.LineService;
-import nextstep.subway.line.dto.LineRequest;
-import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
-import java.util.List;
-
 @RestController
 @RequestMapping("/paths")
 public class PathController {
-    private final LineService lineService;
 
-    public PathController(final LineService lineService) {
-        this.lineService = lineService;
+    private PathService pathService;
+
+    public PathController(PathService pathService) {
+        this.pathService = pathService;
     }
 
-
     @GetMapping
-    public ResponseEntity<PathResponse> findPath(PathRequest pathRequest) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<PathResponse> findPaths(@RequestBody PathRequest pathRequest) {
+        return ResponseEntity.ok().body(pathService.findPath(pathRequest));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity handleIllegalArgsException(IllegalArgumentException e) {
         return ResponseEntity.badRequest().build();
     }
 }

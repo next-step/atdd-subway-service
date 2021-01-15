@@ -3,12 +3,15 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
+import org.hibernate.mapping.Collection;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Path {
     private GraphPath<Station, DefaultWeightedEdge> shortestPath;
@@ -59,5 +62,11 @@ public class Path {
 
     public int findWeight() {
         return (int) shortestPath.getWeight();
+    }
+
+    public List<StationResponse> getStationResponses() {
+        return findShortestPath().stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
     }
 }
