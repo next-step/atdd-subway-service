@@ -3,7 +3,6 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.utils.PathTestUtils;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,9 +40,8 @@ class PathFinderTest extends PathTestUtils {
         Station 도착점 = 양재역;
 
         // when
-        DijkstraShortestPath shortestPath = pathFinder.findDijkstraPath();
-        List<Station> stations = pathFinder.findShortestPathStations(shortestPath, 시작점, 도착점);
-        int distance = pathFinder.findShortestPathDistance(shortestPath, 시작점, 도착점);
+        List<Station> stations = pathFinder.findShortestPathStations(시작점, 도착점);
+        int distance = pathFinder.findShortestPathDistance(시작점, 도착점);
 
         // then
         assertThat(stations.size()).isEqualTo(3);

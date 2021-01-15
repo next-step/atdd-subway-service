@@ -25,17 +25,13 @@ public class PathService {
     }
 
     public PathResponse findDijkstraPath(Long source, Long target) {
-        List<Station> stations = stationService.findAll();
-        List<Section> sections = lineService.findAllSection();
-
-        PathFinder pathFinder = new PathFinder(stations, sections);
-        DijkstraShortestPath shortestPath = pathFinder.findDijkstraPath();
-
         Station startStation = stationService.findById(source);
         Station endStation = stationService.findById(target);
 
-        List<Station> pathStations = pathFinder.findShortestPathStations(shortestPath, startStation, endStation);
-        int distance = pathFinder.findShortestPathDistance(shortestPath, startStation, endStation);
+        PathFinder pathFinder = getPathFinder();
+
+        List<Station> pathStations = pathFinder.findShortestPathStations(startStation, endStation);
+        int distance = pathFinder.findShortestPathDistance(startStation, endStation);
 
         return getPathResponse(pathStations, distance);
     }
@@ -46,5 +42,13 @@ public class PathService {
                 .collect(Collectors.toList());
 
         return new PathResponse(stationResponses, distance);
+    }
+
+    private PathFinder getPathFinder() {
+        List<Station> stations = stationService.findAll();
+        List<Section> sections = lineService.findAllSection();
+
+        PathFinder pathFinder = new PathFinder(stations, sections);
+        return pathFinder;
     }
 }
