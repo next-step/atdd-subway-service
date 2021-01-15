@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 
 class PathServiceTest extends PathTestUtils {
@@ -49,10 +49,10 @@ class PathServiceTest extends PathTestUtils {
         // given
         Station 시작점 = 교대역;
         Station 도착점 = 양재역;
-        when(stationService.findById(시작점.getId())).thenReturn(stationRepository.findById(시작점.getId()).get());
-        when(stationService.findById(도착점.getId())).thenReturn(stationRepository.findById(도착점.getId()).get());
-        when(stationService.findAll()).thenReturn(stationRepository.findAll());
-        when(lineService.findAllSection()).thenReturn(sectionRepository.findAll());
+        given(stationService.findById(시작점.getId())).willReturn(stationRepository.findById(시작점.getId()).get());
+        given(stationService.findById(도착점.getId())).willReturn(stationRepository.findById(도착점.getId()).get());
+        given(stationService.findAll()).willReturn(stationRepository.findAll());
+        given(lineService.findAllSection()).willReturn(sectionRepository.findAll());
 
         // when
         PathResponse response = pathService.findDijkstraPath(시작점.getId(), 도착점.getId());

@@ -13,7 +13,7 @@ import org.mockito.Mock;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
 
 class PathFinderTest extends PathTestUtils {
 
@@ -46,8 +46,8 @@ class PathFinderTest extends PathTestUtils {
         // given
         Station 시작점 = 교대역;
         Station 도착점 = 양재역;
-        when(stationService.findAll()).thenReturn(stationRepository.findAll());
-        when(lineService.findAllSection()).thenReturn(sectionRepository.findAll());
+        given(stationService.findAll()).willReturn(stationRepository.findAll());
+        given(lineService.findAllSection()).willReturn(sectionRepository.findAll());
 
         // when
         DijkstraShortestPath shortestPath = pathFinder.findDijkstraPath();
