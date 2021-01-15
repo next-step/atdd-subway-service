@@ -24,13 +24,14 @@ public class Paths {
     private static final String CANNOT_FOUND_STATION = "존재하지 않은 출발역이나 도착역입니다.";
 
     private final DijkstraShortestPath dijkstraShortestPath;
+    private List<Section> sections;
     private Set<Station> stations;
 
     public Paths(List<Section> sections) {
         this.dijkstraShortestPath = build(sections);
     }
 
-    public PathResponse getShortestPath(Station sourceStation, Station targetStation) {
+    public PathResponse getShortestPath(Station sourceStation, Station targetStation, Fare fare) {
         validate(sourceStation, targetStation);
         GraphPath shortPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
         if (shortPath == null) {
@@ -39,13 +40,13 @@ public class Paths {
         List<Station> shortestPath = shortPath.getVertexList();
         double shortestWeight = shortPath.getWeight();
 
-        Fare fare = new Fare();
-        fare.calculateFare((int) shortestWeight);
+        fare.calculateFare(shortestPath, sections, (int) shortestWeight);
         return PathResponse.of(shortestPath, shortestWeight, fare.getFare());
     }
 
     private DijkstraShortestPath build(List<Section> sections) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        this.sections = sections;
         this.stations = getStations(sections);
         addVertex(graph);
         addEdgeAndWeight(sections, graph);

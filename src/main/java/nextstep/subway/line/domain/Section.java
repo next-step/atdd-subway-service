@@ -29,7 +29,7 @@ public class Section {
 
     private int distance;
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    public Section(Line line, Station upStation, Station downStation, int disxztance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -59,4 +59,9 @@ public class Section {
         this.downStation = station;
         this.distance -= newDistance;
     }
+
+    public int getAdditionalFare() {
+        return this.line.getAdditionalFare();
+    }
+
 }

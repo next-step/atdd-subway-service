@@ -1,5 +1,10 @@
 package nextstep.subway.fare.domain;
 
+import nextstep.subway.line.domain.Section;
+import nextstep.subway.station.domain.Station;
+
+import java.util.List;
+
 public class Fare {
 
     private static final int BASIC_DISTANCE = 10;
@@ -14,22 +19,41 @@ public class Fare {
         this.fare = calculateStandardFare(distance);
     }
 
-    private int calculateStandardFare(int distance) {
+    private int calculateStandardFare(List<Station> path, List<Section> sections, int distance) {
+        int additionalFare = calculateAdditionalFare(path, sections);
+
         if (distance <= BASIC_DISTANCE) {
-            return BASIC_FARE;
+            return BASIC_FARE + additionalFare;
         }
 
         if (distance <= OVER_DISTANCE) {
-            return BASIC_FARE + calculateOverFare(distance - BASIC_DISTANCE, OVER_FARE_STANDARD_1);
+            return BASIC_FARE + calculateOverFare(distance - BASIC_DISTANCE, OVER_FARE_STANDARD_1) + additionalFare;
         }
 
         return BASIC_FARE + calculateOverFare(OVER_DISTANCE - BASIC_DISTANCE, OVER_FARE_STANDARD_1) +
-                calculateOverFare(distance - OVER_DISTANCE, OVER_FARE_STANDARD_2);
+                calculateOverFare(distance - OVER_DISTANCE, OVER_FARE_STANDARD_2) + additionalFare;
     }
 
     // 5km 마다 100원 추가 로직
     private int calculateOverFare(int distance, int eachStandard) {
         return (int) ((Math.ceil((distance - 1) / eachStandard) + 1) * 100);
+    }
+
+    private int calculateAdditionalFare(List<Station> path, List<Section> sections) {
+        int maxFare = 0;
+        for (int i = 0; i < path.size() - 1; i++) {
+            int currentFare = getMatchedAdditionalLineFare(sections, path.get(i), path.get(i + 1));
+            maxFare = Math.max(maxFare, currentFare);
+        }
+        return maxFare;
+    }
+
+    private int getMatchedAdditionalLineFare(List<Section> sections, Station upStation, Station downStation) {
+        return sections.stream()
+                .filter(section -> section.isEqualWithUpStation(upStation) && section.isEqualWithDownStation(downStation))
+                .map(Section::getAdditionalFare)
+                .findFirst()
+                .orElse(0);
     }
 
     public int getFare() {
