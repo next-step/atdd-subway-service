@@ -33,7 +33,7 @@
 ### "Step 3"
 
 - 토큰 발급 기능
-    - [ ] 토큰 발급(로그인)을 검증하는 인수 테스트(AuthAcceptanceTest) 만들기
+    - [x] 토큰 발급(로그인)을 검증하는 인수 테스트(AuthAcceptanceTest) 만들기
     - [ ] Bearer Auth 유효하지 않은 토큰 인수 테스트 추가
     - [ ] 이메일과 패스워드를 이용하여 요청 시 access token을 응답하는 기능을 구현하기
 - 내 정보 조회 기능
