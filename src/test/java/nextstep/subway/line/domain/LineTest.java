@@ -20,6 +20,7 @@ class LineTest {
                 .upStation(StationFixtures.천호역)
                 .downStation(StationFixtures.산성역)
                 .distance(30)
+                .fare(0)
                 .build();
 
         Section 천호역_잠실역 = Section.builder().line(팔호선)

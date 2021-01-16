@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -49,8 +50,8 @@ public class Section {
         return id;
     }
 
-    public Line getLine() {
-        return line;
+    public Fare getFare() {
+        return line.getFare();
     }
 
     public Station getUpStation() {
@@ -63,10 +64,6 @@ public class Section {
 
     public Distance getDistance() {
         return distance;
-    }
-
-    public int getDistanceWeight() {
-        return distance.get();
     }
 
     public void updateUpStation(Station station, Distance newDistance) {

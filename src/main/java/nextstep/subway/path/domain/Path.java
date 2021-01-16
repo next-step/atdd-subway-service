@@ -4,19 +4,16 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
 import java.util.Objects;
 
 public class Path {
-
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
-    private GraphPath<Station, DefaultWeightedEdge> path;
+    private final WeightedMultigraph<Station, PathEdge> graph;
 
     private Path(List<Line> lines) {
-        this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        this.graph = new WeightedMultigraph<>(PathEdge.class);
         initGraph(lines);
     }
 
@@ -34,15 +31,16 @@ public class Path {
         line.getSections().forEach(section -> {
             graph.addVertex(section.getUpStation());
             graph.addVertex(section.getDownStation());
-            DefaultWeightedEdge edge = graph.addEdge(section.getUpStation(), section.getDownStation());
-            graph.setEdgeWeight(edge, section.getDistanceWeight());
+            PathEdge pathEdge = PathEdge.of(section);
+            graph.addEdge(section.getUpStation(), section.getDownStation(), pathEdge);
         });
     }
 
-    public GraphPath<Station, DefaultWeightedEdge> findShortestPath(Station source, Station target) {
+    public ShortestPath findShortestPath(Station source, Station target) {
         validateSection(source, target);
         try {
-            return new DijkstraShortestPath<>(graph).getPath(source, target);
+            GraphPath<Station, PathEdge> path = new DijkstraShortestPath<>(graph).getPath(source, target);
+            return ShortestPath.of(path.getVertexList(), path.getEdgeList(), (int) path.getWeight());
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("경로에 포함되어 있지 않은 역입니다.");
         }

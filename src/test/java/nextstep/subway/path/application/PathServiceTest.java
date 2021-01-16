@@ -1,5 +1,7 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -27,7 +29,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -68,10 +70,10 @@ public class PathServiceTest {
         양재역 = makeMockStation(3L, "양재역");
         남부터미널역 = makeMockStation(4L, "남부터미널역");
 
-        이호선 = makeMockLine("이호선", Arrays.asList(makeMockSection(교대역, 강남역, 10)));
-        삼호선 = makeMockLine("삼호선", Arrays.asList(makeMockSection(교대역, 남부터미널역, 3),
-                makeMockSection(남부터미널역, 양재역, 2)));
-        신분당선 = makeMockLine("신분당선", Arrays.asList(makeMockSection(강남역, 양재역, 10)));
+        이호선 = makeMockLine("이호선", 0, Arrays.asList(makeMockSection(교대역, 강남역, 10, 이호선, 0)));
+        삼호선 = makeMockLine("삼호선", 500, Arrays.asList(makeMockSection(교대역, 남부터미널역, 3, 삼호선, 500),
+                makeMockSection(남부터미널역, 양재역, 2, 삼호선, 500)));
+        신분당선 = makeMockLine("신분당선", 1000, Arrays.asList(makeMockSection(강남역, 양재역, 10, 신분당선, 1000)));
 
         given(lineRepository.findAll()).willReturn(Arrays.asList(신분당선, 이호선, 삼호선));
         given(stationRepository.findById(강남역.getId())).willReturn(Optional.of(강남역));
@@ -80,16 +82,18 @@ public class PathServiceTest {
         given(stationRepository.findById(남부터미널역.getId())).willReturn(Optional.of(남부터미널역));
     }
 
-
-    @DisplayName("최단 경로 조회")
+    @DisplayName("로그인 사용자 최단 경로 조회시 나이를 사용")
     @Test
-    void findShortestPath() {
+    void findShortestPath_로그인_사용자() {
         // given
         given(stationRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(강남역, 남부터미널역));
+        LoginMember loginMember = mock(LoginMember.class);
+        given(loginMember.hasAuthentication()).willReturn(true);
+        given(loginMember.getAge()).willReturn(20);
 
         // when
         PathRequest pathRequest = new PathRequest(강남역.getId(), 남부터미널역.getId());
-        PathResponse pathResponse = pathService.findShortestPath(pathRequest);
+        PathResponse pathResponse = pathService.findShortestPath(pathRequest, loginMember);
 
         // then
         assertThat(pathResponse.getStations())
@@ -97,6 +101,27 @@ public class PathServiceTest {
                 .containsExactly("강남역", "양재역", "남부터미널역");
 
         assertThat(pathResponse.getDistance()).isEqualTo(12);
+        verify(loginMember, times(1)).getAge();
+    }
+
+    @DisplayName("로그인 없이 최단 경로를 조회할 수 있음")
+    @Test
+    void calculatePath_비로그인_사용자() {
+        // given
+        given(stationRepository.findAllByIdIn(anyList())).willReturn(Arrays.asList(강남역, 남부터미널역));
+        LoginMember loginMember = mock(LoginMember.class);
+        given(loginMember.hasAuthentication()).willReturn(false);
+
+        // when
+        PathRequest pathRequest = new PathRequest(강남역.getId(), 남부터미널역.getId());
+        PathResponse pathResponse = pathService.findShortestPath(pathRequest, loginMember);
+
+        // then
+        assertThat(pathResponse.getStations())
+                .map(StationResponse::getName)
+                .containsExactly("강남역", "양재역", "남부터미널역");
+        assertThat(pathResponse.getDistance()).isEqualTo(12);
+        verify(loginMember, never()).getAge();
     }
 
     @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우")
@@ -107,23 +132,25 @@ public class PathServiceTest {
 
         // when
         PathRequest pathRequest = new PathRequest(강남역.getId(), 남부터미널역.getId());
-        assertThatThrownBy(() -> pathService.findShortestPath(pathRequest))
+        assertThatThrownBy(() -> pathService.findShortestPath(pathRequest, new LoginMember()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("존재하지 않는");
     }
 
-    private Line makeMockLine(String name, List<Section> sections) {
+    private Line makeMockLine(String name, int fare, List<Section> sections) {
         Line line = mock(Line.class);
         given(line.getName()).willReturn(name);
+        given(line.getFare()).willReturn(Fare.of(fare));
         given(line.getSections()).willReturn(sections);
         return line;
     }
 
-    private Section makeMockSection(Station upStation, Station downStation, int distance) {
+    private Section makeMockSection(Station upStation, Station downStation, int distance, Line line, int fare) {
         Section section = mock(Section.class);
         given(section.getUpStation()).willReturn(upStation);
         given(section.getDownStation()).willReturn(downStation);
-        given(section.getDistanceWeight()).willReturn(new Distance(distance).get());
+        given(section.getDistance()).willReturn(new Distance(distance));
+        given(section.getFare()).willReturn(Fare.of(fare));
         return section;
     }
 
@@ -135,5 +162,4 @@ public class PathServiceTest {
         given(station.isSameStation(anyLong())).willCallRealMethod();
         return station;
     }
-
 }
