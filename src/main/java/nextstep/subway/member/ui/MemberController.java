@@ -3,6 +3,8 @@ package nextstep.subway.member.ui;
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
@@ -23,9 +25,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class MemberController {
     private MemberService memberService;
+    private JwtTokenProvider jwtTokenProvider;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
         this.memberService = memberService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @PostMapping("/members")
@@ -59,9 +63,10 @@ public class MemberController {
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
+    public ResponseEntity<TokenResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
         memberService.updateMember(loginMember.getId(), param);
-        return ResponseEntity.ok().build();
+        String token = jwtTokenProvider.createToken(param.getEmail());
+        return ResponseEntity.ok().body(new TokenResponse(token));
     }
 
     @DeleteMapping("/members/me")

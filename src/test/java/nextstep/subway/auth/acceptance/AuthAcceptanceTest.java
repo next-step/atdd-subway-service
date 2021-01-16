@@ -47,21 +47,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(result.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    public ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
+    public static ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(tokenRequest)
                 .when().post("/login/token")
-                .then().log().all()
-                .extract();
-    }
-
-    public ExtractableResponse<Response> 내정보_조회_요청(String bearerType, String token) {
-        return RestAssured
-                .given().log().all()
-                .header("Authorization", bearerType + token)
-                .when().get("/members/me")
                 .then().log().all()
                 .extract();
     }

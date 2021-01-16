@@ -2,7 +2,6 @@ package nextstep.subway;
 
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -12,11 +11,6 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class Authentication {
-    private final JwtTokenProvider jwtTokenProvider;
-
-    public Authentication(final JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
 
     @Around("execution(* nextstep.subway.auth.application.AuthService.findMemberByToken(..))")
     public Object accessCheck(ProceedingJoinPoint proceedingJoinPoint) throws Exception {
