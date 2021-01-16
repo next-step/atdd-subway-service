@@ -23,7 +23,7 @@ public class PathService {
         this.lineService = lineService;
     }
 
-    public PathResponse findDijkstraPath(Long source, Long target) {
+    public PathResponse findShortestPath(Long source, Long target) {
         Station startStation = stationService.findById(source);
         Station endStation = stationService.findById(target);
 
