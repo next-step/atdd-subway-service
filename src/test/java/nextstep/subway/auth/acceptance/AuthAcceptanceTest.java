@@ -18,7 +18,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class AuthAcceptanceTest extends AcceptanceTest {
+public class AuthAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     @Override
@@ -56,7 +56,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         내_정보_조회_실패(findResponse);
     }
 
-    private ExtractableResponse<Response> 토큰_발급_요청(String email, String password) {
+    public static ExtractableResponse<Response> 토큰_발급_요청(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
@@ -68,7 +68,11 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private void 토큰_생성_완료(ExtractableResponse<Response> response) {
+    public static String getAccessToken(ExtractableResponse<Response> response) {
+        return response.as(TokenResponse.class).getAccessToken();
+    }
+
+    public static void 토큰_생성_완료(ExtractableResponse<Response> response) {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(TokenResponse.class).getAccessToken()).isNotEmpty()

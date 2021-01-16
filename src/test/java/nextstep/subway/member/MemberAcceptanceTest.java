@@ -4,7 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -49,7 +49,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
 
+        ExtractableResponse<Response> tokenResponse = AuthAcceptanceTest.토큰_발급_요청(EMAIL, PASSWORD);
+        AuthAcceptanceTest.토큰_생성_완료(tokenResponse);
+
+        String accessToken = AuthAcceptanceTest.getAccessToken(tokenResponse);
+        ExtractableResponse<Response> findResponse = 내_정보_조회_요청(accessToken);
+        내_정보_조회됨(findResponse);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -123,5 +131,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 내_정보_조회됨(ExtractableResponse<Response> findResponse) {
+        회원_정보_조회됨(findResponse, EMAIL, AGE);
     }
 }
