@@ -113,6 +113,29 @@ Feature - 지하철 구간 관련 기능
         * 유효하지 않는 토큰으로 /members/me 요청을 보낼 경우 예외처리
         
 * 인증 - 내 정보 조회 기능 완성하기
+    * MemberAcceptanceTest
+        * /members/me URI 요청으로 동작을 검증 
+        * 로그인 후 발급 받은 토큰을 포함해서 요청
+        ```
+            Feature: 회원 정보 관리 기능
+                Scenario: 나의 정보를 관리한다
+                    Given 로그인이 되어있음
+                    When  나의 정보 조회를 요청
+                    Then  나의 정보가 조회됨
+    
+                    Given 로그인이 되어있음
+                    When  나의 정보 수정을 요청
+                    Then  나의 정보가 수정됨        
+                    
+                    Given 로그인이 되어있음
+                    When  나의 정보 삭제를 요청
+                    Then  나의 정보가 삭제됨 
+        ```
+    * 토큰을 통한 인증
+        * /members/me URI 요청 시, 토큰을 확인하여 로그인 정보를 받아옴
+        * @AuthenticationPrincipal과 AuthenticationPrincipalArgumentResolver을 활용
+        * 조회, 수정, 삭제 기능이 제대로 동작하도록 구현
+
 * 인증 - 즐겨 찾기 기능 완성하기 
 
 
