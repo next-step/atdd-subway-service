@@ -15,7 +15,7 @@ class FareBuilderTest {
 	 */
 	@DisplayName("1. 거리별 요금 생성 테스트")
 	@ParameterizedTest
-	@CsvSource(value = {"10:1250", "15:1550", "20:1650", "58:2050"}, delimiter = ':')
+	@CsvSource(value = {"10:1250", "15:1350", "20:1450", "50:2050", "58:2150"}, delimiter = ':')
 	void createFareTest(int distance, int fare) {
 		// when // given
 		FareBuilder fareBuilder = new FareBuilder(distance);

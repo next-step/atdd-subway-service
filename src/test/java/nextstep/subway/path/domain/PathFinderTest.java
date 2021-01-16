@@ -15,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import nextstep.subway.common.exception.NothingException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
@@ -47,13 +46,13 @@ class PathFinderTest {
 		PathFinder finder = new PathFinder(lines);
 
 		// when
-		finder.selectShortPath(인천역, 소요산역);
+		finder.selectShortPath(인천역, 강남역);
 
 		// then
 		assertAll(
 			() -> assertThat(finder.stations()).isNotNull(),
-			() -> assertThat(finder.stations()).hasSize(6),
-			() -> assertThat(finder.distance()).isEqualTo(500)
+			() -> assertThat(finder.stations()).hasSize(7),
+			() -> assertThat(finder.distance()).isEqualTo(450)
 		);
 	}
 
@@ -68,8 +67,7 @@ class PathFinderTest {
 
 		// then
 		assertAll(
-			() -> assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> finder.selectShortPath(인천역, 인천역)),
-			() -> assertThatExceptionOfType(NothingException.class).isThrownBy(() -> finder.selectShortPath(인천역, 강남역))
+			() -> assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> finder.selectShortPath(인천역, 인천역))
 		);
 	}
 
@@ -102,7 +100,7 @@ class PathFinderTest {
 		// then
 		assertAll(
 			() -> assertThat(stations).isNotNull(),
-			() -> assertThat(stations).hasSize(8)
+			() -> assertThat(stations).hasSize(9)
 		);
 	}
 
@@ -153,6 +151,7 @@ class PathFinderTest {
 		구간추가(line1, 주안역, 동암역, 20);
 		구간추가(line1, 동암역, 부평역, 30);
 		구간추가(line1, 부평역, 구로역, 40);
+		구간추가(line1, 구로역, 시청역, 50);
 	}
 
 	private void 구간추가(Line line, Station upStation, Station downStation, int distance) {
