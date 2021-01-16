@@ -52,6 +52,10 @@ public class Member extends BaseEntity {
         return age;
     }
 
+    public List<Favorite> getFavorites() {
+        return favorites;
+    }
+
     public void update(Member member) {
         this.email = member.email;
         this.password = member.password;
