@@ -61,6 +61,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> updateResponse = 내_정보_수정_요청(accessToken, EMAIL, PASSWORD, AGE);
         내_정보_수정됨(updateResponse);
+
+        ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(accessToken);
+        내_정보_삭제됨(deleteResponse);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -152,5 +155,17 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     private void 내_정보_수정됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private ExtractableResponse<Response> 내_정보_삭제_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete("/members/me")
+                .then().log().all().extract();
+    }
+
+    private void 내_정보_삭제됨(ExtractableResponse<Response> deleteResponse) {
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
