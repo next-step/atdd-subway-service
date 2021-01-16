@@ -11,6 +11,23 @@ import nextstep.subway.line.domain.Distance;
 class FareBuilderTest {
 
 	/**
+	 *
+	 * @param age : 나이
+	 * @param fare : 나이별 요금
+	 */
+	@DisplayName("2. 나이별 요금 생성 테스트(58키로 기본요금 2,150)")
+	@ParameterizedTest
+	@CsvSource(value = {"2:0", "9:900", "16:1440", "30:2150", "70:0"}, delimiter = ':')
+	void createAgeFareTest(int age, int fare) {
+		// when // given
+		Distance distance = new Distance(58);
+		FareAge fareAge = FareAge.findFareAge(age);
+
+		// then
+		assertThat(FareBuilder.calculateDistance(distance, fareAge)).isEqualTo(new Money(fare));
+	}
+
+	/**
 	 * 요금체계 : http://www.seoulmetro.co.kr/kr/page.do?menuIdx=354
 	 * @param km: 거리
 	 * @param fare: 요금
@@ -21,8 +38,9 @@ class FareBuilderTest {
 	void createFareTest(int km, int fare) {
 		// when // given
 		Distance distance = new Distance(km);
+		FareAge fareAge = FareAge.findFareAge(30);
 
 		// then
-		assertThat(FareBuilder.calculateDistance(distance)).isEqualTo(new Money(fare));
+		assertThat(FareBuilder.calculateDistance(distance, fareAge)).isEqualTo(new Money(fare));
 	}
 }
