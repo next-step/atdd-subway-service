@@ -46,6 +46,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         List<FavoriteResponse> result = found.jsonPath().getList(".", FavoriteResponse.class);
         assertThat(result).extracting(f -> f.getSource().getName()).containsExactly("강남역", "수서역");
         assertThat(result).extracting(f -> f.getTarget().getName()).containsExactly("양재역", "선릉역");
+
+        ExtractableResponse<Response> deleted = 즐겨찾기_삭제_요청("Bearer", token, created1.header("Location").split("/")[2]);
+        assertThat(deleted.statusCode()).isEqualTo(NO_CONTENT.value());
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String bearerType, String token, FavoriteRequest request) {
@@ -64,6 +67,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .header("Authorization", bearerType + token)
                 .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String bearerType, String token, String id) {
+        return RestAssured
+                .given().log().all()
+                .header("Authorization", bearerType + token)
+                .when().delete("/favorites/{id}", id)
                 .then().log().all()
                 .extract();
     }
