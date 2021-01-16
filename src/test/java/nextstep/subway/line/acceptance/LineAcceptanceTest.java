@@ -28,6 +28,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
 	private LineRequest lineRequest1;
 	private LineRequest lineRequest2;
 
+	public static LineResponse 지하철_노선_등록되어_있음(String line, String color, Long upId, Long downId, int distance,
+		int fare) {
+
+		return 지하철_노선_등록되어_있음(new LineRequest(line, color, upId, downId, distance, fare))
+			.as(LineResponse.class);
+	}
+
 	public static LineResponse 지하철_노선_등록되어_있음(String line, String color, Long upId, Long downId, int distance) {
 
 		return 지하철_노선_등록되어_있음(new LineRequest(line, color, upId, downId, distance))

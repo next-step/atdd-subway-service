@@ -57,7 +57,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> response = MemberAcceptanceTest.회원_내정보_조회_요청("bad-access-token");
 
 		// then
-		로그인_토큰_실패됨(response);
+		로그인_잘못된_토큰(response);
 	}
 
 	public static ExtractableResponse<Response> 로그인_토큰_요청(String email, String password) {
@@ -80,5 +80,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
 	private void 로그인_토큰_실패됨(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+	}
+
+	private void 로그인_잘못된_토큰(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 }
