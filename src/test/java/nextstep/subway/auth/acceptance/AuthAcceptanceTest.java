@@ -48,19 +48,24 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+        // given
+        String invalidAccessToken = "invalidAccessToken";
+        // when
+        ExtractableResponse<Response> findResponse = MemberAcceptanceTest.내_정보_조회_요청(invalidAccessToken);
+        // then
+        내_정보_조회_실패(findResponse);
     }
 
     private ExtractableResponse<Response> 토큰_발급_요청(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
-        ExtractableResponse<Response> response = RestAssured
+        return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/login/token")
                 .then().log().all().extract();
-        return response;
     }
 
     private void 토큰_생성_완료(ExtractableResponse<Response> response) {
@@ -72,5 +77,9 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
     private void 토큰_발급_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private void 내_정보_조회_실패(ExtractableResponse<Response> findResponse) {
+        assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
