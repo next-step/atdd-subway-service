@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.fare.FareBuilder;
 import nextstep.subway.path.domain.fare.Money;
@@ -72,7 +73,7 @@ class PathFinderTest {
 		assertAll(
 			() -> assertThat(finder.stations()).isNotNull(),
 			() -> assertThat(finder.stations()).hasSize(7),
-			() -> assertThat(finder.distance()).isEqualTo(450)
+			() -> assertThat(finder.distance()).isEqualTo(Distance.of(450))
 		);
 	}
 

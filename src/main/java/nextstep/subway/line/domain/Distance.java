@@ -3,9 +3,11 @@ package nextstep.subway.line.domain;
 import javax.persistence.Embeddable;
 
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Embeddable
@@ -18,6 +20,10 @@ public class Distance {
 	public Distance(int distance) {
 		validateDistance(distance);
 		this.distance = distance;
+	}
+
+	public static Distance of(int weight) {
+		return new Distance(weight);
 	}
 
 	private void validateDistance(int distance) {
