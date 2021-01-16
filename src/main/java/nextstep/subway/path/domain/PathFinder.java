@@ -4,7 +4,7 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.application.NoSuchStationException;
 import nextstep.subway.path.application.NotConnectedExeption;
 import nextstep.subway.path.application.SameStartAndEndException;
-import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.application.ShortestPathInfo;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -17,17 +17,16 @@ import java.util.Set;
 public class PathFinder {
     private final Set<Station> stations;
     private final List<Section> sections;
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
     public PathFinder(Set<Station> stations, List<Section> sections) {
         this.stations = stations;
         this.sections = sections;
-        this.graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        this.dijkstraShortestPath = new DijkstraShortestPath<>(graph);
     }
 
-    public PathResponse findShortestPath(Station start, Station end) {
+    public ShortestPathInfo findShortestPath(Station start, Station end) {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);;
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+
         validate(start, end);
         stations.forEach(graph::addVertex);
         sections.forEach(section -> {
@@ -38,7 +37,7 @@ public class PathFinder {
 
         if(path == null) throw new NotConnectedExeption(start, end);
 
-        return new PathResponse(path.getVertexList(), (int) path.getWeight());
+        return new ShortestPathInfo(path);
     }
 
     private void validate(Station start, Station end) {
