@@ -5,7 +5,15 @@ package nextstep.subway.common.exception;
  * @date : 2021/01/15
  * @description :
  **/
-public interface BaseException {
-	String getErrorCode();
-	String getErrorMessage();
+public class BaseException extends RuntimeException {
+	private String errorCode;
+	private String errorMessage;
+
+	public String getErrorCode() {
+		return errorCode;
+	}
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
 }

@@ -13,23 +13,8 @@ import nextstep.subway.common.dto.ErrorResponse;
  **/
 @RestControllerAdvice
 public class BaseExceptionHandler {
-	@ExceptionHandler(DuplicateSourceAndTargetException.class)
-	protected ResponseEntity duplicateSourceAndTargetException(DuplicateSourceAndTargetException exception){
-		return ResponseEntity.badRequest().body(new ErrorResponse(exception));
-	}
-
-	@ExceptionHandler(NoSourceStationException.class)
-	protected ResponseEntity noSourceStationException(NoSourceStationException exception){
-		return ResponseEntity.badRequest().body(new ErrorResponse(exception));
-	}
-
-	@ExceptionHandler(NoTargetStationException.class)
-	protected ResponseEntity noSourceStationException(NoTargetStationException exception){
-		return ResponseEntity.badRequest().body(new ErrorResponse(exception));
-	}
-
-	@ExceptionHandler(NotConnectedLineException.class)
-	protected ResponseEntity notConnectedLineException(NotConnectedLineException exception){
+	@ExceptionHandler(BaseException.class)
+	protected ResponseEntity baseException(BaseException exception){
 		return ResponseEntity.badRequest().body(new ErrorResponse(exception));
 	}
 }
