@@ -3,9 +3,12 @@ package nextstep.subway.member.application;
 import nextstep.subway.member.domain.Favorite;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
+import nextstep.subway.member.dto.FavoriteResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.station.domain.Station;
+
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,5 +44,10 @@ public class MemberService {
     public Favorite createFavorite(Long id, Station source, Station target) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return new Favorite(member, source, target);
+    }
+
+    public List<FavoriteResponse> findFavorites(Long id) {
+        Member member = memberRepository.findByMemberId(id);
+        return FavoriteResponse.ofList(member.getFavorites());
     }
 }

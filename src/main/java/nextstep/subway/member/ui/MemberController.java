@@ -8,12 +8,14 @@ import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Favorite;
 import nextstep.subway.member.dto.FavoriteRequest;
+import nextstep.subway.member.dto.FavoriteResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Stations;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -86,6 +88,11 @@ public class MemberController {
         Stations stations = new Stations(stationService.findByIds(request.toStationIds()));
         Favorite favorite = memberService.createFavorite(loginMember.getId(), stations.getStation(request.getSource()), stations.getStation(request.getTarget()));
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
+    }
+
+    @GetMapping("/favorites")
+    public ResponseEntity<List<FavoriteResponse>> findFavorites(@AuthenticationPrincipal LoginMember loginMember) {
+        return ResponseEntity.ok().body(memberService.findFavorites(loginMember.getId()));
     }
 
     @ExceptionHandler(AuthorizationException.class)
