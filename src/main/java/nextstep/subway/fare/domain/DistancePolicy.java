@@ -1,6 +1,6 @@
 package nextstep.subway.fare.domain;
 
-import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 
 import java.util.List;
@@ -26,10 +26,10 @@ public class DistancePolicy {
                 calculateDistanceFare(distance - OVER_DISTANCE, OVER_FARE_STANDARD_2);
     }
 
-    public static int getLineAdditionalFare(List<Station> path, List<Section> sections) {
+    public static int getLineAdditionalFare(List<Station> path, Sections sections) {
         int maxFare = 0;
         for (int i = 0; i < path.size() - 1; i++) {
-            int currentFare = getMatchedAdditionalLineFare(sections, path.get(i), path.get(i + 1));
+            int currentFare = sections.getLineAdditionalFareByUpAndDownStation(path.get(i), path.get(i + 1));
             maxFare = Math.max(maxFare, currentFare);
         }
         return maxFare;
@@ -37,14 +37,6 @@ public class DistancePolicy {
 
     private static int calculateDistanceFare(int distance, int eachStandard) {
         return (int) ((Math.ceil((distance - 1) / eachStandard) + 1) * 100);
-    }
-
-    private static int getMatchedAdditionalLineFare(List<Section> sections, Station upStation, Station downStation) {
-        return sections.stream()
-                .filter(section -> section.isEqualWithUpStation(upStation) && section.isEqualWithDownStation(downStation))
-                .map(Section::getAdditionalFare)
-                .findFirst()
-                .orElse(0);
     }
 
 }

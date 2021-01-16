@@ -2,6 +2,7 @@ package nextstep.subway.fare.domain;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -53,7 +54,7 @@ class FareTest {
 
         // when
         Fare fare = new Fare();
-        fare.calculateFare(paths, sections,12);
+        fare.calculateFare(paths, new Sections(sections),12);
 
         // then
         assertThat(fare.getFare()).isEqualTo(1350);
@@ -71,7 +72,7 @@ class FareTest {
 
         // when
         Fare fare = new Fare();
-        fare.calculateFare(paths, sections, 12);
+        fare.calculateFare(paths, new Sections(sections), 12);
 
         // then
         assertThat(fare.getFare()).isEqualTo(1850);
@@ -86,7 +87,7 @@ class FareTest {
 
         // when
         Fare fare = new Fare(AgePolicy.CHILD);
-        fare.calculateFare(paths, sections,12);
+        fare.calculateFare(paths, new Sections(sections),12);
 
         // then (1350-350)의 50프로 할인
         assertThat(fare.getFare()).isEqualTo(500);
@@ -101,7 +102,7 @@ class FareTest {
 
         // when
         Fare fare = new Fare(AgePolicy.TEENAGER);
-        fare.calculateFare(paths, sections,12);
+        fare.calculateFare(paths, new Sections(sections),12);
 
         // then (1350-350)의 20프로 할인
         assertThat(fare.getFare()).isEqualTo(800);

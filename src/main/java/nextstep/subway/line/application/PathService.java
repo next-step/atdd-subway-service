@@ -4,6 +4,7 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Paths;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -26,7 +27,7 @@ public class PathService {
         Station targetStation = stationService.findStationById(target);
         List<Section> sections = lineService.findAllSections();
 
-        Paths paths = new Paths(sections);
+        Paths paths = new Paths(new Sections(sections));
         Fare fare = new Fare(loginMember.getAgePolicy());
         return paths.getShortestPath(sourceStation, targetStation, fare);
     }
