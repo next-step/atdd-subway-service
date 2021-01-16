@@ -37,14 +37,14 @@ public class Fare {
         }
 
         if (distance <= OVER_DISTANCE) {
-            return BASIC_FARE + calculateOverFare(distance - BASIC_DISTANCE, OVER_FARE_STANDARD_1) + additionalFare;
+            return BASIC_FARE + calculateDistanceFare(distance - BASIC_DISTANCE, OVER_FARE_STANDARD_1) + additionalFare;
         }
 
-        return BASIC_FARE + calculateOverFare(OVER_DISTANCE - BASIC_DISTANCE, OVER_FARE_STANDARD_1) +
-                calculateOverFare(distance - OVER_DISTANCE, OVER_FARE_STANDARD_2) + additionalFare;
+        return BASIC_FARE + calculateDistanceFare(OVER_DISTANCE - BASIC_DISTANCE, OVER_FARE_STANDARD_1) +
+                calculateDistanceFare(distance - OVER_DISTANCE, OVER_FARE_STANDARD_2) + additionalFare;
     }
 
-    private int calculateOverFare(int distance, int eachStandard) {
+    private int calculateDistanceFare(int distance, int eachStandard) {
         return (int) ((Math.ceil((distance - 1) / eachStandard) + 1) * 100);
     }
 
