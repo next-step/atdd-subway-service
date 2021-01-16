@@ -4,23 +4,21 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fares.domain.Fare;
 import nextstep.subway.path.domain.Path;
 
-import java.util.function.Consumer;
-
 public class DiscountByAgeFarePolicy implements FarePolicy {
     private static final int DEDUCT_FARE = 350;
 
     @Override
     public void calculateFare(Fare fare, Path path, LoginMember loginMember) {
         if (!loginMember.isAnonymous()) {
-            DiscountByAge.getDiscountRateByAge(loginMember.getAge())
-                    .ifPresent(discountByAgeConsumer(fare));
+            DiscountByAge discountRateByAge = DiscountByAge.getDiscountRateByAge(loginMember.getAge());
+            discountFare(fare, discountRateByAge);
         }
     }
 
-    private Consumer<DiscountByAge> discountByAgeConsumer(Fare fare) {
-        return discountByAge -> {
+    private void discountFare(Fare fare, DiscountByAge discountRateByAge) {
+        if (discountRateByAge != DiscountByAge.NONE) {
             fare.minus(DEDUCT_FARE);
-            fare.discount(discountByAge.getRate());
-        };
+            fare.discount(discountRateByAge.getRate());
+        }
     }
 }
