@@ -6,8 +6,12 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.domain.Favorite;
+import nextstep.subway.member.dto.FavoriteRequest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import nextstep.subway.station.application.StationService;
+import nextstep.subway.station.domain.Stations;
 
 import java.net.URI;
 
@@ -26,10 +30,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
     private MemberService memberService;
     private JwtTokenProvider jwtTokenProvider;
+    private StationService stationService;
 
-    public MemberController(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
+    public MemberController(MemberService memberService, JwtTokenProvider jwtTokenProvider, StationService stationService) {
         this.memberService = memberService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.stationService = stationService;
     }
 
     @PostMapping("/members")
@@ -73,6 +79,13 @@ public class MemberController {
     public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/favorites")
+    public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest request) {
+        Stations stations = new Stations(stationService.findByIds(request.toStationIds()));
+        Favorite favorite = memberService.createFavorite(loginMember.getId(), stations.getStation(request.getSource()), stations.getStation(request.getTarget()));
+        return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
     }
 
     @ExceptionHandler(AuthorizationException.class)
