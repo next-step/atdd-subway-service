@@ -9,6 +9,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import lombok.Getter;
 import nextstep.subway.common.exception.NothingException;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.station.domain.Station;
@@ -33,8 +34,8 @@ public class PathFinder {
 		return resultPath.getVertexList();
 	}
 
-	public int distance() {
-		return (int)resultPath.getWeight();
+	public Distance distance() {
+		return Distance.of((int)resultPath.getWeight());
 	}
 
 	private WeightedMultigraph<Station, DefaultWeightedEdge> generateStationGraph() {

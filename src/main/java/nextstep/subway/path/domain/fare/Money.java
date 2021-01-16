@@ -39,4 +39,8 @@ public class Money {
 	public Money plus(Money amount) {
 		return Money.of(this.money + amount.getMoney());
 	}
+
+	public Money multi(double discount) {
+		return Money.of((int)(this.money * discount));
+	}
 }
