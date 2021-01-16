@@ -64,3 +64,10 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     
 - 로직을 옮기기
     - newAddLineStation, newRemoveLineStation, newgetStation 한벌 새로 만들어서 작업
+  
+# 2단계 
+최단거리 구하기
+예외사항
+  - 출발역과 도착역이 같은 경우
+  - 출발역과 도착역이 연결이 되어 있지 않은 경우
+  - 존재하지 않은 출발역이나 도착역을 조회 할 경우
