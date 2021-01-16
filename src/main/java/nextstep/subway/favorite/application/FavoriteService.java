@@ -9,6 +9,9 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
@@ -23,5 +26,12 @@ public class FavoriteService {
         Station source = stationService.findById(request.getSource());
         Station target = stationService.findById(request.getTarget());
         return FavoriteResponse.of(favoriteRepository.save(new Favorite(member, source, target)));
+    }
+
+    public List<FavoriteResponse> findAllFavorites(Member member) {
+        return favoriteRepository.findAllByMember(member)
+                .stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
     }
 }
