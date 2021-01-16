@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.line.exceptions.SectionsException;
 import nextstep.subway.station.domain.Station;
@@ -23,13 +24,14 @@ public class Paths {
     private static final String CANNOT_FOUND_STATION = "존재하지 않은 출발역이나 도착역입니다.";
 
     private final DijkstraShortestPath dijkstraShortestPath;
+    private Sections sections;
     private Set<Station> stations;
 
-    public Paths(List<Section> sections) {
+    public Paths(Sections sections) {
         this.dijkstraShortestPath = build(sections);
     }
 
-    public PathResponse getShortestPath(Station sourceStation, Station targetStation) {
+    public PathResponse getShortestPath(Station sourceStation, Station targetStation, Fare fare) {
         validate(sourceStation, targetStation);
         GraphPath shortPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
         if (shortPath == null) {
@@ -37,14 +39,17 @@ public class Paths {
         }
         List<Station> shortestPath = shortPath.getVertexList();
         double shortestWeight = shortPath.getWeight();
-        return PathResponse.of(shortestPath, shortestWeight);
+
+        fare.calculateFare(shortestPath, sections, (int) shortestWeight);
+        return PathResponse.of(shortestPath, shortestWeight, fare.getFare());
     }
 
-    private DijkstraShortestPath build(List<Section> sections) {
+    private DijkstraShortestPath build(Sections sections) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        this.stations = getStations(sections);
+        this.sections = sections;
+        this.stations = getStations(sections.getSections());
         addVertex(graph);
-        addEdgeAndWeight(sections, graph);
+        addEdgeAndWeight(sections.getSections(), graph);
         return new DijkstraShortestPath(graph);
     }
 

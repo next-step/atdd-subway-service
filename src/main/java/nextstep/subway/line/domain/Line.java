@@ -14,12 +14,16 @@ import java.util.List;
 @Getter
 @Entity
 public class Line extends BaseEntity {
+
+    private static final String FARE_ONLY_POSITIVE_NUMBER = "추가요금은 양수만 가능합니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
     private String name;
     private String color;
+    private int additionalFare;
 
     @Embedded
     private Sections sections = new Sections();
@@ -27,6 +31,19 @@ public class Line extends BaseEntity {
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
+    }
+
+    public Line(String name, String color, int additionalFare) {
+        this.name = name;
+        this.color = color;
+        validate(additionalFare);
+        this.additionalFare = additionalFare;
+    }
+
+    private void validate(int additionalFare) {
+        if (additionalFare < 0) {
+            throw new IllegalArgumentException(FARE_ONLY_POSITIVE_NUMBER);
+        }
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {

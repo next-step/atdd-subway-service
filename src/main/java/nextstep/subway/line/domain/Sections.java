@@ -90,6 +90,14 @@ public class Sections {
         downLineStation.ifPresent(it -> this.sections.remove(it));
     }
 
+    public int getLineAdditionalFareByUpAndDownStation(Station upStation, Station downStation) {
+        return this.sections.stream()
+                .filter(section -> section.isEqualWithUpStation(upStation) && section.isEqualWithDownStation(downStation))
+                .map(Section::getAdditionalFare)
+                .findFirst()
+                .orElse(0);
+    }
+
     private void updateSectionToRemove(Section upLineStation, Section downLineStation) {
         Station newUpStation = downLineStation.getUpStation();
         Station newDownStation = upLineStation.getDownStation();

@@ -59,4 +59,9 @@ public class Section {
         this.downStation = station;
         this.distance -= newDistance;
     }
+
+    public int getAdditionalFare() {
+        return this.line.getAdditionalFare();
+    }
+
 }

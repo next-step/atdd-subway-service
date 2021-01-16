@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.line.exceptions.SectionsException;
 import nextstep.subway.station.domain.Station;
@@ -64,8 +65,8 @@ class PathsTest {
     @Test
     void getPath() {
         // when
-        Paths paths = new Paths(sections);
-        PathResponse response = paths.getShortestPath(강남역, 남부터미널역);
+        Paths paths = new Paths(new Sections(sections));
+        PathResponse response = paths.getShortestPath(강남역, 남부터미널역, new Fare());
 
         // then
         assertThat(response.getStations().size()).isEqualTo(3);
@@ -76,9 +77,9 @@ class PathsTest {
     @Test
     void getPathWithException1() {
         // then
-        Paths paths = new Paths(sections);
+        Paths paths = new Paths(new Sections(sections));
         assertThatThrownBy(() -> {
-            PathResponse response = paths.getShortestPath(강남역, 강남역);
+            PathResponse response = paths.getShortestPath(강남역, 강남역, new Fare());
         }).isInstanceOf(SectionsException.class);
     }
 
@@ -86,9 +87,9 @@ class PathsTest {
     @Test
     void getPathWithException2() {
         // when, then
-        Paths paths = new Paths(sections);
+        Paths paths = new Paths(new Sections(sections));
         assertThatThrownBy(() -> {
-            PathResponse response = paths.getShortestPath(교대역, 신림역);
+            PathResponse response = paths.getShortestPath(교대역, 신림역, new Fare());
         }).isInstanceOf(SectionsException.class);
     }
 
@@ -96,9 +97,9 @@ class PathsTest {
     @Test
     void getPathWithException3() {
         // then
-        Paths paths = new Paths(sections);
+        Paths paths = new Paths(new Sections(sections));
         assertThatThrownBy(() -> {
-            PathResponse response = paths.getShortestPath(강남역, new Station("청계산입구역"));
+            PathResponse response = paths.getShortestPath(강남역, new Station("청계산입구역"), new Fare());
         }).isInstanceOf(SectionsException.class);
     }
 }
