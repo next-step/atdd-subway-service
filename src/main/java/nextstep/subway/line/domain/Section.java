@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nextstep.subway.path.domain.fare.Money;
 import nextstep.subway.station.domain.Station;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -72,15 +73,19 @@ public class Section {
 		return getStations().contains(target);
 	}
 
-	public boolean isUpStation(Section target) {
-		return this.upStation.equals(target.getUpStation());
+	public boolean isUpStation(Station station) {
+		return this.upStation.equals(station);
 	}
 
-	public boolean isDownStation(Section target) {
-		return this.downStation.equals(target.getDownStation());
+	public boolean isDownStation(Station station) {
+		return this.downStation.equals(station);
 	}
 
 	public int distance() {
 		return this.distance.getDistance();
+	}
+
+	public Money fare() {
+		return this.line.getFare();
 	}
 }

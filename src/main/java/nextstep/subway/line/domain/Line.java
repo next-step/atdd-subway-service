@@ -13,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nextstep.subway.BaseEntity;
+import nextstep.subway.path.domain.fare.Money;
 import nextstep.subway.station.domain.Station;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,6 +28,9 @@ public class Line extends BaseEntity {
 	private String color;
 
 	@Embedded
+	private Money fare;
+
+	@Embedded
 	private Sections sections;
 
 	public Line(String name, String color) {
@@ -36,12 +40,18 @@ public class Line extends BaseEntity {
 
 	public Line(String name, String color, Station upStation, Station downStation, int distance) {
 		this(name, color);
+		this.fare = Money.of(Money.ZERO_MONEY);
 		sections = Sections.of(this, upStation, downStation, distance);
 	}
 
 	public Line(Long id, String name, String color, Station upStation, Station downStation, int distance) {
 		this(name, color, upStation, downStation, distance);
 		this.id = id;
+	}
+
+	public Line(String name, String color, Station upStation, Station downStation, int distance, int lineFare) {
+		this(name, color, upStation, downStation, distance);
+		this.fare = Money.of(lineFare);
 	}
 
 	public void update(Line line) {
