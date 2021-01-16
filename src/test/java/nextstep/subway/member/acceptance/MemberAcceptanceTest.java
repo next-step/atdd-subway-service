@@ -2,9 +2,10 @@ package nextstep.subway.member.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestSupport.*;
 
 class MemberAcceptanceTest extends MemberAcceptanceTestSupport {
     @DisplayName("회원 정보를 관리한다.")
@@ -40,12 +41,12 @@ class MemberAcceptanceTest extends MemberAcceptanceTestSupport {
         회원_생성됨(createResponse);
 
         // when
-        ExtractableResponse<Response> tokenResponse = AuthAcceptanceTest.토큰_발급_요청(EMAIL, PASSWORD);
+        ExtractableResponse<Response> tokenResponse = 토큰_발급_요청(EMAIL, PASSWORD);
         // then
-        AuthAcceptanceTest.토큰_생성_완료(tokenResponse);
+        토큰_생성_완료(tokenResponse);
 
         // when
-        String accessToken = AuthAcceptanceTest.getAccessToken(tokenResponse);
+        String accessToken = getAccessToken(tokenResponse);
         ExtractableResponse<Response> findResponse = 내_정보_조회_요청(accessToken);
         // then
         내_정보_조회됨(findResponse);

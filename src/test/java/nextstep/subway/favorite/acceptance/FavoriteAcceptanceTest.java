@@ -2,7 +2,6 @@ package nextstep.subway.favorite.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -11,7 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.토큰_발급_요청;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestSupport.getAccessToken;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestSupport.토큰_발급_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.member.acceptance.MemberAcceptanceTestSupport.*;
@@ -48,7 +48,7 @@ class FavoriteAcceptanceTest extends FavoriteAcceptanceTestSupport {
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
 
         ExtractableResponse<Response> authResponse = 토큰_발급_요청(EMAIL, PASSWORD);
-        accessToken = AuthAcceptanceTest.getAccessToken(authResponse);
+        accessToken = getAccessToken(authResponse);
     }
 
     @DisplayName("즐겨찾기 기능 관리")
