@@ -1,13 +1,21 @@
 package nextstep.subway.path.domain.fare;
 
-import java.util.Objects;
+import javax.persistence.Embeddable;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+@EqualsAndHashCode
 @Getter
+@Embeddable
 public class Money {
 
+	public static final long ZERO_MONEY = 0L;
 	private final long money;
+
+	public Money() {
+		this.money = ZERO_MONEY;
+	}
 
 	public Money(long money) {
 		validateMoney(money);
@@ -19,27 +27,16 @@ public class Money {
 	}
 
 	private void validateMoney(long money) {
-		if (money < 0L) {
+		if (money < ZERO_MONEY) {
 			throw new IllegalArgumentException("돈은 0보다 작을 수 없습니다.");
 		}
 	}
 
 	public Money plus(int amount) {
-		return new Money(this.getMoney() + amount);
+		return Money.of(this.getMoney() + amount);
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-		Money money1 = (Money)o;
-		return money == money1.money;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(money);
+	public Money plus(Money amount) {
+		return Money.of(this.money + amount.getMoney());
 	}
 }
