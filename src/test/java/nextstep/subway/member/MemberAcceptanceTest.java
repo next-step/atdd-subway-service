@@ -58,6 +58,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         String accessToken = AuthAcceptanceTest.getAccessToken(tokenResponse);
         ExtractableResponse<Response> findResponse = 내_정보_조회_요청(accessToken);
         내_정보_조회됨(findResponse);
+
+        ExtractableResponse<Response> updateResponse = 내_정보_수정_요청(accessToken, EMAIL, PASSWORD, AGE);
+        내_정보_수정됨(updateResponse);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -89,6 +92,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/members/me")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> 내_정보_수정_요청(String accessToken, String email, String password, int age) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new MemberRequest(email, password, age))
+                .when().put("/members/me")
                 .then().log().all().extract();
     }
 
@@ -135,5 +148,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     private void 내_정보_조회됨(ExtractableResponse<Response> findResponse) {
         회원_정보_조회됨(findResponse, EMAIL, AGE);
+    }
+
+    private void 내_정보_수정됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
