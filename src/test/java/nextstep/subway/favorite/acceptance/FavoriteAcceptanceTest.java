@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.토큰_발급_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
-import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.acceptance.MemberAcceptanceTestSupport.*;
 
 @DisplayName("즐겨찾기 관련 기능")
 class FavoriteAcceptanceTest extends FavoriteAcceptanceTestSupport {

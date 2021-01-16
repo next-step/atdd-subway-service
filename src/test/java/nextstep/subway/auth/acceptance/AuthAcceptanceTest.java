@@ -5,7 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.member.MemberAcceptanceTest;
+import nextstep.subway.member.acceptance.MemberAcceptanceTestSupport;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.member.acceptance.MemberAcceptanceTestSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -24,14 +25,14 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Override
     public void setUp() {
         super.setUp();
-        MemberAcceptanceTest.회원_생성을_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD, MemberAcceptanceTest.AGE);
+        MemberAcceptanceTestSupport.회원_생성을_요청(EMAIL, PASSWORD, AGE);
     }
 
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
         // when
-        ExtractableResponse<Response> response = 토큰_발급_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD);
+        ExtractableResponse<Response> response = 토큰_발급_요청(EMAIL, PASSWORD);
         // then
         토큰_생성_완료(response);
     }
@@ -40,7 +41,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBadBearerAuth() {
         // when
-        ExtractableResponse<Response> response = 토큰_발급_요청(MemberAcceptanceTest.EMAIL, "invalidPassword");
+        ExtractableResponse<Response> response = 토큰_발급_요청(EMAIL, "invalidPassword");
         // then
         토큰_발급_실패(response);
     }
@@ -51,7 +52,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         // given
         String invalidAccessToken = "invalidAccessToken";
         // when
-        ExtractableResponse<Response> findResponse = MemberAcceptanceTest.내_정보_조회_요청(invalidAccessToken);
+        ExtractableResponse<Response> findResponse = 내_정보_조회_요청(invalidAccessToken);
         // then
         내_정보_조회_실패(findResponse);
     }

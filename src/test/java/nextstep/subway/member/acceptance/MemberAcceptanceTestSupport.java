@@ -1,70 +1,23 @@
-package nextstep.subway.member;
+package nextstep.subway.member.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class MemberAcceptanceTest extends AcceptanceTest {
+public class MemberAcceptanceTestSupport extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final String NEW_EMAIL = "newemail@email.com";
     public static final String NEW_PASSWORD = "newpassword";
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
-
-    @DisplayName("회원 정보를 관리한다.")
-    @Test
-    void manageMember() {
-        // when
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        // then
-        회원_생성됨(createResponse);
-
-        // when
-        ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(createResponse);
-        // then
-        회원_정보_조회됨(findResponse, EMAIL, AGE);
-
-        // when
-        ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
-        // then
-        회원_정보_수정됨(updateResponse);
-
-        // when
-        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
-        // then
-        회원_삭제됨(deleteResponse);
-    }
-
-    @DisplayName("나의 정보를 관리한다.")
-    @Test
-    void manageMyInfo() {
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        회원_생성됨(createResponse);
-
-        ExtractableResponse<Response> tokenResponse = AuthAcceptanceTest.토큰_발급_요청(EMAIL, PASSWORD);
-        AuthAcceptanceTest.토큰_생성_완료(tokenResponse);
-
-        String accessToken = AuthAcceptanceTest.getAccessToken(tokenResponse);
-        ExtractableResponse<Response> findResponse = 내_정보_조회_요청(accessToken);
-        내_정보_조회됨(findResponse);
-
-        ExtractableResponse<Response> updateResponse = 내_정보_수정_요청(accessToken, EMAIL, PASSWORD, AGE);
-        내_정보_수정됨(updateResponse);
-
-        ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(accessToken);
-        내_정보_삭제됨(deleteResponse);
-    }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
@@ -98,7 +51,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> 내_정보_수정_요청(String accessToken, String email, String password, int age) {
+    public static ExtractableResponse<Response> 내_정보_수정_요청(String accessToken, String email, String password, int age) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
@@ -149,15 +102,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    private void 내_정보_조회됨(ExtractableResponse<Response> findResponse) {
+    public static void 내_정보_조회됨(ExtractableResponse<Response> findResponse) {
         회원_정보_조회됨(findResponse, EMAIL, AGE);
     }
 
-    private void 내_정보_수정됨(ExtractableResponse<Response> response) {
+    public static void 내_정보_수정됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private ExtractableResponse<Response> 내_정보_삭제_요청(String accessToken) {
+    public static ExtractableResponse<Response> 내_정보_삭제_요청(String accessToken) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
@@ -165,7 +118,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private void 내_정보_삭제됨(ExtractableResponse<Response> deleteResponse) {
+    public static void 내_정보_삭제됨(ExtractableResponse<Response> deleteResponse) {
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
