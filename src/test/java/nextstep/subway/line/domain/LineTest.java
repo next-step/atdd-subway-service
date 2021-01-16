@@ -2,9 +2,6 @@ package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.List;
-
-import org.assertj.core.api.AbstractAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
