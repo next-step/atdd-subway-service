@@ -39,6 +39,10 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
+        // when
+        ExtractableResponse<Response> response = 토큰_발급_요청(MemberAcceptanceTest.EMAIL, "invalidPassword");
+        // then
+        토큰_발급_실패(response);
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
@@ -64,5 +68,9 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(TokenResponse.class).getAccessToken()).isNotEmpty()
         );
+    }
+
+    private void 토큰_발급_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
