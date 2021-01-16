@@ -8,6 +8,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import nextstep.subway.common.exception.NotConnectedLineException;
@@ -21,7 +22,7 @@ import nextstep.subway.station.domain.Station;
  * @date : 2021/01/15
  * @description :
  **/
-@Service
+@Component
 public class PathFinder {
 
 	public PathResponse getDijkstraShortestPath(List<Line> lines,
