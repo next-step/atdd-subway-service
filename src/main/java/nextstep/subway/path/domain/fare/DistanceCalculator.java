@@ -22,14 +22,25 @@ public class DistanceCalculator {
 			return fareAge.getBasicFare();
 		}
 		if (MIDDLE_DISTANCE >= distance) {
-			distance -= SHORT_DISTANCE;
-			int range = (distance - 1) / MIDDLE_INCREASE_FARE_DISTANCE;
-			return calculateOverFare(SHORT_DISTANCE)
-				.plus((int)((Math.ceil(range) + 1) * fareAge.getDiscount() * INCREASE_DISTANCE_FARE.getMoney()));
+			return calculateMiddleDistance(distance);
 		}
+		return calculateLongDistance(distance);
+	}
+
+	private static Money calculateLongDistance(int distance) {
 		distance -= MIDDLE_DISTANCE;
 		int range = (distance - 1) / LONG_INCREASE_FARE_DISTANCE;
-		return calculateOverFare(MIDDLE_DISTANCE).plus(
-			(int)((Math.ceil(range) + 1) * fareAge.getDiscount() * INCREASE_DISTANCE_FARE.getMoney()));
+		return calculateDistance(range, MIDDLE_DISTANCE);
+	}
+
+	private static Money calculateMiddleDistance(int distance) {
+		distance -= SHORT_DISTANCE;
+		int range = (distance - 1) / MIDDLE_INCREASE_FARE_DISTANCE;
+		return calculateDistance(range, SHORT_DISTANCE);
+	}
+
+	private static Money calculateDistance(int range, int rangeDistance) {
+		return calculateOverFare(rangeDistance)
+			.plus((int)((Math.ceil(range) + 1) * fareAge.getDiscount() * INCREASE_DISTANCE_FARE.getMoney()));
 	}
 }
