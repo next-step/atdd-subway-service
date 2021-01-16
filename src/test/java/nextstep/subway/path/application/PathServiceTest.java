@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.exception.NothingException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
@@ -36,6 +37,8 @@ class PathServiceTest {
 	private Station 인천역;
 	private Station 주안역;
 
+	private LoginMember loginMember;
+
 	@BeforeEach
 	void setUp() {
 		pathService = new PathService(lineService);
@@ -47,6 +50,8 @@ class PathServiceTest {
 
 		line1 = new Line(1L, "1호선", "blue", 인천역, 주안역, 50);
 		line2 = new Line(2L, "2호선", "green", 시청역, 서초역, 100);
+
+		loginMember = new LoginMember();
 	}
 
 	@DisplayName("경로찾기: [에러]동일한 역 경로검색")
@@ -60,7 +65,7 @@ class PathServiceTest {
 
 		// then
 		assertThatExceptionOfType(RuntimeException.class)
-			.isThrownBy(() -> pathService.findPath(request));
+			.isThrownBy(() -> pathService.findPath(loginMember, request));
 	}
 
 	@DisplayName("경로찾기: [에러]존재하지 않는 역 경로검색")
@@ -75,7 +80,7 @@ class PathServiceTest {
 
 		// then
 		assertThatExceptionOfType(NothingException.class)
-			.isThrownBy(() -> pathService.findPath(request));
+			.isThrownBy(() -> pathService.findPath(loginMember, request));
 	}
 
 	@DisplayName("경로찾기: [에러]같은 경로에 없는 역 경로검색")
@@ -91,7 +96,7 @@ class PathServiceTest {
 
 		// then
 		assertThatExceptionOfType(NothingException.class)
-			.isThrownBy(() -> pathService.findPath(request));
+			.isThrownBy(() -> pathService.findPath(loginMember, request));
 	}
 
 	@DisplayName("경로찾기: 최단거리를 검색한다.")
@@ -104,7 +109,7 @@ class PathServiceTest {
 		PathRequest request = new PathRequest(인천역.getId(), 주안역.getId());
 
 		// when
-		PathResponse finder = pathService.findPath(request);
+		PathResponse finder = pathService.findPath(loginMember, request);
 
 		// then
 		assertAll(
