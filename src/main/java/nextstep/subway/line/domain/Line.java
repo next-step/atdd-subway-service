@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,12 +21,16 @@ import nextstep.subway.station.domain.Station;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Line extends BaseEntity {
+	@Transient
+	private static final int MINIMAL_SECTION_COUNT = 2;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	@Column(unique = true)
 	private String name;
 	private String color;
+
 
 	@Embedded
 	private Sections sections = new Sections();
@@ -130,6 +135,6 @@ public class Line extends BaseEntity {
 	}
 
 	public boolean isSectionsExists() {
-		return getSections().size() > 1;
+		return getSections().size() >= MINIMAL_SECTION_COUNT;
 	}
 }
