@@ -1,4 +1,4 @@
-package nextstep.subway.path.application;
+package nextstep.subway.path.domain;
 
 import java.util.Collection;
 import java.util.List;
@@ -22,11 +22,19 @@ import nextstep.subway.station.domain.Station;
  * @date : 2021/01/15
  * @description :
  **/
-@Component
 public class PathFinder {
 
-	public PathResponse getDijkstraShortestPath(List<Line> lines,
-		Station sourceStation, Station targetStation) {
+	private List<Line> lines;
+	private Station sourceStation;
+	private Station targetStation;
+
+	public PathFinder(List<Line> lines, Station sourceStation, Station targetStation) {
+		this.lines = lines;
+		this.sourceStation = sourceStation;
+		this.targetStation = targetStation;
+	}
+
+	public PathResponse getDijkstraShortestPath() {
 		WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
 		generateVertex(lines, graph);
