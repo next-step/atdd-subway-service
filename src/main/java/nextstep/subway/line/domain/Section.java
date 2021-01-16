@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import java.util.stream.Stream;
+
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -24,14 +26,18 @@ public class Section {
 
     private int distance;
 
-    public Section() {
+    protected Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    private Section(Line line, Station upStation, Station downStation, int distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static Section of(Line line, Station upStation, Station downStation, int distance) {
+        return new Section(line, upStation, downStation, distance);
     }
 
     public Long getId() {
@@ -68,5 +74,9 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public Stream<Station> getStations() {
+        return Stream.of(upStation, downStation);
     }
 }
