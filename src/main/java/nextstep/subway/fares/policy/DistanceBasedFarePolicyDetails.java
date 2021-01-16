@@ -13,8 +13,9 @@ public abstract class DistanceBasedFarePolicyDetails {
     }
 
     public void calculateFareByDistance(Distance currDistance, Fare fare, Distance targetDistance) {
-        for (; fareAddable(currDistance, targetDistance); currDistance.add(perDistance)) {
+        while (fareAddable(currDistance, targetDistance)) {
             fare.add(DEFAULT_SURCHARGE);
+            currDistance.add(perDistance);
         }
     }
 

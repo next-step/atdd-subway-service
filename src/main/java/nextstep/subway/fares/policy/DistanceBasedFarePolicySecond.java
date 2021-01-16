@@ -12,7 +12,7 @@ public class DistanceBasedFarePolicySecond extends DistanceBasedFarePolicyDetail
 
     @Override
     public boolean fareAddable(Distance currDistance, Distance targetDistance) {
-        return currDistance.getValue() < MAX_DISTANCE
-                && currDistance.getValue() + PER_DISTANCE <= targetDistance.getValue();
+        return currDistance.isLessThan(MAX_DISTANCE)
+                && currDistance.ensureDistanceIsGreaterThanEqual(targetDistance, PER_DISTANCE);
     }
 }

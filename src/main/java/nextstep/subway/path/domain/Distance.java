@@ -18,4 +18,12 @@ public class Distance {
     public int getValue() {
         return distance;
     }
+
+    public boolean isLessThan(int target) {
+        return distance < target;
+    }
+
+    public boolean ensureDistanceIsGreaterThanEqual(Distance target, int range) {
+        return distance + range <= target.getValue();
+    }
 }
