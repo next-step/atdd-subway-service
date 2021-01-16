@@ -95,6 +95,12 @@ public class MemberController {
         return ResponseEntity.ok().body(memberService.findFavorites(loginMember.getId()));
     }
 
+    @DeleteMapping("/favorites/{id}")
+    public ResponseEntity<Void> removeFavorite(@AuthenticationPrincipal LoginMember loginMember, @PathVariable("id") Long favoriteId) {
+        memberService.removeFavorite(loginMember.getId(), favoriteId);
+        return ResponseEntity.noContent().build();
+    }
+
     @ExceptionHandler(AuthorizationException.class)
     public ResponseEntity<String> handleAuthorizationException(Exception e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());

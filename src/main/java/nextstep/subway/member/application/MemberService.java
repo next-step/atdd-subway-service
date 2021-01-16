@@ -50,4 +50,9 @@ public class MemberService {
         Member member = memberRepository.findByMemberId(id);
         return FavoriteResponse.ofList(member.getFavorites());
     }
+
+    public void removeFavorite(Long id, Long favoriteId) {
+        Member member = memberRepository.findByMemberId(id);
+        member.getFavorites().removeIf(favorite -> favorite.getId().equals(favoriteId));
+    }
 }
