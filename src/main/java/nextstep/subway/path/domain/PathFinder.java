@@ -8,8 +8,6 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import nextstep.subway.common.exception.NotConnectedLineException;
 import nextstep.subway.line.domain.Line;
@@ -43,14 +41,15 @@ public class PathFinder {
 		DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
 
 		GraphPath graphPathResult;
-		try{
+		try {
 			graphPathResult = dijkstraShortestPath.getPath(sourceStation, targetStation);
-		}catch (IllegalArgumentException e){
+		} catch (IllegalArgumentException e) {
 			throw new NotConnectedLineException();
 		}
 
 		List<Station> shortestPath = graphPathResult.getVertexList();
-		int distance = (int) graphPathResult.getWeight();
+		int distance = (int)graphPathResult.getWeight();
+
 		List<PathStationResponse> pathStationResponses = shortestPathResultToPathStationResponses(shortestPath);
 
 		return PathResponse.of(pathStationResponses, distance);

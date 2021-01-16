@@ -16,4 +16,5 @@ public class BaseException extends RuntimeException {
 	public String getErrorMessage() {
 		return errorMessage;
 	}
+
 }

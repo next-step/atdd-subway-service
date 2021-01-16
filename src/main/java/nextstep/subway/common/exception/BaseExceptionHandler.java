@@ -14,7 +14,7 @@ import nextstep.subway.common.dto.ErrorResponse;
 @RestControllerAdvice
 public class BaseExceptionHandler {
 	@ExceptionHandler(BaseException.class)
-	protected ResponseEntity baseException(BaseException exception){
+	protected ResponseEntity baseException(BaseException exception) {
 		return ResponseEntity.badRequest().body(new ErrorResponse(exception));
 	}
 }

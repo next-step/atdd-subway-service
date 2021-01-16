@@ -31,7 +31,6 @@ public class Line extends BaseEntity {
 	private String name;
 	private String color;
 
-
 	@Embedded
 	private Sections sections = new Sections();
 
@@ -130,11 +129,12 @@ public class Line extends BaseEntity {
 	public List<Section> getSections() {
 		return sections.getSections();
 	}
+
 	public List<Station> getStations() {
 		return sections.getStations();
 	}
 
 	public boolean isSectionsExists() {
-		return getSections().size() >= MINIMAL_SECTION_COUNT;
+		return getSections().size() > 1;
 	}
 }

@@ -21,7 +21,6 @@ public class PathStationResponse {
 		this.createdAt = createdAt;
 	}
 
-
 	public static PathStationResponse of(Station station) {
 		return new PathStationResponse(station.getId(), station.getName(), station.getCreatedDate());
 	}

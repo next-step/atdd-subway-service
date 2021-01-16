@@ -7,12 +7,11 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import nextstep.subway.common.exception.DuplicateSourceAndTargetException;
-import nextstep.subway.common.exception.NoSourceStationException;
-import nextstep.subway.common.exception.NoTargetStationException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 
@@ -25,25 +24,25 @@ import nextstep.subway.station.domain.StationRepository;
 @Transactional
 public class PathService {
 	private LineRepository lineRepository;
-	private StationRepository stationRepository;
+	private StationService stationService;
 
-	public PathService(LineRepository lineRepository, StationRepository stationRepository) {
+	public PathService(LineRepository lineRepository, StationService stationService) {
 		this.lineRepository = lineRepository;
-		this.stationRepository = stationRepository;
+		this.stationService = stationService;
 	}
 
 	public PathResponse findShortestPath(Long sourceId, Long targetId) {
 		validateFindShortestPathCondition(sourceId, targetId);
 		List<Line> allLines = lineRepository.findAll();
-		Station sourceStation = stationRepository.findById(sourceId).orElseThrow(() -> new NoSourceStationException());
-		Station targetStation = stationRepository.findById(targetId).orElseThrow(() -> new NoTargetStationException());
+		Station sourceStation = stationService.findStationById(sourceId);
+		Station targetStation = stationService.findStationById(targetId);
 
 		PathFinder pathFinder = new PathFinder(allLines, sourceStation, targetStation);
 		return pathFinder.getDijkstraShortestPath();
 	}
 
 	private void validateFindShortestPathCondition(Long sourceId, Long targetId) {
-		if(sourceId == targetId) {
+		if (sourceId == targetId) {
 			throw new DuplicateSourceAndTargetException();
 		}
 	}

@@ -78,15 +78,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		출발역과_도착역_연결되어있지_않음(response);
 	}
 
-	@DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우")
-	@Test
-	void findNotExistStation() {
-		StationResponse 서울역 = StationAcceptanceTest.지하철역_등록되어_있음("서울역").as(StationResponse.class);
-		ExtractableResponse<Response> response = 최단경로_조회(교대역, 서울역);
-
-		출발역과_도착역_연결되어있지_않음(response);
-	}
-
 	private void 출발역과_도착역_연결되어있지_않음(ExtractableResponse<Response> response) {
 		String errorCode = response.jsonPath().getObject(".", ErrorResponse.class).getErrorCode();
 		assertThat(errorCode).isEqualTo(NotConnectedLineException.ERROR_CODE);

@@ -5,7 +5,6 @@ import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,9 +14,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathStationResponse;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 
@@ -32,9 +31,7 @@ class PathServiceTest {
 	@Mock
 	private LineRepository lineRepository;
 	@Mock
-	private StationRepository stationRepository;
-	@Mock
-	private PathFinder pathFinder;
+	private StationService stationService;
 
 	private Station 강남역 = new Station(1L, "강남역");
 	private Station 양재역 = new Station(2L, "양재역");
@@ -64,16 +61,14 @@ class PathServiceTest {
 		Long targetId = 양재역.getId();
 
 		List<Line> 신분당선_mock = Arrays.asList(신분당선, 이호선, 삼호선);
-		Optional<Station> 교대역_mock = Optional.of(교대역);
-		Optional<Station> 양재역_mock = Optional.of(양재역);
 
 		int distance_mock = 5;
 
 		when(lineRepository.findAll()).thenReturn(신분당선_mock);
-		when(stationRepository.findById(sourceId)).thenReturn(교대역_mock);
-		when(stationRepository.findById(targetId)).thenReturn(양재역_mock);
+		when(stationService.findStationById(sourceId)).thenReturn(교대역);
+		when(stationService.findStationById(targetId)).thenReturn(양재역);
 
-		PathService pathService = new PathService(lineRepository, stationRepository);
+		PathService pathService = new PathService(lineRepository, stationService);
 		PathResponse pathResponse = pathService.findShortestPath(sourceId, targetId);
 
 		// then

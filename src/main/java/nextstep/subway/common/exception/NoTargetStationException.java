@@ -10,7 +10,7 @@ public class NoTargetStationException extends BaseException {
 
 	public static String errorMessage = "도착역이 존재하지 않습니다.";
 
-	public NoTargetStationException(){
+	public NoTargetStationException() {
 	}
 
 	public String getErrorCode() {

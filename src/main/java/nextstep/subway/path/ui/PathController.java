@@ -22,7 +22,8 @@ public class PathController {
 	}
 
 	@GetMapping("/paths")
-	public ResponseEntity findShortestPath(@RequestParam(value = "source") Long sourceId, @RequestParam(value = "target") Long targetId) {
+	public ResponseEntity findShortestPath(@RequestParam(value = "source") Long sourceId,
+		@RequestParam(value = "target") Long targetId) {
 		return ResponseEntity.ok(pathService.findShortestPath(sourceId, targetId));
 	}
 }
