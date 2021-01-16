@@ -10,6 +10,7 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,5 +34,18 @@ public class FavoriteService {
                 .stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public void removeFavorite(Member member, Long favoriteId) {
+        Favorite favorite = findById(favoriteId);
+        if(!favorite.getMember().equals(member)) {
+            throw new IllegalStateException("삭제하고자하는 Favorite id:" + favoriteId + "는 Member id:" + member.getId() + "의 소유가 아닙니다.");
+        }
+        favoriteRepository.delete(favorite);
+    }
+
+    public Favorite findById(Long favoriteId) {
+        return favoriteRepository.findById(favoriteId)
+                .orElseThrow(() -> new NoSuchElementException("Favorite id:" + favoriteId + " 존재하지않습니다."));
     }
 }
