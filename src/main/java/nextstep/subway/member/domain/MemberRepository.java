@@ -10,9 +10,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByEmail(String email);
 
     @Query("select m from Member m"
-            + " join fetch m.favorites fav"
-            + " join fetch fav.departureStation source"
-            + " join fetch fav.arrivalStation target"
+            + " left join fetch m.favorites fav"
+            + " left join fetch fav.departureStation source"
+            + " left join fetch fav.arrivalStation target"
             + " where m.id = :id")
     Member findByMemberId(@Param("id") Long id);
 }
