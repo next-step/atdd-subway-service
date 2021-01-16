@@ -1,9 +1,7 @@
 package nextstep.subway.fares.policy;
 
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fares.domain.Fare;
 import nextstep.subway.path.domain.Distance;
-import nextstep.subway.path.domain.Path;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,10 +20,10 @@ public class DistanceBasedFarePolicy implements FarePolicy {
     }
 
     @Override
-    public void calculateFare(Fare fare, Path path, LoginMember loginMember) {
+    public void calculateFare(Fare fare, FareContext fareContext) {
         Distance currDistance = new Distance();
         for (DistanceBasedFarePolicyDetails policy : policies) {
-            policy.calculateFareByDistance(currDistance, fare, path.getDistance());
+            policy.calculateFareByDistance(currDistance, fare, fareContext.getPath().getDistance());
         }
     }
 }

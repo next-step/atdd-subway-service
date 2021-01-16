@@ -3,6 +3,7 @@ package nextstep.subway.path.application;
 import lombok.RequiredArgsConstructor;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fares.domain.Fare;
+import nextstep.subway.fares.policy.FareContext;
 import nextstep.subway.fares.policy.FarePolicies;
 import nextstep.subway.line.application.SectionRepository;
 import nextstep.subway.line.domain.Sections;
@@ -33,7 +34,7 @@ public class PathService {
         checkStationIsInSections(sections, targetStation);
 
         Path shortestPath = ShortestPathFinder.findShortestPath(sections, sourceStation, targetStation);
-        Fare fare = farePolicies.calculateFare(shortestPath, loginMember);
+        Fare fare = farePolicies.calculateFare(new FareContext(shortestPath, loginMember));
 
         return PathResponse.of(shortestPath, fare);
     }

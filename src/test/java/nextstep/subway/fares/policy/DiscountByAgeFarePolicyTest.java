@@ -29,9 +29,10 @@ public class DiscountByAgeFarePolicyTest {
         // given
         Fare fare = new Fare();
         fare.add(1000);
+        FareContext fareContext = new FareContext(path, new LoginMember(1L, "aaa@gmail.com", 15));
 
         // when
-        farePolicy.calculateFare(fare, path, new LoginMember(1L, "aaa@gmail.com", 15));
+        farePolicy.calculateFare(fare, fareContext);
 
         // then
         assertThat(fare.getFare() * 1.0).isEqualTo((1000 - 350) * 0.8);
@@ -43,9 +44,10 @@ public class DiscountByAgeFarePolicyTest {
         // given
         Fare fare = new Fare();
         fare.add(1000);
+        FareContext fareContext = new FareContext(path, new LoginMember(1L, "aaa@gmail.com", 6));
 
         // when
-        farePolicy.calculateFare(fare, path, new LoginMember(1L, "aaa@gmail.com", 6));
+        farePolicy.calculateFare(fare, fareContext);
 
         // then
         assertThat(fare.getFare() * 1.0).isEqualTo((1000 - 350) * 0.5);
@@ -57,9 +59,10 @@ public class DiscountByAgeFarePolicyTest {
         // given
         Fare fare = new Fare();
         fare.add(1000);
+        FareContext fareContext = new FareContext(path, new LoginMember(1L, "aaa@gmail.com", 1));
 
         // when
-        farePolicy.calculateFare(fare, path, new LoginMember(1L, "aaa@gmail.com", 1));
+        farePolicy.calculateFare(fare, fareContext);
 
         // then
         assertThat(fare.getFare()).isEqualTo(1000);

@@ -20,8 +20,9 @@ public class FarePoliciesTest {
         // given
         FarePolicies farePolicies = new FarePolicies();
         Path path = new Path(Collections.emptyList(), new Distance(10), 0);
+        FareContext fareContext = new FareContext(path, LoginMember.createAnonymousMember());
         // when
-        Fare fare = farePolicies.calculateFare(path, LoginMember.createAnonymousMember());
+        Fare fare = farePolicies.calculateFare(fareContext);
         // then
         assertThat(fare.getFare()).isEqualTo(1250);
     }
@@ -32,8 +33,9 @@ public class FarePoliciesTest {
         // given
         FarePolicies farePolicies = new FarePolicies();
         Path path = new Path(Collections.emptyList(), new Distance(15), 0);
+        FareContext fareContext = new FareContext(path, LoginMember.createAnonymousMember());
         // when
-        Fare fare = farePolicies.calculateFare(path, LoginMember.createAnonymousMember());
+        Fare fare = farePolicies.calculateFare(fareContext);
         // then
         assertThat(fare.getFare()).isEqualTo(1350);
     }
@@ -44,8 +46,9 @@ public class FarePoliciesTest {
         // given
         FarePolicies farePolicies = new FarePolicies();
         Path path = new Path(Collections.emptyList(), new Distance(65), 0);
+        FareContext fareContext = new FareContext(path, LoginMember.createAnonymousMember());
         // when
-        Fare fare = farePolicies.calculateFare(path, LoginMember.createAnonymousMember());
+        Fare fare = farePolicies.calculateFare(fareContext);
         // then
         assertThat(fare.getFare()).isEqualTo(2150);
     }

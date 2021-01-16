@@ -27,9 +27,9 @@ public class SectionExtraChargeFarePolicyTest {
         // given
         Fare fare = new Fare();
         Path path = new Path(Collections.emptyList(), new Distance(10), 1000);
-
+        FareContext fareContext = new FareContext(path , LoginMember.createAnonymousMember());
         // when
-        farePolicy.calculateFare(fare, path, LoginMember.createAnonymousMember());
+        farePolicy.calculateFare(fare, fareContext);
 
         // then
         assertThat(fare.getFare()).isEqualTo(1000);

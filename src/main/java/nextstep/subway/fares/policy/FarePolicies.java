@@ -1,8 +1,6 @@
 package nextstep.subway.fares.policy;
 
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fares.domain.Fare;
-import nextstep.subway.path.domain.Path;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,10 +18,10 @@ public class FarePolicies {
         ));
     }
 
-    public Fare calculateFare(Path path, LoginMember loginMember) {
+    public Fare calculateFare(FareContext fareContext) {
         Fare fare = new Fare();
         for (FarePolicy farePolicy : farePolicies) {
-            farePolicy.calculateFare(fare, path, loginMember);
+            farePolicy.calculateFare(fare, fareContext);
         }
         return fare;
     }
