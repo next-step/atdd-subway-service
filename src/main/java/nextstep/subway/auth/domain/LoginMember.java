@@ -5,7 +5,7 @@ import nextstep.subway.fare.domain.AgePolicy;
 public class LoginMember {
     private Long id;
     private String email;
-    private Integer age;
+    private int age;
 
     public LoginMember() {
     }
@@ -29,6 +29,6 @@ public class LoginMember {
     }
 
     public AgePolicy getAgePolicy() {
-        return AgePolicy.of(this.age == null ? 0 : this.age);
+        return AgePolicy.of(this.age);
     }
 }
