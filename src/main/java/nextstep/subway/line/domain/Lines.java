@@ -41,8 +41,7 @@ public class Lines {
 			Station downStation = stations.get(i);
 
 			sections.add(this.sections().stream()
-				.filter(it -> it.isUpStation(upStation))
-				.filter(it -> it.isDownStation(downStation))
+				.filter(it -> it.isMatchStation(upStation, downStation))
 				.findFirst()
 				.orElse(null));
 			firstStation = downStation;

@@ -88,4 +88,9 @@ public class Section {
 	public Money fare() {
 		return this.line.getFare();
 	}
+
+	public boolean isMatchStation(Station upStation, Station downStation) {
+		return (this.isUpStation(upStation) && this.isDownStation(downStation)) ||
+			(this.isUpStation(downStation) && this.isDownStation(upStation));
+	}
 }
