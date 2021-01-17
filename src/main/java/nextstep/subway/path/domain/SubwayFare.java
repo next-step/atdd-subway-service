@@ -14,15 +14,14 @@ public class SubwayFare {
 	private static final float CHILDREN_DISCOUNT_FARE_RATE = 0.5f;
 	private static final float TEENAGER_DISCOUNT_FARE_RATE = 0.8f;
 
-	public static int calculateDistanceFare(int distance, int maxLineOverFare) {
-		int baseFare = MINIMUM_FARE + maxLineOverFare;
+	public static int calculateDistanceFare(int distance) {
 		if (isMediumDistance(distance)) {
-			return baseFare + calculateMediumDistanceOverFare(distance);
+			return MINIMUM_FARE + calculateMediumDistanceOverFare(distance);
 		}
 		if (isLongDistance(distance)) {
-			return baseFare + calculateLongDistanceFare(distance);
+			return MINIMUM_FARE + calculateLongDistanceFare(distance);
 		}
-		return baseFare;
+		return MINIMUM_FARE;
 	}
 
 	public static int calculateReducedFare(int fare, int age) {

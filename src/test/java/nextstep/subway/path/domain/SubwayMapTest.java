@@ -47,7 +47,7 @@ public class SubwayMapTest {
 		삼호선.addSection(교대역, 남부터미널역, 3);
 		이호선.addSection(강남역, 잠실역, 5);
 
-		전체_지하철_노선 = new SubwayMap(Arrays.asList(신분당선, 이호선, 삼호선));
+		전체_지하철_노선 = new SubwayMap(Arrays.asList(신분당선, 이호선, 삼호선), new DijkstraPathFinder());
 	}
 
 	@Test
@@ -85,7 +85,7 @@ public class SubwayMapTest {
 		Station 연결안된_역1 = new Station(100L, "연결안된_역1");
 		Station 연결안된_역2 = new Station(200L, "연결안된_역2");
 		Line 신규노선 = new Line("연결안된노선", "rainbow", 연결안된_역1, 연결안된_역2, 10);
-		전체_지하철_노선 = new SubwayMap(Arrays.asList(신분당선, 이호선, 삼호선, 신규노선));
+		전체_지하철_노선 = new SubwayMap(Arrays.asList(신분당선, 이호선, 삼호선, 신규노선), new DijkstraPathFinder());
 
 		//when/then
 		assertThatThrownBy(() -> 전체_지하철_노선.findShortestPath(교대역, 연결안된_역1))
@@ -93,15 +93,14 @@ public class SubwayMapTest {
 	}
 
 	@Test
-	@DisplayName("최단 경로 조회시, 추가요금이 있는 노선이 포함되었다면 그 중 최대 추가요금을 찾을 수 있다.")
+	@DisplayName("최단 경로 조회시, 추가요금이 있는 노선이 포함되었다면 그 중 최대 추가요금이 더해져야한다.")
 	void calculateFareWithOverFareLine() {
 		//given
 		// distance(17): 1450, maxOverFare: 900
 		ShortestPath path = 전체_지하철_노선.findShortestPath(잠실역, 남부터미널역);
-		int maxLineOverFare = 전체_지하철_노선.findMaxOverFare(path.getStations());
-		int expectedMaxLineOverFare = 900;
+		int expectedMaxLineOverFare = 1450 + 900;
 
 		//when/then
-		assertThat(maxLineOverFare).isEqualTo(expectedMaxLineOverFare);
+		assertThat(path.getFare()).isEqualTo(expectedMaxLineOverFare);
 	}
 }

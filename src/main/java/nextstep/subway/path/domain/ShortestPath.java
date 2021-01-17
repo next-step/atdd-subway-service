@@ -12,10 +12,10 @@ public class ShortestPath {
 	protected ShortestPath() {
 	}
 
-	public ShortestPath(List<Station> stations, int distance, int maxLineOverFare) {
+	public ShortestPath(List<Station> stations, int distance) {
 		this.stations = stations;
 		this.distance = distance;
-		this.fare = SubwayFare.calculateDistanceFare(distance, maxLineOverFare);
+		fare = SubwayFare.calculateDistanceFare(distance);
 	}
 
 	public List<Station> getStations() {
@@ -28,6 +28,10 @@ public class ShortestPath {
 
 	public int getFare() {
 		return fare;
+	}
+
+	public void addLineOverFare(int maxLineOverFare) {
+		fare += maxLineOverFare;
 	}
 
 	public void calculateWithDiscount(int age) {

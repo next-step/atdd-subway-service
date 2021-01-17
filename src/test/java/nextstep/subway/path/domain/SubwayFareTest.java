@@ -17,22 +17,10 @@ public class SubwayFareTest {
 	@DisplayName("최단거리에 해당하는 요금이 계산되어야한다.")
 	void calculateFare(int distance, int fare) {
 		//given
-		int distanceFare = SubwayFare.calculateDistanceFare(distance, 0);
+		int distanceFare = SubwayFare.calculateDistanceFare(distance);
 
 		//when-then
 		assertThat(distanceFare).isEqualTo(fare);
-	}
-
-	@Test
-	@DisplayName("추가요금이 있는 노선을 이용 시, 그 중 최대 추가요금이 더해져야한다.")
-	void calculateFareWithOverFareLine() {
-		//given
-		// distance(17): 1450, maxOverFare: 900
-		int distanceFare = SubwayFare.calculateDistanceFare(17, 900);
-		int expectedFare = 1450 + 900;
-
-		//when/then
-		assertThat(distanceFare).isEqualTo(expectedFare);
 	}
 
 	@Test
