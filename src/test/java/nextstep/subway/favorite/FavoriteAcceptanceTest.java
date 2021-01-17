@@ -17,7 +17,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
-import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.MemberAcceptanceTest.AGE;
+import static nextstep.subway.member.MemberAcceptanceTest.EMAIL;
+import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")

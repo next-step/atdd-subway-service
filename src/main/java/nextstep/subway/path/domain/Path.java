@@ -11,5 +11,6 @@ import java.util.List;
 public class Path {
 
     private final List<Station> stations;
-    private final int distance;
+    private final Distance distance;
+    private final int maxExtraCharge;
 }

@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -34,11 +35,22 @@ public class Section {
 
     private int distance;
 
+    @Column(name = "extra_charge")
+    private int extraCharge;
+
     public Section(Line line, Station upStation, Station downStation, int distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public Section(Line line, Station upStation, Station downStation, int distance, int extraCharge) {
+        this.line = line;
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
+        this.extraCharge = extraCharge;
     }
 
     public static Section combine(Section upLineStation, Section downLineStation) {

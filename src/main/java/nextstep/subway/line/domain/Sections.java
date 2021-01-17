@@ -91,6 +91,10 @@ public class Sections implements Iterable<Section> {
         downLineStation.ifPresent(sections::remove);
     }
 
+    public boolean containsStation(Station station) {
+        return getStations().contains(station);
+    }
+
     private void updateSection(Station upStation, Station downStation, int distance) {
         for (Section section : sections) {
             UpdateSectionType.valueOf(section, upStation, downStation)
