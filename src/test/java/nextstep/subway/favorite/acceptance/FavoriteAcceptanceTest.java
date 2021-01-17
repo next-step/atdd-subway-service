@@ -25,7 +25,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     public static final int AGE = 20;
     private StationResponse 강남역;
     private StationResponse 광교역;
-    private StationResponse 판교역;
     public String accessToken;
 
     @BeforeEach
@@ -35,7 +34,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         //given
         강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
         광교역 = 지하철역_등록되어_있음("광교역").as(StationResponse.class);
-        판교역 = 지하철역_등록되어_있음("판교역").as(StationResponse.class);
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
         accessToken = 로그인_되어있음(EMAIL, PASSWORD);
     }
@@ -54,8 +52,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_목록_응답됨(listResponse);
 
         //when
-        Long createdId = Long.valueOf(createResponse.header("Location").replace("/favorites/", ""));
-        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, createdId);
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(createResponse, accessToken);
         //then
         즐겨찾기_삭제됨(deleteResponse);
     }
@@ -64,11 +61,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, Long id) {
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(ExtractableResponse<Response> response, String accessToken) {
+        String uri = response.header("Location");
+
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
-                .when().delete("/favorites/{id}", id)
+                .when().delete(uri)
                 .then().log().all()
                 .extract();
     }

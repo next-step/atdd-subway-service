@@ -6,19 +6,17 @@ import nextstep.subway.station.dto.StationResponse;
 
 public class FavoriteResponse {
     private Long id;
-    private Long memberId;
     private StationResponse source;
     private StationResponse target;
 
-    public FavoriteResponse(Long id, Long memberId, Station source, Station target) {
+    public FavoriteResponse(Long id, Station source, Station target) {
         this.id = id;
-        this.memberId = memberId;
         this.source = StationResponse.of(source);
         this.target = StationResponse.of(target);
     }
 
     public static FavoriteResponse of(Favorite favorite) {
-        return new FavoriteResponse(favorite.getId(), favorite.getMember().getId(), favorite.getSource(), favorite.getTarget());
+        return new FavoriteResponse(favorite.getId(), favorite.getSource(), favorite.getTarget());
     }
 
     public Long getId() {
