@@ -4,8 +4,11 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,8 +17,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_됨;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_등록되어_있음;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -30,6 +35,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
     private StationResponse 신도림역;
     private StationResponse 영등포역;
+    private TokenResponse 사용자_토큰;
 
     /**
      * 1호선: 0원
@@ -63,13 +69,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+
+        회원_등록되어_있음(new MemberRequest("email@email.com", "password", 13));
+        사용자_토큰 = 로그인_됨(new TokenRequest("email@email.com", "password")).as(TokenResponse.class);
     }
 
     @DisplayName("출발역부터 도착역까지 최단경로, 총 거리, 이용 요금 조회한다.")
     @Test
     void findShortestPath() {
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(사용자_토큰, 교대역.getId(), 양재역.getId());
         PathResponse pathResponse = response.as(PathResponse.class);
 
         // then
@@ -81,14 +90,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(pathResponse.getStations().get(2)).isEqualTo(양재역),
 
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(12),
-                () -> assertThat(pathResponse.getFare()).isEqualTo(1650)
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1040)
         );
     }
 
     @DisplayName("출발역과 도착역이 같은 경우 조회하지 못한다.")
     @Test
     void findShortestPathException1() {
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(양재역.getId(), 양재역.getId());
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(사용자_토큰, 양재역.getId(), 양재역.getId());
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
@@ -96,7 +105,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우, 조회하지 못한다.")
     @Test
     void findShortestPathException2() {
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(신도림역.getId(), 양재역.getId());
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(사용자_토큰, 신도림역.getId(), 양재역.getId());
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
@@ -106,14 +115,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void findShortestPathException3() {
         StationResponse 노량진역 = 지하철역_등록되어_있음("노량진역").as(StationResponse.class);
 
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역.getId(), 노량진역.getId());
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(사용자_토큰, 교대역.getId(), 노량진역.getId());
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
-    private ExtractableResponse<Response> 최단_경로_조회_요청(Long sourceId, Long targetId) {
+    private ExtractableResponse<Response> 최단_경로_조회_요청(TokenResponse tokenResponse, Long sourceId, Long targetId) {
         return RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .when().get("/paths?source={sourceId}&target={targetId}", sourceId, targetId)
                 .then().log().all()
                 .extract();
