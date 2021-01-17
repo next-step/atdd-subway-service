@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 @DisplayName("지하철 경로 조회")
@@ -80,7 +82,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		return lineResponse;
 	}
 
-
 	private ExtractableResponse<Response> 지하철_노선에_지하철역_등록되어_있음(Long lineId, SectionRequest sectionRequest) {
 		return RestAssured
 				.given().log().all()
@@ -107,9 +108,50 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		assertThat(pathResponse.getStations().size()).isEqualTo(3);
 	}
 
-	//		출발역과 도착역이 같은 경우
-//		출발역과 도착역이 연결이 되어 있지 않은 경우
-//		존재하지 않은 출발역이나 도착역을 조회 할 경우
+	@Test
+	@DisplayName("출발역과 도착역이 같은 경우")
+	public void whenSameSourceTarget() {
+		ExtractableResponse<Response> response = RestAssured
+				.given().log().all()
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.when().get(String.format("/paths?source=%d&target=%d", 1, 1))
+				.then().log().all()
+				.extract();
+
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	}
+
+	@Test
+	@DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
+	public void whenDisconnectSourceTarget() {
+
+		StationResponse 광화문역 = StationAcceptanceTest.지하철역_등록되어_있음("광화문역").as(StationResponse.class);
+		StationResponse 군자역 = StationAcceptanceTest.지하철역_등록되어_있음("군자역").as(StationResponse.class);
+
+		LineResponse 오호선 = this.지하철_노선_등록되어_있음(new LineRequest("오호선", "bg-purple-600", 광화문역.getId(), 군자역.getId(), 10));
+
+		ExtractableResponse<Response> response = RestAssured
+				.given().log().all()
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.when().get(String.format("/paths?source=%d&target=%d", 1, 광화문역.getId()))
+				.then().log().all()
+				.extract();
+
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	}
+
+	@Test
+	@DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우")
+	public void notExistsStation() {
+		ExtractableResponse<Response> response = RestAssured
+				.given().log().all()
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.when().get(String.format("/paths?source=%d&target=%d", 1, 100))
+				.then().log().all()
+				.extract();
+
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	}
 
 }
 

@@ -22,9 +22,11 @@ public class PathService {
 	}
 
 	public PathResponse findShortestPath(PathRequest request) {
-		PathFinder pathFinder = new PathFinder(lineRepository.findAll());
 		Station source = stationService.findById(request.getSource());
 		Station target = stationService.findById(request.getTarget());
+
+		PathFinder pathFinder = new PathFinder(lineRepository.findAll(), source, target);
+
 		pathFinder.findShortestPath(source, target);
 		return PathResponse.of(pathFinder.getStationsInShortestPath(), pathFinder.getShortestDistance());
 	}

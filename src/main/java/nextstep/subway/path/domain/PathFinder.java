@@ -17,13 +17,28 @@ public class PathFinder {
 	private final List<Line> lines;
 	private GraphPath<Station, DefaultWeightedEdge> resultPath;
 
-	public PathFinder(List<Line> lines) {
+	public PathFinder(List<Line> lines, Station source, Station target) {
+		validate(source, target);
+		
 		this.lines = lines;
 		this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 		this.path = new DijkstraShortestPath<>(graph);
 
 		addAllVertex();
 		addAllEdgeWeight();
+	}
+
+	private void validate(Station source, Station target) {
+		if (source.equals(target)) {
+			throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
+		}
+		isConnectPath(source, target);
+	}
+
+	private void isConnectPath(Station source, Station target) {
+		if (path.getPath(source, target) == null) {
+			throw new IllegalArgumentException("출발역과 도착역이 연결이 되어 있지 않습니다.");
+		}
 	}
 
 	private void addAllVertex() {
