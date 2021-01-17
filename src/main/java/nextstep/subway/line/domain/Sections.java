@@ -18,6 +18,10 @@ public class Sections {
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private final List<Section> sections = new ArrayList<>();
 
+	public List<Section> getSections() {
+		return sections;
+	}
+
 	public void addSection(Line line, Station upStation, Station downStation, int distance) {
 		List<Station> stations = getStations();
 		throwExceptionIfNotValid(stations, upStation, downStation);
