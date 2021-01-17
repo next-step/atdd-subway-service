@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
 public class Member extends BaseEntity {
@@ -19,6 +20,12 @@ public class Member extends BaseEntity {
     private Integer age;
 
     public Member() {
+    }
+
+    public Member(Long id, String email, Integer age) {
+        this.id = id;
+        this.email = email;
+        this.age = age;
     }
 
     public Member(String email, String password, Integer age) {
@@ -53,5 +60,18 @@ public class Member extends BaseEntity {
         if (!StringUtils.equals(this.password, password)) {
             throw new AuthorizationException();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Member member = (Member) o;
+        return id.equals(member.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
