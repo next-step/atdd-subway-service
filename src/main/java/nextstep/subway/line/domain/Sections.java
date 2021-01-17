@@ -84,8 +84,8 @@ public class Sections {
 			sections.add(Section.of(line, newUpStation, newDownStation, sumDistance(upSection, downSection)));
 		}
 
-		upLineStation.ifPresent(it -> sections.remove(it));
-		downLineStation.ifPresent(it -> sections.remove(it));
+		upSection.ifPresent(it -> sections.remove(it));
+		downSection.ifPresent(it -> sections.remove(it));
 	}
 
 	private Optional<Section> findSectionByUpStation(Station upStation) {
