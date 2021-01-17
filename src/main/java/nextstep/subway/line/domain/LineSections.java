@@ -95,6 +95,12 @@ public class LineSections {
 		return stations;
 	}
 
+	public Optional<Section> findSectionByStations(Station upStation, Station downStation) {
+		return sections.stream()
+			.filter(section -> section.isTwoStations(upStation, downStation))
+			.findFirst();
+	}
+
 	private Optional<Station> findNextStation(Station baseStation) {
 		Optional<Section> nextSection = findSectionByUpStation(baseStation);
 		return nextSection.map(Section::getDownStation);

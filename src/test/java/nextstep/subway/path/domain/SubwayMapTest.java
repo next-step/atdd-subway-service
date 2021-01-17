@@ -43,9 +43,9 @@ public class SubwayMapTest {
 		남부터미널역 = new Station("남부터미널역");
 		잠실역 = new Station("잠실역");
 
-		신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
-		이호선 = new Line("이호선", "bg-red-600", 교대역, 강남역, 10);
-		삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 5);
+		신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10, 400);
+		이호선 = new Line("이호선", "bg-red-600", 교대역, 강남역, 10, 500);
+		삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 5, 900);
 
 		삼호선.addSection(교대역, 남부터미널역, 3);
 		이호선.addSection(강남역, 잠실역, 5);
@@ -103,9 +103,21 @@ public class SubwayMapTest {
 	@DisplayName("최단거리에 해당하는 요금이 계산되어야한다.")
 	void calculateFare(Long distance, int fare) {
 		//given
-		ShortestPath shortestPath = new ShortestPath(new ArrayList<>(), distance);
+		ShortestPath shortestPath = new ShortestPath(new ArrayList<>(), distance, 0);
 
 		//when-then
 		assertThat(shortestPath.getFare()).isEqualTo(fare);
+	}
+
+	@Test
+	@DisplayName("추가요금이 있는 노선을 이용 시, 그 중 최대 추가요금이 더해져야한다.")
+	void calculateFareWithOverFareLine() {
+		//given
+		// distance(17): 1450, maxOverFare: 900
+		ShortestPath path = 전체_지하철_노선.findShortestPath(잠실역, 남부터미널역);
+		int expectedFare = 1450 + 900;
+
+		//when/then
+		assertThat(path.getFare()).isEqualTo(expectedFare);
 	}
 }

@@ -8,6 +8,7 @@ public class ShortestPath {
 	private List<Station> stations;
 	private long distance;
 	private int fare;
+	private int maxLineOverFare;
 
 	private static final int MINIMUM_FARE = 1250;
 	private static final int OVER_FARE = 100;
@@ -19,9 +20,10 @@ public class ShortestPath {
 	protected ShortestPath() {
 	}
 
-	public ShortestPath(List<Station> stations, long distance) {
+	public ShortestPath(List<Station> stations, long distance, int maxLineOverFare) {
 		this.stations = stations;
 		this.distance = distance;
+		this.maxLineOverFare = maxLineOverFare;
 		this.fare = calculateFare();
 	}
 
@@ -38,13 +40,14 @@ public class ShortestPath {
 	}
 
 	private int calculateFare() {
+		int baseFare = MINIMUM_FARE + maxLineOverFare;
 		if (isMediumDistance()) {
-			return MINIMUM_FARE + calculateMediumDistanceOverFare();
+			return baseFare + calculateMediumDistanceOverFare();
 		}
 		if (isLongDistance()) {
-			return MINIMUM_FARE + calculateLongDistanceFare();
+			return baseFare + calculateLongDistanceFare();
 		}
-		return MINIMUM_FARE;
+		return baseFare;
 	}
 
 	private boolean isMediumDistance() {

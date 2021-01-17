@@ -59,6 +59,6 @@ public class LineResponse {
     }
 
     public int getOverFare() {
-        return 1200;
+        return overFare;
     }
 }
