@@ -1,6 +1,6 @@
 import { CREATE_MEMBER, DELETE_MEMBER, FETCH_MEMBER, UPDATE_MEMBER } from '@/store/shared/actionTypes'
 import MemberService from '@/api/modules/member'
-import { SET_MEMBER } from '@/store/shared/mutationTypes'
+import { SET_MEMBER, SET_ACCESS_TOKEN } from '@/store/shared/mutationTypes'
 
 const state = {
   member: null
@@ -34,7 +34,9 @@ const actions = {
     })
   },
   async [UPDATE_MEMBER]({ commit, dispatch }, updateMemberView) {
-    return MemberService.update(updateMemberView).then(() => {
+    return MemberService.update(updateMemberView).then(({ data }) => {
+      commit(SET_ACCESS_TOKEN, data.accessToken)
+      localStorage.setItem('token', data.accessToken)
       dispatch(FETCH_MEMBER)
     })
   }
