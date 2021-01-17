@@ -21,11 +21,7 @@ public class Favorite extends BaseEntity {
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Station target;
 
-    public Favorite(Long id, Member member, Station source, Station target) {
-        this.id = id;
-        this.member = member;
-        this.source = source;
-        this.target = target;
+    public Favorite() {
     }
 
     public Favorite(Member member, Station source, Station target) {

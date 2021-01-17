@@ -47,9 +47,28 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, new FavoriteRequest(강남역.getId(), 광교역.getId()));
         //then
         즐겨찾기_생성됨(createResponse);
+
+        //when
+        ExtractableResponse<Response> listResponse = 즐겨찾기_목록_조회_요청(accessToken);
+        //then
+        즐겨찾기_목록_응답됨(listResponse);
+
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, FavoriteRequest request) {
+    public static void 즐겨찾기_목록_응답됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, FavoriteRequest request) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)

@@ -10,8 +10,10 @@ import nextstep.subway.path.application.NoSuchStationException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FavoriteService {
@@ -35,6 +37,16 @@ public class FavoriteService {
 
         Favorite savedFavorite = favoriteRepository.save(Favorite.of(member, source, target));
         return FavoriteResponse.of(savedFavorite);
+    }
+
+    @Transactional(readOnly = true)
+    public List<FavoriteResponse> list(Long id) {
+        Member member = findMember(id);
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
+
+        return favorites.stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
     }
 
     private Station findStation(Long stationId) {
