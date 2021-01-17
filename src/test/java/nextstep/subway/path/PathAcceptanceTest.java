@@ -71,6 +71,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	 *     When 지하철 최단 경로 조회 요청
 	 *     Then 최단_경로_조회_성공됨
 	 *     AND 최단 경로에 포함된 역 목록이 순서대로 조회됨
+	 *     AND 최단 경로의 거리가 예상과 같음
 	 */
 	@DisplayName("지하철 경로 조회 통합 인수 테스트")
 	@Test
@@ -83,6 +84,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 		// And 등록한 지하철 구간이 반영된 역 목록이 조회됨
 		최단_경로에_지하철역_순서_정렬됨(지하철_최단_경로_조회_요청_응답, Arrays.asList(교대역, 남부터미널역, 양재역));
+		
+		// And 최단 경로의 거리가 예상과 같음
+		최단_경로의_거리가_예상과_같음(지하철_최단_경로_조회_요청_응답, 5);
 	}
 
 	private ExtractableResponse<Response> 지하철_최단_경로_조회_요청(StationResponse source, StationResponse target) {
@@ -108,5 +112,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 			.collect(Collectors.toList());
 
 		assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+	}
+
+	private void 최단_경로의_거리가_예상과_같음(ExtractableResponse<Response> response, int expectedDistance) {
+		PathResponse pathResponse = response.as(PathResponse.class);
+		assertThat(pathResponse.getDistance()).isEqualTo(expectedDistance);
 	}
 }
