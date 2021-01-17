@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
-import java.util.stream.Stream;
+import java.util.Arrays;
+import java.util.List;
 
 import nextstep.subway.station.domain.Station;
 
@@ -76,7 +77,7 @@ public class Section {
         this.distance -= newDistance;
     }
 
-    public Stream<Station> getStations() {
-        return Stream.of(upStation, downStation);
+    public List<Station> getStations() {
+        return Arrays.asList(upStation, downStation);
     }
 }

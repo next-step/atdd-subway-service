@@ -60,7 +60,7 @@ public class Sections {
 	private Station findTopStation() {
 		List<Station> allStations = sections
 			.stream()
-			.flatMap(Section::getStations)
+			.flatMap(it -> it.getStations().stream())
 			.distinct()
 			.collect(Collectors.toList());
 
