@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.member.application.FavoriteService;
+import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.FavoriteRequest;
 import nextstep.subway.member.dto.FavoriteResponse;
 import nextstep.subway.member.dto.MemberResponse;
@@ -29,6 +30,9 @@ public class FavoriteServiceTest extends AcceptanceTest {
 
     @Autowired
     FavoriteService favoriteService;
+
+    @Autowired
+    MemberRepository memberRepository;
 
     @BeforeEach
     void setup() {
@@ -63,8 +67,7 @@ public class FavoriteServiceTest extends AcceptanceTest {
         FavoriteResponse favoriteResponse = this.favoriteService.findFavorites(this.id);
 
         // then
-        assertThat(favoriteResponse.getFavorites()).hasSize(1);
-        assertThat(favoriteResponse.getFavorites().get(0).getId()).isEqualTo(favoriteId);
+        assertThat(this.memberRepository.existsById(favoriteId)).isTrue();
     }
 
     @Test

@@ -34,9 +34,9 @@ public class FavoriteService {
         Member member = this.memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new);
         Favorite favorite = this.toFavorite(member, favoriteRequest);
         member.addFavorite(favorite);
-        this.memberRepository.flush();
 
-        return member.getFavorite(favorite.getSource(), favorite.getTarget()).getId();
+        return this.memberRepository.save(member)
+                .getFavorite(favorite.getSource(), favorite.getTarget()).getId();
     }
 
     /**

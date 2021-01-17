@@ -13,7 +13,7 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     @JsonBackReference
     private Member member;
@@ -35,10 +35,6 @@ public class Favorite {
 
     public Long getId() {
         return id;
-    }
-
-    public Member getMember() {
-        return member;
     }
 
     public Station getSource() {
