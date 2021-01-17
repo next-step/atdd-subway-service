@@ -32,13 +32,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 영등포역;
 
     /**
-     * 신도림역  --- *1호선* ---- 영등포역
+     * 1호선: 0원
+     * 2호선: 200원
+     * 3호선: 300원
+     * 신분당선: 500원
      *
-     * 교대역    --- *2호선* ---   강남역
+     * 신도림역 ---- *1호선*(5) ---- 영등포역
+     *
+     * 교대역 --- *2호선*(51) ---  강남역
      * |                        |
-     * *3호선*                   *신분당선*
+     * *3호선*(3)              *신분당선*(39)
      * |                        |
-     * 남부터미널역  --- *3호선* --- 양재역
+     * 남부터미널역 -- *3호선*(9) -- 양재역
      */
     @BeforeEach
     public void setUp() {
@@ -51,10 +56,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         신도림역 = 지하철역_등록되어_있음("신도림역").as(StationResponse.class);
         영등포역 = 지하철역_등록되어_있음("영등포역").as(StationResponse.class);
 
-        지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 400));
-        지하철_노선_등록되어_있음(new LineRequest("일호선", "bg-blue-600", 신도림역.getId(), 영등포역.getId(), 20, 0));
-        지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, 300));
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5, 200))
+        지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 39, 500));
+        지하철_노선_등록되어_있음(new LineRequest("일호선", "bg-blue-600", 신도림역.getId(), 영등포역.getId(), 5, 0));
+        지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 51, 200));
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 12, 300))
                 .as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
@@ -70,10 +75,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+
                 () -> assertThat(pathResponse.getStations().get(0)).isEqualTo(교대역),
                 () -> assertThat(pathResponse.getStations().get(1)).isEqualTo(남부터미널역),
                 () -> assertThat(pathResponse.getStations().get(2)).isEqualTo(양재역),
-                () -> assertThat(pathResponse.getDistance()).isEqualTo(5)
+
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(12),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(1650)
         );
     }
 

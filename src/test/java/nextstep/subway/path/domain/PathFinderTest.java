@@ -62,7 +62,7 @@ class PathFinderTest {
     void findShortestPath() {
         Path path = pathFinder.findShortestPath(교대역, 양재역);
         assertThat(path.getStations()).containsExactlyElementsOf(Arrays.asList(교대역, 남부터미널역, 양재역));
-        assertThat(path.getDistance()).isEqualTo(5);
+        assertThat(path.getDistance()).isEqualTo(12);
     }
 
     @DisplayName("출발역과 도착역이 같은 경우 조회하지 못한다.")
