@@ -17,6 +17,9 @@ import nextstep.subway.station.domain.Station;
 
 public class PathFinder {
 
+	private PathFinder() {
+	}
+
 	public static Optional<Path> findPath(List<Line> lines, Station source, Station target) {
 		throwExceptionIfEqual(source, target);
 
