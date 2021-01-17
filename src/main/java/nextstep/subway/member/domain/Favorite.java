@@ -1,5 +1,6 @@
 package nextstep.subway.member.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -12,7 +13,9 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "member_id")
+    @JsonBackReference
     private Member member;
 
     @ManyToOne
