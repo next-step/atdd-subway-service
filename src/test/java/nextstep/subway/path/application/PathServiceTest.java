@@ -79,6 +79,7 @@ public class PathServiceTest {
 			PathStationResponse.of(남부터미널역),
 			PathStationResponse.of(양재역));
 		assertThat(response.getDistance()).isEqualTo(5L);
+		assertThat(response.getFare()).isEqualTo(1250);
 	}
 
 	@Test

@@ -67,7 +67,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		//given
 		List<StationResponse> expectedStations = Arrays.asList(남부터미널역, 양재역, 강남역, 잠실역);
 		Long expectedDistance = (long)(2 + 10 + 5);
-		Long expectedFare = (long)(1250 + 200);
+		int expectedFare = 1250 + 200;
 
 		// when
 		ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(new PathRequest(남부터미널역.getId(), 잠실역.getId()));
@@ -108,7 +108,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		assertThat(path.getDistance()).isEqualTo(expectedDistance);
 	}
 
-	private void 지하철_최단_경로_이용_요금_계산됨(ExtractableResponse<Response> response, Long expectedFare) {
+	private void 지하철_최단_경로_이용_요금_계산됨(ExtractableResponse<Response> response, int expectedFare) {
 		PathResponse path = response.as(PathResponse.class);
 		assertThat(path.getFare()).isEqualTo(expectedFare);
 	}

@@ -2,12 +2,15 @@ package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
@@ -90,5 +93,19 @@ public class SubwayMapTest {
 		//when/then
 		assertThatThrownBy(() -> 전체_지하철_노선.findShortestPath(교대역, 연결안된_역1))
 			.isInstanceOf(IllegalArgumentException.class);
+	}
+
+	@ParameterizedTest
+	@CsvSource(value = {"1:1250", "9:1250", "10:1250"
+		, "11:1350", "15:1350", "16:1450", "20:1450", "26:1650", "50:2050"
+		, "51:2150", "58:2150", "59:2250", "66:2250", "67:2350", "75:2450"
+	}, delimiter = ':')
+	@DisplayName("최단거리에 해당하는 요금이 계산되어야한다.")
+	void calculateFare(Long distance, int fare) {
+		//given
+		ShortestPath shortestPath = new ShortestPath(new ArrayList<>(), distance);
+
+		//when-then
+		assertThat(shortestPath.getFare()).isEqualTo(fare);
 	}
 }

@@ -9,21 +9,22 @@ import nextstep.subway.station.dto.PathStationResponse;
 public class PathResponse {
 	private List<PathStationResponse> stations;
 	private Long distance;
-	private Long fare;
+	private int fare;
 
 	protected PathResponse() {
 	}
 
-	public PathResponse(List<PathStationResponse> stations, Long distance) {
+	public PathResponse(List<PathStationResponse> stations, Long distance, int fare) {
 		this.stations = stations;
 		this.distance = distance;
+		this.fare = fare;
 	}
 
 	public static PathResponse of(ShortestPath shortestPath) {
 		List<PathStationResponse> pathStations = shortestPath.getStations().stream()
 			.map(PathStationResponse::of)
 			.collect(Collectors.toList());
-		return new PathResponse(pathStations, shortestPath.getDistance());
+		return new PathResponse(pathStations, shortestPath.getDistance(), shortestPath.getFare());
 	}
 
 	public List<PathStationResponse> getStations() {
@@ -34,7 +35,7 @@ public class PathResponse {
 		return distance;
 	}
 
-	public Long getFare() {
-		return 1450L;
+	public int getFare() {
+		return fare;
 	}
 }
