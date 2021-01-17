@@ -5,7 +5,6 @@ import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,10 +35,12 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+        return stationRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("주어진 id를 가지는 Station을 찾을 수 없습니다."));
     }
 
     public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+        return stationRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("주어진 id를 가지는 Station을 찾을 수 없습니다."));
     }
 }
