@@ -7,7 +7,7 @@ import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.*;
+import static nextstep.subway.utils.AuthRestAssuredTestUtils.*;
 import static nextstep.subway.utils.MemberRestAssuredUtils.*;
 
 public class MemberAcceptanceTest extends AcceptanceTest {

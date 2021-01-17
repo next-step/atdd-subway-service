@@ -4,19 +4,13 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_됨;
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
+import static nextstep.subway.utils.AuthRestAssuredTestUtils.로그인_됨;
+import static nextstep.subway.utils.AuthRestAssuredTestUtils.로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberRestAssuredUtils {
@@ -96,6 +90,10 @@ public class MemberRestAssuredUtils {
 
     public static void 나의_정보가_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 나의_정보가_조회되지_않음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     public static ExtractableResponse<Response> 나의_정보_수정을_요청(String token, String newEmail, String newPassword, int newAge) {
