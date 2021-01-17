@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
@@ -75,7 +76,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private void 회원_등록됨(String email, String password, int age) {
+    public static void 회원_등록됨(String email, String password, int age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         RestAssured.given().log().all()
@@ -85,7 +86,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest tokenRequest = new TokenRequest(email, password);
 
         return RestAssured.given().log().all()
@@ -96,8 +97,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private void 로그인_됨(ExtractableResponse<Response> response) {
+    public static void 로그인_됨(ExtractableResponse<Response> response) {
+        TokenResponse tokenResponse = response.as(TokenResponse.class);
+
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(tokenResponse.getAccessToken()).isNotEmpty();
+
     }
 
 
