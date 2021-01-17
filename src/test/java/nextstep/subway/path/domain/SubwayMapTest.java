@@ -101,7 +101,7 @@ public class SubwayMapTest {
 		, "51:2150", "58:2150", "59:2250", "66:2250", "67:2350", "75:2450"
 	}, delimiter = ':')
 	@DisplayName("최단거리에 해당하는 요금이 계산되어야한다.")
-	void calculateFare(Long distance, int fare) {
+	void calculateFare(int distance, int fare) {
 		//given
 		ShortestPath shortestPath = new ShortestPath(new ArrayList<>(), distance, 0);
 

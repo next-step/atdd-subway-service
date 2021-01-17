@@ -10,9 +10,12 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -27,6 +30,9 @@ import org.springframework.http.MediaType;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
+	public static final String EMAIL = "email@email.com";
+	public static final String PASSWORD = "password";
+	public static final int TEEN_AGE = 15;
 	private LineResponse 신분당선;
 	private LineResponse 이호선;
 	private LineResponse 삼호선;
@@ -65,12 +71,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	@Test
 	void addLineSection() {
 		//given
+		MemberAcceptanceTest.회원_등록_되어있음(EMAIL, PASSWORD, TEEN_AGE);
+		TokenResponse tokenResponse = AuthAcceptanceTest.로그인_되어있음(EMAIL, PASSWORD).as(TokenResponse.class);
 		List<StationResponse> expectedStations = Arrays.asList(남부터미널역, 양재역, 강남역, 잠실역);
-		Long expectedDistance = (long)(2 + 10 + 5);
-		int expectedFare = 1250 + 200;
+		int expectedDistance = 17;
+		int expectedFare = (int) ((1250 + 200 - 350) * 0.8);
 
 		// when
-		ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(new PathRequest(남부터미널역.getId(), 잠실역.getId()));
+		ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(tokenResponse, new PathRequest(남부터미널역.getId(), 잠실역.getId()));
 
 		// then
 		지하철_최단_경로_조회됨(response);
@@ -79,11 +87,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		지하철_최단_경로_이용_요금_계산됨(response, expectedFare);
 	}
 
-	private ExtractableResponse<Response> 지하철_최단_경로_조회_요청(PathRequest request) {
+	private ExtractableResponse<Response> 지하철_최단_경로_조회_요청(TokenResponse response, PathRequest request) {
 		return RestAssured.given().log().all()
-		        .contentType(MediaType.APPLICATION_JSON_VALUE)
-		        .when().get(String.format("/paths?source=%d&target=%d", request.getSource(), request.getTarget()))
-		        .then().log().all().extract();
+			.auth().oauth2(response.getAccessToken())
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.when().get(String.format("/paths?source=%d&target=%d", request.getSource(), request.getTarget()))
+			.then().log().all().extract();
 	}
 
 	private void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response) {
@@ -103,7 +112,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
 	}
 
-	private void 지하철_최단_경로_거리_계산됨(ExtractableResponse<Response> response, Long expectedDistance) {
+	private void 지하철_최단_경로_거리_계산됨(ExtractableResponse<Response> response, int expectedDistance) {
 		PathResponse path = response.as(PathResponse.class);
 		assertThat(path.getDistance()).isEqualTo(expectedDistance);
 	}

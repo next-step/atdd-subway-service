@@ -35,7 +35,7 @@ public class SubwayMap {
 		}
 
 		int maxLineOverFare = findMaxOverFare(path.getVertexList());
-		return new ShortestPath(path.getVertexList(), Math.round(path.getWeight()), maxLineOverFare);
+		return new ShortestPath(path.getVertexList(), (int) Math.round(path.getWeight()), maxLineOverFare);
 	}
 
 	private DijkstraShortestPath findDijkstraShortestPath() {

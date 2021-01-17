@@ -6,7 +6,7 @@ import nextstep.subway.station.domain.Station;
 
 public class ShortestPath {
 	private List<Station> stations;
-	private long distance;
+	private int distance;
 	private int fare;
 	private int maxLineOverFare;
 
@@ -20,7 +20,7 @@ public class ShortestPath {
 	protected ShortestPath() {
 	}
 
-	public ShortestPath(List<Station> stations, long distance, int maxLineOverFare) {
+	public ShortestPath(List<Station> stations, int distance, int maxLineOverFare) {
 		this.stations = stations;
 		this.distance = distance;
 		this.maxLineOverFare = maxLineOverFare;
