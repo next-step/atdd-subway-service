@@ -18,14 +18,12 @@ public class PathFinder {
 	private GraphPath<Station, DefaultWeightedEdge> resultPath;
 
 	public PathFinder(List<Line> lines, Station source, Station target) {
-		validate(source, target);
-		
 		this.lines = lines;
 		this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 		this.path = new DijkstraShortestPath<>(graph);
-
 		addAllVertex();
 		addAllEdgeWeight();
+		validate(source, target);
 	}
 
 	private void validate(Station source, Station target) {

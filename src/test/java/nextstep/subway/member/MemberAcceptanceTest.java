@@ -1,9 +1,11 @@
 package nextstep.subway.member;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
@@ -55,7 +57,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 		회원_생성됨(createResponse);
 
 		//when
-		ExtractableResponse<Response> loginResponse = 로그인_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD);
+		ExtractableResponse<Response> loginResponse = AuthAcceptanceTest.로그인_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD);
 		//then
 		TokenResponse tokenResponse = loginResponse.as(TokenResponse.class);
 
@@ -143,5 +145,42 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
 	public static void 회원_삭제됨(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+	}
+
+	public static ExtractableResponse<Response> 내_정보_조회_요청(String accessToken) {
+		ExtractableResponse<Response> responseExtractableResponse = RestAssured
+				.given().log().all()
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.contentType(ContentType.JSON)
+				.auth().oauth2(accessToken)
+				.when().get("/members/me")
+				.then().log().all()
+				.extract();
+		return responseExtractableResponse;
+	}
+
+	public ExtractableResponse<Response> 내_정보_수정_요청(String accessToken, MemberRequest memberRequest) {
+		ExtractableResponse<Response> responseExtractableResponse = RestAssured
+				.given().log().all()
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.contentType(ContentType.JSON)
+				.body(memberRequest)
+				.auth().oauth2(accessToken)
+				.when().put("/members/me")
+				.then().log().all()
+				.extract();
+		return responseExtractableResponse;
+	}
+
+	public ExtractableResponse<Response> 내_정보_삭제_요청(String accessToken) {
+		ExtractableResponse<Response> responseExtractableResponse = RestAssured
+				.given().log().all()
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.contentType(ContentType.JSON)
+				.auth().oauth2(accessToken)
+				.when().delete("/members/me")
+				.then().log().all()
+				.extract();
+		return responseExtractableResponse;
 	}
 }
