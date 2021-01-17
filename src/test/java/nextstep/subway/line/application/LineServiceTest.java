@@ -127,7 +127,7 @@ class LineServiceTest {
 
 		assertThatThrownBy(() -> lineService.addLineStation(이호선_응답.getId(),
 			new SectionRequest(역삼역_응답.getId(), 선릉역_응답.getId(), 6)))
-			.isInstanceOf(RuntimeException.class);
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("addLineStation 테스트 (예외 케이스 : 기존 역 사이 길이보다 크다)")
@@ -141,7 +141,7 @@ class LineServiceTest {
 
 		assertThatThrownBy(() -> lineService.addLineStation(이호선_응답.getId(),
 			new SectionRequest(역삼역_응답.getId(), 선릉역_응답.getId(), 7)))
-			.isInstanceOf(RuntimeException.class);
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("addLineStation 테스트 (예외 케이스 : 이미 노선에 모두 등록)")
@@ -149,7 +149,7 @@ class LineServiceTest {
 	void addLineStation_shouldException3() {
 		assertThatThrownBy(() -> lineService.addLineStation(이호선_응답.getId(),
 			new SectionRequest(강남역_응답.getId(), 삼성역_응답.getId(), 7)))
-			.isInstanceOf(RuntimeException.class);
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("addLineStation 테스트 (예외 케이스 : 상행역과 하행역 둘 중 하나도 포함되어있지 않음)")
@@ -157,7 +157,7 @@ class LineServiceTest {
 	void addLineStation_shouldException4() {
 		assertThatThrownBy(() -> lineService.addLineStation(이호선_응답.getId(),
 			new SectionRequest(교대역_응답.getId(), 잠실역_응답.getId(), 7)))
-			.isInstanceOf(RuntimeException.class);
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("addLineStation 테스트 (예외 케이스 : 상행역과 하행역이 같음)")
@@ -165,7 +165,7 @@ class LineServiceTest {
 	void addLineStation_shouldException5() {
 		assertThatThrownBy(() -> lineService.addLineStation(이호선_응답.getId(),
 			new SectionRequest(강남역_응답.getId(), 강남역_응답.getId(), 7)))
-			.isInstanceOf(RuntimeException.class);
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("removeLineStation 테스트 (happy path : 종점 미포함)")
@@ -218,13 +218,13 @@ class LineServiceTest {
 	@Test
 	void removeLineStation_exceptionCase1() {
 		assertThatThrownBy(() -> lineService.removeLineStation(이호선_응답.getId(), 삼성역_응답.getId()))
-			.isInstanceOf(RuntimeException.class);
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 
 	@DisplayName("removeLineStation 테스트 (예외 케이스 : 미포함 역 제거)")
 	@Test
 	void removeLineStation_exceptionCase2() {
 		assertThatThrownBy(() -> lineService.removeLineStation(이호선_응답.getId(), 잠실역_응답.getId()))
-			.isInstanceOf(RuntimeException.class);
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 }

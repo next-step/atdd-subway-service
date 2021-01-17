@@ -5,7 +5,6 @@ import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberService {
@@ -21,12 +20,14 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("주어진 id를 가지는 Member를 찾을 수 없습니다."));
         return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("주어진 id를 가지는 Member를 찾을 수 없습니다."));
         member.update(param.toMember());
     }
 

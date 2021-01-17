@@ -32,10 +32,10 @@ public class Sections {
 
 	private void throwExceptionIfNotValid(List<Station> stations, Station upStation, Station downStation) {
 		if (stations.contains(upStation) && stations.contains(downStation)) {
-			throw new RuntimeException("이미 등록된 구간 입니다.");
+			throw new IllegalArgumentException("이미 등록된 구간 입니다.");
 		}
 		if (!stations.isEmpty() && !stations.contains(upStation) && !stations.contains(downStation)) {
-			throw new RuntimeException("등록할 수 없는 구간 입니다.");
+			throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
 		}
 	}
 
@@ -72,7 +72,7 @@ public class Sections {
 
 	public void removeStation(Line line, Station station) {
 		if (sections.size() <= 1) {
-			throw new RuntimeException("마지막 구간은 삭제할 수 없습니다.");
+			throw new IllegalArgumentException("마지막 구간은 삭제할 수 없습니다.");
 		}
 
 		Optional<Section> upLineStation = findByUpStation(station);
