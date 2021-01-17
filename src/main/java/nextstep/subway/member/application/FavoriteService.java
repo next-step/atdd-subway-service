@@ -26,21 +26,17 @@ public class FavoriteService {
 
     /**
      * 즐겨찾기를 추가합니다.
-     * @param id
+     * @param memberId
      * @param favoriteRequest
      * @return 추가 된 즐겨찾기 ID
      */
-    public Long addFavorite(Long id, FavoriteRequest favoriteRequest) {
-        Member member = this.memberRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    public Long addFavorite(Long memberId, FavoriteRequest favoriteRequest) {
+        Member member = this.memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new);
         Favorite favorite = this.toFavorite(member, favoriteRequest);
         member.addFavorite(favorite);
         this.memberRepository.flush();
 
-        return member.getFavorites().stream()
-                .filter(memberFavorite -> memberFavorite.equalsSource(favorite.getSource())
-                        && memberFavorite.equalsTarget(favorite.getTarget()))
-                .mapToLong(Favorite::getId)
-                .findAny().orElseThrow(IllegalArgumentException::new);
+        return member.getFavorite(favorite.getSource(), favorite.getTarget()).getId();
     }
 
     /**
@@ -60,26 +56,24 @@ public class FavoriteService {
 
     /**
      * 해당 ID의 즐겨찾기를 모두 조회합니다.
-     * @param id
+     * @param memberId
      * @return 즐겨찾기 목록
      */
-    public FavoriteResponse findFavorites(Long id) {
-        return this.memberRepository.findById(id)
+    public FavoriteResponse findFavorites(Long memberId) {
+        return this.memberRepository.findById(memberId)
                 .map(Member::getFavorites)
                 .map(FavoriteResponse::new)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("사용자에 등록 된 즐겨찾기를 찾을 수 없습니다."));
     }
 
     /**
      * 즐겨찾기를 삭제합니다.
-     * @param id
+     * @param memberId
      * @param favoriteId
      */
-    public void deleteFavorite(Long id, Long favoriteId) {
-        Member member = this.memberRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        Favorite favorite = member.getFavorites().stream()
-                .filter(memberFavorite -> memberFavorite.equalsId(favoriteId))
-                .findAny().orElseThrow(IllegalArgumentException::new);
-        member.deleteFavorite(favorite);
+    public void deleteFavorite(Long memberId, Long favoriteId) {
+        Member member = this.memberRepository.findById(memberId).orElseThrow(IllegalArgumentException::new);
+
+        member.deleteFavorite(favoriteId);
     }
 }
