@@ -17,8 +17,8 @@ public class Member extends BaseEntity {
     private String password;
     private Integer age;
 
-    @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Favorite> favorites = new ArrayList<>();
+    @Embedded
+    private final Favorites favorites = new Favorites();
 
     public Member() {
     }
@@ -46,7 +46,7 @@ public class Member extends BaseEntity {
     }
 
     public List<Favorite> getFavorites() {
-        return favorites;
+        return this.favorites.getFavorites();
     }
 
     public void addFavorite(Favorite favorite) {

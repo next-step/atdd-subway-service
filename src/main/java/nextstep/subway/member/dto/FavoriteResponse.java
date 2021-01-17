@@ -19,10 +19,4 @@ public class FavoriteResponse {
         return favorites;
     }
 
-    @Override
-    public String toString() {
-        return "FavoriteResponse{" +
-                "favorites=" + favorites +
-                '}';
-    }
 }
