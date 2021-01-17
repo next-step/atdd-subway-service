@@ -65,11 +65,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 	}
 
-	private static LineResponse 지하철_노선_등록되어_있음(LineRequest params) {
+	public static LineResponse 지하철_노선_등록되어_있음(LineRequest params) {
 		return 지하철_노선_생성_요청(params);
 	}
 
-	private static LineResponse 지하철_노선_생성_요청(LineRequest params) {
+	public static LineResponse 지하철_노선_생성_요청(LineRequest params) {
 		ExtractableResponse<Response> responseExtractableResponse = RestAssured
 				.given().log().all()
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -82,7 +82,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		return lineResponse;
 	}
 
-	private ExtractableResponse<Response> 지하철_노선에_지하철역_등록되어_있음(Long lineId, SectionRequest sectionRequest) {
+	public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록되어_있음(Long lineId, SectionRequest sectionRequest) {
 		return RestAssured
 				.given().log().all()
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
