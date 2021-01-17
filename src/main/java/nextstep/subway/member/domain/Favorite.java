@@ -2,26 +2,40 @@ package nextstep.subway.member.domain;
 
 import nextstep.subway.station.domain.Station;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
 public class Favorite {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    private Member member;
+
+    @ManyToOne
     private Station source;
 
+    @ManyToOne
     private Station target;
 
     public Favorite() {
     }
 
-    public Favorite(Station source, Station target) {
+    public Favorite(Member member, Station source, Station target) {
+        this.member = member;
         this.source = source;
         this.target = target;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public Member getMember() {
+        return member;
     }
 
     public Station getSource() {
@@ -49,8 +63,6 @@ public class Favorite {
     public String toString() {
         return "Favorite{" +
                 "id=" + id +
-                ", source=" + source +
-                ", target=" + target +
                 '}';
     }
 }
