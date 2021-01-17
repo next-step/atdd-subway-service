@@ -4,12 +4,12 @@ import java.util.List;
 
 public class PathResponse {
 	private List<PathStationResponse> stations;
-	private int distance;
+	private long distance;
 
 	private PathResponse() {
 	}
 
-	public PathResponse(List<PathStationResponse> stations, int distance) {
+	public PathResponse(List<PathStationResponse> stations, long distance) {
 		this.stations = stations;
 		this.distance = distance;
 	}
@@ -18,7 +18,7 @@ public class PathResponse {
 		return stations;
 	}
 
-	public int getDistance() {
+	public long getDistance() {
 		return distance;
 	}
 }
