@@ -2,15 +2,12 @@ package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
@@ -95,53 +92,16 @@ public class SubwayMapTest {
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
-	@ParameterizedTest
-	@CsvSource(value = {"1:1250", "9:1250", "10:1250"
-		, "11:1350", "15:1350", "16:1450", "20:1450", "26:1650", "50:2050"
-		, "51:2150", "58:2150", "59:2250", "66:2250", "67:2350", "75:2450"
-	}, delimiter = ':')
-	@DisplayName("최단거리에 해당하는 요금이 계산되어야한다.")
-	void calculateFare(int distance, int fare) {
-		//given
-		ShortestPath shortestPath = new ShortestPath(new ArrayList<>(), distance, 0);
-
-		//when-then
-		assertThat(shortestPath.getFare()).isEqualTo(fare);
-	}
-
 	@Test
-	@DisplayName("추가요금이 있는 노선을 이용 시, 그 중 최대 추가요금이 더해져야한다.")
+	@DisplayName("최단 경로 조회시, 추가요금이 있는 노선이 포함되었다면 그 중 최대 추가요금을 찾을 수 있다.")
 	void calculateFareWithOverFareLine() {
 		//given
 		// distance(17): 1450, maxOverFare: 900
 		ShortestPath path = 전체_지하철_노선.findShortestPath(잠실역, 남부터미널역);
-		int expectedFare = 1450 + 900;
+		int maxLineOverFare = 전체_지하철_노선.findMaxOverFare(path.getStations());
+		int expectedMaxLineOverFare = 900;
 
 		//when/then
-		assertThat(path.getFare()).isEqualTo(expectedFare);
-	}
-
-	@Test
-	@DisplayName("로그인 사용자가 청소년인 경우, 할인되어야한다.")
-	void calculateFareWithTeenagers() {
-		//given
-		// distance(17): 1450, maxOverFare: 900
-		ShortestPath path = 전체_지하철_노선.findShortestPath(잠실역, 남부터미널역);
-		int expectedFare = (int) ((1450 + 900 - 350) * 0.8);
-
-		//when/then
-		assertThat(path.getFareByAge(15)).isEqualTo(expectedFare);
-	}
-
-	@Test
-	@DisplayName("로그인 사용자가 어린이인 경우, 할인되어야한다.")
-	void calculateFareWithChildren() {
-		//given
-		// distance(17): 1450, maxOverFare: 900
-		ShortestPath path = 전체_지하철_노선.findShortestPath(잠실역, 남부터미널역);
-		int expectedFare = (int) (Math.ceil((1450 + 900 - 350) * 0.5));
-
-		//when/then
-		assertThat(path.getFareByAge(10)).isEqualTo(expectedFare);
+		assertThat(maxLineOverFare).isEqualTo(expectedMaxLineOverFare);
 	}
 }

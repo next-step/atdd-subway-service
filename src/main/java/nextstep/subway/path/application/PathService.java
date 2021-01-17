@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.domain.SubwayMap;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
@@ -30,6 +31,8 @@ public class PathService {
 		Station targetStation = stationRepository.findById(request.getTarget())
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 도착역입니다."));
 
-		return PathResponse.of(subwayMap.findShortestPath(sourceStation, targetStation), loginMember.getAge());
+		ShortestPath path = subwayMap.findShortestPath(sourceStation, targetStation);
+		path.calculateWithDiscount(loginMember.getAge());
+		return PathResponse.of(path);
 	}
 }

@@ -50,14 +50,14 @@ public class SubwayMap {
 		return new DijkstraShortestPath(graph);
 	}
 
-	public List<Section> allSections() {
+	protected List<Section> allSections() {
 		return this.lines.stream()
 			.map(Line::getSections)
 			.flatMap(Collection::stream)
 			.collect(Collectors.toList());
 	}
 
-	private int findMaxOverFare(List<Station> stations) {
+	protected int findMaxOverFare(List<Station> stations) {
 		int maxOverFare = 0;
 		for(int i = 0; i < stations.size() - 1; i++) {
 			maxOverFare = findMax(maxOverFare, findLineOverFare(stations.get(i), stations.get(i + 1)));

@@ -8,14 +8,6 @@ public class ShortestPath {
 	private List<Station> stations;
 	private int distance;
 	private int fare;
-	private int maxLineOverFare;
-
-	private static final int MINIMUM_FARE = 1250;
-	private static final int OVER_FARE = 100;
-	private static final long MEDIUM_DISTANCE_CRITERIA = 10;
-	private static final long LONG_DISTANCE_CRITERIA = 50;
-	private static final long MEDIUM_DISTANCE_CHARGING_CRITERIA = 5;
-	private static final long LONG_DISTANCE_CHARGING_CRITERIA = 8;
 
 	protected ShortestPath() {
 	}
@@ -23,8 +15,7 @@ public class ShortestPath {
 	public ShortestPath(List<Station> stations, int distance, int maxLineOverFare) {
 		this.stations = stations;
 		this.distance = distance;
-		this.maxLineOverFare = maxLineOverFare;
-		this.fare = calculateFare();
+		this.fare = SubwayFare.calculateDistanceFare(distance, maxLineOverFare);
 	}
 
 	public List<Station> getStations() {
@@ -39,59 +30,7 @@ public class ShortestPath {
 		return fare;
 	}
 
-	public int getFareByAge(int age) {
-		if (isTeenagers(age)) {
-			return (int) ((fare - 350) * 0.8);
-		}
-
-		if (isChildren(age)) {
-			return (int) ((fare - 350) * 0.5);
-		}
-
-		return fare;
-	}
-
-	private int calculateFare() {
-		int baseFare = MINIMUM_FARE + maxLineOverFare;
-		if (isMediumDistance()) {
-			return baseFare + calculateMediumDistanceOverFare();
-		}
-		if (isLongDistance()) {
-			return baseFare + calculateLongDistanceFare();
-		}
-		return baseFare;
-	}
-
-	private boolean isMediumDistance() {
-		return distance > MEDIUM_DISTANCE_CRITERIA && distance <= LONG_DISTANCE_CRITERIA;
-	}
-
-	private boolean isLongDistance() {
-		return distance > LONG_DISTANCE_CRITERIA;
-	}
-
-	private int calculateMediumDistanceOverFare() {
-		return calculateAdditionalFare(distance - MEDIUM_DISTANCE_CRITERIA, MEDIUM_DISTANCE_CHARGING_CRITERIA);
-	}
-
-	private int calculateLongDistanceFare() {
-		return calculateMediumDistanceFullOverFare()
-			+ calculateAdditionalFare(distance - LONG_DISTANCE_CRITERIA, LONG_DISTANCE_CHARGING_CRITERIA);
-	}
-
-	private int calculateMediumDistanceFullOverFare() {
-		return calculateAdditionalFare(LONG_DISTANCE_CRITERIA - MEDIUM_DISTANCE_CRITERIA, MEDIUM_DISTANCE_CHARGING_CRITERIA);
-	}
-
-	private int calculateAdditionalFare(long overDistance, long chargingCriteria) {
-		return (int) ((Math.ceil((overDistance - 1) / chargingCriteria) + 1) * OVER_FARE);
-	}
-
-	private boolean isTeenagers(int age) {
-		return age < 19 && age >= 13;
-	}
-
-	private boolean isChildren(int age) {
-		return age < 13;
+	public void calculateWithDiscount(int age) {
+		fare = SubwayFare.calculateReducedFare(fare, age);
 	}
 }
