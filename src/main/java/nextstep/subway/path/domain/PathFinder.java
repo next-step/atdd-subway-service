@@ -2,26 +2,25 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.path.exception.InvalidFindShortestPathException;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
 
 public class PathFinder {
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph;
-    private final DijkstraShortestPath dijkstraShortestPath;
+    private final Graph<Station, DefaultWeightedEdge> stationGraph;
+    private final PathAlgorithm pathAlgorithm;
 
-    public PathFinder(WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph) {
+    public PathFinder(Graph<Station, DefaultWeightedEdge> stationGraph, PathAlgorithm pathAlgorithm) {
         this.stationGraph = stationGraph;
-        dijkstraShortestPath = new DijkstraShortestPath(stationGraph);
+        this.pathAlgorithm = pathAlgorithm;
     }
 
     public Path findShortestPath(Station source, Station target) {
         validate(source, target);
 
-        List<Station> shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
-        int distance = (int) dijkstraShortestPath.getPath(source, target).getWeight();
+        List<Station> shortestPath = pathAlgorithm.getShortestPath(source, target);
+        int distance = pathAlgorithm.getDistance(source, target);
         return new Path(shortestPath, distance);
     }
 
@@ -42,6 +41,6 @@ public class PathFinder {
     }
 
     private boolean isNotConnectStations(Station source, Station target) {
-        return dijkstraShortestPath.getPath(source, target) == null;
+        return pathAlgorithm.getPath(source, target) == null;
     }
 }

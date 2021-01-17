@@ -3,22 +3,23 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SubwayMap {
+public class StationGraph {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph;
     private final List<Line> lines;
 
-    public SubwayMap(List<Line> lines) {
+    public StationGraph(List<Line> lines) {
+        this.stationGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         this.lines = lines;
-        stationGraph = new WeightedMultigraph(DefaultWeightedEdge.class);
     }
 
-    public WeightedMultigraph<Station, DefaultWeightedEdge> generateStationGraph() {
+    public Graph<Station, DefaultWeightedEdge> generateGraph() {
         addVertex();
         setEdgeWeight();
         return stationGraph;

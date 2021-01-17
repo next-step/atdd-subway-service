@@ -5,6 +5,8 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.exception.InvalidFindShortestPathException;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,8 +49,8 @@ class PathFinderTest {
         Line 삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 5);
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, new Distance(3)));
 
-        SubwayMap subwayMap = new SubwayMap(Arrays.asList(신분당선, 일호선, 이호선, 삼호선));
-        pathFinder = new PathFinder(subwayMap.generateStationGraph());
+        Graph<Station, DefaultWeightedEdge> stationGraph = new StationGraph(Arrays.asList(신분당선, 일호선, 이호선, 삼호선)).generateGraph();
+        pathFinder = new PathFinder(stationGraph, new DijkstraPath(stationGraph));
     }
 
     @Test

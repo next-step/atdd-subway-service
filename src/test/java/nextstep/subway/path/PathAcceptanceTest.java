@@ -60,12 +60,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
 
-    @DisplayName("출발역부터 도착역까지 최단경로를 조회한다.")
+    @DisplayName("출발역부터 도착역까지 최단경로, 총 거리, 이용 요금 조회한다.")
     @Test
     void findShortestPath() {
+        // when
         ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
         PathResponse pathResponse = response.as(PathResponse.class);
 
+        // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(pathResponse.getStations().get(0)).isEqualTo(교대역),
