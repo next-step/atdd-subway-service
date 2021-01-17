@@ -39,6 +39,18 @@ public class ShortestPath {
 		return fare;
 	}
 
+	public int getFareByAge(int age) {
+		if (isTeenagers(age)) {
+			return (int) ((fare - 350) * 0.8);
+		}
+
+		if (isChildren(age)) {
+			return (int) ((fare - 350) * 0.5);
+		}
+
+		return fare;
+	}
+
 	private int calculateFare() {
 		int baseFare = MINIMUM_FARE + maxLineOverFare;
 		if (isMediumDistance()) {
@@ -73,5 +85,13 @@ public class ShortestPath {
 
 	private int calculateAdditionalFare(long overDistance, long chargingCriteria) {
 		return (int) ((Math.ceil((overDistance - 1) / chargingCriteria) + 1) * OVER_FARE);
+	}
+
+	private boolean isTeenagers(int age) {
+		return age < 19 && age >= 13;
+	}
+
+	private boolean isChildren(int age) {
+		return age < 13;
 	}
 }

@@ -120,4 +120,28 @@ public class SubwayMapTest {
 		//when/then
 		assertThat(path.getFare()).isEqualTo(expectedFare);
 	}
+
+	@Test
+	@DisplayName("로그인 사용자가 청소년인 경우, 할인되어야한다.")
+	void calculateFareWithTeenagers() {
+		//given
+		// distance(17): 1450, maxOverFare: 900
+		ShortestPath path = 전체_지하철_노선.findShortestPath(잠실역, 남부터미널역);
+		int expectedFare = (int) ((1450 + 900 - 350) * 0.8);
+
+		//when/then
+		assertThat(path.getFareByAge(15)).isEqualTo(expectedFare);
+	}
+
+	@Test
+	@DisplayName("로그인 사용자가 어린이인 경우, 할인되어야한다.")
+	void calculateFareWithChildren() {
+		//given
+		// distance(17): 1450, maxOverFare: 900
+		ShortestPath path = 전체_지하철_노선.findShortestPath(잠실역, 남부터미널역);
+		int expectedFare = (int) (Math.ceil((1450 + 900 - 350) * 0.5));
+
+		//when/then
+		assertThat(path.getFareByAge(10)).isEqualTo(expectedFare);
+	}
 }

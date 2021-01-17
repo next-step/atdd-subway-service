@@ -75,7 +75,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		TokenResponse tokenResponse = AuthAcceptanceTest.로그인_되어있음(EMAIL, PASSWORD).as(TokenResponse.class);
 		List<StationResponse> expectedStations = Arrays.asList(남부터미널역, 양재역, 강남역, 잠실역);
 		int expectedDistance = 17;
-		int expectedFare = (int) ((1250 + 200 - 350) * 0.8);
+		int expectedFare = (int) (Math.ceil((1250 + 200 - 350) * 0.8));
 
 		// when
 		ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(tokenResponse, new PathRequest(남부터미널역.getId(), 잠실역.getId()));

@@ -24,6 +24,6 @@ public class PathController {
 	@GetMapping
 	public ResponseEntity<PathResponse> createStation(@AuthenticationPrincipal LoginMember loginMember
 			, PathRequest pathRequest) {
-		return ResponseEntity.ok().body(pathService.findShortestPath(pathRequest));
+		return ResponseEntity.ok().body(pathService.findShortestPath(loginMember, pathRequest));
 	}
 }
