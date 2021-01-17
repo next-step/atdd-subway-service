@@ -22,10 +22,10 @@ public class Sections {
 		List<Station> stations = getStations();
 		throwExceptionIfNotValid(stations, upStation, downStation);
 		if (stations.contains(upStation)) {
-			findByUpStation(upStation).ifPresent(it -> it.updateUpStation(downStation, distance));
+			findSectionByUpStation(upStation).ifPresent(it -> it.updateUpStation(downStation, distance));
 		}
 		if (stations.contains(downStation)) {
-			findByDownStation(downStation).ifPresent(it -> it.updateDownStation(upStation, distance));
+			findSectionByDownStation(downStation).ifPresent(it -> it.updateDownStation(upStation, distance));
 		}
 		sections.add(Section.of(line, upStation, downStation, distance));
 	}
@@ -45,13 +45,13 @@ public class Sections {
 		}
 
 		List<Station> stations = new ArrayList<>();
-		Station downStation = findTopStation();
-		stations.add(downStation);
+		Station upStation = findTopStation();
+		stations.add(upStation);
 
-		Optional<Section> nextLineStation;
-		while ((nextLineStation = findByUpStation(downStation)).isPresent()) {
-			downStation = nextLineStation.map(Section::getDownStation).get();
-			stations.add(downStation);
+		Optional<Section> nextSection;
+		while ((nextSection = findSectionByUpStation(upStation)).isPresent()) {
+			upStation = nextSection.map(Section::getDownStation).get();
+			stations.add(upStation);
 		}
 
 		return stations;
@@ -75,26 +75,26 @@ public class Sections {
 			throw new IllegalArgumentException("마지막 구간은 삭제할 수 없습니다.");
 		}
 
-		Optional<Section> upLineStation = findByUpStation(station);
-		Optional<Section> downLineStation = findByDownStation(station);
+		Optional<Section> upSection = findSectionByUpStation(station);
+		Optional<Section> downSection = findSectionByDownStation(station);
 
-		if (upLineStation.isPresent() && downLineStation.isPresent()) {
-			Station newUpStation = downLineStation.map(Section::getUpStation).get();
-			Station newDownStation = upLineStation.map(Section::getDownStation).get();
-			sections.add(Section.of(line, newUpStation, newDownStation, sumDistance(upLineStation, downLineStation)));
+		if (upSection.isPresent() && downSection.isPresent()) {
+			Station newUpStation = downSection.map(Section::getUpStation).get();
+			Station newDownStation = upSection.map(Section::getDownStation).get();
+			sections.add(Section.of(line, newUpStation, newDownStation, sumDistance(upSection, downSection)));
 		}
 
 		upLineStation.ifPresent(it -> sections.remove(it));
 		downLineStation.ifPresent(it -> sections.remove(it));
 	}
 
-	private Optional<Section> findByUpStation(Station upStation) {
+	private Optional<Section> findSectionByUpStation(Station upStation) {
 		return sections.stream()
 			.filter(section -> section.getUpStation().equals(upStation))
 			.findAny();
 	}
 
-	private Optional<Section> findByDownStation(Station downStation) {
+	private Optional<Section> findSectionByDownStation(Station downStation) {
 		return sections.stream()
 			.filter(section -> section.getDownStation().equals(downStation))
 			.findAny();
