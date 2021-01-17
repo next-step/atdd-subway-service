@@ -7,6 +7,7 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,5 +51,21 @@ public class StationGraph {
                 .map(Line::getSections)
                 .flatMap(it -> it.getSections().stream())
                 .collect(Collectors.toList());
+    }
+
+    public boolean isNotContainStation(Station source, Station target) {
+        return !stationGraph.containsVertex(source) || !stationGraph.containsVertex(target);
+    }
+
+    public List<Integer> getSurchargesOfLine(final List<Station> stations) {
+        List<Integer> surcharges = new ArrayList<>();
+        for (int index = 0; index < stations.size() - 1; index++) {
+            int finalIndex = index;
+            getAllSections().stream()
+                    .filter(section -> section.isEqualStations(stations.get(finalIndex), stations.get(finalIndex + 1)))
+                    .findFirst()
+                    .ifPresent(section -> surcharges.add(section.getSurcharge()));
+        }
+        return surcharges;
     }
 }

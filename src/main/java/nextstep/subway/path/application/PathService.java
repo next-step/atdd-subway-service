@@ -5,8 +5,6 @@ import nextstep.subway.path.domain.*;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,11 +21,12 @@ public class PathService {
 
     @Transactional(readOnly = true)
     public PathResponse findShortestPath(Long sourceId, Long targetId) {
-        Graph<Station, DefaultWeightedEdge> stationGraph = new StationGraph(lineService.findLines()).generateGraph();
-        PathFinder pathFinder = new PathFinder(stationGraph, new DijkstraPath(stationGraph));
+        StationGraph stationGraph = new StationGraph(lineService.findLines());
+        PathAlgorithm pathAlgorithm = new DijkstraPath(stationGraph.generateGraph());
+        PathFinder pathFinder = new PathFinder(stationGraph, pathAlgorithm);
+
         Station source = stationService.findById(sourceId);
         Station target = stationService.findById(targetId);
-
         return PathResponse.of(pathFinder.findShortestPath(source, target));
     }
 }

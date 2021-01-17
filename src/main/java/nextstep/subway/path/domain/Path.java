@@ -12,4 +12,5 @@ import java.util.List;
 public class Path {
     private final List<Station> stations;
     private final int distance;
+    private final int fare;
 }

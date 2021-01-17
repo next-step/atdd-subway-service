@@ -2,16 +2,14 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.path.exception.InvalidFindShortestPathException;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.List;
 
 public class PathFinder {
-    private final Graph<Station, DefaultWeightedEdge> stationGraph;
+    private final StationGraph stationGraph;
     private final PathAlgorithm pathAlgorithm;
 
-    public PathFinder(Graph<Station, DefaultWeightedEdge> stationGraph, PathAlgorithm pathAlgorithm) {
+    public PathFinder(StationGraph stationGraph, PathAlgorithm pathAlgorithm) {
         this.stationGraph = stationGraph;
         this.pathAlgorithm = pathAlgorithm;
     }
@@ -21,7 +19,9 @@ public class PathFinder {
 
         List<Station> shortestPath = pathAlgorithm.getShortestPath(source, target);
         int distance = pathAlgorithm.getDistance(source, target);
-        return new Path(shortestPath, distance);
+        int fare = FareCalculator.calculateFare(distance, stationGraph.getSurchargesOfLine(shortestPath));
+
+        return new Path(shortestPath, distance, fare);
     }
 
     private void validate(Station source, Station target) {
@@ -37,7 +37,7 @@ public class PathFinder {
     }
 
     private boolean isNotContainStation(Station source, Station target) {
-        return !stationGraph.containsVertex(source) || !stationGraph.containsVertex(target);
+        return stationGraph.isNotContainStation(source, target);
     }
 
     private boolean isNotConnectStations(Station source, Station target) {

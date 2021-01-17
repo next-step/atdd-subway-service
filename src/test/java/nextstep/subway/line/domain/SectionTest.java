@@ -19,7 +19,7 @@ class SectionTest {
         Station 광교역 = new Station("광교역");
         양재역 = new Station("양재역");
 
-        Line 신분당선 = new Line("신분당선", "bg-red-600", 강남역, 광교역, 10);
+        Line 신분당선 = new Line("신분당선", "bg-red-600", 강남역, 광교역, 10, 0);
         section = new Section(신분당선, 강남역, 광교역, new Distance(10));
     }
 
