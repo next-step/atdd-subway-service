@@ -27,6 +27,7 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    @Transactional(readOnly = true)
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
@@ -46,6 +47,7 @@ public class MemberService {
         return new Favorite(member, source, target);
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(Long id) {
         Member member = memberRepository.findByMemberId(id);
         return FavoriteResponse.ofList(member.getFavorites());
