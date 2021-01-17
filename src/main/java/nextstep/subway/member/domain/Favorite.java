@@ -49,6 +49,33 @@ public class Favorite {
         return target;
     }
 
+    /**
+     * 주어진 즐겨찾기 ID가 해당 즐겨찾기 ID와 같은지 확인합니다.
+     * @param id
+     * @return
+     */
+    public boolean equalsId(Long id) {
+        return this.id.equals(id);
+    }
+
+    /**
+     * 주어진 역이 즐겨찾기의 source와 같은지 확인합니다.
+     * @param station 
+     * @return
+     */
+    public boolean equalsSource(Station station) {
+        return this.source.equals(station);
+    }
+
+    /**
+     * 주어진 역이 즐겨찾기의 target과 같은지 확인합니다.
+     * @param station 
+     * @return
+     */
+    public boolean equalsTarget(Station station) {
+        return this.target.equals(station);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

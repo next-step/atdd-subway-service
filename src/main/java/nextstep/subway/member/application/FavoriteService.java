@@ -35,9 +35,10 @@ public class FavoriteService {
         Favorite favorite = this.toFavorite(member, favoriteRequest);
         member.addFavorite(favorite);
         this.memberRepository.flush();
+
         return member.getFavorites().stream()
-                .filter(favorite1 -> favorite1.getSource().equals(favorite.getSource())
-                        && favorite1.getTarget().equals(favorite.getTarget()))
+                .filter(memberFavorite -> memberFavorite.equalsSource(favorite.getSource())
+                        && memberFavorite.equalsTarget(favorite.getTarget()))
                 .mapToLong(Favorite::getId)
                 .findAny().orElseThrow(IllegalArgumentException::new);
     }
@@ -77,7 +78,7 @@ public class FavoriteService {
     public void deleteFavorite(Long id, Long favoriteId) {
         Member member = this.memberRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         Favorite favorite = member.getFavorites().stream()
-                .filter(favorite1 -> favorite1.getId().equals(favoriteId))
+                .filter(memberFavorite -> memberFavorite.equalsId(favoriteId))
                 .findAny().orElseThrow(IllegalArgumentException::new);
         member.deleteFavorite(favorite);
     }
