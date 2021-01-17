@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class FavoriteService {
     private final MemberRepository memberRepository;
@@ -29,7 +30,6 @@ public class FavoriteService {
         this.favoriteRepository = favoriteRepository;
     }
 
-    @Transactional
     public FavoriteResponse create(Long memberId, FavoriteRequest favoriteRequest) {
         Member member = findMember(memberId);
         Station source = findStation(favoriteRequest.getSource());
@@ -47,6 +47,14 @@ public class FavoriteService {
         return favorites.stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public void delete(Long favoriteId) {
+        favoriteRepository.findById(favoriteId).orElseThrow(() -> {
+            throw new NoSuchFavoriteException("존재하지 않는 즐겨찾기입니다. 즐겨찾기ID: " + favoriteId);
+        });
+
+        favoriteRepository.deleteById(favoriteId);
     }
 
     private Station findStation(Long stationId) {
