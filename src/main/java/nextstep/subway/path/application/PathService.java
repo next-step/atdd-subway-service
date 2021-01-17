@@ -6,11 +6,16 @@ import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @Service
-@Transactional
 public class PathService {
 
 	private LineRepository lineRepository;
@@ -22,12 +27,11 @@ public class PathService {
 	}
 
 	public PathResponse findShortestPath(PathRequest request) {
-		Station source = stationService.findById(request.getSource());
-		Station target = stationService.findById(request.getTarget());
+		List<Station> stations = stationService.findAllByIdIn(Arrays.asList(request.getSource(), request.getTarget()));
 
-		PathFinder pathFinder = new PathFinder(lineRepository.findAll(), source, target);
+		PathFinder pathFinder = new PathFinder(lineRepository.findAll(), stations);
 
-		pathFinder.findShortestPath(source, target);
-		return PathResponse.of(pathFinder.getStationsInShortestPath(), pathFinder.getShortestDistance());
+		GraphPath<Station, DefaultWeightedEdge> graphPath = pathFinder.findShortestPath(stations);
+		return PathResponse.of(graphPath.getVertexList(), (int) graphPath.getWeight());
 	}
 }
