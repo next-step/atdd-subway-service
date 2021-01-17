@@ -22,6 +22,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.List;
+
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -68,15 +70,47 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 //		When 즐겨찾기 생성을 요청
 		FavoriteRequest favoriteRequest = new FavoriteRequest(강남역.getId(), 교대역.getId());
 		ExtractableResponse<Response> response = 즐겨찾기_생성_요청(tokenResponse.getAccessToken(), favoriteRequest);
-		FavoriteResponse postResponse= response.as(FavoriteResponse.class);
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-
+		FavoriteResponse postResponse = response.as(FavoriteResponse.class);
 //		Then 즐겨찾기 생성됨
-//		When 즐겨찾기 목록 조회 요청
-//		Then 즐겨찾기 목록 조회됨
-//		When 즐겨찾기 삭제 요청
-//		Then 즐겨찾기 삭제됨
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+		assertThat(postResponse.getSource().getName()).isEqualTo(강남역.getName());
 
+//		When 즐겨찾기 목록 조회 요청
+		response = 즐겨찾기_목록_조회_요청(tokenResponse.getAccessToken());
+//		Then 즐겨찾기 목록 조회됨
+		List<FavoriteResponse> getResponses = response.jsonPath().getList(".", FavoriteResponse.class);
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+		assertThat(getResponses).isNotEmpty();
+
+//		When 즐겨찾기 삭제 요청
+		response = 즐겨찾기_삭제_요청(tokenResponse.getAccessToken(), postResponse.getId());
+//		Then 즐겨찾기 삭제됨
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+
+	}
+
+	private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, Long favoriteId) {
+		ExtractableResponse<Response> responseExtractableResponse = RestAssured
+				.given().log().all()
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.contentType(ContentType.JSON)
+				.auth().oauth2(accessToken)
+				.when().delete("/favorites/{id}", favoriteId)
+				.then().log().all()
+				.extract();
+		return responseExtractableResponse;
+	}
+
+	private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
+		ExtractableResponse<Response> responseExtractableResponse = RestAssured
+				.given().log().all()
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.contentType(ContentType.JSON)
+				.auth().oauth2(accessToken)
+				.when().get("/favorites")
+				.then().log().all()
+				.extract();
+		return responseExtractableResponse;
 	}
 
 	public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, FavoriteRequest favoriteRequest) {
