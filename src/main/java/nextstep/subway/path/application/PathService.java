@@ -32,8 +32,7 @@ public class PathService {
 		Station targetStation = stationRepository.findById(request.getTarget())
 			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 도착역입니다."));
 
-		ShortestPath path = subwayMap.findShortestPath(sourceStation, targetStation);
-		path.calculateWithDiscount(loginMember.getAge());
+		ShortestPath path = subwayMap.findShortestPathAndFare(sourceStation, targetStation, loginMember.getAge());
 		return PathResponse.of(path);
 	}
 }

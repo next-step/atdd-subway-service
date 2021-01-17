@@ -23,10 +23,9 @@ public class SubwayMap {
 		this.lineSections = new LineSections(allSections());
 	}
 
-	public ShortestPath findShortestPath(Station sourceStation, Station targetStation) {
+	public ShortestPath findShortestPathAndFare(Station sourceStation, Station targetStation, int age) {
 		ShortestPath path = pathFinder.findShortestPath(lineSections, sourceStation, targetStation);
-		path.addLineOverFare(findMaxOverFare(path.getStations()));
-
+		path.calculateLineOverFareAndAgeDiscount(findMaxOverFare(path.getStations()), age);
 		return path;
 	}
 
@@ -52,9 +51,6 @@ public class SubwayMap {
 	}
 
 	private int findMax(int maxValue, int newValue) {
-		if (maxValue < newValue) {
-			return newValue;
-		}
-		return maxValue;
+		return Math.max(maxValue, newValue);
 	}
 }

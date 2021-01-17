@@ -30,11 +30,7 @@ public class ShortestPath {
 		return fare;
 	}
 
-	public void addLineOverFare(int maxLineOverFare) {
-		fare += maxLineOverFare;
-	}
-
-	public void calculateWithDiscount(int age) {
-		fare = SubwayFare.calculateReducedFare(fare, age);
+	public void calculateLineOverFareAndAgeDiscount(int maxLineOverFare, int age) {
+		fare = SubwayFare.calculateReducedFare(fare + maxLineOverFare, age);
 	}
 }

@@ -23,6 +23,7 @@ public class SubwayMapTest {
 	private Line 이호선;
 	private Line 삼호선;
 	private SubwayMap 전체_지하철_노선;
+	private static final int NO_DISCOUNT_AGE = 32;
 
 	/**
 	 * 교대역    ---   *2호선* (10)  ---   강남역   ----  *2호선* (5) ---- 잠실역
@@ -71,7 +72,7 @@ public class SubwayMapTest {
 	@DisplayName("최단거리를 구하면 최단거리 구간의 역 목록과 최단거리가 계산되어야 한다.")
 	void registerGraph() {
 		//when
-		ShortestPath path = 전체_지하철_노선.findShortestPath(잠실역, 남부터미널역);
+		ShortestPath path = 전체_지하철_노선.findShortestPathAndFare(잠실역, 남부터미널역, NO_DISCOUNT_AGE);
 
 		//then
 		assertThat(path.getStations()).containsExactly(잠실역, 강남역, 양재역, 남부터미널역);
@@ -88,7 +89,7 @@ public class SubwayMapTest {
 		전체_지하철_노선 = new SubwayMap(Arrays.asList(신분당선, 이호선, 삼호선, 신규노선), new DijkstraPathFinder());
 
 		//when/then
-		assertThatThrownBy(() -> 전체_지하철_노선.findShortestPath(교대역, 연결안된_역1))
+		assertThatThrownBy(() -> 전체_지하철_노선.findShortestPathAndFare(교대역, 연결안된_역1, NO_DISCOUNT_AGE))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -97,7 +98,7 @@ public class SubwayMapTest {
 	void calculateFareWithOverFareLine() {
 		//given
 		// distance(17): 1450, maxOverFare: 900
-		ShortestPath path = 전체_지하철_노선.findShortestPath(잠실역, 남부터미널역);
+		ShortestPath path = 전체_지하철_노선.findShortestPathAndFare(잠실역, 남부터미널역, NO_DISCOUNT_AGE);
 		int expectedMaxLineOverFare = 1450 + 900;
 
 		//when/then
