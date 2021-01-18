@@ -52,4 +52,9 @@ public class FavoriteService {
 			.map(FavoriteResponse::of)
 			.collect(Collectors.toList());
 	}
+
+	public void deleteFavorite(Long memberId, Long favoriteId) {
+		Member member = memberService.findMemberById(memberId);
+		member.removeFavorite(favoriteId);
+	}
 }

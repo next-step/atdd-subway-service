@@ -56,8 +56,28 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		//when
 		ExtractableResponse<Response> findResponse = 즐겨찾기_조회_요청(사용자);
 		//then
-		즐겨찾기_조회됨(findResponse,2);
+		즐겨찾기_조회됨(findResponse,1);
 
+		// when
+		ExtractableResponse<Response> updateResponse = 즐겨찾기_삭제_요청(사용자, createResponse);
+		// then
+		증겨찾기_삭제됨(updateResponse);
+
+
+	}
+
+	private void 증겨찾기_삭제됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+	}
+
+	private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, ExtractableResponse<Response> response) {
+		Long favoriteId = Long.parseLong(response.header("Location").split("/")[2]);
+		return RestAssured
+			.given().log().all()
+			.auth().oauth2(accessToken)
+			.when().delete("/favorites/{favoriteId}", favoriteId)
+			.then().log().all()
+			.extract();
 	}
 
 	private ExtractableResponse<Response> 즐겨찾기_조회_요청(String accessToken) {
@@ -72,7 +92,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 	private void 즐겨찾기_조회됨(ExtractableResponse<Response> response, int size) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-		assertThat(response.jsonPath().getList(".",FavoriteResponse.class)).hasSize(1);
+		assertThat(response.jsonPath().getList(".",FavoriteResponse.class)).hasSize(size);
 	}
 
 	private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {

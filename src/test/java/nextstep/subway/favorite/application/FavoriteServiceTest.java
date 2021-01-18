@@ -63,7 +63,6 @@ class FavoriteServiceTest {
 	@Test
 	void findFavoritesOfMine() {
 		// given
-
 		Member dummyMember = new Member(1L, MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD, MemberAcceptanceTest.AGE);
 		Station 강남역 = new Station(1L, "강남역");
 		Station 양재역 = new Station(2L, "양재역");
@@ -81,4 +80,23 @@ class FavoriteServiceTest {
 	}
 
 
+	@DisplayName("즐겨찾기 삭제")
+	@Test
+	void deleteFavorite(){
+		// given
+		Member dummyMember = new Member(1L, MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD, MemberAcceptanceTest.AGE);
+		Station 강남역 = new Station(1L, "강남역");
+		Station 양재역 = new Station(2L, "양재역");
+		Favorite dummyFavorite = new Favorite(1L, dummyMember, 강남역, 양재역);
+		dummyMember.addFavorite(dummyFavorite);
+
+		when(memberService.findMemberById(dummyMember.getId())).thenReturn(dummyMember);
+		FavoriteService favoriteService = new FavoriteService(favoriteRepository, stationService, memberService);
+
+		// when
+		favoriteService.deleteFavorite(dummyMember.getId(), dummyFavorite.getId());
+
+		// then
+		assertThat(dummyMember.getFavorites()).hasSize(0);
+	}
 }

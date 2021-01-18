@@ -68,4 +68,20 @@ public class FavoriteControllerTest {
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 	}
 
+	@DisplayName("즐겨찾기 삭제")
+	@Test
+	void deleteFavorite(){
+		//given
+		LoginMember loginMember = new LoginMember(1L, MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.AGE);
+		Long favoriteId = 1L;
+
+		FavoriteController favoriteController = new FavoriteController(favoriteService);
+
+		//when
+		ResponseEntity response = favoriteController.deleteFavorite(loginMember, favoriteId);
+
+		//then
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+	}
+
 }

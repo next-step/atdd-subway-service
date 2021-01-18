@@ -52,6 +52,11 @@ public class Favorite extends BaseEntity {
 		this.target = target;
 	}
 
+
+	public boolean isEqualId(Long id) {
+		return this.id == id;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -94,4 +99,5 @@ public class Favorite extends BaseEntity {
 			", target=" + target +
 			'}';
 	}
+
 }
