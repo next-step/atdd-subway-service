@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class FavoriteService {
 
     private final MemberService memberService;
@@ -39,6 +39,7 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Member member = memberService.getMember(loginMember.getId());
         Station sourceStation = stationService.findById(request.getSourceStationId());
@@ -48,13 +49,10 @@ public class FavoriteService {
         return FavoriteResponse.of(favorite);
     }
 
+    @Transactional
     public void deleteFavorite(LoginMember loginMember, Long id) {
-        deleteFavorite(loginMember.getId(), getFavorite(id));
-    }
-
-    public void deleteFavorite(Long memberId, Favorite favorite) {
-        Member member = memberService.getMember(memberId);
-        member.removeFavorite(favorite);
+        Member member = memberService.getMember(loginMember.getId());
+        member.removeFavorite(getFavorite(id));
     }
 
     private Favorite getFavorite(Long id) {
