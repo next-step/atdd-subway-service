@@ -3,7 +3,6 @@ package nextstep.subway.favorite.domain;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -14,15 +13,15 @@ public class Favorite extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "source_id")
     private Station source;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "target_id")
     private Station target;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -51,12 +50,12 @@ public class Favorite extends BaseEntity {
         return id;
     }
 
-    public StationResponse getSource() {
-        return StationResponse.of(source);
+    public Station getSource() {
+        return source;
     }
 
-    public StationResponse getTarget() {
-        return StationResponse.of(target);
+    public Station getTarget() {
+        return target;
     }
 
     public Member getMember() {
