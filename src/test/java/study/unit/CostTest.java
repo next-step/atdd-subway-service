@@ -16,11 +16,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class CostTest {
     private static final int DEFAULT_COST = 1250;
     private static final int DEFAULT_DISTANCE = 10;
-    private static final int EXPECTED_YOUTH_RESULT_CASE_01 = (int) (DEFAULT_COST - 350 + 1100 - ((DEFAULT_COST - 350 + 1100) * 0.2));
-    private static final int EXPECTED_YOUTH_RESULT_CASE_02 = (int) (DEFAULT_COST - 350 + 1000 - ((DEFAULT_COST - 350 + 1000) * 0.2));
+    private static final int EXPECTED_YOUTH_RESULT_CASE_01 = (int) (DEFAULT_COST - 350 + 1100 - ((DEFAULT_COST - 350) * 0.2));
+    private static final int EXPECTED_YOUTH_RESULT_CASE_02 = (int) (DEFAULT_COST - 350 + 1000 - ((DEFAULT_COST - 350) * 0.2));
     private static final int EXPECTED_YOUTH_RESULT_CASE_03 = (int) (DEFAULT_COST - 350 - ((DEFAULT_COST - 350) * 0.2));
-    private static final int EXPECTED_CHILD_RESULT_CASE_01 = (int) (DEFAULT_COST - 350 + 1100 - ((DEFAULT_COST - 350 + 1100) * 0.5));
-    private static final int EXPECTED_CHILD_RESULT_CASE_02 = (int) (DEFAULT_COST - 350 + 1000 - ((DEFAULT_COST - 350 + 1000) * 0.5));
+    private static final int EXPECTED_CHILD_RESULT_CASE_01 = (int) (DEFAULT_COST - 350 + 1100 - ((DEFAULT_COST - 350) * 0.5));
+    private static final int EXPECTED_CHILD_RESULT_CASE_02 = (int) (DEFAULT_COST - 350 + 1000 - ((DEFAULT_COST - 350) * 0.5));
     private static final int EXPECTED_CHILD_RESULT_CASE_03 = (int) (DEFAULT_COST - 350 - ((DEFAULT_COST - 350) * 0.5));
 
     @DisplayName("요금 계산 테스트")

@@ -30,7 +30,7 @@ public enum CostType {
 
     public int getFare(int distance) {
         int additionalCost = getAdditionalCost(distance);
-        return (int) (getMyCost(additionalCost) - (getMyCost(additionalCost) * discountRate));
+        return (int) (getMyCost(additionalCost) - (getMyCost(0) * discountRate));
     }
 
     private int getAdditionalCost(int distance) {

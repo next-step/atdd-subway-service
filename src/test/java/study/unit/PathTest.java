@@ -82,7 +82,7 @@ public class PathTest {
         assertThat(pathFinder.findPath(CostType.getCostType(memberService.findMember(1L).getAge()), 남부터미널역, 강남역).getStations())
                 .extracting(StationResponse::getName).containsExactly("남부터미널역", "교대역", "강남역");
         assertThat(pathFinder.findPath(CostType.getCostType(memberService.findMember(1L).getAge()), 남부터미널역, 강남역).getDistance()).isEqualTo(69);
-        assertThat(pathFinder.findPath(CostType.getCostType(memberService.findMember(1L).getAge()), 남부터미널역, 강남역).getFare()).isEqualTo(2200);
+        assertThat(pathFinder.findPath(CostType.getCostType(memberService.findMember(1L).getAge()), 남부터미널역, 강남역).getFare()).isEqualTo(2420);
     }
 
     private static Stream<Arguments> arguments() {
