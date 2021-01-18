@@ -69,4 +69,9 @@ public class Section {
         this.downStation = station;
         this.distance -= newDistance;
     }
+
+    public boolean isMatched(Station upStation, Station downStation) {
+        return this.upStation.equals(upStation) && this.downStation.equals(downStation);
+    }
+
 }

@@ -39,6 +39,12 @@ public class Sections {
         return stations;
     }
 
+    public Optional<Section> findSection(Station upStation, Station downStation) {
+        return this.sections.stream()
+                .filter(item -> item.isMatched(upStation, downStation))
+                .findFirst();
+    }
+
     public void addSection(Line line, Station upStation, Station downStation, int distance) {
         List<Station> stations = this.getStations();
         if (stations.contains(upStation) == stations.contains(downStation)) {
@@ -57,7 +63,7 @@ public class Sections {
                 .filter(it -> it.getDownStation() == station)
                 .findFirst();
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            sections.add(createNewSection(line ,upLineStation.get(), downLineStation.get()));
+            sections.add(createNewSection(line, upLineStation.get(), downLineStation.get()));
         }
         upLineStation.ifPresent(it -> sections.remove(it));
         downLineStation.ifPresent(it -> sections.remove(it));
