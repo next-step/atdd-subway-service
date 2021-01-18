@@ -80,4 +80,19 @@ public class FavoriteServiceTest {
         // when
         assertThat(favoriteService.findAllFavorites(loginMember).size()).isEqualTo(2);
     }
+
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    void delete() {
+        // given
+        LoginMember loginMember = new LoginMember(김민균.getId(), 김민균.getEmail(), 김민균.getAge());
+        FavoriteRequest favoriteRequest = new FavoriteRequest(강남역.getId(), 양재역.getId());
+        FavoriteResponse favoriteResponse = favoriteService.createFavorite(loginMember, favoriteRequest);
+
+        // when
+        favoriteService.deleteFavorite(favoriteResponse.getId());
+
+        // then
+        assertThat(favoriteService.findAllFavorites(loginMember).size()).isEqualTo(0);
+    }
 }
