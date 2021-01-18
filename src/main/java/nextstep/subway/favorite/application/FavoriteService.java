@@ -50,23 +50,19 @@ public class FavoriteService {
     }
 
     public void delete(Long favoriteId) {
-        favoriteRepository.findById(favoriteId).orElseThrow(() -> {
-            throw new NoSuchFavoriteException("존재하지 않는 즐겨찾기입니다. 즐겨찾기ID: " + favoriteId);
-        });
+        Favorite favorite = favoriteRepository.findById(favoriteId)
+                .orElseThrow(() -> new NoSuchFavoriteException("존재하지 않는 즐겨찾기입니다. 즐겨찾기ID: " + favoriteId));
 
-        favoriteRepository.deleteById(favoriteId);
+        favoriteRepository.delete(favorite);
     }
 
     private Station findStation(Long stationId) {
-        return stationRepository.findById(stationId).orElseThrow(() -> {
-                    throw new NoSuchStationException("존재하지 않는 역입니다. 역ID: " + stationId);
-        });
+        return stationRepository.findById(stationId)
+                .orElseThrow(() -> new NoSuchStationException("존재하지 않는 역입니다. 역ID: " + stationId));
     }
 
     private Member findMember(Long memberId) {
-        return memberRepository.findById(memberId).orElseThrow(() -> {
-            throw new NoSuchMemberException("존재하지 않는 회원입니다. 회원ID: " + memberId);
-        });
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchMemberException("존재하지 않는 회원입니다. 회원ID: " + memberId));
     }
-
 }
