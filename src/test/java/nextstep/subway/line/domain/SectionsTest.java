@@ -31,7 +31,7 @@ class SectionsTest {
         이호선.addSection(new Section(이호선, 강남역, 역삼역, 7));
 
         // then
-        assertThat(이호선.getSections().getStations()).containsExactlyElementsOf(Arrays.asList(강남역, 역삼역, 잠실역));
+        assertThat(이호선.getStations()).containsExactlyElementsOf(Arrays.asList(강남역, 역삼역, 잠실역));
     }
 
     @DisplayName("구간 추가 - 신규 상행역 구간 추가")
@@ -41,7 +41,7 @@ class SectionsTest {
         이호선.addSection(new Section(이호선, 역삼역, 강남역, 7));
 
         // then
-        assertThat(이호선.getSections().getStations()).containsExactlyElementsOf(Arrays.asList(역삼역, 강남역, 잠실역));
+        assertThat(이호선.getStations()).containsExactlyElementsOf(Arrays.asList(역삼역, 강남역, 잠실역));
     }
 
     @DisplayName("구간 추가 - 신규 하행역 구간 추가")
@@ -51,7 +51,7 @@ class SectionsTest {
         이호선.addSection(new Section(이호선, 잠실역, 역삼역, 7));
 
         // then
-        assertThat(이호선.getSections().getStations()).containsExactlyElementsOf(Arrays.asList(강남역, 잠실역, 역삼역));
+        assertThat(이호선.getStations()).containsExactlyElementsOf(Arrays.asList(강남역, 잠실역, 역삼역));
     }
 
     @DisplayName("구간 추가 예외 - 이미 등록되어 있는 경우")
@@ -85,7 +85,7 @@ class SectionsTest {
         이호선.addSection(new Section(이호선, 강남역, 역삼역, 7));
         이호선.removeSection(잠실역);
 
-        assertThat(이호선.getSections().getStations()).containsExactly(강남역, 역삼역);
+        assertThat(이호선.getStations()).containsExactly(강남역, 역삼역);
     }
 
     @DisplayName("구간 삭제 - 역 사이 삭제")
@@ -94,7 +94,7 @@ class SectionsTest {
         이호선.addSection(new Section(이호선, 강남역, 역삼역, 7));
         이호선.removeSection(역삼역);
 
-        assertThat(이호선.getSections().getStations()).containsExactly(강남역, 잠실역);
+        assertThat(이호선.getStations()).containsExactly(강남역, 잠실역);
     }
 
     @DisplayName("구간 삭제 - 상행 종점역 삭제")
@@ -105,7 +105,7 @@ class SectionsTest {
         // when
         이호선.removeSection(강남역);
         // then
-        assertThat(이호선.getSections().getStations()).containsExactly(역삼역, 잠실역);
+        assertThat(이호선.getStations()).containsExactly(역삼역, 잠실역);
     }
 
 

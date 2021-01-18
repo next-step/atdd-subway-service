@@ -71,3 +71,40 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - 출발역과 도착역이 같은 경우
   - 출발역과 도착역이 연결이 되어 있지 않은 경우
   - 존재하지 않은 출발역이나 도착역을 조회 할 경우
+
+# 3단계
+토큰 발급 인수 테스트 만들기
+  - 토큰 발급 검증하는 인수 테스트 만들기
+    
+```
+Feature:로그인 기능
+Scenario : 로그인을 시도한다.
+  Given 회원 등록되어 있음
+  When 로그인 요청
+  Then 로그인 됨
+```
+
+Bearer Auth 유효하지 않은 토큰 인수 테스트
+    
+내 정보 조회 기능
+  - 토큰을 통한 인증 @AuthenticationPrincipal @AuthenticationPrincipalArgumentResolver을 활용
+
+즐겨 찾기 기능 구현
+
+```
+Feature : 즐겨찾기를 관리한다.
+Background 
+  Given 지하철역 등록되어 있음
+  And 지하철 노선 등록되어 있음
+  And 지하철 노선에 지하철역 등록되어 있음
+  And 회원 등록되어 있음
+  And 로그인 되어있음
+  
+Scenario : 즐겨찾기를 관리
+  When 즐겨찾기 생성을 요청
+  Then 즐겨찾기 생성됨
+  When 즐겨찾기 목록 조회 요청
+  Then 즐겨찾기 목록 조회됨
+  When 즐겨찾기 삭제 요청
+  Then 즐겨찾기 삭제됨
+```
