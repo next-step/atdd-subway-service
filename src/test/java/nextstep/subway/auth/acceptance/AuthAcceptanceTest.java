@@ -63,6 +63,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         내_정보_요청_인증_실패됨(response, HttpStatus.UNAUTHORIZED);
     }
 
+    public static ExtractableResponse<Response> 로그인_되어있음(String email, String password) {
+        return 로그인_요청(email, password);
+    }
+
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest tokenRequest = new TokenRequest(email, password);
         return RestAssured
