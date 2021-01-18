@@ -4,8 +4,10 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.member.step.MemberAcceptanceStep;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,20 +36,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인_됨(response);
     }
 
-    private void 로그인_됨(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
-        TokenRequest tokenRequest = new TokenRequest(email, password);
-        return RestAssured
-                .given().log().all()
-                .body(tokenRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/login/token")
-                .then().log().all().extract();
-    }
-
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
@@ -63,6 +51,42 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+        ExtractableResponse<Response> createResponse = MemberAcceptanceStep.회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        MemberResponse memberResponse = MemberAcceptanceStep.회원_정보_조회_요청(createResponse).as(MemberResponse.class);
+        LoginMember loginMember = new LoginMember(memberResponse.getId(), memberResponse.getEmail(), memberResponse.getAge());
+
+        // when
+        ExtractableResponse<Response> response = 내_정보_조회_요청(loginMember, "wrong_token");
+
+        // then
+        내_정보_요청_인증_실패됨(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    private void 로그인_됨(ExtractableResponse<Response> response) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+        TokenRequest tokenRequest = new TokenRequest(email, password);
+        return RestAssured
+                .given().log().all()
+                .body(tokenRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/login/token")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> 내_정보_조회_요청(LoginMember loginMember, String accessToken) {
+        return RestAssured
+                .given().log().all().auth().oauth2(accessToken)
+                .body(loginMember)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all().extract();
+    }
+
+    private void 내_정보_요청_인증_실패됨(ExtractableResponse<Response> response, HttpStatus unauthorized) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(unauthorized.value());
     }
 
 }
