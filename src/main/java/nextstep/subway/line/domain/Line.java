@@ -39,19 +39,20 @@ public class Line extends BaseEntity {
 	}
 
 	public Line(String name, String color, Station upStation, Station downStation, int distance) {
-		this(name, color);
-		this.fare = Money.of(Money.ZERO_MONEY);
-		sections = Sections.of(this, upStation, downStation, distance);
-	}
-
-	public Line(Long id, String name, String color, Station upStation, Station downStation, int distance) {
-		this(name, color, upStation, downStation, distance);
-		this.id = id;
+		this(null, name, color, upStation, downStation, distance, 0);
 	}
 
 	public Line(String name, String color, Station upStation, Station downStation, int distance, int lineFare) {
-		this(name, color, upStation, downStation, distance);
+		this(null, name, color, upStation, downStation, distance, lineFare);
+	}
+
+	public Line(Long id, String name, String color, Station upStation, Station downStation, int distance,
+		int lineFare) {
+		this.id = id;
+		this.name = name;
+		this.color = color;
 		this.fare = Money.of(lineFare);
+		this.sections = Sections.of(this, upStation, downStation, distance);
 	}
 
 	public void update(Line line) {

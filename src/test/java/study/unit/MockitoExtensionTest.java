@@ -42,7 +42,7 @@ public class MockitoExtensionTest {
 		시청역 = new Station(1L, "시청역");
 		서초역 = new Station(2L, "서초역");
 
-		line = new Line(1L, "2호선", "green", 시청역, 서초역, 100);
+		line = new Line(1L, "2호선", "green", 시청역, 서초역, 100, 0);
 	}
 
 	@Test

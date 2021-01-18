@@ -48,8 +48,8 @@ class PathServiceTest {
 		인천역 = new Station(3L, "인천역");
 		주안역 = new Station(4L, "주안역");
 
-		line1 = new Line(1L, "1호선", "blue", 인천역, 주안역, 50);
-		line2 = new Line(2L, "2호선", "green", 시청역, 서초역, 100);
+		line1 = new Line(1L, "1호선", "blue", 인천역, 주안역, 50, 0);
+		line2 = new Line(2L, "2호선", "green", 시청역, 서초역, 100, 0);
 
 		loginMember = new LoginMember();
 	}
