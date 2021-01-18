@@ -2,46 +2,52 @@ package nextstep.subway.path.domain.fare;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.Collections;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import nextstep.subway.line.domain.Distance;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.station.domain.Station;
 
 class FareBuilderTest {
+	private Line line1;
 
-	/**
-	 *
-	 * @param age : 나이
-	 * @param fare : 나이별 요금
-	 */
-	@DisplayName("2. 나이별 요금 생성 테스트(58키로 기본요금 2,150)")
+	private Station 인천역;
+	private Station 소요산역;
+
+	@DisplayName("전철 요금을 구한다.(연령할인, 거리 추가요금, 라인 추가요금)")
 	@ParameterizedTest
-	@CsvSource(value = {"2:0", "9:900", "16:1440", "30:2150", "70:0"}, delimiter = ':')
-	void createAgeFareTest(int age, int fare) {
-		// when // given
-		Distance distance = new Distance(58);
-		FareAge fareAge = FareAge.findFareAge(age);
+	@CsvSource(value = {"30:10:900:2150", "30:58:900:3050", "9:58:0:900", "16:58:0:1440"}, delimiter = ':')
+	void selectFareTest(int age, int distance, int lineFare, int totalFare) {
+		// given
+		지하철_초기_데이터_생성(distance, lineFare);
+		PathFinder finder = new PathFinder(Collections.singletonList(line1));
+		LoginMember loginMember = new LoginMember(null, null, age);
+
+		// when
+		finder.selectShortPath(인천역, 소요산역);
 
 		// then
-		assertThat(FareBuilder.calculateDistance(distance, fareAge)).isEqualTo(new Money(fare));
+		assertThat(FareBuilder.calculate(loginMember, finder)).isEqualTo(Money.of(totalFare));
 	}
 
-	/**
-	 * 요금체계 : http://www.seoulmetro.co.kr/kr/page.do?menuIdx=354
-	 * @param km: 거리
-	 * @param fare: 요금
-	 */
-	@DisplayName("1. 거리별 요금 생성 테스트")
-	@ParameterizedTest
-	@CsvSource(value = {"10:1250", "15:1350", "18:1450", "20:1450", "50:2050", "55:2150", "58:2150", "59:2250"},
-		delimiter = ':')
-	void createFareTest(int km, int fare) {
-		// when // given
-		Distance distance = new Distance(km);
-		FareAge fareAge = FareAge.findFareAge(30);
+	private void 지하철_초기_데이터_생성(int distance, int lineFare) {
+		소요산역 = 전철역_생성(1L, "소요산역");
+		인천역 = 전철역_생성(2L, "인천역");
 
-		// then
-		assertThat(FareBuilder.calculateDistance(distance, fareAge)).isEqualTo(new Money(fare));
+		line1 = 라인_생성("1호선", "blue", 인천역, 소요산역, distance, lineFare);
 	}
+
+	private Station 전철역_생성(Long id, String stationName) {
+		return new Station(id, stationName);
+	}
+
+	private Line 라인_생성(String name, String color, Station upStation, Station downStation, int distance, int lineFare) {
+		return new Line(name, color, upStation, downStation, distance, lineFare);
+	}
+
 }
