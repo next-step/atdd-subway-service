@@ -31,28 +31,26 @@ public class Lines {
 			.collect(Collectors.toList());
 	}
 
-	public List<Section> findSections(List<Station> stations) {
-
-		List<Section> sections = new ArrayList<>();
-		Station firstStation = stations.get(0);
-
-		for (int i = 1; i < stations.size(); i++) {
-			Station upStation = firstStation;
-			Station downStation = stations.get(i);
-
-			sections.add(this.sections().stream()
-				.filter(it -> it.isMatchStation(upStation, downStation))
-				.findFirst()
-				.orElse(null));
-			firstStation = downStation;
-		}
-		return sections;
-	}
-
 	public Money maximumLineFare(List<Station> stations) {
 		return findSections(stations).stream()
 			.map(Section::fare)
 			.max(Comparator.comparingLong(Money::getMoney))
 			.orElse(Money.of(0));
+	}
+
+	private List<Section> findSections(List<Station> stations) {
+
+		List<Section> sections = new ArrayList<>();
+
+		for (int i = 1; i < stations.size(); i++) {
+			Station upStation = stations.get(i - 1);
+			Station downStation = stations.get(i);
+
+			this.sections().stream()
+				.filter(it -> it.isMatchStation(upStation, downStation))
+				.findFirst()
+				.ifPresent(sections::add);
+		}
+		return sections;
 	}
 }

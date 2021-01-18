@@ -24,8 +24,7 @@ public enum FareAge {
 			return ADULT;
 		}
 		return Arrays.stream(values())
-			.filter(it -> it.minimumAge <= age)
-			.filter(it -> it.maximumAge > age)
+			.filter(it -> it.minimumAge <= age && age < it.maximumAge)
 			.findFirst()
 			.orElse(ADULT);
 	}
