@@ -7,6 +7,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.member.step.MemberAcceptanceStep;
 import org.assertj.core.api.Assertions;
@@ -42,7 +43,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         MemberAcceptanceStep.회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
         // when
-        ExtractableResponse<Response> response = 로그인_요청(EMAIL, "1234");
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, "wrong_password");
 
         // then
         로그인_됨(response);
@@ -62,11 +63,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         내_정보_요청_인증_실패됨(response, HttpStatus.UNAUTHORIZED);
     }
 
-    private void 로그인_됨(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest tokenRequest = new TokenRequest(email, password);
         return RestAssured
                 .given().log().all()
@@ -74,6 +71,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/login/token")
                 .then().log().all().extract();
+    }
+
+    private void 로그인_됨(ExtractableResponse<Response> response) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     private ExtractableResponse<Response> 내_정보_조회_요청(LoginMember loginMember, String accessToken) {
@@ -88,5 +89,4 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private void 내_정보_요청_인증_실패됨(ExtractableResponse<Response> response, HttpStatus unauthorized) {
         Assertions.assertThat(response.statusCode()).isEqualTo(unauthorized.value());
     }
-
 }
