@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum FareAge {
+public enum FareUserAge {
 	BABY(0, 6, Money.of(0), 0),
 	CHILD(6, 13, Money.of(450), 0.5),
 	STUDENT(13, 18, Money.of(720), 0.8),
@@ -19,7 +19,7 @@ public enum FareAge {
 	private final Money basicFare;
 	private final double discount;
 
-	public static FareAge findFareAge(Integer age) {
+	public static FareUserAge findFareAge(Integer age) {
 		if (age == null) {
 			return ADULT;
 		}
@@ -27,5 +27,9 @@ public enum FareAge {
 			.filter(it -> it.minimumAge <= age && age < it.maximumAge)
 			.findFirst()
 			.orElse(ADULT);
+	}
+
+	public Money discount(Money calculateDistance) {
+		return calculateDistance.multi(this.discount);
 	}
 }

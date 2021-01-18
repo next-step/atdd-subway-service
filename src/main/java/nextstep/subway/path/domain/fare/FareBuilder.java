@@ -11,18 +11,18 @@ import nextstep.subway.station.domain.Station;
 public class FareBuilder {
 
 	public static Money calculate(LoginMember loginMember, PathFinder finder) {
-		FareAge fareAge = FareAge.findFareAge(loginMember.getAge());
-		Money distanceFare = calculateDistance(finder.distance(), fareAge);
-		Money lineAddFare = calculateLineAddFare(finder.getLines(), finder.stations()).multi(fareAge.getDiscount());
+		FareUserAge ageFare = FareUserAge.findFareAge(loginMember.getAge());
+		Money distanceFare = calculateDistanceFare(finder.distance(), ageFare);
+		Money lineAddFare = calculateLineAddFare(finder.getLines(), finder.stations(), ageFare);
 
 		return distanceFare.plus(lineAddFare);
 	}
 
-	public static Money calculateDistance(Distance distance, FareAge fareAge) {
-		return DistanceCalculator.apply(distance.getDistance(), fareAge);
+	private static Money calculateDistanceFare(Distance distance, FareUserAge ageFare) {
+		return FareDistance.calculateDistance(distance, ageFare);
 	}
 
-	public static Money calculateLineAddFare(Lines lines, List<Station> stations) {
-		return lines.maximumLineFare(stations);
+	private static Money calculateLineAddFare(Lines lines, List<Station> stations, FareUserAge ageFare) {
+		return ageFare.discount(lines.maximumLineFare(stations));
 	}
 }
