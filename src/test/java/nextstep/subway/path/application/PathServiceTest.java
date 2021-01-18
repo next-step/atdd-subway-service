@@ -11,8 +11,10 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import nextstep.subway.line.domain.Line;
@@ -47,6 +49,9 @@ class PathServiceTest {
 	@Mock
 	private StationService stationService;
 
+	@InjectMocks
+	private PathService pathService;
+
 	@BeforeEach
 	void setUp() {
 		교대역 = new Station(1L, "교대역");
@@ -72,27 +77,33 @@ class PathServiceTest {
 
 	@Test
 	void findPath() {
-		// given
-		MockedStatic<PathFinder> mockedPathFinder = mockStatic(PathFinder.class);
-		mockedPathFinder.when(() -> PathFinder.findPath(lines, 교대역, 양재역))
-			.thenReturn(Optional.ofNullable(new Path(Arrays.asList(교대역, 남부터미널역, 양재역), 5L)));
-		when(lineRepository.findAll()).thenReturn(lines);
-		when(stationService.findById(교대역.getId())).thenReturn(교대역);
-		when(stationService.findById(양재역.getId())).thenReturn(양재역);
+		try (MockedStatic<PathFinder> mock = mockStatic(PathFinder.class, this::answerPathFinder)) {
+			// given
+			when(lineRepository.findAll()).thenReturn(lines);
+			when(stationService.findById(교대역.getId())).thenReturn(교대역);
+			when(stationService.findById(양재역.getId())).thenReturn(양재역);
 
-		PathService pathService = new PathService(lineRepository, stationService);
+			// when
+			PathResponse response = pathService.findPath(교대역.getId(), 양재역.getId());
 
-		// when
-		PathResponse response = pathService.findPath(교대역.getId(), 양재역.getId());
-		mockedPathFinder.close();
+			// then
+			assertThat(response.getStations())
+				.map(PathStationResponse::getId)
+				.containsExactly(교대역.getId(), 남부터미널역.getId(), 양재역.getId());
+			assertThat(response.getStations())
+				.map(PathStationResponse::getName)
+				.containsExactly(교대역.getName(), 남부터미널역.getName(), 양재역.getName());
+			assertThat(response.getDistance()).isEqualTo(5L);
+		}
+	}
 
-		// then
-		assertThat(response.getStations())
-			.map(PathStationResponse::getId)
-			.containsExactly(교대역.getId(), 남부터미널역.getId(), 양재역.getId());
-		assertThat(response.getStations())
-			.map(PathStationResponse::getName)
-			.containsExactly(교대역.getName(), 남부터미널역.getName(), 양재역.getName());
-		assertThat(response.getDistance()).isEqualTo(5L);
+	public Optional<Path> answerPathFinder(InvocationOnMock invocation) {
+		if(invocation.getMethod().getName().equals("findPath")
+			&& invocation.getArguments().length == 3
+			&& invocation.getArgument(1).equals(교대역)
+			&& invocation.getArgument(2).equals(양재역)) {
+			return Optional.of(new Path(Arrays.asList(교대역, 남부터미널역, 양재역), 5L));
+		}
+		return Optional.empty();
 	}
 }

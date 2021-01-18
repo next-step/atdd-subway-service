@@ -27,12 +27,12 @@ public class SectionsTest {
 
 	@Test
 	void getStations() {
-		assertThat(sections.getStations()).containsExactly(교대역, 선릉역, 삼성역, 잠실역);
+		assertThat(sections.getSortedStations(이호선)).containsExactly(교대역, 선릉역, 삼성역, 잠실역);
 	}
 
 	@Test
 	void removeSection() {
 		sections.removeStation(이호선, 선릉역);
-		assertThat(sections.getStations()).containsExactly(교대역, 삼성역, 잠실역);
+		assertThat(sections.getSortedStations(이호선)).containsExactly(교대역, 삼성역, 잠실역);
 	}
 }
