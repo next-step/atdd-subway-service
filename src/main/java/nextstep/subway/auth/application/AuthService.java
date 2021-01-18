@@ -29,7 +29,7 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new RuntimeException("인증 완료 상태만 접근 가능합니다");
+            throw new AuthorizationException("인증 완료 상태만 접근 가능합니다");
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
