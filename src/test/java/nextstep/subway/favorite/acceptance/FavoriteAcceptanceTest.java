@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,8 +24,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 20;
-    private StationResponse 강남역;
-    private StationResponse 광교역;
+    public static StationResponse 강남역;
+    public static StationResponse 광교역;
     public String accessToken;
 
     @BeforeEach
@@ -43,13 +44,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void manageFavorite() {
         //when
         ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, new FavoriteRequest(강남역.getId(), 광교역.getId()));
+
         //then
         즐겨찾기_생성됨(createResponse);
 
         //when
         ExtractableResponse<Response> listResponse = 즐겨찾기_목록_조회_요청(accessToken);
+
         //then
         즐겨찾기_목록_응답됨(listResponse);
+        즐겨찾기_목록_포함됨(listResponse);
 
         //when
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(createResponse, accessToken);
@@ -83,6 +87,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static void 즐겨찾기_목록_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 즐겨찾기_목록_포함됨(ExtractableResponse<Response> listResponse) {
+        FavoriteResponse[] results = listResponse.body().as(FavoriteResponse[].class);
+        assertThat(results[0].getSource()).isEqualTo(강남역);
+        assertThat(results[0].getTarget()).isEqualTo(광교역);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, FavoriteRequest request) {
