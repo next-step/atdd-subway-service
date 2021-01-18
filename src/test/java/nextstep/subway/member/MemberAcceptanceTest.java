@@ -110,13 +110,18 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse.getAge()).isEqualTo(age);
     }
 
-    private ExtractableResponse<Response> 내_정보_조회(ExtractableResponse<Response> loginResponse) {
+
+    public static ExtractableResponse<Response> 내_정보_조회(ExtractableResponse<Response> loginResponse) {
         TokenResponse tokenResponse = loginResponse.as(TokenResponse.class);
+        return 내_정보_조회(tokenResponse);
+    }
+
+    public static ExtractableResponse<Response> 내_정보_조회(TokenResponse tokenResponse) {
         return RestAssured
-                .given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken())
-                .when().get("/members/me")
-                .then().log().all().extract();
+            .given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
+            .when().get("/members/me")
+            .then().log().all().extract();
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
