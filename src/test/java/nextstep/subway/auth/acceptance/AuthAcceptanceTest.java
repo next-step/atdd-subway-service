@@ -59,7 +59,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> response = MemberAcceptanceTest.내_정보_조회_요청(wrongToken);
 
 		//then 에러
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 
 	}
 
