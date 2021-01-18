@@ -1,6 +1,7 @@
 package nextstep.subway.station.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.HibernateUtils;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -35,9 +36,10 @@ public class Station extends BaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Station station = (Station) o;
+        Object that = HibernateUtils.initializeAndUnproxy(o);
+        if (this == that) return true;
+        if (that == null || getClass() != that.getClass()) return false;
+        Station station = (Station) that;
         return Objects.equals(id, station.id) &&
                 Objects.equals(name, station.name);
     }
