@@ -3,6 +3,7 @@ package nextstep.subway.favorite.domain;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -14,24 +15,25 @@ public class Favorite extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "departure_station_id")
-    private Station departureStation;
+    @JoinColumn(name = "source_id")
+    private Station source;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "arrival_station_id")
-    private Station arrivalStation;
+    @JoinColumn(name = "target_id")
+    private Station target;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
 
     protected Favorite() {
     }
 
     public Favorite(Station departureStation, Station arrivalStation, Member member) {
         validate(departureStation, arrivalStation, member);
-        this.departureStation = departureStation;
-        this.arrivalStation = arrivalStation;
+        this.source = departureStation;
+        this.target = arrivalStation;
         this.member = member;
     }
 
@@ -43,6 +45,22 @@ public class Favorite extends BaseEntity {
 
     public void changeMember(Member member) {
         this.member = member;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public StationResponse getSource() {
+        return StationResponse.of(source);
+    }
+
+    public StationResponse getTarget() {
+        return StationResponse.of(target);
+    }
+
+    public Member getMember() {
+        return member;
     }
 
     @Override
@@ -57,5 +75,6 @@ public class Favorite extends BaseEntity {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }
 
