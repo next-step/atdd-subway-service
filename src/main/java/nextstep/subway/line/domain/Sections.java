@@ -19,7 +19,7 @@ public class Sections {
 	private final List<Section> sections = new ArrayList<>();
 
 	public List<Section> getSections() {
-		return sections;
+		return Collections.unmodifiableList(sections);
 	}
 
 	public void addSection(Line line, Station upStation, Station downStation, int distance) {
