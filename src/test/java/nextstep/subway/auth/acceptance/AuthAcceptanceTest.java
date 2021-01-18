@@ -60,7 +60,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    private void 회원_등록되어_있음(String email, String password, int age) {
+    public static void 회원_등록되어_있음(String email, String password, int age) {
         ExtractableResponse<Response> response = MemberAcceptanceTest.회원_생성을_요청(email, password, age);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }

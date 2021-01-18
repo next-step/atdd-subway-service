@@ -3,6 +3,9 @@ package nextstep.subway.favorite.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -33,6 +36,7 @@ class FavoriteServiceTest {
 	@Mock
 	private MemberService memberService;
 
+	@DisplayName("즐겨찾기 생성")
 	@Test
 	void save(){
 		// given
@@ -53,6 +57,28 @@ class FavoriteServiceTest {
 		FavoriteResponse response = favoriteService.save(loginMember, favoriteRequest);
 		// then
 		assertThat(response.getId()).isNotNull();
-
 	}
+
+	@DisplayName("즐겨찾기 조회")
+	@Test
+	void findFavoritesOfMine() {
+		// given
+
+		Member dummyMember = new Member(1L, MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD, MemberAcceptanceTest.AGE);
+		Station 강남역 = new Station(1L, "강남역");
+		Station 양재역 = new Station(2L, "양재역");
+		Favorite dummyFavorite = new Favorite(1L, dummyMember, 강남역, 양재역);
+		dummyMember.addFavorite(dummyFavorite);
+
+		when(memberService.findMemberById(dummyMember.getId())).thenReturn(dummyMember);
+		FavoriteService favoriteService = new FavoriteService(favoriteRepository, stationService, memberService);
+
+		// when
+		List<FavoriteResponse> favoriteResponses = favoriteService.findFavoritesByMemberId(dummyMember.getId());
+
+		//then
+		assertThat(favoriteResponses).containsExactly(new FavoriteResponse(dummyFavorite));
+	}
+
+
 }

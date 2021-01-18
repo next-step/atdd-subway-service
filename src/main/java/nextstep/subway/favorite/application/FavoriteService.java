@@ -1,5 +1,8 @@
 package nextstep.subway.favorite.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
@@ -41,5 +44,12 @@ public class FavoriteService {
 
 		Favorite saved = favoriteRepository.save(new Favorite(member, sourceStation, targetStation));
 		return FavoriteResponse.of(saved);
+	}
+
+	public List<FavoriteResponse> findFavoritesByMemberId(Long memberId) {
+		Member member = memberService.findMemberById(memberId);
+		return member.getFavorites().stream()
+			.map(FavoriteResponse::of)
+			.collect(Collectors.toList());
 	}
 }

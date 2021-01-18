@@ -15,6 +15,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.member.MemberAcceptanceTest;
@@ -24,7 +25,7 @@ import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
-	String 사용자;
+	private String 사용자;
 	private LineResponse 신분당선;
 	private LineResponse 이호선;
 	private LineResponse 삼호선;
@@ -49,9 +50,29 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	void manageMember() {
 		// when
 		ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(사용자, 강남역.getId(), 양재역.getId());
-
+		// then
 		즐겨찾기_생성됨(createResponse);
 
+		//when
+		ExtractableResponse<Response> findResponse = 즐겨찾기_조회_요청(사용자);
+		//then
+		즐겨찾기_조회됨(findResponse,2);
+
+	}
+
+	private ExtractableResponse<Response> 즐겨찾기_조회_요청(String accessToken) {
+		return RestAssured
+			.given().log().all()
+			.auth().oauth2(accessToken)
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when().get("/favorites")
+			.then().log().all()
+			.extract();
+	}
+
+	private void 즐겨찾기_조회됨(ExtractableResponse<Response> response, int size) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+		assertThat(response.jsonPath().getList(".",FavoriteResponse.class)).hasSize(1);
 	}
 
 	private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
