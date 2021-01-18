@@ -13,21 +13,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class SubwayExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(SectionBadRequestException.class)
+    @ExceptionHandler(value = {SectionBadRequestException.class, MemberBadRequestException.class, FavoriteBadRequestException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    ResponseEntity check(SectionBadRequestException e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-    }
-
-    @ExceptionHandler(MemberBadRequestException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    ResponseEntity check(MemberBadRequestException e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-    }
-
-    @ExceptionHandler(FavoriteBadRequestException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    ResponseEntity check(FavoriteBadRequestException e) {
+    ResponseEntity check(RuntimeException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
 }
