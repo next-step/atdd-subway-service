@@ -45,7 +45,6 @@ public class Lines {
 		for (int i = 1; i < stations.size(); i++) {
 			Station upStation = stations.get(i - 1);
 			Station downStation = stations.get(i);
-
 			this.sections().stream()
 				.filter(it -> it.isMatchStation(upStation, downStation))
 				.findFirst()

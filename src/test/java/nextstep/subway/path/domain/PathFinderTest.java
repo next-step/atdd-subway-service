@@ -17,8 +17,6 @@ import org.junit.jupiter.api.Test;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.domain.fare.FareBuilder;
-import nextstep.subway.path.domain.fare.Money;
 import nextstep.subway.station.domain.Station;
 
 @DisplayName("경로 찾기, 라인 그래프 생성 테스트")
@@ -39,24 +37,6 @@ class PathFinderTest {
 	@BeforeEach
 	void setUp() {
 		지하철_초기_데이터_생성();
-	}
-
-	@DisplayName("경로추가요금: 지하철 경로 추가요금 계산 테스트")
-	@Test
-	void findLineAddFareTest() {
-		// given
-		List<Line> lines = Arrays.asList(line1, line2);
-		PathFinder finder = new PathFinder(lines);
-		finder.selectShortPath(인천역, 강남역);
-
-		// when
-		Money maximumLineFare = FareBuilder.calculateLineAddFare(finder.getLines(), finder.stations());
-
-		// then
-		assertAll(
-			() -> assertThat(maximumLineFare).isNotNull(),
-			() -> assertThat(maximumLineFare.getMoney()).isEqualTo(900)
-		);
 	}
 
 	@DisplayName("PathFinder 경로검색 테스트")
