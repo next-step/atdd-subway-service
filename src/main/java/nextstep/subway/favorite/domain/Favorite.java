@@ -24,7 +24,7 @@ public class Favorite {
     @JoinColumn(name = "target_id")
     private Station target;
 
-    public Favorite() {
+    protected Favorite() {
     }
 
     public Favorite(Member member, Station source, Station target) {
