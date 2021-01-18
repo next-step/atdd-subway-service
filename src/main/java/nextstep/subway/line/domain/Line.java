@@ -7,6 +7,7 @@ import static java.util.Arrays.*;
 import static java.util.Collections.*;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -212,5 +213,19 @@ public class Line extends BaseEntity {
 
     private int mergeDistance(int upDistance, int downDistance) {
         return upDistance + downDistance;
+    }
+
+    public boolean containsEdge(List<LinkedList<Station>> fixedEdgeList) {
+        for (LinkedList<Station> edge : fixedEdgeList) {
+            if (hasEdge(edge)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasEdge(LinkedList<Station> edge) {
+        return sections.stream()
+                .anyMatch(l -> l.getUpStation().equals(edge.getFirst()) && l.getDownStation().equals(edge.getLast()));
     }
 }

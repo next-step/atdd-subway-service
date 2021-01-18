@@ -1,13 +1,11 @@
 package nextstep.subway.line.domain;
 
-import static java.lang.Integer.*;
-
 import java.util.Objects;
 
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class AdditionalCost implements Comparable<AdditionalCost>{
+public class AdditionalCost {
     private int cost;
 
     public AdditionalCost() {}
@@ -31,10 +29,5 @@ public class AdditionalCost implements Comparable<AdditionalCost>{
     @Override
     public int hashCode() {
         return Objects.hash(cost);
-    }
-
-    @Override
-    public int compareTo(AdditionalCost target) {
-        return compare(cost, target.getCost());
     }
 }

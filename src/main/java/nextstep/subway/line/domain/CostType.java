@@ -24,7 +24,7 @@ public enum CostType {
         return minAge;
     }
 
-    public int getMyCost(int additionalCost) {
+    private int getMyCost(int additionalCost) {
         return DEFAULT_COST - deductionCost + additionalCost;
     }
 
@@ -33,7 +33,7 @@ public enum CostType {
         return (int) (getMyCost(additionalCost) - (getMyCost(additionalCost) * discountRate));
     }
 
-    public int getAdditionalCost(int distance) {
+    private int getAdditionalCost(int distance) {
         int additionalCost = 0;
         if (distance > DEFAULT_DISTANCE) {
             additionalCost = new AdditionalFareCalculator(distance - DEFAULT_DISTANCE).getAdditionalFare();
