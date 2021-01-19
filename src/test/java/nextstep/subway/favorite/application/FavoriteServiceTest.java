@@ -38,19 +38,24 @@ class FavoriteServiceTest {
 
 	@DisplayName("즐겨찾기 생성")
 	@Test
-	void save(){
+	void save() {
 		// given
 		LoginMember loginMember = new LoginMember(1L, MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.AGE);
-		Member dummyMember = new Member(1L, MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD, MemberAcceptanceTest.AGE);
+		Member dummyMember = new Member(1L, MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD,
+			MemberAcceptanceTest.AGE);
 		Station 강남역 = new Station(1L, "강남역");
 		Station 양재역 = new Station(2L, "양재역");
 		FavoriteRequest favoriteRequest = new FavoriteRequest(강남역.getId(), 양재역.getId());
-		Favorite saveFavoriteEntity = new Favorite(dummyMember, 강남역, 양재역);
+		Favorite saveFavoriteEntity = Favorite.builder()
+			.member(dummyMember)
+			.source(강남역)
+			.target(양재역)
+			.build();
 
 		when(memberService.findMemberById(loginMember.getId())).thenReturn(dummyMember);
 		when(stationService.findStationById(favoriteRequest.getSource())).thenReturn(강남역);
 		when(stationService.findStationById(favoriteRequest.getTarget())).thenReturn(양재역);
-		when(favoriteRepository.save(saveFavoriteEntity)).thenReturn(new Favorite(1L,dummyMember, 강남역, 양재역));
+		when(favoriteRepository.save(saveFavoriteEntity)).thenReturn(new Favorite(1L, dummyMember, 강남역, 양재역));
 		FavoriteService favoriteService = new FavoriteService(favoriteRepository, stationService, memberService);
 
 		// when
@@ -63,7 +68,8 @@ class FavoriteServiceTest {
 	@Test
 	void findFavoritesOfMine() {
 		// given
-		Member dummyMember = new Member(1L, MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD, MemberAcceptanceTest.AGE);
+		Member dummyMember = new Member(1L, MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD,
+			MemberAcceptanceTest.AGE);
 		Station 강남역 = new Station(1L, "강남역");
 		Station 양재역 = new Station(2L, "양재역");
 		Favorite dummyFavorite = new Favorite(1L, dummyMember, 강남역, 양재역);
@@ -79,12 +85,12 @@ class FavoriteServiceTest {
 		assertThat(favoriteResponses).containsExactly(new FavoriteResponse(dummyFavorite));
 	}
 
-
 	@DisplayName("즐겨찾기 삭제")
 	@Test
-	void deleteFavorite(){
+	void deleteFavorite() {
 		// given
-		Member dummyMember = new Member(1L, MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD, MemberAcceptanceTest.AGE);
+		Member dummyMember = new Member(1L, MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD,
+			MemberAcceptanceTest.AGE);
 		Station 강남역 = new Station(1L, "강남역");
 		Station 양재역 = new Station(2L, "양재역");
 		Favorite dummyFavorite = new Favorite(1L, dummyMember, 강남역, 양재역);

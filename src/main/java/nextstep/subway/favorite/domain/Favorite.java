@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import lombok.Builder;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
@@ -46,6 +47,7 @@ public class Favorite extends BaseEntity {
 		this.target = target;
 	}
 
+	@Builder
 	public Favorite(Member member, Station source, Station target) {
 		this.member = member;
 		this.source = source;
