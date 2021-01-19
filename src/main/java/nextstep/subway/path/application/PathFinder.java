@@ -133,8 +133,21 @@ public class PathFinder {
      * @return
      */
     public int calculateFare(LoginMember loginMember, List<Station> vertexList, int distance) {
-        Integer age = loginMember.getAge();
-        return this.saleForAge(PathFinder.BASE_FARE + this.getMaxLineFare(vertexList) + this.getOverFareByDistance(distance), age);
+        return this.saleForAge(PathFinder.BASE_FARE
+                + this.getMaxLineFare(vertexList) + this.getOverFareByDistance(distance), this.getAge(loginMember));
+    }
+
+    /**
+     * 사용자의 나이를 반환합니다.
+     * 단, 사용자의 나이가 비어오는 경우(비로그인시와 같이) 기본 운임을 계산하도록 0을 반환합니다.
+     * @param loginMember
+     * @return
+     */
+    private int getAge(LoginMember loginMember) {
+        if(loginMember.getAge() != null) {
+            return loginMember.getAge();
+        }
+        return 0;
     }
 
     /**
