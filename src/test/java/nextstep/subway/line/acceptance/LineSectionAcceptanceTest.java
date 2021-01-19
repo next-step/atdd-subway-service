@@ -126,7 +126,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선에_지하철역_등록됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        지하철_구간이_반영된_역_목록이_조회됨(response);
     }
 
     public static void 지하철_노선에_지하철역_등록_실패됨(ExtractableResponse<Response> response) {
@@ -155,10 +155,60 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        지하철_구간이_반영된_역_목록이_조회됨(response);
     }
 
     public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    @Test
+    @DisplayName("지하철 구간 관련 기능")
+    void case1() {
+        //시나리오 지하철 구간을 관리
+        //지하철 구간 등록 요청
+        //when
+        ExtractableResponse<Response> response1 =  지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
+        //지하철 구간 등록됨
+        //then
+        지하철_노선에_지하철역_등록됨(response1);
+
+        //지하철 노선에 등록된 역 목록 조회 요청
+        //when
+        ExtractableResponse<Response> response2 = 지하철_노선에_등록된_역_목록_조회_요청(신분당선);
+
+        //등록한 지하철 구간이 반영된 역 목록이 조회됨
+        //then
+        지하철_구간이_반영된_역_목록이_조회됨(response2);
+
+        //지하철 구간 삭제 요청
+        //when
+        ExtractableResponse<Response> response3 = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+
+        //지하철 구간 삭제됨
+        //then
+        지하철_노선에_지하철역_제외됨(response3);
+
+        //지하철 노선에 등록된 역 목록 조회 요청
+        //when
+        ExtractableResponse<Response> response4 = 지하철_노선에_등록된_역_목록_조회_요청(신분당선);
+
+        //삭제한 지하철 구간이 반영된 역 목록이 조회됨
+        //then
+        지하철_구간이_반영된_역_목록이_조회됨(response4);
+    }
+
+    private static void 지하철_구간이_반영된_역_목록이_조회됨(ExtractableResponse<Response> response2) {
+        assertThat(response2.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private ExtractableResponse<Response> 지하철_노선에_등록된_역_목록_조회_요청(LineResponse line) {
+        return RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get("/lines/" + line.getId())
+                .then()
+                .extract();
     }
 }
