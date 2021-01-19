@@ -7,12 +7,14 @@ import static java.util.Arrays.*;
 import static java.util.Collections.*;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -28,6 +30,9 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
+    @Embedded
+    private AdditionalCost additionalCost;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
@@ -40,8 +45,13 @@ public class Line extends BaseEntity {
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
+        this(name, color, upStation, downStation, distance, new AdditionalCost(0));
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, AdditionalCost cost) {
         this.name = name;
         this.color = color;
+        this.additionalCost = cost;
         addSection(upStation, downStation, distance);
     }
 
@@ -64,6 +74,10 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public AdditionalCost getAdditionalCost() {
+        return additionalCost;
     }
 
     public List<Section> getSections() {
@@ -199,5 +213,19 @@ public class Line extends BaseEntity {
 
     private int mergeDistance(int upDistance, int downDistance) {
         return upDistance + downDistance;
+    }
+
+    public boolean containsEdge(List<LinkedList<Station>> fixedEdgeList) {
+        for (LinkedList<Station> edge : fixedEdgeList) {
+            if (hasEdge(edge)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasEdge(LinkedList<Station> edge) {
+        return sections.stream()
+                .anyMatch(l -> l.getUpStation().equals(edge.getFirst()) && l.getDownStation().equals(edge.getLast()));
     }
 }

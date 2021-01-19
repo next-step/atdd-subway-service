@@ -4,15 +4,12 @@ import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.LoginMember;
 
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.springframework.stereotype.Component;
 
-@Aspect
-@Component
+// @Aspect
+// @Component
 public class Authentication {
 
-    @Around("execution(* nextstep.subway.auth.application.AuthService.findMemberByToken(..))")
+    // @Around("execution(* nextstep.subway.auth.application.AuthService.findMemberByToken(..))")
     public Object accessCheck(ProceedingJoinPoint proceedingJoinPoint) throws Exception {
         Object returnValue = null;
         try {

@@ -1,8 +1,12 @@
 package study.unit;
 
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.domain.AdditionalCost;
+import nextstep.subway.line.domain.CostType;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.PathFinder;
+import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -26,6 +30,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 public class PathTest {
     @MockBean
     private LineService lineService;
+    @MockBean
+    private MemberService memberService;
 
     private static Station 강남역;
     private static Station 교대역;
@@ -47,10 +53,10 @@ public class PathTest {
         사당역 = new Station("사당역");
         남부터미널역 = new Station("남부터미널역");
 
-        신분당선 = new Line("신분당선", "red lighten-1", 강남역, 양재역, 10);
+        신분당선 = new Line("신분당선", "red lighten-1", 강남역, 양재역, 10, new AdditionalCost(600));
         이호선 = new Line("2호선", "green lighten-1", 서초역, 사당역, 10);
-        삼호선 = new Line("3호선", "orange darken-1", 남부터미널역, 교대역, 3);
-        신분당선.addLineStation(교대역, 강남역, 2);
+        삼호선 = new Line("3호선", "orange darken-1", 남부터미널역, 교대역, 60, new AdditionalCost(300));
+        신분당선.addLineStation(교대역, 강남역, 9);
     }
 
     @DisplayName("지하철 경로 조회 실패")
@@ -58,20 +64,25 @@ public class PathTest {
     @MethodSource("arguments")
     void findPathFail(Station s1, Station s2, Class<Exception> e) {
         when(lineService.findAllLines()).thenReturn(asList(신분당선, 이호선, 삼호선));
+        when(memberService.findMember(1L)).thenReturn(new MemberResponse(1L, "baek@github.com", 17));
+
         PathFinder pathFinder = new PathFinder(lineService.findAllLines());
 
-        assertThatThrownBy(() -> pathFinder.findPath(s1, s2)).isInstanceOf(e);
+        assertThatThrownBy(() -> pathFinder.findPath(CostType.getCostType(memberService.findMember(1L).getAge()), s1, s2)).isInstanceOf(e);
     }
 
     @DisplayName("지하철 경로 조회")
     @Test
     void findPath() {
         when(lineService.findAllLines()).thenReturn(asList(신분당선, 이호선, 삼호선));
+        when(memberService.findMember(1L)).thenReturn(new MemberResponse(1L, "baek@github.com", 17));
+
         PathFinder pathFinder = new PathFinder(lineService.findAllLines());
 
-        assertThat(pathFinder.findPath(남부터미널역, 강남역).getStations())
+        assertThat(pathFinder.findPath(CostType.getCostType(memberService.findMember(1L).getAge()), 남부터미널역, 강남역).getStations())
                 .extracting(StationResponse::getName).containsExactly("남부터미널역", "교대역", "강남역");
-        assertThat(pathFinder.findPath(남부터미널역, 강남역).getDistance()).isEqualTo(5.0);
+        assertThat(pathFinder.findPath(CostType.getCostType(memberService.findMember(1L).getAge()), 남부터미널역, 강남역).getDistance()).isEqualTo(69);
+        assertThat(pathFinder.findPath(CostType.getCostType(memberService.findMember(1L).getAge()), 남부터미널역, 강남역).getFare()).isEqualTo(2420);
     }
 
     private static Stream<Arguments> arguments() {
