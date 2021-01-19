@@ -3,6 +3,7 @@ package nextstep.subway.favorite.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -40,22 +41,32 @@ class FavoriteServiceTest {
 	@Test
 	void save() {
 		// given
-		LoginMember loginMember = new LoginMember(1L, MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.AGE);
-		Member dummyMember = new Member(1L, MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD,
-			MemberAcceptanceTest.AGE);
-		Station 강남역 = new Station(1L, "강남역");
-		Station 양재역 = new Station(2L, "양재역");
+		LoginMember loginMember = mock(LoginMember.class);
+		when(loginMember.getId()).thenReturn(1L);
+
+		Station 강남역 = mock(Station.class);
+		Station 양재역 = mock(Station.class);
+		when(강남역.getId()).thenReturn(1L);
+		when(양재역.getId()).thenReturn(2L);
+
+		Member dummyMember = new Member(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD,MemberAcceptanceTest.AGE);
 		FavoriteRequest favoriteRequest = new FavoriteRequest(강남역.getId(), 양재역.getId());
+
 		Favorite saveFavoriteEntity = Favorite.builder()
 			.member(dummyMember)
 			.source(강남역)
 			.target(양재역)
 			.build();
 
+		Favorite saveFavoriteResultExpected = mock(Favorite.class);
+		when(saveFavoriteResultExpected.getId()).thenReturn(1L);
+		when(saveFavoriteResultExpected.getSource()).thenReturn(강남역);
+		when(saveFavoriteResultExpected.getTarget()).thenReturn(양재역);
+
 		when(memberService.findMemberById(loginMember.getId())).thenReturn(dummyMember);
 		when(stationService.findStationById(favoriteRequest.getSource())).thenReturn(강남역);
 		when(stationService.findStationById(favoriteRequest.getTarget())).thenReturn(양재역);
-		when(favoriteRepository.save(saveFavoriteEntity)).thenReturn(new Favorite(1L, dummyMember, 강남역, 양재역));
+		when(favoriteRepository.save(saveFavoriteEntity)).thenReturn(saveFavoriteResultExpected);
 		FavoriteService favoriteService = new FavoriteService(favoriteRepository, stationService, memberService);
 
 		// when
@@ -68,12 +79,19 @@ class FavoriteServiceTest {
 	@Test
 	void findFavoritesOfMine() {
 		// given
-		Member dummyMember = new Member(1L, MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD,
-			MemberAcceptanceTest.AGE);
-		Station 강남역 = new Station(1L, "강남역");
-		Station 양재역 = new Station(2L, "양재역");
-		Favorite dummyFavorite = new Favorite(1L, dummyMember, 강남역, 양재역);
-		dummyMember.addFavorite(dummyFavorite);
+		Station 강남역 = mock(Station.class);
+		Station 양재역 = mock(Station.class);
+		when(강남역.getId()).thenReturn(1L);
+		when(양재역.getId()).thenReturn(2L);
+
+		Favorite dummyFavorite = mock(Favorite.class);
+		when(dummyFavorite.getId()).thenReturn(1L);
+		when(dummyFavorite.getSource()).thenReturn(강남역);
+		when(dummyFavorite.getTarget()).thenReturn(양재역);
+
+		Member dummyMember = mock(Member.class);
+		when(dummyMember.getId()).thenReturn(1L);
+		when(dummyMember.getFavorites()).thenReturn(Arrays.asList(dummyFavorite));
 
 		when(memberService.findMemberById(dummyMember.getId())).thenReturn(dummyMember);
 		FavoriteService favoriteService = new FavoriteService(favoriteRepository, stationService, memberService);
@@ -89,12 +107,15 @@ class FavoriteServiceTest {
 	@Test
 	void deleteFavorite() {
 		// given
-		Member dummyMember = new Member(1L, MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD,
-			MemberAcceptanceTest.AGE);
-		Station 강남역 = new Station(1L, "강남역");
-		Station 양재역 = new Station(2L, "양재역");
-		Favorite dummyFavorite = new Favorite(1L, dummyMember, 강남역, 양재역);
+		Favorite dummyFavorite = mock(Favorite.class);
+		when(dummyFavorite.getId()).thenReturn(1L);
+
+		Member dummyMember = mock(Member.class);
+		when(dummyMember.getId()).thenReturn(1L);
 		dummyMember.addFavorite(dummyFavorite);
+
+		Station 강남역 = mock(Station.class);
+		Station 양재역 = mock(Station.class);
 
 		when(memberService.findMemberById(dummyMember.getId())).thenReturn(dummyMember);
 		FavoriteService favoriteService = new FavoriteService(favoriteRepository, stationService, memberService);
