@@ -5,6 +5,7 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.application.NoSuchStationException;
 import nextstep.subway.path.application.NotConnectedExeption;
 import nextstep.subway.path.application.SameStartAndEndException;
+import nextstep.subway.path.application.ShortestPathInfo;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -38,11 +39,10 @@ class PathFinderTest {
         List<Section> sections = Arrays.asList(강남교대구간, 강남양재구간, 교대양재구간, 양재광교구간);
 
         PathFinder pathFinder = new PathFinder(stations, sections);
-        PathResponse shortestPath = pathFinder.findShortestPath(강남, 광교);
+        ShortestPathInfo pathInfo = pathFinder.findShortestPath(강남, 광교);
 
-        assertThat(shortestPath.getDistance()).isEqualTo(15);
-        assertThat(shortestPath.getStations())
-                .containsExactly(StationResponse.of(강남),StationResponse.of(양재),StationResponse.of(광교));
+        assertThat(pathInfo.getShortestDistance()).isEqualTo(15);
+        assertThat(pathInfo.getResultStations()).containsExactly(강남, 양재, 광교);
     }
 
     @DisplayName("출발역과 도착역이 같은 경우")

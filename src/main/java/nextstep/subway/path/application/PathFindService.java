@@ -29,6 +29,8 @@ public class PathFindService {
         List<Section> sections = lineService.getAllSections();
 
         PathFinder pathFinder = new PathFinder(stations, sections);
-        return pathFinder.findShortestPath(start, end);
+        ShortestPathInfo shortestPath = pathFinder.findShortestPath(start, end);
+
+        return new PathResponse(shortestPath.getResultStations(), shortestPath.getShortestDistance());
     }
 }
