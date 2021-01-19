@@ -18,14 +18,42 @@ public class Sections {
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private final List<Section> sections = new ArrayList<>();
 
+	public static Sections merge(List<Line> lines) {
+		Sections merged = new Sections();
+		lines.stream()
+			.map(Line::getSections)
+			.forEach(merged::addAllByDropDuplicate);
+		return merged;
+	}
+
+	public List<Section> getSections() {
+		return Collections.unmodifiableList(sections);
+	}
+
+	public List<Section> getSections(Line line) {
+		List<Section> sectionsByLine = sections.stream()
+			.filter(section -> section.getLine().equals(line))
+			.collect(Collectors.toList());
+		return Collections.unmodifiableList(sectionsByLine);
+	}
+
+	public Sections addAllByDropDuplicate(Sections other) {
+		for (Section section : other.getSections()) {
+			try {
+				addSection(section.getLine(), section.getUpStation(), section.getDownStation(), section.getDistance());
+			} catch (IllegalArgumentException e) {}
+		}
+		return this;
+	}
+
 	public void addSection(Line line, Station upStation, Station downStation, int distance) {
-		List<Station> stations = getStations();
+		List<Station> stations = getSortedStations(line);
 		throwExceptionIfNotValid(stations, upStation, downStation);
 		if (stations.contains(upStation)) {
-			findSectionByUpStation(upStation).ifPresent(it -> it.updateUpStation(downStation, distance));
+			findSectionByUpStation(line, upStation).ifPresent(it -> it.updateUpStation(downStation, distance));
 		}
 		if (stations.contains(downStation)) {
-			findSectionByDownStation(downStation).ifPresent(it -> it.updateDownStation(upStation, distance));
+			findSectionByDownStation(line, downStation).ifPresent(it -> it.updateDownStation(upStation, distance));
 		}
 		sections.add(Section.of(line, upStation, downStation, distance));
 	}
@@ -40,34 +68,44 @@ public class Sections {
 	}
 
 	public List<Station> getStations() {
+		return sections.stream()
+			.flatMap(it -> it.getStations().stream())
+			.distinct()
+			.collect(Collectors.toList());
+	}
+
+	public List<Station> getSortedStations(Line line) {
 		if (sections.isEmpty()) {
 			return Collections.emptyList();
 		}
 
 		List<Station> stations = new ArrayList<>();
-		Station upStation = findTopStation();
-		stations.add(upStation);
-
-		Optional<Section> nextSection;
-		while ((nextSection = findSectionByUpStation(upStation)).isPresent()) {
-			upStation = nextSection.map(Section::getDownStation).get();
+		findTopStation(line).ifPresent(upStation -> {
 			stations.add(upStation);
-		}
 
+			Optional<Section> nextSection;
+			while ((nextSection = findSectionByUpStation(line, upStation)).isPresent()) {
+				upStation = nextSection.map(Section::getDownStation).get();
+				stations.add(upStation);
+			}
+		});
 		return stations;
 	}
 
-	private Station findTopStation() {
-		List<Station> allStations = sections
-			.stream()
+	private Optional<Station> findTopStation(Line line) {
+		List<Section> sectionsByLine = getSections(line);
+		if (sectionsByLine.isEmpty()) {
+			return Optional.empty();
+		}
+		List<Station> allStations = sectionsByLine.stream()
 			.flatMap(it -> it.getStations().stream())
 			.distinct()
 			.collect(Collectors.toList());
 
-		for (Section section : sections) {
+		for (Section section : sectionsByLine) {
 			allStations.remove(section.getDownStation());
 		}
-		return allStations.get(0);
+		return Optional.ofNullable(allStations.get(0));
 	}
 
 	public void removeStation(Line line, Station station) {
@@ -75,8 +113,8 @@ public class Sections {
 			throw new IllegalArgumentException("마지막 구간은 삭제할 수 없습니다.");
 		}
 
-		Optional<Section> upSection = findSectionByUpStation(station);
-		Optional<Section> downSection = findSectionByDownStation(station);
+		Optional<Section> upSection = findSectionByUpStation(line, station);
+		Optional<Section> downSection = findSectionByDownStation(line, station);
 
 		if (upSection.isPresent() && downSection.isPresent()) {
 			Station newUpStation = downSection.map(Section::getUpStation).get();
@@ -84,19 +122,19 @@ public class Sections {
 			sections.add(Section.of(line, newUpStation, newDownStation, sumDistance(upSection, downSection)));
 		}
 
-		upSection.ifPresent(it -> sections.remove(it));
-		downSection.ifPresent(it -> sections.remove(it));
+		upSection.ifPresent(sections::remove);
+		downSection.ifPresent(sections::remove);
 	}
 
-	private Optional<Section> findSectionByUpStation(Station upStation) {
+	private Optional<Section> findSectionByUpStation(Line line, Station upStation) {
 		return sections.stream()
-			.filter(section -> section.getUpStation().equals(upStation))
+			.filter(section -> section.getLine().equals(line) && section.getUpStation().equals(upStation))
 			.findAny();
 	}
 
-	private Optional<Section> findSectionByDownStation(Station downStation) {
+	private Optional<Section> findSectionByDownStation(Line line, Station downStation) {
 		return sections.stream()
-			.filter(section -> section.getDownStation().equals(downStation))
+			.filter(section -> section.getLine().equals(line) && section.getDownStation().equals(downStation))
 			.findAny();
 	}
 
