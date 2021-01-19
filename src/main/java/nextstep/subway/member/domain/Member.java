@@ -2,6 +2,7 @@ package nextstep.subway.member.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.auth.domain.LoginMember;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Entity;
@@ -18,7 +19,17 @@ public class Member extends BaseEntity {
     private String password;
     private Integer age;
 
-    public Member() {
+    protected Member() {
+    }
+
+    public static Member of(LoginMember member) {
+        return new Member(member.getId(), member.getEmail(), member.getAge());
+    }
+
+    public Member(Long id, String email, Integer age) {
+        this.id = id;
+        this.email = email;
+        this.age = age;
     }
 
     public Member(String email, String password, Integer age) {
