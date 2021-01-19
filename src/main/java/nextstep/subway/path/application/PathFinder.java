@@ -268,7 +268,7 @@ public class PathFinder {
      */
     private int calculateAdditionalOverFareDistance(int distance) {
         return this.calculateOverFareByDistance(PathFinder.ADDITIONAL_OVER_DISTANCE_BOUND)
-                + (((distance - PathFinder.OVER_DISTANCE_BOUND) / 8) * 100);
+                + (int) ((Math.ceil(((distance - PathFinder.OVER_DISTANCE_BOUND) - 1) / 8) + 1) * 100);
     }
 
     /**
@@ -277,7 +277,7 @@ public class PathFinder {
      * @return
      */
     private int calculateOverFareByDistance(int distance) {
-        return ((distance - PathFinder.OVER_DISTANCE_BOUND) / 5) * 100;
+        return (int) ((Math.ceil(((distance - PathFinder.OVER_DISTANCE_BOUND) - 1) / 5) + 1) * 100);
     }
 
     /**
