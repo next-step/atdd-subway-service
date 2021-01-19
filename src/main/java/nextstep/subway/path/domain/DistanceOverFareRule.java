@@ -2,36 +2,32 @@ package nextstep.subway.path.domain;
 
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.function.Function;
 
 public enum DistanceOverFareRule {
 
-	BASIC(0, 10, (distance) -> 1250)
-	, MEDIUM (10, 50, (distance) -> {
-		int calculatedDistance = findCalculateDistance(distance, 10, 50);
-		return calculateDistanceFare(calculatedDistance, 5, 100);
-	})
-	, LONG (50, null, (distance) -> {
-		int calculatedDistance = distance - 50;
-		return calculateDistanceFare(calculatedDistance, 8, 100);
-	});
+	BASIC(0, 10, 0, 0)
+	, MEDIUM_SECTION (10, 50, 5, 100)
+	, LONG_SECTION (50, null, 8, 100);
 
 
 	private int minDistance;
 	private Optional<Integer> maxDistance;
-	private Function<Integer, Integer> calculateFare;
+	private int chargingDistance;
+	private int overFare;
 
+	private static final int MIN_FARE = 1250;
 
-	DistanceOverFareRule(int minDistance, Integer maxDistance, Function<Integer, Integer> calculateFare) {
+	DistanceOverFareRule(int minDistance, Integer maxDistance, int chargingDistance, int overFare) {
 		this.minDistance = minDistance;
-		this.maxDistance = Optional.ofNullable(maxDistance);
-		this.calculateFare = calculateFare;
+		this.maxDistance = Optional.ofNullable(maxDistance);;
+		this.chargingDistance = chargingDistance;
+		this.overFare = overFare;
 	}
 
 	public int calculateFare(int distance) {
-		return Arrays.stream(DistanceOverFareRule.values())
-			.filter(fare -> fare.compareTo(this) <= 0)
-			.mapToInt(fare -> fare.calculateFare.apply(distance))
+		return MIN_FARE + Arrays.stream(DistanceOverFareRule.values())
+			.filter(fare -> fare.compareTo(this) <= 0 && fare.chargingDistance != 0)
+			.mapToInt(fare -> fare.calculateDistanceFare(distance))
 			.sum();
 	}
 
@@ -47,19 +43,20 @@ public enum DistanceOverFareRule {
 		return distance > this.minDistance && distance <= maxDistance;
 	}
 
+	private int calculateDistanceFare(int distance) {
+		int distanceInSection = findDistanceInSection(distance);
+		return (int) ((Math.ceil((distanceInSection - 1) / chargingDistance) + 1) * overFare);
+	}
+
+	private int findDistanceInSection(int distance) {
+		return Math.min(findMaxDistance(distance), distance) - minDistance;
+	}
+
 	private int findMaxDistance(int distance) {
 		int maxDistance = distance;
 		if (this.maxDistance.isPresent()) {
 			maxDistance = this.maxDistance.get();
 		}
 		return maxDistance;
-	}
-
-	private static int findCalculateDistance(int distance, int minDistance, int maxDistance) {
-		return Math.min(distance, maxDistance) - minDistance;
-	}
-
-	private static int calculateDistanceFare(int distance, int chargingDistance, int overFare) {
-		return (int) ((Math.ceil((distance - 1) / chargingDistance) + 1) * overFare);
 	}
 }
