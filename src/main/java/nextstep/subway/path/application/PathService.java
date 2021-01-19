@@ -8,11 +8,13 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class PathService {
 
     private final StationService stationService;
@@ -23,7 +25,7 @@ public class PathService {
         this.lineService = lineService;
     }
 
-    public PathResponse findDijkstraPath(Long source, Long target) {
+    public PathResponse findShortestPath(Long source, Long target) {
         Station startStation = stationService.findById(source);
         Station endStation = stationService.findById(target);
 
