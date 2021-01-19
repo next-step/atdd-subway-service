@@ -1,24 +1,28 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import lombok.Getter;
 import nextstep.subway.common.exception.NothingException;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.station.domain.Station;
 
+@Getter
 public class PathFinder {
+	private final Lines lines;
 	private final DijkstraShortestPath<Station, DefaultWeightedEdge> path;
-
 	private GraphPath<Station, DefaultWeightedEdge> resultPath;
 
 	public PathFinder(List<Line> lines) {
-		this.path = new DijkstraShortestPath<>(generateStationGraph(lines));
+		this.lines = Lines.of(lines);
+		this.path = new DijkstraShortestPath<>(generateStationGraph());
 	}
 
 	public void selectShortPath(Station source, Station target) {
@@ -30,25 +34,19 @@ public class PathFinder {
 		return resultPath.getVertexList();
 	}
 
-	public int distance() {
-		return (int)resultPath.getWeight();
+	public Distance distance() {
+		return Distance.of((int)resultPath.getWeight());
 	}
 
-	private WeightedMultigraph<Station, DefaultWeightedEdge> generateStationGraph(List<Line> lines) {
+	private WeightedMultigraph<Station, DefaultWeightedEdge> generateStationGraph() {
 		WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
-		getStationsAll(lines).forEach(graph::addVertex);
-		lines.forEach(line -> line.sections().forEach(
-			it -> graph.setEdgeWeight(graph.addEdge(it.getUpStation(), it.getDownStation()), it.getDistance())
-		));
+		lines.stations().forEach(graph::addVertex);
+		lines.sections().forEach(
+			it -> graph.setEdgeWeight(graph.addEdge(it.getUpStation(), it.getDownStation()), it.distance())
+		);
 
 		return graph;
-	}
-	
-	private List<Station> getStationsAll(List<Line> lines) {
-		return lines.stream()
-			.flatMap(it -> it.stations().stream())
-			.collect(Collectors.toList());
 	}
 
 	private void validateStation(Station source, Station target) {

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,6 +15,7 @@ import javax.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nextstep.subway.path.domain.fare.Money;
 import nextstep.subway.station.domain.Station;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -36,29 +38,30 @@ public class Section {
 	@JoinColumn(name = "down_station_id")
 	private Station downStation;
 
-	private int distance;
+	@Embedded
+	private Distance distance;
 
 	public Section(Line line, Station upStation, Station downStation, int distance) {
 		this.line = line;
 		this.upStation = upStation;
 		this.downStation = downStation;
-		this.distance = distance;
+		this.distance = new Distance(distance);
 	}
 
 	public static Section of(Section upSection, Section downSection) {
 		return new Section(upSection.getLine(),
 			downSection.getUpStation(),
 			upSection.getDownStation(),
-			upSection.getDistance() + downSection.getDistance());
+			upSection.distance() + downSection.distance());
 	}
 
 	public void updateUpStation(Section target) {
-		this.updateDistance(target);
+		this.distance.update(target.distance());
 		this.upStation = target.getDownStation();
 	}
 
 	public void updateDownStation(Section target) {
-		updateDistance(target);
+		this.distance.update(target.distance());
 		this.downStation = target.getUpStation();
 	}
 
@@ -70,22 +73,24 @@ public class Section {
 		return getStations().contains(target);
 	}
 
-	public boolean isUpStation(Section target) {
-		return this.upStation.equals(target.getUpStation());
+	public boolean isUpStation(Station station) {
+		return this.upStation.equals(station);
 	}
 
-	public boolean isDownStation(Section target) {
-		return this.downStation.equals(target.getDownStation());
+	public boolean isDownStation(Station station) {
+		return this.downStation.equals(station);
 	}
 
-	private void validateDistance(int newDistance) {
-		if (this.distance <= newDistance) {
-			throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-		}
+	public int distance() {
+		return this.distance.getDistance();
 	}
 
-	private void updateDistance(Section section) {
-		validateDistance(section.getDistance());
-		this.distance -= section.getDistance();
+	public Money fare() {
+		return this.line.getFare();
+	}
+
+	public boolean isMatchStation(Station upStation, Station downStation) {
+		return (this.isUpStation(upStation) && this.isDownStation(downStation)) ||
+			(this.isUpStation(downStation) && this.isDownStation(upStation));
 	}
 }

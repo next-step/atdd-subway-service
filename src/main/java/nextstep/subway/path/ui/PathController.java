@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
@@ -20,7 +22,8 @@ public class PathController {
 	}
 
 	@GetMapping
-	public ResponseEntity<PathResponse> findPath(@ModelAttribute PathRequest request) {
-		return ResponseEntity.ok(pathService.findPath(request));
+	public ResponseEntity<PathResponse> findPath(@AuthenticationPrincipal LoginMember loginMember,
+		@ModelAttribute PathRequest request) {
+		return ResponseEntity.ok(pathService.findPath(loginMember, request));
 	}
 }

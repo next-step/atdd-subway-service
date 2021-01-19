@@ -15,7 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import nextstep.subway.common.exception.NothingException;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
@@ -47,13 +47,13 @@ class PathFinderTest {
 		PathFinder finder = new PathFinder(lines);
 
 		// when
-		finder.selectShortPath(인천역, 소요산역);
+		finder.selectShortPath(인천역, 강남역);
 
 		// then
 		assertAll(
 			() -> assertThat(finder.stations()).isNotNull(),
-			() -> assertThat(finder.stations()).hasSize(6),
-			() -> assertThat(finder.distance()).isEqualTo(500)
+			() -> assertThat(finder.stations()).hasSize(7),
+			() -> assertThat(finder.distance()).isEqualTo(Distance.of(450))
 		);
 	}
 
@@ -68,8 +68,7 @@ class PathFinderTest {
 
 		// then
 		assertAll(
-			() -> assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> finder.selectShortPath(인천역, 인천역)),
-			() -> assertThatExceptionOfType(NothingException.class).isThrownBy(() -> finder.selectShortPath(인천역, 강남역))
+			() -> assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> finder.selectShortPath(인천역, 인천역))
 		);
 	}
 
@@ -102,7 +101,7 @@ class PathFinderTest {
 		// then
 		assertAll(
 			() -> assertThat(stations).isNotNull(),
-			() -> assertThat(stations).hasSize(8)
+			() -> assertThat(stations).hasSize(9)
 		);
 	}
 
@@ -119,7 +118,7 @@ class PathFinderTest {
 				Station downStation = section.getDownStation();
 				graph.addVertex(upStation);
 				graph.addVertex(downStation);
-				graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance());
+				graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.distance());
 			});
 		DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
 		GraphPath result = dijkstraShortestPath.getPath(인천역, 소요산역);
@@ -148,11 +147,12 @@ class PathFinderTest {
 		구로역 = 전철역_생성(8L, "구로역");
 
 		line1 = 라인_생성("1호선", "blue", 인천역, 소요산역, 500);
-		line2 = 라인_생성("2호선", "green", 시청역, 강남역, 300);
+		line2 = 라인_생성("2호선", "green", 시청역, 강남역, 300, 900);
 		구간추가(line1, 인천역, 주안역, 10);
 		구간추가(line1, 주안역, 동암역, 20);
 		구간추가(line1, 동암역, 부평역, 30);
 		구간추가(line1, 부평역, 구로역, 40);
+		구간추가(line1, 구로역, 시청역, 50);
 	}
 
 	private void 구간추가(Line line, Station upStation, Station downStation, int distance) {
@@ -165,5 +165,9 @@ class PathFinderTest {
 
 	private Line 라인_생성(String name, String color, Station upStation, Station downStation, int distance) {
 		return new Line(name, color, upStation, downStation, distance);
+	}
+
+	private Line 라인_생성(String name, String color, Station upStation, Station downStation, int distance, int lineFare) {
+		return new Line(name, color, upStation, downStation, distance, lineFare);
 	}
 }

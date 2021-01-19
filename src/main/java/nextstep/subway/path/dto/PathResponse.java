@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nextstep.subway.line.domain.Distance;
+import nextstep.subway.path.domain.fare.Money;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -13,12 +15,13 @@ import nextstep.subway.station.dto.StationResponse;
 public class PathResponse {
 	private final List<StationResponse> stations;
 	private final int distance;
+	private final long fare;
 
-	public static PathResponse of(List<Station> stations, int distance) {
+	public static PathResponse of(List<Station> stations, Distance distance, Money fare) {
 		List<StationResponse> responses = stations.stream()
 			.map(StationResponse::of)
 			.collect(Collectors.toList());
 
-		return new PathResponse(responses, distance);
+		return new PathResponse(responses, distance.getDistance(), fare.getMoney());
 	}
 }

@@ -139,7 +139,7 @@ public class Sections {
 
 	private void addUpStation(Section target) {
 		this.sections.stream()
-			.filter(section -> section.isDownStation(target))
+			.filter(section -> section.isDownStation(target.getDownStation()))
 			.findFirst()
 			.ifPresent(section -> section.updateDownStation(target));
 		this.sections.add(target);
@@ -147,7 +147,7 @@ public class Sections {
 
 	private void addDownStation(Section target) {
 		this.sections.stream()
-			.filter(section -> section.isUpStation(target))
+			.filter(section -> section.isUpStation(target.getUpStation()))
 			.findFirst()
 			.ifPresent(section -> section.updateUpStation(target));
 		this.sections.add(target);
