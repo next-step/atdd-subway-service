@@ -22,10 +22,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTestSupport extends AcceptanceTest {
 
-    public static ExtractableResponse<Response> 최단경로_조회_요청(Long 출발역, Long 도착역) {
+    public static ExtractableResponse<Response> 최단경로_조회_요청(String token, Long 출발역, Long 도착역) {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(token)
                 .when().get("/paths?source=" + 출발역 + "&target=" + 도착역)
                 .then().log().all()
                 .extract();

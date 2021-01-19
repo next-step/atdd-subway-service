@@ -247,4 +247,19 @@ public class Sections {
             this.add(new Section(line, newUpStation, newDownStation, newDistance));
         }
     }
+
+    /**
+     * 상행역, 하행역 정보로 해당 구간이 있는지 반환합니다.
+     * @param upStation
+     * @param downStation
+     * @return
+     */
+    public boolean existSection(Station upStation, Station downStation) {
+        for (Section section : this.sections) {
+            if(upStation.equals(section.getUpStation()) && downStation.equals(section.getDownStation())) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
