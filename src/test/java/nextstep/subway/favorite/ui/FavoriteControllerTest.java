@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
+import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.MemberAcceptanceTest;
@@ -35,12 +36,22 @@ public class FavoriteControllerTest {
 	@Test
 	void createFavorite(){
 		//given
-		Station 강남역 = new Station(1L, "강남역");
-		Station 양재역 = new Station(2L, "양재역");
+		Station 강남역 = mock(Station.class);
+		Station 양재역 = mock(Station.class);
+		when(강남역.getId()).thenReturn(1L);
+		when(양재역.getId()).thenReturn(2L);
 
 		LoginMember loginMember = new LoginMember(1L, MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.AGE);
 		FavoriteRequest request = new FavoriteRequest(강남역.getId(), 양재역.getId());
-		when(favoriteService.save(loginMember, request)).thenReturn(new FavoriteResponse(1L, 강남역, 양재역));
+
+		Favorite dummyFavorite = mock(Favorite.class);
+		when(dummyFavorite.getId()).thenReturn(1L);
+		when(dummyFavorite.getSource()).thenReturn(강남역);
+		when(dummyFavorite.getTarget()).thenReturn(양재역);
+
+		FavoriteResponse favoriteResponse = new FavoriteResponse(dummyFavorite);
+
+		when(favoriteService.save(loginMember, request)).thenReturn(favoriteResponse);
 		FavoriteController favoriteController = new FavoriteController(favoriteService);
 
 		// when
@@ -54,11 +65,22 @@ public class FavoriteControllerTest {
 	@Test
 	void findFavoritesOfMine(){
 		//given
-		Station 강남역 = new Station(1L, "강남역");
-		Station 양재역 = new Station(2L, "양재역");
+		Station 강남역 = mock(Station.class);
+		Station 양재역 = mock(Station.class);
+		when(강남역.getId()).thenReturn(1L);
+		when(양재역.getId()).thenReturn(2L);
 
-		LoginMember loginMember = new LoginMember(1L, MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.AGE);
-		when(favoriteService.findFavoritesByMemberId(loginMember.getId())).thenReturn(Arrays.asList(new FavoriteResponse(1L, 강남역, 양재역)));
+		LoginMember loginMember = mock(LoginMember.class);
+		when(loginMember.getId()).thenReturn(1L);
+
+		Favorite dummyFavorite = mock(Favorite.class);
+		when(dummyFavorite.getId()).thenReturn(1L);
+		when(dummyFavorite.getSource()).thenReturn(강남역);
+		when(dummyFavorite.getTarget()).thenReturn(양재역);
+
+		List<FavoriteResponse> favoriteResponses = Arrays.asList(new FavoriteResponse(dummyFavorite));
+
+		when(favoriteService.findFavoritesByMemberId(loginMember.getId())).thenReturn(favoriteResponses);
 		FavoriteController favoriteController = new FavoriteController(favoriteService);
 
 		// when
