@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.DistanceFarePolicy;
 import nextstep.subway.path.domain.PathFinder;
@@ -27,18 +28,23 @@ public class PathService {
 		this.stationService = stationService;
 	}
 
-	public PathResponse findShortestPath(PathRequest request) {
+	public PathResponse findShortestPath(PathRequest request, LoginMember loginMember) {
 		List<Station> stations = stationService.findAllByIdIn(Arrays.asList(request.getSource(), request.getTarget()));
-
 		PathFinder pathFinder = new PathFinder(lineRepository.findAll(), stations);
-
 		GraphPath<Station, DefaultWeightedEdge> graphPath = pathFinder.findShortestPath(stations);
 
 		int distance = (int) graphPath.getWeight();
-		DistanceFarePolicy distanceFarePolicy = DistanceFarePolicy.calculateDistanceFare(distance);
-		int finalFare = DistanceFarePolicy.calculateDistanceFare(distanceFarePolicy, distance);
-
+		int finalFare = calculateFare(distance, pathFinder, graphPath.getVertexList());
 
 		return PathResponse.of(graphPath.getVertexList(), distance, finalFare);
+	}
+
+	private int calculateFare(int distance, PathFinder pathFinder, List<Station> vertexList) {
+		DistanceFarePolicy distanceFarePolicy = DistanceFarePolicy.calculateDistanceFare(distance);
+		int distanceFare = DistanceFarePolicy.calculateDistanceFare(distanceFarePolicy, distance);
+		int additionalFare = pathFinder.findMaxAdditionalFare(vertexList);
+		int finalFare = distanceFare + additionalFare;
+
+		return finalFare;
 	}
 }

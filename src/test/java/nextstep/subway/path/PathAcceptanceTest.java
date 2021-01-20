@@ -49,9 +49,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 		광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
-		신분당선 = this.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 700));
-		이호선 = this.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-green-400", 교대역.getId(), 강남역.getId(), 10, 850));
-		삼호선 = this.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-yellow-600", 교대역.getId(), 양재역.getId(), 5, 1200));
+		신분당선 = this.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 100));
+		이호선 = this.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-green-400", 교대역.getId(), 강남역.getId(), 10, 200));
+		삼호선 = this.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-yellow-600", 교대역.getId(), 양재역.getId(), 5, 300));
 
 
 		SectionRequest sectionRequest = new SectionRequest(교대역.getId(), 남부터미널역.getId(), 3);
@@ -96,7 +96,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> response = RestAssured
 				.given().log().all()
 				.accept(MediaType.APPLICATION_JSON_VALUE)
-				.when().get(String.format("/paths?source=%d&target=%d", 1, 4))
+//				.when().get(String.format("/paths?source=%d&target=%d", 1, 4))
+				.when().get(String.format("/paths?source=%d&target=%d", 3, 4))
 				.then().log().all()
 				.extract();
 
@@ -194,5 +195,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 //		System.out.println(pathResponse.getFinalFare());
 		assertThat(pathResponse.getFinalFare()).isEqualTo(1950);
 	}
+
+	
 }
 
