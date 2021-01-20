@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.DistanceFarePolicy;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
@@ -32,6 +33,12 @@ public class PathService {
 		PathFinder pathFinder = new PathFinder(lineRepository.findAll(), stations);
 
 		GraphPath<Station, DefaultWeightedEdge> graphPath = pathFinder.findShortestPath(stations);
-		return PathResponse.of(graphPath.getVertexList(), (int) graphPath.getWeight());
+
+		int distance = (int) graphPath.getWeight();
+		DistanceFarePolicy distanceFarePolicy = DistanceFarePolicy.calculateDistanceFare(distance);
+		int finalFare = DistanceFarePolicy.calculateDistanceFare(distanceFarePolicy, distance);
+
+
+		return PathResponse.of(graphPath.getVertexList(), distance, finalFare);
 	}
 }

@@ -28,6 +28,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	private StationResponse 양재역;
 	private StationResponse 교대역;
 	private StationResponse 남부터미널역;
+	private StationResponse 광교역;
 
 	/**
 	 * (4)
@@ -46,6 +47,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
 		교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
 		남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+		광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
 		신분당선 = this.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 700));
 		이호선 = this.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-green-400", 교대역.getId(), 강남역.getId(), 10, 850));
@@ -53,9 +55,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 
 		SectionRequest sectionRequest = new SectionRequest(교대역.getId(), 남부터미널역.getId(), 3);
-		ExtractableResponse<Response> responseExtractableResponse = 지하철_노선에_지하철역_등록되어_있음(삼호선.getId(), sectionRequest);
+		지하철_노선에_지하철역_등록되어_있음(삼호선.getId(), sectionRequest);
 
-
+		SectionRequest sectionRequest2 = new SectionRequest(양재역.getId(), 광교역.getId(), 55);
+		지하철_노선에_지하철역_등록되어_있음(신분당선.getId(), sectionRequest2);
 	}
 
 	public static LineResponse 지하철_노선_등록되어_있음(LineRequest params) {
@@ -146,5 +149,50 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	}
 
+	@Test
+	@DisplayName("거리별 요금 정책 - 기본운임")
+	public void checkDefaultDistanceFare() {
+		//http://0.0.0.0:8081/paths/?source=1&target=4
+		ExtractableResponse<Response> response = RestAssured
+				.given().log().all()
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.when().get(String.format("/paths?source=%d&target=%d", 3, 4))
+				.then().log().all()
+				.extract();
+
+		PathResponse pathResponse = response.jsonPath().getObject(".", PathResponse.class);
+		assertThat(pathResponse.getFinalFare()).isEqualTo(1250);
+	}
+
+	@Test
+	@DisplayName("거리별 요금 정책 - 10km초과∼50km까지(5km마다 100원)")
+	public void checkGTE10KMLT50KmKDistanceFare() {
+		//http://0.0.0.0:8081/paths/?source=1&target=4
+		ExtractableResponse<Response> response = RestAssured
+				.given().log().all()
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.when().get(String.format("/paths?source=%d&target=%d", 1, 4))
+				.then().log().all()
+				.extract();
+
+		PathResponse pathResponse = response.jsonPath().getObject(".", PathResponse.class);
+		assertThat(pathResponse.getFinalFare()).isEqualTo(1550);
+	}
+
+	@Test
+	@DisplayName("거리별 요금 정책 - 50km 초과 시 (8km마다 100원)")
+	public void checkGT50KmKDistanceFare() {
+		//http://0.0.0.0:8081/paths/?source=1&target=4
+		ExtractableResponse<Response> response = RestAssured
+				.given().log().all()
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.when().get(String.format("/paths?source=%d&target=%d", 2, 5))
+				.then().log().all()
+				.extract();
+
+		PathResponse pathResponse = response.jsonPath().getObject(".", PathResponse.class);
+//		System.out.println(pathResponse.getFinalFare());
+		assertThat(pathResponse.getFinalFare()).isEqualTo(1950);
+	}
 }
 
