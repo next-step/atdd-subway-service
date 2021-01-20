@@ -6,9 +6,10 @@ import java.util.function.Predicate;
 
 public enum FareAgeRule {
     청소년(13, 19, 0.8),
-    어린이(8, 13, 0.5);
+    어린이(6, 13, 0.5);
 
     private static final long AGE_DISCOUNT_FARE = 350;
+    private static final double DEFAULT_DISCOUNT_RATE = 1;
 
     private final int minAge;
     private final int maxAge;
@@ -28,7 +29,9 @@ public enum FareAgeRule {
         double rate = Arrays.stream(FareAgeRule.values())
                         .filter(validateAge(age))
                         .map(FareAgeRule::getDiscountRate)
-                        .findFirst().orElseThrow(() -> new RuntimeException());
+                        .findFirst().orElse(DEFAULT_DISCOUNT_RATE);
+        if (rate == DEFAULT_DISCOUNT_RATE) return fare;
+
         return (long) ((fare - AGE_DISCOUNT_FARE) * rate);
     }
 
