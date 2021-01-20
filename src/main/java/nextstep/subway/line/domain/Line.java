@@ -16,6 +16,7 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    private long fare;
 
     @Embedded
     private Sections sections = new Sections();
@@ -31,6 +32,13 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
+        sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, long fare) {
+        this.name = name;
+        this.color = color;
+        this.fare = fare;
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
@@ -55,11 +63,23 @@ public class Line extends BaseEntity {
         return sections;
     }
 
+    public long getFare() {
+        return fare;
+    }
+
     public void addSection(Station upStation, Station downStation, int distance) {
         sections.addSection(new Section(this, upStation, downStation, distance));
     }
 
     public void removeStation(Station station) {
         sections.remove(station, this);
+    }
+
+    @Override
+    public String toString() {
+        return "Line{" +
+                "name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                '}';
     }
 }

@@ -93,4 +93,8 @@ public class LineService {
     public List<Section> findAllSection() {
         return sectionRepository.findAll();
     }
+
+    public Section findSectionByStation(Station upStation, Station downStation) {
+        return sectionRepository.findByUpStationAndDownStation(upStation,downStation);
+    }
 }
