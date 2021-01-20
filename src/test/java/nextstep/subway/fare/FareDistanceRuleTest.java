@@ -3,11 +3,11 @@ package nextstep.subway.fare;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.subway.fare.FareRule.findFareByDistance;
+import static nextstep.subway.fare.FareDistanceRule.findFareByDistance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class FareRuleTest {
+class FareDistanceRuleTest {
 
 
     @DisplayName("요금을 계산한다 : 10km 이내")

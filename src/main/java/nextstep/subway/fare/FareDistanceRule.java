@@ -1,7 +1,7 @@
 package nextstep.subway.fare;
 
 
-public enum FareRule {
+public enum FareDistanceRule {
     추가운임_50km_이내(5, 100),
     추가운임_50km_초과(8, 100);
 
@@ -12,7 +12,7 @@ public enum FareRule {
     private final int fareDistance;
     private final long surcharge;
 
-    FareRule(int fareDistance, long surcharge) {
+    FareDistanceRule(int fareDistance, long surcharge) {
         this.fareDistance = fareDistance;
         this.surcharge = surcharge;
     }
@@ -40,10 +40,10 @@ public enum FareRule {
         return fare;
     }
 
-    private static long findSurcharge(FareRule fareRule, int distance) {
-        int share = distance / fareRule.getFareDistance();
-        share += distance % fareRule.getFareDistance() == 0 ? 0 : 1;
-        long surcharge = share * fareRule.getSurcharge();
+    private static long findSurcharge(FareDistanceRule fareDistanceRule, int distance) {
+        int share = distance / fareDistanceRule.getFareDistance();
+        share += distance % fareDistanceRule.getFareDistance() == 0 ? 0 : 1;
+        long surcharge = share * fareDistanceRule.getSurcharge();
         return surcharge;
     }
 }
