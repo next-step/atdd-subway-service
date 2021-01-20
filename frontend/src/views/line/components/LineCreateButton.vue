@@ -53,6 +53,16 @@
               outlined
           ></v-text-field>
         </div>
+        <div class="d-flex">
+                  <v-text-field
+                      v-model="lineForm.fare"
+                      :rules="rules.section.fare"
+                      color="grey darken-1"
+                      label="요금"
+                      placeholder="요금"
+                      outlined
+                  ></v-text-field>
+                </div>
         <div>
           <v-text-field v-model="lineForm.color" :rules="rules.line.color" :value="lineForm.color" label="노선 색상" filled disabled></v-text-field>
           <p>
@@ -113,7 +123,8 @@ export default {
           color: '',
           upStationId: '',
           downStationId: '',
-          distance: ''
+          distance: '',
+          fare: ''
         }
         this.$refs.lineForm.resetValidation()
         this.closeDialog()
