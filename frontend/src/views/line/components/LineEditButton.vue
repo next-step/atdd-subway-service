@@ -22,8 +22,8 @@
                   v-model="lineEditForm.fare"
                   :rules="rules.line.fare"
                   color="grey darken-1"
-                  label="요금"
-                  placeholder="요금"
+                  label="추가 요금"
+                  placeholder="추가 요금"
                   outlined
                 ></v-text-field>
         <div>

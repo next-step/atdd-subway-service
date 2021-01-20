@@ -23,7 +23,7 @@ public class Line extends BaseEntity {
 	@Column(unique = true)
 	private String name;
 	private String color;
-	private int fare;
+	private int additionalFare;
 
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private List<Section> sections = new ArrayList<>();
@@ -31,23 +31,23 @@ public class Line extends BaseEntity {
 	protected Line() {
 	}
 
-	public Line(String name, String color, int fare) {
+	public Line(String name, String color, int additionalFare) {
 		this.name = name;
 		this.color = color;
-		this.fare = fare;
+		this.additionalFare = additionalFare;
 	}
 
-	public Line(String name, String color, Station upStation, Station downStation, int distance, int fare) {
+	public Line(String name, String color, Station upStation, Station downStation, int distance, int additionalFare) {
 		this.name = name;
 		this.color = color;
-		this.fare = fare;
+		this.additionalFare = additionalFare;
 		sections.add(new Section(this, upStation, downStation, distance));
 	}
 
 	public Line(LineRequest request, List<Station> findStations) {
 		this.name = request.getName();
 		this.color = request.getColor();
-		this.fare = request.getFare();
+		this.additionalFare = request.getAdditionalFare();
 		sections.add(new Section(this, findStations.get(0), findStations.get(1), request.getDistance()));
 	}
 
@@ -72,8 +72,8 @@ public class Line extends BaseEntity {
 		return sections;
 	}
 
-	public int getFare() {
-		return fare;
+	public int getAdditionalFare() {
+		return additionalFare;
 	}
 
 	public List<StationResponse> getStationResponses() {
