@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.SectionRepository;
@@ -75,7 +76,7 @@ class PathServiceTest extends PathTestUtils {
         given(lineService.findSectionByStation(강남역, 양재역)).willReturn(sectionRepository.findByUpStationAndDownStation(강남역, 양재역));
 
         // when
-        PathResponse response = pathService.findShortestPath(시작점.getId(), 도착점.getId());
+        PathResponse response = pathService.findShortestPath(new LoginMember(), 시작점.getId(), 도착점.getId());
 
         // then
         assertThat(response.getStations().size()).isEqualTo(3);
