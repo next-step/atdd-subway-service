@@ -61,18 +61,18 @@ public class Line extends BaseEntity {
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 
+        if (stations.isEmpty()) {
+            line.getSections().add(new Section(line, upStation, downStation, distance));
+            return;
+        }
+
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
 
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
                 stations.stream().noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (stations.isEmpty()) {
-            line.getSections().add(new Section(line, upStation, downStation, distance));
-            return;
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
 
         if (isUpStationExisted) {
@@ -82,15 +82,15 @@ public class Line extends BaseEntity {
                     .ifPresent(it -> it.updateUpStation(downStation, distance));
 
             line.getSections().add(new Section(line, upStation, downStation, distance));
-        } else if (isDownStationExisted) {
+        }
+
+        if (isDownStationExisted) {
             line.getSections().stream()
                     .filter(it -> it.getDownStation() == downStation)
                     .findFirst()
                     .ifPresent(it -> it.updateDownStation(upStation, distance));
 
             line.getSections().add(new Section(line, upStation, downStation, distance));
-        } else {
-            throw new RuntimeException();
         }
     }
 
@@ -177,7 +177,7 @@ public class Line extends BaseEntity {
 
     public void removeLineSection(Line line, Station station) {
         if (line.getSections().size() <= 1) {
-            throw new RuntimeException("제거할 구간이 없습니다!");
+            throw new IllegalArgumentException("제거할 구간이 없습니다!");
         }
 
         Optional<Section> upLineStation = line.getSections().stream()
