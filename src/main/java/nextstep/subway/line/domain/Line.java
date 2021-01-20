@@ -16,6 +16,7 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    private int overFare;
 
     @Embedded
     private LineSections sections = new LineSections();
@@ -32,6 +33,13 @@ public class Line extends BaseEntity {
         this.name = name;
         this.color = color;
         this.sections = new LineSections(Arrays.asList(new Section(this, upStation, downStation, distance)));
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int overFare) {
+        this.name = name;
+        this.color = color;
+        this.sections = new LineSections(Arrays.asList(new Section(this, upStation, downStation, distance)));
+        this.overFare = overFare;
     }
 
     public Line(String name, String color, List<Section> sections) {
@@ -55,6 +63,10 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public int getOverFare() {
+        return overFare;
     }
 
     public List<Section> getSections() {

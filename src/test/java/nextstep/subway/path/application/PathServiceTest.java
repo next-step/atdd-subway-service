@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathRequest;
@@ -33,6 +34,7 @@ public class PathServiceTest {
 	@InjectMocks
 	PathService pathService;
 
+	private final LoginMember loginMember = new LoginMember(1L, "BB", 32);
 	private Station 강남역;
 	private Station 양재역;
 	private Station 교대역;
@@ -72,20 +74,21 @@ public class PathServiceTest {
 		when(stationRepository.findById(양재역.getId())).thenReturn(Optional.of(양재역));
 
 		//when
-		PathResponse response = pathService.findShortestPath(new PathRequest(교대역.getId(), 양재역.getId()));
+		PathResponse response = pathService.findShortestPath(loginMember, new PathRequest(교대역.getId(), 양재역.getId()));
 
 		//then
 		assertThat(response.getStations()).containsExactly(PathStationResponse.of(교대역),
 			PathStationResponse.of(남부터미널역),
 			PathStationResponse.of(양재역));
 		assertThat(response.getDistance()).isEqualTo(5L);
+		assertThat(response.getFare()).isEqualTo(1250);
 	}
 
 	@Test
 	@DisplayName("출발역과 도착역이 같은 경우 IllegalArgumentException을 throw 해야한다.")
 	void sameSourceAndTarget() {
 		//when/then
-		assertThatThrownBy(() -> pathService.findShortestPath(new PathRequest(1L, 1L)))
+		assertThatThrownBy(() -> pathService.findShortestPath(loginMember, new PathRequest(1L, 1L)))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -98,7 +101,7 @@ public class PathServiceTest {
 		when(stationRepository.findById(없는_출발역ID)).thenReturn(Optional.empty());
 
 		//when/then
-		assertThatThrownBy(() -> pathService.findShortestPath(new PathRequest(없는_출발역ID, 양재역.getId())))
+		assertThatThrownBy(() -> pathService.findShortestPath(loginMember, new PathRequest(없는_출발역ID, 양재역.getId())))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
@@ -112,7 +115,7 @@ public class PathServiceTest {
 		when(stationRepository.findById(없는_도착역ID)).thenReturn(Optional.empty());
 
 		//when/then
-		assertThatThrownBy(() -> pathService.findShortestPath(new PathRequest(교대역.getId(), 없는_도착역ID)))
+		assertThatThrownBy(() -> pathService.findShortestPath(loginMember, new PathRequest(교대역.getId(), 없는_도착역ID)))
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 }

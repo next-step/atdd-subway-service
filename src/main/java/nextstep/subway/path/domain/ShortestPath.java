@@ -6,14 +6,16 @@ import nextstep.subway.station.domain.Station;
 
 public class ShortestPath {
 	private List<Station> stations;
-	private long distance;
+	private int distance;
+	private int fare;
 
 	protected ShortestPath() {
 	}
 
-	public ShortestPath(List<Station> stations, long distance) {
+	public ShortestPath(List<Station> stations, int distance) {
 		this.stations = stations;
 		this.distance = distance;
+		fare = SubwayFare.calculateDistanceFare(distance);
 	}
 
 	public List<Station> getStations() {
@@ -22,5 +24,13 @@ public class ShortestPath {
 
 	public long getDistance() {
 		return distance;
+	}
+
+	public int getFare() {
+		return fare;
+	}
+
+	public void calculateLineOverFareAndAgeDiscount(int maxLineOverFare, int age) {
+		fare = SubwayFare.calculateReducedFare(fare + maxLineOverFare, age);
 	}
 }

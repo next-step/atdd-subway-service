@@ -54,6 +54,6 @@ public class Favorite extends BaseEntity {
 		if (this.member == null) {
 			return false;
 		}
-		return this.member.getId().equals(memberId);
+		return this.member.isEqualIdTo(memberId);
 	}
 }

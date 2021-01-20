@@ -1,5 +1,7 @@
 package nextstep.subway.member.domain;
 
+import java.util.Objects;
+
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
 import org.apache.commons.lang3.StringUtils;
@@ -53,5 +55,9 @@ public class Member extends BaseEntity {
         if (!StringUtils.equals(this.password, password)) {
             throw new AuthorizationException("로그인 정보가 일치하지 않습니다.");
         }
+    }
+
+    public boolean isEqualIdTo(Long memberId) {
+        return Objects.equals(id, memberId);
     }
 }

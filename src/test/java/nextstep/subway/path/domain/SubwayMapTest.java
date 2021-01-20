@@ -23,6 +23,7 @@ public class SubwayMapTest {
 	private Line 이호선;
 	private Line 삼호선;
 	private SubwayMap 전체_지하철_노선;
+	private static final int NO_DISCOUNT_AGE = 32;
 
 	/**
 	 * 교대역    ---   *2호선* (10)  ---   강남역   ----  *2호선* (5) ---- 잠실역
@@ -40,14 +41,14 @@ public class SubwayMapTest {
 		남부터미널역 = new Station("남부터미널역");
 		잠실역 = new Station("잠실역");
 
-		신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
-		이호선 = new Line("이호선", "bg-red-600", 교대역, 강남역, 10);
-		삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 5);
+		신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10, 400);
+		이호선 = new Line("이호선", "bg-red-600", 교대역, 강남역, 10, 500);
+		삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 5, 900);
 
 		삼호선.addSection(교대역, 남부터미널역, 3);
 		이호선.addSection(강남역, 잠실역, 5);
 
-		전체_지하철_노선 = new SubwayMap(Arrays.asList(신분당선, 이호선, 삼호선));
+		전체_지하철_노선 = new SubwayMap(Arrays.asList(신분당선, 이호선, 삼호선), new DijkstraPathFinder());
 	}
 
 	@Test
@@ -71,7 +72,7 @@ public class SubwayMapTest {
 	@DisplayName("최단거리를 구하면 최단거리 구간의 역 목록과 최단거리가 계산되어야 한다.")
 	void registerGraph() {
 		//when
-		ShortestPath path = 전체_지하철_노선.findShortestPath(잠실역, 남부터미널역);
+		ShortestPath path = 전체_지하철_노선.findShortestPathAndFare(잠실역, 남부터미널역, NO_DISCOUNT_AGE);
 
 		//then
 		assertThat(path.getStations()).containsExactly(잠실역, 강남역, 양재역, 남부터미널역);
@@ -85,10 +86,22 @@ public class SubwayMapTest {
 		Station 연결안된_역1 = new Station(100L, "연결안된_역1");
 		Station 연결안된_역2 = new Station(200L, "연결안된_역2");
 		Line 신규노선 = new Line("연결안된노선", "rainbow", 연결안된_역1, 연결안된_역2, 10);
-		전체_지하철_노선 = new SubwayMap(Arrays.asList(신분당선, 이호선, 삼호선, 신규노선));
+		전체_지하철_노선 = new SubwayMap(Arrays.asList(신분당선, 이호선, 삼호선, 신규노선), new DijkstraPathFinder());
 
 		//when/then
-		assertThatThrownBy(() -> 전체_지하철_노선.findShortestPath(교대역, 연결안된_역1))
+		assertThatThrownBy(() -> 전체_지하철_노선.findShortestPathAndFare(교대역, 연결안된_역1, NO_DISCOUNT_AGE))
 			.isInstanceOf(IllegalArgumentException.class);
+	}
+
+	@Test
+	@DisplayName("최단 경로 조회시, 추가요금이 있는 노선이 포함되었다면 그 중 최대 추가요금이 더해져야한다.")
+	void calculateFareWithOverFareLine() {
+		//given
+		// distance(17): 1450, maxOverFare: 900
+		ShortestPath path = 전체_지하철_노선.findShortestPathAndFare(잠실역, 남부터미널역, NO_DISCOUNT_AGE);
+		int expectedMaxLineOverFare = 1450 + 900;
+
+		//when/then
+		assertThat(path.getFare()).isEqualTo(expectedMaxLineOverFare);
 	}
 }

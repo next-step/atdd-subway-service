@@ -57,6 +57,10 @@ public class Section {
         return distance.get();
     }
 
+    public int getLineOverFare() {
+        return line.getOverFare();
+    }
+
     public void updateUpStation(Station station, int newDistance) {
         this.distance.calculateNewDistance(newDistance);
         this.upStation = station;
@@ -73,6 +77,11 @@ public class Section {
 
     public boolean isDownStation(Station station) {
         return this.downStation.equals(station);
+    }
+
+    public boolean isTwoStations(Station upStation, Station downStation) {
+        return (isUpStation(upStation) && isDownStation(downStation))
+            || (isUpStation(downStation) && isDownStation(upStation));
     }
 
     @Override
