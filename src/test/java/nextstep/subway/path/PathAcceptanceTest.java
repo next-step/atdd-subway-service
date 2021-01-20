@@ -4,9 +4,12 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -24,11 +27,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	private LineResponse 신분당선;
 	private LineResponse 이호선;
 	private LineResponse 삼호선;
+	private LineResponse 사호선;
 	private StationResponse 강남역;
 	private StationResponse 양재역;
 	private StationResponse 교대역;
 	private StationResponse 남부터미널역;
 	private StationResponse 광교역;
+	private StationResponse 혜화역;
+	private StationResponse 사당역;
+	private TokenResponse tokenResponse;
 
 	/**
 	 * (4)
@@ -48,10 +55,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
 		남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 		광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
+		혜화역 = StationAcceptanceTest.지하철역_등록되어_있음("혜화역").as(StationResponse.class);
+		사당역 = StationAcceptanceTest.지하철역_등록되어_있음("사당역").as(StationResponse.class);
 
 		신분당선 = this.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 100));
 		이호선 = this.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-green-400", 교대역.getId(), 강남역.getId(), 10, 200));
 		삼호선 = this.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-yellow-600", 교대역.getId(), 양재역.getId(), 5, 300));
+
+		사호선 = this.지하철_노선_등록되어_있음(new LineRequest("사호선", "bg-yellow-600", 혜화역.getId(), 사당역.getId(), 5, 0));
 
 
 		SectionRequest sectionRequest = new SectionRequest(교대역.getId(), 남부터미널역.getId(), 3);
@@ -59,6 +70,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 		SectionRequest sectionRequest2 = new SectionRequest(양재역.getId(), 광교역.getId(), 55);
 		지하철_노선에_지하철역_등록되어_있음(신분당선.getId(), sectionRequest2);
+
 	}
 
 	public static LineResponse 지하철_노선_등록되어_있음(LineRequest params) {
@@ -96,8 +108,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> response = RestAssured
 				.given().log().all()
 				.accept(MediaType.APPLICATION_JSON_VALUE)
-//				.when().get(String.format("/paths?source=%d&target=%d", 1, 4))
-				.when().get(String.format("/paths?source=%d&target=%d", 3, 4))
+				.when().get(String.format("/paths?source=%d&target=%d", 1, 4))
 				.then().log().all()
 				.extract();
 
@@ -157,7 +168,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> response = RestAssured
 				.given().log().all()
 				.accept(MediaType.APPLICATION_JSON_VALUE)
-				.when().get(String.format("/paths?source=%d&target=%d", 3, 4))
+				.when().get(String.format("/paths?source=%d&target=%d", 6, 7))
 				.then().log().all()
 				.extract();
 
@@ -177,7 +188,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 				.extract();
 
 		PathResponse pathResponse = response.jsonPath().getObject(".", PathResponse.class);
-		assertThat(pathResponse.getFinalFare()).isEqualTo(1550);
+		assertThat(pathResponse.getFinalFare()).isEqualTo(1850);
 	}
 
 	@Test
@@ -192,10 +203,28 @@ public class PathAcceptanceTest extends AcceptanceTest {
 				.extract();
 
 		PathResponse pathResponse = response.jsonPath().getObject(".", PathResponse.class);
-//		System.out.println(pathResponse.getFinalFare());
-		assertThat(pathResponse.getFinalFare()).isEqualTo(1950);
+		assertThat(pathResponse.getFinalFare()).isEqualTo(2250);
 	}
 
-	
+	@Test
+	@DisplayName("로그인 사용자의 경우 연령별 요금 할인 적용")
+	public void applyAgeDisCountPolicyForLoginMember() {
+		ExtractableResponse<Response> createResponse = MemberAcceptanceTest.회원_생성을_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD, 13);
+		tokenResponse = AuthAcceptanceTest.로그인_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD).as(TokenResponse.class);
+
+		ExtractableResponse<Response> response = RestAssured
+				.given().log().all()
+				.auth().oauth2(tokenResponse.getAccessToken())
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.when().get(String.format("/paths?source=%d&target=%d", 3, 4))
+				.then().log().all()
+				.extract();
+
+		PathResponse pathResponse = response.jsonPath().getObject(".", PathResponse.class);
+		System.out.println(pathResponse.getFinalFare());
+		assertThat(pathResponse.getFinalFare()).isEqualTo(1270);
+	}
+
+
 }
 
