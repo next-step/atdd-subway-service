@@ -39,10 +39,20 @@ public class Sections {
         return stations;
     }
 
-    public Optional<Section> findSection(Station upStation, Station downStation) {
+    public Optional<Section> findSection(Long upStationId, Long downStationId) {
         return this.sections.stream()
-                .filter(item -> item.isMatched(upStation, downStation))
+                .filter(item -> item.isMatched(upStationId, downStationId))
                 .findFirst();
+    }
+
+    public Optional<Station> findStation(Long id) {
+        Optional<Section> optionalSection = this.sections.stream()
+                .filter(it -> it.isStationContain(id))
+                .findFirst();
+        if (optionalSection.isPresent()) {
+            return optionalSection.get().getSation(id);
+        }
+        return Optional.empty();
     }
 
     public void addSection(Line line, Station upStation, Station downStation, int distance) {
@@ -118,7 +128,6 @@ public class Sections {
         int newDistance = upLineSection.getDistance() + downLineSection.getDistance();
         return new Section(line, newUpStation, newDownStation, newDistance);
     }
-
 
 
 }

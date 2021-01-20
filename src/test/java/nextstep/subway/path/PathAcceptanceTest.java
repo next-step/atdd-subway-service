@@ -62,9 +62,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록됨(response);
     }
 
-    @DisplayName("최단 경로로 조회한다 1")
+    @DisplayName("최단 경로로 조회한다 - 한 정거장")
     @Test
-    public void test1() {
+    public void shortestPathOneStation() {
         // when
         ExtractableResponse<Response> response = 지하철_경로_조회_요청(new PathRequest(교대역.getId(), 강남역.getId()));
 
@@ -76,9 +76,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         경로_역_일치됨(pathResponse, 교대역, 강남역);
     }
 
-    @DisplayName("최단 경로로 조회한다 2")
+    @DisplayName("최단 경로로 조회한다 - 두 정거장")
     @Test
-    public void test2() {
+    public void shortestPathTwoStation() {
         // when
         ExtractableResponse<Response> response = 지하철_경로_조회_요청(new PathRequest(교대역.getId(), 양재역.getId()));
 
@@ -92,7 +92,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("조회 불가 케이스 - 출발역과 도착역이 같은 경우")
     @Test
-    public void test4() {
+    public void invalidCaseSameStation() {
         // when
         ExtractableResponse<Response> response = 지하철_경로_조회_요청(new PathRequest(교대역.getId(), 교대역.getId()));
 
@@ -102,7 +102,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("조회 불가 케이스 - 출발역과 도착역이 연결이 되어 있지 않은 경우")
     @Test
-    public void test5() {
+    public void invalidCaseNotConnected() {
         // when
         ExtractableResponse<Response> response = 지하철_경로_조회_요청(new PathRequest(교대역.getId(), 혼자떨어진역.getId()));
 
@@ -112,7 +112,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("조회 불가 케이스 - 존재하지 않은 출발역이나 도착역을 조회 할 경우")
     @Test
-    public void test6() {
+    public void invalidCaseNotExist() {
         Long invalidId = 999999l;
         // when
         ExtractableResponse<Response> response = 지하철_경로_조회_요청(new PathRequest(invalidId, 혼자떨어진역.getId()));

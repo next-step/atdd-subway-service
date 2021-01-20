@@ -1,19 +1,22 @@
-package nextstep.subway.lines;
+package nextstep.subway.path;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.application.PathFinder;
+import nextstep.subway.path.dto.PathFindResponse;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class LinesTest {
+public class PathFinderTest {
 
-    private Lines lines;
     private Station 교대역;
     private Station 강남역;
     private Station 서초역;
@@ -26,6 +29,7 @@ public class LinesTest {
     private Station 양재역;
     private Station 정자역;
     private Station 판교역;
+    private Lines lines;
 
     /**
      * 2호선 - 서초 - 교대 - 강남 - 역삼
@@ -64,15 +68,14 @@ public class LinesTest {
         }});
     }
 
-    @DisplayName("최단 경로 테스트 1")
+    @DisplayName("최단 경로 테스트 - 2개라인, 고터 - 교대 - 강남 - 정자 - 판교")
     @Test
-    public void test1() {
-        assertThat(lines.findPath(신사역, 양재역).getDistance()).isEqualTo(15);
-        /**
-         * 고터 - 교대 - 양재 - 강남 = 3 + 3 + 20
-         * 고터 - 교대 - 강남 = 3 + 10
-         */
-        assertThat(lines.findPath(고속터미널역, 판교역).getStations().size()).isEqualTo(5);
+    public void shortestPathTest() {
+        PathFindResponse pathFindResponse = PathFinder.findPath(lines.getLines(), 고속터미널역, 판교역);
+        assertThat(pathFindResponse.getStationIds().size()).isEqualTo(5);
+
+        List<Long> expected = new ArrayList<>(Arrays.asList(6L, 2L, 1L, 9L, 10L));
+        assertThat(pathFindResponse.getStationIds()).isEqualTo(expected);
     }
 
 }
