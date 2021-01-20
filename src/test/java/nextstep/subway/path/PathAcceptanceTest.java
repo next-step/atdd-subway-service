@@ -75,7 +75,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		return lineResponse;
 	}
 
-	public ExtractableResponse<Response> 지하철_노선에_지하철역_등록되어_있음(Long lineId, SectionRequest sectionRequest) {
+	public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록되어_있음(Long lineId, SectionRequest sectionRequest) {
 		return RestAssured
 				.given().log().all()
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
