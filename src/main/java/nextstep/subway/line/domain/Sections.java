@@ -18,6 +18,9 @@ public class Sections {
         return sections;
     }
 
+    public void addSections(Section section){
+        sections.add(section);
+    }
     public boolean isNextLineStation(Line line, Station station) {
         return line.getSections().stream()
                 .filter(it -> it.getUpStation().equals(station))
@@ -44,4 +47,11 @@ public class Sections {
                 .findFirst();
     }
 
+    public Section callNextLineStation(Line line, Station station) {
+        return nextLineStation(line, station).get();
+    }
+
+    public Section callNextUpstation(Line line, Station station) {
+        return nextUpstation(line, station).get();
+    }
 }

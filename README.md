@@ -57,3 +57,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 * 1.LinSectionAcceptanceTest 리팩토링
 * 2.LineService 리팩토링(비즈니스로직 도메인으로 옮기기)
 * 3.LineTest 추가
+
+## Step2
+* 1.step1 refactoring 일급콜렌션 사용 위임
+* 2.PathAcceptanceTest 작성
+* 3.경로 조회 수행하는 도메인 추가 및 테스트 작성
