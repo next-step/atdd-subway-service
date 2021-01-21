@@ -9,6 +9,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.exception.NotConnectedLineException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathResponse;
@@ -25,11 +26,14 @@ public class PathFinder {
 	private List<Line> lines;
 	private Station sourceStation;
 	private Station targetStation;
+	private LoginMember loginMember;
 
-	public PathFinder(List<Line> lines, Station sourceStation, Station targetStation) {
+	public PathFinder(List<Line> lines, Station sourceStation, Station targetStation,
+		LoginMember loginMember) {
 		this.lines = lines;
 		this.sourceStation = sourceStation;
 		this.targetStation = targetStation;
+		this.loginMember = loginMember;
 	}
 
 	public PathResponse getDijkstraShortestPath() {
@@ -56,7 +60,7 @@ public class PathFinder {
 	}
 
 	private int calculateFare(int distance) {
-		FarePolicy farePolicy = new FarePolicy(lines, distance);
+		FarePolicy farePolicy = new FarePolicy(lines, distance,  loginMember.getAge());
 		return farePolicy.calculate();
 	}
 

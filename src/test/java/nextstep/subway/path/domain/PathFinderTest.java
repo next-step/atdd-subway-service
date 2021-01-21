@@ -7,6 +7,7 @@ import java.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.exception.NotConnectedLineException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
@@ -27,7 +28,8 @@ class PathFinderTest {
 	@Test
 	void sourceStationAndTargetStationNotConnectedException() {
 
-		PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선), 강남역, 교대역);
+		LoginMember loginMember = new LoginMember();
+		PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선), 강남역, 교대역, loginMember);
 		assertThatThrownBy(() -> {
 			pathFinder.getDijkstraShortestPath();
 		}).isInstanceOf(NotConnectedLineException.class);

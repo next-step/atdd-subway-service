@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathResponse;
@@ -73,8 +74,9 @@ class PathServiceTest {
 		when(stationService.findStationById(sourceId)).thenReturn(교대역);
 		when(stationService.findStationById(targetId)).thenReturn(양재역);
 
+		LoginMember loginMember = mock(LoginMember.class);
 		PathService pathService = new PathService(lineRepository, stationService);
-		PathResponse pathResponse = pathService.findShortestPath(sourceId, targetId);
+		PathResponse pathResponse = pathService.findShortestPath(loginMember, sourceId, targetId);
 
 		// then
 		assertThat(pathResponse.getStations()).containsExactly(PathStationResponse.of(교대역),
@@ -113,8 +115,9 @@ class PathServiceTest {
 		when(stationService.findStationById(sourceId)).thenReturn(교대역);
 		when(stationService.findStationById(targetId)).thenReturn(양재역);
 
+		LoginMember loginMember = mock(LoginMember.class);
 		PathService pathService = new PathService(lineRepository, stationService);
-		PathResponse pathResponse = pathService.findShortestPath(sourceId, targetId);
+		PathResponse pathResponse = pathService.findShortestPath(loginMember, sourceId, targetId);
 
 		// then
 		assertThat(pathResponse.getStations()).containsExactly(PathStationResponse.of(교대역),
@@ -152,8 +155,9 @@ class PathServiceTest {
 		when(stationService.findStationById(sourceId)).thenReturn(교대역);
 		when(stationService.findStationById(targetId)).thenReturn(양재역);
 
+		LoginMember loginMember = mock(LoginMember.class);
 		PathService pathService = new PathService(lineRepository, stationService);
-		PathResponse pathResponse = pathService.findShortestPath(sourceId, targetId);
+		PathResponse pathResponse = pathService.findShortestPath(loginMember, sourceId, targetId);
 
 		// then
 		assertThat(pathResponse.getStations()).containsExactly(PathStationResponse.of(교대역),
@@ -192,8 +196,9 @@ class PathServiceTest {
 		when(stationService.findStationById(sourceId)).thenReturn(교대역);
 		when(stationService.findStationById(targetId)).thenReturn(양재역);
 
+		LoginMember loginMember = mock(LoginMember.class);
 		PathService pathService = new PathService(lineRepository, stationService);
-		PathResponse pathResponse = pathService.findShortestPath(sourceId, targetId);
+		PathResponse pathResponse = pathService.findShortestPath(loginMember, sourceId, targetId);
 
 		// then
 		assertThat(pathResponse.getStations()).containsExactly(PathStationResponse.of(교대역),

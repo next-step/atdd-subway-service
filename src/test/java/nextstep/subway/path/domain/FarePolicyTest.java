@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
@@ -25,10 +27,10 @@ class FarePolicyTest {
 	@DisplayName("10km 이하")
 	@Test
 	void calculateLowerThenTenKilometer(){
-
 		// given
+		LoginMember loginMember = new LoginMember();
 		List<Line> lines = Arrays.asList(new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10, 0));
-		FarePolicy farePolicy = new FarePolicy(lines, 5);
+		FarePolicy farePolicy = new FarePolicy(lines, 5, loginMember.getAge());
 
 		// when
 		int amount = farePolicy.calculate();
@@ -41,8 +43,9 @@ class FarePolicyTest {
 	@Test
 	void calculateBetweenTenKilometerAndFiftyKilometer(){
 		// given
+		LoginMember loginMember = new LoginMember();
 		List<Line> lines = Arrays.asList(new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10, 0));
-		FarePolicy farePolicy = new FarePolicy(lines, 30);
+		FarePolicy farePolicy = new FarePolicy(lines, 30, loginMember.getAge());
 
 		// when
 		int amount = farePolicy.calculate();
@@ -56,8 +59,9 @@ class FarePolicyTest {
 	@Test
 	void calculateOverFiftyKilometer(){
 		// given
+		LoginMember loginMember = new LoginMember();
 		List<Line> lines = Arrays.asList(new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10, 0));
-		FarePolicy farePolicy = new FarePolicy(lines, 80);
+		FarePolicy farePolicy = new FarePolicy(lines, 80, loginMember.getAge());
 
 		// when
 		int amount = farePolicy.calculate();
@@ -71,8 +75,9 @@ class FarePolicyTest {
 	@Test
 	void calculateLowerThenTenKilometerWithAdditionalFare(){
 		// given
+		LoginMember loginMember = new LoginMember();
 		List<Line> lines = Arrays.asList(new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10, 900));
-		FarePolicy farePolicy = new FarePolicy(lines, 5);
+		FarePolicy farePolicy = new FarePolicy(lines, 5, loginMember.getAge());
 
 		// when
 		int amount = farePolicy.calculate();
@@ -85,8 +90,9 @@ class FarePolicyTest {
 	@Test
 	void calculateBetweenTenKilometerAndFiftyKilometerWithAdditionalFare(){
 		// given
+		LoginMember loginMember = new LoginMember();
 		List<Line> lines = Arrays.asList(new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10, 900));
-		FarePolicy farePolicy = new FarePolicy(lines, 30);
+		FarePolicy farePolicy = new FarePolicy(lines, 30, loginMember.getAge());
 
 		// when
 		int amount = farePolicy.calculate();
@@ -100,8 +106,9 @@ class FarePolicyTest {
 	@Test
 	void calculateOverFiftyKilometerWithAdditionalFare(){
 		// given
+		LoginMember loginMember = new LoginMember();
 		List<Line> lines = Arrays.asList(new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10, 900));
-		FarePolicy farePolicy = new FarePolicy(lines, 80);
+		FarePolicy farePolicy = new FarePolicy(lines, 80, loginMember.getAge());
 
 		// when
 		int amount = farePolicy.calculate();
@@ -127,6 +134,7 @@ class FarePolicyTest {
 		 */
 
 		// given
+		LoginMember loginMember = new LoginMember();
 		Station 교대역 = new Station(3L, "교대역");
 		Station 남부터미널역 = new Station(4L, "남부터미널역");
 		Station 과천역 = new Station(5L, "과천역");
@@ -138,7 +146,7 @@ class FarePolicyTest {
 
 
 		List<Line> lines = Arrays.asList(삼호선, GTX_C);
-		FarePolicy farePolicy = new FarePolicy(lines, 8);
+		FarePolicy farePolicy = new FarePolicy(lines, 8, loginMember.getAge());
 
 		// when
 		int amount = farePolicy.calculate();
@@ -147,4 +155,37 @@ class FarePolicyTest {
 		assertThat(amount).isEqualTo(1250 + 1100);
 	}
 
+	@DisplayName("10km 이하, 어린이 할인")
+	@Test
+	void calculateLowerThenTenKilometerChildDiscount(){
+		// given
+		LoginMember loginMember = mock(LoginMember.class);
+		when(loginMember.getAge()).thenReturn(10);
+
+		List<Line> lines = Arrays.asList(new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10, 0));
+		FarePolicy farePolicy = new FarePolicy(lines, 5, loginMember.getAge());
+
+		// when
+		int amount = farePolicy.calculate();
+
+		// then
+		assertThat(amount).isEqualTo(450);
+	}
+
+	@DisplayName("10km 이하, 청소년 할인")
+	@Test
+	void calculateLowerThenTenKilometerTeenagerDiscount(){
+		// given
+		LoginMember loginMember = mock(LoginMember.class);
+		when(loginMember.getAge()).thenReturn(15);
+
+		List<Line> lines = Arrays.asList(new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10, 0));
+		FarePolicy farePolicy = new FarePolicy(lines, 5, loginMember.getAge());
+
+		// when
+		int amount = farePolicy.calculate();
+
+		// then
+		assertThat(amount).isEqualTo(180);
+	}
 }

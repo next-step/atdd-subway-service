@@ -6,6 +6,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.exception.DuplicateSourceAndTargetException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -31,14 +32,16 @@ public class PathService {
 		this.stationService = stationService;
 	}
 
-	public PathResponse findShortestPath(Long sourceId, Long targetId) {
+	public PathResponse findShortestPath(LoginMember loginMember, Long sourceId, Long targetId) {
 		validateFindShortestPathCondition(sourceId, targetId);
 		List<Line> allLines = lineRepository.findAll();
 		Station sourceStation = stationService.findStationById(sourceId);
 		Station targetStation = stationService.findStationById(targetId);
 
-		PathFinder pathFinder = new PathFinder(allLines, sourceStation, targetStation);
-		return pathFinder.getDijkstraShortestPath();
+		PathFinder pathFinder = new PathFinder(allLines, sourceStation, targetStation, loginMember);
+		PathResponse dijkstraShortestPath = pathFinder.getDijkstraShortestPath();
+
+		return dijkstraShortestPath;
 	}
 
 	private void validateFindShortestPathCondition(Long sourceId, Long targetId) {
