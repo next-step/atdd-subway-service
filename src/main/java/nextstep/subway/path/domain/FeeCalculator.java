@@ -1,7 +1,6 @@
 package nextstep.subway.path.domain;
 
 public class FeeCalculator {
-
     public static final int ZERO = 0;
     public static final int DEFAULT_FEE = 1250;
     public static final int MAX_EXTRA_FEE_WITHIN_50 = 800;
@@ -32,5 +31,9 @@ public class FeeCalculator {
         }
 
         return fee;
+    }
+
+    public static Integer calculateFee(Integer lineExtraFee, Integer distance) {
+        return calculateFee(distance) + lineExtraFee;
     }
 }

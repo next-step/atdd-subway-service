@@ -2,6 +2,7 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.FeeCalculator;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -30,7 +31,15 @@ public class PathFindService {
 
         PathFinder pathFinder = new PathFinder(stations, sections);
         ShortestPathInfo shortestPath = pathFinder.findShortestPath(start, end);
+        Integer distance = shortestPath.getShortestDistance();
+        List<Station> pathStations = shortestPath.getResultStations();
 
-        return new PathResponse(shortestPath.getResultStations(), shortestPath.getShortestDistance());
+        int lineExtraFee = findLineExtraFee(pathStations);
+        Integer fee = FeeCalculator.calculateFee(lineExtraFee, distance);
+        return new PathResponse(pathStations, distance, fee);
+    }
+
+    private int findLineExtraFee(List<Station> pathStations) {
+        return lineService.getMaxExtraFee(pathStations);
     }
 }

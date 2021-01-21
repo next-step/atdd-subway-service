@@ -8,7 +8,6 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +20,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class LineService {
+    public static final int ZERO = 0;
     private LineRepository lineRepository;
     private StationService stationService;
 
@@ -32,7 +32,7 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        Line persistLine = lineRepository.save(Line.of(request, upStation, downStation));
         return LineResponse.of(persistLine);
     }
 
@@ -78,6 +78,7 @@ public class LineService {
         line.addSection(upStation, downStation, request.getDistance());
     }
 
+
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
@@ -89,9 +90,34 @@ public class LineService {
         List<Section> sections = getAllSections();
         Set<Station> stations = new HashSet<>();
         sections.forEach(it -> {
-                stations.add(it.getUpStation());
-                stations.add(it.getDownStation());
+            stations.add(it.getUpStation());
+            stations.add(it.getDownStation());
         });
         return stations;
+    }
+
+    public Integer getMaxExtraFee(List<Station> stations) {
+        Set<Line> results = new HashSet<>();
+
+        List<Line> lines = lineRepository.findAll();
+
+        for (Line line : lines) {
+            List<Section> sections = line.getSections();
+
+            for (int i = 0; i < stations.size() - 1; i++) {
+                Station start = stations.get(i);
+                Station end = stations.get(i + 1);
+
+                sections.forEach(it -> {
+                    if (it.hasSection(start, end)) {
+                        results.add(line);
+                    }
+                });
+            }
+        }
+        return results.stream()
+                .mapToInt(Line::getExtraFee)
+                .max()
+                .orElse(ZERO);
     }
 }

@@ -69,4 +69,9 @@ public class Section {
         this.downStation = station;
         this.distance -= newDistance;
     }
+
+    public boolean hasSection(Station start, Station end) {
+        return (downStation == start && upStation == end)
+                || (upStation == start && downStation == end);
+    }
 }
