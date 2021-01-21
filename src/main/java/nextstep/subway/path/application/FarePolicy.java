@@ -2,6 +2,7 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 
@@ -191,6 +192,7 @@ public enum FarePolicy {
         return (int) (((100 - saleRate) * 0.01) * fare);
     }
 
+
     /**
      * 노선의 추가 요금을 구합니다.
      * 단, 여러 노선을 거치는 경우 가장 큰 추가요금을 반환합니다.
@@ -198,23 +200,16 @@ public enum FarePolicy {
      * @return
      */
     private static int getMaxLineFare(List<Station> vertexList, List<Line> persistLines) {
-        List<Integer> lineFares = getLineFares(vertaxListToFindSectionInfos(vertexList), persistLines);
-
-        return lineFares.stream().max(Integer::compareTo).orElse(0);
-    }
-
-    /**
-     * 최단경로에 포함 되어 있는 구간의 노선 추가 요금을 구합니다.
-     * @param findSectionInfos
-     * @param persistLines
-     * @return
-     */
-    private static List<Integer> getLineFares(List<Map.Entry<Station, Station>> findSectionInfos, List<Line> persistLines) {
-        List<Integer> lineFares = new ArrayList<>();
+        Sections includedSections = getIncludedSections(vertexList);
+        int max = 0;
         for (Line line : persistLines) {
-            FarePolicy.addLineFareFromSections(findSectionInfos, lineFares, line);
+            max = Math.max(max, line.getSections().stream()
+                                        .filter(includedSections::existSection)
+                                        .map(Section::getSurcharge).distinct()
+                                        .max(Integer::compareTo).orElse(0));
         }
-        return lineFares;
+
+        return max;
     }
 
     /**
@@ -222,31 +217,15 @@ public enum FarePolicy {
      * @param vertexList
      * @return
      */
-    private static List<Map.Entry<Station, Station>> vertaxListToFindSectionInfos(List<Station> vertexList) {
-        List<Map.Entry<Station, Station>> findSections = new ArrayList<>();
+    private static Sections getIncludedSections(List<Station> vertexList) {
+        List<Section> includedSections = new ArrayList<>();
 
         vertexList.stream().reduce((upStation, downStation)
-                -> { findSections.add(new AbstractMap.SimpleEntry<Station, Station>(upStation, downStation));
+                -> { includedSections.add(new Section(new Line(), upStation, downStation, 0));
             return downStation;
         });
 
-        return findSections;
-    }
-
-    /**
-     * 노선의 구간에 주어진 구간이 있으면, 해당 노선의 추가 운임을 목록에 추가합니다.
-     * @param findSectionInfos
-     * @param lineFares
-     * @param line
-     */
-    private static void addLineFareFromSections(List<Map.Entry<Station, Station>> findSectionInfos
-            , List<Integer> lineFares, Line line) {
-        Sections sections = new Sections(line.getSections());
-
-        findSectionInfos.stream().filter(findSectionInfo
-                -> sections.existSection(findSectionInfo.getKey(), findSectionInfo.getValue()))
-                .findAny()
-                .ifPresent(yes -> lineFares.add(line.getSurcharge()));
+        return new Sections(includedSections);
     }
 
 }

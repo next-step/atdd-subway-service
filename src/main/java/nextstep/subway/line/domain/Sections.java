@@ -180,29 +180,6 @@ public class Sections {
     }
 
     /**
-     *
-     * @param isDownStationExisted
-     * @param line
-     * @param upStation
-     * @param downStation
-     * @param distance
-     * @return 구간 추가 여부
-     */
-    private boolean addExistedDownStation(boolean isDownStationExisted, Line line
-            , Station upStation, Station downStation, int distance) {
-        if (isDownStationExisted) {
-            this.getSections().stream()
-                    .filter(it -> it.getDownStation() == downStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, distance));
-
-            this.add(new Section(line, upStation, downStation, distance));
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * 해당 역이 있는 구간을 삭제합니다.
      * 해당 역이 있는 구간이 2개인 경우 (즉, 중간에 있는 역인 경우) 하나는 지우고, 하나는 두 구간을 합쳐서 저장합니다.
      * @param line
@@ -250,11 +227,12 @@ public class Sections {
 
     /**
      * 상행역, 하행역 정보로 해당 구간이 있는지 반환합니다.
-     * @param upStation
-     * @param downStation
+     * @param findSection
      * @return
      */
-    public boolean existSection(Station upStation, Station downStation) {
+    public boolean existSection(Section findSection) {
+        Station upStation = findSection.getUpStation();
+        Station downStation = findSection.getDownStation();
         for (Section section : this.sections) {
             if(upStation.equals(section.getUpStation()) && downStation.equals(section.getDownStation())) {
                 return true;
