@@ -56,7 +56,7 @@ public class PathFinder {
 	}
 
 	private int calculateFare(int distance) {
-		FarePolicy farePolicy = new FarePolicy(distance);
+		FarePolicy farePolicy = new FarePolicy(lines, distance);
 		return farePolicy.calculate();
 	}
 

@@ -30,7 +30,7 @@ public class Line extends BaseEntity {
 	@Column(unique = true)
 	private String name;
 	private String color;
-	private int additionalFare = 0;
+	private int additionalFare;
 
 	@Embedded
 	private Sections sections = new Sections();

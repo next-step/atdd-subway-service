@@ -162,4 +162,43 @@ class PathServiceTest {
 		assertThat(pathResponse.getFare()).isEqualTo(2550);
 	}
 
+	@DisplayName("최단거리 조회 - 10Km 이하 / 900원 추가요금 ")
+	@Test
+	void findShortestPathDistanceLowerTenKilometerWithAdditionalFare() {
+		/**
+		 * 교대역    --- *2호선(10)* ---   강남역
+		 * |                        |
+		 * *3호선(3)*                   *신분당선(10)*
+		 * |                        |
+		 * 남부터미널역  --- *3호선(2)* ---   양재
+		 */
+
+		신분당선 = new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10, 0);
+		Line 이호선 = new Line(12L, "이호선", "bg-red-600", 교대역, 강남역, 10, 0);
+		Line 삼호선 = new Line(13L, "삼호선", "bg-red-600", 교대역, 양재역, 5, 900);
+
+		삼호선.addSection(교대역, 남부터미널역, 3);
+
+
+		//given
+		Long sourceId = 교대역.getId();
+		Long targetId = 양재역.getId();
+
+		List<Line> 신분당선_mock = Arrays.asList(신분당선, 이호선, 삼호선);
+
+		int distance_mock = 5;
+
+		when(lineRepository.findAll()).thenReturn(신분당선_mock);
+		when(stationService.findStationById(sourceId)).thenReturn(교대역);
+		when(stationService.findStationById(targetId)).thenReturn(양재역);
+
+		PathService pathService = new PathService(lineRepository, stationService);
+		PathResponse pathResponse = pathService.findShortestPath(sourceId, targetId);
+
+		// then
+		assertThat(pathResponse.getStations()).containsExactly(PathStationResponse.of(교대역),
+			PathStationResponse.of(남부터미널역), PathStationResponse.of(양재역));
+		assertThat(pathResponse.getDistance()).isEqualTo(distance_mock);
+		assertThat(pathResponse.getFare()).isEqualTo(1250 + 900);
+	}
 }
