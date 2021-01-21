@@ -1,20 +1,26 @@
 package nextstep.subway.fare;
 
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+
 public enum FareDistanceRule {
-    추가운임_50km_이내(5, 100),
-    추가운임_50km_초과(8, 100);
+    추가운임_50km_초과(8, 100, 50),
+    추가운임_10km_초과_50km_이내(5, 100, 10);
 
     private static final long DEFAULT_FARE = 1250;
-    private static final int DISTANCE_10KM = 10;
-    private static final int DISTANCE_50KM = 50;
 
     private final int fareDistance;
     private final long surcharge;
+    private final int minDistance;
 
-    FareDistanceRule(int fareDistance, long surcharge) {
+    FareDistanceRule(int fareDistance, long surcharge, int minDistance) {
         this.fareDistance = fareDistance;
         this.surcharge = surcharge;
+        this.minDistance = minDistance;
     }
 
     public int getFareDistance() {
@@ -25,19 +31,29 @@ public enum FareDistanceRule {
         return surcharge;
     }
 
+    public int getMinDistance() {
+        return minDistance;
+    }
+
     public static long findFareByDistance(int distance) {
+        List<FareDistanceRule> rules = Arrays.stream(FareDistanceRule.values())
+                .sorted(Comparator.comparing(FareDistanceRule::getMinDistance).reversed())
+                .collect(Collectors.toList());
+
         long fare = DEFAULT_FARE;
 
-        if (distance > DISTANCE_50KM) {
-            fare += findSurcharge(추가운임_50km_초과, distance - DISTANCE_50KM);
-            distance = DISTANCE_50KM;
-        }
-
-        if (distance > DISTANCE_10KM) {
-            fare += findSurcharge(추가운임_50km_이내, distance - DISTANCE_10KM);
+        for (FareDistanceRule rule : rules) {
+            if (isRuleDistance(distance, rule)) {
+                fare += findSurcharge(rule, distance - rule.getMinDistance());
+                distance = rule.getMinDistance();
+            }
         }
 
         return fare;
+    }
+
+    private static boolean isRuleDistance(int distance, FareDistanceRule rule) {
+        return distance > rule.getMinDistance();
     }
 
     private static long findSurcharge(FareDistanceRule fareDistanceRule, int distance) {
