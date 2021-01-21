@@ -9,7 +9,6 @@ public enum FareAgeRule {
     어린이(6, 13, 0.5);
 
     private static final long AGE_DISCOUNT_FARE = 350;
-    private static final double DEFAULT_DISCOUNT_RATE = 1;
 
     private final int minAge;
     private final int maxAge;
@@ -26,13 +25,15 @@ public enum FareAgeRule {
     }
 
     public static long discountFareByAge(Integer age, long fare) {
-        double rate = Arrays.stream(FareAgeRule.values())
-                        .filter(validateAge(age))
-                        .map(FareAgeRule::getDiscountRate)
-                        .findFirst().orElse(DEFAULT_DISCOUNT_RATE);
-        if (rate == DEFAULT_DISCOUNT_RATE) return fare;
+        return Arrays.stream(FareAgeRule.values())
+                .filter(validateAge(age))
+                .findFirst()
+                .map(fareAgeRule -> fareAgeRule.discount(fare))
+                .orElse(fare);
+    }
 
-        return (long) ((fare - AGE_DISCOUNT_FARE) * rate);
+    private long discount(long fare) {
+        return (long) ((fare - AGE_DISCOUNT_FARE) * getDiscountRate());
     }
 
     private static Predicate<FareAgeRule> validateAge(Integer age) {
