@@ -1,13 +1,8 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.station.domain.Station;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,9 +20,9 @@ public class PathFinder {
     List<Station> station = new ArrayList<>();
     int distance;
 
-    public void findRouteSearch(Line line) {
-       Line actual = new Line(line.getName(), line.getColor());
-       List<Station> stations = actual.getStations(line);
+    public void findRouteSearch(Station station1, Station station2) {
+        //최단경로 구하기
+
     }
 
     public List<Station> getStation() {

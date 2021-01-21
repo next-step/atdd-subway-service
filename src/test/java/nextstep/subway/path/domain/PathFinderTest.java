@@ -1,19 +1,31 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.station.domain.Station;
+import org.assertj.core.util.Arrays;
+import org.assertj.core.util.Lists;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.when;
 
+@DisplayName("단위 테스트 - mockito의 MockitoExtension을 활용한 가짜 협력 객체 사용")
+@ExtendWith(MockitoExtension.class)
 class PathFinderTest {
+    @Mock
+    private LineRepository lineRepository;
+
     private Line 신분당선;
     private Line 이호선;
     private Line 삼호선;
@@ -63,9 +75,17 @@ class PathFinderTest {
     @Test
     @DisplayName("경로 조회 메소드 테스트")
     void findRouteSearch() {
-        PathFinder path = new PathFinder();
-        path.findRouteSearch(삼호선);
+        when(lineRepository.findAll())
+                .thenReturn(Lists.newArrayList(
+                        new Line("삼호선", "orange darken-1", new Station("교대역"), new Station("남부터미널"), 3),
+                        new Line("삼호선", "orange darken-1", new Station("남부터미널"), new Station("남부터미널"), 2),
+                        new Line("이호선", "green lighten-1", new Station("교대역"), new Station("강남역"), 10),
+                        new Line("신분당선", "red lighten-1", new Station("강남역"), new Station("양재역"), 10)
+                ));
 
-        assertThat(path.getStation().size()).isEqualTo(2);
+        PathFinder path = new PathFinder();
+        path.findRouteSearch(교대역, 양재역);
+
+        assertThat(path.getStation().size()).isEqualTo(0);
     }
 }
