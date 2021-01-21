@@ -42,8 +42,11 @@ public enum FareDistanceRule {
 
     private static long findSurcharge(FareDistanceRule fareDistanceRule, int distance) {
         int share = distance / fareDistanceRule.getFareDistance();
-        share += distance % fareDistanceRule.getFareDistance() == 0 ? 0 : 1;
-        long surcharge = share * fareDistanceRule.getSurcharge();
-        return surcharge;
+        if (!isDivided(fareDistanceRule, distance)) share++;
+        return share * fareDistanceRule.getSurcharge();
+    }
+
+    private static boolean isDivided(FareDistanceRule fareDistanceRule, int distance) {
+        return distance % fareDistanceRule.getFareDistance() == 0;
     }
 }
