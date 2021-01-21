@@ -75,7 +75,7 @@ public class LineService {
         List<Station> stations = stationService.findByIdIn(Arrays.asList(request.getUpStationId(), request.getDownStationId()));
         Station upStation = extractStation(stations, request.getUpStationId());
         Station downStation = extractStation(stations, request.getDownStationId());
-        return new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance());
+        return new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance(), request.getAdditionalFare());
     }
 
     private Station extractStation(List<Station> stations, Long stationId) {

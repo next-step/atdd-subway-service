@@ -31,7 +31,7 @@ public class LineResponse {
     }
 
     public static LineResponse of(Line line) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), convertStations(line.getStations()), 900, line.getCreatedDate(), line.getModifiedDate());
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), convertStations(line.getStations()), line.getAdditionalFare(), line.getCreatedDate(), line.getModifiedDate());
     }
 
     public Long getId() {
