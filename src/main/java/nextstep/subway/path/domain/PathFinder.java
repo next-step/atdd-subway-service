@@ -49,10 +49,15 @@ public class PathFinder {
 
 		List<Station> shortestPath = graphPathResult.getVertexList();
 		int distance = (int)graphPathResult.getWeight();
-
+		int fare = calculateFare(distance);
 		List<PathStationResponse> pathStationResponses = shortestPathResultToPathStationResponses(shortestPath);
 
-		return PathResponse.of(pathStationResponses, distance);
+		return PathResponse.of(pathStationResponses, distance, fare);
+	}
+
+	private int calculateFare(int distance) {
+		FarePolicy farePolicy = new FarePolicy(distance);
+		return farePolicy.calculate();
 	}
 
 	private List<PathStationResponse> shortestPathResultToPathStationResponses(List<Station> shortestPath) {
@@ -64,7 +69,7 @@ public class PathFinder {
 
 	private void generateEdgeWeight(List<Line> lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
 		lines.stream()
-			.map(line -> line.getSections())
+			.map(Line::getSections)
 			.flatMap(Collection::stream)
 			.forEach(section -> {
 				graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
@@ -74,7 +79,7 @@ public class PathFinder {
 
 	private void generateVertex(List<Line> lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
 		lines.stream()
-			.map(line -> line.getStations())
+			.map(Line::getStations)
 			.flatMap(Collection::stream)
 			.forEach(station -> graph.addVertex(station));
 	}

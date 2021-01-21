@@ -12,18 +12,20 @@ import lombok.Builder;
 public class PathResponse {
 	private List<PathStationResponse> stations;
 	private int distance;
+	private int fare;
 
 	@Builder
-	public PathResponse(List<PathStationResponse> stations, int distance) {
+	public PathResponse(List<PathStationResponse> stations, int distance, int fare) {
 		this.stations = stations;
 		this.distance = distance;
+		this.fare = fare;
 	}
 
 	public PathResponse() {
 	}
 
-	public static PathResponse of(List<PathStationResponse> pathStationResponses, int distance) {
-		return new PathResponse(pathStationResponses, distance);
+	public static PathResponse of(List<PathStationResponse> pathStationResponses, int distance, int fare) {
+		return new PathResponse(pathStationResponses, distance, fare);
 	}
 
 	public List<PathStationResponse> getStations() {
@@ -32,5 +34,9 @@ public class PathResponse {
 
 	public int getDistance() {
 		return distance;
+	}
+
+	public int getFare() {
+		return fare;
 	}
 }
