@@ -10,47 +10,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class LineTest {
 
     @Test
-    void addSection1() {
-        Station 강남역 = new Station("강남역");
-        Station 정자역 = new Station("정자역");
-        Station 광교역 = new Station("광교역");
-        //given
-        Line line = new Line("2호선", "green", 강남역, 정자역, 10);
-        //when
-        line.addSection(정자역, 광교역, 10);
-        //then
-         assertThat(line.getStations(line)).containsExactly(강남역, 정자역, 광교역);
-    }
-
-    @Test
-    @DisplayName("구간 추가 - 새로운 구간의 상행역과 기존 구간의 상행역이 같은 경우")
-    void addSectio2() {
-        Station 강남역 = new Station("강남역");
-        Station 정자역 = new Station("정자역");
-        Station 광교역 = new Station("광교역");
-        //given
-        Line line = new Line("2호선", "green", 강남역, 정자역, 10);
-        //when
-        line.add(new Section(line, 강남역, 광교역, 5));
-        //then
-        assertThat(line.getStations(line)).containsExactly(강남역, 광교역, 정자역);
-    }
-
-    @Test
-    @DisplayName("구간 추가 - 새로운 구간의 하행역과 기존 구간의 하행역이 같은 경우")
-    void addSectio3() {
-        Station 강남역 = new Station("강남역");
-        Station 정자역 = new Station("정자역");
-        Station 광교역 = new Station("광교역");
-        //given
-        Line line = new Line("2호선", "green", 강남역, 정자역, 10);
-        //when
-        line.add(new Section(line, 광교역, 정자역, 5));
-        //then
-        assertThat(line.getStations(line)).containsExactly(강남역, 광교역, 정자역);
-    }
-
-    @Test
     @DisplayName("구간 추가 - 새로운 구간의 하행역과 기존 구간의 상행역이 같은 경우")
     void addSection4() {
         Station 강남역 = new Station("강남역");
