@@ -9,6 +9,7 @@ import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.member.MemberAcceptanceTest;
+import nextstep.subway.path.application.FarePolicy;
 import nextstep.subway.path.application.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -93,7 +94,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getStations().size()).isEqualTo(3);
         assertThat(pathResponse.getDistance()).isEqualTo(15);
-        assertThat(pathResponse.getFare()).isEqualTo(PathFinder.BASE_FARE + 100 + 200);
+        assertThat(pathResponse.getFare()).isEqualTo(FarePolicy.BASE_FARE + 100 + 200);
     }
 
     @ParameterizedTest
