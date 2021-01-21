@@ -27,7 +27,6 @@ public class PathService {
         Station source = stationService.findById(request.getSource());
         Station target = stationService.findById(request.getTarget());
         pathFinder.findShortestPath(source, target);
-        ShortestPath shortestPath = pathFinder.getShortestPath();
-        return PathResponse.of(shortestPath.getStations(), shortestPath.getDistance());
+        return PathResponse.from(pathFinder.getShortestPath());
     }
 }

@@ -9,6 +9,7 @@ import java.util.List;
 public class ShortestPath {
     private final List<Station> stations = new ArrayList<>();
     private final PathDistance distance;
+    private final PathFare fare;
 
     public static ShortestPath of(List<Station> stations, Integer distance) {
         return new ShortestPath(stations, distance);
@@ -18,6 +19,7 @@ public class ShortestPath {
         validate(stations, distance);
         this.stations.addAll(stations);
         this.distance = new PathDistance(distance);
+        this.fare = new PathFare(FareCalculator.calculateFareOf(distance));
     }
 
     public List<Station> getStations() {
@@ -26,6 +28,10 @@ public class ShortestPath {
 
     public int getDistance() {
         return distance.getDistance();
+    }
+
+    public int getFare() {
+        return fare.getFare();
     }
 
     private void validate(List<Station> stations, Integer distance) {
