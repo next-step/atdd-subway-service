@@ -3,7 +3,6 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.station.domain.Station;
-import org.assertj.core.util.Arrays;
 import org.assertj.core.util.Lists;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -78,14 +77,15 @@ class PathFinderTest {
         when(lineRepository.findAll())
                 .thenReturn(Lists.newArrayList(
                         new Line("삼호선", "orange darken-1", new Station("교대역"), new Station("남부터미널"), 3),
-                        new Line("삼호선", "orange darken-1", new Station("남부터미널"), new Station("남부터미널"), 2),
+                        new Line("삼호선", "orange darken-1", new Station("남부터미널"), new Station("양재역"), 2),
                         new Line("이호선", "green lighten-1", new Station("교대역"), new Station("강남역"), 10),
                         new Line("신분당선", "red lighten-1", new Station("강남역"), new Station("양재역"), 10)
                 ));
 
-        PathFinder path = new PathFinder();
+        PathFinder path = new PathFinder(lineRepository);
         path.findRouteSearch(교대역, 양재역);
 
-        assertThat(path.getStation().size()).isEqualTo(0);
+        assertThat(path.getStation().size()).isEqualTo(3);
+        assertThat(path.getDistance()).isEqualTo(5);
     }
 }

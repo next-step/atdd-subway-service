@@ -12,10 +12,14 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 
 @DisplayName("지하철 경로 조회")
@@ -81,8 +85,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void case1() {
         Map<String, String> params = new HashMap<>();
         params.put("source", "1");
-        params.put("target", "6");
+        params.put("target", "4");
 
+        ExtractableResponse<Response> response = 최단경로_요청(params);
+
+        최단경로_요청이_조회됨(response);
+    }
+
+    private ExtractableResponse<Response> 최단경로_요청(Map<String, String> params) {
         ExtractableResponse<Response> response = RestAssured
                 .given()
                 .body(params)
@@ -91,6 +101,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .get("/paths")
                 .then()
                 .extract();
+        return response;
     }
 
+    private void 최단경로_요청이_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private void 최단경로_요청_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
 }
