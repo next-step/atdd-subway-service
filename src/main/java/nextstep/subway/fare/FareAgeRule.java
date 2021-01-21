@@ -25,7 +25,7 @@ public enum FareAgeRule {
         return discountRate;
     }
 
-    public static long discountFareByAge(int age, long fare) {
+    public static long discountFareByAge(Integer age, long fare) {
         double rate = Arrays.stream(FareAgeRule.values())
                         .filter(validateAge(age))
                         .map(FareAgeRule::getDiscountRate)
@@ -35,7 +35,7 @@ public enum FareAgeRule {
         return (long) ((fare - AGE_DISCOUNT_FARE) * rate);
     }
 
-    private static Predicate<FareAgeRule> validateAge(int age) {
-        return fareAgeRule -> fareAgeRule.minAge <= age && fareAgeRule.maxAge > age;
+    private static Predicate<FareAgeRule> validateAge(Integer age) {
+        return fareAgeRule -> age != null && fareAgeRule.minAge <= age && fareAgeRule.maxAge > age;
     }
 }
