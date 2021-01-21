@@ -21,7 +21,7 @@ class PathFinderTest {
 	Station 강남역 = new Station(1L, "강남역");
 	Station 양재역 = new Station(2L, "양재역");
 	Station 교대역 = new Station(3L, "교대역");
-	Line 신분당선 = new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10);
+	Line 신분당선 = new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10, 0);
 
 	@DisplayName("출발역과 도착역이 연결되어 있지 않은 경우")
 	@Test

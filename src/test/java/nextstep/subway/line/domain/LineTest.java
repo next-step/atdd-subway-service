@@ -35,7 +35,7 @@ class LineTest {
 	@Test
 	void createLineWithUpStationAndDownStation() {
 		// when
-		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8);
+		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8, 0);
 
 		// then
 		assertThat(actual.getName()).isEqualTo("신분당선");
@@ -47,7 +47,7 @@ class LineTest {
 	@Test
 	void updateLineInfo() {
 		// given
-		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8);
+		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8, 0);
 
 		// when
 		actual.update(new Line("2호선", "green"));
@@ -61,7 +61,7 @@ class LineTest {
 	@Test
 	void addStationMiddle() {
 		// given
-		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8);
+		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8, 0);
 
 		// when
 		actual.addSection(강남역, 판교역, 3);
@@ -75,7 +75,7 @@ class LineTest {
 	@Test
 	void addStationMiddle2() {
 		// given
-		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8);
+		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8, 0);
 
 		// when
 		actual.addSection(판교역, 광교역, 3);
@@ -90,7 +90,7 @@ class LineTest {
 	void addStationNewStart() {
 		// given
 		Station 신논현역 = new Station("신논현역");
-		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8);
+		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8, 0);
 
 		// when
 		actual.addSection(신논현역, 강남역, 3);
@@ -105,7 +105,7 @@ class LineTest {
 	void addStationNewEnd() {
 		// given
 		Station 호매실역 = new Station("호매실역");
-		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8);
+		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8, 0);
 
 		// when
 		actual.addSection(광교역, 호매실역, 3);
@@ -119,7 +119,7 @@ class LineTest {
 	@Test
 	void addStationDuplicateException() {
 		// given
-		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8);
+		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8, 0);
 
 		// when
 		// then
@@ -133,7 +133,7 @@ class LineTest {
 	@Test
 	void addStationMustContainExistStationException() {
 		// given
-		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8);
+		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8, 0);
 
 		// when
 		Station 서울역 = new Station("서울역");
@@ -150,7 +150,7 @@ class LineTest {
 	@Test
 	void remoteStationStart() {
 		// given
-		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8);
+		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8, 0);
 		actual.addSection(강남역, 판교역, 3);
 
 		// when
@@ -165,7 +165,7 @@ class LineTest {
 	@Test
 	void remoteStationEnd() {
 		// given
-		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8);
+		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8, 0);
 		actual.addSection(강남역, 판교역, 3);
 
 		// when
@@ -180,7 +180,7 @@ class LineTest {
 	@Test
 	void remoteStationMiddle() {
 		// given
-		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8);
+		Line actual = new Line("신분당선", "red", 강남역, 광교역, 8, 0);
 		actual.addSection(강남역, 판교역, 3);
 
 		// when

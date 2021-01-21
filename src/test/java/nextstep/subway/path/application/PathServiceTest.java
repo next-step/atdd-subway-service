@@ -54,9 +54,9 @@ class PathServiceTest {
 		 * 남부터미널역  --- *3호선(2)* ---   양재
 		 */
 
-		신분당선 = new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10);
-		Line 이호선 = new Line(12L, "이호선", "bg-red-600", 교대역, 강남역, 10);
-		Line 삼호선 = new Line(13L, "삼호선", "bg-red-600", 교대역, 양재역, 5);
+		신분당선 = new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10, 0);
+		Line 이호선 = new Line(12L, "이호선", "bg-red-600", 교대역, 강남역, 10, 0);
+		Line 삼호선 = new Line(13L, "삼호선", "bg-red-600", 교대역, 양재역, 5, 0);
 
 		삼호선.addSection(교대역, 남부터미널역, 3);
 
@@ -94,9 +94,9 @@ class PathServiceTest {
 		 * 남부터미널역  --- *3호선(20)* ---   양재
 		 */
 
-		신분당선 = new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 60);
-		Line 이호선 = new Line(12L, "이호선", "bg-red-600", 교대역, 강남역, 60);
-		Line 삼호선 = new Line(13L, "삼호선", "bg-red-600", 교대역, 양재역, 35);
+		신분당선 = new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 60, 0);
+		Line 이호선 = new Line(12L, "이호선", "bg-red-600", 교대역, 강남역, 60, 0);
+		Line 삼호선 = new Line(13L, "삼호선", "bg-red-600", 교대역, 양재역, 35, 0);
 
 		삼호선.addSection(교대역, 남부터미널역, 15);
 
@@ -134,9 +134,9 @@ class PathServiceTest {
 		 * 남부터미널역  --- *3호선(44)* ---   양재
 		 */
 
-		신분당선 = new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 110);
-		Line 이호선 = new Line(12L, "이호선", "bg-red-600", 교대역, 강남역, 100);
-		Line 삼호선 = new Line(13L, "삼호선", "bg-red-600", 교대역, 양재역, 64);
+		신분당선 = new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 110, 0);
+		Line 이호선 = new Line(12L, "이호선", "bg-red-600", 교대역, 강남역, 100, 0);
+		Line 삼호선 = new Line(13L, "삼호선", "bg-red-600", 교대역, 양재역, 64, 0);
 
 		삼호선.addSection(교대역, 남부터미널역, 30);
 

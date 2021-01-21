@@ -30,6 +30,7 @@ public class Line extends BaseEntity {
 	@Column(unique = true)
 	private String name;
 	private String color;
+	private int additionalFare = 0;
 
 	@Embedded
 	private Sections sections = new Sections();
@@ -40,16 +41,19 @@ public class Line extends BaseEntity {
 	}
 
 	@Builder
-	public Line(String name, String color, Station upStation, Station downStation, int distance) {
+	public Line(String name, String color, Station upStation, Station downStation, int distance, int additionalFare) {
 		this.name = name;
 		this.color = color;
+		this.additionalFare = additionalFare;
 		sections.addSection(this, upStation, downStation, distance);
 	}
 
-	public Line(long id, String name, String color, Station upStation, Station downStation, int distance) {
+	public Line(long id, String name, String color, Station upStation, Station downStation, int distance,
+		int additionalFare) {
 		this.id = id;
 		this.name = name;
 		this.color = color;
+		this.additionalFare = additionalFare;
 		sections.addSection(this, upStation, downStation, distance);
 	}
 
@@ -126,6 +130,10 @@ public class Line extends BaseEntity {
 		}
 	}
 
+	public boolean isSectionsExists() {
+		return getSections().size() > MINIMAL_SECTION_COUNT;
+	}
+
 	public List<Section> getSections() {
 		return sections.getSections();
 	}
@@ -134,7 +142,19 @@ public class Line extends BaseEntity {
 		return sections.getStations();
 	}
 
-	public boolean isSectionsExists() {
-		return getSections().size() > MINIMAL_SECTION_COUNT;
+	public Long getId() {
+		return id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public int getAdditionalFare() {
+		return additionalFare;
 	}
 }

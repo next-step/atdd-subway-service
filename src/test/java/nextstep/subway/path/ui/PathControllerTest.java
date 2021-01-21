@@ -84,8 +84,8 @@ public class PathControllerTest {
 		Station 교대역 = new Station(3L, "교대역");
 		Station 남부터미널역 = new Station(4L, "남부터미널역");
 
-		Line 신분당선 = new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10);
-		Line 이호선 = new Line(12L, "이호선", "bg-red-600", 교대역, 강남역, 10);
+		Line 신분당선 = new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10, 0);
+		Line 이호선 = new Line(12L, "이호선", "bg-red-600", 교대역, 강남역, 10, 0);
 
 		//when
 		when(pathService.findShortestPath(강남역.getId(), 남부터미널역.getId())).thenThrow(new NotConnectedLineException());
@@ -108,8 +108,8 @@ public class PathControllerTest {
 		Station 교대역 = new Station(3L, "교대역");
 		Station 남부터미널역 = new Station(4L, "남부터미널역");
 
-		Line 신분당선 = new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10);
-		Line 이호선 = new Line(12L, "이호선", "bg-red-600", 교대역, 강남역, 10);
+		Line 신분당선 = new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10, 0);
+		Line 이호선 = new Line(12L, "이호선", "bg-red-600", 교대역, 강남역, 10, 0);
 
 		Long invalidSourceId = 500L;
 		//when
@@ -133,8 +133,8 @@ public class PathControllerTest {
 		Station 교대역 = new Station(3L, "교대역");
 		Station 남부터미널역 = new Station(4L, "남부터미널역");
 
-		Line 신분당선 = new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10);
-		Line 이호선 = new Line(12L, "이호선", "bg-red-600", 교대역, 강남역, 10);
+		Line 신분당선 = new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10, 0);
+		Line 이호선 = new Line(12L, "이호선", "bg-red-600", 교대역, 강남역, 10, 0);
 
 		Long invalidSourceId = 500L;
 		//when
