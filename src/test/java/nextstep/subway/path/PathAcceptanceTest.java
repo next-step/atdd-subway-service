@@ -1,19 +1,16 @@
-package nextstep.subway.favorite;
+package nextstep.subway.path;
 
 import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.favorite.dto.FavoriteRequest;
-import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.member.MemberAcceptanceTest;
-import nextstep.subway.path.PathAcceptanceTest;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,108 +19,212 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.List;
-
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("즐겨찾기 관련 기능")
-public class FavoriteAcceptanceTest extends AcceptanceTest {
+
+@DisplayName("지하철 경로 조회")
+public class PathAcceptanceTest extends AcceptanceTest {
 	private LineResponse 신분당선;
 	private LineResponse 이호선;
 	private LineResponse 삼호선;
+	private LineResponse 사호선;
 	private StationResponse 강남역;
 	private StationResponse 양재역;
 	private StationResponse 교대역;
 	private StationResponse 남부터미널역;
+	private StationResponse 광교역;
+	private StationResponse 혜화역;
+	private StationResponse 사당역;
 	private TokenResponse tokenResponse;
-	private String email = "manageFavorite@email.com";
 
+	/**
+	 * (4)
+	 * 교대역    --- *2호선* ---   강남역
+	 * |                        |
+	 * *3호선* (5)             *신분당선*  (10)
+	 * |                        |
+	 * 남부터미널역  --- *3호선* ---   양재
+	 * (3)
+	 */
 	@BeforeEach
 	public void setUp() {
 		super.setUp();
-//		Given 지하철역 등록되어 있음
+
 		강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
 		양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
 		교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
 		남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
-//		And 지하철 노선 등록되어 있음
-//		And 지하철 노선에 지하철역 등록되어 있음
-		신분당선 = PathAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10));
-		이호선 = PathAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-green-400", 교대역.getId(), 강남역.getId(), 10));
-		삼호선 = PathAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-yellow-600", 교대역.getId(), 양재역.getId(), 5));
+		광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
+		혜화역 = StationAcceptanceTest.지하철역_등록되어_있음("혜화역").as(StationResponse.class);
+		사당역 = StationAcceptanceTest.지하철역_등록되어_있음("사당역").as(StationResponse.class);
+
+		신분당선 = this.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 100));
+		이호선 = this.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-green-400", 교대역.getId(), 강남역.getId(), 10, 200));
+		삼호선 = this.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-yellow-600", 교대역.getId(), 양재역.getId(), 5, 300));
+
+		사호선 = this.지하철_노선_등록되어_있음(new LineRequest("사호선", "bg-yellow-600", 혜화역.getId(), 사당역.getId(), 5, 0));
+
+
 		SectionRequest sectionRequest = new SectionRequest(교대역.getId(), 남부터미널역.getId(), 3);
-		ExtractableResponse<Response> responseExtractableResponse = PathAcceptanceTest.지하철_노선에_지하철역_등록되어_있음(삼호선.getId(), sectionRequest);
-//		And 회원 등록되어 있음
-//		And 로그인 되어있음
-		//given 회원 등록되어있음
+		지하철_노선에_지하철역_등록되어_있음(삼호선.getId(), sectionRequest);
 
-		회원_생성을_요청(email, MemberAcceptanceTest.PASSWORD, MemberAcceptanceTest.AGE);
-		//when 로그인 요청
-		ExtractableResponse<Response> response = AuthAcceptanceTest.로그인_요청(email, MemberAcceptanceTest.PASSWORD);
-		tokenResponse = response.as(TokenResponse.class);
+		SectionRequest sectionRequest2 = new SectionRequest(양재역.getId(), 광교역.getId(), 55);
+		지하철_노선에_지하철역_등록되어_있음(신분당선.getId(), sectionRequest2);
+
 	}
 
-	@DisplayName("즐겨찾기 관리")
+	public static LineResponse 지하철_노선_등록되어_있음(LineRequest params) {
+		return 지하철_노선_생성_요청(params);
+	}
+
+	public static LineResponse 지하철_노선_생성_요청(LineRequest params) {
+		ExtractableResponse<Response> responseExtractableResponse = RestAssured
+				.given().log().all()
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.body(params)
+				.when().post("/lines")
+				.then().log().all().
+						extract();
+
+		LineResponse lineResponse = responseExtractableResponse.jsonPath().getObject(".", LineResponse.class);
+		return lineResponse;
+	}
+
+	public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록되어_있음(Long lineId, SectionRequest sectionRequest) {
+		return RestAssured
+				.given().log().all()
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.body(sectionRequest)
+				.when().post("/lines/{lineId}/sections", lineId)
+				.then().log().all().
+						extract();
+
+	}
+
 	@Test
-	void manageFavorite() {
-//		When 즐겨찾기 생성을 요청
-		FavoriteRequest favoriteRequest = new FavoriteRequest(강남역.getId(), 교대역.getId());
-		ExtractableResponse<Response> response = 즐겨찾기_생성_요청(tokenResponse.getAccessToken(), favoriteRequest);
-		FavoriteResponse postResponse = response.as(FavoriteResponse.class);
-//		Then 즐겨찾기 생성됨
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-		assertThat(postResponse.getSource().getName()).isEqualTo(강남역.getName());
-
-//		When 즐겨찾기 목록 조회 요청
-		response = 즐겨찾기_목록_조회_요청(tokenResponse.getAccessToken());
-//		Then 즐겨찾기 목록 조회됨
-		List<FavoriteResponse> getResponses = response.jsonPath().getList(".", FavoriteResponse.class);
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-		assertThat(getResponses).isNotEmpty();
-
-//		When 즐겨찾기 삭제 요청
-		response = 즐겨찾기_삭제_요청(tokenResponse.getAccessToken(), postResponse.getId());
-//		Then 즐겨찾기 삭제됨
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-
-	}
-
-	private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, Long favoriteId) {
-		ExtractableResponse<Response> responseExtractableResponse = RestAssured
+	@DisplayName("최단 경로 조회")
+	public void findShortestPath() {
+		//http://0.0.0.0:8081/paths/?source=1&target=4
+		ExtractableResponse<Response> response = RestAssured
 				.given().log().all()
 				.accept(MediaType.APPLICATION_JSON_VALUE)
-				.contentType(ContentType.JSON)
-				.auth().oauth2(accessToken)
-				.when().delete("/favorites/{id}", favoriteId)
+				.when().get(String.format("/paths?source=%d&target=%d", 1, 4))
 				.then().log().all()
 				.extract();
-		return responseExtractableResponse;
+
+		PathResponse pathResponse = response.jsonPath().getObject(".", PathResponse.class);
+		assertThat(pathResponse.getStations().size()).isEqualTo(3);
 	}
 
-	private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
-		ExtractableResponse<Response> responseExtractableResponse = RestAssured
+	@Test
+	@DisplayName("출발역과 도착역이 같은 경우")
+	public void whenSameSourceTarget() {
+		ExtractableResponse<Response> response = RestAssured
 				.given().log().all()
 				.accept(MediaType.APPLICATION_JSON_VALUE)
-				.contentType(ContentType.JSON)
-				.auth().oauth2(accessToken)
-				.when().get("/favorites")
+				.when().get(String.format("/paths?source=%d&target=%d", 1, 1))
 				.then().log().all()
 				.extract();
-		return responseExtractableResponse;
+
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	}
 
-	public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, FavoriteRequest favoriteRequest) {
-		ExtractableResponse<Response> responseExtractableResponse = RestAssured
+	@Test
+	@DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
+	public void whenDisconnectSourceTarget() {
+
+		StationResponse 광화문역 = StationAcceptanceTest.지하철역_등록되어_있음("광화문역").as(StationResponse.class);
+		StationResponse 군자역 = StationAcceptanceTest.지하철역_등록되어_있음("군자역").as(StationResponse.class);
+
+		LineResponse 오호선 = this.지하철_노선_등록되어_있음(new LineRequest("오호선", "bg-purple-600", 광화문역.getId(), 군자역.getId(), 10, 1500));
+
+		ExtractableResponse<Response> response = RestAssured
 				.given().log().all()
 				.accept(MediaType.APPLICATION_JSON_VALUE)
-				.contentType(ContentType.JSON)
-				.auth().oauth2(accessToken)
-				.body(favoriteRequest)
-				.when().post("/favorites")
+				.when().get(String.format("/paths?source=%d&target=%d", 1, 광화문역.getId()))
 				.then().log().all()
 				.extract();
-		return responseExtractableResponse;
+
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	}
+
+	@Test
+	@DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우")
+	public void notExistsStation() {
+		ExtractableResponse<Response> response = RestAssured
+				.given().log().all()
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.when().get(String.format("/paths?source=%d&target=%d", 1, 100))
+				.then().log().all()
+				.extract();
+
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	}
+
+	@Test
+	@DisplayName("거리별 요금 정책 - 기본운임")
+	public void checkDefaultDistanceFare() {
+		//http://0.0.0.0:8081/paths/?source=1&target=4
+		ExtractableResponse<Response> response = RestAssured
+				.given().log().all()
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.when().get(String.format("/paths?source=%d&target=%d", 6, 7))
+				.then().log().all()
+				.extract();
+
+		PathResponse pathResponse = response.jsonPath().getObject(".", PathResponse.class);
+		assertThat(pathResponse.getFinalFare()).isEqualTo(1250);
+	}
+
+	@Test
+	@DisplayName("거리별 요금 정책 - 10km초과∼50km까지(5km마다 100원)")
+	public void checkGTE10KMLT50KmKDistanceFare() {
+		//http://0.0.0.0:8081/paths/?source=1&target=4
+		ExtractableResponse<Response> response = RestAssured
+				.given().log().all()
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.when().get(String.format("/paths?source=%d&target=%d", 1, 4))
+				.then().log().all()
+				.extract();
+
+		PathResponse pathResponse = response.jsonPath().getObject(".", PathResponse.class);
+		assertThat(pathResponse.getFinalFare()).isEqualTo(1850);
+	}
+
+	@Test
+	@DisplayName("거리별 요금 정책 - 50km 초과 시 (8km마다 100원)")
+	public void checkGT50KmKDistanceFare() {
+		//http://0.0.0.0:8081/paths/?source=1&target=4
+		ExtractableResponse<Response> response = RestAssured
+				.given().log().all()
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.when().get(String.format("/paths?source=%d&target=%d", 2, 5))
+				.then().log().all()
+				.extract();
+
+		PathResponse pathResponse = response.jsonPath().getObject(".", PathResponse.class);
+		assertThat(pathResponse.getFinalFare()).isEqualTo(2250);
+	}
+
+	@Test
+	@DisplayName("로그인 사용자의 경우 연령별 요금 할인 적용")
+	public void applyAgeDisCountPolicyForLoginMember() {
+		ExtractableResponse<Response> createResponse = MemberAcceptanceTest.회원_생성을_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD, 13);
+		tokenResponse = AuthAcceptanceTest.로그인_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD).as(TokenResponse.class);
+
+		ExtractableResponse<Response> response = RestAssured
+				.given().log().all()
+				.auth().oauth2(tokenResponse.getAccessToken())
+				.accept(MediaType.APPLICATION_JSON_VALUE)
+				.when().get(String.format("/paths?source=%d&target=%d", 3, 4))
+				.then().log().all()
+				.extract();
+
+		PathResponse pathResponse = response.jsonPath().getObject(".", PathResponse.class);
+		System.out.println(pathResponse.getFinalFare());
+		assertThat(pathResponse.getFinalFare()).isEqualTo(1270);
+	}
+
 
 }
+

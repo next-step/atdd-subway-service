@@ -8,7 +8,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PathFinder {
@@ -66,6 +66,37 @@ public class PathFinder {
 
 	public GraphPath<Station, DefaultWeightedEdge> findShortestPath(List<Station> stations) {
 		return path.getPath(stations.get(0), stations.get(1));
+	}
+
+	public int findMaxAdditionalFare(List<Station> vertexList) {
+		List<Station> allStations = lines.stream()
+				.flatMap(line -> line.getStations().stream())
+				.collect(Collectors.toList());
+
+		Set<Station> intersections = allStations.stream()
+				.distinct()
+				.filter(vertexList::contains)
+				.collect(Collectors.toSet());
+
+		List<Integer> additionalFare = new ArrayList<>();
+		for (Line line : lines) {
+			additionalFare = getLineFares(intersections, line, additionalFare);
+		}
+		return Collections.max(additionalFare);
+	}
+
+	private List<Integer> getLineFares(Set<Station> intersections, Line line, List<Integer> additionalFare) {
+		for (Station station : intersections) {
+			addLineFare(line, station, additionalFare);
+		}
+		return additionalFare;
+	}
+
+	private List<Integer> addLineFare(Line line, Station station, List<Integer> additionalFare) {
+		if (line.getStations().contains(station)) {
+			additionalFare.add(line.getAdditionalFare());
+		}
+		return additionalFare;
 	}
 
 }

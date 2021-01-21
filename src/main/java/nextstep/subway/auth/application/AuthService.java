@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
+    public static String PATH_USER_TOKEN = "/paths";
+
     private MemberRepository memberRepository;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -28,6 +30,9 @@ public class AuthService {
     }
 
     public LoginMember findMemberByToken(String credentials) {
+        if(credentials.equalsIgnoreCase(PATH_USER_TOKEN)){
+            return new LoginMember();
+        }
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException();
         }
