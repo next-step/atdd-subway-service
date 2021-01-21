@@ -51,7 +51,8 @@ class FarePolicyTest {
 		int amount = farePolicy.calculate();
 
 		// then
-		assertThat(amount).isEqualTo(1850);
+		// 30km = 1250 + 400 = 1650
+		assertThat(amount).isEqualTo(1650);
 
 	}
 
@@ -67,7 +68,8 @@ class FarePolicyTest {
 		int amount = farePolicy.calculate();
 
 		// then
-		assertThat(amount).isEqualTo(2850);
+		// 80km = 1250 + 800 + 400
+		assertThat(amount).isEqualTo(2450);
 
 	}
 
@@ -83,7 +85,8 @@ class FarePolicyTest {
 		int amount = farePolicy.calculate();
 
 		// then
-		assertThat(amount).isEqualTo(1250 + 900);
+		// 1250 + 900
+		assertThat(amount).isEqualTo(2150);
 	}
 
 	@DisplayName("10km 초과 50km까지 추가요금노선 이용")
@@ -98,7 +101,8 @@ class FarePolicyTest {
 		int amount = farePolicy.calculate();
 
 		// then
-		assertThat(amount).isEqualTo(1850 + 900);
+		// 1250 + 400 + 900
+		assertThat(amount).isEqualTo(2550);
 
 	}
 
@@ -114,7 +118,8 @@ class FarePolicyTest {
 		int amount = farePolicy.calculate();
 
 		// then
-		assertThat(amount).isEqualTo(2850 + 900);
+		// 1250 + 800 + 400 + 900
+		assertThat(amount).isEqualTo(3350);
 
 	}
 
@@ -152,7 +157,8 @@ class FarePolicyTest {
 		int amount = farePolicy.calculate();
 
 		// then
-		assertThat(amount).isEqualTo(1250 + 1100);
+		// 1250 + 1100
+		assertThat(amount).isEqualTo(2350);
 	}
 
 	@DisplayName("10km 이하, 어린이 할인")

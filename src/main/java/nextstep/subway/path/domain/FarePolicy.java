@@ -15,7 +15,7 @@ public class FarePolicy {
 	private static int FIFTY_KILOMETER_DISTANCE = 50;
 
 	private static int STANDARD_PER_FIVE_KILOMETER = 5;
-	private static int STANDARD_PER_EIGHT_KILOMETER = 5;
+	private static int STANDARD_PER_EIGHT_KILOMETER = 8;
 
 	private static int DEFAULT_AMOUNT = 1250;
 	private static final int DEFAULT_DEDUCT_AMOUNT = 350;
@@ -70,11 +70,12 @@ public class FarePolicy {
 
 	private int calculateFare() {
 		if (distance > TEN_KILOMETER_DISTANCE && distance <= FIFTY_KILOMETER_DISTANCE) {
-			return calculateOverFare(distance, STANDARD_PER_FIVE_KILOMETER);
+			return calculateOverFare(distance - TEN_KILOMETER_DISTANCE, STANDARD_PER_FIVE_KILOMETER);
 		}
 
 		if (distance > FIFTY_KILOMETER_DISTANCE) {
-			return calculateOverFare(distance, STANDARD_PER_EIGHT_KILOMETER);
+			return calculateOverFare((FIFTY_KILOMETER_DISTANCE - TEN_KILOMETER_DISTANCE),STANDARD_PER_FIVE_KILOMETER)
+				+  calculateOverFare((distance - FIFTY_KILOMETER_DISTANCE),STANDARD_PER_EIGHT_KILOMETER);
 		}
 		return 0;
 	}
