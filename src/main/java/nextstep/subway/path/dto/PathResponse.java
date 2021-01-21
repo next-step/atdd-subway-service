@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 public class PathResponse {
     private List<StationResponse> stations;
     private long distance;
+    private int fare;
 
     public static PathResponse of(List<Station> stations, long distance) {
         return new PathResponse(convertStationResponse(stations), distance);
@@ -28,6 +29,10 @@ public class PathResponse {
 
     public long getDistance() {
         return distance;
+    }
+
+    public int getFare() {
+        return 1250 + 100 + 100;
     }
 
     private static List<StationResponse> convertStationResponse(List<Station> stations) {
