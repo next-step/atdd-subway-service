@@ -3,6 +3,7 @@ package nextstep.subway.path.application;
 import nextstep.subway.common.exception.CustomException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -37,7 +38,8 @@ class PathServiceTest {
     private Station 강남역;
     private Station 양재역;
     private Station 교대역;
-    private Station 남부터미널;
+    private Station 남부터미널역;
+    private Station 종합운동장역;
     private Line 이호선;
     private Line 신분당선;
     private Line 삼호선;
@@ -48,11 +50,13 @@ class PathServiceTest {
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");
         교대역 = new Station("교대역");
-        남부터미널 = new Station("남부터미널");
-        이호선 = new Line("2호선", "bg-green-200", 교대역, 강남역, 1000L);
-        삼호선 = new Line("3호선", "bg-yellow-200", 교대역, 양재역, 500L);
-        삼호선.addSection(교대역, 남부터미널, 300L);
-        신분당선 = new Line("신분당선", "bg-red-200", 강남역, 양재역, 1000L);
+        남부터미널역 = new Station("남부터미널역");
+        종합운동장역 = new Station("종합운동장역");
+        이호선 = new Line("2호선", "bg-green-200", 교대역, 강남역, 100, 200);
+        삼호선 = new Line("3호선", "bg-yellow-200", 교대역, 양재역, 50, 300);
+        삼호선.addSection(교대역, 남부터미널역, 30);
+        이호선.addSection(강남역, 종합운동장역, 20);
+        신분당선 = new Line("신분당선", "bg-red-200", 강남역, 양재역, 100, 400);
     }
 
     @DisplayName("최단 경로 찾기")
@@ -68,9 +72,22 @@ class PathServiceTest {
                 () -> assertThat(shortestPath.getStations()).isNotNull(),
                 () -> assertThat(shortestPath.getStations()).hasSize(3)
                         .extracting(StationResponse::getName)
-                        .containsExactly("교대역", "남부터미널", "양재역"),
-                () -> assertThat(shortestPath.getDistance()).isEqualTo(500L)
+                        .containsExactly("교대역", "남부터미널역", "양재역"),
+                () -> assertThat(shortestPath.getDistance()).isEqualTo(50),
+                () -> assertThat(shortestPath.getFare()).isEqualTo(1250 + 800 + 300)
         );
+    }
+
+    @Test
+    @DisplayName("추가요금 노선들 중 최대 추가요금만 더해진다.")
+    void calculateFareWithOverFareLine() {
+        // Given
+        given(lineService.findAllLines()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
+        given(stationService.findById(any())).willReturn(남부터미널역).willReturn(종합운동장역);
+        // When
+        PathResponse shortestPath = pathService.findPath(new PathRequest(남부터미널역.getId(), 종합운동장역.getId()));
+        // Then
+        assertThat(shortestPath.getFare()).isEqualTo((1250 + 800 + 1200) + 400);
     }
 
     @DisplayName("예외 상황 - 출발역과 도착역이 같은 경우")
@@ -91,7 +108,7 @@ class PathServiceTest {
         // Given
         Station 광교역 = new Station("광교역");
         Station 정자역 = new Station("정자역");
-        신분당선 = new Line("신분당선", "bg-red-200", 광교역, 정자역, 1000L);
+        신분당선 = new Line("신분당선", "bg-red-200", 광교역, 정자역, 100);
         given(lineService.findAllLines()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
         given(stationService.findById(any())).willReturn(교대역).willReturn(광교역);
         // When & Then

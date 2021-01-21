@@ -18,6 +18,10 @@ public class Sections {
         sections.add(section);
     }
 
+    public Sections(List<Section> sections) {
+        this.sections.addAll(sections);
+    }
+
     protected Sections() {
     }
 
@@ -59,12 +63,18 @@ public class Sections {
         return sections;
     }
 
+    public Optional<Section> findSectionByStations(Station upStation, Station downStation) {
+        return sections.stream()
+                .filter(section -> section.matchStations(upStation, downStation))
+                .findFirst();
+    }
+
     private Optional<Section> findDownSectionBy(Station station) {
-        return findSectionBy(s -> s.hasDownSection(station));
+        return findSectionBy(s -> s.hasUpStation(station));
     }
 
     private Optional<Section> findUpSectionBy(Station station) {
-        return findSectionBy(s -> s.hasUpSection(station));
+        return findSectionBy(s -> s.hasDownStation(station));
     }
 
     private Optional<Section> findSectionBy(Predicate<Section> predicate) {

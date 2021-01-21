@@ -11,15 +11,15 @@ public class ShortestPath {
     private final PathDistance distance;
     private final PathFare fare;
 
-    public static ShortestPath of(List<Station> stations, Integer distance) {
-        return new ShortestPath(stations, distance);
+    public static ShortestPath of(List<Station> stations, Integer distance, Integer maxAdditionalFare) {
+        return new ShortestPath(stations, distance, maxAdditionalFare);
     }
 
-    private ShortestPath(List<Station> stations, Integer distance) {
+    private ShortestPath(List<Station> stations, Integer distance, Integer maxAdditionalFare) {
         validate(stations, distance);
         this.stations.addAll(stations);
         this.distance = new PathDistance(distance);
-        this.fare = new PathFare(FareCalculator.calculateFareOf(distance));
+        this.fare = new PathFare(FareCalculator.calculateFareOf(distance) + maxAdditionalFare);
     }
 
     public List<Station> getStations() {

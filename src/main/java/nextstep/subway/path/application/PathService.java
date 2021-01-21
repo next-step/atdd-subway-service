@@ -2,7 +2,6 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.path.domain.PathFinder;
-import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;

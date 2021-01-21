@@ -2,12 +2,15 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.common.exception.CustomException;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +33,36 @@ public class PathFinder {
     }
 
     public ShortestPath getShortestPath() {
-        return ShortestPath.of(resultPath.getVertexList(), (int) resultPath.getWeight());
+        return ShortestPath.of(resultPath.getVertexList(), (int) resultPath.getWeight(), findMaxAdditionalFare(resultPath.getVertexList()));
+    }
+
+    private int findMaxAdditionalFare(List<Station> stations) {
+        int maxAdditionalFare = 0;
+        for (int i = 0; i < stations.size() - 1; i++) {
+            maxAdditionalFare = findMaxFare(maxAdditionalFare, findAdditionalFare(stations.get(i), stations.get(i + 1)));
+        }
+        return maxAdditionalFare;
+    }
+
+    private int findAdditionalFare(Station upStation, Station downStation) {
+        Sections sections = initiateSections();
+        Section section = sections.findSectionByStations(upStation, downStation)
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 구간이 존재합니다."));
+        return section.getAdditionalFareInLine();
+    }
+
+    private int findMaxFare(int maxValue, int newValue) {
+        if (maxValue < newValue) {
+            return newValue;
+        }
+        return maxValue;
+    }
+
+    private Sections initiateSections() {
+        return new Sections(lines.stream()
+                .map(Line::getSections)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList()));
     }
 
     private void createStationGraph() {
