@@ -49,7 +49,7 @@ class PathFinderTest {
         신도림역 = new Station("신도림역");
         영등포역 = new Station("영등포역");
 
-        Line 신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 39, 500);
+        Line 신분당선 = new Line("신분당선", "bg-red-600", 양재역, 강남역, 39, 500);
         Line 일호선 = new Line("일호선", "bg-blue-600", 신도림역, 영등포역, 5, 0);
         Line 이호선 = new Line("이호선", "bg-red-600", 교대역, 강남역, 51, 200);
         Line 삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 12, 300);
@@ -117,6 +117,6 @@ class PathFinderTest {
     @Test
     void findShortestPathFare4() {
         Path path = pathFinder.findShortestPath(남부터미널역, 강남역);
-        assertThat(path.getFare()).isEqualTo(2350);
+        assertThat(path.getFare()).isEqualTo(2550);
     }
 }
