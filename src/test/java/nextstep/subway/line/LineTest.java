@@ -55,7 +55,9 @@ public class LineTest {
     @DisplayName("생성 후 구간 추가 테스트2")
     @Test
     public void test3() {
-
+        Station 삼성역 = new Station(4L, "삼성역");
+        Station 역삼역 = new Station(5L, "역삼역");
+        Station 신림역 = new Station(6L, "신림역");
         Line line = new Line("2호선", "green", 교대역, 강남역, 10);
         line.addSection(신림역, 교대역, 10);
         line.addSection(강남역, 삼성역, 10);
