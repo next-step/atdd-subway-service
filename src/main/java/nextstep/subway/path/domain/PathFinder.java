@@ -29,12 +29,8 @@ public class PathFinder {
         this.resultPath = path.getPath(source, target);
     }
 
-    public List<Station> getStationsInShortestPath() {
-        return resultPath.getVertexList();
-    }
-
-    public int getDistanceInShortestPath() {
-        return (int) resultPath.getWeight();
+    public ShortestPath getShortestPath() {
+        return ShortestPath.of(resultPath.getVertexList(), (int) resultPath.getWeight());
     }
 
     private void createStationGraph() {
