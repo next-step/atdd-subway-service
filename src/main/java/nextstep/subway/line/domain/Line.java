@@ -21,9 +21,6 @@ import nextstep.subway.station.domain.Station;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Line extends BaseEntity {
-	@Transient
-	private static final int MINIMAL_SECTION_COUNT = 2;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -131,7 +128,7 @@ public class Line extends BaseEntity {
 	}
 
 	public boolean isSectionsExists() {
-		return getSections().size() > MINIMAL_SECTION_COUNT;
+		return sections.isExist();
 	}
 
 	public List<Section> getSections() {
