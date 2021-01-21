@@ -3,8 +3,7 @@ package nextstep.subway.path.application;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.path.domain.*;
-import nextstep.subway.path.domain.graph.DijkstraPath;
-import nextstep.subway.path.domain.graph.PathAlgorithm;
+import nextstep.subway.path.domain.graph.DijkstraShortestPathFinder;
 import nextstep.subway.path.domain.graph.StationGraph;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -27,15 +26,9 @@ public class PathService {
     public PathResponse findShortestPath(LoginMember loginMember, Long sourceId, Long targetId) {
         Station source = stationService.findById(sourceId);
         Station target = stationService.findById(targetId);
-        PathFinder pathFinder = makePathFinder();
+        StationGraph stationGraph = new StationGraph(lineService.findLines(), new DijkstraShortestPathFinder());
 
-        Path shortestPath = pathFinder.findShortestPath(source, target);
+        Path shortestPath = stationGraph.findShortestPath(source, target);
         return PathResponse.of(shortestPath.discountByAge(loginMember.getAge()));
-    }
-
-    private PathFinder makePathFinder() {
-        StationGraph stationGraph = new StationGraph(lineService.findLines());
-        PathAlgorithm pathAlgorithm = new DijkstraPath(stationGraph.generateGraph());
-        return new PathFinder(stationGraph, pathAlgorithm);
     }
 }

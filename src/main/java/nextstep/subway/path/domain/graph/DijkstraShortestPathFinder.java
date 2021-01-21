@@ -8,11 +8,19 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.List;
 
-public class DijkstraPath implements PathAlgorithm {
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
+public class DijkstraShortestPathFinder implements ShortestPathFinder {
+    private DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
-    public DijkstraPath(Graph<Station, DefaultWeightedEdge> stationGraph) {
+    public DijkstraShortestPathFinder() {
+    }
+
+    private DijkstraShortestPathFinder(Graph<Station, DefaultWeightedEdge> stationGraph) {
         this.dijkstraShortestPath = new DijkstraShortestPath<>(stationGraph);
+    }
+
+    @Override
+    public DijkstraShortestPathFinder addGraph(Graph<Station, DefaultWeightedEdge> stationGraph) {
+        return new DijkstraShortestPathFinder(stationGraph);
     }
 
     @Override
@@ -26,7 +34,10 @@ public class DijkstraPath implements PathAlgorithm {
     }
 
     @Override
-    public GraphPath<Station, DefaultWeightedEdge> getPath(Station source, Station target) {
+    public boolean isNotConnectStations(Station source, Station target) {
+        return getPath(source, target) == null;
+    }
+    private GraphPath<Station, DefaultWeightedEdge> getPath(Station source, Station target) {
         return dijkstraShortestPath.getPath(source, target);
     }
 }

@@ -3,8 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.domain.graph.DijkstraPath;
-import nextstep.subway.path.domain.graph.PathAlgorithm;
+import nextstep.subway.path.domain.graph.DijkstraShortestPathFinder;
 import nextstep.subway.path.domain.graph.StationGraph;
 import nextstep.subway.path.exception.InvalidFindShortestPathException;
 import nextstep.subway.station.domain.Station;
@@ -17,14 +16,14 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class PathFinderTest {
+class StationGraphTest {
     private Station 강남역;
     private Station 양재역;
     private Station 교대역;
     private Station 남부터미널역;
     private Station 신도림역;
     private Station 영등포역;
-    private PathFinder pathFinder;
+    private StationGraph stationGraph;
 
     /**
      * 1호선: 0원
@@ -55,15 +54,13 @@ class PathFinderTest {
         Line 삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 12, 300);
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, new Distance(3)));
 
-        StationGraph stationGraph = new StationGraph(Arrays.asList(신분당선, 일호선, 이호선, 삼호선));
-        PathAlgorithm pathAlgorithm = new DijkstraPath(stationGraph.generateGraph());
-        pathFinder = new PathFinder(stationGraph, pathAlgorithm);
+        stationGraph = new StationGraph(Arrays.asList(신분당선, 일호선, 이호선, 삼호선), new DijkstraShortestPathFinder());
     }
 
     @DisplayName("최단경로 조회")
     @Test
     void findShortestPath() {
-        Path path = pathFinder.findShortestPath(교대역, 양재역);
+        Path path = stationGraph.findShortestPath(교대역, 양재역);
         assertThat(path.getStations()).containsExactlyElementsOf(Arrays.asList(교대역, 남부터미널역, 양재역));
         assertThat(path.getDistance()).isEqualTo(12);
     }
@@ -71,7 +68,7 @@ class PathFinderTest {
     @DisplayName("출발역과 도착역이 같은 경우 조회하지 못한다.")
     @Test
     void findShortestPathException1() {
-        assertThatThrownBy(() -> pathFinder.findShortestPath(교대역, 교대역))
+        assertThatThrownBy(() -> stationGraph.findShortestPath(교대역, 교대역))
                 .isInstanceOf(InvalidFindShortestPathException.class)
                 .hasMessage("출발역과 도착역이 같으면 조회 불가능합니다.");
     }
@@ -79,7 +76,7 @@ class PathFinderTest {
     @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우, 조회하지 못한다.")
     @Test
     void findShortestPathException2() {
-        assertThatThrownBy(() -> pathFinder.findShortestPath(교대역, 신도림역))
+        assertThatThrownBy(() -> stationGraph.findShortestPath(교대역, 신도림역))
                 .isInstanceOf(InvalidFindShortestPathException.class)
                 .hasMessage("출발역과 도착역이 연결이 되어 있지 않습니다.");
     }
@@ -87,7 +84,7 @@ class PathFinderTest {
     @DisplayName("존재하지 않은 출발역이나 도착역을 조회할 경우, 조회하지 못한다.")
     @Test
     void findShortestPathException3() {
-        assertThatThrownBy(() -> pathFinder.findShortestPath(교대역, new Station("노량진역")))
+        assertThatThrownBy(() -> stationGraph.findShortestPath(교대역, new Station("노량진역")))
                 .isInstanceOf(InvalidFindShortestPathException.class)
                 .hasMessage("출발역이나 도착역이 존재하지 않습니다.");
     }
@@ -95,28 +92,28 @@ class PathFinderTest {
     @DisplayName("10km 이하 지하철 이용 요금 조회")
     @Test
     void findShortestPathFare1() {
-        Path path = pathFinder.findShortestPath(신도림역, 영등포역);
+        Path path = stationGraph.findShortestPath(신도림역, 영등포역);
         assertThat(path.getFare()).isEqualTo(1250);
     }
 
     @DisplayName("10km 초과 지하철 이용 요금 조회")
     @Test
     void findShortestPathFare2() {
-        Path path = pathFinder.findShortestPath(교대역, 양재역);
+        Path path = stationGraph.findShortestPath(교대역, 양재역);
         assertThat(path.getFare()).isEqualTo(1650);
     }
 
     @DisplayName("50km 초과 지하철 이용 요금 조회")
     @Test
     void findShortestPathFare3() {
-        Path path = pathFinder.findShortestPath(교대역, 강남역);
+        Path path = stationGraph.findShortestPath(교대역, 강남역);
         assertThat(path.getFare()).isEqualTo(2350);
     }
 
     @DisplayName("(거리 + 가장 높은 노선별 금액) 요금 조회")
     @Test
     void findShortestPathFare4() {
-        Path path = pathFinder.findShortestPath(남부터미널역, 강남역);
+        Path path = stationGraph.findShortestPath(남부터미널역, 강남역);
         assertThat(path.getFare()).isEqualTo(2550);
     }
 }
