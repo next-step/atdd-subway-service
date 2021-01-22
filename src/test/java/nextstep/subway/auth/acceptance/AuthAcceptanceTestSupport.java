@@ -26,9 +26,13 @@ public class AuthAcceptanceTestSupport extends AcceptanceTest {
     }
 
     public static String 로그인_되어_있음() {
-        회원_생성을_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD
+        return 로그인_되어_있음(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD
                 , MemberAcceptanceTest.AGE);
-        TokenRequest tokenRequest = new TokenRequest(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD);
+    }
+
+    public static String 로그인_되어_있음(String email, String password, Integer age) {
+        회원_생성을_요청(email, password, age);
+        TokenRequest tokenRequest = new TokenRequest(email, password);
         String accessToken = 로그인_요청(tokenRequest)
                 .as(TokenResponse.class).getAccessToken();
         return accessToken;

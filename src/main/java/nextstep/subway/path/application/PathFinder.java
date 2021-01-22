@@ -1,8 +1,11 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.application.farepolicy.FarePolicy;
+import nextstep.subway.path.application.farepolicy.FarePolicyElements;
 import nextstep.subway.path.dto.PathVertexStation;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -14,14 +17,13 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class PathFinder {
-
+    
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
 
@@ -36,12 +38,12 @@ public class PathFinder {
      * @param targetStationId
      * @return
      */
-    public PathResponse getShortestPath(Long sourceStationId, Long targetStationId) {
+    public PathResponse getShortestPath(LoginMember loginMember, Long sourceStationId, Long targetStationId) {
         Optional<Station> sourceStation = this.stationRepository.findById(sourceStationId);
         Optional<Station> targetStation = this.stationRepository.findById(targetStationId);
 
         if(sourceStation.isPresent() && targetStation.isPresent()) {
-            return this.getShortestPath(sourceStation.get(), targetStation.get());
+            return this.getShortestPath(loginMember, sourceStation.get(), targetStation.get());
         }
 
         throw new IllegalArgumentException("존재하지 않은 지하철역이 있습니다.");
@@ -53,7 +55,7 @@ public class PathFinder {
      * @param targetStation
      * @return 최단 경로
      */
-    public PathResponse getShortestPath(Station sourceStation, Station targetStation) {
+    public PathResponse getShortestPath(LoginMember loginMember, Station sourceStation, Station targetStation) {
         this.equalsSourceAndTargetOccurredException(sourceStation, targetStation);
 
         WeightedMultigraph<Station, DefaultWeightedEdge> graph
@@ -65,9 +67,11 @@ public class PathFinder {
                 = new DijkstraShortestPath<Station, DefaultWeightedEdge>(graph)
                     .getPath(sourceStation, targetStation);
 
+        int distance = (int) shortestPath.getWeight();
         return new PathResponse(shortestPath.getVertexList().stream()
                                     .map(PathVertexStation::of).collect(Collectors.toList())
-                                , (int) shortestPath.getWeight());
+                                , distance
+                                , this.calculateFare(loginMember, shortestPath.getVertexList(), distance));
     }
 
     /**
@@ -112,4 +116,19 @@ public class PathFinder {
                 graph.addEdge(section.getUpStation(), section.getDownStation())
                 , section.getDistance());
     }
+
+    /**
+     * 최단 경로를 기반으로 운임을 계산합니다.
+     * @param loginMember
+     * @param vertexList
+     * @param distance
+     * @return
+     */
+    public int calculateFare(LoginMember loginMember, List<Station> vertexList, int distance) {
+        List<Line> persistLines = this.lineRepository.findAll();
+
+        return FarePolicy.calculateFareByPolicies(
+                new FarePolicyElements(distance, loginMember, vertexList, persistLines));
+    }
+
 }
