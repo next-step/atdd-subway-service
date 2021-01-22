@@ -71,4 +71,8 @@ public class Line extends BaseEntity {
     public Optional<Section> findSection(final Station upStation, final Station downStation) {
         return this.sections.findSection(upStation, downStation);
     }
+
+    public void removeStation(final Station station) {
+        this.sections.removeStation(this, station);
+    }
 }

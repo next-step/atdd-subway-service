@@ -101,15 +101,31 @@ public class Sections {
 		return !stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation());
 	}
 
-	public Optional<Section> findByUpStation(final Station up) {
-		return this.sections.stream()
-			.filter(section -> section.equalsUpStation(up))
+	public void removeStation(final Line line, final Station station) {
+		if (isSizeLessThanOne()) {
+			throw new RuntimeException();
+		}
+
+		Optional<Section> upLineStation = this.sections.stream()
+			.filter(it -> it.getUpStation() == station)
 			.findFirst();
+		Optional<Section> downLineStation = this.sections.stream()
+			.filter(it -> it.getDownStation() == station)
+			.findFirst();
+
+		if (upLineStation.isPresent() && downLineStation.isPresent()) {
+			Station newUpStation = downLineStation.get().getUpStation();
+			Station newDownStation = upLineStation.get().getDownStation();
+			int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+			this.sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+		}
+
+		upLineStation.ifPresent(it -> line.getSections().remove(it));
+		downLineStation.ifPresent(it -> line.getSections().remove(it));
 	}
 
-	public Optional<Section> findByDownStation(final Station down) {
-		return this.sections.stream()
-			.filter(section -> section.equalsDownStation(down))
-			.findFirst();
+	private boolean isSizeLessThanOne() {
+		return this.sections.size() <= 1;
 	}
+
 }
