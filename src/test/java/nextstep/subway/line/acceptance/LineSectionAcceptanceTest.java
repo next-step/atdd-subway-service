@@ -1,5 +1,6 @@
 package nextstep.subway.line.acceptance;
 
+import static io.restassured.RestAssured.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,6 +21,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.line.dto.SectionResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -57,12 +59,19 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 		// Then 지하철 구간 등록됨
 		지하철_노선에_지하철역_등록됨(LineAcceptanceTest.지하철_노선_조회_요청(신분당선), 정자역.getId());
 
+		// Given 새로운 구간 등록 전 기존 노선의 구간 목록
+		final List<SectionResponse> previousSectionResponse = 지하철_노선_구간_목록_조회(신분당선.getId())
+			.jsonPath().getList(".", SectionResponse.class);
 		// When 지하철 구간 사이에 구간 등록 요청
-		지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
+		ExtractableResponse<Response> stationCreatedResponse =
+			지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
 		// Then 지하철 구간 등록됨
-		지하철_노선에_지하철역_등록됨(LineAcceptanceTest.지하철_노선_조회_요청(신분당선), 양재역.getId());
-
+		ExtractableResponse<Response> lineResponse = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+		지하철_노선에_지하철역_등록됨(lineResponse, 양재역.getId());
 		// Then 기존 구간의 길이와 새로 생긴 구간으로 나누어진 구간들의 길이의 합이 같음
+		지하철_노선의_구간_생성_확인(stationCreatedResponse, previousSectionResponse,
+			lineResponse.as(LineResponse.class));
+
 		// When 지하철 노선에 등록된 역 목록 조회 요청
 		// Then 등록한 지하철 구간이 반영된 역 목록이 순서대로 정렬되어 조회됨
 		// When 종점역이 포함되지 않은 지하철 구간 삭제 요청
@@ -206,4 +215,45 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 	public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	}
+
+	public static ExtractableResponse<Response> 지하철_노선_구간_목록_조회(final Long lineId) {
+		return given().log().all()
+			.accept(MediaType.ALL_VALUE)
+			.when()
+			.get(String.format("/lines/%d/sections", lineId))
+			.then().log().all()
+			.extract();
+	}
+
+	public static void 지하철_노선의_구간_생성_확인(final ExtractableResponse<Response> response,
+		final List<SectionResponse> previousSectionResponse, final LineResponse lineResponse) {
+		SectionResponse sectionResponse = response.as(SectionResponse.class);
+		List<SectionResponse> sectionResponses = 지하철_노선_구간_목록_조회(lineResponse.getId())
+			.jsonPath().getList(".", SectionResponse.class);
+
+		SectionResponse previousSameSection = previousSectionResponse.stream()
+			.filter(previousSection -> previousSection.getDownStationId().equals(sectionResponse.getDownStationId()))
+			.findFirst()
+			.orElse(previousSectionResponse.stream()
+				.filter(previousSection -> previousSection.getUpStationId().equals(sectionResponse.getUpStationId()))
+				.findFirst()
+				.orElseGet(null));
+
+		SectionResponse modifiedSection = sectionResponses.stream()
+			.filter(section -> section.getDownStationId().equals(sectionResponse.getUpStationId()))
+			.findFirst()
+			.orElse(
+				sectionResponses.stream()
+				.filter(section -> section.getUpStationId().equals(sectionResponse.getDownStationId()))
+				.findFirst()
+				.orElseGet(null));
+
+		assertAll(
+			() -> assertThat(modifiedSection).isNotNull(),
+			() -> assertThat(previousSameSection).isNotNull(),
+			() -> assertThat(previousSameSection.getDistance()).isEqualTo(sectionResponse.getDistance() +
+				modifiedSection.getDistance())
+		);
+	}
+
 }

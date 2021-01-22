@@ -1,32 +1,38 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.dto.LineRequest;
-import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.station.application.StationService;
-import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.SectionRepository;
+import nextstep.subway.line.dto.LineRequest;
+import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.line.dto.SectionResponse;
+import nextstep.subway.station.application.StationService;
+import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
+
 @Service
 @Transactional
 public class LineService {
     private LineRepository lineRepository;
     private StationService stationService;
+    private SectionRepository sectionRepository;
 
-    public LineService(LineRepository lineRepository, StationService stationService) {
+    public LineService(LineRepository lineRepository, StationService stationService,
+        SectionRepository sectionRepository) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
+        this.sectionRepository = sectionRepository;
     }
 
     public LineResponse saveLine(LineRequest request) {
@@ -73,7 +79,7 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
-    public void addLineStation(Long lineId, SectionRequest request) {
+    public SectionResponse addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
@@ -92,7 +98,8 @@ public class LineService {
 
         if (stations.isEmpty()) {
             line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
-            return;
+            return SectionResponse.of(sectionRepository.findByLineAndUpStationAndDownStation(line, upStation, downStation)
+                .orElseThrow(RuntimeException::new));
         }
 
         if (isUpStationExisted) {
@@ -112,6 +119,9 @@ public class LineService {
         } else {
             throw new RuntimeException();
         }
+
+        return SectionResponse.of(sectionRepository.findByLineAndUpStationAndDownStation(line, upStation, downStation)
+            .orElseThrow(RuntimeException::new));
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
@@ -179,4 +189,18 @@ public class LineService {
 
         return downStation;
     }
+
+    public List<SectionResponse> findAllSections(final Long id) {
+        Line line = findById(id);
+        return line.getSections().stream()
+            .map(SectionResponse::of)
+            .collect(Collectors.toList());
+    }
+
+    private Line findById(final Long id) {
+        return lineRepository.findById(id)
+            .orElseThrow(() ->
+                new RuntimeException(String.format("[id=%d] 요청한 지하철 노선 정보가 없습니다.", id)));
+    }
+
 }
