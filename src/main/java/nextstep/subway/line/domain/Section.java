@@ -1,11 +1,21 @@
 package nextstep.subway.line.domain;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
 import nextstep.subway.station.domain.Station;
 
-import javax.persistence.*;
-
 @Entity
-public class Section {
+public class Section implements Comparable<Section> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -68,5 +78,22 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public List<Station> getStations() {
+        return Stream.of(upStation, downStation).collect(Collectors.toList());
+    }
+
+    @Override
+    public int compareTo(final Section section) {
+        if (section.getDownStation().equals(this.downStation)) {
+            return 0;
+        }
+
+        if (section.getDownStation().equals(this.upStation)) {
+            return 1;
+        }
+
+        return -1;
     }
 }
