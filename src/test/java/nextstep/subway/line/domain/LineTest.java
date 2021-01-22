@@ -25,7 +25,7 @@ class LineTest {
         광교역 = new Station("광교역");
         양재역 = new Station("양재역");
 
-        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 광교역, 10);
+        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 광교역, 10, 0);
     }
 
     @DisplayName("역과 역 사이에 새로운 역을 추가한다.")

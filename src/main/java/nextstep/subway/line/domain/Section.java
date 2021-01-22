@@ -58,6 +58,10 @@ public class Section {
         this.downStation = station;
     }
 
+    public boolean isEqualStations(Station upStation, Station downStation) {
+        return isEqualUpStationTo(upStation) && isEqualDownStationTo(downStation);
+    }
+
     public boolean isEqualUpStation(Section newSection) {
         return this.upStation.equals(newSection.getUpStation());
     }
@@ -72,5 +76,9 @@ public class Section {
 
     public boolean isEqualDownStationTo(Station station) {
         return this.downStation.equals(station);
+    }
+
+    public int getSurcharge() {
+        return this.line.getSurcharge();
     }
 }

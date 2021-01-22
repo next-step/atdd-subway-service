@@ -28,7 +28,7 @@ class SectionsTest {
         양재역 = new Station("양재역");
         정자역 = new Station("정자역");
 
-        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 광교역, 10);
+        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 광교역, 10, 0);
         sections = 신분당선.getSections();
     }
 
