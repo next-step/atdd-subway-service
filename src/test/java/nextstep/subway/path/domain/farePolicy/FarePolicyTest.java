@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.domain.farePolicy;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -61,7 +61,7 @@ class FarePolicyTest {
 	void calculateOverFiftyKilometer(){
 		// given
 		LoginMember loginMember = new LoginMember();
-		List<Line> lines = Arrays.asList(new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10, 0));
+		List<Line> lines = Arrays.asList(new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 80, 0));
 		FarePolicy farePolicy = new FarePolicy(lines, 80, loginMember.getAge());
 
 		// when

@@ -123,7 +123,8 @@ class PathServiceTest {
 		assertThat(pathResponse.getStations()).containsExactly(PathStationResponse.of(교대역),
 			PathStationResponse.of(남부터미널역), PathStationResponse.of(양재역));
 		assertThat(pathResponse.getDistance()).isEqualTo(distance_mock);
-		assertThat(pathResponse.getFare()).isEqualTo(1950);
+		// 1250 + 500
+		assertThat(pathResponse.getFare()).isEqualTo(1750);
 	}
 
 	@DisplayName("최단거리 조회 - 50Km 초과")
@@ -163,7 +164,9 @@ class PathServiceTest {
 		assertThat(pathResponse.getStations()).containsExactly(PathStationResponse.of(교대역),
 			PathStationResponse.of(남부터미널역), PathStationResponse.of(양재역));
 		assertThat(pathResponse.getDistance()).isEqualTo(distance_mock);
-		assertThat(pathResponse.getFare()).isEqualTo(2550);
+
+		// 1250 + 800 + 200
+		assertThat(pathResponse.getFare()).isEqualTo(2250);
 	}
 
 	@DisplayName("최단거리 조회 - 10Km 이하 / 900원 추가요금 ")

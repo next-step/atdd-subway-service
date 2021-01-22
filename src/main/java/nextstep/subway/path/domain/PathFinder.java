@@ -12,6 +12,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.exception.NotConnectedLineException;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.farePolicy.FarePolicy;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathStationResponse;
 import nextstep.subway.station.domain.Station;
