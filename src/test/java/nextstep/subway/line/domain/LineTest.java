@@ -48,6 +48,16 @@ public class LineTest {
 		노선_기존_구간_나눠짐(신분당선, previousSectionDistance, new Section(신분당선, 강남역, 양재역, distance));
 	}
 
+	@DisplayName("노선에 지하철역 삭제")
+	@Test
+	void removeListStation() {
+		신분당선.addSection(강남역, 양재역, 3);
+
+		신분당선.removeStation(양재역);
+
+		노선에_지하철역_삭제됨(신분당선, 양재역);
+	}
+
 	private void 노선_기존_구간_나눠짐(final Line line, final int previousSectionDistance, final Section section) {
 
 		Section modifiedSection = line.findSection(양재역, 광교역)
@@ -67,6 +77,10 @@ public class LineTest {
 
 	public void 노선에_구간_생성됨(final Line line, Station... stations) {
 		assertThat(line.getStations()).contains(stations);
+	}
+
+	public void 노선에_지하철역_삭제됨(final Line line, final Station station) {
+		assertThat(line.getStations()).isNotIn(station);
 	}
 
 }
