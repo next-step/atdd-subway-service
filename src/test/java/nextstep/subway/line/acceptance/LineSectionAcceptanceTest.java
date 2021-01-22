@@ -89,7 +89,8 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
 		// When 지하철 노선에 등록된 역 목록 조회 요청
 		// Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
-
+		지하철_노선에_지하철역_순서_정렬됨(LineAcceptanceTest.지하철_노선_조회_요청(신분당선),
+			Arrays.asList(정자역, 광교역));
 	}
 
 	@DisplayName("지하철 구간을 등록한다.")
