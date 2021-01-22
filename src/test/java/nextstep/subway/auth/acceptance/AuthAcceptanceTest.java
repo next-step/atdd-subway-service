@@ -31,7 +31,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         // Given 회원 등록되어 있음 (setUp 메소드 참고)
 
         // when
-        ExtractableResponse 로그인_요청_응답 = 로그인_요청("success@email.com", "success");
+        ExtractableResponse<Response> 로그인_요청_응답 = 로그인_요청("success@email.com", "success");
 
         // then
         로그인_됨(로그인_요청_응답);
@@ -43,7 +43,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         // Given 회원 등록되어 있음 (setUp 메소드 참고)
 
         // when
-        ExtractableResponse 로그인_요청_응답 = 로그인_요청("fail@email.com", "fail");
+        ExtractableResponse<Response> 로그인_요청_응답 = 로그인_요청("fail@email.com", "fail");
 
         // then
         로그인_실패됨(로그인_요청_응답);
@@ -55,13 +55,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         // Given 회원 등록되어 있음 (setUp 메소드 참고)
 
         // when
-        ExtractableResponse<Response> 회원_정보_조회_응답 = MemberAcceptanceTest.회원_정보_조회_요청("aaa");
+        ExtractableResponse<Response> 회원_정보_조회_응답 = MemberAcceptanceTest.나의_정보_조회_요청("aaa");
 
         // then
         유효하지_않은_토큰임(회원_정보_조회_응답);
     }
 
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -73,9 +73,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     private void 로그인_됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(로그인_토큰_추출함(response)).isNotBlank();
+    }
 
-        TokenResponse 토큰 = response.as(TokenResponse.class);
-        assertThat(토큰.getAccessToken()).isNotBlank();
+    public static String 로그인_토큰_추출함(ExtractableResponse<Response> response) {
+        return response.as(TokenResponse.class).getAccessToken();
     }
 
     private void 로그인_실패됨(ExtractableResponse<Response> response) {
