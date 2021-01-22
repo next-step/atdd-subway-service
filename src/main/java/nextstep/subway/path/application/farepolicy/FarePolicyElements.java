@@ -1,4 +1,4 @@
-package nextstep.subway.path.application;
+package nextstep.subway.path.application.farepolicy;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
