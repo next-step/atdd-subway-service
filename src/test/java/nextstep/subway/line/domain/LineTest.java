@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,8 +37,28 @@ public class LineTest {
 	@DisplayName("노선에 새로운 구간 등록")
 	@Test
 	void addLineSection() {
-		신분당선.addSection(강남역, 양재역, 3);
+		final int previousSectionDistance = 신분당선.findSection(강남역, 광교역)
+			.orElse(new Section(신분당선, 강남역, 광교역, 20))
+			.getDistance();
+		final int distance = 3;
+
+		신분당선.addSection(강남역, 양재역, distance);
+
 		노선에_구간_생성됨(신분당선, 강남역, 양재역);
+		노선_기존_구간_나눠짐(신분당선, previousSectionDistance, new Section(신분당선, 강남역, 양재역, distance));
+	}
+
+	private void 노선_기존_구간_나눠짐(final Line line, final int previousSectionDistance, final Section section) {
+
+		Section modifiedSection = line.findSection(양재역, 광교역)
+			.orElse(null);
+
+		assertAll(
+			() -> assertThat(modifiedSection).isNotNull(),
+			() -> assertThat(line.getSections()).contains(section),
+			() -> assertThat(modifiedSection.getDistance() + section.getDistance())
+				.isEqualTo(previousSectionDistance)
+		);
 	}
 
 	public void 노선_생성됨(final Line line) {
