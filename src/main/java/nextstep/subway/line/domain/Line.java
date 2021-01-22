@@ -2,8 +2,10 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
+import org.springframework.validation.Errors;
 
 import javax.persistence.*;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -14,7 +16,8 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
-    private int surcharge;
+    @Embedded
+    private Surcharge surcharge;
 
     @Embedded
     private final Sections sections = new Sections();
@@ -28,10 +31,10 @@ public class Line extends BaseEntity {
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this(name, color, upStation, downStation, distance, 0);
+        this(name, color, upStation, downStation, distance, new Surcharge(0));
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance, int surcharge) {
+    public Line(String name, String color, Station upStation, Station downStation, int distance, Surcharge surcharge) {
         this.name = name;
         this.color = color;
         this.sections.add(new Section(this, upStation, downStation, distance));
@@ -56,11 +59,11 @@ public class Line extends BaseEntity {
     }
 
     public int getSurcharge() {
-        return surcharge;
+        return surcharge.getSurcharge();
     }
 
     public List<Section> getSections() {
-        return this.sections.getSections();
+        return Collections.unmodifiableList(this.sections.getSections());
     }
 
     public List<Station> getStations() {
