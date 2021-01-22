@@ -1,5 +1,7 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
@@ -19,7 +21,15 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findPath(@ModelAttribute PathRequest request) {
-        return ResponseEntity.ok(pathService.findPath(request));
+    public ResponseEntity<PathResponse> findPath(@AuthenticationPrincipal LoginMember loginMember,
+                                                 @ModelAttribute PathRequest request) {
+        PathResponse path = pathService.findPath(request);
+        int age = loginMember.getAge();
+        if (age >= 6 && age < 13) {
+            path.setFare((int) ((path.getFare() - 350) * 0.5));
+        } else if (age >= 13 && age < 19) {
+            path.setFare((int) ((path.getFare() - 350) * 0.8));
+        }
+        return ResponseEntity.ok(path);
     }
 }

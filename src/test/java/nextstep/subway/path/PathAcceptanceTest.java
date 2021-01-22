@@ -19,6 +19,9 @@ import org.springframework.http.MediaType;
 
 import java.time.LocalDateTime;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestSupport.getAccessToken;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestSupport.토큰_발급_요청;
+import static nextstep.subway.member.acceptance.MemberAcceptanceTestSupport.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -33,6 +36,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
     private StationResponse 인천역;
+    private String 토큰;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -56,13 +60,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-yellow-300", 교대역.getId(), 양재역.getId(), 60);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 30);
+
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        토큰 = getAccessToken(토큰_발급_요청(EMAIL, PASSWORD));
     }
 
-    @DisplayName("`교대역`에서 `양재역`까지 최단경로를 조회")
+    @DisplayName("최단경로 조회 - 성인 요금할인 없음")
     @Test
-    void findShortPathTest() {
+    void findShortPathForAdult() {
         // When
-        ExtractableResponse<Response> response = 지하철_노선_경로탐색_요청(교대역, 양재역);
+        ExtractableResponse<Response> response = 지하철_노선_경로탐색_요청(토큰, 교대역, 양재역);
         // Then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -72,38 +79,71 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @DisplayName("최단경로 조회 - 어린이(6세~12세) 요금할인 350원을 공제한 금액의 50% 할인")
+    @Test
+    void findShortPathForChildren() {
+        // Given
+        내_정보_수정_요청(토큰, EMAIL, PASSWORD, 6);
+        // When
+        ExtractableResponse<Response> response = 지하철_노선_경로탐색_요청(토큰, 교대역, 양재역);
+        // Then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.as(PathResponse.class).getStations()).hasSize(3),
+                () -> assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(60),
+                () -> assertThat(response.as(PathResponse.class).getFare()).isEqualTo((int) ((1250 - 350 + 800 + 200) * 0.5))
+        );
+    }
+
+    @DisplayName("최단경로 조회 - 청소년(13세~18세) 요금할인 없음 350원을 공제한 금액의 20% 할인")
+    @Test
+    void findShortPathTestForYouth() {
+        // Given
+        내_정보_수정_요청(토큰, EMAIL, PASSWORD, 18);
+        // When
+        ExtractableResponse<Response> response = 지하철_노선_경로탐색_요청(토큰, 교대역, 양재역);
+        // Then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.as(PathResponse.class).getStations()).hasSize(3),
+                () -> assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(60),
+                () -> assertThat(response.as(PathResponse.class).getFare()).isEqualTo((int) ((1250 - 350 + 800 + 200) * 0.8))
+        );
+    }
+
     @DisplayName("예외 상황 - 출발역과 도착역이 같은 경우")
     @Test
     void exceptionToSearchPathOfSameStation() {
         // When
-        ExtractableResponse<Response> response = 지하철_노선_경로탐색_요청(교대역, 교대역);
+        ExtractableResponse<Response> response = 지하철_노선_경로탐색_요청(토큰, 교대역, 교대역);
         // Then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-	@DisplayName("예외 상황 - 출발역과 도착역이 연결이 되어 있지 않은 경우")
-	@Test
-	void exceptionToSearchPathOfUnconnectedStation() {
-		// When
-		ExtractableResponse<Response> response = 지하철_노선_경로탐색_요청(교대역, 인천역);
-		// Then
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-	}
+    @DisplayName("예외 상황 - 출발역과 도착역이 연결이 되어 있지 않은 경우")
+    @Test
+    void exceptionToSearchPathOfUnconnectedStation() {
+        // When
+        ExtractableResponse<Response> response = 지하철_노선_경로탐색_요청(토큰, 교대역, 인천역);
+        // Then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 
-	@DisplayName("예외 상황 - 존재하지 않은 출발역이나 도착역을 조회 할 경우")
-	@Test
-	void exceptionToSearchPathOfNotExistedStation() {
-		// Given
-		StationResponse 홍대역 = new StationResponse(5L, "홍대역", LocalDateTime.now(), LocalDateTime.now());
-		// When
-		ExtractableResponse<Response> response = 지하철_노선_경로탐색_요청(교대역, 홍대역);
-		// Then
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-	}
+    @DisplayName("예외 상황 - 존재하지 않은 출발역이나 도착역을 조회 할 경우")
+    @Test
+    void exceptionToSearchPathOfNotExistedStation() {
+        // Given
+        StationResponse 홍대역 = new StationResponse(5L, "홍대역", LocalDateTime.now(), LocalDateTime.now());
+        // When
+        ExtractableResponse<Response> response = 지하철_노선_경로탐색_요청(토큰, 교대역, 홍대역);
+        // Then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 
-    private ExtractableResponse<Response> 지하철_노선_경로탐색_요청(StationResponse source, StationResponse target) {
+    private ExtractableResponse<Response> 지하철_노선_경로탐색_요청(String accessToken, StationResponse source, StationResponse target) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .pathParam("sourceId", source.getId())
                 .pathParam("targetId", target.getId())

@@ -42,4 +42,8 @@ public class PathResponse {
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
+
+    public void setFare(int fare) {
+        this.fare = fare;
+    }
 }
