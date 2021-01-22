@@ -11,19 +11,6 @@ public class DiscountByAgeCalculator {
     public static final int CHILDREN_BOUND_AGE = 6;                 // 어린이 나이 기준
 
     /**
-     * 사용자의 나이를 반환합니다.
-     * 단, 사용자의 나이가 비어오는 경우(비로그인시와 같이) 기본 운임을 계산하도록 0을 반환합니다.
-     * @param loginMember
-     * @return
-     */
-    private static int getAge(LoginMember loginMember) {
-        if(loginMember.getAge() != null) {
-            return loginMember.getAge();
-        }
-        return 0;
-    }
-
-    /**
      * 사용자가 할인 받을 수 있는 나이면 주어진 운임에 할인 값을 적용 합니다.
      * @param fare
      * @param age

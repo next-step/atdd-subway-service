@@ -17,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestSupport.로그인_되어_있음;
@@ -111,6 +112,32 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // 지하철 이용 요금도 함께 응답
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getFare()).isEqualTo(Integer.parseInt(expectedFare));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", "-1"})
+    @DisplayName("최단경로 요청시 사용자의 나이가 잘못 된 경우 오류를 발생합니다.")
+    public void getShortestPathFareByBadAgeOccurredBadRequest(String age) {
+        // given
+        // 경로의 출발지 - 도착지
+        Long 출발역 = 교대역.getId();
+        Long 도착역 = 양재역.getId();
+
+        Integer memberAge = null;
+        if(age.length() > 0) {
+            memberAge = Integer.parseInt(age);
+        }
+
+        String 신규사용자토큰 = 로그인_되어_있음("bad" + age + MemberAcceptanceTest.EMAIL
+                , MemberAcceptanceTest.PASSWORD, memberAge);
+
+        // when
+        // 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+        ExtractableResponse<Response> response = PathAcceptanceTestSupport.최단경로_조회_요청(신규사용자토큰, 출발역, 도착역);
+
+        // then
+        // 지하철 이용 요금도 함께 응답
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test

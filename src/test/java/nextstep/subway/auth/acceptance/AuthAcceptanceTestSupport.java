@@ -30,7 +30,7 @@ public class AuthAcceptanceTestSupport extends AcceptanceTest {
                 , MemberAcceptanceTest.AGE);
     }
 
-    public static String 로그인_되어_있음(String email, String password, int age) {
+    public static String 로그인_되어_있음(String email, String password, Integer age) {
         회원_생성을_요청(email, password, age);
         TokenRequest tokenRequest = new TokenRequest(email, password);
         String accessToken = 로그인_요청(tokenRequest)
