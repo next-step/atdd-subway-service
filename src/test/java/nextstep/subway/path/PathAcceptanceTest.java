@@ -92,6 +92,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_요청이_조회됨(response);
     }
 
+    @Test
+    @DisplayName("최단 경로 조회 예외처리")
+    void case2() {
+        Map<String, String> params = new HashMap<>();
+        params.put("source", "1");
+        params.put("target", "1");
+
+        ExtractableResponse<Response> response = 최단경로_요청(params);
+
+        최단경로_요청_실패됨(response);
+    }
+
     private ExtractableResponse<Response> 최단경로_요청(Map<String, String> params) {
         ExtractableResponse<Response> response = RestAssured
                 .given()

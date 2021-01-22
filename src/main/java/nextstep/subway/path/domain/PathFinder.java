@@ -42,6 +42,10 @@ public class PathFinder {
         }
 
         //최단경로 구하기
+        if (getDijkstraShortestPath(station1, station2, vertex, edge) == 0) {
+            throw new IllegalArgumentException("출발역과 도착역이 연결되지 않았습니다!");
+        }
+
         distance = getDijkstraShortestPath(station1, station2, vertex, edge);
     }
 
@@ -61,18 +65,20 @@ public class PathFinder {
         WeightedMultigraph<String, DefaultWeightedEdge> graph
                 = new WeightedMultigraph(DefaultWeightedEdge.class);
         for(Station station: vertex) {
-            graph.addVertex(station.toString());
+            graph.addVertex(String.valueOf(station.getId()));
         }
         for(Section section: edge) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation().toString(), section.getDownStation().toString()), section.getDistance());
+            //graph.setEdgeWeight(graph.addEdge(section.getUpStation().toString(), section.getDownStation().toString()), section.getDistance());
+            graph.setEdgeWeight(graph.addEdge(String.valueOf(section.getUpStation().getId()),
+                    String.valueOf(section.getDownStation().getId())), section.getDistance());
         }
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
 
-        shortestPath = dijkstraShortestPath.getPath(source.toString(), target.toString()).getVertexList();
+        shortestPath = dijkstraShortestPath.getPath(String.valueOf(source.getId()), String.valueOf(target.toString())).getVertexList();
 
         double shortDistance
-                = dijkstraShortestPath.getPath(source.toString(), target.toString()).getWeight();
+                = dijkstraShortestPath.getPath(String.valueOf(source.getId()), String.valueOf(target.toString())).getWeight();
 
         return Integer.parseInt(String.valueOf(Math.round(shortDistance)));
     }

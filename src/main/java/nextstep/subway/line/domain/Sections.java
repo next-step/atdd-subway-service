@@ -20,6 +20,7 @@ public class Sections {
 
     public void addSections(Section section){
         sections.add(section);
+        //section.setLine(this);
     }
     public boolean isNextLineStation(Line line, Station station) {
         return line.getSections().stream()
