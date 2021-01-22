@@ -74,6 +74,9 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
 		// When 지하철 노선에 등록된 역 목록 조회 요청
 		// Then 등록한 지하철 구간이 반영된 역 목록이 순서대로 정렬되어 조회됨
+		지하철_노선에_지하철역_순서_정렬됨(LineAcceptanceTest.지하철_노선_조회_요청(신분당선),
+			Arrays.asList(강남역, 양재역, 정자역, 광교역));
+
 		// When 종점역이 포함되지 않은 지하철 구간 삭제 요청
 		// Then 지하철 구간 삭제됨
 		// When 종점역이 포함된 지하철 구간 삭제 요청
@@ -190,11 +193,11 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 		List<StationResponse> expectedStations) {
 		LineResponse line = response.as(LineResponse.class);
 		List<Long> stationIds = line.getStations().stream()
-			.map(it -> it.getId())
+			.map(StationResponse::getId)
 			.collect(Collectors.toList());
 
 		List<Long> expectedStationIds = expectedStations.stream()
-			.map(it -> it.getId())
+			.map(StationResponse::getId)
 			.collect(Collectors.toList());
 
 		assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
