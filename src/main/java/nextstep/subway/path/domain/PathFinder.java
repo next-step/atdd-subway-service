@@ -51,11 +51,8 @@ public class PathFinder {
         return section.getAdditionalFareInLine();
     }
 
-    private int findMaxFare(int maxValue, int newValue) {
-        if (maxValue < newValue) {
-            return newValue;
-        }
-        return maxValue;
+    private int findMaxFare(int max, int newValue) {
+        return Math.max(max, newValue);
     }
 
     private Sections initiateSections() {

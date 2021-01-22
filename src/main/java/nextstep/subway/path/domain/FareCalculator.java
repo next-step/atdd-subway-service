@@ -10,6 +10,9 @@ public final class FareCalculator {
     public static final int BASIC_DISCOUNT_FARE = 350;
     public static final double DISCOUNT_RATE_FOR_CHILDREN = 0.5;
     public static final double DISCOUNT_RATE_FOR_YOUTH = 0.8;
+    public static final int MIN_YOUTH_AGE = 13;
+    public static final int MIN_ADULT_AGE = 19;
+    public static final int MIN_CHILDREN_AGE = 6;
 
     private FareCalculator() {
         throw new AssertionError();
@@ -36,11 +39,11 @@ public final class FareCalculator {
     }
 
     private static boolean isYouth(int age) {
-        return age >= 13 && age < 19;
+        return age >= MIN_YOUTH_AGE && age < MIN_ADULT_AGE;
     }
 
     private static boolean isChildren(int age) {
-        return age >= 6 && age < 13;
+        return age >= MIN_CHILDREN_AGE && age < MIN_YOUTH_AGE;
     }
 
     private static boolean isMediumDistance(int distance) {
