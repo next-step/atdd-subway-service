@@ -78,9 +78,15 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 			Arrays.asList(강남역, 양재역, 정자역, 광교역));
 
 		// When 종점역이 포함되지 않은 지하철 구간 삭제 요청
+		ExtractableResponse<Response> deleteStationResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
 		// Then 지하철 구간 삭제됨
+		지하철_노선에_지하철역_제외됨(deleteStationResponse, 신분당선, 양재역);
+
 		// When 종점역이 포함된 지하철 구간 삭제 요청
+		deleteStationResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
 		// Then 지하철 구간 삭제됨
+		지하철_노선에_지하철역_제외됨(deleteStationResponse, 신분당선, 강남역);
+
 		// When 지하철 노선에 등록된 역 목록 조회 요청
 		// Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
 
@@ -142,7 +148,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
 
 		// then
-		지하철_노선에_지하철역_제외됨(removeResponse);
+		지하철_노선에_지하철역_제외됨(removeResponse, 신분당선, 양재역);
 		ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
 		지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 정자역, 광교역));
 	}
@@ -211,8 +217,13 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 			.extract();
 	}
 
-	public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> response) {
+	public static void 지하철_노선에_지하철역_제외됨(final ExtractableResponse<Response> response,
+		final LineResponse lineResponse, final StationResponse stationResponse) {
+
+		LineResponse line = LineAcceptanceTest.지하철_노선_조회_요청(lineResponse).as(LineResponse.class);
+
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+		assertThat(line.getStations().stream().map(StationResponse::getId)).isNotIn(stationResponse.getId());
 	}
 
 	public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
