@@ -18,7 +18,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-import static nextstep.subway.path.domain.FareCalculator.*;
+import static nextstep.subway.path.domain.Fare.BASIC_FARE;
+import static nextstep.subway.path.domain.Fare.DISCOUNT_FARE;
+import static nextstep.subway.path.domain.FareAge.CHILDREN;
+import static nextstep.subway.path.domain.FareAge.YOUTH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -76,7 +79,7 @@ class PathServiceTest {
                         .extracting(StationResponse::getName)
                         .containsExactly("교대역", "남부터미널역", "양재역"),
                 () -> assertThat(shortestPath.getDistance()).isEqualTo(50),
-                () -> assertThat(shortestPath.getFare()).isEqualTo(BASIC_FARE + 800 + 300)
+                () -> assertThat(shortestPath.getFare()).isEqualTo(BASIC_FARE.getValue() + 800 + 300)
         );
     }
 
@@ -89,7 +92,7 @@ class PathServiceTest {
         // When
         PathResponse shortestPath = pathService.findPath(new PathRequest(남부터미널역.getId(), 종합운동장역.getId()), ADULT_AGE);
         // Then
-        assertThat(shortestPath.getFare()).isEqualTo((BASIC_FARE + 800 + 1200) + 신분당선.getAdditionalFare());
+        assertThat(shortestPath.getFare()).isEqualTo((BASIC_FARE.getValue() + 800 + 1200) + 신분당선.getAdditionalFare());
     }
 
     @Test
@@ -101,7 +104,7 @@ class PathServiceTest {
         // When
         PathResponse shortestPath = pathService.findPath(new PathRequest(남부터미널역.getId(), 종합운동장역.getId()), 12);
         // Then
-        int fareForChildren = (int) (((BASIC_FARE + 800 + 1200) + 신분당선.getAdditionalFare() - BASIC_DISCOUNT_FARE) * DISCOUNT_RATE_FOR_CHILDREN);
+        int fareForChildren = (int) (((BASIC_FARE.getValue() + 800 + 1200) + 신분당선.getAdditionalFare() - DISCOUNT_FARE.getValue()) * CHILDREN.getDiscountRate());
         assertThat(shortestPath.getFare()).isEqualTo(fareForChildren);
     }
 
@@ -114,8 +117,8 @@ class PathServiceTest {
         // When
         PathResponse shortestPath = pathService.findPath(new PathRequest(남부터미널역.getId(), 종합운동장역.getId()), 18);
         // Then
-        int fareForChildren = (int) (((BASIC_FARE + 800 + 1200) + 신분당선.getAdditionalFare() - BASIC_DISCOUNT_FARE) * DISCOUNT_RATE_FOR_YOUTH);
-        assertThat(shortestPath.getFare()).isEqualTo(fareForChildren);
+        int fareForYouth = (int) (((BASIC_FARE.getValue() + 800 + 1200) + 신분당선.getAdditionalFare() - DISCOUNT_FARE.getValue()) * YOUTH.getDiscountRate());
+        assertThat(shortestPath.getFare()).isEqualTo(fareForYouth);
     }
 
     @DisplayName("예외 상황 - 출발역과 도착역이 같은 경우")

@@ -19,7 +19,7 @@ public class ShortestPath {
         validate(stations, distance);
         this.stations.addAll(stations);
         this.distance = new PathDistance(distance);
-        this.fare = new PathFare(FareCalculator.calculateFareOf(distance) + maxAdditionalFare);
+        this.fare = new PathFare(FareSection.calculateFareOf(distance) + maxAdditionalFare);
     }
 
     public List<Station> getStations() {
