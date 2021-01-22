@@ -34,10 +34,6 @@ public class Section {
         this.distance = distance;
     }
 
-    public void setLine(Sections sections) {
-        this.line.addSection(sections);
-    }
-
     public Long getId() {
         return id;
     }
