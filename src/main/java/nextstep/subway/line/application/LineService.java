@@ -44,6 +44,7 @@ public class LineService {
 			.upStation(upStation)
 			.downStation(downStation)
 			.distance(request.getDistance())
+			.additionalFare(request.getAdditionalFare())
 			.build();
 	}
 

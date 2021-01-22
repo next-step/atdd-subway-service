@@ -9,8 +9,10 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.exception.NotConnectedLineException;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.farePolicy.FarePolicy;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathStationResponse;
 import nextstep.subway.station.domain.Station;
@@ -25,11 +27,14 @@ public class PathFinder {
 	private List<Line> lines;
 	private Station sourceStation;
 	private Station targetStation;
+	private LoginMember loginMember;
 
-	public PathFinder(List<Line> lines, Station sourceStation, Station targetStation) {
+	public PathFinder(List<Line> lines, Station sourceStation, Station targetStation,
+		LoginMember loginMember) {
 		this.lines = lines;
 		this.sourceStation = sourceStation;
 		this.targetStation = targetStation;
+		this.loginMember = loginMember;
 	}
 
 	public PathResponse getDijkstraShortestPath() {
@@ -49,10 +54,15 @@ public class PathFinder {
 
 		List<Station> shortestPath = graphPathResult.getVertexList();
 		int distance = (int)graphPathResult.getWeight();
-
+		int fare = calculateFare(distance);
 		List<PathStationResponse> pathStationResponses = shortestPathResultToPathStationResponses(shortestPath);
 
-		return PathResponse.of(pathStationResponses, distance);
+		return PathResponse.of(pathStationResponses, distance, fare);
+	}
+
+	private int calculateFare(int distance) {
+		FarePolicy farePolicy = new FarePolicy(lines, distance,  loginMember.getAge());
+		return farePolicy.calculate();
 	}
 
 	private List<PathStationResponse> shortestPathResultToPathStationResponses(List<Station> shortestPath) {
@@ -64,7 +74,7 @@ public class PathFinder {
 
 	private void generateEdgeWeight(List<Line> lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
 		lines.stream()
-			.map(line -> line.getSections())
+			.map(Line::getSections)
 			.flatMap(Collection::stream)
 			.forEach(section -> {
 				graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
@@ -74,7 +84,7 @@ public class PathFinder {
 
 	private void generateVertex(List<Line> lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
 		lines.stream()
-			.map(line -> line.getStations())
+			.map(Line::getStations)
 			.flatMap(Collection::stream)
 			.forEach(station -> graph.addVertex(station));
 	}

@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.exception.DuplicateSourceAndTargetException;
 import nextstep.subway.common.exception.NoSourceStationException;
 import nextstep.subway.common.exception.NoTargetStationException;
@@ -46,11 +47,12 @@ public class PathControllerTest {
 			.distance(3)
 			.build();
 
-		when(pathService.findShortestPath(sourceId, targetId)).thenReturn(mockPathResponse);
+		LoginMember loginMember = mock(LoginMember.class);
+		when(pathService.findShortestPath(loginMember, sourceId, targetId)).thenReturn(mockPathResponse);
 		PathController pathController = new PathController(pathService);
 
 		// when
-		ResponseEntity response = pathController.findShortestPath(sourceId, targetId);
+		ResponseEntity response = pathController.findShortestPath(loginMember, sourceId, targetId);
 
 		//then
 		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -65,12 +67,13 @@ public class PathControllerTest {
 		Long targetId = 1L;
 
 		// when
-		when(pathService.findShortestPath(sourceId, targetId)).thenThrow(new DuplicateSourceAndTargetException());
+		LoginMember loginMember = mock(LoginMember.class);
+		when(pathService.findShortestPath(loginMember, sourceId, targetId)).thenThrow(new DuplicateSourceAndTargetException());
 		PathController pathController = new PathController(pathService);
 
 		// then
 		assertThatThrownBy(() -> {
-			pathController.findShortestPath(sourceId, targetId);
+			pathController.findShortestPath(loginMember, sourceId, targetId);
 
 		}).isInstanceOf(DuplicateSourceAndTargetException.class);
 	}
@@ -84,16 +87,17 @@ public class PathControllerTest {
 		Station 교대역 = new Station(3L, "교대역");
 		Station 남부터미널역 = new Station(4L, "남부터미널역");
 
-		Line 신분당선 = new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10);
-		Line 이호선 = new Line(12L, "이호선", "bg-red-600", 교대역, 강남역, 10);
+		Line 신분당선 = new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10, 0);
+		Line 이호선 = new Line(12L, "이호선", "bg-red-600", 교대역, 강남역, 10, 0);
 
-		//when
-		when(pathService.findShortestPath(강남역.getId(), 남부터미널역.getId())).thenThrow(new NotConnectedLineException());
+		LoginMember loginMember = mock(LoginMember.class);
+
+		when(pathService.findShortestPath(loginMember, 강남역.getId(), 남부터미널역.getId())).thenThrow(new NotConnectedLineException());
 		PathController pathController = new PathController(pathService);
 
-		// then
+		// when - then
 		assertThatThrownBy(() -> {
-			pathController.findShortestPath(강남역.getId(), 남부터미널역.getId());
+			pathController.findShortestPath(loginMember, 강남역.getId(), 남부터미널역.getId());
 
 		}).isInstanceOf(NotConnectedLineException.class);
 
@@ -108,17 +112,18 @@ public class PathControllerTest {
 		Station 교대역 = new Station(3L, "교대역");
 		Station 남부터미널역 = new Station(4L, "남부터미널역");
 
-		Line 신분당선 = new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10);
-		Line 이호선 = new Line(12L, "이호선", "bg-red-600", 교대역, 강남역, 10);
+		Line 신분당선 = new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10, 0);
+		Line 이호선 = new Line(12L, "이호선", "bg-red-600", 교대역, 강남역, 10, 0);
 
 		Long invalidSourceId = 500L;
 		//when
-		when(pathService.findShortestPath(invalidSourceId, 남부터미널역.getId())).thenThrow(new NoSourceStationException());
+		LoginMember loginMember = mock(LoginMember.class);
+		when(pathService.findShortestPath(loginMember, invalidSourceId, 남부터미널역.getId())).thenThrow(new NoSourceStationException());
 		PathController pathController = new PathController(pathService);
 
 		// then
 		assertThatThrownBy(() -> {
-			pathController.findShortestPath(invalidSourceId, 남부터미널역.getId());
+			pathController.findShortestPath(loginMember, invalidSourceId, 남부터미널역.getId());
 
 		}).isInstanceOf(NoSourceStationException.class);
 
@@ -133,17 +138,19 @@ public class PathControllerTest {
 		Station 교대역 = new Station(3L, "교대역");
 		Station 남부터미널역 = new Station(4L, "남부터미널역");
 
-		Line 신분당선 = new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10);
-		Line 이호선 = new Line(12L, "이호선", "bg-red-600", 교대역, 강남역, 10);
+		Line 신분당선 = new Line(11L, "신분당선", "bg-red-600", 강남역, 양재역, 10, 0);
+		Line 이호선 = new Line(12L, "이호선", "bg-red-600", 교대역, 강남역, 10, 0);
 
 		Long invalidSourceId = 500L;
+		LoginMember loginMember = mock(LoginMember.class);
+
 		//when
-		when(pathService.findShortestPath(강남역.getId(), invalidSourceId)).thenThrow(new NoTargetStationException());
+		when(pathService.findShortestPath(loginMember, 강남역.getId(), invalidSourceId)).thenThrow(new NoTargetStationException());
 		PathController pathController = new PathController(pathService);
 
 		// then
 		assertThatThrownBy(() -> {
-			pathController.findShortestPath(강남역.getId(), invalidSourceId);
+			pathController.findShortestPath(loginMember, 강남역.getId(), invalidSourceId);
 
 		}).isInstanceOf(NoTargetStationException.class);
 

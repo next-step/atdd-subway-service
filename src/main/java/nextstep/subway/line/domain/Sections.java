@@ -17,6 +17,8 @@ import nextstep.subway.station.domain.Station;
  **/
 @Embeddable
 public class Sections {
+	private static final int MINIMAL_SECTION_COUNT = 2;
+
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private List<Section> sections = new ArrayList<>();
 
@@ -97,5 +99,9 @@ public class Sections {
 	private boolean isSectionsContainDownStation(Station station) {
 		return sections.stream()
 			.noneMatch(it -> it.isEqualDownStation(station));
+	}
+
+	public boolean isExist() {
+		return sections.size() > MINIMAL_SECTION_COUNT;
 	}
 }
