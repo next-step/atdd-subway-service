@@ -137,7 +137,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 나의_정보_조회_요청(String 로그인_토큰) {
         return RestAssured
             .given().log().all()
-            .header("Authorization", "Bearer " + 로그인_토큰)
+            .auth().oauth2(로그인_토큰)
             .when().get("/members/me")
             .then().log().all()
             .extract();
@@ -148,7 +148,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         return RestAssured
             .given().log().all()
-            .header("Authorization", "Bearer " + 로그인_토큰)
+            .auth().oauth2(로그인_토큰)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(memberRequest)
             .when().put("/members/me")
@@ -159,7 +159,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> 나의_정보_삭제_요청(String 로그인_토큰) {
         return RestAssured
             .given().log().all()
-            .header("Authorization", "Bearer " + 로그인_토큰)
+            .auth().oauth2(로그인_토큰)
             .when().delete("/members/me")
             .then().log().all()
             .extract();
