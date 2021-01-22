@@ -1,5 +1,6 @@
 package nextstep.subway.path.dto;
 
+import nextstep.subway.path.domain.FareCalculator;
 import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -12,8 +13,9 @@ public class PathResponse {
     private long distance;
     private int fare;
 
-    public static PathResponse from(ShortestPath shortestPath) {
-        return new PathResponse(convertStationResponse(shortestPath.getStations()), shortestPath.getDistance(), shortestPath.getFare());
+    public static PathResponse of(ShortestPath shortestPath, int age) {
+        return new PathResponse(convertStationResponse(shortestPath.getStations()),
+                shortestPath.getDistance(), FareCalculator.calculateDiscountedFareByAge(shortestPath.getFare(), age));
     }
 
     public PathResponse(List<StationResponse> stations, long distance, int fare) {
@@ -41,9 +43,5 @@ public class PathResponse {
         return stations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
-    }
-
-    public void setFare(int fare) {
-        this.fare = fare;
     }
 }

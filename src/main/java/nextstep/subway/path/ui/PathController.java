@@ -23,13 +23,6 @@ public class PathController {
     @GetMapping
     public ResponseEntity<PathResponse> findPath(@AuthenticationPrincipal LoginMember loginMember,
                                                  @ModelAttribute PathRequest request) {
-        PathResponse path = pathService.findPath(request);
-        int age = loginMember.getAge();
-        if (age >= 6 && age < 13) {
-            path.setFare((int) ((path.getFare() - 350) * 0.5));
-        } else if (age >= 13 && age < 19) {
-            path.setFare((int) ((path.getFare() - 350) * 0.8));
-        }
-        return ResponseEntity.ok(path);
+        return ResponseEntity.ok(pathService.findPath(request, loginMember.getAge()));
     }
 }

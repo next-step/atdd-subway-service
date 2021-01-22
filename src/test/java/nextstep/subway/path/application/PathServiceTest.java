@@ -3,7 +3,6 @@ package nextstep.subway.path.application;
 import nextstep.subway.common.exception.CustomException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -19,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
+import static nextstep.subway.path.domain.FareCalculator.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -66,7 +66,7 @@ class PathServiceTest {
         given(lineService.findAllLines()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
         given(stationService.findById(any())).willReturn(교대역).willReturn(양재역);
         // When
-        PathResponse shortestPath = pathService.findPath(new PathRequest(교대역.getId(), 양재역.getId()));
+        PathResponse shortestPath = pathService.findPath(new PathRequest(교대역.getId(), 양재역.getId()), 21);
         // Then
         assertAll(
                 () -> assertThat(shortestPath.getStations()).isNotNull(),
@@ -74,7 +74,7 @@ class PathServiceTest {
                         .extracting(StationResponse::getName)
                         .containsExactly("교대역", "남부터미널역", "양재역"),
                 () -> assertThat(shortestPath.getDistance()).isEqualTo(50),
-                () -> assertThat(shortestPath.getFare()).isEqualTo(1250 + 800 + 300)
+                () -> assertThat(shortestPath.getFare()).isEqualTo(BASIC_FARE + 800 + 300)
         );
     }
 
@@ -85,9 +85,9 @@ class PathServiceTest {
         given(lineService.findAllLines()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
         given(stationService.findById(any())).willReturn(남부터미널역).willReturn(종합운동장역);
         // When
-        PathResponse shortestPath = pathService.findPath(new PathRequest(남부터미널역.getId(), 종합운동장역.getId()));
+        PathResponse shortestPath = pathService.findPath(new PathRequest(남부터미널역.getId(), 종합운동장역.getId()), 21);
         // Then
-        assertThat(shortestPath.getFare()).isEqualTo((1250 + 800 + 1200) + 400);
+        assertThat(shortestPath.getFare()).isEqualTo((BASIC_FARE + 800 + 1200) + 신분당선.getAdditionalFare());
     }
 
     @DisplayName("예외 상황 - 출발역과 도착역이 같은 경우")
@@ -97,7 +97,7 @@ class PathServiceTest {
         given(lineService.findAllLines()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
         given(stationService.findById(any())).willReturn(교대역).willReturn(교대역);
         // When & Then
-        assertThatThrownBy(() -> pathService.findPath(new PathRequest(교대역.getId(), 교대역.getId())))
+        assertThatThrownBy(() -> pathService.findPath(new PathRequest(교대역.getId(), 교대역.getId()), 21))
                 .isInstanceOf(CustomException.class)
                 .hasMessage("출발역과 도착역이 동일합니다.");
     }
@@ -112,7 +112,7 @@ class PathServiceTest {
         given(lineService.findAllLines()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
         given(stationService.findById(any())).willReturn(교대역).willReturn(광교역);
         // When & Then
-        assertThatThrownBy(() -> pathService.findPath(new PathRequest(교대역.getId(), 광교역.getId())))
+        assertThatThrownBy(() -> pathService.findPath(new PathRequest(교대역.getId(), 광교역.getId()), 21))
                 .isInstanceOf(CustomException.class)
                 .hasMessage("출발역과 도착역이 연결이 되어 있지 않습니다.");
     }
@@ -125,7 +125,7 @@ class PathServiceTest {
         given(lineService.findAllLines()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
         given(stationService.findById(any())).willReturn(교대역).willThrow(new NoSuchElementException(exceptionMessage));
         // When & Then
-        assertThatThrownBy(() -> pathService.findPath(new PathRequest(교대역.getId(), Long.MAX_VALUE)))
+        assertThatThrownBy(() -> pathService.findPath(new PathRequest(교대역.getId(), Long.MAX_VALUE), 21))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage(exceptionMessage);
     }

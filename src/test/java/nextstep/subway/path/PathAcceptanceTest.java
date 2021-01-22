@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestSupport.getAccessToken;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestSupport.토큰_발급_요청;
 import static nextstep.subway.member.acceptance.MemberAcceptanceTestSupport.*;
+import static nextstep.subway.path.domain.FareCalculator.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -75,7 +76,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(PathResponse.class).getStations()).hasSize(3),
                 () -> assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(60),
-                () -> assertThat(response.as(PathResponse.class).getFare()).isEqualTo(1250 + 800 + 200)
+                () -> assertThat(response.as(PathResponse.class).getFare()).isEqualTo(BASIC_FARE + 800 + 200)
         );
     }
 
@@ -87,11 +88,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // When
         ExtractableResponse<Response> response = 지하철_노선_경로탐색_요청(토큰, 교대역, 양재역);
         // Then
+        int fare = (int) ((BASIC_FARE - BASIC_DISCOUNT_FARE + 800 + 200) * DISCOUNT_RATE_FOR_CHILDREN);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(PathResponse.class).getStations()).hasSize(3),
                 () -> assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(60),
-                () -> assertThat(response.as(PathResponse.class).getFare()).isEqualTo((int) ((1250 - 350 + 800 + 200) * 0.5))
+                () -> assertThat(response.as(PathResponse.class).getFare()).isEqualTo(fare)
         );
     }
 
@@ -103,11 +105,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // When
         ExtractableResponse<Response> response = 지하철_노선_경로탐색_요청(토큰, 교대역, 양재역);
         // Then
+        int fare = (int) ((BASIC_FARE - BASIC_DISCOUNT_FARE + 800 + 200) * DISCOUNT_RATE_FOR_YOUTH);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(PathResponse.class).getStations()).hasSize(3),
                 () -> assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(60),
-                () -> assertThat(response.as(PathResponse.class).getFare()).isEqualTo((int) ((1250 - 350 + 800 + 200) * 0.8))
+                () -> assertThat(response.as(PathResponse.class).getFare()).isEqualTo(fare)
         );
     }
 
