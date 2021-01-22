@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -95,5 +96,33 @@ public class Section implements Comparable<Section> {
         }
 
         return -1;
+    }
+
+    public boolean matchStation(final Station upStation, final Station downStation) {
+        return this.upStation.equals(upStation) && this.downStation.equals(downStation);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        final Section section = (Section)o;
+        return Objects.equals(line, section.line) && Objects.equals(upStation, section.upStation)
+            && Objects.equals(downStation, section.downStation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(line, upStation, downStation);
+    }
+
+    public boolean equalsUpStation(final Station upStation) {
+        return this.upStation.equals(upStation);
+    }
+
+    public boolean equalsDownStation(final Station downStation) {
+        return this.downStation.equals(downStation);
     }
 }

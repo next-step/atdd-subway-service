@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -63,7 +64,11 @@ public class Line extends BaseEntity {
         return this.sections.getStations();
     }
 
-    public void addSection(final Station up, final Station down, final Integer distance) {
-        this.sections.addSection(new Section(this, up, down, distance));
+    public void addSection(final Station upStation, final Station downStation, final Integer distance) {
+        this.sections.addSection(new Section(this, upStation, downStation, distance));
+    }
+
+    public Optional<Section> findSection(final Station upStation, final Station downStation) {
+        return this.sections.findSection(upStation, downStation);
     }
 }
