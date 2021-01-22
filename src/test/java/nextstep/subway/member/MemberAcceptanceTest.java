@@ -51,8 +51,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void manageMyInfo() {
         // given
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        ExtractableResponse<Response> 로그인_요청_응답 = AuthAcceptanceTest.로그인_요청(EMAIL, PASSWORD);
-        String 로그인_토큰 = AuthAcceptanceTest.로그인_토큰_추출함(로그인_요청_응답);
+        String 로그인_토큰 = 로그인_되어_있음(EMAIL, PASSWORD);
 
         // when
         ExtractableResponse<Response> findResponse = 나의_정보_조회_요청(로그인_토큰);
@@ -132,6 +131,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static String 로그인_되어_있음(String email, String password) {
+        ExtractableResponse<Response> 로그인_요청_응답 = AuthAcceptanceTest.로그인_요청(email, password);
+        return AuthAcceptanceTest.로그인_토큰_추출함(로그인_요청_응답);
     }
 
     public static ExtractableResponse<Response> 나의_정보_조회_요청(String 로그인_토큰) {
