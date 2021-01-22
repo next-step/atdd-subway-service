@@ -90,6 +90,32 @@ class PathServiceTest {
         assertThat(shortestPath.getFare()).isEqualTo((BASIC_FARE + 800 + 1200) + 신분당선.getAdditionalFare());
     }
 
+    @Test
+    @DisplayName("연령별로 요금을 할인한 요금 적용 - 어린이")
+    void calculateFareForChildren() {
+        // Given
+        given(lineService.findAllLines()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
+        given(stationService.findById(any())).willReturn(남부터미널역).willReturn(종합운동장역);
+        // When
+        PathResponse shortestPath = pathService.findPath(new PathRequest(남부터미널역.getId(), 종합운동장역.getId()), 12);
+        // Then
+        int fareForChildren = (int) (((BASIC_FARE + 800 + 1200) + 신분당선.getAdditionalFare() - BASIC_DISCOUNT_FARE) * DISCOUNT_RATE_FOR_CHILDREN);
+        assertThat(shortestPath.getFare()).isEqualTo(fareForChildren);
+    }
+
+    @Test
+    @DisplayName("연령별로 요금을 할인한 요금 적용 - 청소년")
+    void calculateFareForYouth() {
+        // Given
+        given(lineService.findAllLines()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
+        given(stationService.findById(any())).willReturn(남부터미널역).willReturn(종합운동장역);
+        // When
+        PathResponse shortestPath = pathService.findPath(new PathRequest(남부터미널역.getId(), 종합운동장역.getId()), 18);
+        // Then
+        int fareForChildren = (int) (((BASIC_FARE + 800 + 1200) + 신분당선.getAdditionalFare() - BASIC_DISCOUNT_FARE) * DISCOUNT_RATE_FOR_YOUTH);
+        assertThat(shortestPath.getFare()).isEqualTo(fareForChildren);
+    }
+
     @DisplayName("예외 상황 - 출발역과 도착역이 같은 경우")
     @Test
     void exceptionToFindShortestPathOfSameSourceAndTarget() {
