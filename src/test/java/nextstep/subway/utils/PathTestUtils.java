@@ -29,9 +29,9 @@ public class PathTestUtils {
     }
 
     protected void createLine() {
-        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = new Line("이호선", "green", 교대역, 강남역, 10);
-        삼호선 = new Line("삼호선", "orange", 교대역, 양재역, 5);
+        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 3, 900);
+        이호선 = new Line("이호선", "green", 교대역, 강남역, 1, 1000);
+        삼호선 = new Line("삼호선", "orange", 교대역, 양재역, 5, 300);
         addSection();
     }
 

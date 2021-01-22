@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.PathFinder;
@@ -13,6 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.fare.FareAgeRule.discountFareByAge;
+import static nextstep.subway.fare.FareDistanceRule.findFareByDistance;
+
 @Service
 @Transactional(readOnly = true)
 public class PathService {
@@ -25,7 +29,7 @@ public class PathService {
         this.lineService = lineService;
     }
 
-    public PathResponse findShortestPath(Long source, Long target) {
+    public PathResponse findShortestPath(LoginMember loginMember, Long source, Long target) {
         Station startStation = stationService.findById(source);
         Station endStation = stationService.findById(target);
 
@@ -34,15 +38,32 @@ public class PathService {
         List<Station> pathStations = pathFinder.findShortestPathStations(startStation, endStation);
         int distance = pathFinder.findShortestPathDistance(startStation, endStation);
 
-        return getPathResponse(pathStations, distance);
+        long fare = getFare(pathStations, distance);
+        fare = discountFareByAge(loginMember.getAge(), fare);
+
+        return getPathResponse(pathStations, distance, fare);
     }
 
-    private PathResponse getPathResponse(List<Station> stations, int distance) {
+    private long getFare(List<Station> pathStations, int distance) {
+        long lineMaxFare = 0;
+
+        for (int i = 1; i< pathStations.size(); i++) {
+            Station upStation = pathStations.get(i-1);
+            Station downStation = pathStations.get(i);
+            Section section = lineService.findSectionByStation(upStation, downStation);
+            long lineFare = section.getLine().getFare();
+            lineMaxFare = Math.max(lineFare, lineMaxFare);
+        }
+
+        return lineMaxFare + findFareByDistance(distance);
+    }
+
+    private PathResponse getPathResponse(List<Station> stations, int distance, long fare) {
         List<StationResponse> stationResponses = stations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
 
-        return new PathResponse(stationResponses, distance);
+        return new PathResponse(stationResponses, distance, fare);
     }
 
     private PathFinder getPathFinder() {

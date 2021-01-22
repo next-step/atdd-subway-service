@@ -34,7 +34,7 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance(), request.getFare()));
         List<StationResponse> stations = getStationResponse(persistLine);
         return LineResponse.of(persistLine, stations);
     }
@@ -92,5 +92,9 @@ public class LineService {
 
     public List<Section> findAllSection() {
         return sectionRepository.findAll();
+    }
+
+    public Section findSectionByStation(Station upStation, Station downStation) {
+        return sectionRepository.findByUpStationAndDownStation(upStation,downStation);
     }
 }

@@ -20,10 +20,10 @@ class PathFinderTest extends PathTestUtils {
     private PathFinder pathFinder;
 
     /**
-     * (10)
+     * (1)
      * 교대역    --- *2호선* ---       강남역
      * |                                |
-     * *3호선*(3)                    *신분당선*(10)
+     * *3호선*(3)                    *신분당선*(2)
      * |                               |
      * 남부터미널역  --- *3호선*(2) ---   양재
      */
@@ -55,6 +55,6 @@ class PathFinderTest extends PathTestUtils {
 
         // then
         assertThat(stations.size()).isEqualTo(3);
-        assertThat(distance).isEqualTo(5);
+        assertThat(distance).isEqualTo(4);
     }
 }

@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.SectionRepository;
@@ -45,12 +46,12 @@ class PathServiceTest extends PathTestUtils {
 
 
     /**
-     * (10)
+     * (1)
      * 교대역    --- *2호선* ---       강남역
      * |                                |
-     * *3호선*(3)                    *신분당선*(10)
+     * *3호선*(3)                    *신분당선*(2)
      * |                               |
-     * 남부터미널역  --- *3호선*(2) ---   양재
+     * 남부터미널역  --- *3호선*(2) ---   양재역
      */
 
     @BeforeEach
@@ -63,7 +64,7 @@ class PathServiceTest extends PathTestUtils {
 
     @Test
     @DisplayName("시작역과 도착역의 최단거리를 구하는 서비스 기능 테스트 : 교대역에서 양재역까지 최단거리")
-    void getDijkstraSortestPath() {
+    void getDijkstraShortestPath() {
         // given
         Station 시작점 = 교대역;
         Station 도착점 = 양재역;
@@ -71,13 +72,16 @@ class PathServiceTest extends PathTestUtils {
         given(stationService.findById(도착점.getId())).willReturn(stationRepository.findById(도착점.getId()).get());
         given(stationService.findAll()).willReturn(stationRepository.findAll());
         given(lineService.findAllSection()).willReturn(sectionRepository.findAll());
+        given(lineService.findSectionByStation(교대역, 강남역)).willReturn(sectionRepository.findByUpStationAndDownStation(교대역, 강남역));
+        given(lineService.findSectionByStation(강남역, 양재역)).willReturn(sectionRepository.findByUpStationAndDownStation(강남역, 양재역));
 
         // when
-        PathResponse response = pathService.findShortestPath(시작점.getId(), 도착점.getId());
+        PathResponse response = pathService.findShortestPath(new LoginMember(), 시작점.getId(), 도착점.getId());
 
         // then
         assertThat(response.getStations().size()).isEqualTo(3);
-        assertThat(response.getDistance()).isEqualTo(5);
+        assertThat(response.getDistance()).isEqualTo(4);
+        assertThat(response.getFare()).isEqualTo(2250);
     }
 
 
