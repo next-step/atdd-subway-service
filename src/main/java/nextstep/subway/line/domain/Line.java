@@ -32,12 +32,17 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.getSections().add(new Section(this, upStation, downStation, distance));
+        addSections(new Section(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+    }
+
+    public void addSections(Section section) {
+        sections.addSections(section);
+        section.setLine(this);
     }
 
     public Long getId() {
@@ -70,7 +75,7 @@ public class Line extends BaseEntity {
             throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
 
-        if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
+        if (!isUpStationExisted && !isDownStationExisted) {
             throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
 
@@ -112,7 +117,7 @@ public class Line extends BaseEntity {
             if (!sections.isNextLineStation(line, finalDownStation)) {
                 break;
             }
-            downStation = sections.nextLineStation(line, finalDownStation).get().getDownStation();
+            downStation = sections.callNextLineStation(line, finalDownStation).getDownStation();
             stations.add(downStation);
         }
 
@@ -127,7 +132,7 @@ public class Line extends BaseEntity {
             if (!sections.isNextUpstation(line, finalDownStation)) {
                 break;
             }
-            downStation = sections.nextUpstation(line, finalDownStation).get().getUpStation();
+            downStation = sections.callNextUpstation(line, finalDownStation).getUpStation();
         }
 
         return downStation;
@@ -139,9 +144,9 @@ public class Line extends BaseEntity {
         }
 
         if (sections.isNextLineStation(line, station) && sections.isNextUpstation(line, station)) {
-            Station newUpStation = sections.nextUpstation(line, station).get().getUpStation();
-            Station newDownStation = sections.nextLineStation(line, station).get().getDownStation();
-            int newDistance = sections.nextLineStation(line, station).get().getDistance() + sections.nextUpstation(line, station).get().getDistance();
+            Station newUpStation = sections.callNextUpstation(line, station).getUpStation();
+            Station newDownStation = sections.callNextLineStation(line, station).getDownStation();
+            int newDistance = sections.callNextLineStation(line, station).getDistance() + sections.callNextUpstation(line, station).getDistance();
             line.getSections().add(new Section(line, newUpStation, newDownStation, newDistance));
         }
 
