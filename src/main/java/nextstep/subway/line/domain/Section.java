@@ -66,11 +66,16 @@ public class Section {
         this.distance = new Distance(this.distance.minus(section.distance));
     }
 
-    public boolean hasUpSection(Station station) {
+    public boolean matchStations(Station upStation, Station downStation) {
+        return (hasUpStation(upStation) && hasDownStation(downStation))
+        || (hasUpStation(downStation) && hasDownStation(upStation));
+    }
+
+    public boolean hasDownStation(Station station) {
         return this.downStation.equals(station);
     }
 
-    public boolean hasDownSection(Station station) {
+    public boolean hasUpStation(Station station) {
         return this.upStation.equals(station);
     }
 
@@ -92,5 +97,9 @@ public class Section {
 
     public long getDistance() {
         return distance.getDistance();
+    }
+
+    public int getAdditionalFareInLine() {
+        return line.getAdditionalFare();
     }
 }

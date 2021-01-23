@@ -26,6 +26,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private StationResponse 광교역;
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
+    private LineRequest lineRequest3;
 
     @BeforeEach
     public void setUp() {
@@ -37,6 +38,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
+        lineRequest3 = new LineRequest("추가요금신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15, 900);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -47,6 +49,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_생성됨(response);
+    }
+
+    @DisplayName("추가요금이 있는 지하철 노선을 생성한다.")
+    @Test
+    void createLineWithOverFare() {
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest3);
+
+        // then
+        지하철_추가요금_노선_생성됨(response, lineRequest3.getAdditionalFare());
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
@@ -217,5 +229,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 지하철_추가요금_노선_생성됨(ExtractableResponse<Response> response, int additionalFare) {
+        지하철_노선_생성됨(response);
+        assertThat(response.as(LineResponse.class).getAdditionalFare()).isEqualTo(additionalFare);
     }
 }

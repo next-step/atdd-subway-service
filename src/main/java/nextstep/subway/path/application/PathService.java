@@ -21,11 +21,11 @@ public class PathService {
         this.lineService = lineService;
     }
 
-    public PathResponse findPath(PathRequest request) {
+    public PathResponse findPath(PathRequest request, int age) {
         PathFinder pathFinder = new PathFinder(lineService.findAllLines());
         Station source = stationService.findById(request.getSource());
         Station target = stationService.findById(request.getTarget());
         pathFinder.findShortestPath(source, target);
-        return PathResponse.of(pathFinder.getStationsInShortestPath(), pathFinder.getDistanceInShortestPath());
+        return PathResponse.of(pathFinder.getShortestPath(), age);
     }
 }

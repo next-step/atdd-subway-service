@@ -18,6 +18,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
+import static nextstep.subway.path.domain.Fare.BASIC_FARE;
+import static nextstep.subway.path.domain.Fare.DISCOUNT_FARE;
+import static nextstep.subway.path.domain.FareAge.CHILDREN;
+import static nextstep.subway.path.domain.FareAge.YOUTH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -27,6 +31,8 @@ import static org.mockito.BDDMockito.given;
 @DisplayName("경로에 관련한 기능")
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
+    private static final int ADULT_AGE = 21;
+
     @Mock
     private LineService lineService;
     @Mock
@@ -37,7 +43,8 @@ class PathServiceTest {
     private Station 강남역;
     private Station 양재역;
     private Station 교대역;
-    private Station 남부터미널;
+    private Station 남부터미널역;
+    private Station 종합운동장역;
     private Line 이호선;
     private Line 신분당선;
     private Line 삼호선;
@@ -48,11 +55,13 @@ class PathServiceTest {
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");
         교대역 = new Station("교대역");
-        남부터미널 = new Station("남부터미널");
-        이호선 = new Line("2호선", "bg-green-200", 교대역, 강남역, 1000L);
-        삼호선 = new Line("3호선", "bg-yellow-200", 교대역, 양재역, 500L);
-        삼호선.addSection(교대역, 남부터미널, 300L);
-        신분당선 = new Line("신분당선", "bg-red-200", 강남역, 양재역, 1000L);
+        남부터미널역 = new Station("남부터미널역");
+        종합운동장역 = new Station("종합운동장역");
+        이호선 = new Line("2호선", "bg-green-200", 교대역, 강남역, 100, 200);
+        삼호선 = new Line("3호선", "bg-yellow-200", 교대역, 양재역, 50, 300);
+        삼호선.addSection(교대역, 남부터미널역, 30);
+        이호선.addSection(강남역, 종합운동장역, 20);
+        신분당선 = new Line("신분당선", "bg-red-200", 강남역, 양재역, 100, 400);
     }
 
     @DisplayName("최단 경로 찾기")
@@ -62,15 +71,54 @@ class PathServiceTest {
         given(lineService.findAllLines()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
         given(stationService.findById(any())).willReturn(교대역).willReturn(양재역);
         // When
-        PathResponse shortestPath = pathService.findPath(new PathRequest(교대역.getId(), 양재역.getId()));
+        PathResponse shortestPath = pathService.findPath(new PathRequest(교대역.getId(), 양재역.getId()), ADULT_AGE);
         // Then
         assertAll(
                 () -> assertThat(shortestPath.getStations()).isNotNull(),
                 () -> assertThat(shortestPath.getStations()).hasSize(3)
                         .extracting(StationResponse::getName)
-                        .containsExactly("교대역", "남부터미널", "양재역"),
-                () -> assertThat(shortestPath.getDistance()).isEqualTo(500L)
+                        .containsExactly("교대역", "남부터미널역", "양재역"),
+                () -> assertThat(shortestPath.getDistance()).isEqualTo(50),
+                () -> assertThat(shortestPath.getFare()).isEqualTo(BASIC_FARE.getValue() + 800 + 300)
         );
+    }
+
+    @Test
+    @DisplayName("추가요금 노선들 중 최대 추가요금만 더해진다.")
+    void calculateFareWithOverFareLine() {
+        // Given
+        given(lineService.findAllLines()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
+        given(stationService.findById(any())).willReturn(남부터미널역).willReturn(종합운동장역);
+        // When
+        PathResponse shortestPath = pathService.findPath(new PathRequest(남부터미널역.getId(), 종합운동장역.getId()), ADULT_AGE);
+        // Then
+        assertThat(shortestPath.getFare()).isEqualTo((BASIC_FARE.getValue() + 800 + 1200) + 신분당선.getAdditionalFare());
+    }
+
+    @Test
+    @DisplayName("연령별로 요금을 할인한 요금 적용 - 어린이")
+    void calculateFareForChildren() {
+        // Given
+        given(lineService.findAllLines()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
+        given(stationService.findById(any())).willReturn(남부터미널역).willReturn(종합운동장역);
+        // When
+        PathResponse shortestPath = pathService.findPath(new PathRequest(남부터미널역.getId(), 종합운동장역.getId()), 12);
+        // Then
+        int fareForChildren = (int) (((BASIC_FARE.getValue() + 800 + 1200) + 신분당선.getAdditionalFare() - DISCOUNT_FARE.getValue()) * CHILDREN.getDiscountRate());
+        assertThat(shortestPath.getFare()).isEqualTo(fareForChildren);
+    }
+
+    @Test
+    @DisplayName("연령별로 요금을 할인한 요금 적용 - 청소년")
+    void calculateFareForYouth() {
+        // Given
+        given(lineService.findAllLines()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
+        given(stationService.findById(any())).willReturn(남부터미널역).willReturn(종합운동장역);
+        // When
+        PathResponse shortestPath = pathService.findPath(new PathRequest(남부터미널역.getId(), 종합운동장역.getId()), 18);
+        // Then
+        int fareForYouth = (int) (((BASIC_FARE.getValue() + 800 + 1200) + 신분당선.getAdditionalFare() - DISCOUNT_FARE.getValue()) * YOUTH.getDiscountRate());
+        assertThat(shortestPath.getFare()).isEqualTo(fareForYouth);
     }
 
     @DisplayName("예외 상황 - 출발역과 도착역이 같은 경우")
@@ -80,7 +128,7 @@ class PathServiceTest {
         given(lineService.findAllLines()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
         given(stationService.findById(any())).willReturn(교대역).willReturn(교대역);
         // When & Then
-        assertThatThrownBy(() -> pathService.findPath(new PathRequest(교대역.getId(), 교대역.getId())))
+        assertThatThrownBy(() -> pathService.findPath(new PathRequest(교대역.getId(), 교대역.getId()), ADULT_AGE))
                 .isInstanceOf(CustomException.class)
                 .hasMessage("출발역과 도착역이 동일합니다.");
     }
@@ -91,11 +139,11 @@ class PathServiceTest {
         // Given
         Station 광교역 = new Station("광교역");
         Station 정자역 = new Station("정자역");
-        신분당선 = new Line("신분당선", "bg-red-200", 광교역, 정자역, 1000L);
+        신분당선 = new Line("신분당선", "bg-red-200", 광교역, 정자역, 100);
         given(lineService.findAllLines()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
         given(stationService.findById(any())).willReturn(교대역).willReturn(광교역);
         // When & Then
-        assertThatThrownBy(() -> pathService.findPath(new PathRequest(교대역.getId(), 광교역.getId())))
+        assertThatThrownBy(() -> pathService.findPath(new PathRequest(교대역.getId(), 광교역.getId()), ADULT_AGE))
                 .isInstanceOf(CustomException.class)
                 .hasMessage("출발역과 도착역이 연결이 되어 있지 않습니다.");
     }
@@ -108,7 +156,7 @@ class PathServiceTest {
         given(lineService.findAllLines()).willReturn(Arrays.asList(이호선, 삼호선, 신분당선));
         given(stationService.findById(any())).willReturn(교대역).willThrow(new NoSuchElementException(exceptionMessage));
         // When & Then
-        assertThatThrownBy(() -> pathService.findPath(new PathRequest(교대역.getId(), Long.MAX_VALUE)))
+        assertThatThrownBy(() -> pathService.findPath(new PathRequest(교대역.getId(), Long.MAX_VALUE), ADULT_AGE))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage(exceptionMessage);
     }

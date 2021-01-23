@@ -52,14 +52,15 @@ class PathFinderTest {
     void findShortestPath() {
         // When
         pathFinder.findShortestPath(교대역, 양재역);
+        ShortestPath shortestPath = pathFinder.getShortestPath();
         // Then
         assertAll(
-                () -> assertThat(pathFinder.getStationsInShortestPath()).isNotNull(),
-                () -> assertThat(pathFinder.getStationsInShortestPath())
+                () -> assertThat(shortestPath.getStations()).isNotNull(),
+                () -> assertThat(shortestPath.getStations())
                         .hasSize(3)
                         .extracting(Station::getName)
                         .containsExactly("교대역", "남부터미널", "양재역"),
-                () -> assertThat(pathFinder.getDistanceInShortestPath()).isEqualTo(500L)
+                () -> assertThat(shortestPath.getDistance()).isEqualTo(500L)
         );
     }
 
