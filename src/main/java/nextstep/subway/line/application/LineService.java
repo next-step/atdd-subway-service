@@ -41,7 +41,8 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id)
+            .orElseThrow(IllegalArgumentException::new);
     }
 
     public LineResponse saveLine(LineRequest request) {
@@ -57,7 +58,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = findLineById(id);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
@@ -88,10 +89,12 @@ public class LineService {
             .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public PathResponse findPath(final Long source, final Long target) {
         PathFinder pathFinder = new PathFinder(lineRepository.findAll());
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
         return PathResponse.of(pathFinder.findPath(sourceStation, targetStation));
     }
+
 }
