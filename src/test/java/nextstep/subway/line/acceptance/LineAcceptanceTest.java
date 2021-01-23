@@ -47,6 +47,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_생성됨(response);
+        지하철_노선_지하철역_목록_포함됨(response, 강남역, 광교역);
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
@@ -181,9 +182,21 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 지하철_노선_생성됨(ExtractableResponse response) {
+    public static void 지하철_노선_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+    }
+
+    public static void 지하철_노선_지하철역_목록_포함됨(ExtractableResponse<Response> response, StationResponse... stations) {
+        LineResponse lineResponse = response.jsonPath().getObject(".", LineResponse.class);
+        assertThat(lineResponse.getStations())
+            .contains(stations);
+    }
+
+    public static void 지하철_노선_지하철역_목록_포함되지_않음(ExtractableResponse<Response> response, StationResponse... stations) {
+        LineResponse lineResponse = response.jsonPath().getObject(".", LineResponse.class);
+        assertThat(lineResponse.getStations())
+            .doesNotContain(stations);
     }
 
     public static void 지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {
