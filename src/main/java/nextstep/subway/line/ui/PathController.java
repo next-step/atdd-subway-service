@@ -1,6 +1,7 @@
 package nextstep.subway.line.ui;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +23,11 @@ public class PathController {
 	@GetMapping
 	public ResponseEntity<PathResponse> findPath(@RequestParam final Long source, @RequestParam final Long target) {
 		return ResponseEntity.ok(lineService.findPath(source, target));
+	}
+
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity handleIllegalArgumentException(IllegalArgumentException e) {
+		return ResponseEntity.badRequest().body(e.getMessage());
 	}
 
 }

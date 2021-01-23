@@ -65,6 +65,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		지하철_경로_응답됨(response, 5, 양재역, 남부터미널역, 교대역);
 	}
 
+	@DisplayName("최단 경로 조회 예외 - 출발역과 도착역이 같은 경우")
+	@Test
+	void findPathThrowExceptionWhenSameSourceAndTarget() {
+		// When 지하철 경로 조회 요청
+		ExtractableResponse<Response> response = 지하철_경로_조회_요청(양재역.getId(), 양재역.getId());
+
+		// Then 지하철 경로 조회 예외 발생
+		지하철_경로_조회_예외_발생(response);
+	}
+
 	private LineResponse 지하철_노선_등록되어_있음(final String name, final String color,
 		final StationResponse upStation, final StationResponse downStation, final int distance) {
 		return LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest(name, color, upStation.getId(),
@@ -94,5 +104,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 			() -> assertThat(pathResponse.getStations()).containsExactlyInAnyOrder(stationResponses),
 			() -> assertThat(pathResponse.getDistance()).isEqualTo(distance)
 		);
+	}
+
+	private void 지하철_경로_조회_예외_발생(final ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 }
