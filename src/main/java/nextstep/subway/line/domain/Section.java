@@ -13,7 +13,6 @@ import javax.persistence.ManyToOne;
 
 import nextstep.subway.Message;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.Stations;
 
 @Entity
 public class Section implements Comparable<Section> {
@@ -38,19 +37,11 @@ public class Section implements Comparable<Section> {
 	public Section() {
 	}
 
-	protected Section(Line line, Station upStation, Station downStation, int distance) {
+	public Section(Line line, Station upStation, Station downStation, int distance) {
 		this.line = line;
 		this.upStation = upStation;
 		this.downStation = downStation;
 		this.distance = distance;
-	}
-
-	public static Section createSection(Line line, Station upStation, Station downStation, int distance) {
-		Stations stations = line.getStations();
-		validateStation(stations, upStation, downStation);
-		Section section = new Section(line, upStation, downStation, distance);
-		validateSection(stations, section);
-		return section;
 	}
 
 	public Long getId() {
@@ -99,27 +90,6 @@ public class Section implements Comparable<Section> {
 		}
 		this.downStation = station;
 		this.distance -= newDistance;
-	}
-
-	private static void validateStation(Stations stations, Station upStation, Station downStation) {
-		if (stations.isContains(upStation) && stations.isContains(downStation)) {
-			throw new RuntimeException(Message.EXIST_SECTION);
-		}
-
-		if (stations.isNotEmpty() && stations.isNotContains(upStation) && stations.isNotContains(downStation)) {
-			throw new RuntimeException(Message.INVALID_SECTION);
-		}
-	}
-
-	private static void validateSection(Stations stations, Section section) {
-		Line line = section.getLine();
-
-		if (stations.isEmpty()
-			|| line.updateSectionStation(section)) {
-			return;
-		}
-
-		throw new RuntimeException();
 	}
 
 	@Override

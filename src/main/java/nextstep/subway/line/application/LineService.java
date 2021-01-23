@@ -1,7 +1,6 @@
 package nextstep.subway.line.application;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,29 +61,14 @@ public class LineService {
 		Station upStation = stationService.findStationById(request.getUpStationId());
 		Station downStation = stationService.findStationById(request.getDownStationId());
 
-		Section section = Section.createSection(line, upStation, downStation, request.getDistance());
+		Section section = new Section(line, upStation, downStation, request.getDistance());
 		line.addSection(section);
 	}
 
 	public void removeLineStation(Long lineId, Long stationId) {
 		Line line = findLineById(lineId);
 		Station station = stationService.findStationById(stationId);
-		if (line.isSectionsSizeLessThanOrEqualTo(1)) {
-			throw new RuntimeException();
-		}
 
-		Optional<Section> upLineStation = line.findSectionByUpStation(station);
-		Optional<Section> downLineStation = line.findSectionByDownStation(station);
-
-		upLineStation.ifPresent(line::removeSection);
-		downLineStation.ifPresent(line::removeSection);
-
-		if (upLineStation.isPresent() && downLineStation.isPresent()) {
-			Station newUpStation = downLineStation.get().getUpStation();
-			Station newDownStation = upLineStation.get().getDownStation();
-			int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-			line.addSection(Section.createSection(line, newUpStation, newDownStation, newDistance));
-		}
-
+		line.removeSection(station);
 	}
 }
