@@ -1,5 +1,8 @@
 package nextstep.subway.line.domain;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,7 +16,7 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 
 @Entity
-public class Section {
+public class Section implements Comparable<Section> {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -56,6 +59,10 @@ public class Section {
 
 	public Line getLine() {
 		return line;
+	}
+
+	public List<Station> getStations() {
+		return Arrays.asList(upStation, downStation);
 	}
 
 	public Station getUpStation() {
@@ -113,5 +120,18 @@ public class Section {
 		}
 
 		throw new RuntimeException();
+	}
+
+	@Override
+	public int compareTo(Section section) {
+		if (section.isDownStation(downStation)) {
+			return 0;
+		}
+
+		if (section.isDownStation(this.upStation)) {
+			return 1;
+		}
+
+		return -1;
 	}
 }

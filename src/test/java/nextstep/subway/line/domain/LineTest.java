@@ -23,14 +23,15 @@ class LineTest {
 		광교역 = new Station("광교역");
 		신분당선 = new Line("신분당선", "bg-red-600", 강남역, 판교역, 10);
 		신분당선.addSection(new Section(신분당선, 판교역, 광교역, 5));
+		신분당선.addSection(new Section(신분당선, 강남역, 양재역, 3));
 	}
 
 	@DisplayName("노선의 지하철역 목록을 조회한다.")
 	@Test
 	void getStations() {
 		assertThat(신분당선.getStations().getStations())
-			.hasSize(3)
-			.containsExactly(강남역, 판교역, 광교역);
+			.hasSize(4)
+			.containsExactly(강남역, 양재역, 판교역, 광교역);
 	}
 
 	@DisplayName("노선의 구간중 상행역이 같은 구간을 찾는다.")

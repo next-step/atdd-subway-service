@@ -1,9 +1,10 @@
 package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -73,19 +74,14 @@ public class Line extends BaseEntity {
 	}
 
 	public Stations getStations() {
-		if (sections.isEmpty()) {
-			return new Stations();
-		}
-
-		List<Station> stations = new ArrayList<>();
-		Station station = findFirstUpStation();
-
-		while (Objects.nonNull(station)) {
-			stations.add(station);
-			station = findDownStationByUpStation(station);
-		}
-
-		return new Stations(stations);
+		return new Stations(
+			sections.stream()
+				.sorted()
+				.map(Section::getStations)
+				.flatMap(Collection::stream)
+				.distinct()
+				.collect(Collectors.toList())
+		);
 	}
 
 	public boolean updateSectionStation(Section section) {
@@ -116,41 +112,13 @@ public class Line extends BaseEntity {
 
 	public Optional<Section> findSectionByUpStation(Station upStation) {
 		return sections.stream()
-			.filter(it -> it.getUpStation() == upStation)
+			.filter(it -> it.isUpStation(upStation))
 			.findFirst();
 	}
 
 	public Optional<Section> findSectionByDownStation(Station downStation) {
 		return sections.stream()
-			.filter(it -> it.getDownStation() == downStation)
-			.findFirst();
-	}
-
-	private Station findFirstUpStation() {
-		Station upStation = null;
-		Station station = sections.get(0).getUpStation();
-
-		while (Objects.nonNull(station)) {
-			upStation = station;
-			station = findUpStationByDownStation(upStation);
-		}
-
-		return upStation;
-	}
-
-	private Station findUpStationByDownStation(Station downStation) {
-		return sections.stream()
 			.filter(it -> it.isDownStation(downStation))
-			.findFirst()
-			.map(Section::getUpStation)
-			.orElse(null);
-	}
-
-	private Station findDownStationByUpStation(Station upStation) {
-		return sections.stream()
-			.filter(it -> it.isUpStation(upStation))
-			.findFirst()
-			.map(Section::getDownStation)
-			.orElse(null);
+			.findFirst();
 	}
 }
