@@ -93,11 +93,23 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("최단 경로 조회 예외처리")
+    @DisplayName("최단 경로 조회 예외처리 : 출발지 도착지 같을 경우")
     void case2() {
         Map<String, String> params = new HashMap<>();
         params.put("source", "1");
         params.put("target", "1");
+
+        ExtractableResponse<Response> response = 최단경로_요청(params);
+
+        최단경로_요청_실패됨(response);
+    }
+
+    @Test
+    @DisplayName("최단 경로 조회 예외처리 : 도착치가 존재하지 않은 경우")
+    void case3() {
+        Map<String, String> params = new HashMap<>();
+        params.put("source", "1");
+        params.put("target", "6");
 
         ExtractableResponse<Response> response = 최단경로_요청(params);
 
