@@ -9,6 +9,7 @@ public class FeeCalculator {
     public static final int SECOND_MAX_DISTANCE = 50;
     public static final int FIRST_EXTRA_CHARGE_UNIT = 5;
     public static final int SECOND_EXTRA_CHARGE_UNIT = 8;
+    public static final int ONE = 1;
 
     public static Integer calculateFee(int distance) {
         int fee = ZERO;
@@ -20,14 +21,14 @@ public class FeeCalculator {
         if(distance > DEFAULT_MAX_DISTANCE && distance <= SECOND_MAX_DISTANCE) {
             int extraArea = distance - DEFAULT_MAX_DISTANCE;
             fee = DEFAULT_FEE
-                    + (int) ((Math.ceil((extraArea - 1) / FIRST_EXTRA_CHARGE_UNIT) + 1) * EXTRA_CHARGE);
+                    + (int) ((Math.ceil((extraArea - ONE) / FIRST_EXTRA_CHARGE_UNIT) + ONE) * EXTRA_CHARGE);
         }
 
         if(distance > SECOND_MAX_DISTANCE) {
             int extraArea = distance - SECOND_MAX_DISTANCE;
             fee = DEFAULT_FEE
                     + MAX_EXTRA_FEE_WITHIN_50
-                    + (int) ((Math.ceil((extraArea - 1) / SECOND_EXTRA_CHARGE_UNIT) + 1) * EXTRA_CHARGE);
+                    + (int) ((Math.ceil((extraArea - ONE) / SECOND_EXTRA_CHARGE_UNIT) + ONE) * EXTRA_CHARGE);
         }
 
         return fee;

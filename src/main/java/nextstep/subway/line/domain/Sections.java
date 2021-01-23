@@ -153,5 +153,13 @@ public class Sections {
     public List<Section> getSections() {
         return sections;
     }
+
+    public boolean hasSection(Section section) {
+        return sections.stream()
+                .anyMatch(it ->
+                    it.getUpStation() == section.getUpStation() && it.getDownStation() == section.getDownStation()
+                    || it.getUpStation() == section.getDownStation() && it.getDownStation() == section.getUpStation()
+                );
+    }
 }
 

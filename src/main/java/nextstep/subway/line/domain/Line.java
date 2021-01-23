@@ -89,4 +89,7 @@ public class Line extends BaseEntity {
         return extraFee;
     }
 
+    public boolean hasSection(Section section) {
+        return sections.hasSection(section);
+    }
 }

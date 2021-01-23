@@ -34,6 +34,11 @@ public class Section {
         this.distance = distance;
     }
 
+    public Section(Station upStation, Station downStation) {
+        this.upStation = upStation;
+        this.downStation = downStation;
+    }
+
     public Long getId() {
         return id;
     }
@@ -70,8 +75,4 @@ public class Section {
         this.distance -= newDistance;
     }
 
-    public boolean hasSection(Station start, Station end) {
-        return (downStation == start && upStation == end)
-                || (upStation == start && downStation == end);
-    }
 }

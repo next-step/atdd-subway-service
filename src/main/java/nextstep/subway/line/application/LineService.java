@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class LineService {
     public static final int ZERO = 0;
+    public static final int ONE = 1;
     private LineRepository lineRepository;
     private StationService stationService;
 
@@ -78,7 +79,6 @@ public class LineService {
         line.addSection(upStation, downStation, request.getDistance());
     }
 
-
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
@@ -97,27 +97,36 @@ public class LineService {
     }
 
     public Integer getMaxExtraFee(List<Station> stations) {
+        List<Line> lines = lineRepository.findAll();
+        List<Section> sections = createSections(stations);
         Set<Line> results = new HashSet<>();
 
-        List<Line> lines = lineRepository.findAll();
-
-        for (Line line : lines) {
-            List<Section> sections = line.getSections();
-
-            for (int i = 0; i < stations.size() - 1; i++) {
-                Station start = stations.get(i);
-                Station end = stations.get(i + 1);
-
-                sections.forEach(it -> {
-                    if (it.hasSection(start, end)) {
-                        results.add(line);
-                    }
-                });
-            }
+        for(Section section: sections) {
+            results = findLinesIncludeSection(lines, section);
         }
+
         return results.stream()
                 .mapToInt(Line::getExtraFee)
                 .max()
                 .orElse(ZERO);
+    }
+
+    private Set<Line> findLinesIncludeSection(List<Line> lines, Section section) {
+        Set<Line> results = new HashSet<>();
+        lines.stream()
+                .filter(it -> it.hasSection(section))
+                .findFirst()
+                .ifPresent(results::add);
+        return results;
+    }
+
+    private List<Section> createSections(List<Station> stations) {
+        List<Section> sections = new ArrayList<>();
+        for (int i = ZERO; i < stations.size() - ONE; i++) {
+            Station upStation = stations.get(i);
+            Station downStation = stations.get(i + ONE);
+            sections.add(new Section(upStation, downStation));
+        }
+        return sections;
     }
 }
