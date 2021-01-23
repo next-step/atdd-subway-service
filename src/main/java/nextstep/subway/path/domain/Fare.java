@@ -13,17 +13,8 @@ public class Fare {
     }
 
     private int calculateOverFare(int distance) {
-        if (distance > 10 && distance < 50) {
-            distance = distance - 10;
-            return (int) ((Math.ceil((distance - 1) / 5) + 1) * 100);
-        }
-
-        if (distance >= 50) {
-            distance = distance -50;
-            return (int) ((Math.ceil((distance - 1) / 8) + 1) * 100);
-        }
-
-        return 0;
+        DistanceTypeFare distanceTypeFare = DistanceTypeFare.valueOf(distance);
+        return distanceTypeFare.calculate(distance);
     }
 
     public BigDecimal getFare() {

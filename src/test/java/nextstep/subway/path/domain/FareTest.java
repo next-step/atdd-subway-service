@@ -30,7 +30,11 @@ public class FareTest {
             "16,10,720.0",
             "21,10,1250.0",
             "25,20,1450",
-            "7,30,700.0"
+            "7,30,650.0",
+            "21,170,3550",
+            "21,58,2150",
+            "16,58,1440",
+            "6,114,1250"
     })
     void calculate(int age, int distance, double fare) {
         Fare actual = new Fare(age, distance);
