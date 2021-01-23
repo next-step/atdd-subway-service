@@ -17,6 +17,7 @@ import nextstep.subway.station.domain.Station;
 @DisplayName("경로 찾기 테스트")
 public class PathTest {
 
+	private long id = 1L;
 	private Station 강남역;
 	private Station 양재역;
 	private Station 교대역;
@@ -32,11 +33,10 @@ public class PathTest {
 
 	@BeforeEach
 	public void setup() {
-		long id = 1L;
 		강남역 = new Station(id++, "강남역");
 		양재역 = new Station(id++, "양재역");
 		교대역 = new Station(id++, "교대역");
-		남부터미널역 = new Station(id, "남부터미널역");
+		남부터미널역 = new Station(id++, "남부터미널역");
 
 		신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
 		이호선 = new Line("이호선", "bg-green-600", 교대역, 강남역, 10);
@@ -67,6 +67,16 @@ public class PathTest {
 	void findPathThrowExceptionWhenSameSourceAndTarget() {
 		assertThatIllegalArgumentException().isThrownBy(
 			() -> pathFinder.findPath(양재역, 양재역)
+		);
+	}
+
+	@DisplayName("경로 조회 예외 - 출발역과 도착역이 연결되어 있지 않은 경우")
+	@Test
+	void findPathThrowExceptionWhen() {
+		pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선));
+
+		assertThatIllegalArgumentException().isThrownBy(
+			() -> pathFinder.findPath(강남역, 남부터미널역)
 		);
 	}
 
