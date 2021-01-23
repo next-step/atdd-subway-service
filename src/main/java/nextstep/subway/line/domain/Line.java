@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,6 +15,7 @@ import javax.persistence.OneToMany;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @Entity
 public class Line extends BaseEntity {
@@ -38,7 +40,7 @@ public class Line extends BaseEntity {
 	public Line(String name, String color, Station upStation, Station downStation, int distance) {
 		this.name = name;
 		this.color = color;
-		sections.add(new Section(this, upStation, downStation, distance));
+		sections.add(Section.createSection(this, upStation, downStation, distance));
 	}
 
 	public void update(Line line) {
@@ -58,11 +60,23 @@ public class Line extends BaseEntity {
 		return color;
 	}
 
-	public List<Section> getSections() {
-		return sections;
+	public boolean isSectionsSizeLessThanOrEqualTo(int size) {
+		return sections.size() <= size;
 	}
 
-	public List<Station> getStations() {
+	public void addSection(Section section) {
+		sections.add(section);
+	}
+
+	public void removeSection(Section section) {
+		sections.remove(section);
+	}
+
+	public Stations getStations() {
+		if (sections.isEmpty()) {
+			return new Stations();
+		}
+
 		List<Station> stations = new ArrayList<>();
 		Station station = findFirstUpStation();
 
@@ -71,7 +85,45 @@ public class Line extends BaseEntity {
 			station = findDownStationByUpStation(station);
 		}
 
-		return stations;
+		return new Stations(stations);
+	}
+
+	public boolean updateSectionStation(Section section) {
+		Stations stations = getStations();
+
+		if (stations.isContains(section.getUpStation())) {
+			updateUpStation(section);
+			return true;
+		}
+
+		if (stations.isContains(section.getDownStation())) {
+			updateDownStation(section);
+			return true;
+		}
+
+		return false;
+	}
+
+	private void updateUpStation(Section section) {
+		findSectionByUpStation(section.getUpStation())
+			.ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+	}
+
+	private void updateDownStation(Section section) {
+		findSectionByDownStation(section.getDownStation())
+			.ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+	}
+
+	public Optional<Section> findSectionByUpStation(Station upStation) {
+		return sections.stream()
+			.filter(it -> it.getUpStation() == upStation)
+			.findFirst();
+	}
+
+	public Optional<Section> findSectionByDownStation(Station downStation) {
+		return sections.stream()
+			.filter(it -> it.getDownStation() == downStation)
+			.findFirst();
 	}
 
 	private Station findFirstUpStation() {
@@ -88,7 +140,7 @@ public class Line extends BaseEntity {
 
 	private Station findUpStationByDownStation(Station downStation) {
 		return sections.stream()
-			.filter(it -> it.getDownStation() == downStation)
+			.filter(it -> it.isDownStation(downStation))
 			.findFirst()
 			.map(Section::getUpStation)
 			.orElse(null);
@@ -96,7 +148,7 @@ public class Line extends BaseEntity {
 
 	private Station findDownStationByUpStation(Station upStation) {
 		return sections.stream()
-			.filter(it -> it.getUpStation() == upStation)
+			.filter(it -> it.isUpStation(upStation))
 			.findFirst()
 			.map(Section::getDownStation)
 			.orElse(null);
