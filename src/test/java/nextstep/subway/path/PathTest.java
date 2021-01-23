@@ -1,6 +1,7 @@
 package nextstep.subway.path;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -78,6 +79,22 @@ public class PathTest {
 		assertThatIllegalArgumentException().isThrownBy(
 			() -> pathFinder.findPath(강남역, 남부터미널역)
 		);
+	}
+
+	@DisplayName("경로 조회 예외 - 존재하지 않은 출발역이나 도착역을 조회할 경우")
+	@Test
+	void findPathThrowExceptionWhenNotExistsStation() {
+		Station 용산역 = new Station(id++, "용산역");
+
+		assertAll(
+			() -> assertThatIllegalArgumentException().isThrownBy(
+				() -> pathFinder.findPath(강남역, 용산역)
+			),
+			() -> assertThatIllegalArgumentException().isThrownBy(
+				() -> pathFinder.findPath(용산역, 강남역)
+			)
+		);
+
 	}
 
 }
