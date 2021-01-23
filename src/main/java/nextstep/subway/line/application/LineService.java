@@ -73,7 +73,7 @@ public class LineService {
         line.addSection(upStation, downStation, request.getDistance());
 
         return SectionResponse.of(sectionRepository.findByLineAndUpStationAndDownStation(line, upStation, downStation)
-            .orElseThrow(RuntimeException::new));
+            .orElseThrow(IllegalArgumentException::new));
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
