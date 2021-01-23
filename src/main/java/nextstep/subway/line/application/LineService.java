@@ -96,7 +96,7 @@ public class LineService {
         return stations;
     }
 
-    public Integer getMaxExtraFee(List<Station> stations) {
+    public Integer getMaxExtraLineFare(List<Station> stations) {
         List<Line> lines = lineRepository.findAll();
         List<Section> sections = createSections(stations);
         Set<Line> results = new HashSet<>();
@@ -106,7 +106,7 @@ public class LineService {
         }
 
         return results.stream()
-                .mapToInt(Line::getExtraFee)
+                .mapToInt(Line::getExtraFare)
                 .max()
                 .orElse(ZERO);
     }

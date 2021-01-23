@@ -72,7 +72,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("남부터미널-강남까지 최단경로는 남부터미널-양재-강남, 최단거리는 60, 요금은 2750 이다.")
     @Test
-    void findShortestPathWithExtraFee() {
+    void findShortestPathWithExtraFare() {
         //given
         신분당선 = this.지하철_노선_추가요금_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 100, 1000);
         이호선 = this.지하철_노선_추가요금_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 30, 500);
@@ -88,14 +88,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_이용요금_응답함(result, 2750); // 1250 + 800 + 200 + 500 = 2750
     }
 
-    private LineResponse 지하철_노선_추가요금_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int extraFee) {
+    private LineResponse 지하철_노선_추가요금_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int extraFare) {
         ExtractableResponse<Response> response =
-                지하철_노선_생성_요청(new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, extraFee));
+                지하철_노선_생성_요청(new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, extraFare));
         return response.body().as(LineResponse.class);
     }
 
-    private void 지하철_이용요금_응답함(PathResponse response, int fee) {
-        assertThat(response.getFee()).isEqualTo(fee);
+    private void 지하철_이용요금_응답함(PathResponse response, int fare) {
+        assertThat(response.getFare()).isEqualTo(fare);
     }
 
     private void 총_거리_응답함(PathResponse response, int distance) {
