@@ -20,9 +20,12 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id)
+        return MemberResponse.of(findById(id));
+    }
+
+    public Member findById(Long id) {
+        return memberRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("주어진 id를 가지는 Member를 찾을 수 없습니다."));
-        return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
