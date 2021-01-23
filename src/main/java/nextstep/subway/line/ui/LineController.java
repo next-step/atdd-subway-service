@@ -4,6 +4,8 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.line.dto.SectionResponse;
+
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,10 +50,15 @@ public class LineController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/{id}/sections")
+    public ResponseEntity<List<SectionResponse>> findAllSections(@PathVariable Long id) {
+        return ResponseEntity.ok(lineService.findAllSections(id));
+    }
+
     @PostMapping("/{lineId}/sections")
     public ResponseEntity addLineStation(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
-        lineService.addLineStation(lineId, sectionRequest);
-        return ResponseEntity.ok().build();
+        SectionResponse sectionResponse = lineService.addLineStation(lineId, sectionRequest);
+        return ResponseEntity.ok(sectionResponse);
     }
 
     @DeleteMapping("/{lineId}/sections")
