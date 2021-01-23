@@ -8,7 +8,7 @@ enum AgeTypeFare {
     CHILDREN_FARE(450,0.5, age -> age >= 6 && age < 13),
     TEENAGER_FARE(720,0.8, age -> age >= 13 && age < 19),
     ADULT_FARE(1_250,1.0, age -> age >= 19),
-    FREE_FARE(0,0, age -> age < 6 || age >= 65);
+    FREE_FARE(0,0, age -> ( age > 0 && age < 6) || age >= 65);
 
     private int defaultFare;
     private double discountRate;
@@ -24,7 +24,7 @@ enum AgeTypeFare {
         return Arrays.stream(AgeTypeFare.values())
                 .filter(it -> it.isAgeType(age))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("나이는 0보다 커야 합니다."));
     }
 
     public boolean isAgeType(int age) {

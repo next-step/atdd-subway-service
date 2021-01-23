@@ -6,7 +6,7 @@ import java.util.function.Function;
 enum DistanceTypeFare {
     TEN_KM_OVER_FARE(distance -> distance > 10 && distance <= 50, distance -> (int) (Math.ceil((distance - 11) / 5) + 1) * 100),
     FIFTY_KM_OVER_FARE(distance -> distance > 50, distance -> (int) (((Math.ceil((distance - 51) / 8) + 1) * 100) + 800)),
-    NO_OVER_FARE(distance -> distance <= 10, distance -> 0);
+    NO_OVER_FARE(distance -> distance > 0 && distance <= 10, distance -> 0);
 
     private Function<Integer, Boolean> distanceType;
     private Function<Integer, Integer> experession;
@@ -20,7 +20,7 @@ enum DistanceTypeFare {
         return Arrays.stream(DistanceTypeFare.values())
                 .filter(it -> it.isDisTanceType(distance))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("거리는 0보다 커야합니다."));
     }
 
     public boolean isDisTanceType(int age) {

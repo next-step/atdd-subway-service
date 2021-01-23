@@ -1,12 +1,14 @@
 package nextstep.subway.path.domain;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class FareTest {
 
@@ -40,5 +42,21 @@ public class FareTest {
         Fare actual = new Fare(age, distance);
         BigDecimal expected = BigDecimal.valueOf(fare);
         assertThat(actual.getFare()).isEqualTo(expected);
+    }
+
+    @DisplayName("거리가 0보다 작은 경우")
+    @Test
+    void validateDistanceLessThanZero() {
+        assertThatThrownBy(() -> {
+            new Fare(10, -1);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("나이가 0보다 작은 경우")
+    @Test
+    void validateAgeLessThanZero() {
+        assertThatThrownBy(() -> {
+            new Fare(-1, 10);
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 }
