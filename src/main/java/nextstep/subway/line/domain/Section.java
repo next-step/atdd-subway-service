@@ -125,4 +125,42 @@ public class Section implements Comparable<Section> {
     public boolean equalsDownStation(final Station downStation) {
         return this.downStation.equals(downStation);
     }
+
+    public static final class Builder {
+        private Line line;
+        private Station upStation;
+        private Station downStation;
+        private int distance;
+
+        private Builder() {
+        }
+
+        public static Builder aSection() {
+            return new Builder();
+        }
+
+        public Builder line(Line line) {
+            this.line = line;
+            return this;
+        }
+
+        public Builder upStation(Station upStation) {
+            this.upStation = upStation;
+            return this;
+        }
+
+        public Builder downStation(Station downStation) {
+            this.downStation = downStation;
+            return this;
+        }
+
+        public Builder distance(int distance) {
+            this.distance = distance;
+            return this;
+        }
+
+        public Section build() {
+            return new Section(line, upStation, downStation, distance);
+        }
+    }
 }
