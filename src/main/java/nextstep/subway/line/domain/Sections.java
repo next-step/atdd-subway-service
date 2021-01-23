@@ -13,7 +13,6 @@ import javax.persistence.OneToMany;
 
 import nextstep.subway.Message;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.Stations;
 
 @Embeddable
 public class Sections {
@@ -24,8 +23,8 @@ public class Sections {
 		return Collections.unmodifiableList(sections);
 	}
 
-	public Stations getStations() {
-		return new Stations(
+	public List<Station> getStations() {
+		return Collections.unmodifiableList(
 			sections.stream()
 				.sorted()
 				.map(Section::getStations)
@@ -36,7 +35,7 @@ public class Sections {
 	}
 
 	public void add(Section section) {
-		Stations stations = getStations();
+		List<Station> stations = getStations();
 		validateAddableSection(stations, section);
 
 		if (!stations.isEmpty() && !updateSectionStation(section)) {
@@ -66,14 +65,14 @@ public class Sections {
 	}
 
 	private boolean updateSectionStation(Section section) {
-		Stations stations = getStations();
+		List<Station> stations = getStations();
 
-		if (stations.isContains(section.getUpStation())) {
+		if (stations.contains(section.getUpStation())) {
 			updateUpStation(section);
 			return true;
 		}
 
-		if (stations.isContains(section.getDownStation())) {
+		if (stations.contains(section.getDownStation())) {
 			updateDownStation(section);
 			return true;
 		}
@@ -103,15 +102,15 @@ public class Sections {
 			.findFirst();
 	}
 
-	private void validateAddableSection(Stations stations, Section section) {
+	private void validateAddableSection(List<Station> stations, Section section) {
 		Station upStation = section.getUpStation();
 		Station downStation = section.getDownStation();
 
-		if (stations.isContains(upStation) && stations.isContains(downStation)) {
+		if (stations.contains(upStation) && stations.contains(downStation)) {
 			throw new RuntimeException(Message.EXIST_SECTION);
 		}
 
-		if (stations.isNotEmpty() && stations.isNotContains(upStation) && stations.isNotContains(downStation)) {
+		if (!stations.isEmpty() && !stations.contains(upStation) && !stations.contains(downStation)) {
 			throw new RuntimeException(Message.INVALID_SECTION);
 		}
 	}

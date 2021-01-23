@@ -6,7 +6,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.Stations;
 
 public class StationResponse {
 	private Long id;
@@ -19,9 +18,8 @@ public class StationResponse {
 			station.getModifiedDate());
 	}
 
-	public static List<StationResponse> of(Stations stations) {
-		return stations.getStations()
-			.stream()
+	public static List<StationResponse> of(List<Station> stations) {
+		return stations.stream()
 			.map(StationResponse::of)
 			.collect(Collectors.toList());
 	}
