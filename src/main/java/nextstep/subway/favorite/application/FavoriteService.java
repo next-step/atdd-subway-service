@@ -38,14 +38,14 @@ public class FavoriteService {
 		return FavoriteResponse.from(persistFavorite);
 	}
 
-	public List<FavoriteResponse> findFavorites() {
-		return favoriteRepository.findAll()
+	public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+		return favoriteRepository.findAllByMemberId(loginMember.getId())
 			.stream()
 			.map(FavoriteResponse::from)
 			.collect(Collectors.toList());
 	}
 
-	public void deleteFavorite(Long id) {
-		favoriteRepository.deleteById(id);
+	public void deleteFavorite(LoginMember loginMember, Long id) {
+		favoriteRepository.deleteByIdAndMemberId(id, loginMember.getId());
 	}
 }

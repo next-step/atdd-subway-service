@@ -78,10 +78,10 @@ class FavoriteServiceTest {
 	@Test
 	void findFavorites() {
 		// given
-		when(favoriteRepository.findAll()).thenReturn(Arrays.asList(생성된_즐겨찾기));
+		when(favoriteRepository.findAllByMemberId(로그인_사용자.getId())).thenReturn(Arrays.asList(생성된_즐겨찾기));
 
 		// when
-		List<FavoriteResponse> findList = favoriteService.findFavorites();
+		List<FavoriteResponse> findList = favoriteService.findFavorites(로그인_사용자);
 
 		// then
 		assertThat(findList).anySatisfy(favoriteResponse -> {

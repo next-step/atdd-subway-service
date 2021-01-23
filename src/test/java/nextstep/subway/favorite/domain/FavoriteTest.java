@@ -30,6 +30,7 @@ public class FavoriteTest {
 	private Station 강남역;
 	private Station 천호역;
 	private Member 사용자;
+	private Member 다른_사용자;
 
 	@BeforeEach
 	void setUp() {
@@ -37,6 +38,7 @@ public class FavoriteTest {
 		강남역 = stationRepository.save(new Station("강남역"));
 		천호역 = stationRepository.save(new Station("천호역"));
 		사용자 = memberRepository.save(new Member("email@email.com", "password", 20));
+		다른_사용자 = memberRepository.save(new Member("other@email.com", "password", 21));
 	}
 
 	@Test
@@ -51,6 +53,7 @@ public class FavoriteTest {
 		assertThat(savedFavorite.getTarget()).isEqualTo(강남역);
 	}
 
+	@DisplayName("자신의 즐겨찾기 목록 조회")
 	@Test
 	void findFavorites() {
 		// given
@@ -58,7 +61,7 @@ public class FavoriteTest {
 		favoriteRepository.save(new Favorite(사용자, 강남역, 천호역));
 
 		// when
-		List<Favorite> favorites = favoriteRepository.findAll();
+		List<Favorite> favorites = favoriteRepository.findAllByMemberId(사용자.getId());
 
 		// then
 		assertThat(favorites)
@@ -76,16 +79,31 @@ public class FavoriteTest {
 			});
 	}
 
+	@DisplayName("자신의 즐겨찾기 삭제")
 	@Test
-	void deleteFavorite() {
+	void deleteFavorite1() {
 		// given
 		Favorite savedFavorite = favoriteRepository.save(new Favorite(사용자, 서울역, 강남역));
 		assertThat(favoriteRepository.findById(savedFavorite.getId())).isPresent();
 
 		// when
-		favoriteRepository.deleteById(savedFavorite.getId());
+		favoriteRepository.deleteByIdAndMemberId(savedFavorite.getId(), 사용자.getId());
 
 		// then
 		assertThat(favoriteRepository.findById(savedFavorite.getId())).isNotPresent();
+	}
+
+	@DisplayName("다른 사용자의 즐겨찾기 삭제")
+	@Test
+	void deleteFavorite2() {
+		// given
+		Favorite savedFavorite = favoriteRepository.save(new Favorite(사용자, 서울역, 강남역));
+		assertThat(favoriteRepository.findById(savedFavorite.getId())).isPresent();
+
+		// when
+		favoriteRepository.deleteByIdAndMemberId(savedFavorite.getId(), 다른_사용자.getId());
+
+		// then
+		assertThat(favoriteRepository.findById(savedFavorite.getId())).isPresent();
 	}
 }
