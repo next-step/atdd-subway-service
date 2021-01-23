@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
-@RestController
+@RestController("/favorites")
 public class FavoriteController {
     private FavoriteService favoriteService;
 
@@ -20,19 +20,19 @@ public class FavoriteController {
         this.favoriteService = favoriteService;
     }
 
-    @PostMapping(value = "/favorites", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     public ResponseEntity<FavoriteResponse> createFavorite(@RequestBody FavoriteRequest request) {
         FavoriteResponse response = favoriteService.createFavorite(request);
         return ResponseEntity.created(URI.create("/favorites/" + response.getId())).build();
     }
 
-    @GetMapping(value = "/favorites", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public ResponseEntity<List<Favorite>> findFavorite() {
         List<Favorite> favorites = favoriteService.findFavorite();
         return ResponseEntity.ok().body(favorites);
     }
 
-    @DeleteMapping(value = "/favorites/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping("/{id}")
     public ResponseEntity<Response> deleteFavorite(@PathVariable Long id) {
         favoriteService.deleteFavorite(id);
         return ResponseEntity.noContent().build();

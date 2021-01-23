@@ -41,8 +41,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     }
 
-
-
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {

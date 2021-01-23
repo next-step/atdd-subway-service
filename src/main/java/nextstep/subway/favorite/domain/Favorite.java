@@ -13,9 +13,9 @@ public class Favorite {
 
     @ManyToOne
     private Member member;
-    @OneToOne
+    @ManyToOne
     private Station source;
-    @OneToOne
+    @ManyToOne
     private Station target;
 
     public Favorite() {

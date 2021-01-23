@@ -15,9 +15,9 @@ import java.util.List;
 @Service
 public class FavoriteService {
 
-    private FavoriteRepository favoritRepository;
-    private MemberRepository memberRepository;
-    private StationRepository stationRepository;
+    final private FavoriteRepository favoritRepository;
+    final private MemberRepository memberRepository;
+    final private StationRepository stationRepository;
 
     public FavoriteService(FavoriteRepository favoritRepository, MemberRepository memberRepository, StationRepository stationRepository) {
         this.favoritRepository = favoritRepository;
