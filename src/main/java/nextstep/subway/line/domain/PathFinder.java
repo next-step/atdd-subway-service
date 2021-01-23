@@ -20,6 +20,9 @@ public class PathFinder {
 	public SubwayPath findPath(final Station source, final Station target) {
 		validateFind(source, target);
 		GraphPath graphPath = this.dijkstraShortestPath.getPath(source, target);
+		if (graphPath == null) {
+			throw new IllegalArgumentException();
+		}
 		return new SubwayPath(graphPath.getVertexList(), Double.valueOf(graphPath.getWeight()).intValue());
 	}
 

@@ -27,10 +27,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	private LineResponse 신분당선;
 	private LineResponse 이호선;
 	private LineResponse 삼호선;
+	private LineResponse 사호선;
 	private StationResponse 강남역;
 	private StationResponse 양재역;
 	private StationResponse 교대역;
 	private StationResponse 남부터미널역;
+	private StationResponse 용산역;
+	private StationResponse 이수역;
 
 	/**
 	 * 교대역    --- *2호선* ---   강남역
@@ -47,10 +50,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
 		교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
 		남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+		용산역 = StationAcceptanceTest.지하철역_등록되어_있음("용산역").as(StationResponse.class);
+		이수역 = StationAcceptanceTest.지하철역_등록되어_있음("이수역").as(StationResponse.class);
 
 		신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
 		이호선 = 지하철_노선_등록되어_있음("이호선", "bg-green-600", 교대역, 강남역, 10);
 		삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-orange-600", 교대역, 양재역, 5);
+		사호선 = 지하철_노선_등록되어_있음("사호선", "bg-blue-600", 용산역, 이수역, 15);
 
 		지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
 	}
@@ -70,6 +76,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	void findPathThrowExceptionWhenSameSourceAndTarget() {
 		// When 지하철 경로 조회 요청
 		ExtractableResponse<Response> response = 지하철_경로_조회_요청(양재역.getId(), 양재역.getId());
+
+		// Then 지하철 경로 조회 예외 발생
+		지하철_경로_조회_예외_발생(response);
+	}
+
+	@DisplayName("최단 경로 조회 예외 - 출발역과 도착역이 연결되어 있지 않은 경우")
+	@Test
+	void findPathThrowExceptionWhen() {
+		// When 지하철 경로 조회 요청
+		ExtractableResponse<Response> response = 지하철_경로_조회_요청(용산역.getId(), 남부터미널역.getId());
 
 		// Then 지하철 경로 조회 예외 발생
 		지하철_경로_조회_예외_발생(response);
