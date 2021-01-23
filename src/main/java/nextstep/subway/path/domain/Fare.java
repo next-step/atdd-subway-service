@@ -6,10 +6,15 @@ public class Fare {
     private BigDecimal fare;
     private AgeTypeFare ageTypeFare;
 
-    public Fare(int age, int distance) {
+    public Fare(int maxOverFare, int age, int distance) {
         ageTypeFare = AgeTypeFare.valueOf(age);
+        int overFare = findOverFare(distance, maxOverFare);
+        fare = ageTypeFare.caculate(BigDecimal.valueOf(overFare));
+    }
+
+    private int findOverFare(int distance, int maxOverFare) {
         int distanceFare = calculateOverFare(distance);
-        fare = ageTypeFare.caculate(BigDecimal.valueOf(distanceFare));
+        return distanceFare + maxOverFare;
     }
 
     private int calculateOverFare(int distance) {

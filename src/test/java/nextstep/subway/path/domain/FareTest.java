@@ -39,7 +39,7 @@ public class FareTest {
             "6,114,1250"
     })
     void calculate(int age, int distance, double fare) {
-        Fare actual = new Fare(age, distance);
+        Fare actual = new Fare(0,age, distance);
         BigDecimal expected = BigDecimal.valueOf(fare);
         assertThat(actual.getFare()).isEqualTo(expected);
     }
@@ -48,7 +48,7 @@ public class FareTest {
     @Test
     void validateDistanceLessThanZero() {
         assertThatThrownBy(() -> {
-            new Fare(10, -1);
+            new Fare(0,10, -1);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -56,7 +56,7 @@ public class FareTest {
     @Test
     void validateAgeLessThanZero() {
         assertThatThrownBy(() -> {
-            new Fare(-1, 10);
+            new Fare(0,-1, 10);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 }

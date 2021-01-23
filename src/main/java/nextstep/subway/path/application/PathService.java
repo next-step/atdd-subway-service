@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @Service
@@ -31,7 +32,14 @@ public class PathService {
         Station target = stationService.findById(pathRequest.getTarget());
         List<Line> lines = lineRepository.findAll();
         Path path = new Path(lines,source, target);
-        Fare fare = new Fare(loginMember.getAge(), path.findWeight());
+        Fare fare = new Fare(findMaxOverFare(path.findLines()), loginMember.getAge(), path.findWeight());
         return PathResponse.of(path, fare);
+    }
+
+    private int findMaxOverFare(List<Line> lines) {
+        return lines.stream()
+                .mapToInt(Line::getOverFare)
+                .max()
+                .orElseThrow(NoSuchElementException::new);
     }
 }
