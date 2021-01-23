@@ -16,14 +16,13 @@ public class PathFinder {
     List<Station> shortestPath = new ArrayList<>();
     int distance;
 
-    public void findRouteSearch(Station station1, Station station2, List<Line> lineList) {
+    public void findRouteSearch(Station station1, Station station2, List<Line> lines) {
         if (station1.equals(station2)) {
             throw new IllegalArgumentException("출발역과 도착역이 같습니다!");
         }
 
         Set<Station> vertex = new HashSet<>();
         List<Section> edge = new ArrayList<>();
-        List<Line> lines = lineList;
         for(Line line: lines) {
             extractVertex(vertex, line);
             extracteEdge(edge, line);

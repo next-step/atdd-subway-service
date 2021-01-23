@@ -2,12 +2,12 @@ package nextstep.subway.member.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.favorite.domain.Favorite;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Member extends BaseEntity {
@@ -18,6 +18,9 @@ public class Member extends BaseEntity {
     private String password;
     private Integer age;
 
+    @OneToMany(mappedBy = "member")
+    private List<Favorite> favorites = new ArrayList<>();
+
     public Member() {
     }
 
@@ -25,6 +28,11 @@ public class Member extends BaseEntity {
         this.email = email;
         this.password = password;
         this.age = age;
+    }
+
+    public Member(Long id, String email, String password, Integer age) {
+        this.id = id;
+        new Member(email, password, age);
     }
 
     public Long getId() {

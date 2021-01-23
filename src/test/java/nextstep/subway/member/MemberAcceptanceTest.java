@@ -4,6 +4,10 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -29,18 +33,19 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then
         회원_생성됨(createResponse);
 
+        String uri = createResponse.header("Location");
         // when
-        ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(createResponse);
+        ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(uri);
         // then
         회원_정보_조회됨(findResponse, EMAIL, AGE);
 
         // when
-        ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(uri, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
         // then
         회원_정보_수정됨(updateResponse);
 
         // when
-        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
+        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(uri);
         // then
         회원_삭제됨(deleteResponse);
     }
@@ -48,7 +53,31 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // when 회원생성
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        // then
+        회원_생성됨(createResponse);
 
+        //로그인 토큰 요청
+        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
+        TokenResponse tokenResponse = AuthAcceptanceTest.로그인_토큰_생성(tokenRequest).as(TokenResponse.class);
+        LoginMember loginInfo = AuthAcceptanceTest.로그인_토큰_유효체크(tokenResponse.getAccessToken());
+        String uri = "/members/" + loginInfo.getId();
+
+        // when
+        ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(uri);
+        // then
+        회원_정보_조회됨(findResponse, EMAIL, AGE);
+
+        // when
+        ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(uri, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        // then
+        회원_정보_수정됨(updateResponse);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(uri);
+        // then
+        회원_삭제됨(deleteResponse);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -63,8 +92,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
+    public static ExtractableResponse<Response> 회원_정보_조회_요청(String uri) {
+
 
         return RestAssured
                 .given().log().all()
@@ -74,8 +103,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
-        String uri = response.header("Location");
+    public static ExtractableResponse<Response> 회원_정보_수정_요청(String uri, String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return RestAssured
@@ -87,8 +115,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
+    public static ExtractableResponse<Response> 회원_삭제_요청(String uri) {
         return RestAssured
                 .given().log().all()
                 .when().delete(uri)
