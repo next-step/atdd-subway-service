@@ -54,7 +54,7 @@ public class PathTest {
 	void findPath() {
 		// given
 		int expectedDistance = 5;
-		subwayPath = pathFinder.getSubwayPath(양재역, 교대역);
+		subwayPath = pathFinder.findPath(양재역, 교대역);
 
 		// then
 		assertThat(subwayPath.getStations()).containsExactly(양재역, 남부터미널역, 교대역);
@@ -66,7 +66,7 @@ public class PathTest {
 	@Test
 	void findPathThrowExceptionWhenSameSourceAndTarget() {
 		assertThatIllegalArgumentException().isThrownBy(
-			() -> pathFinder.getSubwayPath(양재역, 양재역)
+			() -> pathFinder.findPath(양재역, 양재역)
 		);
 	}
 

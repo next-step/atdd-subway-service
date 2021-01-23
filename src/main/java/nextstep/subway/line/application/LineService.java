@@ -92,6 +92,6 @@ public class LineService {
         PathFinder pathFinder = new PathFinder(lineRepository.findAll());
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
-        return PathResponse.of(pathFinder.getSubwayPath(sourceStation, targetStation));
+        return PathResponse.of(pathFinder.findPath(sourceStation, targetStation));
     }
 }

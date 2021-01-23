@@ -17,7 +17,7 @@ public class PathFinder {
 		this.dijkstraShortestPath = build(lines);
 	}
 
-	public SubwayPath getSubwayPath(final Station source, final Station target) {
+	public SubwayPath findPath(final Station source, final Station target) {
 		validateFind(source, target);
 		GraphPath graphPath = this.dijkstraShortestPath.getPath(source, target);
 		return new SubwayPath(graphPath.getVertexList(), Double.valueOf(graphPath.getWeight()).intValue());
