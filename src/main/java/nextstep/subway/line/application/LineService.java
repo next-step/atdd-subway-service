@@ -1,6 +1,5 @@
 package nextstep.subway.line.application;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.PathFinder;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -17,7 +17,6 @@ import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.line.dto.SectionResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 
 @Service
 @Transactional
@@ -90,8 +89,9 @@ public class LineService {
     }
 
     public PathResponse findPath(final Long source, final Long target) {
-        LocalDateTime now = LocalDateTime.now();
-        return new PathResponse(5, new StationResponse(2L, "양재역", now, now),
-            new StationResponse(3L, "교대역", now, now));
+        PathFinder pathFinder = new PathFinder(lineRepository.findAll());
+        Station sourceStation = stationService.findStationById(source);
+        Station targetStation = stationService.findStationById(target);
+        return PathResponse.of(pathFinder.getSubwayPath(sourceStation, targetStation));
     }
 }

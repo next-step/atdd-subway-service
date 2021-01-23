@@ -62,7 +62,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> response = 지하철_경로_조회_요청(양재역.getId(), 교대역.getId());
 
 		// Then 지하철 경로 응답됨
-		지하철_경로_응답됨(response, 5, 양재역, 교대역);
+		지하철_경로_응답됨(response, 5, 양재역, 남부터미널역, 교대역);
 	}
 
 	private LineResponse 지하철_노선_등록되어_있음(final String name, final String color,

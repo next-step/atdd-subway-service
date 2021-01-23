@@ -1,9 +1,9 @@
 package nextstep.subway.station.dto;
 
-import nextstep.subway.station.domain.Station;
-
 import java.time.LocalDateTime;
 import java.util.Objects;
+
+import nextstep.subway.station.domain.Station;
 
 public class StationResponse {
     private Long id;
@@ -55,4 +55,15 @@ public class StationResponse {
     public int hashCode() {
         return Objects.hash(id, name);
     }
+
+    @Override
+    public String toString() {
+        return "StationResponse{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", createdDate=" + createdDate +
+            ", modifiedDate=" + modifiedDate +
+            '}';
+    }
+
 }
