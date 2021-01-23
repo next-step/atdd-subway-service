@@ -18,7 +18,7 @@ public class PathController {
     }
 
     @GetMapping(value = "/paths")
-    public ResponseEntity<PathResponse> getDijkstraShortestPath(@AuthenticationPrincipal LoginMember loginMember,
+    public ResponseEntity<PathResponse> getDijkstraShortestPath(@AuthenticationPrincipal(required = false) LoginMember loginMember,
                                                                 @RequestParam Long source,
                                                                 @RequestParam Long target) {
         PathResponse response = pathFindService.findShortestPathAndFare(loginMember, source, target);
