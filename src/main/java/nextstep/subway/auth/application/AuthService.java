@@ -6,7 +6,10 @@ import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class AuthService {
@@ -28,12 +31,12 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효한 token이 아닙니다.");
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email)
-            .orElseThrow(() -> new IllegalArgumentException("주어진 email을 가지는 member를 찾을 수 없습니다."));
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "주어진 email을 가지는 member를 찾을 수 없습니다."));
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }

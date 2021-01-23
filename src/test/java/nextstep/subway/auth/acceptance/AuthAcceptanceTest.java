@@ -21,6 +21,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     public void setUp() {
+        super.setUp();
+
         // Given 회원 등록되어 있음
         MemberAcceptanceTest.회원_생성을_요청("success@email.com", "success", 20);
     }
