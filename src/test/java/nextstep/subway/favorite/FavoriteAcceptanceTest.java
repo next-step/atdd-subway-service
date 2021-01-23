@@ -92,7 +92,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		즐겨찾기_목록_포함됨(즐겨찾기_목록_조회_요청_응답, Arrays.asList(즐겨찾기_생성_요청_응답1, 즐겨찾기_생성_요청_응답2));
 
 		// When 즐겨찾기 삭제 요청
-		ExtractableResponse<Response> 즐겨찾기_삭제_요청_응답 = 즐겨찾기_삭제_요청(사용자_토큰, 정자역);
+		ExtractableResponse<Response> 즐겨찾기_삭제_요청_응답 = 즐겨찾기_삭제_요청(사용자_토큰, 즐겨찾기_생성_요청_응답2);
 		// Then 즐겨찾기 삭제됨
 		즐겨찾기_목록_삭제됨(즐겨찾기_삭제_요청_응답);
 	}
@@ -136,11 +136,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		assertThat(response.jsonPath().getList("id", Long.class)).containsAll(생성된_즐겨찾기_ID_목록);
 	}
 
-	private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String 사용자_토큰, StationResponse station) {
+	private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String 사용자_토큰, ExtractableResponse<Response> response) {
+		String uri = response.header("Location");
 		return RestAssured
 			.given().log().all()
 			.auth().oauth2(사용자_토큰)
-			.when().delete("/favorites/" + station.getId())
+			.when().delete(uri)
 			.then().log().all()
 			.extract();
 	}
