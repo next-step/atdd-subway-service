@@ -59,12 +59,8 @@ public class SectionsTest {
 		Section upSection = 신분당선.getSections().findSectionByUpStation(강남역).orElse(new Section());
 		Section downSection = 신분당선.getSections().findSectionByDownStation(판교역).orElse(new Section());
 
-		assertThat(upSection.getUpStation().equals(강남역)).isTrue();
-		assertThat(upSection.getDownStation().equals(양재역)).isTrue();
-		assertThat(upSection.getDistance()).isEqualTo(3);
-		assertThat(downSection.getUpStation().equals(양재역)).isTrue();
-		assertThat(downSection.getDownStation().equals(판교역)).isTrue();
-		assertThat(downSection.getDistance()).isEqualTo(4);
+		assertThat(upSection).isEqualTo(new Section(신분당선, 강남역, 양재역, 3));
+		assertThat(downSection).isEqualTo(new Section(신분당선, 양재역, 판교역, 4));
 	}
 
 	@DisplayName("하행역과 연결된 구간을 추가한다.")
@@ -76,12 +72,8 @@ public class SectionsTest {
 		Section upSection = 신분당선.getSections().findSectionByUpStation(강남역).orElse(new Section());
 		Section downSection = 신분당선.getSections().findSectionByDownStation(판교역).orElse(new Section());
 
-		assertThat(upSection.getUpStation().equals(강남역)).isTrue();
-		assertThat(upSection.getDownStation().equals(양재역)).isTrue();
-		assertThat(upSection.getDistance()).isEqualTo(4);
-		assertThat(downSection.getUpStation().equals(양재역)).isTrue();
-		assertThat(downSection.getDownStation().equals(판교역)).isTrue();
-		assertThat(downSection.getDistance()).isEqualTo(3);
+		assertThat(upSection).isEqualTo(new Section(신분당선, 강남역, 양재역, 4));
+		assertThat(downSection).isEqualTo(new Section(신분당선, 양재역, 판교역, 3));
 	}
 
 	@DisplayName("이미 등록된 구간 추가시 오류가 발생한다.")
