@@ -4,9 +4,12 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.acceptance.step.LineAcceptanceStep;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.step.MemberAcceptanceStep;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -29,6 +32,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private String accessToken;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -49,6 +53,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         신분당선 = LineAcceptanceStep.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
         이호선 = LineAcceptanceStep.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
         삼호선 = LineAcceptanceStep.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+
+        MemberAcceptanceStep.회원_등록되어_있음("mkkim90@email.com", "password", 32);
+        TokenResponse tokenResponse = AuthAcceptanceTest.로그인_되어있음("mkkim90@email.com", "password").as(TokenResponse.class);
+        accessToken = tokenResponse.getAccessToken();
     }
 
     @DisplayName("경로찾기")
@@ -98,7 +106,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 지하철_최단_경로_조회_요청(PathRequest request) {
         return RestAssured
-                .given().log().all()
+                .given().log().all().auth().oauth2(accessToken)
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths")
