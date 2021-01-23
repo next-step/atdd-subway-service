@@ -91,6 +91,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		지하철_경로_조회_예외_발생(response);
 	}
 
+	@DisplayName("최단 경로 조회 예외 - 존재하지 않은 출발역이나 도착역을 조회할 경우")
+	@Test
+	void findPathThrowExceptionWhenNotExistsStation() {
+		// When 지하철 경로 조회 요청
+		ExtractableResponse<Response> response = 지하철_경로_조회_요청(999L, 998L);
+
+		// Then 지하철 경로 조회 예외 발생
+		지하철_경로_조회_예외_발생(response);
+	}
+
 	private LineResponse 지하철_노선_등록되어_있음(final String name, final String color,
 		final StationResponse upStation, final StationResponse downStation, final int distance) {
 		return LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest(name, color, upStation.getId(),
