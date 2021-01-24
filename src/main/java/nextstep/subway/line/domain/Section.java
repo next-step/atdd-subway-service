@@ -79,7 +79,7 @@ public class Section implements Comparable<Section> {
 
 	public void updateUpStation(Station station, int newDistance) {
 		if (this.distance <= newDistance) {
-			throw new RuntimeException(PLEASE_ENTER_SHORTER_DISTANCE);
+			throw new IllegalArgumentException(PLEASE_ENTER_SHORTER_DISTANCE);
 		}
 		this.upStation = station;
 		this.distance -= newDistance;
@@ -87,7 +87,7 @@ public class Section implements Comparable<Section> {
 
 	public void updateDownStation(Station station, int newDistance) {
 		if (this.distance <= newDistance) {
-			throw new RuntimeException(PLEASE_ENTER_SHORTER_DISTANCE);
+			throw new IllegalArgumentException(PLEASE_ENTER_SHORTER_DISTANCE);
 		}
 		this.downStation = station;
 		this.distance -= newDistance;

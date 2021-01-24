@@ -17,6 +17,8 @@ import nextstep.subway.station.domain.Station;
 public class Sections {
 	public static final String EXIST_SECTION = "이미 등록된 구간 입니다.";
 	public static final String INVALID_SECTION = "등록할 수 없는 구간 입니다.";
+	public static final String INVALID_SECTION_SIZE = "구간을 지울 수 없습니다.";
+
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private final List<Section> sections = new ArrayList<>();
 
@@ -108,17 +110,17 @@ public class Sections {
 		Station downStation = section.getDownStation();
 
 		if (stations.contains(upStation) && stations.contains(downStation)) {
-			throw new RuntimeException(EXIST_SECTION);
+			throw new IllegalArgumentException(EXIST_SECTION);
 		}
 
 		if (!stations.isEmpty() && !stations.contains(upStation) && !stations.contains(downStation)) {
-			throw new RuntimeException(INVALID_SECTION);
+			throw new IllegalArgumentException(INVALID_SECTION);
 		}
 	}
 
 	private void validateRemovableSection() {
 		if (sections.size() <= 1) {
-			throw new RuntimeException();
+			throw new IllegalArgumentException(INVALID_SECTION_SIZE);
 		}
 	}
 }

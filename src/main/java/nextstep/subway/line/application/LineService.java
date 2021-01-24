@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.exception.NoDataException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -26,8 +27,8 @@ public class LineService {
 	}
 
 	public LineResponse saveLine(LineRequest request) {
-		Station upStation = stationService.findById(request.getUpStationId());
-		Station downStation = stationService.findById(request.getDownStationId());
+		Station upStation = stationService.findStationById(request.getUpStationId());
+		Station downStation = stationService.findStationById(request.getDownStationId());
 		Line persistLine = lineRepository.save(
 			new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
 		return LineResponse.of(persistLine);
@@ -39,7 +40,7 @@ public class LineService {
 	}
 
 	public Line findLineById(Long id) {
-		return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+		return lineRepository.findById(id).orElseThrow(NoDataException::new);
 	}
 
 	public LineResponse findLineResponseById(Long id) {
