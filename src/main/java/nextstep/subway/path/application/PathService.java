@@ -22,7 +22,7 @@ public class PathService {
         Station station2 = stationRepository.findById(target).orElseThrow(IllegalArgumentException::new);
         PathFinder pathFinder = new PathFinder();
         pathFinder.findRouteSearch(station1, station2, lineRepository.findAll());
-        return new PathResponse(pathFinder.getStation(), pathFinder.getDistance());
+        return new PathResponse(pathFinder.getStation(), pathFinder.getDistance(), pathFinder.getTotalFee());
     }
 
     private Station getStation(Long id) {

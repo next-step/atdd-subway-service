@@ -24,6 +24,7 @@ class PathFinderTest {
     private Station 양재역;
     private Station 교대역;
     private Station 남부터미널역;
+    private PathFinder pathFinder = new PathFinder();
 
     @BeforeEach
     public void setUp() {
@@ -73,12 +74,12 @@ class PathFinderTest {
         ReflectionTestUtils.setField(양재역, "id", 2L);
         ReflectionTestUtils.setField(교대역, "id", 3L);
 
-        WeightedMultigraph<String, DefaultWeightedEdge> graph
+        WeightedMultigraph<Long, DefaultWeightedEdge> graph
                 = new WeightedMultigraph(DefaultWeightedEdge.class);
         
-        String 교대 = String.valueOf(교대역.getId());
-        String 강남 = String.valueOf(강남역.getId());
-        String 양재 = String.valueOf(양재역.getId());
+        Long 교대 = 교대역.getId();
+        Long 강남 = 강남역.getId();
+        Long 양재 = 양재역.getId();
 
 
         graph.addVertex(교대);
@@ -90,7 +91,7 @@ class PathFinderTest {
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
 
-        List<Station> shortestPath
+        List<Long> shortestPath
                 = dijkstraShortestPath.getPath(교대, 양재).getVertexList();
 
         assertThat(shortestPath.size()).isEqualTo(2);
@@ -120,5 +121,54 @@ class PathFinderTest {
 
         assertThat(path.getStation().size()).isEqualTo(3);
         assertThat(path.getDistance()).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("경로 조회 메소드 요금 조회 테스트")
+    void findTotalFee() {
+        ReflectionTestUtils.setField(강남역, "id", 1L);
+        ReflectionTestUtils.setField(양재역, "id", 2L);
+        ReflectionTestUtils.setField(교대역, "id", 3L);
+        ReflectionTestUtils.setField(남부터미널역, "id", 4L);
+        ReflectionTestUtils.setField(신분당선, "id", 1L);
+        ReflectionTestUtils.setField(신분당선, "addFee", 900);
+        ReflectionTestUtils.setField(이호선, "id", 2L);
+        ReflectionTestUtils.setField(이호선, "addFee", 500);
+        ReflectionTestUtils.setField(삼호선, "id", 3L);
+        ReflectionTestUtils.setField(삼호선, "addFee", 0);
+
+
+        List<Line> lines = new ArrayList<>();
+        lines.add(이호선);
+        lines.add(삼호선);
+        lines.add(신분당선);
+        pathFinder.findRouteSearch(교대역, 양재역, lines);
+
+        assertThat(pathFinder.getStation().size()).isEqualTo(3);
+        assertThat(pathFinder.getDistance()).isEqualTo(5);
+
+        pathFinder.findTotalFee();
+        assertThat(pathFinder.getTotalFee()).isEqualTo(1250);
+    }
+
+    @Test
+    @DisplayName("기본 운임 계산")
+    void baseFare() {
+        int distance = 5;
+
+        pathFinder.baseFare(distance);
+        assertThat(pathFinder.getTotalFee()).isEqualTo(1250);
+
+        distance = 14;
+        pathFinder.baseFare(distance);
+        assertThat(pathFinder.getTotalFee()).isEqualTo(1250);
+
+        distance = 50;
+        pathFinder.baseFare(distance);
+        assertThat(pathFinder.getTotalFee()).isEqualTo(2050);
+
+        distance = 178;
+        pathFinder.baseFare(distance);
+        assertThat(pathFinder.getTotalFee()).isEqualTo(3650);
     }
 }

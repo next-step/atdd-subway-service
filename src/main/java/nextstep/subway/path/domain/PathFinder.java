@@ -7,14 +7,18 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class PathFinder {
     public PathFinder() {
     }
 
-    List<Station> shortestPath = new ArrayList<>();
-    int distance;
+    private List<Long> shortestPath = new ArrayList<>();
+    private Integer distance;
+    private Integer totalFee;
 
     public void findRouteSearch(Station station1, Station station2, List<Line> lines) {
         if (station1.equals(station2)) {
@@ -37,6 +41,9 @@ public class PathFinder {
         if (distance == 0) {
             throw new IllegalArgumentException("출발역과 도착역이 연결되지 않았습니다!");
         }
+        
+        //지하철 이용 요금 구하기
+        findTotalFee();
     }
 
     private void extracteEdge(List<Section> edge, Line line) {
@@ -52,32 +59,76 @@ public class PathFinder {
     }
 
     public Integer getDijkstraShortestPath(Long source, Long target, Set<Station> vertex, List<Section> edge) {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph
+        WeightedMultigraph<Long, DefaultWeightedEdge> graph
                 = new WeightedMultigraph(DefaultWeightedEdge.class);
         for(Station station: vertex) {
-            graph.addVertex(String.valueOf(station.getId()));
+            graph.addVertex(station.getId());
         }
         for(Section section: edge) {
-            graph.setEdgeWeight(graph.addEdge(String.valueOf(section.getUpStation().getId()),
-                    String.valueOf(section.getDownStation().getId())), section.getDistance());
+            graph.setEdgeWeight(graph.addEdge(section.getUpStation().getId(),
+                    section.getDownStation().getId()), section.getDistance());
         }
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
 
-        shortestPath = dijkstraShortestPath.getPath(String.valueOf(source), String.valueOf(target)).getVertexList();
+        shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
 
         double shortDistance
-                = dijkstraShortestPath.getPath(String.valueOf(source), String.valueOf(target)).getWeight();
+                = dijkstraShortestPath.getPath(source, target).getWeight();
 
         return Integer.parseInt(String.valueOf(Math.round(shortDistance)));
     }
 
-    public List<Station> getStation() {
+    public void findTotalFee() {
+        baseFare(distance);
+        //노선별 추가 요금 정책(추가요금이 있는 노선을 환승하여 이용할 경우, 가장 높은 금액의 추가요금만 적용)
+        //로그인 사용자 연령별 요금 할인 적용(청소년 13세이상 ~19세 미만, 어린이 6세이상 ~13세 미만)
+    }
+
+    public void baseFare(int distance) {
+        if (distance <= 10) {
+            totalFee = 1250;
+        }
+
+        if (distance > 10 && distance <= 50) {
+            totalFee = 1250 + calculateOverFareFiveKm(distance-10);
+        }
+
+        if (distance > 50) {
+            totalFee = 2050 + calculateOverFareEightKm(distance-50);
+        }
+    }
+
+    private int calculateOverFareFiveKm(int distance) {
+        if (distance >= 5 && distance % 5 == 0) {
+            return (int) ((Math.floor((distance - 1) / 5) + 1) * 100);
+        }
+        if (distance >= 5 && distance % 5 != 0) {
+            return (int) (Math.floor((distance - 1) / 5) * 100);
+        }
+        return 0;
+    }
+
+    private int calculateOverFareEightKm(int distance) {
+        if (distance >= 8 && distance % 8 == 0) {
+            return (int) ((Math.floor((distance - 1) / 8) + 1) * 100);
+        }
+        if (distance >= 8 && distance % 8 != 0) {
+            return (int) (Math.floor((distance -1 ) / 8) * 100);
+        }
+        return 0;
+    }
+
+    public List<Long> getStation() {
         return shortestPath;
     }
 
     public int getDistance() {
         return distance;
+    }
+
+    public Integer getTotalFee() {
+        return totalFee;
     }
 }
 

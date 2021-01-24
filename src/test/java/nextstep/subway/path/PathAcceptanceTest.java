@@ -7,6 +7,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -113,6 +114,23 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 최단경로_요청(params);
 
         최단경로_요청_실패됨(response);
+    }
+
+    @Test
+    @DisplayName("최단 경로 조회 요금조회")
+    void case14() {
+        Map<String, String> params = new HashMap<>();
+        params.put("source", "1");
+        params.put("target", "4");
+
+        ExtractableResponse<Response> response = 최단경로_요청(params);
+
+        최단경로_요청이_조회됨(response);
+
+        PathResponse result = 최단경로_요청(params).as(PathResponse.class);
+        assertThat(result.getDistance()).isEqualTo(12);
+        assertThat(result.getTotalFee()).isEqualTo(1250);
+
     }
 
     private ExtractableResponse<Response> 최단경로_요청(Map<String, String> params) {

@@ -67,3 +67,14 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 * 1.토큰 발급(로그인)을 검증하는 인수 테스트(AuthAcceptanceTest) 작성
 * 2.내 정보 조회 인수 테스트(MemberAcceptanceTest) 작성
 * 3.즐겨찾기 인수 테스트(FavoriteAcceptanceTest) 작성
+
+## Step4
+* 1.1 거리별 요금 정책파악
+*     기본운임(10km 이내) : 기본운임 1,250원
+*     이용 거리초과 시 추가운임 부과
+*     10km초과 ~ 50km까지(5km마다 100원)
+*     50km초과 시(8km마다 100원)
+* 1.2 노선별 추가 요금 정책(추가요금이 있는 노선을 환승하여 이용할 경우, 가장 높은 금액의 추가요금만 적용)
+* 1.3 로그인 사용자 연령별 요금 할인 적용(청소년 13세이상 ~19세 미만, 어린이 6세이상 ~13세 미만)
+* 2.최단경로라이브러리 확인(Long 제네릭타입)
+* 3.인수테스트(PathAcceptanceTest)
