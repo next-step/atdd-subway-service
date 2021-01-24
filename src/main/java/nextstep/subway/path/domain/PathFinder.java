@@ -21,7 +21,7 @@ public class PathFinder {
     public PathFinder() {
     }
 
-    public void findRouteSearch(Station station1, Station station2, List<Line> lines) {
+    public void findRouteSearch(Station station1, Station station2, List<Line> lines, Integer age) {
         if (station1.equals(station2)) {
             throw new IllegalArgumentException("출발역과 도착역이 같습니다!");
         }
@@ -44,7 +44,7 @@ public class PathFinder {
         }
         
         //지하철 이용 요금 구하기
-        findTotalFee(lines);
+        findTotalFee(lines, age);
     }
 
     private void extracteEdge(List<Section> edge, Line line) {
@@ -80,7 +80,7 @@ public class PathFinder {
         return Integer.parseInt(String.valueOf(Math.round(shortDistance)));
     }
 
-    public void findTotalFee(List<Line> lines) {
+    public void findTotalFee(List<Line> lines, Integer age) {
         baseFare(distance);
         //노선별 추가 요금 정책(추가요금이 있는 노선을 환승하여 이용할 경우, 가장 높은 금액의 추가요금만 적용)
         for(Line line : lines) {
@@ -88,6 +88,17 @@ public class PathFinder {
         }
         totalFee = totalFee + maxAddFee;
         //로그인 사용자 연령별 요금 할인 적용(청소년 13세이상 ~19세 미만, 어린이 6세이상 ~13세 미만)
+        ageDiscountFee(age);
+    }
+
+    public void ageDiscountFee(int age){
+        int targetFee = totalFee - 350;
+        if (age >= 13 && age < 19) {
+            totalFee = targetFee - (int)Math.floor(targetFee * 0.2);
+        }
+        if (age >= 6 && age < 13) {
+            totalFee = targetFee - (int)Math.floor(targetFee * 0.5);
+        }
     }
 
     public void baseFare(int distance) {

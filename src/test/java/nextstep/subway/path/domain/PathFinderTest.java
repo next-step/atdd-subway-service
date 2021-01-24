@@ -117,7 +117,7 @@ class PathFinderTest {
         lines.add(삼호선);
         lines.add(신분당선);
         PathFinder path = new PathFinder();
-        path.findRouteSearch(교대역, 양재역, lines);
+        path.findRouteSearch(교대역, 양재역, lines, 40);
 
         assertThat(path.getStation().size()).isEqualTo(3);
         assertThat(path.getDistance()).isEqualTo(5);
@@ -142,12 +142,12 @@ class PathFinderTest {
         lines.add(이호선);
         lines.add(삼호선);
         lines.add(신분당선);
-        pathFinder.findRouteSearch(교대역, 양재역, lines);
+        pathFinder.findRouteSearch(교대역, 양재역, lines, 40);
 
         assertThat(pathFinder.getStation().size()).isEqualTo(3);
         assertThat(pathFinder.getDistance()).isEqualTo(5);
 
-        pathFinder.findTotalFee(lines);
+        pathFinder.findTotalFee(lines, 40);
         assertThat(pathFinder.getTotalFee()).isEqualTo(1750);
     }
 
@@ -170,5 +170,21 @@ class PathFinderTest {
         distance = 178;
         pathFinder.baseFare(distance);
         assertThat(pathFinder.getTotalFee()).isEqualTo(3650);
+    }
+
+    @Test
+    @DisplayName("로그인 사용자 연령별 요금 할인 적용")
+    void ageDiscountFee() {
+        int distance = 5;
+        pathFinder.baseFare(distance);
+        assertThat(pathFinder.getTotalFee()).isEqualTo(1250);
+/*
+        int age = 18;
+        pathFinder.ageDiscountFee(age);
+        assertThat(pathFinder.getTotalFee()).isEqualTo(720);
+*/
+        int age = 6;
+        pathFinder.ageDiscountFee(age);
+        assertThat(pathFinder.getTotalFee()).isEqualTo(450);
     }
 }
