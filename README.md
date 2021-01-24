@@ -62,3 +62,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 * 1.step1 refactoring 일급콜렌션 사용 위임
 * 2.PathAcceptanceTest 작성
 * 3.경로 조회 수행하는 도메인 추가 및 테스트 작성
+
+## Step3
+* 1.토큰 발급(로그인)을 검증하는 인수 테스트(AuthAcceptanceTest) 작성
+* 2.내 정보 조회 인수 테스트(MemberAcceptanceTest) 작성
+* 3.즐겨찾기 인수 테스트(FavoriteAcceptanceTest) 작성

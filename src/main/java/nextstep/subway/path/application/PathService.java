@@ -20,9 +20,9 @@ public class PathService {
     public PathResponse findRouteSearch(Long source, Long target) {
         Station station1 = stationRepository.findById(source).orElseThrow(IllegalArgumentException::new);
         Station station2 = stationRepository.findById(target).orElseThrow(IllegalArgumentException::new);
-        PathFinder path = new PathFinder();
-        path.findRouteSearch(station1, station2, lineRepository.findAll());
-        return new PathResponse(path.getStation(), path.getDistance());
+        PathFinder pathFinder = new PathFinder();
+        pathFinder.findRouteSearch(station1, station2, lineRepository.findAll());
+        return new PathResponse(pathFinder.getStation(), pathFinder.getDistance());
     }
 
     private Station getStation(Long id) {
