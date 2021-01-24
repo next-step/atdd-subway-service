@@ -1,17 +1,19 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @Service
@@ -25,10 +27,19 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse findPath(PathRequest pathRequest) {
+    public PathResponse findPath(LoginMember loginMember, PathRequest pathRequest) {
         Station source = stationService.findById(pathRequest.getSource());
         Station target = stationService.findById(pathRequest.getTarget());
         List<Line> lines = lineRepository.findAll();
-        return PathResponse.of(new Path(lines,source, target));
+        Path path = new Path(lines,source, target);
+        Fare fare = new Fare(findMaxOverFare(path.findLines()), loginMember.getAge(), path.findWeight());
+        return PathResponse.of(path, fare);
+    }
+
+    private int findMaxOverFare(List<Line> lines) {
+        return lines.stream()
+                .mapToInt(Line::getOverFare)
+                .max()
+                .orElseThrow(NoSuchElementException::new);
     }
 }

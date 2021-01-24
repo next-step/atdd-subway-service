@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,20 +29,20 @@ public class PathTest {
 
         Line 신분당선 = new Line("신분당선", "red", 강남역, 양재역, 10);
         Line 이호선 = new Line("이호선", "green", 교대역, 강남역, 10);
-        Line 삼호선 = new Line("삼호선", "orange", 교대역, 양재역, 5);
+        //Line 삼호선 = new Line("삼호선", "orange", 교대역, 양재역, 5);
 
         lines.add(신분당선);
         lines.add(이호선);
-        lines.add(삼호선);
+       // lines.add(삼호선);
     }
 
     @DisplayName("경로 찾기")
     @Test
     void findPath() {
-        Path path = new Path(lines, 강남역, 양재역);
+        Path path = new Path(lines, 양재역, 교대역);
 
-        assertThat(path.findShortestPath()).containsExactly(강남역, 양재역);
-        assertThat(path.findWeight()).isEqualTo(10);
+        assertThat(path.findShortestPath()).containsExactly(양재역, 강남역, 교대역);
+        assertThat(path.findWeight()).isEqualTo(20);
     }
 
     @DisplayName("경로 찾기 예외 - 출발역과 도착역이 같은 경우")

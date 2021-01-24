@@ -10,12 +10,14 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class FavoriteService {
     private final FavoriteRepository favoriteRepository;
@@ -54,7 +56,7 @@ public class FavoriteService {
         }
     }
 
-
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> findAllFavorites(LoginMember loginMember) {
         Member member = memberService.findMemberById(loginMember.getId());
         List<Favorite> favorites = favoriteRepository.findAllByMember(member);
