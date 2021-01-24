@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import nextstep.subway.Message;
 import nextstep.subway.station.domain.Station;
 
 public class SectionsTest {
@@ -81,7 +80,7 @@ public class SectionsTest {
 	void add_ThrowRuntimeException1() {
 		assertThatExceptionOfType(RuntimeException.class)
 			.isThrownBy(() -> sections.add(new Section(신분당선, 강남역, 광교역, 3)))
-			.withMessage(Message.EXIST_SECTION);
+			.withMessage(Sections.EXIST_SECTION);
 	}
 
 	@DisplayName("연결되지 않은 구간 추가시 오류가 발생한다.")
@@ -89,7 +88,7 @@ public class SectionsTest {
 	void add_ThrowRuntimeException2() {
 		assertThatExceptionOfType(RuntimeException.class)
 			.isThrownBy(() -> sections.add(new Section(신분당선, 양재역, 청계산입구역, 3)))
-			.withMessage(Message.INVALID_SECTION);
+			.withMessage(Sections.INVALID_SECTION);
 	}
 
 	@DisplayName("구간이 1개 이하이면 오류가 발생한다.")

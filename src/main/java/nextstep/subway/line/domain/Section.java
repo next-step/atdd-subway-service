@@ -12,11 +12,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import nextstep.subway.Message;
 import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Section implements Comparable<Section> {
+	public static final String PLEASE_ENTER_SHORTER_DISTANCE = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -79,7 +79,7 @@ public class Section implements Comparable<Section> {
 
 	public void updateUpStation(Station station, int newDistance) {
 		if (this.distance <= newDistance) {
-			throw new RuntimeException(Message.PLEASE_ENTER_SHORTER_DISTANCE);
+			throw new RuntimeException(PLEASE_ENTER_SHORTER_DISTANCE);
 		}
 		this.upStation = station;
 		this.distance -= newDistance;
@@ -87,7 +87,7 @@ public class Section implements Comparable<Section> {
 
 	public void updateDownStation(Station station, int newDistance) {
 		if (this.distance <= newDistance) {
-			throw new RuntimeException(Message.PLEASE_ENTER_SHORTER_DISTANCE);
+			throw new RuntimeException(PLEASE_ENTER_SHORTER_DISTANCE);
 		}
 		this.downStation = station;
 		this.distance -= newDistance;
@@ -113,15 +113,11 @@ public class Section implements Comparable<Section> {
 		if (o == null || getClass() != o.getClass())
 			return false;
 		Section section = (Section)o;
-		return distance == section.distance &&
-			Objects.equals(id, section.id) &&
-			Objects.equals(line, section.line) &&
-			Objects.equals(upStation, section.upStation) &&
-			Objects.equals(downStation, section.downStation);
+		return Objects.equals(id, section.id);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, line, upStation, downStation, distance);
+		return Objects.hash(id);
 	}
 }

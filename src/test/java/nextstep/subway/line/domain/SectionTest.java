@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import nextstep.subway.Message;
 import nextstep.subway.station.domain.Station;
 
 class SectionTest {
@@ -32,7 +31,7 @@ class SectionTest {
 
 		assertThatExceptionOfType(RuntimeException.class)
 			.isThrownBy(() -> section.updateUpStation(강남역, 10))
-			.withMessage(Message.PLEASE_ENTER_SHORTER_DISTANCE);
+			.withMessage(Section.PLEASE_ENTER_SHORTER_DISTANCE);
 	}
 
 	@DisplayName("하행역에 역간 거리보다 먼 거리 입력시 오류가 발생한다.")
@@ -42,6 +41,6 @@ class SectionTest {
 
 		assertThatExceptionOfType(RuntimeException.class)
 			.isThrownBy(() -> section.updateDownStation(판교역, 10))
-			.withMessage(Message.PLEASE_ENTER_SHORTER_DISTANCE);
+			.withMessage(Section.PLEASE_ENTER_SHORTER_DISTANCE);
 	}
 }
