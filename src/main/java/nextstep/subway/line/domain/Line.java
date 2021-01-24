@@ -197,4 +197,22 @@ public class Line extends BaseEntity {
         upLineStation.ifPresent(it -> line.getSections().remove(it));
         downLineStation.ifPresent(it -> line.getSections().remove(it));
     }
+
+    public boolean containsPath(List<Long> shortestPath) {
+        for(Section section:sections) {
+            if (cconfirmSectionIfContainsPath(shortestPath, section)) return true;
+        }
+        return false;
+    }
+
+    private boolean cconfirmSectionIfContainsPath(List<Long> shortestPath, Section section) {
+        if (section.containsSection(shortestPath)) {
+            return true;
+        }
+        return false;
+    }
+
+    public Integer getAddFee() {
+        return addFee;
+    }
 }

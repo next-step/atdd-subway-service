@@ -124,7 +124,7 @@ class PathFinderTest {
     }
 
     @Test
-    @DisplayName("경로 조회 메소드 요금 조회 테스트")
+    @DisplayName("경로 조회 메소드 요금 조회")
     void findTotalFee() {
         ReflectionTestUtils.setField(강남역, "id", 1L);
         ReflectionTestUtils.setField(양재역, "id", 2L);
@@ -133,9 +133,9 @@ class PathFinderTest {
         ReflectionTestUtils.setField(신분당선, "id", 1L);
         ReflectionTestUtils.setField(신분당선, "addFee", 900);
         ReflectionTestUtils.setField(이호선, "id", 2L);
-        ReflectionTestUtils.setField(이호선, "addFee", 500);
+        ReflectionTestUtils.setField(이호선, "addFee", 0);
         ReflectionTestUtils.setField(삼호선, "id", 3L);
-        ReflectionTestUtils.setField(삼호선, "addFee", 0);
+        ReflectionTestUtils.setField(삼호선, "addFee", 500);
 
 
         List<Line> lines = new ArrayList<>();
@@ -147,8 +147,8 @@ class PathFinderTest {
         assertThat(pathFinder.getStation().size()).isEqualTo(3);
         assertThat(pathFinder.getDistance()).isEqualTo(5);
 
-        pathFinder.findTotalFee();
-        assertThat(pathFinder.getTotalFee()).isEqualTo(1250);
+        pathFinder.findTotalFee(lines);
+        assertThat(pathFinder.getTotalFee()).isEqualTo(1750);
     }
 
     @Test

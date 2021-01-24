@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Set;
 
 public class PathFinder {
+    private int maxAddFee;
+
     public PathFinder() {
     }
 
@@ -43,7 +45,7 @@ public class PathFinder {
         }
         
         //지하철 이용 요금 구하기
-        findTotalFee();
+        findTotalFee(lines);
     }
 
     private void extracteEdge(List<Section> edge, Line line) {
@@ -79,9 +81,13 @@ public class PathFinder {
         return Integer.parseInt(String.valueOf(Math.round(shortDistance)));
     }
 
-    public void findTotalFee() {
+    public void findTotalFee(List<Line> lines) {
         baseFare(distance);
         //노선별 추가 요금 정책(추가요금이 있는 노선을 환승하여 이용할 경우, 가장 높은 금액의 추가요금만 적용)
+        for(Line line : lines) {
+            lineAddFee(line);
+        }
+        totalFee = totalFee + maxAddFee;
         //로그인 사용자 연령별 요금 할인 적용(청소년 13세이상 ~19세 미만, 어린이 6세이상 ~13세 미만)
     }
 
@@ -117,6 +123,18 @@ public class PathFinder {
             return (int) (Math.floor((distance -1 ) / 8) * 100);
         }
         return 0;
+    }
+
+    private void lineAddFee(Line line) {
+        if (line.containsPath(shortestPath)) {
+            extractedMaxAddFee(line);
+        }
+    }
+
+    private void extractedMaxAddFee(Line line) {
+        if (maxAddFee < line.getAddFee()){
+            maxAddFee = line.getAddFee();
+        }
     }
 
     public List<Long> getStation() {

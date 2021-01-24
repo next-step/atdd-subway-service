@@ -48,14 +48,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "red lighten-1", 강남역, 양재역, 10).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음("2호선", "green lighten-1", 교대역, 강남역, 10).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음("3호선", "orange darken-1", 교대역, 양재역, 5).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "red lighten-1", 강남역, 양재역, 10, 900).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음("2호선", "green lighten-1", 교대역, 강남역, 10, 0).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음("3호선", "orange darken-1", 교대역, 양재역, 5, 500).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
 
-    public ExtractableResponse<Response> 지하철_노선_등록되어_있음(String name, String color, StationResponse station1, StationResponse station2, int distance) {
+    public ExtractableResponse<Response> 지하철_노선_등록되어_있음(String name, String color, StationResponse station1, StationResponse station2, int distance, int addFee) {
         LineRequest params = new LineRequest(name, color, station1.getId(), station2.getId(), distance);
         return RestAssured
                 .given().log().all()
