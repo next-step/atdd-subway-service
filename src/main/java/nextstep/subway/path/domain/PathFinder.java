@@ -13,14 +13,13 @@ import java.util.List;
 import java.util.Set;
 
 public class PathFinder {
+    private List<Long> shortestPath = new ArrayList<>();
+    private Integer distance;
+    private Integer totalFee;
     private int maxAddFee;
 
     public PathFinder() {
     }
-
-    private List<Long> shortestPath = new ArrayList<>();
-    private Integer distance;
-    private Integer totalFee;
 
     public void findRouteSearch(Station station1, Station station2, List<Line> lines) {
         if (station1.equals(station2)) {

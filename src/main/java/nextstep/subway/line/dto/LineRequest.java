@@ -24,7 +24,11 @@ public class LineRequest {
     }
 
     public LineRequest(String name, String color, Long upStationId, Long downStationId, Integer distance, Integer addFee) {
-        new LineRequest(name, color, upStationId, downStationId, distance);
+        this.name = name;
+        this.color = color;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
+        this.distance = distance;
         this.addFee = addFee;
     }
 

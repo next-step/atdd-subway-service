@@ -56,7 +56,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     public ExtractableResponse<Response> 지하철_노선_등록되어_있음(String name, String color, StationResponse station1, StationResponse station2, int distance, int addFee) {
-        LineRequest params = new LineRequest(name, color, station1.getId(), station2.getId(), distance);
+        LineRequest params = new LineRequest(name, color, station1.getId(), station2.getId(), distance, addFee);
         return RestAssured
                 .given().log().all()
                 .body(params)
@@ -120,16 +120,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("최단 경로 조회 요금조회")
     void case14() {
         Map<String, String> params = new HashMap<>();
-        params.put("source", "1");
-        params.put("target", "4");
+        params.put("source", "3");
+        params.put("target", "2");
 
         ExtractableResponse<Response> response = 최단경로_요청(params);
 
         최단경로_요청이_조회됨(response);
 
         PathResponse result = 최단경로_요청(params).as(PathResponse.class);
-        assertThat(result.getDistance()).isEqualTo(12);
-        assertThat(result.getTotalFee()).isEqualTo(1250);
+        assertThat(result.getDistance()).isEqualTo(5);
+        assertThat(result.getTotalFee()).isEqualTo(1750);
 
     }
 
