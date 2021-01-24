@@ -16,7 +16,6 @@ import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Section implements Comparable<Section> {
-	public static final String PLEASE_ENTER_SHORTER_DISTANCE = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -33,12 +32,12 @@ public class Section implements Comparable<Section> {
 	@JoinColumn(name = "down_station_id")
 	private Station downStation;
 
-	private int distance;
+	private Distance distance;
 
 	protected Section() {
 	}
 
-	public Section(Line line, Station upStation, Station downStation, int distance) {
+	public Section(Line line, Station upStation, Station downStation, Distance distance) {
 		this.line = line;
 		this.upStation = upStation;
 		this.downStation = downStation;
@@ -73,24 +72,18 @@ public class Section implements Comparable<Section> {
 		return downStation.equals(station);
 	}
 
-	public int getDistance() {
+	public Distance getDistance() {
 		return distance;
 	}
 
-	public void updateUpStation(Station station, int newDistance) {
-		if (this.distance <= newDistance) {
-			throw new IllegalArgumentException(PLEASE_ENTER_SHORTER_DISTANCE);
-		}
+	public void updateUpStation(Station station, Distance distance) {
 		this.upStation = station;
-		this.distance -= newDistance;
+		this.distance = this.distance.minus(distance);
 	}
 
-	public void updateDownStation(Station station, int newDistance) {
-		if (this.distance <= newDistance) {
-			throw new IllegalArgumentException(PLEASE_ENTER_SHORTER_DISTANCE);
-		}
+	public void updateDownStation(Station station, Distance distance) {
 		this.downStation = station;
-		this.distance -= newDistance;
+		this.distance = this.distance.minus(distance);
 	}
 
 	@Override
