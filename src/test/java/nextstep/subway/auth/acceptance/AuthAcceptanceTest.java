@@ -46,6 +46,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	@DisplayName("Bearer Auth 유효하지 않은 토큰")
 	@Test
 	void myInfoWithWrongBearerAuth() {
+		ExtractableResponse<Response> response = 로그인을_시도한다(MemberAcceptanceTest.EMAIL,
+			MemberAcceptanceTest.PASSWORD);
+		String token = response.as(TokenResponse.class).getAccessToken();
+
+		ExtractableResponse<Response> myInfoResponse = MemberAcceptanceTest.내_정보_조회_요청(token + "wrong");
+
+		유효하지_않은_토큰(myInfoResponse);
 	}
 
 	private ExtractableResponse<Response> 로그인을_시도한다(final String email, final String password) {
@@ -66,5 +73,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
 	private void 로그인_실패(final ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+	}
+
+	private void 유효하지_않은_토큰(final ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 }

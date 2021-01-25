@@ -1,17 +1,18 @@
 package nextstep.subway.member;
 
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -94,6 +95,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .when().delete(uri)
                 .then().log().all()
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_조회_요청(final String token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all().extract();
     }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
