@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nextstep.subway.BaseEntity;
@@ -29,6 +30,7 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
+    @Builder
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
@@ -38,10 +40,6 @@ public class Line extends BaseEntity {
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
-    }
-
-    public List<Section> getSections() {
-        return sections.getSections();
     }
 
     public List<Station> getStations() {

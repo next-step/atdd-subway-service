@@ -46,15 +46,4 @@ public class Section {
     public boolean isMatchDownStation(Station station) {
         return this.downStation == station;
     }
-
-
-    public void updateUpStation(Station station, int newDistance) {
-        this.upStation = station;
-        this.distance = this.distance - newDistance;
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
-        this.downStation = station;
-        this.distance = this.distance - newDistance;
-    }
 }

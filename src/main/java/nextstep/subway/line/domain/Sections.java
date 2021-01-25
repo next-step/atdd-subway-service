@@ -109,10 +109,6 @@ public class Sections {
         }
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
     public void removeSection(Line line, Station station) {
         validateRemoveSection();
 
