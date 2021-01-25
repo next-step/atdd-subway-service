@@ -17,6 +17,10 @@ public class Distance {
 		this.distance = distance;
 	}
 
+	public int value() {
+		return distance;
+	}
+
 	public Distance plus(Distance distance) {
 		return new Distance(this.distance + distance.distance);
 	}

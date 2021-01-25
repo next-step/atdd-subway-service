@@ -25,7 +25,7 @@ public class Sections {
 	protected Sections() {
 	}
 
-	public List<Section> getSections() {
+	public List<Section> values() {
 		return Collections.unmodifiableList(sections);
 	}
 

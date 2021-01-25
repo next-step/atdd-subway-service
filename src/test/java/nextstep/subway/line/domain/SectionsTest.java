@@ -45,7 +45,7 @@ public class SectionsTest {
 		Sections sections = new Sections();
 		sections.add(section);
 
-		assertThat(sections.getSections())
+		assertThat(sections.values())
 			.hasSize(1)
 			.containsExactly(section);
 	}
@@ -106,7 +106,7 @@ public class SectionsTest {
 	@Test
 	void remove1() {
 		sections.remove(강남역);
-		assertThat(sections.getSections())
+		assertThat(sections.values())
 			.hasSize(1)
 			.containsExactly(new Section(신분당선, 판교역, 광교역, THREE_DISTANCE));
 	}
@@ -115,7 +115,7 @@ public class SectionsTest {
 	@Test
 	void remove2() {
 		sections.remove(광교역);
-		assertThat(sections.getSections())
+		assertThat(sections.values())
 			.hasSize(1)
 			.containsExactly(new Section(신분당선, 강남역, 판교역, THREE_DISTANCE));
 	}
@@ -124,7 +124,7 @@ public class SectionsTest {
 	@Test
 	void remove3() {
 		sections.remove(판교역);
-		assertThat(sections.getSections())
+		assertThat(sections.values())
 			.hasSize(1)
 			.containsExactly(new Section(신분당선, 강남역, 광교역, THREE_DISTANCE));
 	}
