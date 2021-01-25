@@ -40,6 +40,7 @@ class LineTest {
     @DisplayName("노선에 구간 등록")
     @Test
     void addSection() {
+        // given when
         일호선.addSection(Section.builder()
                 .line(일호선)
                 .upStation(소요산역)
@@ -47,14 +48,17 @@ class LineTest {
                 .distance(5)
                 .build());
 
+        // then
         노선에_포함된_지하철역_검증(일호선 ,소요산역, 창동역, 서울역, 인천역);
     }
 
     @DisplayName("노선에 지하철역 제거")
     @Test
     void deleteSection() {
+        // given when
         일호선.remove(서울역);
 
+        // then
         노선에_포함된_지하철역_검증(일호선 ,소요산역, 인천역);
     }
 

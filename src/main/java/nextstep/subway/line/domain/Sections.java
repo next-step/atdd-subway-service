@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.util.CommonConstant;
@@ -23,6 +24,7 @@ public class Sections {
     @OneToMany(mappedBy = "line" , cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
+    @Builder
     public Sections(Line line, Station upStation, Station downStation, int distance) {
         sections.add(Section.builder()
                 .line(line)
