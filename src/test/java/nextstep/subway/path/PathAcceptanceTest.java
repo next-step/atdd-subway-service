@@ -133,6 +133,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	}
 
 	private void 지하철_경로_조회_예외_발생(final ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+		assertThat(response.statusCode()).isNotEqualTo(HttpStatus.OK.value());
 	}
 }

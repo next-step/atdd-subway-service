@@ -7,6 +7,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import nextstep.subway.line.exception.CanNotFindPathException;
 import nextstep.subway.station.domain.Station;
 
 public class PathFinder {
@@ -21,7 +22,7 @@ public class PathFinder {
 		validateFind(source, target);
 		GraphPath graphPath = this.dijkstraShortestPath.getPath(source, target);
 		if (graphPath == null) {
-			throw new IllegalArgumentException();
+			throw new CanNotFindPathException(source, target);
 		}
 		return new SubwayPath(graphPath.getVertexList(), Double.valueOf(graphPath.getWeight()).intValue());
 	}
