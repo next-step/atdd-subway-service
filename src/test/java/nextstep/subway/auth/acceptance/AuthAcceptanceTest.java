@@ -55,7 +55,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 		유효하지_않은_토큰(myInfoResponse);
 	}
 
-	private ExtractableResponse<Response> 로그인을_시도한다(final String email, final String password) {
+	public static ExtractableResponse<Response> 로그인을_시도한다(final String email, final String password) {
 		TokenRequest request = new TokenRequest(email, password);
 		return given().log().all()
 			.body(request)
