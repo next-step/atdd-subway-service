@@ -52,6 +52,27 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		// then
 		즐겨찾기_생성됨(createdResponse);
 
+		// when
+		ExtractableResponse<Response> listResponse = 즐겨찾기_목록_조회_요청(accessToken);
+
+		// then
+		즐겨찾기_목록_조회됨(listResponse);
+
+	}
+
+	private void 즐겨찾기_목록_조회됨(final ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+	}
+
+	private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(final String accessToken) {
+		return RestAssured
+			.given().log().all()
+			.auth().oauth2(accessToken)
+			.accept(MediaType.ALL_VALUE)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.when().get("/favorites")
+			.then().log().all()
+			.extract();
 	}
 
 	private void 즐겨찾기_생성됨(final ExtractableResponse<Response> response) {
