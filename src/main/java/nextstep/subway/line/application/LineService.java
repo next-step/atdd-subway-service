@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import nextstep.subway.exception.NoDataException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -41,7 +40,7 @@ public class LineService {
 	}
 
 	public Line findLineById(Long id) {
-		return lineRepository.findById(id).orElseThrow(NoDataException::new);
+		return lineRepository.findById(id).orElseThrow(IllegalArgumentException::new);
 	}
 
 	public LineResponse findLineResponseById(Long id) {
