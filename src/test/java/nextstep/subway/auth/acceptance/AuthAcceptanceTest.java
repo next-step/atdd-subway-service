@@ -18,21 +18,19 @@ import nextstep.subway.member.MemberAcceptanceTest;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
 
-	private String email;
-	private String password;
+	private ExtractableResponse<Response> memberResponse;
 
 	@BeforeEach
 	public void setup() {
-		email = "email@email.com";
-		password = "password";
-
-		MemberAcceptanceTest.회원_생성을_요청(email, password, 30);
+		memberResponse = MemberAcceptanceTest.회원_생성을_요청(MemberAcceptanceTest.EMAIL,
+			MemberAcceptanceTest.PASSWORD, MemberAcceptanceTest.AGE);
 	}
 
 	@DisplayName("Bearer Auth")
 	@Test
 	void myInfoWithBearerAuth() {
-		ExtractableResponse<Response> response = 로그인을_시도한다(email, password);
+		ExtractableResponse<Response> response = 로그인을_시도한다(MemberAcceptanceTest.EMAIL,
+			MemberAcceptanceTest.PASSWORD);
 
 		로그인_시도하여_토큰을_받아옴(response);
 	}
@@ -40,6 +38,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	@DisplayName("Bearer Auth 로그인 실패")
 	@Test
 	void myInfoWithBadBearerAuth() {
+		ExtractableResponse<Response> response = 로그인을_시도한다(MemberAcceptanceTest.EMAIL, "123");
+
+		로그인_실패(response);
 	}
 
 	@DisplayName("Bearer Auth 유효하지 않은 토큰")
@@ -61,5 +62,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	private void 로그인_시도하여_토큰을_받아옴(final ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 		assertThat(response.as(TokenResponse.class).getAccessToken()).isNotEmpty();
+	}
+
+	private void 로그인_실패(final ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 }
