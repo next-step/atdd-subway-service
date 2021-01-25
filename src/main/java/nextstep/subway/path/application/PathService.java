@@ -24,8 +24,8 @@ public class PathService {
 	public PathResponse findShortestPath(PathRequest pathRequest) {
 		validate(pathRequest);
 
-		Station source = stationService.findStationById(pathRequest.getSourceStationId());
-		Station target = stationService.findStationById(pathRequest.getTargetStationId());
+		Station source = stationService.findStationById(pathRequest.getSource());
+		Station target = stationService.findStationById(pathRequest.getTarget());
 
 		PathFinder pathFinder = new PathFinder(lineService.findAll());
 		Path path = pathFinder.findShortestPath(source, target);
@@ -34,8 +34,8 @@ public class PathService {
 	}
 
 	private void validate(PathRequest request) {
-		Long sourceStationId = request.getSourceStationId();
-		Long targetStationId = request.getTargetStationId();
+		Long sourceStationId = request.getSource();
+		Long targetStationId = request.getTarget();
 
 		if (sourceStationId.equals(targetStationId)) {
 			throw new IllegalArgumentException(SAME_SOURCE_AND_TARGET);
