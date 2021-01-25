@@ -1,6 +1,10 @@
 package nextstep.subway.favorite;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +18,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
@@ -58,25 +63,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		// then
 		즐겨찾기_목록_조회됨(listResponse);
 
-	}
+		// given
+		List<FavoriteResponse> favoriteResponses = listResponse.jsonPath()
+			.getList(".", FavoriteResponse.class);
+		Long favoriteId = favoriteResponses.get(0).getId();
 
-	private void 즐겨찾기_목록_조회됨(final ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-	}
+		// when
+		ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, favoriteId);
+		listResponse = 즐겨찾기_목록_조회_요청(accessToken);
 
-	private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(final String accessToken) {
-		return RestAssured
-			.given().log().all()
-			.auth().oauth2(accessToken)
-			.accept(MediaType.ALL_VALUE)
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.when().get("/favorites")
-			.then().log().all()
-			.extract();
-	}
+		// then
+		즐겨찾기_삭제됨(deleteResponse, listResponse, favoriteId);
 
-	private void 즐겨찾기_생성됨(final ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 	}
 
 	public static ExtractableResponse<Response> 즐겨찾기_생성_요청(final String accessToken,
@@ -90,6 +88,51 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 			.when().post("/favorites")
 			.then().log().all()
 			.extract();
+	}
+
+	private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(final String accessToken) {
+		return RestAssured
+			.given().log().all()
+			.auth().oauth2(accessToken)
+			.accept(MediaType.ALL_VALUE)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.when().get("/favorites")
+			.then().log().all()
+			.extract();
+	}
+
+	private ExtractableResponse<Response> 즐겨찾기_삭제_요청(final String accessToken,
+		final Long id) {
+
+		return RestAssured
+			.given().log().all()
+			.auth().oauth2(accessToken)
+			.accept(MediaType.ALL_VALUE)
+			.when().delete("/favorites/" + id)
+			.then().log().all()
+			.extract();
+	}
+
+	private void 즐겨찾기_생성됨(final ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+	}
+
+	private void 즐겨찾기_목록_조회됨(final ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+	}
+
+	private void 즐겨찾기_삭제됨(final ExtractableResponse<Response> response,
+		final ExtractableResponse<Response> listResponse, final Long favoriteId) {
+
+		List<FavoriteResponse> favoriteResponses = listResponse.jsonPath()
+			.getList(".", FavoriteResponse.class);
+		List<Long> ids = favoriteResponses.stream().map(FavoriteResponse::getId)
+			.collect(Collectors.toList());
+
+		assertAll(
+			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
+			() -> assertThat(ids).doesNotContain(favoriteId)
+		);
 	}
 
 }

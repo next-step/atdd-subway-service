@@ -45,5 +45,7 @@ public class FavoriteService {
 		return favoriteResponses;
 	}
 
-
+	public void delete(final Long id, final Long favoriteId) {
+		Member member = memberService.findById(id);
+	}
 }
