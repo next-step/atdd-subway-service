@@ -65,7 +65,12 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(final Station upStation, final Station downStation, final Integer distance) {
-        this.sections.addSection(new Section(this, upStation, downStation, distance));
+        this.sections.addSection(Section.Builder.aSection()
+            .line(this)
+            .upStation(upStation)
+            .downStation(downStation)
+            .distance(distance)
+            .build());
     }
 
     public Optional<Section> findSection(final Station upStation, final Station downStation) {

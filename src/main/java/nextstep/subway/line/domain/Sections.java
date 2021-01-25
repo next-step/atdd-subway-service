@@ -21,8 +21,12 @@ public class Sections {
 	protected Sections() {
 	}
 
+	public Sections(List<Section> sections) {
+		this.sections.addAll(sections);
+	}
+
 	public Sections(Section... sections) {
-		this.sections.addAll(Arrays.asList(sections));
+		this(Arrays.asList(sections));
 	}
 
 	public List<Section> getSections() {

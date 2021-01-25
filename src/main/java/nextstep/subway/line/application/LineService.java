@@ -8,9 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.PathFinder;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.line.dto.SectionResponse;
 import nextstep.subway.station.application.StationService;
@@ -39,7 +41,8 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id)
+            .orElseThrow(IllegalArgumentException::new);
     }
 
     public LineResponse saveLine(LineRequest request) {
@@ -55,7 +58,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = findLineById(id);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
@@ -70,7 +73,7 @@ public class LineService {
         line.addSection(upStation, downStation, request.getDistance());
 
         return SectionResponse.of(sectionRepository.findByLineAndUpStationAndDownStation(line, upStation, downStation)
-            .orElseThrow(RuntimeException::new));
+            .orElseThrow(IllegalArgumentException::new));
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
@@ -84,6 +87,14 @@ public class LineService {
         return line.getSections().stream()
             .map(SectionResponse::of)
             .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public PathResponse findPath(final Long source, final Long target) {
+        PathFinder pathFinder = new PathFinder(lineRepository.findAll());
+        Station sourceStation = stationService.findStationById(source);
+        Station targetStation = stationService.findStationById(target);
+        return PathResponse.of(pathFinder.findPath(sourceStation, targetStation));
     }
 
 }

@@ -16,6 +16,11 @@ public class Station extends BaseEntity {
     public Station() {
     }
 
+    public Station(final Long id, final String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Station(String name) {
         this.name = name;
     }
@@ -41,4 +46,13 @@ public class Station extends BaseEntity {
     public int hashCode() {
         return Objects.hash(id, name);
     }
+
+    @Override
+    public String toString() {
+        return "Station{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            '}';
+    }
+
 }
