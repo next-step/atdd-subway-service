@@ -33,9 +33,9 @@ class PathFinderTest {
         양재역 = new Station("양재역");
         교대역 = new Station("교대역");
         남부터미널역 = new Station("남부터미널");
-        신분당선 = new Line("신분당선", "red lighten-1", 강남역, 양재역, 10);
-        이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, 10);
-        삼호선 = new Line("3호선", "orange darken-1", 교대역, 양재역, 5);
+        신분당선 = new Line("신분당선", "red lighten-1", 강남역, 양재역, 10, 900);
+        이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, 10, 0);
+        삼호선 = new Line("3호선", "orange darken-1", 교대역, 양재역, 5, 500);
 
 
         삼호선.addLineSection(삼호선, 교대역, 남부터미널역, 3);
@@ -131,11 +131,8 @@ class PathFinderTest {
         ReflectionTestUtils.setField(교대역, "id", 3L);
         ReflectionTestUtils.setField(남부터미널역, "id", 4L);
         ReflectionTestUtils.setField(신분당선, "id", 1L);
-        ReflectionTestUtils.setField(신분당선, "addFee", 900);
         ReflectionTestUtils.setField(이호선, "id", 2L);
-        ReflectionTestUtils.setField(이호선, "addFee", 0);
         ReflectionTestUtils.setField(삼호선, "id", 3L);
-        ReflectionTestUtils.setField(삼호선, "addFee", 500);
 
 
         List<Line> lines = new ArrayList<>();
@@ -178,13 +175,9 @@ class PathFinderTest {
         int distance = 5;
         pathFinder.baseFare(distance);
         assertThat(pathFinder.getTotalFee()).isEqualTo(1250);
-/*
-        int age = 18;
+
+        int age = 17;
         pathFinder.ageDiscountFee(age);
         assertThat(pathFinder.getTotalFee()).isEqualTo(720);
-*/
-        int age = 6;
-        pathFinder.ageDiscountFee(age);
-        assertThat(pathFinder.getTotalFee()).isEqualTo(450);
     }
 }

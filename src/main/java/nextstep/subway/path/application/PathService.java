@@ -8,6 +8,9 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class PathService {
     private StationRepository stationRepository;
@@ -23,7 +26,11 @@ public class PathService {
         Station station2 = stationRepository.findById(target).orElseThrow(IllegalArgumentException::new);
         PathFinder pathFinder = new PathFinder();
         pathFinder.findRouteSearch(station1, station2, lineRepository.findAll(), user.getAge());
-        return new PathResponse(pathFinder.getStation(), pathFinder.getDistance(), pathFinder.getTotalFee());
+        List<Station> stations = new ArrayList();
+        for(Long id: pathFinder.getStation()){
+            stations.add(stationRepository.findById(id).orElseThrow(IllegalArgumentException::new));
+        }
+        return new PathResponse(stations, pathFinder.getDistance(), pathFinder.getTotalFee());
     }
 
     private Station getStation(Long id) {

@@ -89,7 +89,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("최단 경로 조회")
     void case1() {
-        PathRequest params = new PathRequest(1L, 4L);
+        PathRequest params = new PathRequest(1L, 4L, new LoginMember(1L, "test@test.com", 30));
 
         ExtractableResponse<Response> response = 최단경로_요청(params);
 
@@ -119,7 +119,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("최단 경로 조회 요금조회")
     void case14() {
-        PathRequest params = new PathRequest(3L, 2L);
+        PathRequest params = new PathRequest(3L, 2L, new LoginMember(1L, "test@test.com", 30));
 
         ExtractableResponse<Response> response = 최단경로_요청(params);
 
