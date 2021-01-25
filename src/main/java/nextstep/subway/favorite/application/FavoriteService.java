@@ -48,7 +48,10 @@ public class FavoriteService {
 	}
 
 	public void delete(final Long id, final Long favoriteId) {
-		Member member = findMemberById(id);
+		findMemberById(id);
+		Favorite favorite = favoriteRepository.findById(favoriteId)
+			.orElseThrow(IllegalArgumentException::new);
+		favoriteRepository.delete(favorite);
 	}
 
 	@Transactional(readOnly = true)
