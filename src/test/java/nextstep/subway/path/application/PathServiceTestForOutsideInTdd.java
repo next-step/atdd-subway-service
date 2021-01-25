@@ -26,7 +26,7 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
 @ExtendWith(MockitoExtension.class)
-public class PathServiceTest {
+public class PathServiceTestForOutsideInTdd {
 	@InjectMocks
 	private PathService pathService;
 	@Mock

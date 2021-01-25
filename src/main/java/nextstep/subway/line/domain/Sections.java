@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 import nextstep.subway.station.domain.Station;
@@ -19,7 +20,7 @@ public class Sections {
 	public static final String INVALID_SECTION = "등록할 수 없는 구간 입니다.";
 	public static final String INVALID_SECTION_SIZE = "구간을 지울 수 없습니다.";
 
-	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.EAGER)
 	private final List<Section> sections = new ArrayList<>();
 
 	protected Sections() {
