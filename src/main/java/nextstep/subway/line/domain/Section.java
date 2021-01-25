@@ -1,10 +1,17 @@
 package nextstep.subway.line.domain;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Section {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,9 +31,7 @@ public class Section {
 
     private int distance;
 
-    public Section() {
-    }
-
+    @Builder
     public Section(Line line, Station upStation, Station downStation, int distance) {
         this.line = line;
         this.upStation = upStation;
@@ -34,39 +39,22 @@ public class Section {
         this.distance = distance;
     }
 
-    public Long getId() {
-        return id;
+    public boolean isMatchUpStation(Station station) {
+        return this.upStation == station;
     }
 
-    public Line getLine() {
-        return line;
+    public boolean isMatchDownStation(Station station) {
+        return this.downStation == station;
     }
 
-    public Station getUpStation() {
-        return upStation;
-    }
-
-    public Station getDownStation() {
-        return downStation;
-    }
-
-    public int getDistance() {
-        return distance;
-    }
 
     public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
         this.upStation = station;
-        this.distance -= newDistance;
+        this.distance = this.distance - newDistance;
     }
 
     public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
         this.downStation = station;
-        this.distance -= newDistance;
+        this.distance = this.distance - newDistance;
     }
 }
