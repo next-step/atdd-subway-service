@@ -1,6 +1,5 @@
 package nextstep.subway.favorite.application;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 
 @Transactional
 @Service
@@ -32,7 +30,7 @@ public class FavoriteService {
 	}
 
 	public FavoriteResponse save(final Long id, final FavoriteRequest favoriteRequest) {
-		Member member = memberService.findById(id);
+		Member member = findMemberById(id);
 		Station source = stationService.findById(favoriteRequest.getSource());
 		Station target = stationService.findById(favoriteRequest.getTarget());
 
@@ -43,18 +41,18 @@ public class FavoriteService {
 		return FavoriteResponse.of(favorite);
 	}
 
+	@Transactional(readOnly = true)
 	public List<FavoriteResponse> findAll(final Long id) {
-		Member member = memberService.findById(id);
-		List<FavoriteResponse> favoriteResponses = new ArrayList<>();
-		favoriteResponses.add(new FavoriteResponse(
-			1L,
-			StationResponse.of(stationService.findById(1L)),
-			StationResponse.of(stationService.findById(2L))
-		));
-		return favoriteResponses;
+		Member member = findMemberById(id);
+		return FavoriteResponse.ofList(favoriteRepository.findAllByMember(member));
 	}
 
 	public void delete(final Long id, final Long favoriteId) {
-		Member member = memberService.findById(id);
+		Member member = findMemberById(id);
+	}
+
+	@Transactional(readOnly = true)
+	public Member findMemberById(final Long id) {
+		return memberService.findById(id);
 	}
 }
