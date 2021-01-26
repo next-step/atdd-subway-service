@@ -5,13 +5,16 @@ import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
@@ -37,6 +40,7 @@ class FavoriteServiceTest {
 	FavoriteService favoriteService;
 
 	private LoginMember 로그인_사용자;
+	private LoginMember 다른_로그인_사용자;
 	private Member 사용자;
 	private Station 강남역;
 	private Station 정자역;
@@ -46,7 +50,8 @@ class FavoriteServiceTest {
 	@BeforeEach
 	void setUp() {
 		로그인_사용자 = new LoginMember(1L, "email@email.com", 20);
-		사용자 = new Member("email@email.com", "password", 20);
+		다른_로그인_사용자 = new LoginMember(2L, "other@email.com", 21);
+		사용자 = new Member(1L, "email@email.com", "password", 20);
 
 		강남역 = new Station(1L, "강남역");
 		정자역 = new Station(2L, "정자역");
@@ -90,5 +95,34 @@ class FavoriteServiceTest {
 			assertThat(favoriteResponse.getTarget().getId()).isEqualTo(생성된_즐겨찾기.getTarget().getId());
 			assertThat(favoriteResponse.getTarget().getName()).isEqualTo(생성된_즐겨찾기.getTarget().getName());
 		});
+	}
+
+	@DisplayName("자신의 즐겨찾기 삭제")
+	@Test
+	void deleteFavorite1() {
+		// given
+		when(favoriteRepository.findById(생성된_즐겨찾기.getId())).thenReturn(Optional.of(생성된_즐겨찾기));
+		doAnswer(invocation -> {
+			생성된_즐겨찾기 = null;
+			return null;
+		}).when(favoriteRepository).delete(생성된_즐겨찾기);
+
+
+		// when
+		favoriteService.deleteFavorite(로그인_사용자.getId(), 생성된_즐겨찾기.getId());
+
+		// then
+		assertThat(생성된_즐겨찾기).isNull();
+	}
+
+	@DisplayName("다른 사용자의 즐겨찾기 삭제")
+	@Test
+	void deleteFavorite2() {
+		// given
+		when(favoriteRepository.findById(생성된_즐겨찾기.getId())).thenReturn(Optional.of(생성된_즐겨찾기));
+
+		// when & then
+		assertThatThrownBy(() -> favoriteService.deleteFavorite(다른_로그인_사용자.getId(), 생성된_즐겨찾기.getId()))
+			.isInstanceOf(ResponseStatusException.class);
 	}
 }

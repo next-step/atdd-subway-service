@@ -3,8 +3,10 @@ package nextstep.subway.favorite.application;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -46,6 +48,12 @@ public class FavoriteService {
 	}
 
 	public void deleteFavorite(Long memberId, Long id) {
-		favoriteRepository.deleteByIdAndMemberId(id, memberId);
+		Favorite favorite = favoriteRepository.findById(id)
+			.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "주어진 id의 즐겨찾기가 없습니다."));
+		if(favorite.haveNoPermissionToDeleteByMemberId(memberId)){
+			throw new ResponseStatusException(HttpStatus.FORBIDDEN, "주어진 id의 즐겨찾기를 삭제할 권한이 없습니다.");
+		}
+
+		favoriteRepository.delete(favorite);
 	}
 }

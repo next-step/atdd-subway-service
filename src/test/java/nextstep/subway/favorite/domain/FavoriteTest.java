@@ -78,32 +78,4 @@ public class FavoriteTest {
 				assertThat(favorite.getTarget()).isEqualTo(천호역);
 			});
 	}
-
-	@DisplayName("자신의 즐겨찾기 삭제")
-	@Test
-	void deleteFavorite1() {
-		// given
-		Favorite savedFavorite = favoriteRepository.save(new Favorite(사용자, 서울역, 강남역));
-		assertThat(favoriteRepository.findById(savedFavorite.getId())).isPresent();
-
-		// when
-		favoriteRepository.deleteByIdAndMemberId(savedFavorite.getId(), 사용자.getId());
-
-		// then
-		assertThat(favoriteRepository.findById(savedFavorite.getId())).isNotPresent();
-	}
-
-	@DisplayName("다른 사용자의 즐겨찾기 삭제")
-	@Test
-	void deleteFavorite2() {
-		// given
-		Favorite savedFavorite = favoriteRepository.save(new Favorite(사용자, 서울역, 강남역));
-		assertThat(favoriteRepository.findById(savedFavorite.getId())).isPresent();
-
-		// when
-		favoriteRepository.deleteByIdAndMemberId(savedFavorite.getId(), 다른_사용자.getId());
-
-		// then
-		assertThat(favoriteRepository.findById(savedFavorite.getId())).isPresent();
-	}
 }

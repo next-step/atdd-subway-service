@@ -1,5 +1,7 @@
 package nextstep.subway.favorite.domain;
 
+import java.util.Objects;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -60,5 +62,9 @@ public class Favorite {
 
 	public Station getTarget() {
 		return target;
+	}
+
+	public boolean haveNoPermissionToDeleteByMemberId(Long id) {
+		return !Objects.equals(member.getId(), id);
 	}
 }
