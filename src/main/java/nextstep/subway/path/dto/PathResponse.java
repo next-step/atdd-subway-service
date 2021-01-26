@@ -9,15 +9,17 @@ import java.util.stream.Collectors;
 public class PathResponse {
     private List<StationResponse> stations;
     private Integer distance;
+    private Integer fare;
 
     public PathResponse() {
     }
 
-    public PathResponse(List<Station> stations, Integer distance) {
+    public PathResponse(List<Station> stations, Integer distance, Integer fare) {
         this.stations = stations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
         this.distance = distance;
+        this.fare = fare;
     }
 
     public List<StationResponse> getStations() {
@@ -26,5 +28,9 @@ public class PathResponse {
 
     public Integer getDistance() {
         return distance;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }

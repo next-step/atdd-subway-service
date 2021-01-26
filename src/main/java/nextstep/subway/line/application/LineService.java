@@ -8,7 +8,6 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +31,7 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        Line persistLine = lineRepository.save(Line.of(request, upStation, downStation));
         return LineResponse.of(persistLine);
     }
 
@@ -89,9 +88,43 @@ public class LineService {
         List<Section> sections = getAllSections();
         Set<Station> stations = new HashSet<>();
         sections.forEach(it -> {
-                stations.add(it.getUpStation());
-                stations.add(it.getDownStation());
+            stations.add(it.getUpStation());
+            stations.add(it.getDownStation());
         });
         return stations;
+    }
+
+    public Integer getMaxExtraLineFare(List<Station> stations) {
+        List<Line> lines = lineRepository.findAll();
+        List<Section> sections = createSections(stations);
+        Set<Line> results = new HashSet<>();
+
+        for(Section section: sections) {
+            results = findLinesIncludeSection(lines, section);
+        }
+
+        return results.stream()
+                .mapToInt(Line::getExtraFare)
+                .max()
+                .orElse(0);
+    }
+
+    private Set<Line> findLinesIncludeSection(List<Line> lines, Section section) {
+        Set<Line> results = new HashSet<>();
+        lines.stream()
+                .filter(it -> it.hasSection(section))
+                .findFirst()
+                .ifPresent(results::add);
+        return results;
+    }
+
+    private List<Section> createSections(List<Station> stations) {
+        List<Section> sections = new ArrayList<>();
+        for (int i = 0; i < stations.size() - 1; i++) {
+            Station upStation = stations.get(i);
+            Station downStation = stations.get(i + 1);
+            sections.add(new Section(upStation, downStation));
+        }
+        return sections;
     }
 }
