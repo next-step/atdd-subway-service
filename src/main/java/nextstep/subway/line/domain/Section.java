@@ -37,11 +37,11 @@ public class Section implements Comparable<Section> {
 	protected Section() {
 	}
 
-	public Section(Line line, Station upStation, Station downStation, Distance distance) {
+	public Section(Line line, Station upStation, Station downStation, int distance) {
 		this.line = line;
 		this.upStation = upStation;
 		this.downStation = downStation;
-		this.distance = distance;
+		this.distance = new Distance(distance);
 	}
 
 	public Long getId() {
@@ -72,16 +72,20 @@ public class Section implements Comparable<Section> {
 		return downStation.equals(station);
 	}
 
-	public Distance getDistance() {
-		return distance;
+	public int getDistance() {
+		return distance.value();
 	}
 
-	public void updateUpStation(Station station, Distance distance) {
+	public int plusDistance(Section section) {
+		return distance.plus(section.getDistance()).value();
+	}
+
+	public void updateUpStation(Station station, int distance) {
 		this.upStation = station;
 		this.distance = this.distance.minus(distance);
 	}
 
-	public void updateDownStation(Station station, Distance distance) {
+	public void updateDownStation(Station station, int distance) {
 		this.downStation = station;
 		this.distance = this.distance.minus(distance);
 	}

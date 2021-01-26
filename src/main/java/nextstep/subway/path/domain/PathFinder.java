@@ -12,26 +12,25 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
 public class PathFinder {
-	private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+	private final WeightedMultigraph<Long, DefaultWeightedEdge> graph;
 
 	public PathFinder(List<Line> lines) {
 		graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
 		lines.forEach(line -> {
-			line.getStations().forEach(graph::addVertex);
-			line.getSections().values().forEach(this::addEdgeWithWeight);
+			line.getStations().stream().map(Station::getId).forEach(graph::addVertex);
+			line.getSections().forEach(this::addEdgeWithWeight);
 		});
 	}
 
 	private void addEdgeWithWeight(Section section) {
-		DefaultWeightedEdge edge = graph.addEdge(section.getUpStation(), section.getDownStation());
-		graph.setEdgeWeight(edge, section.getDistance().value());
+		DefaultWeightedEdge edge = graph.addEdge(section.getUpStation().getId(), section.getDownStation().getId());
+		graph.setEdgeWeight(edge, section.getDistance());
 	}
 
-	public Path findShortestPath(Station source, Station target) {
-		DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-		GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(source, target);
+	public GraphPath<Long, DefaultWeightedEdge> findShortestPath(Long source, Long target) {
+		DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
-		return Path.of(graphPath);
+		return dijkstraShortestPath.getPath(source, target);
 	}
 }
