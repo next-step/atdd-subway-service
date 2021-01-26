@@ -55,7 +55,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        Line persistLine = lineRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Message.NOT_FOUND_LINE_MESSAGE));
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 

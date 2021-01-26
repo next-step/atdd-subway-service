@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.util.CommonConstant;
-import nextstep.subway.util.CommonException;
 import nextstep.subway.util.Message;
 
 import javax.persistence.CascadeType;
@@ -93,7 +92,7 @@ public class Sections {
 
     private void selectWithStation(Section section, Section oldSection, Station upStation, Station upStation2) {
         if (oldSection.getDistance() <= section.getDistance()) {
-            CommonException.IllegalArgumentException(Message.DISTANCE_EXCESS_MESSAGE);
+            throw new IllegalArgumentException(Message.DISTANCE_EXCESS_MESSAGE);
         }
         sections.add(new Section(oldSection.getLine(), upStation, upStation2, oldSection.getDistance() - section.getDistance()));
         sections.remove(oldSection);
@@ -101,13 +100,13 @@ public class Sections {
 
     private void validateNotExistStation(Section section) {
         if(!getStations().contains(section.getUpStation()) && !getStations().contains(section.getDownStation())) {
-            CommonException.IllegalArgumentException(Message.NOT_EXIST_STATION_MESSAGE);
+            throw new IllegalArgumentException(Message.NOT_EXIST_STATION_MESSAGE);
         }
     }
 
     private void alreadyExistStation(Section section) {
         if(getStations().containsAll(Arrays.asList(section.getUpStation(), section.getDownStation()))) {
-            CommonException.IllegalArgumentException(Message.ALREADY_EXIST_STATION_MESSAGE);
+            throw new IllegalArgumentException(Message.ALREADY_EXIST_STATION_MESSAGE);
         }
     }
 
@@ -139,7 +138,7 @@ public class Sections {
 
     private void validateRemoveSection() {
         if(sections.size() <= CommonConstant.MIN_SECTION_SIZE) {
-            CommonException.IllegalArgumentException(Message.ONE_SECTION_CANNOT_BE_UNDESSED);
+            throw new IllegalArgumentException(Message.ONE_SECTION_CANNOT_BE_UNDESSED);
         }
     }
 
@@ -157,7 +156,7 @@ public class Sections {
 
     private void validateRemoveStation(boolean upStation, boolean downStation) {
         if (!upStation && !downStation) {
-            CommonException.IllegalArgumentException(Message.NOT_REGISTER_STATION_CANNOT_REMOVE);
+            throw new IllegalArgumentException(Message.NOT_REGISTER_STATION_CANNOT_REMOVE);
         }
     }
 }
