@@ -9,20 +9,24 @@ import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
-import nextstep.subway.Message;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
-	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+	public static final String EXIST_SECTION = "이미 등록된 구간 입니다.";
+	public static final String INVALID_SECTION = "등록할 수 없는 구간 입니다.";
+	public static final String INVALID_SECTION_SIZE = "구간을 지울 수 없습니다.";
+
+	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.EAGER)
 	private final List<Section> sections = new ArrayList<>();
 
 	protected Sections() {
 	}
 
-	public List<Section> getSections() {
+	public List<Section> values() {
 		return Collections.unmodifiableList(sections);
 	}
 
@@ -41,9 +45,7 @@ public class Sections {
 		List<Station> stations = getStations();
 		validateAddableSection(stations, section);
 
-		if (!stations.isEmpty() && !updateSectionStation(section)) {
-			throw new RuntimeException();
-		}
+		updateSectionStation(stations, section);
 
 		sections.add(section);
 	}
@@ -58,29 +60,28 @@ public class Sections {
 		downLineSection.ifPresent(sections::remove);
 
 		if (upLineSection.isPresent() && downLineSection.isPresent()) {
-			Line line = upLineSection.get().getLine();
-			Station newUpStation = downLineSection.get().getUpStation();
-			Station newDownStation = upLineSection.get().getDownStation();
-			int newDistance = upLineSection.get().getDistance() + downLineSection.get().getDistance();
-
-			add(new Section(line, newUpStation, newDownStation, newDistance));
+			connectSections(upLineSection.get(), downLineSection.get());
 		}
 	}
 
-	private boolean updateSectionStation(Section section) {
-		List<Station> stations = getStations();
+	private void connectSections(Section upSection, Section downSection) {
+		Line line = upSection.getLine();
+		Station newUpStation = downSection.getUpStation();
+		Station newDownStation = upSection.getDownStation();
+		Distance newDistance = upSection.getDistance().plus(downSection.getDistance());
 
+		add(new Section(line, newUpStation, newDownStation, newDistance));
+	}
+
+	private void updateSectionStation(List<Station> stations, Section section) {
 		if (stations.contains(section.getUpStation())) {
 			updateUpStation(section);
-			return true;
+			return;
 		}
 
 		if (stations.contains(section.getDownStation())) {
 			updateDownStation(section);
-			return true;
 		}
-
-		return false;
 	}
 
 	private void updateUpStation(Section section) {
@@ -110,17 +111,17 @@ public class Sections {
 		Station downStation = section.getDownStation();
 
 		if (stations.contains(upStation) && stations.contains(downStation)) {
-			throw new RuntimeException(Message.EXIST_SECTION);
+			throw new IllegalArgumentException(EXIST_SECTION);
 		}
 
 		if (!stations.isEmpty() && !stations.contains(upStation) && !stations.contains(downStation)) {
-			throw new RuntimeException(Message.INVALID_SECTION);
+			throw new IllegalArgumentException(INVALID_SECTION);
 		}
 	}
 
 	private void validateRemovableSection() {
 		if (sections.size() <= 1) {
-			throw new RuntimeException();
+			throw new IllegalArgumentException(INVALID_SECTION_SIZE);
 		}
 	}
 }

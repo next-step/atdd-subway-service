@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -26,20 +27,23 @@ public class LineService {
 	}
 
 	public LineResponse saveLine(LineRequest request) {
-		Station upStation = stationService.findById(request.getUpStationId());
-		Station downStation = stationService.findById(request.getDownStationId());
+		Station upStation = stationService.findStationById(request.getUpStationId());
+		Station downStation = stationService.findStationById(request.getDownStationId());
 		Line persistLine = lineRepository.save(
 			new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
 		return LineResponse.of(persistLine);
 	}
 
+	public List<Line> findAll() {
+		return lineRepository.findAll();
+	}
+
 	public List<LineResponse> findLines() {
-		List<Line> persistLines = lineRepository.findAll();
-		return LineResponse.of(persistLines);
+		return LineResponse.of(findAll());
 	}
 
 	public Line findLineById(Long id) {
-		return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+		return lineRepository.findById(id).orElseThrow(IllegalArgumentException::new);
 	}
 
 	public LineResponse findLineResponseById(Long id) {
@@ -48,7 +52,7 @@ public class LineService {
 	}
 
 	public void updateLine(Long id, LineRequest lineUpdateRequest) {
-		Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+		Line persistLine = findLineById(id);
 		persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
 	}
 
@@ -61,7 +65,7 @@ public class LineService {
 		Station upStation = stationService.findStationById(request.getUpStationId());
 		Station downStation = stationService.findStationById(request.getDownStationId());
 
-		Section section = new Section(line, upStation, downStation, request.getDistance());
+		Section section = new Section(line, upStation, downStation, new Distance(request.getDistance()));
 		line.addSection(section);
 	}
 
