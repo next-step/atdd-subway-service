@@ -20,8 +20,6 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class LineService {
-    public static final int ZERO = 0;
-    public static final int ONE = 1;
     private LineRepository lineRepository;
     private StationService stationService;
 
@@ -108,7 +106,7 @@ public class LineService {
         return results.stream()
                 .mapToInt(Line::getExtraFare)
                 .max()
-                .orElse(ZERO);
+                .orElse(0);
     }
 
     private Set<Line> findLinesIncludeSection(List<Line> lines, Section section) {
@@ -122,9 +120,9 @@ public class LineService {
 
     private List<Section> createSections(List<Station> stations) {
         List<Section> sections = new ArrayList<>();
-        for (int i = ZERO; i < stations.size() - ONE; i++) {
+        for (int i = 0; i < stations.size() - 1; i++) {
             Station upStation = stations.get(i);
-            Station downStation = stations.get(i + ONE);
+            Station downStation = stations.get(i + 1);
             sections.add(new Section(upStation, downStation));
         }
         return sections;

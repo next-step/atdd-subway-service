@@ -19,7 +19,7 @@ public enum DistanceFarePolicy {
         public int calculateFare(int distance) {
             int extraArea = distance - DEFAULT_MAX_DISTANCE;
             return DEFAULT_FARE
-                    + (int) ((Math.ceil((extraArea - ONE) / FIRST_EXTRA_CHARGE_UNIT) + ONE) * EXTRA_CHARGE);
+                    + (int) ((Math.ceil((extraArea - 1) / FIRST_EXTRA_CHARGE_UNIT) + 1) * EXTRA_CHARGE);
         }
 
         @Override
@@ -31,9 +31,8 @@ public enum DistanceFarePolicy {
         @Override
         public int calculateFare(int distance) {
             int extraArea = distance - SECOND_MAX_DISTANCE;
-            return DEFAULT_FARE
-                    + MAX_EXTRA_FARE_WITHIN_50
-                    + (int) ((Math.ceil((extraArea - ONE) / SECOND_EXTRA_CHARGE_UNIT) + ONE) * EXTRA_CHARGE);
+            return UNDER_FIFTY.calculateFare(SECOND_MAX_DISTANCE)
+                    + (int) ((Math.ceil((extraArea - 1) / SECOND_EXTRA_CHARGE_UNIT) + 1) * EXTRA_CHARGE);
         }
 
         @Override
@@ -45,13 +44,11 @@ public enum DistanceFarePolicy {
 
     private static final int ZERO = 0;
     private static final int DEFAULT_FARE = 1250;
-    private static final int MAX_EXTRA_FARE_WITHIN_50 = 800;
     private static final int EXTRA_CHARGE = 100;
     private static final int DEFAULT_MAX_DISTANCE = 10;
     private static final int SECOND_MAX_DISTANCE = 50;
     private static final int FIRST_EXTRA_CHARGE_UNIT = 5;
     private static final int SECOND_EXTRA_CHARGE_UNIT = 8;
-    private static final int ONE = 1;
 
     public int calculateFare(int distance) {
         return ZERO;
