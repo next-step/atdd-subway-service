@@ -75,8 +75,7 @@ public class LineService {
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
 
-        List<Station> stations = line.getStations();
-        line.addSection(stations, upStation, downStation, request.getDistance());
+        line.addSection(upStation, downStation, request.getDistance());
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
