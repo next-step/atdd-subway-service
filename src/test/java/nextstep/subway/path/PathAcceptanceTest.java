@@ -4,9 +4,16 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.member.MemberAcceptanceTest;
+import nextstep.subway.path.dto.PathRequest;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,15 +54,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "red lighten-1", 강남역, 양재역, 10).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음("2호선", "green lighten-1", 교대역, 강남역, 10).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음("3호선", "orange darken-1", 교대역, 양재역, 5).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "red lighten-1", 강남역, 양재역, 10, 900).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음("2호선", "green lighten-1", 교대역, 강남역, 10, 0).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음("3호선", "orange darken-1", 교대역, 양재역, 5, 500).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
 
-    public ExtractableResponse<Response> 지하철_노선_등록되어_있음(String name, String color, StationResponse station1, StationResponse station2, int distance) {
-        LineRequest params = new LineRequest(name, color, station1.getId(), station2.getId(), distance);
+    public ExtractableResponse<Response> 지하철_노선_등록되어_있음(String name, String color, StationResponse station1, StationResponse station2, int distance, int addFee) {
+        LineRequest params = new LineRequest(name, color, station1.getId(), station2.getId(), distance, addFee);
         return RestAssured
                 .given().log().all()
                 .body(params)
@@ -82,9 +89,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("최단 경로 조회")
     void case1() {
-        Map<String, String> params = new HashMap<>();
-        params.put("source", "1");
-        params.put("target", "4");
+        PathRequest params = new PathRequest(1L, 4L, new LoginMember(1L, "test@test.com", 30));
 
         ExtractableResponse<Response> response = 최단경로_요청(params);
 
@@ -94,9 +99,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("최단 경로 조회 예외처리 : 출발지 도착지 같을 경우")
     void case2() {
-        Map<String, String> params = new HashMap<>();
-        params.put("source", "1");
-        params.put("target", "1");
+        PathRequest params = new PathRequest(1L, 1L);
 
         ExtractableResponse<Response> response = 최단경로_요청(params);
 
@@ -106,16 +109,51 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("최단 경로 조회 예외처리 : 도착치가 존재하지 않은 경우")
     void case3() {
-        Map<String, String> params = new HashMap<>();
-        params.put("source", "1");
-        params.put("target", "6");
+        PathRequest params = new PathRequest(1L, 6L);
 
         ExtractableResponse<Response> response = 최단경로_요청(params);
 
         최단경로_요청_실패됨(response);
     }
 
-    private ExtractableResponse<Response> 최단경로_요청(Map<String, String> params) {
+    @Test
+    @DisplayName("최단 경로 조회 요금조회")
+    void case14() {
+        PathRequest params = new PathRequest(3L, 2L, new LoginMember(1L, "test@test.com", 30));
+
+        ExtractableResponse<Response> response = 최단경로_요청(params);
+
+        최단경로_요청이_조회됨(response);
+
+        PathResponse result = 최단경로_요청(params).as(PathResponse.class);
+        assertThat(result.getDistance()).isEqualTo(5);
+        assertThat(result.getTotalFee()).isEqualTo(1750);
+
+    }
+
+    @Test
+    @DisplayName("최단 경로 조회 로그인 사용자 연령별 요금조회")
+    void case15() {
+        //given
+        MemberAcceptanceTest.회원_생성을_요청("test@test.com", "1111", 30);
+        TokenRequest userInfo = new TokenRequest("test@test.com", "1111");
+        TokenResponse userResponse = AuthAcceptanceTest.로그인_토큰_생성(userInfo).as(TokenResponse.class);
+        LoginMember user = AuthAcceptanceTest.로그인_토큰_유효체크(userResponse.getAccessToken());
+
+        PathRequest params = new PathRequest(3L, 2L, user);
+        ExtractableResponse<Response> response = 최단경로_요청(params);
+        최단경로_요청이_조회됨(response);
+
+        //when
+        PathResponse result = 최단경로_요청(params).as(PathResponse.class);
+
+        //then
+        assertThat(result.getDistance()).isEqualTo(5);
+        assertThat(result.getTotalFee()).isEqualTo(1750);
+
+    }
+
+    private ExtractableResponse<Response> 최단경로_요청(PathRequest params) {
         ExtractableResponse<Response> response = RestAssured
                 .given()
                 .body(params)

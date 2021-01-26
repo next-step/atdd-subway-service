@@ -20,8 +20,8 @@ public class PathController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity findRouteSearch(@RequestBody PathRequest params) {
-        PathResponse response = pathService.findRouteSearch(params.getSource(), params.getTarget());
+    public ResponseEntity<PathResponse> fPathResponseindRouteSearch(@RequestBody PathRequest params) {
+        PathResponse response = pathService.findRouteSearch(params.getSource(), params.getTarget(), params.getUser());
         return ResponseEntity.ok(response);
     }
 

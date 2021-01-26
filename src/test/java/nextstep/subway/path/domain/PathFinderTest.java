@@ -24,6 +24,7 @@ class PathFinderTest {
     private Station 양재역;
     private Station 교대역;
     private Station 남부터미널역;
+    private PathFinder pathFinder = new PathFinder();
 
     @BeforeEach
     public void setUp() {
@@ -32,9 +33,9 @@ class PathFinderTest {
         양재역 = new Station("양재역");
         교대역 = new Station("교대역");
         남부터미널역 = new Station("남부터미널");
-        신분당선 = new Line("신분당선", "red lighten-1", 강남역, 양재역, 10);
-        이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, 10);
-        삼호선 = new Line("3호선", "orange darken-1", 교대역, 양재역, 5);
+        신분당선 = new Line("신분당선", "red lighten-1", 강남역, 양재역, 10, 900);
+        이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, 10, 0);
+        삼호선 = new Line("3호선", "orange darken-1", 교대역, 양재역, 5, 500);
 
 
         삼호선.addLineSection(삼호선, 교대역, 남부터미널역, 3);
@@ -73,12 +74,12 @@ class PathFinderTest {
         ReflectionTestUtils.setField(양재역, "id", 2L);
         ReflectionTestUtils.setField(교대역, "id", 3L);
 
-        WeightedMultigraph<String, DefaultWeightedEdge> graph
+        WeightedMultigraph<Long, DefaultWeightedEdge> graph
                 = new WeightedMultigraph(DefaultWeightedEdge.class);
         
-        String 교대 = String.valueOf(교대역.getId());
-        String 강남 = String.valueOf(강남역.getId());
-        String 양재 = String.valueOf(양재역.getId());
+        Long 교대 = 교대역.getId();
+        Long 강남 = 강남역.getId();
+        Long 양재 = 양재역.getId();
 
 
         graph.addVertex(교대);
@@ -90,7 +91,7 @@ class PathFinderTest {
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
 
-        List<Station> shortestPath
+        List<Long> shortestPath
                 = dijkstraShortestPath.getPath(교대, 양재).getVertexList();
 
         assertThat(shortestPath.size()).isEqualTo(2);
@@ -116,9 +117,74 @@ class PathFinderTest {
         lines.add(삼호선);
         lines.add(신분당선);
         PathFinder path = new PathFinder();
-        path.findRouteSearch(교대역, 양재역, lines);
+        path.findRouteSearch(교대역, 양재역, lines, 40);
 
         assertThat(path.getStation().size()).isEqualTo(3);
         assertThat(path.getDistance()).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("경로 조회 메소드 요금 조회")
+    void findTotalFee() {
+        ReflectionTestUtils.setField(강남역, "id", 1L);
+        ReflectionTestUtils.setField(양재역, "id", 2L);
+        ReflectionTestUtils.setField(교대역, "id", 3L);
+        ReflectionTestUtils.setField(남부터미널역, "id", 4L);
+        ReflectionTestUtils.setField(신분당선, "id", 1L);
+        ReflectionTestUtils.setField(이호선, "id", 2L);
+        ReflectionTestUtils.setField(삼호선, "id", 3L);
+
+
+        List<Line> lines = new ArrayList<>();
+        lines.add(이호선);
+        lines.add(삼호선);
+        lines.add(신분당선);
+        pathFinder.findRouteSearch(교대역, 양재역, lines, 40);
+
+        assertThat(pathFinder.getStation().size()).isEqualTo(3);
+        assertThat(pathFinder.getDistance()).isEqualTo(5);
+
+        pathFinder.findTotalFee(lines, 40);
+        assertThat(pathFinder.getTotalFee()).isEqualTo(1750);
+    }
+
+    @Test
+    @DisplayName("기본 운임 계산")
+    void baseFare() {
+        int distance = 5;
+
+        pathFinder.baseFare(distance);
+        assertThat(pathFinder.getTotalFee()).isEqualTo(1250);
+
+        distance = 14;
+        pathFinder.baseFare(distance);
+        assertThat(pathFinder.getTotalFee()).isEqualTo(1250);
+
+        distance = 50;
+        pathFinder.baseFare(distance);
+        assertThat(pathFinder.getTotalFee()).isEqualTo(2050);
+
+        distance = 178;
+        pathFinder.baseFare(distance);
+        assertThat(pathFinder.getTotalFee()).isEqualTo(3650);
+    }
+
+    @Test
+    @DisplayName("로그인 사용자 연령별 요금 할인 적용")
+    void ageDiscountFee() {
+        int distance = 5;
+        pathFinder.baseFare(distance);
+        assertThat(pathFinder.getTotalFee()).isEqualTo(1250);
+
+        int age = 19;
+        pathFinder.ageDiscountFee(age);
+        assertThat(pathFinder.getTotalFee()).isEqualTo(1250);
+    }
+
+    @Test
+    @DisplayName("초과거리 계산")
+    void calculateOverFare() {
+        int result = pathFinder.calculateOverFare(5,4);
+        assertThat(result).isEqualTo(0);
     }
 }

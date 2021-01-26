@@ -74,19 +74,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨(deleteResponse);
     }
 
-    private void 즐겨찾기_삭제됨(ExtractableResponse<Response> deleteResponse) {
-        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String uri) {
-        return RestAssured
-                .given()
-                .when()
-                .delete(uri)
-                .then()
-                .extract();
-    }
-
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(LoginMember user, StationResponse source, StationResponse target) {
         FavoriteRequest params = new FavoriteRequest(user, source.getId(), target.getId());
 
@@ -109,6 +96,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String uri) {
+        return RestAssured
+                .given()
+                .when()
+                .delete(uri)
+                .then()
+                .extract();
+    }
+
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> createResponse) {
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -117,4 +113,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
+    private void 즐겨찾기_삭제됨(ExtractableResponse<Response> deleteResponse) {
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
 }

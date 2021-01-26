@@ -8,7 +8,8 @@ import java.util.List;
 public class PathResponse {
 
     private List<Station> shortestPath = new ArrayList<>();
-    private int distance;
+    private Integer distance;
+    private Integer totalFee;
 
     public PathResponse() {
     }
@@ -18,11 +19,21 @@ public class PathResponse {
         this.distance = distance;
     }
 
+    public PathResponse(List<Station> shortestPath, int distance, int totalFee) {
+        this.shortestPath = shortestPath;
+        this.distance = distance;
+        this.totalFee = totalFee;
+    }
+
     public List<Station> getShortestPath() {
         return shortestPath;
     }
 
     public int getDistance() {
         return distance;
+    }
+
+    public Integer getTotalFee() {
+        return totalFee;
     }
 }

@@ -3,6 +3,7 @@ package nextstep.subway.station.domain;
 import nextstep.subway.BaseEntity;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -31,6 +32,14 @@ public class Station extends BaseEntity {
 
     public String getName() {
         return name;
+    }
+
+
+    public boolean containStation(List<Long> shortestPath) {
+        for (Long stationId: shortestPath) {
+            if (stationId == id) return true;
+        }
+        return false;
     }
 
     @Override
