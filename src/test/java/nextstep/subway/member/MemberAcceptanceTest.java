@@ -64,6 +64,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_정보_수정됨(updateResponse);
 
         // when
+        로그인_토큰 = 로그인_되어_있음(NEW_EMAIL, NEW_PASSWORD);
         ExtractableResponse<Response> deleteResponse = 나의_정보_삭제_요청(로그인_토큰);
         // then
         회원_삭제됨(deleteResponse);
