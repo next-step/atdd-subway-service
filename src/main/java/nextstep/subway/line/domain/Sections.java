@@ -126,6 +126,18 @@ public class Sections {
 		downSection.ifPresent(sections::remove);
 	}
 
+	public Optional<Line> findLineWithMinDistance(Station upStation, Station downStation) {
+		return sections.stream()
+			.filter(section -> section.getStations().containsAll(Arrays.asList(upStation, downStation)))
+			.reduce((section1, section2) -> {
+				if (section1.getDistance() < section2.getDistance()) {
+					return section1;
+				}
+				return section2;
+			})
+			.map(Section::getLine);
+	}
+
 	private Optional<Section> findSectionByUpStation(Line line, Station upStation) {
 		return sections.stream()
 			.filter(section -> section.getLine().equals(line) && section.getUpStation().equals(upStation))

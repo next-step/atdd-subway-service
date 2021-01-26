@@ -28,7 +28,7 @@ public class PathFinder {
 		}
 
 		return Optional.ofNullable(findPathUsingJgrapht(sections, source, target))
-			.map(graphPath -> new Path(graphPath.getVertexList(), Math.round(graphPath.getWeight())));
+			.map(graphPath -> new Path(sections, graphPath.getVertexList(), Math.round(graphPath.getWeight())));
 	}
 
 	private static GraphPath<Station, DefaultWeightedEdge> findPathUsingJgrapht(Sections sections,

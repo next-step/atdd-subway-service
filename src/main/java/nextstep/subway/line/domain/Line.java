@@ -14,6 +14,7 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    private int extraFare;
     @Embedded
     private Sections sections = new Sections();
 
@@ -62,5 +63,9 @@ public class Line extends BaseEntity {
 
     public void removeStation(Station station) {
         sections.removeStation(this, station);
+    }
+
+    public int getExtraFare() {
+       return extraFare;
     }
 }

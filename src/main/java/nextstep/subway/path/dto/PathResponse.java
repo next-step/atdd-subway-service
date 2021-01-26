@@ -17,7 +17,7 @@ public class PathResponse {
 	}
 
 	public static PathResponse of(Path path) {
-		return new PathResponse(PathStationResponse.newList(path.getStations()), path.getDistance(), 0L);
+		return new PathResponse(PathStationResponse.newList(path.getStations()), path.getDistance(), path.getFare());
 	}
 
 	public List<PathStationResponse> getStations() {

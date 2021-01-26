@@ -2,15 +2,18 @@ package nextstep.subway.path.dto;
 
 import java.util.List;
 
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 
 public class Path {
-	private List<Station> stations;
-	private long distance;
+	private final List<Station> stations;
+	private final long distance;
+	private final Fare fare;
 
-	public Path(List<Station> stations, long distance) {
+	public Path(Sections sections, List<Station> stations, long distance) {
 		this.stations = stations;
 		this.distance = distance;
+		this.fare = new Fare(sections, stations, distance);
 	}
 
 	public List<Station> getStations() {
@@ -19,5 +22,9 @@ public class Path {
 
 	public long getDistance() {
 		return distance;
+	}
+
+	public long getFare() {
+		return fare.getFare();
 	}
 }

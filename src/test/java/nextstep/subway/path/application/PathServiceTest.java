@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.Path;
 import nextstep.subway.path.dto.PathResponse;
@@ -30,6 +32,8 @@ import nextstep.subway.station.domain.Station;
 class PathServiceTest {
 
 	private List<Line> lines;
+	private Sections sections;
+
 	private Station 교대역;
 	private Station 강남역;
 	private Station 남부터미널역;
@@ -73,6 +77,11 @@ class PathServiceTest {
 		lines.add(이호선);
 		lines.add(삼호선);
 		lines.add(팔호선);
+
+		sections = Stream.of(신분당선, 이호선, 삼호선, 팔호선)
+			.map(Line::getSections)
+			.reduce((sections1, sections2) -> sections1.addAllByDropDuplicate(sections2))
+			.orElseGet(Sections::new);
 	}
 
 	@Test
@@ -102,7 +111,7 @@ class PathServiceTest {
 			&& invocation.getArguments().length == 3
 			&& invocation.getArgument(1).equals(교대역)
 			&& invocation.getArgument(2).equals(양재역)) {
-			return Optional.of(new Path(Arrays.asList(교대역, 남부터미널역, 양재역), 5L));
+			return Optional.of(new Path(sections, Arrays.asList(교대역, 남부터미널역, 양재역), 5));
 		}
 		return Optional.empty();
 	}
