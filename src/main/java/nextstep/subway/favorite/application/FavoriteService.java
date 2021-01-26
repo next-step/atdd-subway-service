@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -30,8 +29,8 @@ public class FavoriteService {
 		this.memberService = memberService;
 	}
 
-	public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
-		Member member = memberService.findById(loginMember.getId());
+	public FavoriteResponse createFavorite(Long memberId, FavoriteRequest request) {
+		Member member = memberService.findById(memberId);
 		Station source = stationService.findById(request.getSource());
 		Station target = stationService.findById(request.getTarget());
 		Favorite persistFavorite = favoriteRepository.save(new Favorite(member, source, target));
@@ -39,14 +38,14 @@ public class FavoriteService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-		return favoriteRepository.findAllByMemberId(loginMember.getId())
+	public List<FavoriteResponse> findFavorites(Long memberId) {
+		return favoriteRepository.findAllByMemberId(memberId)
 			.stream()
 			.map(FavoriteResponse::from)
 			.collect(Collectors.toList());
 	}
 
-	public void deleteFavorite(LoginMember loginMember, Long id) {
-		favoriteRepository.deleteByIdAndMemberId(id, loginMember.getId());
+	public void deleteFavorite(Long memberId, Long id) {
+		favoriteRepository.deleteByIdAndMemberId(id, memberId);
 	}
 }

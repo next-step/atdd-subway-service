@@ -65,7 +65,7 @@ class FavoriteServiceTest {
 		when(stationService.findById(서울역.getId())).thenReturn(서울역);
 
 		// when
-		FavoriteResponse created = favoriteService.createFavorite(로그인_사용자,
+		FavoriteResponse created = favoriteService.createFavorite(로그인_사용자.getId(),
 			new FavoriteRequest(강남역.getId(), 서울역.getId()));
 
 		// then
@@ -81,7 +81,7 @@ class FavoriteServiceTest {
 		when(favoriteRepository.findAllByMemberId(로그인_사용자.getId())).thenReturn(Arrays.asList(생성된_즐겨찾기));
 
 		// when
-		List<FavoriteResponse> findList = favoriteService.findFavorites(로그인_사용자);
+		List<FavoriteResponse> findList = favoriteService.findFavorites(로그인_사용자.getId());
 
 		// then
 		assertThat(findList).anySatisfy(favoriteResponse -> {
