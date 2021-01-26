@@ -31,6 +31,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         return lineRepository.findAll()
             .stream()
@@ -43,6 +44,7 @@ public class LineService {
             .orElseThrow(() -> new RuntimeException("주어진 id를 가지는 Line을 찾을 수 없습니다."));
     }
 
+    @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
