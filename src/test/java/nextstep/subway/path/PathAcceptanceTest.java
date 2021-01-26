@@ -64,11 +64,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	@DisplayName("최단 경로 조회")
 	@Test
 	void findPath() {
+		final int expectedFare = 1250;
 		// When 지하철 경로 조회 요청
 		ExtractableResponse<Response> response = 지하철_경로_조회_요청(양재역.getId(), 교대역.getId());
-
 		// Then 지하철 경로 응답됨
-		지하철_경로_응답됨(response, 5, 양재역, 남부터미널역, 교대역);
+		지하철_경로_응답됨(response, 5, expectedFare, 양재역, 남부터미널역, 교대역);
 	}
 
 	@DisplayName("최단 경로 조회 예외 - 출발역과 도착역이 같은 경우")
@@ -123,12 +123,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	}
 
 	private void 지하철_경로_응답됨(final ExtractableResponse<Response> response, final int distance,
-		final StationResponse... stationResponses) {
+		final int expectedFare, final StationResponse... stationResponses) {
 		PathResponse pathResponse = response.as(PathResponse.class);
 		assertAll(
 			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
 			() -> assertThat(pathResponse.getStations()).containsExactlyInAnyOrder(stationResponses),
-			() -> assertThat(pathResponse.getDistance()).isEqualTo(distance)
+			() -> assertThat(pathResponse.getDistance()).isEqualTo(distance),
+			() -> assertThat(pathResponse.getFare()).isEqualTo(expectedFare)
 		);
 	}
 
