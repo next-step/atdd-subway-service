@@ -1,4 +1,4 @@
-package nextstep.subway.favorite;
+package nextstep.subway.favorite.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -67,7 +67,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		즐겨찾기_목록_조회됨(findResponse);
 
 		// when
-		ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken);
+		ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, createResponse);
 		// then
 		즐겨찾기_삭제됨(deleteResponse);
 	}
@@ -97,11 +97,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 			.extract();
 	}
 
-	public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken) {
+	public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, ExtractableResponse<Response> response) {
+		String uri = response.header("Location");
 		return RestAssured
 			.given().log().all()
 			.auth().oauth2(accessToken)
-			.when().delete("/favorites")
+			.when().delete(uri)
 			.then().log().all()
 			.extract();
 	}

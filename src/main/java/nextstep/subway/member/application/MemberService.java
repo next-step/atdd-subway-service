@@ -20,12 +20,15 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        return MemberResponse.of(member);
+        return MemberResponse.of(findMemberById(id));
+    }
+
+    public Member findMemberById(Long id) {
+        return memberRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        Member member = findMemberById(id);
         member.update(param.toMember());
     }
 
