@@ -1,7 +1,6 @@
 package nextstep.subway.station.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,11 +26,7 @@ public class StationService {
 
     @Transactional(readOnly = true)
     public List<StationResponse> findAllStations() {
-        List<Station> stations = stationRepository.findAll();
-
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+        return StationResponse.ofList(stationRepository.findAll());
     }
 
     public void deleteStationById(Long id) {
