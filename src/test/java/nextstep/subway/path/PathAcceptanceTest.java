@@ -58,12 +58,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
 		// And 지하철 노선 등록되어 있음
-		신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10).as(LineResponse.class);
-		이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10).as(LineResponse.class);
-		삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5).as(LineResponse.class);
+		신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 23).as(LineResponse.class);
+		이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 62).as(LineResponse.class);
+		삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 84).as(LineResponse.class);
 
 		// And 지하철 노선에 지하철역 등록되어 있음
-		LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+		LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 43);
 	}
 
 	/**
@@ -72,6 +72,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	 *     Then 최단_경로_조회_성공됨
 	 *     AND 최단 경로에 포함된 역 목록이 순서대로 조회됨
 	 *     AND 최단 경로의 거리가 예상과 같음
+	 *     AND 지하철 이용 요금이 예상과 같음
 	 */
 	@DisplayName("지하철 경로 조회 통합 인수 테스트")
 	@Test
@@ -86,7 +87,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		최단_경로에_지하철역_순서_정렬됨(지하철_최단_경로_조회_요청_응답, Arrays.asList(교대역, 남부터미널역, 양재역));
 		
 		// And 최단 경로의 거리가 예상과 같음
-		최단_경로의_거리가_예상과_같음(지하철_최단_경로_조회_요청_응답, 5);
+		최단_경로의_거리가_예상과_같음(지하철_최단_경로_조회_요청_응답, 84);
+
+		// And 지하철 이용 요금이 예상과 같음
+		지하철_이용_요금이_예상과_같음(지하철_최단_경로_조회_요청_응답, 2450);
 	}
 
 	private ExtractableResponse<Response> 지하철_최단_경로_조회_요청(StationResponse source, StationResponse target) {
@@ -117,5 +121,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	private void 최단_경로의_거리가_예상과_같음(ExtractableResponse<Response> response, int expectedDistance) {
 		PathResponse pathResponse = response.as(PathResponse.class);
 		assertThat(pathResponse.getDistance()).isEqualTo(expectedDistance);
+	}
+
+	private void 지하철_이용_요금이_예상과_같음(ExtractableResponse<Response> response, int expectedFare) {
+		PathResponse pathResponse = response.as(PathResponse.class);
+		assertThat(pathResponse.getFare()).isEqualTo(expectedFare);
 	}
 }
