@@ -9,9 +9,11 @@ import nextstep.subway.member.domain.MemberRepository;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
+@Transactional(readOnly = true)
 public class AuthService {
     private MemberRepository memberRepository;
     private JwtTokenProvider jwtTokenProvider;

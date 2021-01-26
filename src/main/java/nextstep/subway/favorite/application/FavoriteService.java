@@ -38,6 +38,7 @@ public class FavoriteService {
 		return FavoriteResponse.from(persistFavorite);
 	}
 
+	@Transactional(readOnly = true)
 	public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
 		return favoriteRepository.findAllByMemberId(loginMember.getId())
 			.stream()
