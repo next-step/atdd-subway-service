@@ -176,8 +176,15 @@ class PathFinderTest {
         pathFinder.baseFare(distance);
         assertThat(pathFinder.getTotalFee()).isEqualTo(1250);
 
-        int age = 17;
+        int age = 19;
         pathFinder.ageDiscountFee(age);
-        assertThat(pathFinder.getTotalFee()).isEqualTo(720);
+        assertThat(pathFinder.getTotalFee()).isEqualTo(1250);
+    }
+
+    @Test
+    @DisplayName("초과거리 계산")
+    void calculateOverFare() {
+        int result = pathFinder.calculateOverFare(5,4);
+        assertThat(result).isEqualTo(0);
     }
 }

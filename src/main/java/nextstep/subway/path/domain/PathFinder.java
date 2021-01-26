@@ -7,23 +7,25 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static nextstep.subway.path.domain.AgeDiscount.*;
+import static nextstep.subway.path.domain.OverFare.*;
 
 public class PathFinder {
     private List<Long> shortestPath = new ArrayList<>();
     private Integer distance;
     private Integer totalFee;
     private int maxAddFee;
+/*
     @Enumerated(EnumType.STRING)
     private OverFare overFare;
     @Enumerated(EnumType.STRING)
     private AgeDiscount ageDiscount;
-
+*/
     public PathFinder() {
     }
 
@@ -98,12 +100,12 @@ public class PathFinder {
     }
 
     public void ageDiscountFee(int age){
-        int targetFee = totalFee - 350;
-        if (age >= 13 && age < 19) {
-            totalFee = ageDiscount.YOUTH.calculateDiscount(targetFee);
-        }
-        if (age >= 6 && age < 13) {
-            totalFee = ageDiscount.CHILD.calculateDiscount(targetFee);
+        int targetFee = 0;
+        for (AgeDiscount ageDiscount: AgeDiscount.values()) {
+            if (age >= ageDiscount.getStartAge() && age <= ageDiscount.getEndAge()) {
+                targetFee = totalFee - ageDiscount.getDeductionFare();
+                totalFee = targetFee - (int)Math.floor(targetFee * ageDiscount.getDeductionRatio());
+            }
         }
     }
 
@@ -113,30 +115,22 @@ public class PathFinder {
         }
 
         if (distance > 10 && distance <= 50) {
-            totalFee = 1250 + calculateOverFareFiveKm(distance-10);
+            totalFee = 1250 + calculateOverFare(5, distance-10);
         }
 
         if (distance > 50) {
-            totalFee = 2050 + calculateOverFareEightKm(distance-50);
+            totalFee = 2050 + calculateOverFare(8, distance-50);
         }
     }
 
-    private int calculateOverFareFiveKm(int distance) {
-        if (distance >= 5 && distance % 5 == 0) {
-            return overFare.FIVE_TRUE.calculate(distance);
-        }
-        if (distance >= 5 && distance % 5 != 0) {
-            return overFare.FIVE_FALSE.calculate(distance);
-        }
-        return 0;
-    }
-
-    private int calculateOverFareEightKm(int distance) {
-        if (distance >= 8 && distance % 8 == 0) {
-            return overFare.EIGHT_TRUE.calculate(distance);
-        }
-        if (distance >= 8 && distance % 8 != 0) {
-            return overFare.EIGHT_FALSE.calculate(distance);
+    public int calculateOverFare(int unit, int distance) {
+        for(OverFare overFare: OverFare.values()){
+            if (unit == overFare.getUnit() && distance % overFare.getUnit() == 0) {
+                return (int) ((Math.floor((distance - 1) / overFare.getUnit()) + 1) * 100);
+            }
+            if (unit == overFare.getUnit() && distance % overFare.getUnit()  != 0) {
+                return (int) (Math.floor((distance - 1) / overFare.getUnit()) * 100);
+            }
         }
         return 0;
     }

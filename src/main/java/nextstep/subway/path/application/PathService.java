@@ -28,7 +28,7 @@ public class PathService {
         pathFinder.findRouteSearch(station1, station2, lineRepository.findAll(), user.getAge());
         List<Station> stations = new ArrayList();
         for(Long id: pathFinder.getStation()){
-            stations.add(stationRepository.findById(id).orElseThrow(IllegalArgumentException::new));
+            stations.add(getStation(id));
         }
         return new PathResponse(stations, pathFinder.getDistance(), pathFinder.getTotalFee());
     }

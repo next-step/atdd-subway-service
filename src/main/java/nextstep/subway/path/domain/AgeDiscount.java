@@ -1,17 +1,34 @@
 package nextstep.subway.path.domain;
 
-import java.util.function.Function;
-
 public enum AgeDiscount {
-    CHILD(targetFee -> targetFee - (int)Math.floor(targetFee * 0.5)),
-    YOUTH(targetFee -> targetFee - (int)Math.floor(targetFee * 0.2));
+    YOUTH(13, 18, 350, 0.2),
+    CHILD(6, 12, 350, 0.5);
 
+    private int startAge;
+    private int endAge;
+    private final int deductionFare;
+    private final double deductionRatio;
 
-    public Function<Integer, Integer> expression;
-    AgeDiscount(Function<Integer, Integer> expression) {
-        this.expression = expression;
+    AgeDiscount(int startAge, int endAge, int deductionFare, double deductionRatio) {
+        this.startAge = startAge;
+        this.endAge = endAge;
+        this.deductionFare = deductionFare;
+        this.deductionRatio = deductionRatio;
     }
 
-    public int calculateDiscount(int targetFee) { return expression.apply(targetFee);}
+    public int getStartAge() {
+        return startAge;
+    }
 
+    public int getEndAge() {
+        return endAge;
+    }
+
+    public int getDeductionFare() {
+        return deductionFare;
+    }
+
+    public double getDeductionRatio() {
+        return deductionRatio;
+    }
 }
