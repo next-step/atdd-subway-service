@@ -3,6 +3,8 @@ package nextstep.subway.favorite.ui;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,7 +33,7 @@ public class FavoriteController {
 
 	@PostMapping
 	public ResponseEntity createFavorite(@AuthenticationPrincipal LoginMember loginMember,
-		@RequestBody FavoriteRequest favoriteRequest) {
+		@RequestBody @Valid FavoriteRequest favoriteRequest) {
 		FavoriteResponse favorite = favoriteService.createFavorite(loginMember.getId(), favoriteRequest);
 		return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
 
