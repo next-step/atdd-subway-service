@@ -26,15 +26,23 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public Line(String name, String color, int extraFare) {
         this.name = name;
         this.color = color;
+        this.extraFare = extraFare;
+    }
+
+    public Line(String name, String color, int extraFare, Station upStation, Station downStation, int distance) {
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
         sections.addSection(this, upStation, downStation, distance);
     }
 
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+        this.extraFare = line.getExtraFare();
     }
 
     public Long getId() {

@@ -52,7 +52,11 @@ public class LineService {
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = findLineById(id);
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        persistLine.update(new Line(
+            lineUpdateRequest.getName(),
+            lineUpdateRequest.getColor(),
+            lineUpdateRequest.getExtraFare())
+        );
     }
 
     public void deleteLineById(Long id) {

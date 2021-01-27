@@ -42,8 +42,8 @@ public class LineTest {
 		천호역 = stationRepository.save(new Station("천호역"));
 		군자역 = stationRepository.save(new Station("군자역"));
 
-		이호선 = lineRepository.save(new Line("2호선", "green"));
-		오호선 = lineRepository.save(new Line("5호선", "purple"));
+		이호선 = lineRepository.save(new Line("2호선", "green", 100));
+		오호선 = lineRepository.save(new Line("5호선", "purple", 200));
 
 		이호선.addSection(교대역, 삼성역,10);
 		이호선.addSection(선릉역, 삼성역, 5);
@@ -53,6 +53,7 @@ public class LineTest {
 	@Test
 	void getStations() {
 		assertThat(이호선.getStations()).containsExactly(교대역, 선릉역, 삼성역, 잠실역);
+		assertThat(이호선.getExtraFare()).isEqualTo(100);
 	}
 
 	@Test

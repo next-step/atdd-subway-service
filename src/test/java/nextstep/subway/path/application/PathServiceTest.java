@@ -67,10 +67,10 @@ class PathServiceTest {
 		송파역 = new Station(6L, "송파역");
 		잠실역 = new Station(7L, "잠실역");
 
-		신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
-		이호선 = new Line("이호선", "bg-red-600", 교대역, 강남역, 10);
-		삼호선 = new Line("삼호선", "bg-red-600", 교대역, 양재역, 5);
-		팔호선 = new Line("팔호선", "bg-red-600", 석촌역, 송파역, 5);
+		신분당선 = new Line("신분당선", "bg-red-600", 0, 강남역, 양재역, 10);
+		이호선 = new Line("이호선", "bg-red-600", 0, 교대역, 강남역, 10);
+		삼호선 = new Line("삼호선", "bg-red-600", 0, 교대역, 양재역, 5);
+		팔호선 = new Line("팔호선", "bg-red-600", 0, 석촌역, 송파역, 5);
 		삼호선.addSection(교대역, 남부터미널역, 3);
 
 		lines = new ArrayList<>();

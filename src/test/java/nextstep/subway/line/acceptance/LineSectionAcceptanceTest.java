@@ -46,7 +46,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
         // And 지하철 노선 등록되어 있음 & 지하철 노선에 지하철역 등록되어 있음
-        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 정자역.getId(), 10);
+        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 0, 강남역.getId(), 정자역.getId(), 10);
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 

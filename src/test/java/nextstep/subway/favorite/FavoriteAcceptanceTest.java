@@ -52,7 +52,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 		// And 지하철 노선 등록되어 있음
 		이호선 = LineAcceptanceTest
-			.지하철_노선_등록되어_있음("이호선", "green", 강남역, 양재역, 5).as(LineResponse.class);
+			.지하철_노선_등록되어_있음("이호선", "green", 0, 강남역, 양재역, 5).as(LineResponse.class);
 
 		// And 지하철 노선에 지하철역 등록되어 있음
 		LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 양재역, 정자역, 6);
