@@ -6,7 +6,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Distance {
-	public static String DISTANCE_GREATER_THAN_ZERO = "거리는 0보다 커야 합니다.";
+	public static final String DISTANCE_GREATER_THAN_ZERO = "거리는 0보다 커야 합니다.";
 	private int distance;
 
 	protected Distance() {
@@ -21,12 +21,12 @@ public class Distance {
 		return distance;
 	}
 
-	public Distance plus(Distance distance) {
-		return new Distance(this.distance + distance.distance);
+	public Distance plus(int distance) {
+		return new Distance(this.distance + distance);
 	}
 
-	public Distance minus(Distance distance) {
-		return new Distance((this.distance - distance.distance));
+	public Distance minus(int distance) {
+		return new Distance(this.distance - distance);
 	}
 
 	private void validate(int distance) {

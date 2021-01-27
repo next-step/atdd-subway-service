@@ -15,10 +15,10 @@ public class Path {
 	private final List<Station> stations;
 	private final Distance distance;
 
-	public Path(List<Station> stations, Distance distance) {
+	public Path(List<Station> stations, int distance) {
 		validate(stations);
 		this.stations = Collections.unmodifiableList(stations);
-		this.distance = distance;
+		this.distance = new Distance(distance);
 	}
 
 	private void validate(List<Station> stations) {
@@ -27,9 +27,8 @@ public class Path {
 		}
 	}
 
-	public static Path of(GraphPath<Station, DefaultWeightedEdge> graphPath) {
-		validateGraphPath(graphPath);
-		return new Path(graphPath.getVertexList(), new Distance((int)graphPath.getWeight()));
+	public static Path of(List<Station> stations, double weight) {
+		return new Path(stations, (int)weight);
 	}
 
 	private static void validateGraphPath(GraphPath<Station, DefaultWeightedEdge> graphPath) {

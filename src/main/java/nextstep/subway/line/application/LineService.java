@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -65,7 +64,7 @@ public class LineService {
 		Station upStation = stationService.findStationById(request.getUpStationId());
 		Station downStation = stationService.findStationById(request.getDownStationId());
 
-		Section section = new Section(line, upStation, downStation, new Distance(request.getDistance()));
+		Section section = new Section(line, upStation, downStation, request.getDistance());
 		line.addSection(section);
 	}
 
