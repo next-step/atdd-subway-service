@@ -62,17 +62,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		Long sourceId = 남부터미널역.getId();
 		Long targetId = 강남역.getId();
 
-		ExtractableResponse<Response> response = RestAssured.given().log().all()
-			.queryParam("source", sourceId)
-			.queryParam("target", targetId)
-			.when().get("/paths")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> response = 최단_거리_경로_조회_요청(sourceId, targetId);
 
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-		PathResponse pathResponse = response.as(PathResponse.class);
-		assertThat(pathResponse.getStations()).hasSize(3).contains(남부터미널역, 양재역, 강남역);
-		assertThat(pathResponse.getDistance()).isEqualTo(12);
+		최단_거리_경로_조회됨(response);
+		최단_거리_경로_검증됨(response);
 	}
 
 	@DisplayName("출발역과 도착역이 같은 경우 500 에러가 발생한다.")
@@ -81,14 +74,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		Long sourceId = 강남역.getId();
 		Long targetId = 강남역.getId();
 
-		ExtractableResponse<Response> response = RestAssured.given().log().all()
-			.queryParam("source", sourceId)
-			.queryParam("target", targetId)
-			.when().get("/paths")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> response = 최단_거리_경로_조회_요청(sourceId, targetId);
 
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+		최단_거리_경로_조회_실패(response);
 	}
 
 	@DisplayName("출발역과 도착역이 연결 되어 있지 않은 경우 400 에러가 발생한다.")
@@ -97,14 +85,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		Long sourceId = 강남역.getId();
 		Long targetId = 당산역.getId();
 
-		ExtractableResponse<Response> response = RestAssured.given().log().all()
-			.queryParam("source", sourceId)
-			.queryParam("target", targetId)
-			.when().get("/paths")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> response = 최단_거리_경로_조회_요청(sourceId, targetId);
 
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+		최단_거리_경로_조회_실패(response);
 	}
 
 	@DisplayName("존재하지 않는 출발역이나 도착역을 조회 할 경우 400 에러가 발생한다.")
@@ -113,13 +96,32 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		Long sourceId = 강남역.getId();
 		Long targetId = 10L;
 
-		ExtractableResponse<Response> response = RestAssured.given().log().all()
+		ExtractableResponse<Response> response = 최단_거리_경로_조회_요청(sourceId, targetId);
+
+		최단_거리_경로_조회_실패(response);
+	}
+
+	public static ExtractableResponse<Response> 최단_거리_경로_조회_요청(Long sourceId, Long targetId) {
+		return RestAssured.given().log().all()
 			.queryParam("source", sourceId)
 			.queryParam("target", targetId)
 			.when().get("/paths")
 			.then().log().all()
 			.extract();
+	}
 
+	public static void 최단_거리_경로_조회됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+	}
+
+	public void 최단_거리_경로_검증됨(ExtractableResponse<Response> response) {
+		PathResponse pathResponse = response.as(PathResponse.class);
+		assertThat(pathResponse.getStations()).hasSize(3).contains(남부터미널역, 양재역, 강남역);
+		assertThat(pathResponse.getDistance()).isEqualTo(12);
+		assertThat(pathResponse.getFare()).isEqualTo(1350);
+	}
+
+	public static void 최단_거리_경로_조회_실패(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 }
