@@ -64,6 +64,11 @@ public class Sections {
 		}
 	}
 
+	public boolean contains(List<Station> stations){
+		return sections.stream()
+			.anyMatch(section -> section.containsAll(stations));
+	}
+
 	private void connectSections(Section upSection, Section downSection) {
 		Line line = upSection.getLine();
 		Station newUpStation = downSection.getUpStation();

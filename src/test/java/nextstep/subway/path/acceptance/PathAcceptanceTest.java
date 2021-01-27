@@ -49,11 +49,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		당산역 = StationAcceptanceTest.지하철역_등록되어_있음("당산역").as(StationResponse.class);
 		여의도역 = StationAcceptanceTest.지하철역_등록되어_있음("여의도역").as(StationResponse.class);
 
-		신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10).as(LineResponse.class);
-		이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10).as(LineResponse.class);
-		삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5).as(LineResponse.class);
+		신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 900).as(LineResponse.class);
+		이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 0).as(LineResponse.class);
+		삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 0).as(LineResponse.class);
 		LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
-		구호선 = LineAcceptanceTest.지하철_노선_등록되어_있음("구호선", "bg-red-600", 당산역, 여의도역, 5).as(LineResponse.class);
+		구호선 = LineAcceptanceTest.지하철_노선_등록되어_있음("구호선", "bg-red-600", 당산역, 여의도역, 5, 0).as(LineResponse.class);
 	}
 
 	@DisplayName("최단 경로를 조회 한다.")
@@ -118,7 +118,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		PathResponse pathResponse = response.as(PathResponse.class);
 		assertThat(pathResponse.getStations()).hasSize(3).contains(남부터미널역, 양재역, 강남역);
 		assertThat(pathResponse.getDistance()).isEqualTo(12);
-		assertThat(pathResponse.getFare()).isEqualTo(1350);
+		assertThat(pathResponse.getFare()).isEqualTo(2250);
 	}
 
 	public static void 최단_거리_경로_조회_실패(ExtractableResponse<Response> response) {

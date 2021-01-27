@@ -1,25 +1,27 @@
 package nextstep.subway.path.application;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.dto.ShortestPath;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @Service
 public class PathService {
 	public static final String SAME_SOURCE_AND_TARGET = "출발역과 도착역이 같습니다.";
-	public static final String UNCONNECTED_SOURCE_AND_TARGET = "출발역과 도착역이 연결되어 있지 않습니다.";
 	private final LineService lineService;
 	private final StationService stationService;
 
@@ -35,12 +37,11 @@ public class PathService {
 		Station source = stationService.findStationById(pathRequest.getSource());
 		Station target = stationService.findStationById(pathRequest.getTarget());
 
-		PathFinder pathFinder = new PathFinder(lineService.findAll());
-		GraphPath<Long, DefaultWeightedEdge> graphPath = pathFinder.findShortestPath(source.getId(), target.getId());
-		validateGraphPath(graphPath);
+		List<Line> lines = lineService.findAll();
+		ShortestPath shortestPath = new PathFinder(lines).findShortestPath(source.getId(), target.getId());
 
-		List<Station> pathStations = stationService.findAllStationsByIds(graphPath.getVertexList());
-		Path path = Path.of(pathStations, graphPath.getWeight());
+		List<Station> stations = stationService.findAllStationsByIds(shortestPath.getVertexes());
+		Path path = Path.of(stations, shortestPath.getWeight(), findPathLines(lines, grouping(stations)));
 
 		return PathResponse.of(path);
 	}
@@ -54,9 +55,18 @@ public class PathService {
 		}
 	}
 
-	private void validateGraphPath(GraphPath<Long, DefaultWeightedEdge> graphPath){
-		if(Objects.isNull(graphPath)){
-			throw new IllegalArgumentException(UNCONNECTED_SOURCE_AND_TARGET);
+	private List<Stations> grouping(List<Station> stations) {
+		List<Stations> returnStations = new ArrayList<>();
+		for (int i = 0; i < stations.size() - 1; i++) {
+			returnStations.add(new Stations(Arrays.asList(stations.get(i), stations.get(i + 1))));
 		}
+		return returnStations;
+	}
+
+	private List<Line> findPathLines(List<Line> lines, List<Stations> stations) {
+		return lines.stream()
+			.filter(line -> line.anyContainsSection(stations))
+			.distinct()
+			.collect(Collectors.toList());
 	}
 }

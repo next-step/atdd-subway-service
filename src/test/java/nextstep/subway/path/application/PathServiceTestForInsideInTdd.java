@@ -52,11 +52,11 @@ public class PathServiceTestForInsideInTdd {
 		당산역 = stationService.saveStation(new StationRequest("당산역"));
 		여의도역 = stationService.saveStation(new StationRequest("여의도역"));
 
-		신분당선 = lineService.saveLine(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10));
-		이호선 = lineService.saveLine(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10));
-		삼호선 = lineService.saveLine(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5));
+		신분당선 = lineService.saveLine(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 900));
+		이호선 = lineService.saveLine(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, 0));
+		삼호선 = lineService.saveLine(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5, 0));
 		lineService.addLineStation(삼호선.getId(), new SectionRequest(교대역.getId(), 남부터미널.getId(), 3));
-		구호선 = lineService.saveLine(new LineRequest("구호선", "bg-red-600", 당산역.getId(), 여의도역.getId(), 5));
+		구호선 = lineService.saveLine(new LineRequest("구호선", "bg-red-600", 당산역.getId(), 여의도역.getId(), 5, 0));
 	}
 
 	@DisplayName("최단 경로 조회")
@@ -68,7 +68,7 @@ public class PathServiceTestForInsideInTdd {
 
 		assertThat(pathResponse.getStations()).hasSize(3).containsExactly(남부터미널, 양재역, 강남역);
 		assertThat(pathResponse.getDistance()).isEqualTo(12);
-		assertThat(pathResponse.getFare()).isEqualTo(1350);
+		assertThat(pathResponse.getFare()).isEqualTo(2250);
 	}
 
 	@DisplayName("출발역과 도착역이 같은 경우 IllegalArgumentException 발생")

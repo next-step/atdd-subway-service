@@ -4,10 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
 public class Path {
@@ -16,11 +14,11 @@ public class Path {
 	private final Distance distance;
 	private final Fare fare;
 
-	public Path(List<Station> stations, int distance) {
+	public Path(List<Station> stations, int distance, List<Line> lines) {
 		validate(stations);
 		this.stations = Collections.unmodifiableList(stations);
 		this.distance = new Distance(distance);
-		this.fare = new Fare(distance);
+		this.fare = new Fare(distance, lines);
 	}
 
 	private void validate(List<Station> stations) {
@@ -29,14 +27,8 @@ public class Path {
 		}
 	}
 
-	public static Path of(List<Station> stations, double weight) {
-		return new Path(stations, (int)weight);
-	}
-
-	private static void validateGraphPath(GraphPath<Station, DefaultWeightedEdge> graphPath) {
-		if (Objects.isNull(graphPath)) {
-			throw new IllegalArgumentException(UNCONNECTED_SOURCE_AND_TARGET);
-		}
+	public static Path of(List<Station> stations, double weight, List<Line> lines) {
+		return new Path(stations, (int)weight, lines);
 	}
 
 	public List<Station> getStations() {
