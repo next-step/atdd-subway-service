@@ -103,8 +103,6 @@ public class LineService {
         PathFinder pathFinder = new PathFinder(lineRepository.findAll(), sourceStation, targetStation);
 
         SubwayPath subwayPath = pathFinder.findPath();
-        Fare distanceFare = DistanceFarePolicy.calculateDistanceFare(subwayPath.getDistance());
-        subwayPath.addFare(distanceFare);
 
         return PathResponse.of(subwayPath);
     }

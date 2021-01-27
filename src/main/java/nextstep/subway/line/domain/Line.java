@@ -23,7 +23,7 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
-    private Fare additionalFare;
+    private Fare additionalFare = new Fare(0);
 
     @Embedded
     private final Sections sections = new Sections();
