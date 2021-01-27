@@ -7,6 +7,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -97,13 +98,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .get(String.format("/paths?source={id}&target={id}", startStation.getId(), arrivalStation.getId()))
+                .queryParam("source", startStation.getId())
+                .queryParam("target", arrivalStation.getId())
+                .get("/paths")
                 .then().log().all()
                 .extract();
     }
 
     private void 지하철_최단경로_조회_확인(ExtractableResponse<Response> response, List<String> expectedStations) {
-
+        List<StationResponse> stationResponses = response.body().as(PathResponse.class).getStations();
+        assertThat(stationResponses)
+                .map(StationResponse::getName)
+                .asList()
+                .containsExactlyElementsOf(expectedStations);
     }
 
     private void API_요청_확인(ExtractableResponse<Response> response, HttpStatus httpStatus) {

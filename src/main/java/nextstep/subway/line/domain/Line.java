@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,5 +51,9 @@ public class Line extends BaseEntity {
 
     public void remove(Station station) {
         sections.removeSection(this, station);
+    }
+
+    public List<Section> getAllSection() {
+        return sections.getSections();
     }
 }
