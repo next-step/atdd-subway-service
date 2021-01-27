@@ -23,6 +23,7 @@ public class PathTest {
 	private Station 양재역;
 	private Station 교대역;
 	private Station 남부터미널역;
+	private Station 광교역;
 
 	private Line 신분당선;
 	private Line 이호선;
@@ -37,16 +38,16 @@ public class PathTest {
 		양재역 = new Station(id++, "양재역");
 		교대역 = new Station(id++, "교대역");
 		남부터미널역 = new Station(id++, "남부터미널역");
+		광교역 = new Station(id++, "광교역");
 
 		신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
 		이호선 = new Line("이호선", "bg-green-600", 교대역, 강남역, 10);
 		삼호선 = new Line("삼호선", "bg-orange-600", 교대역, 양재역, 5);
 
 		삼호선.addSection(교대역, 남부터미널역, 3);
+		신분당선.addSection(양재역, 광교역, 20);
 
 		lines = Arrays.asList(신분당선, 이호선, 삼호선);
-
-
 	}
 
 	@DisplayName("경로 조회")
@@ -94,6 +95,16 @@ public class PathTest {
 			)
 		);
 
+	}
+
+	@DisplayName("경로 조회시 길이에 따른 요금 조회")
+	@Test
+	void findPathWithFare() {
+		final int expectedFare = 1650;
+		final PathFinder pathFinder = new PathFinder(lines, 강남역, 광교역);
+		subwayPath = pathFinder.findPath();
+
+		assertThat(subwayPath.getFare()).isEqualTo(expectedFare);
 	}
 
 }

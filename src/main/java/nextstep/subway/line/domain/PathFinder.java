@@ -65,7 +65,7 @@ public class PathFinder {
 
 	public SubwayPath findPath() {
 		return new SubwayPath(this.graphPath.getVertexList(),
-			Double.valueOf(this.graphPath.getWeight()).intValue(), this.pathLineFare);
+			Double.valueOf(this.graphPath.getWeight()).intValue(), this.pathLineFare.getFare());
 	}
 
 	private Fare calculatePathLineAdditionalPare() {

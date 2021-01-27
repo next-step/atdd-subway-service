@@ -18,10 +18,11 @@ public class SubwayPath {
 		this(stations, distance, new Fare(fare));
 	}
 
-	public SubwayPath(final List<Station> stations, final int distance, final Fare fare) {
+	private SubwayPath(final List<Station> stations, final int distance, final Fare fare) {
 		this.stations = stations;
 		this.distance = distance;
 		this.fare = fare;
+		this.addFare(DistanceFarePolicy.calculateDistanceFare(distance));
 	}
 
 	public List<Station> getStations() {

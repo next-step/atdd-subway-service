@@ -21,8 +21,8 @@ public class Fare {
 		return fare;
 	}
 
-	public Fare add(final Fare fare) {
-		return new Fare(this.fare + fare.getFare());
+	public Fare add(final Fare added) {
+		return new Fare(this.fare + added.fare);
 	}
 
 }
