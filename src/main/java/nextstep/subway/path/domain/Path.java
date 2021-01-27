@@ -14,11 +14,11 @@ public class Path {
 	private final Distance distance;
 	private final Fare fare;
 
-	public Path(List<Station> stations, int distance, List<Line> lines) {
+	public Path(List<Station> stations, int distance, List<Line> lines, int age) {
 		validate(stations);
 		this.stations = Collections.unmodifiableList(stations);
 		this.distance = new Distance(distance);
-		this.fare = new Fare(distance, lines);
+		this.fare = new Fare(distance, lines, age);
 	}
 
 	private void validate(List<Station> stations) {
@@ -27,8 +27,8 @@ public class Path {
 		}
 	}
 
-	public static Path of(List<Station> stations, double weight, List<Line> lines) {
-		return new Path(stations, (int)weight, lines);
+	public static Path of(List<Station> stations, double weight, List<Line> lines, int age) {
+		return new Path(stations, (int)weight, lines, age);
 	}
 
 	public List<Station> getStations() {

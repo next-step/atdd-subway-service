@@ -11,9 +11,11 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -30,6 +32,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	private StationResponse 남부터미널역;
 	private StationResponse 당산역;
 	private StationResponse 여의도역;
+	private String accessToken;
 
 	/**
 	 * 교대역    --- *2호선* ---   강남역
@@ -54,6 +57,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 0).as(LineResponse.class);
 		LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
 		구호선 = LineAcceptanceTest.지하철_노선_등록되어_있음("구호선", "bg-red-600", 당산역, 여의도역, 5, 0).as(LineResponse.class);
+
+		MemberAcceptanceTest.회원_등록되어_있음("test@gmail.com", "test123", 10);
+		accessToken = AuthAcceptanceTest.로그인_되어_있음("test@gmail.com", "test123");
 	}
 
 	@DisplayName("최단 경로를 조회 한다.")
@@ -62,7 +68,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		Long sourceId = 남부터미널역.getId();
 		Long targetId = 강남역.getId();
 
-		ExtractableResponse<Response> response = 최단_거리_경로_조회_요청(sourceId, targetId);
+		ExtractableResponse<Response> response = 최단_거리_경로_조회_요청(accessToken, sourceId, targetId);
 
 		최단_거리_경로_조회됨(response);
 		최단_거리_경로_검증됨(response);
@@ -74,7 +80,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		Long sourceId = 강남역.getId();
 		Long targetId = 강남역.getId();
 
-		ExtractableResponse<Response> response = 최단_거리_경로_조회_요청(sourceId, targetId);
+		ExtractableResponse<Response> response = 최단_거리_경로_조회_요청(accessToken, sourceId, targetId);
 
 		최단_거리_경로_조회_실패(response);
 	}
@@ -85,7 +91,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		Long sourceId = 강남역.getId();
 		Long targetId = 당산역.getId();
 
-		ExtractableResponse<Response> response = 최단_거리_경로_조회_요청(sourceId, targetId);
+		ExtractableResponse<Response> response = 최단_거리_경로_조회_요청(accessToken, sourceId, targetId);
 
 		최단_거리_경로_조회_실패(response);
 	}
@@ -96,13 +102,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		Long sourceId = 강남역.getId();
 		Long targetId = 10L;
 
-		ExtractableResponse<Response> response = 최단_거리_경로_조회_요청(sourceId, targetId);
+		ExtractableResponse<Response> response = 최단_거리_경로_조회_요청(accessToken, sourceId, targetId);
 
 		최단_거리_경로_조회_실패(response);
 	}
 
-	public static ExtractableResponse<Response> 최단_거리_경로_조회_요청(Long sourceId, Long targetId) {
+	public static ExtractableResponse<Response> 최단_거리_경로_조회_요청(String accessToken, Long sourceId, Long targetId) {
 		return RestAssured.given().log().all()
+			.auth().oauth2(accessToken)
 			.queryParam("source", sourceId)
 			.queryParam("target", targetId)
 			.when().get("/paths")
@@ -118,7 +125,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		PathResponse pathResponse = response.as(PathResponse.class);
 		assertThat(pathResponse.getStations()).hasSize(3).contains(남부터미널역, 양재역, 강남역);
 		assertThat(pathResponse.getDistance()).isEqualTo(12);
-		assertThat(pathResponse.getFare()).isEqualTo(2250);
+		assertThat(pathResponse.getFare()).isEqualTo(950);
 	}
 
 	public static void 최단_거리_경로_조회_실패(ExtractableResponse<Response> response) {
