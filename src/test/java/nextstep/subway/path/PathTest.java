@@ -29,7 +29,6 @@ public class PathTest {
 	private Line 삼호선;
 
 	private List<Line> lines;
-	private PathFinder pathFinder;
 	private SubwayPath subwayPath;
 
 	@BeforeEach
@@ -46,7 +45,7 @@ public class PathTest {
 		삼호선.addSection(교대역, 남부터미널역, 3);
 
 		lines = Arrays.asList(신분당선, 이호선, 삼호선);
-		pathFinder = new PathFinder(lines);
+
 
 	}
 
@@ -55,7 +54,8 @@ public class PathTest {
 	void findPath() {
 		// given
 		int expectedDistance = 5;
-		subwayPath = pathFinder.findPath(양재역, 교대역);
+		PathFinder pathFinder = new PathFinder(lines, 양재역, 교대역);
+		subwayPath = pathFinder.findPath();
 
 		// then
 		assertThat(subwayPath.getStations()).containsExactly(양재역, 남부터미널역, 교대역);
@@ -66,18 +66,17 @@ public class PathTest {
 	@DisplayName("경로 조회 예외 - 출발역과 도착역이 같은 경우")
 	@Test
 	void findPathThrowExceptionWhenSameSourceAndTarget() {
+
 		assertThatIllegalArgumentException().isThrownBy(
-			() -> pathFinder.findPath(양재역, 양재역)
+			() -> new PathFinder(lines, 양재역, 양재역)
 		);
 	}
 
 	@DisplayName("경로 조회 예외 - 출발역과 도착역이 연결되어 있지 않은 경우")
 	@Test
 	void findPathThrowExceptionWhen() {
-		pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선));
-
 		assertThatIllegalArgumentException().isThrownBy(
-			() -> pathFinder.findPath(강남역, 남부터미널역)
+			() -> new PathFinder(Arrays.asList(신분당선, 이호선), 강남역, 남부터미널역)
 		);
 	}
 
@@ -88,10 +87,10 @@ public class PathTest {
 
 		assertAll(
 			() -> assertThatIllegalArgumentException().isThrownBy(
-				() -> pathFinder.findPath(강남역, 용산역)
+				() -> new PathFinder(lines, 강남역, 용산역)
 			),
 			() -> assertThatIllegalArgumentException().isThrownBy(
-				() -> pathFinder.findPath(용산역, 강남역)
+				() -> new PathFinder(lines, 용산역, 강남역)
 			)
 		);
 

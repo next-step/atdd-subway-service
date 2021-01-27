@@ -6,10 +6,13 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.line.domain.DistanceFarePolicy;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.PathFinder;
 import nextstep.subway.line.domain.SectionRepository;
+import nextstep.subway.line.domain.SubwayPath;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.PathResponse;
@@ -91,10 +94,15 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public PathResponse findPath(final Long source, final Long target) {
-        PathFinder pathFinder = new PathFinder(lineRepository.findAll());
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
-        return PathResponse.of(pathFinder.findPath(sourceStation, targetStation));
+        PathFinder pathFinder = new PathFinder(lineRepository.findAll(), sourceStation, targetStation);
+
+        SubwayPath subwayPath = pathFinder.findPath();
+        Fare distanceFare = DistanceFarePolicy.calculateDistanceFare(subwayPath.getDistance());
+        subwayPath.addFare(distanceFare);
+
+        return PathResponse.of(subwayPath);
     }
 
 }

@@ -8,10 +8,20 @@ public class SubwayPath {
 
 	private List<Station> stations;
 	private int distance;
+	private Fare fare;
 
 	public SubwayPath(final List<Station> stations, final int distance) {
+		this(stations, distance, 0);
+	}
+
+	public SubwayPath(final List<Station> stations, final int distance, final int fare) {
+		this(stations, distance, new Fare(fare));
+	}
+
+	public SubwayPath(final List<Station> stations, final int distance, final Fare fare) {
 		this.stations = stations;
 		this.distance = distance;
+		this.fare = fare;
 	}
 
 	public List<Station> getStations() {
@@ -20,6 +30,14 @@ public class SubwayPath {
 
 	public int getDistance() {
 		return distance;
+	}
+
+	public int getFare() {
+		return fare.getFare();
+	}
+
+	public void addFare(Fare fare) {
+		this.fare = this.fare.add(fare);
 	}
 
 }
