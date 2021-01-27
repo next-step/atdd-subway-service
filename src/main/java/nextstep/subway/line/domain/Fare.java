@@ -25,4 +25,11 @@ public class Fare {
 		return new Fare(this.fare + added.fare);
 	}
 
+	public Fare minus(final int deduction) {
+		return new Fare(this.fare - deduction);
+	}
+
+	public Fare multiply(final double inverseDiscountRate) {
+		return new Fare((int)(this.fare * inverseDiscountRate));
+	}
 }
