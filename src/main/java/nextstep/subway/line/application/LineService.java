@@ -6,8 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import nextstep.subway.line.domain.DistanceFarePolicy;
-import nextstep.subway.line.domain.Fare;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.PathFinder;
@@ -97,12 +96,13 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(final Long source, final Long target) {
+    public PathResponse findPath(final LoginMember loginMember, final Long source, final Long target) {
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
         PathFinder pathFinder = new PathFinder(lineRepository.findAll(), sourceStation, targetStation);
 
         SubwayPath subwayPath = pathFinder.findPath();
+        loginMember.ifPresent(member -> subwayPath.calculateAgeFare(member.getAge()));
 
         return PathResponse.of(subwayPath);
     }

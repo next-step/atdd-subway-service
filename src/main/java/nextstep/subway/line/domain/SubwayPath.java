@@ -41,4 +41,7 @@ public class SubwayPath {
 		this.fare = this.fare.add(fare);
 	}
 
+	public void calculateAgeFare(final int age) {
+		this.fare = AgeFarePolicy.calculate(age, this.fare);
+	}
 }

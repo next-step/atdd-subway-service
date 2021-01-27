@@ -1,5 +1,7 @@
 package nextstep.subway.auth.domain;
 
+import java.util.function.Consumer;
+
 public class LoginMember {
     private Long id;
     private String email;
@@ -25,4 +27,14 @@ public class LoginMember {
     public Integer getAge() {
         return age;
     }
+
+    public boolean isPresent() {
+        return id != null;
+    }
+
+    public void ifPresent(Consumer<LoginMember> consumer) {
+        if (id != null)
+            consumer.accept(this);
+    }
+
 }
