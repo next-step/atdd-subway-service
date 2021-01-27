@@ -18,6 +18,7 @@ import org.mockito.MockedStatic;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Sections;
@@ -93,7 +94,7 @@ class PathServiceTest {
 			when(stationService.findById(양재역.getId())).thenReturn(양재역);
 
 			// when
-			PathResponse response = pathService.findPath(교대역.getId(), 양재역.getId());
+			PathResponse response = pathService.findPath(new LoginMember(), 교대역.getId(), 양재역.getId());
 
 			// then
 			assertThat(response.getStations())

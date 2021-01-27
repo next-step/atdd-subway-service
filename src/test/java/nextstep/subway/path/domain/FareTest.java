@@ -75,4 +75,10 @@ public class FareTest {
 	void calculateOverFare(int distance, int interval, int expected) {
 		assertThat(Fare.calculateOverFare(distance, interval)).isEqualTo(expected);
 	}
+
+	@ParameterizedTest
+	@CsvSource(value = {"1000, 20, 1000", "1000, 18, 520", "921, 18, 456", "1000, 12, 325"})
+	void discountFareByAge(int fare, int age, int expected) {
+		assertThat(Fare.discountFareByAge(fare, age)).isEqualTo(expected);
+	}
 }

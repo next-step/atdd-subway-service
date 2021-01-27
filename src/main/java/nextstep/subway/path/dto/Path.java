@@ -16,6 +16,11 @@ public class Path {
 		this.fare = new Fare(sections, stations, distance);
 	}
 
+	public Path discountFareByAge(Integer age) {
+		fare.discountByAge(age);
+		return this;
+	}
+
 	public List<Station> getStations() {
 		return stations;
 	}

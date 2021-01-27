@@ -17,7 +17,7 @@ public class Fare {
 	public static int SECOND_SECTION_START_DISTANCE = 50;
 	public static int SECOND_SECTION_FARE_INTERVAL = 8;
 
-	private final long fare;
+	private long fare;
 
 	public Fare(Sections sections, List<Station> stations, long distance) {
 		this.fare = BASIC_FARE + calculateFare(sections, stations, distance);
@@ -52,7 +52,8 @@ public class Fare {
 	public static long calculateDistanceFare(long distance) {
 		long fare = 0;
 		if (distance > FIRST_SECTION_START_DISTANCE) {
-			long more10Less50Distance = Math.min(SECOND_SECTION_START_DISTANCE, distance) - FIRST_SECTION_START_DISTANCE;
+			long more10Less50Distance =
+				Math.min(SECOND_SECTION_START_DISTANCE, distance) - FIRST_SECTION_START_DISTANCE;
 			fare += calculateOverFare(more10Less50Distance, FIRST_SECTION_FARE_INTERVAL);
 		}
 		if (distance > SECOND_SECTION_START_DISTANCE) {
@@ -66,7 +67,27 @@ public class Fare {
 		return (long)((Math.ceil((distance - 1) / interval) + 1) * ADDITIONAL_FARE_UNIT);
 	}
 
+	public static long discountFareByAge(long fare, int age) {
+		if (age <= 0 || age >= 20) {
+			return fare;
+		}
+		if (age >= 13) {
+			return (fare - 350) * 4 / 5;
+		}
+		if (age >= 6) {
+			return (fare - 350) / 2;
+		}
+		return 0;
+	}
+
 	public long getFare() {
 		return fare;
+	}
+
+	public void discountByAge(Integer age) {
+		if (age == null) {
+			return;
+		}
+		fare = discountFareByAge(fare, age);
 	}
 }
