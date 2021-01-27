@@ -68,6 +68,7 @@ public class PathServiceTestForInsideInTdd {
 
 		assertThat(pathResponse.getStations()).hasSize(3).containsExactly(남부터미널, 양재역, 강남역);
 		assertThat(pathResponse.getDistance()).isEqualTo(12);
+		assertThat(pathResponse.getFare()).isEqualTo(1350);
 	}
 
 	@DisplayName("출발역과 도착역이 같은 경우 IllegalArgumentException 발생")

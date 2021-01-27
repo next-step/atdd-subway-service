@@ -14,11 +14,13 @@ public class Path {
 	public static final String UNCONNECTED_SOURCE_AND_TARGET = "출발역과 도착역이 연결되어 있지 않습니다.";
 	private final List<Station> stations;
 	private final Distance distance;
+	private final Fare fare;
 
 	public Path(List<Station> stations, int distance) {
 		validate(stations);
 		this.stations = Collections.unmodifiableList(stations);
 		this.distance = new Distance(distance);
+		this.fare = new Fare(distance);
 	}
 
 	private void validate(List<Station> stations) {
@@ -41,7 +43,11 @@ public class Path {
 		return stations;
 	}
 
-	public Distance getDistance() {
-		return distance;
+	public int getDistance() {
+		return distance.value();
+	}
+
+	public int getFare() {
+		return fare.value();
 	}
 }
