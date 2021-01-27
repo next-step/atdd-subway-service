@@ -32,8 +32,8 @@ public class Sections {
             return;
         }
 
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+        boolean isUpStationExisted = isStationExisted(stations, upStation);
+        boolean isDownStationExisted = isStationExisted(stations, downStation);
 
         validate(stations, isUpStationExisted, isDownStationExisted);
 
@@ -112,8 +112,12 @@ public class Sections {
                 .findFirst();
     }
 
+    private boolean isStationExisted(List<Station> stations, Station station) {
+        return stations.stream().anyMatch(it -> it == station);
+    }
+
     public void removeSection(Line line, Station station) {
-        if (sections.size() <= 1) {
+        if (line.getStations().size() <= 2) {
             throw new RuntimeException();
         }
 
