@@ -29,19 +29,19 @@ public enum DistanceFarePolicy {
 			return new Fare(DEFAULT_DISTANCE_FARE);
 		}
 
-		int fee = DEFAULT_DISTANCE_FARE;
+		int fare = DEFAULT_DISTANCE_FARE;
 		int step;
 
 		while (distance > 0) {
 			final int finalDistance = distance;
 			DistanceFarePolicy distanceFarePolicy = DistanceFarePolicy.getInstance(finalDistance);
-			fee += distanceFarePolicy.stepFare;
+			fare += distanceFarePolicy.stepFare;
 			step = distanceFarePolicy.stepDistance;
 
 			distance -= step;
 		}
 
-		return new Fare(fee);
+		return new Fare(fare);
 	}
 
 	private static DistanceFarePolicy getInstance(final int finalDistance) {
