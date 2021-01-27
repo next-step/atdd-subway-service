@@ -42,7 +42,7 @@ public class PathTest {
 
 		신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
 		이호선 = new Line("이호선", "bg-green-600", 교대역, 강남역, 10);
-		삼호선 = new Line("삼호선", "bg-orange-600", 교대역, 양재역, 5);
+		삼호선 = new Line("삼호선", "bg-orange-600", 교대역, 양재역, 5, 300);
 
 		삼호선.addSection(교대역, 남부터미널역, 3);
 		신분당선.addSection(양재역, 광교역, 20);
@@ -101,9 +101,23 @@ public class PathTest {
 	@Test
 	void findPathWithFare() {
 		final int expectedFare = 1650;
+		final int expectedDistance = 30;
 		final PathFinder pathFinder = new PathFinder(lines, 강남역, 광교역);
 		subwayPath = pathFinder.findPath();
 
+		assertThat(subwayPath.getDistance()).isEqualTo(expectedDistance);
+		assertThat(subwayPath.getFare()).isEqualTo(expectedFare);
+	}
+
+	@DisplayName("경로 조회시 노선별 추가 요금 더해서 조회")
+	@Test
+	void findPathWithAdditionalFare() {
+		final int expectedFare = 1850;
+		final int expectedDistance = 25;
+		final PathFinder pathFinder = new PathFinder(lines, 광교역, 교대역);
+		subwayPath = pathFinder.findPath();
+
+		assertThat(subwayPath.getDistance()).isEqualTo(expectedDistance);
 		assertThat(subwayPath.getFare()).isEqualTo(expectedFare);
 	}
 
