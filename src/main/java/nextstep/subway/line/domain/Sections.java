@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
 import nextstep.subway.station.domain.Station;
@@ -62,11 +61,6 @@ public class Sections {
 		if (upLineSection.isPresent() && downLineSection.isPresent()) {
 			connectSections(upLineSection.get(), downLineSection.get());
 		}
-	}
-
-	public boolean contains(List<Station> stations){
-		return sections.stream()
-			.anyMatch(section -> section.containsAll(stations));
 	}
 
 	private void connectSections(Section upSection, Section downSection) {

@@ -11,7 +11,6 @@ import javax.persistence.Id;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.Stations;
 
 @Entity
 public class Line extends BaseEntity {
@@ -76,10 +75,5 @@ public class Line extends BaseEntity {
 
 	public int getOverFare() {
 		return overFare;
-	}
-
-	public boolean anyContainsSection(List<Stations> stations){
-		return stations.stream()
-			.anyMatch(it -> sections.contains(it.getStations()));
 	}
 }

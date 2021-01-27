@@ -33,6 +33,10 @@ public class LineService {
 		return LineResponse.of(persistLine);
 	}
 
+	public List<Line> findAllLinesByIds(List<Long> ids) {
+		return lineRepository.findAllById(ids);
+	}
+
 	public List<Line> findAll() {
 		return lineRepository.findAll();
 	}

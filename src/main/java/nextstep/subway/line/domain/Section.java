@@ -56,10 +56,6 @@ public class Section implements Comparable<Section> {
 		return Arrays.asList(upStation, downStation);
 	}
 
-	public boolean containsAll(List<Station> stations) {
-		return getStations().containsAll(stations);
-	}
-
 	public Station getUpStation() {
 		return upStation;
 	}
