@@ -62,12 +62,12 @@ public class PathServiceTestForInsideInTdd {
 	@DisplayName("최단 경로 조회")
 	@Test
 	void findShortestPath() {
-		PathRequest pathRequest = new PathRequest(강남역.getId(), 양재역.getId());
+		PathRequest pathRequest = new PathRequest(남부터미널.getId(), 강남역.getId());
 
 		PathResponse pathResponse = pathService.findShortestPath(pathRequest);
 
-		assertThat(pathResponse.getStations()).hasSize(2).contains(강남역, 양재역);
-		assertThat(pathResponse.getDistance()).isEqualTo(10);
+		assertThat(pathResponse.getStations()).hasSize(3).containsExactly(남부터미널, 양재역, 강남역);
+		assertThat(pathResponse.getDistance()).isEqualTo(12);
 	}
 
 	@DisplayName("출발역과 도착역이 같은 경우 IllegalArgumentException 발생")

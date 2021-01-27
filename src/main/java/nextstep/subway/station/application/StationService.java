@@ -30,8 +30,10 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    public List<Station> findAllStationsByIds(List<Long> ids){
-        return stationRepository.findAllById(ids);
+    public List<Station> findAllStationsByIds(List<Long> ids) {
+        return ids.stream()
+            .map(this::findStationById)
+            .collect(Collectors.toList());
     }
 
     public void deleteStationById(Long id) {
