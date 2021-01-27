@@ -27,9 +27,15 @@ dependencies {
 
 	// jgraph
 	implementation 'org.jgrapht:jgrapht-core:1.0.1'
+	implementation 'org.projectlombok:lombok:1.18.16'
+
 
 	// jwt
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+
+	// lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
 
 	testImplementation 'io.rest-assured:rest-assured:3.3.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
