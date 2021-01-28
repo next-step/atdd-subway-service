@@ -79,13 +79,13 @@ public class Section {
         return this.upStation.getId().equals(id) || this.downStation.getId().equals(id);
     }
 
-    public Optional<Station> getSation(Long id) {
+    public Station getStationOrNull(Long id) {
         if(this.upStation.getId().equals(id)){
-            return Optional.of(upStation);
+            return upStation;
         }
         if(this.downStation.getId().equals(id)){
-            return Optional.of(downStation);
+            return downStation;
         }
-        return Optional.empty();
+        return null;
     }
 }

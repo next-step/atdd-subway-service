@@ -68,12 +68,12 @@ public class Line extends BaseEntity {
         sections.removeStation(this, station);
     }
 
-    public Optional<Section> findSection(Long upStationId, Long downStationId){
-        return this.getSections().findSection(upStationId, downStationId);
+    public Section findSectionOrNull(Long upStationId, Long downStationId) {
+        return this.getSections().findSectionOrNull(upStationId, downStationId);
     }
 
-    public Optional<Station> findStation(Long id){
-        return this.getSections().findStation(id);
+    public Station findStationOrNull(Long id) {
+        return this.getSections().findStationOrNull(id);
     }
 
 }

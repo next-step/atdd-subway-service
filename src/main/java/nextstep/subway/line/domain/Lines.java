@@ -40,19 +40,19 @@ public class Lines {
 
     private Station findMustExistStationById(Long id) {
         Optional<Line> containLine = lines.stream()
-                .filter(line -> line.findStation(id).isPresent())
+                .filter(line -> line.findStationOrNull(id) != null)
                 .findFirst();
         if (containLine.isPresent()) {
-            return containLine.get().findStation(id).get();
+            return containLine.get().findStationOrNull(id);
         }
         throw new RuntimeException("역이 존재하지 않습니다");
     }
 
     private Section findMustExistSectionById(Long upStationId, Long downStationId) {
-        Optional<Line> containLine = lines.stream().filter(line -> line.findSection(upStationId, downStationId).isPresent())
+        Optional<Line> containLine = lines.stream().filter(line -> line.findSectionOrNull(upStationId, downStationId) != null)
                 .findFirst();
         if (containLine.isPresent()) {
-            return containLine.get().findSection(upStationId, downStationId).get();
+            return containLine.get().findSectionOrNull(upStationId, downStationId);
         }
         throw new RuntimeException("구간이이 존재하지 않습니다");
     }
