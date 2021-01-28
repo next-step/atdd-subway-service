@@ -24,13 +24,14 @@ public class Fare {
 	}
 
 	public static long calculateFare(Sections sections, List<Station> stations, long distance) {
-		return sumExtraFareByLine(sections, stations) + calculateDistanceFare(distance);
+		return maxExtraFareByLine(sections, stations) + calculateDistanceFare(distance);
 	}
 
-	public static long sumExtraFareByLine(Sections sections, List<Station> stations) {
+	public static int maxExtraFareByLine(Sections sections, List<Station> stations) {
 		return getLinesByStationsInPath(sections, stations).stream()
 			.mapToInt(Line::getExtraFare)
-			.sum();
+			.max()
+			.orElse(0);
 	}
 
 	public static Set<Line> getLinesByStationsInPath(Sections sections, List<Station> stations) {

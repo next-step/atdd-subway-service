@@ -27,9 +27,9 @@ public class FareTest {
 	private final Station 송파역 = new Station("송파역");
 	private final Station 잠실역 = new Station("잠실역");
 
-	private final Line 신분당선 = new Line("신분당선", "bg-red-600");
-	private final Line 이호선 = new Line("이호선", "bg-red-600");
-	private final Line 삼호선 = new Line("삼호선", "bg-red-600");
+	private final Line 신분당선 = new Line("신분당선", "bg-red-600", 10);
+	private final Line 이호선 = new Line("이호선", "bg-red-600", 20);
+	private final Line 삼호선 = new Line("삼호선", "bg-red-600", 30);
 	private final Line 팔호선 = new Line("팔호선", "bg-red-600");
 
 	private Sections sections;
@@ -47,13 +47,13 @@ public class FareTest {
 	@Test
 	void calculateFare() {
 		long fare = Fare.calculateFare(sections, Arrays.asList(강남역, 교대역, 남부터미널역, 양재역, 강남역), 24L);
-		assertThat(fare).isEqualTo(300);
+		assertThat(fare).isEqualTo(330);
 	}
 
 	@Test
 	void sumExtraFareByLine() {
-		long extraFare = Fare.sumExtraFareByLine(sections, Arrays.asList(강남역, 교대역, 남부터미널역, 양재역, 강남역));
-		assertThat(extraFare).isEqualTo(신분당선.getExtraFare() + 이호선.getExtraFare() + 삼호선.getExtraFare());
+		long extraFare = Fare.maxExtraFareByLine(sections, Arrays.asList(강남역, 교대역, 남부터미널역, 양재역, 강남역));
+		assertThat(extraFare).isEqualTo(삼호선.getExtraFare());
 
 	}
 

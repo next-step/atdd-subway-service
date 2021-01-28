@@ -109,8 +109,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		// And 최단 경로의 거리가 예상과 같음
 		최단_경로의_거리가_예상과_같음(지하철_최단_경로_조회_요청_응답, 184);
 
-		// And 지하철 이용 요금이 예상과 같음 (삼호선추가요금 + 십호선추가요금 + 기본운임 + 거리추가운임)
-		지하철_이용_요금이_예상과_같음(지하철_최단_경로_조회_요청_응답, 10 + 10000 + 1250 + 2500);
+		// And 지하철 이용 요금이 예상과 같음 (십호선추가요금 + 기본운임 + 거리추가운임)
+		지하철_이용_요금이_예상과_같음(지하철_최단_경로_조회_요청_응답, 10000 + 1250 + 2500);
 
 		// When 로그인 요청
 		ExtractableResponse<Response> 로그인_요청_응답 = AuthAcceptanceTest.로그인_요청(EMAIL, PASSWORD);
@@ -121,8 +121,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		// When 지하철 최단 경로 조회 요청
 		ExtractableResponse<Response> 로그인_후_최단_경로_조회_요청_응답 = 로그인_후_최단_경로_조회_요청(로그인_토큰, 교대역, 제주도역);
 
-		// And 지하철 이용 요금이 예상과 같음 : (13760 - 350) * 0.8 원
-		지하철_이용_요금이_예상과_같음(로그인_후_최단_경로_조회_요청_응답, 10728);
+		// And 지하철 이용 요금이 예상과 같음 : (13750 - 350) * 0.8 원
+		지하철_이용_요금이_예상과_같음(로그인_후_최단_경로_조회_요청_응답, 10720);
 	}
 
 	private ExtractableResponse<Response> 지하철_최단_경로_조회_요청(StationResponse source, StationResponse target) {
