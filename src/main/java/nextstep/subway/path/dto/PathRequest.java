@@ -1,7 +1,8 @@
 package nextstep.subway.path.dto;
 
-import com.sun.istack.NotNull;
 import lombok.Getter;
+
+import javax.validation.constraints.NotNull;
 
 @Getter
 public class PathRequest {
