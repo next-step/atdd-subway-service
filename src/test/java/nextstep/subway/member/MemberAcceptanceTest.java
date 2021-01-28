@@ -24,6 +24,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
     public static final String AUTHORIZATION = "Authorization";
+    public static String BEARER_TYPE = "Bearer";
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
@@ -62,36 +63,34 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         AuthAcceptanceTest.토큰_로그인됨(tokenResponse);
-        String token = tokenResponse.as(TokenResponse.class).getAccessToken();
+        String token = BEARER_TYPE +  tokenResponse.as(TokenResponse.class).getAccessToken();
 
         // when
-        ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(createResponse, token);
+        ExtractableResponse<Response> findResponse = 내_회원_정보_조회_요청(token);
         // then
         회원_정보_조회됨(findResponse, EMAIL, AGE);
 
         // when
-        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(createResponse, token, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        ExtractableResponse<Response> updateResponse = 내_회원_정보_수정_요청(token, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
         // then
         회원_정보_수정됨(updateResponse);
 
         // when
-        ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(createResponse, token);
+        ExtractableResponse<Response> deleteResponse = 내_회원_삭제_요청(token);
         // then
         회원_삭제됨(deleteResponse);
     }
 
-    private ExtractableResponse<Response> 내_회원_삭제_요청(ExtractableResponse<Response> response, String token) {
-        String uri = response.header("Location");
+    private ExtractableResponse<Response> 내_회원_삭제_요청(String token) {
         return RestAssured
                 .given().log().all()
                 .header(AUTHORIZATION, token)
-                .when().delete(uri)
+                .when().delete("/members/me")
                 .then().log().all()
                 .extract();
     }
 
-    private ExtractableResponse<Response> 내_회원_정보_수정_요청(ExtractableResponse<Response> response, String token, String email, String password, int age) {
-        String uri = response.header("Location");
+    private ExtractableResponse<Response> 내_회원_정보_수정_요청(String token, String email, String password, int age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return RestAssured
@@ -99,7 +98,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .header(AUTHORIZATION, token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
-                .when().put(uri)
+                .when().put("/members/me")
                 .then().log().all()
                 .extract();
     }
@@ -149,13 +148,12 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(ExtractableResponse<Response> response, String token) {
-        String uri = response.header("Location");
+    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(String token) {
         return RestAssured
                 .given().log().all()
                 .header(AUTHORIZATION, token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(uri)
+                .when().get("/members/me")
                 .then().log().all()
                 .extract();
     }
