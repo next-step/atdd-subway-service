@@ -16,6 +16,14 @@ public class Path {
             graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
     private GraphPath<Station, DefaultWeightedEdge> path;
 
+    public Path(List<Line> lines) {
+        init(lines);
+    }
+
+    public static Path of(List<Line> lines) {
+        return new Path(lines);
+    }
+
     public void init(List<Line> lines) {
         addLoopLine(lines);
     }
