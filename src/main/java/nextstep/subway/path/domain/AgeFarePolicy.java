@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.function.IntUnaryOperator;
 
 public enum AgeFarePolicy {
+	DEFAULT(0, 0, fare -> fare),
 	CHILD(6, 13, fare -> (int)((fare - 350) * 0.5)),
 	TEENAGER(13, 19, fare -> (int)((fare - 350) * 0.8));
 
@@ -29,6 +30,6 @@ public enum AgeFarePolicy {
 		return Arrays.stream(AgeFarePolicy.values())
 			.filter(ageFarePolicy -> ageFarePolicy.isTargetAge(age))
 			.findFirst()
-			.orElseThrow(IllegalArgumentException::new);
+			.orElse(DEFAULT);
 	}
 }

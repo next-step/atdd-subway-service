@@ -19,22 +19,6 @@ public enum DistanceFarePolicy {
 		this.overFare = overFare;
 	}
 
-	private int calculateOverFare(int distance) {
-		return calculateOverAmount(distance) * overFare;
-	}
-
-	private int calculateOverAmount(int distance) {
-		if (standardDistance == 0) {
-			return 1;
-		}
-
-		return (int)Math.ceil(distance / standardDistance);
-	}
-
-	private boolean isTargetDistance(int distance) {
-		return distance > minDistance && distance <= maxDistance;
-	}
-
 	public static int calculateFare(int distance) {
 		int fare = 0;
 
@@ -52,5 +36,21 @@ public enum DistanceFarePolicy {
 			.filter(distanceFarePolicy -> distanceFarePolicy.isTargetDistance(distance))
 			.findFirst()
 			.orElseThrow(IllegalArgumentException::new);
+	}
+
+	private boolean isTargetDistance(int distance) {
+		return distance > minDistance && distance <= maxDistance;
+	}
+
+	private int calculateOverFare(int distance) {
+		return calculateOverAmount(distance) * overFare;
+	}
+
+	private int calculateOverAmount(int distance) {
+		if (standardDistance == 0) {
+			return 1;
+		}
+
+		return (int)Math.ceil(distance / standardDistance);
 	}
 }

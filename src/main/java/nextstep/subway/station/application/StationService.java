@@ -7,6 +7,8 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,10 +32,10 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    public List<Station> findAllStationsByIds(List<Long> ids) {
-        return ids.stream()
-            .map(this::findStationById)
-            .collect(Collectors.toList());
+    public Map<Long, Station> findAllStationsByIds(List<Long> ids) {
+        return stationRepository.findAllById(ids)
+            .stream()
+            .collect(Collectors.toMap(Station::getId, Function.identity()));
     }
 
     public void deleteStationById(Long id) {

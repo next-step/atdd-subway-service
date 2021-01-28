@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
-public class LineFarePolicyTest {
+public class LinesTest {
 	private Line 신분당선;
 	private Line 이호선;
 	private Line 삼호선;
@@ -38,9 +38,9 @@ public class LineFarePolicyTest {
 		구호선 = new Line("구호선", "bg-red-600", 당산역, 여의도역, 10, 100);
 	}
 
-	@DisplayName("노선별 추가 요금")
+	@DisplayName("노선 추가 요금을 계산한다.")
 	@Test
-	void dd() {
-		assertThat(LineFarePolicy.calculateOverFare(Arrays.asList(신분당선, 이호선, 삼호선, 구호선))).isEqualTo(1300);
+	void calculateOverFare() {
+		assertThat(new Lines(Arrays.asList(신분당선, 이호선, 삼호선, 구호선)).calculateOverFare()).isEqualTo(1300);
 	}
 }

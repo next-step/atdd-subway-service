@@ -18,7 +18,7 @@ public class Path {
 		validate(stations);
 		this.stations = Collections.unmodifiableList(stations);
 		this.distance = new Distance(distance);
-		this.fare = new Fare(distance, lines, age);
+		this.fare = new Fare(distance, new Lines(lines), age);
 	}
 
 	private void validate(List<Station> stations) {

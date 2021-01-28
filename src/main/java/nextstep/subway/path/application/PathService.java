@@ -1,6 +1,8 @@
 package nextstep.subway.path.application;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,11 +39,19 @@ public class PathService {
 		PathFinder pathFinder = new PathFinder(lineService.findAll());
 		ShortestPath shortestPath = pathFinder.findShortestPath(source.getId(), target.getId());
 
-		List<Station> stations = stationService.findAllStationsByIds(shortestPath.getStationIds());
+		List<Station> stations = findSortedStationsByIds(shortestPath.getStationIds());
 		List<Line> lines = lineService.findAllLinesByIds(shortestPath.getLineIds());
 		Path path = Path.of(stations, shortestPath.getDistance(), lines, loginMember.getAge());
 
 		return PathResponse.of(path);
+	}
+
+	private List<Station> findSortedStationsByIds(List<Long> ids) {
+		Map<Long, Station> stations = stationService.findAllStationsByIds(ids);
+
+		return ids.stream()
+			.map(stations::get)
+			.collect(Collectors.toList());
 	}
 
 	private void validatePathRequest(PathRequest request) {
