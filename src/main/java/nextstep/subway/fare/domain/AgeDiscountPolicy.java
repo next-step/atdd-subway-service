@@ -1,5 +1,7 @@
 package nextstep.subway.fare.domain;
 
+import java.util.Arrays;
+
 import org.springframework.stereotype.Component;
 
 import nextstep.subway.auth.domain.LoginMember;
@@ -14,16 +16,10 @@ public class AgeDiscountPolicy implements DiscountPolicy{
 	}
 
 	public static long discountFareByAge(long fare, int age) {
-		if (age <= 0 || age >= 20) {
-			return fare;
-		}
-		if (age >= 13) {
-			return (fare - 350) * 4 / 5;
-		}
-		if (age >= 6) {
-			return (fare - 350) / 2;
-		}
-		return 0;
+		return Arrays.stream(AgeDiscountStandard.values())
+			.filter(standard -> standard.equalOrMore <= age && age < standard.less)
+			.findAny()
+			.map(standard -> (long)((fare - standard.deduction) * standard.discountRate))
+			.orElse(fare);
 	}
-
 }

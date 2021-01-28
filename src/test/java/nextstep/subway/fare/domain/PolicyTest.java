@@ -51,15 +51,15 @@ public class PolicyTest {
 
 	@ParameterizedTest
 	@CsvSource(value = {"10, 0", "20, 200", "50, 800", "74, 1100"})
-	void calculateDistanceFare(int distance, int expected) {
-		assertThat(DistanceFarePolicy.calculateDistanceFare(distance)).isEqualTo(expected);
+	void getTotalDistanceFare(int distance, int expected) {
+		assertThat(DistanceFarePolicy.getTotalDistanceFare(distance)).isEqualTo(expected);
 
 	}
 
 	@ParameterizedTest
-	@CsvSource(value = {"10, 5, 200", "11, 5, 300", "19, 8, 300"})
-	void calculateOverFare(int distance, int interval, int expected) {
-		assertThat(DistanceFarePolicy.calculateOverFare(distance, interval)).isEqualTo(expected);
+	@CsvSource(value = {"10, 5, 100, 200", "11, 5, 100, 300", "19, 8, 100, 300"})
+	void calculateOverFare(int distance, int interval, int unitFare, int expected) {
+		assertThat(DistanceFarePolicy.calculateOverFare(distance, interval, unitFare)).isEqualTo(expected);
 	}
 
 	@ParameterizedTest
