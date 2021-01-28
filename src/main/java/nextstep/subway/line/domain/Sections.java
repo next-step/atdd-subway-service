@@ -18,6 +18,13 @@ public class Sections {
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private final List<Section> sections = new ArrayList<>();
 
+	public Sections() {
+	}
+
+	public Sections(List<Section> sections) {
+		this.sections.addAll(sections);
+	}
+
 	public static Sections merge(List<Line> lines) {
 		Sections merged = new Sections();
 		lines.stream()
