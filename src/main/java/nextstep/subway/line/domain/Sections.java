@@ -39,6 +39,22 @@ public class Sections {
         return stations;
     }
 
+    public Optional<Section> findSection(Long upStationId, Long downStationId) {
+        return this.sections.stream()
+                .filter(item -> item.isMatched(upStationId, downStationId))
+                .findFirst();
+    }
+
+    public Optional<Station> findStation(Long id) {
+        Optional<Section> optionalSection = this.sections.stream()
+                .filter(it -> it.isStationContain(id))
+                .findFirst();
+        if (optionalSection.isPresent()) {
+            return optionalSection.get().getSation(id);
+        }
+        return Optional.empty();
+    }
+
     public void addSection(Line line, Station upStation, Station downStation, int distance) {
         List<Station> stations = this.getStations();
         if (stations.contains(upStation) == stations.contains(downStation)) {
@@ -57,7 +73,7 @@ public class Sections {
                 .filter(it -> it.getDownStation() == station)
                 .findFirst();
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            sections.add(createNewSection(line ,upLineStation.get(), downLineStation.get()));
+            sections.add(createNewSection(line, upLineStation.get(), downLineStation.get()));
         }
         upLineStation.ifPresent(it -> sections.remove(it));
         downLineStation.ifPresent(it -> sections.remove(it));
@@ -112,7 +128,6 @@ public class Sections {
         int newDistance = upLineSection.getDistance() + downLineSection.getDistance();
         return new Section(line, newUpStation, newDownStation, newDistance);
     }
-
 
 
 }
