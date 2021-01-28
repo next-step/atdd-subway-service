@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.auth.exception.UnauthorizedException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -48,9 +49,14 @@ public class FavoriteService {
 	}
 
 	public void delete(final Long id, final Long favoriteId) {
-		findMemberById(id);
+		Member member = findMemberById(id);
 		Favorite favorite = favoriteRepository.findById(favoriteId)
 			.orElseThrow(IllegalArgumentException::new);
+
+		if (favorite.getMember() != member) {
+			throw new UnauthorizedException("인증된 객체가 가진 권한 내의 리소스가 아닙니다.");
+		}
+
 		favoriteRepository.delete(favorite);
 	}
 

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import nextstep.subway.auth.exception.UnauthorizedException;
 import nextstep.subway.common.exception.dto.ErrorResponse;
 import nextstep.subway.line.exception.CanNotFindPathException;
 
@@ -36,6 +37,14 @@ public class RestExceptionHandler {
 		CanNotFindPathException e) {
 		return ResponseEntity
 			.status(HttpStatus.INTERNAL_SERVER_ERROR)
+			.body(new ErrorResponse(e.getMessage(), extractRequestedPath(request)));
+	}
+
+	@ExceptionHandler(UnauthorizedException.class)
+	public ResponseEntity<ErrorResponse> handleUnauthorizedException(HttpServletRequest request,
+		UnauthorizedException e) {
+		return ResponseEntity
+			.status(HttpStatus.UNAUTHORIZED)
 			.body(new ErrorResponse(e.getMessage(), extractRequestedPath(request)));
 	}
 

@@ -6,10 +6,12 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.PathFinder;
 import nextstep.subway.line.domain.SectionRepository;
+import nextstep.subway.line.domain.SubwayPath;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.PathResponse;
@@ -48,7 +50,11 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+
+        Line line = request.toLine();
+        line.addSection(upStation, downStation, request.getDistance());
+
+        Line persistLine = lineRepository.save(line);
         return LineResponse.of(persistLine);
     }
 
@@ -90,11 +96,15 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(final Long source, final Long target) {
-        PathFinder pathFinder = new PathFinder(lineRepository.findAll());
+    public PathResponse findPath(final LoginMember loginMember, final Long source, final Long target) {
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
-        return PathResponse.of(pathFinder.findPath(sourceStation, targetStation));
+        PathFinder pathFinder = new PathFinder(lineRepository.findAll(), sourceStation, targetStation);
+
+        SubwayPath subwayPath = pathFinder.findPath();
+        loginMember.ifPresent(member -> subwayPath.calculateAgeFare(member.getAge()));
+
+        return PathResponse.of(subwayPath);
     }
 
 }

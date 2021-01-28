@@ -34,14 +34,14 @@ public class FavoriteController {
 	}
 
 	@PostMapping
-	public ResponseEntity<?> saveFavorite(@AuthenticationPrincipal LoginMember loginMember,
+	public ResponseEntity<Void> saveFavorite(@AuthenticationPrincipal LoginMember loginMember,
 		@RequestBody FavoriteRequest favoriteRequest) {
 		FavoriteResponse favorite = favoriteService.save(loginMember.getId(), favoriteRequest);
 		return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
 	}
 
 	@DeleteMapping("/{favoriteId}")
-	public ResponseEntity<?> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember,
+	public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember,
 		@PathVariable Long favoriteId) {
 		favoriteService.delete(loginMember.getId(), favoriteId);
 		return ResponseEntity.noContent().build();

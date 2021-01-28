@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
@@ -115,6 +116,34 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_삭제됨(response);
+    }
+
+    @DisplayName("지하촐 노선 정보 조회시 추가 요금 조회")
+    @Test
+    void findLineWithAdditionalFare() {
+        // given
+        int additionalFare = 300;
+        LineRequest additionalLineRequest =
+            new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(),
+                15, additionalFare);
+        ExtractableResponse<Response> createResponse = 지하철_노선_등록되어_있음(additionalLineRequest);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청(createResponse);
+
+        // then
+        추가요금정보가_포함된_지하철_노선_응답됨(response, additionalFare);
+    }
+
+    private void 추가요금정보가_포함된_지하철_노선_응답됨(final ExtractableResponse<Response> response,
+        final int expectedAdditionalFare) {
+        LineResponse lineResponse = response.as(LineResponse.class);
+
+        assertAll(
+            () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+            () -> assertThat(lineResponse).isNotNull(),
+            () -> assertThat(lineResponse.getAdditionalFare()).isEqualTo(expectedAdditionalFare)
+        );
     }
 
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest params) {
