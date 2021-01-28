@@ -7,6 +7,8 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -54,6 +56,6 @@ public class Line extends BaseEntity {
     }
 
     public List<Section> getAllSection() {
-        return sections.getSections();
+        return Collections.unmodifiableList(sections.getSections());
     }
 }
