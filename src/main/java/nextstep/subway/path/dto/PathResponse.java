@@ -2,6 +2,8 @@ package nextstep.subway.path.dto;
 
 import java.util.List;
 
+import nextstep.subway.fare.dto.Fare;
+
 public class PathResponse {
 	private List<PathStationResponse> stations;
 	private long distance;
@@ -16,8 +18,8 @@ public class PathResponse {
 		this.fare = fare;
 	}
 
-	public static PathResponse of(Path path) {
-		return new PathResponse(PathStationResponse.newList(path.getStations()), path.getDistance(), path.getFare());
+	public static PathResponse of(Path path, Fare fare) {
+		return new PathResponse(PathStationResponse.newList(path.getStations()), path.getDistance(), fare.getFare());
 	}
 
 	public List<PathStationResponse> getStations() {

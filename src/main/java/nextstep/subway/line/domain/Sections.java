@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -133,16 +134,11 @@ public class Sections {
 		downSection.ifPresent(sections::remove);
 	}
 
-	public Optional<Line> findLineWithMinDistance(Station upStation, Station downStation) {
+	public List<Line> getLines() {
 		return sections.stream()
-			.filter(section -> section.getStations().containsAll(Arrays.asList(upStation, downStation)))
-			.reduce((section1, section2) -> {
-				if (section1.getDistance() < section2.getDistance()) {
-					return section1;
-				}
-				return section2;
-			})
-			.map(Section::getLine);
+			.map(Section::getLine)
+			.distinct()
+			.collect(Collectors.toList());
 	}
 
 	private Optional<Section> findSectionByUpStation(Line line, Station upStation) {

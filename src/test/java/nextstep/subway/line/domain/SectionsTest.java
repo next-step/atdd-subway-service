@@ -38,9 +38,4 @@ public class SectionsTest {
 		sections.removeStation(삼호선, 남부터미널역);
 		assertThat(sections.getSortedStations(삼호선)).containsExactly(교대역, 양재역);
 	}
-
-	@Test
-	void findLineWithMinDistance() {
-		assertThat(sections.findLineWithMinDistance(교대역, 양재역)).hasValue(이호선);
-	}
 }
