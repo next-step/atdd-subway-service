@@ -85,10 +85,7 @@ public class Fare {
 		return fare;
 	}
 
-	public void discountByAge(Integer age) {
-		if (age == null) {
-			return;
-		}
+	public void discountByAge(int age) {
 		fare = discountFareByAge(fare, age);
 	}
 }
