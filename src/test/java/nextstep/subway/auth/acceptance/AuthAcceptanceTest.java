@@ -49,7 +49,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithWrongBearerAuth() {
     }
 
-    static ExtractableResponse<Response> 토큰_로그인_요청(TokenRequest tokenRequest) {
+    public static ExtractableResponse<Response> 토큰_로그인_요청(TokenRequest tokenRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -59,7 +59,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    static void 토큰_로그인됨(ExtractableResponse response) {
+    public static void 토큰_로그인됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
