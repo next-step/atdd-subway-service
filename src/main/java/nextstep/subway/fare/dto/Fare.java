@@ -1,5 +1,4 @@
-package nextstep.subway.path.dto;
-
+package nextstep.subway.fare.dto;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
