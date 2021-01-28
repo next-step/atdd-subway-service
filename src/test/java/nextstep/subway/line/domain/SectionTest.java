@@ -21,7 +21,7 @@ class SectionTest {
 		양재역 = new Station("양재역");
 		청계산입구역 = new Station("청계산입구역");
 		판교역 = new Station("판교역");
-		신분당선 = new Line("신분당선", "bg-red-600", 강남역, 판교역, 10);
+		신분당선 = new Line("신분당선", "bg-red-600", 강남역, 판교역, 10, 0);
 	}
 
 	@DisplayName("상행역에 역간 거리보다 먼 거리 입력시 오류가 발생한다.")

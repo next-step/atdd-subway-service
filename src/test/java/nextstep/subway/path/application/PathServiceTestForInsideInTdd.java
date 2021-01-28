@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -41,6 +42,7 @@ public class PathServiceTestForInsideInTdd {
 	private StationResponse 남부터미널;
 	private StationResponse 당산역;
 	private StationResponse 여의도역;
+	private LoginMember 사용자;
 
 	@BeforeEach
 	public void setUp() {
@@ -52,22 +54,25 @@ public class PathServiceTestForInsideInTdd {
 		당산역 = stationService.saveStation(new StationRequest("당산역"));
 		여의도역 = stationService.saveStation(new StationRequest("여의도역"));
 
-		신분당선 = lineService.saveLine(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10));
-		이호선 = lineService.saveLine(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10));
-		삼호선 = lineService.saveLine(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5));
+		신분당선 = lineService.saveLine(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 900));
+		이호선 = lineService.saveLine(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, 0));
+		삼호선 = lineService.saveLine(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5, 0));
 		lineService.addLineStation(삼호선.getId(), new SectionRequest(교대역.getId(), 남부터미널.getId(), 3));
-		구호선 = lineService.saveLine(new LineRequest("구호선", "bg-red-600", 당산역.getId(), 여의도역.getId(), 5));
+		구호선 = lineService.saveLine(new LineRequest("구호선", "bg-red-600", 당산역.getId(), 여의도역.getId(), 5, 0));
+
+		사용자 = new LoginMember(1L, "test@gmail.com", 14);
 	}
 
 	@DisplayName("최단 경로 조회")
 	@Test
 	void findShortestPath() {
-		PathRequest pathRequest = new PathRequest(강남역.getId(), 양재역.getId());
+		PathRequest pathRequest = new PathRequest(남부터미널.getId(), 강남역.getId());
 
-		PathResponse pathResponse = pathService.findShortestPath(pathRequest);
+		PathResponse pathResponse = pathService.findShortestPath(사용자, pathRequest);
 
-		assertThat(pathResponse.getStations()).hasSize(2).contains(강남역, 양재역);
-		assertThat(pathResponse.getDistance()).isEqualTo(10);
+		assertThat(pathResponse.getStations()).hasSize(3).containsExactly(남부터미널, 양재역, 강남역);
+		assertThat(pathResponse.getDistance()).isEqualTo(12);
+		assertThat(pathResponse.getFare()).isEqualTo(1520);
 	}
 
 	@DisplayName("출발역과 도착역이 같은 경우 IllegalArgumentException 발생")
@@ -76,7 +81,7 @@ public class PathServiceTestForInsideInTdd {
 		PathRequest pathRequest = new PathRequest(강남역.getId(), 강남역.getId());
 
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> pathService.findShortestPath(pathRequest))
+			.isThrownBy(() -> pathService.findShortestPath(사용자, pathRequest))
 			.withMessage(PathService.SAME_SOURCE_AND_TARGET);
 	}
 
@@ -86,7 +91,7 @@ public class PathServiceTestForInsideInTdd {
 		PathRequest pathRequest = new PathRequest(강남역.getId(), 당산역.getId());
 
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> pathService.findShortestPath(pathRequest))
+			.isThrownBy(() -> pathService.findShortestPath(사용자, pathRequest))
 			.withMessage(Path.UNCONNECTED_SOURCE_AND_TARGET);
 	}
 
@@ -96,6 +101,6 @@ public class PathServiceTestForInsideInTdd {
 		PathRequest pathRequest = new PathRequest(강남역.getId(), 12L);
 
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> pathService.findShortestPath(pathRequest));
+			.isThrownBy(() -> pathService.findShortestPath(사용자, pathRequest));
 	}
 }
