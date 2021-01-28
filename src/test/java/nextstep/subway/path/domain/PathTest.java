@@ -8,8 +8,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -64,7 +66,9 @@ public class PathTest {
 
         삼호선.addSection(교대역_남부터미널역);
 
-        path = new Path(asList(신분당선, 이호선, 삼호선));
+        path = new Path(Stream.of(신분당선, 삼호선, 이호선)
+                .flatMap(line -> line.getAllSection().stream())
+                .collect(toList()));
     }
 
     @DisplayName("지하철역 최단경로 조회")

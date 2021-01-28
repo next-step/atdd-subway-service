@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.util.Message;
 import org.jgrapht.GraphPath;
@@ -16,24 +17,21 @@ public class Path {
             graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
     private GraphPath<Station, DefaultWeightedEdge> path;
 
-    public Path(List<Line> lines) {
-        init(lines);
+    public Path(List<Section> sections) {
+        init(sections);
     }
 
-    public static Path of(List<Line> lines) {
-        return new Path(lines);
+    public static Path of(List<Section> sections) {
+        return new Path(sections);
     }
 
-    public void init(List<Line> lines) {
-        addLoopLine(lines);
+    public void init(List<Section> sections) {
+        addLineToGraph(graph, sections);
     }
 
-    private void addLoopLine(List<Line> lines) {
-        lines.forEach(line -> addLineToGraph(graph, line));
-    }
 
-    private void addLineToGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
-        line.getAllSection().forEach(section -> {
+    private void addLineToGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> sections) {
+        sections.forEach(section -> {
             graph.addVertex(section.getUpStation());
             graph.addVertex(section.getDownStation());
             DefaultWeightedEdge edge = graph.addEdge(section.getUpStation(), section.getDownStation());
