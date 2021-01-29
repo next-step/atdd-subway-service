@@ -57,9 +57,8 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> getFavorites(Long memberId) {
-        Member member = selectMember(memberId);
-        List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
-        return favorites.stream()
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new EntityNotFoundException(Message.NOT_EXIST_STATION_MESSAGE));
+        return member.getFavorites().stream()
                 .map(FavoriteResponse::of)
                 .collect(toList());
     }
