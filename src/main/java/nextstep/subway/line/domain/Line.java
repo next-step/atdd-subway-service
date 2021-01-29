@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +7,8 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -52,5 +53,9 @@ public class Line extends BaseEntity {
 
     public void remove(Station station) {
         sections.removeSection(this, station);
+    }
+
+    public List<Section> getAllSection() {
+        return Collections.unmodifiableList(sections.getSections());
     }
 }
