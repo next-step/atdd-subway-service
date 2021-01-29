@@ -32,9 +32,9 @@ public class FavoriteService {
         this.favoriteRepository = favoriteRepository;
     }
 
-    public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
+    public FavoriteResponse createFavorite(Long memberId, FavoriteRequest favoriteRequest) {
         validateCreateFavorite(favoriteRequest);
-        Member member = selectMember(loginMember);
+        Member member = selectMember(memberId);
         Station source = selectStation(favoriteRequest.getSource());
         Station target = selectStation(favoriteRequest.getTarget());
 
@@ -42,8 +42,8 @@ public class FavoriteService {
         return FavoriteResponse.of(persistFavorite);
     }
 
-    private Member selectMember(LoginMember loginMember) {
-        return memberRepository.findById(loginMember.getId()).orElseThrow(() -> new EntityNotFoundException(Message.NOT_FOUND_MEMBER_MESSAGE));
+    private Member selectMember(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(() -> new EntityNotFoundException(Message.NOT_FOUND_MEMBER_MESSAGE));
     }
 
     private void validateCreateFavorite(FavoriteRequest favoriteRequest) {
@@ -56,17 +56,17 @@ public class FavoriteService {
         return stationRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Message.NOT_EXIST_STATION_MESSAGE));
     }
 
-    public List<FavoriteResponse> getFavorites(LoginMember loginMember) {
-        Member member = selectMember(loginMember);
+    public List<FavoriteResponse> getFavorites(Long memberId) {
+        Member member = selectMember(memberId);
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
         return favorites.stream()
                 .map(FavoriteResponse::of)
                 .collect(toList());
     }
 
-    public void deleteFavorite(LoginMember loginMember, Long id) {
-        Member member = selectMember(loginMember);
-        Favorite favorite = favoriteRepository.findByIdAndMemberId(id, member.getId())
+    public void deleteFavorite(Long memberId, Long favoriteId) {
+        Member member = selectMember(memberId);
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, member.getId())
                 .orElseThrow(() -> new DataRetrievalFailureException(Message.NOT_EXIST_FAVORITE_MESSAGE));
         favoriteRepository.delete(favorite);
     }
