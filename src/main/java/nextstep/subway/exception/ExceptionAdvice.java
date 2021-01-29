@@ -1,5 +1,6 @@
 package nextstep.subway.exception;
 
+import nextstep.subway.auth.application.AuthorizationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -19,6 +20,12 @@ public class ExceptionAdvice {
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleIllegalArgumentException(IllegalArgumentException e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(AuthorizationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public String authorizationException(AuthorizationException e) {
         return e.getMessage();
     }
 }
