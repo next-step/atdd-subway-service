@@ -34,7 +34,7 @@ public class FavoriteService {
 
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
         validateCreateFavorite(favoriteRequest);
-        Member member = getMember(loginMember);
+        Member member = selectMember(loginMember);
         Station source = selectStation(favoriteRequest.getSource());
         Station target = selectStation(favoriteRequest.getTarget());
 
@@ -42,7 +42,7 @@ public class FavoriteService {
         return FavoriteResponse.of(persistFavorite);
     }
 
-    private Member getMember(LoginMember loginMember) {
+    private Member selectMember(LoginMember loginMember) {
         return memberRepository.findById(loginMember.getId()).orElseThrow(() -> new EntityNotFoundException(Message.NOT_FOUND_MEMBER_MESSAGE));
     }
 
@@ -57,7 +57,7 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> getFavorites(LoginMember loginMember) {
-        Member member = getMember(loginMember);
+        Member member = selectMember(loginMember);
         List<Favorite> favorites = favoriteRepository.findAllByMemberId(member.getId());
         return favorites.stream()
                 .map(FavoriteResponse::of)
@@ -65,7 +65,7 @@ public class FavoriteService {
     }
 
     public void deleteFavorite(LoginMember loginMember, Long id) {
-        Member member = getMember(loginMember);
+        Member member = selectMember(loginMember);
         Favorite favorite = favoriteRepository.findByIdAndMemberId(id, member.getId())
                 .orElseThrow(() -> new DataRetrievalFailureException(Message.NOT_EXIST_FAVORITE_MESSAGE));
         favoriteRepository.delete(favorite);
