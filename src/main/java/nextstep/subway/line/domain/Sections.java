@@ -39,23 +39,6 @@ public class Sections {
         return stations;
     }
 
-    public Section findSectionOrNull(Long upStationId, Long downStationId) {
-        if (this.sections.stream().anyMatch(item -> item.isMatched(upStationId, downStationId))) {
-            return this.sections.stream()
-                    .filter(item -> item.isMatched(upStationId, downStationId))
-                    .findFirst()
-                    .get();
-        }
-        return null;
-    }
-
-    public Station findStationOrNull(Long id) {
-        Optional<Section> optionalSection = this.sections.stream()
-                .filter(it -> it.isStationContain(id))
-                .findFirst();
-        return optionalSection.map(section -> section.getStationOrNull(id)).orElse(null);
-    }
-
     public void addSection(Line line, Station upStation, Station downStation, int distance) {
         List<Station> stations = this.getStations();
         if (stations.contains(upStation) == stations.contains(downStation)) {
