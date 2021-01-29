@@ -32,14 +32,14 @@ public class FavoriteService {
         this.favoriteRepository = favoriteRepository;
     }
 
-    public Long createFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
+    public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
         validateCreateFavorite(favoriteRequest);
         Member member = getMember(loginMember);
         Station source = selectStation(favoriteRequest.getSource());
         Station target = selectStation(favoriteRequest.getTarget());
 
         Favorite persistFavorite = favoriteRepository.save(new Favorite(source, target, member));
-        return persistFavorite.getId();
+        return FavoriteResponse.of(persistFavorite);
     }
 
     private Member getMember(LoginMember loginMember) {
