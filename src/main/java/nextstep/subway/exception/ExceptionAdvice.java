@@ -22,10 +22,4 @@ public class ExceptionAdvice {
     public String handleIllegalArgumentException(IllegalArgumentException e) {
         return e.getMessage();
     }
-
-    @ExceptionHandler(AuthorizationException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public String authorizationException(AuthorizationException e) {
-        return e.getMessage();
-    }
 }
