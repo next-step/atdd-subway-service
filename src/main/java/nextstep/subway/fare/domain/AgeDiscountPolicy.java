@@ -9,7 +9,7 @@ import nextstep.subway.fare.dto.Fare;
 import nextstep.subway.path.dto.Path;
 
 @Component
-public class AgeDiscountPolicy implements DiscountPolicy{
+public class AgeDiscountPolicy implements DiscountPolicy {
 	@Override
 	public Fare discount(Fare fare, LoginMember member, Path path) {
 		return Fare.from(discountFareByAge(fare.getFare(), member.getAge()));
