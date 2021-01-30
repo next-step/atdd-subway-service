@@ -27,6 +27,7 @@ public class Money {
         return new Money(this.value.subtract(discount.value));
     }
 
+
     public Money add(Money value) {
         return new Money(this.value.add(value.value));
     }
@@ -50,6 +51,4 @@ public class Money {
     public int hashCode() {
         return Objects.hash(value);
     }
-
-
 }
