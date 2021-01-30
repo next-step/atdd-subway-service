@@ -10,9 +10,11 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathStationResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -29,23 +31,30 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	private LineResponse 신분당선;
 	private LineResponse 이호선;
 	private LineResponse 삼호선;
+	private LineResponse 십호선;
 	private StationResponse 강남역;
 	private StationResponse 양재역;
 	private StationResponse 교대역;
 	private StationResponse 남부터미널역;
+	private StationResponse 제주도역;
+
+	public static final String EMAIL = "email@email.com";
+	public static final String PASSWORD = "password";
+	public static final int AGE = 17;
 
 	/**
 	 *   Background
 	 *     Given 지하철역 등록되어 있음
 	 *     And 지하철 노선 등록되어 있음
 	 *     And 지하철 노선에 지하철역 등록되어 있음
+	 *     And 회원이 생성되어 있음
 	 *
 	 *
 	 *     교대역     --- *2호선* ---   강남역
 	 *       |                          |
 	 *    *3호선*                    *신분당선*
 	 *       |                          |
-	 *     남부터미널역  --- *3호선* --- 양재역
+	 *     남부터미널역  --- *3호선* --- 양재역 --- *10호선* --- 제주도역
 	 *
 	 */
 	@BeforeEach
@@ -56,14 +65,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
 		교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
 		남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+		제주도역 = StationAcceptanceTest.지하철역_등록되어_있음("제주도역").as(StationResponse.class);
 
 		// And 지하철 노선 등록되어 있음
-		신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10).as(LineResponse.class);
-		이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10).as(LineResponse.class);
-		삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5).as(LineResponse.class);
+		신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음("신분당선", "bg-red-600", 0, 강남역, 양재역, 23).as(LineResponse.class);
+		이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음("이호선", "bg-red-600", 0, 교대역, 강남역, 62).as(LineResponse.class);
+		삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음("삼호선", "bg-red-600", 10, 교대역, 양재역, 84).as(LineResponse.class);
+		십호선 = LineAcceptanceTest.지하철_노선_등록되어_있음("십호선", "bg-red-600", 10000, 양재역, 제주도역, 100).as(LineResponse.class);
 
 		// And 지하철 노선에 지하철역 등록되어 있음
-		LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+		LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 43);
+
+		// And 회원이 생성되어 있음
+		 MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE);
 	}
 
 	/**
@@ -72,26 +86,57 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	 *     Then 최단_경로_조회_성공됨
 	 *     AND 최단 경로에 포함된 역 목록이 순서대로 조회됨
 	 *     AND 최단 경로의 거리가 예상과 같음
+	 *     AND 지하철 이용 요금이 예상과 같음
+	 *
+	 *     When 로그인 요청
+	 *     Then 로그인 성공됨
+	 *
+	 *     When 지하철 최단 경로 조회 요청
+	 *     AND 지하철 이용 요금이 예상과 같음
 	 */
 	@DisplayName("지하철 경로 조회 통합 인수 테스트")
 	@Test
 	void testIntegrationAcceptance () {
 		// When 지하철 최단 경로 조회 요청
-		ExtractableResponse<Response> 지하철_최단_경로_조회_요청_응답 = 지하철_최단_경로_조회_요청(교대역, 양재역);
+		ExtractableResponse<Response> 지하철_최단_경로_조회_요청_응답 = 지하철_최단_경로_조회_요청(교대역, 제주도역);
 
 		// Then 최단_경로_조회_성공됨
 		최단_경로_조회_성공됨(지하철_최단_경로_조회_요청_응답);
 
 		// And 등록한 지하철 구간이 반영된 역 목록이 조회됨
-		최단_경로에_지하철역_순서_정렬됨(지하철_최단_경로_조회_요청_응답, Arrays.asList(교대역, 남부터미널역, 양재역));
+		최단_경로에_지하철역_순서_정렬됨(지하철_최단_경로_조회_요청_응답, Arrays.asList(교대역, 남부터미널역, 양재역, 제주도역));
 		
 		// And 최단 경로의 거리가 예상과 같음
-		최단_경로의_거리가_예상과_같음(지하철_최단_경로_조회_요청_응답, 5);
+		최단_경로의_거리가_예상과_같음(지하철_최단_경로_조회_요청_응답, 184);
+
+		// And 지하철 이용 요금이 예상과 같음 (십호선추가요금 + 기본운임 + 거리추가운임)
+		지하철_이용_요금이_예상과_같음(지하철_최단_경로_조회_요청_응답, 10000 + 1250 + 2500);
+
+		// When 로그인 요청
+		ExtractableResponse<Response> 로그인_요청_응답 = AuthAcceptanceTest.로그인_요청(EMAIL, PASSWORD);
+		
+		// Then 로그인 성공됨
+		String 로그인_토큰 = AuthAcceptanceTest.로그인_토큰_추출함(로그인_요청_응답);
+
+		// When 지하철 최단 경로 조회 요청
+		ExtractableResponse<Response> 로그인_후_최단_경로_조회_요청_응답 = 로그인_후_최단_경로_조회_요청(로그인_토큰, 교대역, 제주도역);
+
+		// And 지하철 이용 요금이 예상과 같음 : (13750 - 350) * 0.8 원
+		지하철_이용_요금이_예상과_같음(로그인_후_최단_경로_조회_요청_응답, 10720);
 	}
 
 	private ExtractableResponse<Response> 지하철_최단_경로_조회_요청(StationResponse source, StationResponse target) {
 		return RestAssured
 			.given().log().all()
+			.when().get("/paths?source={sourceStationId}&target={targetStationId}", source.getId(), target.getId())
+			.then().log().all()
+			.extract();
+	}
+
+	private ExtractableResponse<Response> 로그인_후_최단_경로_조회_요청(String token, StationResponse source, StationResponse target) {
+		return RestAssured
+			.given().log().all()
+			.auth().oauth2(token)
 			.when().get("/paths?source={sourceStationId}&target={targetStationId}", source.getId(), target.getId())
 			.then().log().all()
 			.extract();
@@ -117,5 +162,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	private void 최단_경로의_거리가_예상과_같음(ExtractableResponse<Response> response, int expectedDistance) {
 		PathResponse pathResponse = response.as(PathResponse.class);
 		assertThat(pathResponse.getDistance()).isEqualTo(expectedDistance);
+	}
+
+	private void 지하철_이용_요금이_예상과_같음(ExtractableResponse<Response> response, int expectedFare) {
+		PathResponse pathResponse = response.as(PathResponse.class);
+		assertThat(pathResponse.getFare()).isEqualTo(expectedFare);
 	}
 }

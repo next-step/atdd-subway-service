@@ -12,27 +12,30 @@ import nextstep.subway.station.domain.Station;
 public class SectionsTest {
 
 	private final Station 교대역 = new Station("교대역");
-	private final Station 선릉역 = new Station("선릉역");
-	private final Station 삼성역 = new Station("삼성역");
-	private final Station 잠실역 = new Station("잠실역");
-	private final Line 이호선 = new Line("2호선", "green");
-	private final Sections sections = new Sections();
+	private final Station 남부터미널역 = new Station("남부터미널역");
+	private final Station 양재역 = new Station("양재역");
+
+	private final Line 이호선 = new Line("이호선", "bg-red-600");
+	private final Line 삼호선 = new Line("삼호선", "bg-red-600");
+
+	private Sections sections;
 
 	@BeforeEach
 	void addSection() {
-		sections.addSection(이호선, 교대역, 삼성역, 10);
-		sections.addSection(이호선, 선릉역, 삼성역, 5);
-		sections.addSection(이호선, 삼성역, 잠실역, 7);
+		sections = new Sections();
+		sections.addSection(이호선, 교대역, 양재역, 3);
+		sections.addSection(삼호선, 교대역, 양재역, 5);
+		sections.addSection(삼호선, 교대역, 남부터미널역, 3);
 	}
 
 	@Test
 	void getStations() {
-		assertThat(sections.getSortedStations(이호선)).containsExactly(교대역, 선릉역, 삼성역, 잠실역);
+		assertThat(sections.getSortedStations(삼호선)).containsExactly(교대역, 남부터미널역, 양재역);
 	}
 
 	@Test
 	void removeSection() {
-		sections.removeStation(이호선, 선릉역);
-		assertThat(sections.getSortedStations(이호선)).containsExactly(교대역, 삼성역, 잠실역);
+		sections.removeStation(삼호선, 남부터미널역);
+		assertThat(sections.getSortedStations(삼호선)).containsExactly(교대역, 양재역);
 	}
 }

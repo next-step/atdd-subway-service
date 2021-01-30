@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -17,6 +18,13 @@ import nextstep.subway.station.domain.Station;
 public class Sections {
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private final List<Section> sections = new ArrayList<>();
+
+	public Sections() {
+	}
+
+	public Sections(List<Section> sections) {
+		this.sections.addAll(sections);
+	}
 
 	public static Sections merge(List<Line> lines) {
 		Sections merged = new Sections();
@@ -124,6 +132,13 @@ public class Sections {
 
 		upSection.ifPresent(sections::remove);
 		downSection.ifPresent(sections::remove);
+	}
+
+	public List<Line> getLines() {
+		return sections.stream()
+			.map(Section::getLine)
+			.distinct()
+			.collect(Collectors.toList());
 	}
 
 	private Optional<Section> findSectionByUpStation(Line line, Station upStation) {

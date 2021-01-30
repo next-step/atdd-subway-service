@@ -31,9 +31,13 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
+    public LoginMember findMemberByToken(String credentials, boolean loginOnly) {
+        boolean isNotValidToken = !jwtTokenProvider.validateToken(credentials);
+        if (isNotValidToken && loginOnly) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효한 token이 아닙니다.");
+        }
+        if (isNotValidToken) {
+            return new LoginMember();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);

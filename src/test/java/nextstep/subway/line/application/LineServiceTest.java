@@ -54,8 +54,8 @@ class LineServiceTest {
 		천호역_응답 = stationService.saveStation(new StationRequest("천호역"));
 		군자역_응답 = stationService.saveStation(new StationRequest("군자역"));
 
-		이호선_응답 = lineService.saveLine(new LineRequest("2호선", "green", 강남역_응답.getId(), 삼성역_응답.getId(), 10));
-		오호선_응답 = lineService.saveLine(new LineRequest("5호선", "purple", 천호역_응답.getId(), 군자역_응답.getId(), 15));
+		이호선_응답 = lineService.saveLine(new LineRequest("2호선", "green", 100, 강남역_응답.getId(), 삼성역_응답.getId(), 10));
+		오호선_응답 = lineService.saveLine(new LineRequest("5호선", "purple", 200, 천호역_응답.getId(), 군자역_응답.getId(), 15));
 	}
 
 	@Test
@@ -70,7 +70,18 @@ class LineServiceTest {
 	@Test
 	void findLineResponseById() {
 		LineResponse lineResponse = lineService.findLineResponseById(이호선_응답.getId());
+		assertThat(lineResponse.getExtraFare()).isEqualTo(100);
 		assertThat(lineResponse.getStations()).map(StationResponse::getName).containsExactly("강남역", "삼성역");
+	}
+
+	@Test
+	void updateLine() {
+		lineService.updateLine(이호선_응답.getId(), new LineRequest("이호선", "blue", 200));
+
+		LineResponse lineResponse = lineService.findLineResponseById(이호선_응답.getId());
+		assertThat(lineResponse.getName()).isEqualTo("이호선");
+		assertThat(lineResponse.getColor()).isEqualTo("blue");
+		assertThat(lineResponse.getExtraFare()).isEqualTo(200);
 	}
 
 	@Test
