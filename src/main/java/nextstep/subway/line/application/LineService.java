@@ -1,7 +1,6 @@
 package nextstep.subway.line.application;
 
 import java.util.List;
-import java.util.Optional;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
@@ -31,10 +30,13 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository
-            .save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        Line persistLine = lineRepository.save(createLineByRequest(request, upStation, downStation));
         StationResponses stationResponses = StationResponses.of(persistLine.getStations());
         return LineResponse.of(persistLine, stationResponses);
+    }
+
+    private Line createLineByRequest(LineRequest request, Station upStation, Station downStation) {
+        return new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance());
     }
 
     public List<LineResponse> findLines() {
@@ -69,28 +71,9 @@ public class LineService {
         line.addSection(new Section(line, upStation, downStation, request.getDistance()));
     }
 
-    public void removeLineStation(Long lineId, Long stationId) {
+    public void removeSection(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
-        if (line.getSections().size() <= 1) {
-            throw new RuntimeException();
-        }
-
-        Optional<Section> upLineStation = line.getSections().stream()
-            .filter(it -> it.getUpStation() == station)
-            .findFirst();
-        Optional<Section> downLineStation = line.getSections().stream()
-            .filter(it -> it.getDownStation() == station)
-            .findFirst();
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            line.getSections().add(new Section(line, newUpStation, newDownStation, newDistance));
-        }
-
-        upLineStation.ifPresent(it -> line.getSections().remove(it));
-        downLineStation.ifPresent(it -> line.getSections().remove(it));
+       line.removeStation(station);
     }
 }
