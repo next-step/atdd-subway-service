@@ -31,6 +31,8 @@ public class LineTest {
         서초역 = new Station(3L, "서초역");
         삼성역 = new Station(4L, "삼성역");
         역삼역 = new Station(5L, "역삼역");
+
+        
         신림역 = new Station(6L, "신림역");
     }
 
