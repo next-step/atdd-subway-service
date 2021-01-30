@@ -127,7 +127,7 @@ public class Sections {
     }
 
 
-    public void updateUpStation(Section section) {
+    private void updateUpStation(Section section) {
         findUpStation(section.getUpStation())
             .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
     }
@@ -139,13 +139,13 @@ public class Sections {
 
     public Optional<Section> findUpStation(Station station) {
         return this.sections.stream()
-            .filter(it -> it.getUpStation() == station)
+            .filter(it -> it.getUpStation().equals(station) )
             .findFirst();
     }
 
     public Optional<Section> findDownStation(Station station) {
         return this.sections.stream()
-            .filter(it -> it.getDownStation() == station)
+            .filter(it -> it.getDownStation().equals(station) )
             .findFirst();
     }
 

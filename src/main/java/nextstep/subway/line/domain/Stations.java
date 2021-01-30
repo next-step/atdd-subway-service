@@ -15,14 +15,4 @@ public class Stations {
         return stations;
     }
 
-    public boolean anyMatch(Station station) {
-        return stations.stream().anyMatch(it -> it == station);
-    }
-    public boolean isEmpty() {
-        return stations.isEmpty();
-    }
-
-    public boolean noneMatch(Station station) {
-        return stations.stream().noneMatch(it -> it == station);
-    }
 }
