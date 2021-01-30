@@ -1,14 +1,11 @@
 package nextstep.subway.fare.domain;
 
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.dto.Fare;
 import nextstep.subway.path.dto.Path;
 
 @Component
-@Order(2)
 public class DistanceFarePolicy implements FarePolicy {
 
 	@Override
