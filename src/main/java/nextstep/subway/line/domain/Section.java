@@ -71,21 +71,4 @@ public class Section {
         this.distance -= newDistance;
     }
 
-    public boolean isMatched(Long upStationId, Long downStationId) {
-        return this.upStation.getId().equals(upStationId) && this.downStation.getId().equals(downStationId);
-    }
-
-    public boolean isStationContain(Long id){
-        return this.upStation.getId().equals(id) || this.downStation.getId().equals(id);
-    }
-
-    public Optional<Station> getSation(Long id) {
-        if(this.upStation.getId().equals(id)){
-            return Optional.of(upStation);
-        }
-        if(this.downStation.getId().equals(id)){
-            return Optional.of(downStation);
-        }
-        return Optional.empty();
-    }
 }
