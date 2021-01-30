@@ -3,7 +3,6 @@ package nextstep.subway.fare.domain;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.dto.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Sections;
@@ -14,7 +13,7 @@ import nextstep.subway.path.dto.Path;
 public class LineExtraFarePolicy implements FarePolicy{
 
 	@Override
-	public Fare calculate(LoginMember member, Path path) {
+	public Fare calculate(Path path) {
 		return Fare.from(maxExtraFareByLine(path.getSections()));
 	}
 

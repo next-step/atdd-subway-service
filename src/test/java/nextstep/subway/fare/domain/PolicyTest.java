@@ -62,7 +62,7 @@ public class PolicyTest {
 	@DisplayName("LineExtraFarePolicy의 calculate 기능 테스트")
 	@Test
 	void lineExtraFarePolicy() {
-		Fare fare = new LineExtraFarePolicy().calculate(어린이, path);
+		Fare fare = new LineExtraFarePolicy().calculate(path);
 		assertThat(fare.getFare()).isEqualTo(30);
 	}
 
@@ -70,14 +70,14 @@ public class PolicyTest {
 	@ParameterizedTest
 	@CsvSource(value = {"10, 0", "20, 200", "50, 800", "74, 1100"})
 	void distanceFarePolicy(long distance, long expected) {
-		Fare fare = new DistanceFarePolicy().calculate(어린이, new Path(null, null, distance));
+		Fare fare = new DistanceFarePolicy().calculate(new Path(null, null, distance));
 		assertThat(fare.getFare()).isEqualTo(expected);
 	}
 
 	@DisplayName("BasicFarePolicy의 calculate 기능 테스트")
 	@Test
 	void basicFarePolicy() {
-		Fare fare = new BasicFarePolicy().calculate(어린이, path);
+		Fare fare = new BasicFarePolicy().calculate(path);
 		assertThat(fare.getFare()).isEqualTo(1_250);
 	}
 
@@ -85,7 +85,7 @@ public class PolicyTest {
 	@ParameterizedTest
 	@CsvSource(value = {"1000, 20, 1000", "1000, 18, 520", "921, 18, 456", "1000, 12, 325"})
 	void ageDiscountPolicy(long fare, int age, long expected) {
-		Fare result = new AgeDiscountPolicy().discount(Fare.from(fare), new LoginMember(null, null, age), path);
+		Fare result = new AgeDiscountPolicy().discount(Fare.from(fare), new LoginMember(null, null, age));
 		assertThat(result.getFare()).isEqualTo(expected);
 	}
 }

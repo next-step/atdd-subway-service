@@ -12,7 +12,7 @@ import nextstep.subway.path.dto.Path;
 public class DistanceFarePolicy implements FarePolicy {
 
 	@Override
-	public Fare calculate(LoginMember member, Path path) {
+	public Fare calculate(Path path) {
 		return Fare.from(getTotalDistanceFare(path.getDistance()));
 	}
 

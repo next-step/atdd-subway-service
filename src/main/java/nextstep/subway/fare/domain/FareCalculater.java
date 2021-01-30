@@ -21,12 +21,12 @@ public class FareCalculater {
 
 	public Fare calculateFare(LoginMember member, Path path) {
 		Fare fare = farePolicies.stream()
-			.map(policy -> policy.calculate(member, path))
+			.map(policy -> policy.calculate(path))
 			.reduce(Fare::sum)
 			.orElseGet(() -> Fare.from(0));
 
 		for(DiscountPolicy discountPolicy : discountPolicies) {
-			fare = discountPolicy.discount(fare, member, path);
+			fare = discountPolicy.discount(fare, member);
 		}
 
 		return fare;

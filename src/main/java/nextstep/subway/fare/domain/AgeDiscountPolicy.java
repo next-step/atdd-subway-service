@@ -6,12 +6,11 @@ import org.springframework.stereotype.Component;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.dto.Fare;
-import nextstep.subway.path.dto.Path;
 
 @Component
 public class AgeDiscountPolicy implements DiscountPolicy {
 	@Override
-	public Fare discount(Fare fare, LoginMember member, Path path) {
+	public Fare discount(Fare fare, LoginMember member) {
 		return Fare.from(discountFareByAge(fare.getFare(), member.getAge()));
 	}
 
