@@ -15,7 +15,7 @@ public class AgeDiscountPolicy implements DiscountPolicy {
 		return Fare.from(discountFareByAge(fare.getFare(), member.getAge()));
 	}
 
-	public static long discountFareByAge(long fare, int age) {
+	private long discountFareByAge(long fare, int age) {
 		return Arrays.stream(AgeDiscountStandard.values())
 			.filter(standard -> standard.equalOrMore <= age && age < standard.less)
 			.findAny()

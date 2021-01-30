@@ -10,8 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.fare.dto.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.Path;
 import nextstep.subway.station.domain.Station;
 
@@ -32,39 +35,57 @@ public class PolicyTest {
 	private final Line 팔호선 = new Line("팔호선", "bg-red-600");
 
 	private Sections sections;
+	private Path path;
+
+	private LoginMember 어린이;
+	private LoginMember 청소년;
+	private LoginMember 성인;
 
 	@BeforeEach
 	void setUp() {
 		sections = new Sections();
+
+		sections.addSection(신분당선, 강남역, 양재역, 10);
 		sections.addSection(이호선, 교대역, 강남역, 10);
 		sections.addSection(삼호선, 교대역, 양재역, 4);
 		sections.addSection(삼호선, 교대역, 남부터미널역, 3);
-		sections.addSection(신분당선, 강남역, 양재역, 10);
+		sections.addSection(팔호선, 석촌역, 송파역, 5);
+
+		// 강남역 --2호선(10km)-- 교대역 --3호선(3km)-- 남부터미널역
+		path = PathFinder.findPath(sections, 강남역, 남부터미널역).get();
+
+		어린이 = new LoginMember(1L, "child@emil.com", 7);
+		청소년 = new LoginMember(2L, "teenager@emil.com", 17);
+		성인 = new LoginMember(3L, "adult@emil.com", 27);
 	}
 
+	@DisplayName("LineExtraFarePolicy의 calculate 기능 테스트")
 	@Test
-	void sumExtraFareByLine() {
-		long extraFare = LineExtraFarePolicy.maxExtraFareByLine(sections);
-		assertThat(extraFare).isEqualTo(삼호선.getExtraFare());
-
+	void lineExtraFarePolicy() {
+		Fare fare = new LineExtraFarePolicy().calculate(어린이, path);
+		assertThat(fare.getFare()).isEqualTo(30);
 	}
 
+	@DisplayName("DistanceFarePolicy의 calculate 기능 테스트")
 	@ParameterizedTest
 	@CsvSource(value = {"10, 0", "20, 200", "50, 800", "74, 1100"})
-	void getTotalDistanceFare(int distance, int expected) {
-		assertThat(DistanceFarePolicy.getTotalDistanceFare(distance)).isEqualTo(expected);
-
+	void distanceFarePolicy(long distance, long expected) {
+		Fare fare = new DistanceFarePolicy().calculate(어린이, new Path(null, null, distance));
+		assertThat(fare.getFare()).isEqualTo(expected);
 	}
 
-	@ParameterizedTest
-	@CsvSource(value = {"10, 5, 100, 200", "11, 5, 100, 300", "19, 8, 100, 300"})
-	void calculateOverFare(int distance, int interval, int unitFare, int expected) {
-		assertThat(DistanceFarePolicy.calculateOverFare(distance, interval, unitFare)).isEqualTo(expected);
+	@DisplayName("BasicFarePolicy의 calculate 기능 테스트")
+	@Test
+	void basicFarePolicy() {
+		Fare fare = new BasicFarePolicy().calculate(어린이, path);
+		assertThat(fare.getFare()).isEqualTo(1_250);
 	}
 
+	@DisplayName("AgeDiscountPolicy의 calculate 기능 테스트")
 	@ParameterizedTest
 	@CsvSource(value = {"1000, 20, 1000", "1000, 18, 520", "921, 18, 456", "1000, 12, 325"})
-	void discountFareByAge(int fare, int age, int expected) {
-		assertThat(AgeDiscountPolicy.discountFareByAge(fare, age)).isEqualTo(expected);
+	void ageDiscountPolicy(long fare, int age, long expected) {
+		Fare result = new AgeDiscountPolicy().discount(Fare.from(fare), new LoginMember(null, null, age), path);
+		assertThat(result.getFare()).isEqualTo(expected);
 	}
 }

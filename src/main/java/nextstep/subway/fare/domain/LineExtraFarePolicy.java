@@ -18,7 +18,7 @@ public class LineExtraFarePolicy implements FarePolicy{
 		return Fare.from(maxExtraFareByLine(path.getSections()));
 	}
 
-	public static int maxExtraFareByLine(Sections sections) {
+	private int maxExtraFareByLine(Sections sections) {
 		return sections.getLines()
 			.stream()
 			.mapToInt(Line::getExtraFare)

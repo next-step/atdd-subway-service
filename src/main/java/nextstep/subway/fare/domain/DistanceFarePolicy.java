@@ -11,7 +11,12 @@ import nextstep.subway.path.dto.Path;
 @Order(2)
 public class DistanceFarePolicy implements FarePolicy {
 
-	public static long getTotalDistanceFare(long distance) {
+	@Override
+	public Fare calculate(LoginMember member, Path path) {
+		return Fare.from(getTotalDistanceFare(path.getDistance()));
+	}
+
+	private long getTotalDistanceFare(long distance) {
 		long sum = 0;
 		for (DistanceIntervalStandard standard : DistanceIntervalStandard.values()) {
 			sum += getDistanceFare(standard, distance);
@@ -19,7 +24,7 @@ public class DistanceFarePolicy implements FarePolicy {
 		return sum;
 	}
 
-	public static long getDistanceFare(DistanceIntervalStandard standard, long distance) {
+	private long getDistanceFare(DistanceIntervalStandard standard, long distance) {
 		if (distance <= standard.over) {
 			return 0;
 		}
@@ -28,12 +33,7 @@ public class DistanceFarePolicy implements FarePolicy {
 		return calculateOverFare(targetDistance, standard.interval, standard.unitFare);
 	}
 
-	public static long calculateOverFare(long distance, long interval, long unitFare) {
+	private long calculateOverFare(long distance, long interval, long unitFare) {
 		return (long)((Math.ceil((distance - 1) / interval) + 1) * unitFare);
-	}
-
-	@Override
-	public Fare calculate(LoginMember member, Path path) {
-		return Fare.from(getTotalDistanceFare(path.getDistance()));
 	}
 }
