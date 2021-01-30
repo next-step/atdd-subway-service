@@ -1,6 +1,7 @@
 package nextstep.subway;
 
 import io.restassured.RestAssured;
+import io.restassured.parsing.Parser;
 import nextstep.subway.utils.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
