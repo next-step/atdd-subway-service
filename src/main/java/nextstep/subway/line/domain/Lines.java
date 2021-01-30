@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,6 +20,5 @@ public class Lines {
     public List<Line> getLines() {
         return lines;
     }
-
 
 }
