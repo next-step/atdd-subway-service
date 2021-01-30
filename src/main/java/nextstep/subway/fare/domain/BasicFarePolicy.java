@@ -9,7 +9,7 @@ import nextstep.subway.path.dto.Path;
 
 @Component
 @Order(1)
-public class BasicFarePolicy implements FarePolicy{
+public class BasicFarePolicy implements FarePolicy {
 	public static int BASIC_FARE = 1_250;
 
 	@Override
