@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nextstep.subway.BaseEntity;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -24,18 +25,23 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
+    private Fare fare;
+
+    @Embedded
     private Sections sections;
 
-    public Line(String name, String color) {
+    public Line(String name, String color, int fare) {
         this.name = name;
         this.color = color;
+        this.fare = Fare.of(fare);
     }
 
     @Builder
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int fare) {
         this.name = name;
         this.color = color;
         this.sections = new Sections(this, upStation, downStation, distance);
+        this.fare = Fare.of(fare);
     }
 
     public void update(Line line) {
@@ -57,5 +63,9 @@ public class Line extends BaseEntity {
 
     public List<Section> getAllSection() {
         return Collections.unmodifiableList(sections.getSections());
+    }
+
+    public Fare getFare() {
+        return fare;
     }
 }

@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
@@ -45,5 +46,9 @@ public class Section {
 
     public boolean isMatchDownStation(Station station) {
         return this.downStation == station;
+    }
+
+    public Fare getFare() {
+        return line.getFare();
     }
 }

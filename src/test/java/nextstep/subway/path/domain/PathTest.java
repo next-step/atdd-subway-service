@@ -75,9 +75,9 @@ public class PathTest {
     @Test
     void selectShortPath() {
         // given when
-        List<Station> stations = path.selectShortestPath(강남역, 남부터미널역);
+        ShortestPath shortestPath = path.selectShortestPath(강남역, 남부터미널역);
         // then
-        assertThat(stations)
+        assertThat(shortestPath.getStations())
                 .map(Station::getName).containsExactly("강남역", "양재역", "남부터미널역");
     }
 
