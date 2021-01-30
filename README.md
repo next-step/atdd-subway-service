@@ -52,3 +52,11 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+## Step 4
+### 거리별 오금 정책
+### 노선별 추가 요금 정책
+### 로그인 사용자의 경우 연령별 요금 할인 적용
+* 청소년: 운임에서 350원을 공제한 금액의 20%할인
+* 어린이: 운임에서 350원을 공제한 금액의 50%할인
+

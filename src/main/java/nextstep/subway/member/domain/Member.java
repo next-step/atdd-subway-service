@@ -2,6 +2,7 @@ package nextstep.subway.member.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.member.dto.Money;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Entity;
@@ -11,6 +12,11 @@ import javax.persistence.Id;
 
 @Entity
 public class Member extends BaseEntity {
+
+    private static final int CHILD_START_AGE = 6;
+    private static final int CHILD_END_AGE = 13;
+    private static final int TEENAGE_END_AGE = 19;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -53,5 +59,23 @@ public class Member extends BaseEntity {
         if (!StringUtils.equals(this.password, password)) {
             throw new AuthorizationException();
         }
+    }
+
+    public DiscountStrategy getDiscountStrategy() {
+        if(isChild()){
+            return new ChildDiscountStrategy();
+        }
+        if(isTeenager()){
+            return new TeenagerDiscountStrategy();
+        }
+        return new NoDiscountStrategy();
+    }
+
+    private boolean isChild() {
+        return this.age >= CHILD_START_AGE && this.age < CHILD_END_AGE;
+    }
+
+    private boolean isTeenager() {
+        return this.age >= CHILD_END_AGE && this.age < TEENAGE_END_AGE;
     }
 }

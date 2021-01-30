@@ -1,0 +1,12 @@
+package nextstep.subway.member.domain;
+
+import nextstep.subway.member.dto.Money;
+
+public class TeenagerDiscountStrategy implements DiscountStrategy {
+
+    @Override
+    public Money discount(Money money) {
+        Money discount = money.subtract(Money.of(350)).multiply(0.2);
+        return money.subtract(discount);
+    }
+}
