@@ -1,15 +1,18 @@
 package nextstep.subway.member.domain;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.favorite.domain.Favorite;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,13 +21,17 @@ public class Member extends BaseEntity {
     private String password;
     private Integer age;
 
-    public Member() {
-    }
+    @OneToMany(mappedBy = "member")
+    private List<Favorite> favorites = new ArrayList<>();
 
     public Member(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
         this.age = age;
+    }
+
+    public List<Favorite> getFavorites() {
+        return favorites;
     }
 
     public Long getId() {

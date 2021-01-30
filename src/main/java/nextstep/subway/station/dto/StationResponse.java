@@ -24,6 +24,10 @@ public class StationResponse {
         this.modifiedDate = modifiedDate;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }
