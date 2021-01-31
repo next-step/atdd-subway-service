@@ -24,6 +24,10 @@ public class Sections {
         this.sections.add(section);
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
     public void addSection(Line line, Station upStation, Station downStation, int distance) {
         List<Station> stations = getStations();
 
