@@ -9,7 +9,6 @@ import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Favorite extends BaseEntity {
@@ -26,6 +25,18 @@ public class Favorite extends BaseEntity {
 
     @ManyToOne
     private Member member;
+
+    public Long getId() {
+        return id;
+    }
+
+    public Station getSource() {
+        return source;
+    }
+
+    public Station getTarget() {
+        return target;
+    }
 
     public Favorite(Station source, Station target, Member member) {
         this.source = source;

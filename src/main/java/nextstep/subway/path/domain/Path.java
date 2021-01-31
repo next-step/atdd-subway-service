@@ -1,21 +1,19 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.util.Message;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
 import java.util.Objects;
 
 public class Path {
-    private final WeightedMultigraph<Station, DefaultWeightedEdge>
-            graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-    private GraphPath<Station, DefaultWeightedEdge> path;
+    private final WeightedMultigraph<Station, PathEdge>
+            graph = new WeightedMultigraph<>(PathEdge.class);
+    private GraphPath<Station, PathEdge> path;
 
     public Path(List<Section> sections) {
         init(sections);
@@ -26,31 +24,26 @@ public class Path {
     }
 
     public void init(List<Section> sections) {
-        addLineToGraph(graph, sections);
+        addLineToGraph(sections);
     }
 
-
-    private void addLineToGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> sections) {
+    private void addLineToGraph(List<Section> sections) {
         sections.forEach(section -> {
             graph.addVertex(section.getUpStation());
             graph.addVertex(section.getDownStation());
-            DefaultWeightedEdge edge = graph.addEdge(section.getUpStation(), section.getDownStation());
-            graph.setEdgeWeight(edge, section.getDistance());
+            PathEdge pathEdge = PathEdge.of(section);
+            graph.addEdge(section.getUpStation(), section.getDownStation(), pathEdge);
         });
     }
 
-    public List<Station> selectShortestPath(Station source, Station target) {
+    public ShortestPath selectShortestPath(Station source, Station target) {
         validateSection(source, target);
         try {
             path = new DijkstraShortestPath<>(graph).getPath(source, target);
-            return path.getVertexList();
+            return ShortestPath.of(path.getVertexList(), path.getEdgeList(), (int) path.getWeight());
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(Message.NOT_REGISTER_STATION);
         }
-    }
-
-    public int selectPathDistance() {
-        return (int) path.getWeight();
     }
 
     private void validateSection(Station source, Station target) {

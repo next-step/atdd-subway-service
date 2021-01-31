@@ -27,6 +27,7 @@ class LineTest {
                 .upStation(소요산역)
                 .downStation(인천역)
                 .distance(20)
+                .fare(0)
                 .build();
 
         일호선.addSection(Section.builder()

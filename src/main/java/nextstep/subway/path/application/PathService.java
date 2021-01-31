@@ -1,13 +1,19 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.fare.domain.FareCalculator;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.util.Message;
+import org.jgrapht.GraphPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,14 +34,16 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse selectShortPath(Long source, Long target) {
+    public PathResponse selectShortPath(Long source, Long target, LoginMember loginMember) {
         Station startStation = stationFindById(source);
         Station arrivalStation = stationFindById(target);
 
         List<Line> lines = lineRepository.findAll();
 
         Path path = Path.of(linesFlatMapSections(lines));
-        return PathResponse.of(path.selectShortestPath(startStation, arrivalStation), path.selectPathDistance());
+        ShortestPath shortestPath = path.selectShortestPath(startStation, arrivalStation);
+        Fare fare = FareCalculator.of(loginMember, shortestPath).calculate();
+        return PathResponse.of(shortestPath, fare);
     }
 
     private List<Section> linesFlatMapSections(List<Line> lines) {
