@@ -44,7 +44,7 @@ public class PathFinderTest {
         서초역 = new Station(3L, "서초역");
         역삼역 = new Station(4L, "역삼역");
 
-        이호선 = new Line("이호선", "green", 서초역, 교대역, 20);
+        이호선 = new Line("이호선", "green", 서초역, 교대역, 20, 0);
         이호선.addSection(교대역, 강남역, 10);
         이호선.addSection(강남역, 역삼역, 10);
 
@@ -52,13 +52,13 @@ public class PathFinderTest {
         고속터미널역 = new Station(6L, "고속터미널역");
         양재역 = new Station(8L, "양재역");
 
-        삼호선 = new Line("삼호선", "orange", 신사역, 고속터미널역, 9);
+        삼호선 = new Line("삼호선", "orange", 신사역, 고속터미널역, 9, 0);
         삼호선.addSection(고속터미널역, 교대역, 3);
         삼호선.addSection(교대역, 양재역, 3);
 
         정자역 = new Station(9L, "정자역");
         판교역 = new Station(10L, "판교역");
-        신분당선 = new Line("신분당선", "red", 양재역, 강남역, 20);
+        신분당선 = new Line("신분당선", "red", 양재역, 강남역, 20, 0);
         신분당선.addSection(강남역, 정자역, 32);
         신분당선.addSection(정자역, 판교역, 199);
         lines = new Lines(new ArrayList<Line>() {{

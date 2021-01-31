@@ -35,7 +35,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // given
         StationResponse 강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         StationResponse 교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
-        LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("2호선", "green", 강남역.getId(), 교대역.getId(), 10));
+        LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("2호선", "green", 강남역.getId(), 교대역.getId(), 10, 200));
         MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, 10);
         TokenResponse 토큰 = AuthAcceptanceTest.토큰_로그인_요청(new TokenRequest(EMAIL, PASSWORD)).as(TokenResponse.class);
         String token = BEARER_TYPE + 토큰.getAccessToken();

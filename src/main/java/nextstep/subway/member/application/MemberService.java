@@ -20,6 +20,10 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    public Member getOne(Long id){
+        return memberRepository.getOne(id);
+    }
+
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
