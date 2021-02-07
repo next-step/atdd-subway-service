@@ -57,7 +57,10 @@ public class LineTest {
         List<Station> stations = line.getStations();
 
         // then
-        assertThat(stations).hasSize(2);
+        assertAll(
+                () -> assertThat(stations).containsExactly(양재, 강남),
+                () -> assertThat(stations).hasSize(2)
+        );
     }
 
     @DisplayName("1개의 지하철 구간 중 역을 삭제한다")
