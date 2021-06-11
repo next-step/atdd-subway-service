@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SortedSection {
+public class SortedSections {
     private List<Section> sections;
 
-    public SortedSection(List<Section> sections) {
+    public SortedSections(List<Section> sections) {
         this.sections = sort(sections);
     }
 

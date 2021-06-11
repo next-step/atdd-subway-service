@@ -2,6 +2,7 @@ package nextstep.subway.line.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -30,28 +31,28 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+
+        Line persistLine = lineRepository.save(new Line(request.getName(),
+                request.getColor(),
+                upStation,
+                downStation,
+                request.getDistance()));
+
         List<StationResponse> stations = persistLine.sortedStation2()
                 .toResponses();
         return LineResponse.of(persistLine, stations);
     }
 
     public List<LineResponse> findLines() {
-        List<Line> persistLines = lineRepository.findAll();
-        return persistLines.stream()
-                .map(line -> {
-                    List<StationResponse> stations = line.sortedStation().stream()
-                            .map(it -> StationResponse.of(it))
-                            .collect(Collectors.toList());
-                    return LineResponse.of(line, stations);
-                })
-                .collect(Collectors.toList());
+        Lines lines = new Lines(lineRepository.findAll());
+
+        return lines.toResponses();
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id)
+                .orElseThrow(RuntimeException::new);
     }
-
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);

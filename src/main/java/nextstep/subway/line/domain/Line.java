@@ -76,7 +76,7 @@ public class Line extends BaseEntity {
         return results;
     }
 
-    public SortedStation sortedStation2() {
-        return new SortedStation(sections);
+    public SortedStations sortedStation2() {
+        return new SortedStations(sections);
     }
 }

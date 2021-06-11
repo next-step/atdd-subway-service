@@ -8,10 +8,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SortedStation {
+public class SortedStations {
     private List<Station> stations;
 
-    public SortedStation(List<Section> sections) {
+    public SortedStations(List<Section> sections) {
         this.stations = sort(sections);
     }
 
@@ -24,9 +24,9 @@ public class SortedStation {
     private List<Station> sort(List<Section> sections) {
         List<Station> results = new ArrayList<>();
 
-        SortedSection sortedSection = new SortedSection(sections);
+        SortedSections sortedSections = new SortedSections(sections);
 
-        for (Section section : sortedSection.toCollection()) {
+        for (Section section : sortedSections.toCollection()) {
             addStation(results, section);
         }
 

@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-class SortedSectionTest {
+class SortedSectionsTest {
     @Test
     @DisplayName("섞여있어도 정렬이 되어야 한다")
     void 섞여있어도_정렬이_되어야_한다() {
@@ -25,10 +25,10 @@ class SortedSectionTest {
         List<Section> sections = Arrays.asList(thirdSection, firstSection, secondSection);
 
         // when
-        SortedSection sortedSection = new SortedSection(sections);
+        SortedSections sortedSections = new SortedSections(sections);
 
         // then
-        assertThat(sortedSection.toCollection())
+        assertThat(sortedSections.toCollection())
                 .containsExactly(firstSection, secondSection, thirdSection);
     }
 }
