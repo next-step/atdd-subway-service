@@ -74,6 +74,14 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @TestFactory
+    @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록한다.")
+    Stream<DynamicTest> 지하철_노선에_등록되지_않은_역을_기준으로_등록한다() {
+        return Stream.of(
+                dynamicTest("이미 있는 역을 추가하면 실패 양재역 - 정자역", 지하철_노선에_지하철역_등록_요멍_및_실패_확인(신분당선, 양재역, 정자역, 3))
+        );
+    }
+
     public static Executable 지하철_노선에_지하철역_등록_요청_및_확인(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         return () -> {
             ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
@@ -98,16 +106,6 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
             지하철_노선에_지하철역_등록_실패됨(response);
         };
-    }
-
-    @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록한다.")
-    @Test
-    void addLineSectionWithNoStation() {
-        // when
-        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 양재역, 3);
-
-        // then
-        지하철_노선에_지하철역_등록_실패됨(response);
     }
 
     @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
