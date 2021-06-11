@@ -53,6 +53,16 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @TestFactory
+    @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
+    Stream<DynamicTest> 지하철_노선에_여러개의_역을_순서_상관_없이_등록한다() {
+        return Stream.of(
+                dynamicTest("노선에 역 등록 요청 및 확인", 지하철_노선에_지하철역_등록_요청_및_확인(신분당선, 강남역, 양재역, 3)),
+                dynamicTest("노선에 역 등록 요청 및 확인", 지하철_노선에_지하철역_등록_요청_및_확인(신분당선, 정자역, 강남역, 5)),
+                dynamicTest("역이 순서 정렬이 됨", 지하철_노선에_지하철역_순서_정렬됨(신분당선, 정자역, 강남역, 양재역, 광교역))
+        );
+    }
+
     public static Executable 지하철_노선에_지하철역_등록_요청_및_확인(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         return () -> {
             ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
@@ -69,19 +79,6 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
             지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(stationResponses));
         };
-    }
-
-    @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
-    @Test
-    void addLineSection2() {
-        // when
-        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
-        지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 강남역, 5);
-
-        // then
-        ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-        지하철_노선에_지하철역_등록됨(response);
-        지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(정자역, 강남역, 양재역, 광교역));
     }
 
     @DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
