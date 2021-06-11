@@ -9,17 +9,19 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.function.Executable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_목록_응답됨;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("지하철 구간 관련 기능")
 public class LineSectionAcceptanceTest extends AcceptanceTest {
@@ -42,16 +44,31 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
-    @DisplayName("지하철 구간을 등록한다.")
-    @Test
-    void addLineSection() {
-        // when
-        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
+    @TestFactory
+    @DisplayName("지하철 구간을 등록한다")
+    Stream<DynamicTest> 지하철_구간을_등록한다() {
+        return Stream.of(
+                dynamicTest("노선에 역 등록 요청 및 확인", 지하철_노선에_지하철역_등록_요청_및_확인(신분당선, 강남역, 양재역, 3)),
+                dynamicTest("역이 순서 정렬이 됨", 지하철_노선에_지하철역_순서_정렬됨(신분당선, 강남역, 양재역, 광교역))
+        );
+    }
 
-        // then
-        ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-        지하철_노선에_지하철역_등록됨(response);
-        지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 양재역, 광교역));
+    public static Executable 지하철_노선에_지하철역_등록_요청_및_확인(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+        return () -> {
+            ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
+
+            지하철_노선에_지하철역_등록됨(response);
+        };
+    }
+
+    public static Executable 지하철_노선에_지하철역_순서_정렬됨(LineResponse line, StationResponse ...stationResponses) {
+        return () -> {
+            ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(line);
+
+            지하철_노선_목록_응답됨(response);
+
+            지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(stationResponses));
+        };
     }
 
     @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
