@@ -38,9 +38,7 @@ public class LineService {
                 downStation,
                 request.getDistance()));
 
-        List<StationResponse> stations = persistLine.sortedStation2()
-                .toResponses();
-        return LineResponse.of(persistLine, stations);
+        return LineResponse.of(persistLine);
     }
 
     public List<LineResponse> findLines() {
@@ -56,9 +54,8 @@ public class LineService {
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        List<StationResponse> stations = persistLine.sortedStation2()
-                .toResponses();
-        return LineResponse.of(persistLine, stations);
+
+        return LineResponse.of(persistLine);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
