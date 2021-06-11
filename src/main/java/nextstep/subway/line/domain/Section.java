@@ -9,6 +9,8 @@ import java.util.stream.Stream;
 @Entity
 public class Section implements Comparable<Section> {
 
+    private static final String NEW_SECTION_DISTANCE_MUST_SHORTER_THAN_EXIST_ONE = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -60,19 +62,46 @@ public class Section implements Comparable<Section> {
     }
 
     public void updateUpStation(Section newSection) {
-        if (!distance.isFartherThan(newSection.distance)) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+        validateNewSectionDistance(newSection);
         this.upStation = newSection.downStation;
         this.distance = distance.subtract(newSection.distance);
     }
 
     public void updateDownStation(Section newSection) {
-        if (!distance.isFartherThan(newSection.distance)) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+        validateNewSectionDistance(newSection);
         this.downStation = newSection.upStation;
         this.distance = distance.subtract(newSection.distance);
+    }
+
+    public boolean containsStation(Station station) {
+        return upStation.equals(station) || downStation.equals(station);
+    }
+
+    public void insertNewSection(Section newSection) {
+        if (this.isSameUpStation(newSection)) {
+            this.updateUpStation(newSection);
+        }
+        if (this.isSameDownStation(newSection)) {
+            this.updateDownStation(newSection);
+        }
+    }
+
+    private void validateNewSectionDistance(Section newSection) {
+        if (!distance.isFartherThan(newSection.distance)) {
+            throw new IllegalArgumentException(NEW_SECTION_DISTANCE_MUST_SHORTER_THAN_EXIST_ONE);
+        }
+    }
+
+    private boolean isSameDownStation(Section other) {
+        Station thisDownStation = this.getDownStation();
+        Station otherDownStation = other.getDownStation();
+        return thisDownStation.equals(otherDownStation);
+    }
+
+    private boolean isSameUpStation(Section other) {
+        Station thisUpStation = this.getUpStation();
+        Station otherUpStation = other.getUpStation();
+        return thisUpStation.equals(otherUpStation);
     }
 
     @Override
