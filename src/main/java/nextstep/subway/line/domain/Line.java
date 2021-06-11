@@ -79,4 +79,10 @@ public class Line extends BaseEntity {
     public SortedStations sortedStation2() {
         return new SortedStations(sections);
     }
+
+    public void removeStation(Station station) {
+        if (this.sections.size() <= 1) {
+            throw new RuntimeException();
+        }
+    }
 }

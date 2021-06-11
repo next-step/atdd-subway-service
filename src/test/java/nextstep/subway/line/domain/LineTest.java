@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.*;
 
 class LineTest {
@@ -34,5 +35,21 @@ class LineTest {
         // then
         assertThat(stations)
                 .containsExactly(first, second, third, fourth);
+    }
+
+    @Test
+    @DisplayName("삭제시 구간이 1개만 있으면 RuntimeException이 발생한다")
+    void 삭제시_구간이_1개만_있으면_RuntimeException이_발생한다() {
+        // given
+        Station first = new Station("강남역");
+        Station second = new Station("양재역");
+
+        Section secondSection = new Section(null, first, second, 3);
+
+        Line line = new Line("신분당", "RED", secondSection.getUpStation(), secondSection.getDownStation(), 3);
+
+        // when / then
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> line.removeStation(second));
     }
 }
