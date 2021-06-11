@@ -150,4 +150,26 @@ class LineServiceTest {
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> lineService.removeLineStation(신분당_응답.getId(), 양재역.getId()));
     }
+
+    @Test
+    @DisplayName("역을 삭제를 하면 새로운 구간이 생성되어야 한다")
+    void 역을_삭제를_하면_새로운_구간이_생성되어야_한다() {
+        // given
+        stationRepository.saveAll(Arrays.asList(강남역, 양재역, 판교역, 정자역));
+
+        LineRequest 신분당_요청 = new LineRequest("신분당선", "빨간색", 양재역.getId(), 판교역.getId(), 3);
+
+        LineResponse 신분당_응답 = lineService.saveLine(신분당_요청);
+        lineService.addLineStation(신분당_응답.getId(), new SectionRequest(강남역.getId(), 양재역.getId(), 3));
+
+        // when
+        lineService.removeLineStation(신분당_응답.getId(), 양재역.getId());
+
+        // then
+        LineResponse lineResponse = lineService.findLineResponseById(신분당_응답.getId());
+
+        assertThat(lineResponse.getStations())
+                .map(StationResponse::getId)
+                .containsExactly(강남역.getId(), 판교역.getId());
+    }
 }
