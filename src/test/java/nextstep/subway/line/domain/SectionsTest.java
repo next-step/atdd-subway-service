@@ -26,6 +26,7 @@ class SectionsTest {
   private Line 신분당선 = new Line("신분당선", "red", 강남역, 광교역, Distance.from(12));
 
   private Sections sections;
+
   @BeforeEach
   void setUp() {
     Section first = new Section(신분당선, 강남역, 양재역, Distance.from(2));

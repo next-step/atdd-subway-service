@@ -57,5 +57,6 @@ Feature: 지하철 구간 관련 기능
 - [x] Sections 도메인 테스트 코드 작성
 - [x] Sections 도메인 코드 리팩토링
 - [x] Line Service 코드 리팩토링
+- [x] Line 도메인 테스트 코드 작성
 
 
