@@ -49,8 +49,8 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 구간을 등록한다")
     Stream<DynamicTest> 지하철_구간을_등록한다() {
         return Stream.of(
-                dynamicTest("노선에 역 등록 요청 및 확인", 지하철_노선에_지하철역_등록_요청_및_확인(신분당선, 강남역, 양재역, 3)),
-                dynamicTest("역이 순서 정렬이 됨", 지하철_노선에_지하철역_순서_정렬됨(신분당선, 강남역, 양재역, 광교역))
+                dynamicTest("노선에 역 등록 요청 및 확인 강남역 - 양재역", 지하철_노선에_지하철역_등록_요청_및_확인(신분당선, 강남역, 양재역, 3)),
+                dynamicTest("역이 순서 정렬이 됨 강남역 - 양재역 - 광교역", 지하철_노선에_지하철역_순서_정렬됨(신분당선, 강남역, 양재역, 광교역))
         );
     }
 
@@ -58,9 +58,9 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
     Stream<DynamicTest> 지하철_노선에_여러개의_역을_순서_상관_없이_등록한다() {
         return Stream.of(
-                dynamicTest("노선에 역 등록 요청 및 확인", 지하철_노선에_지하철역_등록_요청_및_확인(신분당선, 강남역, 양재역, 3)),
-                dynamicTest("노선에 역 등록 요청 및 확인", 지하철_노선에_지하철역_등록_요청_및_확인(신분당선, 정자역, 강남역, 5)),
-                dynamicTest("역이 순서 정렬이 됨", 지하철_노선에_지하철역_순서_정렬됨(신분당선, 정자역, 강남역, 양재역, 광교역))
+                dynamicTest("노선에 역 등록 요청 및 확인 강남역 - 양재역", 지하철_노선에_지하철역_등록_요청_및_확인(신분당선, 강남역, 양재역, 3)),
+                dynamicTest("노선에 역 등록 요청 및 확인 정자역 - 강남역", 지하철_노선에_지하철역_등록_요청_및_확인(신분당선, 정자역, 강남역, 5)),
+                dynamicTest("역이 순서 정렬이 됨 정자역 - 강남역 - 양재역 - 광교역", 지하철_노선에_지하철역_순서_정렬됨(신분당선, 정자역, 강남역, 양재역, 광교역))
         );
     }
 
@@ -79,6 +79,14 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     Stream<DynamicTest> 지하철_노선에_등록되지_않은_역을_기준으로_등록한다() {
         return Stream.of(
                 dynamicTest("이미 있는 역을 추가하면 실패 양재역 - 정자역", 지하철_노선에_지하철역_등록_요멍_및_실패_확인(신분당선, 양재역, 정자역, 3))
+        );
+    }
+
+    @TestFactory
+    @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
+    Stream<DynamicTest> 지하철_노선에_등록된_지하철역이_두개일_때_한_역을_제외한다() {
+        return Stream.of(
+                dynamicTest("두개의 역을 가진 노선에서 한 역 제거 요청 및 실패", 지하철_노선에_지하철역_제외_요멍_및_실패_확인(신분당선, 강남역))
         );
     }
 
@@ -108,6 +116,14 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         };
     }
 
+    public static Executable 지하철_노선에_지하철역_제외_요멍_및_실패_확인(LineResponse line, StationResponse stationResponse) {
+        return () -> {
+            ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(line, stationResponse);
+
+            지하철_노선에_지하철역_제외_실패됨(removeResponse);
+        };
+    }
+
     @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
     @Test
     void removeLineSection1() {
@@ -122,16 +138,6 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외됨(removeResponse);
         ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
         지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 정자역, 광교역));
-    }
-
-    @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
-    @Test
-    void removeLineSection2() {
-        // when
-        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
-
-        // then
-        지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
