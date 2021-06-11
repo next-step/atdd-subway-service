@@ -1,12 +1,16 @@
 package nextstep.subway.line.domain;
 
+import javax.persistence.Embeddable;
 import java.util.Objects;
 
+@Embeddable
 public class Distance {
 
   private static final int MIN_DISTANCE = 1;
   private static final String DISTANCE_SHOULD_BE_LARGER_THAN_ZERO = "역 간 거리는 %d 이상이어야 합니다.";
-  private final int number;
+  private int number;
+
+  protected Distance() {}
 
   private Distance(int distanceNumber) {
     this.number = distanceNumber;
