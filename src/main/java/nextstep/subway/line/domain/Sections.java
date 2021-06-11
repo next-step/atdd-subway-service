@@ -12,8 +12,11 @@ import java.util.stream.Collectors;
 @Embeddable
 public class Sections {
 
+  private static final int SINGLE_ELEMENT_SIZE = 1;
   private static final String DUPLICATED_STATIONS = "이미 등록된 역 구간을 다시 등록 할 수 없습니다.";
   private static final String NOT_CONTAINS_NEITHER_STATIONS = "상행역과 하행역 둘 중 하나도 포함되어있지 않으면 추가할 수 없습니다.";
+  private static final String CAN_NOT_REMOVE_NON_REGISTERED_STATION = "등록되어 있지 않은 역은 제거할 수 없습니다.";
+  private static final String CAN_NOT_REMOVE_STATION_FROM_SINGLE_SECTION = "상행 종점 - 하행 종점으로 이루어진 하나의 구간만 있을 때는 역을 제거할 수 없습니다.";
 
   @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
   @SortNatural
@@ -37,8 +40,17 @@ public class Sections {
         .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
-  public void removeStation(Station 양재역) {
-
+  public void removeStation(Station stationForRemove) {
+    validateBeforeRemoveStation(stationForRemove);
+    if (isUpStationEdge(stationForRemove)) {
+      lineSections.remove(lineSections.first());
+      return;
+    }
+    if (isDownStationEdge(stationForRemove)) {
+      lineSections.remove(lineSections.last());
+      return;
+    }
+    removeStationNotEachEdge(stationForRemove);
   }
 
   private void registerNewSectionToNotEmptySections(Section newSection) {
@@ -68,5 +80,46 @@ public class Sections {
   private boolean notContainsStation(Station station) {
     return lineSections.stream()
         .noneMatch(lineSection -> lineSection.containsStation(station));
+  }
+
+  private void validateBeforeRemoveStation(Station stationForRemove) {
+    validateSingleSection();
+    validateNonRegisteredStation(stationForRemove);
+  }
+
+  private void validateSingleSection() {
+    if (lineSections.size() <= SINGLE_ELEMENT_SIZE) {
+      throw new IllegalArgumentException(CAN_NOT_REMOVE_STATION_FROM_SINGLE_SECTION);
+    }
+  }
+
+  private void validateNonRegisteredStation(Station stationForRemove) {
+    if (lineSections.stream().noneMatch(section -> section.containsStation(stationForRemove))) {
+      throw new IllegalArgumentException(CAN_NOT_REMOVE_NON_REGISTERED_STATION);
+    }
+  }
+
+  private boolean isUpStationEdge(Station stationForRemove) {
+    return lineSections.first()
+        .containsAsUpStation(stationForRemove);
+  }
+
+  private boolean isDownStationEdge(Station stationForRemove) {
+    return lineSections.last()
+        .containsAsDownStation(stationForRemove);
+  }
+
+  private void removeStationNotEachEdge(Station stationForRemove) {
+    List<Section> stationContainingSortedSections = getStationContainingSortedSections(stationForRemove);
+    Section toUpdateSection = stationContainingSortedSections.get(0);
+    Section toRemoveSection = stationContainingSortedSections.get(1);
+    toUpdateSection.removeStationBetweenSections(toRemoveSection);
+    lineSections.remove(toRemoveSection);
+  }
+
+  private List<Section> getStationContainingSortedSections(Station targetStation) {
+    return lineSections.stream()
+        .filter(section -> section.containsStation(targetStation))
+        .collect(Collectors.toList());
   }
 }

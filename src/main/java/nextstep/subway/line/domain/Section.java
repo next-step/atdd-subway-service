@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 public class Section implements Comparable<Section> {
 
     private static final String NEW_SECTION_DISTANCE_MUST_SHORTER_THAN_EXIST_ONE = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
+    private static final String ONLY_CONNECTED_SECTION_CAN_REMOVE_SHARED_STATION = "연속 된 구간에서 겹치는 역만 제거할 수 있습니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -86,6 +87,18 @@ public class Section implements Comparable<Section> {
         }
     }
 
+    public Stream<Station> getUpAndDownStationStream() {
+        return Stream.of(this.getUpStation(), this.getDownStation());
+    }
+
+    public boolean containsAsUpStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean containsAsDownStation(Station station) {
+        return downStation.equals(station);
+    }
+
     private void validateNewSectionDistance(Section newSection) {
         if (!distance.isFartherThan(newSection.distance)) {
             throw new IllegalArgumentException(NEW_SECTION_DISTANCE_MUST_SHORTER_THAN_EXIST_ONE);
@@ -130,7 +143,11 @@ public class Section implements Comparable<Section> {
         return Objects.hash(id, line, upStation, downStation, distance);
     }
 
-    public Stream<Station> getUpAndDownStationStream() {
-        return Stream.of(this.getUpStation(), this.getDownStation());
+    public void removeStationBetweenSections(Section other) {
+        if(!this.downStation.equals(other.upStation)) {
+            throw new IllegalArgumentException(ONLY_CONNECTED_SECTION_CAN_REMOVE_SHARED_STATION);
+        }
+        this.downStation = other.downStation;
+        this.distance = this.distance.add(other.distance);
     }
 }
