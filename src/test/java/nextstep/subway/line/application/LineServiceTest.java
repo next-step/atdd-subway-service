@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 class LineServiceTest {
@@ -133,5 +134,20 @@ class LineServiceTest {
                         .map(StationResponse::getId)
                         .containsExactly(야탑역.getId(), 모란역.getId(), 수진역.getId(), 태평역.getId())
         );
+    }
+
+    @Test
+    @DisplayName("구간이 한개만 있으면 RuntimeException이 발생한다")
+    void 구간이_한개만_있으면_RuntimeException이이_발생한다() {
+        // given
+        stationRepository.saveAll(Arrays.asList(강남역, 양재역, 판교역, 정자역));
+
+        LineRequest 신분당_요청 = new LineRequest("신분당선", "빨간색", 양재역.getId(), 판교역.getId(), 3);
+
+        LineResponse 신분당_응답 = lineService.saveLine(신분당_요청);
+
+        // when
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> lineService.removeLineStation(신분당_응답.getId(), 양재역.getId()));
     }
 }
