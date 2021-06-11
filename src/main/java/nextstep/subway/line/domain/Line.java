@@ -16,8 +16,7 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    private Sections sections = new Sections();
 
     public Line() {
     }
@@ -30,6 +29,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
+
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
@@ -51,13 +51,13 @@ public class Line extends BaseEntity {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return sections.toCollection();
     }
 
     public List<Station> sortedStation() {
         List<Station> results = new ArrayList<>();
 
-        List<Section> copiedSections = new ArrayList<>(sections);
+        List<Section> copiedSections = new ArrayList<>(sections.toCollection());
 
         TopSection topSection = new TopSection(copiedSections);
 
@@ -77,12 +77,10 @@ public class Line extends BaseEntity {
     }
 
     public SortedStations sortedStation2() {
-        return new SortedStations(sections);
+        return sections.toSortedStations();
     }
 
     public void removeStation(Station station) {
-        if (this.sections.size() <= 1) {
-            throw new RuntimeException();
-        }
+        sections.removeStationAndNewSection(this, station);
     }
 }
