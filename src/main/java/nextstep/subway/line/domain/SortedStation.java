@@ -1,16 +1,24 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SortedStation {
     private List<Station> stations;
 
     public SortedStation(List<Section> sections) {
         this.stations = sort(sections);
+    }
+
+    public List<StationResponse> toResponse() {
+        return this.stations.stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
     }
 
     private List<Station> sort(List<Section> sections) {
