@@ -15,7 +15,7 @@ public class SortedStation {
         this.stations = sort(sections);
     }
 
-    public List<StationResponse> toResponse() {
+    public List<StationResponse> toResponses() {
         return this.stations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
