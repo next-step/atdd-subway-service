@@ -57,7 +57,26 @@ public class Line extends BaseEntity {
     public List<Station> sortedStation() {
         List<Station> results = new ArrayList<>();
 
+        List<Section> copiedSections = new ArrayList<>(sections);
+
+        TopSection topSection = new TopSection(copiedSections);
+
+        if (topSection.hasTopSection()) {
+            results.add(topSection.getTopSection().getUpStation());
+        }
+
+        while (topSection.hasTopSection()) {
+            Section section = topSection.getTopSection();
+            results.add(section.getDownStation());
+            copiedSections.remove(section);
+
+            topSection = new TopSection(copiedSections);
+        }
 
         return results;
+    }
+
+    public SortedStation sortedStation2() {
+        return new SortedStation(sections);
     }
 }
