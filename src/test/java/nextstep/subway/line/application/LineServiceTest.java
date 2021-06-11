@@ -36,12 +36,22 @@ class LineServiceTest {
     private Station 판교역;
     private Station 정자역;
 
+    private Station 야탑역;
+    private Station 모란역;
+    private Station 수진역;
+    private Station 태평역;
+
     @BeforeEach
     void setUp() {
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");
         판교역 = new Station("판교역");
         정자역 = new Station("정자역");
+
+        야탑역 = new Station("야탑역");
+        모란역 = new Station("모란역");
+        수진역 = new Station("수진역");
+        태평역 = new Station("태평역");
 
         lineService = new LineService(lineRepository, new StationService(stationRepository));
     }
@@ -64,7 +74,6 @@ class LineServiceTest {
                 .containsExactly(양재역.getId(), 판교역.getId());
     }
 
-
     @Test
     @DisplayName("검색을 하면 정렬된 역의 Response가 같이 나온다")
     void 검색을_하면_정렬된_역의_Response가_같이_나온다() {
@@ -86,5 +95,43 @@ class LineServiceTest {
         assertThat(lineResponseById.getStations())
                 .map(StationResponse::getId)
                 .containsExactly(강남역.getId(), 양재역.getId(), 판교역.getId(), 정자역.getId());
+    }
+
+    @Test
+    @DisplayName("findAll로 검색을 하면 정렬된 역의 Response가 같이 나온다")
+    void findAll_로_검색을_하면_정렬된_역의_Response가_같이_나온다() {
+        // given
+        stationRepository.saveAll(Arrays.asList(강남역, 양재역, 판교역, 정자역));
+        stationRepository.saveAll(Arrays.asList(야탑역, 모란역, 수진역, 태평역));
+
+        LineRequest 신분당_요청 = new LineRequest("신분당선", "빨간색", 양재역.getId(), 판교역.getId(), 3);
+        LineRequest 분당_요청 = new LineRequest("분당선", "노란색", 야탑역.getId(), 수진역.getId(), 3);
+
+        LineResponse 신분당_웅답 = lineService.saveLine(신분당_요청);
+        lineService.addLineStation(신분당_웅답.getId(), new SectionRequest(강남역.getId(), 양재역.getId(), 3));
+        lineService.addLineStation(신분당_웅답.getId(), new SectionRequest(판교역.getId(), 정자역.getId(), 3));
+
+        LineResponse 분당_웅답 = lineService.saveLine(분당_요청);
+        lineService.addLineStation(분당_웅답.getId(), new SectionRequest(모란역.getId(), 수진역.getId(), 1));
+        lineService.addLineStation(분당_웅답.getId(), new SectionRequest(수진역.getId(), 태평역.getId(), 3));
+
+        // when
+        List<LineResponse> lineResponses = lineService.findLines();
+
+        // then
+        assertAll(
+                () -> assertThat(lineResponses.get(0).getName()).isEqualTo(신분당_요청.getName()),
+                () -> assertThat(lineResponses.get(0).getColor()).isEqualTo(신분당_요청.getColor()),
+                () -> assertThat(lineResponses.get(0).getStations())
+                        .map(StationResponse::getId)
+                        .containsExactly(강남역.getId(), 양재역.getId(), 판교역.getId(), 정자역.getId())
+        );
+        assertAll(
+                () -> assertThat(lineResponses.get(1).getName()).isEqualTo(분당_요청.getName()),
+                () -> assertThat(lineResponses.get(1).getColor()).isEqualTo(분당_요청.getColor()),
+                () -> assertThat(lineResponses.get(1).getStations())
+                        .map(StationResponse::getId)
+                        .containsExactly(야탑역.getId(), 모란역.getId(), 수진역.getId(), 태평역.getId())
+        );
     }
 }
