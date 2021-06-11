@@ -5,6 +5,7 @@ import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -64,4 +65,26 @@ class LineServiceTest {
     }
 
 
+    @Test
+    @DisplayName("검색을 하면 정렬된 역의 Response가 같이 나온다")
+    void 검색을_하면_정렬된_역의_Response가_같이_나온다() {
+        // given
+        stationRepository.saveAll(Arrays.asList(강남역, 양재역, 판교역, 정자역));
+
+        LineRequest lineRequest = new LineRequest("신분당선", "빨간색", 양재역.getId(), 판교역.getId(), 3);
+
+        LineResponse lineResponse = lineService.saveLine(lineRequest);
+        lineService.addLineStation(lineResponse.getId(), new SectionRequest(강남역.getId(), 양재역.getId(), 3));
+        lineService.addLineStation(lineResponse.getId(), new SectionRequest(판교역.getId(), 정자역.getId(), 3));
+
+        // when
+        LineResponse lineResponseById = lineService.findLineResponseById(lineResponse.getId());
+
+        // then
+        assertThat(lineResponseById.getName()).isEqualTo(lineRequest.getName());
+        assertThat(lineResponseById.getColor()).isEqualTo(lineRequest.getColor());
+        assertThat(lineResponseById.getStations())
+                .map(StationResponse::getId)
+                .containsExactly(강남역.getId(), 양재역.getId(), 판교역.getId(), 정자역.getId());
+    }
 }
