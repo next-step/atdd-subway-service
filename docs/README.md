@@ -54,7 +54,7 @@ Feature: 지하철 구간 관련 기능
 - [x] 지하철 구간을 관리 시나리오 인수 테스트 작성
 - [x] Distance 도메인 테스트 코드 작성
 - [x] Distance 도메인 코드 리팩토링
-- [ ] Sections 도메인 테스트 코드 작성
+- [x] Sections 도메인 테스트 코드 작성
 - [ ] Sections 도메인 코드 리팩토링
 - [ ] Line 도메인 테스트 코드 작성
 
