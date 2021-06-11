@@ -8,6 +8,7 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.StationAcceptanceTest;
+import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
@@ -63,6 +64,16 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @TestFactory
+    @DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
+    Stream<DynamicTest> 지하철_노선에_이미_등록되어있는_역을_등록한다() {
+        return Stream.of(
+                dynamicTest("노선에 역 등록 요청 및 확인", 지하철_노선에_지하철역_등록_요청_및_확인(신분당선, 강남역, 양재역, 3)),
+                dynamicTest("이미 있는 역을 추가하면 실패 강남역 - 양재역", 지하철_노선에_지하철역_등록_요멍_및_실패_확인(신분당선, 강남역, 양재역, 3)),
+                dynamicTest("이미 있는 역을 추가하면 실패 양재역 - 광교역", 지하철_노선에_지하철역_등록_요멍_및_실패_확인(신분당선, 양재역, 광교역, 3))
+        );
+    }
+
     public static Executable 지하철_노선에_지하철역_등록_요청_및_확인(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         return () -> {
             ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
@@ -81,14 +92,12 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         };
     }
 
-    @DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
-    @Test
-    void addLineSectionWithSameStation() {
-        // when
-        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 광교역, 3);
+    public static Executable 지하철_노선에_지하철역_등록_요멍_및_실패_확인(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+        return () -> {
+            ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
 
-        // then
-        지하철_노선에_지하철역_등록_실패됨(response);
+            지하철_노선에_지하철역_등록_실패됨(response);
+        };
     }
 
     @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록한다.")
