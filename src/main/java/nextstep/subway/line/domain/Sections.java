@@ -1,7 +1,6 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
-import org.hibernate.annotations.SortNatural;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -17,14 +16,13 @@ public class Sections {
   private static final String NOT_CONTAINS_NEITHER_STATIONS = "상행역과 하행역 둘 중 하나도 포함되어있지 않으면 추가할 수 없습니다.";
   private static final String CAN_NOT_REMOVE_NON_REGISTERED_STATION = "등록되어 있지 않은 역은 제거할 수 없습니다.";
   private static final String CAN_NOT_REMOVE_STATION_FROM_SINGLE_SECTION = "상행 종점 - 하행 종점으로 이루어진 하나의 구간만 있을 때는 역을 제거할 수 없습니다.";
+  private static final String EMPTY_SECTIONS = "등록된 구간이 없습니다.";
 
-  @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-  @SortNatural
-  private SortedSet<Section> lineSections = new TreeSet<>();
+  @OneToMany(mappedBy = "line", cascade = {CascadeType.ALL}, orphanRemoval = true)
+  private List<Section> lineSections = new ArrayList<>();
 
   public Sections() {
   }
-
 
   public void registerNewSection(Section newSection) {
     if (lineSections.isEmpty()) {
@@ -35,7 +33,7 @@ public class Sections {
   }
 
   public Set<Station> getDistinctStations() {
-    return lineSections.stream()
+    return getSortedSections().stream()
         .flatMap(Section::getUpAndDownStationStream)
         .collect(Collectors.toCollection(LinkedHashSet::new));
   }
@@ -43,11 +41,11 @@ public class Sections {
   public void removeStation(Station stationForRemove) {
     validateBeforeRemoveStation(stationForRemove);
     if (isUpStationEdge(stationForRemove)) {
-      lineSections.remove(lineSections.first());
+      lineSections.remove(getFirst());
       return;
     }
     if (isDownStationEdge(stationForRemove)) {
-      lineSections.remove(lineSections.last());
+      lineSections.remove(getLast());
       return;
     }
     removeStationNotEachEdge(stationForRemove);
@@ -100,13 +98,21 @@ public class Sections {
   }
 
   private boolean isUpStationEdge(Station stationForRemove) {
-    return lineSections.first()
+    return getFirst()
         .containsAsUpStation(stationForRemove);
   }
 
   private boolean isDownStationEdge(Station stationForRemove) {
-    return lineSections.last()
+    return getLast()
         .containsAsDownStation(stationForRemove);
+  }
+
+  private Section getFirst() {
+    return getSortedSections().get(0);
+  }
+
+  private Section getLast() {
+    return getSortedSections().get(lineSections.size() -1);
   }
 
   private void removeStationNotEachEdge(Station stationForRemove) {
@@ -118,8 +124,36 @@ public class Sections {
   }
 
   private List<Section> getStationContainingSortedSections(Station targetStation) {
-    return lineSections.stream()
+    return getSortedSections().stream()
         .filter(section -> section.containsStation(targetStation))
         .collect(Collectors.toList());
+  }
+
+  private List<Section> getSortedSections() {
+    List<Section> sortedSections = new ArrayList<>();
+    List<Section> elementDecreasingList = new ArrayList<>(lineSections);
+    Iterator<Section> elementDecreasingListIterator = elementDecreasingList.iterator();
+    while (elementDecreasingListIterator.hasNext()) {
+      sortedSections.add(popFirstSection(elementDecreasingList));
+    }
+    return sortedSections;
+  }
+
+  private Section popFirstSection(List<Section> sections) {
+    Iterator<Section> iterator = sections.iterator();
+    while (iterator.hasNext()) {
+      Section current = iterator.next();
+      if (isHead(sections, current)) {
+        iterator.remove();
+        return current;
+      }
+    }
+    throw new IllegalArgumentException(EMPTY_SECTIONS);
+  }
+
+  private boolean isHead(List<Section> sections, Section compare) {
+    return sections.stream()
+        .filter(origin -> !compare.isSameEdges(origin))
+        .noneMatch(compare::isNextSection);
   }
 }

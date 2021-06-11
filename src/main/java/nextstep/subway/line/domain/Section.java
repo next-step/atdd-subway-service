@@ -7,7 +7,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 @Entity
-public class Section implements Comparable<Section> {
+public class Section {
 
     private static final String NEW_SECTION_DISTANCE_MUST_SHORTER_THAN_EXIST_ONE = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
     private static final String ONLY_CONNECTED_SECTION_CAN_REMOVE_SHARED_STATION = "연속 된 구간에서 겹치는 역만 제거할 수 있습니다.";
@@ -117,37 +117,42 @@ public class Section implements Comparable<Section> {
         return thisUpStation.equals(otherUpStation);
     }
 
-    @Override
-    public int compareTo(Section o) {
-        if (this.downStation.equals(o.upStation)) {
-            return -1;
-        }
-
-        if (this.equals(o)) {
-            return 0;
-        }
-
-        return 1;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Section section = (Section) o;
-        return Objects.equals(id, section.id) && Objects.equals(line, section.line) && Objects.equals(upStation, section.upStation) && Objects.equals(downStation, section.downStation) && Objects.equals(distance, section.distance);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, line, upStation, downStation, distance);
-    }
-
     public void removeStationBetweenSections(Section other) {
         if(!this.downStation.equals(other.upStation)) {
             throw new IllegalArgumentException(ONLY_CONNECTED_SECTION_CAN_REMOVE_SHARED_STATION);
         }
         this.downStation = other.downStation;
         this.distance = this.distance.add(other.distance);
+    }
+
+    public void addLine(Line line) {
+        this.line = line;
+    }
+
+    public boolean isSameEdges(Section other) {
+        return this.getUpStation().equals(other.getUpStation()) &&
+            this.getDownStation().equals(other.getDownStation());
+    }
+
+    public boolean isNextSection(Section other) {
+        return this.getUpStation().equals(other.getDownStation());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        if (!(o instanceof Section)) return false;
+        Section section = (Section) o;
+        return Objects.equals(this.getId(), section.getId()) &&
+            Objects.equals(this.getLine(), section.getLine()) &&
+            Objects.equals(this.getUpStation(), section.getUpStation()) &&
+            Objects.equals(this.getDownStation(), section.getDownStation()) &&
+            Objects.equals(this.getDistance(), section.getDistance());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getLine(), getUpStation(), getDownStation(), getDistance());
     }
 }
