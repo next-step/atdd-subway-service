@@ -45,9 +45,3 @@ Feature: 지하철 구간 관련 기능
       Then 역 제거 성공
       When 지하철역 목록 조회
       Then 역이 순서 정렬이 됨
-
-   Scenario: 지하철 노선에 존재하지 않는 역을 제외한다
-      When 노선에 역 등록 요청 
-      Then 역 추가 성공
-      When 역 제거 요청
-      Then 역 제거 실패
