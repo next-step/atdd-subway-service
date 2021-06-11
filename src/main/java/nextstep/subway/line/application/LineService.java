@@ -100,14 +100,14 @@ public class LineService {
             line.getSections().stream()
                     .filter(it -> it.getUpStation() == upStation)
                     .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, request.toDistanceDomain()));
+                    .ifPresent(it -> it.updateUpStation(new Section(line, upStation, downStation, request.toDistanceDomain())));
 
             line.getSections().add(new Section(line, upStation, downStation, request.toDistanceDomain()));
         } else if (isDownStationExisted) {
             line.getSections().stream()
                     .filter(it -> it.getDownStation() == downStation)
                     .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, request.toDistanceDomain()));
+                    .ifPresent(it -> it.updateDownStation(new Section(line, upStation, downStation, request.toDistanceDomain())));
 
             line.getSections().add(new Section(line, upStation, downStation, request.toDistanceDomain()));
         } else {
