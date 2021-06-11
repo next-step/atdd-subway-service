@@ -55,9 +55,8 @@ public class LineService {
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        List<StationResponse> stations = persistLine.sortedStation().stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
+        List<StationResponse> stations = persistLine.sortedStation2()
+                .toResponses();
         return LineResponse.of(persistLine, stations);
     }
 
