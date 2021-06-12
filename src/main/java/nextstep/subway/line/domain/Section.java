@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.exception.InvalidDistanceException;
+import nextstep.subway.exception.InvalidStationException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -124,7 +125,7 @@ public class Section {
 
     public void removeStationBetweenSections(Section other) {
         if(!this.downStation.equals(other.upStation)) {
-            throw new IllegalArgumentException(ONLY_CONNECTED_SECTION_CAN_REMOVE_SHARED_STATION);
+            throw new InvalidStationException(ONLY_CONNECTED_SECTION_CAN_REMOVE_SHARED_STATION);
         }
         this.downStation = other.downStation;
         this.distance = this.distance.add(other.distance);

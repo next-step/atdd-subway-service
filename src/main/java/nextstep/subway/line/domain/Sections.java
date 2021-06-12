@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.InvalidStationException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -60,10 +61,10 @@ public class Sections {
 
   private void validateNewSection(Section newSection) {
     if (hasBothStations(newSection)) {
-      throw new IllegalArgumentException(DUPLICATED_STATIONS);
+      throw new InvalidStationException(DUPLICATED_STATIONS);
     }
     if (hasNotBothStations(newSection)) {
-      throw new IllegalArgumentException(NOT_CONTAINS_NEITHER_STATIONS);
+      throw new InvalidStationException(NOT_CONTAINS_NEITHER_STATIONS);
     }
   }
 
@@ -93,7 +94,7 @@ public class Sections {
 
   private void validateNonRegisteredStation(Long stationIdForRemove) {
     if (lineSections.stream().noneMatch(section -> section.containsStation(stationIdForRemove))) {
-      throw new IllegalArgumentException(CAN_NOT_REMOVE_NON_REGISTERED_STATION);
+      throw new InvalidStationException(CAN_NOT_REMOVE_NON_REGISTERED_STATION);
     }
   }
 
