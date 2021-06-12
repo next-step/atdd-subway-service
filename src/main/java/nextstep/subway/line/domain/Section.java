@@ -42,11 +42,11 @@ public class Section {
         return line;
     }
 
-    public Station getUpStation() {
+    protected Station getUpStation() {
         return upStation;
     }
 
-    public Station getDownStation() {
+    protected Station getDownStation() {
         return downStation;
     }
 
