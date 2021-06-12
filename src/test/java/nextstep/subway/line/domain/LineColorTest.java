@@ -21,26 +21,26 @@ class LineColorTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"a", "ab", "abc", "abcd"})
-    @DisplayName("이름이 공백이 아니면 정상이다")
-    void 이름이_공백이_아니면_정상이다(String s) {
+    @DisplayName("색깔이 공백이 아니면 정상이다")
+    void 색깔이_공백이_아니면_정상이다(String s) {
         assertDoesNotThrow(() -> new LineColor(s));
     }
 
     @Test
-    @DisplayName("같은 값의 이름은 hashcode와 equals가 같다")
-    void 같은_값의_이름은_hashcode와_equals가_같다() {
-        LineColor name1 = new LineColor("ABCD");
-        LineColor name2 = new LineColor("ABCD");
-        LineColor name3 = new LineColor("A");
+    @DisplayName("같은 값의 색깔은 hashcode와 equals가 같다")
+    void 같은_값의_색깔은_hashcode와_equals가_같다() {
+        LineColor color1 = new LineColor("ABCD");
+        LineColor color2 = new LineColor("ABCD");
+        LineColor color3 = new LineColor("A");
 
-        assertThat(name1.hashCode())
-                .isEqualTo(name2.hashCode());
-        assertThat(name1)
-                .isEqualTo(name2);
+        assertThat(color1.hashCode())
+                .isEqualTo(color2.hashCode());
+        assertThat(color1)
+                .isEqualTo(color2);
 
-        assertThat(name2.hashCode())
-                .isNotEqualTo(name3.hashCode());
-        assertThat(name2)
-                .isNotEqualTo(name3);
+        assertThat(color2.hashCode())
+                .isNotEqualTo(color3.hashCode());
+        assertThat(color2)
+                .isNotEqualTo(color3);
     }
 }
