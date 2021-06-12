@@ -28,13 +28,7 @@ public class Sections {
             return;
         }
 
-        if (containsByUpStation(section) && containsByDownStation(section)) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (!containsByUpStation(section) && !containsByUpStation(section)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
+        validateAdd(section);
 
         sections.add(section);
 //
@@ -55,6 +49,16 @@ public class Sections {
 //        } else {
 //            throw new RuntimeException();
 //        }
+    }
+
+    private void validateAdd(Section section) {
+        if (containsByUpStation(section) && containsByDownStation(section)) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!containsByUpStation(section) && !containsByUpStation(section)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
     }
 
     protected NewSection removeStation(Station station) {
