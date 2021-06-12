@@ -62,6 +62,6 @@ Feature: 지하철 구간 관련 기능
 
 ### 코드 리뷰 반영
 - [x] 구간에서 역 제거시 역 조회없이 stationId로 제거하도록 로직 변경
-- [ ] CustomException 적용
+- [x] CustomException 적용
 
 
