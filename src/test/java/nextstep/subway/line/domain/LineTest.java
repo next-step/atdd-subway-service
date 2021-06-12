@@ -1,10 +1,14 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.dto.LineRequest;
+import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,5 +74,29 @@ class LineTest {
         // then
         assertThat(line.sortedStation().toCollection())
                 .containsExactly(강남역, 판교역);
+    }
+
+    @Test
+    @DisplayName("이미 등록된 역들을 등록하면 RuntimeException이 발생한다")
+    void 이미_등록된_역들을_등록하면_RuntimeException이_발생한다() {
+        // given
+        Line line = new Line("신분당", "RED", 강남역, 양재역, 3);
+
+        // when
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> line.addSection(강남역, 양재역, 3))
+                .withMessage("이미 등록된 구간 입니다.");
+    }
+
+    @Test
+    @DisplayName("노선에 등록되지 않은 역을 연결하려 할 경우 RuntimeException이 발생한다")
+    void 노선에_등록되지_않은_역을_연결하려_할_경우_RuntimeException이_발생한다() {
+        // given
+        Line line = new Line("신분당", "RED", 강남역, 양재역, 3);
+
+        // when
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> line.addSection(판교역, 정자역, 3))
+                .withMessage("등록할 수 없는 구간 입니다.");
     }
 }

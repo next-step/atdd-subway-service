@@ -77,4 +77,25 @@ public class Section {
     public boolean isDownStationEquals(Station station) {
         return this.downStation == station;
     }
+
+    public boolean containsStation(Station station) {
+        return this.upStation == station || this.downStation == station
+                ;
+    }
+
+    public boolean containsSameDownStation(Section section) {
+        return this.upStation == section.upStation;
+    }
+
+    public boolean containsSameUpStation(Section section) {
+        return this.downStation == section.downStation;
+    }
+
+    public boolean containsByUpStation(Section section) {
+        return this.upStation == section.upStation || this.downStation == section.upStation;
+    }
+
+    public boolean containsByDownStation(Section section) {
+        return this.upStation == section.downStation || this.downStation == section.downStation;
+    }
 }
