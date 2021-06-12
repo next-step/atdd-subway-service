@@ -1,6 +1,5 @@
 package nextstep.subway.line.dto;
 
-import com.google.common.base.Strings;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineColor;
 import nextstep.subway.line.domain.LineName;

@@ -24,18 +24,18 @@ public class Distance {
         return this.distance <= distance.distance;
     }
 
-    private void validate(int distance) {
-        if (distance < MINIMUM_DISTANCE) {
-            throw new IllegalArgumentException(format("최소 거리는 %d 이상이여야 합니다", MINIMUM_DISTANCE));
-        }
-    }
-
     public Distance minus(Distance distance) {
         return new Distance(this.distance - distance.distance);
     }
 
     public Distance plus(Distance distance) {
         return new Distance(this.distance + distance.distance);
+    }
+
+    private void validate(int distance) {
+        if (distance < MINIMUM_DISTANCE) {
+            throw new IllegalArgumentException(format("최소 거리는 %d 이상이여야 합니다", MINIMUM_DISTANCE));
+        }
     }
 
     @Override
