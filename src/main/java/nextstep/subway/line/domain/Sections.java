@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.EmptySectionException;
 import nextstep.subway.exception.IllegalSectionStateException;
 import nextstep.subway.exception.InvalidStationException;
 import nextstep.subway.station.domain.Station;
@@ -150,7 +151,7 @@ public class Sections {
         return current;
       }
     }
-    throw new IllegalArgumentException(EMPTY_SECTIONS);
+    throw new EmptySectionException(EMPTY_SECTIONS);
   }
 
   private boolean isHead(List<Section> sections, Section compare) {
