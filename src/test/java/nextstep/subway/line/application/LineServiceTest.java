@@ -274,4 +274,19 @@ class LineServiceTest {
                 .isThrownBy(() -> lineService.addLineStation(신분당_응답.getId(), new SectionRequest(양재역.getId(), 정자역.getId(), 5)))
                 .withMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
     }
+
+    @Test
+    @DisplayName("신규 노선이 상행성을 넘으면 RuntimeException이 발생한다")
+    void 신규_노선이_상행성을_넘으면_RuntimeException이_발생한다() {
+        // given
+        stationRepository.saveAll(Arrays.asList(양재역, 판교역, 정자역));
+
+        LineRequest 신분당_요청 = new LineRequest("신분당선", "빨간색", 판교역.getId(), 정자역.getId(), 3);
+        LineResponse 신분당_응답 = lineService.saveLine(신분당_요청);
+
+        // when
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> lineService.addLineStation(신분당_응답.getId(), new SectionRequest(양재역.getId(), 정자역.getId(), 5)))
+                .withMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    }
 }
