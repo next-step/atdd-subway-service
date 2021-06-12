@@ -20,12 +20,27 @@ public class Station extends BaseEntity {
         this.name = name;
     }
 
+    //For TestCode
+    private Station(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    //For TestCode
+    public static Station stationStaticFactoryForTestCode(Long id, String name) {
+        return new Station(id, name);
+    }
+
     public Long getId() {
         return id;
     }
 
     public String getName() {
         return name;
+    }
+
+    public boolean isSameId(Long id) {
+        return this.id.equals(id);
     }
 
     @Override

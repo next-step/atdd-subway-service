@@ -38,17 +38,17 @@ public class Sections {
         .collect(Collectors.toCollection(LinkedHashSet::new));
   }
 
-  public void removeStation(Station stationForRemove) {
-    validateBeforeRemoveStation(stationForRemove);
-    if (isUpStationEdge(stationForRemove)) {
+  public void removeStation(Long stationIdForRemove) {
+    validateBeforeRemoveStation(stationIdForRemove);
+    if (isUpStationEdge(stationIdForRemove)) {
       lineSections.remove(getFirst());
       return;
     }
-    if (isDownStationEdge(stationForRemove)) {
+    if (isDownStationEdge(stationIdForRemove)) {
       lineSections.remove(getLast());
       return;
     }
-    removeStationNotEachEdge(stationForRemove);
+    removeStationNotEachEdge(stationIdForRemove);
   }
 
   private void registerNewSectionToNotEmptySections(Section newSection) {
@@ -80,9 +80,9 @@ public class Sections {
         .noneMatch(lineSection -> lineSection.containsStation(station));
   }
 
-  private void validateBeforeRemoveStation(Station stationForRemove) {
+  private void validateBeforeRemoveStation(Long stationIdForRemove) {
     validateSingleSection();
-    validateNonRegisteredStation(stationForRemove);
+    validateNonRegisteredStation(stationIdForRemove);
   }
 
   private void validateSingleSection() {
@@ -91,20 +91,20 @@ public class Sections {
     }
   }
 
-  private void validateNonRegisteredStation(Station stationForRemove) {
-    if (lineSections.stream().noneMatch(section -> section.containsStation(stationForRemove))) {
+  private void validateNonRegisteredStation(Long stationIdForRemove) {
+    if (lineSections.stream().noneMatch(section -> section.containsStation(stationIdForRemove))) {
       throw new IllegalArgumentException(CAN_NOT_REMOVE_NON_REGISTERED_STATION);
     }
   }
 
-  private boolean isUpStationEdge(Station stationForRemove) {
+  private boolean isUpStationEdge(Long stationIdForRemove) {
     return getFirst()
-        .containsAsUpStation(stationForRemove);
+        .containsAsUpStation(stationIdForRemove);
   }
 
-  private boolean isDownStationEdge(Station stationForRemove) {
+  private boolean isDownStationEdge(Long stationIdForRemove) {
     return getLast()
-        .containsAsDownStation(stationForRemove);
+        .containsAsDownStation(stationIdForRemove);
   }
 
   private Section getFirst() {
@@ -115,17 +115,17 @@ public class Sections {
     return getSortedSections().get(lineSections.size() -1);
   }
 
-  private void removeStationNotEachEdge(Station stationForRemove) {
-    List<Section> stationContainingSortedSections = getStationContainingSortedSections(stationForRemove);
+  private void removeStationNotEachEdge(Long stationIdForRemove) {
+    List<Section> stationContainingSortedSections = getStationContainingSortedSections(stationIdForRemove);
     Section toUpdateSection = stationContainingSortedSections.get(0);
     Section toRemoveSection = stationContainingSortedSections.get(1);
     toUpdateSection.removeStationBetweenSections(toRemoveSection);
     lineSections.remove(toRemoveSection);
   }
 
-  private List<Section> getStationContainingSortedSections(Station targetStation) {
+  private List<Section> getStationContainingSortedSections(Long targetStationId) {
     return getSortedSections().stream()
-        .filter(section -> section.containsStation(targetStation))
+        .filter(section -> section.containsStation(targetStationId))
         .collect(Collectors.toList());
   }
 

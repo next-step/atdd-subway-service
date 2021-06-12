@@ -74,6 +74,10 @@ public class Section {
         this.distance = distance.subtract(newSection.distance);
     }
 
+    public boolean containsStation(Long stationIdForRemove) {
+        return upStation.isSameId(stationIdForRemove) || downStation.isSameId(stationIdForRemove);
+    }
+
     public boolean containsStation(Station station) {
         return upStation.equals(station) || downStation.equals(station);
     }
@@ -91,12 +95,12 @@ public class Section {
         return Stream.of(this.getUpStation(), this.getDownStation());
     }
 
-    public boolean containsAsUpStation(Station station) {
-        return upStation.equals(station);
+    public boolean containsAsUpStation(Long stationId) {
+        return upStation.isSameId(stationId);
     }
 
-    public boolean containsAsDownStation(Station station) {
-        return downStation.equals(station);
+    public boolean containsAsDownStation(Long stationId) {
+        return downStation.isSameId(stationId);
     }
 
     private void validateNewSectionDistance(Section newSection) {

@@ -5,23 +5,24 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.subway.station.domain.Station.stationStaticFactoryForTestCode;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class SectionsTest {
 
-  private Station 강남역 = new Station("강남역");
+  private Station 강남역 = stationStaticFactoryForTestCode(1L, "강남역");
 
-  private Station 양재역 = new Station("양재역");
+  private Station 양재역 = stationStaticFactoryForTestCode(2L, "양재역");
 
-  private Station 청계산입구역 = new Station("청계산입구역");
+  private Station 청계산입구역 = stationStaticFactoryForTestCode(3L, "청계산입구역");
 
-  private Station 판교역 = new Station("판교역");
+  private Station 판교역 = stationStaticFactoryForTestCode(4L, "판교역");
 
-  private Station 수지구청역 = new Station("수지구청역");
+  private Station 수지구청역 = stationStaticFactoryForTestCode(5L, "수지구청역");
 
-  private Station 광교역 = new Station("광교역");
+  private Station 광교역 = stationStaticFactoryForTestCode(6L, "광교역");
 
   private Line 신분당선 = new Line("신분당선", "red", 강남역, 광교역, Distance.from(12));
 
@@ -65,7 +66,7 @@ class SectionsTest {
   @Test
   void registerNewSectionTest() {
     //given
-    Station 양재시민의숲역 = new Station("양재시민의숲역");
+    Station 양재시민의숲역 = stationStaticFactoryForTestCode(7L, "양재시민의숲역");
     Section given = new Section(신분당선, 양재역, 양재시민의숲역, Distance.from(1));
     //when
     sections.registerNewSection(given);
@@ -77,7 +78,7 @@ class SectionsTest {
   @Test
   void registerNewSectionFailTest() {
     //given
-    Station 양재시민의숲역 = new Station("양재시민의숲역");
+    Station 양재시민의숲역 = stationStaticFactoryForTestCode(7L, "양재시민의숲역");
     Section given = new Section(신분당선, 양재역, 양재시민의숲역, Distance.from(15));
     //when
     assertThatThrownBy(() -> sections.registerNewSection(given)).isInstanceOf(IllegalArgumentException.class);
@@ -87,7 +88,7 @@ class SectionsTest {
   @Test
   void removeStationTest() {
     //when
-    sections.removeStation(양재역);
+    sections.removeStation(양재역.getId());
 
     //then
     assertThat(sections.getDistinctStations()).containsExactly(강남역, 청계산입구역, 판교역, 수지구청역, 광교역);
@@ -97,10 +98,10 @@ class SectionsTest {
   @Test
   void removeFailWhenStationNotContainedTest() {
     //given
-    Station 양재시민의숲역 = new Station("양재시민의숲역");
+    Station 양재시민의숲역 = stationStaticFactoryForTestCode(7L, "양재시민의숲역");
 
     //when & then
-    assertThatThrownBy(() -> sections.removeStation(양재시민의숲역)).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> sections.removeStation(양재시민의숲역.getId())).isInstanceOf(IllegalArgumentException.class);
   }
 
   @DisplayName("단일 구간일 때는 역을 제거할 수 없다.")
@@ -112,7 +113,7 @@ class SectionsTest {
     givenSections.registerNewSection(singleSection);
 
     //when & then
-    assertThatThrownBy(() -> givenSections.removeStation(강남역)).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> givenSections.removeStation(강남역.getId())).isInstanceOf(IllegalArgumentException.class);
   }
 
 }
