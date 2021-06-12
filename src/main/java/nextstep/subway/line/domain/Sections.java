@@ -98,14 +98,14 @@ public class Sections {
 
     private void updateUpStationBySameUpStation(Section section) {
         sections.stream()
-                .filter(item -> item.containsSameUpStation(section))
+                .filter(item -> item.isSameUpStation(section))
                 .findFirst()
                 .ifPresent(item -> item.updateUpStation(section));
     }
 
     private void updateDownStationBySameDownStation(Section section) {
         sections.stream()
-                .filter(item -> item.containsSameDownStation(section))
+                .filter(item -> item.isSameDownStation(section))
                 .findFirst()
                 .ifPresent(item -> item.updateDownStation(section));
     }

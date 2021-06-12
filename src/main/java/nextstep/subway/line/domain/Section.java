@@ -78,12 +78,16 @@ public class Section {
         return this.downStation == station;
     }
 
-    public boolean containsSameDownStation(Section section) {
+    public boolean isSameDownStation(Section section) {
         return this.downStation == section.downStation;
     }
 
-    public boolean containsSameUpStation(Section section) {
+    public boolean isSameUpStation(Section section) {
         return this.upStation == section.upStation;
+    }
+
+    public boolean isDownStationEqualsUpStationBy(Section section) {
+        return this.downStation == section.upStation;
     }
 
     public boolean containsByUpStation(Section section) {

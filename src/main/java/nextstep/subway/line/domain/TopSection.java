@@ -22,9 +22,10 @@ public class TopSection {
         do {
             section = lastTopSection;
 
-            Station lastUpStation = lastTopSection.getUpStation();
+            final Section finalSection = section;
+
             lastTopSection = sections.stream()
-                    .filter(item -> item.getDownStation() == lastUpStation)
+                    .filter(item -> item.isDownStationEqualsUpStationBy(finalSection))
                     .findFirst()
                     .orElse(section);
         } while(section != lastTopSection);
