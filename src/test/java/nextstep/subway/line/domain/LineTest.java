@@ -173,24 +173,19 @@ class LineTest {
                 .map(StationResponse::getId)
                 .containsExactly(양재역.getId(), 판교역.getId(), 정자역.getId());
     }
-//
-//    @Test
-//    @DisplayName("신규 노선이 상행성을 넘지 않으면 사이에 정상 등록된다")
-//    void 신규_노선이_상행성을_넘지_않으면_사이에_정상_등록된다() {
-//        // given
-//        stationRepository.saveAll(Arrays.asList(양재역, 판교역, 정자역));
-//
-//        LineRequest 신분당_요청 = new LineRequest("신분당선", "빨간색", 양재역.getId(), 정자역.getId(), 3);
-//        LineResponse 신분당_응답 = lineService.saveLine(신분당_요청);
-//
-//        // when
-//        lineService.addLineStation(신분당_응답.getId(), new SectionRequest(판교역.getId(), 정자역.getId(), 1));
-//
-//        // then
-//        LineResponse lineResponse = lineService.findLineResponseById(신분당_응답.getId());
-//
-//        assertThat(lineResponse.getStations())
-//                .map(StationResponse::getId)
-//                .containsExactly(양재역.getId(), 판교역.getId(), 정자역.getId());
-//    }
+
+    @Test
+    @DisplayName("신규 노선이 상행성을 넘지 않으면 사이에 정상 등록된다")
+    void 신규_노선이_상행성을_넘지_않으면_사이에_정상_등록된다() {
+        // given
+        Line line = new Line("신분당", "RED", 양재역, 정자역, 3);
+
+        // when
+        line.addSection(판교역, 정자역, 1);
+
+        // then
+        assertThat(line.sortedStation().toResponses())
+                .map(StationResponse::getId)
+                .containsExactly(양재역.getId(), 판교역.getId(), 정자역.getId());
+    }
 }
