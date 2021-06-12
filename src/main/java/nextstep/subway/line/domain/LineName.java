@@ -1,9 +1,16 @@
 package nextstep.subway.line.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.util.Objects;
 
+@Embeddable
 public class LineName {
+    @Column(unique = true)
     private String name;
+
+    protected LineName() {
+    }
 
     public LineName(String name) {
         validate(name);
@@ -15,6 +22,11 @@ public class LineName {
         if (name == null || name.trim().length() == 0) {
             throw new IllegalArgumentException("이름은 공백이거나 공백이면 안됩니다");
         }
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 
     @Override

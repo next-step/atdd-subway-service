@@ -12,8 +12,8 @@ public class Line extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
-    private String name;
+
+    private LineName name;
     private String color;
 
     private Sections sections = new Sections();
@@ -22,15 +22,18 @@ public class Line extends BaseEntity {
     }
 
     public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
+        this(new LineName(name), color);
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
+        this(new LineName(name), color);
 
         sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public Line(LineName name, String color) {
+        this.name = name;
+        this.color = color;
     }
 
     public void update(Line line) {
@@ -42,7 +45,7 @@ public class Line extends BaseEntity {
         return id;
     }
 
-    public String getName() {
+    public LineName getName() {
         return name;
     }
 
