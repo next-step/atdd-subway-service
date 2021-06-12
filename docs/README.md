@@ -67,5 +67,6 @@ Feature: 지하철 구간 관련 기능
 - [x] Line에서 getSections() 제거
 - [x] equals & hashCode에서 getter 쓰는 부분 제거
 - [x] 테스트 변수명 한글로 교체
+- [ ] section 목록 정렬 메서드 Iterator 제거 및 객체지향 생활체조 원칙 지키게 변경
 
 
