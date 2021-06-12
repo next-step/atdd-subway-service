@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.IllegalSectionStateException;
 import nextstep.subway.exception.InvalidStationException;
 import nextstep.subway.station.domain.Station;
 
@@ -88,7 +89,7 @@ public class Sections {
 
   private void validateSingleSection() {
     if (lineSections.size() <= SINGLE_ELEMENT_SIZE) {
-      throw new IllegalArgumentException(CAN_NOT_REMOVE_STATION_FROM_SINGLE_SECTION);
+      throw new IllegalSectionStateException(CAN_NOT_REMOVE_STATION_FROM_SINGLE_SECTION);
     }
   }
 
