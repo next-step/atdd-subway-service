@@ -66,6 +66,6 @@ Feature: 지하철 구간 관련 기능
 - [x] Distane에서 내부의 static method 호출할때 불필요하게 클래스 명을 붙여둔 부분 제거
 - [x] Line에서 getSections() 제거
 - [x] equals & hashCode에서 getter 쓰는 부분 제거
-- [ ] 테스트 변수명 한글로 교체
+- [x] 테스트 변수명 한글로 교체
 
 
