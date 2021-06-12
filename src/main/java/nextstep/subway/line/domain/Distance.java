@@ -30,11 +30,11 @@ public class Distance {
   }
 
   public Distance add(Distance other) {
-    return Distance.from(this.number + other.number);
+    return from(this.number + other.number);
   }
 
   public Distance subtract(Distance other) {
-    return Distance.from(this.number - other.number);
+    return from(this.number - other.number);
   }
 
   public boolean isFartherThan(Distance other) {

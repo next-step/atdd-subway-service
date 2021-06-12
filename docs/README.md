@@ -63,6 +63,6 @@ Feature: 지하철 구간 관련 기능
 ### 코드 리뷰 반영
 - [x] 구간에서 역 제거시 역 조회없이 stationId로 제거하도록 로직 변경
 - [x] CustomException 적용
-- [ ] Distane에서 내부의 static method 호출할때 불필요하게 클래스 명을 붙여둔 부분 제거
+- [x] Distane에서 내부의 static method 호출할때 불필요하게 클래스 명을 붙여둔 부분 제거
 
 
