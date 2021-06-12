@@ -87,4 +87,44 @@ public class Line extends BaseEntity {
             sections.add(section);
         }
     }
+
+    public void addSection(Station upStation, Station downStation, int distance) {
+        List<Station> stations = sortedStation2();
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+
+        Section section = new Section(this, upStation, downStation, distance);
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
+                stations.stream().noneMatch(it -> it == downStation)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
+        if (stations.isEmpty()) {
+            sections.add(section);
+            return;
+        }
+
+        if (isUpStationExisted) {
+            getSections().stream()
+                    .filter(it -> it.getUpStation() == upStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(downStation, distance));
+
+            getSections().add(section);
+        } else if (isDownStationExisted) {
+            getSections().stream()
+                    .filter(it -> it.getDownStation() == downStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(upStation, distance));
+
+            getSections().add(section);
+        } else {
+            throw new RuntimeException();
+        }
+    }
 }
