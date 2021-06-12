@@ -134,28 +134,37 @@ public class Sections {
 
   private List<Section> getSortedSections() {
     List<Section> sortedSections = new ArrayList<>();
-    List<Section> elementDecreasingList = new ArrayList<>(lineSections);
-    Iterator<Section> elementDecreasingListIterator = elementDecreasingList.iterator();
-    while (elementDecreasingListIterator.hasNext()) {
-      sortedSections.add(popFirstSection(elementDecreasingList));
-    }
+    Section currentSection = findFirstSection();
+    sortedSections.add(currentSection);
+    addNextSectionIfExist(findNextSection(currentSection), sortedSections);
     return sortedSections;
   }
 
-  private Section popFirstSection(List<Section> sections) {
-    Iterator<Section> iterator = sections.iterator();
-    while (iterator.hasNext()) {
-      Section current = iterator.next();
-      if (isHead(sections, current)) {
-        iterator.remove();
-        return current;
-      }
-    }
-    throw new EmptySectionException(EMPTY_SECTIONS);
+  private Section findFirstSection() {
+    return lineSections.stream()
+        .filter(this::isHead)
+        .findFirst()
+        .orElseThrow(() -> new IllegalArgumentException(EMPTY_SECTIONS));
   }
 
-  private boolean isHead(List<Section> sections, Section compare) {
-    return sections.stream()
+  private void addNextSectionIfExist(Optional<Section> maybeNextSection, List<Section> sortedSections) {
+    if (!maybeNextSection.isPresent()) {
+      return;
+    }
+    Section section = maybeNextSection.get();
+    sortedSections.add(section);
+    addNextSectionIfExist(findNextSection(section), sortedSections);
+  }
+
+  private Optional<Section> findNextSection(Section compare) {
+    return lineSections.stream()
+        .filter(origin -> !compare.isSameEdges(origin))
+        .filter(origin -> origin.isNextSection(compare))
+        .findFirst();
+  }
+
+  private boolean isHead(Section compare) {
+    return lineSections.stream()
         .filter(origin -> !compare.isSameEdges(origin))
         .noneMatch(compare::isNextSection);
   }
