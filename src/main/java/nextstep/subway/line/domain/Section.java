@@ -150,15 +150,15 @@ public class Section {
         if (o == null) return false;
         if (!(o instanceof Section)) return false;
         Section section = (Section) o;
-        return Objects.equals(this.getId(), section.getId()) &&
-            Objects.equals(this.getLine(), section.getLine()) &&
-            Objects.equals(this.getUpStation(), section.getUpStation()) &&
-            Objects.equals(this.getDownStation(), section.getDownStation()) &&
-            Objects.equals(this.getDistance(), section.getDistance());
+        return Objects.equals(this.id, section.id) &&
+            Objects.equals(this.line, section.line) &&
+            Objects.equals(this.upStation, section.upStation) &&
+            Objects.equals(this.downStation, section.downStation) &&
+            Objects.equals(this.distance, section.distance);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getLine(), getUpStation(), getDownStation(), getDistance());
+        return Objects.hash(id, line, upStation, downStation, distance);
     }
 }
