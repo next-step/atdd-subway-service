@@ -30,25 +30,9 @@ public class Sections {
 
         validateAdd(section);
 
+        resizeNearSections(section);
+
         sections.add(section);
-//
-//        if (isUpStationExisted) {
-//            getSections().stream()
-//                    .filter(it -> it.getUpStation() == upStation)
-//                    .findFirst()
-//                    .ifPresent(it -> it.updateUpStation(downStation, distance));
-//
-//            getSections().add(section);
-//        } else if (isDownStationExisted) {
-//            getSections().stream()
-//                    .filter(it -> it.getDownStation() == downStation)
-//                    .findFirst()
-//                    .ifPresent(it -> it.updateDownStation(upStation, distance));
-//
-//            getSections().add(section);
-//        } else {
-//            throw new RuntimeException();
-//        }
     }
 
     private void validateAdd(Section section) {
@@ -56,11 +40,18 @@ public class Sections {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
 
-        if (!containsByUpStation(section) && !containsByUpStation(section)) {
+        if (!containsByUpStation(section) && !containsByDownStation(section)) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
     }
 
+    private void resizeNearSections(Section section) {
+        if (containsByUpStation(section)) {
+            updateUpStationBySameUpStation(section);
+        } else if (containsByDownStation(section)) {
+            updateDownStationBySameUpStation(section);
+        }
+    }
     protected NewSection removeStation(Station station) {
         if (sections.size() <= 1) {
             throw new RuntimeException();
@@ -115,14 +106,18 @@ public class Sections {
                 .anyMatch(item -> item.containsByDownStation(section));
     }
 
-    private boolean containsSameUpStation(Section section) {
-        return sections.stream()
-                .anyMatch(item -> item.containsSameUpStation(section));
+    private void updateUpStationBySameUpStation(Section section) {
+        sections.stream()
+                .filter(item -> item.containsSameUpStation(section))
+                .findFirst()
+                .ifPresent(item -> item.updateUpStation(section));
     }
 
-    private boolean containsSameDownStation(Section section) {
-        return sections.stream()
-                .anyMatch(item -> item.containsSameDownStation(section));
+    private void updateDownStationBySameUpStation(Section section) {
+        sections.stream()
+                .filter(item -> item.containsSameDownStation(section))
+                .findFirst()
+                .ifPresent(item -> item.updateDownStation(section));
     }
 
     private void removeSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
