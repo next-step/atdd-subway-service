@@ -1,5 +1,8 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.IllegalSectionStateException;
+import nextstep.subway.exception.InvalidDistanceException;
+import nextstep.subway.exception.InvalidStationException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -57,8 +60,8 @@ class SectionsTest {
     Section alreadyExistEdgesSection = new Section(신분당선, 청계산입구역, 판교역, Distance.from(8));
     Section alreadyContainsEachStationsSection = new Section(신분당선, 강남역, 광교역, Distance.from(8));
     assertAll(
-        () -> assertThatThrownBy(() -> sections.registerNewSection(alreadyExistEdgesSection)).isInstanceOf(IllegalArgumentException.class),
-        () -> assertThatThrownBy(() -> sections.registerNewSection(alreadyContainsEachStationsSection)).isInstanceOf(IllegalArgumentException.class)
+        () -> assertThatThrownBy(() -> sections.registerNewSection(alreadyExistEdgesSection)).isInstanceOf(InvalidStationException.class),
+        () -> assertThatThrownBy(() -> sections.registerNewSection(alreadyContainsEachStationsSection)).isInstanceOf(InvalidStationException.class)
     );
   }
 
@@ -81,7 +84,7 @@ class SectionsTest {
     Station 양재시민의숲역 = stationStaticFactoryForTestCode(7L, "양재시민의숲역");
     Section given = new Section(신분당선, 양재역, 양재시민의숲역, Distance.from(15));
     //when
-    assertThatThrownBy(() -> sections.registerNewSection(given)).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> sections.registerNewSection(given)).isInstanceOf(InvalidDistanceException.class);
   }
 
   @DisplayName("구간에서 역을 제거한다.")
@@ -101,7 +104,7 @@ class SectionsTest {
     Station 양재시민의숲역 = stationStaticFactoryForTestCode(7L, "양재시민의숲역");
 
     //when & then
-    assertThatThrownBy(() -> sections.removeStation(양재시민의숲역.getId())).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> sections.removeStation(양재시민의숲역.getId())).isInstanceOf(InvalidStationException.class);
   }
 
   @DisplayName("단일 구간일 때는 역을 제거할 수 없다.")
@@ -113,7 +116,7 @@ class SectionsTest {
     givenSections.registerNewSection(singleSection);
 
     //when & then
-    assertThatThrownBy(() -> givenSections.removeStation(강남역.getId())).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> givenSections.removeStation(강남역.getId())).isInstanceOf(IllegalSectionStateException.class);
   }
 
 }

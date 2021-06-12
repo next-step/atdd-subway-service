@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.InvalidDistanceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,7 +15,7 @@ class DistanceTest {
   @ValueSource(ints = {-1, 0})
   @ParameterizedTest
   void MinimumDistanceTest(int invalidDistance) {
-    assertThatThrownBy(() -> Distance.from(invalidDistance)).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> Distance.from(invalidDistance)).isInstanceOf(InvalidDistanceException.class);
   }
 
   @DisplayName("역 간 거리 끼리 더할 수 있다.")

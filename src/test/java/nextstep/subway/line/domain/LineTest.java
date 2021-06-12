@@ -1,5 +1,8 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.IllegalSectionStateException;
+import nextstep.subway.exception.InvalidDistanceException;
+import nextstep.subway.exception.InvalidStationException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -92,8 +95,8 @@ class LineTest {
 
     //when & then
     assertAll(
-        () -> assertThatThrownBy(() -> 신분당선.addSection(alreadyExistEdgesSection)).isInstanceOf(IllegalArgumentException.class),
-        () -> assertThatThrownBy(() -> 신분당선.addSection(alreadyContainsEachStationsSection)).isInstanceOf(IllegalArgumentException.class)
+        () -> assertThatThrownBy(() -> 신분당선.addSection(alreadyExistEdgesSection)).isInstanceOf(InvalidStationException.class),
+        () -> assertThatThrownBy(() -> 신분당선.addSection(alreadyContainsEachStationsSection)).isInstanceOf(InvalidStationException.class)
     );
   }
 
@@ -104,7 +107,7 @@ class LineTest {
     Station 양재시민의숲역 = stationStaticFactoryForTestCode(7L, "양재시민의숲역");
     Section given = new Section(신분당선, 강남역, 양재시민의숲역, Distance.from(15));
     //when
-    assertThatThrownBy(() -> 신분당선.addSection(given)).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> 신분당선.addSection(given)).isInstanceOf(InvalidDistanceException.class);
   }
 
   @DisplayName("구간에서 역을 제거한다.")
@@ -128,13 +131,13 @@ class LineTest {
     Station 양재시민의숲역 = stationStaticFactoryForTestCode(7L, "양재시민의숲역");
 
     //when & then
-    assertThatThrownBy(() -> 신분당선.removeStation(양재시민의숲역.getId())).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> 신분당선.removeStation(양재시민의숲역.getId())).isInstanceOf(IllegalSectionStateException.class);
   }
 
   @DisplayName("단일 구간일 때는 역을 제거할 수 없다.")
   @Test
   void removeFailWhenSingleSectionTest() {
-    assertThatThrownBy(() -> 신분당선.removeStation(강남역.getId())).isInstanceOf(IllegalArgumentException.class);
+    assertThatThrownBy(() -> 신분당선.removeStation(강남역.getId())).isInstanceOf(IllegalSectionStateException.class);
   }
 
 }
