@@ -14,6 +14,16 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
+    public Sections() {
+
+    }
+
+    public Sections(List<Section> sections) {
+        for (Section section : sections) {
+            add(section);
+        }
+    }
+
     public void add(Section section) {
         if (sections.contains(section)) {
             return;
@@ -22,34 +32,56 @@ public class Sections {
         sections.add(section);
     }
 
-    public void removeStationAndNewSection(Line line, Station station) {
+    public NewSection removeStation(Station station) {
         if (sections.size() <= 1) {
             throw new RuntimeException();
         }
 
-        Optional<Section> upLineStation = sections.stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = sections.stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
+        Optional<Section> upLineStation = findByUpStationEquals(station);
+        Optional<Section> downLineStation = findByDownStationEquals(station);
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            add(new Section(line, newUpStation, newDownStation, newDistance));
-        }
+        removeSection(upLineStation, downLineStation);
 
-        upLineStation.ifPresent(it -> line.getSections().remove(it));
-        downLineStation.ifPresent(it -> line.getSections().remove(it));
+        return createNewSection(upLineStation, downLineStation);
+    }
+
+    public SortedStations toSortedStations() {
+        return new SortedStations(sections);
     }
 
     protected List<Section> toCollection() {
         return sections;
     }
 
-    public SortedStations toSortedStations() {
-        return new SortedStations(sections);
+    private NewSection createNewSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+
+            return new NewSection(newUpStation, newDownStation, newDistance);
+        }
+        return null;
+    }
+
+    private void removeSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        upLineStation.ifPresent(it -> remove(it));
+        downLineStation.ifPresent(it -> remove(it));
+    }
+
+    private Optional<Section> findByUpStationEquals(Station station) {
+        return sections.stream()
+                .filter(item -> item.isUpStationEquals(station))
+                .findFirst();
+    }
+
+    private Optional<Section> findByDownStationEquals(Station station) {
+        return sections.stream()
+                .filter(item -> item.isDownStationEquals(station))
+                .findFirst();
+    }
+
+    private void remove(Section section) {
+        sections.remove(section);
     }
 }
