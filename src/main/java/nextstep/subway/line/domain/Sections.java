@@ -14,9 +14,7 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
-    public Sections() {
-
-    }
+    public Sections() { }
 
     public Sections(List<Section> sections) {
         for (Section section : sections) {
@@ -24,7 +22,7 @@ public class Sections {
         }
     }
 
-    public void add(Section section) {
+    protected void add(Section section) {
         if (sections.contains(section)) {
             return;
         }
@@ -32,7 +30,7 @@ public class Sections {
         sections.add(section);
     }
 
-    public NewSection removeStation(Station station) {
+    protected NewSection removeStation(Station station) {
         if (sections.size() <= 1) {
             throw new RuntimeException();
         }
@@ -45,7 +43,7 @@ public class Sections {
         return createNewSection(upLineStation, downLineStation);
     }
 
-    public SortedStations toSortedStations() {
+    protected SortedStations toSortedStations() {
         return new SortedStations(sections);
     }
 
