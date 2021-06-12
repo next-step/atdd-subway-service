@@ -49,7 +49,7 @@ public class Sections {
         if (containsByUpStation(section)) {
             updateUpStationBySameUpStation(section);
         } else if (containsByDownStation(section)) {
-            updateDownStationBySameUpStation(section);
+            updateDownStationBySameDownStation(section);
         }
     }
     protected NewSection removeStation(Station station) {
@@ -113,7 +113,7 @@ public class Sections {
                 .ifPresent(item -> item.updateUpStation(section));
     }
 
-    private void updateDownStationBySameUpStation(Section section) {
+    private void updateDownStationBySameDownStation(Section section) {
         sections.stream()
                 .filter(item -> item.containsSameDownStation(section))
                 .findFirst()
