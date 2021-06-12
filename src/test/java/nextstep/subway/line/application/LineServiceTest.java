@@ -219,4 +219,25 @@ class LineServiceTest {
                 .map(StationResponse::getId)
                 .containsExactly(강남역.getId(), 양재역.getId());
     }
+
+    @Test
+    @DisplayName("상행선에 연결할 수 있다")
+    void 상행선에_연결할_수_있다() {
+        // given
+        stationRepository.saveAll(Arrays.asList(강남역, 양재역, 판교역, 정자역));
+
+        LineRequest 신분당_요청 = new LineRequest("신분당선", "빨간색", 양재역.getId(), 판교역.getId(), 3);
+        LineResponse 신분당_응답 = lineService.saveLine(신분당_요청);
+
+        // when
+        lineService.addLineStation(신분당_응답.getId(), new SectionRequest(강남역.getId(), 양재역.getId(), 3));
+
+        // then
+        LineResponse lineResponse = lineService.findLineResponseById(신분당_응답.getId());
+
+        assertThat(lineResponse.getStations())
+                .map(StationResponse::getId)
+                .containsExactly(강남역.getId(), 양재역.getId(), 판교역.getId());
+
+    }
 }
