@@ -39,8 +39,8 @@ class LineTest {
 
         // when
         Line line = new Line("신분당", "RED", secondSection.getUpStation(), secondSection.getDownStation(), 3);
-        line.getSections().add(thirdSection);
-        line.getSections().add(firstSection);
+        line.addSection(판교역, 정자역, 3);
+        line.addSection(강남역, 양재역, 3);
 
         List<Station> stations = line.sortedStation()
                 .toCollection();
@@ -67,7 +67,7 @@ class LineTest {
     void 역을_삭제하면_새로운_구간이_반환된다() {
         // given
         Line line = new Line("신분당", "RED", 강남역, 양재역, 3);
-        line.getSections().add(new Section(null, 양재역, 판교역, 5));
+        line.addSection(양재역, 판교역, 5);
 
         // when
         line.removeStation(양재역);
