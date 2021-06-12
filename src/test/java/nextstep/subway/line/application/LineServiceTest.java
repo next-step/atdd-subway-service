@@ -202,4 +202,21 @@ class LineServiceTest {
                 .isThrownBy(() -> lineService.addLineStation(신분당_응답.getId(), new SectionRequest(양재역.getId(), 판교역.getId(), 3)))
                 .withMessage("등록할 수 없는 구간 입니다.");
     }
+
+    @Test
+    @DisplayName("노선에 아무 역도 없을경우 등록된다")
+    void 노선에_아무_역도_없을경우_등록된다() {
+        // given
+        stationRepository.saveAll(Arrays.asList(강남역, 양재역));
+        Line save = lineRepository.save(new Line("신분당선", "빨간색"));
+
+        // when
+        lineService.addLineStation(save.getId(), new SectionRequest(강남역.getId(), 양재역.getId(), 3));
+
+        // then
+        LineResponse lineById = lineService.findLineResponseById(save.getId());
+        assertThat(lineById.getStations())
+                .map(StationResponse::getId)
+                .containsExactly(강남역.getId(), 양재역.getId());
+    }
 }
