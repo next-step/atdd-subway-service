@@ -1,6 +1,8 @@
 package nextstep.subway.line.dto;
 
+import com.google.common.base.Strings;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.LineColor;
 import nextstep.subway.line.domain.LineName;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -18,10 +20,10 @@ public class LineResponse {
     public LineResponse() {
     }
 
-    public LineResponse(Long id, LineName name, String color, List<StationResponse> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public LineResponse(Long id, LineName name, LineColor color, List<StationResponse> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
-        this.name = toString(name);
-        this.color = color;
+        this.name = toStringIfNotnull(name);
+        this.color = toStringIfNotnull(color);
         this.stations = stations;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
@@ -59,10 +61,11 @@ public class LineResponse {
         return modifiedDate;
     }
 
-    private String toString(LineName name) {
-        if (name != null) {
-            return name.toString();
+    private String toStringIfNotnull(Object object) {
+        if (object != null) {
+            return object.toString();
         }
+
         return null;
     }
 }

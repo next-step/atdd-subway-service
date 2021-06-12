@@ -14,7 +14,7 @@ public class Line extends BaseEntity {
     private Long id;
 
     private LineName name;
-    private String color;
+    private LineColor color;
 
     private Sections sections = new Sections();
 
@@ -22,16 +22,16 @@ public class Line extends BaseEntity {
     }
 
     public Line(String name, String color) {
-        this(new LineName(name), color);
+        this(new LineName(name), new LineColor(color));
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this(new LineName(name), color);
+        this(new LineName(name), new LineColor(color));
 
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
-    public Line(LineName name, String color) {
+    public Line(LineName name, LineColor color) {
         this.name = name;
         this.color = color;
     }
@@ -49,7 +49,7 @@ public class Line extends BaseEntity {
         return name;
     }
 
-    public String getColor() {
+    public LineColor getColor() {
         return color;
     }
 
