@@ -1,9 +1,11 @@
 package nextstep.subway.line.domain;
 
+import javax.persistence.Embeddable;
 import java.util.Objects;
 
 import static java.lang.String.format;
 
+@Embeddable
 public class Distance {
     private static final int MINIMUM_DISTANCE = 0;
 
@@ -18,10 +20,22 @@ public class Distance {
         this.distance = distance;
     }
 
+    public boolean isLessThen(Distance distance) {
+        return this.distance <= distance.distance;
+    }
+
     private void validate(int distance) {
         if (distance < MINIMUM_DISTANCE) {
             throw new IllegalArgumentException(format("최소 거리는 %d 이상이여야 합니다", MINIMUM_DISTANCE));
         }
+    }
+
+    public Distance minus(Distance distance) {
+        return new Distance(this.distance - distance.distance);
+    }
+
+    public Distance plus(Distance distance) {
+        return new Distance(this.distance + distance.distance);
     }
 
     @Override
