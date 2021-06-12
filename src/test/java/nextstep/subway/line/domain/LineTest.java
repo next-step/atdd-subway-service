@@ -33,12 +33,7 @@ class LineTest {
     @Test
     @DisplayName("섞여있어도 정렬하여 가져올 수 있다.")
     void 섞여있어도_정렬하여_가져올_수_있다() {
-        Section firstSection = new Section(null, 강남역, 양재역, 3);
-        Section secondSection = new Section(null, 양재역, 판교역, 3);
-        Section thirdSection = new Section(null, 판교역, 정자역, 3);
-
-        // when
-        Line line = new Line("신분당", "RED", secondSection.getUpStation(), secondSection.getDownStation(), 3);
+        Line line = new Line("신분당", "RED", 양재역, 판교역, 3);
         line.addSection(판교역, 정자역, 3);
         line.addSection(강남역, 양재역, 3);
 
@@ -53,9 +48,7 @@ class LineTest {
     @Test
     @DisplayName("삭제시 구간이 1개만 있으면 RuntimeException이 발생한다")
     void 삭제시_구간이_1개만_있으면_RuntimeException이_발생한다() {
-        Section secondSection = new Section(null, 강남역, 양재역, 3);
-
-        Line line = new Line("신분당", "RED", secondSection.getUpStation(), secondSection.getDownStation(), 3);
+        Line line = new Line("신분당", "RED", 강남역, 양재역, 3);
 
         // when / then
         assertThatExceptionOfType(RuntimeException.class)
