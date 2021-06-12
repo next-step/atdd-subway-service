@@ -16,12 +16,6 @@ public class Sections {
 
     public Sections() { }
 
-    public Sections(List<Section> sections) {
-        for (Section section : sections) {
-            add(section);
-        }
-    }
-
     protected void add(Section section) {
         if (sections.isEmpty()) {
             sections.add(section);
@@ -67,10 +61,6 @@ public class Sections {
 
     protected SortedStations toSortedStations() {
         return new SortedStations(sections);
-    }
-
-    protected List<Section> toCollection() {
-        return sections;
     }
 
     private NewSection createNewSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
