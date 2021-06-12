@@ -71,7 +71,7 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        List<Station> stations = line.sortedStation();
+        List<Station> stations = line.sortedStation2();
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 

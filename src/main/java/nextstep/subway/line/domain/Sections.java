@@ -62,11 +62,6 @@ public class Sections {
         return null;
     }
 
-    private void removeSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
-        upLineStation.ifPresent(it -> remove(it));
-        downLineStation.ifPresent(it -> remove(it));
-    }
-
     private Optional<Section> findByUpStationEquals(Station station) {
         return sections.stream()
                 .filter(item -> item.isUpStationEquals(station))
@@ -77,6 +72,11 @@ public class Sections {
         return sections.stream()
                 .filter(item -> item.isDownStationEquals(station))
                 .findFirst();
+    }
+
+    private void removeSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        upLineStation.ifPresent(it -> remove(it));
+        downLineStation.ifPresent(it -> remove(it));
     }
 
     private void remove(Section section) {

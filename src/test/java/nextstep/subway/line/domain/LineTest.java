@@ -37,7 +37,8 @@ class LineTest {
         line.getSections().add(thirdSection);
         line.getSections().add(firstSection);
 
-        List<Station> stations = line.sortedStation();
+        List<Station> stations = line.sortedStation()
+                .toCollection();
 
         // then
         assertThat(stations)
@@ -67,7 +68,7 @@ class LineTest {
         line.removeStation(양재역);
 
         // then
-        assertThat(line.sortedStation2().toCollection())
+        assertThat(line.sortedStation().toCollection())
                 .containsExactly(강남역, 판교역);
     }
 }

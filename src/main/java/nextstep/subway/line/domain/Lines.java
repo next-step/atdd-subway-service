@@ -15,7 +15,7 @@ public class Lines {
 
     public List<LineResponse> toResponses() {
         return lines.stream()
-                .map(item -> LineResponse.of(item, item.sortedStation2().toResponses()))
+                .map(item -> LineResponse.of(item, item.sortedStation().toResponses()))
                 .collect(Collectors.toList());
     }
 }

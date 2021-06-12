@@ -27,7 +27,7 @@ public class LineResponse {
     }
 
     public static LineResponse of(Line line) {
-        return of(line, line.sortedStation2().toResponses());
+        return of(line, line.sortedStation().toResponses());
     }
 
     public static LineResponse of(Line line, List<StationResponse> stations) {

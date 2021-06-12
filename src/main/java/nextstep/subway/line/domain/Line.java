@@ -54,7 +54,7 @@ public class Line extends BaseEntity {
         return sections.toCollection();
     }
 
-    public List<Station> sortedStation() {
+    public List<Station> sortedStation2() {
         List<Station> results = new ArrayList<>();
 
         List<Section> copiedSections = new ArrayList<>(sections.toCollection());
@@ -76,7 +76,7 @@ public class Line extends BaseEntity {
         return results;
     }
 
-    public SortedStations sortedStation2() {
+    public SortedStations sortedStation() {
         return sections.toSortedStations();
     }
 
