@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.InvalidDistanceException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -105,7 +106,7 @@ public class Section {
 
     private void validateNewSectionDistance(Section newSection) {
         if (!distance.isFartherThan(newSection.distance)) {
-            throw new IllegalArgumentException(NEW_SECTION_DISTANCE_MUST_SHORTER_THAN_EXIST_ONE);
+            throw new InvalidDistanceException(NEW_SECTION_DISTANCE_MUST_SHORTER_THAN_EXIST_ONE);
         }
     }
 

@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.InvalidDistanceException;
+
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
@@ -22,8 +24,8 @@ public class Distance {
   }
 
   private static void validateDistanceNumber(int distanceNumber) {
-    if(distanceNumber < 1) {
-      throw new IllegalArgumentException(String.format(DISTANCE_SHOULD_BE_LARGER_THAN_ZERO, MIN_DISTANCE));
+    if(distanceNumber < MIN_DISTANCE) {
+      throw new InvalidDistanceException(String.format(DISTANCE_SHOULD_BE_LARGER_THAN_ZERO, MIN_DISTANCE));
     }
   }
 
