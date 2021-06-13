@@ -1,9 +1,6 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Lines;
+import nextstep.subway.line.domain.*;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -26,14 +23,11 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
-
-        Line persistLine = lineRepository.save(new Line(request.getName(),
-                request.getColor(),
-                upStation,
-                downStation,
-                request.getDistance()));
+        Line persistLine = lineRepository.save(
+                new Line(request.getName(),
+                        request.getColor(),
+                        createSection(request.getUpStationId(), request.getDownStationId(), request.getDistance())
+                ));
 
         return LineResponse.of(persistLine);
     }
@@ -66,9 +60,7 @@ public class LineService {
 
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
-        line.addSection(upStation, downStation, new Distance(request.getDistance()));
+        line.addSection(createSection(request.getUpStationId(), request.getDownStationId(), request.getDistance()));
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
@@ -76,5 +68,12 @@ public class LineService {
         Station station = stationService.findStationById(stationId);
 
         line.removeStation(station);
+    }
+
+    private Section createSection(long upstationId, long downStationId, int distance) {
+        Station upStation = stationService.findById(upstationId);
+        Station downStation = stationService.findById(downStationId);
+
+        return new Section(upStation, downStation, new Distance(distance));
     }
 }

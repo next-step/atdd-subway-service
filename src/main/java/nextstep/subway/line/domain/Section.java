@@ -27,6 +27,10 @@ public class Section {
     public Section() {
     }
 
+    public Section(Station upStation, Station downStation, Distance distance) {
+        this(null, upStation, downStation, distance);
+    }
+
     public Section(Line line, Station upStation, Station downStation, int distance) {
         this(line, upStation, downStation, new Distance(distance));
     }
@@ -46,16 +50,12 @@ public class Section {
         return line;
     }
 
-    protected Station getUpStation() {
-        return upStation;
-    }
-
-    protected Station getDownStation() {
-        return downStation;
-    }
-
     public Distance getDistance() {
         return distance;
+    }
+
+    protected void changeLine(Line line) {
+        this.line = line;
     }
 
     protected void updateUpStation(Section section) {
@@ -64,11 +64,20 @@ public class Section {
         this.upStation = section.downStation;
         this.distance = this.distance.minus(section.distance);
     }
+
     protected void updateDownStation(Section section) {
         validateDistance(section);
 
         this.downStation = section.upStation;
         this.distance = this.distance.minus(section.distance);
+    }
+
+    protected Station getUpStation() {
+        return upStation;
+    }
+
+    protected Station getDownStation() {
+        return downStation;
     }
 
     public boolean isUpStationEquals(Station station) {
