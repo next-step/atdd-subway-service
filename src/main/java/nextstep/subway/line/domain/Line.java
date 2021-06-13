@@ -115,16 +115,15 @@ public class Line extends BaseEntity {
         Station upStation = section.getUpStation();
         Station downStation = section.getDownStation();
 
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+        boolean isUpStationExisted = isExistedStation(stations, upStation);
+        boolean isDownStationExisted = isExistedStation(stations, downStation);
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new AddLineSectionException("이미 등록된 구간 입니다.");
+            throw new AddSectionException("이미 등록된 구간 입니다.");
         }
 
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-            stations.stream().noneMatch(it -> it == downStation)) {
-            throw new AddLineSectionException("등록할 수 없는 구간 입니다.");
+        if (!isUpStationExisted && !isDownStationExisted) {
+            throw new AddSectionException("등록할 수 없는 구간 입니다.");
         }
 
         if (stations.isEmpty()) {
@@ -141,15 +140,18 @@ public class Line extends BaseEntity {
                     .ifPresent(it -> it.updateUpStation(downStation, distance));
 
             sections.add(new Section(this, upStation, downStation, distance));
-        } else if (isDownStationExisted) {
-            sections.stream()
-                    .filter(it -> it.getDownStation() == downStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, distance));
-
-            sections.add(new Section(this, upStation, downStation, distance));
-        } else {
-            throw new AddLineSectionException();
+            return;
         }
+
+        sections.stream()
+                .filter(it -> it.getDownStation() == downStation)
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(upStation, distance));
+
+        sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    private boolean isExistedStation(List<Station> stations, Station station) {
+        return stations.stream().anyMatch(it -> it == station);
     }
 }
