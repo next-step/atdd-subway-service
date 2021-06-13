@@ -3,6 +3,7 @@ package nextstep.subway.line.application;
 import nextstep.subway.line.domain.*;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.line.dto.LineResponses;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -32,10 +33,8 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    public List<LineResponse> findLines() {
-        Lines lines = new Lines(lineRepository.findAll());
-
-        return lines.toResponses();
+    public LineResponses findLines() {
+        return new LineResponses(lineRepository.findAll());
     }
 
     public Line findLineById(Long id) {

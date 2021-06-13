@@ -117,7 +117,8 @@ class LineServiceTest {
         lineService.addLineStation(분당_웅답.getId(), new SectionRequest(수진역.getId(), 태평역.getId(), 3));
 
         // when
-        List<LineResponse> lineResponses = lineService.findLines();
+        List<LineResponse> lineResponses = lineService.findLines()
+                .toCollection();
 
         // then
         assertAll(
