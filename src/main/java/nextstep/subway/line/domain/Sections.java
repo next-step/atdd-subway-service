@@ -8,6 +8,7 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 @Embeddable
 public class Sections {
@@ -75,38 +76,28 @@ public class Sections {
     }
 
     private Optional<Section> findByUpStationEquals(Station station) {
-        return sections.stream()
-                .filter(item -> item.isUpStationEquals(station))
-                .findFirst();
+        return findFirst(item -> item.isUpStationEquals(station));
     }
 
     private Optional<Section> findByDownStationEquals(Station station) {
-        return sections.stream()
-                .filter(item -> item.isDownStationEquals(station))
-                .findFirst();
+        return findFirst(item -> item.isDownStationEquals(station));
     }
 
     private boolean containsByUpStation(Section section) {
-        return sections.stream()
-                .anyMatch(item -> item.containsByUpStation(section));
+        return anyMatch(item -> item.containsByUpStation(section));
     }
 
     private boolean containsByDownStation(Section section) {
-        return sections.stream()
-                .anyMatch(item -> item.containsByDownStation(section));
+        return anyMatch(item -> item.containsByDownStation(section));
     }
 
     private void updateUpStationBySameUpStation(Section section) {
-        sections.stream()
-                .filter(item -> item.isSameUpStation(section))
-                .findFirst()
+        findFirst(item -> item.isSameUpStation(section))
                 .ifPresent(item -> item.updateUpStation(section));
     }
 
     private void updateDownStationBySameDownStation(Section section) {
-        sections.stream()
-                .filter(item -> item.isSameDownStation(section))
-                .findFirst()
+        findFirst(item -> item.isSameDownStation(section))
                 .ifPresent(item -> item.updateDownStation(section));
     }
 
@@ -117,5 +108,16 @@ public class Sections {
 
     private void remove(Section section) {
         sections.remove(section);
+    }
+
+    private Optional<Section> findFirst(Predicate<Section> predicate) {
+        return sections.stream()
+                .filter(predicate)
+                .findFirst();
+    }
+
+    private boolean anyMatch(Predicate<Section> predicate) {
+        return sections.stream()
+                .anyMatch(predicate);
     }
 }
