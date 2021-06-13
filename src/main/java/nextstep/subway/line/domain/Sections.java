@@ -14,7 +14,7 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
-    public Sections() { }
+    protected Sections() { }
 
     protected void add(Section section) {
         if (sections.isEmpty()) {
