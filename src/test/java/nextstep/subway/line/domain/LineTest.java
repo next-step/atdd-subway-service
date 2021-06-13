@@ -34,8 +34,9 @@ class LineTest {
     @DisplayName("섞여있어도 정렬하여 가져올 수 있다.")
     void 섞여있어도_정렬하여_가져올_수_있다() {
         Line line = new Line("신분당", "RED", 양재역, 판교역, 3);
-        line.addSection(판교역, 정자역, new Distance(3));
-        line.addSection(강남역, 양재역, new Distance(3));
+
+        line.addSection(new Section(판교역, 정자역, new Distance(3)));
+        line.addSection(new Section(강남역, 양재역, new Distance(3)));
 
         List<Station> stations = line.sortedStation()
                 .toCollection();
@@ -60,7 +61,7 @@ class LineTest {
     void 역을_삭제하면_새로운_구간이_반환된다() {
         // given
         Line line = new Line("신분당", "RED", 강남역, 양재역, 3);
-        line.addSection(양재역, 판교역, new Distance(5));
+        line.addSection(new Section(양재역, 판교역, new Distance(5)));
 
         // when
         line.removeStation(양재역);
@@ -78,7 +79,7 @@ class LineTest {
 
         // when
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> line.addSection(강남역, 양재역, new Distance(3)))
+                .isThrownBy(() -> line.addSection(new Section(강남역, 양재역, new Distance(3))))
                 .withMessage("이미 등록된 구간 입니다.");
     }
 
@@ -90,7 +91,7 @@ class LineTest {
 
         // when
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> line.addSection(판교역, 정자역, new Distance(3)))
+                .isThrownBy(() -> line.addSection(new Section(판교역, 정자역, new Distance(3))))
                 .withMessage("등록할 수 없는 구간 입니다.");
     }
 
@@ -103,7 +104,7 @@ class LineTest {
         Line line = new Line("신분당", "RED", 양재역, 판교역, 3);
 
         // when
-        line.addSection(강남역, 양재역, new Distance(3));
+        line.addSection(new Section(강남역, 양재역, new Distance(3)));
 
         // then
 
@@ -119,7 +120,7 @@ class LineTest {
         Line line = new Line("신분당", "RED", 양재역, 판교역, 3);
 
         // when
-        line.addSection(판교역, 정자역, new Distance(3));
+        line.addSection(new Section(판교역, 정자역, new Distance(3)));
 
         // then
 
@@ -136,7 +137,7 @@ class LineTest {
 
         // when
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> line.addSection(양재역, 정자역, new Distance(5)))
+                .isThrownBy(() -> line.addSection(new Section(양재역, 정자역, new Distance(5))))
                 .withMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
     }
 
@@ -148,7 +149,7 @@ class LineTest {
 
         // when
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> line.addSection(양재역, 정자역, new Distance(5)))
+                .isThrownBy(() -> line.addSection(new Section(양재역, 정자역, new Distance(5))))
                 .withMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
     }
 
@@ -159,7 +160,7 @@ class LineTest {
         Line line = new Line("신분당", "RED", 판교역, 정자역, 3);
 
         // when
-        line.addSection(양재역, 판교역, new Distance(1));
+        line.addSection(new Section(양재역, 판교역, new Distance(1)));
 
         // then
         assertThat(line.sortedStation().toResponses())
@@ -174,7 +175,7 @@ class LineTest {
         Line line = new Line("신분당", "RED", 양재역, 정자역, 3);
 
         // when
-        line.addSection(판교역, 정자역, new Distance(1));
+        line.addSection(new Section(판교역, 정자역, new Distance(1)));
 
         // then
         assertThat(line.sortedStation().toResponses())
