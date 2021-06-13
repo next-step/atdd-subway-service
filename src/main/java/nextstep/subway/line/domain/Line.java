@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
@@ -64,11 +65,8 @@ public class Line extends BaseEntity {
     }
 
     public void removeStation(Station station) {
-        NewSection newSection = sections.removeStation(station);
-        if (newSection != null) {
-            Section section = newSection.toSection(this);
-            sections.add(section);
-        }
+        Optional<Section> newSection = sections.removeStation(station);
+        newSection.ifPresent(item -> addSection(item));
     }
 
     public void addSection(Station upStation, Station downStation, Distance distance) {

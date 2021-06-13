@@ -46,7 +46,7 @@ public class Sections {
             updateDownStationBySameDownStation(section);
         }
     }
-    protected NewSection removeStation(Station station) {
+    protected Optional<Section> removeStation(Station station) {
         if (sections.size() <= 1) {
             throw new RuntimeException();
         }
@@ -63,15 +63,15 @@ public class Sections {
         return new SortedStations(sections);
     }
 
-    private NewSection createNewSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+    private Optional<Section> createNewSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
             Distance newDistance = upLineStation.get().getDistance().plus(downLineStation.get().getDistance());
 
-            return new NewSection(newUpStation, newDownStation, newDistance);
+            return Optional.of(new Section(newUpStation, newDownStation, newDistance));
         }
-        return null;
+        return Optional.empty();
     }
 
     private Optional<Section> findByUpStationEquals(Station station) {
