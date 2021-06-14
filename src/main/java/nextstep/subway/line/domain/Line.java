@@ -154,4 +154,27 @@ public class Line extends BaseEntity {
     private boolean isExistedStation(List<Station> stations, Station station) {
         return stations.stream().anyMatch(it -> it == station);
     }
+
+    public void removeLineSection(Station station) {
+        if (sections.size() <= 1) {
+            throw new DeleteSectionException("남은 구간이 1개이면 삭제할 수 없습니다.");
+        }
+
+        Optional<Section> upLineStation = sections.stream()
+                                                  .filter(it -> it.getUpStation() == station)
+                                                  .findFirst();
+        Optional<Section> downLineStation = sections.stream()
+                                                    .filter(it -> it.getDownStation() == station)
+                                                    .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            sections.add(new Section(this, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
+    }
 }
