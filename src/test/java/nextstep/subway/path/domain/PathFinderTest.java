@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.StationsNotConnectedException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
@@ -8,10 +9,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PathFinderTest {
 
@@ -52,7 +55,7 @@ class PathFinderTest {
 
   @DisplayName("출발역과 도착역같으면 해당 역과 거리는 0을 반환")
   @Test
-  void findShortestPathTest2() {
+  void findShortestPathWithSingleStationTest() {
     //given
     PathFinder pathFinder = PathFinder.init(wholeStations, wholeSections);
 
@@ -61,6 +64,25 @@ class PathFinderTest {
 
     //then
     assertThat(shortestPath).isEqualTo(new Path(Arrays.asList(교대역), 0));
+  }
+
+  @DisplayName("연결되지 않은 역으로 조회")
+  @Test
+  void findShortestPathWithNotConnectedStationTest() {
+    //given
+    Station 서울역 = Station.stationStaticFactoryForTestCode(5L, "서울역");
+    Station 용산역 = Station.stationStaticFactoryForTestCode(6L, "용산역");
+    Line 일호선 = new Line("일호선", "navy", 서울역, 용산역, Distance.from(5));
+    List<Station> newWholeStations = new ArrayList<>(wholeStations);
+    newWholeStations.add(서울역);
+    newWholeStations.add(용산역);
+    Section 서울역_용산역_구간 = new Section(일호선, 서울역, 용산역, Distance.from(3));
+    List<Section> newWholeSections = new ArrayList<>(wholeSections);
+    newWholeSections.add(서울역_용산역_구간);
+    PathFinder pathFinder = PathFinder.init(newWholeStations, newWholeSections);
+
+    //when & then
+    assertThatThrownBy(() -> pathFinder.findShortestPath(교대역.getId(), 서울역.getId())).isInstanceOf(StationsNotConnectedException.class);
   }
 
 }
