@@ -11,10 +11,7 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.LinePathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.http.HttpStatus;
 
@@ -81,6 +78,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return Stream.of(
                 dynamicTest("신분당선에 정자역을 추가한다", 지하철_노선에_지하철역_등록_요청_및_확인(신분당선, 양재역, 정자역, 2)),
                 dynamicTest("정자역과 정자역을 찾는다", 지하철_최단거리_요청_및_실패(정자역, 정자역))
+        );
+    }
+
+    @TestFactory
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않을경우 실패한다")
+    Stream<DynamicTest> 출발역과_도착역이_연결이_되어_있지_않을경우_실패한다() {
+        return Stream.of(
+                dynamicTest("신분당선에 정자역을 추가한다", 지하철_노선에_지하철역_등록_요청_및_확인(신분당선, 양재역, 정자역, 2)),
+                dynamicTest("정자역과 광교역 찾는다", 지하철_최단거리_요청_및_실패(정자역, 광교역))
         );
     }
 

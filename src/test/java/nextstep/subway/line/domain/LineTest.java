@@ -256,4 +256,13 @@ class LineTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> line.calcDistanceBetween(정자역, 정자역));
     }
+
+    @Test
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않을경우 IllegalArgumentException이 발생한다")
+    void 출발역과_도착역이_연결이_되어_있지_않을경우_IllegalArgumentException이_발생한다() {
+        Line line = new Line("신분당", "RED", 양재역, 정자역, 3);
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> line.calcDistanceBetween(양재역, 판교역));
+    }
 }
