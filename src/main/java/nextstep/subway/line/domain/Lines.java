@@ -16,16 +16,17 @@ public class Lines {
     public Line findShortestLine(Station source, Station target) {
         validateFindShortDistance(source, target);
 
-        Optional<Line> minLine = lines.stream()
+        Line minLine = lines.stream()
                 .filter(item -> item.containsStationsExactly(source, target))
                 .min((l1, l2) -> {
                     Distance l1Distance = l1.calcDistanceBetween(source, target);
                     Distance l2Distance = l2.calcDistanceBetween(source, target);
 
                     return l1Distance.compareTo(l2Distance);
-                });
+                })
+                .orElseThrow(() -> new RuntimeException("최단거리가 존재하지 않습니다."));
 
-        return minLine.get();
+        return minLine;
     }
 
     private void validateFindShortDistance(Station source, Station target) {
