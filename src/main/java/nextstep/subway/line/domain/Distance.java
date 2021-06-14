@@ -33,6 +33,10 @@ public class Distance {
     return from(this.number + other.number);
   }
 
+  public int intValue() {
+    return number;
+  }
+
   public Distance subtract(Distance other) {
     return from(this.number - other.number);
   }
