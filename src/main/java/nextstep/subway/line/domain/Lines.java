@@ -16,7 +16,7 @@ public class Lines {
     public Line findShortestLine(Station source, Station target) {
         validateFindShortDistance(source, target);
 
-        Line minLine = lines.stream()
+        return lines.stream()
                 .filter(item -> item.containsStationsExactly(source, target))
                 .min((l1, l2) -> {
                     Distance l1Distance = l1.calcDistanceBetween(source, target);
@@ -25,8 +25,6 @@ public class Lines {
                     return l1Distance.compareTo(l2Distance);
                 })
                 .orElseThrow(() -> new RuntimeException("최단거리가 존재하지 않습니다."));
-
-        return minLine;
     }
 
     private void validateFindShortDistance(Station source, Station target) {
