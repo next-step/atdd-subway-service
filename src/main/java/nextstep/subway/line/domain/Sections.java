@@ -35,7 +35,23 @@ public class Sections {
         sections.add(section);
     }
 
-    public boolean containsStationsExactly(Station[] stations) {
+    public Optional<Distance> calcDistanceBetween(Station source, Station target) {
+        if (!containsStationsExactly(source, target)) {
+            return Optional.empty();
+        }
+
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+
+        sections.stream()
+                .forEach(item -> item.prepareShortestDistance(graph));
+
+        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        GraphPath path = dijkstraShortestPath.getPath(source, target);
+
+        return Optional.of(new Distance(path.getWeight()));
+    }
+
+    public boolean containsStationsExactly(Station ...stations) {
         return Arrays.stream(stations)
                 .allMatch(item -> containsStation(item));
     }
@@ -134,17 +150,5 @@ public class Sections {
     private boolean anyMatch(Predicate<Section> predicate) {
         return sections.stream()
                 .anyMatch(predicate);
-    }
-
-    public Distance calcDistanceBetween(Station source, Station target) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-
-        sections.stream()
-                .forEach(item -> item.prepareShortestDistance(graph));
-
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath path = dijkstraShortestPath.getPath(source, target);
-
-        return new Distance(path.getWeight());
     }
 }

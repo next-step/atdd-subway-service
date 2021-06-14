@@ -214,14 +214,14 @@ class LineTest {
     }
 
     @Test
-    @DisplayName("없는 역이면 IllegalArgumentException이 발생한다")
-    void 없는_역이면_IllegalArgumentException이_발생한다() {
+    @DisplayName("없는 역이면 Optiona_empty가 반환된다")
+    void 없는_역이면_Optional_empty가_반환된다() {
         Line line = new Line("신분당", "RED", 양재역, 정자역, 3);
 
         line.addSection(new Section(판교역, 정자역, new Distance(1)));
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> line.calcDistanceBetween(판교역, 강남역));
+        assertThat(line.calcDistanceBetween(판교역, 강남역))
+                .isNotPresent();
     }
 
     @Test
@@ -231,18 +231,18 @@ class LineTest {
 
         line.addSection(new Section(판교역, 정자역, new Distance(1)));
 
-        assertThat(line.calcDistanceBetween(양재역, 정자역))
+        assertThat(line.calcDistanceBetween(양재역, 정자역).get())
                 .isEqualTo(new Distance(3));
-        assertThat(line.calcDistanceBetween(판교역, 정자역))
+        assertThat(line.calcDistanceBetween(판교역, 정자역).get())
                 .isEqualTo(new Distance(1));
-        assertThat(line.calcDistanceBetween(양재역, 판교역))
+        assertThat(line.calcDistanceBetween(양재역, 판교역).get())
                 .isEqualTo(new Distance(2));
 
-        assertThat(line.calcDistanceBetween(정자역, 양재역))
+        assertThat(line.calcDistanceBetween(정자역, 양재역).get())
                 .isEqualTo(new Distance(3));
-        assertThat(line.calcDistanceBetween(정자역, 판교역))
+        assertThat(line.calcDistanceBetween(정자역, 판교역).get())
                 .isEqualTo(new Distance(1));
-        assertThat(line.calcDistanceBetween(판교역, 양재역))
+        assertThat(line.calcDistanceBetween(판교역, 양재역).get())
                 .isEqualTo(new Distance(2));
     }
 }
