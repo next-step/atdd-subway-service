@@ -13,14 +13,16 @@ public class Lines {
     }
 
     public Line findShortDistance(Station source, Station target) {
-//        lines.stream()
-//                .filter(item -> item.containsStationsExactly(source, target))
-//                .min((l1, l2) -> {
-//                    l1.calcDistance(source, target, )
-//                })
-//                .min
+        validateFindShortDistance(source, target);
 
         return null;
+    }
+
+    private void validateFindShortDistance(Station source, Station target) {
+        if (!lines.stream()
+                .anyMatch(item -> item.containsStationsExactly(source, target))) {
+            throw new IllegalArgumentException("포함되지 않은 역이 있습니다.");
+        }
     }
 
 }

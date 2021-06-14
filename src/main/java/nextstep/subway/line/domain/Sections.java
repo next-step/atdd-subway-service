@@ -35,9 +35,9 @@ public class Sections {
         sections.add(section);
     }
 
-    public Optional<Distance> calcDistanceBetween(Station source, Station target) {
+    protected Distance calcDistanceBetween(Station source, Station target) {
         if (!containsStationsExactly(source, target)) {
-            return Optional.empty();
+            throw new IllegalArgumentException("포함되지 않은 역이 있습니다.");
         }
 
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
@@ -48,10 +48,10 @@ public class Sections {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         GraphPath path = dijkstraShortestPath.getPath(source, target);
 
-        return Optional.of(new Distance(path.getWeight()));
+        return new Distance(path.getWeight());
     }
 
-    public boolean containsStationsExactly(Station ...stations) {
+    protected boolean containsStationsExactly(Station ...stations) {
         return Arrays.stream(stations)
                 .allMatch(item -> containsStation(item));
     }
