@@ -58,4 +58,8 @@ public class Distance {
     public int hashCode() {
         return Objects.hash(distance);
     }
+
+    public int compareTo(Distance l2Distance) {
+        return Long.compare(this.distance, l2Distance.distance);
+    }
 }
