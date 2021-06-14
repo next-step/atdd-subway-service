@@ -61,6 +61,10 @@ public class Line extends BaseEntity {
         if (!sections.containsStationsExactly(source, distance)) {
             throw new IllegalArgumentException("포함되지 않은 역이 있습니다.");
         }
+
+        if (source == distance) {
+            throw new IllegalArgumentException("같은 역끼리는 길을 찾을 수 없습니다.");
+        }
     }
 
     public void update(Line line) {

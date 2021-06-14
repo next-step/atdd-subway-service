@@ -245,4 +245,15 @@ class LineTest {
         assertThat(line.calcDistanceBetween(판교역, 양재역))
                 .isEqualTo(new Distance(2));
     }
+
+    @Test
+    @DisplayName("같은 역끼리 찾으려 하면 IllegalArgumentException이 발생한다")
+    void 같은_역끼리_찾으려_하면_IllegalArgumentException이_발생한다() {
+        Line line = new Line("신분당", "RED", 양재역, 정자역, 3);
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> line.calcDistanceBetween(양재역, 양재역));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> line.calcDistanceBetween(정자역, 정자역));
+    }
 }

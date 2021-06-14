@@ -75,6 +75,31 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @TestFactory
+    @DisplayName("같은 역끼리의 최단거리는 찾지 못한다")
+    Stream<DynamicTest> 같은_역끼리의_최단거리는_찾지_못한다() {
+        return Stream.of(
+                dynamicTest("신분당선에 정자역을 추가한다", 지하철_노선에_지하철역_등록_요청_및_확인(신분당선, 양재역, 정자역, 2)),
+                dynamicTest("정자역과 정자역을 찾는다", 지하철_최단거리_요청_및_실패(정자역, 정자역))
+        );
+    }
+
+    private Executable 지하철_최단거리_요청_및_실패(StationResponse source, StationResponse target) {
+        return () -> {
+            ExtractableResponse<Response> response = RestAssured.given().log().all()
+                    .param("source", source.getId())
+                    .param("target", target.getId())
+                    .accept(ContentType.JSON)
+                    .contentType(ContentType.JSON)
+                    .when().log().all()
+                    .get("/paths")
+                    .then().log().all()
+                    .extract();
+
+            지하철_최단거리_실패됨(response);
+        };
+    }
+
     private Executable 지하철_최단거리_요청_및_확인(StationResponse source, StationResponse target, List<StationResponse> exceptStations, int exceptDistance) {
         return () -> {
             ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -96,6 +121,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private void 지하철_최단거리_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(LinePathResponse.class)).isNotNull();
+    }
+
+    private void 지하철_최단거리_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     private void 지하철_최단거리_검증(ExtractableResponse<Response> response, List<StationResponse> exceptStations, int exceptDistance) {
