@@ -7,12 +7,10 @@ import nextstep.subway.path.dto.LinePathRequest;
 import nextstep.subway.path.dto.LinePathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Arrays;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,7 +29,7 @@ public class LinePathQueryService {
         Station source = findStationById(linePathRequest.getSource());
         Station target = findStationById(linePathRequest.getTarget());
 
-        Line shortDistance = lines.findShortDistance(source, target);
+        Line shortDistance = lines.findShortestLine(source, target);
 
         return new LinePathResponse(shortDistance, source, target);
     }

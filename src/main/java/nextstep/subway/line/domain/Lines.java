@@ -13,7 +13,7 @@ public class Lines {
         this.lines = new ArrayList<>(lines);
     }
 
-    public Line findShortDistance(Station source, Station target) {
+    public Line findShortestLine(Station source, Station target) {
         validateFindShortDistance(source, target);
 
         Optional<Line> minLine = lines.stream()

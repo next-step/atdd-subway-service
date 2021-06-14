@@ -1,17 +1,11 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.line.dto.LineRequest;
-import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.line.dto.StationResponses;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -41,7 +35,7 @@ class LinesTest {
         Lines lines = new Lines(Arrays.asList(신분당선, 분당선));
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> lines.findShortDistance(강남역, 양재역));
+                .isThrownBy(() -> lines.findShortestLine(강남역, 양재역));
     }
 
     @Test
@@ -57,8 +51,8 @@ class LinesTest {
 
         Lines lines = new Lines(Arrays.asList(신분당선, 이호선, 삼호선));
 
-        Line shortDistance = lines.findShortDistance(강남역, 광교역);
-        
+        Line shortDistance = lines.findShortestLine(강남역, 광교역);
+
         assertThat(shortDistance)
                 .isEqualTo(삼호선);
     }

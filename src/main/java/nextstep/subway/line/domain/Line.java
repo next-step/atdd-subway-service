@@ -46,7 +46,7 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Stations getShortestRoute(Station source, Station target) {
+    public Stations findShortestRoute(Station source, Station target) {
         validateShortestRoute(source, target);
 
         return new Stations(sections.getShortestRoute(source, target));

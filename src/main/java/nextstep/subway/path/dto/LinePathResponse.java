@@ -16,7 +16,7 @@ public class LinePathResponse {
 
     public LinePathResponse(Line shortDistance, Station source, Station target) {
         this.distance = shortDistance.calcDistanceBetween(source, target).toInt();
-        this.stations = new StationResponses(shortDistance.getShortestRoute(source, target))
+        this.stations = new StationResponses(shortDistance.findShortestRoute(source, target))
                 .toCollection();
     }
 

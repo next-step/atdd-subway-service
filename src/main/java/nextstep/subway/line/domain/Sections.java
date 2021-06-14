@@ -51,12 +51,6 @@ public class Sections {
         return new Distance(path.getWeight());
     }
 
-    private void validateShortestRoute(Station source, Station target) {
-        if (!containsStationsExactly(source, target)) {
-            throw new IllegalArgumentException("포함되지 않은 역이 있습니다.");
-        }
-    }
-
     protected boolean containsStationsExactly(Station ...stations) {
         return Arrays.stream(stations)
                 .allMatch(item -> containsStation(item));
@@ -92,6 +86,12 @@ public class Sections {
             return Optional.of(new Section(newUpStation, newDownStation, newDistance));
         }
         return Optional.empty();
+    }
+
+    private void validateShortestRoute(Station source, Station target) {
+        if (!containsStationsExactly(source, target)) {
+            throw new IllegalArgumentException("포함되지 않은 역이 있습니다.");
+        }
     }
 
     private void validateAdd(Section section) {
