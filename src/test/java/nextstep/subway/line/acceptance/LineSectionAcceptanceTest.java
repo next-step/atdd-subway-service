@@ -107,4 +107,22 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         // then
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
+
+    @DisplayName("지하철 구간을 관리")
+    @Test
+    void manage_the_section() {
+        ExtractableResponse<Response> 등록된_구간 = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
+
+        지하철_노선에_지하철역_등록됨(등록된_구간);
+
+        ExtractableResponse<Response> 조회된_구간 = 지하철_노선_조회_요청(신분당선);
+
+        지하철_노선에_지하철역_순서_정렬됨(조회된_구간, Arrays.asList(강남역, 양재역, 광교역));
+
+        지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+
+        ExtractableResponse<Response> 제거후_조회된_구간 = 지하철_노선_조회_요청(신분당선);
+
+        지하철_노선에_지하철역_순서_정렬됨(제거후_조회된_구간, Arrays.asList(강남역, 광교역));
+    }
 }
