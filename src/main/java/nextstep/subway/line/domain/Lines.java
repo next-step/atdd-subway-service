@@ -4,7 +4,6 @@ import nextstep.subway.station.domain.Station;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class Lines {
     private final List<Line> lines;
@@ -28,8 +27,8 @@ public class Lines {
     }
 
     private void validateFindShortDistance(Station source, Station target) {
-        if (!lines.stream()
-                .anyMatch(item -> item.containsStationsExactly(source, target))) {
+        if (lines.stream()
+                .noneMatch(item -> item.containsStationsExactly(source, target))) {
             throw new IllegalArgumentException("포함되지 않은 역이 있습니다.");
         }
     }
