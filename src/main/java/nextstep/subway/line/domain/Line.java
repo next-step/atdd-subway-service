@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -45,10 +46,10 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public List<Station> getShortestRoute(Station source, Station target) {
+    public Stations getShortestRoute(Station source, Station target) {
         validateShortestRoute(source, target);
 
-        return sections.getShortestRoute(source, target);
+        return new Stations(sections.getShortestRoute(source, target));
     }
 
     public Distance calcDistanceBetween(Station source, Station distance) {

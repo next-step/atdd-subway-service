@@ -2,6 +2,7 @@ package nextstep.subway.line.dto;
 
 import nextstep.subway.line.domain.SortedStations;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 import nextstep.subway.station.dto.StationResponse;
 
 import java.util.Collections;
@@ -14,6 +15,10 @@ public class StationResponses {
 
     public StationResponses(SortedStations sortedStation) {
         this(sortedStation.toCollection());
+    }
+
+    public StationResponses(Stations stations) {
+        this(stations.toCollection());
     }
 
     public StationResponses(List<Station> stations) {
