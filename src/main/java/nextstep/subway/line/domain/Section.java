@@ -78,6 +78,12 @@ public class Section {
         this.distance = this.distance.minus(section.distance);
     }
 
+    protected void prepareShortestDistance(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        graph.addVertex(getUpStation());
+        graph.addVertex(getDownStation());
+        graph.setEdgeWeight(graph.addEdge(upStation, downStation), getDistance().toLong());
+    }
+
     protected Station getUpStation() {
         return upStation;
     }

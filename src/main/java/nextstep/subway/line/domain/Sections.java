@@ -137,19 +137,13 @@ public class Sections {
     }
 
     public Distance calcDistanceBetween(Station source, Station target) {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
         sections.stream()
-                .forEach(item -> {
-                    graph.addVertex(item.getUpStation().getName());
-                    graph.addVertex(item.getDownStation().getName());
-                    graph.setEdgeWeight(graph.addEdge(item.getUpStation().getName(), item.getDownStation().getName()), item.getDistance().toLong());
-                });
-
-
+                .forEach(item -> item.prepareShortestDistance(graph));
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath path = dijkstraShortestPath.getPath(source.getName(), target.getName());
+        GraphPath path = dijkstraShortestPath.getPath(source, target);
 
         return new Distance(path.getWeight());
     }
