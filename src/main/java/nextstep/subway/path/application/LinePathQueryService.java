@@ -28,14 +28,12 @@ public class LinePathQueryService {
     public LinePathResponse findShortDistance(LinePathRequest linePathRequest) {
         Lines lines = findAll();
 
-        Line shortDistance = lines.findShortDistance(findStationById(linePathRequest.getSource()), findStationById(linePathRequest.getTarget()));
-        return new LinePathResponse(
-                Arrays.asList(
-                        new StationResponse(1L, null, null, null),
-                        new StationResponse(4L, null, null, null)
-                ),
-                3
-        );
+        Station source = findStationById(linePathRequest.getSource());
+        Station target = findStationById(linePathRequest.getTarget());
+
+        Line shortDistance = lines.findShortDistance(source, target);
+
+        return new LinePathResponse(shortDistance, source, target);
     }
 
     private Lines findAll() {

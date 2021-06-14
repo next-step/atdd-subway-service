@@ -13,6 +13,14 @@ public class LinePathRequest {
         this.target = target;
     }
 
+    public void setSource(Long source) {
+        this.source = source;
+    }
+
+    public void setTarget(Long target) {
+        this.target = target;
+    }
+
     public Long getSource() {
         return source;
     }

@@ -107,7 +107,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertThat(pathResponse.getStations())
                 .map(StationResponse::getId)
-                .containsExactlyElementsOf(exceptStationIds);
+                .containsExactlyInAnyOrderElementsOf(exceptStationIds);
 
         assertThat(pathResponse.getDistance())
                 .isEqualTo(exceptDistance);

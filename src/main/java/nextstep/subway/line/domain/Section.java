@@ -5,10 +5,6 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Predicate;
 
 @Entity
 public class Section {
@@ -81,7 +77,7 @@ public class Section {
     protected void prepareShortestDistance(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         graph.addVertex(getUpStation());
         graph.addVertex(getDownStation());
-        graph.setEdgeWeight(graph.addEdge(upStation, downStation), getDistance().toLong());
+        graph.setEdgeWeight(graph.addEdge(upStation, downStation), getDistance().toInt());
     }
 
     protected Station getUpStation() {

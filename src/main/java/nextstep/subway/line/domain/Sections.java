@@ -35,20 +35,26 @@ public class Sections {
         sections.add(section);
     }
 
+    public List<Station> getShortestRoute(Station source, Station target) {
+        validateShortestRoute(source, target);
+
+        GraphPath shortestGraph = getShortestGraph(source, target);
+
+        return shortestGraph.getVertexList();
+    }
+
     protected Distance calcDistanceBetween(Station source, Station target) {
+        validateShortestRoute(source, target);
+
+        GraphPath path = getShortestGraph(source, target);
+
+        return new Distance(path.getWeight());
+    }
+
+    private void validateShortestRoute(Station source, Station target) {
         if (!containsStationsExactly(source, target)) {
             throw new IllegalArgumentException("포함되지 않은 역이 있습니다.");
         }
-
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-
-        sections.stream()
-                .forEach(item -> item.prepareShortestDistance(graph));
-
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath path = dijkstraShortestPath.getPath(source, target);
-
-        return new Distance(path.getWeight());
     }
 
     protected boolean containsStationsExactly(Station ...stations) {
@@ -150,5 +156,16 @@ public class Sections {
     private boolean anyMatch(Predicate<Section> predicate) {
         return sections.stream()
                 .anyMatch(predicate);
+    }
+
+    private GraphPath getShortestGraph(Station source, Station target) {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+
+        sections.stream()
+                .forEach(item -> item.prepareShortestDistance(graph));
+
+        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        GraphPath path = dijkstraShortestPath.getPath(source, target);
+        return path;
     }
 }

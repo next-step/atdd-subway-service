@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.List;
 import java.util.Optional;
 
 @Entity
@@ -44,12 +45,22 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
+    public List<Station> getShortestRoute(Station source, Station target) {
+        validateShortestRoute(source, target);
+
+        return sections.getShortestRoute(source, target);
+    }
+
     public Distance calcDistanceBetween(Station source, Station distance) {
+        validateShortestRoute(source, distance);
+
+        return sections.calcDistanceBetween(source, distance);
+    }
+
+    private void validateShortestRoute(Station source, Station distance) {
         if (!sections.containsStationsExactly(source, distance)) {
             throw new IllegalArgumentException("포함되지 않은 역이 있습니다.");
         }
-
-        return sections.calcDistanceBetween(source, distance);
     }
 
     public void update(Line line) {

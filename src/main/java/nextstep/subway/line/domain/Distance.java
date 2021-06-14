@@ -42,7 +42,7 @@ public class Distance {
         }
     }
 
-    protected long toLong() {
+    public int toInt() {
        return this.distance;
     }
 
