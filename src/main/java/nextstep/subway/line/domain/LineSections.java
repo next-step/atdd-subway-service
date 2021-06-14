@@ -43,11 +43,6 @@ public class LineSections {
             throw new AddSectionException("등록할 수 없는 구간 입니다.");
         }
 
-        if (stations.isEmpty()) {
-            sections.add(section);
-            return;
-        }
-
         int distance = section.getDistance();
 
         if (isUpStationExisted) {
