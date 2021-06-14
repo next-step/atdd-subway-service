@@ -215,12 +215,34 @@ class LineTest {
 
     @Test
     @DisplayName("없는 역이면 IllegalArgumentException이 발생한다")
-    void calcDistanceBetween() {
+    void 없는_역이면_IllegalArgumentException이_발생한다() {
         Line line = new Line("신분당", "RED", 양재역, 정자역, 3);
 
         line.addSection(new Section(판교역, 정자역, new Distance(1)));
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> line.calcDistanceBetween(판교역, 강남역));
+    }
+
+    @Test
+    @DisplayName("역끼리의 거리를 측정할 수 있다.")
+    void 역끼리의_거리를_측정할_수_있다() {
+        Line line = new Line("신분당", "RED", 양재역, 정자역, 3);
+
+        line.addSection(new Section(판교역, 정자역, new Distance(1)));
+
+        assertThat(line.calcDistanceBetween(양재역, 정자역))
+                .isEqualTo(new Distance(3));
+        assertThat(line.calcDistanceBetween(판교역, 정자역))
+                .isEqualTo(new Distance(1));
+        assertThat(line.calcDistanceBetween(양재역, 판교역))
+                .isEqualTo(new Distance(2));
+
+        assertThat(line.calcDistanceBetween(정자역, 양재역))
+                .isEqualTo(new Distance(3));
+        assertThat(line.calcDistanceBetween(정자역, 판교역))
+                .isEqualTo(new Distance(1));
+        assertThat(line.calcDistanceBetween(판교역, 양재역))
+                .isEqualTo(new Distance(2));
     }
 }

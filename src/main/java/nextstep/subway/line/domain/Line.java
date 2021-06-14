@@ -49,7 +49,7 @@ public class Line extends BaseEntity {
             throw new IllegalArgumentException("존재하지 않는 역이 있습니다.");
         }
 
-        return new Distance(3);
+        return sections.calcDistanceBetween(source, distance);
     }
 
     public void update(Line line) {

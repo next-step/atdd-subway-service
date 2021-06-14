@@ -1,6 +1,8 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -120,5 +122,9 @@ public class Section {
         if (distance.isLessThen(section.distance)) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
+    }
+
+    public void addEdge(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
+        graph.addEdge(this.upStation.getName(), this.downStation.getName());
     }
 }

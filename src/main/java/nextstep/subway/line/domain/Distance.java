@@ -14,6 +14,10 @@ public class Distance {
     protected Distance() {
     }
 
+    public Distance(double weight) {
+        this((int) weight);
+    }
+
     public Distance(int distance) {
         validate(distance);
 
@@ -36,6 +40,10 @@ public class Distance {
         if (distance < MINIMUM_DISTANCE) {
             throw new IllegalArgumentException(format("최소 거리는 %d 이상이여야 합니다", MINIMUM_DISTANCE));
         }
+    }
+
+    protected long toLong() {
+       return this.distance;
     }
 
     @Override
