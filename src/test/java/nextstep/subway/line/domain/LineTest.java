@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.line.dto.StationResponses;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -108,7 +109,7 @@ class LineTest {
 
         // then
 
-        assertThat(line.sortedStation().toResponses())
+        assertThat(new StationResponses(line.sortedStation()).toCollection())
                 .map(StationResponse::getId)
                 .containsExactly(강남역.getId(), 양재역.getId(), 판교역.getId());
     }
@@ -124,7 +125,7 @@ class LineTest {
 
         // then
 
-        assertThat(line.sortedStation().toResponses())
+        assertThat(new StationResponses(line.sortedStation()).toCollection())
                 .map(StationResponse::getId)
                 .containsExactly(강남역.getId(), 양재역.getId(), 판교역.getId());
     }
@@ -163,7 +164,7 @@ class LineTest {
         line.addSection(new Section(양재역, 판교역, new Distance(1)));
 
         // then
-        assertThat(line.sortedStation().toResponses())
+        assertThat(new StationResponses(line.sortedStation()).toCollection())
                 .map(StationResponse::getId)
                 .containsExactly(양재역.getId(), 판교역.getId(), 정자역.getId());
     }
@@ -178,7 +179,7 @@ class LineTest {
         line.addSection(new Section(판교역, 정자역, new Distance(1)));
 
         // then
-        assertThat(line.sortedStation().toResponses())
+        assertThat(new StationResponses(line.sortedStation()).toCollection())
                 .map(StationResponse::getId)
                 .containsExactly(양재역.getId(), 판교역.getId(), 정자역.getId());
     }

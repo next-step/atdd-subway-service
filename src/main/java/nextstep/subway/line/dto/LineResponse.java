@@ -3,6 +3,7 @@ package nextstep.subway.line.dto;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineColor;
 import nextstep.subway.line.domain.LineName;
+import nextstep.subway.line.domain.SortedStations;
 import nextstep.subway.station.dto.StationResponse;
 
 import java.time.LocalDateTime;
@@ -30,7 +31,11 @@ public class LineResponse {
     }
 
     public static LineResponse of(Line line) {
-        return of(line, line.sortedStation().toResponses());
+        return of(line, new StationResponses(line.sortedStation()).toCollection());
+    }
+
+    public static LineResponse of(Line line, StationResponses stationResponses) {
+        return of(line, stationResponses.toCollection());
     }
 
     public static LineResponse of(Line line, List<StationResponse> stations) {
