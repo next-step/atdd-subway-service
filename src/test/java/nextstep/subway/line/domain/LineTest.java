@@ -72,9 +72,44 @@ class LineTest {
     @DisplayName("구간 등록 실패 - 기존 구간에 포함되어 있지 않는 상/하행역")
     @Test
     void addSectionFailTest03() {
-        Line line = new Line("name", "color",upStation, downStation, 100);
+        Line line = new Line("name", "color", upStation, downStation, 100);
         assertThatExceptionOfType(AddSectionException.class).isThrownBy(
             () -> line.addSection(new Section(line, new Station("다른 상행역"), new Station("다른 하행역"), 100))
+        );
+    }
+
+    @DisplayName("구간 삭제 성공")
+    @Test
+    void removeLineSectionSuccessTest01() {
+        Line line = new Line("name", "color", upStation, downStation, 100);
+        line.addSection(new Section(line, upStation, middleStation, 50));
+        line.removeLineSection(middleStation);
+
+        assertThat(line.getStations()).containsExactly(upStation, downStation);
+    }
+
+    @DisplayName("구간 삭제 성공")
+    @Test
+    void removeLineSectionSuccessTest02() {
+        Line line = new Line("name", "color", upStation, downStation, 100);
+
+        Station lastStation = new Station("real real last station");
+        Section lastSection = new Section(line, downStation, lastStation, 70);
+
+        line.addSection(new Section(line, upStation, middleStation, 50));
+        line.addSection(lastSection);
+
+        line.removeLineSection(middleStation);
+        assertThat(line.getStations()).containsExactly(upStation, downStation, lastStation);
+        assertThat(line.getSections()).contains(lastSection);
+    }
+
+    @DisplayName("구간 삭제 실패 - 남은 구간이 하나")
+    @Test
+    void removeLineSectionFailTest() {
+        Line line = new Line("name", "color", upStation, downStation, 100);
+        assertThatExceptionOfType(DeleteSectionException.class).isThrownBy(
+            () -> line.removeLineSection(middleStation)
         );
     }
 }
