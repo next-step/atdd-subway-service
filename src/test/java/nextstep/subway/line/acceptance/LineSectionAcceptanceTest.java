@@ -141,6 +141,5 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
         //then
         지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 정자역));
-
     }
 }

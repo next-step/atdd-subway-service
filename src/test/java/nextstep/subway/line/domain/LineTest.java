@@ -33,7 +33,6 @@ public class LineTest {
         대치역 = new Station("대치역");
 
         삼호선 = new Line("3호선", "red", 대치역, 학여울역, 10);
-
     }
 
     @DisplayName("역 리스트 만들기")
