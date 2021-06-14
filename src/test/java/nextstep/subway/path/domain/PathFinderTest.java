@@ -40,7 +40,7 @@ class PathFinderTest {
     wholeSections = Arrays.asList(강남_양재_구간, 교대_강남_구간, 교대_남부터미널_구간, 남부터미널_양재_구간);
   }
 
-  @DisplayName("출발역에서 도착역까지 최단거리로 갈 수 있는 역들을 반환한다.")
+  @DisplayName("출발역에서 도착역까지 최단거리로 갈 수 있는 역들을 조회")
   @Test
   void findShortestPathTest() {
     //given
@@ -53,7 +53,7 @@ class PathFinderTest {
     assertThat(shortestPath).isEqualTo(new Path(Arrays.asList(교대역, 남부터미널역, 양재역), 5));
   }
 
-  @DisplayName("출발역과 도착역같으면 해당 역과 거리는 0을 반환")
+  @DisplayName("출발역과 도착역을 같은 역으로 조회")
   @Test
   void findShortestPathWithSingleStationTest() {
     //given
@@ -66,7 +66,7 @@ class PathFinderTest {
     assertThat(shortestPath).isEqualTo(new Path(Arrays.asList(교대역), 0));
   }
 
-  @DisplayName("연결되지 않은 역으로 조회")
+  @DisplayName("연결되지 않은 역과의 최단거리를 조회")
   @Test
   void findShortestPathWithNotConnectedStationTest() {
     //given
@@ -83,6 +83,17 @@ class PathFinderTest {
 
     //when & then
     assertThatThrownBy(() -> pathFinder.findShortestPath(교대역.getId(), 서울역.getId())).isInstanceOf(StationsNotConnectedException.class);
+  }
+
+  @DisplayName("존재하지 않는 역과의 최단거리를 조회")
+  @Test
+  void findShortestPathWithNoneExistStationTest() {
+    //given
+    Station 서울역 = Station.stationStaticFactoryForTestCode(5L, "서울역");
+    PathFinder pathFinder = PathFinder.init(wholeStations, wholeSections);
+
+    //when & then
+    assertThatThrownBy(() -> pathFinder.findShortestPath(교대역.getId(), 서울역.getId())).isInstanceOf(StationNotExistException.class);
   }
 
 }
