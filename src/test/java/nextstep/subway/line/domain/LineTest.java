@@ -35,9 +35,7 @@ class LineTest {
         Line line = new Line("name", "color", upStation, downStation, 100);
         line.addSection(new Section(line, upStation, middleStation, 50));
 
-        assertThat(line.getStations()).containsExactly(upStation,
-                                                       middleStation,
-                                                       downStation);
+        assertThat(line.getStations()).containsExactly(upStation, middleStation, downStation);
     }
 
     @DisplayName("구간 등록 성공 - 구 상행역에 새로운 상행역을 등록")
@@ -46,9 +44,7 @@ class LineTest {
         Line line = new Line("name", "color", middleStation, downStation, 100);
         line.addSection(new Section(line, upStation, middleStation, 50));
 
-        assertThat(line.getStations()).containsExactly(upStation,
-                                                       middleStation,
-                                                       downStation);
+        assertThat(line.getStations()).containsExactly(upStation, middleStation, downStation);
     }
 
     @DisplayName("구간 등록 실패 - 기존 구간 사이에 등록하는 경우 기존 구간보다 더 긴 새 구간 등록 불가")
@@ -78,17 +74,17 @@ class LineTest {
         );
     }
 
-    @DisplayName("구간 삭제 성공")
+    @DisplayName("구간 삭제 성공 - 중간 역 삭제 시 새 구간 생성")
     @Test
     void removeLineSectionSuccessTest01() {
         Line line = new Line("name", "color", upStation, downStation, 100);
         line.addSection(new Section(line, upStation, middleStation, 50));
-        line.removeLineSection(middleStation);
+        line.removeSection(middleStation);
 
         assertThat(line.getStations()).containsExactly(upStation, downStation);
     }
 
-    @DisplayName("구간 삭제 성공")
+    @DisplayName("구간 삭제 성공 - 하행 삭제")
     @Test
     void removeLineSectionSuccessTest02() {
         Line line = new Line("name", "color", upStation, downStation, 100);
@@ -99,7 +95,7 @@ class LineTest {
         line.addSection(new Section(line, upStation, middleStation, 50));
         line.addSection(lastSection);
 
-        line.removeLineSection(middleStation);
+        line.removeSection(middleStation);
         assertThat(line.getStations()).containsExactly(upStation, downStation, lastStation);
         assertThat(line.getSections()).contains(lastSection);
     }
@@ -109,7 +105,7 @@ class LineTest {
     void removeLineSectionFailTest() {
         Line line = new Line("name", "color", upStation, downStation, 100);
         assertThatExceptionOfType(DeleteSectionException.class).isThrownBy(
-            () -> line.removeLineSection(middleStation)
+            () -> line.removeSection(middleStation)
         );
     }
 }
