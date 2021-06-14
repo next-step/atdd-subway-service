@@ -22,12 +22,20 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    private Distance distance;
 
-    public Section() {
+    protected Section() {
+    }
+
+    public Section(Station upStation, Station downStation, Distance distance) {
+        this(null, upStation, downStation, distance);
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
+        this(line, upStation, downStation, new Distance(distance));
+    }
+
+    public Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -42,31 +50,67 @@ public class Section {
         return line;
     }
 
-    public Station getUpStation() {
-        return upStation;
-    }
-
-    public Station getDownStation() {
-        return downStation;
-    }
-
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
+    protected void changeLine(Line line) {
+        this.line = line;
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
+    protected void updateUpStation(Section section) {
+        validateDistance(section);
+
+        this.upStation = section.downStation;
+        this.distance = this.distance.minus(section.distance);
+    }
+
+    protected void updateDownStation(Section section) {
+        validateDistance(section);
+
+        this.downStation = section.upStation;
+        this.distance = this.distance.minus(section.distance);
+    }
+
+    protected Station getUpStation() {
+        return upStation;
+    }
+
+    protected Station getDownStation() {
+        return downStation;
+    }
+
+    public boolean isUpStationEquals(Station station) {
+        return this.upStation == station;
+    }
+
+    public boolean isDownStationEquals(Station station) {
+        return this.downStation == station;
+    }
+
+    public boolean isSameDownStation(Section section) {
+        return this.downStation == section.downStation;
+    }
+
+    public boolean isSameUpStation(Section section) {
+        return this.upStation == section.upStation;
+    }
+
+    public boolean isDownStationEqualsUpStationBy(Section section) {
+        return this.downStation == section.upStation;
+    }
+
+    public boolean containsByUpStation(Section section) {
+        return this.upStation == section.upStation || this.downStation == section.upStation;
+    }
+
+    public boolean containsByDownStation(Section section) {
+        return this.upStation == section.downStation || this.downStation == section.downStation;
+    }
+
+    private void validateDistance(Section section) {
+        if (distance.isLessThen(section.distance)) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.downStation = station;
-        this.distance -= newDistance;
     }
 }

@@ -3,34 +3,45 @@ package nextstep.subway.line.domain;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
-    private String name;
-    private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    private LineName name;
+    private LineColor color;
 
-    public Line() {
+    private Sections sections = new Sections();
+
+    protected Line() {
     }
 
     public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
+        this(new LineName(name), new LineColor(color));
+    }
+
+    public Line(String name, String color, Section section) {
+        this(name, color);
+
+        addSection(section);
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
+        this(new LineName(name), new LineColor(color));
+
+        addSection(new Section(this, upStation, downStation, new Distance(distance)));
+    }
+
+    public Line(LineName name, LineColor color) {
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {
@@ -42,15 +53,25 @@ public class Line extends BaseEntity {
         return id;
     }
 
-    public String getName() {
+    public LineName getName() {
         return name;
     }
 
-    public String getColor() {
+    public LineColor getColor() {
         return color;
     }
 
-    public List<Section> getSections() {
-        return sections;
+    public SortedStations sortedStation() {
+        return sections.toSortedStations();
+    }
+
+    public void removeStation(Station station) {
+        Optional<Section> newSection = sections.removeStation(station);
+        newSection.ifPresent(item -> addSection(item));
+    }
+
+    public void addSection(Section section) {
+        section.changeLine(this);
+        sections.add(section);
     }
 }
