@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.StationNotExistException;
 import nextstep.subway.exception.StationsNotConnectedException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
