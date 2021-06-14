@@ -14,7 +14,11 @@ public class Lines {
 
     public Line findShortDistance(Station source, Station target) {
 //        lines.stream()
-//                .map()
+//                .filter(item -> item.containsStationsExactly(source, target))
+//                .min((l1, l2) -> {
+//                    l1.calcDistance(source, target, )
+//                })
+//                .min
 
         return null;
     }

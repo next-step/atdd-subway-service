@@ -74,4 +74,12 @@ public class Line extends BaseEntity {
         section.changeLine(this);
         sections.add(section);
     }
+
+    public boolean containsStationsExactly(Station ...stations) {
+        return sections.containsStationsExactly(stations);
+    }
+
+    public boolean containsStation(Station station) {
+        return sections.containsStation(station);
+    }
 }

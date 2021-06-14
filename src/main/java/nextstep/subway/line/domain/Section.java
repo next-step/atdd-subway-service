@@ -3,6 +3,10 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
 
 @Entity
 public class Section {
@@ -106,6 +110,10 @@ public class Section {
 
     public boolean containsByDownStation(Section section) {
         return this.upStation == section.downStation || this.downStation == section.downStation;
+    }
+
+    public boolean containsStation(Station station) {
+        return this.upStation == station || this.downStation == station;
     }
 
     private void validateDistance(Section section) {

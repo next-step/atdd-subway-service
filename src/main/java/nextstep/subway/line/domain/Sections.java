@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -30,23 +31,15 @@ public class Sections {
         sections.add(section);
     }
 
-    private void validateAdd(Section section) {
-        if (containsByUpStation(section) && containsByDownStation(section)) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (!containsByUpStation(section) && !containsByDownStation(section)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
+    public boolean containsStationsExactly(Station[] stations) {
+        return Arrays.stream(stations)
+                .allMatch(item -> containsStation(item));
     }
 
-    private void resizeNearSections(Section section) {
-        if (containsByUpStation(section)) {
-            updateUpStationBySameUpStation(section);
-        } else if (containsByDownStation(section)) {
-            updateDownStationBySameDownStation(section);
-        }
+    protected boolean containsStation(Station station) {
+        return anyMatch(item -> item.containsStation(station));
     }
+
     protected Optional<Section> removeStation(Station station) {
         if (sections.size() <= 1) {
             throw new RuntimeException();
@@ -73,6 +66,24 @@ public class Sections {
             return Optional.of(new Section(newUpStation, newDownStation, newDistance));
         }
         return Optional.empty();
+    }
+
+    private void validateAdd(Section section) {
+        if (containsByUpStation(section) && containsByDownStation(section)) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!containsByUpStation(section) && !containsByDownStation(section)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void resizeNearSections(Section section) {
+        if (containsByUpStation(section)) {
+            updateUpStationBySameUpStation(section);
+        } else if (containsByDownStation(section)) {
+            updateDownStationBySameDownStation(section);
+        }
     }
 
     private Optional<Section> findByUpStationEquals(Station station) {

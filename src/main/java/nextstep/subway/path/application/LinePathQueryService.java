@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.dto.LinePathRequest;
@@ -27,7 +28,7 @@ public class LinePathQueryService {
     public LinePathResponse findShortDistance(LinePathRequest linePathRequest) {
         Lines lines = findAll();
 
-        lines.findShortDistance(findStationById(linePathRequest.getSource()), findStationById(linePathRequest.getTarget()));
+        Line shortDistance = lines.findShortDistance(findStationById(linePathRequest.getSource()), findStationById(linePathRequest.getTarget()));
         return new LinePathResponse(
                 Arrays.asList(
                         new StationResponse(1L, null, null, null),
