@@ -13,8 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.*;
 
 class LineTest {
     private Station 강남역 = new Station("강남역");
@@ -212,5 +211,16 @@ class LineTest {
 
         assertThat(line.containsStationsExactly(양재역, 정자역, 판교역, 강남역))
                 .isFalse();
+    }
+
+    @Test
+    @DisplayName("없는 역이면 IllegalArgumentException이 발생한다")
+    void calcDistanceBetween() {
+        Line line = new Line("신분당", "RED", 양재역, 정자역, 3);
+
+        line.addSection(new Section(판교역, 정자역, new Distance(1)));
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> line.calcDistanceBetween(판교역, 강남역));
     }
 }

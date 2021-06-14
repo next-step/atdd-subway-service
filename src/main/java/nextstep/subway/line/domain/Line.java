@@ -44,6 +44,14 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
+    public Distance calcDistanceBetween(Station source, Station distance) {
+        if (!containsStationsExactly(source, distance)) {
+            throw new IllegalArgumentException("존재하지 않는 역이 있습니다.");
+        }
+
+        return new Distance(3);
+    }
+
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
