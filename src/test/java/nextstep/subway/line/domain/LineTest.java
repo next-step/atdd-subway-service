@@ -265,4 +265,15 @@ class LineTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> line.calcDistanceBetween(양재역, 판교역));
     }
+
+    @Test
+    @DisplayName("존재하지 않는 출발역이나 도착역으로 조회시 IllegalArgumentException이 실패한다")
+    void 존재하지_않는_출발역이나_도착역으로_조회시_IllegalArgumentException이_발생한다() {
+        Line line = new Line("신분당", "RED", 양재역, 정자역, 3);
+
+        Station 쿄잉역 = new Station("쿄잉역");
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> line.calcDistanceBetween(양재역, 쿄잉역));
+    }
 }

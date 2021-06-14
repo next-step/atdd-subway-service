@@ -15,6 +15,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.http.HttpStatus;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -87,6 +88,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return Stream.of(
                 dynamicTest("신분당선에 정자역을 추가한다", 지하철_노선에_지하철역_등록_요청_및_확인(신분당선, 양재역, 정자역, 2)),
                 dynamicTest("정자역과 광교역 찾는다", 지하철_최단거리_요청_및_실패(정자역, 광교역))
+        );
+    }
+
+    @TestFactory
+    @DisplayName("존재하지 않는 출발역이나 도착역으로 조회시 실패한다")
+    Stream<DynamicTest> 존재하지_않는_출발역이나_도착역으로_조회시_실패한다() {
+        StationResponse 쿄잉역 = new StationResponse(1000L, "쿄잉역", LocalDateTime.now(), LocalDateTime.now());
+        return Stream.of(
+                dynamicTest("신분당선에 정자역을 추가한다", 지하철_노선에_지하철역_등록_요청_및_확인(신분당선, 양재역, 정자역, 2)),
+                dynamicTest("정자역과 쿄잉역을 찾는다", 지하철_최단거리_요청_및_실패(정자역, 쿄잉역)),
+                dynamicTest("쿄잉역과 정자역 찾는다", 지하철_최단거리_요청_및_실패(쿄잉역, 정자역))
         );
     }
 
