@@ -6,7 +6,6 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class LinePathResponse {
     private List<StationResponse> stations;
@@ -17,11 +16,8 @@ public class LinePathResponse {
 
     public LinePathResponse(Line shortDistance, Station source, Station target) {
         this.distance = shortDistance.calcDistanceBetween(source, target).toInt();
-        this.stations = shortDistance.getShortestRoute(source, target)
-                .stream()
-                .filter(item -> item != target)
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+        this.stations = new StationResponses(shortDistance.getShortestRoute(source, target))
+                .toCollection();
     }
 
     public List<StationResponse> getStations() {
