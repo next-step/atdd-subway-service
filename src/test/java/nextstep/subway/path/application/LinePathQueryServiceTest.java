@@ -18,7 +18,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import javax.persistence.EntityNotFoundException;
+
+import static org.assertj.core.api.Assertions.*;
 
 @DataJpaTest
 class LinePathQueryServiceTest {
@@ -41,7 +43,7 @@ class LinePathQueryServiceTest {
 
     @BeforeEach
     public void setUp() {
-        this.linePathQueryService = new LinePathQueryService(lineRepository);
+        this.linePathQueryService = new LinePathQueryService(lineRepository, stationRepository);
 
         강남역 = stationRepository.save(new Station("강남역"));
         양재역 = stationRepository.save(new Station("양재역"));
@@ -69,6 +71,15 @@ class LinePathQueryServiceTest {
 
         assertThat(linePathResponse.getDistance())
                 .isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 역의 최단거리를 찾으려 하면 EntityNotFoundException이 발생한다")
+    void 존재하지_않는_역의_최단거리를_찾으려_하면_EntityNotFoundException이_발생한다() {
+        LinePathRequest linePathRequest = new LinePathRequest(1000L, 1001L);
+
+        assertThatExceptionOfType(EntityNotFoundException.class)
+                .isThrownBy(() -> linePathQueryService.findShortDistance(linePathRequest));
     }
 
 }
