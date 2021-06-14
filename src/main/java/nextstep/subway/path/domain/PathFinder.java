@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.StationsNotConnectedException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -51,7 +52,14 @@ public class PathFinder {
   public Path findShortestPath(Long sourceStationId, Long targetStationId) {
     DijkstraShortestPath<Long, Distance> shortestPathFinder = new DijkstraShortestPath<>(pathGraph);
     GraphPath<Long, Distance> shortestPath = shortestPathFinder.getPath(sourceStationId, targetStationId);
+    throwIfNotConnectedStations(shortestPath);
     return new Path(getShortestPathStations(shortestPath.getVertexList()), calculateShortestDistance(shortestPath.getEdgeList()));
+  }
+
+  private void throwIfNotConnectedStations(GraphPath<Long, Distance> graphPath) {
+    if (graphPath == null) {
+      throw new StationsNotConnectedException();
+    }
   }
 
   private List<Station> getShortestPathStations(List<Long> shortestPathStationIds) {
