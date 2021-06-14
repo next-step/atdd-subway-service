@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -35,12 +36,12 @@ public class Sections {
         sections.add(section);
     }
 
-    public List<Station> getShortestRoute(Station source, Station target) {
+    public Stations getShortestRoute(Station source, Station target) {
         validateShortestRoute(source, target);
 
         GraphPath shortestGraph = getShortestGraph(source, target);
 
-        return shortestGraph.getVertexList();
+        return new Stations(shortestGraph.getVertexList());
     }
 
     protected Distance calcDistanceBetween(Station source, Station target) {

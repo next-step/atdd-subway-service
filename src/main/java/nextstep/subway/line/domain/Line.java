@@ -49,7 +49,7 @@ public class Line extends BaseEntity {
     public Stations findShortestRoute(Station source, Station target) {
         validateShortestRoute(source, target);
 
-        return new Stations(sections.getShortestRoute(source, target));
+        return sections.getShortestRoute(source, target);
     }
 
     public Distance calcDistanceBetween(Station source, Station distance) {
