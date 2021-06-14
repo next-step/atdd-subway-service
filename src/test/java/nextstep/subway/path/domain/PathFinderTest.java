@@ -50,4 +50,17 @@ class PathFinderTest {
     assertThat(shortestPath).isEqualTo(new Path(Arrays.asList(교대역, 남부터미널역, 양재역), 5));
   }
 
+  @DisplayName("출발역과 도착역같으면 해당 역과 거리는 0을 반환")
+  @Test
+  void findShortestPathTest2() {
+    //given
+    PathFinder pathFinder = PathFinder.init(wholeStations, wholeSections);
+
+    //when
+    Path shortestPath = pathFinder.findShortestPath(교대역.getId(), 교대역.getId());
+
+    //then
+    assertThat(shortestPath).isEqualTo(new Path(Arrays.asList(교대역), 0));
+  }
+
 }
