@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.StationNotExistException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,8 +25,8 @@ class LinesTest {
     }
 
     @Test
-    @DisplayName("없는 역이면 IllegalArgumentException이 발생한다")
-    void 없는_역이면_IllegalArgumentException이_발생한다() {
+    @DisplayName("없는 역이면 StationNotExistException이 발생한다")
+    void 없는_역이면_StationNotExistException이_발생한다() {
         Line 신분당선 = new Line("신분당", "RED", 양재역, 정자역, 3);
         Line 분당선 = new Line("분당", "YELLO", 광교역, 양재역, 3);
 
@@ -34,7 +35,7 @@ class LinesTest {
 
         Lines lines = new Lines(Arrays.asList(신분당선, 분당선));
 
-        assertThatIllegalArgumentException()
+        assertThatExceptionOfType(StationNotExistException.class)
                 .isThrownBy(() -> lines.findShortestLine(강남역, 양재역));
     }
 

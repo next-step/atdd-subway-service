@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.exception.LineHasNotExistShortestException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 
@@ -98,11 +99,11 @@ public class Line extends BaseEntity {
 
     private void validateShortestRoute(Station source, Station distance) {
         if (!sections.containsStationsExactly(source, distance)) {
-            throw new IllegalArgumentException("포함되지 않은 역이 있습니다.");
+            throw new LineHasNotExistShortestException("포함되지 않은 역이 있습니다.");
         }
 
         if (source == distance) {
-            throw new IllegalArgumentException("같은 역끼리는 길을 찾을 수 없습니다.");
+            throw new LineHasNotExistShortestException("같은 역끼리는 길을 찾을 수 없습니다.");
         }
     }
 }

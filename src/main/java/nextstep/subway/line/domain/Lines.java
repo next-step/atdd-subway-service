@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.LineHasNotExistShortestException;
+import nextstep.subway.exception.StationNotExistException;
 import nextstep.subway.station.domain.Station;
 
 import java.util.ArrayList;
@@ -23,13 +25,13 @@ public class Lines {
 
                     return l1Distance.compareTo(l2Distance);
                 })
-                .orElseThrow(() -> new RuntimeException("최단거리가 존재하지 않습니다."));
+                .orElseThrow(() -> new LineHasNotExistShortestException("최단거리가 존재하지 않습니다."));
     }
 
     private void validateFindShortDistance(Station source, Station target) {
         if (lines.stream()
                 .noneMatch(item -> item.containsStationsExactly(source, target))) {
-            throw new IllegalArgumentException("포함되지 않은 역이 있습니다.");
+            throw new StationNotExistException("포함되지 않은 역이 있습니다.");
         }
     }
 

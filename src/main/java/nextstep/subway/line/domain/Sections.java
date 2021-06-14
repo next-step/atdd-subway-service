@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.StationNotExistException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 import org.jgrapht.GraphPath;
@@ -91,7 +92,7 @@ public class Sections {
 
     private void validateShortestRoute(Station source, Station target) {
         if (!containsStationsExactly(source, target)) {
-            throw new IllegalArgumentException("포함되지 않은 역이 있습니다.");
+            throw new StationNotExistException("포함되지 않은 역이 있습니다.");
         }
     }
 

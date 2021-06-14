@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.StationNotExistException;
 import nextstep.subway.line.dto.StationResponses;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -28,14 +29,14 @@ class SectionsTest {
     }
 
     @Test
-    @DisplayName("없는 역이면 IllegalArgumentException이 발생한다")
-    void 없는_역이면_IllegalArgumentException이_발생한다() {
+    @DisplayName("없는 역이면 StationNotExistException이 발생한다")
+    void 없는_역이면_StationNotExistException이_발생한다() {
         Sections sections = new Sections();
 
         sections.add(new Section(null, 양재역, 정자역, 3));
         sections.add(new Section(null, 판교역, 정자역, 1));
 
-        assertThatIllegalArgumentException()
+        assertThatExceptionOfType(StationNotExistException.class)
                 .isThrownBy(() -> sections.calcDistanceBetween(판교역, 강남역));
     }
 

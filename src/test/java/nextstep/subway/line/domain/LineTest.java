@@ -1,8 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.line.dto.LineRequest;
-import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.exception.LineHasNotExistShortestException;
 import nextstep.subway.line.dto.StationResponses;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -10,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -214,13 +211,13 @@ class LineTest {
     }
 
     @Test
-    @DisplayName("없는 역이면 IllegalArgumentException이 발생한다")
+    @DisplayName("없는 역이면 LineHasNotExistShortestException이 발생한다")
     void 없는_역이면_IllegalArgumentException이_발생한다() {
         Line line = new Line("신분당", "RED", 양재역, 정자역, 3);
 
         line.addSection(new Section(판교역, 정자역, new Distance(1)));
 
-        assertThatIllegalArgumentException()
+        assertThatExceptionOfType(LineHasNotExistShortestException.class)
                 .isThrownBy(() -> line.calcDistanceBetween(판교역, 강남역));
     }
 
@@ -247,33 +244,33 @@ class LineTest {
     }
 
     @Test
-    @DisplayName("같은 역끼리 찾으려 하면 IllegalArgumentException이 발생한다")
-    void 같은_역끼리_찾으려_하면_IllegalArgumentException이_발생한다() {
+    @DisplayName("같은 역끼리 찾으려 하면 LineHasNotExistShortestException이 발생한다")
+    void 같은_역끼리_찾으려_하면_LineHasNotExistShortestException이_발생한다() {
         Line line = new Line("신분당", "RED", 양재역, 정자역, 3);
 
-        assertThatIllegalArgumentException()
+        assertThatExceptionOfType(LineHasNotExistShortestException.class)
                 .isThrownBy(() -> line.calcDistanceBetween(양재역, 양재역));
-        assertThatIllegalArgumentException()
+        assertThatExceptionOfType(LineHasNotExistShortestException.class)
                 .isThrownBy(() -> line.calcDistanceBetween(정자역, 정자역));
     }
 
     @Test
-    @DisplayName("출발역과 도착역이 연결이 되어 있지 않을경우 IllegalArgumentException이 발생한다")
-    void 출발역과_도착역이_연결이_되어_있지_않을경우_IllegalArgumentException이_발생한다() {
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않을경우 LineHasNotExistShortest이 발생한다")
+    void 출발역과_도착역이_연결이_되어_있지_않을경우_LineHasNotExistShortest이_발생한다() {
         Line line = new Line("신분당", "RED", 양재역, 정자역, 3);
 
-        assertThatIllegalArgumentException()
+        assertThatExceptionOfType(LineHasNotExistShortestException.class)
                 .isThrownBy(() -> line.calcDistanceBetween(양재역, 판교역));
     }
 
     @Test
-    @DisplayName("존재하지 않는 출발역이나 도착역으로 조회시 IllegalArgumentException이 실패한다")
-    void 존재하지_않는_출발역이나_도착역으로_조회시_IllegalArgumentException이_발생한다() {
+    @DisplayName("존재하지 않는 출발역이나 도착역으로 조회시 LineHasNotExistShortest이 실패한다")
+    void 존재하지_않는_출발역이나_도착역으로_조회시_LineHasNotExistShortest이_발생한다() {
         Line line = new Line("신분당", "RED", 양재역, 정자역, 3);
 
         Station 쿄잉역 = new Station("쿄잉역");
 
-        assertThatIllegalArgumentException()
+        assertThatExceptionOfType(LineHasNotExistShortestException.class)
                 .isThrownBy(() -> line.calcDistanceBetween(양재역, 쿄잉역));
     }
 }
