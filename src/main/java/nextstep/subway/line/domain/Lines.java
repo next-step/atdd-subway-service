@@ -29,8 +29,9 @@ public class Lines {
     }
 
     private void validateFindShortDistance(Station source, Station target) {
-        if (lines.stream()
-                .noneMatch(item -> item.containsStationsExactly(source, target))) {
+        final boolean notContainsStation = lines.stream()
+                .noneMatch(item -> item.containsStationsExactly(source, target));
+        if (notContainsStation) {
             throw new StationNotExistException("포함되지 않은 역이 있습니다.");
         }
     }
