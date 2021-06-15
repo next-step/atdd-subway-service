@@ -1,16 +1,13 @@
 package nextstep.subway.line.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.request.AcceptanceTestRequest;
 import nextstep.subway.request.Given;
 import nextstep.subway.request.When;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.util.List;
 import java.util.stream.Collectors;

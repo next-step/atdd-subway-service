@@ -11,7 +11,8 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static nextstep.subway.line.domain.LinesTest.DEFAULT_SHORTEST_DISTANCE;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class LineTest {
     private Station 강남역 = new Station("강남역");

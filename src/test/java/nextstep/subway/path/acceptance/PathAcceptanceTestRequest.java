@@ -1,11 +1,9 @@
 package nextstep.subway.path.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.path.dto.LinePathResponse;
-import nextstep.subway.request.AcceptanceTestRequest;
 import nextstep.subway.request.Given;
 import nextstep.subway.request.When;
 import nextstep.subway.station.dto.StationResponse;

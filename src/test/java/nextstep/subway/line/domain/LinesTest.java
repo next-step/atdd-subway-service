@@ -8,7 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class LinesTest {
     public static final ShortestDistance DEFAULT_SHORTEST_DISTANCE = new DijkstraShortestDistance();

@@ -1,19 +1,14 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.exception.StationNotExistException;
-import nextstep.subway.line.dto.StationResponses;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static nextstep.subway.line.domain.LinesTest.DEFAULT_SHORTEST_DISTANCE;
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class SectionsTest {
     private Station 강남역 = new Station("강남역");
