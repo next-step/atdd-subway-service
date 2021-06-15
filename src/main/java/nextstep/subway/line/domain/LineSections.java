@@ -64,7 +64,7 @@ public class LineSections {
     }
 
     private boolean isExistedStation(List<Station> stations, Station station) {
-        return stations.stream().anyMatch(it -> it == station);
+        return stations.stream().anyMatch(it -> it.equals(station));
     }
 
     public List<Station> toStations() {
@@ -80,7 +80,7 @@ public class LineSections {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = sections.stream()
-                                                        .filter(it -> it.getUpStation() == finalDownStation)
+                                                        .filter(it -> it.getUpStation().equals(finalDownStation))
                                                         .findFirst();
 
             if (!nextLineStation.isPresent()) {
@@ -100,7 +100,7 @@ public class LineSections {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = sections.stream()
-                                                        .filter(it -> it.getDownStation() == finalDownStation)
+                                                        .filter(it -> it.getDownStation().equals(finalDownStation))
                                                         .findFirst();
 
             if (!nextLineStation.isPresent()) {
