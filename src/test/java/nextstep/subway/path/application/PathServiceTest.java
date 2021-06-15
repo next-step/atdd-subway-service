@@ -31,7 +31,11 @@ class PathServiceTest {
     when(stationRepository.findAll()).thenReturn(Arrays.asList(강남역, 양재역, 교대역, 남부터미널역));
     when(sectionRepository.findAll()).thenReturn(Arrays.asList(강남_양재_구간, 교대_강남_구간, 교대_남부터미널_구간, 남부터미널_양재_구간));
     PathService pathService = new PathService(stationRepository, sectionRepository);
+
+    //when
     PathResponse shortestPath = pathService.findShortestPath(교대역.getId(), 양재역.getId());
+
+    //then
     assertThat(shortestPath).isEqualTo(new PathResponse(Arrays.asList(StationResponse.of(교대역), StationResponse.of(남부터미널역), StationResponse.of(양재역)), 5D));
   }
 
@@ -42,8 +46,27 @@ class PathServiceTest {
     when(stationRepository.findAll()).thenReturn(Arrays.asList(강남역, 양재역, 교대역, 남부터미널역));
     when(sectionRepository.findAll()).thenReturn(Arrays.asList(강남_양재_구간, 교대_강남_구간, 교대_남부터미널_구간));
     PathService pathService = new PathService(stationRepository, sectionRepository);
+
+    //when
     PathResponse shortestPath = pathService.findShortestPath(교대역.getId(), 양재역.getId());
+
+    //then
     assertThat(shortestPath).isEqualTo(new PathResponse(Arrays.asList(StationResponse.of(교대역), StationResponse.of(강남역), StationResponse.of(양재역)), 20D));
+  }
+
+  @DisplayName("출발역과 도착역을 같은 역으로 조회")
+  @Test
+  void findShortestPathWithSingleStationTest() {
+    //given
+    when(stationRepository.findAll()).thenReturn(Arrays.asList(강남역, 양재역, 교대역, 남부터미널역));
+    when(sectionRepository.findAll()).thenReturn(Arrays.asList(강남_양재_구간, 교대_강남_구간, 교대_남부터미널_구간, 남부터미널_양재_구간));
+    PathService pathService = new PathService(stationRepository, sectionRepository);
+
+    //when
+    PathResponse shortestPath = pathService.findShortestPath(교대역.getId(), 교대역.getId());
+
+    //then
+    assertThat(shortestPath).isEqualTo(new PathResponse(Arrays.asList(StationResponse.of(교대역)), 0D));
   }
 
 
