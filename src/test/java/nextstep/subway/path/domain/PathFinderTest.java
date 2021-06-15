@@ -17,16 +17,21 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class PathFinderTest {
+public class PathFinderTest {
 
-  private Station 강남역 = Station.stationStaticFactoryForTestCode(1L, "강남역");
-  private Station 양재역 = Station.stationStaticFactoryForTestCode(2L, "양재역");
-  private Station 교대역 = Station.stationStaticFactoryForTestCode(3L, "교대역");
-  private Station 남부터미널역 = Station.stationStaticFactoryForTestCode(4L, "남부터미널역");
+  public static Station 강남역 = Station.stationStaticFactoryForTestCode(1L, "강남역");
+  public static Station 양재역 = Station.stationStaticFactoryForTestCode(2L, "양재역");
+  public static Station 교대역 = Station.stationStaticFactoryForTestCode(3L, "교대역");
+  public static Station 남부터미널역 = Station.stationStaticFactoryForTestCode(4L, "남부터미널역");
 
-  private Line 신분당선 = new Line("신분당선", "red", 강남역, 양재역, Distance.from(10));
-  private Line 이호선 = new Line("이호선", "green", 교대역, 강남역, Distance.from(10));
-  private Line 삼호선 = new Line("삼호선", "orange", 교대역, 양재역, Distance.from(5));
+  public static Line 신분당선 = new Line("신분당선", "red", 강남역, 양재역, Distance.from(10));
+  public static Line 이호선 = new Line("이호선", "green", 교대역, 강남역, Distance.from(10));
+  public static Line 삼호선 = new Line("삼호선", "orange", 교대역, 양재역, Distance.from(5));
+
+  public static Section 강남_양재_구간 = new Section(신분당선, 강남역, 양재역, Distance.from(10));
+  public static Section 교대_강남_구간 = new Section(이호선, 교대역, 강남역, Distance.from(10));
+  public static Section 교대_남부터미널_구간 = new Section(삼호선, 교대역, 남부터미널역, Distance.from(3));
+  public static Section 남부터미널_양재_구간 = new Section(삼호선, 남부터미널역, 양재역, Distance.from(2));
 
   private List<Station> wholeStations;
   private List<Section> wholeSections;
@@ -34,10 +39,7 @@ class PathFinderTest {
   @BeforeEach
   void setUp() {
     wholeStations = Arrays.asList(강남역, 양재역, 교대역, 남부터미널역);
-    Section 강남_양재_구간 = new Section(신분당선, 강남역, 양재역, Distance.from(10));
-    Section 교대_강남_구간 = new Section(이호선, 교대역, 강남역, Distance.from(10));
-    Section 교대_남부터미널_구간 = new Section(삼호선, 교대역, 남부터미널역, Distance.from(3));
-    Section 남부터미널_양재_구간 = new Section(삼호선, 남부터미널역, 양재역, Distance.from(2));
+
     wholeSections = Arrays.asList(강남_양재_구간, 교대_강남_구간, 교대_남부터미널_구간, 남부터미널_양재_구간);
   }
 
