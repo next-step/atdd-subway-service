@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.exception.StationNotExistException;
 import nextstep.subway.exception.StationsNotConnectedException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
@@ -89,6 +90,19 @@ class PathServiceTest {
 
     //when & then
     assertThatThrownBy(() -> 최단거리서비스.findShortestPath(교대역.getId(), 서울역.getId())).isInstanceOf(StationsNotConnectedException.class);
+  }
+
+  @DisplayName("존재하지 않는 역과의 최단거리를 조회")
+  @Test
+  void findShortestPathWithNoneExistStationTest() {
+    //given
+    Station 서울역 = Station.stationStaticFactoryForTestCode(5L, "서울역");
+    when(stationRepository.findAll()).thenReturn(Arrays.asList(강남역, 양재역, 교대역, 남부터미널역));
+    when(sectionRepository.findAll()).thenReturn(Arrays.asList(강남_양재_구간, 교대_강남_구간, 교대_남부터미널_구간, 남부터미널_양재_구간));
+    PathService 최단거리서비스 = new PathService(stationRepository, sectionRepository);
+
+    //when & then
+    assertThatThrownBy(() -> 최단거리서비스.findShortestPath(교대역.getId(), 서울역.getId())).isInstanceOf(StationNotExistException.class);
   }
 
 
