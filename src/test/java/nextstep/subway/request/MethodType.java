@@ -2,13 +2,22 @@ package nextstep.subway.request;
 
 public enum MethodType {
     GET((R, W) -> {
-        return R.get(W.getUri(), W.getPathParams());
+        if (W.getPathParams() != null) {
+            return R.get(W.getUri(), W.getPathParams());
+        }
+        return R.get(W.getUri());
     }),
     POST((R, W) -> {
-        return R.post(W.getUri(), W.getPathParams());
+        if (W.getPathParams() != null) {
+            return R.post(W.getUri(), W.getPathParams());
+        }
+        return R.post(W.getUri());
     }),
     DELETE(((R, W) -> {
-        return R.delete(W.getUri(), W.getPathParams());
+        if (W.getPathParams() != null) {
+            return R.delete(W.getUri(), W.getPathParams());
+        }
+        return R.delete(W.getUri());
     }));
 
     WhenFunction function;

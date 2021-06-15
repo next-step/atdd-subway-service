@@ -24,6 +24,8 @@ import java.util.stream.Stream;
 import static java.lang.String.format;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청_및_확인;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_순서_정렬됨;
+import static nextstep.subway.path.acceptance.PathAcceptanceTestRequest.지하철_최단거리_요청_및_실패;
+import static nextstep.subway.path.acceptance.PathAcceptanceTestRequest.지하철_최단거리_요청_및_확인;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
@@ -100,63 +102,5 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 dynamicTest("정자역과 쿄잉역을 찾는다", 지하철_최단거리_요청_및_실패(정자역, 쿄잉역)),
                 dynamicTest("쿄잉역과 정자역 찾는다", 지하철_최단거리_요청_및_실패(쿄잉역, 정자역))
         );
-    }
-
-    private Executable 지하철_최단거리_요청_및_실패(StationResponse source, StationResponse target) {
-        return () -> {
-            ExtractableResponse<Response> response = RestAssured.given().log().all()
-                    .param("source", source.getId())
-                    .param("target", target.getId())
-                    .accept(ContentType.JSON)
-                    .contentType(ContentType.JSON)
-                    .when().log().all()
-                    .get("/paths")
-                    .then().log().all()
-                    .extract();
-
-            지하철_최단거리_실패됨(response);
-        };
-    }
-
-    private Executable 지하철_최단거리_요청_및_확인(StationResponse source, StationResponse target, List<StationResponse> exceptStations, int exceptDistance) {
-        return () -> {
-            ExtractableResponse<Response> response = RestAssured.given().log().all()
-                    .param("source", source.getId())
-                    .param("target", target.getId())
-                    .accept(ContentType.JSON)
-                    .contentType(ContentType.JSON)
-                    .when().log().all()
-                    .get("/paths")
-                    .then().log().all()
-                    .extract();
-
-            지하철_최단거리_응답됨(response);
-
-            지하철_최단거리_검증(response, exceptStations, exceptDistance);
-        };
-    }
-
-    private void 지하철_최단거리_응답됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.as(LinePathResponse.class)).isNotNull();
-    }
-
-    private void 지하철_최단거리_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-    }
-
-    private void 지하철_최단거리_검증(ExtractableResponse<Response> response, List<StationResponse> exceptStations, int exceptDistance) {
-        LinePathResponse pathResponse = response.as(LinePathResponse.class);
-
-        List<Long> exceptStationIds = exceptStations.stream()
-                .map(StationResponse::getId)
-                .collect(Collectors.toList());
-
-        assertThat(pathResponse.getStations())
-                .map(StationResponse::getId)
-                .containsExactlyInAnyOrderElementsOf(exceptStationIds);
-
-        assertThat(pathResponse.getDistance())
-                .isEqualTo(exceptDistance);
     }
 }

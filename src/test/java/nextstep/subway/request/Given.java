@@ -3,22 +3,29 @@ package nextstep.subway.request;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 public class Given {
     private ContentType contentType;
     private ContentType accept;
     private Object body;
+    private List<Map.Entry<String, Object>> params = new ArrayList<>();
 
     public Given() {
     }
 
     public Given(Builder builder) {
-        this(builder.contentType, builder.accept, builder.body);
+        this(builder.contentType, builder.accept, builder.body, builder.params);
     }
 
-    public Given(ContentType contentType, ContentType accept, Object body) {
+    public Given(ContentType contentType, ContentType accept, Object body, List<Map.Entry<String, Object>> params) {
         this.contentType = contentType;
         this.accept = accept;
         this.body = body;
+        this.params = params;
     }
 
     public RequestSpecification append(RequestSpecification requestSpecification) {
@@ -31,7 +38,17 @@ public class Given {
         if (this.body != null) {
             requestSpecification = requestSpecification.body(this.body);
         }
+        if (params != null && !params.isEmpty()) {
+            addParams(requestSpecification);
+        }
 
+        return requestSpecification;
+    }
+
+    private RequestSpecification addParams(RequestSpecification requestSpecification) {
+        for (Map.Entry<String, Object> param : params) {
+            requestSpecification = requestSpecification.param(param.getKey(), param.getValue());
+        }
         return requestSpecification;
     }
 
@@ -43,6 +60,7 @@ public class Given {
         private ContentType contentType;
         private ContentType accept;
         private Object body;
+        private List<Map.Entry<String, Object>> params = new ArrayList<>();
 
         public Builder body(Object body) {
             this.body = body;
@@ -56,6 +74,11 @@ public class Given {
 
         public Builder contentType(ContentType contentType) {
             this.contentType = contentType;
+            return this;
+        }
+
+        public Builder param(String source, Object value) {
+            params.add(new AbstractMap.SimpleEntry<>(source, value));
             return this;
         }
 
