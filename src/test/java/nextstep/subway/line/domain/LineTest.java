@@ -25,8 +25,18 @@ class LineTest {
     @DisplayName("역 목록 조회 시 상행역에서 하행역 순으로 정렬된 Station 목록 생성")
     @Test
     void getStationsTest() {
-        Line line = new Line("name", "color", upStation, downStation, 100);
-        assertThat(line.getStations()).containsExactly(upStation, downStation);
+
+        Station[] stations = new Station[10];
+        for (int i = 0; i < 10; i++) {
+            stations[i] = new Station("정거장 " + (i + 1));
+        }
+
+        Line line = new Line("name", "color", stations[0], stations[1], 10);
+        for (int i = 1; i < 9; i++) {
+            line.addSection(new Section(line, stations[i], stations[i + 1], 10));
+        }
+
+        assertThat(line.getStations()).containsExactly(stations);
     }
 
     @DisplayName("구간 등록 성공 - 기존 구간 가운데에 새 구간 등록")
