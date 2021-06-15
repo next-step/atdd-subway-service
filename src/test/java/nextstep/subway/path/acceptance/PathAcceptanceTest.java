@@ -1,33 +1,24 @@
 package nextstep.subway.path.acceptance;
 
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.path.dto.LinePathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.function.Executable;
-import org.springframework.http.HttpStatus;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.lang.String.format;
 import static nextstep.subway.line.acceptance.LineAcceptanceTestRequest.지하철_노선_생성_요청_및_검증;
-import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청_및_확인;
-import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_순서_정렬됨;
+import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestRequest.지하철_노선에_지하철역_등록_요청_및_확인;
+import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestRequest.지하철_노선에_지하철역_순서_정렬됨;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestRequest.지하철_최단거리_요청_및_실패;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestRequest.지하철_최단거리_요청_및_확인;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 

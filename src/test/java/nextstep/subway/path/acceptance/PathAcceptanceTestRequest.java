@@ -44,8 +44,8 @@ public class PathAcceptanceTestRequest {
                         .param("target", target.getId())
                         .accept(ContentType.JSON)
                         .contentType(ContentType.JSON)
-                        .build()
-                , When.builder().uri("/paths").build()
+                        .build(),
+                When.builder().uri("/paths").build()
         );
     }
 
