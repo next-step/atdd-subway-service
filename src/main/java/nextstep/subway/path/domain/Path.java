@@ -7,11 +7,19 @@ import java.util.Objects;
 
 public class Path {
   private final List<Station> stations;
-  private final Integer distance;
+  private final Double distance;
 
-  public Path(List<Station> stations, Integer distance) {
+  public Path(List<Station> stations, Double distance) {
     this.stations = stations;
     this.distance = distance;
+  }
+
+  public List<Station> getStations() {
+    return stations;
+  }
+
+  public Double getDistance() {
+    return distance;
   }
 
   @Override

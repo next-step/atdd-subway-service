@@ -7,6 +7,7 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
@@ -17,31 +18,32 @@ import java.util.stream.Collectors;
 public class PathFinder {
 
   private Map<Long, Station> wholeStations;
-  private WeightedMultigraph<Long, Distance> pathGraph;
+  private WeightedMultigraph<Long, DefaultWeightedEdge> pathGraph;
 
-  private PathFinder(Map<Long, Station> wholeStations, WeightedMultigraph<Long, Distance> pathGraph) {
+  private PathFinder(Map<Long, Station> wholeStations, WeightedMultigraph<Long, DefaultWeightedEdge> pathGraph) {
     this.wholeStations = wholeStations;
     this.pathGraph = pathGraph;
   }
 
   public static PathFinder init(List<Station> wholeStations, List<Section> wholeSections) {
-    WeightedMultigraph<Long, Distance> pathGraph = new WeightedMultigraph<>(Distance.class);
+    WeightedMultigraph<Long, DefaultWeightedEdge> pathGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
     addVertexToGraph(pathGraph, wholeStations);
     addEdgesToGraph(pathGraph, wholeSections);
     return new PathFinder(collectThroughId(wholeStations), pathGraph);
   }
 
-  private static void addVertexToGraph(WeightedMultigraph<Long, Distance> pathGraph, List<Station> wholeStations) {
+  private static void addVertexToGraph(WeightedMultigraph<Long, DefaultWeightedEdge> pathGraph, List<Station> wholeStations) {
     wholeStations.stream()
         .map(Station::getId)
         .forEach(pathGraph::addVertex);
   }
 
-  private static void addEdgesToGraph(WeightedMultigraph<Long, Distance> pathGraph, List<Section> wholeSections) {
+  private static void addEdgesToGraph(WeightedMultigraph<Long, DefaultWeightedEdge> pathGraph, List<Section> wholeSections) {
     wholeSections.forEach(section -> {
       Station sourceStation = section.getUpStation();
       Station targetStation = section.getDownStation();
-      pathGraph.addEdge(sourceStation.getId(), targetStation.getId(), section.getDistance());
+      Distance sectionDistance = section.getDistance();
+      pathGraph.setEdgeWeight(pathGraph.addEdge(sourceStation.getId(), targetStation.getId()), sectionDistance.intValue());
     });
   }
 
@@ -51,13 +53,13 @@ public class PathFinder {
   }
 
   public Path findShortestPath(Long sourceStationId, Long targetStationId) {
-    GraphPath<Long, Distance> shortestPath = findPathGraph(sourceStationId, targetStationId);
+    GraphPath<Long, DefaultWeightedEdge> shortestPath = findPathGraph(sourceStationId, targetStationId);
     throwIfNotConnectedStations(shortestPath);
-    return new Path(getShortestPathStations(shortestPath.getVertexList()), calculateShortestDistance(shortestPath.getEdgeList()));
+    return new Path(getShortestPathStations(shortestPath.getVertexList()), shortestPath.getWeight());
   }
 
-  private GraphPath<Long, Distance> findPathGraph(Long sourceStationId, Long targetStationId) {
-    DijkstraShortestPath<Long, Distance> shortestPathFinder = new DijkstraShortestPath<>(pathGraph);
+  private GraphPath<Long, DefaultWeightedEdge> findPathGraph(Long sourceStationId, Long targetStationId) {
+    DijkstraShortestPath<Long, DefaultWeightedEdge> shortestPathFinder = new DijkstraShortestPath<>(pathGraph);
     try {
       return shortestPathFinder.getPath(sourceStationId, targetStationId);
     } catch (IllegalArgumentException e) {
@@ -65,7 +67,7 @@ public class PathFinder {
     }
   }
 
-  private void throwIfNotConnectedStations(GraphPath<Long, Distance> graphPath) {
+  private void throwIfNotConnectedStations(GraphPath<Long, DefaultWeightedEdge> graphPath) {
     if (graphPath == null) {
       throw new StationsNotConnectedException();
     }
@@ -75,11 +77,5 @@ public class PathFinder {
     return shortestPathStationIds.stream()
             .map(stationId -> wholeStations.get(stationId))
             .collect(Collectors.toList());
-  }
-
-  private Integer calculateShortestDistance(List<Distance> edgeList) {
-    return edgeList.stream()
-            .map(Distance::intValue)
-            .reduce(0, Integer::sum);
   }
 }
