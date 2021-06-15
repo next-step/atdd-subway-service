@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class LineTest {
 
@@ -30,6 +31,7 @@ class LineTest {
 
         이호선.addSection(newSection);
 
-        assertThat(이호선.getSections()).hasSize(2);
+        assertAll(() -> assertThat(이호선.getSections()).hasSize(2),
+                () -> assertThat(이호선.getSections().get(1).getDownStation()).isEqualTo(양재역));
     }
 }
