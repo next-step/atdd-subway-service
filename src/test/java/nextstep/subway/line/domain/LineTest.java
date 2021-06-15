@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static nextstep.subway.line.domain.LinesTest.DEFAULT_SHORTEST_DISTANCE;
 import static org.assertj.core.api.Assertions.*;
 
 class LineTest {
@@ -218,7 +219,7 @@ class LineTest {
         line.addSection(new Section(판교역, 정자역, new Distance(1)));
 
         assertThatExceptionOfType(LineHasNotExistShortestException.class)
-                .isThrownBy(() -> line.calcDistanceBetween(판교역, 강남역));
+                .isThrownBy(() -> line.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 판교역, 강남역));
     }
 
     @Test
@@ -228,18 +229,18 @@ class LineTest {
 
         line.addSection(new Section(판교역, 정자역, new Distance(1)));
 
-        assertThat(line.calcDistanceBetween(양재역, 정자역))
+        assertThat(line.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 양재역, 정자역))
                 .isEqualTo(new Distance(3));
-        assertThat(line.calcDistanceBetween(판교역, 정자역))
+        assertThat(line.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 판교역, 정자역))
                 .isEqualTo(new Distance(1));
-        assertThat(line.calcDistanceBetween(양재역, 판교역))
+        assertThat(line.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 양재역, 판교역))
                 .isEqualTo(new Distance(2));
 
-        assertThat(line.calcDistanceBetween(정자역, 양재역))
+        assertThat(line.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 정자역, 양재역))
                 .isEqualTo(new Distance(3));
-        assertThat(line.calcDistanceBetween(정자역, 판교역))
+        assertThat(line.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 정자역, 판교역))
                 .isEqualTo(new Distance(1));
-        assertThat(line.calcDistanceBetween(판교역, 양재역))
+        assertThat(line.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 판교역, 양재역))
                 .isEqualTo(new Distance(2));
     }
 
@@ -249,9 +250,9 @@ class LineTest {
         Line line = new Line("신분당", "RED", 양재역, 정자역, 3);
 
         assertThatExceptionOfType(LineHasNotExistShortestException.class)
-                .isThrownBy(() -> line.calcDistanceBetween(양재역, 양재역));
+                .isThrownBy(() -> line.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 양재역, 양재역));
         assertThatExceptionOfType(LineHasNotExistShortestException.class)
-                .isThrownBy(() -> line.calcDistanceBetween(정자역, 정자역));
+                .isThrownBy(() -> line.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 정자역, 정자역));
     }
 
     @Test
@@ -260,7 +261,7 @@ class LineTest {
         Line line = new Line("신분당", "RED", 양재역, 정자역, 3);
 
         assertThatExceptionOfType(LineHasNotExistShortestException.class)
-                .isThrownBy(() -> line.calcDistanceBetween(양재역, 판교역));
+                .isThrownBy(() -> line.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 양재역, 판교역));
     }
 
     @Test
@@ -271,6 +272,6 @@ class LineTest {
         Station 쿄잉역 = new Station("쿄잉역");
 
         assertThatExceptionOfType(LineHasNotExistShortestException.class)
-                .isThrownBy(() -> line.calcDistanceBetween(양재역, 쿄잉역));
+                .isThrownBy(() -> line.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 양재역, 쿄잉역));
     }
 }

@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.exception.LineHasNotExistShortestException;
+import nextstep.subway.path.domain.ShortestDistance;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 
@@ -46,16 +47,16 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Stations findShortestRoute(Station source, Station target) {
+    public Stations findShortestRoute(ShortestDistance shortestDistance, Station source, Station target) {
         validateShortestRoute(source, target);
 
-        return sections.getShortestRoute(source, target);
+        return sections.getShortestRoute(shortestDistance, source, target);
     }
 
-    public Distance calcDistanceBetween(Station source, Station distance) {
+    public Distance calcDistanceBetween(ShortestDistance shortestDistance, Station source, Station distance) {
         validateShortestRoute(source, distance);
 
-        return sections.calcDistanceBetween(source, distance);
+        return sections.calcDistanceBetween(shortestDistance, source, distance);
     }
 
     public void update(Line line) {

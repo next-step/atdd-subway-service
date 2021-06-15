@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.exception.StationNotExistException;
+import nextstep.subway.path.domain.ShortestDistance;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 import org.jgrapht.GraphPath;
@@ -37,20 +38,16 @@ public class Sections {
         sections.add(section);
     }
 
-    Stations getShortestRoute(Station source, Station target) {
+    Stations getShortestRoute(ShortestDistance shortestDistance, Station source, Station target) {
         validateShortestRoute(source, target);
 
-        GraphPath shortestGraph = getShortestGraph(source, target);
-
-        return new Stations(shortestGraph.getVertexList());
+        return shortestDistance.shortestRoute(sections, source, target);
     }
 
-    Distance calcDistanceBetween(Station source, Station target) {
+    Distance calcDistanceBetween(ShortestDistance shortestDistance, Station source, Station target) {
         validateShortestRoute(source, target);
 
-        GraphPath path = getShortestGraph(source, target);
-
-        return new Distance(path.getWeight());
+        return shortestDistance.shortestDistance(sections, source, target);
     }
 
     boolean containsStationsExactly(Station ...stations) {

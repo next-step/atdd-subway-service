@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static nextstep.subway.line.domain.LinesTest.DEFAULT_SHORTEST_DISTANCE;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,7 +38,7 @@ class SectionsTest {
         sections.add(new Section(null, 판교역, 정자역, 1));
 
         assertThatExceptionOfType(StationNotExistException.class)
-                .isThrownBy(() -> sections.calcDistanceBetween(판교역, 강남역));
+                .isThrownBy(() -> sections.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 판교역, 강남역));
     }
 
     @Test
@@ -48,18 +49,18 @@ class SectionsTest {
         sections.add(new Section(null, 양재역, 정자역, 3));
         sections.add(new Section(null, 판교역, 정자역, 1));
 
-        assertThat(sections.calcDistanceBetween(양재역, 정자역))
+        assertThat(sections.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 양재역, 정자역))
                 .isEqualTo(new Distance(3));
-        assertThat(sections.calcDistanceBetween(판교역, 정자역))
+        assertThat(sections.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 판교역, 정자역))
                 .isEqualTo(new Distance(1));
-        assertThat(sections.calcDistanceBetween(양재역, 판교역))
+        assertThat(sections.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 양재역, 판교역))
                 .isEqualTo(new Distance(2));
 
-        assertThat(sections.calcDistanceBetween(정자역, 양재역))
+        assertThat(sections.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 정자역, 양재역))
                 .isEqualTo(new Distance(3));
-        assertThat(sections.calcDistanceBetween(정자역, 판교역))
+        assertThat(sections.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 정자역, 판교역))
                 .isEqualTo(new Distance(1));
-        assertThat(sections.calcDistanceBetween(판교역, 양재역))
+        assertThat(sections.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 판교역, 양재역))
                 .isEqualTo(new Distance(2));
     }
 }

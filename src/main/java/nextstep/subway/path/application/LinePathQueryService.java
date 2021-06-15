@@ -3,6 +3,7 @@ package nextstep.subway.path.application;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.domain.ShortestDistance;
 import nextstep.subway.path.dto.LinePathRequest;
 import nextstep.subway.path.dto.LinePathResponse;
 import nextstep.subway.station.domain.Station;
@@ -17,21 +18,23 @@ import javax.persistence.EntityNotFoundException;
 public class LinePathQueryService {
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
+    private final ShortestDistance shortestDistance;
 
-    public LinePathQueryService(LineRepository lineRepository, StationRepository stationRepository) {
+    public LinePathQueryService(LineRepository lineRepository, StationRepository stationRepository, ShortestDistance shortestDistance) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.shortestDistance = shortestDistance;
     }
 
     public LinePathResponse findShortDistance(LinePathRequest linePathRequest) {
         Station source = findStationById(linePathRequest.getSource());
         Station target = findStationById(linePathRequest.getTarget());
 
-        Line shortDistance = findAll().findShortestLine(source, target);
+        Line shortDistance = findAll().findShortestLine(shortestDistance, source, target);
 
         return new LinePathResponse(
-                shortDistance.findShortestRoute(source, target),
-                shortDistance.calcDistanceBetween(source, target)
+                shortDistance.findShortestRoute(shortestDistance, source, target),
+                shortDistance.calcDistanceBetween(shortestDistance, source, target)
         );
     }
 

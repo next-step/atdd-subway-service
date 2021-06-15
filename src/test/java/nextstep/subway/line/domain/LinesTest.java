@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.exception.StationNotExistException;
+import nextstep.subway.path.domain.ShortestDistance;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.*;
 
 class LinesTest {
+    public static final ShortestDistance DEFAULT_SHORTEST_DISTANCE = new DijkstraShortestDistance();
     private Station 강남역 = new Station("강남역");
     private Station 양재역 = new Station("양재역");
     private Station 광교역 = new Station("광교역");
@@ -36,7 +38,7 @@ class LinesTest {
         Lines lines = new Lines(Arrays.asList(신분당선, 분당선));
 
         assertThatExceptionOfType(StationNotExistException.class)
-                .isThrownBy(() -> lines.findShortestLine(강남역, 양재역));
+                .isThrownBy(() -> lines.findShortestLine(DEFAULT_SHORTEST_DISTANCE, 강남역, 양재역));
     }
 
     @Test
@@ -52,7 +54,7 @@ class LinesTest {
 
         Lines lines = new Lines(Arrays.asList(신분당선, 이호선, 삼호선));
 
-        Line shortDistance = lines.findShortestLine(강남역, 광교역);
+        Line shortDistance = lines.findShortestLine(DEFAULT_SHORTEST_DISTANCE, 강남역, 광교역);
 
         assertThat(shortDistance)
                 .isEqualTo(삼호선);
