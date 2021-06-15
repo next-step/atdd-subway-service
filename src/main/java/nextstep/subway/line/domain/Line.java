@@ -81,7 +81,7 @@ public class Line extends BaseEntity {
 
     public void removeStation(Station station) {
         Optional<Section> newSection = sections.removeStation(station);
-        newSection.ifPresent(item -> addSection(item));
+        newSection.ifPresent(this::addSection);
     }
 
     public void addSection(Section section) {

@@ -133,8 +133,8 @@ public class Sections {
     }
 
     private void removeSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
-        upLineStation.ifPresent(it -> remove(it));
-        downLineStation.ifPresent(it -> remove(it));
+        upLineStation.ifPresent(this::remove);
+        downLineStation.ifPresent(this::remove);
     }
 
     private void remove(Section section) {
