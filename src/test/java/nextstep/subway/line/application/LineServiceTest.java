@@ -127,13 +127,4 @@ class LineServiceTest {
         Line removedSectionLine = lineService.findLineById(이호선.getId());
         assertThat(removedSectionLine.getSections()).hasSize(1);
     }
-
-    @Test
-    void getStations() {
-        List<Station> stations = lineService.getStations(이호선);
-
-        assertAll(() -> assertThat(stations).hasSize(2),
-                () -> assertThat(stations).containsExactly(강남역, 역삼역)
-        );
-    }
 }
