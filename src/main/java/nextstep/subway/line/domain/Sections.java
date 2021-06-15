@@ -24,7 +24,7 @@ public class Sections {
 
     protected Sections() { }
 
-    protected void add(Section section) {
+    void add(Section section) {
         if (sections.isEmpty()) {
             sections.add(section);
             return;
@@ -37,7 +37,7 @@ public class Sections {
         sections.add(section);
     }
 
-    public Stations getShortestRoute(Station source, Station target) {
+    Stations getShortestRoute(Station source, Station target) {
         validateShortestRoute(source, target);
 
         GraphPath shortestGraph = getShortestGraph(source, target);
@@ -45,7 +45,7 @@ public class Sections {
         return new Stations(shortestGraph.getVertexList());
     }
 
-    protected Distance calcDistanceBetween(Station source, Station target) {
+    Distance calcDistanceBetween(Station source, Station target) {
         validateShortestRoute(source, target);
 
         GraphPath path = getShortestGraph(source, target);
@@ -53,16 +53,16 @@ public class Sections {
         return new Distance(path.getWeight());
     }
 
-    protected boolean containsStationsExactly(Station ...stations) {
+    boolean containsStationsExactly(Station ...stations) {
         return Arrays.stream(stations)
                 .allMatch(item -> containsStation(item));
     }
 
-    protected boolean containsStation(Station station) {
+    boolean containsStation(Station station) {
         return anyMatch(item -> item.containsStation(station));
     }
 
-    protected Optional<Section> removeStation(Station station) {
+    Optional<Section> removeStation(Station station) {
         if (sections.size() <= 1) {
             throw new RuntimeException();
         }
@@ -75,7 +75,7 @@ public class Sections {
         return createNewSection(upLineStation, downLineStation);
     }
 
-    protected SortedStations toSortedStations() {
+    SortedStations toSortedStations() {
         return new SortedStations(sections);
     }
 

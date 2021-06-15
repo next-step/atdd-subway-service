@@ -56,35 +56,35 @@ public class Section {
         return distance;
     }
 
-    protected void changeLine(Line line) {
+    void changeLine(Line line) {
         this.line = line;
     }
 
-    protected void updateUpStation(Section section) {
+    void updateUpStation(Section section) {
         validateDistance(section);
 
         this.upStation = section.downStation;
         this.distance = this.distance.minus(section.distance);
     }
 
-    protected void updateDownStation(Section section) {
+    void updateDownStation(Section section) {
         validateDistance(section);
 
         this.downStation = section.upStation;
         this.distance = this.distance.minus(section.distance);
     }
 
-    protected void prepareShortestDistance(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    void prepareShortestDistance(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         graph.addVertex(getUpStation());
         graph.addVertex(getDownStation());
         graph.setEdgeWeight(graph.addEdge(upStation, downStation), getDistance().toInt());
     }
 
-    protected Station getUpStation() {
+    Station getUpStation() {
         return upStation;
     }
 
-    protected Station getDownStation() {
+    Station getDownStation() {
         return downStation;
     }
 

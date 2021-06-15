@@ -33,7 +33,7 @@ public class SortedSections {
         return results;
     }
 
-    protected List<Section> toCollection() {
+    List<Section> toCollection() {
         return Collections.unmodifiableList(sections);
     }
 }
