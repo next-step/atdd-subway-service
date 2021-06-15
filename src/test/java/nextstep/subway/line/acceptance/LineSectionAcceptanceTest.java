@@ -8,9 +8,11 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.StationAcceptanceTest;
-import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_목록_응답됨;
+import static nextstep.subway.line.acceptance.LineAcceptanceTestRequest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
@@ -42,7 +44,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
         LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
     @TestFactory
@@ -120,7 +122,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
     public static Executable 지하철_노선에_지하철역_순서_정렬됨(LineResponse line, StationResponse ...stationResponses) {
         return () -> {
-            ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(line);
+            ExtractableResponse<Response> response = 지하철_노선_조회_요청(line);
 
             지하철_노선_목록_응답됨(response);
 

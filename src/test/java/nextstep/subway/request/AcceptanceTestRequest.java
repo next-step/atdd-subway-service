@@ -11,6 +11,11 @@ public class AcceptanceTestRequest {
         return execute(given, when);
     }
 
+    public static ExtractableResponse<Response> put(Given given, When when) {
+        when.setType(MethodType.PUT);
+        return execute(given, when);
+    }
+
     public static ExtractableResponse<Response> post(Given given, When when) {
         when.setType(MethodType.POST);
         return execute(given, when);
