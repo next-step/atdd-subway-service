@@ -23,16 +23,18 @@ public class DijkstraShortestDistance implements ShortestDistance {
     public Stations shortestRoute(List<Section> sections, Station source, Station target) {
         GraphPath path = getShortestGraph(sections, source, target);
 
-        GraphPath shortestGraph = path;
-
-        return new Stations(shortestGraph.getVertexList());
+        return new Stations(path.getVertexList());
     }
 
     private GraphPath getShortestGraph(List<Section> sections, Station source, Station target) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
         sections.stream()
-                .forEach(item -> item.prepareShortestDistance(graph));
+                .forEach(item -> {
+                    graph.addVertex(item.getUpStation());
+                    graph.addVertex(item.getDownStation());
+                    graph.setEdgeWeight(graph.addEdge(item.getUpStation(), item.getDownStation()), item.getDistance().toInt());
+                });
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         GraphPath path = dijkstraShortestPath.getPath(source, target);

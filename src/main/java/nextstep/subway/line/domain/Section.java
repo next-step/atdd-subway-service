@@ -1,8 +1,6 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 import javax.persistence.*;
 
@@ -72,12 +70,6 @@ public class Section {
 
         this.downStation = section.upStation;
         this.distance = this.distance.minus(section.distance);
-    }
-
-    void prepareShortestDistance(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        graph.addVertex(getUpStation());
-        graph.addVertex(getDownStation());
-        graph.setEdgeWeight(graph.addEdge(upStation, downStation), getDistance().toInt());
     }
 
     Station getUpStation() {
