@@ -35,6 +35,17 @@ class PathServiceTest {
     assertThat(shortestPath).isEqualTo(new PathResponse(Arrays.asList(StationResponse.of(교대역), StationResponse.of(남부터미널역), StationResponse.of(양재역)), 5D));
   }
 
+  @DisplayName("기존 최단거리역이 제거되었을 때")
+  @Test
+  void findNewShortestPath() {
+    //given
+    when(stationRepository.findAll()).thenReturn(Arrays.asList(강남역, 양재역, 교대역, 남부터미널역));
+    when(sectionRepository.findAll()).thenReturn(Arrays.asList(강남_양재_구간, 교대_강남_구간, 교대_남부터미널_구간));
+    PathService pathService = new PathService(stationRepository, sectionRepository);
+    PathResponse shortestPath = pathService.findShortestPath(교대역.getId(), 양재역.getId());
+    assertThat(shortestPath).isEqualTo(new PathResponse(Arrays.asList(StationResponse.of(교대역), StationResponse.of(강남역), StationResponse.of(양재역)), 20D));
+  }
+
 
 
 }

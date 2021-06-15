@@ -58,7 +58,7 @@ public class PathFinderTest {
 
   @DisplayName("기존 최단거리역이 제거되었을 때")
   @Test
-  void temp() {
+  void findNewShortestPathTest() {
     //given
     Section 강남_양재_구간 = new Section(신분당선, 강남역, 양재역, Distance.from(10));
     Section 교대_강남_구간 = new Section(이호선, 교대역, 강남역, Distance.from(10));
