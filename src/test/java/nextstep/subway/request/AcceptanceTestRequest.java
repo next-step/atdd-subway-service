@@ -6,21 +6,25 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
 public class AcceptanceTestRequest {
-    public static ExtractableResponse<Response> get(String path, Given given) {
-        return then(givenWhen(given).get(path));
+    public static ExtractableResponse<Response> get(Given given, When when) {
+        when.setType(MethodType.GET);
+        return execute(given, when);
     }
 
-    public static ExtractableResponse<Response> post(String path, Given given) {
-        return then(givenWhen(given).post(path));
+    public static ExtractableResponse<Response> post(Given given, When when) {
+        when.setType(MethodType.POST);
+        return execute(given, when);
     }
 
-    public static ExtractableResponse<Response> delete(String path, Given given) {
-        return then(givenWhen(given).delete(path));
+    public static ExtractableResponse<Response> delete(Given given, When when) {
+        when.setType(MethodType.DELETE);
+        return execute(given, when);
     }
 
-    private static RequestSpecification givenWhen(Given given) {
+    private static ExtractableResponse<Response> execute(Given given, When when) {
         RequestSpecification givenSpecification = given.append(given());
-        return when(givenSpecification);
+        Response append = when.append(givenSpecification);
+        return then(append);
     }
 
     private static RequestSpecification given() {

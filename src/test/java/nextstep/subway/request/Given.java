@@ -11,16 +11,14 @@ public class Given {
     public Given() {
     }
 
+    public Given(Builder builder) {
+        this(builder.contentType, builder.accept, builder.body);
+    }
+
     public Given(ContentType contentType, ContentType accept, Object body) {
         this.contentType = contentType;
         this.accept = accept;
         this.body = body;
-    }
-
-    public Given(Builder builder) {
-        this.body = builder.body;
-        this.accept = builder.accept;
-        this.contentType = builder.contentType;
     }
 
     public RequestSpecification append(RequestSpecification requestSpecification) {
