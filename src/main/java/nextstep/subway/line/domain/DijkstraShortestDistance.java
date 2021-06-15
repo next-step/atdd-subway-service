@@ -1,8 +1,5 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.domain.ShortestDistance;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 import org.jgrapht.GraphPath;

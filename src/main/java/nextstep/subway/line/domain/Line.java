@@ -2,7 +2,6 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.exception.LineHasNotExistShortestException;
-import nextstep.subway.path.domain.ShortestDistance;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 

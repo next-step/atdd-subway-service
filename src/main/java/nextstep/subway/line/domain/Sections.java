@@ -1,13 +1,8 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.exception.StationNotExistException;
-import nextstep.subway.path.domain.ShortestDistance;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -155,16 +150,5 @@ public class Sections {
     private boolean anyMatch(Predicate<Section> predicate) {
         return sections.stream()
                 .anyMatch(predicate);
-    }
-
-    private GraphPath getShortestGraph(Station source, Station target) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-
-        sections.stream()
-                .forEach(item -> item.prepareShortestDistance(graph));
-
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath path = dijkstraShortestPath.getPath(source, target);
-        return path;
     }
 }
