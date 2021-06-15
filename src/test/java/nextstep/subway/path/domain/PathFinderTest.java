@@ -51,7 +51,27 @@ class PathFinderTest {
     Path shortestPath = pathFinder.findShortestPath(교대역.getId(), 양재역.getId());
 
     //then
-    assertThat(shortestPath).isEqualTo(new Path(Arrays.asList(교대역, 남부터미널역, 양재역), 5));
+    assertThat(shortestPath).isEqualTo(new Path(Arrays.asList(교대역, 남부터미널역, 양재역), 5D));
+  }
+
+  @DisplayName("기존 최단거리역이 제거되었을 때")
+  @Test
+  void temp() {
+    //given
+    Section 강남_양재_구간 = new Section(신분당선, 강남역, 양재역, Distance.from(10));
+    Section 교대_강남_구간 = new Section(이호선, 교대역, 강남역, Distance.from(10));
+    Section 교대_남부터미널_구간 = new Section(삼호선, 교대역, 남부터미널역, Distance.from(3));
+    List<Section> newWholeSections = new ArrayList<>();
+    newWholeSections.add(교대_강남_구간);
+    newWholeSections.add(강남_양재_구간);
+    newWholeSections.add(교대_남부터미널_구간);
+    PathFinder pathFinder = PathFinder.init(wholeStations, newWholeSections);
+
+    //when
+    Path shortestPath = pathFinder.findShortestPath(교대역.getId(), 양재역.getId());
+
+    //then
+    assertThat(shortestPath).isEqualTo(new Path(Arrays.asList(교대역, 강남역, 양재역), 20D));
   }
 
   @DisplayName("출발역과 도착역을 같은 역으로 조회")
@@ -64,7 +84,7 @@ class PathFinderTest {
     Path shortestPath = pathFinder.findShortestPath(교대역.getId(), 교대역.getId());
 
     //then
-    assertThat(shortestPath).isEqualTo(new Path(Arrays.asList(교대역), 0));
+    assertThat(shortestPath).isEqualTo(new Path(Arrays.asList(교대역), 0D));
   }
 
   @DisplayName("연결되지 않은 역과의 최단거리를 조회")
