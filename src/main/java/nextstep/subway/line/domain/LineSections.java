@@ -43,7 +43,7 @@ public class LineSections {
             throw new AddSectionException("등록할 수 없는 구간 입니다.");
         }
 
-        int distance = section.getDistance();
+        Distance distance = section.getDistance();
 
         if (isUpStationExisted) {
             sections.stream()
@@ -128,7 +128,8 @@ public class LineSections {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            Distance newDistance = upLineStation.get().getDistance().plus(downLineStation.get().getDistance());
+
             sections.add(new Section(line, newUpStation, newDownStation, newDistance));
         }
 
