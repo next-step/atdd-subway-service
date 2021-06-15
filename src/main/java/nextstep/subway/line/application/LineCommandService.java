@@ -61,7 +61,7 @@ public class LineCommandService {
         return new Section(upStation, downStation, new Distance(distance));
     }
 
-    public Line findById(Long id) {
+    private Line findById(Long id) {
         return lineRepository.findById(id)
                 .orElseThrow(RuntimeException::new);
     }
