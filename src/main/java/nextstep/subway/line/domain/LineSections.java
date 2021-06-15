@@ -115,7 +115,7 @@ public class LineSections {
 
     public void delete(Line line, Station station) {
         if (sections.size() <= 1) {
-            throw new DeleteSectionException("남은 구간이 1개이면 삭제할 수 없습니다.");
+            throw new DeleteSectionException("남은 구간이 1개 이하면 삭제할 수 없습니다.");
         }
 
         Optional<Section> upLineStation = sections.stream()
