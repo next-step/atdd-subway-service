@@ -1,9 +1,9 @@
 package nextstep.subway.line.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.NotFoundLineException;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -13,6 +13,8 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 @Transactional
@@ -29,28 +31,28 @@ public class LineService {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
-        return LineResponse.of(persistLine, StationResponse.listOf(persistLine.getStations()));
+        return createLineResponse(persistLine);
     }
 
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
-                           .map(line -> LineResponse.of(line, StationResponse.listOf(line.getStations())))
-                           .collect(Collectors.toList());
+                           .map(this::createLineResponse)
+                           .collect(toList());
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id).orElseThrow(NotFoundLineException::new);
     }
 
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine, StationResponse.listOf(persistLine.getStations()));
+        return createLineResponse(persistLine);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = lineRepository.findById(id).orElseThrow(NotFoundLineException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
@@ -69,5 +71,15 @@ public class LineService {
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         line.removeSection(stationService.findStationById(stationId));
+    }
+
+    private LineResponse createLineResponse(Line line) {
+        List<StationResponse> stationResponses = line.getStations()
+                                                     .stream()
+                                                     .map(StationResponse::of)
+                                                     .collect(toList());
+
+        return new LineResponse(line.getId(), line.getName(), line.getColor(),
+                                stationResponses, line.getCreatedDate(), line.getModifiedDate());
     }
 }
