@@ -1,8 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.exception.StationNotExistException;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.Stations;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
