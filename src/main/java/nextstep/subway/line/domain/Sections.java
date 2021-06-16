@@ -29,12 +29,12 @@ public class Sections {
             sections.add(section);
             return;
         }
-        updateEqualUpStation(section, isUpStationExisted);
-        updateEqualDownStation(section, isDownStationExisted);
+        addInsideCaseEqualUpStation(section);
+        addInsideCaseEqualDownStation(section);
         sections.add(section);
     }
 
-    private void updateEqualDownStation(Section section, boolean isDownStationExisted) {
+    private void addInsideCaseEqualDownStation(Section section) {
         sections.stream()
                 .filter(preSection -> preSection.hasSameDownStation(section))
                 .findFirst()
@@ -43,7 +43,7 @@ public class Sections {
                 });
     }
 
-    private void updateEqualUpStation(Section section, boolean isUpStationExisted) {
+    private void addInsideCaseEqualUpStation(Section section) {
         sections.stream()
                 .filter(preSection -> preSection.hasSameUpStation(section))
                 .findFirst()
