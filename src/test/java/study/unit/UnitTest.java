@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("단위 테스트")
-public class UnitTest {
+class UnitTest {
     @Test
     void update() {
         // given
@@ -20,7 +20,7 @@ public class UnitTest {
         Line newLine = new Line(newName, "GREEN");
 
         // when
-        line.update(newLine);
+        line.update(newLine.getName(), newLine.getColor());
 
         // then
         assertThat(line.getName()).isEqualTo(newName);

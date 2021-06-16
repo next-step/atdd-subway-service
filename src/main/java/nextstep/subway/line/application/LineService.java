@@ -53,7 +53,7 @@ public class LineService {
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(NotFoundLineException::new);
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        persistLine.update(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
     }
 
     public void deleteLineById(Long id) {
@@ -79,7 +79,6 @@ public class LineService {
                                                      .map(StationResponse::of)
                                                      .collect(toList());
 
-        return new LineResponse(line.getId(), line.getName(), line.getColor(),
-                                stationResponses, line.getCreatedDate(), line.getModifiedDate());
+        return LineResponse.of(line, stationResponses);
     }
 }
