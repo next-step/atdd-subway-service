@@ -50,6 +50,14 @@ public class Section {
         return downStation;
     }
 
+    public boolean isSameDownStation(Station station) {
+        return downStation == station;
+    }
+
+    public boolean isSameUpStation(Station station) {
+        return upStation == station;
+    }
+
     public int getDistance() {
         return distance;
     }
