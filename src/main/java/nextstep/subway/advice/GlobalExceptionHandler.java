@@ -1,9 +1,6 @@
 package nextstep.subway.advice;
 
-import nextstep.subway.exception.EmptySectionException;
-import nextstep.subway.exception.IllegalSectionStateException;
-import nextstep.subway.exception.InvalidDistanceException;
-import nextstep.subway.exception.InvalidStationException;
+import nextstep.subway.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -53,5 +50,17 @@ public class GlobalExceptionHandler {
   public ResponseEntity<Object> handleEmptySectionException(EmptySectionException e) {
     LOG.error("GlobalExceptionHandler.handleEmptySectionException : ", e);
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+  }
+
+  @ExceptionHandler(value = {StationsNotConnectedException.class})
+  public ResponseEntity<Object> handleStationsNotConnectedException(StationsNotConnectedException e) {
+    LOG.error("GlobalExceptionHandler.handleStationsNotConnectedException : ", e);
+    return ResponseEntity.badRequest().build();
+  }
+
+  @ExceptionHandler(value = {StationNotExistException.class})
+  public ResponseEntity<Object> handleStationNotExistException(StationNotExistException e) {
+    LOG.error("GlobalExceptionHandler.handleStationNotExistException : ", e);
+    return ResponseEntity.notFound().build();
   }
 }
