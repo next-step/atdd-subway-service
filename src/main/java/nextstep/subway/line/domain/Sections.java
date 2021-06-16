@@ -7,10 +7,7 @@ import nextstep.subway.station.domain.Stations;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 
 @Embeddable
@@ -31,18 +28,6 @@ public class Sections {
         resizeNearSections(section);
 
         sections.add(section);
-    }
-
-    Stations getShortestRoute(ShortestDistance shortestDistance, Station source, Station target) {
-        validateShortestRoute(source, target);
-
-        return shortestDistance.shortestRoute(sections, source, target);
-    }
-
-    Distance calcDistanceBetween(ShortestDistance shortestDistance, Station source, Station target) {
-        validateShortestRoute(source, target);
-
-        return shortestDistance.shortestDistance(sections, source, target);
     }
 
     boolean containsStationsExactly(Station ...stations) {
@@ -80,12 +65,6 @@ public class Sections {
             return Optional.of(new Section(newUpStation, newDownStation, newDistance));
         }
         return Optional.empty();
-    }
-
-    private void validateShortestRoute(Station source, Station target) {
-        if (!containsStationsExactly(source, target)) {
-            throw new StationNotExistException("포함되지 않은 역이 있습니다.");
-        }
     }
 
     private void validateAdd(Section section) {
@@ -150,5 +129,9 @@ public class Sections {
     private boolean anyMatch(Predicate<Section> predicate) {
         return sections.stream()
                 .anyMatch(predicate);
+    }
+
+    List<Section> toCollection() {
+        return Collections.unmodifiableList(sections);
     }
 }

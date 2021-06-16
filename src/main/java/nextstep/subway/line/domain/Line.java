@@ -46,18 +46,6 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Stations findShortestRoute(ShortestDistance shortestDistance, Station source, Station target) {
-        validateShortestRoute(source, target);
-
-        return sections.getShortestRoute(shortestDistance, source, target);
-    }
-
-    public Distance calcDistanceBetween(ShortestDistance shortestDistance, Station source, Station distance) {
-        validateShortestRoute(source, distance);
-
-        return sections.calcDistanceBetween(shortestDistance, source, distance);
-    }
-
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
@@ -97,13 +85,7 @@ public class Line extends BaseEntity {
         return sections.containsStation(station);
     }
 
-    private void validateShortestRoute(Station source, Station distance) {
-        if (!sections.containsStationsExactly(source, distance)) {
-            throw new LineHasNotExistShortestException("포함되지 않은 역이 있습니다.");
-        }
-
-        if (source == distance) {
-            throw new LineHasNotExistShortestException("같은 역끼리는 길을 찾을 수 없습니다.");
-        }
+    Sections getSections() {
+        return sections;
     }
 }

@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.exception.LineHasNotExistShortestException;
 import nextstep.subway.line.dto.StationResponses;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static nextstep.subway.line.domain.LinesTest.DEFAULT_SHORTEST_DISTANCE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -212,67 +210,4 @@ class LineTest {
                 .isFalse();
     }
 
-    @Test
-    @DisplayName("없는 역이면 LineHasNotExistShortestException이 발생한다")
-    void 없는_역이면_IllegalArgumentException이_발생한다() {
-        Line line = new Line("신분당", "RED", 양재역, 정자역, 3);
-
-        line.addSection(new Section(판교역, 정자역, new Distance(1)));
-
-        assertThatExceptionOfType(LineHasNotExistShortestException.class)
-                .isThrownBy(() -> line.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 판교역, 강남역));
-    }
-
-    @Test
-    @DisplayName("역끼리의 거리를 측정할 수 있다.")
-    void 역끼리의_거리를_측정할_수_있다() {
-        Line line = new Line("신분당", "RED", 양재역, 정자역, 3);
-
-        line.addSection(new Section(판교역, 정자역, new Distance(1)));
-
-        assertThat(line.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 양재역, 정자역))
-                .isEqualTo(new Distance(3));
-        assertThat(line.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 판교역, 정자역))
-                .isEqualTo(new Distance(1));
-        assertThat(line.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 양재역, 판교역))
-                .isEqualTo(new Distance(2));
-
-        assertThat(line.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 정자역, 양재역))
-                .isEqualTo(new Distance(3));
-        assertThat(line.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 정자역, 판교역))
-                .isEqualTo(new Distance(1));
-        assertThat(line.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 판교역, 양재역))
-                .isEqualTo(new Distance(2));
-    }
-
-    @Test
-    @DisplayName("같은 역끼리 찾으려 하면 LineHasNotExistShortestException이 발생한다")
-    void 같은_역끼리_찾으려_하면_LineHasNotExistShortestException이_발생한다() {
-        Line line = new Line("신분당", "RED", 양재역, 정자역, 3);
-
-        assertThatExceptionOfType(LineHasNotExistShortestException.class)
-                .isThrownBy(() -> line.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 양재역, 양재역));
-        assertThatExceptionOfType(LineHasNotExistShortestException.class)
-                .isThrownBy(() -> line.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 정자역, 정자역));
-    }
-
-    @Test
-    @DisplayName("출발역과 도착역이 연결이 되어 있지 않을경우 LineHasNotExistShortest이 발생한다")
-    void 출발역과_도착역이_연결이_되어_있지_않을경우_LineHasNotExistShortest이_발생한다() {
-        Line line = new Line("신분당", "RED", 양재역, 정자역, 3);
-
-        assertThatExceptionOfType(LineHasNotExistShortestException.class)
-                .isThrownBy(() -> line.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 양재역, 판교역));
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 출발역이나 도착역으로 조회시 LineHasNotExistShortest이 실패한다")
-    void 존재하지_않는_출발역이나_도착역으로_조회시_LineHasNotExistShortest이_발생한다() {
-        Line line = new Line("신분당", "RED", 양재역, 정자역, 3);
-
-        Station 쿄잉역 = new Station("쿄잉역");
-
-        assertThatExceptionOfType(LineHasNotExistShortestException.class)
-                .isThrownBy(() -> line.calcDistanceBetween(DEFAULT_SHORTEST_DISTANCE, 양재역, 쿄잉역));
-    }
 }

@@ -6,6 +6,6 @@ import nextstep.subway.station.domain.Stations;
 import java.util.List;
 
 public interface ShortestDistance {
-    Distance shortestDistance(List<Section> sections, Station source, Station target);
-    Stations shortestRoute(List<Section> sections, Station source, Station target);
+    Distance shortestDistance();
+    Stations shortestRoute();
 }

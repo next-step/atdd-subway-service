@@ -1,9 +1,6 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Lines;
-import nextstep.subway.line.domain.ShortestDistance;
+import nextstep.subway.line.domain.*;
 import nextstep.subway.path.dto.LinePathRequest;
 import nextstep.subway.path.dto.LinePathResponse;
 import nextstep.subway.station.domain.Station;
@@ -18,28 +15,23 @@ import javax.persistence.EntityNotFoundException;
 public class LinePathQueryService {
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
-    private final ShortestDistance shortestDistance;
 
-    public LinePathQueryService(LineRepository lineRepository, StationRepository stationRepository, ShortestDistance shortestDistance) {
+    public LinePathQueryService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
-        this.shortestDistance = shortestDistance;
     }
 
     public LinePathResponse findShortDistance(LinePathRequest linePathRequest) {
         Station source = findStationById(linePathRequest.getSource());
         Station target = findStationById(linePathRequest.getTarget());
 
-        Line shortDistance = findAll().findShortestLine(shortestDistance, source, target);
+        ShortestDistance shortestDistance = new DijkstraShortestDistance(lineRepository.findAll(), source, target);
+
 
         return new LinePathResponse(
-                shortDistance.findShortestRoute(shortestDistance, source, target),
-                shortDistance.calcDistanceBetween(shortestDistance, source, target)
+                shortestDistance.shortestRoute(),
+                shortestDistance.shortestDistance()
         );
-    }
-
-    private Lines findAll() {
-        return new Lines(lineRepository.findAll());
     }
 
     private Station findStationById(Long id) {
