@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -83,7 +82,7 @@ public class LineTest {
 
         //when
         Section findSection = 삼호선.getSections().stream()
-                .filter(section -> section.getUpStation().equals(대청역))
+                .filter(section -> section.upStation().equals(대청역))
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
 
@@ -158,7 +157,7 @@ public class LineTest {
 
         //when
         Section findSection = 삼호선.getSections().stream()
-                .filter(section -> section.getUpStation().equals(대청역))
+                .filter(section -> section.upStation().equals(대청역))
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
 

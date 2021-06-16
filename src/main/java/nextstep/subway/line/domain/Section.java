@@ -49,11 +49,11 @@ public class Section {
         return line;
     }
 
-    public Station getUpStation() {
+    public Station upStation() {
         return upStation;
     }
 
-    public Station getDownStation() {
+    public Station downStation() {
         return downStation;
     }
 
@@ -77,7 +77,7 @@ public class Section {
         this.distance -= newDistance;
     }
 
-    public void addLine(Line line) {
+    public void applyLine(Line line) {
         this.line = line;
     }
 }
