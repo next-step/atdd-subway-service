@@ -25,35 +25,39 @@ public class DijkstraShortestDistance implements ShortestDistance {
     public Distance shortestDistance() {
         validateShortestRoute();
 
-        return new Distance(getShortestGraph(getShortestLine()).getWeight());
+        return new Distance(getShortestGraph().getWeight());
     }
 
     @Override
     public Stations shortestRoute() {
         validateShortestRoute();
 
-        return new Stations(getShortestGraph(getShortestLine()).getVertexList());
+        return new Stations(getShortestGraph().getVertexList());
+    }
+
+    private GraphPath<Station, DefaultWeightedEdge> getShortestGraph() {
+        return getShortestGraphOf(getShortestLine());
     }
 
     private Line getShortestLine() {
         return lines.stream()
                 .filter(item -> item.containsStationsExactly(source, target))
                 .min((l1, l2) -> {
-                    Distance l1Distance = getShortestDistance(l1);
-                    Distance l2Distance = getShortestDistance(l2);
+                    Distance l1Distance = getShortestDistanceOf(l1);
+                    Distance l2Distance = getShortestDistanceOf(l2);
 
                     return l1Distance.compareTo(l2Distance);
                 })
                 .orElseThrow(() -> new LineHasNotExistShortestException("최단거리가 존재하지 않습니다."));
     }
 
-    private Distance getShortestDistance(Line line) {
-        GraphPath<Station, DefaultWeightedEdge> path = getShortestGraph(line);
+    private Distance getShortestDistanceOf(Line line) {
+        GraphPath<Station, DefaultWeightedEdge> path = getShortestGraphOf(line);
 
         return new Distance(path.getWeight());
     }
 
-    private GraphPath<Station, DefaultWeightedEdge> getShortestGraph(Line line) {
+    private GraphPath<Station, DefaultWeightedEdge> getShortestGraphOf(Line line) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         line.getSections()
