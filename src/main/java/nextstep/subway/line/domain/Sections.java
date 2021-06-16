@@ -17,18 +17,23 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
+    protected Sections() {
+    }
+
     public void add(Section section) {
+        if (sections.isEmpty()) {
+            sections.add(section);
+            return;
+        }
+
         List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(section::isEqaulsUpStation);
+        boolean isUpStationExisted = getStations().stream().anyMatch(section::isEqaulsUpStation);
         boolean isDownStationExisted = stations.stream().anyMatch(section::isEqualsDownStation);
 
         checkExistAddedSection(isUpStationExisted, isDownStationExisted);
         checkNonMatchSection(section, stations);
 
-        if (stations.isEmpty()) {
-            sections.add(section);
-            return;
-        }
+
         addInsideCaseEqualUpStation(section);
         addInsideCaseEqualDownStation(section);
         sections.add(section);
@@ -66,43 +71,18 @@ public class Sections {
     }
 
     public List<Station> getStations() {
-        if (sections.isEmpty()) {
+        Optional<Section> firstSection = findFirstSection();
+        if (!firstSection.isPresent()){
             return Collections.emptyList();
         }
-
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
-
-        return stations;
+        List<Station> otherStations = firstSection.get().findStations(this);
+        return firstSection.get().findAllStations(otherStations);
     }
 
-    private Station findUpStation() {
-        Station downStation = getSections().get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = getSections().stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
+    private Optional<Section> findFirstSection() {
+        return sections.stream()
+                .filter(section -> section.isFirstSection(sections))
+                .findFirst();
     }
 
     public void removeStation(Station station) {
@@ -126,6 +106,12 @@ public class Sections {
 
         upLineStation.ifPresent(it -> sections.remove(it));
         downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
+    public Optional<Section> findSectionInUpStation(Section newSection) {
+        return sections.stream()
+                .filter(section -> section.isAfterSectionThan(newSection))
+                .findFirst();
     }
 
     public List<Section> getSections() {

@@ -4,6 +4,9 @@ import nextstep.subway.line.exception.IllegalSectionException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Section {
@@ -85,5 +88,35 @@ public class Section {
 
     public boolean isEqualsDownStation(Station station) {
         return downStation.equals(station);
+    }
+
+    public List<Station> findStations(Sections sections) {
+        List<Station> stations = new ArrayList<>();
+        stations.add(downStation);
+        Optional<Section> nextSection = sections.findSectionInUpStation(this);
+        while (nextSection.isPresent()) {
+            stations.add(nextSection.get().downStation);
+            nextSection = sections.findSectionInUpStation(nextSection.get());
+        }
+        return stations;
+    }
+
+    public List<Station> findAllStations(List<Station> otherStations) {
+        List<Station> stations = new ArrayList<>();
+        stations.add(upStation);
+        stations.addAll(otherStations);
+        return stations;
+    }
+
+    public boolean isFirstSection(List<Section> sections) {
+        return sections.stream().noneMatch(section -> section.isBeforeSectionThan(this));
+    }
+
+    private boolean isBeforeSectionThan(Section section) {
+        return downStation.equals(section.upStation);
+    }
+
+    public boolean isAfterSectionThan(Section newSection) {
+        return upStation.equals(newSection.downStation);
     }
 }
