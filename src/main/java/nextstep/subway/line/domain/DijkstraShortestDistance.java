@@ -6,11 +6,9 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
 public class DijkstraShortestDistance implements ShortestDistance {
     @Override
     public Distance shortestDistance(List<Section> sections, Station source, Station target) {
