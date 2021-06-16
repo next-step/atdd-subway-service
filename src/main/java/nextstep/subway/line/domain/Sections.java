@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.exception.IllegalSectionException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -22,12 +23,12 @@ public class Sections {
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalSectionException("이미 등록된 구간 입니다.");
         }
 
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
                 stations.stream().noneMatch(it -> it == section.getDownStation())) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new IllegalSectionException("등록할 수 없는 구간 입니다.");
         }
 
         if (stations.isEmpty()) {
@@ -50,12 +51,8 @@ public class Sections {
 
             sections.add(section);
         } else {
-            throw new RuntimeException();
+            throw new IllegalSectionException("구간 추가 예외 입니다.");
         }
-    }
-
-    public List<Section> getSections() {
-        return new ArrayList<>(sections);
     }
 
     public List<Station> getStations() {
@@ -119,5 +116,9 @@ public class Sections {
 
         upLineStation.ifPresent(it -> sections.remove(it));
         downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
+    public List<Section> getSections() {
+        return new ArrayList<>(sections);
     }
 }
