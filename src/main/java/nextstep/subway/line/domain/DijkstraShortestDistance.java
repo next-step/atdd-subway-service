@@ -12,30 +12,29 @@ import java.util.List;
 public class DijkstraShortestDistance implements ShortestDistance {
     @Override
     public Distance shortestDistance(List<Section> sections, Station source, Station target) {
-        GraphPath path = getShortestGraph(sections, source, target);
+        GraphPath<Station, DefaultWeightedEdge> path = getShortestGraph(sections, source, target);
 
         return new Distance(path.getWeight());
     }
 
     @Override
     public Stations shortestRoute(List<Section> sections, Station source, Station target) {
-        GraphPath path = getShortestGraph(sections, source, target);
+        GraphPath<Station, DefaultWeightedEdge> path = getShortestGraph(sections, source, target);
 
         return new Stations(path.getVertexList());
     }
 
-    private GraphPath getShortestGraph(List<Section> sections, Station source, Station target) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+    private GraphPath<Station, DefaultWeightedEdge> getShortestGraph(List<Section> sections, Station source, Station target) {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
-        sections.stream()
-                .forEach(item -> {
+        sections.forEach(item -> {
                     graph.addVertex(item.getUpStation());
                     graph.addVertex(item.getDownStation());
                     graph.setEdgeWeight(graph.addEdge(item.getUpStation(), item.getDownStation()), item.getDistance().toInt());
                 });
 
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath path = dijkstraShortestPath.getPath(source, target);
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
         return path;
     }
 
