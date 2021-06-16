@@ -28,6 +28,8 @@ public class Section {
 
     private int distance;
 
+    private static final String EXCEPTION_FOR_DISTANCE = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
+
     public Section() {
     }
 
@@ -36,6 +38,13 @@ public class Section {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static Section of(Section upLineStation, Section downLineStation) {
+        Station newUpStation = downLineStation.upStation;
+        Station newDownStation = upLineStation.downStation;
+        int newDistance = upLineStation.distance + downLineStation.distance;
+        return new Section(upLineStation.line, newUpStation, newDownStation, newDistance);
     }
 
     public Long getId() {
@@ -60,7 +69,7 @@ public class Section {
 
     public void updateUpStation(Section section) {
         if (this.distance <= section.distance) {
-            throw new IllegalSectionException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalSectionException(EXCEPTION_FOR_DISTANCE);
         }
         this.upStation = section.downStation;
         this.distance -= section.distance;
@@ -68,7 +77,7 @@ public class Section {
 
     public void updateDownStation(Section section) {
         if (this.distance <= section.distance) {
-            throw new IllegalSectionException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalSectionException(EXCEPTION_FOR_DISTANCE);
         }
         this.downStation = section.upStation;
         this.distance -= section.distance;
