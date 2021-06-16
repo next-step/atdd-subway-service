@@ -55,19 +55,35 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
+    public void updateUpStation(Section section) {
+        if (this.distance <= section.distance) {
             throw new IllegalSectionException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.upStation = station;
-        this.distance -= newDistance;
+        this.upStation = section.downStation;
+        this.distance -= section.distance;
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
+    public void updateDownStation(Section section) {
+        if (this.distance <= section.distance) {
             throw new IllegalSectionException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.downStation = station;
-        this.distance -= newDistance;
+        this.downStation = section.upStation;
+        this.distance -= section.distance;
+    }
+
+    public boolean hasSameDownStation(Section section) {
+        return downStation.equals(section.downStation);
+    }
+
+    public boolean hasSameUpStation(Section section) {
+        return upStation.equals(section.upStation);
+    }
+
+    public boolean isEqaulsUpStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean isEqualsDownStation(Station station) {
+        return downStation.equals(station);
     }
 }
