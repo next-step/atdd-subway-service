@@ -39,6 +39,10 @@ public class Favorite {
     this.targetStation = targetStation;
   }
 
+  public Long getId() {
+    return id;
+  }
+
   public Station getSourceStation() {
     return sourceStation;
   }
