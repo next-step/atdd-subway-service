@@ -51,7 +51,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         양재역 = createStation("양재역");
         교대역 = createStation("교대역");
         남부터미널역 = createStation("남부터미널역");
-        남부터미널역 = createStation("부평역");
+        부평역 = createStation("부평역");
 
         신분당선 = createLine("신분당선", "bg-red-600", 강남역, 양재역, 14);
         이호선 = createLine("이호선", "bg-green-600", 교대역, 강남역, 12);
@@ -99,7 +99,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("최단 거리 탐색 - 같은 노선")
     @Test
     void findPathSuccess01() {
-        findPathSuccess(강남역, 양재역, 15, ImmutableList.of(강남역, 양재역));
+        findPathSuccess(강남역, 양재역, 14, ImmutableList.of(강남역, 양재역));
     }
 
     @DisplayName("최단 거리 탐색 - 다른 노선")

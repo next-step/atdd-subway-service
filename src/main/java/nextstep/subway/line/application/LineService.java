@@ -34,11 +34,15 @@ public class LineService {
         return createLineResponse(persistLine);
     }
 
-    public List<LineResponse> findLines() {
-        List<Line> persistLines = lineRepository.findAll();
+    public List<LineResponse> findLineResponses() {
+        List<Line> persistLines = findLines();
         return persistLines.stream()
                            .map(this::createLineResponse)
                            .collect(toList());
+    }
+
+    public List<Line> findLines() {
+        return lineRepository.findAll();
     }
 
     public Line findLineById(Long id) {

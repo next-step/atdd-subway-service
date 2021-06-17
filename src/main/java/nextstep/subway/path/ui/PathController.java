@@ -1,6 +1,7 @@
 package nextstep.subway.path.ui;
 
 import nextstep.subway.path.application.PathService;
+import nextstep.subway.path.domain.NotFoundPathException;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.NotFoundStationException;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,11 @@ public class PathController {
 
     @ExceptionHandler(NotFoundStationException.class)
     public ResponseEntity<String> handleNotFoundStationException(NotFoundStationException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(NotFoundPathException.class)
+    public ResponseEntity<String> handleNotFoundPathException(NotFoundPathException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
