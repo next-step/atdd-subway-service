@@ -1,5 +1,8 @@
 package nextstep.subway.auth.acceptance;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -11,6 +14,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import java.util.Date;
 
 import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -62,16 +67,21 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 잘못된_조회_응답 = 내_정보_조회("BadBearerToken");
 
         내_정보_조회_실패(잘못된_조회_응답);
-
-    }
-
-    private void 내_정보_조회_실패(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+        //given 회원 등록되어 있음
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        //given 등록된 Email과 Password로 로그인
+        로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
+        String 유효시간_지난_토큰 = 유효시간_지난_토큰_생성();
+
+        //when 유효하지 않은 토큰으로 로그인 시도
+        ExtractableResponse<Response> 유효하지_않은_토큰_조회 = 내_정보_조회(유효시간_지난_토큰);
+
+        내_정보_조회_실패(유효하지_않은_토큰_조회);
     }
 
     public static void 로그인_실패(ExtractableResponse<Response> response) {
@@ -106,5 +116,20 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .get("/members/me")
             .then().log().all()
             .extract();
+    }
+
+    private void 내_정보_조회_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private String 유효시간_지난_토큰_생성() {
+        Claims claims = Jwts.claims().setSubject(EMAIL);
+        Date oneHourBefore = new Date(new Date().getTime() - 3600000);
+        return Jwts.builder()
+            .setClaims(claims)
+            .setIssuedAt(oneHourBefore)
+            .setExpiration(oneHourBefore)
+            .signWith(SignatureAlgorithm.HS256, "secretKey")
+            .compact();
     }
 }
