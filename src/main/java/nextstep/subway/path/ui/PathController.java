@@ -2,8 +2,10 @@ package nextstep.subway.path.ui;
 
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.station.domain.NotFoundStationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,8 +21,13 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findPath(@RequestParam("source") Long sourceId,
-                                                 @RequestParam("target") Long targetId) {
-        return ResponseEntity.ok().body(pathService.findPath(sourceId, targetId));
+    public ResponseEntity<PathResponse> findShortestPath(@RequestParam("source") Long sourceId,
+                                                         @RequestParam("target") Long targetId) {
+        return ResponseEntity.ok().body(pathService.findShortestPath(sourceId, targetId));
+    }
+
+    @ExceptionHandler(NotFoundStationException.class)
+    public ResponseEntity<String> handleNotFoundStationException(NotFoundStationException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }

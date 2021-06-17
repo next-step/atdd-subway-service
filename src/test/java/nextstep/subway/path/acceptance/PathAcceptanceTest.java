@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,7 +88,12 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 출발역이나 도착역을 조회하면 오류")
     @Test
     void findPathFail03() {
-        findPathFail(10000L, 20000L);
+
+        LocalDateTime dontCareTime = LocalDateTime.now();
+        StationResponse noExistStation1 = new StationResponse(10000L, "NO_1", dontCareTime, dontCareTime);
+        StationResponse noExistStation2 = new StationResponse(20000L, "NO_2", dontCareTime, dontCareTime);
+
+        findPathFail(noExistStation1, noExistStation2);
     }
 
     @DisplayName("최단 거리 탐색 - 같은 노선")
@@ -120,11 +126,6 @@ class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = findPathRequest(source.getId(), destination.getId());
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    private void findPathFail(Long source, Long destination) {
-        ExtractableResponse<Response> response = findPathRequest(source, destination);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
