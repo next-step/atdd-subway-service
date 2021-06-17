@@ -1,5 +1,7 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.exception.StationNotExistException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -24,11 +26,19 @@ public class FavoriteService {
   }
 
   public FavoriteResponse saveFavorite(Long memberId, FavoriteRequest request) {
-    Member member = memberRepository.findById(memberId).orElseThrow(RuntimeException::new);
-    Station sourceStation = stationRepository.findById(request.getSourceStationId()).orElseThrow(RuntimeException::new);
-    Station targetStation = stationRepository.findById(request.getTargetStationId()).orElseThrow(RuntimeException::new);
+    Member member = findMember(memberId);
+    Station sourceStation = findStation(request.getSourceStationId());
+    Station targetStation = findStation(request.getTargetStationId());
     return FavoriteResponse.of(favoriteRepository.save(new Favorite(member, sourceStation, targetStation)));
   }
 
+  private Member findMember(Long memberId) {
+    return memberRepository.findById(memberId)
+              .orElseThrow(AuthorizationException::new);
+  }
 
+  private Station findStation(Long stationId) {
+    return stationRepository.findById(stationId)
+            .orElseThrow(StationNotExistException::new);
+  }
 }
