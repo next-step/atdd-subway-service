@@ -134,7 +134,7 @@ public class Line extends BaseEntity {
         return downStation;
     }
 
-    public void addSection(Station upStation, Station downStation,int distance) {
+    public void addSection(Station upStation, Station downStation, int distance) {
         List<Station> stations = getStations();
 
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
@@ -162,5 +162,24 @@ public class Line extends BaseEntity {
             throw new RuntimeException();
         }
         sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public void removeLineStation(Station station) {
+        if (isUnableRemoveStatus()) {
+            throw new RuntimeException();
+        }
+
+        Optional<Section> upLineStation = getSection(section -> section.isSameUpStation(station));
+        Optional<Section> downLineStation = getSection(section -> section.isSameDownStation(station));
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            getSections().add(new Section(this, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> removeSection(it));
+        downLineStation.ifPresent(it -> removeSection(it));
     }
 }

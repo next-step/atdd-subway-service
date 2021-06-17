@@ -77,22 +77,6 @@ public class LineService {
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
-
-        if (line.isUnableRemoveStatus()) {
-            throw new RuntimeException();
-        }
-
-        Optional<Section> upLineStation = line.getSection(section -> section.isSameUpStation(station));
-        Optional<Section> downLineStation = line.getSection(section -> section.isSameDownStation(station));
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            line.getSections().add(new Section(line, newUpStation, newDownStation, newDistance));
-        }
-
-        upLineStation.ifPresent(it -> line.removeSection(it));
-        downLineStation.ifPresent(it -> line.removeSection(it));
+        line.removeLineStation(station);
     }
 }
