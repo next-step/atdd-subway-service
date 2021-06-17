@@ -15,4 +15,8 @@ public class PathFinder {
         this.target = target;
         this.lines = lines;
     }
+
+    public ShortestPath findShortestPath() {
+        return null;
+    }
 }
