@@ -45,7 +45,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         TokenResponse 로그인_응답 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
 
         //when 발급된 토큰으로 내 정보 조회
-        ExtractableResponse<Response> 내_정보 = 내_정보_조회(로그인_응답);
+        ExtractableResponse<Response> 내_정보 = 내_정보_조회(로그인_응답.getAccessToken());
 
         내_정보_조회됨(내_정보);
     }
@@ -53,6 +53,20 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
+        //given 회원 등록되어 있음
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        //given 등록된 Email과 Password로 로그인
+        로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
+
+        //when 잘못된 토큰으로 로그인 시도
+        ExtractableResponse<Response> 잘못된_조회_응답 = 내_정보_조회("BadBearerToken");
+
+        내_정보_조회_실패(잘못된_조회_응답);
+
+    }
+
+    private void 내_정보_조회_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
@@ -85,9 +99,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(내_정보.getAge()).isEqualTo(AGE);
     }
 
-    private ExtractableResponse<Response> 내_정보_조회(TokenResponse token) {
+    private ExtractableResponse<Response> 내_정보_조회(String token) {
         return RestAssured.given().log().all()
-            .auth().oauth2(token.getAccessToken())
+            .auth().oauth2(token)
             .when()
             .get("/members/me")
             .then().log().all()
