@@ -10,20 +10,15 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathFinder {
 
-    private final Station source;
-    private final Station target;
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
-    public PathFinder(Station source, Station target, List<Line> lines) {
-
-        verifySourceNotEqualTarget(source, target);
-
-        this.source = source;
-        this.target = target;
+    public PathFinder(List<Line> lines) {
         this.graph = initializeStationGraph(lines);
     }
 
-    public ShortestPath findShortestPath() {
+    public ShortestPath findShortestPath(Station source, Station target) {
+
+        verifySourceNotEqualTarget(source, target);
 
         try {
             DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
