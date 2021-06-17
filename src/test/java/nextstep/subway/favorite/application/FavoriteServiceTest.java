@@ -14,6 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static nextstep.subway.member.MemberAcceptanceTest.*;
@@ -52,7 +54,27 @@ class FavoriteServiceTest {
     //when
     FavoriteResponse result = favoriteService.saveFavorite(0L, new FavoriteRequest(sourceStation.getId(), targetStation.getId()));
 
+    //then
     assertThat(result).isEqualTo(FavoriteResponse.of(favorite));
+  }
+
+  @DisplayName("즐겨찾기 목록 조회 요청을 한다.")
+  @Test
+  void findFavoritesTest() {
+    //given
+    Member user = new Member(EMAIL, PASSWORD, AGE);
+    Station sourceStation = stationStaticFactoryForTestCode(1L, "교대역");
+    Station targetStation = stationStaticFactoryForTestCode(2L, "양재역");
+    when(memberRepository.findById(anyLong())).thenReturn(Optional.of(user));
+    Favorite favorite = new Favorite(user, sourceStation, targetStation);
+    when(favoriteRepository.findAllByMember(user)).thenReturn(Arrays.asList(favorite));
+    FavoriteService favoriteService = new FavoriteService(memberRepository, stationRepository, favoriteRepository);
+
+    //when
+    List<FavoriteResponse> result = favoriteService.findFavorites(0L);
+
+    //then
+    assertThat(result).containsExactly(FavoriteResponse.of(favorite));
   }
 
 }
