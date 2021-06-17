@@ -60,6 +60,12 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         //then 내 정보 조회됨
         내_정보_조회됨(내_정보);
+
+        //when 내 정보 수정 요청
+        ExtractableResponse<Response> 내_정보_수정_응답 = 내_정보_수정_요청(로그인_응답.getAccessToken(), NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+
+        //then 내 정보 수정됨
+        회원_정보_수정됨(내_정보_수정_응답);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -124,5 +130,18 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static ExtractableResponse<Response> 내_정보_수정_요청(String token, String newEmail, String newPassword, int newAge) {
+        MemberRequest modifyRequest = new MemberRequest(newEmail, newPassword, newAge);
+
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(token)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(modifyRequest)
+            .when().put("/members/me")
+            .then().log().all()
+            .extract();
     }
 }
