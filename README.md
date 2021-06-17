@@ -80,7 +80,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             1. When 지하철 강남역 - 양재역 구간 등록 요청
             2. Then 지하철 구간 등록됨
         2. 지하철 노선을 제외한다.
-            1. When 지하철 강남역 - 광교역 구간 제외 요청
+            1. When 지하철 강남역 제외 요청
             2. Then 지하철 구간 제외됨
         3. 지하철 노선을 조회한다.
             1. When 지하철 노선 조회 요청
@@ -91,7 +91,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             1. When 지하철 강남역 - 양재역 구간 등록 요청
             2. Then 지하철 구간 등록됨
         2. 지하철 노선을 제외한다.
-            1. When 지하철 강남역 - 양재역 구간 제외 요청
+            1. When 지하철 광교역 구간 제외 요청
             2. Then 지하철 구간 제외됨
         3. 지하철 노선을 조회한다.
             1. When 지하철 노선 조회 요청
@@ -100,10 +100,10 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     *  Scenario: 지하철 구간 중 중간을 제외하고 등록하고 조회한다.
         1. 지하철 노선을 등록한다.
             1. When 지하철 강남역 - 양재역 구간 등록 요청
-               And 지하철 양재역 - 정자역 구간 등록 요청
+               And 지하철 광교역 - 정자역 구간 등록 요청
             2. Then 지하철 구간 등록됨
         2. 지하철 노선을 제외한다.
-            1. When 지하철 강남역 - 양재역 구간 제외 요청
+            1. When 지하철 광교역 구간 제외 요청
             2. Then 지하철 구간 제외됨
         3. 지하철 노선을 조회한다.
             1. When 지하철 노선 조회 요청
@@ -114,7 +114,13 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             1.  When 지하철 강남역 - 광교역 구간 등록 요청
             2. Then 지하철 노선에 지하철역 등록 실패
         2. 지하철 노선에 등록되지 않은 역을 기준으로 등록한다.
-            1. When 지하철 노선에 연결되지 않는 구간 정자역 - 양재역 새로 등록
+            1. When 지하철 노선에 연결되지 않는 구간 양재역 - 정자역 새로 등록
+            2. Then 지하철 노선에 지하철역 등록 실패
+        3. 지하철 노선을 조회한다.
+            1. When 지하철 노선 조회 요청
+            2. Then 지하철 노선 순서대로 조회
+        4. 지하철 구간 등록시 거리가 큰 값으로 등록한다.
+            1. When 지하철 노선에 강남역 - 정자역 새로 등록 요청. 요청시 거리를 100으로 한다.
             2. Then 지하철 노선에 지하철역 등록 실패
 
     *  Scenario: 지하철 구간 제외 실패를 한다.

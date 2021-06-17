@@ -137,6 +137,11 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_실패됨(양재역_정자역_구간_등록_응답);
 
         //when
+        ExtractableResponse<Response> 강남역_정자역_구간_등록_응답 = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 100);
+        //then
+        지하철_노선에_지하철역_등록_실패됨(강남역_정자역_구간_등록_응답);
+
+        //when
         ExtractableResponse<Response> 지하철_노선_조회_응답 = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
         //then
         지하철_노선에_지하철역_순서_정렬됨(지하철_노선_조회_응답, 강남역, 광교역);
