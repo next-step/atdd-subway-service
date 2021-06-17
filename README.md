@@ -52,3 +52,18 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+# 인수 테스트 기반 TDD 미션!
+
+## 1단계 - 인수 테스트 기반 리팩터링
+### 요구사항
+1. LineSectionAcceptanceTest 리팩터링
+2. LineService 리팩터링
+- [X] LineService의 비즈니스 로직을 도메인으로 옮기기
+    - [X] 도메인의 단위 테스트를 작성하기
+    - [X] 로직을 옮기기
+3. 단위 테스트
+- [X] 노선에 여러 구간을 등록하고 항상 정렬 된 목록을 받을 수 있다.
+- [X] 노선에 역을 제거할 수 있다.
+- [X] 노선에 등록되어 있지 않은 역을 제거할 때 제거할 수 없다.
+- [X] 구간이 하나인 노선에서 마지막 구간을 제거할 때 제거할 수 없다.
