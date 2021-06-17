@@ -103,13 +103,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    private void 내_정보_조회됨(ExtractableResponse<Response> response) {
+    public static void 내_정보_조회됨(ExtractableResponse<Response> response) {
         MemberResponse 내_정보 = response.as(MemberResponse.class);
         assertThat(내_정보.getEmail()).isEqualTo(EMAIL);
         assertThat(내_정보.getAge()).isEqualTo(AGE);
     }
 
-    private ExtractableResponse<Response> 내_정보_조회(String token) {
+    public static ExtractableResponse<Response> 내_정보_조회(String token) {
         return RestAssured.given().log().all()
             .auth().oauth2(token)
             .when()
