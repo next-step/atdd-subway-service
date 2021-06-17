@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMyInfo() {
         //given 회원 등록되어 있음
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
 
         //when 등록된 Email과 Password로 로그인
         ExtractableResponse<Response> 로그인_응답 = 로그인_요청(EMAIL, PASSWORD);
@@ -38,6 +39,15 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
+        //given 회원 등록되어 있음
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        //given 등록된 Email과 Password로 로그인
+        TokenResponse 로그인_응답 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
+
+        //when 발급된 토큰으로 내 정보 조회
+        ExtractableResponse<Response> 내_정보 = 내_정보_조회(로그인_응답);
+
+        내_정보_조회됨(내_정보);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
@@ -65,6 +75,21 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .body(new TokenRequest(email, password))
             .when()
             .post("/login/token")
+            .then().log().all()
+            .extract();
+    }
+
+    private void 내_정보_조회됨(ExtractableResponse<Response> response) {
+        MemberResponse 내_정보 = response.as(MemberResponse.class);
+        assertThat(내_정보.getEmail()).isEqualTo(EMAIL);
+        assertThat(내_정보.getAge()).isEqualTo(AGE);
+    }
+
+    private ExtractableResponse<Response> 내_정보_조회(TokenResponse token) {
+        return RestAssured.given().log().all()
+            .auth().oauth2(token.getAccessToken())
+            .when()
+            .get("/members/me")
             .then().log().all()
             .extract();
     }
