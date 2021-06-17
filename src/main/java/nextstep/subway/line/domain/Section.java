@@ -27,6 +27,12 @@ public class Section implements Comparable<Section> {
     public Section() {
     }
 
+    public Section(Station upStation, Station downStation, int distance) {
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
+    }
+
     public Section(Line line, Station upStation, Station downStation, int distance) {
         this.line = line;
         this.upStation = upStation;
@@ -78,6 +84,9 @@ public class Section implements Comparable<Section> {
         this.distance -= newDistance;
     }
 
+    public void setLine(Line line) {
+        this.line = line;
+    }
     @Override
     public int compareTo(Section section) {
         if(this.upStation.equals(section.getDownStation())) {
