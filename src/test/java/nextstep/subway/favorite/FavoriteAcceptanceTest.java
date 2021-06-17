@@ -75,6 +75,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     //then 즐겨찾기 목록 조회됨
     즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_응답, 즐겨찾기_생성_응답);
 
+    //when 즐겨찾기 삭제 요청
+    ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(즐겨찾기_생성_응답);
+    //then 즐겨찾기 삭제됨
+    즐겨찾기_삭제됨(즐겨찾기_삭제_응답);
+
   }
 
   private ExtractableResponse<Response> 즐겨찾기_생성_요청(Long source, Long target) {
@@ -92,15 +97,29 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
   }
   private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청() {
     return RestAssured.given().log().all()
-        .auth().oauth2(loginToken)
-        .when().get("/favorites")
-        .then().log().all()
-        .extract();
+            .auth().oauth2(loginToken)
+            .when().get("/favorites")
+            .then().log().all()
+            .extract();
   }
 
   private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, ExtractableResponse<Response> createdResponse) {
     assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     List<FavoriteResponse> results = response.jsonPath().getList(".", FavoriteResponse.class);
     assertThat(results).containsExactly(createdResponse.as(FavoriteResponse.class));
+  }
+
+  private ExtractableResponse<Response> 즐겨찾기_삭제_요청(ExtractableResponse<Response> createdResponse) {
+    FavoriteResponse favoriteResponse = createdResponse.as(FavoriteResponse.class);
+    return RestAssured.given().log().all()
+        .auth().oauth2(loginToken)
+        .pathParam("id", favoriteResponse.getId())
+        .when().delete("/favorites/{id}")
+        .then().log().all()
+        .extract();
+  }
+
+  private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+    assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
   }
 }
