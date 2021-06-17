@@ -21,6 +21,18 @@ public class FavoriteResponse {
     return new FavoriteResponse(favorite.getId(), StationResponse.of(favorite.getSourceStation()), StationResponse.of(favorite.getTargetStation()));
   }
 
+  public Long getId() {
+    return id;
+  }
+
+  public StationResponse getSource() {
+    return source;
+  }
+
+  public StationResponse getTarget() {
+    return target;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
