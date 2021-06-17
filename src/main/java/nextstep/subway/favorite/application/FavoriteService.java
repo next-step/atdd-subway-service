@@ -43,6 +43,10 @@ public class FavoriteService {
                           .collect(Collectors.toList());
   }
 
+  public void deleteFavorite(Long favoriteId) {
+    favoriteRepository.deleteById(favoriteId);
+  }
+
   private Member findMember(Long memberId) {
     return memberRepository.findById(memberId)
               .orElseThrow(AuthorizationException::new);
