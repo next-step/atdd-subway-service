@@ -5,11 +5,19 @@ import nextstep.subway.station.domain.Station;
 
 public class ShortestPath {
 
-    public List<Station> getStations() {
-        return null;
+    private final List<Station> path;
+    private final int distance;
+
+    public ShortestPath(List<Station> path, int distance) {
+        this.path = path;
+        this.distance = distance;
+    }
+
+    public List<Station> getPath() {
+        return path;
     }
 
     public int getDistance() {
-        return 0;
+        return distance;
     }
 }
