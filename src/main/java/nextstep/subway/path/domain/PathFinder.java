@@ -1,8 +1,6 @@
 package nextstep.subway.path.domain;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -30,26 +28,30 @@ public class PathFinder {
 
     public ShortestPath findShortestPath() {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        Set<Station> stations = new HashSet<>();
 
         for (Line line : lines) {
             for (Section section : line.getSections()) {
-                stations.add(section.getUpStation());
-                stations.add(section.getDownStation());
-                graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
+
+                Station upStation = section.getUpStation();
+                Station downStation = section.getDownStation();
+
+                graph.addVertex(upStation);
+                graph.addVertex(downStation);
+
+                graph.setEdgeWeight(graph.addEdge(upStation, downStation),
                                     section.getDistance().getValue());
             }
         }
 
-        for (Station station : stations) {
-            graph.addVertex(station);
+        try {
+            DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+            GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
+            List<Station> shortestPath = path.getVertexList();
+            int distance = (int) path.getWeight();
+
+            return new ShortestPath(shortestPath, distance);
+        } catch (IllegalArgumentException e) {
+            throw new NotFoundPathException("경로가 연결되어 있지 않습니다.");
         }
-
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
-        List<Station> shortestPath = path.getVertexList();
-        int distance = (int) path.getWeight();
-
-        return new ShortestPath(shortestPath, distance);
     }
 }

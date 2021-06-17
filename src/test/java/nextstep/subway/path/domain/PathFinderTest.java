@@ -36,7 +36,7 @@ class PathFinderTest {
         서울역 = new Station("서울역");
 
         인천1호선 = new Line("인천1호선", "color", 계양역, 귤현역, 9);
-        공항철도 = new Line("공항철도", "color", 계양역, 김포공항역, 66);
+        공항철도 = new Line("공항철도", "color", 김포공항역, 계양역, 66);
         공항철도.addSection(new Section(인천1호선, 마곡나루역, 김포공항역, 23));
 
         allLines = Lists.newArrayList(인천1호선, 공항철도);
@@ -53,9 +53,8 @@ class PathFinderTest {
     @DisplayName("출발역과 도착역이 연결되어 있지 않으면 오류 발생")
     @Test
     void shortestPathFail02() {
-        assertThatExceptionOfType(NotFoundPathException.class).isThrownBy(
-            () -> new PathFinder(서울역, 계양역, allLines)
-        );
+        PathFinder pathFinder =  new PathFinder(서울역, 계양역, allLines);
+        assertThatExceptionOfType(NotFoundPathException.class).isThrownBy(pathFinder::findShortestPath);
     }
 
     @DisplayName("경로 탐색 성공 - 같은 노선")
