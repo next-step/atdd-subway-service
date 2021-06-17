@@ -57,7 +57,20 @@ class LineTest {
         Station 잠실역 = new Station("잠실역");
         Line 지하철2호선 = new Line("2호선", "초록색", 강남역, 잠실역, 200);
 
-        지하철2호선.addSection(new Section(지하철2호선, 강남역, 삼성역, 100));
+        지하철2호선.addSection(강남역, 삼성역, 100);
         assertThat(지하철2호선.getSections()).hasSize(2);
+    }
+
+    @DisplayName("지하철역이 순서대로 조회되는지 확인")
+    @Test
+    void getStations() {
+        Station 강남역 = new Station("강남역");
+        Station 삼성역 = new Station("삼성역");
+        Station 잠실역 = new Station("잠실역");
+        Line 지하철2호선 = new Line("2호선", "초록색", 강남역, 잠실역, 200);
+
+        지하철2호선.addSection(강남역, 삼성역, 100);
+        assertThat(지하철2호선.getSections()).hasSize(2);
+        assertThat(지하철2호선.getStations()).containsExactly(강남역, 삼성역, 잠실역);
     }
 }
