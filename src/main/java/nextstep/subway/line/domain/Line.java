@@ -4,9 +4,7 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 
 @Entity
@@ -82,10 +80,6 @@ public class Line extends BaseEntity {
                 .findFirst();
     }
 
-    public void addSection(Section section) {
-        sections.add(section);
-    }
-
     public void updateUpStationIfSameUpStation(Station upStation, Station downStation, int distance) {
         sections.stream()
                 .filter(it -> it.getUpStation() == upStation)
@@ -98,5 +92,75 @@ public class Line extends BaseEntity {
                 .filter(it -> it.getDownStation() == downStation)
                 .findFirst()
                 .ifPresent(it -> it.updateDownStation(upStation, distance));
+    }
+
+    public List<Station> getStations() {
+
+        if (isEmptySection()) {
+            return Arrays.asList();
+        }
+
+        List<Station> stations = new ArrayList<>();
+        Station downStation = findUpStation();
+        stations.add(downStation);
+
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = getSection(section -> section.isSameUpStation(finalDownStation));
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getDownStation();
+            stations.add(downStation);
+        }
+
+        return stations;
+    }
+
+    private Station findUpStation() {
+        Collections.sort(sections);
+
+        Station downStation = getUpStation();
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+
+            Optional<Section> nextLineStation = getSection(section -> section.isSameDownStation(finalDownStation));
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getUpStation();
+        }
+
+        return downStation;
+    }
+
+    public void addSection(Station upStation, Station downStation,int distance) {
+        List<Station> stations = getStations();
+
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
+                stations.stream().noneMatch(it -> it == downStation)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
+        if (stations.isEmpty()) {
+            sections.add(new Section(this, upStation, downStation, distance));
+            return;
+        }
+
+        if (isUpStationExisted) {
+            updateUpStationIfSameUpStation(upStation, downStation, distance);
+        } else if (isDownStationExisted) {
+            updateDownStationIfSameDownStation(upStation, downStation, distance);
+        } else {
+            throw new RuntimeException();
+        }
+        sections.add(new Section(this, upStation, downStation, distance));
     }
 }
