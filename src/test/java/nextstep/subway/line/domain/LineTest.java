@@ -1,15 +1,12 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.line.dto.LineRequest;
-import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.line.dto.StationResponses;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -108,7 +105,7 @@ class LineTest {
 
         // then
 
-        assertThat(line.sortedStation().toResponses())
+        assertThat(new StationResponses(line.sortedStation()).toCollection())
                 .map(StationResponse::getId)
                 .containsExactly(강남역.getId(), 양재역.getId(), 판교역.getId());
     }
@@ -124,7 +121,7 @@ class LineTest {
 
         // then
 
-        assertThat(line.sortedStation().toResponses())
+        assertThat(new StationResponses(line.sortedStation()).toCollection())
                 .map(StationResponse::getId)
                 .containsExactly(강남역.getId(), 양재역.getId(), 판교역.getId());
     }
@@ -163,7 +160,7 @@ class LineTest {
         line.addSection(new Section(양재역, 판교역, new Distance(1)));
 
         // then
-        assertThat(line.sortedStation().toResponses())
+        assertThat(new StationResponses(line.sortedStation()).toCollection())
                 .map(StationResponse::getId)
                 .containsExactly(양재역.getId(), 판교역.getId(), 정자역.getId());
     }
@@ -178,8 +175,39 @@ class LineTest {
         line.addSection(new Section(판교역, 정자역, new Distance(1)));
 
         // then
-        assertThat(line.sortedStation().toResponses())
+        assertThat(new StationResponses(line.sortedStation()).toCollection())
                 .map(StationResponse::getId)
                 .containsExactly(양재역.getId(), 판교역.getId(), 정자역.getId());
     }
+
+    @Test
+    @DisplayName("라인에 역이 존재하는지 확인이 가능하다")
+    void 라인에_역이_존재하는지_확인이_가능하다() {
+        Line line = new Line("신분당", "RED", 양재역, 정자역, 3);
+
+        line.addSection(new Section(판교역, 정자역, new Distance(1)));
+
+        assertThat(line.containsStation(양재역))
+                .isTrue();
+        assertThat(line.containsStation(정자역))
+                .isTrue();
+        assertThat(line.containsStation(판교역))
+                .isTrue();
+        assertThat(line.containsStation(강남역))
+                .isFalse();
+    }
+
+    @Test
+    void containsStationsExactly() {
+        Line line = new Line("신분당", "RED", 양재역, 정자역, 3);
+
+        line.addSection(new Section(판교역, 정자역, new Distance(1)));
+
+        assertThat(line.containsStationsExactly(양재역, 정자역, 판교역))
+                .isTrue();
+
+        assertThat(line.containsStationsExactly(양재역, 정자역, 판교역, 강남역))
+                .isFalse();
+    }
+
 }

@@ -54,29 +54,29 @@ public class Section {
         return distance;
     }
 
-    protected void changeLine(Line line) {
+    void changeLine(Line line) {
         this.line = line;
     }
 
-    protected void updateUpStation(Section section) {
+    void updateUpStation(Section section) {
         validateDistance(section);
 
         this.upStation = section.downStation;
         this.distance = this.distance.minus(section.distance);
     }
 
-    protected void updateDownStation(Section section) {
+    void updateDownStation(Section section) {
         validateDistance(section);
 
         this.downStation = section.upStation;
         this.distance = this.distance.minus(section.distance);
     }
 
-    protected Station getUpStation() {
+    Station getUpStation() {
         return upStation;
     }
 
-    protected Station getDownStation() {
+    Station getDownStation() {
         return downStation;
     }
 
@@ -106,6 +106,10 @@ public class Section {
 
     public boolean containsByDownStation(Section section) {
         return this.upStation == section.downStation || this.downStation == section.downStation;
+    }
+
+    public boolean containsStation(Station station) {
+        return this.upStation == station || this.downStation == station;
     }
 
     private void validateDistance(Section section) {

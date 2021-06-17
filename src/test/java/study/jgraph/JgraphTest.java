@@ -14,20 +14,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class JgraphTest {
     @Test
     public void getDijkstraShortestPath() {
-        String source = "v3";
-        String target = "v1";
+        String source = "v1";
+        String target = "v4";
         WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         graph.addVertex("v1");
         graph.addVertex("v2");
         graph.addVertex("v3");
+        graph.addVertex("v4");
         graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
         graph.setEdgeWeight(graph.addEdge("v2", "v3"), 2);
         graph.setEdgeWeight(graph.addEdge("v1", "v3"), 100);
+        graph.setEdgeWeight(graph.addEdge("v3", "v4"), 105);
+        graph.setEdgeWeight(graph.addEdge("v1", "v4"), 101);
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        dijkstraShortestPath.getPath(source, target).getGraph();
+
         List<String> shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
 
-        assertThat(shortestPath.size()).isEqualTo(3);
+        assertThat(shortestPath.size()).isEqualTo(2);
     }
 
     @Test

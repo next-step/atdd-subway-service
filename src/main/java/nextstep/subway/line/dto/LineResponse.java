@@ -30,7 +30,11 @@ public class LineResponse {
     }
 
     public static LineResponse of(Line line) {
-        return of(line, line.sortedStation().toResponses());
+        return of(line, new StationResponses(line.sortedStation()).toCollection());
+    }
+
+    public static LineResponse of(Line line, StationResponses stationResponses) {
+        return of(line, stationResponses.toCollection());
     }
 
     public static LineResponse of(Line line, List<StationResponse> stations) {

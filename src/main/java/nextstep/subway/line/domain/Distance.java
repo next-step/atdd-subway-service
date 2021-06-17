@@ -14,6 +14,10 @@ public class Distance {
     protected Distance() {
     }
 
+    public Distance(double weight) {
+        this((int) weight);
+    }
+
     public Distance(int distance) {
         validate(distance);
 
@@ -38,6 +42,10 @@ public class Distance {
         }
     }
 
+    public int toInt() {
+       return this.distance;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -49,5 +57,9 @@ public class Distance {
     @Override
     public int hashCode() {
         return Objects.hash(distance);
+    }
+
+    public int compareTo(Distance l2Distance) {
+        return Long.compare(this.distance, l2Distance.distance);
     }
 }

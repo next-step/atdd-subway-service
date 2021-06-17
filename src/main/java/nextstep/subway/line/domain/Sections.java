@@ -5,9 +5,7 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Predicate;
 
 @Embeddable
@@ -17,7 +15,7 @@ public class Sections {
 
     protected Sections() { }
 
-    protected void add(Section section) {
+    void add(Section section) {
         if (sections.isEmpty()) {
             sections.add(section);
             return;
@@ -28,6 +26,43 @@ public class Sections {
         resizeNearSections(section);
 
         sections.add(section);
+    }
+
+    boolean containsStationsExactly(Station ...stations) {
+        return Arrays.stream(stations)
+                .allMatch(item -> containsStation(item));
+    }
+
+    boolean containsStation(Station station) {
+        return anyMatch(item -> item.containsStation(station));
+    }
+
+    Optional<Section> removeStation(Station station) {
+        if (sections.size() <= 1) {
+            throw new RuntimeException();
+        }
+
+        Optional<Section> upLineStation = findByUpStationEquals(station);
+        Optional<Section> downLineStation = findByDownStationEquals(station);
+
+        removeSection(upLineStation, downLineStation);
+
+        return createNewSection(upLineStation, downLineStation);
+    }
+
+    SortedStations toSortedStations() {
+        return new SortedStations(sections);
+    }
+
+    private Optional<Section> createNewSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            Distance newDistance = upLineStation.get().getDistance().plus(downLineStation.get().getDistance());
+
+            return Optional.of(new Section(newUpStation, newDownStation, newDistance));
+        }
+        return Optional.empty();
     }
 
     private void validateAdd(Section section) {
@@ -46,33 +81,6 @@ public class Sections {
         } else if (containsByDownStation(section)) {
             updateDownStationBySameDownStation(section);
         }
-    }
-    protected Optional<Section> removeStation(Station station) {
-        if (sections.size() <= 1) {
-            throw new RuntimeException();
-        }
-
-        Optional<Section> upLineStation = findByUpStationEquals(station);
-        Optional<Section> downLineStation = findByDownStationEquals(station);
-
-        removeSection(upLineStation, downLineStation);
-
-        return createNewSection(upLineStation, downLineStation);
-    }
-
-    protected SortedStations toSortedStations() {
-        return new SortedStations(sections);
-    }
-
-    private Optional<Section> createNewSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            Distance newDistance = upLineStation.get().getDistance().plus(downLineStation.get().getDistance());
-
-            return Optional.of(new Section(newUpStation, newDownStation, newDistance));
-        }
-        return Optional.empty();
     }
 
     private Optional<Section> findByUpStationEquals(Station station) {
@@ -102,8 +110,8 @@ public class Sections {
     }
 
     private void removeSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
-        upLineStation.ifPresent(it -> remove(it));
-        downLineStation.ifPresent(it -> remove(it));
+        upLineStation.ifPresent(this::remove);
+        downLineStation.ifPresent(this::remove);
     }
 
     private void remove(Section section) {
@@ -119,5 +127,9 @@ public class Sections {
     private boolean anyMatch(Predicate<Section> predicate) {
         return sections.stream()
                 .anyMatch(predicate);
+    }
+
+    List<Section> toCollection() {
+        return Collections.unmodifiableList(sections);
     }
 }

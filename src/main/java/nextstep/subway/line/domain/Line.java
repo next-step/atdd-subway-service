@@ -67,11 +67,23 @@ public class Line extends BaseEntity {
 
     public void removeStation(Station station) {
         Optional<Section> newSection = sections.removeStation(station);
-        newSection.ifPresent(item -> addSection(item));
+        newSection.ifPresent(this::addSection);
     }
 
     public void addSection(Section section) {
         section.changeLine(this);
         sections.add(section);
+    }
+
+    public boolean containsStationsExactly(Station ...stations) {
+        return sections.containsStationsExactly(stations);
+    }
+
+    public boolean containsStation(Station station) {
+        return sections.containsStation(station);
+    }
+
+    Sections getSections() {
+        return sections;
     }
 }

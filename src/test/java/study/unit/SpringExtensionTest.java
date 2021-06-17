@@ -1,18 +1,14 @@
 package study.unit;
 
 import com.google.common.collect.Lists;
-import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.application.LineQueryService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.LineResponses;
-import nextstep.subway.station.application.StationService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -22,17 +18,15 @@ import static org.mockito.Mockito.when;
 public class SpringExtensionTest {
     @MockBean
     private LineRepository lineRepository;
-    @MockBean
-    private StationService stationService;
 
     @Test
     void findAllLines() {
         // given
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line("신분당선", "빨간색")));
-        LineService lineService = new LineService(lineRepository, stationService);
+        LineQueryService lineQueryService = new LineQueryService(lineRepository);
 
         // when
-        LineResponses responses = lineService.findLines();
+        LineResponses responses = lineQueryService.findLines();
 
         // then
         assertThat(responses.size()).isEqualTo(1);

@@ -73,6 +73,14 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_삭제됨(response);
     }
 
+    public static ExtractableResponse<Response> 지하철역_생성_요청_및_검증(String name) {
+        ExtractableResponse<Response> response = 지하철역_생성_요청(name);
+
+        지하철역_생성됨(response);
+
+        return response;
+    }
+
     public static ExtractableResponse<Response> 지하철역_등록되어_있음(String name) {
         return 지하철역_생성_요청(name);
     }

@@ -23,7 +23,7 @@ public class LineResponses {
 
     private List<LineResponse> convertToDTO(List<Line> lines) {
         return lines.stream()
-                .map(item -> LineResponse.of(item, item.sortedStation().toResponses()))
+                .map(item -> LineResponse.of(item, new StationResponses(item.sortedStation())))
                 .collect(Collectors.toList());
     }
 }
