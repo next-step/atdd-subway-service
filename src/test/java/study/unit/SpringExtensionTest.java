@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,13 +29,13 @@ public class SpringExtensionTest {
     @Test
     void findAllLines() {
         // given
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
+        when(lineRepository.findAll()).thenReturn(Collections.emptyList());
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when
         List<LineResponse> responses = lineService.findLines();
 
         // then
-        assertThat(responses).hasSize(1);
+        assertThat(responses).isEmpty();
     }
 }
