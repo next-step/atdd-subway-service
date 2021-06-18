@@ -12,8 +12,7 @@ import nextstep.subway.request.When;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.http.HttpStatus;
 
-import java.util.Arrays;
-
+import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FavoriteAcceptanceRequest {
@@ -57,14 +56,35 @@ public class FavoriteAcceptanceRequest {
 
     public static Executable 즐겨찾기_목록_요청_및_비어있음(AuthToken authToken) {
         return () -> {
-            assertThat(true).isFalse();
+            ExtractableResponse<Response> response = 즐겨찾기_목록_요청(authToken);
+
+            즐겨찾기_목록_빔(response);
         };
+    }
+
+    private static void 즐겨찾기_목록_빔(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     public static Executable 즐겨찾기_삭제_요청_및_삭제됨(AuthToken authToken, Long favoriteId) {
         return () -> {
-            assertThat(true).isFalse();
+            ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(authToken, favoriteId);
+
+            즐겨찾기_삭제됨(response);
         };
+    }
+
+    private static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private static ExtractableResponse<Response> 즐겨찾기_삭제_요청(AuthToken authToken, Long favoriteId) {
+        return AcceptanceTestRequest.delete(
+                Given.builder().bearer(authToken.getToken()).build(),
+                When.builder()
+                        .uri(format("/favorites/%d", favoriteId))
+                        .build()
+        );
     }
 
     private static ExtractableResponse<Response> 즐겨찾기_등록_요청(AuthToken authToken, FavoriteRequest request) {

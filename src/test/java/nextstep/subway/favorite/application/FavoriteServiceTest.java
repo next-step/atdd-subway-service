@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.auth.application.ApproveException;
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.LineHasNotExistStationException;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -125,5 +127,40 @@ class FavoriteServiceTest {
         assertThat(allFavorites).hasSize(3);
         assertThat(allFavorites)
                 .containsExactlyInAnyOrder(favorite1, favorite2, favorite3);
+    }
+
+    @Test
+    @DisplayName("본인의 즐겨찾기가 아닌것을 삭제하려 하면 NotOwnerException이 발생한다")
+    void 본인의_즐겨찾기가_아닌것을_삭제하려_하면_ApproveException이_발생한다() {
+        Member newMember = memberRepository.save(new Member("NEWNEW@EMAIL.com", "NEWNEW", 11));
+        LoginMember newLoginMember = new LoginMember(newMember.getId(), newMember.getEmail(), newMember.getAge());
+
+        LoginMember loginMember = new LoginMember(savedMember.getId(), savedMember.getEmail(), savedMember.getAge());
+        FavoriteResponse favorite = favoriteService.createFavorite(loginMember, new FavoriteRequest(savedStation1.getId(), savedStation2.getId()));
+
+        assertThatExceptionOfType(ApproveException.class)
+                .isThrownBy(() -> favoriteService.deleteById(newLoginMember, favorite.getId()));
+    }
+
+    @Test
+    @DisplayName("본인의 즐겨찾기를 삭제하려면 성공한다")
+    void 본인의_즐겨찾기를_삭제하려면_성공한다() {
+        LoginMember loginMember = new LoginMember(savedMember.getId(), savedMember.getEmail(), savedMember.getAge());
+        FavoriteResponse favorite = favoriteService.createFavorite(loginMember, new FavoriteRequest(savedStation1.getId(), savedStation2.getId()));
+
+        assertDoesNotThrow(() -> favoriteService.deleteById(loginMember, favorite.getId()));
+        assertThat(favoriteService.findAllByMember(loginMember)).isEmpty();
+    }
+
+    @Test
+    @DisplayName("등록되지 않은 즐겨찾기를 삭제하려 하면 EntityNotFoundException이 발생한다")
+    void 등록되지_않은_즐겨찾기를_삭제하려_하면_EntityNotFoundException이_발생한다() {
+        LoginMember loginMember = new LoginMember(savedMember.getId(), savedMember.getEmail(), savedMember.getAge());
+        FavoriteResponse favorite = favoriteService.createFavorite(loginMember, new FavoriteRequest(savedStation1.getId(), savedStation2.getId()));
+
+        favoriteService.deleteById(loginMember, favorite.getId());
+
+        assertThatExceptionOfType(EntityNotFoundException.class)
+                .isThrownBy(() -> favoriteService.deleteById(loginMember, favorite.getId()));
     }
 }
