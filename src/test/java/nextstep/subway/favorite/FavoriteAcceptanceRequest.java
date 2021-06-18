@@ -50,7 +50,31 @@ public class FavoriteAcceptanceRequest {
         return () -> {
             ExtractableResponse<Response> response = 즐겨찾기_등록_요청(authToken, request);
 
-            즐겨찾기_실패됨(response);
+            즐겨찾기_등록_실패됨(response);
+        };
+    }
+
+    public static Executable 비로그인시_즐겨찾기_등록_요청_및_실패됨(AuthToken authToken, FavoriteRequest request) {
+        return () -> {
+            ExtractableResponse<Response> response = 즐겨찾기_등록_요청(authToken, request);
+
+            비로그인_즐겨찾기_실패됨(response);
+        };
+    }
+
+    public static Executable 비로그인시_즐겨찾기_목록_요청_및_실패됨(AuthToken authToken) {
+        return () -> {
+            ExtractableResponse<Response> response = 즐겨찾기_목록_요청(authToken);
+
+            비로그인_즐겨찾기_실패됨(response);
+        };
+    }
+
+    public static Executable 비로그인시_즐겨찾기_삭제_요청_및_실패됨(AuthToken authToken, Long id) {
+        return () -> {
+            ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(authToken, id);
+
+            비로그인_즐겨찾기_실패됨(response);
         };
     }
 
@@ -71,6 +95,14 @@ public class FavoriteAcceptanceRequest {
             ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(authToken, favoriteId);
 
             즐겨찾기_삭제됨(response);
+        };
+    }
+
+    public static Executable 즐겨찾기_삭제_요청_및_거절됨(AuthToken authToken, Long favoriteId) {
+        return () -> {
+            ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(authToken, favoriteId);
+
+            즐겨찾기_삭제_거절됨(response);
         };
     }
 
@@ -107,7 +139,15 @@ public class FavoriteAcceptanceRequest {
         assertThat(uri).isEqualTo("/favorites/" + exceptId);
     }
 
-    private static void 즐겨찾기_실패됨(ExtractableResponse<Response> response) {
+    private static void 즐겨찾기_등록_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    private static void 즐겨찾기_삭제_거절됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
+    }
+
+    private static void 비로그인_즐겨찾기_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

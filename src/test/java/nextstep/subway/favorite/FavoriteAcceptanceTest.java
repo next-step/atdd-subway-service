@@ -2,6 +2,7 @@ package nextstep.subway.favorite;
 
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthToken;
+import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTestRequest;
@@ -27,6 +28,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private FavoriteRequest 강남역_양재역_즐겨찾기;
 
     private AuthToken 인증_정보;
+    private AuthToken 비로그인_정보 = new AuthToken();
 
     private StationResponse 강남역;
     private StationResponse 양재역;
@@ -97,6 +99,53 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 dynamicTest("즐겨찾기 강남역 - 양재역 추가", 즐겨찾기_등록_요청_및_등록됨(인증_정보, 강남역_양재역_즐겨찾기, 강남역_양재역_즐겨찾기_ID)),
                 dynamicTest("즐겨찾기 강남역 - 양재역을 삭제한다.", 즐겨찾기_삭제_요청_및_삭제됨(인증_정보, 강남역_양재역_즐겨찾기_ID)),
                 dynamicTest("즐겨찾기 목록을 조회시 비어있다.", 즐겨찾기_목록_요청_및_비어있음(인증_정보))
+        );
+    }
+
+    @TestFactory
+    @DisplayName("비로그인 추가시 실패한다")
+    Stream<DynamicTest> 비로그인_추가시_실패한다() {
+        return Stream.of(
+                dynamicTest("즐겨찾기 강남역 - 양재역 추가", 비로그인시_즐겨찾기_등록_요청_및_실패됨(비로그인_정보, 강남역_양재역_즐겨찾기))
+        );
+    }
+
+    @TestFactory
+    @DisplayName("비로그인 목록조회시 실패한다")
+    Stream<DynamicTest> 비로그인_목록조회시_실패한다() {
+        return Stream.of(
+                dynamicTest("즐겨찾기 목록을 조회한다", 비로그인시_즐겨찾기_목록_요청_및_실패됨(비로그인_정보))
+        );
+    }
+
+    @TestFactory
+    @DisplayName("비로그인 삭제요청시 실패한다")
+    Stream<DynamicTest> 비로그인_삭제요청시_실패한다() {
+        return Stream.of(
+                dynamicTest("즐겨찾기 강남역 - 양재역 추가", 즐겨찾기_등록_요청_및_등록됨(인증_정보, 강남역_양재역_즐겨찾기, 강남역_양재역_즐겨찾기_ID)),
+                dynamicTest("즐겨찾기 강남역 - 양재역을 삭제한다", 비로그인시_즐겨찾기_삭제_요청_및_실패됨(비로그인_정보, 강남역_양재역_즐겨찾기_ID))
+        );
+    }
+
+    @TestFactory
+    @DisplayName("다른계정으로 삭제시 실패한다")
+    Stream<DynamicTest> 다른계정으로_삭제시_실패한다() {
+        회원_생성됨(회원_생성을_요청(NEW_EMAIL, NEW_PASSWORD, NEW_AGE));
+        AuthToken 새로운_유저 = new AuthToken(로그인_요청_및_전체_검증(new TokenRequest(NEW_EMAIL, NEW_PASSWORD)).getAccessToken());
+        return Stream.of(
+                dynamicTest("즐겨찾기 강남역 - 양재역 추가", 즐겨찾기_등록_요청_및_등록됨(인증_정보, 강남역_양재역_즐겨찾기, 강남역_양재역_즐겨찾기_ID)),
+                dynamicTest("즐겨찾기 강남역 - 양재역을 삭제한다", 즐겨찾기_삭제_요청_및_거절됨(새로운_유저, 강남역_양재역_즐겨찾기_ID))
+        );
+    }
+
+    @TestFactory
+    @DisplayName("다른계정으로 목록 조회시 조회가 안된다")
+    Stream<DynamicTest> 다른계정으로_목록_조회시_조회가_안된다() {
+        회원_생성됨(회원_생성을_요청(NEW_EMAIL, NEW_PASSWORD, NEW_AGE));
+        AuthToken 새로운_유저 = new AuthToken(로그인_요청_및_전체_검증(new TokenRequest(NEW_EMAIL, NEW_PASSWORD)).getAccessToken());
+        return Stream.of(
+                dynamicTest("즐겨찾기 강남역 - 양재역 추가", 즐겨찾기_등록_요청_및_등록됨(인증_정보, 강남역_양재역_즐겨찾기, 강남역_양재역_즐겨찾기_ID)),
+                dynamicTest("즐겨찾기 목록을 조회시 비어있다.", 즐겨찾기_목록_요청_및_비어있음(새로운_유저))
         );
     }
 }
