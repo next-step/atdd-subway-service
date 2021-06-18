@@ -66,25 +66,37 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
   @Test
   void favoriteManagementTest() {
     //when 즐겨찾기 생성을 요청
-    ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(교대역.getId(), 양재역.getId());
+    ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(loginToken, 교대역.getId(), 양재역.getId());
     //then 즐겨찾기 생성됨
     즐겨찾기_생성됨(즐겨찾기_생성_응답);
 
+    //when 잘못된 토큰으로 즐겨찾기 생성을 요청
+    ExtractableResponse<Response> 잘못된_토큰_즐겨찾기_생성_응답 = 즐겨찾기_생성_요청("invalidToken", 교대역.getId(), 양재역.getId());
+    //then 즐겨찾기 생성 실패함
+    잘못된_토큰_때문에_즐겨찾기_등록_실패(잘못된_토큰_즐겨찾기_생성_응답);
+
+    //when 존재하지 않는 역의 id로 생성을 요청
+    Long notExistSourceId = 999L;
+    Long notExistTargetId = 9999L;
+    ExtractableResponse<Response> 존재하지않는_역_즐겨찾기_생성_응답 = 즐겨찾기_생성_요청(loginToken, notExistSourceId, notExistTargetId);
+    //then 즐겨찾기 생성 실패함
+    존재하지않는_역은_즐겨찾기_등록_실패(존재하지않는_역_즐겨찾기_생성_응답);
+
     //when 즐겨찾기 목록 조회 요청
-    ExtractableResponse<Response> 즐겨찾기_목록_조회_응답 = 즐겨찾기_목록_조회_요청();
+    ExtractableResponse<Response> 즐겨찾기_목록_조회_응답 = 즐겨찾기_목록_조회_요청(loginToken);
     //then 즐겨찾기 목록 조회됨
     즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_응답, 즐겨찾기_생성_응답);
 
     //when 즐겨찾기 삭제 요청
-    ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(즐겨찾기_생성_응답);
+    ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(loginToken, 즐겨찾기_생성_응답);
     //then 즐겨찾기 삭제됨
     즐겨찾기_삭제됨(즐겨찾기_삭제_응답);
 
   }
 
-  private ExtractableResponse<Response> 즐겨찾기_생성_요청(Long source, Long target) {
+  private ExtractableResponse<Response> 즐겨찾기_생성_요청(String token, Long source, Long target) {
     return RestAssured.given().log().all()
-            .auth().oauth2(loginToken)
+            .auth().oauth2(token)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(new FavoriteRequest(source, target))
             .when().post("/favorites")
@@ -95,9 +107,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
   private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
     assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
   }
-  private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청() {
+  private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String token) {
     return RestAssured.given().log().all()
-            .auth().oauth2(loginToken)
+            .auth().oauth2(token)
             .when().get("/favorites")
             .then().log().all()
             .extract();
@@ -109,10 +121,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     assertThat(results).containsExactly(createdResponse.as(FavoriteResponse.class));
   }
 
-  private ExtractableResponse<Response> 즐겨찾기_삭제_요청(ExtractableResponse<Response> createdResponse) {
+  private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String token, ExtractableResponse<Response> createdResponse) {
     FavoriteResponse favoriteResponse = createdResponse.as(FavoriteResponse.class);
     return RestAssured.given().log().all()
-        .auth().oauth2(loginToken)
+        .auth().oauth2(token)
         .pathParam("id", favoriteResponse.getId())
         .when().delete("/favorites/{id}")
         .then().log().all()
@@ -121,5 +133,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
   private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
     assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+  }
+
+  private void 잘못된_토큰_때문에_즐겨찾기_등록_실패(ExtractableResponse<Response> response) {
+    assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+  }
+
+  private void 존재하지않는_역은_즐겨찾기_등록_실패(ExtractableResponse<Response> response) {
+    assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
   }
 }
