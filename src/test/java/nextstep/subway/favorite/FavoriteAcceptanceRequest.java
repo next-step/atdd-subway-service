@@ -33,13 +33,6 @@ public class FavoriteAcceptanceRequest {
         };
     }
 
-    private static ExtractableResponse<Response> 즐겨찾기_목록_요청(AuthToken authToken) {
-        return AcceptanceTestRequest.get(
-                Given.builder().bearer(authToken.getToken()).build() ,
-                When.builder().uri("/favorites").build()
-        );
-    }
-
     public static Executable 즐겨찾기_등록_요청_및_실패됨(AuthToken authToken, FavoriteRequest request) {
         return () -> {
             ExtractableResponse<Response> response = 즐겨찾기_등록_요청(authToken, request);
@@ -96,6 +89,12 @@ public class FavoriteAcceptanceRequest {
         };
     }
 
+    private static ExtractableResponse<Response> 즐겨찾기_목록_요청(AuthToken authToken) {
+        return AcceptanceTestRequest.get(
+                Given.builder().bearer(authToken.getToken()).build() ,
+                When.builder().uri("/favorites").build()
+        );
+    }
 
     private static ExtractableResponse<Response> 즐겨찾기_삭제_요청(AuthToken authToken, Long favoriteId) {
         return AcceptanceTestRequest.delete(
