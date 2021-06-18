@@ -3,6 +3,7 @@ package nextstep.subway.favorite;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthToken;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.line.acceptance.LineAcceptanceTestRequest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,8 +31,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 광교역;
 
-    private LineRequest 신분당선;
-
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -45,7 +44,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         양재역 = 지하철역_생성_요청_및_검증("양재역").as(StationResponse.class);
         광교역 = 지하철역_생성_요청_및_검증("광교역").as(StationResponse.class);
 
-        신분당선 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        LineAcceptanceTestRequest.지하철_노선_생성_요청_및_검증(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10));
 
         강남역_양재역_즐겨찾기 = new FavoriteRequest(강남역.getId(), 양재역.getId());
     }
