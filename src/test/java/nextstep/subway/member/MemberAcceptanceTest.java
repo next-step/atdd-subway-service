@@ -4,10 +4,15 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthToken;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import nextstep.subway.request.AcceptanceTestRequest;
+import nextstep.subway.request.Given;
+import nextstep.subway.request.When;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -49,6 +54,17 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMyInfo() {
 
+    }
+
+    public static Executable 나의_정보_조회_요청_및_검증(AuthToken token, String email, Integer age) {
+        return () -> {
+            ExtractableResponse<Response> response = AcceptanceTestRequest.get(
+                    Given.builder().bearer(token.getToken()).build(),
+                    When.builder().uri("/members/me").build()
+            );
+
+            회원_정보_조회됨(response, email, age);
+        };
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {

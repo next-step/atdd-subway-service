@@ -30,7 +30,8 @@ class AuthAcceptanceTest extends AcceptanceTest {
     Stream<DynamicTest> 로그인을_시도한다() {
         AuthToken authToken = new AuthToken();
         return Stream.of(
-                dynamicTest("등록된 계정으로 로그인 시도시 성공한다.", 로그인_요청_성공됨(등록된_계정_토큰_요청, authToken))
+                dynamicTest("등록된 계정으로 로그인 시도시 성공한다.", 로그인_요청_성공됨(등록된_계정_토큰_요청, authToken)),
+                dynamicTest("로그인이 되었는지 확인한다", 나의_정보_조회_요청_및_검증(authToken, EMAIL, AGE))
         );
     }
 
