@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.auth.application.ApproveException;
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.LineHasNotExistStationException;
@@ -58,12 +59,28 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
+    public void deleteById(LoginMember loginMember, Long id) {
+        Member member = findMemberByEmail(loginMember.getEmail());
+        Favorite favorite = findById(id);
+
+        if (!favorite.isOwner(member)) {
+            throw new ApproveException();
+        }
+
+        favoriteRepository.delete(favorite);
+    }
+
     private void validateLineContainsStations(Station source, Station target) {
         Lines lines = new Lines(findAllLines());
 
         if (!lines.containsStationsExactly(source, target)) {
             throw new LineHasNotExistStationException();
         }
+    }
+
+    private Favorite findById(Long id) {
+        return favoriteRepository.findById(id)
+                .orElseThrow(EntityNotFoundException::new);
     }
 
     private Member findMemberByEmail(String email) {

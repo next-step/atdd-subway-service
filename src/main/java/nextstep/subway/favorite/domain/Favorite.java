@@ -40,4 +40,8 @@ public class Favorite {
     public Station getTarget() {
         return target;
     }
+
+    public boolean isOwner(Member member) {
+        return this.member == member;
+    }
 }
