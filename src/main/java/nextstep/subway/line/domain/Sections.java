@@ -1,10 +1,14 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.station.domain.Station;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Embeddable
 public class Sections {
@@ -18,5 +22,43 @@ public class Sections {
 
     public List<Section> get() {
         return this.sections;
+    }
+
+    public boolean isEmpty() {
+        return sections.isEmpty();
+    }
+
+    public void updateIfMidFront(Section section) {
+        hasSameUpStation(section)
+                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+    }
+
+    public Optional<Section> hasSameUpStation(Section section) {
+        return sections.stream()
+                .filter(it -> it.getUpStation() == section.getUpStation())
+                .findFirst();
+    }
+
+    public Optional<Section> hasSameUpStationWith(Station station) {
+        return sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+    }
+
+    public void updateIfMidRear(Section section) {
+        sections.stream()
+                .filter(it -> it.getDownStation() == section.getDownStation())
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+    }
+
+    public Optional<Section> hasSameDownStationWith(Station station) {
+        return sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+    }
+
+    public Stream<Section> stream() {
+        return sections.stream();
     }
 }
