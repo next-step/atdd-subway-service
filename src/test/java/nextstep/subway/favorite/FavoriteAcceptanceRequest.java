@@ -33,12 +33,6 @@ public class FavoriteAcceptanceRequest {
         };
     }
 
-    private static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, FavoriteResponse[] responses) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.as(FavoriteResponse[].class))
-                .containsExactlyInAnyOrder(responses);
-    }
-
     private static ExtractableResponse<Response> 즐겨찾기_목록_요청(AuthToken authToken) {
         return AcceptanceTestRequest.get(
                 Given.builder().bearer(authToken.getToken()).build() ,
@@ -86,10 +80,6 @@ public class FavoriteAcceptanceRequest {
         };
     }
 
-    private static void 즐겨찾기_목록_빔(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
     public static Executable 즐겨찾기_삭제_요청_및_삭제됨(AuthToken authToken, Long favoriteId) {
         return () -> {
             ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(authToken, favoriteId);
@@ -106,9 +96,6 @@ public class FavoriteAcceptanceRequest {
         };
     }
 
-    private static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
 
     private static ExtractableResponse<Response> 즐겨찾기_삭제_요청(AuthToken authToken, Long favoriteId) {
         return AcceptanceTestRequest.delete(
@@ -149,5 +136,19 @@ public class FavoriteAcceptanceRequest {
 
     private static void 비로그인_즐겨찾기_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, FavoriteResponse[] responses) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.as(FavoriteResponse[].class))
+                .containsExactlyInAnyOrder(responses);
+    }
+
+    private static void 즐겨찾기_목록_빔(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
