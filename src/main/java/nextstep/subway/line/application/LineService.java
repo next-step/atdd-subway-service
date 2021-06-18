@@ -34,11 +34,15 @@ public class LineService {
         return createLineResponse(persistLine);
     }
 
-    public List<LineResponse> findLines() {
-        List<Line> persistLines = lineRepository.findAll();
+    public List<LineResponse> findLineResponses() {
+        List<Line> persistLines = findLines();
         return persistLines.stream()
                            .map(this::createLineResponse)
                            .collect(toList());
+    }
+
+    public List<Line> findLines() {
+        return lineRepository.findAll();
     }
 
     public Line findLineById(Long id) {
@@ -53,7 +57,7 @@ public class LineService {
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(NotFoundLineException::new);
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        persistLine.update(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
     }
 
     public void deleteLineById(Long id) {
@@ -79,7 +83,6 @@ public class LineService {
                                                      .map(StationResponse::of)
                                                      .collect(toList());
 
-        return new LineResponse(line.getId(), line.getName(), line.getColor(),
-                                stationResponses, line.getCreatedDate(), line.getModifiedDate());
+        return LineResponse.of(line, stationResponses);
     }
 }

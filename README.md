@@ -52,3 +52,117 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+---
+
+# Step1, 인수 테스트 기반 리팩토링
+
+## 요구사항
+
+- [x] LineSectionAcceptanceTest 리팩터링
+- [x] LineService 리팩터링
+
+## 요구사항 설명
+
+### 인수 테스트 통합
+
+- API를 검증하기 보다는 시나리오, 흐름을 검증하는 테스트로 리팩터링 하기
+- 반드시 하나의 시나리오로 통합할 필요는 없음, 기능의 인수 조건을 설명할 때 하나 이상의 시나리오가 필요한 경우 여러개의 시나리오를 만들어 인수 테스트를 작성할 수 있음
+
+```text
+Feature: 지하철 구간 관련 기능
+
+  Background 
+    Given 지하철역 등록되어 있음
+    And 지하철 노선 등록되어 있음
+    And 지하철 노선에 지하철역 등록되어 있음
+
+  Scenario: 지하철 구간을 관리
+    When 지하철 구간 등록 요청
+    Then 지하철 구간 등록됨
+    When 지하철 노선에 등록된 역 목록 조회 요청
+    Then 등록한 지하철 구간이 반영된 역 목록이 조회됨
+    When 지하철 구간 삭제 요청
+    Then 지하철 구간 삭제됨
+    When 지하철 노선에 등록된 역 목록 조회 요청
+    Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+```
+
+### 인수 테스트 기반 리팩터링
+
+1. LineService의 비즈니스 로직을 도메인으로 옮기기
+    - 스프링 빈을 사용하는 객체와 의존하는 로직을 제외하고는 도메인으로 이관
+    - 단위 테스트 작
+  
+2. 한번에 많은 부분을 고치려 하지 말고 나눠서 부분부분 리팩터링하기
+
+3. 전체 기능은 인수 테스트로 보호한 뒤 세부 기능을 TDD로 리팩터링하기
+    - 기존 로직을 지우지 않고 새 로직 작성
+    - 새 로직이 정상 작동하면 기존 로직 삭제
+
+---
+
+# Step2, 경로 조회 기능
+
+## 요구사항
+
+- [x] 최단 경로 조회 인수 테스트 만들기
+- [x] 최단 경로 조회 기능 구현하기
+
+## 요청/응답
+
+1. 요청
+    ```text
+    HTTP/1.1 200 
+    Request method:	GET
+    Request URI:	http://localhost:55494/paths?source=1&target=6
+    Headers: 	    Accept=application/json
+                    Content-Type=application/json; charset=UTF-8
+    ```
+
+2. 응답
+    ```text
+    HTTP/1.1 200 
+    Content-Type: application/json
+    Transfer-Encoding: chunked
+    Date: Sat, 09 May 2020 14:54:11 GMT
+    Keep-Alive: timeout=60
+    Connection: keep-alive
+    
+    {
+        "stations": [
+            {
+                "id": 5,
+                "name": "양재시민의숲역",
+                "createdAt": "2020-05-09T23:54:12.007"
+            },
+            {
+                "id": 4,
+                "name": "양재역",
+                "createdAt": "2020-05-09T23:54:11.995"
+            },
+            {
+                "id": 1,
+                "name": "강남역",
+                "createdAt": "2020-05-09T23:54:11.855"
+            },
+            {
+                "id": 2,
+                "name": "역삼역",
+                "createdAt": "2020-05-09T23:54:11.876"
+            },
+            {
+                "id": 3,
+                "name": "선릉역",
+                "createdAt": "2020-05-09T23:54:11.893"
+            }
+        ],
+        "distance": 40
+    }
+    ```
+
+## 예외 상황
+
+- 출발역과 도착역이 같은 경우
+- 출발역과 도착역이 연결이 되어 있지 않은 경우
+- 존재하지 않은 출발역이나 도착역을 조회 할 경우
