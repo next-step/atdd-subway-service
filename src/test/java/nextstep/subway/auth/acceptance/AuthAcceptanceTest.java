@@ -31,7 +31,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         AuthToken authToken = new AuthToken();
         return Stream.of(
                 dynamicTest("등록된 계정으로 로그인 시도시 성공한다.", 로그인_요청_성공됨(등록된_계정_토큰_요청, authToken)),
-                dynamicTest("로그인이 되었는지 확인한다", 나의_정보_조회_요청_및_검증(authToken, EMAIL, AGE))
+                dynamicTest("로그인이 되었는지 확인한다", 나의_정보_조회_요청_및_성공함(authToken, EMAIL, AGE))
         );
     }
 
@@ -43,9 +43,13 @@ class AuthAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("Bearer Auth 유효하지 않은 토큰")
-    @Test
-    void myInfoWithWrongBearerAuth() {
+    @TestFactory
+    @DisplayName("유효하지 않는 토큰으로 정보 조회시 실패한다")
+    Stream<DynamicTest> myInfoWithWrongBearerAuth() {
+        AuthToken authToken = new AuthToken("ASDF.ASDF.ASDF");
+        return Stream.of(
+                dynamicTest("유효하지 않는 토큰으로 조회시 실패한다.", 나의_정보_조회_요청_및_실패함(authToken))
+        );
     }
 
 

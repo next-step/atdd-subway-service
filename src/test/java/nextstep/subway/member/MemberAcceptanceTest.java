@@ -56,7 +56,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     }
 
-    public static Executable 나의_정보_조회_요청_및_검증(AuthToken token, String email, Integer age) {
+    public static Executable 나의_정보_조회_요청_및_성공함(AuthToken token, String email, Integer age) {
         return () -> {
             ExtractableResponse<Response> response = AcceptanceTestRequest.get(
                     Given.builder().bearer(token.getToken()).build(),
@@ -64,6 +64,17 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             );
 
             회원_정보_조회됨(response, email, age);
+        };
+    }
+
+    public static Executable 나의_정보_조회_요청_및_실패함(AuthToken token) {
+        return () -> {
+            ExtractableResponse<Response> response = AcceptanceTestRequest.get(
+                    Given.builder().bearer(token.getToken()).build(),
+                    When.builder().uri("/members/me").build()
+            );
+
+            회원_정보_조회_실패함(response);
         };
     }
 
@@ -129,5 +140,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 회원_정보_조회_실패함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }
