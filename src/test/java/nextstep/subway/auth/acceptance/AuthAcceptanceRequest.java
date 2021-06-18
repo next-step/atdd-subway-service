@@ -36,8 +36,11 @@ public class AuthAcceptanceRequest {
         };
     }
 
-    private static void 로그인_요청_실패_검증(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    private static ExtractableResponse<Response> 로그인_요청(TokenRequest request) {
+        return post(
+                Given.builder().contentType(ContentType.JSON).body(request).build(),
+                When.builder().uri("/login/token").build()
+        );
     }
 
     public static TokenResponse 로그인_요청_및_전체_검증(TokenRequest request) {
@@ -51,11 +54,8 @@ public class AuthAcceptanceRequest {
         return tokenResponse;
     }
 
-    private static ExtractableResponse<Response> 로그인_요청(TokenRequest request) {
-        return post(
-                Given.builder().contentType(ContentType.JSON).body(request).build(),
-                When.builder().uri("/login/token").build()
-        );
+    private static void 로그인_요청_실패_검증(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private static void 로그인_요청_본문_검증(TokenResponse response) {
