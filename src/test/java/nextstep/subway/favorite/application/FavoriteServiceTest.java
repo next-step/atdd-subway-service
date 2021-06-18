@@ -6,8 +6,10 @@ import nextstep.subway.exception.LineHasNotExistStationException;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
@@ -18,6 +20,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -61,8 +65,8 @@ class FavoriteServiceTest {
     }
 
     @Test
-    @DisplayName("등록되지 않은 회원이면 AuthorizationException이 발생한다")
-    void 등록되지_않은_회원이면_AuthorizationException이_발생한다() {
+    @DisplayName("등록되지 않은 회원이 등록하려 하면 AuthorizationException이 발생한다")
+    void 등록되지_않은_회원이_등록하려_하면_AuthorizationException이_발생한다() {
         assertThatExceptionOfType(AuthorizationException.class)
                 .isThrownBy(() -> favoriteService.createFavorite(new LoginMember(1L, "NONE@MAIL.com", 25), new FavoriteRequest(1L, 2L)));
     }
@@ -91,5 +95,35 @@ class FavoriteServiceTest {
         assertThat(favoriteResponse.getId()).isNotNull();
         assertThat(favoriteResponse.getSource()).isEqualTo(StationResponse.of(savedStation1));
         assertThat(favoriteResponse.getTarget()).isEqualTo(StationResponse.of(savedStation2));
+    }
+
+    @Test
+    @DisplayName("등록되지 않은 회원이 목록을 조회시 AuthorizationException이 발생한다")
+    void 등록되지_않은_회원이_목록을_조회시_AuthorizationException이_발생한다() {
+        assertThatExceptionOfType(AuthorizationException.class)
+                .isThrownBy(() -> favoriteService.findAllByMember(new LoginMember(1L, "NONE@MAIL.com", 25)));
+    }
+
+    @Test
+    @DisplayName("등록된 계정이 조회하려 하면 조회가 성공한다")
+    void 등록된_계정이_조회하려_하면_조회가_성공한다() {
+        Member newMember = memberRepository.save(new Member("NEWNEW@EMAIL.com", "NEWNEW", 11));
+        LoginMember newLoginMember = new LoginMember(newMember.getId(), newMember.getEmail(), newMember.getAge());
+
+        LoginMember loginMember = new LoginMember(savedMember.getId(), savedMember.getEmail(), savedMember.getAge());
+
+        savedLine.addSection(new Section(savedStation2, savedStation3, new Distance(10)));
+
+        FavoriteResponse favorite1 = favoriteService.createFavorite(loginMember, new FavoriteRequest(savedStation1.getId(), savedStation2.getId()));
+        FavoriteResponse favorite2 = favoriteService.createFavorite(loginMember, new FavoriteRequest(savedStation2.getId(), savedStation3.getId()));
+        FavoriteResponse favorite3 = favoriteService.createFavorite(loginMember, new FavoriteRequest(savedStation1.getId(), savedStation3.getId()));
+
+        favoriteService.createFavorite(newLoginMember, new FavoriteRequest(savedStation1.getId(), savedStation3.getId()));
+
+        List<FavoriteResponse> allFavorites = favoriteService.findAllByMember(loginMember);
+
+        assertThat(allFavorites).hasSize(3);
+        assertThat(allFavorites)
+                .containsExactlyInAnyOrder(favorite1, favorite2, favorite3);
     }
 }

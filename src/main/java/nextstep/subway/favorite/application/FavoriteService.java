@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -46,6 +47,15 @@ public class FavoriteService {
         validateLineContainsStations(source, target);
 
         return FavoriteResponse.of(favoriteRepository.save(new Favorite(member, source, target)));
+    }
+
+    public List<FavoriteResponse> findAllByMember(LoginMember loginMember) {
+        Member member = findMemberByEmail(loginMember.getEmail());
+
+        return favoriteRepository.findAllByMember(member)
+                .stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
     }
 
     private void validateLineContainsStations(Station source, Station target) {
