@@ -59,17 +59,37 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @TestFactory
-    @DisplayName("나의 정보를 관리한다.")
-    Stream<DynamicTest> manageMyInfo() {
+    @DisplayName("나의 정보를 조회한다.")
+    Stream<DynamicTest> 나의_정보를_조회한다() {
         AuthToken authToken = new AuthToken();
         return Stream.of(
                 dynamicTest("회원을 등록한다", 회원_생성_요청_및_성공함(EMAIL, PASSWORD, AGE)),
                 dynamicTest("로그인을 요청한다", 로그인_요청_성공됨(new TokenRequest(EMAIL, PASSWORD), authToken)),
-                dynamicTest("회원 정보를 조회한다", 나의_정보_조회_요청_및_성공함(authToken, EMAIL, AGE)),
+                dynamicTest("회원 정보를 조회한다", 나의_정보_조회_요청_및_성공함(authToken, EMAIL, AGE))
+        );
+    }
+
+    @TestFactory
+    @DisplayName("나의 정보를 수정한다.")
+    Stream<DynamicTest> 나의_정보를_수정한다() {
+        AuthToken authToken = new AuthToken();
+        return Stream.of(
+                dynamicTest("회원을 등록한다", 회원_생성_요청_및_성공함(EMAIL, PASSWORD, AGE)),
+                dynamicTest("로그인을 요청한다", 로그인_요청_성공됨(new TokenRequest(EMAIL, PASSWORD), authToken)),
                 dynamicTest("회원 정보를 수정한다", 나의_정보_수정_요청_및_성공함(authToken, NEW_EMAIL, NEW_PASSWORD, NEW_AGE)),
                 dynamicTest("이메일이 바뀐 기존의 토큰으로는 수정된 회원 정보를 조회할 수 없다", 나의_정보_조회_요청_및_실패함(authToken)),
-                dynamicTest("로그인을 요청한다", 로그인_요청_성공됨(new TokenRequest(NEW_EMAIL, NEW_PASSWORD), authToken)),
-                dynamicTest("바뀐 정보로 회원 정보를 조회한다", 나의_정보_조회_요청_및_성공함(authToken, NEW_EMAIL, NEW_AGE)),
+                dynamicTest("새로운 계정으로 로그인을 요청한다", 로그인_요청_성공됨(new TokenRequest(NEW_EMAIL, NEW_PASSWORD), authToken)),
+                dynamicTest("바뀐 정보로 회원 정보를 조회한다", 나의_정보_조회_요청_및_성공함(authToken, NEW_EMAIL, NEW_AGE))
+        );
+    }
+
+    @TestFactory
+    @DisplayName("나의 정보를 삭제한다.")
+    Stream<DynamicTest> 나의_정보를_삭제한다() {
+        AuthToken authToken = new AuthToken();
+        return Stream.of(
+                dynamicTest("회원을 등록한다", 회원_생성_요청_및_성공함(EMAIL, PASSWORD, AGE)),
+                dynamicTest("로그인을 요청한다", 로그인_요청_성공됨(new TokenRequest(EMAIL, PASSWORD), authToken)),
                 dynamicTest("회원 정보를 삭제한다", 나의_정보_삭제_요청_및_성공함(authToken)),
                 dynamicTest("삭제된 회원 정보를 조회한다", 나의_정보_조회_요청_및_실패함(authToken))
         );
