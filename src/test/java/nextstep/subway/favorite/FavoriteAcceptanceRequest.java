@@ -25,7 +25,7 @@ public class FavoriteAcceptanceRequest {
 
     public static Executable 즐겨찾기_목록_요청_및_조회됨(AuthToken authToken, FavoriteRequest request) {
         return () -> {
-
+            assertThat(true).isFalse();
         };
     }
 
@@ -39,13 +39,13 @@ public class FavoriteAcceptanceRequest {
 
     public static Executable 즐겨찾기_목록_요청_및_비어있음(AuthToken authToken) {
         return () -> {
-
+            assertThat(true).isFalse();
         };
     }
 
     public static Executable 즐겨찾기_삭제_요청_및_삭제됨(AuthToken authToken, Long favoriteId) {
         return () -> {
-
+            assertThat(true).isFalse();
         };
     }
 
@@ -68,7 +68,7 @@ public class FavoriteAcceptanceRequest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(uri).isEqualTo("/favorites/" + exceptId);
     }
-    
+
     private static void 즐겨찾기_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
