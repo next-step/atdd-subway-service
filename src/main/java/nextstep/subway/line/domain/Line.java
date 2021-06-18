@@ -19,8 +19,9 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+
+    @Embedded
+    private Sections sections = new Sections();
 
     public Line() {
     }
@@ -59,7 +60,7 @@ public class Line extends BaseEntity {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return sections.get();
     }
 
     public List<Station> getStations() {
@@ -104,23 +105,15 @@ public class Line extends BaseEntity {
 
     public void addSection(Section section) {
         List<Station> stations = this.getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (!stations.isEmpty()
-                && stations.stream().noneMatch(it -> it == section.getUpStation())
-                && stations.stream().noneMatch(it -> it == section.getDownStation())) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-
         if (stations.isEmpty()) {
             this.getSections().add(section);
             return;
         }
+
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
+
+        validate(isUpStationExisted, isDownStationExisted);
 
         if (isUpStationExisted) {
             this.getSections().stream()
@@ -138,6 +131,16 @@ public class Line extends BaseEntity {
             this.getSections().add(section);
         } else {
             throw new RuntimeException();
+        }
+    }
+
+    private void validate(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!isUpStationExisted && !isDownStationExisted) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
     }
 
