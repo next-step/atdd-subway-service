@@ -82,11 +82,11 @@ public class Sections {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = getSection(section -> section.isSameUpStation(finalDownStation));
-            if (!nextLineStation.isPresent()) {
+            Optional<Section> nextSection = getSection(section -> section.isSameUpStation(finalDownStation));
+            if (!nextSection.isPresent()) {
                 break;
             }
-            downStation = nextLineStation.get().getDownStation();
+            downStation = nextSection.get().getDownStation();
             stations.add(downStation);
         }
 
@@ -100,11 +100,11 @@ public class Sections {
         while (downStation != null) {
             Station finalDownStation = downStation;
 
-            Optional<Section> nextLineStation = getSection(section -> section.isSameDownStation(finalDownStation));
-            if (!nextLineStation.isPresent()) {
+            Optional<Section> nextSection = getSection(section -> section.isSameDownStation(finalDownStation));
+            if (!nextSection.isPresent()) {
                 break;
             }
-            downStation = nextLineStation.get().getUpStation();
+            downStation = nextSection.get().getUpStation();
         }
 
         return downStation;
