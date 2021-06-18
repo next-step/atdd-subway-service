@@ -68,8 +68,8 @@ public class Sections {
     }
 
     private void validateTwoStationNotExist(List<Station> stations, Station upStation, Station downStation) {
-        if (!stations.isEmpty() && stations.stream().noneMatch(station -> station.hasStation(upStation)) &&
-                stations.stream().noneMatch(station -> station.hasStation(downStation))) {
+        if (!stations.isEmpty() && stations.stream().noneMatch(station -> station.isSameStation(upStation)) &&
+                stations.stream().noneMatch(station -> station.isSameStation(downStation))) {
             throw new TwoStationNotExistException();
         }
     }
@@ -81,11 +81,11 @@ public class Sections {
     }
 
     private boolean isDownStationExisted(List<Station> stations, Station downStation) {
-        return stations.stream().anyMatch(station -> station.hasStation(downStation));
+        return stations.stream().anyMatch(station -> station.isSameStation(downStation));
     }
 
     private boolean isUpStationExisted(List<Station> stations, Station upStation) {
-        return stations.stream().anyMatch(station -> station.hasStation(upStation));
+        return stations.stream().anyMatch(station -> station.isSameStation(upStation));
     }
 
     public List<Station> stations() {

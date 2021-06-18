@@ -28,7 +28,7 @@ public class Station extends BaseEntity {
         return name;
     }
 
-    public boolean hasStation(Station station) {
+    public boolean isSameStation(Station station) {
         return this.equals(station);
     }
 
