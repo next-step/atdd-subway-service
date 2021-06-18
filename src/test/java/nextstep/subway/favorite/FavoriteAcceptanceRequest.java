@@ -5,11 +5,14 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.acceptance.AuthToken;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.request.AcceptanceTestRequest;
 import nextstep.subway.request.Given;
 import nextstep.subway.request.When;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.http.HttpStatus;
+
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,10 +26,25 @@ public class FavoriteAcceptanceRequest {
         };
     }
 
-    public static Executable 즐겨찾기_목록_요청_및_조회됨(AuthToken authToken, FavoriteRequest request) {
+    public static Executable 즐겨찾기_목록_요청_및_조회됨(AuthToken authToken, FavoriteResponse ...responses) {
         return () -> {
-            assertThat(true).isFalse();
+            ExtractableResponse<Response> response = 즐겨찾기_목록_요청(authToken);
+
+            즐겨찾기_목록_조회됨(response, responses);
         };
+    }
+
+    private static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, FavoriteResponse[] responses) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.as(FavoriteResponse[].class))
+                .containsExactlyInAnyOrder(responses);
+    }
+
+    private static ExtractableResponse<Response> 즐겨찾기_목록_요청(AuthToken authToken) {
+        return AcceptanceTestRequest.get(
+                Given.builder().bearer(authToken.getToken()).build() ,
+                When.builder().uri("/favorites").build()
+        );
     }
 
     public static Executable 즐겨찾기_등록_요청_및_실패됨(AuthToken authToken, FavoriteRequest request) {

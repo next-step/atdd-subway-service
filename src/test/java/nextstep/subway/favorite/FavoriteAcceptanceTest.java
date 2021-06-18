@@ -3,6 +3,7 @@ package nextstep.subway.favorite;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthToken;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTestRequest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.station.dto.StationResponse;
@@ -75,16 +76,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         FavoriteRequest 정자역_판교역_즐겨찾기 = new FavoriteRequest(정자역_ID, 판교역_ID);
         return Stream.of(
-                dynamicTest("즐겨찾기 양재역 - 광교역 추가", 즐겨찾기_등록_요청_및_실패됨(인증_정보, 정자역_판교역_즐겨찾기))
+                dynamicTest("즐겨찾기 등록되지 않은 양재역 - 광교역 추가", 즐겨찾기_등록_요청_및_실패됨(인증_정보, 정자역_판교역_즐겨찾기))
         );
     }
 
     @TestFactory
     @DisplayName("목록을 조회한다")
     Stream<DynamicTest> 목록을_조회한다() {
+        FavoriteResponse 강남역_양재역_목록 = new FavoriteResponse(강남역_양재역_즐겨찾기_ID, 강남역, 양재역);
         return Stream.of(
                 dynamicTest("즐겨찾기 강남역 - 양재역 추가", 즐겨찾기_등록_요청_및_등록됨(인증_정보, 강남역_양재역_즐겨찾기, 강남역_양재역_즐겨찾기_ID)),
-                dynamicTest("즐겨찾기 목록을 조회한다", 즐겨찾기_목록_요청_및_조회됨(인증_정보, 강남역_양재역_즐겨찾기))
+                dynamicTest("즐겨찾기 목록을 조회한다", 즐겨찾기_목록_요청_및_조회됨(인증_정보, 강남역_양재역_목록))
         );
     }
     
