@@ -1,14 +1,39 @@
 package nextstep.subway.auth.acceptance;
 
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.function.Executable;
+import org.springframework.http.HttpStatus;
 
-public class AuthAcceptanceTest extends AcceptanceTest {
+import java.util.stream.Stream;
 
-    @DisplayName("Bearer Auth")
-    @Test
-    void myInfoWithBearerAuth() {
+import static nextstep.subway.auth.acceptance.AuthAcceptanceRequest.로그인_요청_및_검증;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.DynamicTest.*;
+
+class AuthAcceptanceTest extends AcceptanceTest {
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        ExtractableResponse<Response> response = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(response);
+    }
+
+    @TestFactory
+    @DisplayName("로그인을 시도한다")
+    Stream<DynamicTest> 로그인을_시도한다() {
+        return Stream.of(
+                dynamicTest("로그인을 요청 및 검증한다", 로그인_요청_및_검증(new TokenRequest(EMAIL, PASSWORD)))
+        );
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
@@ -20,5 +45,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithWrongBearerAuth() {
     }
+
 
 }
