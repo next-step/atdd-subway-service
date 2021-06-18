@@ -42,7 +42,7 @@ public class AuthAcceptanceRequest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    private static TokenResponse 로그인_요청_및_전체_검증(TokenRequest request) {
+    public static TokenResponse 로그인_요청_및_전체_검증(TokenRequest request) {
         ExtractableResponse<Response> response = 로그인_요청(request);
 
         로그인_요청_응답됨(response);

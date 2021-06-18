@@ -13,16 +13,16 @@ import static nextstep.subway.auth.acceptance.AuthAcceptanceRequest.로그인_�
 import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
-class AuthAcceptanceTest extends AcceptanceTest {
+public class AuthAcceptanceTest extends AcceptanceTest {
 
-    public static TokenRequest 등록된_계정_토큰_요청 = new TokenRequest(EMAIL, PASSWORD);
-    public static TokenRequest 등록되지_않은_계정_토큰_요청 = new TokenRequest(NEW_EMAIL, NEW_PASSWORD);
+    public static final TokenRequest 등록된_계정_토큰_요청 = new TokenRequest(EMAIL, PASSWORD);
+    public static final TokenRequest 등록되지_않은_계정_토큰_요청 = new TokenRequest(NEW_EMAIL, NEW_PASSWORD);
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        ExtractableResponse<Response> response = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        회원_생성됨(response);
+
+        회원_생성됨(회원_생성을_요청(EMAIL, PASSWORD, AGE));
     }
 
     @TestFactory
