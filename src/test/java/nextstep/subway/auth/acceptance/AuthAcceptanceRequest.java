@@ -1,18 +1,16 @@
 package nextstep.subway.auth.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.request.AcceptanceTestRequest;
 import nextstep.subway.request.Given;
 import nextstep.subway.request.When;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.subway.request.AcceptanceTestRequest.*;
+import static nextstep.subway.request.AcceptanceTestRequest.post;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceRequest {

@@ -4,7 +4,6 @@ import nextstep.subway.auth.application.ApproveException;
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.LineHasNotExistStationException;
-import nextstep.subway.exception.StationNotExistException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
