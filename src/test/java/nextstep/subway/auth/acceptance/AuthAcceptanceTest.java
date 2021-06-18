@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceRequest.로그인_요청_성공됨;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceRequest.로그인_요청_실패함;
 import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.MemberAcceptanceTestRequest.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 public class AuthAcceptanceTest extends AcceptanceTest {

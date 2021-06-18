@@ -19,6 +19,8 @@ import static nextstep.subway.auth.acceptance.AuthAcceptanceRequest.로그인_�
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.등록된_계정_토큰_요청;
 import static nextstep.subway.favorite.FavoriteAcceptanceRequest.*;
 import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.MemberAcceptanceTestRequest.회원_생성됨;
+import static nextstep.subway.member.MemberAcceptanceTestRequest.회원_생성을_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_생성_요청_및_검증;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
