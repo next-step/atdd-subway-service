@@ -51,6 +51,4 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 dynamicTest("유효하지 않는 토큰으로 조회시 실패한다.", 나의_정보_조회_요청_및_실패함(authToken))
         );
     }
-
-
 }
