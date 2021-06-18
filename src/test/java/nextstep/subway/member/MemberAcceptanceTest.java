@@ -1,6 +1,7 @@
 package nextstep.subway.member;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -66,7 +67,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 dynamicTest("로그인을 요청한다", 로그인_요청_성공됨(new TokenRequest(EMAIL, PASSWORD), authToken)),
                 dynamicTest("회원 정보를 조회한다", 나의_정보_조회_요청_및_성공함(authToken, EMAIL, AGE)),
                 dynamicTest("회원 정보를 수정한다", 나의_정보_수정_요청_및_성공함(authToken, NEW_EMAIL, NEW_PASSWORD, NEW_AGE)),
-                dynamicTest("수정된 회원 정보를 조회한다", 나의_정보_조회_요청_및_성공함(authToken, NEW_EMAIL, NEW_AGE)),
+                dynamicTest("이메일이 바뀐 기존의 토큰으로는 수정된 회원 정보를 조회할 수 없다", 나의_정보_조회_요청_및_실패함(authToken)),
+                dynamicTest("로그인을 요청한다", 로그인_요청_성공됨(new TokenRequest(NEW_EMAIL, NEW_PASSWORD), authToken)),
+                dynamicTest("바뀐 정보로 회원 정보를 조회한다", 나의_정보_조회_요청_및_성공함(authToken, NEW_EMAIL, NEW_AGE)),
                 dynamicTest("회원 정보를 삭제한다", 나의_정보_삭제_요청_및_성공함(authToken)),
                 dynamicTest("삭제된 회원 정보를 조회한다", 나의_정보_조회_요청_및_실패함(authToken))
         );
@@ -85,10 +88,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static Executable 나의_정보_수정_요청_및_성공함(AuthToken token, String email, String password, Integer age) {
         return () -> {
-            ExtractableResponse<Response> response = AcceptanceTestRequest.post(
+            ExtractableResponse<Response> response = AcceptanceTestRequest.put(
                     Given.builder()
                             .bearer(token.getToken())
                             .body(new MemberRequest(email, password, age))
+                            .contentType(ContentType.JSON)
                             .build(),
                     When.builder().uri("/members/me").build()
             );
