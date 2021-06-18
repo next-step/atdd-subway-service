@@ -42,75 +42,76 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
-    @DisplayName("지하철 구간을 등록한다.")
+    @DisplayName("")
     @Test
-    void addLineSection() {
-        // when
-        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
+    void 통합인수테스트_구간을_추가_하고_싶은데_할_수가_없네() {
+//        Background (setUp)
+//        Given 지하철역 등록되어 있음
+//        And 지하철 노선 등록되어 있음
+//        And 지하철 노선에 지하철역 등록되어 있음
 
-        // then
-        ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-        지하철_노선에_지하철역_등록됨(response);
-        지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 양재역, 광교역));
+        // When 중복되는 구간을 추가 요청
+        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 광교역, 3);
+        // Then 추가 실패
+        지하철_노선에_지하철역_등록_실패됨(response);
+
+        // When 중복인가? 해서 등록되지 않은 역들을 추가 요청
+        response = 지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 양재역, 3);
+        // Then 추가 실패
+        지하철_노선에_지하철역_등록_실패됨(response);
     }
 
-    @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
+    @DisplayName("없는역을 삭제 시도, 노선에 역이 두개 밖에 없는데 삭제 시도")
     @Test
-    void addLineSection2() {
-        // when
-        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
+    void 통합인수테스트_삭제를_하고_싶은데_할_수가_없네() {
+//        Background (setUp)
+//        Given 지하철역 등록되어 있음
+//        And 지하철 노선 등록되어 있음
+//        And 지하철 노선에 지하철역 등록되어 있음
+
+        // When 잘못 눌러서 노선에 없는 역을 삭제 요청
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 정자역);
+        // Then 삭제에 실패
+        지하철_노선에_지하철역_제외_실패됨(removeResponse);
+
+        // When 지우고 싶은 역은 잘 골랐는데, 삭제 요청 했지만 노선에 역이 두개 밖에 없음
+        removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
+        // Then 삭제에 실패
+        지하철_노선에_지하철역_제외_실패됨(removeResponse);
+
+    }
+
+    @Test
+    void 통합인수테스트_지하철에_구간추가_후에_역을_삭제하고_전체조회해서_확인한다() {
+//        Background (setUp)
+//        Given 지하철역 등록되어 있음
+//        And 지하철 노선 등록되어 있음
+//        And 지하철 노선에 지하철역 등록되어 있음
+
+//        When 지하철 구간 등록 요청
+        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
+//        Then 지하철 구간 등록됨
+        지하철_노선에_지하철역_등록됨(response);
+
+//        When 지하철 노선에 순서가 얽히는 역을 하나 더 추가한다
         지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 강남역, 5);
 
-        // then
-        ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-        지하철_노선에_지하철역_등록됨(response);
+//        When 지하철 노선에 등록된 역 목록 조회 요청
+        response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+
+//        Then 등록한 지하철 구간이 반영된 역 목록이 정렬되어 조회됨
         지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(정자역, 강남역, 양재역, 광교역));
-    }
 
-    @DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
-    @Test
-    void addLineSectionWithSameStation() {
-        // when
-        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 광교역, 3);
-
-        // then
-        지하철_노선에_지하철역_등록_실패됨(response);
-    }
-
-    @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록한다.")
-    @Test
-    void addLineSectionWithNoStation() {
-        // when
-        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 양재역, 3);
-
-        // then
-        지하철_노선에_지하철역_등록_실패됨(response);
-    }
-
-    @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
-    @Test
-    void removeLineSection1() {
-        // given
-        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
-        지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 정자역, 2);
-
-        // when
-        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
-
-        // then
+//        When 지하철 구간 삭제 요청
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 광교역);
+//        Then 지하철 구간 삭제됨
         지하철_노선에_지하철역_제외됨(removeResponse);
-        ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-        지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 정자역, 광교역));
-    }
 
-    @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
-    @Test
-    void removeLineSection2() {
-        // when
-        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
+//        When 지하철 노선에 등록된 역 목록 조회 요청
+        response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+//        Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+        지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(정자역, 강남역, 양재역));
 
-        // then
-        지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
