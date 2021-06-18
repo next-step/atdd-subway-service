@@ -25,14 +25,14 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class FavoriteService {
+public class FavoriteCommandService {
     private final StationRepository stationRepository;
     private final LineRepository lineRepository;
     private final MemberRepository memberRepository;
     private final FavoriteRepository favoriteRepository;
 
 
-    public FavoriteService(StationRepository stationRepository, LineRepository lineRepository, MemberRepository memberRepository, FavoriteRepository favoriteRepository) {
+    public FavoriteCommandService(StationRepository stationRepository, LineRepository lineRepository, MemberRepository memberRepository, FavoriteRepository favoriteRepository) {
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
         this.memberRepository = memberRepository;
@@ -49,24 +49,19 @@ public class FavoriteService {
         return FavoriteResponse.of(favoriteRepository.save(new Favorite(member, source, target)));
     }
 
-    public List<FavoriteResponse> findAllByMember(LoginMember loginMember) {
-        Member member = findMemberByEmail(loginMember.getEmail());
-
-        return favoriteRepository.findAllByMember(member)
-                .stream()
-                .map(FavoriteResponse::of)
-                .collect(Collectors.toList());
-    }
-
     public void deleteById(LoginMember loginMember, Long id) {
         Member member = findMemberByEmail(loginMember.getEmail());
         Favorite favorite = findById(id);
 
+        validateOwner(member, favorite);
+
+        favoriteRepository.delete(favorite);
+    }
+
+    private void validateOwner(Member member, Favorite favorite) {
         if (!favorite.isOwner(member)) {
             throw new ApproveException();
         }
-
-        favoriteRepository.delete(favorite);
     }
 
     private void validateLineContainsStations(Station source, Station target) {
