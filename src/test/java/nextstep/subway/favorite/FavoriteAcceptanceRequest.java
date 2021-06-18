@@ -31,7 +31,9 @@ public class FavoriteAcceptanceRequest {
 
     public static Executable 즐겨찾기_등록_요청_및_실패됨(AuthToken authToken, FavoriteRequest request) {
         return () -> {
+            ExtractableResponse<Response> response = 즐겨찾기_등록_요청(authToken, request);
 
+            즐겨찾기_실패됨(response);
         };
     }
 
@@ -65,5 +67,9 @@ public class FavoriteAcceptanceRequest {
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(uri).isEqualTo("/favorites/" + exceptId);
+    }
+    
+    private static void 즐겨찾기_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }

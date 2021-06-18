@@ -53,7 +53,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("라인에 등록된 역을 즐겨찾기 한다.")
     Stream<DynamicTest> 라인에_등록된_역을_즐겨찾기_한다() {
         return Stream.of(
-                dynamicTest("즐겨찾기 강남역 - 양재역 추가", 즐겨찾기_등록_요청_및_등록됨(인증_정보, 강남역_양재역_즐겨찾기, 강남역_양재역_즐겨찾기_ID))
+                dynamicTest("즐겨찾기 등록된 강남역 - 양재역 추가", 즐겨찾기_등록_요청_및_등록됨(인증_정보, 강남역_양재역_즐겨찾기, 강남역_양재역_즐겨찾기_ID))
         );
     }
 
@@ -63,7 +63,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         FavoriteRequest 강남역_광교역_즐겨찾기 = new FavoriteRequest(강남역.getId(), 광교역.getId());
 
         return Stream.of(
-                dynamicTest("즐겨찾기 양재역 - 광교역 추가", 즐겨찾기_등록_요청_및_실패됨(인증_정보, 강남역_광교역_즐겨찾기))
+                dynamicTest("즐겨찾기 등록되지 않은 양재역 - 광교역 추가", 즐겨찾기_등록_요청_및_실패됨(인증_정보, 강남역_광교역_즐겨찾기))
         );
     }
 
