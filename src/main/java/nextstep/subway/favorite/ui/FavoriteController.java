@@ -33,6 +33,12 @@ public class FavoriteController {
 
     @GetMapping
     public ResponseEntity<List<FavoriteResponse>> lists(@AuthenticationPrincipal LoginMember loginMember) {
+        List<FavoriteResponse> results = favoriteService.findAllByMember(loginMember);
+
+        if (results.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
         return ResponseEntity.ok(
                 favoriteService.findAllByMember(loginMember)
         );
