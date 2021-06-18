@@ -24,7 +24,6 @@ public class Sections {
 
     public void addSection(Section section) {
         List<Station> stations = getStations();
-
         validationSection(section, stations);
 
         boolean isUpStationExisted = isExistStation(stations, section.getUpStation());
@@ -44,11 +43,6 @@ public class Sections {
 
         if (isUpStationExisted == isDownStationExisted) {
             throw new RuntimeException("이미 등록된 구간 또는 등록할수 없는 구간입니다.");
-        }
-
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
-                stations.stream().noneMatch(it -> it == section.getDownStation())) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
     }
 
