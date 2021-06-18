@@ -8,6 +8,7 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Embeddable
@@ -60,5 +61,40 @@ public class Sections {
 
     public Stream<Section> stream() {
         return sections.stream();
+    }
+
+    public boolean alreadyHas(Section section) {
+        List<Station> stations = sections.stream()
+                .flatMap(it -> Stream.of(it.getUpStation(), it.getDownStation()))
+                .collect(Collectors.toList());
+        return stations.contains(section.getUpStation()) && stations.contains(section.getDownStation());
+    }
+
+    public boolean cannotConnect(Section section) {
+        List<Station> stations = sections.stream()
+                .flatMap(it -> Stream.of(it.getUpStation(), it.getDownStation()))
+                .collect(Collectors.toList());
+        return !stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation());
+    }
+
+    public void validateRemovableSize() {
+        if (sections.size() <= 1) {
+            throw new RuntimeException();
+        }
+    }
+
+    public void remove(Station station) {
+        Optional<Section> upSection = hasSameUpStationWith(station);
+        Optional<Section> downSection = hasSameDownStationWith(station);
+
+        if (upSection.isPresent() && downSection.isPresent()) {
+            Station newUpStation = downSection.get().getUpStation();
+            Station newDownStation = upSection.get().getDownStation();
+            int newDistance = upSection.get().getDistance() + downSection.get().getDistance();
+            sections.add(new Section(upSection.get().getLine(), newUpStation, newDownStation, newDistance));
+        }
+
+        upSection.ifPresent(it -> sections.remove(it));
+        downSection.ifPresent(it -> sections.remove(it));
     }
 }

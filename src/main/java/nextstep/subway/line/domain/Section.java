@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Section {
@@ -68,5 +69,13 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public boolean upStationIsIn(List<Station> stations) {
+        return stations.contains(upStation);
+    }
+
+    public boolean downStationIsIn(List<Station> stations) {
+        return stations.contains(downStation);
     }
 }

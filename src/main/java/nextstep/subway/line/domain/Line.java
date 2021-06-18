@@ -112,16 +112,14 @@ public class Line extends BaseEntity {
 
     private void updateForConnection(Section section) {
         List<Station> stations = this.getStations();
-        boolean isUpStationExisted = stations.contains(section.getUpStation());
-        boolean isDownStationExisted = stations.contains(section.getDownStation());
 
-        if (isUpStationExisted) {
+        if (section.upStationIsIn(stations)) {
             sections.updateIfMidFront(section);
             sections.add(section);
             return;
         }
 
-        if (isDownStationExisted) {
+        if (section.downStationIsIn(stations)) {
             sections.updateIfMidRear(section);
             sections.add(section);
             return;
@@ -131,35 +129,24 @@ public class Line extends BaseEntity {
     }
 
     private void validate(Section section) {
-        List<Station> stations = this.getStations();
-        boolean isUpStationExisted = stations.contains(section.getUpStation());
-        boolean isDownStationExisted = stations.contains(section.getDownStation());
+        validateBothEnrolled(section);
+        validateBothNotExist(section);
+    }
 
-        if (isUpStationExisted && isDownStationExisted) {
+    private void validateBothEnrolled(Section section) {
+        if (sections.alreadyHas(section)) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
+    }
 
-        if (!isUpStationExisted && !isDownStationExisted) {
+    private void validateBothNotExist(Section section) {
+        if (sections.cannotConnect(section)) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
     }
 
     public void remove(Station station) {
-        if (this.getSections().size() <= 1) {
-            throw new RuntimeException();
-        }
-
-        Optional<Section> upSection = sections.hasSameUpStationWith(station);
-        Optional<Section> downSection = sections.hasSameDownStationWith(station);
-
-        if (upSection.isPresent() && downSection.isPresent()) {
-            Station newUpStation = downSection.get().getUpStation();
-            Station newDownStation = upSection.get().getDownStation();
-            int newDistance = upSection.get().getDistance() + downSection.get().getDistance();
-            this.getSections().add(new Section(this, newUpStation, newDownStation, newDistance));
-        }
-
-        upSection.ifPresent(it -> this.getSections().remove(it));
-        downSection.ifPresent(it -> this.getSections().remove(it));
+        sections.validateRemovableSize();
+        sections.remove(station);
     }
 }
