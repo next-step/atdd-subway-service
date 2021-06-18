@@ -7,6 +7,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
@@ -94,8 +95,6 @@ public class Sections {
     }
 
     private Station findUpStation() {
-        Collections.sort(sections);
-
         Station downStation = getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
@@ -111,7 +110,16 @@ public class Sections {
     }
 
     private Station getUpStation() {
-        return sections.get(0).getUpStation();
+        List<Station> downStations = sections.stream()
+                .map(section -> section.getDownStation())
+                .collect(Collectors.toList());
+
+        Section firstSection = sections.stream()
+                .filter(section -> !downStations.contains(section.getUpStation()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("상행역이 존재하지않습니다."));
+
+        return firstSection.getUpStation();
     }
 
     public Section removeLineStation(Station station) {
