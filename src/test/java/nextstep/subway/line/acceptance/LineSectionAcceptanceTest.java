@@ -43,7 +43,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
-    @DisplayName("지하철 구간을 관리하는 시나리오 테스트.")
+    @DisplayName("지하철 구간을 등록하고 제거한다.")
     @Test
     void manageSectionTest() {
         지하철_노선에_지하철역_등록을_한다(신분당선, 강남역, 양재역, 5);
