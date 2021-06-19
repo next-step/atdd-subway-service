@@ -57,42 +57,57 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getStations() {
-        if (this.getSections().isEmpty()) {
-            return Arrays.asList();
-        }
-
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.getSections().stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
-
-        return stations;
+        return this.getSections().getStations();
     }
 
-    public Station findUpStation() {
-        Station downStation = this.getSections().get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.getSections().stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
+    public void addSection(Section section) {
+        Station downStation = section.getDownStation();
+        Station upStation = section.getUpStation();
+        boolean isUpStationExisted = getStations().stream().anyMatch(it -> it == upStation);
+        boolean isDownStationExisted = getStations().stream().anyMatch(it -> it == downStation);
+
+        validateBothStationsRegistered(isUpStationExisted, isDownStationExisted);
+        validateBothStationsNotRegistered(isUpStationExisted, isDownStationExisted);
+
+        if (getStations().isEmpty()) {
+            this.getSections().add(section);
+            return;
         }
 
-        return downStation;
+        if (isUpStationExisted) {
+            this.getSections().stream()
+                    .filter(it -> it.getUpStation() == upStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(downStation, section.getDistance()));
+
+            this.getSections().add(section);
+            return;
+        }
+
+        if (isDownStationExisted) {
+            this.getSections().stream()
+                    .filter(it -> it.getDownStation() == downStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(upStation, section.getDistance()));
+            this.getSections().add(section);
+            return;
+        }
+
+        this.getSections().add(section);
+
+    }
+
+    private void validateBothStationsNotRegistered(boolean downStation, boolean upStation) {
+        if ((getStations().isEmpty() == false)
+                && (downStation == false)
+                && upStation == false) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void validateBothStationsRegistered(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
     }
 }
