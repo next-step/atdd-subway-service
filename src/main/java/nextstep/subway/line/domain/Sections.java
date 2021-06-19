@@ -64,4 +64,8 @@ public class Sections {
     public void add(Section section) {
         sections.add(section);
     }
+
+    public List<Section> getSections() {
+        return Collections.unmodifiableList(sections);
+    }
 }
