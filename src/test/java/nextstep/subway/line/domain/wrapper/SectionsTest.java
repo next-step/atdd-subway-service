@@ -84,4 +84,31 @@ class SectionsTest {
         assertThatThrownBy(() -> sections.registerNewSection(given))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("존재하지 않는 역을 제거하려고 하면 예외가 발생한다.")
+    @Test
+    void canNotRemoveNotFoundStationTest() {
+        // given
+        Sections sections = new Sections();
+        sections.add(new Section(신분당선, 강남역, 양재역, 2));
+        sections.add(new Section(신분당선, 양재역, 청계산입구역, 2));
+
+        // when & then
+        assertThatThrownBy(() -> sections.removeSectionByStation(판교역))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("등록되어있지 않은 역으로 구간을 제거할 수 없습니다.");
+    }
+
+    @DisplayName("구간이 한개만 존재할때 구간을 제거하려고 하면 예외가 발생한다.")
+    @Test
+    void canNotRemoveExistOnlyOneSection() {
+        // given
+        Sections sections = new Sections();
+        sections.add(new Section(신분당선, 강남역, 양재역, 2));
+
+        // when & then
+        assertThatThrownBy(() -> sections.removeSectionByStation(강남역))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("구간이 하나만 존재할 경우 제거할 수 없습니다.");
+    }
 }
