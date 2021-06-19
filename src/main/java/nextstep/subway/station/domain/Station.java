@@ -5,18 +5,26 @@ import nextstep.subway.BaseEntity;
 import javax.persistence.*;
 import java.util.Objects;
 
+@Table(name = "station")
 @Entity
 public class Station extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
+
+    @Column(unique = true, nullable = false)
     private String name;
 
-    public Station() {
+    protected Station() {
     }
 
-    public Station(String name) {
+    public Station(final String name) {
+        this.name = name;
+    }
+
+    public Station(final Long id, final String name) {
+        this.id = id;
         this.name = name;
     }
 
@@ -40,5 +48,13 @@ public class Station extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    @Override
+    public String toString() {
+        return "Station{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
