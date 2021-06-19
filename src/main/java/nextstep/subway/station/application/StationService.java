@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class StationService {
-    private StationRepository stationRepository;
+    private final StationRepository stationRepository;
 
     public StationService(StationRepository stationRepository) {
         this.stationRepository = stationRepository;
@@ -39,7 +39,4 @@ public class StationService {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-    public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
 }
