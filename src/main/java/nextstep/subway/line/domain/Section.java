@@ -1,7 +1,6 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.line.domain.wrapper.Sections;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -46,27 +45,44 @@ public class Section extends BaseEntity {
     protected Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    public Section(final Line line, final Station upStation, final Station downStation, final int distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    public void updateSectionStationByAddNewSection(final Section newSection) {
+        if (isSameUpStation(newSection.getUpStation())) {
+            updateUpStation(newSection);
         }
-        this.upStation = station;
-        this.distance -= newDistance;
+        if (isSameDownStation(newSection.getDownStation())) {
+            updateDownStation(newSection);
+        }
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    public boolean isSameDownStation(final Station otherDownStation) {
+        return this.downStation.equals(otherDownStation);
+    }
+
+    public boolean isSameUpStation(final Station otherUpStation) {
+        return this.upStation.equals(otherUpStation);
+    }
+
+    public void updateUpStation(final Section newSection) {
+        if (this.distance <= newSection.getDistance()) {
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.downStation = station;
-        this.distance -= newDistance;
+        this.upStation = newSection.getDownStation();
+        this.distance -= newSection.getDistance();
+    }
+
+    public void updateDownStation(final Section newSection) {
+        if (this.distance <= newSection.getDistance()) {
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.downStation = newSection.getUpStation();
+        this.distance -= newSection.getDistance();
     }
 
     public List<Station> getUpAndDownStation() {
