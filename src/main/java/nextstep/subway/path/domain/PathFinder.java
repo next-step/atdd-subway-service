@@ -8,6 +8,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class PathFinder {
 
@@ -35,7 +36,13 @@ public class PathFinder {
     }
 
     public List<Station> getPath(Station source, Station target) {
-        return dijkstraShortestPath.getPath(source, target).getVertexList();
+        try {
+            return dijkstraShortestPath.getPath(source, target)
+                    .getVertexList();
+        } catch (NullPointerException e) {
+            throw new NoSuchElementException("출발지와 목적지는 연결되어있지 않는 경로입니다.");
+        }
+
     }
 
     public int getWeight(Station source, Station target) {
