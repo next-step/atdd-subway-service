@@ -53,6 +53,30 @@ public class Section extends BaseEntity {
         this.distance = distance;
     }
 
+    public void updateUpStation(Station station, int newDistance) {
+        if (this.distance <= newDistance) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.upStation = station;
+        this.distance -= newDistance;
+    }
+
+    public void updateDownStation(Station station, int newDistance) {
+        if (this.distance <= newDistance) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.downStation = station;
+        this.distance -= newDistance;
+    }
+
+    public List<Station> getUpAndDownStation() {
+        return Stream.of(upStation, downStation).collect(toList());
+    }
+
+    public boolean isAfter(Section other) {
+        return this.upStation.equals(other.getDownStation());
+    }
+
     public Long getId() {
         return id;
     }
@@ -71,35 +95,6 @@ public class Section extends BaseEntity {
 
     public int getDistance() {
         return distance;
-    }
-
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
-    }
-
-    public List<Station> getUpAndDownStation() {
-        return Stream.of(upStation, downStation)
-                .collect(toList());
-    }
-
-    public boolean isSameEdges(Section other) {
-        return this.upStation.equals(other.getUpStation()) && this.downStation.equals(other.getDownStation());
-    }
-
-    public boolean isAfter(Section other) {
-        return this.upStation.equals(other.getDownStation());
     }
 
     @Override

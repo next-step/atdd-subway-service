@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @Embeddable
 public class Sections {
     private static final String EMPTY_SECTIONS = "등록된 구간이 없습니다.";
+    private static final String EXISTS_SECTION = "이미 존재하는 구간입니다.";
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -30,16 +31,16 @@ public class Sections {
 
     public void add(final Section section) {
         if (this.sections.contains(section)) {
-            throw new EntityExistsException();
+            throw new EntityExistsException(EXISTS_SECTION);
         }
         this.sections.add(section);
     }
 
     public Set<Station> getSortedStations() {
         List<Section> sortedSections = new ArrayList<>();
-        Section currentSection = findFirstSection();
-        sortedSections.add(currentSection);
-        addNextSectionIfExist(findNextSection(currentSection), sortedSections);
+        Section firstSection = findFirstSection();
+        sortedSections.add(firstSection);
+        addNextSectionIfExist(findNextSection(firstSection), sortedSections);
         return sortedSections.stream()
                 .flatMap(section -> section.getUpAndDownStation().stream())
                 .collect(Collectors.toCollection(LinkedHashSet::new));
@@ -56,7 +57,7 @@ public class Sections {
 
     private Optional<Section> findNextSection(Section compare) {
         return sections.stream()
-                .filter(origin -> !compare.isSameEdges(origin))
+                .filter(origin -> !compare.equals(origin))
                 .filter(origin -> origin.isAfter(compare))
                 .findFirst();
     }
@@ -70,7 +71,7 @@ public class Sections {
 
     private boolean isHead(Section compare) {
         return sections.stream()
-                .filter(origin -> !compare.isSameEdges(origin))
+                .filter(origin -> !compare.equals(origin))
                 .noneMatch(compare::isAfter);
     }
 
