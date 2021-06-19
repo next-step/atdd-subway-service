@@ -1,11 +1,13 @@
 package nextstep.subway.line.dto;
 
+import java.util.Objects;
+
 public class SectionRequest {
     private Long upStationId;
     private Long downStationId;
     private int distance;
 
-    public SectionRequest() {
+    private SectionRequest() {
     }
 
     public SectionRequest(Long upStationId, Long downStationId, int distance) {
@@ -24,5 +26,18 @@ public class SectionRequest {
 
     public int getDistance() {
         return distance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SectionRequest)) return false;
+        SectionRequest that = (SectionRequest) o;
+        return distance == that.distance && Objects.equals(upStationId, that.upStationId) && Objects.equals(downStationId, that.downStationId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(upStationId, downStationId, distance);
     }
 }
