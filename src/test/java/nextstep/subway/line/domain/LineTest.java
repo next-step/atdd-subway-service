@@ -49,6 +49,10 @@ public class LineTest {
         assertThatThrownBy(() -> {
             line.remove(역삼역);
         }).isInstanceOf(RuntimeException.class);
+
+        Section section2 = new Section(line, 강남역, 군자역, 5);
+        line.addSection(section2);
+
         assertThatThrownBy(() -> {
             line.remove(삼성역);
         }).isInstanceOf(RuntimeException.class);
@@ -67,21 +71,6 @@ public class LineTest {
         List<Station> stations = line.getStations();
 
         assertThat(stations).containsExactly(삼성역, 강남역, 역삼역, 군자역);
-    }
-
-    @DisplayName("라인에서 가장 최상행 역을 찾는다.")
-    @Test
-    void findMostTopStationTest() {
-        Section section1 = new Section(line, 강남역, 역삼역, 10);
-        Section section2 = new Section(line, 역삼역, 군자역, 10);
-        Section section3 = new Section(line, 삼성역, 강남역, 5);
-        line.addSection(section1);
-        line.addSection(section2);
-        line.addSection(section3);
-
-        Station topMostStation = line.findTopMostStation();
-
-        assertThat(topMostStation).isEqualTo(삼성역);
     }
 
     @DisplayName("라인에 구간을 추가한다.")

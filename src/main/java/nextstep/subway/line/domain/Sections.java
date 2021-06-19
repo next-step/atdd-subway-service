@@ -84,17 +84,86 @@ public class Sections {
     }
 
     public void remove(Station station) {
+        removeDependsOnPosition(station);
+    }
+
+    private void removeDependsOnPosition(Station station) {
         Optional<Section> upSection = hasSameUpStationWith(station);
         Optional<Section> downSection = hasSameDownStationWith(station);
 
-        if (upSection.isPresent() && downSection.isPresent()) {
-            Station newUpStation = downSection.get().getUpStation();
-            Station newDownStation = upSection.get().getDownStation();
-            int newDistance = upSection.get().getDistance() + downSection.get().getDistance();
-            sections.add(new Section(upSection.get().getLine(), newUpStation, newDownStation, newDistance));
+        if (isOnMiddleOf(upSection, downSection)) {
+            connectSectionForRemoving(upSection, downSection);
         }
 
         upSection.ifPresent(it -> sections.remove(it));
         downSection.ifPresent(it -> sections.remove(it));
+    }
+
+    private boolean isOnMiddleOf(Optional<Section> upSection, Optional<Section> downSection) {
+        return upSection.isPresent() && downSection.isPresent();
+    }
+
+    private void connectSectionForRemoving(Optional<Section> upSection, Optional<Section> downSection) {
+        Station newUpStation = downSection.get().getUpStation();
+        Station newDownStation = upSection.get().getDownStation();
+        int newDistance = upSection.get().getDistance() + downSection.get().getDistance();
+        sections.add(new Section(upSection.get().getLine(), newUpStation, newDownStation, newDistance));
+    }
+
+    private Optional<Section> findNextSectionUsing(Station finalDownStation) {
+        return sections.stream()
+                .filter(it -> it.getUpStation() == finalDownStation)
+                .findFirst();
+    }
+
+    public List<Station> stations() {
+        List<Station> stations = new ArrayList<>();
+
+        if (this.sections.isEmpty()) {
+            return stations;
+        }
+
+        Station topMostStation = this.findTopMostStation();
+        stations.add(topMostStation);
+
+        addLinkedStations(stations, topMostStation);
+
+        return stations;
+    }
+
+    private void addLinkedStations(List<Station> stations, Station station) {
+        while (station != null) {
+            Station finalDownStation = station;
+            Optional<Section> nextSection = findNextSectionUsing(finalDownStation);
+
+            station = addNextSectionAndReturnDownStation(stations, nextSection);
+        }
+    }
+
+    private Station addNextSectionAndReturnDownStation(List<Station> stations, Optional<Section> nextSection) {
+        if (!nextSection.isPresent()) {
+            return null;
+        }
+
+        Station downStation = nextSection.get().getDownStation();
+        stations.add(downStation);
+
+        return downStation;
+    }
+
+    protected Station findTopMostStation() {
+        Optional<Section> topSection = sections.stream()
+                .filter(section -> isTop(section))
+                .findFirst();
+        return topSection.get().getUpStation();
+    }
+
+    private boolean isTop(Section section) {
+        return sections.stream()
+                .noneMatch(it -> it.getDownStation().equals(section.getUpStation()));
+    }
+
+    public Section get(int index) {
+        return sections.get(index);
     }
 }
