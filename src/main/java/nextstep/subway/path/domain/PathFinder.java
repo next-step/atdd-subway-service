@@ -1,11 +1,12 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.ui.NoStationInListException;
 import nextstep.subway.path.ui.SameSourceTargetException;
 import nextstep.subway.path.ui.SourceTargetNotConnectException;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -16,31 +17,30 @@ import java.util.List;
 public class PathFinder {
 
     private DijkstraShortestPath dijkstraShortestPath;
+    private Stations allStations;
 
-    public PathFinder(List<Station> allStations, List<Line> lines) {
+    public PathFinder(Stations allStations, Lines lines) {
 
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        this.allStations = allStations;
 
-        addStationToVertex(allStations, graph);
+        addStationToVertex(graph);
         addSectionToEdge(lines, graph);
 
         dijkstraShortestPath = new DijkstraShortestPath(graph);
     }
 
-    private void addStationToVertex(List<Station> allStations, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        for (Station station : allStations) {
+    private void addStationToVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        for (Station station : allStations.stations()) {
             graph.addVertex(station);
         }
     }
 
-    private void addSectionToEdge(List<Line> lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        for (Line line : lines) {
-            line.getSections().forEach(
-                    section -> graph.setEdgeWeight(graph.addEdge(section.upStation(), section.downStation()),
-                            section.getDistance()
-                    )
-            );
-        }
+    private void addSectionToEdge(Lines lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        lines.handleLinesSection(section -> graph.setEdgeWeight(
+                graph.addEdge(section.upStation(), section.downStation()),
+                section.getDistance()
+        ));
     }
 
     public List<Station> shortestPath(Station source, Station target) {
@@ -65,6 +65,7 @@ public class PathFinder {
 
     private GraphPath graphPath(Station source, Station target) {
         validateSourceTarget(source, target);
+        validateValidStation(source, target);
 
         return dijkstraShortestPath.getPath(source, target);
     }
@@ -72,6 +73,12 @@ public class PathFinder {
     private void validateSourceTarget(Station source, Station target) {
         if (source.isSameStation(target)) {
             throw new SameSourceTargetException();
+        }
+    }
+
+    private void validateValidStation(Station source, Station target) {
+        if (!allStations.hasStation(source) || !allStations.hasStation(target)) {
+            throw new NoStationInListException();
         }
     }
 }

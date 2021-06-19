@@ -1,11 +1,12 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.ui.NoStationInListException;
 import nextstep.subway.path.ui.SameSourceTargetException;
 import nextstep.subway.path.ui.SourceTargetNotConnectException;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,8 +19,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class PathFinderTest {
 
-    List<Station> allStations;
-    List<Line> lines;
+    Stations allStations;
+    Lines lines;
 
     Station 강남역;
     Station 역삼역;
@@ -50,7 +51,7 @@ public class PathFinderTest {
         동춘역 = new Station("동춘역");
         동막역 = new Station("동막역");
 
-        allStations = Arrays.asList(강남역, 역삼역, 선릉역, 교대역, 남부터미널역, 양재역, 매봉역, 도곡역, 한티역, 동춘역, 동막역);
+        allStations = new Stations(Arrays.asList(강남역, 역삼역, 선릉역, 교대역, 남부터미널역, 양재역, 매봉역, 도곡역, 한티역, 동춘역, 동막역));
 
         Line 이호선 = new Line("이호선", "green", 강남역, 역삼역, 10);
         이호선.addSection(new Section(역삼역, 선릉역, 10));
@@ -68,7 +69,7 @@ public class PathFinderTest {
 
         Line 인천선 = new Line("인천선", "blue", 동춘역, 동막역, 10);
 
-        lines = Arrays.asList(이호선, 삼호선, 분당선, 신분당선, 인천선);
+        lines = new Lines(Arrays.asList(이호선, 삼호선, 분당선, 신분당선, 인천선));
 
         pathFinder = new PathFinder(allStations, lines);
     }
