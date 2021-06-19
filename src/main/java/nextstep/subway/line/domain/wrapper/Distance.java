@@ -30,12 +30,12 @@ public class Distance {
         }
     }
 
-    public Distance distanceDiffWithOtherDistance(Distance other) {
+    public Distance distanceDiffWithOtherDistance(final Distance other) {
         int distanceDiff = this.distance - other.getDistance();
         return Distance.from(distanceDiff);
     }
 
-    public Distance plus(Distance otherDistance) {
+    public Distance plus(final Distance otherDistance) {
         return Distance.from(this.distance + otherDistance.getDistance());
     }
 

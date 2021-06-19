@@ -70,17 +70,17 @@ public class Section extends BaseEntity {
         return this.upStation.equals(otherUpStation);
     }
 
-    private void updateDownStation(Section newSection) {
+    private void updateDownStation(final Section newSection) {
         changeDistanceByNewSectionDistance(newSection.distance);
         this.downStation = newSection.upStation;
     }
 
-    private void updateUpStation(Section newSection) {
+    private void updateUpStation(final Section newSection) {
         changeDistanceByNewSectionDistance(newSection.distance);
         this.upStation = newSection.downStation;
     }
 
-    private void changeDistanceByNewSectionDistance(Distance newSectionDistance) {
+    private void changeDistanceByNewSectionDistance(final Distance newSectionDistance) {
         this.distance = distance.distanceDiffWithOtherDistance(newSectionDistance);
     }
 
@@ -88,15 +88,15 @@ public class Section extends BaseEntity {
         return Stream.of(upStation, downStation).collect(toList());
     }
 
-    public boolean isAfter(Section other) {
+    public boolean isAfter(final Section other) {
         return this.upStation.equals(other.getDownStation());
     }
 
-    public boolean isBefore(Section other) {
+    public boolean isBefore(final Section other) {
         return this.downStation.equals(other.getUpStation());
     }
 
-    public Section combineWithDownSection(Section downSection) {
+    public Section combineWithDownSection(final Section downSection) {
         Distance distance = this.distance.plus(downSection.distance);
         Section combinedSection = new Section(line, upStation, downSection.getDownStation(), distance.getDistance());
         return combinedSection;

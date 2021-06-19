@@ -98,7 +98,7 @@ public class Sections {
                 .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
-    private void addNextSectionIfExist(Optional<Section> maybeNextSection, List<Section> sortedSections) {
+    private void addNextSectionIfExist(final Optional<Section> maybeNextSection, final List<Section> sortedSections) {
         if (!maybeNextSection.isPresent()) {
             return;
         }
@@ -107,7 +107,7 @@ public class Sections {
         addNextSectionIfExist(findNextSection(section), sortedSections);
     }
 
-    private Optional<Section> findNextSection(Section compare) {
+    private Optional<Section> findNextSection(final Section compare) {
         return sections.stream()
                 .filter(origin -> !compare.equals(origin))
                 .filter(origin -> origin.isAfter(compare))
@@ -128,13 +128,13 @@ public class Sections {
                 .orElseThrow(() -> new IllegalArgumentException(EMPTY_SECTIONS));
     }
 
-    private boolean isHead(Section compare) {
+    private boolean isHead(final Section compare) {
         return sections.stream()
                 .filter(origin -> !compare.equals(origin))
                 .noneMatch(compare::isAfter);
     }
 
-    private boolean isFoot(Section compare) {
+    private boolean isFoot(final Section compare) {
         return sections.stream()
                 .filter(origin -> !compare.equals(origin))
                 .noneMatch(compare::isBefore);
