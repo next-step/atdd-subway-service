@@ -1,15 +1,18 @@
 package nextstep.subway.line.ui;
 
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.station.dto.StationResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/lines")
@@ -21,19 +24,36 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity createLine(@RequestBody LineRequest lineRequest) {
-        LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
+        Line persistLine = lineService.saveLine(lineRequest);
+        List<StationResponse> stations = persistLine.getStations().stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
+        return ResponseEntity.created(URI.create("/lines/" + persistLine.getId()))
+                .body(LineResponse.of(persistLine, stations));
     }
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLines());
+        List<Line> lines = lineService.findLines();
+        return ResponseEntity.ok(lines.stream()
+                .map(line -> {
+                    List<StationResponse> stations = line.getStations().stream()
+                            .map(StationResponse::of)
+                            .collect(Collectors.toList());
+                    return LineResponse.of(line, stations);
+                })
+                .collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+    public ResponseEntity<LineResponse> getLineById(@PathVariable Long id) {
+        Line line = lineService.findLineById(id);
+
+        List<StationResponse> stations = line.getStations().stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(LineResponse.of(line, stations));
     }
 
     @PutMapping("/{id}")
