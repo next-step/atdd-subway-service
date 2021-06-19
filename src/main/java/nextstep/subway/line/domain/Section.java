@@ -1,10 +1,11 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.domain.wrapper.Distance;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -39,8 +40,8 @@ public class Section extends BaseEntity {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    @Column(name = "distance", nullable = false)
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     protected Section() {
     }
@@ -49,7 +50,7 @@ public class Section extends BaseEntity {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = Distance.from(distance);
     }
 
     public void updateSectionStationByAddNewSection(final Section newSection) {
@@ -69,20 +70,18 @@ public class Section extends BaseEntity {
         return this.upStation.equals(otherUpStation);
     }
 
-    public void updateUpStation(final Section newSection) {
-        if (this.distance <= newSection.getDistance()) {
-            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = newSection.getDownStation();
-        this.distance -= newSection.getDistance();
+    private void updateDownStation(Section newSection) {
+        changeDistanceByNewSectionDistance(newSection.distance);
+        this.downStation = newSection.upStation;
     }
 
-    public void updateDownStation(final Section newSection) {
-        if (this.distance <= newSection.getDistance()) {
-            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = newSection.getUpStation();
-        this.distance -= newSection.getDistance();
+    private void updateUpStation(Section newSection) {
+        changeDistanceByNewSectionDistance(newSection.distance);
+        this.upStation = newSection.downStation;
+    }
+
+    private void changeDistanceByNewSectionDistance(Distance newSectionDistance) {
+        this.distance = distance.distanceDiffWithOtherDistance(newSectionDistance);
     }
 
     public List<Station> getUpAndDownStation() {
@@ -110,7 +109,7 @@ public class Section extends BaseEntity {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.getDistance();
     }
 
     @Override
