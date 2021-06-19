@@ -92,6 +92,16 @@ public class Section extends BaseEntity {
         return this.upStation.equals(other.getDownStation());
     }
 
+    public boolean isBefore(Section other) {
+        return this.downStation.equals(other.getUpStation());
+    }
+
+    public Section combineWithDownSection(Section downSection) {
+        Distance distance = this.distance.plus(downSection.distance);
+        Section combinedSection = new Section(line, upStation, downSection.getDownStation(), distance.getDistance());
+        return combinedSection;
+    }
+
     public Long getId() {
         return id;
     }
@@ -106,10 +116,6 @@ public class Section extends BaseEntity {
 
     public Station getDownStation() {
         return downStation;
-    }
-
-    public int getDistance() {
-        return distance.getDistance();
     }
 
     @Override

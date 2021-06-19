@@ -60,6 +60,18 @@ public class Line extends BaseEntity {
         this.sections.registerNewSection(section);
     }
 
+    public void removeSectionByStation(final Station targetStation) {
+        this.sections.removeSectionByStation(targetStation);
+    }
+
+    public List<Station> getSortedStations() {
+        return new ArrayList<>(sections.getSortedStations());
+    }
+
+    public List<Section> getSections() {
+        return sections.toCollection();
+    }
+
     public Long getId() {
         return id;
     }
@@ -70,14 +82,6 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
-    }
-
-    public List<Station> getSortedStations() {
-        return new ArrayList<>(sections.getSortedStations());
-    }
-
-    public List<Section> getSections() {
-        return sections.toCollection();
     }
 
     @Override
