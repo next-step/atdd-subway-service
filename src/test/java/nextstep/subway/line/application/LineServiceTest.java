@@ -6,6 +6,7 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -16,7 +17,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,31 +37,35 @@ class LineServiceTest {
     private StationService stationService;
 
     private LineRequest lineRequest1;
-    private LineRequest lineRequest2;
-    private Line line1;
-    private Station upStation;
-    private Station downStation;
+    private Line 일호선;
+    private Station 용산역;
+    private Station 남영역;
+    private Station 서울역;
+    private Station 시청역;
 
     @BeforeEach
     void setUp() {
         lineService = new LineService(lineRepository, stationService);
         lineRequest1 = new LineRequest("1호선", "blue", 1L, 2L, 10);
-        lineRequest2 = new LineRequest("2호선", "green", 1L, 2L, 20);
-        upStation = new Station("용산역");
-        ReflectionTestUtils.setField(upStation, "id", 1L);
-        downStation = new Station("서울역");
-        ReflectionTestUtils.setField(downStation, "id", 2L);
-        line1 = new Line("1호선", "blue");
-        ReflectionTestUtils.setField(line1, "id", 1L);
-        ReflectionTestUtils.setField(line1, "sections2", new Sections(Arrays.asList(new Section(line1, upStation, downStation, 1))));
+        용산역 = new Station("용산역");
+        ReflectionTestUtils.setField(용산역, "id", 1L);
+        남영역 = new Station("남영역");
+        ReflectionTestUtils.setField(남영역, "id", 2L);
+        서울역 = new Station("서울역");
+        ReflectionTestUtils.setField(서울역, "id", 3L);
+        시청역 = new Station("시청역");
+        ReflectionTestUtils.setField(시청역, "id", 4L);
+        일호선 = new Line("1호선", "blue");
+        ReflectionTestUtils.setField(일호선, "id", 1L);
+        ReflectionTestUtils.setField(일호선, "sections", new Sections(new ArrayList<>(Arrays.asList(new Section(일호선, 용산역, 남영역, 10)))));
     }
 
     @Test
     void saveLine() {
         //given
-        when(stationService.findById(upStation.getId())).thenReturn(upStation);
-        when(stationService.findById(downStation.getId())).thenReturn(downStation);
-        when(lineRepository.save(any())).thenReturn(line1);
+        when(stationService.findById(용산역.getId())).thenReturn(용산역);
+        when(stationService.findById(남영역.getId())).thenReturn(남영역);
+        when(lineRepository.save(any())).thenReturn(일호선);
 
         //when
         LineResponse actual = lineService.saveLine(lineRequest1);
@@ -68,8 +75,22 @@ class LineServiceTest {
             assertThat(actual.getId()).isEqualTo(1L);
             assertThat(actual.getName()).isEqualTo("1호선");
             assertThat(actual.getColor()).isEqualTo("blue");
-            assertThat(actual.getStations()).containsAll(Arrays.asList(StationResponse.of(upStation), StationResponse.of(upStation)));
+            assertThat(actual.getStations()).containsAll(Arrays.asList(StationResponse.of(용산역), StationResponse.of(남영역)));
         });
+    }
+
+    @Test
+    void addLineStation() {
+        //given
+        when(lineRepository.findById(any())).thenReturn(Optional.of(일호선));
+        when(stationService.findStationById(서울역.getId())).thenReturn(서울역);
+        when(stationService.findStationById(남영역.getId())).thenReturn(남영역);
+
+        //when
+        lineService.addLineStation2(일호선.getId(), new SectionRequest(서울역.getId(), 남영역.getId(), 1));
+
+        //then
+        assertThat(일호선.getStations()).containsAll(Arrays.asList((용산역), (남영역)));
     }
 
     @Test
@@ -90,10 +111,6 @@ class LineServiceTest {
 
     @Test
     void deleteLineById() {
-    }
-
-    @Test
-    void addLineStation() {
     }
 
     @Test
