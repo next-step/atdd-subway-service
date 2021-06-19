@@ -66,7 +66,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.header("Location")).isNotBlank();
     }
 
-    private ExtractableResponse<Response> loginRequest(MemberRequest memberRequest) {
+    public static ExtractableResponse<Response> loginRequest(MemberRequest memberRequest) {
         TokenRequest tokenRequest = new TokenRequest(memberRequest.getEmail(),
                                                      memberRequest.getPassword());
 
