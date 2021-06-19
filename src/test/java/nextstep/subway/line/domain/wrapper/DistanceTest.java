@@ -32,4 +32,19 @@ class DistanceTest {
         // then
         assertThat(actualDistance).isEqualTo(expected);
     }
+
+    @DisplayName("거리에 다른 거리를 더하면 합계된 거리를 반환한다.")
+    @Test
+    void plus() {
+        // given
+        Distance distance = Distance.from(10);
+        Distance other = Distance.from(5);
+        Distance expected = Distance.from(15);
+
+        // when
+        Distance actual = distance.plus(other);
+
+        // then
+        assertThat(actual).isEqualTo(expected);
+    }
 }
