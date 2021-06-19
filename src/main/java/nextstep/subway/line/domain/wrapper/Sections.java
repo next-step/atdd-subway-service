@@ -1,21 +1,27 @@
 package nextstep.subway.line.domain.wrapper;
 
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.EntityExistsException;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
+    private static final String EMPTY_SECTIONS = "등록된 구간이 없습니다.";
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
-    public Sections() {
+    protected Sections() {
     }
 
     public static Sections newInstance() {
@@ -27,6 +33,45 @@ public class Sections {
             throw new EntityExistsException();
         }
         this.sections.add(section);
+    }
+
+    public Set<Station> getSortedStations() {
+        List<Section> sortedSections = new ArrayList<>();
+        Section currentSection = findFirstSection();
+        sortedSections.add(currentSection);
+        addNextSectionIfExist(findNextSection(currentSection), sortedSections);
+        return sortedSections.stream()
+                .flatMap(section -> section.getUpAndDownStation().stream())
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    private void addNextSectionIfExist(Optional<Section> maybeNextSection, List<Section> sortedSections) {
+        if (!maybeNextSection.isPresent()) {
+            return;
+        }
+        Section section = maybeNextSection.get();
+        sortedSections.add(section);
+        addNextSectionIfExist(findNextSection(section), sortedSections);
+    }
+
+    private Optional<Section> findNextSection(Section compare) {
+        return sections.stream()
+                .filter(origin -> !compare.isSameEdges(origin))
+                .filter(origin -> origin.isAfter(compare))
+                .findFirst();
+    }
+
+    private Section findFirstSection() {
+        return sections.stream()
+                .filter(this::isHead)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(EMPTY_SECTIONS));
+    }
+
+    private boolean isHead(Section compare) {
+        return sections.stream()
+                .filter(origin -> !compare.isSameEdges(origin))
+                .noneMatch(compare::isAfter);
     }
 
     public List<Section> toCollection() {

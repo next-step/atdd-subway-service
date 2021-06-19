@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.domain.wrapper.Sections;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -13,7 +14,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 @Table(name = "section")
 @Entity
@@ -82,6 +87,19 @@ public class Section extends BaseEntity {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public List<Station> getUpAndDownStation() {
+        return Stream.of(upStation, downStation)
+                .collect(toList());
+    }
+
+    public boolean isSameEdges(Section other) {
+        return this.upStation.equals(other.getUpStation()) && this.downStation.equals(other.getDownStation());
+    }
+
+    public boolean isAfter(Section other) {
+        return this.upStation.equals(other.getDownStation());
     }
 
     @Override

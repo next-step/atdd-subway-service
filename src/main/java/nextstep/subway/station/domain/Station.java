@@ -23,9 +23,13 @@ public class Station extends BaseEntity {
         this.name = name;
     }
 
-    public Station(final Long id, final String name) {
+    private Station(final Long id, final String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public static Station of(final Long id, final String name) {
+        return new Station(id, name);
     }
 
     public Long getId() {
