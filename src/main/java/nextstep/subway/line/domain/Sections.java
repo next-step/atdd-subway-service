@@ -65,6 +65,10 @@ public class Sections {
                 .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
     private Optional<Section> getSection(Predicate<Section> sectionPredicate) {
         return sections.stream()
                 .filter(sectionPredicate)
