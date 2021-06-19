@@ -57,20 +57,19 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    boolean connectSection(Section section) {
+        if (equals(section)) {
+            return false;
         }
-        this.upStation = station;
-        this.distance -= newDistance;
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        if (hasEqualDownStation(section)) {
+            connectDownward(section);
+            return true;
         }
-        this.downStation = station;
-        this.distance -= newDistance;
+        if (hasEqualUpStation(section)) {
+            connectUpward(section);
+            return true;
+        }
+        return false;
     }
 
     boolean isUpwardOf(Section other) {
@@ -83,6 +82,34 @@ public class Section {
 
     Stream<Station> getStations() {
         return Stream.of(upStation, downStation);
+    }
+
+    boolean hasEqualUpStation(Section section) {
+        return this.upStation.equals(section.upStation);
+    }
+
+    boolean hasEqualDownStation(Section section) {
+        return this.downStation.equals(section.downStation);
+    }
+
+    boolean contain(Station station) {
+        return upStation.equals(station) || downStation.equals(station);
+    }
+
+    private void connectUpward(Section section) {
+        if (this.distance <= section.distance) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.upStation = section.downStation;
+        this.distance = this.distance - section.distance;
+    }
+
+    private void connectDownward(Section section) {
+        if (this.distance <= section.distance) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.downStation = section.upStation;
+        this.distance = this.distance - section.distance;
     }
 
     @Override
@@ -100,4 +127,5 @@ public class Section {
         return Objects.hash(getId());
     }
 }
+
 

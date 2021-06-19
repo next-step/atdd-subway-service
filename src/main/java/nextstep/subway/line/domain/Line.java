@@ -22,6 +22,19 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
+        addSection(upStation, downStation, distance);
+    }
+
+    // TODO : 리팩터링 후 삭제 하기
+    void setSections(Section... sections) {
+        this.sections = Sections.of(sections);
+    }
+
+    public List<Station> getStationsInOrder() {
+        return sections.getStationsInOrder();
+    }
+
+    public void addSection(Station upStation, Station downStation, int distance) {
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
@@ -44,15 +57,6 @@ public class Line extends BaseEntity {
 
     public List<Section> getSections() {
         return sections.getSections();
-    }
-
-    // TODO : 리팩터링 후 삭제 하기
-    void setSections(Section... sections) {
-        this.sections = Sections.of(sections);
-    }
-
-    public List<Station> getStationsInOrder() {
-        return sections.getStationsInOrder();
     }
 }
 

@@ -5,7 +5,6 @@ import static java.util.stream.Collectors.*;
 import static java.util.stream.Stream.*;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -29,11 +28,44 @@ public class Sections {
 	}
 
 	static Sections of(Section... sections) {
-		return new Sections(asList(sections));
+		return new Sections(new ArrayList<>(asList(sections)));
 	}
 
-	void add(Section section) {
-		this.sections.add(section);
+	void add(Section other) {
+		validateNonDuplication(other);
+		validateContainStation(other);
+		connectSection(other);
+		sections.add(other);
+	}
+
+	private void connectSection(Section other) {
+		for (Section section : sections) {
+			section.connectSection(other);
+		}
+	}
+
+	private void validateNonDuplication(Section other) {
+		boolean isUpStationExisted = sections.stream()
+			.anyMatch(section -> section.hasEqualUpStation(other));
+
+		boolean isDownStationExisted = sections.stream()
+			.anyMatch(section -> isUpStationExisted && section.hasEqualDownStation(other));
+
+		if (isUpStationExisted && isDownStationExisted) {
+			throw new RuntimeException("이미 등록된 구간 입니다.");
+		}
+	}
+
+	private void validateContainStation(Section otherSection) {
+		if (sections.isEmpty()) {
+			return;
+		}
+		boolean notContainStation = sections.stream()
+			.flatMap(Section::getStations)
+			.noneMatch(otherSection::contain);
+		if (notContainStation) {
+			throw new RuntimeException("등록할 수 없는 구간 입니다.");
+		}
 	}
 
 	List<Section> getSections() {
