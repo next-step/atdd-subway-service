@@ -145,16 +145,16 @@ public class Sections {
 
         validateNoStationInLine(upLineStation, downLineStation);
 
-        addNewSection(upLineStation, downLineStation);
+        changeSection(upLineStation, downLineStation);
 
         removeEndStation(upLineStation, downLineStation);
     }
 
-    private void addNewSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+    private void changeSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             sections.remove(upLineStation.get());
             int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            downLineStation.get().changeDownStationWhenRemove(upLineStation.get().downStation(), newDistance);
+            downLineStation.get().changeDownStation(upLineStation.get().downStation(), newDistance);
         }
     }
 

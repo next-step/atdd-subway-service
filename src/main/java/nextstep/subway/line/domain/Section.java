@@ -77,7 +77,7 @@ public class Section {
         this.distance -= newDistance;
     }
 
-    public void changeDownStationWhenRemove(Station station, int newDistance) {
+    public void changeDownStation(Station station, int newDistance) {
         this.downStation = station;
         this.distance = newDistance;
     }
