@@ -83,7 +83,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         * given: 강남역, 양재역, 정자역, 광교역 지하철 역이 등록되어 있음
         * and: 강남역 - 광교역 구간으로 신분당선이 등록되어 있음 
         
-    * [ ] Scenario: 지하철 구간 추가 및 조회 기능
+    * [x] Scenario: 지하철 구간 추가 및 조회 기능
         * whne: 정자역, 양재역 구간을 등록 요청한다.
         * then: 등록되지 않은 역구간으로 인해 등록에 실패한다.
         * when: 신분당선 구간에 강남역, 양재역 구간을 등록 요청 한다.
@@ -95,7 +95,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         * when: 지하철 노선을 조회한다.
         * then: 지하철 노선에 지하철역이 강남역, 양재역, 광교역 순서로 정렬되어 있다.
         
-    * [ ] Scenario: 지하철 구간 삭제 기능
+    * [x] Scenario: 지하철 구간 삭제 기능
         * given: 신분당선 구간에 강남역 - 양재역 - 광교역 구간이 등록되어 있다.
         * when: 강남역을 노선에서 제외 요청 한다.
         * then: 강남역이 지하철역이 노선에서 제외된다.
@@ -103,9 +103,10 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         * then: 양재역이 노선에서 제외가 실패한다.
   
 ## 기능 구현 목록
-* [ ] 작성한 인수테스트 시나리오 기반으로 인수테스트 코드 리팩터링
-    * [ ] 지하철 구간 추가 및 조회 기능 인수테스트 코드 리펙터링
-    * [ ] 지하철 구간 삭제 기능 인수테스트 코드 리펙터링
+* [x] 작성한 인수테스트 시나리오 기반으로 인수테스트 코드 리팩터링
+    * [x] 지하철 구간 추가 및 조회 기능 인수테스트 코드 리펙터링
+    * [x] 지하철 구간 삭제 기능 인수테스트 코드 리펙터링
+
 * [ ] LineService 리팩터링
     * [ ] Domain으로 옮길 로직을 찾기
     * [ ] Domain 객체 단위 테스트 코드 작성
