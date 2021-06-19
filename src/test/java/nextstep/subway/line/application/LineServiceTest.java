@@ -3,6 +3,7 @@ package nextstep.subway.line.application;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.application.StationService;
@@ -49,7 +50,7 @@ class LineServiceTest {
         ReflectionTestUtils.setField(downStation, "id", 2L);
         line1 = new Line("1호선", "blue");
         ReflectionTestUtils.setField(line1, "id", 1L);
-        ReflectionTestUtils.setField(line1, "sections", Arrays.asList(new Section(line1, upStation, downStation, 1)));
+        ReflectionTestUtils.setField(line1, "sections2", new Sections(Arrays.asList(new Section(line1, upStation, downStation, 1))));
     }
 
     @Test
@@ -97,9 +98,5 @@ class LineServiceTest {
 
     @Test
     void removeLineStation() {
-    }
-
-    @Test
-    void getStations() {
     }
 }
