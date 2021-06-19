@@ -6,7 +6,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -88,5 +87,17 @@ public class Sections {
 
     public void remove(Section it) {
         this.values.remove(it);
+    }
+
+    public Optional<Section> getStationInUpStations(Station station) {
+        return this.values.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+    }
+
+    public Optional<Section> getStationInDownStations(Station station) {
+        return this.values.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
     }
 }

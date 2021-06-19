@@ -5,7 +5,6 @@ import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,30 +69,30 @@ public class Line extends BaseEntity {
         validateBothStationsNotRegistered(isUpStationExisted, isDownStationExisted);
 
         if (getStations().isEmpty()) {
-            this.getSections().add(section);
+            getSections().add(section);
             return;
         }
 
         if (isUpStationExisted) {
-            this.getSections().stream()
+            getSections().stream()
                     .filter(it -> it.getUpStation() == upStation)
                     .findFirst()
                     .ifPresent(it -> it.updateUpStation(downStation, section.getDistance()));
 
-            this.getSections().add(section);
+            getSections().add(section);
             return;
         }
 
         if (isDownStationExisted) {
-            this.getSections().stream()
+            getSections().stream()
                     .filter(it -> it.getDownStation() == downStation)
                     .findFirst()
                     .ifPresent(it -> it.updateDownStation(upStation, section.getDistance()));
-            this.getSections().add(section);
+            getSections().add(section);
             return;
         }
 
-        this.getSections().add(section);
+        getSections().add(section);
 
     }
 
@@ -109,5 +108,22 @@ public class Line extends BaseEntity {
         if (isUpStationExisted && isDownStationExisted) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
+    }
+
+    public void removeLineStation(Station station) {
+        getSections().exist();
+
+        Optional<Section> upStation = getSections().getStationInUpStations(station);
+        Optional<Section> downStation = getSections().getStationInDownStations(station);
+        if (upStation.isPresent() && downStation.isPresent()) {
+            Station newUpStation = downStation.get().getUpStation();
+            Station newDownStation = upStation.get().getDownStation();
+            int newDistance = upStation.get().getDistance() + downStation.get().getDistance();
+            Section section = new Section(this, newUpStation, newDownStation, newDistance);
+            getSections().add(section);
+        }
+
+        upStation.ifPresent(it -> getSections().remove(it));
+        downStation.ifPresent(it -> getSections().remove(it));
     }
 }
