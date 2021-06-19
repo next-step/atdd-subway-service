@@ -3,13 +3,13 @@ package nextstep.subway.line.domain;
 import static java.util.Arrays.*;
 import static java.util.stream.Collectors.*;
 import static java.util.stream.Stream.*;
+import static javax.persistence.CascadeType.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
@@ -17,8 +17,10 @@ import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
+	private static final int ORDER_START_SECTION_IDX = 0;
+	private static final int MIN_SIZE = 1;
 
-	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+	@OneToMany(mappedBy = "line", cascade = ALL, orphanRemoval = true)
 	private List<Section> sections = new ArrayList<>();
 
 	protected Sections() {}
@@ -31,17 +33,35 @@ public class Sections {
 		return new Sections(new ArrayList<>(asList(sections)));
 	}
 
-	void add(Section other) {
-		validateNonDuplication(other);
-		validateContainStation(other);
-		connectSection(other);
-		sections.add(other);
+	void add(Section otherSection) {
+		validateNonDuplication(otherSection);
+		validateContainStation(otherSection);
+		for (Section section : sections) {
+			section.connectIfHasEqualStation(otherSection);
+		}
+		sections.add(otherSection);
 	}
 
-	private void connectSection(Section other) {
+	void removeSectionByStation(Station station) {
+		validateMinSize();
+		Section sectionToRemove = findSectionToRemoveBy(station);
 		for (Section section : sections) {
-			section.connectIfAdjacent(other);
+			section.connectIfAdjacentByStation(sectionToRemove, station);
 		}
+		sections.remove(sectionToRemove);
+	}
+
+	List<Station> getStationsInOrder() {
+		return getSectionsInOrder()
+			.flatMap(Section::getStations)
+			.distinct()
+			.collect(toList());
+	}
+
+	int sumDistance() {
+		return sections.stream()
+			.mapToInt(Section::getDistance)
+			.sum();
 	}
 
 	private void validateNonDuplication(Section other) {
@@ -68,19 +88,8 @@ public class Sections {
 		}
 	}
 
-	List<Section> getSections() {
-		return sections;
-	}
-
-	List<Station> getStationsInOrder() {
-		return getSectionsInOrder()
-			.flatMap(Section::getStations)
-			.distinct()
-			.collect(toList());
-	}
-
 	private Stream<Section> getSectionsInOrder() {
-		Section section = sections.get(0);
+		Section section = sections.get(ORDER_START_SECTION_IDX);
 		Stream<Section> upwardSections = getUpwardSectionsClosed(section);
 		Stream<Section> downwardSections = getDownwardSectionsClosed(section);
 		return concat(upwardSections, downwardSections).distinct();
@@ -108,5 +117,18 @@ public class Sections {
 		return downwardSection
 			.map(downward -> concat(current, getDownwardSectionsClosed(downward)))
 			.orElse(current);
+	}
+
+	private void validateMinSize() {
+		if (sections.size() == MIN_SIZE) {
+			throw new IllegalArgumentException("노선의 남은 구간이 하나 밖에 없어 제거할 수 없습니다.");
+		}
+	}
+
+	private Section findSectionToRemoveBy(Station station) {
+		return sections.stream()
+			.filter(section -> section.contain(station))
+			.findAny()
+			.orElseThrow(() -> new IllegalArgumentException("노선에 없는 역의 구간은 제거할 수 없습니다."));
 	}
 }

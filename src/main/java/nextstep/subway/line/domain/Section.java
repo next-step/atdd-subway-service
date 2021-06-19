@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import static javax.persistence.FetchType.*;
+
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -13,7 +15,7 @@ public class Section {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "line_id")
     private Line line;
 
@@ -27,43 +29,42 @@ public class Section {
 
     private int distance;
 
-    public Section() {
-    }
+    protected Section() { }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    Section(Line line, Station upStation, Station downStation, int distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
 
-    public Long getId() {
+    Long getId() {
         return id;
     }
 
-    public Line getLine() {
-        return line;
-    }
-
-    public Station getUpStation() {
-        return upStation;
-    }
-
-    public Station getDownStation() {
-        return downStation;
-    }
-
-    public int getDistance() {
+    int getDistance() {
         return distance;
     }
 
-    boolean connectIfAdjacent(Section section) {
+    boolean connectIfHasEqualStation(Section section) {
         if (hasEqualDownStation(section)) {
-            connectDownward(section);
+            changeDownStationToUpStationOf(section);
             return true;
         }
         if (hasEqualUpStation(section)) {
-            connectUpward(section);
+            changeUpStationToDownStationOf(section);
+            return true;
+        }
+        return false;
+    }
+
+    boolean connectIfAdjacentByStation(Section section, Station station) {
+        if (isConnectedUpwardByStation(section, station)) {
+            changeDownStationToDownStationOf(section);
+            return true;
+        }
+        if (isConnectedDownwardByStation(section, station)) {
+            changeUpStationToUpStationOf(section);
             return true;
         }
         return false;
@@ -90,23 +91,51 @@ public class Section {
     }
 
     boolean contain(Station station) {
-        return upStation.equals(station) || downStation.equals(station);
+        return containUpwardStation(station) || containDownwardStation(station);
     }
 
-    private void connectUpward(Section section) {
-        if (this.distance <= section.distance) {
-            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+    private void changeUpStationToDownStationOf(Section section) {
+        validateLongerThan(section);
         this.upStation = section.downStation;
-        this.distance = this.distance - section.distance;
+        this.distance -= section.distance;
     }
 
-    private void connectDownward(Section section) {
+    private void changeDownStationToUpStationOf(Section section) {
+        validateLongerThan(section);
+        this.downStation = section.upStation;
+        this.distance -= section.distance;
+    }
+
+    private void validateLongerThan(Section section) {
         if (this.distance <= section.distance) {
             throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.downStation = section.upStation;
-        this.distance = this.distance - section.distance;
+    }
+
+    private void changeUpStationToUpStationOf(Section adjacentSection) {
+        this.upStation = adjacentSection.upStation;
+        this.distance += adjacentSection.distance;
+    }
+
+    private void changeDownStationToDownStationOf(Section adjacentSection) {
+        this.downStation = adjacentSection.downStation;
+        this.distance += adjacentSection.distance;
+    }
+
+    private boolean isConnectedDownwardByStation(Section adjacentSection, Station station) {
+        return containUpwardStation(station) && isDownwardOf(adjacentSection);
+    }
+
+    private boolean isConnectedUpwardByStation(Section adjacentSection, Station station) {
+        return containDownwardStation(station) && isUpwardOf(adjacentSection);
+    }
+
+    private boolean containUpwardStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    private boolean containDownwardStation(Station station) {
+        return this.downStation.equals(station);
     }
 
     @Override

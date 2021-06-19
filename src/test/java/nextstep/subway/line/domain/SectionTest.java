@@ -38,9 +38,9 @@ public class SectionTest {
 		Section 강남_양재_구간 = spy(new Section(신분당선, 강남역, 양재역, 5));
 		when(강남_양재_구간.getId()).thenReturn(2L);
 
-		boolean isAdded = 강남_광교_구간.connectIfAdjacent(강남_양재_구간);
+		boolean connected = 강남_광교_구간.connectIfHasEqualStation(강남_양재_구간);
 
-		assertThat(isAdded).isTrue();
+		assertThat(connected).isTrue();
 		assertThat(강남_광교_구간.getStations()).containsExactly(양재역, 광교역);
 		assertThat(강남_광교_구간.getDistance()).isEqualTo(5);
 	}
@@ -53,9 +53,9 @@ public class SectionTest {
 		Section 양재_광교_구간 = spy(new Section(신분당선, 양재역, 광교역, 5));
 		when(양재_광교_구간.getId()).thenReturn(2L);
 
-		boolean isAdded = 강남_광교_구간.connectIfAdjacent(양재_광교_구간);
+		boolean connected = 강남_광교_구간.connectIfHasEqualStation(양재_광교_구간);
 
-		assertThat(isAdded).isTrue();
+		assertThat(connected).isTrue();
 		assertThat(강남_광교_구간.getStations()).containsExactly(강남역, 양재역);
 		assertThat(강남_광교_구간.getDistance()).isEqualTo(5);
 	}
@@ -66,9 +66,9 @@ public class SectionTest {
 		Section 강남_광교_구간 = new Section(신분당선, 강남역, 광교역, 10);
 		Section 양재_양재시민의숲_구간 = new Section(신분당선, 양재역, 양재시민의숲역, 5);
 
-		boolean isAdded = 강남_광교_구간.connectIfAdjacent(양재_양재시민의숲_구간);
+		boolean connected = 강남_광교_구간.connectIfHasEqualStation(양재_양재시민의숲_구간);
 
-		assertThat(isAdded).isFalse();
+		assertThat(connected).isFalse();
 	}
 
 	@ParameterizedTest
@@ -80,8 +80,31 @@ public class SectionTest {
 		Section 강남_양재 = new Section(신분당선, 강남역, 양재역, longDistance);
 
 		// when then
-		assertThatThrownBy(() -> 강남_양재시민의숲.connectIfAdjacent(강남_양재))
+		assertThatThrownBy(() -> 강남_양재시민의숲.connectIfHasEqualStation(강남_양재))
 			.isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+	}
+
+	@Test
+	@DisplayName("역을 사이로 인접한 두 구간의 연결하면 하나의 구간이 된다.")
+	public void removeConnectingStationTest() {
+		Section 강남_양재 = new Section(신분당선, 강남역, 양재역, 5);
+		Section 양재_양재시민의숲 = new Section(신분당선, 양재역, 양재시민의숲역, 6);
+
+		강남_양재.connectIfAdjacentByStation(양재_양재시민의숲, 양재역);
+
+		assertThat(강남_양재.getStations()).containsExactly(강남역, 양재시민의숲역);
+		assertThat(강남_양재.getDistance()).isEqualTo(11);
+	}
+
+	@Test
+	@DisplayName("역을 사이에 두지 않는 두 구간은 연결할 수 없다.")
+	public void removeEndStationTest() {
+		Section 강남_양재 = new Section(신분당선, 강남역, 양재역, 5);
+		Section 양재_양재시민의숲 = new Section(신분당선, 양재역, 양재시민의숲역, 6);
+
+		boolean connected = 강남_양재.connectIfAdjacentByStation(양재_양재시민의숲, 강남역);
+
+		assertThat(connected).isFalse();
 	}
 }
