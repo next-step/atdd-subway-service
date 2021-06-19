@@ -2,6 +2,7 @@ package nextstep.subway.station.domain;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class Stations {
 
@@ -39,5 +40,18 @@ public class Stations {
         if (!upStationContains && !downStationContains) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Stations)) return false;
+        Stations stations = (Stations) o;
+        return Objects.equals(values, stations.values);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(values);
     }
 }

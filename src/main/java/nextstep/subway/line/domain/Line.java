@@ -64,12 +64,12 @@ public class Line extends BaseEntity {
         Station downStation = section.getDownStation();
         Stations stations = getStations();
 
-        stations.validate(upStation, downStation);
-
         if (stations.isEmpty()) {
             this.sections.add(section);
             return;
         }
+
+        stations.validate(upStation, downStation);
 
         if (stations.isContains(upStation)) {
             this.sections.changeUpStationIfFindEqualsUpStation(section);
