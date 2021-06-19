@@ -28,6 +28,7 @@ public class PathService {
     public PathResponse findPath(Long sourceStationId, Long targetStationId) {
         PathFinder pathFinder = initPathFinder();
 
+        validation(sourceStationId, targetStationId);
         Station sourceStation = findStation(sourceStationId);
         Station targetStation = findStation(targetStationId);
 
@@ -39,6 +40,12 @@ public class PathService {
         PathResponse response = new PathResponse(stationResponses, pathFinder.getWeight(sourceStation, targetStation));
 
         return response;
+    }
+
+    private void validation(Long sourceStationId, Long targetStationId) {
+        if(sourceStationId == targetStationId) {
+            throw new IllegalArgumentException("출발역과 도착역이 같을수는 없습니다.");
+        }
     }
 
     private Station findStation(Long stationId) {
