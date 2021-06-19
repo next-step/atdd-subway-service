@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class LineAcceptanceStep {
     public static final String RESOURCES = "/lines";
@@ -33,12 +34,6 @@ class LineAcceptanceStep {
 
     public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
         return 지하철_노선_목록_조회_요청(RESOURCES);
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(ExtractableResponse<Response> response) {
-        String uri = response.header(LOCATION);
-
-        return 지하철_노선_목록_조회_요청(uri);
     }
 
     private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(String uri) {
@@ -86,17 +81,26 @@ class LineAcceptanceStep {
         assertThat(response.header(LOCATION)).isNotBlank();
     }
 
-    public static void 지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
     public static void 지하철_노선_목록_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 지하철_노선_응답됨(ExtractableResponse<Response> response, ExtractableResponse<Response> createdResponse) {
+    public static void 지하철_노선_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(LineResponse.class)).isNotNull();
+    }
+
+    public static void 지하철_노선_포함됨(ExtractableResponse<Response> response, ExtractableResponse<Response> expected) {
+        assertThat(response.jsonPath().getObject("", LineResponse.class)).isEqualTo(
+                expected.jsonPath().getObject("", LineResponse.class));
+    }
+
+    public static void 지하철_노선_포함됨(ExtractableResponse<Response> response, LineRequest expected) {
+        LineResponse actual = response.jsonPath().getObject("", LineResponse.class);
+        assertAll(() ->{
+            assertThat(actual.getName()).isEqualTo(expected.getName());
+            assertThat(actual.getColor()).isEqualTo(expected.getColor());
+        });
     }
 
     public static void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
