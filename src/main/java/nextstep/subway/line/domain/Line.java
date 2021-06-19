@@ -2,10 +2,10 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Entity
@@ -55,75 +55,49 @@ public class Line extends BaseEntity {
         return sections;
     }
 
-    public List<Station> getStations() {
-        return this.getSections().getStations();
+    public Stations getStations() {
+        return Stations.of(this.getSections().getStations());
     }
 
     public void addSection(Section section) {
-        Station downStation = section.getDownStation();
         Station upStation = section.getUpStation();
-        boolean isUpStationExisted = getStations().stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = getStations().stream().anyMatch(it -> it == downStation);
+        Station downStation = section.getDownStation();
+        Stations stations = getStations();
 
-        validateBothStationsRegistered(isUpStationExisted, isDownStationExisted);
-        validateBothStationsNotRegistered(isUpStationExisted, isDownStationExisted);
+        stations.validate(upStation, downStation);
 
-        if (getStations().isEmpty()) {
-            getSections().add(section);
+        if (stations.isEmpty()) {
+            this.sections.add(section);
             return;
         }
 
-        if (isUpStationExisted) {
-            getSections().stream()
-                    .filter(it -> it.getUpStation() == upStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, section.getDistance()));
-
-            getSections().add(section);
+        if (stations.isContains(upStation)) {
+            this.sections.changeUpStationIfFindEqualsUpStation(section);
             return;
         }
 
-        if (isDownStationExisted) {
-            getSections().stream()
-                    .filter(it -> it.getDownStation() == downStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, section.getDistance()));
-            getSections().add(section);
+        if (stations.isContains(downStation)) {
+            this.sections.changeDownStationIfFindEqualsDownStation(section);
             return;
         }
 
-        getSections().add(section);
-
-    }
-
-    private void validateBothStationsNotRegistered(boolean downStation, boolean upStation) {
-        if ((getStations().isEmpty() == false)
-                && (downStation == false)
-                && upStation == false) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-    }
-
-    private void validateBothStationsRegistered(boolean isUpStationExisted, boolean isDownStationExisted) {
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
+        throw new RuntimeException("Not Matched Equals Station");
     }
 
     public void removeLineStation(Station station) {
-        getSections().exist();
+        this.sections.exist();
 
-        Optional<Section> upStation = getSections().getStationInUpStations(station);
-        Optional<Section> downStation = getSections().getStationInDownStations(station);
+        Optional<Section> upStation = this.sections.getStationInUpStations(station);
+        Optional<Section> downStation = this.sections.getStationInDownStations(station);
         if (upStation.isPresent() && downStation.isPresent()) {
             Station newUpStation = downStation.get().getUpStation();
             Station newDownStation = upStation.get().getDownStation();
             int newDistance = upStation.get().getDistance() + downStation.get().getDistance();
             Section section = new Section(this, newUpStation, newDownStation, newDistance);
-            getSections().add(section);
+            this.sections.add(section);
         }
 
-        upStation.ifPresent(it -> getSections().remove(it));
-        downStation.ifPresent(it -> getSections().remove(it));
+        upStation.ifPresent(this.sections::remove);
+        downStation.ifPresent(this.sections::remove);
     }
 }

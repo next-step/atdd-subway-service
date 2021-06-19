@@ -5,7 +5,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.station.dto.StationResponseList;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,34 +26,24 @@ public class LineController {
     @PostMapping
     public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
         Line persistLine = lineService.saveLine(lineRequest);
-        List<StationResponse> stations = persistLine.getStations().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+
         return ResponseEntity.created(URI.create("/lines/" + persistLine.getId()))
-                .body(LineResponse.of(persistLine, stations));
+                .body(LineResponse.of(persistLine, StationResponseList.of(persistLine.getStations())));
     }
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
         List<Line> lines = lineService.findLines();
+
         return ResponseEntity.ok(lines.stream()
-                .map(line -> {
-                    List<StationResponse> stations = line.getStations().stream()
-                            .map(StationResponse::of)
-                            .collect(Collectors.toList());
-                    return LineResponse.of(line, stations);
-                })
+                .map(line -> LineResponse.of(line, StationResponseList.of(line.getStations())))
                 .collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> getLineById(@PathVariable Long id) {
         Line line = lineService.findLineById(id);
-
-        List<StationResponse> stations = line.getStations().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(LineResponse.of(line, stations));
+        return ResponseEntity.ok(LineResponse.of(line, StationResponseList.of(line.getStations())));
     }
 
     @PutMapping("/{id}")

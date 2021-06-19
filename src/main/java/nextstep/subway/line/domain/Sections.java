@@ -34,37 +34,38 @@ public class Sections {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
+        Station upStation = findUpStation();
+        stations.add(upStation);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
+        while (upStation != null) {
+            Station finalUpStation = upStation;
             Optional<Section> nextLineStation = this.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
+                    .filter(it -> it.getUpStation() == finalUpStation)
                     .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
             }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+            upStation = nextLineStation.get().getDownStation();
+            stations.add(upStation);
         }
         return stations;
     }
 
     public Station findUpStation() {
-        Station downStation = this.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
+        Station upStation = this.get(0).getUpStation();
+
+        while (upStation != null) {
+            Station finalUpStation = upStation;
             Optional<Section> nextLineStation = this.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
+                    .filter(it -> it.getDownStation() == finalUpStation)
                     .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
             }
-            downStation = nextLineStation.get().getUpStation();
+            upStation = nextLineStation.get().getUpStation();
         }
 
-        return downStation;
+        return upStation;
     }
 
     public boolean isEmpty() {
@@ -99,5 +100,25 @@ public class Sections {
         return this.values.stream()
                 .filter(it -> it.getDownStation() == station)
                 .findFirst();
+    }
+
+    public void changeUpStationIfFindEqualsUpStation(Section section) {
+        Station downStation = section.getDownStation();
+        Station upStation = section.getUpStation();
+        this.values.stream()
+                .filter(it -> it.getUpStation() == upStation)
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(downStation, section.getDistance()));
+        this.values.add(section);
+    }
+
+    public void changeDownStationIfFindEqualsDownStation(Section section) {
+        Station downStation = section.getDownStation();
+        Station upStation = section.getUpStation();
+        this.values.stream()
+                .filter(it -> it.getDownStation() == downStation)
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(upStation, section.getDistance()));
+        this.values.add(section);
     }
 }
