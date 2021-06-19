@@ -49,7 +49,6 @@ public class PathFinderTest {
         한티역 = new Station("한티역");
         동춘역 = new Station("동춘역");
         동막역 = new Station("동막역");
-        공사중역 = new Station("공사중역");
 
         allStations = Arrays.asList(강남역, 역삼역, 선릉역, 교대역, 남부터미널역, 양재역, 매봉역, 도곡역, 한티역, 동춘역, 동막역);
 
@@ -88,7 +87,7 @@ public class PathFinderTest {
     @Test
     void 최단_경로_거리() {
         //when
-        Integer shortestWeight = pathFinder.shortestWeight(강남역, 한티역);
+        int shortestWeight = pathFinder.shortestWeight(강남역, 한티역);
 
         //then
         assertThat(shortestWeight).isEqualTo(30);
@@ -106,12 +105,5 @@ public class PathFinderTest {
     void 출발역_도착역_연결_안됨() {
         //when, then
         assertThatThrownBy(() -> pathFinder.shortestPath(강남역, 동춘역)).isInstanceOf(SourceTargetNotConnectException.class);
-    }
-
-    @DisplayName("출발역 또는 도착역 노선에 등록 안됨")
-    @Test
-    void 출발역_도착역_노선에_등록_안됨() {
-        //when, then
-        assertThatThrownBy(() -> pathFinder.shortestPath(강남역, 공사중역)).isInstanceOf(NoStationInListException.class);
     }
 }

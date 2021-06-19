@@ -15,35 +15,33 @@ import java.util.List;
 
 public class PathFinder {
 
-    List<Station> allStations;
-    List<Line> lines;
-
-    WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+    private DijkstraShortestPath dijkstraShortestPath;
 
     public PathFinder(List<Station> allStations, List<Line> lines) {
-        this.allStations = allStations;
-        this.lines = lines;
 
-        graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
-        addStationToVertex(allStations);
-        addSectionToEdge(lines);
+        addStationToVertex(allStations, graph);
+        addSectionToEdge(lines, graph);
+
+        dijkstraShortestPath = new DijkstraShortestPath(graph);
     }
 
-    private void addSectionToEdge(List<Line> lines) {
-        for (Line line : lines) {
-            for (Section section : line.getSections()) {
-                graph.setEdgeWeight(graph.addEdge(section.upStation(), section.downStation()), section.getDistance());
-            }
-        }
-    }
-
-    private void addStationToVertex(List<Station> allStations) {
+    private void addStationToVertex(List<Station> allStations, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         for (Station station : allStations) {
             graph.addVertex(station);
         }
     }
 
+    private void addSectionToEdge(List<Line> lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        for (Line line : lines) {
+            line.getSections().forEach(
+                    section -> graph.setEdgeWeight(graph.addEdge(section.upStation(), section.downStation()),
+                            section.getDistance()
+                    )
+            );
+        }
+    }
 
     public List<Station> shortestPath(Station source, Station target) {
         try {
@@ -53,7 +51,7 @@ public class PathFinder {
         }
     }
 
-    public Integer shortestWeight(Station source, Station target) {
+    public int shortestWeight(Station source, Station target) {
         Double distance;
 
         try {
@@ -67,9 +65,6 @@ public class PathFinder {
 
     private GraphPath graphPath(Station source, Station target) {
         validateSourceTarget(source, target);
-        validateValidStation(source, target);
-
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
 
         return dijkstraShortestPath.getPath(source, target);
     }
@@ -77,12 +72,6 @@ public class PathFinder {
     private void validateSourceTarget(Station source, Station target) {
         if (source.isSameStation(target)) {
             throw new SameSourceTargetException();
-        }
-    }
-
-    private void validateValidStation(Station source, Station target) {
-        if (!allStations.contains(source) || !allStations.contains(target)) {
-            throw new NoStationInListException();
         }
     }
 }

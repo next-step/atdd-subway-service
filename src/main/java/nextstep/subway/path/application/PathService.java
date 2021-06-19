@@ -4,6 +4,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.ui.NoStationInListException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
@@ -35,12 +36,20 @@ public class PathService {
         Station sourceStation = stationRepository.findById(source).orElseThrow(NoSuchElementException::new);
         Station targetStation = stationRepository.findById(target).orElseThrow(NoSuchElementException::new);
 
+        validateValidStation(allStations, sourceStation, targetStation);
+
         List<Station> shortestPath = pathFinder.shortestPath(sourceStation, targetStation);
-        Integer distance = pathFinder.shortestWeight(sourceStation, targetStation);
+        int distance = pathFinder.shortestWeight(sourceStation, targetStation);
 
         return new PathResponse(
                 shortestPath.stream().map(StationResponse::of).collect(Collectors.toList()),
                 distance
         );
+    }
+
+    private void validateValidStation(List<Station> allStations, Station source, Station target) {
+        if (!allStations.contains(source) || !allStations.contains(target)) {
+            throw new NoStationInListException();
+        }
     }
 }

@@ -5,6 +5,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,6 +32,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     StationResponse 매봉역;
     StationResponse 도곡역;
     StationResponse 한티역;
+    StationResponse 공사중역;
 
     @BeforeEach
     void 미리_생성() {
@@ -43,6 +45,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         매봉역 = 지하철역_등록되어_있음("매봉역").as(StationResponse.class);
         도곡역 = 지하철역_등록되어_있음("도곡역").as(StationResponse.class);
         한티역 = 지하철역_등록되어_있음("한티역").as(StationResponse.class);
+        공사중역 = 지하철역_등록되어_있음("공사중역").as(StationResponse.class);
 
         LineResponse 이호선 = 지하철_노선_등록되어_있음(new LineRequest("2호선", "green", 강남역.getId(), 역삼역.getId(), 5)).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(이호선, 역삼역, 선릉역, 5);
@@ -79,6 +82,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void 출발역과_도착역이_같을_때() {
         //when
         ExtractableResponse pathResponse = 최단_경로(1L, 1L);
+
+        //then
+        assertThat(pathResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("출발역이 등록이 안되어 있을 때")
+    @Test
+    void 출발역이_등록이_안되어_있을때() {
+        //when
+        ExtractableResponse pathResponse = 최단_경로(10L, 1L);
 
         //then
         assertThat(pathResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
