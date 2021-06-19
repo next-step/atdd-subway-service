@@ -25,11 +25,6 @@ public class Line extends BaseEntity {
         addSection(upStation, downStation, distance);
     }
 
-    // TODO : 리팩터링 후 삭제 하기
-    void setSections(Section... sections) {
-        this.sections = Sections.of(sections);
-    }
-
     public List<Station> getStationsInOrder() {
         return sections.getStationsInOrder();
     }

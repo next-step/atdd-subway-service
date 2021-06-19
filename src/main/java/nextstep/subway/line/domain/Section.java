@@ -57,10 +57,7 @@ public class Section {
         return distance;
     }
 
-    boolean connectSection(Section section) {
-        if (equals(section)) {
-            return false;
-        }
+    boolean connectIfAdjacent(Section section) {
         if (hasEqualDownStation(section)) {
             connectDownward(section);
             return true;
@@ -98,7 +95,7 @@ public class Section {
 
     private void connectUpward(Section section) {
         if (this.distance <= section.distance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.upStation = section.downStation;
         this.distance = this.distance - section.distance;
@@ -106,7 +103,7 @@ public class Section {
 
     private void connectDownward(Section section) {
         if (this.distance <= section.distance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.downStation = section.upStation;
         this.distance = this.distance - section.distance;

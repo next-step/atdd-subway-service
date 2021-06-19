@@ -40,7 +40,7 @@ public class Sections {
 
 	private void connectSection(Section other) {
 		for (Section section : sections) {
-			section.connectSection(other);
+			section.connectIfAdjacent(other);
 		}
 	}
 
@@ -52,7 +52,7 @@ public class Sections {
 			.anyMatch(section -> isUpStationExisted && section.hasEqualDownStation(other));
 
 		if (isUpStationExisted && isDownStationExisted) {
-			throw new RuntimeException("이미 등록된 구간 입니다.");
+			throw new IllegalArgumentException("이미 등록된 구간 입니다.");
 		}
 	}
 
@@ -64,7 +64,7 @@ public class Sections {
 			.flatMap(Section::getStations)
 			.noneMatch(otherSection::contain);
 		if (notContainStation) {
-			throw new RuntimeException("등록할 수 없는 구간 입니다.");
+			throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
 		}
 	}
 

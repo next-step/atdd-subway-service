@@ -7,6 +7,8 @@ import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class SectionTest {
 
@@ -30,13 +32,13 @@ public class SectionTest {
 
 	@DisplayName("구간과 구간을 상행역 기준으로 연결할 수 있다.")
 	@Test
-	void connectDownwardSection() {
+	void connectDownwardSectionTest() {
 		Section 강남_광교_구간 = spy(new Section(신분당선, 강남역, 광교역, 10));
 		when(강남_광교_구간.getId()).thenReturn(1L);
 		Section 강남_양재_구간 = spy(new Section(신분당선, 강남역, 양재역, 5));
 		when(강남_양재_구간.getId()).thenReturn(2L);
 
-		boolean isAdded = 강남_광교_구간.connectSection(강남_양재_구간);
+		boolean isAdded = 강남_광교_구간.connectIfAdjacent(강남_양재_구간);
 
 		assertThat(isAdded).isTrue();
 		assertThat(강남_광교_구간.getStations()).containsExactly(양재역, 광교역);
@@ -45,13 +47,13 @@ public class SectionTest {
 
 	@DisplayName("구간과 구간을 하행역 기준으로 연결할 수 있다.")
 	@Test
-	void connectUpwardSection() {
+	void connectUpwardSectionTest() {
 		Section 강남_광교_구간 = spy(new Section(신분당선, 강남역, 광교역, 10));
 		when(강남_광교_구간.getId()).thenReturn(1L);
 		Section 양재_광교_구간 = spy(new Section(신분당선, 양재역, 광교역, 5));
 		when(양재_광교_구간.getId()).thenReturn(2L);
 
-		boolean isAdded = 강남_광교_구간.connectSection(양재_광교_구간);
+		boolean isAdded = 강남_광교_구간.connectIfAdjacent(양재_광교_구간);
 
 		assertThat(isAdded).isTrue();
 		assertThat(강남_광교_구간.getStations()).containsExactly(강남역, 양재역);
@@ -64,19 +66,22 @@ public class SectionTest {
 		Section 강남_광교_구간 = new Section(신분당선, 강남역, 광교역, 10);
 		Section 양재_양재시민의숲_구간 = new Section(신분당선, 양재역, 양재시민의숲역, 5);
 
-		boolean isAdded = 강남_광교_구간.connectSection(양재_양재시민의숲_구간);
+		boolean isAdded = 강남_광교_구간.connectIfAdjacent(양재_양재시민의숲_구간);
 
 		assertThat(isAdded).isFalse();
 	}
 
-	@DisplayName("같은 구간은 연결되지 않는다.")
-	@Test
-	void cannotConnectSameSectionTest() {
-		Section 강남_광교_구간1 = new Section(신분당선, 강남역, 광교역, 10);
-		Section 강남_광교_구간2 = new Section(신분당선, 강남역, 광교역, 10);
+	@ParameterizedTest
+	@DisplayName("구간을 연결할때 연결하려는 구간의 길이가 기존 구간의 길이보다 같거나 크면 연결할 수 없다.")
+	@ValueSource(ints = {10, 11})
+	void connectSectionOverDistanceTest(int longDistance) {
+		// given
+		Section 강남_양재시민의숲 = new Section(신분당선, 강남역, 양재시민의숲역, 10);
+		Section 강남_양재 = new Section(신분당선, 강남역, 양재역, longDistance);
 
-		boolean isAdded = 강남_광교_구간1.connectSection(강남_광교_구간2);
-
-		assertThat(isAdded).isFalse();
+		// when then
+		assertThatThrownBy(() -> 강남_양재시민의숲.connectIfAdjacent(강남_양재))
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
 	}
 }

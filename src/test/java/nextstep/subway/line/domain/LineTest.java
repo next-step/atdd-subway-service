@@ -15,18 +15,4 @@ class LineTest {
 
 	static Line 신분당선 = new Line("신분당선","red", 강남역, 광교역, 10);
 
-	@Test
-	@DisplayName("상행 -> 하행 순서로 정렬된 노선의 역들을 반환한다.")
-	void getStationsTest() {
-		// given
-		Line 신분당선 = new Line("신분당선","red", 강남역, 광교역, 10);
-		신분당선.setSections(양재_양재시민의숲_구간, 강남_양재_구간, 양재시민의숲_광교_구간);
-
-		// when
-		List<Station> stationsInOrder = 신분당선.getStationsInOrder();
-
-		// then
-		assertThat(stationsInOrder).containsExactly(강남역, 양재역, 양재시민의숲역, 광교역);
-	}
-
 }
