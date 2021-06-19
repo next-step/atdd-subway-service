@@ -52,7 +52,7 @@ public class PathFinder {
     }
 
     public int shortestWeight(Station source, Station target) {
-        Double distance;
+        double distance;
 
         try {
             distance = graphPath(source, target).getWeight();
@@ -60,7 +60,7 @@ public class PathFinder {
             throw new SourceTargetNotConnectException();
         }
 
-        return distance.intValue();
+        return (int) distance;
     }
 
     private GraphPath graphPath(Station source, Station target) {
