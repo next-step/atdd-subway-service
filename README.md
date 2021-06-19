@@ -132,7 +132,12 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             2. Then 지하철 노선에 지하철역 제외 실패
 
 * 계획한 시나리오를 LineSectionAcceptanceTest when과 then으로 작성한다.
-* LineService를 분석하고 어떤 도메인으로 옮길 수 있을지 요규사항에 정리한다.
+* LineService를 분석하고 어떤 도메인으로 옮길 수 있을지 요구사항에 정리한다.
+    * saveLine의 메서드를 sections 일급 컬렉션으로 생성하여 처리
+    * findLines 메서드에서 응답을 Line 도메인에서 생성되도록 수정
+    * findLineResponseById 메서드 Line으로 이동
+    * addLines 메서드에서 station 유효성 검사를 station 메서드에서 진행하도록
+    * 구간에 대한 검사는 sections 에서
 * LineService의 로직을 단계별로 분리한다. 분리 시 도메인으로 새로운 코드를 작성하고 테스트 완료 후 기존 로직을 제거한다. 이 후 테스트를 다시 실행하여 모두 통과 되는지 확인한다.
 * LineService 로직 분기를 단계별로 진행하고, 완료 후 리팩토링을 진행한다.
     * 각 도메인의 역할에 맞는 행동을 하고 있는지 체크
