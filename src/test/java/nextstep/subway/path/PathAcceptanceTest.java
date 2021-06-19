@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_목록_조회_요청;
@@ -82,8 +84,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 최단경로의_역들과_최단거리를_반환함(ExtractableResponse<Response> pathsResponse, List<StationResponse> asList, int i) {
-
+    private void 최단경로의_역들과_최단거리를_반환함(ExtractableResponse<Response> pathResponse, List<StationResponse> asList, int i) {
+        PathResponse path = pathResponse.as(PathResponse.class);
+        List<Long> stationIds = path.getStations().stream()
+                .map(it -> it.getId())
+                .collect(Collectors.toList());
     }
 
 }
