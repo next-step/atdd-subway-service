@@ -74,9 +74,7 @@ public class Sections {
 		}
 
 		List<Station> stations = getStations();
-		//boolean isUpStationExisted = isUpStationExisted(section, stations);
 		boolean isUpStationExisted = isStationExisted(section.getUpStation(), stations);
-		//boolean isDownStationExisted = isDownStationExisted(section, stations);
 		boolean isDownStationExisted = isStationExisted(section.getDownStation(), stations);
 
 		validateTwoStationsAlreadyExists(isUpStationExisted, isDownStationExisted);
