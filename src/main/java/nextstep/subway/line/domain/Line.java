@@ -6,6 +6,8 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Entity
 public class Line extends BaseEntity {
@@ -58,26 +60,23 @@ public class Line extends BaseEntity {
         Station upStation = newSection.getUpStation();
         Station downStation = newSection.getDownStation();
         int distance = newSection.getDistance();
-        boolean isUpStationExisted =this.sections.stream().anyMatch(section -> section.getUpStation().equals(upStation));
-        boolean isDownStationExisted =this.sections.stream().anyMatch(section -> section.getDownStation().equals(downStation));
+        boolean isUpStationExisted = this.sections.stream().anyMatch(section -> section.getUpStation().equals(upStation));
+        boolean isDownStationExisted = this.sections.stream().anyMatch(section -> section.getDownStation().equals(downStation));
 
-        if (isDownStationExisted && isUpStationExisted){
+        if (isDownStationExisted && isUpStationExisted) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
 
-        if (isDownStationExisted == false && isUpStationExisted == false){
+        if (isDownStationExisted == false && isUpStationExisted == false) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
 
-       if (isUpStationExisted){
-           updateUpStationWhenEqualsUpStations(newSection, upStation, downStation, distance);
-           return;
-       }
+        if (isUpStationExisted) {
+            updateUpStationWhenEqualsUpStations(newSection, upStation, downStation, distance);
+            return;
+        }
 
-       if (isDownStationExisted){
-           updateDownStationWhenEqualsDownStations(newSection, upStation, downStation, distance);
-           return;
-       }
+        updateDownStationWhenEqualsDownStations(newSection, upStation, downStation, distance);
     }
 
     private void updateDownStationWhenEqualsDownStations(Section newSection, Station upStation, Station downStation, int distance) {
@@ -87,20 +86,36 @@ public class Line extends BaseEntity {
                 .ifPresent(section -> {
                     int findIndex = sections.indexOf(section);
                     section.updateDownStation(upStation, distance);
-                    this.sections.add(findIndex+1, newSection);
+                    this.sections.add(findIndex + 1, newSection);
                 });
     }
 
     private void updateUpStationWhenEqualsUpStations(Section newSection, Station upStation, Station downStation, int distance) {
         this.sections.stream()
                 .filter(it -> it.getUpStation() == upStation)
-//                    같은 상행선역이 있는 섹터를 찾아
                 .findFirst()
-//                    같은 상행선역이 있는 섹터를 찾아
                 .ifPresent(section -> {
                     int findIndex = sections.indexOf(section);
                     section.updateUpStation(downStation, distance);
                     this.sections.add(findIndex, newSection);
                 });
+    }
+
+    public List<Station> getStations() {
+        return this.sections.stream()
+                .flatMap(section -> Stream.of(section.getUpStation(), section.getDownStation()))
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public void removeStation(Station station) {
+        AdjacentSections adjacentSections = getSectionsContainingStation(station);
+        adjacentSections.merge(this.sections);
+    }
+
+    private AdjacentSections getSectionsContainingStation(Station station) {
+        return AdjacentSections.of(this.sections.stream()
+                .filter(section -> section.getUpStation().equals(station) || section.getDownStation().equals(station))
+                .collect(Collectors.toList()));
     }
 }

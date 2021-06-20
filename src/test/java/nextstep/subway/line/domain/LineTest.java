@@ -14,6 +14,7 @@ class LineTest {
     private Station 광교;
     private Station 정자;
     private int disatnce;
+    private Station 미금;
 
     @BeforeEach
     void setUp() {
@@ -69,5 +70,47 @@ class LineTest {
         assertThatThrownBy(() -> 신분당선.addSection(newSection))
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("이미 등록된 구간 입니다.");
+    }
+
+    @Test
+    void getStation() {
+        Section newSection = new Section(신분당선, 강남, 정자, 2);
+        미금 = new Station("미금");
+
+        신분당선.addSection(newSection);
+        assertThat(신분당선.getStations()).containsExactly(강남, 정자, 광교);
+
+        Section newSection2 = new Section(신분당선, 정자, 미금, 2);
+        신분당선.addSection(newSection2);
+
+        assertThat(신분당선.getStations()).containsExactly(강남, 정자, 미금, 광교);
+    }
+
+    @Test
+    void removeStation() {
+        Section newSection = new Section(신분당선, 강남, 정자, 2);
+        신분당선.addSection(newSection);
+        assertThat(신분당선.getStations()).containsExactly(강남, 정자, 광교);
+
+        신분당선.removeStation(정자);
+        assertThat(신분당선.getStations()).containsExactly(강남, 광교);
+    }
+
+    @Test
+    void removeStation_error_when_final_upStation() {
+        Section newSection = new Section(신분당선, 강남, 정자, 2);
+        신분당선.addSection(newSection);
+        assertThat(신분당선.getStations()).containsExactly(강남, 정자, 광교);
+
+        assertThatThrownBy(() -> 신분당선.removeStation(강남)).isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void removeStation_error_when_final_downStation() {
+        Section newSection = new Section(신분당선, 강남, 정자, 2);
+        신분당선.addSection(newSection);
+        assertThat(신분당선.getStations()).containsExactly(강남, 정자, 광교);
+
+        assertThatThrownBy(() -> 신분당선.removeStation(광교)).isInstanceOf(RuntimeException.class);
     }
 }
