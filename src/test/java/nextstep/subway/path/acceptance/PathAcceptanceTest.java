@@ -86,14 +86,4 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         assertThat(pathResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
-
-    @DisplayName("출발역이 등록이 안되어 있을 때")
-    @Test
-    void 출발역이_등록이_안되어_있을때() {
-        //when
-        ExtractableResponse pathResponse = 최단_경로(10L, 1L);
-
-        //then
-        assertThat(pathResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
 }

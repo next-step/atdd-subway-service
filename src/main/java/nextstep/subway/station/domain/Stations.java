@@ -10,10 +10,6 @@ public class Stations {
         this.stations = stations;
     }
 
-    public boolean hasStation(Station station) {
-        return stations.contains(station);
-    }
-
     public List<Station> stations() {
         return stations;
     }

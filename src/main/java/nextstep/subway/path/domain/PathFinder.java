@@ -17,20 +17,18 @@ import java.util.List;
 public class PathFinder {
 
     private DijkstraShortestPath dijkstraShortestPath;
-    private Stations allStations;
 
     public PathFinder(Stations allStations, Lines lines) {
 
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        this.allStations = allStations;
 
-        addStationToVertex(graph);
+        addStationToVertex(allStations, graph);
         addSectionToEdge(lines, graph);
 
         dijkstraShortestPath = new DijkstraShortestPath(graph);
     }
 
-    private void addStationToVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private void addStationToVertex(Stations allStations, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         for (Station station : allStations.stations()) {
             graph.addVertex(station);
         }
@@ -65,7 +63,6 @@ public class PathFinder {
 
     private GraphPath graphPath(Station source, Station target) {
         validateSourceTarget(source, target);
-        validateValidStation(source, target);
 
         return dijkstraShortestPath.getPath(source, target);
     }
@@ -73,12 +70,6 @@ public class PathFinder {
     private void validateSourceTarget(Station source, Station target) {
         if (source.isSameStation(target)) {
             throw new SameSourceTargetException();
-        }
-    }
-
-    private void validateValidStation(Station source, Station target) {
-        if (!allStations.hasStation(source) || !allStations.hasStation(target)) {
-            throw new NoStationInListException();
         }
     }
 }
