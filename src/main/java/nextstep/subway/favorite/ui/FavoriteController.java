@@ -10,13 +10,16 @@ import nextstep.subway.favorite.dto.FavoriteResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static java.util.stream.Collectors.toList;
 
 @RestController
+@RequestMapping(value = "/favorites")
 public class FavoriteController {
 
     private final FavoriteService favoriteService;
@@ -25,7 +28,7 @@ public class FavoriteController {
         this.favoriteService = favoriteService;
     }
 
-    @PostMapping(value = "/favorites")
+    @PostMapping
     public ResponseEntity<URI> createFavorite(@AuthenticationPrincipal LoginMember loginMember,
                                               @RequestBody FavoriteRequest favoriteRequest) {
 
@@ -36,7 +39,7 @@ public class FavoriteController {
         return ResponseEntity.created(URI.create("/favorites" + id)).build();
     }
 
-    @GetMapping(value = "/favorites")
+    @GetMapping
     public ResponseEntity<List<FavoriteResponse>> findFavorite(@AuthenticationPrincipal LoginMember loginMember) {
 
         List<FavoriteResponse> responses = favoriteService.findAllByMember(loginMember.getId())
@@ -47,9 +50,10 @@ public class FavoriteController {
         return ResponseEntity.ok().body(responses);
     }
 
-    @DeleteMapping
+    @DeleteMapping(value = "/{favoriteId}")
     public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember,
-                                               FavoriteRequest favoriteRequest) {
-        return null;
+                                               @PathVariable Long favoriteId) {
+        favoriteService.delete(loginMember.getId(), favoriteId);
+        return ResponseEntity.noContent().build();
     }
 }

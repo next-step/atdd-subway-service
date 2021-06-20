@@ -1,6 +1,8 @@
 package nextstep.subway.common;
 
 import nextstep.subway.auth.domain.InvalidTokenException;
+import nextstep.subway.favorite.domain.DeleteFavoriteException;
+import nextstep.subway.favorite.domain.NotFoundFavoriteException;
 import nextstep.subway.member.domain.NotFoundMemberException;
 import nextstep.subway.path.domain.NotFoundPathException;
 import nextstep.subway.station.domain.NotFoundStationException;
@@ -47,6 +49,18 @@ public class CommonExceptionHandler {
     @ExceptionHandler(InvalidTokenException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public String handleInvalidTokenException(InvalidTokenException e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(NotFoundFavoriteException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleNotFoundFavoriteException(NotFoundFavoriteException e) {
+        return e.getMessage();
+    }
+
+    @ExceptionHandler(DeleteFavoriteException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleDeleteFavoriteException(DeleteFavoriteException e) {
         return e.getMessage();
     }
 }

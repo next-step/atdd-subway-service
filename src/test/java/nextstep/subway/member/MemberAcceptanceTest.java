@@ -19,6 +19,8 @@ import org.springframework.http.MediaType;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
+@SuppressWarnings("NonAsciiCharacters")
+@DisplayName("회원 정보 관련 기능")
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
@@ -212,7 +214,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     private Executable findMyInformationFail(BearerAuthToken bearerAuthToken) {
         return () -> {
             ExtractableResponse<Response> response = findMyInformationRequest(bearerAuthToken);
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         };
     }
 

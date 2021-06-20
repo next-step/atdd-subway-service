@@ -71,7 +71,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         return Stream.of(
             dynamicTest("즐겨찾기 생성 성공", createFavoriteSuccess(request)),
             dynamicTest("즐겨찾기 목록 조회", findFavoriteAndTest()),
-            dynamicTest("즐겨찾기 삭제 성공", deleteFavoriteSuccess(1L))
+            dynamicTest("즐겨찾기 삭제 성공", deleteFavoriteSuccess())
         );
     }
 
@@ -127,6 +127,26 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("즐겨찾기 삭제 실패 - 자신의 즐겨찾기가 아니면 삭제 불가능")
+    @Test
+    void deleteFavoriteFail03() {
+        // given: 사용자 A가 즐겨찾기 등록, 그리고 B로 로그인
+        createFavoriteRequest(accessToken, request);
+
+        MemberRequest otherMember = new MemberRequest("test2@email", "1234", 29);
+        registerMember(otherMember);
+
+        TokenResponse tokenResponse = loginRequest(otherMember).as(TokenResponse.class);
+
+        String otherMemberToken = tokenResponse.getAccessToken();
+
+        // when
+        ExtractableResponse<Response> response = deleteFavoriteRequest(otherMemberToken, 1L);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     private Executable createFavoriteSuccess(FavoriteRequest favoriteRequest) {
         return () -> {
             // when
@@ -138,14 +158,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         };
     }
 
-    private ExtractableResponse<Response> createFavoriteRequest(FavoriteRequest favoriteRequest) {
+    private ExtractableResponse<Response> createFavoriteRequest(String token, FavoriteRequest favoriteRequest) {
         return RestAssured.given().log().all()
-                          .auth().oauth2(accessToken)
+                          .auth().oauth2(token)
                           .body(favoriteRequest)
                           .contentType(MediaType.APPLICATION_JSON_VALUE)
                           .when().post("/favorites")
                           .then().log().all()
                           .extract();
+    }
+
+    private ExtractableResponse<Response> createFavoriteRequest(FavoriteRequest favoriteRequest) {
+        return createFavoriteRequest(accessToken, favoriteRequest);
     }
 
     private Executable findFavoriteAndTest() {
@@ -171,10 +195,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                           .extract();
     }
 
-    private Executable deleteFavoriteSuccess(Long id) {
+    private Executable deleteFavoriteSuccess() {
         return () -> {
             // when
-            ExtractableResponse<Response> response = deleteFavoriteRequest(accessToken, id);
+            ExtractableResponse<Response> response = deleteFavoriteRequest(accessToken, 1L);
 
             // then
             assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
