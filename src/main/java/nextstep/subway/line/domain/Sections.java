@@ -121,10 +121,6 @@ public class Sections {
 		}
 	}
 
-	public void add(Section section){
-		sections.add(section);
-	}
-
 	public void removeLineStation(Line line, Station station) {
 		if (sections.size() <= 1) {
 			throw new RuntimeException();
