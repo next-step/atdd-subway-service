@@ -1,6 +1,6 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.dto;
 
-public class PathsRequest {
+public class PathRequest {
 
     private Long sourceStationId;
     private Long targetStationId;

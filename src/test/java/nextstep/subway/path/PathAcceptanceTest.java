@@ -79,16 +79,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> 출발역과_도착역으로_최단경로를_찾는다(StationResponse sourceStation, StationResponse targetStation) {
         return RestAssured
                 .given().log().all()
-                .when().delete("/paths?source={sourceId}&target={targetId}", sourceStation.getId(), targetStation.getId())
+                .when().get("/paths?source={sourceId}&target={targetId}", sourceStation.getId(), targetStation.getId())
                 .then().log().all()
                 .extract();
     }
 
-    private void 최단경로의_역들과_최단거리를_반환함(ExtractableResponse<Response> pathResponse, List<StationResponse> asList, int i) {
+    private void 최단경로의_역들과_최단거리를_반환함(ExtractableResponse<Response> pathResponse, List<StationResponse> expectedStations, int i) {
         PathResponse path = pathResponse.as(PathResponse.class);
+
         List<Long> stationIds = path.getStations().stream()
                 .map(it -> it.getId())
                 .collect(Collectors.toList());
+        List<Long> expectedStationIds = expectedStations.stream()
+                .map(it -> it.getId())
+                .collect(Collectors.toList());
+
+        assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
     }
 
 }
