@@ -8,12 +8,9 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,6 +18,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class LineService {
+    public static final String NOT_FOUND_LINE_ERROR_MESSAGE = "id %s와 일치하는 노선을 찾을 수 없습니다.";
     private LineRepository lineRepository;
     private StationService stationService;
 
@@ -42,8 +40,9 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        // TODO - Exception 변경
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository
+                .findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(String.format(NOT_FOUND_LINE_ERROR_MESSAGE, id)));
     }
 
 
@@ -53,8 +52,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        // TODO - findLineById 호출 하도록 변경
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = findLineById(id);
         persistLine.update(lineUpdateRequest.toLine());
     }
 
