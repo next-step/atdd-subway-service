@@ -37,51 +37,11 @@ public class LineResponse {
     }
 
     public static LineResponse of(Line line) {
-		List<StationResponse> stations = getStations(line).stream()
+		List<StationResponse> stations = line.getStations().stream()
 			.map(it -> StationResponse.of(it))
 			.collect(Collectors.toList());
 
 		return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
-	}
-
-	private static List<Station> getStations(Line line) {
-		if (line.getSections().isEmpty()) {
-			return Arrays.asList();
-		}
-
-		List<Station> stations = new ArrayList<>();
-		Station downStation = findUpStation(line);
-		stations.add(downStation);
-
-		while (downStation != null) {
-			Station finalDownStation = downStation;
-			Optional<Section> nextLineStation = line.getSections().stream()
-				.filter(it -> it.getUpStation() == finalDownStation)
-				.findFirst();
-			if (!nextLineStation.isPresent()) {
-				break;
-			}
-			downStation = nextLineStation.get().getDownStation();
-			stations.add(downStation);
-		}
-
-		return stations;
-	}
-
-	private static Station findUpStation(Line line) {
-		Station downStation = line.getSections().get(0).getUpStation();
-		while (downStation != null) {
-			Station finalDownStation = downStation;
-			Optional<Section> nextLineStation = line.getSections().stream()
-				.filter(it -> it.getDownStation() == finalDownStation)
-				.findFirst();
-			if (!nextLineStation.isPresent()) {
-				break;
-			}
-			downStation = nextLineStation.get().getUpStation();
-		}
-
-		return downStation;
 	}
 
     public Long getId() {
