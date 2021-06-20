@@ -9,6 +9,7 @@ import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.domain.Stations;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -25,6 +26,7 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse findPath(Long sourceStationId, Long targetStationId) {
         PathFinder pathFinder = initPathFinder();
 
