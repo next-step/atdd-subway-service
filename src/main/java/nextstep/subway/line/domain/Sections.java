@@ -12,6 +12,8 @@ import java.util.Optional;
 
 @Embeddable
 public class Sections {
+    private static final String LINE_DUPLICATED = "노선이 중복되었습니다.";
+    private static final String NOT_VALID_STATION_EXISTED = "역이 포함되지 않아, 등록할 수 없습니다.";
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -19,47 +21,40 @@ public class Sections {
     public Sections() {
     }
 
-    public void add(Section section) {
+    public void addSection(Line line, Station upStation, Station downStation, int distance) {
         List<Station> stations = getStations();
-        validateSection(stations, section.getUpStation(), section.getDownStation());
+        validateStations(stations, upStation, downStation);
 
-        Station upStation = stations.stream().filter(v -> v.equals(section.getUpStation())).findFirst()
-                .orElse(null);
-        Station downStation = stations.stream().filter(v -> v.equals(section.getDownStation())).findFirst()
-                .orElse(null);
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+        if (stations.contains(upStation)) {
+            getSectionByUpStation(upStation)
+                    .ifPresent(v -> v.updateUpStation(downStation, distance));
         }
-
-        if (stations.isEmpty()) {
-            sections.add(section);
-            return;
+        if (stations.contains(downStation)) {
+            getSectionByDownStation(downStation)
+                    .ifPresent(it -> it.updateDownStation(upStation, distance));
         }
-
-        if (isUpStationExisted) {
-            sections.stream()
-                    .filter(it -> it.getUpStation() == upStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, section.getDistance()));
-
-            sections.add(section);
-        } else if (isDownStationExisted) {
-            sections.stream()
-                    .filter(it -> it.getDownStation() == downStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, section.getDistance()));
-
-            sections.add(section);
-        } else {
-            throw new RuntimeException();
-        }
+        sections.add(Section.of(line, upStation, downStation, distance));
     }
 
-    public List<Section> getSections() {
-        return Collections.unmodifiableList(sections);
+    private Optional<Section> getSectionByUpStation(Station upStation) {
+        return sections.stream()
+                .filter(it -> it.getUpStation() == upStation)
+                .findFirst();
+    }
+
+    private Optional<Section> getSectionByDownStation(Station downStation) {
+        return sections.stream()
+                .filter(it -> it.getUpStation() == downStation)
+                .findFirst();
+    }
+
+    private void validateStations(List<Station> stations, Station upStation, Station downStation) {
+        if (stations.size() > 0 && stations.contains(upStation) && stations.contains(downStation)) {
+            throw new IllegalStateException(LINE_DUPLICATED);
+        }
+        if (stations.size() > 0 && !stations.contains(upStation) && !stations.contains(downStation)) {
+            throw new IllegalStateException(NOT_VALID_STATION_EXISTED);
+        }
     }
 
     public List<Station> getStations() {

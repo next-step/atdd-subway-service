@@ -85,8 +85,4 @@ public class Section {
     public List<Station> getStations() {
         return Arrays.asList(upStation, downStation);
     }
-
-    public boolean isDownToUpStationConnected(Section section) {
-        return this.downStation.equals(section.upStation);
-    }
 }
