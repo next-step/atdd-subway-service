@@ -57,7 +57,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_순서_정렬됨(lineResponse, Arrays.asList(강남역, 양재역, 광교역));
 
         // When : 지하철 구간 삭제 요청
-        ExtractableResponse<Response> removeResponse = NEW_지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
 
         // Then : 지하철 구간 삭제됨
         지하철_노선에_지하철역_제외됨(removeResponse);
@@ -179,14 +179,6 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
                 .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
                 .then().log().all()
                 .extract();
-    }
-
-    public static ExtractableResponse<Response> NEW_지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
-        return RestAssured
-            .given().log().all()
-            .when().delete("/lines/new/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
-            .then().log().all()
-            .extract();
     }
 
     public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> response) {
