@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import nextstep.subway.line.exception.NotExistStationOnLineException;
+import nextstep.subway.line.exception.OnlyOneSectionExistException;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -15,6 +17,8 @@ public class Sections {
 
     public static final String SECTION_ALREADY_EXISTS = "이미 상행역과 하행역으로 연결되는 구간이 등록되어 있습니다.";
     public static final String THERE_IS_NO_STATION_INCLUDED_BETWEEN_UP_AND_DOWN_STATIONS = "상행역과 하행역 둘중 포함되는 역이 없습니다.";
+    public static final int ZERO = 0;
+    public static final int ONE = 1;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -114,5 +118,59 @@ public class Sections {
 
     public List<Section> getSections() {
         return sections;
+    }
+
+    public void delete(Station station) {
+        validationNotExistStationOnLine(station);
+        validationOnlyOneSectionExists();
+
+        List<Section> foundSections = findSectionsContainStation(station);
+        if (foundSections.size() == ONE) {
+            sections.remove(foundSections.get(ZERO));
+        }
+        if (foundSections.size() > ONE) {
+            deleteMiddleStation(foundSections, station);
+        }
+    }
+
+    private void validationOnlyOneSectionExists() {
+        if (sections.size() == ONE) {
+            throw new OnlyOneSectionExistException();
+        }
+    }
+
+    private void validationNotExistStationOnLine(Station station) {
+        sections.stream()
+            .filter(section -> section.contain(station))
+            .findFirst().orElseThrow(NotExistStationOnLineException::new);
+    }
+
+    private List<Section> findSectionsContainStation(Station station) {
+        return sections.stream()
+            .filter(section -> section.contain(station))
+            .collect(Collectors.toList());
+    }
+
+    private void deleteMiddleStation(List<Section> foundSections, Station station) {
+        Optional<Section> updateSectionOptional = findUpdateSection(foundSections, station);
+        Optional<Section> removeSectionOptional = findRemoveSection(foundSections, station);
+        if (updateSectionOptional.isPresent() && removeSectionOptional.isPresent()) {
+            Section updateSection = updateSectionOptional.get();
+            Section removeSection = removeSectionOptional.get();
+            updateSection.updateDownStation(removeSection.getDownStation(), removeSection.getDistance());
+            sections.remove(removeSection);
+        }
+    }
+
+    private Optional<Section> findUpdateSection(List<Section> foundSections, Station station) {
+        return foundSections.stream()
+            .filter(section -> station.equals(section.getDownStation()))
+            .findFirst();
+    }
+
+    private Optional<Section> findRemoveSection(List<Section> foundSections, Station station) {
+        return foundSections.stream()
+            .filter(section -> station.equals(section.getUpStation()))
+            .findFirst();
     }
 }

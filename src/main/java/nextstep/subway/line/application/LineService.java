@@ -103,6 +103,11 @@ public class LineService {
         downLineStation.ifPresent(it -> line.getSections().remove(it));
     }
 
+    public void newRemoveLineStation(Long lineId, Long stationId) {
+        Station station = stationService.findStationById(stationId);
+        Line line = lineRepository.findById(lineId).orElseThrow(EntityNotFoundException::new);
+        line.deleteStation(station);
+    }
 
     public List<Station> getStations(Line line) {
         if (line.getSections().isEmpty()) {
