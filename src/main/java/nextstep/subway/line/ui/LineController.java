@@ -48,21 +48,9 @@ public class LineController {
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * TODO - 리팩토링후 제거 대상
-     */
     @PostMapping("/{lineId}/sections")
     public ResponseEntity<Void> addLineStation(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
         lineService.addLineStation(lineId, sectionRequest);
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * TODO - 리팩토링 후 기존 로직 대체
-     */
-    @PostMapping("/new/{lineId}/sections")
-    public ResponseEntity<Void> newAddLineStation(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
-        lineService.newAddLineStation(lineId, sectionRequest);
         return ResponseEntity.ok().build();
     }
 
