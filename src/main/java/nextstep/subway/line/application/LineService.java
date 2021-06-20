@@ -57,14 +57,6 @@ public class LineService {
     }
 
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        List<StationResponse> stations = getStations(persistLine).stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-        return LineResponse.of(persistLine, stations);
-    }
-
-    public LineResponse newFindLineResponseById(Long id) {
         Line line = lineRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         return LineResponse.of(line);
     }
