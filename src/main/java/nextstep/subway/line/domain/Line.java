@@ -11,6 +11,9 @@ import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
+
+    private static final int MIN_SECTIONS_SIZE = 1;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -73,13 +76,36 @@ public class Line extends BaseEntity {
         }
     }
 
-    private boolean contains(Station station) {
-        return stations().stream().anyMatch(it -> it == station);
-    }
-
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+    }
+
+    public void remove(Station station) {
+        validateRemovable();
+
+        Optional<Section> upLineStation = sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+        Optional<Section> downLineStation = sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            sections.add(new Section(this, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
+    private void validateRemovable() {
+        if (sections.size() <= MIN_SECTIONS_SIZE) {
+            throw new RuntimeException();
+        }
     }
 
     public List<Station> stations() {
@@ -120,6 +146,10 @@ public class Line extends BaseEntity {
         }
 
         return downStation;
+    }
+
+    private boolean contains(Station station) {
+        return stations().stream().anyMatch(it -> it == station);
     }
 
     public Long getId() {
