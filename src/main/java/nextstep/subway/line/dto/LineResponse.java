@@ -37,14 +37,16 @@ public class LineResponse {
     }
 
     public static LineResponse of(Line line) {
-		List<StationResponse> stations = line.getStations().stream()
-			.map(it -> StationResponse.of(it))
-			.collect(Collectors.toList());
-
-		return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
+		return new LineResponse(line.getId(), line.getName(), line.getColor(), getStationResponses(line), line.getCreatedDate(), line.getModifiedDate());
 	}
 
-    public Long getId() {
+	private static List<StationResponse> getStationResponses(Line line) {
+		return line.getStations().stream()
+				.map(it -> StationResponse.of(it))
+				.collect(Collectors.toList());
+	}
+
+	public Long getId() {
         return id;
     }
 
