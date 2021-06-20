@@ -11,39 +11,32 @@ import java.util.List;
 import java.util.Optional;
 
 @Embeddable
-public class SectionList {
+public class SectionGroup {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
     /**
      * 생성자
      */
-    protected SectionList() {
+    protected SectionGroup() {
     }
 
-    public SectionList(List<Section> sections) {
+    public SectionGroup(List<Section> sections) {
         this.sections = sections;
     }
 
     /**
      * 비즈니스 메소드
      */
-    public void addToCreateLine(Section section) {
-        sections.add(section);
-    }
 
     public void addSection(Line line, Station upStation, Station downStation, int distance) {
-        boolean isUpStationExisted = isExistsStation(upStation);
-        boolean isDownStationExisted = isExistsStation(downStation);
+        if (!sections.isEmpty()) {
+            boolean isUpStationExisted = isExistsStation(upStation);
+            boolean isDownStationExisted = isExistsStation(downStation);
 
-        verifyAddable(isUpStationExisted, isDownStationExisted);
-
-        if (isUpStationExisted) {
-            changeUpStation(upStation, downStation, distance);
-        }
-
-        if (isDownStationExisted) {
-            changeDownStation(upStation, downStation, distance);
+            verifyAddable(isUpStationExisted, isDownStationExisted);
+            changeUpStationIfExists(upStation, downStation, distance, isUpStationExisted);
+            changeDownStationIfExists(upStation, downStation, distance, isDownStationExisted);
         }
 
         sections.add(Section.create(line, upStation, downStation, distance));
@@ -52,12 +45,8 @@ public class SectionList {
     public void removeSection(Line line, Station station) {
         verifyDeletable();
 
-        Optional<Section> upLineStation = sections.stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = sections.stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
+        Optional<Section> upLineStation = findDownSection(station);
+        Optional<Section> downLineStation = findUpSection(station);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             createNewSection(line, upLineStation, downLineStation);
@@ -88,31 +77,34 @@ public class SectionList {
      * 기타 메소드
      */
     private Station iterateToFindUpEndStation(Station downStation) {
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
+        Optional<Section> nextSection = findUpSection(downStation);
+        Station nextStation = downStation;
+        while (nextSection.isPresent()) {
+            nextStation = nextSection.get().getUpStation();
+            nextSection = findUpSection(nextStation);
         }
-        return downStation;
+        return nextStation;
+    }
+
+    private Optional<Section> findUpSection(Station finalDownStation) {
+        return sections.stream()
+                .filter(it -> it.getDownStation() == finalDownStation)
+                .findFirst();
     }
 
     private void iterateToAdd(List<Station> stations, Station downStation) {
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        Optional<Section> nextSection = findDownSection(downStation);
+        while (nextSection.isPresent()) {
+            Station nextStation = nextSection.get().getDownStation();
+            stations.add(nextStation);
+            nextSection = findDownSection(nextStation);
         }
+    }
+
+    private Optional<Section> findDownSection(Station finalDownStation) {
+        return sections.stream()
+                .filter(it -> it.getUpStation() == finalDownStation)
+                .findFirst();
     }
 
     private void verifyDeletable() {
@@ -148,17 +140,15 @@ public class SectionList {
         }
     }
 
-    private void changeDownStation(Station upStation, Station downStation, int distance) {
-        sections.stream()
-                .filter(it -> it.getDownStation() == downStation)
-                .findFirst()
-                .ifPresent(it -> it.updateDownStation(upStation, distance));
+    private void changeDownStationIfExists(Station upStation, Station downStation, int distance, boolean isDownStationExisted) {
+        if (isDownStationExisted) {
+            findUpSection(downStation).ifPresent(it -> it.updateDownStation(upStation, distance));
+        }
     }
 
-    private void changeUpStation(Station upStation, Station downStation, int distance) {
-        sections.stream()
-                .filter(it -> it.getUpStation() == upStation)
-                .findFirst()
-                .ifPresent(it -> it.updateUpStation(downStation, distance));
+    private void changeUpStationIfExists(Station upStation, Station downStation, int distance, boolean isUpStationExisted) {
+        if (isUpStationExisted) {
+            findDownSection(upStation).ifPresent(it -> it.updateUpStation(downStation, distance));
+        }
     }
 }

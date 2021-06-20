@@ -2,6 +2,7 @@ package nextstep.subway.line.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -28,14 +29,15 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(Line.create(request.getName(), request.getColor(), upStation, downStation,
-                request.getDistance()));
+        Line line = Line.create(request.getName(), request.getColor(), upStation, downStation, request.getDistance());
+        Line persistLine = lineRepository.save(line);
         return LineResponse.of(persistLine, createStationResponses(persistLine));
     }
 
     private List<StationResponse> createStationResponses(Line line) {
-        return line.findStationsOrderUpToDown().stream()
-                .map(it -> StationResponse.of(it))
+        return line.findStationsOrderUpToDown()
+                .stream()
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -53,7 +55,8 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(() -> new IllegalStateException("노선이 존재하지 않습니다. 노선 ID:" + id));
+        return lineRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("노선이 존재하지 않습니다. 노선 ID:" + id));
     }
 
     @Transactional(readOnly = true)
@@ -65,7 +68,7 @@ public class LineService {
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = findLineById(id);
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        persistLine.update(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
     }
 
     public void deleteLineById(Long id) {

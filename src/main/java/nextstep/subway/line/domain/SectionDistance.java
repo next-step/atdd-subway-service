@@ -1,11 +1,13 @@
 package nextstep.subway.line.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class SectionDistance {
-    private final static int SECTION_DISTANCE_MIN = 1;
+    private static final int SECTION_DISTANCE_MIN = 1;
 
+    @Column
     private int distance;
 
     protected SectionDistance() {

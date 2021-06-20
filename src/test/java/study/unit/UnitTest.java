@@ -16,11 +16,12 @@ public class UnitTest {
 
         Station upStation = new Station("강남역");
         Station downStation = new Station("광교역");
-        Line line = new Line("신분당선", "RED", upStation, downStation, 10);
-        Line newLine = new Line(newName, "GREEN");
+        Line line = new Line(1L, "신분당선", "RED");
+        line.addSection(upStation, downStation, 10);
+        Line newLine = new Line(2L, newName, "GREEN");
 
         // when
-        line.update(newLine);
+        line.update(newLine.getName(), newLine.getColor());
 
         // then
         assertThat(line.getName()).isEqualTo(newName);

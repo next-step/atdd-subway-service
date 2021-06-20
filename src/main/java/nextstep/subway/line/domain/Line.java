@@ -19,29 +19,22 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
-    private SectionList sections = new SectionList(new ArrayList<>());
+    private SectionGroup sections = new SectionGroup(new ArrayList<>());
 
     /**
      * 생성자
      */
-    public Line() {
-    }
+    protected Line() {}
 
-    public Line(String name, String color) {
+    private Line(String name, String color) {
         this.name = name;
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this(name, color);
-        sections.addToCreateLine(Section.create(this, upStation, downStation, distance));
-    }
-
     //테스트용
-    public Line(Long id, String name, String color, SectionList sections) {
+    public Line(Long id, String name, String color) {
         this(name, color);
         this.id = id;
-        this.sections = sections;
     }
 
     /**
@@ -50,7 +43,7 @@ public class Line extends BaseEntity {
     public static Line create(String name, String color, Station upStation, Station downStation, int distance) {
         verifyAvailable(name, color, upStation, downStation);
         Line line = new Line(name, color);
-        line.sections.addToCreateLine(Section.create(line, upStation, downStation, distance));
+        line.sections.addSection(line, upStation, downStation, distance);
         return line;
     }
 
@@ -67,9 +60,9 @@ public class Line extends BaseEntity {
     /**
      * 비즈니스 메소드
      */
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
+    public void update(String name, String color) {
+        this.name = name;
+        this.color = color;
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {

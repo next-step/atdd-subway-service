@@ -5,8 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -19,9 +17,8 @@ public class SectionTest {
     private void setUp() {
         방화역 = new Station(1L, "방화역");
         하남검단산역 = new Station(2L, "하남검단산역");
-        SectionList sections = new SectionList(new ArrayList<>());
-        오호선 = new Line(1L, "오호선", "보라색", sections);
-        sections.addToCreateLine(new Section(1L, 오호선, 방화역, 하남검단산역, 10));
+        오호선 = new Line(1L, "오호선", "보라색");
+        오호선.addSection(방화역, 하남검단산역, 10);
     }
 
     @DisplayName("구간등록 - 예외발생 - 구간의 두 역이 이미 노선에 등록되어있으면 구간 등록될 수 없다.")
