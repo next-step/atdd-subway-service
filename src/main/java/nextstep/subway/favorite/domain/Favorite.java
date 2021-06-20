@@ -12,9 +12,7 @@ public class Favorite {
   @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @ManyToOne
-  @JoinColumn(name = "member_id")
-  private Member member;
+  private Long memberId;
 
   @ManyToOne
   @JoinColumn(name = "source_station_id")
@@ -26,15 +24,15 @@ public class Favorite {
 
   protected Favorite() {}
 
-  public Favorite(Member member, Station sourceStation, Station targetStation) {
-    this.member = member;
+  public Favorite(Long memberId, Station sourceStation, Station targetStation) {
+    this.memberId = memberId;
     this.sourceStation = sourceStation;
     this.targetStation = targetStation;
   }
 
-  public Favorite(Long id, Member member, Station sourceStation, Station targetStation) {
+  public Favorite(Long id, Long memberId, Station sourceStation, Station targetStation) {
     this.id = id;
-    this.member = member;
+    this.memberId = memberId;
     this.sourceStation = sourceStation;
     this.targetStation = targetStation;
   }
@@ -56,11 +54,11 @@ public class Favorite {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Favorite favorite = (Favorite) o;
-    return Objects.equals(id, favorite.id) && Objects.equals(member, favorite.member) && Objects.equals(sourceStation, favorite.sourceStation) && Objects.equals(targetStation, favorite.targetStation);
+    return Objects.equals(id, favorite.id) && Objects.equals(memberId, favorite.memberId) && Objects.equals(sourceStation, favorite.sourceStation) && Objects.equals(targetStation, favorite.targetStation);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, member, sourceStation, targetStation);
+    return Objects.hash(id, memberId, sourceStation, targetStation);
   }
 }
