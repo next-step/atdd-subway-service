@@ -44,7 +44,7 @@ public class Line extends BaseEntity {
     }
 
     private void add(Section section) {
-        if (stations().isEmpty()) {
+        if (isEmpty()) {
             sections.add(section);
             return;
         }
@@ -71,7 +71,7 @@ public class Line extends BaseEntity {
         if (contains(upStation) && contains(downStation)) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
-        if (!stations().isEmpty() && !contains(upStation) && !contains(downStation)) {
+        if (!isEmpty() && !contains(upStation) && !contains(downStation)) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
     }
@@ -109,7 +109,7 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> stations() {
-        if (sections.isEmpty()) {
+        if (isEmpty()) {
             return Collections.emptyList();
         }
 
@@ -133,7 +133,7 @@ public class Line extends BaseEntity {
     }
 
     private Station findUpStation() {
-        Station downStation = getSections().get(0).getUpStation();
+        Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = getSections().stream()
@@ -150,6 +150,10 @@ public class Line extends BaseEntity {
 
     private boolean contains(Station station) {
         return stations().stream().anyMatch(it -> it == station);
+    }
+
+    private boolean isEmpty() {
+        return sections.isEmpty();
     }
 
     public Long getId() {
