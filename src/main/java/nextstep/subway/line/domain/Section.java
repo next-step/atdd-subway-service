@@ -25,6 +25,8 @@ public class Section {
 
     private int distance;
 
+    private int sequence;
+
     public Section() {
     }
 
@@ -33,6 +35,22 @@ public class Section {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public Section(Line line, Station upStation, Station downStation, int distance, int sequence) {
+        this.line = line;
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
+        this.sequence = sequence;
+    }
+
+    public int getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(int sequence) {
+        this.sequence = sequence;
     }
 
     public Long getId() {

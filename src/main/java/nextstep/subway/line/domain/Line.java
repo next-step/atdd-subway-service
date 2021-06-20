@@ -4,8 +4,9 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,8 +19,9 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @OneToMany(mappedBy = "line", cascade = {CascadeType.ALL }, orphanRemoval = true)
+    @OrderBy("sequence ASC")
+    private List<Section> sections = new LinkedList<>();
 
     public Line() {
     }
@@ -32,7 +34,8 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        Section e = new Section(this, upStation, downStation, distance, 0);
+        sections.add(e);
     }
 
     public void update(Line line) {
@@ -63,6 +66,9 @@ public class Line extends BaseEntity {
         boolean isUpStationExisted = this.sections.stream().anyMatch(section -> section.getUpStation().equals(upStation));
         boolean isDownStationExisted = this.sections.stream().anyMatch(section -> section.getDownStation().equals(downStation));
 
+        boolean isUpStationAndDownStationNotEquals = this.sections.stream().anyMatch(section -> section.getUpStation().equals(downStation));
+        boolean isDownStationAndUpStationNotEquals = this.sections.stream().anyMatch(section -> section.getDownStation().equals(upStation));
+
         if (isDownStationExisted && isUpStationExisted) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
@@ -76,7 +82,37 @@ public class Line extends BaseEntity {
             return;
         }
 
-        updateDownStationWhenEqualsDownStations(newSection, upStation, downStation, distance);
+        if (isDownStationExisted) {
+            updateDownStationWhenEqualsDownStations(newSection, upStation, downStation, distance);
+            return;
+        }
+
+        if (isUpStationAndDownStationNotEquals) {
+            this.sections.stream()
+                    .filter(section -> section.getUpStation().equals(downStation))
+                    .findFirst()
+                    .ifPresent(section ->
+                            addSectionBehindOfOriginal(section, newSection)
+                    );
+            return;
+        }
+
+        if (isDownStationAndUpStationNotEquals) {
+            this.sections.stream()
+                    .filter(section -> section.getDownStation().equals(upStation))
+                    .findFirst()
+                    .ifPresent(section ->
+                            addSectionOriginalIndex(section, newSection)
+                    );
+        }
+    }
+
+    private void addSectionBehindOfOriginal(Section targetSection, Section original) {
+        this.sections.add(this.sections.indexOf(original) + 1, targetSection);
+    }
+
+    private void addSectionOriginalIndex(Section targetSection, Section original) {
+        this.sections.add(this.sections.indexOf(original), targetSection);
     }
 
     private void updateDownStationWhenEqualsDownStations(Section newSection, Station upStation, Station downStation, int distance) {
@@ -114,8 +150,31 @@ public class Line extends BaseEntity {
     }
 
     private AdjacentSections getSectionsContainingStation(Station station) {
-        return AdjacentSections.of(this.sections.stream()
+        List<Section> collect = this.sections.stream()
                 .filter(section -> section.getUpStation().equals(station) || section.getDownStation().equals(station))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
+
+        return AdjacentSections.of(collect);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Line line = (Line) o;
+        return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color) && Objects.equals(sections, line.sections);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, color, sections);
+    }
+
+    public void syncSequence() {
+        List<Section> list = this.sections;
+        for (int i = 0; i < list.size(); i++) {
+            Section section = list.get(i);
+            section.setSequence(i);
+        }
     }
 }

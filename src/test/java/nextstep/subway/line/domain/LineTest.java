@@ -13,14 +13,16 @@ class LineTest {
     private Station 강남;
     private Station 광교;
     private Station 정자;
-    private int disatnce;
     private Station 미금;
+    private int disatnce;
+
 
     @BeforeEach
     void setUp() {
         강남 = new Station("강남");
         광교 = new Station("광교");
         정자 = new Station("정자");
+        미금 = new Station("미금");
         신분당선 = new Line("신분당선", "abc", 강남, 광교, 10);
         disatnce = 10;
     }
@@ -112,5 +114,19 @@ class LineTest {
         assertThat(신분당선.getStations()).containsExactly(강남, 정자, 광교);
 
         assertThatThrownBy(() -> 신분당선.removeStation(광교)).isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void removeStation2() {
+        Section newSection = new Section(신분당선, 강남, 정자, 2);
+        신분당선.addSection(newSection);
+        assertThat(신분당선.getStations()).containsExactly(강남, 정자, 광교);
+        Section newSection2 = new Section(신분당선, 정자, 미금, 2);
+        신분당선.addSection(newSection2);
+        assertThat(신분당선.getStations()).containsExactly(강남, 정자, 미금, 광교);
+
+        신분당선.removeStation(미금);
+
+        assertThat(신분당선.getStations()).containsExactly(강남, 정자, 광교);
     }
 }
