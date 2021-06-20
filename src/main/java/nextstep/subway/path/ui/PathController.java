@@ -23,7 +23,7 @@ public class PathController {
     }
 
     @ExceptionHandler({
-            NoStationInListException.class, SameSourceTargetException.class, SourceTargetNotConnectException.class
+            SameSourceTargetException.class, SourceTargetNotConnectException.class
     })
     public ResponseEntity exceptionHandler() {
         return ResponseEntity.badRequest().build();
