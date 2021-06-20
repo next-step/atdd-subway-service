@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import javax.persistence.EntityNotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -34,7 +35,7 @@ public class LineService {
         Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
         List<StationResponse> stations = getStations(persistLine).stream()
-                .map(it -> StationResponse.of(it))
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
         return LineResponse.of(persistLine, stations);
     }
@@ -44,7 +45,7 @@ public class LineService {
         return persistLines.stream()
                 .map(line -> {
                     List<StationResponse> stations = getStations(line).stream()
-                            .map(it -> StationResponse.of(it))
+                            .map(StationResponse::of)
                             .collect(Collectors.toList());
                     return LineResponse.of(line, stations);
                 })
@@ -59,7 +60,7 @@ public class LineService {
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         List<StationResponse> stations = getStations(persistLine).stream()
-                .map(it -> StationResponse.of(it))
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
         return LineResponse.of(persistLine, stations);
     }
@@ -73,6 +74,9 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
+    /**
+     * TODO - 리팩토링후 제거 대상
+     */
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -112,6 +116,17 @@ public class LineService {
         } else {
             throw new RuntimeException();
         }
+    }
+
+    /**
+     * TODO - 리팩토링 후 기존 로직 대체
+     */
+    public void newAddLineStation(Long lineId, SectionRequest request) {
+        Station upStation = stationService.findStationById(request.getUpStationId());
+        Station downStation = stationService.findStationById(request.getDownStationId());
+        Line persistLine = lineRepository.findById(lineId).orElseThrow(EntityNotFoundException::new);
+        Section section = new Section(persistLine, upStation, downStation, request.getDistance());
+        persistLine.addSection(section);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
