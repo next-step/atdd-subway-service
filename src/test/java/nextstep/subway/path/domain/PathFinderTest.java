@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class PathFinderTest {
 
-    Stations allStations;
+    List<Station> allStations;
     Lines lines;
 
     Station 강남역;
@@ -51,7 +51,7 @@ public class PathFinderTest {
         동춘역 = new Station("동춘역");
         동막역 = new Station("동막역");
 
-        allStations = new Stations(Arrays.asList(강남역, 역삼역, 선릉역, 교대역, 남부터미널역, 양재역, 매봉역, 도곡역, 한티역, 동춘역, 동막역));
+        allStations = Arrays.asList(강남역, 역삼역, 선릉역, 교대역, 남부터미널역, 양재역, 매봉역, 도곡역, 한티역, 동춘역, 동막역);
 
         Line 이호선 = new Line("이호선", "green", 강남역, 역삼역, 10);
         이호선.addSection(new Section(역삼역, 선릉역, 10));
