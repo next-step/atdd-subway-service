@@ -66,7 +66,7 @@ public class Sections {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return Collections.unmodifiableList(sections);
     }
 
     private Optional<Section> getSection(Predicate<Section> sectionPredicate) {
