@@ -1,14 +1,17 @@
 package nextstep.subway.line.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 public class Line extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,8 +19,8 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Sections sections = new Sections();
 
     public Line() {
     }
@@ -50,7 +53,16 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
+    public void addSection(Section section) {
+        section.toLine(this);
+        sections.add(section);
+    }
+
+    public Sections getSections() {
         return sections;
+    }
+
+    public void deleteStation(Station station) {
+        sections.delete(station);
     }
 }
