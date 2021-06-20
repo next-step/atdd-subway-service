@@ -28,4 +28,12 @@ public class LineTest {
         List<Station> stations = 신분당선.getStations();
         assertThat(stations).containsExactly(강남역, 광교역);
     }
+
+    @Test
+    void 노선_이름_색상_업데이트() {
+        Line expected = new Line("구분당선", "green");
+        신분당선.update(expected);
+        assertThat(신분당선.getName()).isEqualTo(expected.getName());
+        assertThat(신분당선.getColor()).isEqualTo(expected.getColor());
+    }
 }
