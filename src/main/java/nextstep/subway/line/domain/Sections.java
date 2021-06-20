@@ -1,15 +1,18 @@
 package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
 
-    public static final String SECTIONS_CANNOT_BE_NULL = "구간목록은 NULL이 될수 없습니다.";
     public static final String SECTION_ALREADY_EXISTS = "이미 상행역과 하행역으로 연결되는 구간이 등록되어 있습니다.";
     public static final String THERE_IS_NO_STATION_INCLUDED_BETWEEN_UP_AND_DOWN_STATIONS = "상행역과 하행역 둘중 포함되는 역이 없습니다.";
 
@@ -59,6 +62,54 @@ public class Sections {
     private boolean isPresentAnyStation(Section section) {
         return sections.stream()
             .anyMatch(s -> s.isPresentAnyStation(section));
+    }
+
+    public List<Station> findStationsInOrder() {
+        List<Station> results = new ArrayList<>();
+
+        //첫번째 구간 찾기
+        if (findFirstSection().isPresent()) {
+            Section firstSection = findFirstSection().get();
+            List<Section> sortSections = new ArrayList<>(Arrays.asList(firstSection));
+
+            //재귀호출하여 구간 이어붙히기
+            recursiveSort(sortSections, firstSection);
+
+            //정렬된 역 목록 만들어서 반환하기
+            results.add(firstSection.getUpStation());
+            results.addAll(getDownStations(sortSections));
+        }
+        return results;
+    }
+
+    private void recursiveSort(List<Section> sortSections, Section beforeSection) {
+        this.sections.stream()
+            .filter(section -> section.isAfter(beforeSection))
+            .findFirst()
+            .ifPresent(section -> {
+                //뒤에 붙히기
+                sortSections.add(section);
+
+                //재귀호출
+                recursiveSort(sortSections, section);
+            });
+    }
+
+    private Optional<Section> findFirstSection() {
+        return sections.stream()
+            .filter(this::notExistPrevious)
+            .findFirst();
+    }
+
+    private boolean notExistPrevious(Section dest) {
+        return sections.stream()
+            .noneMatch(section -> section.isBefore(dest));
+    }
+
+    private List<Station> getDownStations(List<Section> list) {
+        return list.stream()
+            .map(Section::getDownStation)
+            .collect(Collectors.toList());
     }
 
     public List<Section> getSections() {

@@ -51,7 +51,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록됨(response);
 
         // When : 지하철 노선에 등록된 역 목록 조회 요청
-        ExtractableResponse<Response> lineResponse = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+        ExtractableResponse<Response> lineResponse = LineAcceptanceTest.NEW_지하철_노선_조회_요청(신분당선);
 
         // Then : 등록한 지하철 구간이 반영된 역 목록이 조회됨
         지하철_노선에_지하철역_순서_정렬됨(lineResponse, Arrays.asList(강남역, 양재역, 광교역));
