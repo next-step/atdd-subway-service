@@ -33,7 +33,7 @@ public class LineResponse {
     }
 
     public static LineResponse of(Line line) {
-        List<StationResponse> stations = line.getSectionFirstClassCollection()
+        List<StationResponse> stations = line.getSections()
             .findStationsInOrder().stream()
             .map(StationResponse::of)
             .collect(Collectors.toList());
