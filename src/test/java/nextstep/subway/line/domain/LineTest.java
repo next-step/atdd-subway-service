@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("노선 entity 테스트")
 public class LineTest {
@@ -35,5 +36,47 @@ public class LineTest {
         신분당선.update(expected);
         assertThat(신분당선.getName()).isEqualTo(expected.getName());
         assertThat(신분당선.getColor()).isEqualTo(expected.getColor());
+    }
+
+    @Test
+    void 노선에_구간_추가_middle() {
+        Station 양재역 = new Station("양재역");
+        Section section = new Section(신분당선, 강남역, 양재역, 3);
+        신분당선.addSection(section);
+        assertThat(신분당선.getSections()).contains(section);
+    }
+
+    @Test
+    void 노선에_구간_추가_up() {
+        Station 양재역 = new Station("양재역");
+        Section section = new Section(신분당선, 양재역, 강남역, 3);
+        신분당선.addSection(section);
+        assertThat(신분당선.getSections()).contains(section);
+    }
+
+    @Test
+    void 노선에_구간_추가_down() {
+        Station 정자역 = new Station("정자역");
+        Section section = new Section(신분당선, 광교역, 정자역, 3);
+        신분당선.addSection(section);
+        assertThat(신분당선.getSections()).contains(section);
+    }
+
+    @Test
+    void 이미_추가된_구간_노선에_추가_시_에러_발생() {
+        Section section = new Section(신분당선, 강남역, 광교역, 10);
+        assertThatThrownBy(() -> 신분당선.addSection(section))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("이미 등록된 구간 입니다.");
+    }
+
+    @Test
+    void 등록할_수_없는_구간_노선에_추가_시_에러_발생() {
+        Station 양재역 = new Station("양재역");
+        Station 정자역 = new Station("정자역");
+        Section section = new Section(신분당선, 양재역, 정자역, 3);
+        assertThatThrownBy(() -> 신분당선.addSection(section))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("등록할 수 없는 구간 입니다.");
     }
 }
