@@ -114,7 +114,9 @@ public class Sections {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            Distance newDistance = Distance.valueOf(0);
+            newDistance.plus(upLineStation.get().getDistance());
+            newDistance.plus(downLineStation.get().getDistance());
             sections.add(new Section(line, newUpStation, newDownStation, newDistance));
         }
 

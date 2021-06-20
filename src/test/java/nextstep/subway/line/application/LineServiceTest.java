@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -95,25 +95,19 @@ class LineServiceTest {
 
     @Test
     void removeLineStation() {
-    }
+        //given
+        when(lineRepository.findById(any())).thenReturn(Optional.of(일호선));
+        when(stationService.findStationById(서울역.getId())).thenReturn(서울역);
+        when(stationService.findStationById(남영역.getId())).thenReturn(남영역);
+        lineService.addLineStation(일호선.getId(), new SectionRequest(서울역.getId(), 남영역.getId(), 1));
 
-    @Test
-    void findLines() {
-    }
+        //when
+        lineService.removeLineStation(일호선.getId(), 서울역.getId());
 
-    @Test
-    void findLineById() {
-    }
-
-    @Test
-    void findLineResponseById() {
-    }
-
-    @Test
-    void updateLine() {
-    }
-
-    @Test
-    void deleteLineById() {
+        //then
+        assertAll(() -> {
+            assertThat(일호선.getStations().size()).isEqualTo(2);
+            assertThat(일호선.getStations()).containsAll(Arrays.asList(용산역, 남영역));
+        });
     }
 }
