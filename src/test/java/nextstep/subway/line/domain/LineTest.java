@@ -4,6 +4,7 @@ import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,7 +41,28 @@ class LineTest {
         // then
         List<Station> stations = 신분당선.stations();
         assertThat(stations.size()).isEqualTo(3);
-        assertThat(stations.get(0)).isEqualTo(강남역);
-        assertThat(stations.get(2)).isEqualTo(정자역);
+        assertThat(stations).isEqualTo(Arrays.asList(강남역, 양재역, 정자역));
+    }
+
+    @DisplayName("노선에서 역 제거")
+    @Test
+    void removeStation() {
+        // given
+        Station 강남역 = new Station("강남역");
+        Station 정자역 = new Station("정자역");
+        Line 신분당선 = new Line("신분당선", "red", 강남역, 정자역, 35);
+
+        Station 양재역 = new Station("양재역");
+        Station 판교역 = new Station("판교역");
+        신분당선.add(강남역, 양재역, 5);
+        신분당선.add(양재역, 판교역, 15);
+
+        // when
+        신분당선.remove(양재역);
+
+        // then
+        List<Station> stations = 신분당선.stations();
+        assertThat(stations.size()).isEqualTo(3);
+        assertThat(stations).isEqualTo(Arrays.asList(강남역, 판교역, 정자역));
     }
 }
