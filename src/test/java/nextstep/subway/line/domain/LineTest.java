@@ -79,4 +79,36 @@ public class LineTest {
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage("등록할 수 없는 구간 입니다.");
     }
+
+    @Test
+    void 노선_제거_middle() {
+        Station 양재역 = new Station("양재역");
+        Section section = new Section(신분당선, 강남역, 양재역, 3);
+        신분당선.addSection(section);
+        신분당선.removeSection(양재역);
+        assertThat(신분당선.getStations()).containsExactly(강남역, 광교역);
+    }
+
+    @Test
+    void 노선_제거_up() {
+        Station 양재역 = new Station("양재역");
+        Section section = new Section(신분당선, 강남역, 양재역, 3);
+        신분당선.addSection(section);
+        신분당선.removeSection(강남역);
+        assertThat(신분당선.getStations()).containsExactly(양재역, 광교역);
+    }
+
+    @Test
+    void 노선_제거_down() {
+        Station 양재역 = new Station("양재역");
+        Section section = new Section(신분당선, 강남역, 양재역, 3);
+        신분당선.addSection(section);
+        신분당선.removeSection(광교역);
+        assertThat(신분당선.getStations()).containsExactly(강남역, 양재역);
+    }
+
+    @Test
+    void 한개의_구간할때_구간_삭제_실행하면_에러_발생() {
+        assertThatThrownBy(() -> 신분당선.removeSection(강남역)).isInstanceOf(RuntimeException.class);
+    }
 }

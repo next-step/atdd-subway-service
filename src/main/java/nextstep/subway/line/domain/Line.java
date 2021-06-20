@@ -119,6 +119,29 @@ public class Line extends BaseEntity {
         }
     }
 
+    public void removeSection(Station station) {
+        if (sections.size() <= 1) {
+            throw new RuntimeException();
+        }
+
+        Optional<Section> upLineStation = sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+        Optional<Section> downLineStation = sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            getSections().add(new Section(this, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> getSections().remove(it));
+        downLineStation.ifPresent(it -> getSections().remove(it));
+    }
+
     private Station findUpStation() {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
