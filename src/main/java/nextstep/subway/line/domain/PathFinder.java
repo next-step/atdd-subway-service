@@ -1,6 +1,5 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.line.domain;
 
-import nextstep.subway.line.domain.Lines;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -12,7 +11,7 @@ import java.util.NoSuchElementException;
 
 public class PathFinder {
 
-    private DijkstraShortestPath dijkstraShortestPath;
+    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
     public PathFinder(Lines lines, Stations stations) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
@@ -25,13 +24,11 @@ public class PathFinder {
 
     private void initSectionEdge(Lines lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         lines.getSections()
-                .stream()
                 .forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance()));
     }
 
     private void initStationVertex(Stations stations, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         stations.getStations()
-                .stream()
                 .forEach(station -> graph.addVertex(station));
     }
 
