@@ -19,7 +19,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -27,11 +26,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class LineServiceTest {
-    private LineService lineService;
+class LineCommandServiceTest {
+    private LineCommandService lineCommandService;
 
     @Mock
     private LineRepository lineRepository;
+
+    @Mock
+    private LineQueryService lineQueryService;
 
     @Mock
     private StationService stationService;
@@ -45,7 +47,7 @@ class LineServiceTest {
 
     @BeforeEach
     void setUp() {
-        lineService = new LineService(lineRepository, stationService);
+        lineCommandService = new LineCommandService(lineQueryService, stationService, lineRepository);
         lineRequest1 = new LineRequest("1호선", "blue", 1L, 2L, 10);
         용산역 = new Station("용산역");
         ReflectionTestUtils.setField(용산역, "id", 1L);
@@ -68,7 +70,7 @@ class LineServiceTest {
         when(lineRepository.save(any())).thenReturn(일호선);
 
         //when
-        LineResponse actual = lineService.saveLine(lineRequest1);
+        LineResponse actual = lineCommandService.saveLine(lineRequest1);
 
         //then
         assertAll(() -> {
@@ -82,12 +84,12 @@ class LineServiceTest {
     @Test
     void addLineStation() {
         //given
-        when(lineRepository.findById(any())).thenReturn(Optional.of(일호선));
+        when(lineQueryService.findLineById(any())).thenReturn(일호선);
         when(stationService.findStationById(서울역.getId())).thenReturn(서울역);
         when(stationService.findStationById(남영역.getId())).thenReturn(남영역);
 
         //when
-        lineService.addLineStation(일호선.getId(), new SectionRequest(서울역.getId(), 남영역.getId(), 1));
+        lineCommandService.addLineStation(일호선.getId(), new SectionRequest(서울역.getId(), 남영역.getId(), 1));
 
         //then
         assertThat(일호선.getStations()).containsAll(Arrays.asList(용산역, 서울역, 남영역));
@@ -96,13 +98,13 @@ class LineServiceTest {
     @Test
     void removeLineStation() {
         //given
-        when(lineRepository.findById(any())).thenReturn(Optional.of(일호선));
+        when(lineQueryService.findLineById(any())).thenReturn(일호선);
         when(stationService.findStationById(서울역.getId())).thenReturn(서울역);
         when(stationService.findStationById(남영역.getId())).thenReturn(남영역);
-        lineService.addLineStation(일호선.getId(), new SectionRequest(서울역.getId(), 남영역.getId(), 1));
+        lineCommandService.addLineStation(일호선.getId(), new SectionRequest(서울역.getId(), 남영역.getId(), 1));
 
         //when
-        lineService.removeLineStation(일호선.getId(), 서울역.getId());
+        lineCommandService.removeLineStation(일호선.getId(), 서울역.getId());
 
         //then
         assertAll(() -> {
