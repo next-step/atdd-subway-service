@@ -74,4 +74,30 @@ public class MemberHelper {
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    public static ExtractableResponse<Response> 내_정보_찾기(String accessToken) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_삭제(String accessToken, MemberRequest updateMemberRequest) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .body(updateMemberRequest)
+                .when().delete("/members/me")
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_업데이트(String accessToken, MemberRequest updateMemberRequest) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(updateMemberRequest)
+                .when().put("/members/me")
+                .then().log().all().extract();
+    }
 }
