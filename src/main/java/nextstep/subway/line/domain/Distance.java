@@ -20,8 +20,15 @@ public class Distance {
         this.distance = distance;
     }
 
-    public static Distance valueOf(int distance){
+    public static Distance valueOf(int distance) {
         return new Distance(distance);
+    }
+
+    public static Distance merge(Distance distanceToMerge, Distance otherDistanceToMerge) {
+        Distance newDistance = Distance.valueOf(0);
+        newDistance.plus(distanceToMerge);
+        newDistance.plus(otherDistanceToMerge);
+        return newDistance;
     }
 
     private void validate(int distance) {
@@ -41,7 +48,7 @@ public class Distance {
         distance -= distanceToMinus.getDistance();
     }
 
-    private boolean isAvailableMinus(Distance distanceToMinus){
+    private boolean isAvailableMinus(Distance distanceToMinus) {
         return distance > distanceToMinus.getDistance();
     }
 

@@ -30,38 +30,48 @@ public class Sections {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
+        Station downStation = findFirstUpStation();
         stations.add(downStation);
+        addNextStation(stations, downStation);
+        return stations;
+    }
 
+    private void addNextStation(List<Station> stations, Station downStation) {
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
+            Optional<Section> nextLineStation = findNextStation(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
             downStation = nextLineStation.get().getDownStation();
             stations.add(downStation);
         }
-
-        return stations;
     }
 
-    private Station findUpStation() {
+    private Optional<Section> findNextStation(Station finalDownStation) {
+        return sections.stream()
+                .filter(it -> it.isUpStationEqualsToStation(finalDownStation))
+                .findFirst();
+    }
+
+    private Station findFirstUpStation() {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
+            Optional<Section> previousLineStation = findPreviousStation(finalDownStation);
+            if (!previousLineStation.isPresent()) {
                 break;
             }
-            downStation = nextLineStation.get().getUpStation();
+            downStation = previousLineStation.get().getUpStation();
         }
 
         return downStation;
+    }
+
+    private Optional<Section> findPreviousStation(Station finalDownStation) {
+        return sections.stream()
+                .filter(it -> it.isDownStationEqualsToStation(finalDownStation))
+                .findFirst();
     }
 
     public void add(Section section) {
@@ -104,19 +114,13 @@ public class Sections {
             throw new IllegalArgumentException(AT_LEAST_ONE_SECTION_EXCEPTION_MESSAGE);
         }
 
-        Optional<Section> upLineStation = sections.stream()
-                .filter(it -> it.isUpStationEqualsToStation(station))
-                .findFirst();
-        Optional<Section> downLineStation = sections.stream()
-                .filter(it -> it.isDownStationEqualsToStation(station))
-                .findFirst();
+        Optional<Section> upLineStation = findNextStation(station);
+        Optional<Section> downLineStation = findPreviousStation(station);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
-            Distance newDistance = Distance.valueOf(0);
-            newDistance.plus(upLineStation.get().getDistance());
-            newDistance.plus(downLineStation.get().getDistance());
+            Distance newDistance = Distance.merge(upLineStation.get().getDistance(), downLineStation.get().getDistance());
             sections.add(new Section(line, newUpStation, newDownStation, newDistance));
         }
 
