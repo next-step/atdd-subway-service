@@ -23,9 +23,7 @@ public class Sections {
 			return Arrays.asList();
 		}
 
-		List<Station> stations = makeOrderedStations();
-
-		return stations;
+		return makeOrderedStations();
 	}
 
 	private List<Station> makeOrderedStations() {
@@ -117,11 +115,23 @@ public class Sections {
 		return stations.stream().anyMatch(it -> it.equals(section.getUpStation()));
 	}
 
+	private boolean isStationExisted(Station station, List<Station> stations) {
+		return stations.stream().anyMatch(it -> it.equals(station));
+	}
+
 	private void validateConnectedStationToOldLineExists(Section section, List<Station> stations) {
-		if (!stations.isEmpty() && stations.stream().noneMatch(it -> it.equals(section.getUpStation())) &&
-			stations.stream().noneMatch(it -> it.equals(section.getDownStation()))) {
+		if (!stations.isEmpty() && isMatchExisted(section.getUpStation(), stations) && isMatchExisted(section.getDownStation(), stations)) {
 			throw new RuntimeException("등록할 수 없는 구간 입니다.");
 		}
+
+		// if (!stations.isEmpty() && stations.stream().noneMatch(it -> it.equals(section.getUpStation())) &&
+		// 	stations.stream().noneMatch(it -> it.equals(section.getDownStation()))) {
+		// 	throw new RuntimeException("등록할 수 없는 구간 입니다.");
+		// }
+	}
+
+	private boolean isMatchExisted(Station station, List<Station> stations) {
+		return stations.stream().noneMatch(it -> it.equals(station));
 	}
 
 	private void validateTwoStationsAlreadyExists(boolean isUpStationExisted, boolean isDownStationExisted) {
