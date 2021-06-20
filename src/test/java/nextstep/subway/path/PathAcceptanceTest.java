@@ -42,19 +42,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음(
-                makeParams("신분당선", "bg-red-600", 강남역, 양재역, 10)).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(
-                makeParams("이호선", "bg-red-600", 교대역, 강남역, 10)).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(
-                makeParams("삼호선", "bg-red-600", 교대역, 양재역, 5)).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
-    }
-
-    private LineRequest makeParams(String lineName, String lineColor,
-                                   StationResponse source, StationResponse target, int distance) {
-        return new LineRequest(lineName, lineColor, source.getId(), target.getId(), distance);
     }
 
     @DisplayName("최단 경로를 조회한다.")

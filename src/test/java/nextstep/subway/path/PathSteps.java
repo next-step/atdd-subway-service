@@ -13,8 +13,10 @@ public class PathSteps {
     public static ExtractableResponse<Response> 지하철_노선_최단경로_조회_요청(
             StationResponse source, StationResponse target) {
         return RestAssured.given().log().all()
+                .queryParam("source", source.getId())
+                .queryParam("target", target.getId())
                 .when()
-                .get("/paths?source={sourceId}&target={targetId}", source.getId(), target.getId())
+                .get("/paths")
                 .then().log().all()
                 .extract();
     }
