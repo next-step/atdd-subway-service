@@ -70,10 +70,11 @@ public class Sections {
 
     public List<Station> findStationsInOrder() {
         List<Station> results = new ArrayList<>();
+        Optional<Section> optionalSection = findFirstSection();
 
         //첫번째 구간 찾기
-        if (findFirstSection().isPresent()) {
-            Section firstSection = findFirstSection().get();
+        if (optionalSection.isPresent()) {
+            Section firstSection = optionalSection.get();
             List<Section> sortSections = new ArrayList<>(Arrays.asList(firstSection));
 
             //재귀호출하여 구간 이어붙히기
