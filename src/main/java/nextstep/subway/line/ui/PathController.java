@@ -1,7 +1,7 @@
-package nextstep.subway.path.ui;
+package nextstep.subway.line.ui;
 
-import nextstep.subway.path.application.PathService;
-import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.line.application.PathService;
+import nextstep.subway.line.dto.PathResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
