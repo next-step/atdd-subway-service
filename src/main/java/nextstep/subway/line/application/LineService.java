@@ -35,7 +35,7 @@ public class LineService {
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
         List<StationResponse> stations = getStations(persistLine).stream()
                 .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()); // TODO : 리팩로링 대상
         return LineResponse.of(persistLine, stations);
     }
 
@@ -139,7 +139,7 @@ public class LineService {
         downLineStation.ifPresent(it -> line.getSections().remove(it));
     }
 
-
+    // TODO : 리팩토링 후 삭제대상
     public List<Station> getStations(Line line) {
         if (line.getSections().isEmpty()) {
             return Arrays.asList();
