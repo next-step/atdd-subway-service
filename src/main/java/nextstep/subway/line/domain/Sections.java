@@ -74,8 +74,10 @@ public class Sections {
 		}
 
 		List<Station> stations = getStations();
-		boolean isUpStationExisted = isUpStationExisted(section, stations);
-		boolean isDownStationExisted = isDownStationExisted(section, stations);
+		//boolean isUpStationExisted = isUpStationExisted(section, stations);
+		boolean isUpStationExisted = isStationExisted(section.getUpStation(), stations);
+		//boolean isDownStationExisted = isDownStationExisted(section, stations);
+		boolean isDownStationExisted = isStationExisted(section.getDownStation(), stations);
 
 		validateTwoStationsAlreadyExists(isUpStationExisted, isDownStationExisted);
 		validateConnectedStationToOldLineExists(section, stations);
@@ -107,14 +109,6 @@ public class Sections {
 			.ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
 	}
 
-	private boolean isDownStationExisted(Section section, List<Station> stations) {
-		return stations.stream().anyMatch(it -> it.equals(section.getDownStation()));
-	}
-
-	private boolean isUpStationExisted(Section section, List<Station> stations) {
-		return stations.stream().anyMatch(it -> it.equals(section.getUpStation()));
-	}
-
 	private boolean isStationExisted(Station station, List<Station> stations) {
 		return stations.stream().anyMatch(it -> it.equals(station));
 	}
@@ -123,11 +117,6 @@ public class Sections {
 		if (!stations.isEmpty() && isMatchExisted(section.getUpStation(), stations) && isMatchExisted(section.getDownStation(), stations)) {
 			throw new RuntimeException("등록할 수 없는 구간 입니다.");
 		}
-
-		// if (!stations.isEmpty() && stations.stream().noneMatch(it -> it.equals(section.getUpStation())) &&
-		// 	stations.stream().noneMatch(it -> it.equals(section.getDownStation()))) {
-		// 	throw new RuntimeException("등록할 수 없는 구간 입니다.");
-		// }
 	}
 
 	private boolean isMatchExisted(Station station, List<Station> stations) {
