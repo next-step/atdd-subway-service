@@ -69,21 +69,16 @@ public class Sections {
     }
 
     public List<Station> findStationsInOrder() {
-        List<Station> results = new ArrayList<>();
-        Optional<Section> optionalSection = findFirstSection();
-
-        //첫번째 구간 찾기
-        if (optionalSection.isPresent()) {
-            Section firstSection = optionalSection.get();
-            List<Section> sortSections = new ArrayList<>(Arrays.asList(firstSection));
-
-            //재귀호출하여 구간 이어붙히기
-            recursiveSort(sortSections, firstSection);
-
-            //정렬된 역 목록 만들어서 반환하기
-            results.add(firstSection.getUpStation());
-            results.addAll(getDownStations(sortSections));
+        Section firstSection = findFirstSection();
+        if (firstSection == null) {
+            return new ArrayList<>();
         }
+        List<Section> sortSections = new ArrayList<>(Arrays.asList(firstSection));
+        recursiveSort(sortSections, firstSection);
+
+        List<Station> results = new ArrayList<>();
+        results.add(firstSection.getUpStation());
+        results.addAll(getDownStations(sortSections));
         return results;
     }
 
@@ -92,18 +87,16 @@ public class Sections {
             .filter(section -> section.isAfter(beforeSection))
             .findFirst()
             .ifPresent(section -> {
-                //뒤에 붙히기
                 sortSections.add(section);
-
-                //재귀호출
                 recursiveSort(sortSections, section);
             });
     }
 
-    private Optional<Section> findFirstSection() {
+    private Section findFirstSection() {
         return sections.stream()
             .filter(this::notExistPrevious)
-            .findFirst();
+            .findFirst()
+            .orElse(null);
     }
 
     private boolean notExistPrevious(Section dest) {
