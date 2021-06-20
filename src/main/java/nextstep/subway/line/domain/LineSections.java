@@ -122,7 +122,42 @@ public class LineSections {
     }
 
     public void removeSection(Line line, Station station) {
+        validateLineSectionsHasOnly();
 
+        Optional<Section> upLineStation = findUpLineStation(station);
+        Optional<Section> downLineStation = findDownLineStation(station);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            addNewSection(line, upLineStation.get(), downLineStation.get());
+        }
+
+        upLineStation.ifPresent(lineSections::remove);
+        downLineStation.ifPresent(lineSections::remove);
+    }
+
+    private void validateLineSectionsHasOnly() {
+        if (lineSections.size() <= 1) {
+            throw new RuntimeException();
+        }
+    }
+
+    private Optional<Section> findUpLineStation(Station station) {
+        return lineSections.stream()
+            .filter(it -> it.getUpStation() == station)
+            .findFirst();
+    }
+
+    private Optional<Section> findDownLineStation(Station station) {
+        return lineSections.stream()
+            .filter(it -> it.getDownStation() == station)
+            .findFirst();
+    }
+
+    private void addNewSection(Line line, Section upLineStation, Section downLineStation) {
+        Station newUpStation = downLineStation.getUpStation();
+        Station newDownStation = upLineStation.getDownStation();
+        int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
+        lineSections.add(new Section(line, newUpStation, newDownStation, newDistance));
     }
 
     public List<Section> getLineSections() {

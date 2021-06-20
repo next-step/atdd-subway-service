@@ -113,4 +113,45 @@ public class LineSectionsTest {
         // then
         assertThat(lineSections.toStations()).containsExactly(강남역, 광교역);
     }
+
+    @DisplayName("구간의 하행 종점역 삭제")
+    @Test
+    void removeLineSection2() {
+        // given
+        LineSections lineSections = new LineSections();
+        lineSections.add(new Section(null, 강남역, 광교역, 10));
+        lineSections.add(new Section(null, 판교역, 광교역, 5));
+
+        // when
+        lineSections.removeSection(null, 광교역);
+
+        // then
+        assertThat(lineSections.toStations()).containsExactly(강남역, 판교역);
+    }
+
+    @DisplayName("구간의 상행 종점역 삭제")
+    @Test
+    void removeLineSection3() {
+        // given
+        LineSections lineSections = new LineSections();
+        lineSections.add(new Section(null, 강남역, 광교역, 10));
+        lineSections.add(new Section(null, 판교역, 광교역, 5));
+
+        // when
+        lineSections.removeSection(null, 강남역);
+
+        // then
+        assertThat(lineSections.toStations()).containsExactly(판교역, 광교역);
+    }
+
+    @DisplayName("구간이 하나인 경우, 삭제 불가능")
+    @Test
+    void removeLineSection_exception() {
+        // given
+        LineSections lineSections = new LineSections();
+        lineSections.add(new Section(null, 강남역, 광교역, 10));
+
+        // when & then
+        Assertions.assertThrows(RuntimeException.class, () -> lineSections.removeSection(null, 판교역));
+    }
 }
