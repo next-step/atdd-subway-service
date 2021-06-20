@@ -13,6 +13,7 @@ import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
+	private static final int MINIMUM_SECITON_SIZE = 1;
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private List<Section> sections = new ArrayList<>();
 
@@ -122,25 +123,46 @@ public class Sections {
 	}
 
 	public void removeLineStation(Line line, Station station) {
-		if (sections.size() <= 1) {
-			throw new RuntimeException();
-		}
+		validateStationRemovableInSections();
 
-		Optional<Section> upLineStation = sections.stream()
-			.filter(it -> it.getUpStation() == station)
-			.findFirst();
-		Optional<Section> downLineStation = sections.stream()
-			.filter(it -> it.getDownStation() == station)
-			.findFirst();
+		Optional<Section> upLineStation = findCommonUpStationSection(station);
+		Optional<Section> downLineStation = findCommonDownStationSection(station);
 
 		if (upLineStation.isPresent() && downLineStation.isPresent()) {
-			Station newUpStation = downLineStation.get().getUpStation();
-			Station newDownStation = upLineStation.get().getDownStation();
-			int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-			sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+			connectTwoStation(line, upLineStation, downLineStation);
 		}
 
-		upLineStation.ifPresent(it -> sections.remove(it));
-		downLineStation.ifPresent(it -> sections.remove(it));
+		remove(upLineStation);
+		remove(downLineStation);
+	}
+
+	private void remove(Optional<Section> optionalSection){
+		optionalSection.ifPresent(it -> sections.remove(it));
+	}
+
+	private void connectTwoStation(Line line, Optional<Section> upLineStation, Optional<Section> downLineStation) {
+		Station newUpStation = downLineStation.get().getUpStation();
+		Station newDownStation = upLineStation.get().getDownStation();
+		int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+
+		sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+	}
+
+	private Optional<Section> findCommonDownStationSection(Station station) {
+		return sections.stream()
+			.filter(it -> it.getDownStation().equals(station))
+			.findFirst();
+	}
+
+	private Optional<Section> findCommonUpStationSection(Station station) {
+		return sections.stream()
+			.filter(it -> it.getUpStation().equals(station))
+			.findFirst();
+	}
+
+	private void validateStationRemovableInSections() {
+		if (sections.size() <= MINIMUM_SECITON_SIZE) {
+			throw new RuntimeException();
+		}
 	}
 }
