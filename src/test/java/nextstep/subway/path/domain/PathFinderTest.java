@@ -107,4 +107,11 @@ public class PathFinderTest {
         //when, then
         assertThatThrownBy(() -> pathFinder.shortestPath(강남역, 동춘역)).isInstanceOf(SourceTargetNotConnectException.class);
     }
+
+    @DisplayName("출발역이 노선에 없음")
+    @Test
+    void 출발역이_노선에_없음() {
+        //when, then
+        assertThatThrownBy(() -> pathFinder.shortestPath(공사중역, 동춘역)).isInstanceOf(SourceTargetNotConnectException.class);
+    }
 }
