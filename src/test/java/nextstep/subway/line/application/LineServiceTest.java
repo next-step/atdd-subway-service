@@ -90,7 +90,11 @@ class LineServiceTest {
         lineService.addLineStation(일호선.getId(), new SectionRequest(서울역.getId(), 남영역.getId(), 1));
 
         //then
-        assertThat(일호선.getStations()).containsAll(Arrays.asList((용산역), (남영역)));
+        assertThat(일호선.getStations()).containsAll(Arrays.asList(용산역, 서울역, 남영역));
+    }
+
+    @Test
+    void removeLineStation() {
     }
 
     @Test
@@ -111,9 +115,5 @@ class LineServiceTest {
 
     @Test
     void deleteLineById() {
-    }
-
-    @Test
-    void removeLineStation() {
     }
 }

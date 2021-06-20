@@ -11,6 +11,7 @@ import java.util.*;
 public class Sections {
     public static final String EXISTS_SECTION_EXCEPTION_MESSAGE = "이미 등록된 구간 입니다.";
     public static final String NOT_EXISTS_ALL_STATIONS_EXCEPTION_MESSAGE = "등록할 수 없는 구간 입니다.";
+    public static final String AT_LEAST_ONE_SECTION_EXCEPTION_MESSAGE = "구간은 최소 한개 이상이어야만 합니다.";
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections;
@@ -63,10 +64,6 @@ public class Sections {
         return downStation;
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
     public void add(Section section) {
         List<Station> stations = getStations();
         boolean isUpStationExisted = stations.stream().anyMatch(section::isUpStationEqualsToStation);
@@ -100,5 +97,28 @@ public class Sections {
         }
 
         sections.add(section);
+    }
+
+    public void removeSection(Line line, Station station) {
+        if (sections.size() <= 1) {
+            throw new IllegalArgumentException(AT_LEAST_ONE_SECTION_EXCEPTION_MESSAGE);
+        }
+
+        Optional<Section> upLineStation = sections.stream()
+                .filter(it -> it.isUpStationEqualsToStation(station))
+                .findFirst();
+        Optional<Section> downLineStation = sections.stream()
+                .filter(it -> it.isDownStationEqualsToStation(station))
+                .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(sections::remove);
+        downLineStation.ifPresent(sections::remove);
     }
 }
