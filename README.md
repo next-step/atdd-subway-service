@@ -95,13 +95,12 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
   * **To-be** LineSectionAcceptanceTest
   
-    ```markdown
+  ```markdown
     ✅ Feature: 지하철 구간 관련 기능 
-    
         🔙 Background
             Given 지하철역 등록되어 있음
-              And 지하철 노선 등록되어 있음
-              And 지하철 노선에 지하철역 등록되어 있음        
+            And 지하철 노선 등록되어 있음
+            And 지하철 노선에 지하철역 등록되어 있음        
 
         1️⃣ Scenario : 지하철 구간 등록 관련
             When 지하철 구간 등록 요청
@@ -123,7 +122,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             
             When (노선에 구간이 하나뿐일 때) 지하철 구간 삭제 요청
             Then 지하철 구간 삭제 실패됨
-    ```
+  ```
     
 * [ ] LineService 리팩터링
     * [ ] Domain으로 옮길 로직 찾기
