@@ -115,7 +115,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - Sections 객체 신규 생성
     * [ ] Domain 객체 단위 테스트 코드 작성
         * [ ] LineRequest
-            * [ ] Station(up, down) 정보를 이용하여 Line entity 생성
+            * [x] Station(up, down) 정보를 이용하여 Line entity 생성
+            * [x] name, color 정보를 이용하여 Line entity 생성
         * [ ] Sections 일급 컬렉션 객체 생성
             * [ ] getStations: 상행에서 하행으로 정렬된 지하철역 리스트 반환
         * [ ] Line

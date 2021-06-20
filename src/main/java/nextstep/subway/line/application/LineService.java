@@ -32,8 +32,7 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        // TODO - LineRequest
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        Line persistLine = lineRepository.save(request.toLine(upStation, downStation));
         // TODO - LineResponse, Line
         List<StationResponse> stations = getStations(persistLine).stream()
                 .map(it -> StationResponse.of(it))
@@ -73,7 +72,7 @@ public class LineService {
         // TODO - findLineById 호출 하도록 변경
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
         // TODO - LineRequest에서 Line 객체 생성하도록 수정
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        persistLine.update(lineUpdateRequest.toLine());
     }
 
     public void deleteLineById(Long id) {
