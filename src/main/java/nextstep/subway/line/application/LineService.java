@@ -17,7 +17,6 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 
 @Service
 @Transactional
@@ -50,14 +49,6 @@ public class LineService {
     }
 
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        List<StationResponse> stations = getStations(persistLine).stream()
-            .map(it -> StationResponse.of(it))
-            .collect(Collectors.toList());
-        return LineResponse.of(persistLine, stations);
-    }
-
-    public LineResponse findLineResponseByIdNew(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
