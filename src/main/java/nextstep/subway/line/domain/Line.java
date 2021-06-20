@@ -1,7 +1,9 @@
 package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,6 +19,8 @@ import nextstep.subway.station.dto.StationResponse;
 
 @Entity
 public class Line extends BaseEntity {
+    private static final String NO_EXIST = "등록할 수 없는 구간 입니다.";
+    private static final String ALREADY_EXIST = "이미 등록된 구간 입니다.";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -61,21 +65,28 @@ public class Line extends BaseEntity {
         return sections;
     }
 
-    public List<StationResponse> getStations() {
-        List<StationResponse> stations = new ArrayList<>();
+    private List<Station> getStations() {
         Section nextSection = findStartSection();
+        List<Station> stations = new ArrayList<>();
 
         if (sections.isEmpty() || nextSection == null) {
-            return stations;
+            return Arrays.asList();
         }
 
-        stations.add(StationResponse.of(nextSection.getUpStation()));
+        stations.add(nextSection.getUpStation());
         while (nextSection != null) {
-            stations.add(StationResponse.of(nextSection.getDownStation()));
+            stations.add(nextSection.getDownStation());
             nextSection = findNextSection(nextSection);
         }
 
         return stations;
+
+    }
+
+    public List<StationResponse> getStationsResponse() {
+        return getStations().stream()
+            .map(station -> StationResponse.of(station))
+            .collect(Collectors.toList());
 
     }
 
@@ -97,6 +108,42 @@ public class Line extends BaseEntity {
             .filter(section -> section.isDownStationWithUp(beforeSection))
             .findFirst()
             .orElse(null);
+    }
+
+    public void addSection(Section section) {
+        List<Station> statoins = getStations();
+        validateAlreadyOrNoExist(section, statoins);
+        updateIfUpStationMatch(section);
+        updateIfDownStationMatch(section);
+        sections.add(section);
+    }
+
+    private void updateIfDownStationMatch(Section compareSection) {
+        sections.stream()
+            .filter(compareSection::sameDownStation)
+            .findFirst()
+            .ifPresent(findedSection -> findedSection.updateDownStation(compareSection.getUpStation(),
+                compareSection.getDistance()));
+    }
+
+    private void updateIfUpStationMatch(Section compareSection) {
+        sections.stream()
+            .filter(compareSection::sameUpStation)
+            .findFirst()
+            .ifPresent(findedSection -> findedSection.updateUpStation(compareSection.getDownStation(),
+                compareSection.getDistance()));
+    }
+
+    private void validateAlreadyOrNoExist(Section compareSection, List<Station> statoins) {
+        boolean hasUpStation = statoins.stream().anyMatch(station -> station.equals(compareSection.getUpStation()));
+        boolean hasDownStation = statoins.stream().anyMatch(station -> station.equals(compareSection.getDownStation()));
+
+        if (!hasUpStation && !hasDownStation) {
+            throw new RuntimeException(NO_EXIST);
+        }
+        if (hasUpStation && hasDownStation) {
+            throw new RuntimeException(ALREADY_EXIST);
+        }
     }
 
 }

@@ -82,4 +82,13 @@ public class Section {
     public boolean isUpStationWithDown(Section beforeSection) {
         return this.upStation.equals(beforeSection.downStation);
     }
+
+    public boolean sameUpStation(Section beforeSection) {
+        return this.upStation.equals(beforeSection.upStation);
+    }
+
+    public boolean sameDownStation(Section beforeSection) {
+        return this.downStation.equals(beforeSection.downStation);
+    }
+
 }
