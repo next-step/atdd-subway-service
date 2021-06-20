@@ -97,5 +97,11 @@ class PathServiceTest {
         ).isInstanceOf(NoSuchElementException.class);
     }
 
-
+    @DisplayName("동일한 역을 경로검색시 에러발생")
+    @Test
+    void findPathSameStation() {
+        assertThatThrownBy(
+                () -> pathService.findPath(강남역.getId(), 강남역.getId())
+        ).isInstanceOf(IllegalArgumentException.class);
+    }
 }
