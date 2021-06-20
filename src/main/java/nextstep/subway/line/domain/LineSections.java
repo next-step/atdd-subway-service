@@ -24,7 +24,7 @@ public class LineSections {
         this.lineSections = lineSections;
     }
 
-    public List<Station> toStation() {
+    public List<Station> toStations() {
         if (lineSections.isEmpty()) {
             return Arrays.asList();
         }
@@ -65,7 +65,6 @@ public class LineSections {
     }
 
     public void add(Section section) {
-        this.lineSections.add(section);
     }
 
     public List<Section> getLineSections() {
