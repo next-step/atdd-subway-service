@@ -87,7 +87,7 @@ class LineServiceTest {
         when(stationService.findStationById(남영역.getId())).thenReturn(남영역);
 
         //when
-        lineService.addLineStation2(일호선.getId(), new SectionRequest(서울역.getId(), 남영역.getId(), 1));
+        lineService.addLineStation(일호선.getId(), new SectionRequest(서울역.getId(), 남영역.getId(), 1));
 
         //then
         assertThat(일호선.getStations()).containsAll(Arrays.asList((용산역), (남영역)));

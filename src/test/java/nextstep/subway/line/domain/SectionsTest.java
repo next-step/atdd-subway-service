@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class SectionsTest {
     private Line 이호선;
@@ -17,10 +18,12 @@ class SectionsTest {
     private Station 삼성역;
     private Station 선릉역;
     private Station 잠실역;
+    private Station 잠실나루역;
     private Sections sections;
 
     @BeforeEach
     void setUp() {
+        //given
         강남역 = new Station("강남역");
         ReflectionTestUtils.setField(강남역, "id", 1L);
         삼성역 = new Station("삼성역");
@@ -36,7 +39,11 @@ class SectionsTest {
                 new Section(이호선, 강남역, 삼성역, 10),
                 new Section(이호선, 선릉역, 잠실역, 10)
         )));
-        ReflectionTestUtils.setField(이호선, "sections2", sections);
+        ReflectionTestUtils.setField(이호선, "sections", sections);
+
+        //and
+        잠실나루역 = new Station("잠실나루역");
+        ReflectionTestUtils.setField(잠실나루역, "id", 5L);
     }
 
     @Test
@@ -46,5 +53,22 @@ class SectionsTest {
 
         //then
         assertThat(actual).containsAll(Arrays.asList(강남역, 삼성역, 선릉역, 잠실역));
+    }
+
+    @Test
+    void add() {
+        //when
+        sections.add(new Section(이호선, 잠실나루역, 잠실역, 1));
+        List<Station> actual = sections.getStations();
+
+        //then
+        assertAll(() -> {
+            assertThat(actual.size()).isEqualTo(5);
+            assertThat(actual.get(0)).isEqualTo(강남역);
+            assertThat(actual.get(1)).isEqualTo(삼성역);
+            assertThat(actual.get(2)).isEqualTo(선릉역);
+            assertThat(actual.get(3)).isEqualTo(잠실나루역);
+            assertThat(actual.get(4)).isEqualTo(잠실역);
+        });
     }
 }
