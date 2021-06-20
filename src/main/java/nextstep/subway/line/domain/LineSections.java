@@ -65,6 +65,60 @@ public class LineSections {
     }
 
     public void add(Section section) {
+        List<Station> stations = toStations();
+        Station upStation = section.getUpStation();
+        Station downStation = section.getDownStation();
+
+        boolean isUpStationExisted = isStationExisted(stations, upStation);
+        boolean isDownStationExisted = isStationExisted(stations, downStation);
+
+        validateDuplicate(isUpStationExisted, isDownStationExisted);
+        validateNotExist(stations, upStation, downStation);
+
+        if (stations.isEmpty()) {
+            lineSections.add(section);
+            return;
+        }
+
+        if (isUpStationExisted) {
+            changeUpStation(section);
+        }
+
+        if (isDownStationExisted) {
+            changeDownStation(section);
+        }
+        lineSections.add(section);
+    }
+
+    private void changeUpStation(Section section) {
+        lineSections.stream()
+            .filter(it -> it.getUpStation() == section.getUpStation())
+            .findFirst()
+            .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+    }
+
+    private void changeDownStation(Section section) {
+        lineSections.stream()
+            .filter(it -> it.getDownStation() == section.getDownStation())
+            .findFirst()
+            .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+    }
+
+    private boolean isStationExisted(List<Station> stations, Station station) {
+        return stations.stream().anyMatch(it -> it == station);
+    }
+
+    private void validateDuplicate(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    private void validateNotExist(List<Station> stations, Station upStation, Station downStation) {
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
+            stations.stream().noneMatch(it -> it == downStation)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
     }
 
     public List<Section> getLineSections() {
