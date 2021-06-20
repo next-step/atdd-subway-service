@@ -114,7 +114,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - LineResponse
         - Sections 객체 신규 생성
     * [ ] Domain 객체 단위 테스트 코드 작성
-        * [ ] LineRequest
+        * [x] LineRequest
             * [x] Station(up, down) 정보를 이용하여 Line entity 생성
             * [x] name, color 정보를 이용하여 Line entity 생성
         * [ ] Line
@@ -122,7 +122,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         * [ ] Sections 일급 컬렉션 객체 생성
             * [ ] addSection: 구간 정보 추가 기능
             * [ ] stations: 상행에서 하행으로 정렬된 지하철역 리스트 반환
-            
-        * [ ] LineResponse
-            * [ ] Line 객체를 이용하여 LineResponse 객체 생성
+        * [x] LineResponse
+            * [x] Line 객체를 이용하여 LineResponse 객체 생성
     * [ ] LineService에 domain 로직 옮기기

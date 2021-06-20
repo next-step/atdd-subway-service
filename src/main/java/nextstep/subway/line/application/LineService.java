@@ -33,24 +33,12 @@ public class LineService {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(request.toLine(upStation, downStation));
-        // TODO - LineResponse, Line
-        List<StationResponse> stations = persistLine.getStations().stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
-        return LineResponse.of(persistLine, stations);
+        return LineResponse.of(persistLine);
     }
 
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
-        // TODO - LineResponse
-        return persistLines.stream()
-                .map(line -> {
-                    List<StationResponse> stations = line.getStations().stream()
-                            .map(it -> StationResponse.of(it))
-                            .collect(Collectors.toList());
-                    return LineResponse.of(line, stations);
-                })
-                .collect(Collectors.toList());
+        return persistLines.stream().map(LineResponse::of).collect(Collectors.toList());
     }
 
     public Line findLineById(Long id) {
@@ -61,17 +49,12 @@ public class LineService {
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        // TODO -  LineResponse 객체로 옮기기
-        List<StationResponse> stations = persistLine.getStations().stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
-        return LineResponse.of(persistLine, stations);
+        return LineResponse.of(persistLine);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         // TODO - findLineById 호출 하도록 변경
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        // TODO - LineRequest에서 Line 객체 생성하도록 수정
         persistLine.update(lineUpdateRequest.toLine());
     }
 
