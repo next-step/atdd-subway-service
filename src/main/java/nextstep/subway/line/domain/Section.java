@@ -12,6 +12,8 @@ import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Section {
+    public static final Section EMPTY = new Section();
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -89,6 +91,10 @@ public class Section {
 
     public boolean sameDownStation(Section beforeSection) {
         return this.downStation.equals(beforeSection.downStation);
+    }
+
+    public boolean sameUpStation(Station upStation) {
+        return this.upStation.equals(upStation);
     }
 
 }

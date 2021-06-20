@@ -1,8 +1,11 @@
 package nextstep.subway.line.domain;
 
+import java.nio.file.ProviderNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -85,7 +88,7 @@ public class Line extends BaseEntity {
 
     public List<StationResponse> getStationsResponse() {
         return getStations().stream()
-            .map(station -> StationResponse.of(station))
+            .map(StationResponse::of)
             .collect(Collectors.toList());
 
     }
@@ -139,11 +142,74 @@ public class Line extends BaseEntity {
         boolean hasDownStation = statoins.stream().anyMatch(station -> station.equals(compareSection.getDownStation()));
 
         if (!hasUpStation && !hasDownStation) {
-            throw new RuntimeException(NO_EXIST);
+            throw new NoSuchElementException(NO_EXIST);
         }
         if (hasUpStation && hasDownStation) {
-            throw new RuntimeException(ALREADY_EXIST);
+            throw new NoSuchElementException(ALREADY_EXIST);
         }
+    }
+
+    public void removeStation(Station station) {
+        validationRemove();
+
+        Optional<Section> afterSection = findAfterSection(station);
+        Optional<Section> beforeSection = findBeforeSection(station);
+
+        if (afterSection.isPresent() && beforeSection.isPresent()) {
+            Station newUpStation = beforeSection.get().getUpStation();
+            Station newDownStation = afterSection.get().getDownStation();
+            int newDistance = afterSection.get().getDistance() + beforeSection.get().getDistance();
+            this.sections.add(new Section(this, newUpStation, newDownStation, newDistance));
+        }
+
+        afterSection.ifPresent(it -> this.sections.remove(it));
+        beforeSection.ifPresent(it -> this.sections.remove(it));
+    }
+
+    private Optional<Section> findBeforeSection(Station station) {
+        return this.sections.stream()
+            .filter(it -> it.getDownStation() == station)
+            .findFirst();
+    }
+
+    private Optional<Section> findAfterSection(Station station) {
+        return this.sections.stream()
+            .filter(it -> it.getUpStation() == station)
+            .findFirst();
+    }
+
+    private void validationRemove() {
+        if (this.sections.size() <= 1) {
+            throw new ProviderNotFoundException();
+        }
+    }
+
+    public int getDistanceBetweenStations(Station upStation, Station downStation) {
+        int distance = 0;
+        Section nextSection = findByUpstation(upStation);
+        if (nextSection == null) {
+            return distance;
+        }
+        if (nextSection.getDownStation().equals(downStation)) {
+            return nextSection.getDistance();
+        }
+        while (nextSection != null && !nextSection.getDownStation().equals(downStation)) {
+            distance += nextSection.getDistance();
+            nextSection = findNextSection(nextSection);
+        }
+
+        if (nextSection != null) {
+            distance += nextSection.getDistance();
+        }
+
+        return distance;
+    }
+
+    private Section findByUpstation(Station upStation) {
+        return sections.stream()
+            .filter(section -> section.sameUpStation(upStation))
+            .findFirst()
+            .orElse(null);
     }
 
 }

@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -67,6 +67,44 @@ public class LineTest {
             호선2.addSection(new Section(호선2, 교대역, 삼성역, 100));
         });
         assertThat(exception.getMessage()).isEqualTo("이미 등록된 구간 입니다.");
+    }
+
+    @Test
+    @DisplayName("교대역-삼성역-선릉역-잠실역-건대입구 중 교대역 > 선릉역 > 건대입구  순으로 삭제 시 삭제 후 순서로 노출되어야 한다.")
+    void removeStationTest() {
+        호선2.addSection(new Section(호선2, 잠실역, 건대입구, 10));
+        호선2.removeStation(교대역);
+        List<StationResponse> stationList = 호선2.getStationsResponse();
+        assertThat(getStationId(stationList)).containsExactly(삼성역.getId(), 선릉역.getId(), 잠실역.getId(), 건대입구.getId());
+        호선2.removeStation(선릉역);
+        stationList = 호선2.getStationsResponse();
+        assertThat(getStationId(stationList)).containsExactly(삼성역.getId(), 잠실역.getId(), 건대입구.getId());
+        호선2.removeStation(건대입구);
+        stationList = 호선2.getStationsResponse();
+        assertThat(getStationId(stationList)).containsExactly(삼성역.getId(), 잠실역.getId());
+
+    }
+
+    @Test
+    @DisplayName("구간이 하나 밖에 없는데 삭제를 요청 시 Runtime에러를 뱉는다.")
+    void removeNoSections() {
+        Line 신분당선 = new Line();
+        assertThrows(RuntimeException.class, () -> {
+            신분당선.removeStation(삼성역);
+        });
+    }
+
+    @Test
+    @DisplayName("교대역-삼성역-선릉역-잠실역 중 삼성역 삭제 시 두 구간을 연결해야 한다.")
+    void removeStationCheckDistanceTest() {
+        호선2.removeStation(삼성역);
+        assertThat(호선2.getDistanceBetweenStations(교대역, 선릉역)).isEqualTo(80);
+    }
+
+    @Test
+    @DisplayName("두 구간 사이의 거리를 구한다.")
+    void getDistanceBetweenStationsTest() {
+        assertThat(호선2.getDistanceBetweenStations(삼성역, 잠실역)).isEqualTo(160);
     }
 
     private List<Long> getStationId(List<StationResponse> stationList) {

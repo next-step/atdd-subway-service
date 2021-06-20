@@ -92,4 +92,10 @@ public class LineService {
         downLineStation.ifPresent(it -> line.getSections().remove(it));
     }
 
+    public void removeLineStationNew(Long lineId, Long stationId) {
+        Line line = findLineById(lineId);
+        Station station = stationService.findStationById(stationId);
+        line.removeStation(station);
+    }
+
 }
