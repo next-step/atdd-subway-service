@@ -12,6 +12,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
+@SuppressWarnings("NonAsciiCharacters")
 public class SectionsTest {
 
     private final Line line = new Line("2호선", "green");
@@ -21,7 +22,7 @@ public class SectionsTest {
 
     @DisplayName("새로 추가한 2개의 역 목록이 순서대로  반환되는지 테스트")
     @Test
-    void stations() {
+    void given_Sections_when_GetListOfStation_then_ReturnListOfStation() {
         // given
         final Section firstSection = new Section(line, upStation, downStation, 100);
         sections.add(firstSection);
@@ -31,5 +32,52 @@ public class SectionsTest {
 
         // then
         assertThat(actual).isEqualTo(Arrays.asList(upStation, downStation));
+    }
+
+    @DisplayName("Section 을 추가했을 때 정상적으로 저장되는지 테스트")
+    @Test
+    void given_Station_when_AddSection_then_AddedToGivenSections() {
+        // given
+        final Section firstSection = new Section(line, upStation, downStation, 100);
+        final Station newStation = new Station("신림역");
+        final Section secondSection = new Section(line, upStation, newStation, 10);
+
+        // when
+        sections.add(firstSection);
+        sections.add(secondSection);
+
+        // then
+        assertThat(sections.toList()).isEqualTo(Arrays.asList(firstSection, secondSection));
+    }
+
+    @DisplayName("존재하는 역을 추가할 때 예외가 발생하는지 테스트")
+    @Test
+    void given_ExistStation_when_AddSection_then_ThrownException() {
+        // given
+        final Section firstSection = new Section(line, upStation, downStation, 100);
+        sections.add(firstSection);
+
+        // when
+        final Throwable throwable = catchThrowable(() -> sections.add(firstSection));
+
+        // then
+        assertThat(throwable).isInstanceOf(RuntimeException.class);
+    }
+
+    @DisplayName("존재하지 않은 역을 추가할 때 예외가 발생하는지 테스트")
+    @Test
+    void given_NotExistStation_when_AddSection_then_ThrownException() {
+        // given
+        final Section firstSection = new Section(line, upStation, downStation, 100);
+        sections.add(firstSection);
+        final Station 시청역 = new Station("시청역");
+        final Station 당산역 = new Station("당산역");
+        final Section section = new Section(line, 시청역, 당산역, 5);
+
+        // when
+        final Throwable throwable = catchThrowable(() -> sections.add(section));
+
+        // then
+        assertThat(throwable).isInstanceOf(RuntimeException.class);
     }
 }
