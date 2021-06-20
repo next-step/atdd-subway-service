@@ -57,6 +57,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ## Todo
 
 - [x] LineSectionAcceptanceTest 리팩터링
-- [ ] LineSerivce 리팩토링
+- [x] LineSerivce 리팩토링
 
 
