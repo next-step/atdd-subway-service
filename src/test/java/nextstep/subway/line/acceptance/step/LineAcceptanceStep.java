@@ -8,6 +8,7 @@ import nextstep.subway.line.dto.LineResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -116,4 +117,12 @@ public class LineAcceptanceStep {
     public static void 지하철_노선_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    public static void 지하철_노선_목록_포함되지않음(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> deleteLineIds) {
+        List<Long> ids = new ArrayList<>(response.jsonPath().getList("id", Long.class));
+        List<Long> deletedIds = deleteLineIds.stream().map(res -> res.jsonPath().getObject("id", Long.class)).collect(Collectors.toList());
+        ids.retainAll(deletedIds);
+        assertThat(ids.size()).isZero();
+    }
+
 }
