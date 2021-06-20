@@ -63,47 +63,47 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     * **As-is** LineSectionAcceptanceTest
   
     ```markdown
-          ✅ Feature: 지하철 구간 관련 기능 
-          
-          🔙 Background
+    ✅ Feature: 지하철 구간 관련 기능 
+        🔙 Background
             Given 지하철역 등록되어 있음
               And 지하철 노선 등록되어 있음
               And 지하철 노선에 지하철역 등록되어 있음 
           
-          1️⃣ Scenario #1 : 지하철 구간을 등록한다
+        1️⃣ Scenario : 지하철 구간을 등록한다
             When 지하철 구간 등록 요청
             Then 지하철 구간 등록됨
             Then 지하철 구간 순서대로 정렬되어 조회됨
       
-          2️⃣ Scenario #2 : 지하철 노선에 이미 등록되어 있는 역을 등록한다
+        2️⃣ Scenario : 지하철 노선에 이미 등록되어 있는 역을 등록한다
             When 지하철 구간 등록 요청
             Then 지하철 구간 등록 실패됨       
       
-          3️⃣ Scenario #3 : 지하철 노선에 등록되지 않은 역을 기준으로 등록한다
+        3️⃣ Scenario : 지하철 노선에 등록되지 않은 역을 기준으로 등록한다
             When 지하철 구간 등록 요청
             Then 지하철 구간 등록 실패됨 
       
-          4️⃣ Scenario #4 : 지하철 노선에 등록된 지하철역을 제외한다
+        4️⃣ Scenario : 지하철 노선에 등록된 지하철역을 제외한다
             Given 지하철 구간 등록됨 
             When 지하철 구간 삭제 요청
             Then 지하철 구간 삭제됨
-            Then (삭제한 지하철 구간이 반영되어) 지하철 구간 순서대로 정렬되어 조회됨
+            Then (삭제한 지하철 구간 반영되어) 지하철 구간 순서대로 정렬되어 조회됨
            
-          5️⃣ Scenario #5 : 지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다
+        5️⃣ Scenario : 지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다
             When 지하철 구간 삭제 요청
             Then 지하철 구간 삭제 실패됨
     ```     
 
   * **To-be** LineSectionAcceptanceTest
+  
     ```markdown
-          ✅ Feature: 지하철 구간 관련 기능 
-          
-          🔙 Background
+    ✅ Feature: 지하철 구간 관련 기능 
+    
+        🔙 Background
             Given 지하철역 등록되어 있음
               And 지하철 노선 등록되어 있음
               And 지하철 노선에 지하철역 등록되어 있음        
 
-          1️⃣ Scenario #1 : 지하철 구간 등록 관련
+        1️⃣ Scenario : 지하철 구간 등록 관련
             When 지하철 구간 등록 요청
             Then 지하철 구간 등록됨
             Then 지하철 구간 순서대로 정렬되어 조회됨
@@ -114,12 +114,12 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             When (노선에 등록되지 않는 지하철 역을 이용하여) 지하철 구간 등록 요청
             Then 지하철 구간 등록 실패됨 
     
-          2️⃣ Scenario #2 : 지하철 구간 제외 관련
+        2️⃣ Scenario : 지하철 구간 제외 관련
             Given 지하철 구간 등록 요청 
             
             When 지하철 구간 삭제 요청
             Then 지하철 구간 삭제됨
-            Then (삭제한 지하철 구간이 반영되어) 지하철 구간 순서대로 정렬되어 조회됨
+            Then (삭제한 지하철 구간 반영되어) 지하철 구간 순서대로 정렬되어 조회됨
             
             When (노선에 구간이 하나뿐일 때) 지하철 구간 삭제 요청
             Then 지하철 구간 삭제 실패됨
