@@ -37,10 +37,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     /**
      * 교대역    --- *2호선* ---   강남역
+     *              10
      * |                        |
-     * *3호선*                   *신분당선*
+     * *3호선* 3                 *신분당선* 10
      * |                        |
      * 남부터미널역  --- *3호선* ---   양재
+     *               2
      */
     @BeforeEach
     public void setUp() {
@@ -74,7 +76,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // Then
         assertThat(pathsResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        최단경로의_역들과_최단거리를_반환함(pathsResponse, Arrays.asList(강남역, 양재역, 남부터미널역), 15);
+        최단경로의_역들과_최단거리를_반환함(pathsResponse, Arrays.asList(강남역, 양재역, 남부터미널역), 12);
 
     }
 
@@ -86,7 +88,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 최단경로의_역들과_최단거리를_반환함(ExtractableResponse<Response> pathResponse, List<StationResponse> expectedStations, int i) {
+    private void 최단경로의_역들과_최단거리를_반환함(ExtractableResponse<Response> pathResponse,
+                                     List<StationResponse> expectedStations,
+                                     int distance) {
         PathResponse path = pathResponse.as(PathResponse.class);
 
         List<Long> stationIds = path.getStations().stream()
@@ -97,6 +101,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+        assertThat(path.getDistance()).isEqualTo(distance);
     }
 
 }
