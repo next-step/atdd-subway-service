@@ -9,6 +9,7 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,6 +31,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
+    private LineResponse 칠호선;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
@@ -37,6 +39,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 대교역;
     private StationResponse 널미터부남역;
     private StationResponse 남부터미널역;
+    private StationResponse 노원역;
+    private StationResponse 군자역;
 
     /**
      * 교대역    --- *2호선* ---     강남역 --- *2호선* ---   대교역
@@ -49,6 +53,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * |                              |
      * 남부터미널역  --- *3호선* ---   양재   --- *3호선* --- 널미터부남역
      *                  2                       21
+     *
+     *
+     * 노원역 --- *7호선* --- 군자역
+     *             77
      */
     @BeforeEach
     public void setUp() {
@@ -59,6 +67,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남강역 = StationAcceptanceTest.지하철역_등록되어_있음("남강역").as(StationResponse.class);
         대교역 = StationAcceptanceTest.지하철역_등록되어_있음("대교역").as(StationResponse.class);
+        노원역 = StationAcceptanceTest.지하철역_등록되어_있음("노원역").as(StationResponse.class);
+        군자역 = StationAcceptanceTest.지하철역_등록되어_있음("군자역").as(StationResponse.class);
         널미터부남역 = StationAcceptanceTest.지하철역_등록되어_있음("널미터부남역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
@@ -71,11 +81,45 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음(
                 new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5))
                 .as(LineResponse.class);
+        칠호선 = 지하철_노선_등록되어_있음(
+                new LineRequest("칠호선", "bg-red-600", 노원역.getId(), 군자역.getId(), 77))
+                .as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 43);
         지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 남강역, 17);
         지하철_노선에_지하철역_등록_요청(이호선, 강남역, 대교역, 11);
         지하철_노선에_지하철역_등록_요청(삼호선, 양재역, 널미터부남역, 21);
+    }
+
+    @Test
+    void 없는_역의_경로를_확인해서_실패한다() {
+        Long 등록안된역의_ID = 111L;
+        // When
+        PathRequest pathRequest = PathRequest.of(강남역.getId(), 등록안된역의_ID);
+        ExtractableResponse<Response> pathsResponse = 출발역과_도착역으로_최단경로를_찾는다(pathRequest);
+
+        // Then
+        assertThat(pathsResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void 연결되지_않은_출발역과_도착역의_최단거리를_확인해서_실패한다() {
+        // When
+        PathRequest pathRequest = PathRequest.of(노원역.getId(), 강남역.getId());
+        ExtractableResponse<Response> pathsResponse = 출발역과_도착역으로_최단경로를_찾는다(pathRequest);
+
+        // Then
+        assertThat(pathsResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void 출발역과_도착역이_같은_경우의_최단거리를_확인해서_실패한다() {
+        // When
+        PathRequest pathRequest = PathRequest.of(강남역.getId(), 강남역.getId());
+        ExtractableResponse<Response> pathsResponse = 출발역과_도착역으로_최단경로를_찾는다(pathRequest);
+
+        // Then
+        assertThat(pathsResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
