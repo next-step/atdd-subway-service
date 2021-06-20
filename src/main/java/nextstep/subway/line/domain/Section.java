@@ -54,19 +54,35 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    public void updateUpStation(Section newSection) {
+        if (this.distance <= newSection.getDistance()) {
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.upStation = station;
-        this.distance -= newDistance;
+        this.upStation = newSection.getDownStation();
+        this.distance -= newSection.getDistance();
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    public void updateDownStation(Section newSection) {
+        if (this.distance <= newSection.getDistance()) {
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.downStation = station;
-        this.distance -= newDistance;
+        this.downStation = newSection.getUpStation();
+        this.distance -= newSection.getDistance();
+    }
+
+    public boolean isUpStationEqualsToStation(Station station){
+        return upStation == station;
+    }
+
+    public boolean isDownStationEqualsToStation(Station station){
+        return downStation == station;
+    }
+
+    public boolean isUpStationEqualsToUpStationInSection(Section sectionToAdd){
+        return sectionToAdd.isUpStationEqualsToStation(upStation);
+    }
+
+    public boolean isDownStationEqualsToDownStationInSection(Section sectionToAdd){
+        return sectionToAdd.isDownStationEqualsToStation(downStation);
     }
 }

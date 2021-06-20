@@ -9,6 +9,8 @@ import java.util.*;
 
 @Embeddable
 public class Sections {
+    public static final String EXISTS_SECTION_EXCEPTION_MESSAGE = "이미 등록된 구간 입니다.";
+    public static final String NOT_EXISTS_ALL_STATIONS_EXCEPTION_MESSAGE = "등록할 수 없는 구간 입니다.";
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections;
@@ -61,46 +63,42 @@ public class Sections {
         return downStation;
     }
 
-//    public void add(Section section) {
-//        sections.add(section);
-//    }
-
     public List<Section> getSections() {
         return sections;
     }
 
     public void add(Section section) {
         List<Station> stations = getStations();
+        boolean isUpStationExisted = stations.stream().anyMatch(section::isUpStationEqualsToStation);
+        boolean isDownStationExisted = stations.stream().anyMatch(section::isDownStationEqualsToStation);
+
         if (stations.isEmpty()) {
             sections.add(section);
             return;
         }
 
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
-
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException(EXISTS_SECTION_EXCEPTION_MESSAGE);
         }
 
-        if (stations.stream().noneMatch(it -> it == section.getUpStation()) &&
-                stations.stream().noneMatch(it -> it == section.getDownStation())) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        if (!isUpStationExisted && !isDownStationExisted) {
+            throw new IllegalArgumentException(NOT_EXISTS_ALL_STATIONS_EXCEPTION_MESSAGE);
         }
 
         if (isUpStationExisted) {
             sections.stream()
-                    .filter(it -> it.getUpStation() == section.getUpStation())
+                    .filter(section::isUpStationEqualsToUpStationInSection)
                     .findFirst()
-                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-            sections.add(section);
+                    .ifPresent(it -> it.updateUpStation(section));
         }
+
         if (isDownStationExisted) {
             sections.stream()
-                    .filter(it -> it.getDownStation() == section.getDownStation())
+                    .filter(section::isDownStationEqualsToDownStationInSection)
                     .findFirst()
-                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
-            sections.add(section);
+                    .ifPresent(it -> it.updateDownStation(section));
         }
+
+        sections.add(section);
     }
 }
