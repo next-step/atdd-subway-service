@@ -1,9 +1,9 @@
-package nextstep.subway.path.application;
+package nextstep.subway.line.application;
 
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
-import nextstep.subway.path.domain.PathFinder;
-import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.line.domain.PathFinder;
+import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.domain.Stations;
@@ -34,16 +34,14 @@ public class PathService {
 
         List<StationResponse> stationResponses = pathFinder.getPath(sourceStation, targetStation)
                 .stream()
-                .map(station -> StationResponse.of(station))
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
 
-        PathResponse response = new PathResponse(stationResponses, pathFinder.getWeight(sourceStation, targetStation));
-
-        return response;
+        return new PathResponse(stationResponses, pathFinder.getWeight(sourceStation, targetStation));
     }
 
     private void validation(Long sourceStationId, Long targetStationId) {
-        if(sourceStationId == targetStationId) {
+        if (sourceStationId == targetStationId) {
             throw new IllegalArgumentException("출발역과 도착역이 같을수는 없습니다.");
         }
     }
@@ -56,7 +54,7 @@ public class PathService {
     private PathFinder initPathFinder() {
         Lines lines = new Lines(lineRepository.findAll());
         Stations stations = new Stations(stationRepository.findAll());
-        PathFinder pathFinder = new PathFinder(lines, stations);
-        return pathFinder;
+
+        return new PathFinder(lines, stations);
     }
 }
