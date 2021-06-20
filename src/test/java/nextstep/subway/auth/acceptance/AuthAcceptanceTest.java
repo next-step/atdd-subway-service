@@ -53,7 +53,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    private void registerMember(MemberRequest memberRequest) {
+    public static void registerMember(MemberRequest memberRequest) {
         ExtractableResponse<Response> response =
             RestAssured.given().log().all()
                        .body(memberRequest)

@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.loginRequest;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.registerMember;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
@@ -40,6 +41,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
         신분당선 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+
+        MemberRequest member = new MemberRequest("test@email", "1234", 29);
+        registerMember(member);
 
         TokenResponse tokenResponse =
             loginRequest(new MemberRequest("test@email", "1234", 29)).as(TokenResponse.class);
@@ -77,6 +81,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
             // then
             assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+            assertThat(response.header("Location")).isNotBlank();
         };
     }
 
