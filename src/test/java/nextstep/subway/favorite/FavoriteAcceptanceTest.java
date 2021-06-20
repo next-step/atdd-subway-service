@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.stream.Stream;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -38,7 +39,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 
     private FavoriteRequest request;
-    private String token;
+    private String accessToken;
 
     @BeforeEach
     public void given() {
@@ -61,7 +62,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         TokenResponse tokenResponse =
             loginRequest(new MemberRequest("test@email", "1234", 29)).as(TokenResponse.class);
 
-        token = tokenResponse.getAccessToken();
+        accessToken = tokenResponse.getAccessToken();
     }
 
     @DisplayName("즐겨찾기 시나리오 테스트")
@@ -69,7 +70,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     Stream<DynamicTest> favoriteScenarioTest() {
         return Stream.of(
             dynamicTest("즐겨찾기 생성 성공", createFavoriteSuccess(request)),
-            dynamicTest("즐겨찾기 목록 조회", findFavoriteAndTest(request)),
+            dynamicTest("즐겨찾기 목록 조회", findFavoriteAndTest()),
             dynamicTest("즐겨찾기 삭제 성공", deleteFavoriteSuccess(1L))
         );
     }
@@ -120,7 +121,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         long invalidFavoriteId = -1L;
 
         // when
-        ExtractableResponse<Response> response = deleteFavoriteRequest(token, invalidFavoriteId);
+        ExtractableResponse<Response> response = deleteFavoriteRequest(accessToken, invalidFavoriteId);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -139,7 +140,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> createFavoriteRequest(FavoriteRequest favoriteRequest) {
         return RestAssured.given().log().all()
-                          .auth().oauth2(token)
+                          .auth().oauth2(accessToken)
                           .body(favoriteRequest)
                           .contentType(MediaType.APPLICATION_JSON_VALUE)
                           .when().post("/favorites")
@@ -147,16 +148,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                           .extract();
     }
 
-    private Executable findFavoriteAndTest(FavoriteRequest favoriteRequest) {
+    private Executable findFavoriteAndTest() {
         return () -> {
             // when
-            ExtractableResponse<Response> response = findFavoriteRequest(token);
+            ExtractableResponse<Response> response = findFavoriteRequest(accessToken);
 
             // then
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-            FavoriteResponse favoriteResponse = response.as(FavoriteResponse.class);
-            assertThat(favoriteResponse.getSource().getId()).isEqualTo(favoriteRequest.getSource());
+            List<FavoriteResponse> responses = response.jsonPath().getList(".", FavoriteResponse.class);
+            assertThat(responses).hasSize(1);
+            assertThat(responses.get(0).getSource()).isEqualTo(강남역);
+            assertThat(responses.get(0).getTarget()).isEqualTo(광교역);
         };
     }
 
@@ -171,7 +174,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private Executable deleteFavoriteSuccess(Long id) {
         return () -> {
             // when
-            ExtractableResponse<Response> response = deleteFavoriteRequest(token, id);
+            ExtractableResponse<Response> response = deleteFavoriteRequest(accessToken, id);
 
             // then
             assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());

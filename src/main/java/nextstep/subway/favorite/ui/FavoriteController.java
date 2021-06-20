@@ -1,19 +1,20 @@
 package nextstep.subway.favorite.ui;
 
 import java.net.URI;
+import java.util.List;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.station.domain.NotFoundStationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import static java.util.stream.Collectors.toList;
 
 @RestController
 public class FavoriteController {
@@ -27,26 +28,28 @@ public class FavoriteController {
     @PostMapping(value = "/favorites")
     public ResponseEntity<URI> createFavorite(@AuthenticationPrincipal LoginMember loginMember,
                                               @RequestBody FavoriteRequest favoriteRequest) {
-        return ResponseEntity.created(URI.create(
-            "/favorites" + favoriteService.save(loginMember.getId(),
-                                                favoriteRequest.getSource(),
-                                                favoriteRequest.getTarget()))).build();
+
+        Long id = favoriteService.save(loginMember.getId(),
+                                       favoriteRequest.getSource(),
+                                       favoriteRequest.getTarget());
+
+        return ResponseEntity.created(URI.create("/favorites" + id)).build();
     }
 
-    @GetMapping
-    public ResponseEntity<FavoriteResponse> findFavorite(@AuthenticationPrincipal LoginMember loginMember,
-                                                         FavoriteRequest favoriteRequest) {
-        return null;
+    @GetMapping(value = "/favorites")
+    public ResponseEntity<List<FavoriteResponse>> findFavorite(@AuthenticationPrincipal LoginMember loginMember) {
+
+        List<FavoriteResponse> responses = favoriteService.findAllByMember(loginMember.getId())
+                                                          .stream()
+                                                          .map(FavoriteResponse::of)
+                                                          .collect(toList());
+
+        return ResponseEntity.ok().body(responses);
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember,
                                                FavoriteRequest favoriteRequest) {
         return null;
-    }
-
-    @ExceptionHandler(NotFoundStationException.class)
-    public ResponseEntity<String> handleNotFoundStationException(NotFoundStationException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
