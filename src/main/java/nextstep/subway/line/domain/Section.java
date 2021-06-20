@@ -77,6 +77,19 @@ public class Section {
         this.distance -= newDistance;
     }
 
+    public void changeDownStation(Station station, int newDistance) {
+        this.downStation = station;
+        this.distance = newDistance;
+    }
+
+    public boolean hasSameUpStation(Station station) {
+        return this.upStation.equals(station);
+    }
+
+    public boolean hasSameDownStation(Station station) {
+        return this.downStation.equals(station);
+    }
+
     public void applyLine(Line line) {
         this.line = line;
     }

@@ -59,7 +59,7 @@ public class Line extends BaseEntity {
     }
 
     public void removeSection(Station station) {
-        sections.removeSection(this, station);
+        sections.removeSection(station);
     }
 
     public List<Station> stations() {
