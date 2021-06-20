@@ -28,6 +28,15 @@ public class SectionTest {
 	}
 
 	@Test
+	@DisplayName("역 순서대로 정렬")
+	void order_stations() {
+		sections.addLineStation(new Section(line, sinChonStation, hapJeungStation, 10));
+		sections.addLineStation(new Section(line, hongDaeStation, hapJeungStation, 7));
+
+		assertThat(sections.getStations()).containsExactly(sinChonStation, hongDaeStation, hapJeungStation);
+	}
+
+	@Test
 	@DisplayName("sections 내 section 추가")
 	void when_section_not_exists_station_can_be_added() {
 		sections.addLineStation(new Section(line, sinChonStation, hongDaeStation, 10));

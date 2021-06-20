@@ -14,6 +14,7 @@ import nextstep.subway.station.domain.Station;
 @Embeddable
 public class Sections {
 	private static final int MINIMUM_SECITON_SIZE = 1;
+
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private List<Section> sections = new ArrayList<>();
 
@@ -22,32 +23,39 @@ public class Sections {
 			return Arrays.asList();
 		}
 
+		List<Station> stations = makeOrderedStations();
+
+		return stations;
+	}
+
+	private List<Station> makeOrderedStations() {
 		List<Station> stations = new ArrayList<>();
-		Station downStation = findUpStation();
+		Station downStation = findStartStation();
 		stations.add(downStation);
 
 		while (downStation != null) {
 			Station finalDownStation = downStation;
-			Optional<Section> nextLineStation = sections.stream()
-				.filter(it -> it.getUpStation().equals(finalDownStation))
-				.findFirst();
+			Optional<Section> nextLineStation = findCommonUpStationSection(finalDownStation);
 			if (!nextLineStation.isPresent()) {
 				break;
 			}
-			downStation = nextLineStation.get().getDownStation();
+			downStation = getNextStation(nextLineStation);
 			stations.add(downStation);
 		}
 
 		return stations;
 	}
 
-	private Station findUpStation() {
-		Station downStation = sections.get(0).getUpStation();
+	private Station getNextStation(Optional<Section> nextLineStation) {
+		return nextLineStation.get().getDownStation();
+	}
+
+	private Station findStartStation() {
+		Station downStation = getAnyStation();
+
 		while (downStation != null) {
 			Station finalDownStation = downStation;
-			Optional<Section> nextLineStation = sections.stream()
-				.filter(it -> it.getDownStation().equals(finalDownStation))
-				.findFirst();
+			Optional<Section> nextLineStation = findCommonDownStationSection(finalDownStation);
 			if (!nextLineStation.isPresent()) {
 				break;
 			}
@@ -55,6 +63,10 @@ public class Sections {
 		}
 
 		return downStation;
+	}
+
+	private Station getAnyStation() {
+		return sections.stream().findAny().get().getUpStation();
 	}
 
 	public void addLineStation(Section section) {
@@ -88,16 +100,12 @@ public class Sections {
 	}
 
 	private void modifyCommonDownStationSection(Section section) {
-		sections.stream()
-			.filter(it -> it.getDownStation().equals(section.getDownStation()))
-			.findFirst()
+		findCommonDownStationSection(section.getDownStation())
 			.ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
 	}
 
 	private void modifyCommonUpStationSection(Section section) {
-		sections.stream()
-			.filter(it -> it.getUpStation().equals(section.getUpStation()))
-			.findFirst()
+		findCommonUpStationSection(section.getUpStation())
 			.ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
 	}
 
