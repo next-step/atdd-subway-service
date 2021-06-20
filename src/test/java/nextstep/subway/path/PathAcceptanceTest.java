@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -68,7 +69,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // Given (setUp())
 
         // When
-        ExtractableResponse<Response> pathsResponse = 출발역과_도착역으로_최단경로를_찾는다(강남역, 남부터미널역);
+        PathRequest pathRequest = PathRequest.of(강남역.getId(), 남부터미널역.getId());
+        ExtractableResponse<Response> pathsResponse = 출발역과_도착역으로_최단경로를_찾는다(pathRequest);
 
         // Then
         assertThat(pathsResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -76,10 +78,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     }
 
-    private ExtractableResponse<Response> 출발역과_도착역으로_최단경로를_찾는다(StationResponse sourceStation, StationResponse targetStation) {
+    private ExtractableResponse<Response> 출발역과_도착역으로_최단경로를_찾는다(PathRequest pathRequest) {
         return RestAssured
                 .given().log().all()
-                .when().get("/paths?source={sourceId}&target={targetId}", sourceStation.getId(), targetStation.getId())
+                .when().get("/paths?source={sourceId}&target={targetId}", pathRequest.getSourceStationId(), pathRequest.getTargetStationId())
                 .then().log().all()
                 .extract();
     }
