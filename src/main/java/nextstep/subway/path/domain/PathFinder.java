@@ -3,7 +3,6 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.alg.shortestpath.KShortestPaths;
@@ -24,12 +23,17 @@ public class PathFinder {
     private void makeWeightedMultigraph(List<Line> lines) {
         weightedMultigraph = new WeightedMultigraph(DefaultWeightedEdge.class);
         for (Line line : lines) {
-            List<Section> sections = line.getSections().get();
-            for (Section section : sections) {
-                weightedMultigraph.addVertex(section.getUpStation());
-                weightedMultigraph.addVertex(section.getDownStation());
-                weightedMultigraph.setEdgeWeight(weightedMultigraph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
-            }
+            makeVerticesAndEdgesOf(line);
+        }
+    }
+
+    private void makeVerticesAndEdgesOf(Line line) {
+        for (Section section : line.getSections().get()) {
+            weightedMultigraph.addVertex(section.getUpStation());
+            weightedMultigraph.addVertex(section.getDownStation());
+            weightedMultigraph.setEdgeWeight(
+                    weightedMultigraph.addEdge(section.getUpStation(), section.getDownStation()),
+                    section.getDistance());
         }
     }
 
