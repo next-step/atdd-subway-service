@@ -32,7 +32,9 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
+        // TODO - LineRequest
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        // TODO - LineResponse, Line
         List<StationResponse> stations = getStations(persistLine).stream()
                 .map(it -> StationResponse.of(it))
                 .collect(Collectors.toList());
@@ -41,6 +43,7 @@ public class LineService {
 
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
+        // TODO - LineResponse
         return persistLines.stream()
                 .map(line -> {
                     List<StationResponse> stations = getStations(line).stream()
@@ -52,12 +55,14 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
+        // TODO - Exception 변경
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
+        // TODO -  LineResponse 객체로 옮기기
         List<StationResponse> stations = getStations(persistLine).stream()
                 .map(it -> StationResponse.of(it))
                 .collect(Collectors.toList());
@@ -65,7 +70,9 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        // TODO - findLineById 호출 하도록 변경
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        // TODO - LineRequest에서 Line 객체 생성하도록 수정
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
@@ -75,8 +82,10 @@ public class LineService {
 
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
+
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
+        // TODO - Line, Sections 객체로 이동
         List<Station> stations = getStations(line);
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
@@ -117,6 +126,7 @@ public class LineService {
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
+        // TODO - Line, Sections 객체로 이동
         if (line.getSections().size() <= 1) {
             throw new RuntimeException();
         }
@@ -139,7 +149,7 @@ public class LineService {
         downLineStation.ifPresent(it -> line.getSections().remove(it));
     }
 
-
+    // TODO - Line 객체로 이동
     public List<Station> getStations(Line line) {
         if (line.getSections().isEmpty()) {
             return Arrays.asList();
@@ -164,6 +174,7 @@ public class LineService {
         return stations;
     }
 
+    // TODO - Sections 객체로 이동
     private Station findUpStation(Line line) {
         Station downStation = line.getSections().get(0).getUpStation();
         while (downStation != null) {
