@@ -114,14 +114,13 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             Then 지하철 구간 등록 실패됨 
     
           Scenario #2 : 지하철 구간 제외 관련
-            Given 지하철 구간 등록 요청 (첫 번째 구간)
-             And 지하철 구간 등록 요청 (두 번째 구간)
+            Given 지하철 구간 등록 요청 
             
             When 지하철 구간 삭제 요청
             Then 지하철 구간 삭제됨
             Then (삭제한 지하철 구간이 반영되어) 지하철 구간 순서대로 정렬되어 조회됨
             
-            When 지하철 구간 삭제 요청
+            When (노선에 구간이 하나뿐일 때) 지하철 구간 삭제 요청
             Then 지하철 구간 삭제 실패됨
       ```
 *[ ] LineService 리팩터링
