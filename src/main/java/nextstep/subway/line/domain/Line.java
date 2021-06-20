@@ -62,6 +62,7 @@ public class Line extends BaseEntity {
         sections.addSection(this, upStation, downStation, distance);
     }
 
-    public void removeLineStation(Station station) {
+    public void removeSection(Station station) {
+        sections.removeSection(this, station);
     }
 }
