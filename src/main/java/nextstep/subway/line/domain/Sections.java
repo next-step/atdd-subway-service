@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.common.exception.StationNotFoundException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -56,7 +57,9 @@ public class Sections {
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
 
-        if (isNotAddPossibleStation(section, stations, isUpStationExisted, isDownStationExisted)) return;
+        if (isNotAddPossibleStation(section, stations, isUpStationExisted, isDownStationExisted)) {
+            return;
+        }
 
         addPossibleStation(section, isUpStationExisted, isDownStationExisted);
     }
@@ -67,8 +70,8 @@ public class Sections {
     }
 
     private Station findStartStation() {
-        Station upStation = getSections().get(0).getUpStation();
-        return findDownStation(upStation);
+        Section upStation = getSections().stream().findFirst().orElseThrow(() -> new StationNotFoundException("존재하지 않는 역입니다."));
+        return findDownStation(upStation.getUpStation());
     }
 
     private Station findDownStation(Station station) {
@@ -121,11 +124,11 @@ public class Sections {
     }
 
     private boolean isNoneMatchUpStation(Section section, List<Station> stations) {
-        return stations.stream().noneMatch(it -> it == section.getUpStation());
+        return stations.stream().noneMatch(it -> it.equals(section.getUpStation()));
     }
 
     private boolean isNoneMatchDownStation(Section section, List<Station> stations) {
-        return stations.stream().noneMatch(it -> it == section.getDownStation());
+        return stations.stream().noneMatch(it -> it.equals(section.getDownStation()));
     }
 
     private void addPossibleStation(Section section, boolean isUpStationExisted, boolean isDownStationExisted) {
