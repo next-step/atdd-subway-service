@@ -116,10 +116,6 @@ public class Sections {
             .collect(Collectors.toList());
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
     public void delete(Station station) {
         validationNotExistStationOnLine(station);
         validationOnlyOneSectionExists();
