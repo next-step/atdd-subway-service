@@ -74,7 +74,7 @@ public class Sections implements Iterable<Section> {
     }
 
     public boolean contains(Station station) {
-        return stations().stream().anyMatch(it -> it == station);
+        return stations().contains(station);
     }
 
     public List<Station> stations() {

@@ -61,7 +61,7 @@ public class Line extends BaseEntity {
     }
 
     private boolean contains(Station station) {
-        return stations().stream().anyMatch(it -> it == station);
+        return sections.contains(station);
     }
 
     private boolean isEmpty() {
