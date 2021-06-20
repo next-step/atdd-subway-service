@@ -35,6 +35,48 @@ public class Line extends BaseEntity {
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
+    public void add(Station upStation, Station downStation, int distance) {
+        validateAddable(upStation, downStation);
+        add(new Section(this, upStation, downStation, distance));
+    }
+
+    private void add(Section section) {
+        if (stations().isEmpty()) {
+            sections.add(section);
+            return;
+        }
+        if (contains(section.getUpStation())) {
+            getSections().stream()
+                    .filter(it -> it.getUpStation() == section.getUpStation())
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+            sections.add(section);
+            return;
+        }
+        if (contains(section.getDownStation())) {
+            getSections().stream()
+                    .filter(it -> it.getDownStation() == section.getDownStation())
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+            sections.add(section);
+            return;
+        }
+        throw new RuntimeException();
+    }
+
+    private void validateAddable(Station upStation, Station downStation) {
+        if (contains(upStation) && contains(downStation)) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+        if (!stations().isEmpty() && !contains(upStation) && !contains(downStation)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private boolean contains(Station station) {
+        return stations().stream().anyMatch(it -> it == station);
+    }
+
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
