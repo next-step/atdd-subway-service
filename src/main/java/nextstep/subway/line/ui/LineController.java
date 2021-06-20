@@ -32,8 +32,7 @@ public class LineController {
 
     @PostMapping
     public ResponseEntity createLine(@RequestBody LineRequest lineRequest) {
-        //LineResponse line = lineService.saveLine(lineRequest); // 구로직 - 제거 예정
-        LineResponse line = lineService.saveLineNew(lineRequest);
+        LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
