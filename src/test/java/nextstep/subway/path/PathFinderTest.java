@@ -5,11 +5,6 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.alg.shortestpath.KShortestPaths;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
