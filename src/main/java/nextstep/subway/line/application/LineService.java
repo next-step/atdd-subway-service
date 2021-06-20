@@ -164,6 +164,7 @@ public class LineService {
         return stations;
     }
 
+    //노선의 상행종점을 찾는 로직
     private Station findUpStation(Line line) {
         Station downStation = line.getSections().get(0).getUpStation();
         while (downStation != null) {
