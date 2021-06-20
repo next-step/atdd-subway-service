@@ -36,9 +36,14 @@ public class LineAcceptanceStep {
 
     public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
-
         return 지하철_노선_목록_조회_요청(uri);
     }
+
+    public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(Long lineId) {
+        String uri = "/lines/" + lineId;
+        return 지하철_노선_목록_조회_요청(uri);
+    }
+
 
     private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(String uri) {
         return RestAssured

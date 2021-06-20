@@ -57,11 +57,34 @@ public class LineSectionAcceptanceStep {
                 .extract();
     }
 
-    public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> response) {
+    public static void 지하철_구간_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    public static void 등록한_지하철_구간이_반영된_역_목록이_조회됨(ExtractableResponse<Response> response, List<StationResponse> stations) {
+        List<Long> resultStationIds = response.jsonPath().getList("stations", StationResponse.class).stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+
+        List<Long> collect = stations.stream().map(StationResponse::getId).collect(Collectors.toList());
+
+        assertThat(resultStationIds.containsAll(collect)).isTrue();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 삭제한_지하철_구간이_반영된_역_목록이_조회됨(ExtractableResponse<Response> response, List<StationResponse> stations) {
+        List<Long> resultStationIds = response.jsonPath().getList("stations", StationResponse.class).stream()
+                .map(StationResponse::getId)
+                .collect(Collectors.toList());
+
+        List<Long> collect = stations.stream().map(StationResponse::getId).collect(Collectors.toList());
+        resultStationIds.retainAll(collect);
+
+        assertThat(resultStationIds.size()).isZero();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
