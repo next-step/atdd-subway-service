@@ -128,5 +128,5 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             * SectionRequest를 이용하여 Section 객체 생성
         * [ ] Sections 일급 컬렉션 객체 생성
             * [ ] addSection: 구간 정보 추가 기능
-            * [ ] stations: 상행에서 하행으로 정렬된 지하철역 리스트 반환
+            * [x] stations: 상행에서 하행으로 정렬된 지하철역 리스트 반환
     * [x] LineService에 domain 로직 옮기기
