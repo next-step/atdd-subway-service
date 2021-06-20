@@ -51,7 +51,7 @@ class SectionsTest {
         sections.addFirstSection(new Section(강남역, 잠실역, 100));
 
         assertThatThrownBy(
-                ()-> sections.addSection(new Section(삼성역, 종합운동장역, 40))
+                () -> sections.addSection(new Section(삼성역, 종합운동장역, 40))
         ).isInstanceOf(RuntimeException.class);
     }
 
@@ -66,7 +66,7 @@ class SectionsTest {
         sections.addFirstSection(new Section(강남역, 잠실역, 100));
 
         assertThatThrownBy(
-                ()-> sections.addSection(new Section(강남역, 잠실역, 40))
+                () -> sections.addSection(new Section(강남역, 잠실역, 40))
         ).isInstanceOf(RuntimeException.class);
     }
 
@@ -96,7 +96,7 @@ class SectionsTest {
         sections.addFirstSection(new Section(강남역, 잠실역, 100));
 
         assertThatThrownBy(
-                ()-> sections.removeLineStation(잠실역)
+                () -> sections.removeLineStation(잠실역)
         ).isInstanceOf(RuntimeException.class);
     }
 }

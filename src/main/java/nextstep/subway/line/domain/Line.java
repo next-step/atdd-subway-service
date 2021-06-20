@@ -53,6 +53,10 @@ public class Line extends BaseEntity {
         return sections.isEmptySections();
     }
 
+    public List<Section> getSections() {
+        return sections.getSections();
+    }
+
     public List<Station> getStations() {
 
         if (isEmptySection()) {
@@ -75,7 +79,7 @@ public class Line extends BaseEntity {
     public void removeLineStation(Station station) {
         Section newSection = sections.removeLineStation(station);
 
-        if(newSection != null) {
+        if (newSection != null) {
             newSection.setLine(this);
         }
     }
