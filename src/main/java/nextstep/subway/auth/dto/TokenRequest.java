@@ -1,6 +1,8 @@
 package nextstep.subway.auth.dto;
 
-public class TokenRequest {
+import nextstep.subway.auth.domain.PasswordSupplier;
+
+public class TokenRequest implements PasswordSupplier {
     private String email;
     private String password;
 
