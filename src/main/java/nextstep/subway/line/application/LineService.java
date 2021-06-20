@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class LineService {
+    public static final String NOT_EXIST_LINE = "존재하지않는 노선 : ";
     private final LineRepository lineRepository;
     private final StationService stationService;
 
@@ -34,7 +35,7 @@ public class LineService {
 
     public Line findLineById(Long id) {
         return lineRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new LineNotFoundException(NOT_EXIST_LINE + id));
     }
 
     public LineResponse findLineResponseById(Long id) {
