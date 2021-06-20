@@ -6,6 +6,7 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.line.exception.LineNotFoundException;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -52,7 +53,7 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id).orElseThrow(() -> new LineNotFoundException("조회된 노선이 없습니다."));
     }
 
 
@@ -65,7 +66,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = lineRepository.findById(id).orElseThrow(() -> new LineNotFoundException("조회된 노선이 없습니다."));
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
@@ -82,12 +83,12 @@ public class LineService {
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalStateException("이미 등록된 구간 입니다.");
         }
 
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
                 stations.stream().noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new IllegalStateException("등록할 수 없는 구간 입니다.");
         }
 
         if (stations.isEmpty()) {
@@ -110,7 +111,7 @@ public class LineService {
 
             line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
         } else {
-            throw new RuntimeException();
+            throw new IllegalStateException("기존 구간과 연결되지 않습니다.");
         }
     }
 
@@ -118,7 +119,7 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         if (line.getSections().size() <= 1) {
-            throw new RuntimeException();
+            throw new IllegalStateException("지울 수 있는 구간이 없습니다.");
         }
 
         Optional<Section> upLineStation = line.getSections().stream()
