@@ -98,4 +98,19 @@ public class LineSectionsTest {
         // when & then
         Assertions.assertThrows(RuntimeException.class, () -> lineSections.add(new Section(null, 판교역, 광교역, 10)));
     }
+
+    @DisplayName("구간의 중간역 삭제")
+    @Test
+    void removeLineSection() {
+        // given
+        LineSections lineSections = new LineSections();
+        lineSections.add(new Section(null, 강남역, 광교역, 10));
+        lineSections.add(new Section(null, 판교역, 광교역, 5));
+
+        // when
+        lineSections.removeSection(null, 판교역);
+
+        // then
+        assertThat(lineSections.toStations()).containsExactly(강남역, 광교역);
+    }
 }

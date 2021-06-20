@@ -121,6 +121,10 @@ public class LineSections {
         }
     }
 
+    public void removeSection(Line line, Station station) {
+
+    }
+
     public List<Section> getLineSections() {
         return lineSections;
     }
