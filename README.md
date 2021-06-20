@@ -52,3 +52,76 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+
+---
+
+### 요구사항 정리
+
+*[ ] LineSectionAcceptanceTest 리팩터링
+    * 목표 : 인수테스트 통합 → 시나리오, 흐름 위주의 테스트로 리팩토링
+    * **As-is** LineSectionAcceptanceTest
+        ```markdown
+          Feature: 지하철 구간 관련 기능 
+          
+          Background
+            Given 지하철역 등록되어 있음
+              And 지하철 노선 등록되어 있음
+              And 지하철 노선에 지하철역 등록되어 있음 
+          
+          Scenario #1 : 지하철 구간을 등록한다
+            When 지하철 구간 등록 요청
+            Then 지하철 구간 등록됨
+            Then 지하철 구간 순서대로 정렬되어 조회됨
+      
+          Scenario #2 : 지하철 노선에 이미 등록되어 있는 역을 등록한다
+            When 지하철 구간 등록 요청
+            Then 지하철 구간 등록 실패됨       
+      
+          Scenario #3 : 지하철 노선에 등록되지 않은 역을 기준으로 등록한다
+            When 지하철 구간 등록 요청
+            Then 지하철 구간 등록 실패됨 
+      
+          Scenario #4 : 지하철 노선에 등록된 지하철역을 제외한다
+            Given 지하철 구간 등록됨 
+            When 지하철 구간 삭제 요청
+            Then 지하철 구간 삭제됨
+            Then (삭제한 지하철 구간이 반영되어) 지하철 구간 순서대로 정렬되어 조회됨
+           
+          Scenario #5 : 지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다
+            When 지하철 구간 삭제 요청
+            Then 지하철 구간 삭제 실패됨
+        ```     
+
+  * **To-be** LineSectionAcceptanceTest
+      ```markdown
+          Feature: 지하철 구간 관련 기능 
+          
+          Background
+            Given 지하철역 등록되어 있음
+              And 지하철 노선 등록되어 있음
+              And 지하철 노선에 지하철역 등록되어 있음        
+
+          Scenario #1 : 지하철 구간 등록 관련
+            When 지하철 구간 등록 요청
+            Then 지하철 구간 등록됨
+            Then 지하철 구간 순서대로 정렬되어 조회됨
+            
+            When (기존에 있는) 지하철 구간 등록 요청
+            Then  지하철 구간 등록 실패됨
+            
+            When (노선에 등록되지 않는 지하철 역을 이용하여) 지하철 구간 등록 요청
+            Then 지하철 구간 등록 실패됨 
+    
+          Scenario #2 : 지하철 구간 제외 관련
+            Given 지하철 구간 등록 요청 (첫 번째 구간)
+             And 지하철 구간 등록 요청 (두 번째 구간)
+            
+            When 지하철 구간 삭제 요청
+            Then 지하철 구간 삭제됨
+            Then (삭제한 지하철 구간이 반영되어) 지하철 구간 순서대로 정렬되어 조회됨
+            
+            When 지하철 구간 삭제 요청
+            Then 지하철 구간 삭제 실패됨
+      ```
+*[ ] LineService 리팩터링
