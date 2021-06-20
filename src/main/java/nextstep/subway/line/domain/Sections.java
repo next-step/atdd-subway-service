@@ -13,7 +13,7 @@ import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
-	private static final int MINIMUM_SECITON_SIZE = 1;
+	private static final int MINIMUM_SECTION_SIZE = 1;
 
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private List<Section> sections = new ArrayList<>();
@@ -169,7 +169,7 @@ public class Sections {
 	}
 
 	private void validateStationRemovableInSections() {
-		if (sections.size() <= MINIMUM_SECITON_SIZE) {
+		if (sections.size() <= MINIMUM_SECTION_SIZE) {
 			throw new RuntimeException();
 		}
 	}
