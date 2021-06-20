@@ -1,5 +1,14 @@
 package nextstep.subway.line.application;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -9,14 +18,6 @@ import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -32,35 +33,44 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        Line persistLine = lineRepository
+            .save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
         List<StationResponse> stations = getStations(persistLine).stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
+            .map(it -> StationResponse.of(it))
+            .collect(Collectors.toList());
         return LineResponse.of(persistLine, stations);
+    }
+
+    public LineResponse saveLineNew(LineRequest request) {
+        Station upStation = stationService.findById(request.getUpStationId());
+        Station downStation = stationService.findById(request.getDownStationId());
+        Line persistLine = lineRepository
+            .save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+
+        return LineResponse.of(persistLine, persistLine.getStations());
     }
 
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
-                .map(line -> {
-                    List<StationResponse> stations = getStations(line).stream()
-                            .map(it -> StationResponse.of(it))
-                            .collect(Collectors.toList());
-                    return LineResponse.of(line, stations);
-                })
-                .collect(Collectors.toList());
+            .map(line -> {
+                List<StationResponse> stations = getStations(line).stream()
+                    .map(it -> StationResponse.of(it))
+                    .collect(Collectors.toList());
+                return LineResponse.of(line, stations);
+            })
+            .collect(Collectors.toList());
     }
 
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         List<StationResponse> stations = getStations(persistLine).stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
+            .map(it -> StationResponse.of(it))
+            .collect(Collectors.toList());
         return LineResponse.of(persistLine, stations);
     }
 
@@ -86,7 +96,7 @@ public class LineService {
         }
 
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation)) {
+            stations.stream().noneMatch(it -> it == downStation)) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
 
@@ -97,16 +107,16 @@ public class LineService {
 
         if (isUpStationExisted) {
             line.getSections().stream()
-                    .filter(it -> it.getUpStation() == upStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
+                .filter(it -> it.getUpStation() == upStation)
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
 
             line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
         } else if (isDownStationExisted) {
             line.getSections().stream()
-                    .filter(it -> it.getDownStation() == downStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
+                .filter(it -> it.getDownStation() == downStation)
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
 
             line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
         } else {
@@ -122,11 +132,11 @@ public class LineService {
         }
 
         Optional<Section> upLineStation = line.getSections().stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
+            .filter(it -> it.getUpStation() == station)
+            .findFirst();
         Optional<Section> downLineStation = line.getSections().stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
+            .filter(it -> it.getDownStation() == station)
+            .findFirst();
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
@@ -138,7 +148,6 @@ public class LineService {
         upLineStation.ifPresent(it -> line.getSections().remove(it));
         downLineStation.ifPresent(it -> line.getSections().remove(it));
     }
-
 
     public List<Station> getStations(Line line) {
         if (line.getSections().isEmpty()) {
@@ -152,8 +161,8 @@ public class LineService {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = line.getSections().stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
+                .filter(it -> it.getUpStation() == finalDownStation)
+                .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -169,8 +178,8 @@ public class LineService {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = line.getSections().stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
+                .filter(it -> it.getDownStation() == finalDownStation)
+                .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
             }

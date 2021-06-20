@@ -1,11 +1,19 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.BaseEntity;
-import nextstep.subway.station.domain.Station;
-
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import nextstep.subway.BaseEntity;
+import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 
 @Entity
 public class Line extends BaseEntity {
@@ -19,8 +27,7 @@ public class Line extends BaseEntity {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
-    public Line() {
-    }
+    public Line() {}
 
     public Line(String name, String color) {
         this.name = name;
@@ -53,4 +60,43 @@ public class Line extends BaseEntity {
     public List<Section> getSections() {
         return sections;
     }
+
+    public List<StationResponse> getStations() {
+        List<StationResponse> stations = new ArrayList<>();
+        Section nextSection = findStartSection();
+
+        if (sections.isEmpty() || nextSection == null) {
+            return stations;
+        }
+
+        stations.add(StationResponse.of(nextSection.getUpStation()));
+        while (nextSection != null) {
+            stations.add(StationResponse.of(nextSection.getDownStation()));
+            nextSection = findNextSection(nextSection);
+        }
+
+        return stations;
+
+    }
+
+    private Section findNextSection(Section beforSection) {
+        return sections.stream().filter(section -> section.isUpStationWithDown(beforSection))
+            .findFirst()
+            .orElse(null);
+    }
+
+    private Section findStartSection() {
+        return sections.stream()
+            .filter(section -> findSectionIsAnotherDownStation(section) == null)
+            .findFirst()
+            .orElse(null);
+    }
+
+    private Section findSectionIsAnotherDownStation(Section beforeSection) {
+        return sections.stream()
+            .filter(section -> section.isDownStationWithUp(beforeSection))
+            .findFirst()
+            .orElse(null);
+    }
+
 }
