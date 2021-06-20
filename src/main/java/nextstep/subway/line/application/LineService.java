@@ -33,22 +33,13 @@ public class LineService {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
-        // TODO getStations()
-        List<StationResponse> stations = getStations(persistLine).stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
-        return LineResponse.of(persistLine, stations);
+        return LineResponse.of(persistLine);
     }
 
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
-                .map(line -> {
-                    List<StationResponse> stations = getStations(line).stream()
-                            .map(it -> StationResponse.of(it))
-                            .collect(Collectors.toList());
-                    return LineResponse.of(line, stations);
-                })
+                .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -58,11 +49,7 @@ public class LineService {
 
 
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        List<StationResponse> stations = getStations(persistLine).stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
-        return LineResponse.of(persistLine, stations);
+        return LineResponse.of(findLineById(id));
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
@@ -81,17 +68,14 @@ public class LineService {
         Long downStationId = request.getDownStationId();
         Station downStation = getStationById(downStationId);
 
-        line.addSection(new Section(line, upStation, downStation, request.getDistance()));
+        Section newSection = new Section(line, upStation, downStation, request.getDistance());
+        line.addSection(newSection);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = getStationById(stationId);
         line.removeStation(station);
-    }
-
-    public List<Station> getStations(Line line) {
-        return line.getStations();
     }
 
     private Station getStationById(Long upStationId) {
