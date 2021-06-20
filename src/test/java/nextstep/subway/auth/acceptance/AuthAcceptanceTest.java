@@ -58,6 +58,15 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+        //given
+        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
+        ExtractableResponse<Response> loginResponse = 로그인_요청(tokenRequest);
+        String accessToken = loginResponse.jsonPath().getObject(".", TokenResponse.class).getAccessToken();
+        accessToken = accessToken.concat("hi");
+        //when
+        ExtractableResponse findMeResponse = 내_정보_찾기(accessToken);
+        //then
+        assertThat(findMeResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
 }
