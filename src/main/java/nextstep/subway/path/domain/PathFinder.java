@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class PathFinder {
 
-    private WeightedMultigraph weightedMultigraph;
+    private WeightedMultigraph<Station, DefaultWeightedEdge> weightedMultigraph;
 
     public PathFinder(List<Line> lines) {
         makeWeightedMultigraph(lines);
@@ -23,11 +23,11 @@ public class PathFinder {
     private void makeWeightedMultigraph(List<Line> lines) {
         weightedMultigraph = new WeightedMultigraph(DefaultWeightedEdge.class);
         for (Line line : lines) {
-            makeVerticesAndEdgesOf(line);
+            addVerticesAndEdgesOf(line);
         }
     }
 
-    private void makeVerticesAndEdgesOf(Line line) {
+    private void addVerticesAndEdgesOf(Line line) {
         for (Section section : line.getSections().get()) {
             weightedMultigraph.addVertex(section.getUpStation());
             weightedMultigraph.addVertex(section.getDownStation());
@@ -38,18 +38,30 @@ public class PathFinder {
     }
 
     public ShortestPath executeDijkstra(Station sourceStation, Station targetStation) {
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(weightedMultigraph);
-        GraphPath path = dijkstraShortestPath.getPath(sourceStation, targetStation);
+        validateSourceTarget(sourceStation, targetStation);
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath
+                = new DijkstraShortestPath(weightedMultigraph);
+        GraphPath<Station, DefaultWeightedEdge> path
+                = dijkstraShortestPath.getPath(sourceStation, targetStation);
 
         return new ShortestPath(path);
     }
 
     public List<ShortestPath> executeKShortest(Station sourceStation, Station targetStation) {
-        KShortestPaths kShortestPaths = new KShortestPaths(weightedMultigraph, 5);
-        List<GraphPath> paths = kShortestPaths.getPaths(sourceStation, targetStation);
+        validateSourceTarget(sourceStation, targetStation);
+        KShortestPaths<Station, DefaultWeightedEdge> kShortestPaths
+                = new KShortestPaths(weightedMultigraph, 5);
+        List<GraphPath<Station, DefaultWeightedEdge>> paths
+                = kShortestPaths.getPaths(sourceStation, targetStation);
 
         return paths.stream()
-                .map(graphPath -> new ShortestPath(graphPath))
+                .map(ShortestPath::new)
                 .collect(Collectors.toList());
+    }
+
+    private void validateSourceTarget(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new RuntimeException("경로를 검색하려는 출발역과 도착역이 같습니다.");
+        }
     }
 }
