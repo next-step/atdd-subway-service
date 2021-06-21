@@ -1,5 +1,14 @@
 package nextstep.subway.line.application;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -10,14 +19,6 @@ import nextstep.subway.line.exception.LineNotFoundException;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -78,41 +79,7 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        List<Station> stations = getStations(line);
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new IllegalStateException("이미 등록된 구간 입니다.");
-        }
-
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation)) {
-            throw new IllegalStateException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (stations.isEmpty()) {
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
-            return;
-        }
-
-        if (isUpStationExisted) {
-            line.getSections().stream()
-                    .filter(it -> it.getUpStation() == upStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
-
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
-        } else if (isDownStationExisted) {
-            line.getSections().stream()
-                    .filter(it -> it.getDownStation() == downStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
-
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
-        } else {
-            throw new IllegalStateException("기존 구간과 연결되지 않습니다.");
-        }
+        line.addSection(new Section(line, upStation, downStation, request.getDistance()));
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
@@ -139,7 +106,6 @@ public class LineService {
         upLineStation.ifPresent(it -> line.getSections().remove(it));
         downLineStation.ifPresent(it -> line.getSections().remove(it));
     }
-
 
     public List<Station> getStations(Line line) {
         if (line.getSections().isEmpty()) {

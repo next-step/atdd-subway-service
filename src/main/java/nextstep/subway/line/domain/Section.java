@@ -1,8 +1,14 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.station.domain.Station;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
-import javax.persistence.*;
+import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Section {
@@ -24,7 +30,7 @@ public class Section {
 
     private int distance;
 
-    public Section() {
+    protected Section() {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
@@ -68,5 +74,17 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public boolean isMatchDownStation(Station station) {
+        return this.downStation.equals(station);
+    }
+
+    public boolean isMatchUpStation(Station station) {
+        return this.upStation.equals(station);
+    }
+
+    public boolean isMatchUpStationToUpStationBy(Section section) {
+        return this.upStation.equals(section.upStation);
     }
 }
