@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AuthAcceptanceTest extends AcceptanceTest {
+public class AuthAcceptanceTest extends AcceptanceTest {
 
     private String email = MemberAcceptanceTest.EMAIL;
     private String password = MemberAcceptanceTest.PASSWORD;
@@ -37,7 +37,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         String token = tokenResponse.as(TokenResponse.class).getAccessToken();
 
         // When
-        ExtractableResponse<Response> meResponse = 내_정보를_조회한다(token);
+        ExtractableResponse<Response> meResponse = 내_정보_조회(token);
 
         // Then
         요청_성공(meResponse);
@@ -50,7 +50,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBadBearerAuth() {
         // When
-        ExtractableResponse<Response> meResponse = 내_정보를_조회한다("이상한토큰");
+        ExtractableResponse<Response> meResponse = 내_정보_조회("이상한토큰");
 
         // Then
         요청_UNAUTHORIZED_실패(meResponse);
@@ -69,7 +69,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(tokenProvider.validateToken(token)).isFalse();
 
         // When
-        ExtractableResponse<Response> meResponse = 내_정보를_조회한다(token);
+        ExtractableResponse<Response> meResponse = 내_정보_조회(token);
 
         // Then
         요청_UNAUTHORIZED_실패(meResponse);
@@ -88,7 +88,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         요청_UNAUTHORIZED_실패(responseFalse);
     }
 
-    private ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
+    public static ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
         return RestAssuredCRUD.postRequest("/login/token", tokenRequest);
     }
 

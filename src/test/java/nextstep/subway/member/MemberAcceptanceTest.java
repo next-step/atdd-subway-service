@@ -1,19 +1,19 @@
 package nextstep.subway.member;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.member.domain.Member;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.utils.RestAssuredCRUD;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.jpa.repository.support.CrudMethodMetadata;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -23,6 +23,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String NEW_PASSWORD = "newpassword";
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+    }
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
@@ -51,13 +56,42 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // Given 생성 및 로그인
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
+        ExtractableResponse<Response> tokenResponse = 로그인_요청(tokenRequest);
+        String token = tokenResponse.as(TokenResponse.class).getAccessToken();
 
+        // When 내 정보를 조회한다.
+        ExtractableResponse<Response> meResponse = 내_정보_조회(token);
+        // Then 정보 조회된다
+        회원_정보_조회됨(meResponse, EMAIL, AGE);
+
+        // When 내 정보를 수정한다.
+        ExtractableResponse<Response> updateResponse = 내_정보_수정_요청(
+                new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE),
+                token);
+        // Then 수정한 정보가 조회된다.
+        회원_정보_수정됨(updateResponse);
+
+        // When 내 정보를 삭제한다.
+        ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(token);
+        // Then 삭제 요청 성공한다.
+        회원_삭제됨(deleteResponse);
     }
 
-    public static ExtractableResponse<Response> 내_정보를_조회한다(String token) {
+    public static ExtractableResponse<Response> 내_정보_조회(String token) {
         return RestAssuredCRUD.getWithOAuth("/members/me", token);
     }
-    
+
+    public static ExtractableResponse<Response> 내_정보_수정_요청(MemberRequest memberRequest, String token) {
+        return RestAssuredCRUD.putRequestWithAOuth("/members/me", memberRequest, token);
+    }
+
+    public static ExtractableResponse<Response> 내_정보_삭제_요청(String token) {
+        return RestAssuredCRUD.deleteWithOAuth("/members/me", token);
+    }
+
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
         return RestAssuredCRUD.postRequest("/members", memberRequest);
