@@ -132,6 +132,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 즐겨찾기_삭제_요청() {
+        return null;
     }
 
     private void 즐겨찾기_삭제됨(ExtractableResponse<Response> deleteResponse) {
