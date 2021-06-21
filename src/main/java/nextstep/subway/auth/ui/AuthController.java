@@ -1,12 +1,16 @@
 package nextstep.subway.auth.ui;
 
 import nextstep.subway.auth.application.AuthService;
+import nextstep.subway.auth.application.InvalidTokenException;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.xml.ws.Response;
 
 @RestController
 public class AuthController {
@@ -17,8 +21,9 @@ public class AuthController {
     }
 
     @PostMapping("/login/token")
-    public ResponseEntity<TokenResponse> login(@RequestBody TokenRequest request) {
+    public ResponseEntity login(@RequestBody TokenRequest request) {
         TokenResponse token = authService.login(request);
         return ResponseEntity.ok().body(token);
     }
+
 }

@@ -25,6 +25,15 @@ public class RestAssuredCRUD {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> getWithOAuth(String path, String token) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .when()
+                .get(path)
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> putRequest(String path, Object request) {
         return RestAssured.given().log().all()
                 .body(request)

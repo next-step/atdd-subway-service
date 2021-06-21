@@ -1,90 +1,103 @@
 package nextstep.subway.auth.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
-import nextstep.subway.member.domain.Member;
-import nextstep.subway.path.dto.PathRequest;
-import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.utils.RestAssuredCRUD;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AuthAcceptanceTest extends AcceptanceTest {
 
-    private String email = "email";
-    private String password = "pw";
+    private String email = MemberAcceptanceTest.EMAIL;
+    private String password = MemberAcceptanceTest.PASSWORD;
+    private int age = AGE;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        회원등록_되어있음();
+        회원_생성을_요청(email, password, age);
     }
 
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
+        // Given
+        ExtractableResponse<Response> tokenResponse = 로그인_요청(new TokenRequest(email, password));
+        String token = tokenResponse.as(TokenResponse.class).getAccessToken();
+
         // When
-        TokenRequest tokenRequest = new TokenRequest(email, password);
-        ExtractableResponse<Response> response = 로그인_요청(tokenRequest);
+        ExtractableResponse<Response> meResponse = 내_정보를_조회한다(token);
 
         // Then
-        로그인_됨(response);
+        요청_성공(meResponse);
+
+        // And
+        회원_정보_조회됨(meResponse, email, age);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
+        // When
+        ExtractableResponse<Response> meResponse = 내_정보를_조회한다("이상한토큰");
+
+        // Then
+        요청_UNAUTHORIZED_실패(meResponse);
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+        // When 유효하지 않은 토큰을 준비한다.
+        String secretKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIiLCJuYW1lIjoiSm9obiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.ih1aovtQShabQ7l0cINw4k1fagApg3qLWiB8Kt59Lno";
+        long validityInMilliseconds = 0;
+        JwtTokenProvider tokenProvider = new JwtTokenProvider();
+        String token = tokenProvider.createToken(email, secretKey, validityInMilliseconds);
+
+        // Then 유효하지 않은 토큰으로 판별된다.
+        assertThat(tokenProvider.validateToken(token)).isFalse();
+
+        // When
+        ExtractableResponse<Response> meResponse = 내_정보를_조회한다(token);
+
+        // Then
+        요청_UNAUTHORIZED_실패(meResponse);
     }
 
-    private void 회원등록_되어있음() {
-        RestAssuredCRUD.postRequest("/members", new Member(email, password, 33));
+    @Test
+    void 로그인_시도_성공과_실패() {
+        // When 정상 로그인
+        ExtractableResponse<Response> responseTrue = 로그인_요청(new TokenRequest(email, password));
+        // Then
+        요청_성공(responseTrue);
+
+        // When 틀린 비밀번호 로그인
+        ExtractableResponse<Response> responseFalse = 로그인_요청(new TokenRequest(email, "false"));
+        // Then
+        요청_UNAUTHORIZED_실패(responseFalse);
     }
 
     private ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tokenRequest)
-                .when().post("/login/token")
-                .then().log().all()
-                .extract();
+        return RestAssuredCRUD.postRequest("/login/token", tokenRequest);
     }
 
-    private void 로그인_됨(ExtractableResponse<Response> response) {
+    private void 요청_성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private void 최단경로의_역들과_최단거리를_반환함(ExtractableResponse<Response> pathResponse,
-                                     List<StationResponse> expectedStations,
-                                     int distance) {
-        PathResponse path = pathResponse.as(PathResponse.class);
-
-        List<Long> stationIds = path.getStations().stream()
-                .map(it -> it.getId())
-                .collect(Collectors.toList());
-        List<Long> expectedStationIds = expectedStations.stream()
-                .map(it -> it.getId())
-                .collect(Collectors.toList());
-
-        assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
-        assertThat(path.getDistance()).isEqualTo(distance);
+    private void 요청_UNAUTHORIZED_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
+    
 }
