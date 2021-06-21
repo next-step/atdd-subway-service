@@ -1,5 +1,7 @@
 package nextstep.subway.line.dto;
 
+import nextstep.subway.station.dto.StationResponse;
+
 public class LineRequest {
     private String name;
     private String color;
@@ -15,6 +17,14 @@ public class LineRequest {
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
+        this.distance = distance;
+    }
+
+    public LineRequest(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
+        this.name = name;
+        this.color = color;
+        this.upStationId = upStation.getId();
+        this.downStationId = downStation.getId();
         this.distance = distance;
     }
 
