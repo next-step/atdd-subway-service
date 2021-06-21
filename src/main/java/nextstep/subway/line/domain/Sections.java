@@ -35,20 +35,20 @@ public class Sections {
 
     public int getDistanceBetweenStations(Station upStation, Station downStation) {
         int distance = 0;
-        Section nextSection = findByUpstation(upStation);
-        if (nextSection == null) {
+        Optional<Section> nextSection = findByUpstation(upStation);
+        if (!nextSection.isPresent()) {
             return distance;
         }
-        if (nextSection.getDownStation().equals(downStation)) {
-            return nextSection.getDistance();
+        if (nextSection.get().getDownStation().equals(downStation)) {
+            return nextSection.get().getDistance();
         }
-        while (nextSection != null && !nextSection.getDownStation().equals(downStation)) {
-            distance += nextSection.getDistance();
-            nextSection = findNextSection(nextSection);
+        while (nextSection.isPresent() && !nextSection.get().getDownStation().equals(downStation)) {
+            distance += nextSection.get().getDistance();
+            nextSection = findNextSection(nextSection.get());
         }
 
-        if (nextSection != null) {
-            distance += nextSection.getDistance();
+        if (nextSection.isPresent()) {
+            distance += nextSection.get().getDistance();
         }
 
         return distance;
@@ -80,41 +80,38 @@ public class Sections {
     }
 
     public List<Station> getStations() {
-        Section nextSection = findStartSection();
+        Optional<Section> nextSection = findStartSection();
         List<Station> stations = new ArrayList<>();
 
-        if (sections.isEmpty() || nextSection == null) {
+        if (sections.isEmpty() || !nextSection.isPresent()) {
             return Arrays.asList();
         }
 
-        stations.add(nextSection.getUpStation());
-        while (nextSection != null) {
-            stations.add(nextSection.getDownStation());
-            nextSection = findNextSection(nextSection);
+        stations.add(nextSection.get().getUpStation());
+        while (nextSection.isPresent()) {
+            stations.add(nextSection.get().getDownStation());
+            nextSection = findNextSection(nextSection.get());
         }
 
         return Collections.unmodifiableList(stations);
 
     }
 
-    private Section findNextSection(Section beforSection) {
+    private Optional<Section> findNextSection(Section beforSection) {
         return sections.stream().filter(section -> section.isUpStationWithDown(beforSection))
-            .findFirst()
-            .orElse(null);
+            .findFirst();
     }
 
-    private Section findStartSection() {
+    private Optional<Section> findStartSection() {
         return sections.stream()
-            .filter(section -> findSectionIsAnotherDownStation(section) == null)
-            .findFirst()
-            .orElse(null);
+            .filter(section -> !findSectionIsAnotherDownStation(section).isPresent())
+            .findFirst();
     }
 
-    private Section findSectionIsAnotherDownStation(Section beforeSection) {
+    private Optional<Section> findSectionIsAnotherDownStation(Section beforeSection) {
         return sections.stream()
             .filter(section -> section.isDownStationWithUp(beforeSection))
-            .findFirst()
-            .orElse(null);
+            .findFirst();
     }
 
     private void updateIfDownStationMatch(Section compareSection) {
@@ -163,11 +160,10 @@ public class Sections {
         }
     }
 
-    private Section findByUpstation(Station upStation) {
+    private Optional<Section> findByUpstation(Station upStation) {
         return sections.stream()
             .filter(section -> section.sameUpStation(upStation))
-            .findFirst()
-            .orElse(null);
+            .findFirst();
     }
 
 }
