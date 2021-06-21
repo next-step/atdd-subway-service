@@ -20,18 +20,21 @@ public class SectionsTest {
     private final Station downStation = new Station("역삼역");
     private final Sections sections = new Sections();
 
-    @DisplayName("새로 추가한 2개의 역 목록이 순서대로  반환되는지 테스트")
+    @DisplayName("새로 추가한 역 목록이 순서대로  반환되는지 테스트")
     @Test
     void given_Sections_when_GetListOfStation_then_ReturnListOfStation() {
         // given
         final Section firstSection = new Section(line, upStation, downStation, 100);
+        final Station newStation = new Station("시청역");
+        final Section secondSection = new Section(line, upStation, newStation, 10);
         sections.add(firstSection);
+        sections.add(secondSection);
 
         // when
         List<Station> actual = sections.stations();
 
         // then
-        assertThat(actual).isEqualTo(Arrays.asList(upStation, downStation));
+        assertThat(actual).isEqualTo(Arrays.asList(upStation, newStation, downStation));
     }
 
     @DisplayName("Section 을 추가했을 때 정상적으로 저장되는지 테스트")

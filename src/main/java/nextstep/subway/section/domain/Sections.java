@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -83,7 +84,15 @@ public class Sections {
     }
 
     private Station firstUpStation() {
-        return sections.get(0).getUpStation();
+        final List<Station> downStations = sections.stream()
+            .map(Section::getDownStation)
+            .collect(Collectors.toList());
+
+        return sections.stream()
+            .map(Section::getUpStation)
+            .filter(it -> !downStations.contains(it))
+            .findFirst()
+            .orElseThrow(RuntimeException::new);
     }
 
     private Optional<Station> findNextStation(Station upStation) {
