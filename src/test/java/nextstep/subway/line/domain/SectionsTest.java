@@ -61,9 +61,9 @@ class SectionsTest {
         assertThat(actual).containsAll(Arrays.asList(강남역, 삼성역, 선릉역, 잠실역));
     }
 
-    @DisplayName("노선의 구간을 추가한다.")
+    @DisplayName("노선의 중간 구간을 추가한다.")
     @Test
-    void add() {
+    void addMiddle() {
         //when
         sections.add(new Section(이호선, 잠실나루역, 잠실역, 1));
         List<Station> actual = sections.getStations();
@@ -76,6 +76,42 @@ class SectionsTest {
             assertThat(actual.get(2)).isEqualTo(선릉역);
             assertThat(actual.get(3)).isEqualTo(잠실나루역);
             assertThat(actual.get(4)).isEqualTo(잠실역);
+        });
+    }
+
+    @DisplayName("노선의 맨앞 구간을 추가한다.")
+    @Test
+    void addFirst() {
+        //when
+        sections.add(new Section(이호선, 잠실나루역, 강남역, 1));
+        List<Station> actual = sections.getStations();
+
+        //then
+        assertAll(() -> {
+            assertThat(actual.size()).isEqualTo(5);
+            assertThat(actual.get(0)).isEqualTo(잠실나루역);
+            assertThat(actual.get(1)).isEqualTo(강남역);
+            assertThat(actual.get(2)).isEqualTo(삼성역);
+            assertThat(actual.get(3)).isEqualTo(선릉역);
+            assertThat(actual.get(4)).isEqualTo(잠실역);
+        });
+    }
+
+    @DisplayName("노선의 맨끝 구간을 추가한다.")
+    @Test
+    void addEnd() {
+        //when
+        sections.add(new Section(이호선, 잠실역, 잠실나루역, 1));
+        List<Station> actual = sections.getStations();
+
+        //then
+        assertAll(() -> {
+            assertThat(actual.size()).isEqualTo(5);
+            assertThat(actual.get(0)).isEqualTo(강남역);
+            assertThat(actual.get(1)).isEqualTo(삼성역);
+            assertThat(actual.get(2)).isEqualTo(선릉역);
+            assertThat(actual.get(3)).isEqualTo(잠실역);
+            assertThat(actual.get(4)).isEqualTo(잠실나루역);
         });
     }
 
