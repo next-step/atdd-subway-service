@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("회원 권한 관련 기능")
 public class AuthAcceptanceTest extends AcceptanceTest {
 
     private MemberRequest registeredMember;
@@ -40,8 +41,20 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("미등록 회원 로그인 실패")
     @Test
-    void loginFail() {
+    void loginFail01() {
         ExtractableResponse<Response> response = loginRequest(unregisteredMember);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @DisplayName("비밀번호가 틀리면 로그인 실패")
+    @Test
+    void loginFail02() {
+
+        MemberRequest member = new MemberRequest(registeredMember.getEmail(),
+                                                 registeredMember.getPassword() + "1",
+                                                 registeredMember.getAge());
+
+        ExtractableResponse<Response> response = loginRequest(member);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
