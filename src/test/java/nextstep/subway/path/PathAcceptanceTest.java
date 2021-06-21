@@ -1,20 +1,26 @@
 package nextstep.subway.path;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import java.time.LocalDateTime;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 
-@DisplayName("지하철 경로 조회")
+@DisplayName("지하철 경로 조회 인수테스트")
 public class PathAcceptanceTest extends AcceptanceTest {
-
 
     private StationResponse 서울역;
     private StationResponse 시청역;
@@ -36,16 +42,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void setup() {
-        //1호선 노선 구성
+        //1호선
         서울역 = StationAcceptanceTest.지하철역_등록되어_있음("서울역").as(StationResponse.class);
         시청역 = StationAcceptanceTest.지하철역_등록되어_있음("시청역").as(StationResponse.class);
         종각역 = StationAcceptanceTest.지하철역_등록되어_있음("종각역").as(StationResponse.class);
         종로3가역 = StationAcceptanceTest.지하철역_등록되어_있음("종로3가역").as(StationResponse.class);
         일호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("일호선", "blue", 서울역, 시청역, 10)).as(LineResponse.class);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 시청역, 종각역, 10);
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 종각역, 종로3가역, 5);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 종각역, 종로3가역, 9);
 
-        //2호선 노선 구성
+        //2호선
         아현역 = StationAcceptanceTest.지하철역_등록되어_있음("아현역").as(StationResponse.class);
         충정로역 = StationAcceptanceTest.지하철역_등록되어_있음("충정로역").as(StationResponse.class);
         을지로입구역 = StationAcceptanceTest.지하철역_등록되어_있음("을지로입구역").as(StationResponse.class);
@@ -53,12 +59,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 충정로역, 시청역, 10);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 시청역, 을지로입구역, 10);
 
-        //3호선 노선 구성
+        //3호선
         독립문역 = StationAcceptanceTest.지하철역_등록되어_있음("독립문역").as(StationResponse.class);
         경복궁역 = StationAcceptanceTest.지하철역_등록되어_있음("경복궁역").as(StationResponse.class);
         삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("삼호선", "orange", 독립문역, 경복궁역, 10)).as(LineResponse.class);
 
-        //5호선 노선 구성
+        //5호선
         애오개역 = StationAcceptanceTest.지하철역_등록되어_있음("애오개역").as(StationResponse.class);
         서대문역 = StationAcceptanceTest.지하철역_등록되어_있음("서대문역").as(StationResponse.class);
         광화문역 = StationAcceptanceTest.지하철역_등록되어_있음("광화문역").as(StationResponse.class);
@@ -72,50 +78,70 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathByPoints() {
         // When
-        // 서대문역 -> 시청역 이동 최단 경로 조회
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(서대문역, 시청역);
 
         // Then
-        // 서대문역 -> 충정로역 -> 시청역 순으로 정렬된 목록을 반환한다.
+        지하철_최단_경로_목록_응답됨(response);
+        지하철_최단_경로_목록_정렬됨(response, 서대문역, 충정로역, 시청역);
     }
 
     @DisplayName("최단 경로 찾기 - 동일한 경로가 여럿인경우(거쳐가는 지하철역 개수가 동일) 짧은 거리를 기준")
     @Test
     void findPathByPointsWithDistance() {
         // When
-        // 광화문역에서 시청역을 가는 최단 경로를 찾는다.
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(광화문역, 시청역);
 
         // Then
-        // 광화문역 -> 종로3가역 -> 종각역 -> 시청역 순으로 정렬된 목록을 반환한다.
+        지하철_최단_경로_목록_응답됨(response);
+        지하철_최단_경로_목록_정렬됨(response, 광화문역, 종로3가역, 종각역, 시청역);
     }
 
     @DisplayName("출발역과 도착역이 같을 경우 예외 발생")
     @Test
     void originAndDestinationSame() {
         // When
-        // 동일한 출발역과 도착역을 인자값으로 경로를 찾는다.
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(광화문역, 광화문역);
 
         // Then
-        // 출발역과 도착역이 같다는 예외가 발생한다.
+        지하철_최단_경로_조회_실패함(response);
     }
 
     @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우 예외 발생")
     @Test
     void notConnectedOriginAndDestination() {
         // When
-        // 출발역과 연결되지 않은 도착역을 인자값으로 전달하여 경로를 찾는다.
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(광화문역, 독립문역);
 
         // Then
-        // 출발역과 도착역이 연결되어 있지 않다는 예외가 발생한다.
+        지하철_최단_경로_조회_실패함(response);
     }
 
     @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우 예외 발생")
     @Test
     void notExistOriginAndDestination() {
         // When
-        // 존재하지 않은 출발역이나 도착역을 인자값으로 사용하여 경로를 찾는다.
+        StationResponse 알수없는역 = new StationResponse(999L, "알수없는역", LocalDateTime.now(), LocalDateTime.now());
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(광화문역, 알수없는역);
 
         // Then
-        // 존재하지 않은 출발역이나 도착역이라는 예외가 발생한다.
+        지하철_최단_경로_조회_실패함(response);
+    }
+
+    private void 지하철_최단_경로_목록_응답됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private void 지하철_최단_경로_조회_실패함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    private void 지하철_최단_경로_목록_정렬됨(ExtractableResponse<Response> response, StationResponse... expectStationResponses) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getStations()).containsExactly(expectStationResponses);
+    }
+
+    private ExtractableResponse<Response> 지하철_최단_경로_조회_요청(StationResponse startStation, StationResponse endStation) {
+        return get(String.format("/paths?source=%d&target=%d", startStation.getId(), endStation.getId()));
     }
 
 }

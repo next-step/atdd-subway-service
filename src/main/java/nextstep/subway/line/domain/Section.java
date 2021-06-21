@@ -135,4 +135,15 @@ public class Section extends BaseEntity {
     public void toLine(Line line) {
         this.line = line;
     }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+            "id=" + id +
+            ", line=" + line +
+            ", upStation=" + upStation +
+            ", downStation=" + downStation +
+            ", distance=" + distance +
+            '}';
+    }
 }
