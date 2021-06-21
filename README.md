@@ -125,7 +125,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   ```
     
 * [ ] LineService 리팩터링
-    * [ ] Domain으로 옮길 로직 찾기
+    * [X] Domain으로 옮길 로직 찾기
         * `getStations()` → `Line`, `Section` `Sections`에 위임
             * 노선에 등록되어 있는 구간을 찾음(`Line`)
             * 상행 종점 찾음 (`Sections`)
@@ -133,7 +133,15 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             해당 구간의 downStation을 List<Station>에 add(`Sections`) 
             
         * `addLineStation()` → `Line`, `Section`, `Sections`에 위임
+            * 신규 구간의 `Station` 점검 (`Sections`)
+              * 양쪽 지하철역 모두 동일한 기존 구간이 있는지 등의 점검은 `Section`에서 담당  
+            * 점검 통과했을 경우 거리 고려하여 add (`Sections`)
+          
         * `removeLineStation` → `Line`, `Section`, `Sections`에 위임
+            * 삭제 가능여부 점검 (`Sections`)
+            * 삭제하려는 구간 탐색 (`Sections`)
+            * 거리 계산하여 구간 제거한 신규 구간 추가 (`Section`, `Sections`)
+    
     * [ ] Domain의 단위테스트 작성 
     * [ ] 리팩토링
     
