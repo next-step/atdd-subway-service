@@ -102,12 +102,20 @@ public class Sections {
     }
 
     private void validateStations(List<Station> stations, Station upStation, Station downStation) {
-        if (stations.size() > 0 && stations.contains(upStation) && stations.contains(downStation)) {
+        if (hasDuplicatedStations(stations, upStation, downStation)) {
             throw new IllegalStateException(LINE_DUPLICATED);
         }
-        if (stations.size() > 0 && !stations.contains(upStation) && !stations.contains(downStation)) {
+        if (hasNonMatchStations(stations, upStation, downStation)) {
             throw new IllegalStateException(NOT_VALID_STATION_EXISTED);
         }
+    }
+
+    private boolean hasNonMatchStations(List<Station> stations, Station upStation, Station downStation) {
+        return stations.size() > 0 && !stations.contains(upStation) && !stations.contains(downStation);
+    }
+
+    private boolean hasDuplicatedStations(List<Station> stations, Station upStation, Station downStation) {
+        return stations.size() > 0 && stations.contains(upStation) && stations.contains(downStation);
     }
 
     private Optional<Section> findSectionWithUpStation(Station upStation) {
