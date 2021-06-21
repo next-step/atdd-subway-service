@@ -33,7 +33,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBearerAuth() {
         // Given
-        ExtractableResponse<Response> tokenResponse = 로그인_요청(new TokenRequest(email, password));
+        ExtractableResponse<Response> tokenResponse = 로그인_되어_있음(email, password);
         String token = tokenResponse.as(TokenResponse.class).getAccessToken();
 
         // When
@@ -78,18 +78,18 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void 로그인_시도_성공과_실패() {
         // When 정상 로그인
-        ExtractableResponse<Response> responseTrue = 로그인_요청(new TokenRequest(email, password));
+        ExtractableResponse<Response> responseTrue = 로그인_되어_있음(email, password);
         // Then
         요청_성공(responseTrue);
 
         // When 틀린 비밀번호 로그인
-        ExtractableResponse<Response> responseFalse = 로그인_요청(new TokenRequest(email, "false"));
+        ExtractableResponse<Response> responseFalse = 로그인_되어_있음(email, "false");
         // Then
         요청_UNAUTHORIZED_실패(responseFalse);
     }
 
-    public static ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
-        return RestAssuredCRUD.postRequest("/login/token", tokenRequest);
+    public static ExtractableResponse<Response> 로그인_되어_있음(String email, String password) {
+        return RestAssuredCRUD.postRequest("/login/token", new TokenRequest(email, password));
     }
 
     private void 요청_성공(ExtractableResponse<Response> response) {

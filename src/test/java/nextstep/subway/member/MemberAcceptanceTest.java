@@ -13,7 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -59,7 +59,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // Given 생성 및 로그인
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
         TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-        ExtractableResponse<Response> tokenResponse = 로그인_요청(tokenRequest);
+        ExtractableResponse<Response> tokenResponse = 로그인_되어_있음(tokenRequest);
         String token = tokenResponse.as(TokenResponse.class).getAccessToken();
 
         // When
