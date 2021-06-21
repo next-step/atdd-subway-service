@@ -10,9 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class AuthService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private static final String EMAIL_NOT_FOUND = "회원 이메일을 찾을 수 없습니다";
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
@@ -20,10 +22,10 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(AuthorizationException::new);
-        member.checkPassword(request.getPassword());
+        final Member member = getMember(request.getEmail());
+        member.checkPassword(request);
 
-        String token = jwtTokenProvider.createToken(request.getEmail());
+        final String token = jwtTokenProvider.createToken(request.getEmail());
         return new TokenResponse(token);
     }
 
@@ -31,9 +33,13 @@ public class AuthService {
         if (!jwtTokenProvider.validateToken(credentials)) {
             return new LoginMember();
         }
-
-        String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        final String email = jwtTokenProvider.getPayload(credentials);
+        final Member member = getMember(email);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+    }
+
+    private Member getMember(String email) {
+        return memberRepository.findByEmail(email)
+                .orElseThrow(() -> new AuthorizationException(EMAIL_NOT_FOUND));
     }
 }
