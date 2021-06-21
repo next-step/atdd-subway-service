@@ -70,4 +70,8 @@ public class Line extends BaseEntity {
     public List<StationResponse> stationResponses() {
         return sections.stationResponse();
     }
+
+    public void addSection(Station upStation, Station downStation, int distance) {
+        sections.addLineStation(this, upStation, downStation, distance);
+    }
 }
