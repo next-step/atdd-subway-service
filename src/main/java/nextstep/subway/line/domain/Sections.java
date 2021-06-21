@@ -22,11 +22,19 @@ public class Sections {
         return sections.isEmpty();
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
     public List<StationResponse> stationResponse() {
         List<StationResponse> result = sections.stream()
                 .map(section -> section.getDownStation().toResponse()).collect(Collectors.toList());
         result.addAll(sections.stream()
                 .map(section -> section.getUpStation().toResponse()).collect(Collectors.toSet()));
         return result;
+    }
+
+    public int size() {
+        return sections.size();
     }
 }

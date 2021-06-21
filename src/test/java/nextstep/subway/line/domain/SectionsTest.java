@@ -32,4 +32,14 @@ class SectionsTest {
         //then
         assertThat(sections.isEmpty()).isTrue();
     }
+
+    @DisplayName("사이즈 구하기")
+    @Test
+    void size() {
+        //given
+        //when
+        sections.add(new Section());
+        //then
+        assertThat(sections.size()).isEqualTo(1);
+    }
 }

@@ -5,7 +5,6 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,11 +16,8 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
-
     @Embedded
-    Sections sections1 = new Sections();
+    Sections sections = new Sections();
 
     public Line() {
     }
@@ -36,7 +32,6 @@ public class Line extends BaseEntity {
         this.color = color;
         Section section = new Section(this, upStation, downStation, distance);
         sections.add(section);
-        sections1.add(section);
     }
 
     public void update(Line line) {
@@ -56,11 +51,23 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
+    public Sections getSections() {
         return sections;
     }
 
+    public int sectionSize() {
+        return sections.size();
+    }
+
+    public boolean isSectionEmpty() {
+        return sections.isEmpty();
+    }
+
+    public void addSection(Section section) {
+        sections.add(section);
+    }
+
     public List<StationResponse> stationResponses() {
-        return sections1.stationResponse();
+        return sections.stationResponse();
     }
 }
