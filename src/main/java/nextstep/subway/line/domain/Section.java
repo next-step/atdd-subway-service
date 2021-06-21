@@ -73,7 +73,7 @@ public class Section {
 	}
 
 	public void updateUpStation(Station station, Distance newDistance) {
-		if (this.distance.isLessthanOrEqual(newDistance)) {
+		if (this.distance.isLessThanOrEqual(newDistance)) {
 			throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
 		}
 		this.upStation = station;
@@ -81,7 +81,7 @@ public class Section {
 	}
 
 	public void updateDownStation(Station station, Distance newDistance) {
-		if (this.distance.isLessthanOrEqual(newDistance)) {
+		if (this.distance.isLessThanOrEqual(newDistance)) {
 			throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
 		}
 		this.downStation = station;
