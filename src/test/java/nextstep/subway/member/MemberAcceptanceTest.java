@@ -3,7 +3,6 @@ package nextstep.subway.member;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
@@ -13,7 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어_있음;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -33,7 +32,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMember() {
         // when
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> createResponse = 회원_등록되어_있음(EMAIL, PASSWORD, AGE);
         // then
         회원_생성됨(createResponse);
 
@@ -57,8 +56,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMyInfo() {
         // Given 생성 및 로그인
-        회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        ExtractableResponse<Response> tokenResponse = 로그인_되어_있음(EMAIL, PASSWORD);
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> tokenResponse = 로그인_요청(EMAIL, PASSWORD);
         String token = tokenResponse.as(TokenResponse.class).getAccessToken();
 
         // When
@@ -89,7 +88,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return RestAssuredCRUD.deleteWithOAuth("/members/me", token);
     }
 
-    public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
         return RestAssuredCRUD.postRequest("/members", memberRequest);
     }

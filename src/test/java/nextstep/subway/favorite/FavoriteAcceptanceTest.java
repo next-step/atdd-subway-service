@@ -12,7 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어_있음;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.*;
@@ -90,10 +90,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_요청(삼호선, 양재역, 널미터부남역, 21);
 
         // And 회원 등록되어 있음
-        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
 
         // And 로그인 되어있음
-        사용자 = 로그인_되어_있음(EMAIL, PASSWORD).as(MemberResponse.class);
+        사용자 = 로그인_요청(EMAIL, PASSWORD).as(MemberResponse.class);
     }
 
     @DisplayName("즐겨찾기를 관리한다.")
