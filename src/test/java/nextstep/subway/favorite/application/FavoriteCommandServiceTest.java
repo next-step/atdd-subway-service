@@ -3,6 +3,7 @@ package nextstep.subway.favorite.application;
 import nextstep.subway.auth.application.ApproveException;
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.exception.EntityNotExistException;
 import nextstep.subway.exception.LineHasNotExistStationException;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -19,8 +20,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import javax.persistence.EntityNotFoundException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -119,13 +118,13 @@ class FavoriteCommandServiceTest {
     }
 
     @Test
-    @DisplayName("등록되지 않은 즐겨찾기를 삭제하려 하면 EntityNotFoundException이 발생한다")
-    void 등록되지_않은_즐겨찾기를_삭제하려_하면_EntityNotFoundException이_발생한다() {
+    @DisplayName("등록되지 않은 즐겨찾기를 삭제하려 하면 EntityNotExistException 발생한다")
+    void 등록되지_않은_즐겨찾기를_삭제하려_하면_EntityNotExistException이_발생한다() {
         FavoriteResponse favorite = favoriteCommandService.createFavorite(savedLoginMember, new FavoriteRequest(savedStation1.getId(), savedStation2.getId()));
 
         favoriteCommandService.deleteById(savedLoginMember, favorite.getId());
 
-        assertThatExceptionOfType(EntityNotFoundException.class)
+        assertThatExceptionOfType(EntityNotExistException.class)
                 .isThrownBy(() -> favoriteCommandService.deleteById(savedLoginMember, favorite.getId()));
     }
 }

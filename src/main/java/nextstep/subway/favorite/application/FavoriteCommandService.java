@@ -3,6 +3,7 @@ package nextstep.subway.favorite.application;
 import nextstep.subway.auth.application.ApproveException;
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.exception.EntityNotExistException;
 import nextstep.subway.exception.LineHasNotExistStationException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -18,7 +19,6 @@ import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 
@@ -68,7 +68,7 @@ public class FavoriteCommandService {
 
     private Favorite findById(Long id) {
         return favoriteRepository.findById(id)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(EntityNotExistException::new);
     }
 
     private Member findMemberByEmail(String email) {
@@ -78,7 +78,7 @@ public class FavoriteCommandService {
 
     private Station findStationById(Long id) {
         return stationRepository.findById(id)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(EntityNotExistException::new);
     }
 
     private List<Line> findAllLines() {
