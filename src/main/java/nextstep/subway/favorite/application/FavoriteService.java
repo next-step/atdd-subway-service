@@ -51,12 +51,14 @@ public class FavoriteService {
     }
 
     public void deleteFavorite(Long myId, Long id) {
+        Member me = memberRepository.findById(myId).orElseThrow(NoSuchElementException::new);
 
-        Favorite favorite = favoriteRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        List<Favorite> favorites = favoriteRepository.findByMember(me);
 
-        if (!favorite.isCreateBy(myId)) {
-            throw new AuthorizationException();
-        }
+        favorites.stream()
+                .filter(favorite -> favorite.getId().equals(id))
+                .findAny()
+                .orElseThrow(AuthorizationException::new);
 
         favoriteRepository.deleteById(id);
     }
