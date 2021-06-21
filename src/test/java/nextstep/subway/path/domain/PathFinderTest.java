@@ -17,16 +17,33 @@ class PathFinderTest {
 	private Line 오호선;
 	private Line 신분당선;
 
+	/**
+	 *         고속터미널역
+	 *            |
+	 *            5
+	 *            |
+	 * 서초역 -2- 교대역 -9- 강남역 -5- 역삼역
+	 * 			  |        |
+	 * 			  1        4
+	 * 			  |        |
+	 * 		남부터미널역 -1- 양재역 -5- 도곡역
+	 * 					   |
+	 * 					   6
+	 * 					   |
+	 * 					양재시민의숲
+	 *
+	 * 	목동역 -5- 오목교역
+	 */
 	@BeforeEach
 	void setup() {
 		이호선 = new Line("2호선", "green", 서초역, 교대역, 2);
-		이호선.addSection(교대역, 강남역, 3);
+		이호선.addSection(교대역, 강남역, 19);
 		이호선.addSection(강남역, 역삼역, 5);
 		신분당선 = new Line("신분당선", "red", 강남역, 양재역, 4);
 		신분당선.addSection(양재역, 양재시민의숲역, 6);
 		삼호선 = new Line("삼호선", "orange", 고속터미널역, 교대역, 5);
-		삼호선.addSection(교대역, 남부터미널역, 5);
-		삼호선.addSection(남부터미널역, 양재역, 5);
+		삼호선.addSection(교대역, 남부터미널역, 1);
+		삼호선.addSection(남부터미널역, 양재역, 1);
 		삼호선.addSection(양재역, 도곡역, 5);
 		오호선 = new Line("오호선", "orange", 목동역, 오목교역, 5);
 	}
@@ -36,10 +53,19 @@ class PathFinderTest {
 	void pathTest() {
 		PathFinder graph = PathFinder.of(asList(이호선, 신분당선, 삼호선));
 
-		Path subwayPath = graph.findPath(양재역, 서초역);
+		// when
+		Path subwayPath = graph.findPath(양재시민의숲역, 고속터미널역);
 
-		assertThat(subwayPath.getStations()).containsExactly(양재역, 강남역, 교대역, 서초역);
-		assertThat(subwayPath.sumTotalDistance()).isEqualTo(9);
+		// then
+		assertThat(subwayPath.getStations()).containsExactly(양재시민의숲역, 양재역, 남부터미널역, 교대역, 고속터미널역);
+		assertThat(subwayPath.sumTotalDistance()).isEqualTo(4);
+
+		// when
+		subwayPath = graph.findPath(서초역, 역삼역);
+
+		// then
+		assertThat(subwayPath.getStations()).containsExactly(서초역, 남부터미널역, 양재역, 역삼역);
+		assertThat(subwayPath.sumTotalDistance()).isEqualTo(13);
 	}
 
 	@DisplayName("도착역과 출발역이 같을때는 최단 경로를 구할 수 없다.")
