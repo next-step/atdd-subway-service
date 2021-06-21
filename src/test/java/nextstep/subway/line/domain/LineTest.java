@@ -25,17 +25,6 @@ public class LineTest {
 		이호선 = lineRequest.toLine(성수역, 뚝섬역);
 	}
 
-	@DisplayName("LineRequest Line으로 변환")
-	@Test
-	void toLine() {
-
-		assertThat(이호선.getName()).isEqualTo("2호선");
-		assertThat(이호선.getColor()).isEqualTo("초록색");
-		assertThat(이호선.getSections().get(0).getUpStation().getId()).isEqualTo(1L);
-		assertThat(이호선.getSections().get(0).getDownStation().getId()).isEqualTo(2L);
-		assertThat(이호선.getSections().get(0).getDistance()).isEqualTo(10);
-	}
-
 	@DisplayName("Line 지하철역 조회")
 	@Test
 	void getStations() {
