@@ -52,3 +52,8 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+## 기능 구현 목록
+1. LineService 리팩터링
+    - Line, Section, Sections 도메인으로 비즈니스 로직 옮기기
+    - Line, Section, Sections 도메인 단위테스트 작성
