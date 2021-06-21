@@ -12,18 +12,15 @@ class SectionEdge extends DefaultWeightedEdge {
 		this.section = section;
 	}
 
-	@Override
-	protected double getWeight() {
-		return section.getDistance();
-	}
-
-	@Override
-	public Station getSource() {
+	Station getUpStation() {
 		return section.getUpStation();
 	}
 
-	@Override
-	public Station getTarget() {
+	Station getDownStation() {
 		return section.getDownStation();
+	}
+
+	int getDistance() {
+		return section.getDistance();
 	}
 }

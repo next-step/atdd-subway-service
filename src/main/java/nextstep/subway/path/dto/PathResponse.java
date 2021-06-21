@@ -1,39 +1,11 @@
 package nextstep.subway.path.dto;
 
-import static java.time.LocalDateTime.*;
-import static java.util.Arrays.*;
-
-import java.time.LocalDateTime;
 import java.util.List;
 
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.station.dto.StationResponse;
+
 public class PathResponse {
-
-	public static class StationResponse {
-		private Long id;
-		private String name;
-		private LocalDateTime createdAt;
-
-		public StationResponse(Long id, String name, LocalDateTime createdAt) {
-			this.id = id;
-			this.name = name;
-			this.createdAt = createdAt;
-		}
-
-		public StationResponse() {}
-
-		public Long getId() {
-			return id;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public LocalDateTime getCreatedAt() {
-			return createdAt;
-		}
-	}
-
 	private List<StationResponse> stations;
 	private int distance;
 
@@ -44,12 +16,9 @@ public class PathResponse {
 
 	public PathResponse() {}
 
-	public static PathResponse createMock() {
-		List<StationResponse> stationResponses = asList(
-			new StationResponse(3L, "교대역", now()),
-			new StationResponse(2L, "양재역", now()));
-
-		return new PathResponse(stationResponses, 2);
+	public static PathResponse of(Path subwayPath) {
+		List<StationResponse> stationResponses = StationResponse.listOf(subwayPath.getStations());
+		return new PathResponse(stationResponses, subwayPath.sumTotalDistance());
 	}
 
 	public List<StationResponse> getStations() {

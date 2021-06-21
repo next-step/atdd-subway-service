@@ -5,26 +5,22 @@ import java.util.List;
 
 import nextstep.subway.station.domain.Station;
 
-class ShortestStationPath implements StationPath {
+public class Path {
 	private final List<Station> stations;
 	private final List<SectionEdge> sectionEdges;
 
-	public ShortestStationPath(List<Station> stations, List<SectionEdge> sectionEdges) {
+	Path(List<Station> stations, List<SectionEdge> sectionEdges) {
 		this.stations = stations;
 		this.sectionEdges = sectionEdges;
 	}
 
-	@Override
 	public List<Station> getStations() {
 		return Collections.unmodifiableList(stations);
 	}
 
-	@Override
-	public int getTotalDistance() {
-		return (int) sumTotalDistance();
-	}
-
-	private double sumTotalDistance() {
-		return sectionEdges.stream().mapToDouble(SectionEdge::getWeight).sum();
+	public int sumTotalDistance() {
+		return sectionEdges.stream()
+			.mapToInt(SectionEdge::getDistance)
+			.sum();
 	}
 }

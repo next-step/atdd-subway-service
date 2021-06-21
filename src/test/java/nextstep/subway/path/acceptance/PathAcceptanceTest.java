@@ -45,7 +45,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 		// then
 		지하철경로_최단경로_조회됨(response);
-		지하철경로_최단경로가_포함됨(response, 교대역.getId(), 양재역.getId());
+		지하철경로_최단경로가_포함됨(response, 교대역.getId(), 강남역.getId(), 양재역.getId());
 		지하철경로_최단경로의_거리가_포함됨(response, 2);
 	}
 
