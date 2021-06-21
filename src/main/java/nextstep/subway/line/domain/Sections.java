@@ -1,10 +1,13 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.station.dto.StationResponse;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
@@ -17,5 +20,13 @@ public class Sections {
 
     public boolean isEmpty() {
         return sections.isEmpty();
+    }
+
+    public List<StationResponse> stationResponse() {
+        List<StationResponse> result = sections.stream()
+                .map(section -> section.getDownStation().toResponse()).collect(Collectors.toList());
+        result.addAll(sections.stream()
+                .map(section -> section.getUpStation().toResponse()).collect(Collectors.toSet()));
+        return result;
     }
 }

@@ -1,6 +1,7 @@
 package nextstep.subway.station.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.station.dto.StationResponse;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -26,6 +27,10 @@ public class Station extends BaseEntity {
 
     public String getName() {
         return name;
+    }
+
+    public StationResponse toResponse() {
+        return StationResponse.of(this);
     }
 
     @Override
