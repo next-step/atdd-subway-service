@@ -1,6 +1,8 @@
 package nextstep.subway.favorite.domain;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.exception.LineHasNotExistStationException;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -24,7 +26,15 @@ public class Favorite {
     protected Favorite() {
     }
 
-    public Favorite(Member member, Station source, Station target) {
+    public static Favorite create(Lines lines, Member member, Station source, Station target) {
+        if (!lines.containsStationsExactly(source, target)) {
+            throw new LineHasNotExistStationException();
+        }
+
+        return new Favorite(member, source, target);
+    }
+
+    private Favorite(Member member, Station source, Station target) {
         this.member = member;
         this.source = source;
         this.target = target;

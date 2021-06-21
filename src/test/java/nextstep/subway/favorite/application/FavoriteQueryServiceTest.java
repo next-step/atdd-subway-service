@@ -5,10 +5,7 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.*;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
@@ -19,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -66,14 +64,16 @@ class FavoriteQueryServiceTest {
     void 등록된_계정이_조회하려_하면_조회가_성공한다() {
         Member newMember = memberRepository.save(new Member("NEWNEW@EMAIL.com", "NEWNEW", 11));
         LoginMember loginMember = new LoginMember(savedMember.getId(), savedMember.getEmail(), savedMember.getAge());
+        Lines lines = new Lines(Arrays.asList(savedLine));
 
         savedLine.addSection(new Section(savedStation2, savedStation3, new Distance(10)));
 
-        Favorite favorite1 = favoriteRepository.save(new Favorite(savedMember, savedStation1, savedStation2));
-        Favorite favorite2 = favoriteRepository.save(new Favorite(savedMember, savedStation2, savedStation3));
-        Favorite favorite3 = favoriteRepository.save(new Favorite(savedMember, savedStation1, savedStation3));
 
-        favoriteRepository.save(new Favorite(newMember, savedStation1, savedStation3));
+        Favorite favorite1 = favoriteRepository.save(Favorite.create(lines, savedMember, savedStation1, savedStation2));
+        Favorite favorite2 = favoriteRepository.save(Favorite.create(lines, savedMember, savedStation2, savedStation3));
+        Favorite favorite3 = favoriteRepository.save(Favorite.create(lines, savedMember, savedStation1, savedStation3));
+
+        favoriteRepository.save(Favorite.create(lines, newMember, savedStation1, savedStation3));
 
         List<FavoriteResponse> allFavorites = favoriteQueryService.findAllByMember(loginMember);
 

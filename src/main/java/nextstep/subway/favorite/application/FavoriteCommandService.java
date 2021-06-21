@@ -42,10 +42,9 @@ public class FavoriteCommandService {
         Station source = findStationById(request.getSource());
         Station target = findStationById(request.getTarget());
         Member member = findMemberByEmail(loginMember.getEmail());
+        Lines lines = new Lines(findAllLines());
 
-        validateLineContainsStations(source, target);
-
-        return FavoriteResponse.of(favoriteRepository.save(new Favorite(member, source, target)));
+        return FavoriteResponse.of(favoriteRepository.save(Favorite.create(lines, member, source, target)));
     }
 
     public void deleteById(LoginMember loginMember, Long id) {
@@ -56,14 +55,6 @@ public class FavoriteCommandService {
         }
 
         favoriteRepository.delete(favorite);
-    }
-
-    private void validateLineContainsStations(Station source, Station target) {
-        Lines lines = new Lines(findAllLines());
-
-        if (!lines.containsStationsExactly(source, target)) {
-            throw new LineHasNotExistStationException();
-        }
     }
 
     private Favorite findById(Long id) {
