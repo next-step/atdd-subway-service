@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.station.domain.Station;
+
 class SectionsTest {
     Sections sections;
 
@@ -39,6 +41,19 @@ class SectionsTest {
         //given
         //when
         sections.add(new Section());
+        //then
+        assertThat(sections.size()).isEqualTo(1);
+    }
+
+    @DisplayName("구간 추가")
+    @Test
+    void addLineStation() {
+        //given
+        Line line = new Line("분당선", "노랑색");
+        Station upStation = new Station("선릉역");
+        Station downStation = new Station("한티역");
+        //when
+        sections.addLineStation(line, upStation, downStation, 5);
         //then
         assertThat(sections.size()).isEqualTo(1);
     }

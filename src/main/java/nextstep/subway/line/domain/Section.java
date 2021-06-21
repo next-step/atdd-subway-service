@@ -50,6 +50,14 @@ public class Section {
         return downStation;
     }
 
+    public boolean isUpStation(Station station) {
+        return this.upStation == station;
+    }
+
+    public boolean isDownStation(Station station) {
+        return this.downStation == station;
+    }
+
     public int getDistance() {
         return distance;
     }
