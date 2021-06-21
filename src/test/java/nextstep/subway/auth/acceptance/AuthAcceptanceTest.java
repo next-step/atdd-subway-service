@@ -69,7 +69,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    private ExtractableResponse<Response> 로그인_요청(TokenRequest params) {
+    public static ExtractableResponse<Response> 로그인_요청(TokenRequest params) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -90,7 +90,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                         extract();
     }
 
-    private void 로그인_성공(ExtractableResponse<Response> response) {
+    private static void 로그인_성공(ExtractableResponse<Response> response) {
         TokenResponse tokenResponse = response.as(TokenResponse.class);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
