@@ -5,20 +5,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import nextstep.subway.exception.line.LineAlreadyExistException;
+import nextstep.subway.exception.line.NotFoundStationsException;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
-
-    private static final String NO_EXIST = "등록할 수 없는 구간 입니다.";
-    private static final String ALREADY_EXIST = "이미 등록된 구간 입니다.";
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -135,10 +133,10 @@ public class Sections {
         boolean hasDownStation = statoins.stream().anyMatch(station -> station.equals(compareSection.getDownStation()));
 
         if (!hasUpStation && !hasDownStation) {
-            throw new NoSuchElementException(NO_EXIST);
+            throw new NotFoundStationsException();
         }
         if (hasUpStation && hasDownStation) {
-            throw new NoSuchElementException(ALREADY_EXIST);
+            throw new LineAlreadyExistException();
         }
     }
 
