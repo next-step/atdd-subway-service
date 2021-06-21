@@ -48,22 +48,22 @@ public class Sections implements Iterable<Section> {
     public void remove(Line line, Station station) {
         validateRemovable(station);
 
-        Optional<Section> upLineStation = sections.stream()
+        Optional<Section> upStationMatching = sections.stream()
                 .filter(it -> it.getUpStation() == station)
                 .findFirst();
-        Optional<Section> downLineStation = sections.stream()
+        Optional<Section> downStationMatching = sections.stream()
                 .filter(it -> it.getDownStation() == station)
                 .findFirst();
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+        if (upStationMatching.isPresent() && downStationMatching.isPresent()) {
+            Station newUpStation = downStationMatching.get().getUpStation();
+            Station newDownStation = upStationMatching.get().getDownStation();
+            int newDistance = upStationMatching.get().getDistance() + downStationMatching.get().getDistance();
             sections.add(new Section(line, newUpStation, newDownStation, newDistance));
         }
 
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
+        upStationMatching.ifPresent(it -> sections.remove(it));
+        downStationMatching.ifPresent(it -> sections.remove(it));
     }
 
     private void validateRemovable(Station station) {
