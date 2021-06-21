@@ -64,4 +64,8 @@ public class LineResponse {
     public LocalDateTime getModifiedDate() {
         return modifiedDate;
     }
+
+    public Line toLine() {
+        return new Line(id, name, color);
+    }
 }
