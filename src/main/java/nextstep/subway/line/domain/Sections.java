@@ -23,23 +23,26 @@ public class Sections implements Iterable<Section> {
             sections.add(section);
             return;
         }
-        if (contains(section.getUpStation())) {
-            sections.stream()
-                    .filter(it -> it.getUpStation() == section.getUpStation())
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-            sections.add(section);
-            return;
+        if (!contains(section.getUpStation()) && !contains(section.getDownStation())) {
+            throw new IllegalArgumentException("구간 추가를 위해서는 기존 구간과의 연결점이 필요합니다. 역 정보를 확인해주세요.");
         }
-        if (contains(section.getDownStation())) {
-            sections.stream()
-                    .filter(it -> it.getDownStation() == section.getDownStation())
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
-            sections.add(section);
-            return;
-        }
-        throw new IllegalArgumentException("구간 추가를 위해서는 기존 구간과의 연결점이 필요합니다. 역 정보를 확인해주세요.");
+        mergeByUpStation(section);
+        mergeByDownStation(section);
+        sections.add(section);
+    }
+
+    private void mergeByUpStation(Section section) {
+        sections.stream()
+                .filter(it -> it.getUpStation() == section.getUpStation())
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+    }
+
+    private void mergeByDownStation(Section section) {
+        sections.stream()
+                .filter(it -> it.getDownStation() == section.getDownStation())
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
     }
 
     public void remove(Line line, Station station) {
