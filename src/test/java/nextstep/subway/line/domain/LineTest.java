@@ -41,6 +41,6 @@ public class LineTest {
 	void Line_지하철역_조회() {
 		List<Station> stations = 이호선.getStations();
 		assertThat(stations.get(0).getName()).isEqualTo("성수역");
-		assertThat(stations.get(0).getName()).isEqualTo("뚝섬역");
+		assertThat(stations.get(1).getName()).isEqualTo("뚝섬역");
 	}
 }
