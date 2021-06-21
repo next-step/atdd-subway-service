@@ -16,18 +16,18 @@ public class PathFinder {
 
     private DijkstraShortestPath dijkstraShortestPath;
 
-    public PathFinder(Stations allStations, Lines lines) {
+    public PathFinder(List<Station> stations, Lines lines) {
 
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
-        addStationToVertex(allStations, graph);
+        addStationToVertex(stations, graph);
         addSectionToEdge(lines, graph);
 
         dijkstraShortestPath = new DijkstraShortestPath(graph);
     }
 
-    private void addStationToVertex(Stations allStations, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        for (Station station : allStations.stations()) {
+    private void addStationToVertex(List<Station> allStations, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        for (Station station : allStations) {
             graph.addVertex(station);
         }
     }

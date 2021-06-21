@@ -28,7 +28,7 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(Long source, Long target) {
-        Stations allStations = new Stations(stationRepository.findAll());
+        List<Station> allStations = stationRepository.findAll();
         Lines lines = new Lines(lineRepository.findAll());
 
         PathFinder pathFinder = new PathFinder(allStations, lines);
