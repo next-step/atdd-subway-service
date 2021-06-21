@@ -94,5 +94,4 @@ class FavoriteServiceTest {
         List<FavoriteResponse> favorites = favoriteService.findFavorites(로그인_사용자);
         assertThat(favorites).isEmpty();
     }
-
 }
