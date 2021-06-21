@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
-public class LineTest {
+public class SectionsTest {
 
     private Station 삼성역;
     private Station 교대역;
@@ -31,11 +31,9 @@ public class LineTest {
         잠실역 = new Station(4L, "잠실역");
         건대입구 = new Station(5L, "건대입구");
         강변역 = new Station(6L, "강변역");
-        호선2 = new Line();
-        호선2.getSections().add(new Section(호선2, 교대역, 삼성역, 20));
-        호선2.getSections().add(new Section(호선2, 삼성역, 선릉역, 60));
-        호선2.getSections().add(new Section(호선2, 선릉역, 잠실역, 100));
-
+        호선2 = new Line("2호선", "초록", 교대역, 잠실역, 180);
+        호선2.addSection(new Section(호선2, 교대역, 삼성역, 20));
+        호선2.addSection(new Section(호선2, 삼성역, 선릉역, 60));
     }
 
     @Test
