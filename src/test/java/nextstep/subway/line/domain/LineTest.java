@@ -37,7 +37,7 @@ public class LineTest {
 	@Test
 	void addLineStations() {
 		Station 건대입구역 = new Station("건대입구역");
-		Section section = new Section(이호선, 뚝섬역, 건대입구역, 10);
+		Section section = new Section(이호선, 뚝섬역, 건대입구역, new Distance(10));
 		이호선.addLineStation(section);
 		List<Station> stations = 이호선.getStations();
 		assertThat(stations.get(0).getName()).isEqualTo("성수역");
@@ -49,7 +49,7 @@ public class LineTest {
 	@Test
 	void removeLineStation() {
 		Station 건대입구역 = new Station("건대입구역");
-		Section section = new Section(이호선, 뚝섬역, 건대입구역, 10);
+		Section section = new Section(이호선, 뚝섬역, 건대입구역, new Distance(10));
 		이호선.addLineStation(section);
 		이호선.removeLineStation(성수역);
 		List<Station> stations = 이호선.getStations();

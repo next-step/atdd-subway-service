@@ -23,7 +23,7 @@ public class SectionsTest {
 		성수역 = new Station(1L, "성수역");
 		뚝섬역 = new Station(2L, "뚝섬역");
 		건대입구역 = new Station(3L, "건대입구역");
-		성수뚝섬구간 = new Section(이호선, 성수역, 뚝섬역, 10);
+		성수뚝섬구간 = new Section(이호선, 성수역, 뚝섬역, new Distance(10));
 	}
 
 	@DisplayName("구간들의 역 순서 조회 기능 테스트")
@@ -39,7 +39,7 @@ public class SectionsTest {
 	void addSection() {
 		Sections sections = new Sections();
 		sections.addSection(성수뚝섬구간);
-		sections.addSection(new Section(이호선, 건대입구역, 성수역, 10));
+		sections.addSection(new Section(이호선, 건대입구역, 성수역, new Distance(10)));
 		assertThat(sections.getStations()).containsAll(Arrays.asList(건대입구역, 성수역, 뚝섬역));
 	}
 
@@ -48,7 +48,7 @@ public class SectionsTest {
 	void removeStation() {
 		Sections sections = new Sections();
 		sections.addSection(성수뚝섬구간);
-		sections.addSection(new Section(이호선, 건대입구역, 성수역, 10));
+		sections.addSection(new Section(이호선, 건대입구역, 성수역, new Distance(10)));
 		sections.removeStation(이호선, 성수역);
 		assertThat(sections.getStations()).containsAll(Arrays.asList(건대입구역, 뚝섬역));
 	}
