@@ -32,7 +32,7 @@ public class LineCommandService {
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineQueryService.findLineById(id);
-        persistLine.update(lineUpdateRequest.toLine());
+        persistLine.update(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
     }
 
     public void deleteLineById(Long id) {
