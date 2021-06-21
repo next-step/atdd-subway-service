@@ -33,6 +33,10 @@ public class Favorite {
         this.target = target;
     }
 
+    public boolean isCreateBy(Long myId) {
+        return this.member.getId().equals(myId);
+    }
+
     public Long getId() {
         return id;
     }
