@@ -5,6 +5,8 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Distance {
 
+	private static final int MIN_DISTANCE = 0;
+
 	private int distance;
 
 	protected Distance() {
@@ -12,11 +14,12 @@ public class Distance {
 	}
 
 	public Distance(int distance) {
+		validate(distance);
 		this.distance = distance;
 	}
 
 	private void validate(int distance) {
-		if (distance <= 0)
+		if (distance <= MIN_DISTANCE)
 			throw new RuntimeException("거리는 0보다 같거나 작을 수 없습니다.");
 	}
 
@@ -28,7 +31,7 @@ public class Distance {
 		return new Distance(this.distance - distance.distance);
 	}
 
-	public boolean isLessthanOrEqual(Distance newDistance) {
+	public boolean isLessThanOrEqual(Distance newDistance) {
 		return this.distance <= newDistance.distance;
 	}
 }
