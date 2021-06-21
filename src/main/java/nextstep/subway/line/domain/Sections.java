@@ -39,7 +39,7 @@ public class Sections implements Iterable<Section> {
             sections.add(section);
             return;
         }
-        throw new RuntimeException();
+        throw new IllegalArgumentException("구간 추가를 위해서는 기존 구간과의 연결점이 필요합니다. 역 정보를 확인해주세요.");
     }
 
     public void remove(Line line, Station station) {
