@@ -18,37 +18,37 @@ public class GlobalExceptionHandler {
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(AuthorizationException.class)
-    public ErrorResponse handleAuthorization() {
-        return new ErrorResponse(NOT_AUTHORIZED);
+    public ErrorResponse handleAuthorization(Exception e) {
+        return new ErrorResponse(e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(MemberNotFoundException.class)
-    public ErrorResponse handleMemberNotFound() {
-        return new ErrorResponse(MEMBER_NOT_FOUND);
+    public ErrorResponse handleMemberNotFound(Exception e) {
+        return new ErrorResponse(e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(IllegalArgumentException.class)
-    public ErrorResponse handleIllegalArgument() {
-        return new ErrorResponse(NOT_VALID_INPUT);
+    public ErrorResponse handleIllegalArgument(Exception e) {
+        return new ErrorResponse(e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(IllegalStateException.class)
-    public ErrorResponse handleIllegalState() {
-        return new ErrorResponse(SERVER_ERROR);
+    public ErrorResponse handleIllegalState(Exception e) {
+        return new ErrorResponse(e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(LineNotFoundException.class)
-    public ErrorResponse handleLineNotFound() {
-        return new ErrorResponse(LINE_NOT_FOUND);
+    public ErrorResponse handleLineNotFound(Exception e) {
+        return new ErrorResponse(e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Throwable.class)
-    public ErrorResponse handleException() {
-        return new ErrorResponse(SERVER_ERROR);
+    public ErrorResponse handleException(Exception e) {
+        return new ErrorResponse(e.getMessage());
     }
 }
