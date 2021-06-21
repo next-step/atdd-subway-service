@@ -16,26 +16,16 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class FavoriteQueryService {
-    private final MemberRepository memberRepository;
     private final FavoriteRepository favoriteRepository;
 
-
-    public FavoriteQueryService(MemberRepository memberRepository, FavoriteRepository favoriteRepository) {
-        this.memberRepository = memberRepository;
+    public FavoriteQueryService(FavoriteRepository favoriteRepository) {
         this.favoriteRepository = favoriteRepository;
     }
 
     public List<FavoriteResponse> findAllByMember(LoginMember loginMember) {
-        Member member = findMemberByEmail(loginMember.getEmail());
-
-        return favoriteRepository.findAllByMember(member)
+        return favoriteRepository.findAllByMember_Email(loginMember.getEmail())
                 .stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
-    }
-
-    private Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email)
-                .orElseThrow(AuthorizationException::new);
     }
 }

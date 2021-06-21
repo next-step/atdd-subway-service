@@ -58,15 +58,7 @@ class FavoriteQueryServiceTest {
 
         savedLine = lineRepository.save(savedLine);
 
-        favoriteQueryService = new FavoriteQueryService(memberRepository, favoriteRepository);
-    }
-
-
-    @Test
-    @DisplayName("등록되지 않은 회원이 목록을 조회시 AuthorizationException이 발생한다")
-    void 등록되지_않은_회원이_목록을_조회시_AuthorizationException이_발생한다() {
-        assertThatExceptionOfType(AuthorizationException.class)
-                .isThrownBy(() -> favoriteQueryService.findAllByMember(new LoginMember(1L, "NONE@MAIL.com", 25)));
+        favoriteQueryService = new FavoriteQueryService(favoriteRepository);
     }
 
     @Test
