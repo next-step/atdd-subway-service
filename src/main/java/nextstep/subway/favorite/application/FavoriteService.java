@@ -44,10 +44,9 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        Member member = findMember(loginMember);
+        List<Favorite> findFavorites = favoriteRepository.findAllByMember(new Member(loginMember.getId()));
 
-        return member.getFavorites()
-                .stream()
+        return findFavorites.stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
     }
