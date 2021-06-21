@@ -70,7 +70,7 @@ public class LineService {
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        persistLine.update(new Line(lineUpdateRequest));
+        persistLine.update(lineUpdateRequest.toLine());
     }
 
     public void deleteLineById(Long id) {

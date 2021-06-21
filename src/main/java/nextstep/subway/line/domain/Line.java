@@ -1,14 +1,10 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
@@ -37,11 +33,6 @@ public class Line extends BaseEntity {
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
-    public Line(LineRequest lineRequest) {
-        this.name = lineRequest.getName();
-        this.color = lineRequest.getColor();
-    }
-
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
@@ -68,13 +59,22 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(Section section) {
-        if (sections.isEmpty()) {
-            sections.add(section);
+        if (sections.contains(section)) {
             return;
         }
 
-        validate(section);
+        if (sections.isEmpty()) {
+            add(section);
+            return;
+        }
+
+        validateAddable(section);
         updateForConnection(section);
+    }
+
+    private void add(Section section) {
+        sections.add(section);
+        section.setLine(this);
     }
 
     private void updateForConnection(Section section) {
@@ -82,33 +82,33 @@ public class Line extends BaseEntity {
 
         if (section.upStationIsIn(stations)) {
             sections.updateIfMidFront(section);
-            sections.add(section);
+            add(section);
             return;
         }
 
         if (section.downStationIsIn(stations)) {
             sections.updateIfMidRear(section);
-            sections.add(section);
+            add(section);
             return;
         }
 
         throw new RuntimeException();
     }
 
-    private void validate(Section section) {
-        validateBothEnrolled(section);
-        validateBothNotExist(section);
+    private void validateAddable(Section section) {
+        checkExistedStationsOf(section);
+        hasStationCanBeConnectedIn(section);
     }
 
-    private void validateBothEnrolled(Section section) {
-        if (sections.alreadyHas(section)) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+    private void checkExistedStationsOf(Section section) {
+        if (sections.checkExistedStationsOf(section)) {
+            throw new RuntimeException("이미 등록된 역들을 가진 구간 입니다.");
         }
     }
 
-    private void validateBothNotExist(Section section) {
-        if (sections.cannotConnect(section)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+    private void hasStationCanBeConnectedIn(Section section) {
+        if (!sections.hasStationCanBeConnectedIn(section)) {
+            throw new RuntimeException("연결 가능한 역이 하나도 없는 구간 입니다.");
         }
     }
 
