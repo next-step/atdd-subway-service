@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -11,7 +12,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 
 @Entity
 public class Line extends BaseEntity {
@@ -40,8 +43,8 @@ public class Line extends BaseEntity {
     }
 
     public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
+        this.name = line.name;
+        this.color = line.color;
     }
 
     public Long getId() {
@@ -66,5 +69,17 @@ public class Line extends BaseEntity {
 
     public void removeSectionBy(Station station) {
         this.sections.removeStation(this, station);
+    }
+
+    public List<Station> getStations() {
+        return this.sections.getStations();
+    }
+
+    public LineResponse toLineResponse() {
+        List<StationResponse> collect = this.sections.getStations()
+                .stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
+        return new LineResponse(id, name, color, collect, getCreatedDate(), getModifiedDate());
     }
 }
