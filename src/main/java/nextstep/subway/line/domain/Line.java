@@ -26,34 +26,25 @@ public class Line extends BaseEntity {
      */
     protected Line() {}
 
-    private Line(String name, String color) {
+    public Line(String name, String color) {
+        verifyAvailable(name, color);
         this.name = name;
         this.color = color;
     }
 
-    //테스트용
     public Line(Long id, String name, String color) {
         this(name, color);
         this.id = id;
     }
 
-    /**
-     * 생성 메소드
-     */
-    public static Line create(String name, String color, Station upStation, Station downStation, int distance) {
-        verifyAvailable(name, color, upStation, downStation);
-        Line line = new Line(name, color);
-        line.sections.addSection(line, upStation, downStation, distance);
-        return line;
+    public Line(Long id, String name, String color, SectionGroup sections) {
+        this(id, name, color);
+        this.sections = sections;
     }
 
-    private static void verifyAvailable(String name, String color, Station upStation, Station downStation) {
+    private static void verifyAvailable(String name, String color) {
         if (Strings.isBlank(name) || Strings.isBlank(color)) {
             throw new IllegalArgumentException("노선 정보가 충분하지 않습니다.");
-        }
-
-        if (Objects.isNull(upStation) || Objects.isNull(downStation)) {
-            throw new IllegalArgumentException("역을 식별할 수 없습니다.");
         }
     }
 
@@ -65,8 +56,11 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public void addSection(Station upStation, Station downStation, int distance) {
-        sections.addSection(this, upStation, downStation, distance);
+    public void addSection(Section section) {
+        if (Objects.isNull(section.getLine())) {
+            section.setLine(this);
+        }
+        sections.addSection(section);
     }
 
     public void removeSection(Station station) {

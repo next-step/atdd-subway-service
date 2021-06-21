@@ -32,33 +32,38 @@ public class Section {
     protected Section() {
     }
 
-    //테스트용
     public Section(Long id, Line line, Station upStation, Station downStation, int distance) {
+        this(line, upStation, downStation, distance);
         this.id = id;
-        this.line = line;
+    }
+
+    public Section(Long id, Station upStation, Station downStation, int distance) {
+        this(upStation, downStation, distance);
+        this.id = id;
+    }
+
+    public Section(Station upStation, Station downStation, int distance) {
+        verifyAvailableStations(upStation, downStation);
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = SectionDistance.create(distance);
+        this.distance = new SectionDistance(distance);
     }
 
-    private Section(Line line, Station upStation, Station downStation, int distance) {
+    public Section(Line line, Station upStation, Station downStation, int distance) {
+        this(upStation, downStation, distance);
+        verifyAvailableLine(line);
         this.line = line;
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = SectionDistance.create(distance);
     }
 
-    /**
-     * 생성 메소드
-     */
-    public static Section create(Line line, Station upStation, Station downStation, int distance) {
-        verifyAvailable(line, upStation, downStation);
-        return new Section(line, upStation, downStation, distance);
+    private static void verifyAvailableStations(Station upStation, Station downStation) {
+        if (Objects.isNull(upStation) || Objects.isNull(downStation)) {
+            throw new IllegalArgumentException("구간 생성정보(역)가 충분하지 않습니다.");
+        }
     }
 
-    private static void verifyAvailable(Line line, Station upStation, Station downStation) {
-        if (Objects.isNull(line) || Objects.isNull(upStation) || Objects.isNull(downStation)) {
-            throw new IllegalArgumentException("구간 생성정보가 충분하지 않습니다.");
+    private static void verifyAvailableLine(Line line) {
+        if (Objects.isNull(line)) {
+            throw new IllegalArgumentException("구간 생성정보(노선)가 충분하지 않습니다.");
         }
     }
 
@@ -73,6 +78,10 @@ public class Section {
     public void updateDownStation(Station station, int newDistance) {
         distance.updateDistance(newDistance);
         this.downStation = station;
+    }
+
+    public void setLine(Line line) {
+        this.line = line;
     }
 
     /**

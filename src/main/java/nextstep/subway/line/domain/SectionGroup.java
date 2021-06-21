@@ -29,30 +29,30 @@ public class SectionGroup {
      * 비즈니스 메소드
      */
 
-    public void addSection(Line line, Station upStation, Station downStation, int distance) {
+    public void addSection(Section section) {
         if (!sections.isEmpty()) {
-            boolean isUpStationExisted = isExistsStation(upStation);
-            boolean isDownStationExisted = isExistsStation(downStation);
+            boolean isUpStationExisted = isExistsStation(section.getUpStation());
+            boolean isDownStationExisted = isExistsStation(section.getDownStation());
 
             verifyAddable(isUpStationExisted, isDownStationExisted);
-            changeUpStationIfExists(upStation, downStation, distance, isUpStationExisted);
-            changeDownStationIfExists(upStation, downStation, distance, isDownStationExisted);
+            changeUpStationIfExists(section, isUpStationExisted);
+            changeDownStationIfExists(section, isDownStationExisted);
         }
 
-        sections.add(Section.create(line, upStation, downStation, distance));
+        sections.add(section);
     }
 
     public void removeSection(Line line, Station station) {
         verifyDeletable();
 
-        Optional<Section> upLineStation = findDownSection(station);
-        Optional<Section> downLineStation = findUpSection(station);
+        Optional<Section> upSection = findDownSection(station);
+        Optional<Section> downSection = findUpSection(station);
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            createNewSection(line, upLineStation, downLineStation);
+        if (upSection.isPresent() && downSection.isPresent()) {
+            createNewSection(line, upSection, downSection);
         }
 
-        removeSections(upLineStation, downLineStation);
+        removeSections(upSection, downSection);
     }
 
     public List<Station> findStationsOrderUpToDown() {
@@ -113,11 +113,11 @@ public class SectionGroup {
         }
     }
 
-    private void createNewSection(Line line, Optional<Section> upLineStation, Optional<Section> downLineStation) {
-        Station newUpStation = downLineStation.get().getUpStation();
-        Station newDownStation = upLineStation.get().getDownStation();
-        int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-        sections.add(Section.create(line, newUpStation, newDownStation, newDistance));
+    private void createNewSection(Line line, Optional<Section> upSection, Optional<Section> downSection) {
+        Station newUpStation = downSection.get().getUpStation();
+        Station newDownStation = upSection.get().getDownStation();
+        int newDistance = upSection.get().getDistance() + downSection.get().getDistance();
+        sections.add(new Section(line, newUpStation, newDownStation, newDistance));
     }
 
     private void removeSections(Optional<Section> upLineStation, Optional<Section> downLineStation) {
@@ -140,15 +140,17 @@ public class SectionGroup {
         }
     }
 
-    private void changeDownStationIfExists(Station upStation, Station downStation, int distance, boolean isDownStationExisted) {
+    private void changeDownStationIfExists(Section section, boolean isDownStationExisted) {
         if (isDownStationExisted) {
-            findUpSection(downStation).ifPresent(it -> it.updateDownStation(upStation, distance));
+            findUpSection(section.getDownStation())
+                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
         }
     }
 
-    private void changeUpStationIfExists(Station upStation, Station downStation, int distance, boolean isUpStationExisted) {
+    private void changeUpStationIfExists(Section section, boolean isUpStationExisted) {
         if (isUpStationExisted) {
-            findDownSection(upStation).ifPresent(it -> it.updateUpStation(downStation, distance));
+            findDownSection(section.getUpStation())
+                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
         }
     }
 }

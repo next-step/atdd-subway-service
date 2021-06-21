@@ -3,6 +3,7 @@ package nextstep.subway;
 import com.google.common.collect.Lists;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
@@ -29,11 +30,11 @@ public class DataLoaderConfig implements CommandLineRunner {
         Station 남부터미널역 = new Station("남부터미널역");
 
         Line 신분당선 = new Line(1L, "신분당선", "red lighten-1");
-        신분당선.addSection(강남역, 양재역, 10);
+        신분당선.addSection(new Section(강남역, 양재역, 10));
         Line 이호선 = new Line(2L, "2호선", "green lighten-1");
-        이호선.addSection(교대역, 강남역, 10);
+        이호선.addSection(new Section(교대역, 강남역, 10));
         Line 삼호선 = new Line(3L, "3호선", "orange darken-1");
-        삼호선.addSection(교대역, 양재역, 10);
+        삼호선.addSection(new Section(교대역, 양재역, 10));
 
         lineRepository.saveAll(Lists.newArrayList(신분당선, 이호선, 삼호선));
 

@@ -6,140 +6,42 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class SectionTest {
     private Station 방화역;
     private Station 하남검단산역;
-    private Line 오호선;
+    private Section 오호선생성구간;
 
     @BeforeEach
     private void setUp() {
         방화역 = new Station(1L, "방화역");
         하남검단산역 = new Station(2L, "하남검단산역");
-        오호선 = new Line(1L, "오호선", "보라색");
-        오호선.addSection(방화역, 하남검단산역, 10);
+        오호선생성구간 = new Section(1L, 방화역, 하남검단산역, 10);
     }
 
-    @DisplayName("구간등록 - 예외발생 - 구간의 두 역이 이미 노선에 등록되어있으면 구간 등록될 수 없다.")
+    @DisplayName("상행역 변경")
     @Test
-    public void 이미등록된두역_등록_예외() throws Exception {
-        //when
-        //then
-        assertThatThrownBy(() -> 오호선.addSection(방화역, 하남검단산역, 5)).isInstanceOf(IllegalStateException.class);
-    }
-
-    @DisplayName("구간등록 - 예외발생 - 구간의 두 역이 모두 노선에 등록되어있지 않으면 구간 등록될 수 없다.")
-    @Test
-    public void 등록되지않은두역_등록_예외() throws Exception {
+    public void 상행역_변경_확인() throws Exception {
         //given
-        Station 청구역 = new Station(3L, "청구역");
-        Station 미사역 = new Station(4L, "미사역");
+        Station 새로운역 = new Station(3L, "새로운역");
 
         //when
+        오호선생성구간.updateUpStation(새로운역, 3);
+
         //then
-        assertThatThrownBy(() -> 오호선.addSection(청구역, 미사역, 5)).isInstanceOf(IllegalStateException.class);
+        assertThat(오호선생성구간.getUpStation()).isEqualTo(새로운역);
     }
 
-    @DisplayName("구간등록 - 상행종점역 등록")
+    @DisplayName("하행역 변경")
     @Test
-    public void 상행종점역_등록_확인() throws Exception {
+    public void 하행역_변경_확인() throws Exception {
         //given
-        Station 새로운상행종점역 = new Station(3L, "새로운상행종점역");
+        Station 새로운역 = new Station(3L, "새로운역");
 
         //when
-        오호선.addSection(새로운상행종점역, 방화역, 3);
+        오호선생성구간.updateDownStation(새로운역, 3);
 
         //then
-        assertThat(오호선.findStationsOrderUpToDown()).containsExactly(새로운상행종점역, 방화역, 하남검단산역);
-    }
-
-    @DisplayName("구간등록 - 하행종점역 등록")
-    @Test
-    public void 하행종점역_등록_확인() throws Exception {
-        //given
-        Station 새로운하행종점역 = new Station(3L, "새로운하행종점역");
-
-        //when
-        오호선.addSection(하남검단산역, 새로운하행종점역, 3);
-
-        //then
-        assertThat(오호선.findStationsOrderUpToDown()).containsExactly(방화역, 하남검단산역, 새로운하행종점역);
-    }
-
-    @DisplayName("구간등록 - 중간상행역 등록")
-    @Test
-    public void 중간상행역_등록_확인() throws Exception {
-        //given
-        Station 중간상행역 = new Station(3L, "중간상행역");
-
-        //when
-        오호선.addSection(중간상행역, 하남검단산역, 3);
-
-        //then
-        assertThat(오호선.findStationsOrderUpToDown()).containsExactly(방화역, 중간상행역, 하남검단산역);
-    }
-
-    @DisplayName("구간등록 - 중간하행역 등록")
-    @Test
-    public void 중간하행역_등록_확인() throws Exception {
-        //given
-        Station 중간하행역 = new Station(3L, "중간하행역");
-
-        //when
-        오호선.addSection(방화역, 중간하행역, 3);
-
-        //then
-        assertThat(오호선.findStationsOrderUpToDown()).containsExactly(방화역, 중간하행역, 하남검단산역);
-    }
-
-    @DisplayName("구간제외 - 예외발생 - 노선에 포함된 역이 두 개 이하이면 구간을 제외할 수 없다.")
-    @Test
-    public void 역이두개이하일때_구간제외_예외() throws Exception {
-        //when
-        //then
-        assertThatThrownBy(() -> 오호선.removeSection(방화역)).isInstanceOf(IllegalStateException.class);
-    }
-
-    @DisplayName("구간제외 - 상행종점역 제외")
-    @Test
-    public void 상행종점역_제외_확인() throws Exception {
-        //given
-        Station 새로운상행종점역 = new Station(3L, "새로운상행종점역");
-        오호선.addSection(새로운상행종점역, 방화역, 3);
-
-        //when
-        오호선.removeSection(새로운상행종점역);
-
-        //then
-        assertThat(오호선.findStationsOrderUpToDown()).containsExactly(방화역, 하남검단산역);
-    }
-
-    @DisplayName("구간제외 - 하행종점역 제외")
-    @Test
-    public void 하행종점역_제외_확인() throws Exception {
-        //given
-        Station 새로운하행종점역 = new Station(3L, "새로운하행종점역");
-        오호선.addSection(하남검단산역, 새로운하행종점역, 3);
-
-        //when
-        오호선.removeSection(새로운하행종점역);
-
-        //then
-        assertThat(오호선.findStationsOrderUpToDown()).containsExactly(방화역, 하남검단산역);
-    }
-
-    @DisplayName("구간제외 - 중간역 제외")
-    @Test
-    public void 중간역_제외_확인() throws Exception {
-        //given
-        Station 새로운중간역 = new Station(3L, "새로운중간역");
-        오호선.addSection(방화역, 새로운중간역, 3);
-
-        //when
-        오호선.removeSection(새로운중간역);
-
-        //then
-        assertThat(오호선.findStationsOrderUpToDown()).containsExactly(방화역, 하남검단산역);
+        assertThat(오호선생성구간.getDownStation()).isEqualTo(새로운역);
     }
 }
