@@ -35,6 +35,10 @@ public class Sections {
         return sections.isEmpty();
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
     public List<StationResponse> stationResponse() {
         return getStations().toResponse();
     }
@@ -178,5 +182,9 @@ public class Sections {
         return sections.stream()
                 .filter(section -> section.isDownStation(station))
                 .findFirst();
+    }
+
+    public int size() {
+        return sections.size();
     }
 }
