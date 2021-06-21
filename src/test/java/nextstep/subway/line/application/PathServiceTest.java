@@ -6,6 +6,7 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
+import nextstep.subway.utils.DatabaseCleanup;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class PathServiceTest {
 
     @Autowired
+    private DatabaseCleanup databaseCleanup;
+    @Autowired
     private LineRepository lineRepository;
     @Autowired
     private StationRepository stationRepository;
@@ -38,12 +41,11 @@ class PathServiceTest {
 
     @BeforeEach
     void beforeEach() {
-        lineRepository.deleteAll();
-        stationRepository.deleteAll();
+        databaseCleanup.execute();
 
         강남역 = new Station("강남역");
         삼성역 = new Station("삼성역");
-        잠실역 = new Station("잠실역 =");
+        잠실역 = new Station("잠실역");
         덕소역 = new Station("덕소역");
         구리역 = new Station("구리역");
 
