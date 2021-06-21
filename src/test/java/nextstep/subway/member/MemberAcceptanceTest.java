@@ -75,7 +75,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
-    private String 인증_토근_가져오기(ExtractableResponse<Response> response) {
+    public static String 인증_토근_가져오기(ExtractableResponse<Response> response) {
         TokenResponse tokenResponse = response.as(TokenResponse.class);
         return tokenResponse.getAccessToken();
     }
