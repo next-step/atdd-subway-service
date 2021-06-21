@@ -59,6 +59,11 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [x] LineSectionAcceptanceTest 리팩터링
 - [x] LineSerivce 리팩토링
 
+- [x] line.syncSequence() 코드 수정
+- [x] 매직넘버 수정
+- [ ] sections.stream().anyMatch(section -> section.getDownStation().equals(upStation));
+- [ ] addSection() 리팩토링
+- [ ] 구간 앞뒤로 구간 추가시 오류 확인
 
 2단계 - 경로 조회 기능
 

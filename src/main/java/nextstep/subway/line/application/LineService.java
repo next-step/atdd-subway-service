@@ -52,7 +52,6 @@ public class LineService {
         Section newSection = new Section(line, upStation, downStation, request.getDistance());
 
         line.addSection(newSection);
-        line.syncSequence();
     }
 
     public void removeLineStation(Long lineId, Long stationId) {

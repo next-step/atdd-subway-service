@@ -105,6 +105,12 @@ public class Line extends BaseEntity {
                             addSectionOriginalIndex(section, newSection)
                     );
         }
+
+        List<Section> list = this.sections;
+        for (int i = 0; i < list.size(); i++) {
+            Section section = list.get(i);
+            section.setSequence(i);
+        }
     }
 
     private void addSectionBehindOfOriginal(Section targetSection, Section original) {
@@ -168,13 +174,5 @@ public class Line extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, color, sections);
-    }
-
-    public void syncSequence() {
-        List<Section> list = this.sections;
-        for (int i = 0; i < list.size(); i++) {
-            Section section = list.get(i);
-            section.setSequence(i);
-        }
     }
 }
