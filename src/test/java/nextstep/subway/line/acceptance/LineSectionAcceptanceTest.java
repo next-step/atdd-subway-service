@@ -84,10 +84,10 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_성공됨(신분당선, Arrays.asList(강남역, 정자역, 광교역));
 
         //when
-        ExtractableResponse<Response> removeResponse1 = 지하철_노선에_지하철역_제외_요청(신분당선, 정자역);
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 정자역);
 
         //then
-        지하철_노선에_지하철역_제외_성공됨(removeResponse1, 신분당선, Arrays.asList(강남역, 광교역));
+        지하철_노선에_지하철역_제외_성공됨(removeResponse, 신분당선, Arrays.asList(강남역, 광교역));
     }
 
     @DisplayName("하행중간역 등록, 제외")
@@ -100,13 +100,21 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_성공됨(신분당선, Arrays.asList(강남역, 정자역, 광교역));
 
         //when
-        ExtractableResponse<Response> removeResponse1 = 지하철_노선에_지하철역_제외_요청(신분당선, 정자역);
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 정자역);
 
         //then
-        지하철_노선에_지하철역_제외_성공됨(removeResponse1, 신분당선, Arrays.asList(강남역, 광교역));
+        지하철_노선에_지하철역_제외_성공됨(removeResponse, 신분당선, Arrays.asList(강남역, 광교역));
     }
 
-    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록되어_있음(LineResponse lineResponse,
+                                                                     StationResponse upStationResponse,
+                                                                     StationResponse downStationResponse,
+                                                                     int distance) {
+        return 지하철_노선에_지하철역_등록_요청(lineResponse, upStationResponse, downStationResponse, distance);
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation,
+                                                                   StationResponse downStation, int distance) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 
         return RestAssured
