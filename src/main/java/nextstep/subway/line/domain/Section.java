@@ -109,4 +109,20 @@ public class Section {
     public void changeDownStation(Station downStation) {
         this.downStation = downStation;
     }
+
+    public boolean isUpStationEquals(Station upStation){
+        return this.getUpStation().equals(upStation);
+    }
+
+    public boolean isDownStationEquals(Station downStation){
+        return this.getDownStation().equals(downStation);
+    }
+
+    public boolean isUpStationAndDownStationEquals(Station downStation){
+        return this.getUpStation().equals(downStation);
+    }
+
+    public boolean isDownStationAndUpStationEquals(Station upStation){
+        return this.getDownStation().equals(upStation);
+    }
 }
