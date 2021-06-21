@@ -73,11 +73,11 @@ public class Section {
     }
 
     public boolean isUpStationEqualsToStation(Station station) {
-        return upStation == station;
+        return upStation.equals(station);
     }
 
     public boolean isDownStationEqualsToStation(Station station) {
-        return downStation == station;
+        return downStation.equals(station);
     }
 
     public boolean isUpStationEqualsToUpStationInSection(Section sectionToAdd) {
