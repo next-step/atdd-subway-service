@@ -6,19 +6,20 @@ import javax.persistence.*;
 
 @Entity
 public class Section {
+    private static final String LONGER_EXISTING_SECTION_EXCEPTION = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "line_id")
     private Line line;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "up_station_id")
     private Station upStation;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
@@ -42,31 +43,41 @@ public class Section {
         return line;
     }
 
-    public Station getUpStation() {
+    public Station upStation() {
         return upStation;
     }
 
-    public Station getDownStation() {
+    public Station downStation() {
         return downStation;
     }
 
-    public int getDistance() {
+    public int distance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
+    public void updateUpStation(Section newSection) {
+        checkDistance(newSection.distance());
+        this.upStation = newSection.downStation();
+        this.distance -= newSection.distance();
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    public void updateDownStation(Section newSection) {
+        checkDistance(newSection.distance());
+        this.downStation = newSection.upStation();
+        this.distance -= newSection.distance();
+    }
+
+    private void checkDistance(int distance){
+        if (this.distance < distance) {
+            throw new IllegalArgumentException(LONGER_EXISTING_SECTION_EXCEPTION);
         }
-        this.downStation = station;
-        this.distance -= newDistance;
+    }
+
+    public boolean isEqualsUpStation(Station inputUpStation) {
+        return upStation.equals(inputUpStation);
+    }
+
+    public boolean isEqualsDownStation(Station inputDownStation) {
+        return downStation.equals(inputDownStation);
     }
 }

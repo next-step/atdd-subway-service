@@ -4,7 +4,9 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.dto.StationResponse;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class LineResponse {
     private Long id;
@@ -26,8 +28,11 @@ public class LineResponse {
         this.modifiedDate = modifiedDate;
     }
 
-    public static LineResponse of(Line line, List<StationResponse> stations) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
+    public static LineResponse of(Line line) {
+        if(line.assembleStations().isEmpty()) {
+            return new LineResponse(line.getId(), line.getName(), line.getColor(), new ArrayList(), line.getCreatedDate(), line.getModifiedDate());
+        }
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), getStations(line), line.getCreatedDate(), line.getModifiedDate());
     }
 
     public Long getId() {
@@ -52,5 +57,11 @@ public class LineResponse {
 
     public LocalDateTime getModifiedDate() {
         return modifiedDate;
+    }
+
+    private static List<StationResponse> getStations(Line line) {
+        return line.assembleStations().stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
     }
 }
