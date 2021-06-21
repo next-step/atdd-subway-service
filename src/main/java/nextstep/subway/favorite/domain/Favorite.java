@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -41,7 +42,7 @@ public class Favorite {
         return target;
     }
 
-    public boolean isOwner(Member member) {
-        return this.member == member;
+    public boolean hasPermission(LoginMember loginMember) {
+        return member.getEmail().equals(loginMember.getEmail());
     }
 }

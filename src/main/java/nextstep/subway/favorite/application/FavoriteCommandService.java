@@ -49,18 +49,13 @@ public class FavoriteCommandService {
     }
 
     public void deleteById(LoginMember loginMember, Long id) {
-        Member member = findMemberByEmail(loginMember.getEmail());
         Favorite favorite = findById(id);
 
-        validateOwner(member, favorite);
-
-        favoriteRepository.delete(favorite);
-    }
-
-    private void validateOwner(Member member, Favorite favorite) {
-        if (!favorite.isOwner(member)) {
+        if (!favorite.hasPermission(loginMember)) {
             throw new ApproveException();
         }
+
+        favoriteRepository.delete(favorite);
     }
 
     private void validateLineContainsStations(Station source, Station target) {

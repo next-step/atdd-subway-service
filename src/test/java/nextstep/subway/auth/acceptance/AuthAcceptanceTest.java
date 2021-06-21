@@ -50,7 +50,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     Stream<DynamicTest> myInfoWithWrongBearerAuth() {
         AuthToken authToken = new AuthToken("ASDF.ASDF.ASDF");
         return Stream.of(
-                dynamicTest("유효하지 않는 토큰으로 조회시 실패한다.", 나의_정보_조회_요청_및_실패함(authToken))
+                dynamicTest("유효하지 않는 토큰으로 조회시 실패한다.", 나의_정보_조회_요청_및_권한없음(authToken))
         );
     }
 }

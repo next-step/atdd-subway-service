@@ -14,12 +14,13 @@ import org.junit.jupiter.api.function.Executable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.request.AcceptanceTestRequest.get;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTestRequest {
     public static Executable 나의_정보_조회_요청_및_성공함(AuthToken token, String email, Integer age) {
         return () -> {
-            ExtractableResponse<Response> response = AcceptanceTestRequest.get(
+            ExtractableResponse<Response> response = get(
                     Given.builder().bearer(token.getToken()).build(),
                     When.builder().uri("/members/me").build()
             );
@@ -56,12 +57,23 @@ public class MemberAcceptanceTestRequest {
 
     public static Executable 나의_정보_조회_요청_및_실패함(AuthToken token) {
         return () -> {
-            ExtractableResponse<Response> response = AcceptanceTestRequest.get(
+            ExtractableResponse<Response> response = get(
                     Given.builder().bearer(token.getToken()).build(),
                     When.builder().uri("/members/me").build()
             );
 
             회원_정보_조회_실패함(response);
+        };
+    }
+
+    public static Executable 나의_정보_조회_요청_및_권한없음(AuthToken token) {
+        return () -> {
+            ExtractableResponse<Response> response = get(
+                    Given.builder().bearer(token.getToken()).build(),
+                    When.builder().uri("/members/me").build()
+            );
+
+            회원_정보_조회_권한없음(response);
         };
     }
 
@@ -139,5 +151,9 @@ public class MemberAcceptanceTestRequest {
 
     public static void 회원_정보_조회_실패함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    private static void 회원_정보_조회_권한없음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
