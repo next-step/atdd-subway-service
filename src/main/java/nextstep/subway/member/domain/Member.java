@@ -19,9 +19,6 @@ public class Member extends BaseEntity {
     private String password;
     private Integer age;
 
-//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Favorite> favorites = new ArrayList<>();
-
     @Embedded
     private Favorites favorites = new Favorites();
 
