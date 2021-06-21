@@ -46,7 +46,7 @@ public class Sections implements Iterable<Section> {
     }
 
     public void remove(Line line, Station station) {
-        validateRemovable();
+        validateRemovable(station);
 
         Optional<Section> upLineStation = sections.stream()
                 .filter(it -> it.getUpStation() == station)
@@ -66,9 +66,12 @@ public class Sections implements Iterable<Section> {
         downLineStation.ifPresent(it -> sections.remove(it));
     }
 
-    private void validateRemovable() {
+    private void validateRemovable(Station station) {
         if (sections.size() <= MIN_SECTIONS_SIZE) {
-            throw new RuntimeException();
+            throw new IllegalStateException("구간의 갯수가 " + sections.size() + " 입니다. 삭제할 수 없습니다.");
+        }
+        if (!contains(station)) {
+            throw new IllegalArgumentException("구간에 존재하지 않는 역입니다. 삭제하고자 하는 역 정보를 확인해 주세요");
         }
     }
 
