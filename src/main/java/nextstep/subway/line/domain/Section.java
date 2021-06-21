@@ -65,32 +65,32 @@ public class Section {
         if (this.distance <= newDistance) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.upStation = station;
-        this.distance -= newDistance;
+        upStation = station;
+        distance -= newDistance;
     }
 
     public void updateDownStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.downStation = station;
-        this.distance -= newDistance;
+        downStation = station;
+        distance -= newDistance;
     }
 
     public boolean isDownStationWithUp(Section beforeSection) {
-        return this.downStation.equals(beforeSection.upStation);
+        return downStation.equals(beforeSection.upStation);
     }
 
     public boolean isUpStationWithDown(Section beforeSection) {
-        return this.upStation.equals(beforeSection.downStation);
+        return upStation.equals(beforeSection.downStation);
     }
 
     public boolean sameUpStation(Section beforeSection) {
-        return this.upStation.equals(beforeSection.upStation);
+        return upStation.equals(beforeSection.upStation);
     }
 
     public boolean sameDownStation(Section beforeSection) {
-        return this.downStation.equals(beforeSection.downStation);
+        return downStation.equals(beforeSection.downStation);
     }
 
     public boolean sameUpStation(Station upStation) {
