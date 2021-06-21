@@ -3,6 +3,7 @@ package nextstep.subway.member.domain;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.favorite.domain.Favorites;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
@@ -18,8 +19,11 @@ public class Member extends BaseEntity {
     private String password;
     private Integer age;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Favorite> favorites = new ArrayList<>();
+//    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Favorite> favorites = new ArrayList<>();
+
+    @Embedded
+    private Favorites favorites = new Favorites();
 
     public Member() {
     }
@@ -59,15 +63,15 @@ public class Member extends BaseEntity {
     }
 
     public void addFavorite(Favorite favorite) {
-        this.favorites.add(favorite);
+        this.favorites.addFavorite(favorite);
         favorite.setMember(this);
     }
 
     public void removeFavorite(Favorite favorite) {
-        this.favorites.remove(favorite);
+        this.favorites.removeFavorite(favorite);
     }
 
     public List<Favorite> getFavorites() {
-        return favorites;
+        return favorites.getFavorites();
     }
 }
