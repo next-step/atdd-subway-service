@@ -71,7 +71,7 @@ public class Sections implements Iterable<Section> {
             throw new IllegalStateException("구간의 갯수가 " + sections.size() + " 입니다. 삭제할 수 없습니다.");
         }
         if (!contains(station)) {
-            throw new IllegalArgumentException("구간에 존재하지 않는 역입니다. 삭제하고자 하는 역 정보를 확인해 주세요");
+            throw new IllegalArgumentException("구간에 존재하지 않는 역입니다. 삭제하고자 하는 역 정보를 확인해 주세요.");
         }
     }
 
