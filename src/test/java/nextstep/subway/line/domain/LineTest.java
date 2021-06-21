@@ -55,4 +55,16 @@ public class LineTest {
 		assertThat(stations.get(1).getName()).isEqualTo("뚝섬역");
 		assertThat(stations.get(2).getName()).isEqualTo("건대입구역");
 	}
+
+	@DisplayName("Line 역 제거하기")
+	@Test
+	void removeLineStation() {
+		Station 건대입구역 = new Station("건대입구역");
+		Section section = new Section(이호선, 뚝섬역, 건대입구역, 10);
+		이호선.addLineStation(section);
+		이호선.removeLineStation(성수역);
+		List<Station> stations = 이호선.getStations();
+		assertThat(stations.get(0).getName()).isEqualTo("뚝섬역");
+		assertThat(stations.get(1).getName()).isEqualTo("건대입구역");
+	}
 }
