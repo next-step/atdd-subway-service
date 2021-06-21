@@ -27,7 +27,7 @@ public class LineTest {
 
 	@DisplayName("LineRequest Line으로 변환")
 	@Test
-	void LineRequest_Line_으로_변환() {
+	void toLine() {
 
 		assertThat(이호선.getName()).isEqualTo("2호선");
 		assertThat(이호선.getColor()).isEqualTo("초록색");
@@ -36,11 +36,23 @@ public class LineTest {
 		assertThat(이호선.getSections().get(0).getDistance()).isEqualTo(10);
 	}
 
-	@DisplayName("Line의 지하철역 조회") 
+	@DisplayName("Line 지하철역 조회")
 	@Test
-	void Line_지하철역_조회() {
+	void getStations() {
 		List<Station> stations = 이호선.getStations();
 		assertThat(stations.get(0).getName()).isEqualTo("성수역");
 		assertThat(stations.get(1).getName()).isEqualTo("뚝섬역");
+	}
+
+	@DisplayName("Line 구간 추가하기")
+	@Test
+	void addLineStations() {
+		Station 건대입구역 = new Station("건대입구역");
+		Section section = new Section(이호선, 뚝섬역, 건대입구역, 10);
+		이호선.addLineStation(section);
+		List<Station> stations = 이호선.getStations();
+		assertThat(stations.get(0).getName()).isEqualTo("성수역");
+		assertThat(stations.get(1).getName()).isEqualTo("뚝섬역");
+		assertThat(stations.get(2).getName()).isEqualTo("건대입구역");
 	}
 }
