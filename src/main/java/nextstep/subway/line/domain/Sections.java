@@ -63,18 +63,18 @@ public class Sections {
         return sections.stream();
     }
 
-    public boolean alreadyHas(Section section) {
+    public boolean checkExistedStationsOf(Section section) {
         List<Station> stations = sections.stream()
                 .flatMap(it -> Stream.of(it.getUpStation(), it.getDownStation()))
                 .collect(Collectors.toList());
         return stations.contains(section.getUpStation()) && stations.contains(section.getDownStation());
     }
 
-    public boolean cannotConnect(Section section) {
+    public boolean hasStationCanBeConnectedIn(Section section) {
         List<Station> stations = sections.stream()
                 .flatMap(it -> Stream.of(it.getUpStation(), it.getDownStation()))
                 .collect(Collectors.toList());
-        return !stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation());
+        return stations.contains(section.getUpStation()) || stations.contains(section.getDownStation());
     }
 
     public void validateRemovableSize() {
@@ -165,5 +165,9 @@ public class Sections {
 
     public Section get(int index) {
         return sections.get(index);
+    }
+
+    public boolean contains(Section section) {
+        return sections.contains(section);
     }
 }

@@ -78,4 +78,10 @@ public class Section {
     public boolean downStationIsIn(List<Station> stations) {
         return stations.contains(downStation);
     }
+
+    public void setLine(Line line) {
+        this.line = line;
+        line.addSection(this);
+    }
+
 }
