@@ -62,21 +62,19 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> tokenResponse = 로그인_요청(tokenRequest);
         String token = tokenResponse.as(TokenResponse.class).getAccessToken();
 
-        // When 내 정보를 조회한다.
+        // When
         ExtractableResponse<Response> meResponse = 내_정보_조회(token);
-        // Then 정보 조회된다
+        // Then
         회원_정보_조회됨(meResponse, EMAIL, AGE);
 
-        // When 내 정보를 수정한다.
-        ExtractableResponse<Response> updateResponse = 내_정보_수정_요청(
-                new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE),
-                token);
-        // Then 수정한 정보가 조회된다.
+        // When
+        ExtractableResponse<Response> updateResponse = 내_정보_수정_요청(new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE), token);
+        // Then
         회원_정보_수정됨(updateResponse);
 
-        // When 내 정보를 삭제한다.
+        // When
         ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(token);
-        // Then 삭제 요청 성공한다.
+        // Then
         회원_삭제됨(deleteResponse);
     }
 
