@@ -38,7 +38,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private LineRequest 신분당선;
 
 
-    private FavoriteRequest request;
+    private FavoriteRequest 강남역광교역;
     private String accessToken;
 
     @BeforeEach
@@ -54,7 +54,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         신분당선 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
 
-        request = new FavoriteRequest(강남역.getId(), 광교역.getId());
+        강남역광교역 = new FavoriteRequest(강남역.getId(), 광교역.getId());
 
         MemberRequest member = new MemberRequest("test@email", "1234", 29);
         registerMember(member);
@@ -69,7 +69,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @TestFactory
     Stream<DynamicTest> favoriteScenarioTest() {
         return Stream.of(
-            dynamicTest("즐겨찾기 생성 성공", createFavoriteSuccess(request)),
+            dynamicTest("즐겨찾기 생성 성공", createFavoriteSuccess(강남역광교역)),
             dynamicTest("즐겨찾기 목록 조회", findFavoriteAndTest()),
             dynamicTest("즐겨찾기 삭제 성공", deleteFavoriteSuccess())
         );
@@ -130,15 +130,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 삭제 실패 - 자신의 즐겨찾기가 아니면 삭제 불가능")
     @Test
     void deleteFavoriteFail03() {
-        // given: 사용자 A가 즐겨찾기 등록, 그리고 B로 로그인
-        createFavoriteRequest(accessToken, request);
+        // given: 사용자 A가 강남역-광교역 즐겨찾기 등록, 사용자 B로 로그인
+        createFavoriteRequest(accessToken, 강남역광교역);
 
         MemberRequest otherMember = new MemberRequest("test2@email", "1234", 29);
         registerMember(otherMember);
 
-        TokenResponse tokenResponse = loginRequest(otherMember).as(TokenResponse.class);
-
-        String otherMemberToken = tokenResponse.getAccessToken();
+        String otherMemberToken = loginRequest(otherMember).as(TokenResponse.class)
+                                                           .getAccessToken();
 
         // when
         ExtractableResponse<Response> response = deleteFavoriteRequest(otherMemberToken, 1L);
