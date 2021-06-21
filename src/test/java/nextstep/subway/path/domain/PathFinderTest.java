@@ -58,13 +58,13 @@ class PathFinderTest {
 
 		// then
 		assertThat(subwayPath.getStations()).containsExactly(양재시민의숲역, 양재역, 남부터미널역, 교대역, 고속터미널역);
-		assertThat(subwayPath.sumTotalDistance()).isEqualTo(4);
+		assertThat(subwayPath.sumTotalDistance()).isEqualTo(13);
 
 		// when
 		subwayPath = graph.findPath(서초역, 역삼역);
 
 		// then
-		assertThat(subwayPath.getStations()).containsExactly(서초역, 남부터미널역, 양재역, 역삼역);
+		assertThat(subwayPath.getStations()).containsExactly(서초역, 교대역, 남부터미널역, 양재역, 강남역, 역삼역);
 		assertThat(subwayPath.sumTotalDistance()).isEqualTo(13);
 	}
 
