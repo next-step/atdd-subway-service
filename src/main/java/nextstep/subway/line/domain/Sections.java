@@ -89,35 +89,35 @@ public class Sections implements Iterable<Section> {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
+        Station downStation = lastStopOfUpBound();
         stations.add(downStation);
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
+            Optional<Section> nextDownSection = sections.stream()
                     .filter(it -> it.getUpStation() == finalDownStation)
                     .findFirst();
-            if (!nextLineStation.isPresent()) {
+            if (!nextDownSection.isPresent()) {
                 break;
             }
-            downStation = nextLineStation.get().getDownStation();
+            downStation = nextDownSection.get().getDownStation();
             stations.add(downStation);
         }
 
         return stations;
     }
 
-    private Station findUpStation() {
+    private Station lastStopOfUpBound() {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
+            Optional<Section> nextUpSection = sections.stream()
                     .filter(it -> it.getDownStation() == finalDownStation)
                     .findFirst();
-            if (!nextLineStation.isPresent()) {
+            if (!nextUpSection.isPresent()) {
                 break;
             }
-            downStation = nextLineStation.get().getUpStation();
+            downStation = nextUpSection.get().getUpStation();
         }
         return downStation;
     }
