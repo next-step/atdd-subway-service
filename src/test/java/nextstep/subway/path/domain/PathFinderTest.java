@@ -24,6 +24,13 @@ class PathFinderTest {
 
     private PathFinder pathFinder;
 
+    /**
+     * 계양역 --- *공항철도* -(66)- 김포공항역 -(23)- 마포나루역
+     * |
+     * *인천1호선*
+     * |(9)
+     * 귤현역
+     */
     @BeforeEach
     void setUp() {
         계양역 = new Station("계양역");
