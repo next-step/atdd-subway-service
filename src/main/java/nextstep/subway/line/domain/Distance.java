@@ -9,10 +9,11 @@ public class Distance {
     public static final String INVALID_DISTANCE_EXCEPTION_MESSAGE = "구간 거리는 0보다 커야합니다.";
     public static final String BIGGER_THAN_DISTANCE_EXCEPTION_MESSAGE = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요.";
 
-    @Column
-    private int distance;
+    @Column(name = "distance")
+    private final int distance;
 
     protected Distance() {
+        distance = 0;
     }
 
     private Distance(int distance) {
@@ -22,13 +23,6 @@ public class Distance {
 
     public static Distance valueOf(int distance) {
         return new Distance(distance);
-    }
-
-    public static Distance merge(Distance distanceToMerge, Distance otherDistanceToMerge) {
-        Distance newDistance = Distance.valueOf(0);
-        newDistance.plus(distanceToMerge);
-        newDistance.plus(otherDistanceToMerge);
-        return newDistance;
     }
 
     private void validate(int distance) {
@@ -41,19 +35,19 @@ public class Distance {
         return distance;
     }
 
-    public void minus(Distance distanceToMinus) {
+    public Distance minus(Distance distanceToMinus) {
         if (!isAvailableMinus(distanceToMinus)) {
             throw new IllegalArgumentException(BIGGER_THAN_DISTANCE_EXCEPTION_MESSAGE);
         }
-        distance -= distanceToMinus.getDistance();
+        return Distance.valueOf(distance - distanceToMinus.getDistance());
     }
 
     private boolean isAvailableMinus(Distance distanceToMinus) {
         return distance > distanceToMinus.getDistance();
     }
 
-    public void plus(Distance distanceToPlus) {
-        distance += distanceToPlus.getDistance();
+    public Distance plus(Distance distanceToPlus) {
+        return Distance.valueOf(distance + distanceToPlus.getDistance());
     }
 
     @Override

@@ -116,7 +116,7 @@ public class Sections {
         if (nextSection.isPresent() && previousSection.isPresent()) {
             Station newUpStation = previousSection.get().getUpStation();
             Station newDownStation = nextSection.get().getDownStation();
-            Distance newDistance = Distance.merge(nextSection.get().getDistance(), previousSection.get().getDistance());
+            Distance newDistance = nextSection.get().getDistance().plus(previousSection.get().getDistance());
             sections.add(new Section(line, newUpStation, newDownStation, newDistance));
         }
 

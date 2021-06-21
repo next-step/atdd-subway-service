@@ -25,10 +25,10 @@ class DistanceTest {
         Distance distanceToMinus = Distance.valueOf(3);
 
         //when
-        originalDistance.minus(distanceToMinus);
+        Distance actual = originalDistance.minus(distanceToMinus);
 
         //then
-        assertThat(originalDistance.getDistance()).isEqualTo(7);
+        assertThat(actual.getDistance()).isEqualTo(7);
     }
 
     @DisplayName("역과 역 사이의 거리보다 좁은 거리를 입력하면 예외를 발생시킨다.")
@@ -52,9 +52,9 @@ class DistanceTest {
         Distance distanceToPlus = Distance.valueOf(3);
 
         //when
-        originalDistance.plus(distanceToPlus);
+        Distance actual = originalDistance.plus(distanceToPlus);
 
         //then
-        assertThat(originalDistance.getDistance()).isEqualTo(13);
+        assertThat(actual.getDistance()).isEqualTo(13);
     }
 }

@@ -63,28 +63,28 @@ public class Section {
     }
 
     public void updateUpStation(Section newSection) {
-        this.distance.minus(newSection.getDistance());
+        this.distance = this.distance.minus(newSection.getDistance());
         this.upStation = newSection.getDownStation();
     }
 
     public void updateDownStation(Section newSection) {
-        this.distance.minus(newSection.getDistance());
+        this.distance = this.distance.minus(newSection.getDistance());
         this.downStation = newSection.getUpStation();
     }
 
-    public boolean isUpStationEqualsToStation(Station station){
+    public boolean isUpStationEqualsToStation(Station station) {
         return upStation == station;
     }
 
-    public boolean isDownStationEqualsToStation(Station station){
+    public boolean isDownStationEqualsToStation(Station station) {
         return downStation == station;
     }
 
-    public boolean isUpStationEqualsToUpStationInSection(Section sectionToAdd){
+    public boolean isUpStationEqualsToUpStationInSection(Section sectionToAdd) {
         return sectionToAdd.isUpStationEqualsToStation(upStation);
     }
 
-    public boolean isDownStationEqualsToDownStationInSection(Section sectionToAdd){
+    public boolean isDownStationEqualsToDownStationInSection(Section sectionToAdd) {
         return sectionToAdd.isDownStationEqualsToStation(downStation);
     }
 }
