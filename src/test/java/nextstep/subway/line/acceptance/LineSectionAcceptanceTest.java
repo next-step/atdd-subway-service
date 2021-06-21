@@ -32,6 +32,57 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 	private StationResponse 성수역;
 	private StationResponse 뚝섬역;
 
+	public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation,
+		StationResponse downStation, int distance) {
+		SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
+
+		return RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(sectionRequest)
+			.when().post("/lines/{lineId}/sections", line.getId())
+			.then().log().all()
+			.extract();
+	}
+
+	public static void 지하철_노선에_지하철역_등록됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+	}
+
+	public static void 지하철_노선에_지하철역_등록_실패됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	}
+
+	public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response,
+		List<StationResponse> expectedStations) {
+		LineResponse line = response.as(LineResponse.class);
+		List<Long> stationIds = line.getStations().stream()
+			.map(it -> it.getId())
+			.collect(Collectors.toList());
+
+		List<Long> expectedStationIds = expectedStations.stream()
+			.map(it -> it.getId())
+			.collect(Collectors.toList());
+
+		assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+	}
+
+	public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
+		return RestAssured
+			.given().log().all()
+			.when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
+			.then().log().all()
+			.extract();
+	}
+
+	public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+	}
+
+	public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	}
+
 	@BeforeEach
 	public void setUp() {
 		super.setUp();
@@ -71,12 +122,12 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 		지하철_노선에_지하철역_등록됨(response3);
 		지하철_노선에_지하철역_순서_정렬됨(response3, Arrays.asList(정자역, 강남역, 성수역, 양재역, 광교역));
 
-        //when 가장 뒤에 지하철 역 등록 요청
-        지하철_노선에_지하철역_등록_요청(신분당선, 광교역, 뚝섬역, 1);
-        // then
-        ExtractableResponse<Response> response4 = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-        지하철_노선에_지하철역_등록됨(response4);
-        지하철_노선에_지하철역_순서_정렬됨(response4, Arrays.asList(정자역, 강남역, 성수역, 양재역, 광교역, 뚝섬역));
+		//when 가장 뒤에 지하철 역 등록 요청
+		지하철_노선에_지하철역_등록_요청(신분당선, 광교역, 뚝섬역, 1);
+		// then
+		ExtractableResponse<Response> response4 = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+		지하철_노선에_지하철역_등록됨(response4);
+		지하철_노선에_지하철역_순서_정렬됨(response4, Arrays.asList(정자역, 강남역, 성수역, 양재역, 광교역, 뚝섬역));
 
 		// when
 		ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
@@ -156,56 +207,5 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
 		// then
 		지하철_노선에_지하철역_제외_실패됨(removeResponse);
-	}
-
-	public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation,
-		StationResponse downStation, int distance) {
-		SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
-
-		return RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(sectionRequest)
-			.when().post("/lines/{lineId}/sections", line.getId())
-			.then().log().all()
-			.extract();
-	}
-
-	public static void 지하철_노선에_지하철역_등록됨(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-	}
-
-	public static void 지하철_노선에_지하철역_등록_실패됨(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
-	}
-
-	public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response,
-		List<StationResponse> expectedStations) {
-		LineResponse line = response.as(LineResponse.class);
-		List<Long> stationIds = line.getStations().stream()
-			.map(it -> it.getId())
-			.collect(Collectors.toList());
-
-		List<Long> expectedStationIds = expectedStations.stream()
-			.map(it -> it.getId())
-			.collect(Collectors.toList());
-
-		assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
-	}
-
-	public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
-		return RestAssured
-			.given().log().all()
-			.when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
-			.then().log().all()
-			.extract();
-	}
-
-	public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-	}
-
-	public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	}
 }

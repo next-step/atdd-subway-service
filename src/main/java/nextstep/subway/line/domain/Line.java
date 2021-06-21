@@ -20,12 +20,11 @@ public class Line extends BaseEntity {
 	@Column(unique = true)
 	private String name;
 	private String color;
+	@Embedded
+	private Sections sections = new Sections();
 
 	public Line() {
 	}
-
-	@Embedded
-	private Sections sections = new Sections();
 
 	public Line(String name, String color) {
 		this.name = name;

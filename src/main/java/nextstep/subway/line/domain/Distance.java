@@ -16,7 +16,7 @@ public class Distance {
 	}
 
 	private void validate(int distance) {
-		if(distance <= 0)
+		if (distance <= 0)
 			throw new RuntimeException("거리는 0보다 같거나 작을 수 없습니다.");
 	}
 
