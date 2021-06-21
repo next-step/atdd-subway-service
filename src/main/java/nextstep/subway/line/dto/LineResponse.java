@@ -31,11 +31,6 @@ public class LineResponse {
             line.getModifiedDate());
     }
 
-    public static LineResponse of(Line line) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getStationsResponse(),
-            line.getCreatedDate(), line.getModifiedDate());
-    }
-
     public Long getId() {
         return id;
     }

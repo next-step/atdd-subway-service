@@ -11,7 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 
 public class SectionsTest {
 
@@ -39,7 +38,7 @@ public class SectionsTest {
     @Test
     @DisplayName("line에 속하는 station을 상행 > 하행선순으로 순차적으로 가져온다.")
     void getStationsTest() {
-        List<StationResponse> stationList = 호선2.getStationsResponse();
+        List<Station> stationList = 호선2.getStations();
         assertThat(getStationId(stationList)).containsExactly(교대역.getId(), 삼성역.getId(), 선릉역.getId(), 잠실역.getId());
     }
 
@@ -48,7 +47,7 @@ public class SectionsTest {
     void addSecctionTest() {
         호선2.addSection(new Section(호선2, 잠실역, 건대입구, 100));
         호선2.addSection(new Section(호선2, 잠실역, 강변역, 80));
-        List<StationResponse> stationList = 호선2.getStationsResponse();
+        List<Station> stationList = 호선2.getStations();
         assertThat(getStationId(stationList)).containsExactly(교대역.getId(), 삼성역.getId(), 선릉역.getId(), 잠실역.getId(),
             강변역.getId(), 건대입구.getId());
     }
@@ -72,13 +71,13 @@ public class SectionsTest {
     void removeStationTest() {
         호선2.addSection(new Section(호선2, 잠실역, 건대입구, 10));
         호선2.removeStation(교대역);
-        List<StationResponse> stationList = 호선2.getStationsResponse();
+        List<Station> stationList = 호선2.getStations();
         assertThat(getStationId(stationList)).containsExactly(삼성역.getId(), 선릉역.getId(), 잠실역.getId(), 건대입구.getId());
         호선2.removeStation(선릉역);
-        stationList = 호선2.getStationsResponse();
+        stationList = 호선2.getStations();
         assertThat(getStationId(stationList)).containsExactly(삼성역.getId(), 잠실역.getId(), 건대입구.getId());
         호선2.removeStation(건대입구);
-        stationList = 호선2.getStationsResponse();
+        stationList = 호선2.getStations();
         assertThat(getStationId(stationList)).containsExactly(삼성역.getId(), 잠실역.getId());
 
     }
@@ -105,7 +104,7 @@ public class SectionsTest {
         assertThat(호선2.getDistanceBetweenStations(삼성역, 잠실역)).isEqualTo(160);
     }
 
-    private List<Long> getStationId(List<StationResponse> stationList) {
+    private List<Long> getStationId(List<Station> stationList) {
         return stationList.stream()
             .map(response -> response.getId())
             .collect(Collectors.toList());

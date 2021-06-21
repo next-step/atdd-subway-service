@@ -14,6 +14,7 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 
 @Service
 @Transactional
@@ -32,12 +33,15 @@ public class LineService {
         Line persistLine = lineRepository
             .save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
 
-        return LineResponse.of(persistLine, persistLine.getStationsResponse());
+        return LineResponse.of(persistLine, getStationsResponse(persistLine));
     }
 
     public List<LineResponse> findLines() {
         return lineRepository.findAll().stream()
-            .map(LineResponse::of)
+            .map(line -> {
+                List<StationResponse> stationResponse = getStationsResponse(line);
+                return LineResponse.of(line, stationResponse);
+            })
             .collect(Collectors.toList());
     }
 
@@ -47,7 +51,7 @@ public class LineService {
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        return LineResponse.of(persistLine, getStationsResponse(persistLine));
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
@@ -70,6 +74,12 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.removeStation(station);
+    }
+
+    private List<StationResponse> getStationsResponse(Line line) {
+        return line.getStations().stream()
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
     }
 
 }
