@@ -60,16 +60,13 @@ class PathAcceptanceTest extends AcceptanceTest {
         신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-300", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-400", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
         삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-500", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
-        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
-        지하철_노선에_지하철역_등록됨(response);
+        지하철_노선에_지하철역_등록됨(지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3));
     }
 
     @DisplayName("최단 경로를 조회한다")
     @Test
     void getShortestPath() {
-
-        ExtractableResponse<Response> response = 최단_경로를_조회(강남역.getId(), 남부터미널역.getId());
-        최단_경로가_조회됨(response, 12);
+        최단_경로가_조회됨(최단_경로를_조회(강남역.getId(), 남부터미널역.getId()), 12);
     }
 
     private ExtractableResponse<Response> 최단_경로를_조회(long source, long target) {
@@ -86,31 +83,26 @@ class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         PathResponse object = response.body().jsonPath().getObject(".", PathResponse.class);
         assertThat(object).isNotNull();
+        assertThat(object.getList()).isNotEmpty();
         assertThat(object.getDistance()).isEqualTo(distance);
     }
-//    출발역과 도착역이 같은 경우
-//    출발역과 도착역이 연결이 되어 있지 않은 경우
-//    존재하지 않은 출발역이나 도착역을 조회 할 경우
 
     @Test
     @DisplayName("출발역과 도착역이 같은 경우")
     void fail_test1() {
-        ExtractableResponse<Response> response = 최단_경로를_조회(강남역.getId(), 남부터미널역.getId());
-        최단_경로가_조회되지_않음(response);
+        최단_경로가_조회되지_않음(최단_경로를_조회(강남역.getId(), 강남역.getId()));
     }
 
     @Test
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
     void fail_test2() {
-        ExtractableResponse<Response> response = 최단_경로를_조회(강남역.getId(), 구리역.getId());
-        최단_경로가_조회되지_않음(response);
+        최단_경로가_조회되지_않음(최단_경로를_조회(강남역.getId(), 구리역.getId()));
     }
 
     @Test
     @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우")
     void fail_test3() {
-        ExtractableResponse<Response> response = 최단_경로를_조회(강남역.getId(), 용산역.getId());
-        최단_경로가_조회되지_않음(response);
+        최단_경로가_조회되지_않음(최단_경로를_조회(강남역.getId(), 용산역.getId()));
     }
 
     private void 최단_경로가_조회되지_않음(ExtractableResponse<Response> response) {
