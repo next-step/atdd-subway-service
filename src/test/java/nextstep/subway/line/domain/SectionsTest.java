@@ -16,7 +16,7 @@ class SectionsTest {
     private Station station3 = new Station("교대역");
     private Station station4 = new Station("선릉역");
 
-    private Section section = new Section(line, station1, station2, 10);
+    private Section section = Section.of(line, station1, station2, 10);
 
     @Nested
     @DisplayName("addSection 메서드는")
