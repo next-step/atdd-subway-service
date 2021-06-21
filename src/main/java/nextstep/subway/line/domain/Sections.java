@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -48,6 +49,15 @@ public class Sections {
             stations.add(downStation);
         }
         return stations;
+    }
+
+    public void removeStation(Line line, Station station) {
+        validateRemovableSize();
+        mergeSections(line, station);
+        this.sections.stream()
+                .filter(section -> section.isMatchUpStation(station) || section.isMatchDownStation(station))
+                .collect(Collectors.toList())
+                .forEach(sections::remove);
     }
 
     public List<Section> getSections() {
@@ -106,6 +116,27 @@ public class Sections {
     private void validateSectionsSize(List<Section> sections) {
         if (sections.size() < SECTIONS_MINIMUM_SIZE) {
             throw new IllegalArgumentException("구간 목록은 개수는 1 이상 이어야 합니다.");
+        }
+    }
+
+    private void mergeSections(Line line, Station station) {
+        Optional<Section> upLineStation = this.sections.stream()
+                .filter(it -> it.isMatchUpStation(station))
+                .findFirst();
+        Optional<Section> downLineStation = this.sections.stream()
+                .filter(it -> it.isMatchDownStation(station))
+                .findFirst();
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            this.sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+    }
+
+    private void validateRemovableSize() {
+        if (this.sections.size() <= SECTIONS_MINIMUM_SIZE) {
+            throw new IllegalStateException("지울 수 있는 구간이 없습니다.");
         }
     }
 }

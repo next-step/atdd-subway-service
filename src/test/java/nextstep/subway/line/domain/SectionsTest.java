@@ -9,10 +9,15 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 
 import nextstep.subway.station.domain.Station;
 
+/**
+ * Sections 기능 검증 테스트 코드 작성
+ */
 class SectionsTest {
 
     private Station station1;
@@ -149,11 +154,61 @@ class SectionsTest {
     }
 
     @Test
-    @DisplayName("구간이 기존 구간과 연결되지 않음.")
+    @DisplayName("구간이 기존 구간과 연결되지 않음")
     void not_connect_section_error() {
         // then
         assertThatThrownBy(() -> sections.add(new Section(line, station4, station5, 3)))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("등록할 수 없는 구간 입니다.");
+    }
+
+    @TestFactory
+    @DisplayName("노선 구간에 포함된 역 삭제")
+    List<DynamicTest> remove_station() {
+        // given
+        sections.add(new Section(line, station2, station3, 3));
+        sections.add(new Section(line, station3, station4, 3));
+        sections.add(new Section(line, station4, station5, 3));
+        sections.add(new Section(line, station5, station6, 3));
+        sections.add(new Section(line, station6, station7, 3));
+
+        return Arrays.asList(
+                DynamicTest.dynamicTest("노선에 포함되는 중간역 삭제", () -> {
+                    // when
+                    sections.removeStation(line, station5);
+
+                    // then
+                    List<Station> stations = sections.getStations();
+                    List<Station> targetStations = Arrays.asList(station1, station2, station3, station4, station6, station7);
+                    assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
+                }),
+                DynamicTest.dynamicTest("노선에 포함되는 시작역 삭제", () -> {
+                    // when
+                    sections.removeStation(line, station1);
+
+                    // then
+                    List<Station> stations = sections.getStations();
+                    List<Station> targetStations = Arrays.asList(station2, station3, station4, station6, station7);
+                    assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
+                }),
+                DynamicTest.dynamicTest("노선에 포함되는 마지막역 삭제", () -> {
+                    // when
+                    sections.removeStation(line, station7);
+
+                    // then
+                    List<Station> stations = sections.getStations();
+                    List<Station> targetStations = Arrays.asList(station2, station3, station4, station6);
+                    assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
+                })
+        );
+    }
+
+    @Test
+    @DisplayName("노선 구간에 포함되지 않은 역 삭제")
+    void remove_fail_notIncluding_sections() {
+        // then
+        assertThatThrownBy(() -> sections.removeStation(line, station4))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("지울 수 있는 구간이 없습니다.");
     }
 }
