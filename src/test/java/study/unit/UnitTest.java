@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
 @DisplayName("단위 테스트")
@@ -18,7 +19,8 @@ public class UnitTest {
 
 		Station upStation = new Station("강남역");
 		Station downStation = new Station("광교역");
-		Line line = new Line("신분당선", "RED", upStation, downStation, new Distance(10));
+		Line line = new Line("신분당선", "RED");
+		line.addLineStation(new Section(line, upStation, downStation, new Distance(10)));
 		Line newLine = new Line(newName, "GREEN");
 
 		// when

@@ -31,14 +31,8 @@ public class Line extends BaseEntity {
 		this.color = color;
 	}
 
-	public Line(String name, String color, Station upStation, Station downStation, Distance distance) {
-		this.name = name;
-		this.color = color;
-		sections.addSection(new Section(this, upStation, downStation, distance));
-	}
-
-	public Line(Long id, String name, String color, Station upStation, Station downStation, Distance distance) {
-		this(name, color, upStation, downStation, distance);
+	public Line(Long id, String name, String color) {
+		this(name, color);
 		this.id = id;
 	}
 
