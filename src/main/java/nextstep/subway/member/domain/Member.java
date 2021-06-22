@@ -2,12 +2,13 @@ package nextstep.subway.member.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.favorite.application.UnableDeleteException;
+import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.favorite.domain.Favorites;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Member extends BaseEntity {
@@ -18,7 +19,14 @@ public class Member extends BaseEntity {
     private String password;
     private Integer age;
 
+    @Embedded
+    private Favorites favorites = new Favorites();
+
     public Member() {
+    }
+
+    public Member(Long id) {
+        this.id = id;
     }
 
     public Member(String email, String password, Integer age) {
@@ -53,5 +61,25 @@ public class Member extends BaseEntity {
         if (!StringUtils.equals(this.password, password)) {
             throw new AuthorizationException();
         }
+    }
+
+    public void addFavorite(Favorite favorite) {
+        this.favorites.addFavorite(favorite);
+        favorite.setMember(this);
+    }
+
+    public void removeFavorite(Favorite favorite) {
+        if (!isSameMember(favorite.getMember())) {
+            throw new UnableDeleteException("자기 자신의 즐겨찾기만 삭제할수 있습니다.");
+        }
+        this.favorites.removeFavorite(favorite);
+    }
+
+    private boolean isSameMember(Member member) {
+        return this.equals(member);
+    }
+
+    public List<Favorite> getFavorites() {
+        return favorites.getFavorites();
     }
 }
