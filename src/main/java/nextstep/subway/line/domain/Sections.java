@@ -52,7 +52,7 @@ public class Sections {
             return;
         }
         if (isUpStationExisted) {
-            findUpStation(upStation).ifPresent(section -> section.updateUpStation(downStation, distance));
+            findFirstStation(upStation).ifPresent(section -> section.updateUpStation(downStation, distance));
             sections.add(createSection(line, upStation, downStation, distance));
             return;
         }
@@ -70,25 +70,20 @@ public class Sections {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
+        Station firstStation = findFirstStation();
+        stations.add(firstStation);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(section -> section.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        while (hasSectionByUpStation(firstStation)) {
+            Station tempStation = firstStation;
+            Section nextLineSection = findSectionByUpStation(tempStation)
+                    .orElseThrow(() -> new RuntimeException("구간을 찾을 수 없습니다."));
+            firstStation = nextLineSection.getDownStation();
+            stations.add(firstStation);
         }
-
         return stations;
     }
 
-    private Station findUpStation() {
+    private Station findFirstStation() {
         Station firstStation = sections.get(0).getUpStation();
         while (hasSectionByDownStation(firstStation)) {
             Station tempStation = firstStation;
@@ -97,17 +92,6 @@ public class Sections {
             firstStation = nextLineSection.getUpStation();
         }
         return firstStation;
-    }
-
-    private boolean hasSectionByDownStation(Station station) {
-        return sections.stream()
-                .anyMatch(section -> section.isDownStation(station));
-    }
-
-    private Optional<Section> findSectionByDownStation(Station station) {
-        return sections.stream()
-                .filter(section -> section.isDownStation(station))
-                .findFirst();
     }
 
     private void checkValidStations(List<Station> stations, boolean isUpStationExisted, boolean isDownStationExisted) {
@@ -120,7 +104,7 @@ public class Sections {
         }
     }
 
-    private Optional<Section> findUpStation(Station upStation) {
+    private Optional<Section> findFirstStation(Station upStation) {
         return sections.stream()
                 .filter(section -> section.isUpStation(upStation))
                 .findFirst();
@@ -134,5 +118,27 @@ public class Sections {
 
     private Section createSection(Line line, Station upStation, Station downStation, int distance) {
         return new Section(line, upStation, downStation, distance);
+    }
+
+    private boolean hasSectionByDownStation(Station station) {
+        return sections.stream()
+                .anyMatch(section -> section.isDownStation(station));
+    }
+
+    private boolean hasSectionByUpStation(Station station) {
+        return sections.stream()
+                .anyMatch(section -> section.isUpStation(station));
+    }
+
+    private Optional<Section> findSectionByDownStation(Station station) {
+        return sections.stream()
+                .filter(section -> section.isDownStation(station))
+                .findFirst();
+    }
+
+    private Optional<Section> findSectionByUpStation(Station station) {
+        return sections.stream()
+                .filter(section -> section.isUpStation(station))
+                .findFirst();
     }
 }
