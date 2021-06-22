@@ -30,11 +30,10 @@ public class PathService {
         List<Line> lines = lineRepository.findAll();
         Station source = findStation(pathRequest.getSource());
         Station target = findStation(pathRequest.getTarget());
-        SubwayMapData subwayMapData = new SubwayMapData(lines, SectionEdge.class);
-        SubwayNavigation subwayNavigation = new SubwayNavigation(subwayMapData.initData());
+        SubwayNavigation subwayNavigation = new SubwayNavigation(new SubwayMapData(lines, SectionEdge.class).initData());
 
         return PathResponse.of(subwayNavigation.getPaths(source, target),
-                (int)subwayNavigation.getDistance(source, target));
+                subwayNavigation.getDistance(source, target));
     }
 
     private Station findStation(Long id) {
