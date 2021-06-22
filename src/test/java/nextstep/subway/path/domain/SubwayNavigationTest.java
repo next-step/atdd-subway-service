@@ -91,7 +91,7 @@ class SubwayNavigationTest {
                 .hasMessage("노선이 연결되어 있지 않습니다.");
     }
 
-    @DisplayName("경로 내의 지하철역 조회시 예외발생 - case 3 : 존재하지 않는 역을 조회할 경우")
+    @DisplayName("경로 내의 지하철역 조회시 예외발생 - case 3 : 경로상에 존재하지 않는 역을 조회할 경우")
     @Test
     void getPaths_exception_3() {
         SubwayMapData subwayMapData = new SubwayMapData(노선도, SectionEdge.class);
@@ -103,6 +103,20 @@ class SubwayNavigationTest {
         assertThatThrownBy(() -> subwayNavigation.getPaths(처음보는역, 못보던역))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("graph must contain the source vertex");
+    }
+
+    @DisplayName("경로 내의 지하철역 조회시 예외발생 - case 4 : 없는(null) 역을 조회할 경우")
+    @Test
+    void getPaths_exception_4() {
+        SubwayMapData subwayMapData = new SubwayMapData(노선도, SectionEdge.class);
+        Station 없는역1= null;
+        Station 없는역2 = null;
+
+        SubwayNavigation subwayNavigation = new SubwayNavigation(subwayMapData.initData());
+
+        assertThatThrownBy(() -> subwayNavigation.getPaths(없는역1, 없는역2))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("기존에 등록되지 않은 역입니다.");
     }
 
     @Test
