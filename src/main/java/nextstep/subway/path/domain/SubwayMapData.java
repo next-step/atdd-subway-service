@@ -3,19 +3,18 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.WeightedGraph;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SubwayMapData extends WeightedMultigraph<Station, DefaultWeightedEdge> {
+public class SubwayMapData extends WeightedMultigraph<Station, SectionEdge> {
     private static final String NO_LINES_EXCEPTION = "경로 조회에 필요한 노선도 값이 조회되지 않습니다.";
 
     private final List<Line> lines;
 
-    public SubwayMapData(List<Line> lines, Class<DefaultWeightedEdge> edgeClass) {
+    public SubwayMapData(List<Line> lines, Class<SectionEdge> edgeClass) {
         super(edgeClass);
         validateLines(lines);
         this.lines = Collections.unmodifiableList(lines);

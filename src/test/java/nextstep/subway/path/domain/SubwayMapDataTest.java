@@ -62,7 +62,7 @@ class SubwayMapDataTest {
     @DisplayName("지하철 노선 데이터를 WeightedMultigraph 에 셋팅한다.")
     @Test
     void initData() {
-        SubwayMapData subwayMapData = new SubwayMapData(노선도, DefaultWeightedEdge.class);
+        SubwayMapData subwayMapData = new SubwayMapData(노선도, SectionEdge.class);
 
         assertThat(subwayMapData.initData().vertexSet()).isNotEmpty();
         assertThat(subwayMapData.initData().edgeSet()).isNotEmpty();
@@ -71,7 +71,7 @@ class SubwayMapDataTest {
     @DisplayName("노선도 값이 들어오지 않을 경우 예외가 발생한다")
     @Test
     void validateData() {
-        assertThatThrownBy(() -> new SubwayMapData(new ArrayList<>(), DefaultWeightedEdge.class))
+        assertThatThrownBy(() -> new SubwayMapData(new ArrayList<>(), SectionEdge.class))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("경로 조회에 필요한 노선도 값이 조회되지 않습니다.");
     }
