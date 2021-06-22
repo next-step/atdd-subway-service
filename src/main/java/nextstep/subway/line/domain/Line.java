@@ -55,14 +55,6 @@ public class Line extends BaseEntity {
         return sections;
     }
 
-    public int sectionSize() {
-        return sections.size();
-    }
-
-    public boolean isSectionEmpty() {
-        return sections.isEmpty();
-    }
-
     public void addSection(Section section) {
         sections.add(section);
     }
@@ -72,6 +64,10 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {
-        sections.addLineStation(this, upStation, downStation, distance);
+        sections.addSection(this, upStation, downStation, distance);
+    }
+
+    public void removeStation(Station station) {
+        sections.removeStation(this, station);
     }
 }

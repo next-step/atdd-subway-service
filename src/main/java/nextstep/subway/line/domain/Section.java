@@ -58,6 +58,10 @@ public class Section {
         return this.downStation == station;
     }
 
+    public boolean isExistsStation(Station station) {
+        return upStation == station || downStation == station;
+    }
+
     public int getDistance() {
         return distance;
     }

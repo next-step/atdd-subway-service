@@ -15,6 +15,9 @@ import nextstep.subway.station.dto.StationResponse;
 
 @Embeddable
 public class Sections {
+
+    public static final int SECTION_DELETABLE_MIN_SIZE = 1;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
@@ -24,10 +27,6 @@ public class Sections {
 
     public boolean isEmpty() {
         return sections.isEmpty();
-    }
-
-    public List<Section> getSections() {
-        return sections;
     }
 
     public List<StationResponse> stationResponse() {
@@ -40,10 +39,10 @@ public class Sections {
         return sections.size();
     }
 
-    public void addLineStation(Line line, Station upStation, Station downStation, int distance) {
+    public void addSection(Line line, Station upStation, Station downStation, int distance) {
         List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(station -> station == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(station -> station == downStation);
+        boolean isUpStationExisted = isExistStation(upStation);
+        boolean isDownStationExisted = isExistStation(downStation);
 
         checkValidStations(stations, isUpStationExisted, isDownStationExisted);
 
@@ -81,6 +80,27 @@ public class Sections {
             stations.add(firstStation);
         }
         return stations;
+    }
+
+    public void removeStation(Line line, Station station) {
+        checkDeletable();
+
+        Optional<Section> upSection = findSectionByUpStation(station);
+        Optional<Section> downSection = findSectionByDownStation(station);
+
+        if (upSection.isPresent() && downSection.isPresent()) {
+            mergeSection(line, upSection.get(), downSection.get());
+        }
+
+        upSection.ifPresent(it -> sections.remove(it));
+        downSection.ifPresent(it -> sections.remove(it));
+    }
+
+    private void mergeSection(Line line, Section upSection, Section downSection) {
+        Station newUpStation = downSection.getUpStation();
+        Station newDownStation = upSection.getDownStation();
+        int newDistance = upSection.getDistance() + downSection.getDistance();
+        sections.add(createSection(line, newUpStation, newDownStation, newDistance));
     }
 
     private Station findFirstStation() {
@@ -128,5 +148,16 @@ public class Sections {
         return sections.stream()
                 .filter(section -> section.isUpStation(station))
                 .findFirst();
+    }
+
+    private void checkDeletable() {
+        if (sections.size() <= SECTION_DELETABLE_MIN_SIZE) {
+            throw new RuntimeException("구간이 1개밖에 없습니다.");
+        }
+    }
+
+    private boolean isExistStation(Station station) {
+        return sections.stream()
+                .anyMatch(section -> section.isExistsStation(station));
     }
 }
