@@ -62,10 +62,4 @@ public class LinePathSearch {
         }
     }
 
-    private void validataion(GraphPath<Station, SectionEdge> path) {
-        if (path == null) {
-            throw new PathException();
-        }
-    }
-
 }
