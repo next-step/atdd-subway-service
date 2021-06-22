@@ -70,6 +70,11 @@ public class Section {
         this.distance = distance.minus(newDistance);
     }
 
+    public boolean hasStations(Station station, Station nextStation) {
+        return (station.equals(upStation) && nextStation.equals(downStation)) ||
+            (station.equals(downStation) && nextStation.equals(upStation));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

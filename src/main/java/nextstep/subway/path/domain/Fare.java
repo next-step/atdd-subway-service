@@ -1,6 +1,6 @@
 package nextstep.subway.path.domain;
 
-import java.util.List;
+import java.util.Collection;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 
@@ -12,7 +12,7 @@ public class Fare {
     private final int surcharge;
     private final DiscountStrategy discountStrategy;
 
-    public Fare(Distance distance, List<Line> lines, DiscountStrategy discountStrategy) {
+    public Fare(Distance distance, Collection<Line> lines, DiscountStrategy discountStrategy) {
         this.fareByDistance = calculateFare(distance);
         this.surcharge = extractMaxSurcharge(lines);
         this.discountStrategy = discountStrategy;
@@ -42,7 +42,7 @@ public class Fare {
         return ((distance - 1) / perDistance + 1) * 100;
     }
 
-    private int extractMaxSurcharge(List<Line> lines) {
+    private int extractMaxSurcharge(Collection<Line> lines) {
         return lines.stream()
                     .mapToInt(Line::getSurcharge)
                     .max()
