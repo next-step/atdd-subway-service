@@ -129,19 +129,19 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("최단 거리 탐색 - 같은 노선, 추가요금 없는 노선, 10km 이하")
     @Test
     void findPathSuccess01() {
-        findPathSuccess(교대역, 남부터미널역, 9, ImmutableList.of(강남역, 양재역), 1250);
+        findPathSuccess(교대역, 남부터미널역, 9, ImmutableList.of(교대역, 남부터미널역), 1250);
     }
 
     @DisplayName("최단 거리 탐색 - 다른 노선, 신분당선 추가 이용요금 900원, 10km 초과 ~ 50km 이하")
     @Test
     void findPathSuccess02() {
-        findPathSuccess(교대역, 양재역, 26, ImmutableList.of(교대역, 강남역, 양재역), 2650);
+        findPathSuccess(교대역, 양재역, 26, ImmutableList.of(교대역, 강남역, 양재역), 2550);
     }
 
     @DisplayName("최단 거리 탐색 - 같은 노선, 추가요금 없는 노선, 50km 초과")
     @Test
     void findPathSuccess03() {
-        findPathSuccess(서초역, 강남역, 56, ImmutableList.of(서초역, 교대역, 강남역), 1950);
+        findPathSuccess(서초역, 강남역, 56, ImmutableList.of(서초역, 교대역, 강남역), 2150);
     }
 
     @DisplayName("최단 거리 탐색 시나리오 - 추가 요금 노선으로 환승, 어린이 요금")
