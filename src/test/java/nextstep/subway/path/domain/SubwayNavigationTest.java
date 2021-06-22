@@ -81,6 +81,18 @@ class SubwayNavigationTest {
                 .hasMessage("같은 역으로 경로를 조회할 수 없습니다.");
     }
 
+    @DisplayName("경로 내의 지하철역 조회시 예외발생 - case 2 : 출발역과 도착역이 연결되어 있지 않은 경우")
+    @Test
+    void getPaths_exception_2() {
+        SubwayMapData subwayMapData = new SubwayMapData(노선도, SectionEdge.class);
+
+        SubwayNavigation subwayNavigation = new SubwayNavigation(subwayMapData.initData());
+
+        assertThatThrownBy(() -> subwayNavigation.getPaths(강남역, 강원역))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("노선이 연결되어 있지 않습니다.");
+    }
+
     @Test
     void getDistance() {
 
