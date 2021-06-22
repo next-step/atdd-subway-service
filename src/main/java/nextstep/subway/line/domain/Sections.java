@@ -52,12 +52,12 @@ public class Sections {
             return;
         }
         if (isUpStationExisted) {
-            findFirstStation(upStation).ifPresent(section -> section.updateUpStation(downStation, distance));
+            findSectionByUpStation(upStation).ifPresent(section -> section.updateUpStation(downStation, distance));
             sections.add(createSection(line, upStation, downStation, distance));
             return;
         }
         if (isDownStationExisted) {
-            findDownStation(downStation).ifPresent(section -> section.updateDownStation(upStation, distance));
+            findSectionByDownStation(downStation).ifPresent(section -> section.updateDownStation(upStation, distance));
             sections.add(createSection(line, upStation, downStation, distance));
             return;
         }
@@ -102,18 +102,6 @@ public class Sections {
         if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
-    }
-
-    private Optional<Section> findFirstStation(Station upStation) {
-        return sections.stream()
-                .filter(section -> section.isUpStation(upStation))
-                .findFirst();
-    }
-
-    private Optional<Section> findDownStation(Station downStation) {
-        return sections.stream()
-                .filter(section -> section.isDownStation(downStation))
-                .findFirst();
     }
 
     private Section createSection(Line line, Station upStation, Station downStation, int distance) {
