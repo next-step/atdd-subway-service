@@ -1,13 +1,9 @@
 package nextstep.subway.path;
 
-import java.util.Arrays;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionTestMethod;
 import nextstep.subway.line.acceptance.LineTestMethod;
