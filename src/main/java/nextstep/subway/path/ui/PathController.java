@@ -6,7 +6,6 @@ import nextstep.subway.path.dto.PathResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,10 +23,5 @@ public class PathController {
     public ResponseEntity<PathResponse> findShortestPath(@RequestBody PathRequest pathRequest) {
         PathResponse pathResponse = pathService.findShortestPath(pathRequest);
         return ResponseEntity.ok(pathResponse);
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity handleIllegalArgsException(IllegalArgumentException e) {
-        return ResponseEntity.badRequest().build();
     }
 }
