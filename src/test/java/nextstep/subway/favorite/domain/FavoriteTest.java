@@ -18,8 +18,8 @@ public class FavoriteTest {
         Favorite favorite = new Favorite(id, Station.of(stationName1), Station.of(stationName2));
 
         assertThat(favorite.getId()).isEqualTo(id);
-        assertThat(favorite.getSourceStation().getName()).isEqualTo(stationName1);
-        assertThat(favorite.getTargetStation().getName()).isEqualTo(stationName2);
+        assertThat(favorite.getSource().getName()).isEqualTo(stationName1);
+        assertThat(favorite.getTarget().getName()).isEqualTo(stationName2);
     }
 
 }
