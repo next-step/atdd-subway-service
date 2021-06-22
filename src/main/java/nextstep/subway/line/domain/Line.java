@@ -11,15 +11,21 @@ import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
+    private static final int MINIMUM_SECTION_LENGTH = 1;
+    public static final String ALREADY_EXISTS_SECTION = "이미 등록된 구간 입니다.";
+    public static final String NOT_ADDED_SECTION = "등록할 수 없는 구간 입니다.";
+    public static final String DELETE_FAIL_SECTION = "삭제 할 수 없는 구간입니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String name;
     private String color;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    private final List<Section> sections = new ArrayList<>();
 
     public Line() {
     }
@@ -45,7 +51,7 @@ public class Line extends BaseEntity {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
+                    .filter(it -> it.getDownStation().equals(finalDownStation))
                     .findFirst();
 
             if (!nextLineStation.isPresent()) {
@@ -108,14 +114,14 @@ public class Line extends BaseEntity {
 
     private void validateAlreadyExists(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new RuntimeException(ALREADY_EXISTS_SECTION);
         }
     }
 
     private void validateNotExistsStations(Station upStation, Station downStation, List<Station> stations) {
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
                 stations.stream().noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new RuntimeException(NOT_ADDED_SECTION);
         }
     }
 
@@ -141,10 +147,10 @@ public class Line extends BaseEntity {
         validateSectionLength();
 
         Optional<Section> upLineStation = sections.stream()
-                .filter(it -> it.getUpStation() == station)
+                .filter(it -> it.getUpStation().equals(station))
                 .findFirst();
         Optional<Section> downLineStation = sections.stream()
-                .filter(it -> it.getDownStation() == station)
+                .filter(it -> it.getDownStation().equals(station))
                 .findFirst();
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
@@ -159,8 +165,8 @@ public class Line extends BaseEntity {
     }
 
     private void validateSectionLength() {
-        if (sections.size() <= 1) {
-            throw new RuntimeException("삭제 할 수 없는 구간입니다.");
+        if (sections.size() <= MINIMUM_SECTION_LENGTH) {
+            throw new RuntimeException(DELETE_FAIL_SECTION);
         }
     }
 
@@ -176,7 +182,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
+    public List<Section> sections() {
         return sections;
     }
 }

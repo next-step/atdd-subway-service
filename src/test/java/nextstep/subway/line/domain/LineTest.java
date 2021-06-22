@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static nextstep.subway.line.domain.Line.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -51,13 +52,13 @@ public class LineTest {
     @DisplayName("역 추가 실패 - 이미 존재하는 구간 추가")
     @Test
     public void alreadyExistsStationAdd() {
-        assertThatThrownBy(() -> 신분당선.addStation(강남역, 광교역, 500)).isInstanceOf(RuntimeException.class).hasMessageContaining("이미 등록된 구간 입니다.");
+        assertThatThrownBy(() -> 신분당선.addStation(강남역, 광교역, 500)).isInstanceOf(RuntimeException.class).hasMessageContaining(ALREADY_EXISTS_SECTION);
     }
 
     @DisplayName("역 추가 실패 - 기존에 존재하지 않는 구간 추가")
     @Test
     public void notExistsStationsAdd() {
-        assertThatThrownBy(() -> 신분당선.addStation(양재역, 정자역, 200)).isInstanceOf(RuntimeException.class).hasMessageContaining("등록할 수 없는 구간 입니다.");
+        assertThatThrownBy(() -> 신분당선.addStation(양재역, 정자역, 200)).isInstanceOf(RuntimeException.class).hasMessageContaining(NOT_ADDED_SECTION);
     }
 
     @DisplayName("상행역 기준으로 역 추가")
@@ -88,7 +89,7 @@ public class LineTest {
     @DisplayName("역 삭제 실패 - 존재하지 않는 구간 삭제")
     @Test
     public void emptyStationDelete() {
-        assertThatThrownBy(() -> 신분당선.removeStation(강남역)).isInstanceOf(RuntimeException.class).hasMessageContaining("삭제 할 수 없는 구간입니다.");
+        assertThatThrownBy(() -> 신분당선.removeStation(강남역)).isInstanceOf(RuntimeException.class).hasMessageContaining(DELETE_FAIL_SECTION);
     }
 
     @DisplayName("상행선 종점 역 삭제")
