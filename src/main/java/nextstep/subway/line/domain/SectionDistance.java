@@ -1,16 +1,19 @@
 package nextstep.subway.line.domain;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.util.Objects;
 
 @Embeddable
-public class SectionDistance {
+public class SectionDistance extends DefaultWeightedEdge {
     private static final int SECTION_DISTANCE_MIN = 1;
 
     @Column
     private int distance;
 
-    protected SectionDistance() {
+    public SectionDistance() {
     }
 
     public SectionDistance(int distance) {
@@ -38,5 +41,18 @@ public class SectionDistance {
 
     public int getDistance() {
         return distance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SectionDistance distance1 = (SectionDistance) o;
+        return getDistance() == distance1.getDistance();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDistance());
     }
 }

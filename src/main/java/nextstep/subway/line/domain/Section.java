@@ -81,6 +81,7 @@ public class Section {
     }
 
     public void setLine(Line line) {
+        verifyAvailableLine(line);
         this.line = line;
     }
 

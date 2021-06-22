@@ -15,36 +15,12 @@ public class LineTest {
     private Line 오호선;
 
     @BeforeEach
-    private void setUp() {
+    public void setUp() {
         방화역 = new Station(1L, "방화역");
         하남검단산역 = new Station(2L, "하남검단산역");
         오호선생성구간 = new Section(1L, 방화역, 하남검단산역, 10);
         오호선 = new Line(1L, "오호선", "보라색");
         오호선.addSection(오호선생성구간);
-    }
-
-    @DisplayName("구간등록 - 예외발생 - 구간의 두 역이 이미 노선에 등록되어있으면 구간 등록될 수 없다.")
-    @Test
-    public void 이미등록된두역_등록_예외() throws Exception {
-        //given
-        Section section = new Section(2L, 방화역, 하남검단산역, 5);
-
-        //when
-        //then
-        assertThatThrownBy(() -> 오호선.addSection(section)).isInstanceOf(IllegalStateException.class);
-    }
-
-    @DisplayName("구간등록 - 예외발생 - 구간의 두 역이 모두 노선에 등록되어있지 않으면 구간 등록될 수 없다.")
-    @Test
-    public void 등록되지않은두역_등록_예외() throws Exception {
-        //given
-        Station 청구역 = new Station(3L, "청구역");
-        Station 미사역 = new Station(4L, "미사역");
-        Section section = new Section(2L, 청구역, 미사역, 5);
-
-        //when
-        //then
-        assertThatThrownBy(() -> 오호선.addSection(section)).isInstanceOf(IllegalStateException.class);
     }
 
     @DisplayName("구간등록 - 상행종점역 등록")
@@ -101,14 +77,6 @@ public class LineTest {
 
         //then
         assertThat(오호선.findStationsOrderUpToDown()).containsExactly(방화역, 중간하행역, 하남검단산역);
-    }
-
-    @DisplayName("구간제외 - 예외발생 - 노선에 포함된 역이 두 개 이하이면 구간을 제외할 수 없다.")
-    @Test
-    public void 역이두개이하일때_구간제외_예외() throws Exception {
-        //when
-        //then
-        assertThatThrownBy(() -> 오호선.removeSection(방화역)).isInstanceOf(IllegalStateException.class);
     }
 
     @DisplayName("구간제외 - 상행종점역 제외")

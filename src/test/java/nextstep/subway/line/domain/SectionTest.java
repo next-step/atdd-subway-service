@@ -13,7 +13,7 @@ public class SectionTest {
     private Section 오호선생성구간;
 
     @BeforeEach
-    private void setUp() {
+    public void setUp() {
         방화역 = new Station(1L, "방화역");
         하남검단산역 = new Station(2L, "하남검단산역");
         오호선생성구간 = new Section(1L, 방화역, 하남검단산역, 10);

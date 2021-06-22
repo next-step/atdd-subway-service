@@ -18,7 +18,7 @@ public class SectionGroupTest {
     private Line 오호선;
 
     @BeforeEach
-    private void setUp() {
+    public void setUp() {
         방화역 = new Station(1L, "방화역");
         하남검단산역 = new Station(2L, "하남검단산역");
         오호선생성구간 = new Section(1L, 방화역, 하남검단산역, 10);
@@ -158,5 +158,15 @@ public class SectionGroupTest {
 
         //then
         assertThat(구간그룹.findStationsOrderUpToDown()).containsExactly(방화역, 하남검단산역);
+    }
+
+    @DisplayName("상행종점역 조회")
+    @Test
+    public void 상행종점역_조회_확인() throws Exception {
+        //when
+        Station upEndStation = 구간그룹.findUpEndStation();
+
+        //then
+        assertThat(upEndStation).isEqualTo(방화역);
     }
 }
