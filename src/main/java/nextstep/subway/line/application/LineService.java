@@ -63,16 +63,18 @@ public class LineService {
 
     public void addLineStation(Long lineId, SectionRequest request) {
         Line persistLine = findLineById(lineId);
-        Station upStation = stationRepository.findStationById(request.getUpStationId())
+        Station upStation = stationRepository.findById(request.getUpStationId())
                 .orElseThrow(NoSuchElementException::new);
-        Station downStation = stationRepository.findStationById(request.getDownStationId())
+        Station downStation = stationRepository.findById(request.getDownStationId())
                 .orElseThrow(NoSuchElementException::new);
-        persistLine.addSection(new Section(persistLine, upStation, downStation, request.getDistance()));
+        Section newSection = Section.of(persistLine, upStation, downStation, request.getDistance());
+
+        persistLine.addSection(newSection);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
-        Station station = stationRepository.findStationById(stationId)
+        Station station = stationRepository.findById(stationId)
                 .orElseThrow(NoSuchElementException::new);
         line.remove(station);
     }
