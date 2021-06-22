@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class LineSectionAcceptanceStep {
+public class LineSectionAcceptanceStep {
     public static final String LINE_RESOURCES = "/lines";
     public static final String SECTION_RESOURCES = "/sections";
 
@@ -28,6 +28,10 @@ class LineSectionAcceptanceStep {
                 .when().post(LINE_RESOURCES + "/{lineId}" + SECTION_RESOURCES, line.getId())
                 .then().log().all()
                 .extract();
+    }
+
+    public static void 지하철_노선에_지하철역_등록되어_있음(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+        지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
     }
 
     public static void 지하철_노선에_지하철역_등록됨(ExtractableResponse<Response> response) {
