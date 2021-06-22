@@ -1,7 +1,7 @@
 package nextstep.subway.member.ui;
 
 import java.net.URI;
-import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.StringAuthPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.dto.MemberRequest;
@@ -48,20 +48,20 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+    public ResponseEntity<MemberResponse> findMemberOfMine(@StringAuthPrincipal LoginMember loginMember) {
         MemberResponse member = memberService.findMember(loginMember.getId());
         return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<Void> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
+    public ResponseEntity<Void> updateMemberOfMine(@StringAuthPrincipal LoginMember loginMember,
                                                    @RequestBody MemberRequest param) {
         memberService.updateMember(loginMember.getId(), param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+    public ResponseEntity<Void> deleteMemberOfMine(@StringAuthPrincipal LoginMember loginMember) {
         memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }

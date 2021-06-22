@@ -2,7 +2,7 @@ package nextstep.subway.favorite.ui;
 
 import java.net.URI;
 import java.util.List;
-import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.StringAuthPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -29,7 +29,7 @@ public class FavoriteController {
     }
 
     @PostMapping
-    public ResponseEntity<URI> createFavorite(@AuthenticationPrincipal LoginMember loginMember,
+    public ResponseEntity<URI> createFavorite(@StringAuthPrincipal LoginMember loginMember,
                                               @RequestBody FavoriteRequest favoriteRequest) {
 
         Long id = favoriteService.save(loginMember.getId(),
@@ -40,7 +40,7 @@ public class FavoriteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FavoriteResponse>> findFavorite(@AuthenticationPrincipal LoginMember loginMember) {
+    public ResponseEntity<List<FavoriteResponse>> findFavorite(@StringAuthPrincipal LoginMember loginMember) {
 
         List<FavoriteResponse> responses = favoriteService.findAllByMember(loginMember.getId())
                                                           .stream()
@@ -51,7 +51,7 @@ public class FavoriteController {
     }
 
     @DeleteMapping(value = "/{favoriteId}")
-    public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember,
+    public ResponseEntity<Void> deleteFavorite(@StringAuthPrincipal LoginMember loginMember,
                                                @PathVariable Long favoriteId) {
         favoriteService.delete(loginMember.getId(), favoriteId);
         return ResponseEntity.noContent().build();

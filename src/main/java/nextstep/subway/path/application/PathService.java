@@ -6,8 +6,8 @@ import java.util.Set;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.DiscountStrategy;
 import nextstep.subway.path.domain.Fare;
-import nextstep.subway.path.domain.NoDiscountStrategy;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.dto.PathResponse;
@@ -28,7 +28,7 @@ public class PathService {
         this.lineService = lineService;
     }
 
-    public PathResponse findShortestPath(Long sourceId, Long targetId) {
+    public PathResponse findShortestPath(DiscountStrategy discountStrategy, Long sourceId, Long targetId) {
 
         Station source = stationService.findById(sourceId);
         Station target = stationService.findById(targetId);
@@ -37,8 +37,8 @@ public class PathService {
         PathFinder pathFinder = new PathFinder(lines);
         ShortestPath shortestPath = pathFinder.findShortestPath(source, target);
         Fare fare = new Fare(shortestPath.getDistance(),
-                             getBelongLines(lines, shortestPath),
-                             new NoDiscountStrategy());
+                             getPathBelongLines(lines, shortestPath),
+                             discountStrategy);
 
         return PathResponse.of(shortestPath, fare);
     }
@@ -49,7 +49,7 @@ public class PathService {
                     .collect(toList());
     }
 
-    private Set<Line> getBelongLines(List<Line> lines, ShortestPath shortestPath) {
+    private Set<Line> getPathBelongLines(List<Line> lines, ShortestPath shortestPath) {
 
         Set<Line> lineSet = new HashSet<>();
         List<Station> path = shortestPath.getPath();

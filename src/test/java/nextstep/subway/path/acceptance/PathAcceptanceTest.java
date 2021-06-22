@@ -81,8 +81,8 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         createSection(이호선, 서초역, 교대역, 44);
         createSection(삼호선, 남부터미널역, 양재역, 18);
-        createSection(수인분당선, 양재역, 매봉역, 1);
-        createSection(수인분당선, 매봉역, 도곡역, 1);
+        createSection(삼호선, 양재역, 매봉역, 1);
+        createSection(삼호선, 매봉역, 도곡역, 1);
         createSection(신분당선, 양재역, 양재시민의숲역, 1);
     }
 

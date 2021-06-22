@@ -4,6 +4,8 @@ import java.util.List;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.DiscountStrategy;
+import nextstep.subway.path.domain.NoDiscountStrategy;
 import nextstep.subway.path.domain.NotFoundPathException;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -38,6 +40,8 @@ class PathServiceTest {
     @Mock
     private LineService lineService;
 
+    private DiscountStrategy 할인없음;
+
     private Station 계양역;
     private Station 귤현역;
     private Station 김포공항역;
@@ -48,6 +52,9 @@ class PathServiceTest {
 
     @BeforeEach
     void setUp() {
+
+        할인없음 = new NoDiscountStrategy();
+
         계양역 = new Station("계양역");
         귤현역 = new Station("귤현역");
         김포공항역 = new Station("김포공항역");
@@ -72,7 +79,7 @@ class PathServiceTest {
 
         // when, then
         assertThatExceptionOfType(NotFoundPathException.class).isThrownBy(
-            () -> pathService.findShortestPath(id, id)
+            () -> pathService.findShortestPath(할인없음, id, id)
         );
     }
 
@@ -90,7 +97,7 @@ class PathServiceTest {
 
         // when, then
         assertThatExceptionOfType(NotFoundPathException.class).isThrownBy(
-            () -> pathService.findShortestPath(계양역_id, 서울역_id)
+            () -> pathService.findShortestPath(할인없음, 계양역_id, 서울역_id)
         );
     }
 
@@ -105,7 +112,7 @@ class PathServiceTest {
 
         // when, then
         assertThatExceptionOfType(NotFoundStationException.class).isThrownBy(
-            () -> pathService.findShortestPath(부평역_id, 서울역_id)
+            () -> pathService.findShortestPath(할인없음, 부평역_id, 서울역_id)
         );
 
         verify(stationService).findById(부평역_id);
@@ -125,7 +132,7 @@ class PathServiceTest {
         given(lineService.findLines()).willReturn(lines);
 
         // when
-        PathResponse response = pathService.findShortestPath(귤현역_id, 계양역_id);
+        PathResponse response = pathService.findShortestPath(할인없음, 귤현역_id, 계양역_id);
 
         // then
         assertThat(response.getStations()).containsExactly(StationResponse.of(귤현역), StationResponse.of(계양역));
@@ -144,7 +151,7 @@ class PathServiceTest {
         given(lineService.findLines()).willReturn(lines);
 
         // when
-        PathResponse response = pathService.findShortestPath(귤현역_id, 계양역_id);
+        PathResponse response = pathService.findShortestPath(할인없음, 귤현역_id, 계양역_id);
 
         // then
         assertThat(response.getStations()).containsExactly(StationResponse.of(귤현역),
