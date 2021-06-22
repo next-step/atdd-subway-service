@@ -54,7 +54,7 @@ public class PathFinder {
     public Path findShortestPath(final Long sourceStationId, final Long targetStationId) {
         GraphPath<Long, DefaultWeightedEdge> shortestPath = findPathGraph(sourceStationId, targetStationId);
         throwIfNotConnectedSection(shortestPath);
-        return new Path(getShortestPathStations(shortestPath.getVertexList()), (int) Math.round(shortestPath.getWeight()));
+        return new Path(getShortestPathStations(shortestPath.getVertexList()), new Double(shortestPath.getWeight()).intValue());
     }
 
     private GraphPath<Long, DefaultWeightedEdge> findPathGraph(final Long sourceStationId, final Long targetStationId) {
