@@ -3,18 +3,21 @@ package nextstep.subway.path;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
+
+import java.util.Arrays;
 
 import static nextstep.subway.line.acceptance.LineSetionSteps.*;
 import static nextstep.subway.line.acceptance.LineSteps.*;
 import static nextstep.subway.path.PathSteps.*;
 
+@ActiveProfiles("test")
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
 
@@ -52,10 +55,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("최단 경로를 조회한다.")
     @Test
     void findShortestPath() {
-        int expectedDistance = 10;
+        int expectedDistance = 5;
         ExtractableResponse<Response> response = 지하철_노선_최단경로_조회_요청(교대역, 양재역);
 
         지하철_노선_최단경로_조회됨(response);
-        //지하철_노선_최단경로_목록_정렬됨(response, expectedDistance);
+        지하철_노선_최단경로_목록_정렬됨(response, Arrays.asList(교대역, 남부터미널역, 양재역));
+        지하철_노선_최단경로_거리_응답됨(response, expectedDistance);
     }
 }
