@@ -3,11 +3,12 @@ package nextstep.subway.line.domain;
 import java.util.List;
 
 public class AdjacentSections {
-
+    private final int MAX_ADJACENT_SECTIONS_SIZE = 2;
     private final List<Section> value;
 
     private AdjacentSections(List<Section> sections) {
-        if (sections.size() != 2){
+
+        if (sections.size() != MAX_ADJACENT_SECTIONS_SIZE){
             throw new RuntimeException("adjacentSections size: " + sections.size());
         }
         this.value = sections;

@@ -57,6 +57,24 @@ class LineTest {
     }
 
     @Test
+    void addSection_to_upStation() {
+        Section newSection = new Section(신분당선, 정자, 강남, 2);
+        신분당선.addSection(newSection);
+
+        assertThat(신분당선.getSections())
+                .contains(newSection, new Section(신분당선, 강남, 광교, 10));
+    }
+
+    @Test
+    void addSection_to_downStation() {
+        Section newSection = new Section(신분당선, 광교, 정자, 2);
+        신분당선.addSection(newSection);
+
+        assertThat(신분당선.getSections())
+                .contains(new Section(신분당선, 강남, 광교, 10), newSection);
+    }
+
+    @Test
     void addSection_none_of_match() {
         Station 구리 = new Station("구리");
         Station 도농 = new Station("도농");

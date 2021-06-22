@@ -19,7 +19,7 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.ALL }, orphanRemoval = true)
+    @OneToMany(mappedBy = "line", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @OrderBy("sequence ASC")
     private List<Section> sections = new LinkedList<>();
 
@@ -63,78 +63,133 @@ public class Line extends BaseEntity {
         Station upStation = newSection.getUpStation();
         Station downStation = newSection.getDownStation();
         int distance = newSection.getDistance();
-        boolean isUpStationExisted = this.sections.stream().anyMatch(section -> section.getUpStation().equals(upStation));
-        boolean isDownStationExisted = this.sections.stream().anyMatch(section -> section.getDownStation().equals(downStation));
+        validateStationContains(newSection, this);
 
-        boolean isUpStationAndDownStationNotEquals = this.sections.stream().anyMatch(section -> section.getUpStation().equals(downStation));
-        boolean isDownStationAndUpStationNotEquals = this.sections.stream().anyMatch(section -> section.getDownStation().equals(upStation));
+        changeSection(newSection, upStation, downStation, distance);
+    }
 
-        if (isDownStationExisted && isUpStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+    private void changeSection(Section newSection, Station upStation, Station downStation, int distance) {
+        boolean isUpStationExisted = this.sections.stream().anyMatch(section -> section.isUpStationEquals(upStation));
+        boolean isDownStationExisted = this.sections.stream().anyMatch(section -> section.isDownStationEquals(downStation));
+        boolean isUpStationAndDownStationNotEquals = this.sections.stream().anyMatch(section -> section.isUpStationEquals(downStation));
+        boolean isDownStationAndUpStationNotEquals = this.sections.stream().anyMatch(section -> section.isDownStationEquals(upStation));
+        whenEqualsUpStation(newSection, upStation, downStation, distance, isUpStationExisted, isDownStationExisted);
+        whenEqualsDownStation(newSection, upStation, downStation, distance, isUpStationExisted, isDownStationExisted);
+        whenNotEqualsUpStation(newSection, downStation, isUpStationAndDownStationNotEquals, isDownStationAndUpStationNotEquals, isUpStationExisted, isDownStationExisted);
+        whenNotEqualsDownStation(newSection, upStation, isUpStationAndDownStationNotEquals, isDownStationAndUpStationNotEquals, isUpStationExisted, isDownStationExisted);
+    }
+
+    private void whenNotEqualsDownStation(Section newSection, Station upStation, boolean isUpStationAndDownStationNotEquals, boolean isDownStationAndUpStationNotEquals, boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (!isUpStationAndDownStationNotEquals && isDownStationAndUpStationNotEquals && (!isDownStationExisted && !isUpStationExisted)) {
+            updateIndexWhenNotEqualsDownStation(newSection, upStation);
         }
+    }
 
-        if (isDownStationExisted == false && isUpStationExisted == false) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+    private void whenNotEqualsUpStation(Section newSection, Station downStation, boolean isUpStationAndDownStationNotEquals, boolean isDownStationAndUpStationNotEquals, boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationAndDownStationNotEquals && !isDownStationAndUpStationNotEquals && (!isDownStationExisted && !isUpStationExisted)) {
+            updateIndexWhenNotEqualsUpStation(newSection, downStation);
         }
+    }
 
-        if (isUpStationExisted) {
-            updateUpStationWhenEqualsUpStations(newSection, upStation, downStation, distance);
-            return;
+    private void whenEqualsDownStation(Section newSection, Station upStation, Station downStation, int distance, boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (!isUpStationExisted && isDownStationExisted) {
+            updateDownStation(newSection, upStation, downStation, distance);
         }
+    }
 
-        if (isDownStationExisted) {
-            updateDownStationWhenEqualsDownStations(newSection, upStation, downStation, distance);
-            return;
+    private void whenEqualsUpStation(Section newSection, Station upStation, Station downStation, int distance, boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && !isDownStationExisted) {
+            updateUpStation(newSection, upStation, downStation, distance);
         }
+    }
 
-        if (isUpStationAndDownStationNotEquals) {
-            this.sections.stream()
-                    .filter(section -> section.getUpStation().equals(downStation))
-                    .findFirst()
-                    .ifPresent(section ->
-                            addSectionBehindOfOriginal(section, newSection)
-                    );
-            return;
+    private void updateIndexWhenNotEqualsDownStation(Section newSection, Station upStation) {
+        this.sections.stream()
+                .filter(section -> section.isDownStationAndUpStationEquals(upStation))
+                .findFirst()
+                .ifPresent(section -> {
+                            addSectionOriginalIndex(newSection, section);
+                            doSyncSequence();
+                        }
+                );
+    }
+
+    private void updateIndexWhenNotEqualsUpStation(Section newSection, Station downStation) {
+        this.sections.stream()
+                .filter(section -> section.isUpStationAndDownStationEquals(downStation))
+                .findFirst()
+                .ifPresent(section -> {
+                            addSectionBehindOfOriginal(newSection, section);
+                            doSyncSequence();
+                        }
+                );
+
+    }
+
+    private void validateStationContains(Section newSection, Line line) {
+        Station upStation = newSection.getUpStation();
+        Station downStation = newSection.getDownStation();
+        checkNotContainingStations(line, upStation, downStation);
+        checkContainingStations(line, upStation, downStation);
+    }
+
+    private void checkContainingStations(Line line, Station upStation, Station downStation) {
+        if (line.isContainingStation(upStation) &&
+                line.isContainingStation(downStation)) {
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
+    }
 
-        if (isDownStationAndUpStationNotEquals) {
-            this.sections.stream()
-                    .filter(section -> section.getDownStation().equals(upStation))
-                    .findFirst()
-                    .ifPresent(section ->
-                            addSectionOriginalIndex(section, newSection)
-                    );
+    private boolean isContainingStation(Station station) {
+        return getStations().contains(station);
+    }
+
+    private void checkNotContainingStations(Line line, Station upStation, Station downStation) {
+        if (line.isContainingStation(upStation) == false &&
+                line.isContainingStation(downStation) == false) {
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+
+    private void doSyncSequence() {
+        List<Section> list = this.sections;
+        for (int i = 0; i < list.size(); i++) {
+            Section section = list.get(i);
+            section.setSequence(i);
         }
     }
 
     private void addSectionBehindOfOriginal(Section targetSection, Section original) {
-        this.sections.add(this.sections.indexOf(original) + 1, targetSection);
+        int index = this.sections.indexOf(original) + 1;
+        this.sections.add(index, targetSection);
     }
 
     private void addSectionOriginalIndex(Section targetSection, Section original) {
         this.sections.add(this.sections.indexOf(original), targetSection);
     }
 
-    private void updateDownStationWhenEqualsDownStations(Section newSection, Station upStation, Station downStation, int distance) {
+    private void updateDownStation(Section newSection, Station upStation, Station downStation, int distance) {
         this.sections.stream()
                 .filter(it -> it.getDownStation() == downStation)
                 .findFirst()
                 .ifPresent(section -> {
-                    int findIndex = sections.indexOf(section);
                     section.updateDownStation(upStation, distance);
-                    this.sections.add(findIndex + 1, newSection);
+                    this.sections.add(sections.indexOf(section) + 1, newSection);
+                    doSyncSequence();
                 });
     }
 
-    private void updateUpStationWhenEqualsUpStations(Section newSection, Station upStation, Station downStation, int distance) {
+    private void updateUpStation(Section newSection, Station upStation, Station downStation, int distance) {
         this.sections.stream()
-                .filter(it -> it.getUpStation() == upStation)
+                .filter(section -> section.isUpStationEquals(upStation))
                 .findFirst()
                 .ifPresent(section -> {
-                    int findIndex = sections.indexOf(section);
                     section.updateUpStation(downStation, distance);
-                    this.sections.add(findIndex, newSection);
+                    this.sections.add(sections.indexOf(section), newSection);
+                    doSyncSequence();
                 });
+
     }
 
     public List<Station> getStations() {
@@ -168,13 +223,5 @@ public class Line extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, color, sections);
-    }
-
-    public void syncSequence() {
-        List<Section> list = this.sections;
-        for (int i = 0; i < list.size(); i++) {
-            Section section = list.get(i);
-            section.setSequence(i);
-        }
     }
 }
