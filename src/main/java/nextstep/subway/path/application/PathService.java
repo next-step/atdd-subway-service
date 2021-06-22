@@ -8,11 +8,13 @@ import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
+@Transactional
 public class PathService {
 
     private LineRepository lineRepository;
@@ -23,6 +25,7 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse findPath(Long sourceStationId, Long targetStationId) {
         Station sourceStation = stationRepository.findById(sourceStationId)
                 .orElseThrow(NoSuchElementException::new);
