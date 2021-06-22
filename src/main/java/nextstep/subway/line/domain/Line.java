@@ -69,10 +69,14 @@ public class Line extends BaseEntity {
     }
 
     private void changeSection(Section newSection, Station upStation, Station downStation, int distance) {
-        boolean isUpStationExisted = this.sections.stream().anyMatch(section -> section.isUpStationEquals(upStation));
-        boolean isDownStationExisted = this.sections.stream().anyMatch(section -> section.isDownStationEquals(downStation));
-        boolean isUpStationAndDownStationNotEquals = this.sections.stream().anyMatch(section -> section.isUpStationEquals(downStation));
-        boolean isDownStationAndUpStationNotEquals = this.sections.stream().anyMatch(section -> section.isDownStationEquals(upStation));
+        boolean isUpStationExisted = this.sections.stream()
+                .anyMatch(section -> section.isUpStationEquals(upStation));
+        boolean isDownStationExisted = this.sections.stream()
+                .anyMatch(section -> section.isDownStationEquals(downStation));
+        boolean isUpStationAndDownStationNotEquals = this.sections.stream()
+                .anyMatch(section -> section.isUpStationEquals(downStation));
+        boolean isDownStationAndUpStationNotEquals = this.sections.stream()
+                .anyMatch(section -> section.isDownStationEquals(upStation));
         whenEqualsUpStation(newSection, upStation, downStation, distance, isUpStationExisted, isDownStationExisted);
         whenEqualsDownStation(newSection, upStation, downStation, distance, isUpStationExisted, isDownStationExisted);
         whenNotEqualsUpStation(newSection, downStation, isUpStationAndDownStationNotEquals, isDownStationAndUpStationNotEquals, isUpStationExisted, isDownStationExisted);
