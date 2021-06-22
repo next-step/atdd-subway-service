@@ -90,6 +90,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    void 두_역의_최단거리와_요금을_조회한다() {
+//        When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+        PathRequest pathRequest = PathRequest.of(대교역.getId(), 널미터부남역.getId());
+        ExtractableResponse<Response> pathResponse = 출발역과_도착역으로_최단경로를_찾는다(pathRequest);
+//        Then 최단 거리 경로를 응답
+        assertThat(pathResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        역_사이의_최단경로_역들을_확인한다(pathResponse, Arrays.asList(대교역, 강남역, 남강역, 양재역, 널미터부남역));
+
+//        And 총 거리도 함께 응답함
+        역_사이의_최단거리를_확인한다(pathResponse, 59);
+
+//        And ** 지하철 이용 요금도 함께 응답함 **
+        역_사이의_요금을_확인한다(pathResponse, 2250);
+    }
+
+    @Test
     void 없는_역의_경로를_확인해서_실패한다() {
         Long 등록안된역의_ID = 111L;
         // When
@@ -126,12 +142,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // When
         PathRequest pathRequest = PathRequest.of(대교역.getId(), 널미터부남역.getId());
-        ExtractableResponse<Response> pathsResponse = 출발역과_도착역으로_최단경로를_찾는다(pathRequest);
+        ExtractableResponse<Response> pathResponse = 출발역과_도착역으로_최단경로를_찾는다(pathRequest);
 
         // Then
-        assertThat(pathsResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        최단경로의_역들과_최단거리를_반환함(pathsResponse,
-                Arrays.asList(대교역, 강남역, 남강역, 양재역, 널미터부남역), 59);
+        assertThat(pathResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        역_사이의_최단경로_역들을_확인한다(pathResponse, Arrays.asList(대교역, 강남역, 남강역, 양재역, 널미터부남역));
+        역_사이의_최단거리를_확인한다(pathResponse, 59);
     }
 
     private ExtractableResponse<Response> 출발역과_도착역으로_최단경로를_찾는다(PathRequest pathRequest) {
@@ -142,9 +158,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 최단경로의_역들과_최단거리를_반환함(ExtractableResponse<Response> pathResponse,
-                                     List<StationResponse> expectedStations,
-                                     int distance) {
+    private void 역_사이의_최단경로_역들을_확인한다(ExtractableResponse<Response> pathResponse,
+                                     List<StationResponse> expectedStations) {
         PathResponse path = pathResponse.as(PathResponse.class);
 
         List<Long> stationIds = path.getStations().stream()
@@ -155,7 +170,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+    }
+
+    private void 역_사이의_최단거리를_확인한다(ExtractableResponse<Response> pathResponse, int distance) {
+        PathResponse path = pathResponse.as(PathResponse.class);
         assertThat(path.getDistance()).isEqualTo(distance);
     }
 
+    private void 역_사이의_요금을_확인한다(ExtractableResponse<Response> pathResponse, int fare) {
+        PathResponse path = pathResponse.as(PathResponse.class);
+        assertThat(path.getFare()).isEqualTo(fare);
+    }
 }

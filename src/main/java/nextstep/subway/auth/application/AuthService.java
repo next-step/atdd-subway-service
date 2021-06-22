@@ -31,7 +31,8 @@ public class AuthService {
     @Transactional(readOnly = true)
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new InvalidTokenException("유효하지 않은 토큰입니다.");
+//            throw new InvalidTokenException("유효하지 않은 토큰입니다.");
+            return new LoginMember();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
