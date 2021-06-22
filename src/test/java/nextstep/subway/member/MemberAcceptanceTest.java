@@ -66,9 +66,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(meResponse, EMAIL, AGE);
 
         // When
-        ExtractableResponse<Response> updateResponse = 내_정보_수정_요청(new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE), token);
+        ExtractableResponse<Response> updateResponse = 내_정보_수정_요청(
+                new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE), token);
         // Then
         회원_정보_수정됨(updateResponse);
+        // And 바뀐 이메일에 맞게 토큰 재발급
+        tokenResponse = 로그인_요청(NEW_EMAIL, NEW_PASSWORD);
+        token = tokenResponse.as(TokenResponse.class).getAccessToken();
+        meResponse = 내_정보_조회(token);
+        회원_정보_조회됨(meResponse, NEW_EMAIL, NEW_AGE);
 
         // When
         ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(token);

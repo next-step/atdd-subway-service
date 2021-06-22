@@ -7,12 +7,14 @@ import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
@@ -23,15 +25,18 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional(readOnly = true)
     public Favorite findFavoriteById(Long id) {
         return favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
+    @Transactional(readOnly = true)
     public FavoriteResponse findFavoriteResponseById(Long id) {
         Favorite persistFavorite = findFavoriteById(id);
         return FavoriteResponse.of(persistFavorite);
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> findAllFavorites() {
         List<Favorite> favorites = favoriteRepository.findAll();
         return favorites.stream()
