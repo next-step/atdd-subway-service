@@ -14,11 +14,19 @@ public class SubwayNavigation {
     private static final String EQUAL_STATION_EXCEPTION = "같은 역으로 경로를 조회할 수 없습니다.";
     private static final String DISCONNECT_STATION_EXCEPTION = "노선이 연결되어 있지 않습니다.";
     private static final String UNKNOWN_STATION_EXCEPTION = "기존에 등록되지 않은 역입니다.";
+    private static final String NO_GRAPH_EXCEPTION = "경로 조회를 위한 객체 그래프 값이 없습니다.";
 
     private final ShortestPathAlgorithm<Station, SectionEdge> shortestPath;
 
     public SubwayNavigation(WeightedGraph graph) {
+        validateGraph(graph);
         this.shortestPath = new DijkstraShortestPath<>(graph);
+    }
+
+    private void validateGraph(WeightedGraph graph) {
+        if (Objects.isNull(graph)) {
+            throw new IllegalArgumentException(NO_GRAPH_EXCEPTION);
+        }
     }
 
     public List<Station> getPaths(Station source, Station target) {
