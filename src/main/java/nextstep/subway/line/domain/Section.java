@@ -97,4 +97,8 @@ public class Section {
         return this.upStation.equals(upStation);
     }
 
+    public boolean sameDownStation(Station downStation) {
+        return this.downStation.equals(downStation);
+    }
+
 }
