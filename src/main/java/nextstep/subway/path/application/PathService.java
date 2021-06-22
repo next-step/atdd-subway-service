@@ -4,12 +4,12 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.SectionEdge;
 import nextstep.subway.path.domain.SubwayMapData;
+import nextstep.subway.path.domain.SubwayNavigation;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,10 +31,10 @@ public class PathService {
         Station source = findStation(pathRequest.getSource());
         Station target = findStation(pathRequest.getTarget());
         SubwayMapData subwayMapData = new SubwayMapData(lines, SectionEdge.class);
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(subwayMapData.initData());
+        SubwayNavigation subwayNavigation = new SubwayNavigation(subwayMapData.initData());
 
-        return PathResponse.of(dijkstraShortestPath.getPath(source, target).getVertexList(),
-                (int)dijkstraShortestPath.getPathWeight(source, target));
+        return PathResponse.of(subwayNavigation.getPaths(source, target),
+                (int)subwayNavigation.getDistance(source, target));
     }
 
     private Station findStation(Long id) {
