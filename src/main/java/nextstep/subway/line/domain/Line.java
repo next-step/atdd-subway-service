@@ -84,6 +84,59 @@ public class Line extends BaseEntity {
         return stations;
     }
 
+    public void addStation(Station upStation, Station downStation, int distance) {
+        List<Station> stations = this.stations();
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+
+        validateAlreadyExists(isUpStationExisted, isDownStationExisted);
+        validateNotExistsStations(upStation, downStation, stations);
+
+        if (stations.isEmpty()) {
+            sections.add(new Section(this, upStation, downStation, distance));
+            return;
+        }
+
+        if (isUpStationExisted) {
+            updateUpStation(upStation, downStation, distance);
+        }
+
+        if ((!isUpStationExisted) && isDownStationExisted) {
+            updateDownStation(upStation, downStation, distance);
+        }
+    }
+
+    private void validateAlreadyExists(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    private void validateNotExistsStations(Station upStation, Station downStation, List<Station> stations) {
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
+                stations.stream().noneMatch(it -> it == downStation)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void updateUpStation(Station upStation, Station downStation, int distance) {
+        sections.stream()
+                .filter(it -> it.getUpStation() == upStation)
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(downStation, distance));
+
+        sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    private void updateDownStation(Station upStation, Station downStation, int distance) {
+        sections.stream()
+                .filter(it -> it.getDownStation() == downStation)
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(upStation, distance));
+
+        sections.add(new Section(this, upStation, downStation, distance));
+    }
+
     public Long getId() {
         return id;
     }

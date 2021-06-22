@@ -48,4 +48,41 @@ public class LineTest {
         assertThat(stations.get(1).equals(광교역)).isTrue();
     }
 
+    @DisplayName("역 추가 실패 - 이미 존재하는 구간 추가")
+    @Test
+    public void alreadyExistsStationAdd() {
+        assertThatThrownBy(() -> 신분당선.addStation(강남역, 광교역, 500)).isInstanceOf(RuntimeException.class).hasMessageContaining("이미 등록된 구간 입니다.");
+    }
+
+    @DisplayName("역 추가 실패 - 기존에 존재하지 않는 구간 추가")
+    @Test
+    public void notExistsStationsAdd() {
+        assertThatThrownBy(() -> 신분당선.addStation(양재역, 정자역, 200)).isInstanceOf(RuntimeException.class).hasMessageContaining("등록할 수 없는 구간 입니다.");
+    }
+
+    @DisplayName("상행역 기준으로 역 추가")
+    @Test
+    public void addStationByUpStation() {
+        //when
+        신분당선.addStation(강남역, 양재역, 100);
+
+        //then
+        List<Station> stations = 신분당선.stations();
+        assertThat(stations.get(0).equals(강남역)).isTrue();
+        assertThat(stations.get(1).equals(양재역)).isTrue();
+    }
+
+    @DisplayName("하행역 기준으로 역 추가")
+    @Test
+    public void addStationByDownStation() {
+        //when
+        신분당선.addStation(양재역, 광교역, 200);
+
+        //then
+        List<Station> stations = 신분당선.stations();
+        assertThat(stations.get(0).equals(강남역)).isTrue();
+        assertThat(stations.get(1).equals(양재역)).isTrue();
+        assertThat(stations.get(2).equals(광교역)).isTrue();
+    }
+
 }
