@@ -12,6 +12,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 class SubwayNavigationTest {
 
     /**
@@ -20,7 +23,7 @@ class SubwayNavigationTest {
      * *3호선*(7)                     *신분당선* (4)
      * |                                |
      * 남부터미널역 --- *3호선*(10) --- 양재
-     *
+     * <p>
      * 춘천역 -----*춘천강원선*(20)------- 강원역
      */
 
@@ -63,12 +66,24 @@ class SubwayNavigationTest {
         SubwayNavigation subwayNavigation = new SubwayNavigation(subwayMapData.initData());
 
         List<Station> stations = subwayNavigation.getPaths(강남역, 남부터미널역);
-        Assertions.assertThat(stations).containsExactly(강남역, 양재역, 남부터미널역);
+        assertThat(stations).containsExactly(강남역, 양재역, 남부터미널역);
+    }
+
+    @DisplayName("경로 내의 지하철역 조회시 예외발생 - case 1 : 출발역과 도착역이 같은 경우")
+    @Test
+    void getPaths_exception_1() {
+        SubwayMapData subwayMapData = new SubwayMapData(노선도, SectionEdge.class);
+
+        SubwayNavigation subwayNavigation = new SubwayNavigation(subwayMapData.initData());
+
+        assertThatThrownBy(() -> subwayNavigation.getPaths(강남역, 강남역))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("같은 역으로 경로를 조회할 수 없습니다.");
     }
 
     @Test
     void getDistance() {
-        
+
     }
 
     private Station initStation(String name, Long id) {
