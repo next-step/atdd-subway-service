@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.SectionNotConnectedException;
+import nextstep.subway.exception.StationsNotExistException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -69,7 +71,8 @@ class PathFinderTest {
 
         // when & then
         assertThatThrownBy(() -> pathFinder.findShortestPath(교대역.getId(), 몽촌토성역.getId()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(SectionNotConnectedException.class)
+                .hasMessage("구간이 연결되어 있지 않습니다.");
     }
 
     @DisplayName("존재하지 않는 역으로 최단 경로를 조회한다.")
@@ -81,6 +84,7 @@ class PathFinderTest {
 
         // when & then
         assertThatThrownBy(() -> pathFinder.findShortestPath(교대역.getId(), 몽촌토성역.getId()))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(StationsNotExistException.class)
+                .hasMessage("요청한 역들이 존재하지 않습니다.");
     }
 }

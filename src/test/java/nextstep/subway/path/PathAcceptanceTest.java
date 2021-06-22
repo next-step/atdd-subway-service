@@ -82,13 +82,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // and: 연결된 구간으로 갈 수 없는 목적지 최단 경로 조회
         ExtractableResponse<Response> 목적지_역으로_이동_불가능한_최단_경로_조회됨 = 최단_경로_조회_요청(교대역.getId(), 오금역.getId());
         // then: 최단 경로 조회에 실패
-        최단_경로_조회_실패(목적지_역으로_이동_불가능한_최단_경로_조회됨);
+        연결되지_않은_구간으로_최단_경로_조회_실패(목적지_역으로_이동_불가능한_최단_경로_조회됨);
 
         // when: 존재하지 않는 역을 목적지로 최단 경로 조회
         Long 존재하지않는_역_ID = 10000L;
         ExtractableResponse<Response> 존재하지_않는_목적지_역으로_최단_경로_조회됨 = 최단_경로_조회_요청(교대역.getId(), 존재하지않는_역_ID);
         // then: 최단 경로 조회에 실패
-        최단_경로_조회_실패(존재하지_않는_목적지_역으로_최단_경로_조회됨);
+        등록되지_않은_역들로_최단_경로_조회_실패(존재하지_않는_목적지_역으로_최단_경로_조회됨);
     }
 
     @DisplayName("최단 경로를 조회한다. (목적지로 가는 역을 순서대로 반환한다)")
@@ -111,7 +111,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 조회된_최단_경로 = 최단_경로_조회_요청(교대역.getId(), 몽촌토성역.getId());
 
         // then
-        최단_경로_조회_실패(조회된_최단_경로);
+        연결되지_않은_구간으로_최단_경로_조회_실패(조회된_최단_경로);
     }
 
     @DisplayName("존재하지 않는 역으로 최단 경로를 조회한다.")
@@ -124,11 +124,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 조회된_최단_경로 = 최단_경로_조회_요청(교대역.getId(), 존재하지않는_역_ID);
 
         //then
-        최단_경로_조회_실패(조회된_최단_경로);
+        등록되지_않은_역들로_최단_경로_조회_실패(조회된_최단_경로);
     }
 
-    private void 최단_경로_조회_실패(ExtractableResponse<Response> response) {
+    private void 연결되지_않은_구간으로_최단_경로_조회_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private void 등록되지_않은_역들로_최단_경로_조회_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     private void 최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectStations) {
