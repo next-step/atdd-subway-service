@@ -85,4 +85,55 @@ public class LineTest {
         assertThat(stations.get(2).equals(광교역)).isTrue();
     }
 
+    @DisplayName("역 삭제 실패 - 존재하지 않는 구간 삭제")
+    @Test
+    public void emptyStationDelete() {
+        assertThatThrownBy(() -> 신분당선.removeStation(강남역)).isInstanceOf(RuntimeException.class).hasMessageContaining("삭제 할 수 없는 구간입니다.");
+    }
+
+    @DisplayName("상행선 종점 역 삭제")
+    @Test
+    public void removeUpStation() {
+        //given
+        신분당선.addStation(강남역, 양재역, 100);
+
+        //when
+        신분당선.removeStation(강남역);
+
+        //then
+        List<Station> stations = 신분당선.stations();
+        assertThat(stations.get(0).equals(양재역)).isTrue();
+        assertThat(stations.get(1).equals(광교역)).isTrue();
+    }
+
+    @DisplayName("구간 사이의 역 삭제")
+    @Test
+    public void removeBetweenStation() {
+        //given
+        신분당선.addStation(강남역, 양재역, 100);
+
+        //when
+        신분당선.removeStation(양재역);
+
+        //then
+        List<Station> stations = 신분당선.stations();
+        assertThat(stations.get(0).equals(강남역)).isTrue();
+        assertThat(stations.get(1).equals(광교역)).isTrue();
+    }
+
+    @DisplayName("하행선 종점 역 삭제")
+    @Test
+    public void removeDownStation() {
+        //given
+        신분당선.addStation(강남역, 양재역, 100);
+
+        //when
+        신분당선.removeStation(광교역);
+
+        //then
+        List<Station> stations = 신분당선.stations();
+        assertThat(stations.get(0).equals(강남역)).isTrue();
+        assertThat(stations.get(1).equals(양재역)).isTrue();
+    }
+
 }
