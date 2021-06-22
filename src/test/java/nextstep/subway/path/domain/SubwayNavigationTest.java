@@ -3,7 +3,6 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,7 +56,6 @@ class SubwayNavigationTest {
         노선도 = Arrays.asList(이호선, 삼호선, 신분당선, 춘천강원선);
     }
 
-
     @DisplayName("경로 내의 지하철역들을 조회한다.")
     @Test
     void getPaths() {
@@ -91,6 +89,20 @@ class SubwayNavigationTest {
         assertThatThrownBy(() -> subwayNavigation.getPaths(강남역, 강원역))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("노선이 연결되어 있지 않습니다.");
+    }
+
+    @DisplayName("경로 내의 지하철역 조회시 예외발생 - case 3 : 존재하지 않는 역을 조회할 경우")
+    @Test
+    void getPaths_exception_3() {
+        SubwayMapData subwayMapData = new SubwayMapData(노선도, SectionEdge.class);
+        Station 처음보는역 = new Station("처음보는역");
+        Station 못보던역 = new Station("못보던역");
+
+        SubwayNavigation subwayNavigation = new SubwayNavigation(subwayMapData.initData());
+
+        assertThatThrownBy(() -> subwayNavigation.getPaths(처음보는역, 못보던역))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("graph must contain the source vertex");
     }
 
     @Test
