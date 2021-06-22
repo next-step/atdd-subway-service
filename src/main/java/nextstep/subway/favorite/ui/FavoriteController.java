@@ -1,7 +1,6 @@
 package nextstep.subway.favorite.ui;
 
 import nextstep.subway.favorite.application.FavoriteService;
-import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import org.springframework.http.ResponseEntity;
