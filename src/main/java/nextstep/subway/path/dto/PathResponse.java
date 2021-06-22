@@ -11,12 +11,12 @@ public class PathResponse {
     private List<StationResponse> stations;
     private int distance;
 
-    public PathResponse(List<StationResponse> stations, int distance) {
+    public PathResponse(final List<StationResponse> stations, final int distance) {
         this.stations = stations;
         this.distance = distance;
     }
 
-    public static PathResponse from(Path shortestPath) {
+    public static PathResponse from(final Path shortestPath) {
         List<StationResponse> stationResponses = shortestPath.getStations()
                 .stream()
                 .map(StationResponse::of)
