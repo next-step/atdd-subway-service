@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,11 +58,17 @@ class SubwayNavigationTest {
     @DisplayName("경로 내의 지하철역들을 조회한다.")
     @Test
     void getPaths() {
+        SubwayMapData subwayMapData = new SubwayMapData(노선도, SectionEdge.class);
 
+        SubwayNavigation subwayNavigation = new SubwayNavigation(subwayMapData.initData());
+
+        List<Station> stations = subwayNavigation.getPaths(강남역, 남부터미널역);
+        Assertions.assertThat(stations).containsExactly(강남역, 양재역, 남부터미널역);
     }
 
     @Test
     void getDistance() {
+        
     }
 
     private Station initStation(String name, Long id) {
