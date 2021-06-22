@@ -20,72 +20,9 @@ import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
+
 	private static final String 강남역 = "강남역";
 	private static final String 역삼역 = "역삼역";
-
-	public static ExtractableResponse<Response> 지하철역_등록되어_있음(String name) {
-		return 지하철역_생성_요청(name);
-	}
-
-	public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
-		StationRequest stationRequest = new StationRequest(name);
-
-		return RestAssured
-			.given().log().all()
-			.body(stationRequest)
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.when().post("/stations")
-			.then().log().all()
-			.extract();
-	}
-
-	public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
-		return RestAssured
-			.given().log().all()
-			.when().get("/stations")
-			.then().log().all()
-			.extract();
-	}
-
-	public static ExtractableResponse<Response> 지하철역_제거_요청(ExtractableResponse<Response> response) {
-		String uri = response.header("Location");
-
-		return RestAssured
-			.given().log().all()
-			.when().delete(uri)
-			.then().log().all()
-			.extract();
-	}
-
-	public static void 지하철역_생성됨(ExtractableResponse response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-		assertThat(response.header("Location")).isNotBlank();
-	}
-
-	public static void 지하철역_생성_실패됨(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-	}
-
-	public static void 지하철역_목록_응답됨(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-	}
-
-	public static void 지하철역_삭제됨(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-	}
-
-	public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response,
-		List<ExtractableResponse<Response>> createdResponses) {
-		List<Long> expectedLineIds = createdResponses.stream()
-			.map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-			.collect(Collectors.toList());
-
-		List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
-			.map(StationResponse::getId)
-			.collect(Collectors.toList());
-
-		assertThat(resultLineIds).containsAll(expectedLineIds);
-	}
 
 	@DisplayName("지하철역을 생성한다.")
 	@Test
@@ -136,5 +73,54 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
 		// then
 		지하철역_삭제됨(response);
+	}
+
+	public ExtractableResponse<Response> 지하철역_등록되어_있음(String name) {
+		return 지하철역_생성_요청(name);
+	}
+
+	public ExtractableResponse<Response> 지하철역_생성_요청(String name) {
+		StationRequest stationRequest = new StationRequest(name);
+
+		return post(stationRequest, "/stations");
+	}
+
+	public ExtractableResponse<Response> 지하철역_목록_조회_요청() {
+		return get("/stations");
+	}
+
+	public ExtractableResponse<Response> 지하철역_제거_요청(ExtractableResponse<Response> response) {
+		String uri = response.header("Location");
+		return delete(uri);
+	}
+
+	public void 지하철역_생성됨(ExtractableResponse response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+		assertThat(response.header("Location")).isNotBlank();
+	}
+
+	public void 지하철역_생성_실패됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+	}
+
+	public void 지하철역_목록_응답됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+	}
+
+	public void 지하철역_삭제됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+	}
+
+	public void 지하철역_목록_포함됨(ExtractableResponse<Response> response,
+		List<ExtractableResponse<Response>> createdResponses) {
+		List<Long> expectedLineIds = createdResponses.stream()
+			.map(it -> Long.parseLong(it.header("Location").split("/")[2]))
+			.collect(Collectors.toList());
+
+		List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
+			.map(StationResponse::getId)
+			.collect(Collectors.toList());
+
+		assertThat(resultLineIds).containsAll(expectedLineIds);
 	}
 }
