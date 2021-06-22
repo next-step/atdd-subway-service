@@ -76,10 +76,10 @@ public class Line extends BaseEntity {
     }
 
     public LineResponse toLineResponse() {
-        List<StationResponse> collect = this.sections.getStations()
+        List<StationResponse> stationResponses = this.sections.getStations()
                 .stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
-        return new LineResponse(id, name, color, collect, getCreatedDate(), getModifiedDate());
+        return new LineResponse(id, name, color, stationResponses, getCreatedDate(), getModifiedDate());
     }
 }
