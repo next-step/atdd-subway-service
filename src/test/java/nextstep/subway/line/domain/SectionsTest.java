@@ -55,7 +55,7 @@ class SectionsTest {
         Station upStation = new Station("선릉역");
         Station downStation = new Station("한티역");
         //when
-        sections.addSection(line, upStation, downStation, 5);
+        sections.addSection(line, upStation, downStation, new Distance(5));
         //then
         assertThat(sections.size()).isEqualTo(1);
     }
@@ -67,7 +67,7 @@ class SectionsTest {
         Line line = new Line("분당선", "노랑색");
         Station upStation = new Station("선릉역");
         Station downStation = new Station("한티역");
-        sections.addSection(line, upStation, downStation, 5);
+        sections.addSection(line, upStation, downStation, new Distance(5));
         //when
         List<Station> stations = sections.getStations();
         //then
@@ -84,8 +84,8 @@ class SectionsTest {
         Station upStation = new Station("선릉역");
         Station middleStation = new Station("한티역");
         Station downStation = new Station("복정역");
-        sections.addSection(line, upStation, middleStation, 5);
-        sections.addSection(line, middleStation, downStation, 5);
+        sections.addSection(line, upStation, middleStation, new Distance(5));
+        sections.addSection(line, middleStation, downStation, new Distance(5));
         //when
         sections.removeStation(line, downStation);
         List<Station> stations = sections.getStations();

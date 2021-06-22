@@ -39,7 +39,7 @@ public class Sections {
         return sections.size();
     }
 
-    public void addSection(Line line, Station upStation, Station downStation, int distance) {
+    public void addSection(Line line, Station upStation, Station downStation, Distance distance) {
         List<Station> stations = getStations();
         boolean isUpStationExisted = isExistStation(upStation);
         boolean isDownStationExisted = isExistStation(downStation);
@@ -99,7 +99,7 @@ public class Sections {
     private void mergeSection(Line line, Section upSection, Section downSection) {
         Station newUpStation = downSection.getUpStation();
         Station newDownStation = upSection.getDownStation();
-        int newDistance = upSection.getDistance() + downSection.getDistance();
+        Distance newDistance = upSection.addDistance(downSection);
         sections.add(createSection(line, newUpStation, newDownStation, newDistance));
     }
 
@@ -124,7 +124,7 @@ public class Sections {
         }
     }
 
-    private Section createSection(Line line, Station upStation, Station downStation, int distance) {
+    private Section createSection(Line line, Station upStation, Station downStation, Distance distance) {
         return new Section(line, upStation, downStation, distance);
     }
 

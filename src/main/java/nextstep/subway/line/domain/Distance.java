@@ -2,9 +2,15 @@ package nextstep.subway.line.domain;
 
 import java.util.Objects;
 
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class Distance {
-    public static final String INVALID_DISTANCE = "구간이 너무 깁니다.";
+    public static final String INVALID_DISTANCE = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
     private int value;
+
+    public Distance() {
+    }
 
     public Distance(int value) {
         checkValidValue(value);

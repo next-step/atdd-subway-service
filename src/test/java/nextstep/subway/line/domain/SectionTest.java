@@ -20,13 +20,12 @@ class SectionTest {
                 , "빨간색"
                 , new Station("강남역")
                 , new Station("선릉역")
-                , 5
-        );
+                , new Distance(5));
 
         upStation = new Station("선릉역");
         downStation = new Station("한티역");
 
-        section = new Section(line, upStation, downStation, 5);
+        section = new Section(line, upStation, downStation, new Distance(5));
     }
 
     @DisplayName("상행역 비교")
@@ -62,7 +61,7 @@ class SectionTest {
         //given
         Station station = new Station("임시역");
         //when
-        section.updateUpStation(station, 3);
+        section.updateUpStation(station, new Distance(3));
         //then
         assertThat(section.isUpStation(station)).isTrue();
     }
@@ -73,7 +72,7 @@ class SectionTest {
         //given
         Station station = new Station("임시역");
         //when
-        section.updateDownStation(station, 3);
+        section.updateDownStation(station, new Distance(3));
         //then
         assertThat(section.isDownStation(station)).isTrue();
     }

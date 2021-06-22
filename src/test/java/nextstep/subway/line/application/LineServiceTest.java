@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Optional;
 
+import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,7 +45,7 @@ class LineServiceTest {
         when(lineRepository.save(any(Line.class)))
                 .thenReturn(new Line());
         //then
-        assertThat(lineService.saveLine(new LineRequest())).isNotNull();
+        assertThat(lineService.saveLine(new LineRequest("분당선", "노랑색", 1L, 1L, 5))).isNotNull();
     }
 
     @DisplayName("라인을 id로 찾기")
