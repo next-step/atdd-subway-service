@@ -22,7 +22,7 @@ class SubwayNavigationTest {
      * *3호선*(7)                     *신분당선* (4)
      * |                                |
      * 남부터미널역 --- *3호선*(10) --- 양재
-     * <p>
+     *
      * 춘천역 -----*춘천강원선*(20)------- 강원역
      */
 
@@ -127,9 +127,16 @@ class SubwayNavigationTest {
                 .hasMessage("경로 조회를 위한 객체 그래프 값이 없습니다.");
     }
 
+    @DisplayName("최단경로를 조회하여 거리를 구한다.")
     @Test
     void getDistance() {
+        SubwayMapData subwayMapData = new SubwayMapData(노선도, SectionEdge.class);
 
+        SubwayNavigation subwayNavigation = new SubwayNavigation(subwayMapData.initData());
+
+        int distance = subwayNavigation.getDistance(교대역, 양재역);
+        int expectedDistance = 14;
+        assertThat(distance).isEqualTo(expectedDistance);
     }
 
     private Station initStation(String name, Long id) {
