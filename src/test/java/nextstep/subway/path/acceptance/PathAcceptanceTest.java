@@ -186,7 +186,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private Executable findPathWithToken(BearerAuthToken token, StationResponse source, StationResponse destination, int distance, List<StationResponse> path, int fee) {
+    private Executable findPathWithToken(BearerAuthToken token, StationResponse source, StationResponse destination, int distance, List<StationResponse> path, int fare) {
         return () -> {
             Map<String, Long> queryParameters = new HashMap<>();
             queryParameters.put("source", source.getId());
@@ -204,7 +204,7 @@ class PathAcceptanceTest extends AcceptanceTest {
 
             assertThat(pathResponse.getDistance()).isEqualTo(distance);
             assertThat(pathResponse.getStations()).isEqualTo(path);
-            assertThat(pathResponse.getFee()).isEqualTo(fee);
+            assertThat(pathResponse.getFare()).isEqualTo(fare);
         };
     }
 
@@ -229,7 +229,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private void findPathSuccess(StationResponse source, StationResponse destination, int distance, List<StationResponse> path, int fee) {
+    private void findPathSuccess(StationResponse source, StationResponse destination, int distance, List<StationResponse> path, int fare) {
 
         // when
         PathResponse response = findPathRequest(source.getId(), destination.getId()).as(PathResponse.class);
@@ -237,6 +237,6 @@ class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.getDistance()).isEqualTo(distance);
         assertThat(response.getStations()).isEqualTo(path);
-        assertThat(response.getFee()).isEqualTo(fee);
+        assertThat(response.getFare()).isEqualTo(fare);
     }
 }

@@ -11,7 +11,7 @@ public class PathResponse {
 
     private List<StationResponse> stations;
     private int distance;
-    private int fee;
+    private int fare;
 
     public PathResponse() {
 
@@ -40,8 +40,8 @@ public class PathResponse {
         return distance;
     }
 
-    public int getFee() {
-        return fee;
+    public int getFare() {
+        return fare;
     }
 
     @Override
