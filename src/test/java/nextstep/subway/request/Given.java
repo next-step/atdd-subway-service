@@ -12,19 +12,21 @@ public class Given {
     private ContentType contentType;
     private ContentType accept;
     private Object body;
+    private String bearer;
     private List<Map.Entry<String, Object>> params = new ArrayList<>();
 
     public Given() {
     }
 
     public Given(Builder builder) {
-        this(builder.contentType, builder.accept, builder.body, builder.params);
+        this(builder.contentType, builder.accept, builder.body, builder.bearer, builder.params);
     }
 
-    public Given(ContentType contentType, ContentType accept, Object body, List<Map.Entry<String, Object>> params) {
+    public Given(ContentType contentType, ContentType accept, Object body, String bearer, List<Map.Entry<String, Object>> params) {
         this.contentType = contentType;
         this.accept = accept;
         this.body = body;
+        this.bearer = bearer;
         this.params = params;
     }
 
@@ -37,6 +39,9 @@ public class Given {
         }
         if (this.body != null) {
             requestSpecification = requestSpecification.body(this.body);
+        }
+        if (this.bearer != null) {
+            requestSpecification.auth().oauth2(this.bearer);
         }
         if (params != null && !params.isEmpty()) {
             addParams(requestSpecification);
@@ -60,10 +65,12 @@ public class Given {
         private ContentType contentType;
         private ContentType accept;
         private Object body;
+        private String bearer;
         private List<Map.Entry<String, Object>> params = new ArrayList<>();
 
-        public Builder body(Object body) {
-            this.body = body;
+
+        public Builder contentType(ContentType contentType) {
+            this.contentType = contentType;
             return this;
         }
 
@@ -72,8 +79,13 @@ public class Given {
             return this;
         }
 
-        public Builder contentType(ContentType contentType) {
-            this.contentType = contentType;
+        public Builder body(Object body) {
+            this.body = body;
+            return this;
+        }
+
+        public Builder bearer(String bearer) {
+            this.bearer = bearer;
             return this;
         }
 

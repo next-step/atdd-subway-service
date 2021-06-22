@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.exception.EntityNotExistException;
 import nextstep.subway.line.domain.DijkstraShortestDistance;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.ShortestDistance;
@@ -9,8 +10,6 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityNotFoundException;
 
 @Service
 @Transactional(readOnly = true)
@@ -38,6 +37,6 @@ public class LinePathQueryService {
 
     private Station findStationById(Long id) {
         return stationRepository.findById(id)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(EntityNotExistException::new);
     }
 }
