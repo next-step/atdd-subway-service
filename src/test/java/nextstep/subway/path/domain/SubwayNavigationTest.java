@@ -119,6 +119,14 @@ class SubwayNavigationTest {
                 .hasMessage("기존에 등록되지 않은 역입니다.");
     }
 
+    @DisplayName("경로 내의 지하철역 조회시 예외발생 - case 5 : 조회를 위한 참조 graph 값이 없는 경우")
+    @Test
+    void getPaths_exception_5() {
+        assertThatThrownBy(() -> new SubwayNavigation(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("경로 조회를 위한 객체 그래프 값이 없습니다.");
+    }
+
     @Test
     void getDistance() {
 
