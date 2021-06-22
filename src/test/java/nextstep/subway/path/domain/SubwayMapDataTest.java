@@ -3,16 +3,19 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
+import org.assertj.core.api.Assertions;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SubwayMapDataTest {
 
@@ -63,6 +66,14 @@ class SubwayMapDataTest {
 
         assertThat(subwayMapData.initData().vertexSet()).isNotEmpty();
         assertThat(subwayMapData.initData().edgeSet()).isNotEmpty();
+    }
+
+    @DisplayName("노선도 값이 들어오지 않을 경우 예외가 발생한다")
+    @Test
+    void validateData() {
+        assertThatThrownBy(() -> new SubwayMapData(new ArrayList<>(), DefaultWeightedEdge.class))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("경로 조회에 필요한 노선도 값이 조회되지 않습니다.");
     }
 
     private Station initStation(String name, Long id) {
