@@ -40,9 +40,9 @@ public class FavoriteService {
     }
 
     public FavoriteResponse save(FavoriteRequest favoriteRequest) {
-        Station sourceStation = stationRepository.findById(favoriteRequest.getSourceStationId())
+        Station sourceStation = stationRepository.findById(favoriteRequest.getSource())
                 .orElseThrow(NoSuchElementException::new);
-        Station targetStation = stationRepository.findById(favoriteRequest.getTargetStationId())
+        Station targetStation = stationRepository.findById(favoriteRequest.getTarget())
                 .orElseThrow(NoSuchElementException::new);
         Favorite persistFavorite = favoriteRepository.save(new Favorite(sourceStation, targetStation));
         return FavoriteResponse.of(persistFavorite);

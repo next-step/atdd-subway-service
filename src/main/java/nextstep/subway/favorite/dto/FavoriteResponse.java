@@ -6,28 +6,28 @@ import nextstep.subway.station.domain.Station;
 public class FavoriteResponse {
 
     private Long id;
-    private Station sourceStation;
-    private Station targetStation;
+    private Station source;
+    private Station target;
 
-    private FavoriteResponse(Long id, Station sourceStation, Station targetStation) {
+    public FavoriteResponse(Long id, Station sourceStation, Station targetStation) {
         this.id = id;
-        this.sourceStation = sourceStation;
-        this.targetStation = targetStation;
+        this.source = sourceStation;
+        this.target = targetStation;
     }
 
     public Long getId() {
         return id;
     }
 
-    public Station getSourceStation() {
-        return sourceStation;
+    public Station getSource() {
+        return source;
     }
 
-    public Station getTargetStation() {
-        return targetStation;
+    public Station getTarget() {
+        return target;
     }
 
     public static FavoriteResponse of(Favorite favorite) {
-        return new FavoriteResponse(favorite.getId(), favorite.getSourceStation(), favorite.getTargetStation());
+        return new FavoriteResponse(favorite.getId(), favorite.getSource(), favorite.getTarget());
     }
 }
