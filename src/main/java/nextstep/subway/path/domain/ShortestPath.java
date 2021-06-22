@@ -1,23 +1,28 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.station.domain.Station;
 
 public class ShortestPath {
 
     private final List<Station> path;
-    private final int distance;
+    private final Distance distance;
 
     public ShortestPath(List<Station> path, int distance) {
         this.path = path;
-        this.distance = distance;
+        this.distance = new Distance(distance);
     }
 
     public List<Station> getPath() {
         return path;
     }
 
-    public int getDistance() {
+    public int getDistanceValue() {
+        return distance.getValue();
+    }
+
+    public Distance getDistance() {
         return distance;
     }
 }

@@ -29,7 +29,7 @@ public class PathResponse {
                                                              .map(StationResponse::of)
                                                              .collect(toList());
 
-        return new PathResponse(stationResponses, shortestPath.getDistance());
+        return new PathResponse(stationResponses, shortestPath.getDistanceValue());
     }
 
     public List<StationResponse> getStations() {
