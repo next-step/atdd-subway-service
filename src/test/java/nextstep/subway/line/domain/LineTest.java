@@ -8,7 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import nextstep.subway.line.dto.LineRequest;
+import nextstep.subway.line.exception.InvalidLineException;
 import nextstep.subway.station.domain.Station;
 
 public class LineTest {
@@ -55,5 +55,29 @@ public class LineTest {
 		List<Station> stations = 이호선.getStations();
 		assertThat(stations.get(0).getName()).isEqualTo("뚝섬역");
 		assertThat(stations.get(1).getName()).isEqualTo("건대입구역");
+	}
+
+	@DisplayName("Line 수정하기")
+	@Test
+	void update() {
+		이호선.update(new Line("1호선", "파랑색"));
+		assertThat(이호선.getName()).isEqualTo("1호선");
+		assertThat(이호선.getColor()).isEqualTo("파랑색");
+	}
+
+	@DisplayName("Line 생성 - 이름, 색깔이 빈 값 체크")
+	@Test
+	void createExceptionTest() {
+		assertThatThrownBy(
+			() -> { Line line = new Line("", ""); }
+		).isInstanceOf(InvalidLineException.class);
+	}
+
+	@DisplayName("Line 수정 - Null Exception 체크")
+	@Test
+	void updateNullExceptionTest() {
+		assertThatThrownBy(
+			() -> 이호선.update(null)
+		).isInstanceOf(InvalidLineException.class);
 	}
 }
