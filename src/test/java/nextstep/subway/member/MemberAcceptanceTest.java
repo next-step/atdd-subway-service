@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -48,7 +50,44 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        //given 나의 정보 생성함
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        //given 로그인 함
+        TokenResponse 로그인_응답 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
 
+        //when 내 정보를 조회 요청
+        ExtractableResponse<Response> 내_정보 = 내_정보_조회(로그인_응답.getAccessToken());
+        //then 내 정보 조회됨
+        내_정보_조회됨(내_정보);
+
+        //when 잘못된 토큰으로 내 정보를 조회 요청
+        ExtractableResponse<Response> 잘못된_토큰_정보_조회_응답 = 내_정보_조회("invalidToken");
+        //then 내 정보 조회 실패함
+        잘못된_토큰으로인한_실패(잘못된_토큰_정보_조회_응답);
+
+        //when 내 정보 수정 요청
+        ExtractableResponse<Response> 내_정보_수정_응답 = 내_정보_수정_요청(로그인_응답.getAccessToken(), NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        //then 내 정보 수정됨
+        회원_정보_수정됨(내_정보_수정_응답);
+
+        //when 잘못된 토큰으로 내 정보 수정 요청
+        ExtractableResponse<Response> 잘못된_토큰_정보_수정_응답 = 내_정보_수정_요청("invalidToken", NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        //then 내정보 수정 실패함
+        잘못된_토큰으로인한_실패(잘못된_토큰_정보_수정_응답);
+
+        //when 내 정보 삭제 요청
+        ExtractableResponse<Response> 내_정보_삭제_응답 = 내_정보_삭제_요청(로그인_응답.getAccessToken());
+        // then 내 정보 삭제 됨
+        회원_삭제됨(내_정보_삭제_응답);
+
+        //when 잘못된 토큰으로 내 정보 삭제 요청
+        ExtractableResponse<Response> 잘못된_토큰_정보_삭제_응답 = 내_정보_삭제_요청("invalidToken");
+        //then 내정보 삭제 실패함
+        잘못된_토큰으로인한_실패(잘못된_토큰_정보_삭제_응답);
+    }
+
+    private void 잘못된_토큰으로인한_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -113,5 +152,27 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static ExtractableResponse<Response> 내_정보_수정_요청(String token, String newEmail, String newPassword, int newAge) {
+        MemberRequest modifyRequest = new MemberRequest(newEmail, newPassword, newAge);
+
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(token)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(modifyRequest)
+            .when().put("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
+    private ExtractableResponse<Response> 내_정보_삭제_요청(String token) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(token)
+            .when().delete("/members/me")
+            .then().log().all()
+            .extract();
     }
 }

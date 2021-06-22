@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class PathFinder {
+public class PathFinder implements ShortestPathFinder {
 
   private Map<Long, Station> wholeStations;
   private WeightedMultigraph<Long, DefaultWeightedEdge> pathGraph;
@@ -52,6 +52,7 @@ public class PathFinder {
             .collect(Collectors.toMap(Station::getId, Function.identity()));
   }
 
+  @Override
   public Path findShortestPath(Long sourceStationId, Long targetStationId) {
     GraphPath<Long, DefaultWeightedEdge> shortestPath = findPathGraph(sourceStationId, targetStationId);
     throwIfNotConnectedStations(shortestPath);
