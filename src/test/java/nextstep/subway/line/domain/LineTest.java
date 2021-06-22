@@ -37,4 +37,15 @@ public class LineTest {
         assertThat(findStation.equals(강남역)).isTrue();
     }
 
+    @DisplayName("라인의 모든 역 상행선 -> 하행선 순서로 가져오기")
+    @Test
+    public void findLineAllStations() {
+        //when
+        List<Station> stations = 신분당선.stations();
+
+        //then
+        assertThat(stations.get(0).equals(강남역)).isTrue();
+        assertThat(stations.get(1).equals(광교역)).isTrue();
+    }
+
 }
