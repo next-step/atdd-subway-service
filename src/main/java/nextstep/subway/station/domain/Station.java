@@ -3,6 +3,7 @@ package nextstep.subway.station.domain;
 import nextstep.subway.BaseEntity;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -40,5 +41,9 @@ public class Station extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    public boolean isIncludedIn(List<Station> stations) {
+        return stations.contains(this);
     }
 }

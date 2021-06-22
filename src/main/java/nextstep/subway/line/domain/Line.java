@@ -5,7 +5,9 @@ import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
@@ -52,5 +54,85 @@ public class Line extends BaseEntity {
 
     public List<Section> getSections() {
         return sections;
+    }
+
+    public List<Station> getSortedStation() {
+        if (sections.isEmpty()) {
+            return Arrays.asList();
+        }
+        List<Station> stations = new ArrayList<>();
+        Station downStation = newFindUpStation();
+        stations.add(downStation);
+
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = getSections().stream()
+                    .filter(it -> it.getUpStation() == finalDownStation)
+                    .findFirst();
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getDownStation();
+            stations.add(downStation);
+        }
+        return stations;
+    }
+
+    private Station newFindUpStation() {
+        Station downStation = getSections().get(0).getUpStation();
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = getSections().stream()
+                    .filter(it -> it.getDownStation() == finalDownStation)
+                    .findFirst();
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getUpStation();
+        }
+
+        return downStation;
+    }
+
+    public void addSection(Section section) {
+        List<Station> stations = getSortedStation();
+
+        Station upStation = section.getUpStation();
+        Station downStation = section.getDownStation();
+
+        boolean isUpStationExisted = upStation.isIncludedIn(stations);
+        boolean isDownStationExisted = downStation.isIncludedIn(stations);
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
+                stations.stream().noneMatch(it -> it == downStation)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
+        if (stations.isEmpty()) {
+            sections.add(new Section(this, upStation, downStation, section.getDistance()));
+            return;
+        }
+
+        if (isUpStationExisted) {
+            sections.stream()
+                    .filter(it -> it.getUpStation() == upStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(downStation, section.getDistance()));
+
+            sections.add(new Section(this, upStation, downStation, section.getDistance()));
+        } else if (isDownStationExisted) {
+            sections.stream()
+                    .filter(it -> it.getDownStation() == downStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(upStation, section.getDistance()));
+
+            sections.add(new Section(this, upStation, downStation, section.getDistance()));
+        } else {
+            throw new RuntimeException();
+        }
     }
 }

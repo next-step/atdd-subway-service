@@ -141,7 +141,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             * 삭제 가능여부 점검 (`Sections`)
             * 삭제하려는 구간 탐색 (`Sections`)
             * 거리 계산하여 구간 제거한 신규 구간 추가 (`Section`, `Sections`)
-    
-    * [ ] Domain의 단위테스트 작성 
-    * [ ] 리팩토링
+        
+    * [ ] Service 리팩토링 + Domain의 단위테스트 작성
     
