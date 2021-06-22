@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.SectionNotConnectedException;
+import nextstep.subway.exception.StationsNotExistException;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.wrapper.Distance;
 import nextstep.subway.station.domain.Station;
@@ -62,13 +64,13 @@ public class PathFinder {
         try {
             return shortestPathFinder.getPath(sourceStationId, targetStationId);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("등록되어있지 않은 역으로 최단 경로를 찾을 수 없습니다.");
+            throw new StationsNotExistException();
         }
     }
 
     private void throwIfNotConnectedSection(final GraphPath<Long, DefaultWeightedEdge> graphPath) {
         if (graphPath == null) {
-            throw new IllegalArgumentException("해당 목적지로는 연결된 구간이 없어서 이동이 불가능합니다.");
+            throw new SectionNotConnectedException();
         }
     }
 
