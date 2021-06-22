@@ -21,7 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import io.restassured.exception.PathException;
+import nextstep.subway.exception.path.PathException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 
@@ -55,7 +55,7 @@ public class LinePathSearchTest {
     void setUp() {
         신분당선 = new Line(1L, "신분당선", "bg-red-600", 강남역, 양재역, 10);
         이호선 = new Line(2L, "이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = new Line(3L, "삼호선", "bg-red-600", 교대역, 양재역, 5);
+        삼호선 = new Line(3L, "삼호선", "bg-red-600", 교대역, 남부터미널역, 3);
         사호선 = new Line(4L, "사호선", "bg-red-600", 양재역, 오리역, 7);
         자바선 = new Line(5L, "자바선", "bg-red-600", 선릉역, 오리역, 1);
         호남선 = new Line(6L, "호남선", "bg-red-600", 잠실역, 분당역, 10);
@@ -64,7 +64,7 @@ public class LinePathSearchTest {
         이호선.addSection(new Section(이호선, 강남역, 선릉역, 10));
         이호선.addSection(new Section(이호선, 선릉역, 잠실역, 5));
 
-        삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, 3));
+        삼호선.addSection(new Section(삼호선, 남부터미널역, 양재역, 2));
         사호선.addSection(new Section(사호선, 오리역, 분당역, 10));
         linePathSearch = LinePathSearch.of(Arrays.asList(이호선, 삼호선, 신분당선, 자바선, 호남선, 사호선, 서해선));
 
@@ -84,7 +84,7 @@ public class LinePathSearchTest {
         Exception exception = assertThrows(PathException.class, () -> {
             linePathSearch.searchPath(양재역, 양재역);
         });
-        assertThat(exception.getMessage()).isEqualTo("검색하려는 두 역이 동일합니다. 다른 역을 입력하세요");
+        assertThat(exception.getMessage()).isEqualTo(PathException.SAME_STATION);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class LinePathSearchTest {
         Exception exception = assertThrows(PathException.class, () -> {
             linePathSearch.searchPath(교대역, 은계역);
         });
-        assertThat(exception.getMessage()).isEqualTo("출발역과 도착역이 연결되지 않았습니다.");
+        assertThat(exception.getMessage()).isEqualTo(PathException.NOT_CONNECTED);
     }
 
     @Test
@@ -102,7 +102,7 @@ public class LinePathSearchTest {
         Exception exception = assertThrows(PathException.class, () -> {
             linePathSearch.searchPath(사당역, 서울대역);
         });
-        assertThat(exception.getMessage()).isEqualTo("검색하려는 역이 라인에 등록되어 있지 않습니다.");
+        assertThat(exception.getMessage()).isEqualTo(PathException.NO_REGISTRATION);
     }
 
 }

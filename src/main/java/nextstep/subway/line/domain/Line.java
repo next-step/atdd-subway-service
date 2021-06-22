@@ -78,4 +78,8 @@ public class Line extends BaseEntity {
         return sections.getDistanceBetweenStations(upStation, downStation);
     }
 
+    public List<Section> getSections() {
+        return sections.getSections();
+    }
+
 }
