@@ -22,8 +22,8 @@ class LineResponseTest {
 
     @BeforeEach
     void setUp() {
-        강남역 = new Station("강남역");
-        광교역 = new Station("광교역");
+        강남역 = new Station(1L, "강남역");
+        광교역 = new Station(2L, "광교역");
         신분당선 = new Line("신분당선", "red", 강남역, 광교역, 10);
     }
 

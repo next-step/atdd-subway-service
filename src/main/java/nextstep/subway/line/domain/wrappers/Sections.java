@@ -24,25 +24,30 @@ public class Sections {
     }
 
     public List<Station> stations() {
-        if (sections.isEmpty()) {
-            return Arrays.asList();
-        }
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
+        if (sections.isEmpty()) {
+            return stations;
+        }
+        Section preSection = findFirstSection();
+        stations.add(preSection.getUpStation());
+        while (preSection != null) {
+            Station downStation = preSection.getDownStation();
             stations.add(downStation);
+            preSection = findNextSection(preSection);
         }
         return stations;
+    }
+
+    private Section findFirstSection() {
+        Section section = new Section();
+        for (Section st : sections) {
+            section = st.calcFirstSection(section);
+        }
+        return section;
+    }
+
+    private Section findNextSection(Section section) {
+        return sections.stream().filter(st -> st.isNextSection(section)).findFirst().orElse(null);
     }
 
     private void checkValidDuplicateSection(Section section) {

@@ -17,13 +17,15 @@ class SectionsTest {
     private Line 신분당선;
     private Station 강남역;
     private Station 광교역;
+    private Station 교대역;
     private Section 구간;
 
     @BeforeEach
     void setUp() {
         신분당선 = new Line("신분당선", "red");
-        강남역 = new Station("강남역");
-        광교역 = new Station("광교역");
+        강남역 = new Station(1L, "강남역");
+        광교역 = new Station(2L, "광교역");
+        교대역 = new Station(3L, "교대역");
         구간 = new Section(신분당선, 강남역, 광교역, 10);
     }
 
@@ -36,8 +38,8 @@ class SectionsTest {
 
     @Test
     void 구간_리스트_를_이용하여_지하철역_리스트_반환() {
-        Sections sections = new Sections(Arrays.asList(구간));
+        Sections sections = new Sections(Arrays.asList(구간, new Section(신분당선, 교대역, 강남역, 10)));
         List<Station> stations = sections.stations();
-        assertThat(stations).containsExactly(강남역, 광교역);
+        assertThat(stations).containsExactly(교대역, 강남역, 광교역);
     }
 }

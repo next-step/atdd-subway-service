@@ -19,8 +19,8 @@ public class LineTest {
 
     @BeforeEach
     void setUp() {
-        강남역 = new Station("강남역");
-        광교역 = new Station("광교역");
+        강남역 = new Station(1L, "강남역");
+        광교역 = new Station(2L, "광교역");
         신분당선 = new Line("신분당선", "red", 강남역, 광교역, 10);
     }
 
@@ -40,7 +40,7 @@ public class LineTest {
 
     @Test
     void 노선에_구간_추가_middle() {
-        Station 양재역 = new Station("양재역");
+        Station 양재역 = new Station(3L, "양재역");
         Section section = new Section(신분당선, 강남역, 양재역, 3);
         신분당선.addSection(section);
         assertThat(신분당선.getSections()).contains(section);
@@ -48,7 +48,7 @@ public class LineTest {
 
     @Test
     void 노선에_구간_추가_up() {
-        Station 양재역 = new Station("양재역");
+        Station 양재역 = new Station(3L, "양재역");
         Section section = new Section(신분당선, 양재역, 강남역, 3);
         신분당선.addSection(section);
         assertThat(신분당선.getSections()).contains(section);
@@ -56,7 +56,7 @@ public class LineTest {
 
     @Test
     void 노선에_구간_추가_down() {
-        Station 정자역 = new Station("정자역");
+        Station 정자역 = new Station(4L, "정자역");
         Section section = new Section(신분당선, 광교역, 정자역, 3);
         신분당선.addSection(section);
         assertThat(신분당선.getSections()).contains(section);
@@ -72,8 +72,8 @@ public class LineTest {
 
     @Test
     void 등록할_수_없는_구간_노선에_추가_시_에러_발생() {
-        Station 양재역 = new Station("양재역");
-        Station 정자역 = new Station("정자역");
+        Station 양재역 = new Station(3L, "양재역");
+        Station 정자역 = new Station(4L, "정자역");
         Section section = new Section(신분당선, 양재역, 정자역, 3);
         assertThatThrownBy(() -> 신분당선.addSection(section))
                 .isInstanceOf(RuntimeException.class)
@@ -82,7 +82,7 @@ public class LineTest {
 
     @Test
     void 노선_제거_middle() {
-        Station 양재역 = new Station("양재역");
+        Station 양재역 = new Station(3L, "양재역");
         Section section = new Section(신분당선, 강남역, 양재역, 3);
         신분당선.addSection(section);
         신분당선.removeSection(양재역);
@@ -91,7 +91,7 @@ public class LineTest {
 
     @Test
     void 노선_제거_up() {
-        Station 양재역 = new Station("양재역");
+        Station 양재역 = new Station(3L, "양재역");
         Section section = new Section(신분당선, 강남역, 양재역, 3);
         신분당선.addSection(section);
         신분당선.removeSection(강남역);
@@ -100,7 +100,7 @@ public class LineTest {
 
     @Test
     void 노선_제거_down() {
-        Station 양재역 = new Station("양재역");
+        Station 양재역 = new Station(3L, "양재역");
         Section section = new Section(신분당선, 강남역, 양재역, 3);
         신분당선.addSection(section);
         신분당선.removeSection(광교역);

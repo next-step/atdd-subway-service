@@ -6,7 +6,6 @@ import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,15 +64,15 @@ public class Line extends BaseEntity {
 
     public void addSection(Section section) {
         List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it.isSame(section.getUpStation()));
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it.isSame(section.getDownStation()));
 
         if (isUpStationExisted && isDownStationExisted) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
 
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
-                stations.stream().noneMatch(it -> it == section.getDownStation())) {
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it.isSame(section.getUpStation())) &&
+                stations.stream().noneMatch(it -> it.isSame(section.getDownStation()))) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
 
@@ -84,14 +83,14 @@ public class Line extends BaseEntity {
 
         if (isUpStationExisted) {
             getSections().stream()
-                    .filter(it -> it.getUpStation() == section.getUpStation())
+                    .filter(it -> it.getUpStation().isSame(section.getUpStation()))
                     .findFirst()
                     .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
 
             getSections().add(section);
         } else if (isDownStationExisted) {
             getSections().stream()
-                    .filter(it -> it.getDownStation() == section.getDownStation())
+                    .filter(it -> it.getDownStation().isSame(section.getDownStation()))
                     .findFirst()
                     .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
 

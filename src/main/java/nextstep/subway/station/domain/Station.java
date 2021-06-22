@@ -20,12 +20,21 @@ public class Station extends BaseEntity {
         this.name = name;
     }
 
+    public Station(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }
 
     public String getName() {
         return name;
+    }
+
+    public boolean isSame(Station other) {
+        return Objects.equals(id, other.getId());
     }
 
     @Override
