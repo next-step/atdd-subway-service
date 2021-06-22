@@ -74,10 +74,10 @@ class PathAcceptanceTest extends AcceptanceTest {
         양재시민의숲역 = createStation("양재시민의숲역");
         부평역 = createStation("부평역");
 
-        신분당선 = createLine("신분당선", "bg-red-600", 강남역, 양재역, 14);
+        신분당선 = createLine("신분당선", "bg-red-600", 900, 강남역, 양재역, 14);
         이호선 = createLine("이호선", "bg-green-600", 교대역, 강남역, 12);
         삼호선 = createLine("삼호선", "bg-orange-600", 교대역, 남부터미널역, 9);
-        수인분당선 = createLine("수인분당선", "bg-yellow-600", 한티역, 도곡역, 1);
+        수인분당선 = createLine("수인분당선", "bg-yellow-600", 500, 한티역, 도곡역, 1);
 
         createSection(이호선, 서초역, 교대역, 44);
         createSection(삼호선, 남부터미널역, 양재역, 18);
@@ -90,9 +90,13 @@ class PathAcceptanceTest extends AcceptanceTest {
         return StationAcceptanceTest.지하철역_등록되어_있음(name).as(StationResponse.class);
     }
 
-    private LineResponse createLine(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        return LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest(name, color, upStation.getId(), downStation.getId(), distance))
+    private LineResponse createLine(String name, String color, Integer surcharge, StationResponse upStation, StationResponse downStation, int distance) {
+        return LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest(name, color, surcharge, upStation.getId(), downStation.getId(), distance))
                                  .as(LineResponse.class);
+    }
+
+    private LineResponse createLine(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
+        return createLine(name, color, 0, upStation, downStation, distance);
     }
 
     private void createSection(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
