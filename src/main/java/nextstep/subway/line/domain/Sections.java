@@ -63,7 +63,7 @@ public class Sections {
 
 	private Optional<Section> findFirstSectionOptional() {
 		return sections.stream()
-			.filter(section -> section.isFirstSection(sections))
+			.filter(section -> isFirstSection(section))
 			.findFirst();
 	}
 
@@ -141,5 +141,10 @@ public class Sections {
 			.filter(section -> section.isEqualsUpStation(station))
 			.findFirst();
 	}
+
+	private boolean isFirstSection(Section otherSection) {
+		return sections.stream().noneMatch(section -> otherSection.isEqualsUpStation(section.getDownStation()));
+	}
+
 
 }

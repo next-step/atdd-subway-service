@@ -92,12 +92,9 @@ public class Section {
 		return this.upStation.equals(station);
 	}
 
-	public boolean isFirstSection(List<Section> sections) {
-		return sections.stream().noneMatch(section -> this.isEqualsUpStation(section.getDownStation()));
-	}
-
 	private void validate(Line line, Station upStation, Station downStation, Distance distance) {
-		if(!Objects.nonNull(line) || !Objects.nonNull(upStation) || !Objects.nonNull(downStation) || !Objects.nonNull(distance)) {
+		if (!Objects.nonNull(line) || !Objects.nonNull(upStation) || !Objects.nonNull(downStation) || !Objects.nonNull(
+			distance)) {
 			throw new RuntimeException("노선 또는 상행역, 하행역, 거리가 비워져 있습니다.");
 		}
 
