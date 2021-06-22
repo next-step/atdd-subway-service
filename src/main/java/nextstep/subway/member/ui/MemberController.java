@@ -2,6 +2,7 @@ package nextstep.subway.member.ui;
 
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.exception.AuthorizationException;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
@@ -44,19 +45,23 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        loginMember.validation();
         MemberResponse member = memberService.findMember(loginMember.getId());
         return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/members/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
+        loginMember.validation();
         memberService.updateMember(loginMember.getId(), param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        loginMember.validation();
         memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }
+
 }

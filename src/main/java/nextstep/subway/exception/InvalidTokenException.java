@@ -1,4 +1,4 @@
-package nextstep.subway.auth.application;
+package nextstep.subway.exception;
 
 public class InvalidTokenException extends RuntimeException {
     public InvalidTokenException() {
