@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -66,7 +66,7 @@ public class Sections {
 
     public List<Station> getStations() {
         if (sections.isEmpty()) {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
         List<Station> stations = new ArrayList<>();
@@ -89,19 +89,25 @@ public class Sections {
     }
 
     private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(section -> section.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
+        Station firstStation = sections.get(0).getUpStation();
+        while (hasSectionByDownStation(firstStation)) {
+            Station tempStation = firstStation;
+            Section nextLineSection = findSectionByDownStation(tempStation)
+                    .orElseThrow(() -> new RuntimeException("구간을 찾을 수 없습니다."));
+            firstStation = nextLineSection.getUpStation();
         }
+        return firstStation;
+    }
 
-        return downStation;
+    private boolean hasSectionByDownStation(Station station) {
+        return sections.stream()
+                .anyMatch(section -> section.isDownStation(station));
+    }
+
+    private Optional<Section> findSectionByDownStation(Station station) {
+        return sections.stream()
+                .filter(section -> section.isDownStation(station))
+                .findFirst();
     }
 
     private void checkValidStations(List<Station> stations, boolean isUpStationExisted, boolean isDownStationExisted) {
