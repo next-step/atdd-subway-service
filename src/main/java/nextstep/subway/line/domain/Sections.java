@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.persistence.CascadeType;
@@ -21,7 +22,7 @@ public class Sections {
 
 	public void addSection(Section newSection) {
 		List<Station> stations = this.getStations();
-		validateSection(newSection, stations);
+		validateAddSection(newSection, stations);
 		if (!stations.isEmpty()) {
 			updateUpStation(newSection, stations);
 			updateDownStation(newSection, stations);
@@ -30,7 +31,7 @@ public class Sections {
 	}
 
 	public void removeStation(Line line, Station station) {
-		validateMinSizeSections();
+		validateRemoveStation(station);
 		Optional<Section> upLineStation = getSectionOptionalEqualsUpStation(station);
 		Optional<Section> downLineStation = getSectionOptionalEqualsDownStation(station);
 		updateSectionForRemove(line, upLineStation, downLineStation);
@@ -85,6 +86,12 @@ public class Sections {
 		return stations.stream().noneMatch(it -> newSection.isEqualsDownStation(it));
 	}
 
+	private void validateSection(Section section) {
+		if(!Objects.nonNull(section)) {
+			throw new RuntimeException("구간이 null 입니다.");
+		}
+	}
+
 	private void validateAlreadyExistedSection(Section newSection, List<Station> stations) {
 		if (newSection.isUpStationExisted(stations) && newSection.isDownStationExisted(stations)) {
 			throw new RuntimeException("이미 등록된 구간 입니다.");
@@ -105,14 +112,27 @@ public class Sections {
 		}
 	}
 
-	private void validateSection(Section newSection, List<Station> stations) {
+	private void validateAddSection(Section newSection, List<Station> stations)
+	{
+		validateSection(newSection);
 		validateAlreadyExistedSection(newSection, stations);
 		validateNotExistedStationInSections(newSection, stations);
 	}
 
+	private void validateRemoveStation(Station station) {
+		validateStation(station);
+		validateMinSizeSections();
+	}
+
 	private void validateMinSizeSections() {
 		if (this.sections.size() <= MIN_SECTIONS_SIZE) {
-			throw new RuntimeException();
+			throw new RuntimeException("구간이 하나 이하이므로 지울 수 없습니다.");
+		}
+	}
+
+	private void validateStation(Station station) {
+		if(!Objects.nonNull(station)) {
+			throw new RuntimeException("역이 null 인 경우 삭제할 수 없습니다.");
 		}
 	}
 
