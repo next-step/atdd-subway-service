@@ -6,6 +6,7 @@ import static java.util.stream.Stream.*;
 import static javax.persistence.CascadeType.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -62,6 +63,10 @@ public class Sections {
 		return sections.stream()
 			.mapToInt(Section::getDistance)
 			.sum();
+	}
+
+	List<Section> getSections() {
+		return Collections.unmodifiableList(sections);
 	}
 
 	private void validateNonDuplication(Section other) {

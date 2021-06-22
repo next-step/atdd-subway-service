@@ -42,7 +42,7 @@ public class Section {
         return id;
     }
 
-    int getDistance() {
+    public int getDistance() {
         return distance;
     }
 
@@ -80,6 +80,14 @@ public class Section {
 
     Stream<Station> getStations() {
         return Stream.of(upStation, downStation);
+    }
+
+    public Station getUpStation() {
+        return upStation;
+    }
+
+    public Station getDownStation() {
+        return downStation;
     }
 
     boolean hasEqualUpStation(Section section) {
