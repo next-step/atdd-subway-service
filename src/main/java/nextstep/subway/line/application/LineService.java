@@ -12,10 +12,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,10 +30,7 @@ public class LineService {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
-        List<StationResponse> stations = getStations(persistLine).stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
-        return LineResponse.of(persistLine, stations);
+        return LineResponse.of(persistLine, persistLine.getStations());
     }
 
     public List<LineResponse> findLines() {
@@ -44,7 +38,7 @@ public class LineService {
         return persistLines.stream()
                 .map(line -> {
                     List<StationResponse> stations = getStations(line).stream()
-                            .map(it -> StationResponse.of(it))
+                            .map(StationResponse::of)
                             .collect(Collectors.toList());
                     return LineResponse.of(line, stations);
                 })
@@ -59,7 +53,7 @@ public class LineService {
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         List<StationResponse> stations = getStations(persistLine).stream()
-                .map(it -> StationResponse.of(it))
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
         return LineResponse.of(persistLine, stations);
     }
@@ -142,7 +136,7 @@ public class LineService {
 
     public List<Station> getStations(Line line) {
         if (line.getSections().isEmpty()) {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
         List<Station> stations = new ArrayList<>();
