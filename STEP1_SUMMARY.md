@@ -1,7 +1,7 @@
 ### 요구사항
-- [ ] LineSectionAcceptanceTest 리팩터링
+- [X] LineSectionAcceptanceTest 리팩터링
     + [X] 통합 시나리오 구성
-- [ ] LineService 리팩터링
+- [X] LineService 리팩터링
     + [X] 커스텀 예외처리 적용
     + [X] `LineService`의 구간 추가, 삭제 로직 등에 대한 `Sections`의 테스트 작성
         * [X] 구간 추가 테스트케이스 작성
@@ -9,7 +9,7 @@
     + [X] `LineService`의 로직을 `Sections`로 이관
         * [X] `LineService`에 있는 구간 추가 로직 이관
         * [X] `LineService`에 있는 구간 삭제 로직 이관
-    + [ ] 부분 코드 리팩터링
+    + [X] 부분 코드 리팩터링
     
 ### 요구사항 설명
 #### 인수 테스트 통합

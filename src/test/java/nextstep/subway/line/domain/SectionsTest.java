@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -51,9 +52,20 @@ class SectionsTest {
         sections.add(new Section(line, station3, station4, 3));
 
         // then
-        List<Station> stations = sections.getStations();
-        List<Station> targetStations = Arrays.asList(station1, station2, station3, station4);
-        assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
+        assertAll(
+                () -> {
+                    List<Station> stations = sections.getStations();
+                    List<Station> targetStations = Arrays.asList(station1, station2, station3, station4);
+                    assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
+                },
+                () -> {
+                    List<Integer> distances = sections.getSections()
+                            .stream()
+                            .map(Section::getDistance)
+                            .collect(Collectors.toList());
+                    assertThat(isEqualsArraysValue(distances, Arrays.asList(3, 3, 3))).isTrue();
+                }
+        );
     }
 
     @Test
@@ -64,9 +76,20 @@ class SectionsTest {
         sections.add(new Section(line, station2, station3, 3));
 
         // then
-        List<Station> stations = sections.getStations();
-        List<Station> targetStations = Arrays.asList(station1, station2, station3, station4);
-        assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
+        assertAll(
+                () -> {
+                    List<Station> stations = sections.getStations();
+                    List<Station> targetStations = Arrays.asList(station1, station2, station3, station4);
+                    assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
+                },
+                () -> {
+                    List<Integer> distances = sections.getSections()
+                            .stream()
+                            .map(Section::getDistance)
+                            .collect(Collectors.toList());
+                    assertThat(isEqualsArraysValue(distances, Arrays.asList(3, 3, 4))).isTrue();
+                }
+        );
     }
 
     @Test
@@ -77,31 +100,53 @@ class SectionsTest {
         sections.add(new Section(line, station3, station4, 3));
 
         // then
-        List<Station> stations = sections.getStations();
-        List<Station> targetStations = Arrays.asList(station1, station2, station3, station4);
-        assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
+        assertAll(
+                () -> {
+                    List<Station> stations = sections.getStations();
+                    List<Station> targetStations = Arrays.asList(station1, station2, station3, station4);
+                    assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
+                },
+                () -> {
+                    List<Integer> distances = sections.getSections()
+                            .stream()
+                            .map(Section::getDistance)
+                            .collect(Collectors.toList());
+                    assertThat(isEqualsArraysValue(distances, Arrays.asList(3, 4, 3))).isTrue();
+                }
+        );
     }
 
     @Test
     @DisplayName("가장 앞쪽에 구간 추가")
     void addSection4() {
         // when
-        sections.add(new Section(line, station3, station1, 3));
+        sections.add(new Section(line, station3, station1, 2));
 
         // then
-        List<Station> stations = sections.getStations();
-        List<Station> targetStations = Arrays.asList(station3, station1, station2);
-        assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
+        assertAll(
+                () -> {
+                    List<Station> stations = sections.getStations();
+                    List<Station> targetStations = Arrays.asList(station3, station1, station2);
+                    assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
+                },
+                () -> {
+                    List<Integer> distances = sections.getSections()
+                            .stream()
+                            .map(Section::getDistance)
+                            .collect(Collectors.toList());
+                    assertThat(isEqualsArraysValue(distances, Arrays.asList(2, 3))).isTrue();
+                }
+        );
     }
 
     @Test
     @DisplayName("뒤섞인 구간을 정렬함")
     void sort_sections() {
         // given
-        Section section1 = new Section(line, station1, station2, 3);
+        Section section1 = new Section(line, station1, station2, 2);
         Section section2 = new Section(line, station2, station3, 3);
-        Section section3 = new Section(line, station3, station4, 3);
-        Section section4 = new Section(line, station4, station5, 3);
+        Section section3 = new Section(line, station3, station4, 4);
+        Section section4 = new Section(line, station4, station5, 5);
 
         // then
         Sections sections1 = new Sections(Arrays.asList(section3, section1, section4, section2));
@@ -109,7 +154,6 @@ class SectionsTest {
         // then
         List<Station> stations = sections1.getStations();
         List<Station> targetStations = Arrays.asList(station1, station2, station3, station4, station5);
-
         assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
     }
 
@@ -166,11 +210,11 @@ class SectionsTest {
     @DisplayName("노선 구간에 포함된 역 삭제")
     List<DynamicTest> remove_station() {
         // given
-        sections.add(new Section(line, station2, station3, 3));
+        sections.add(new Section(line, station2, station3, 2));
         sections.add(new Section(line, station3, station4, 3));
-        sections.add(new Section(line, station4, station5, 3));
-        sections.add(new Section(line, station5, station6, 3));
-        sections.add(new Section(line, station6, station7, 3));
+        sections.add(new Section(line, station4, station5, 4));
+        sections.add(new Section(line, station5, station6, 5));
+        sections.add(new Section(line, station6, station7, 6));
 
         return Arrays.asList(
                 DynamicTest.dynamicTest("노선에 포함되는 중간역 삭제", () -> {
@@ -178,27 +222,59 @@ class SectionsTest {
                     sections.removeStation(line, station5);
 
                     // then
-                    List<Station> stations = sections.getStations();
-                    List<Station> targetStations = Arrays.asList(station1, station2, station3, station4, station6, station7);
-                    assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
+                    assertAll(
+                            () -> {
+                                List<Station> stations = sections.getStations();
+                                List<Station> targetStations = Arrays.asList(station1, station2, station3, station4,
+                                        station6, station7);
+                                assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
+                            },
+                            () -> {
+                                List<Integer> distances = sections.getSections()
+                                        .stream()
+                                        .map(Section::getDistance)
+                                        .collect(Collectors.toList());
+                                assertThat(isEqualsArraysValue(distances, Arrays.asList(3, 2, 3, 9, 6))).isTrue();
+                            }
+                    );
                 }),
                 DynamicTest.dynamicTest("노선에 포함되는 시작역 삭제", () -> {
                     // when
                     sections.removeStation(line, station1);
 
                     // then
-                    List<Station> stations = sections.getStations();
-                    List<Station> targetStations = Arrays.asList(station2, station3, station4, station6, station7);
-                    assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
+                    assertAll(
+                            () -> {
+                                List<Station> stations = sections.getStations();
+                                List<Station> targetStations = Arrays.asList(station2, station3, station4, station6, station7);
+                                assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
+                            },
+                            () -> {
+                                List<Integer> distances = sections.getSections().stream()
+                                        .map(Section::getDistance)
+                                        .collect(Collectors.toList());
+                                assertThat(isEqualsArraysValue(distances, Arrays.asList(2, 3, 9, 6))).isTrue();
+                            }
+                    );
                 }),
                 DynamicTest.dynamicTest("노선에 포함되는 마지막역 삭제", () -> {
                     // when
                     sections.removeStation(line, station7);
 
                     // then
-                    List<Station> stations = sections.getStations();
-                    List<Station> targetStations = Arrays.asList(station2, station3, station4, station6);
-                    assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
+                    assertAll(
+                            () -> {
+                                List<Station> stations = sections.getStations();
+                                List<Station> targetStations = Arrays.asList(station2, station3, station4, station6);
+                                assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
+                            },
+                            () -> {
+                                List<Integer> distances = sections.getSections().stream()
+                                        .map(Section::getDistance)
+                                        .collect(Collectors.toList());
+                                assertThat(isEqualsArraysValue(distances, Arrays.asList(2, 3, 9))).isTrue();
+                            }
+                    );
                 })
         );
     }
@@ -210,5 +286,9 @@ class SectionsTest {
         assertThatThrownBy(() -> sections.removeStation(line, station4))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("지울 수 있는 구간이 없습니다.");
+    }
+
+    private boolean isEqualsArraysValue(List<Integer> distance, List<Integer> targetDistance) {
+        return Arrays.equals(distance.toArray(), targetDistance.toArray());
     }
 }

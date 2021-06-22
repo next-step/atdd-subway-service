@@ -15,8 +15,8 @@ import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
-    public static final int SECTIONS_MINIMUM_SIZE = 1;
-    public static final int FIRST_SECTION_INDEX = 0;
+    private static final int FIRST_SECTION_INDEX = 0;
+    private static final int SECTIONS_MINIMUM_SIZE = 1;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -29,7 +29,7 @@ public class Sections {
         this.sections = new ArrayList<>(sections);
     }
 
-    public void add(Section section) {
+    public void add(final Section section) {
         List<Station> stations = getStations();
         validateExistsStations(stations, section);
         validateNotExistsAllStations(stations, section);
@@ -52,7 +52,7 @@ public class Sections {
         return stations;
     }
 
-    public void removeStation(Line line, Station station) {
+    public void removeStation(final Line line, final Station station) {
         validateRemovableSize();
         mergeSections(line, station);
         this.sections.stream()
@@ -62,7 +62,15 @@ public class Sections {
     }
 
     public List<Section> getSections() {
-        return this.sections;
+        Map<Station, Section> collect = this.sections.stream()
+                .collect(Collectors.toMap(Section::getUpStation, section -> section));
+        Station nextUpStation = findUpStation();
+        List<Section> sortSections = new ArrayList<>();
+        while (collect.containsKey(nextUpStation)) {
+            sortSections.add(collect.get(nextUpStation));
+            nextUpStation = collect.get(nextUpStation).getDownStation();
+        }
+        return sortSections;
     }
 
     private Station findUpStation() {
