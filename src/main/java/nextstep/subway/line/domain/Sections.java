@@ -17,6 +17,10 @@ import nextstep.subway.station.dto.StationResponse;
 public class Sections {
 
     public static final int SECTION_DELETABLE_MIN_SIZE = 1;
+    public static final String SECTION_IS_ALREADY_ADD = "이미 등록된 구간 입니다.";
+    public static final String CANT_ADD_THIS_SECTION = "등록할 수 없는 구간 입니다.";
+    public static final String NOT_FOUND_SECTION = "구간을 찾을 수 없습니다.";
+    public static final String SECTIONS_HAVE_ONLY_ONE = "구간이 1개밖에 없습니다.";
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -75,7 +79,7 @@ public class Sections {
         while (hasSectionByUpStation(firstStation)) {
             Station tempStation = firstStation;
             Section nextLineSection = findSectionByUpStation(tempStation)
-                    .orElseThrow(() -> new RuntimeException("구간을 찾을 수 없습니다."));
+                    .orElseThrow(() -> new RuntimeException(NOT_FOUND_SECTION));
             firstStation = nextLineSection.getDownStation();
             stations.add(firstStation);
         }
@@ -108,7 +112,7 @@ public class Sections {
         while (hasSectionByDownStation(firstStation)) {
             Station tempStation = firstStation;
             Section nextLineSection = findSectionByDownStation(tempStation)
-                    .orElseThrow(() -> new RuntimeException("구간을 찾을 수 없습니다."));
+                    .orElseThrow(() -> new RuntimeException(NOT_FOUND_SECTION));
             firstStation = nextLineSection.getUpStation();
         }
         return firstStation;
@@ -116,11 +120,11 @@ public class Sections {
 
     private void checkValidStations(List<Station> stations, boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new RuntimeException(SECTION_IS_ALREADY_ADD);
         }
 
         if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new RuntimeException(CANT_ADD_THIS_SECTION);
         }
     }
 
@@ -152,7 +156,7 @@ public class Sections {
 
     private void checkDeletable() {
         if (sections.size() <= SECTION_DELETABLE_MIN_SIZE) {
-            throw new RuntimeException("구간이 1개밖에 없습니다.");
+            throw new RuntimeException(SECTIONS_HAVE_ONLY_ONE);
         }
     }
 
