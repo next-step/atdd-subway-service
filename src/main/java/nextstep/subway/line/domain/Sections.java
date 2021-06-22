@@ -16,6 +16,7 @@ import nextstep.subway.station.domain.Station;
 @Embeddable
 public class Sections {
     public static final int SECTIONS_MINIMUM_SIZE = 1;
+    public static final int FIRST_SECTION_INDEX = 0;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -55,7 +56,7 @@ public class Sections {
         validateRemovableSize();
         mergeSections(line, station);
         this.sections.stream()
-                .filter(section -> section.isMatchUpStation(station) || section.isMatchDownStation(station))
+                .filter(section -> section.hasContainBy(station))
                 .collect(Collectors.toList())
                 .forEach(sections::remove);
     }
@@ -72,7 +73,7 @@ public class Sections {
                 .filter(section -> !downStations.contains(section.getUpStation()))
                 .findFirst()
                 .map(Section::getUpStation)
-                .orElse(null);
+                .orElse(this.sections.get(FIRST_SECTION_INDEX).getUpStation());
     }
 
     private void addSectionForConnectedStation(List<Station> stations, Section section) {
@@ -85,9 +86,9 @@ public class Sections {
 
     private void insertSectionAfter(Section section) {
         this.sections.stream()
-                .filter(it -> it.getDownStation().equals(section.getDownStation()))
+                .filter(section::isMatchDownStationToDownStationBy)
                 .findFirst()
-                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+                .ifPresent(it -> it.updateDownStationAndDistanceFromUpStation(section));
         this.sections.add(section);
     }
 
@@ -95,8 +96,20 @@ public class Sections {
         this.sections.stream()
                 .filter(section::isMatchUpStationToUpStationBy)
                 .findFirst()
-                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+                .ifPresent(it -> it.updateUpStationAndDistanceFromDownStation(section));
         this.sections.add(section);
+    }
+
+    private void mergeSections(Line line, Station station) {
+        Optional<Section> upLineStation = this.sections.stream()
+                .filter(it -> it.isMatchDownStation(station))
+                .findFirst();
+        Optional<Section> downLineStation = this.sections.stream()
+                .filter(it -> it.isMatchUpStation(station))
+                .findFirst();
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            this.sections.add(Section.createMergeSection(line, upLineStation.get(), downLineStation.get()));
+        }
     }
 
     private void validateNotExistsAllStations(List<Station> stations, Section section) {
@@ -116,21 +129,6 @@ public class Sections {
     private void validateSectionsSize(List<Section> sections) {
         if (sections.size() < SECTIONS_MINIMUM_SIZE) {
             throw new IllegalArgumentException("구간 목록은 개수는 1 이상 이어야 합니다.");
-        }
-    }
-
-    private void mergeSections(Line line, Station station) {
-        Optional<Section> upLineStation = this.sections.stream()
-                .filter(it -> it.isMatchUpStation(station))
-                .findFirst();
-        Optional<Section> downLineStation = this.sections.stream()
-                .filter(it -> it.isMatchDownStation(station))
-                .findFirst();
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            this.sections.add(new Section(line, newUpStation, newDownStation, newDistance));
         }
     }
 

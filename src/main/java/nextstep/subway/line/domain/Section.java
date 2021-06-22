@@ -40,6 +40,11 @@ public class Section {
         this.distance = distance;
     }
 
+    public static Section createMergeSection(Line line, Section upLineSection, Section downLineSection) {
+        return new Section(line, upLineSection.upStation, downLineSection.downStation,
+                upLineSection.distance + downLineSection.distance);
+    }
+
     public Long getId() {
         return id;
     }
@@ -60,20 +65,16 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
+    public void updateUpStationAndDistanceFromDownStation(Section section) {
+        validateUpdateDistance(section);
+        this.upStation = section.downStation;
+        this.distance -= section.distance;
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
+    public void updateDownStationAndDistanceFromUpStation(Section section) {
+        validateUpdateDistance(section);
+        this.downStation = section.upStation;
+        this.distance -= section.distance;
     }
 
     public boolean isMatchDownStation(Station station) {
@@ -86,5 +87,19 @@ public class Section {
 
     public boolean isMatchUpStationToUpStationBy(Section section) {
         return this.upStation.equals(section.upStation);
+    }
+
+    public boolean isMatchDownStationToDownStationBy(Section section) {
+        return this.downStation.equals(section.downStation);
+    }
+
+    public boolean hasContainBy(Station station) {
+        return this.upStation.equals(station) || this.downStation.equals(station);
+    }
+
+    private void validateUpdateDistance(Section section) {
+        if (this.distance <= section.distance) {
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
     }
 }
