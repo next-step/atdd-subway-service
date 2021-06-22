@@ -2,7 +2,6 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.EdgeFactory;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -42,7 +41,14 @@ public class PathNavigation {
         validateStations(source, target);
 
         GraphPath<Station, DefaultWeightedEdge> shortestPath = this.path.getPath(source, target);
+        validateShortestPathIsNull(shortestPath);
         return Path.of(shortestPath.getVertexList(), (int) shortestPath.getWeight());
+    }
+
+    private void validateShortestPathIsNull(GraphPath<Station, DefaultWeightedEdge> shortestPath) {
+        if (Objects.isNull(shortestPath)) {
+            throw new IllegalArgumentException(ERROR_MESSAGE_NOT_CONNECTED_STATIONS);
+        }
     }
 
     private void validateStations(Station source, Station target) {
@@ -52,10 +58,6 @@ public class PathNavigation {
 
         if (!graph.containsVertex(source) || !graph.containsVertex(target)) {
             throw new IllegalArgumentException(ERROR_MESSAGE_NOT_EXISTED_STATIONS);
-        }
-
-        if (!graph.containsEdge(source, target)) {
-            throw new IllegalArgumentException(ERROR_MESSAGE_NOT_CONNECTED_STATIONS);
         }
     }
 

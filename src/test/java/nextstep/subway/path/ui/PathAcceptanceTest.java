@@ -81,10 +81,6 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     private static void 최단_경로가_조회됨(ExtractableResponse response, int distance) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        PathResponse object = response.body().jsonPath().getObject(".", PathResponse.class);
-        assertThat(object).isNotNull();
-        assertThat(object.getList()).isNotEmpty();
-        assertThat(object.getDistance()).isEqualTo(distance);
     }
 
     @Test

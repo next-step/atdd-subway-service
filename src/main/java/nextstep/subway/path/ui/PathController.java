@@ -4,6 +4,7 @@ import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,4 +25,8 @@ public class PathController {
         return ResponseEntity.ok().body(PathResponse.of(shortestPath));
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity IllegalArgumentExceptionHandler() {
+        return ResponseEntity.badRequest().build();
+    }
 }
