@@ -22,12 +22,20 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
+        this.line = line;
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = Distance.valueOf(distance);
+    }
+
+    public Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -50,23 +58,33 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
+    public void updateUpStation(Section newSection) {
+        this.distance = this.distance.minus(newSection.getDistance());
+        this.upStation = newSection.getDownStation();
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
+    public void updateDownStation(Section newSection) {
+        this.distance = this.distance.minus(newSection.getDistance());
+        this.downStation = newSection.getUpStation();
+    }
+
+    public boolean isUpStationEqualsToStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean isDownStationEqualsToStation(Station station) {
+        return downStation.equals(station);
+    }
+
+    public boolean isUpStationEqualsToUpStationInSection(Section sectionToAdd) {
+        return sectionToAdd.isUpStationEqualsToStation(upStation);
+    }
+
+    public boolean isDownStationEqualsToDownStationInSection(Section sectionToAdd) {
+        return sectionToAdd.isDownStationEqualsToStation(downStation);
     }
 }
