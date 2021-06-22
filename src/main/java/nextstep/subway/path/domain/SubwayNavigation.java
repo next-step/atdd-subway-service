@@ -13,15 +13,16 @@ import java.util.Objects;
 public class SubwayNavigation {
     private static final String EQUAL_STATION_EXCEPTION = "같은 역으로 경로를 조회할 수 없습니다.";
     private static final String DISCONNECT_STATION_EXCEPTION = "노선이 연결되어 있지 않습니다.";
+    private static final String UNKNOWN_STATION_EXCEPTION = "기존에 등록되지 않은 역입니다.";
 
     private final ShortestPathAlgorithm<Station, SectionEdge> shortestPath;
 
     public SubwayNavigation(WeightedGraph graph) {
-
         this.shortestPath = new DijkstraShortestPath<>(graph);
     }
 
     public List<Station> getPaths(Station source, Station target) {
+        validateUnknownStaton(source, target);
         validateEqualStation(source, target);
         GraphPath<Station, SectionEdge> path = shortestPath.getPath(source, target);
         validatePath(path);
@@ -37,6 +38,12 @@ public class SubwayNavigation {
     private void validatePath(GraphPath<Station, SectionEdge> path) {
         if (Objects.isNull(path)) {
             throw new IllegalArgumentException(DISCONNECT_STATION_EXCEPTION);
+        }
+    }
+
+    private void validateUnknownStaton(Station source, Station target) {
+        if (Objects.isNull(source) || Objects.isNull(target)) {
+            throw new IllegalArgumentException(UNKNOWN_STATION_EXCEPTION);
         }
     }
 
