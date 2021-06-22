@@ -93,7 +93,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("최단 경로를 조회한다. (목적지로 가는 역을 순서대로 반환한다)")
     @Test
-    void findPath() {
+    void findShortestPath() {
         // when
         ExtractableResponse<Response> 조회된_최단_경로 = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
 
@@ -103,7 +103,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("연결되어있지 않은 출발역과 도착역으로 최단 경로를 조회한다.")
     @Test
-    void findPath_notConnectedSection() {
+    void findShortestPath_notConnectedSection() {
         // given
         StationResponse 몽촌토성역 = 지하철역_등록되어_있음("몽촌토성역").as(StationResponse.class);
 
@@ -116,7 +116,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("존재하지 않는 역으로 최단 경로를 조회한다.")
     @Test
-    void findPath_notFoundStation() {
+    void findShortestPath_notFoundStation() {
         //given
         Long 존재하지않는_역_ID = 10000L;
 
