@@ -21,8 +21,7 @@ public class LineTest {
 	void setUp() {
 		성수역 = new Station(1L, "성수역");
 		뚝섬역 = new Station(2L, "뚝섬역");
-		LineRequest lineRequest = new LineRequest("2호선", "초록색", 성수역.getId(), 뚝섬역.getId(), 10);
-		이호선 = lineRequest.toLine(성수역, 뚝섬역);
+		이호선 = new Line (1L, "2호선", "초록색", 성수역, 뚝섬역, new Distance(10));
 	}
 
 	@DisplayName("Line 지하철역 조회")
