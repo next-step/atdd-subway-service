@@ -68,10 +68,21 @@ public class Sections {
 	}
 
 	private void validateNotExistedStationInSections(Section newSection, List<Station> stations) {
-		if (!stations.isEmpty() && stations.stream().noneMatch(it -> newSection.isEqualsUpStation(it)) &&
-			stations.stream().noneMatch(it -> newSection.isEqualsDownStation(it))) {
+		if (!stations.isEmpty() && isNoneMatchSectionInSections(newSection, stations)) {
 			throw new RuntimeException("등록할 수 없는 구간 입니다.");
 		}
+	}
+
+	private boolean isNoneMatchSectionInSections(Section newSection, List<Station> stations) {
+		return isNoneMatchUpStationInSections(newSection, stations) && isNoneMatchDownStationInSections(newSection, stations);
+	}
+
+	private boolean isNoneMatchUpStationInSections(Section newSection, List<Station> stations) {
+		return stations.stream().noneMatch(it -> newSection.isEqualsUpStation(it));
+	}
+
+	private boolean isNoneMatchDownStationInSections(Section newSection, List<Station> stations) {
+		return stations.stream().noneMatch(it -> newSection.isEqualsDownStation(it));
 	}
 
 	private void validateAlreadyExistedSection(Section newSection, List<Station> stations) {
