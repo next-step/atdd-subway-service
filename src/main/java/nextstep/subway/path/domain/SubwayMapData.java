@@ -11,11 +11,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SubwayMapData extends WeightedMultigraph<Station, DefaultWeightedEdge> {
+    private static final String NO_LINES_EXCEPTION = "경로 조회에 필요한 노선도 값이 조회되지 않습니다.";
+
     private final List<Line> lines;
 
     public SubwayMapData(List<Line> lines, Class<DefaultWeightedEdge> edgeClass) {
         super(edgeClass);
+        validateLines(lines);
         this.lines = Collections.unmodifiableList(lines);
+    }
+
+    private void validateLines(List<Line> lines) {
+        if (lines.isEmpty()) {
+            throw new IllegalArgumentException(NO_LINES_EXCEPTION);
+        }
     }
 
     public WeightedGraph initData() {
