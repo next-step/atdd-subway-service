@@ -10,15 +10,15 @@ public class Section {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "line_id")
     private Line line;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "up_station_id")
     private Station upStation;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
@@ -68,5 +68,22 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public boolean downStationSameWith(Station station) {
+        return downStation.equals(station);
+    }
+
+    public boolean hasEqualUpStationWith(Section section) {
+        return this.upStation.equals(section.getUpStation());
+    }
+
+    public boolean hasEqualDownStationWith(Section section) {
+        return this.downStation.equals(section.getDownStation());
+    }
+
+    public void addLine(Line line) {
+        this.line = line;
+        line.newGetSections().add(this);
     }
 }

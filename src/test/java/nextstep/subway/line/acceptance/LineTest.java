@@ -11,7 +11,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class LineTest {
+class LineTest {
 
     private Line 사호선;
     Station 회현역;
@@ -20,6 +20,8 @@ public class LineTest {
 
     @BeforeEach
     void setUp() {
+        사호선 = new Line("사호선", "파란색");
+
         회현역 = new Station("회현역");
         서울역 = new Station("서울역");
         명동역 = new Station("명동역");
