@@ -1,15 +1,18 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 public class SubwayNavigation {
     private static final String EQUAL_STATION_EXCEPTION = "같은 역으로 경로를 조회할 수 없습니다.";
+    private static final String DISCONNECT_STATION_EXCEPTION = "노선이 연결되어 있지 않습니다.";
 
     private final ShortestPathAlgorithm<Station, SectionEdge> shortestPath;
 
@@ -20,7 +23,9 @@ public class SubwayNavigation {
 
     public List<Station> getPaths(Station source, Station target) {
         validateEqualStation(source, target);
-        return shortestPath.getPath(source, target).getVertexList();
+        GraphPath<Station, SectionEdge> path = shortestPath.getPath(source, target);
+        validatePath(path);
+        return path.getVertexList();
     }
 
     private void validateEqualStation(Station source, Station target) {
@@ -29,7 +34,13 @@ public class SubwayNavigation {
         }
     }
 
+    private void validatePath(GraphPath<Station, SectionEdge> path) {
+        if (Objects.isNull(path)) {
+            throw new IllegalArgumentException(DISCONNECT_STATION_EXCEPTION);
+        }
+    }
+
     public int getDistance(Station source, Station target) {
-        return new BigDecimal(shortestPath.getPathWeight(source, target)).intValue();
+        return BigDecimal.valueOf(shortestPath.getPathWeight(source, target)).intValue();
     }
 }
