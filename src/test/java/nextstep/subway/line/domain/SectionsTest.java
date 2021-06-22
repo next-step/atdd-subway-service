@@ -23,6 +23,7 @@ public class SectionsTest {
 		성수역 = new Station(1L, "성수역");
 		뚝섬역 = new Station(2L, "뚝섬역");
 		건대입구역 = new Station(3L, "건대입구역");
+		이호선 = new Line("이호선", "초록색");
 		성수뚝섬구간 = new Section(이호선, 성수역, 뚝섬역, new Distance(10));
 	}
 

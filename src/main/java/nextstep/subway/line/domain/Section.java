@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -38,6 +39,7 @@ public class Section {
 	}
 
 	public Section(Line line, Station upStation, Station downStation, Distance distance) {
+		validate(line, upStation, downStation, distance);
 		this.line = line;
 		this.upStation = upStation;
 		this.downStation = downStation;
@@ -72,20 +74,14 @@ public class Section {
 		return stations.stream().anyMatch(it -> it == this.downStation);
 	}
 
-	public void updateUpStation(Station station, Distance newDistance) {
-		if (this.distance.isLessThanOrEqual(newDistance)) {
-			throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-		}
+	public void updateUpStation(Station station, Distance distance) {
 		this.upStation = station;
-		this.distance = this.distance.minus(newDistance);
+		this.distance = this.distance.minus(distance);
 	}
 
-	public void updateDownStation(Station station, Distance newDistance) {
-		if (this.distance.isLessThanOrEqual(newDistance)) {
-			throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-		}
+	public void updateDownStation(Station station, Distance distance) {
 		this.downStation = station;
-		this.distance = this.distance.minus(newDistance);
+		this.distance = this.distance.minus(distance);
 	}
 
 	public boolean isEqualsDownStation(Station station) {
@@ -98,6 +94,13 @@ public class Section {
 
 	public boolean isFirstSection(List<Section> sections) {
 		return sections.stream().noneMatch(section -> this.isEqualsUpStation(section.getDownStation()));
+	}
+
+	private void validate(Line line, Station upStation, Station downStation, Distance distance) {
+		if(!Objects.nonNull(line) || !Objects.nonNull(upStation) || !Objects.nonNull(downStation) || !Objects.nonNull(distance)) {
+			throw new RuntimeException("노선 또는 상행역, 하행역, 거리가 비워져 있습니다.");
+		}
+
 	}
 
 }

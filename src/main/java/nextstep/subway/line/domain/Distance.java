@@ -1,6 +1,10 @@
 package nextstep.subway.line.domain;
 
+import java.util.Objects;
+
 import javax.persistence.Embeddable;
+
+import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Distance {
@@ -28,10 +32,23 @@ public class Distance {
 	}
 
 	public Distance minus(Distance distance) {
+		if(isLessThanOrEqual(distance)) {
+			throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+		}
 		return new Distance(this.distance - distance.distance);
 	}
 
-	public boolean isLessThanOrEqual(Distance newDistance) {
-		return this.distance <= newDistance.distance;
+	private boolean isLessThanOrEqual(Distance distance) {
+		return this.distance <= distance.distance;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null || getClass() != obj.getClass())
+			return false;
+		Distance distance = (Distance)obj;
+		return this.distance == distance.distance;
 	}
 }
