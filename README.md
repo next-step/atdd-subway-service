@@ -59,3 +59,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ### 요구 사항
 - [x] LineSectionAcceptanceTest 리팩터링
 - [x] LineService 리팩터링
+
+## 2단계 - 경로 조회 기능
+### 요구 사항
+- [ ] 최단 경로 조회 인수 테스트 만들기
+- [ ] 최단 경로 조회 기능 구현하기
+
