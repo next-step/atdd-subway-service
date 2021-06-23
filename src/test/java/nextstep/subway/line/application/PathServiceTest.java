@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -73,7 +74,7 @@ class PathServiceTest {
     @DisplayName("출발지와 목적지 사이의 경로를 찾아보자")
     @Test
     void findPath() {
-        PathResponse response = pathService.findPath(강남역.getId(), 잠실역.getId());
+        PathResponse response = pathService.findPath(new LoginMember(), 강남역.getId(), 잠실역.getId());
 
         List<String> stationNames = response.getStations().stream()
                 .map(stationResponse -> stationResponse.getName())
@@ -87,7 +88,7 @@ class PathServiceTest {
     @Test
     void notConnectedPath() {
         assertThatThrownBy(
-                () -> pathService.findPath(강남역.getId(), 덕소역.getId())
+                () -> pathService.findPath(new LoginMember(), 강남역.getId(), 덕소역.getId())
         ).isInstanceOf(NoSuchElementException.class);
     }
 
@@ -95,7 +96,7 @@ class PathServiceTest {
     @Test
     void notExistStation() {
         assertThatThrownBy(
-                () -> pathService.findPath(강남역.getId(), 0L)
+                () -> pathService.findPath(new LoginMember(), 강남역.getId(), 0L)
         ).isInstanceOf(NoSuchElementException.class);
     }
 
@@ -103,7 +104,7 @@ class PathServiceTest {
     @Test
     void findPathSameStation() {
         assertThatThrownBy(
-                () -> pathService.findPath(강남역.getId(), 강남역.getId())
+                () -> pathService.findPath(new LoginMember(), 강남역.getId(), 강남역.getId())
         ).isInstanceOf(IllegalArgumentException.class);
     }
 }
