@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.*;
 import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -28,7 +29,7 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(Long sourceStationId, Long targetStationId) {
+    public PathResponse findPath(LoginMember loginMember, Long sourceStationId, Long targetStationId) {
         PathFinder pathFinder = initPathFinder();
 
         validation(sourceStationId, targetStationId);
@@ -45,7 +46,8 @@ public class PathService {
                 .collect(Collectors.toList());
 
         int distance = pathFinder.getWeight(sourceStation, targetStation);
-        return new PathResponse(stationResponses, distance, new Fare(distance, extraFare));
+        return new PathResponse(stationResponses, distance,
+                new Fare(distance, extraFare, DefaultFare.of(loginMember.getAge()).fare()));
     }
 
     private int getMaxExtraFare(List<Station> stations) {
@@ -65,7 +67,7 @@ public class PathService {
     private Line getMaxExtraSectionLine(List<Section> sections, Station prevStation, Station nextStation) {
         Section maxExtraFareSection = sections.stream()
                 .filter(section -> section.isSameSection(prevStation, nextStation))
-                .max(Comparator.comparing(section -> section.getLine().getExtraFare()))
+                .min(Comparator.comparing(section -> section.getLine().getExtraFare()))
                 .orElseThrow(() -> new NoSuchElementException("일치하는 구간이 없습니다."));
         return maxExtraFareSection.getLine();
     }
