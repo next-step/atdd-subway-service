@@ -52,8 +52,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMyInfo() {
         // given
-        회원_가입을_한다(EMAIL, PASSWORD, AGE);
-        TokenResponse token = 로그인을_한다(EMAIL, PASSWORD).as(TokenResponse.class);
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        TokenResponse token = 로그인_되어있음(EMAIL, PASSWORD).as(TokenResponse.class);
 
         // when
         ExtractableResponse<Response> myInfoResponse = 나의_정보_조회_요청(token);
@@ -88,7 +88,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_가입을_한다(String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
         return 회원_생성을_요청(email, password, age);
     }
 

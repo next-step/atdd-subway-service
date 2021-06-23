@@ -25,7 +25,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setup() {
         super.setUp();
-        회원_가입을_한다(EMAIL, PASSWORD, AGE);
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
     }
 
     @DisplayName("이메일과 비밀번호로 로그인을 한다.")
@@ -86,7 +86,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    public static ExtractableResponse<Response> 로그인을_한다(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_되어있음(String email, String password) {
         return 로그인_요청(email, password);
     }
 }
