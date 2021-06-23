@@ -23,7 +23,8 @@ public class AuthService {
         Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(AuthorizationException::new);
         member.checkPassword(request.getPassword());
 
-        String token = jwtTokenProvider.createToken(request.getEmail());
+        String payload = String.valueOf(member.getId());
+        String token = jwtTokenProvider.createToken(payload);
         return new TokenResponse(token);
     }
 
@@ -32,8 +33,9 @@ public class AuthService {
             throw new AuthorizationException();
         }
 
-        String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        String payLoad = jwtTokenProvider.getPayload(credentials);
+        long memberId = Long.parseLong(payLoad);
+        Member member = memberRepository.findById(memberId).orElseThrow(RuntimeException::new);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }
