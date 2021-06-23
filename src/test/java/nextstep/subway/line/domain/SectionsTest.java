@@ -3,8 +3,6 @@ package nextstep.subway.line.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,11 +68,11 @@ class SectionsTest {
         //given
         //when
         sections.addSection(new Section(line, upStation, downStation, new Distance(5)));
-        List<Station> stations = sections.getStations();
+        Stations stations = sections.getStations();
         //then
         assertThat(stations.size()).isEqualTo(2);
-        assertThat(stations.get(0)).isEqualTo(upStation);
-        assertThat(stations.get(1)).isEqualTo(downStation);
+        assertThat(stations.contain(upStation)).isTrue();
+        assertThat(stations.contain(downStation)).isTrue();
     }
 
     @DisplayName("역 제거")
@@ -86,11 +84,11 @@ class SectionsTest {
         sections.addSection(new Section(line, middleStation, downStation, new Distance(5)));
         //when
         sections.removeStation(line, downStation);
+        Stations stations = sections.getStations();
         //then
-        List<Station> stations = sections.getStations();
         assertThat(stations.size()).isEqualTo(2);
-        assertThat(stations.get(0)).isEqualTo(upStation);
-        assertThat(stations.get(1)).isEqualTo(middleStation);
+        assertThat(stations.contain(upStation)).isTrue();
+        assertThat(stations.contain(middleStation)).isTrue();
     }
 
     @DisplayName("역 제거 실패 - 구간이 하나")

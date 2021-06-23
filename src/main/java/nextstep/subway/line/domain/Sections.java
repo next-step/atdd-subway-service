@@ -34,9 +34,7 @@ public class Sections {
     }
 
     public List<StationResponse> stationResponse() {
-        return getStations().stream()
-                .map(Station::toResponse)
-                .collect(Collectors.toList());
+        return getStations().toResponse();
     }
 
     public int size() {
@@ -44,7 +42,7 @@ public class Sections {
     }
 
     public void addSection(Section newSection) {
-        List<Station> stations = getStations();
+        Stations stations = getStations();
         boolean isUpStationExisted = isExistUpStation(newSection);
         boolean isDownStationExisted = isExistDownStation(newSection);
 
@@ -81,12 +79,12 @@ public class Sections {
                 .ifPresent(section -> section.connectDownStation(newSection));
     }
 
-    public List<Station> getStations() {
+    public Stations getStations() {
         if (sections.isEmpty()) {
-            return Collections.emptyList();
+            return new Stations();
         }
 
-        List<Station> stations = new ArrayList<>();
+        Stations stations = new Stations();
         Station firstStation = findFirstStation();
         stations.add(firstStation);
 
