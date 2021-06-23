@@ -17,7 +17,7 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> values = new ArrayList<>();
 
-    public List<Station> getStations() {
+    public List<Station> getStationsInOrder() {
         if (values.isEmpty()) {
             return Collections.emptyList();
         }
@@ -63,5 +63,13 @@ public class Sections {
 
     public List<Section> values() {
         return values;
+    }
+
+    public void addSection(Section section) {
+        // TODO addSection
+    }
+
+    public void removeStation(Station station) {
+        // TODO removeStation
     }
 }
