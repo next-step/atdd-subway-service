@@ -8,7 +8,7 @@ import javax.persistence.OneToMany;
 import java.util.*;
 
 @Embeddable
-public class Sections implements Iterable<Section> {
+public class Sections {
 
     private static final int MIN_SECTIONS_SIZE = 1;
 
@@ -132,8 +132,4 @@ public class Sections implements Iterable<Section> {
         return downStation;
     }
 
-    @Override
-    public Iterator<Section> iterator() {
-        return sections.iterator();
-    }
 }
