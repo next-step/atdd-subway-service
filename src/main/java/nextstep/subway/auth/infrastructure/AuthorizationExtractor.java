@@ -25,4 +25,8 @@ public class AuthorizationExtractor {
 
         return null;
     }
+
+    public static String extractUri(HttpServletRequest request) {
+        return request.getRequestURI();
+    }
 }
