@@ -13,17 +13,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceRequest.로그인_요청_성공됨;
 import static nextstep.subway.line.acceptance.LineAcceptanceTestRequest.지하철_노선_생성_요청_및_검증;
-import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestRequest.지하철_노선에_지하철역_등록_요청_및_확인;
-import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestRequest.지하철_노선에_지하철역_순서_정렬됨;
 import static nextstep.subway.member.MemberAcceptanceTestRequest.회원_생성됨;
 import static nextstep.subway.member.MemberAcceptanceTestRequest.회원_생성을_요청;
-import static nextstep.subway.path.acceptance.PathAcceptanceTestRequest.지하철_최단거리_요청_및_실패;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestRequest.지하철_최단거리_요청_및_확인;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 

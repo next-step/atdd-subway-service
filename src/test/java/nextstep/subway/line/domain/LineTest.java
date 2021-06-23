@@ -1,9 +1,9 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.wrapped.Distance;
 import nextstep.subway.line.dto.StationResponses;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.wrapped.Distance;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

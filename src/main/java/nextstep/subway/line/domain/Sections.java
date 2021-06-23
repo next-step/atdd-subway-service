@@ -1,9 +1,8 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.exception.LineHasNotExistSectionException;
-import nextstep.subway.exception.LineHasNotExistStationException;
-import nextstep.subway.wrapped.Distance;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.wrapped.Distance;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;

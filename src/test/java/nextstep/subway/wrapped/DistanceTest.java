@@ -1,6 +1,5 @@
 package nextstep.subway.wrapped;
 
-import nextstep.subway.wrapped.Distance;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

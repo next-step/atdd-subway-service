@@ -1,7 +1,5 @@
 package nextstep.subway.path.acceptance;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthToken;
 import nextstep.subway.auth.dto.TokenRequest;
@@ -19,13 +17,10 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceRequest.로그인_요청_및_전체_검증;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceRequest.로그인_요청_성공됨;
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.등록된_계정_토큰_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTestRequest.지하철_노선_생성_요청_및_검증;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestRequest.지하철_노선에_지하철역_등록_요청_및_확인;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestRequest.지하철_노선에_지하철역_순서_정렬됨;
-import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static nextstep.subway.member.MemberAcceptanceTestRequest.회원_생성됨;
 import static nextstep.subway.member.MemberAcceptanceTestRequest.회원_생성을_요청;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestRequest.지하철_최단거리_요청_및_실패;
