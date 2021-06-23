@@ -17,7 +17,9 @@ public class DistanceCalculator {
             )
     );
 
-    public static Money calcDistance(Distance distance, Money money) {
+    public static Money calcDistance(Distance distance) {
+        Money money = new Money(0);
+
         for (DistancePremiumPolicy premiumPolicy : distancePremiumPolicies) {
             money = calcFareIfSupported(premiumPolicy, distance, money);
         }
