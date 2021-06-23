@@ -4,7 +4,6 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.util.Objects;
 
 @Embeddable
 public class SectionDistance extends DefaultWeightedEdge {
@@ -49,10 +48,5 @@ public class SectionDistance extends DefaultWeightedEdge {
         if (o == null || getClass() != o.getClass()) return false;
         SectionDistance distance1 = (SectionDistance) o;
         return getDistance() == distance1.getDistance();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getDistance());
     }
 }
