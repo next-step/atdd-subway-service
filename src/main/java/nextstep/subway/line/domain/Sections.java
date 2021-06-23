@@ -65,9 +65,6 @@ public class Sections {
             sections.add(section);
             return;
         }
-        if (sections.contains(section)) {
-            return;
-        }
 
         List<Station> stations = getSortedStation();
         boolean isUpStationExisted = validateUpStation(stations, section.getUpStation());

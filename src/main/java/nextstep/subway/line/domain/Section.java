@@ -24,16 +24,17 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
-    public Section() {
+    protected Section() {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = Distance.ofValue(distance);
     }
 
     public Long getId() {
@@ -52,24 +53,24 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
+    public void updateUpStation(Station station, Distance newDistance) {
+        if (distance.isSameOrShorterThan(newDistance)) {
             throw new IllegalArgumentException(Message.ERROR_INPUT_DISTANCE_SHOULD_BE_LESS_THAN_EXISTING_DISTANCE.showText());
         }
         this.upStation = station;
-        this.distance -= newDistance;
+        distance.minus(newDistance);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
+    public void updateDownStation(Station station, Distance newDistance) {
+        if (distance.isSameOrShorterThan(newDistance)) {
             throw new IllegalArgumentException(Message.ERROR_INPUT_DISTANCE_SHOULD_BE_LESS_THAN_EXISTING_DISTANCE.showText());
         }
         this.downStation = station;
-        this.distance -= newDistance;
+        distance.minus(newDistance);
     }
 
     public boolean hasDownStationSameWith(Station station) {
@@ -82,7 +83,12 @@ public class Section {
 
     public void addLine(Line line) {
         this.line = line;
-        line.newGetSections().add(this);
+        line.getSections().add(this);
+    }
+
+    public void removeConnectionWith(Section upSection) {
+        this.upStation = upSection.getUpStation();
+        distance.plus(upSection.getDistance());
     }
 
     @Override
@@ -94,7 +100,7 @@ public class Section {
             return false;
         }
         Section section = (Section) o;
-        return distance == section.distance
+        return Objects.equals(distance, section.distance)
                 && Objects.equals(id, section.id)
                 && Objects.equals(line, section.line)
                 && Objects.equals(upStation, section.upStation)
@@ -104,10 +110,5 @@ public class Section {
     @Override
     public int hashCode() {
         return Objects.hash(id, line, upStation, downStation, distance);
-    }
-
-    public void removeConnectionWith(Section upSection) {
-        this.upStation = upSection.getUpStation();
-        this.distance += upSection.getDistance();
     }
 }

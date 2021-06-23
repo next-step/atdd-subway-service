@@ -2,6 +2,7 @@ package nextstep.subway.line.acceptance;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,7 +56,8 @@ class LineTest {
         사호선.addSection(firstSection);
 
         //Then
-        assertThat(사호선.getSections()).containsExactly(firstSection);
+        Sections sections = 사호선.getSections();
+        assertThat(sections.getSections()).containsExactly(firstSection);
     }
 
     @DisplayName("노선에서 구간 제거")
@@ -72,7 +74,7 @@ class LineTest {
         사호선.removeStation(회현역);
 
         //Then
-        assertThat(사호선.getSections()).contains(firstSection);
-        assertThat(사호선.getSections().get(0).getDistance()).isEqualTo(30);
+        Sections sections = 사호선.getSections();
+        assertThat(sections.getSections()).contains(firstSection);
     }
 }
