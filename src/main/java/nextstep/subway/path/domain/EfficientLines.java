@@ -9,6 +9,7 @@ import nextstep.subway.wrapped.Money;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class EfficientLines {
     private final List<Line> lines;
@@ -18,20 +19,19 @@ public class EfficientLines {
     }
 
     public Line findCheapAndShortestBy(StationPair stationPair) {
-        List<Line> sectionContainLines = getLinesContainsBy(stationPair);
+        List<Line> sectionContainLines = findLinesContainsBy(stationPair);
 
         Distance minimumDistance = getShortestDistanceBy(stationPair, sectionContainLines);
 
         Money minimumMoney = getCheapBy(stationPair, sectionContainLines, minimumDistance);
 
-        return sectionContainLines.stream()
-                .filter(item -> item.findSectionBy(stationPair).getDistance() == minimumDistance)
+        return findContainsShortestStation(sectionContainLines, stationPair, minimumDistance)
                 .filter(item -> item.getMoney() == minimumMoney)
                 .findFirst()
                 .orElseThrow(NoRouteException::new);
     }
 
-    private List<Line> getLinesContainsBy(StationPair stationPair) {
+    private List<Line> findLinesContainsBy(StationPair stationPair) {
         List<Line> lines = this.lines.stream()
                 .filter(item -> item.containsSection(stationPair))
                 .collect(Collectors.toList());
@@ -39,20 +39,24 @@ public class EfficientLines {
         return lines;
     }
 
-    private Distance getShortestDistanceBy(StationPair stationPair, List<Line> collect) {
-        Distance minimumDistance = collect.stream()
+    private Distance getShortestDistanceBy(StationPair stationPair, List<Line> sectionContainLines) {
+        Distance minimumDistance = sectionContainLines.stream()
                 .map(item -> item.getSectionDistanceBy(stationPair))
                 .min(Distance::compareTo)
                 .orElseThrow(NoRouteException::new);
         return minimumDistance;
     }
 
-    private Money getCheapBy(StationPair stationPair, List<Line> collect, Distance minimumDistance) {
-        Money minimumMoney = collect.stream()
-                .filter(item -> item.getSectionDistanceBy(stationPair) == minimumDistance)
+    private Money getCheapBy(StationPair stationPair, List<Line> sectionContainLines, Distance minimumDistance) {
+        Money minimumMoney = findContainsShortestStation(sectionContainLines, stationPair, minimumDistance)
                 .map(item -> item.getMoney())
                 .min(Money::compareTo)
                 .orElseThrow(NoRouteException::new);
         return minimumMoney;
+    }
+
+    private Stream<Line> findContainsShortestStation(List<Line> sectionContainLines, StationPair stationPair, Distance minimumDistance) {
+        return sectionContainLines.stream()
+                .filter(item -> item.getSectionDistanceBy(stationPair) == minimumDistance);
     }
 }
