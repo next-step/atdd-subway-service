@@ -99,4 +99,32 @@ class SectionsTest {
                 () -> sections.removeLineStation(잠실역)
         ).isInstanceOf(RuntimeException.class);
     }
+
+    @DisplayName("역을 전달하여 동일한 구간인지 확인하자")
+    @Test
+    void isSameSection() {
+        Station 강남역 = new Station("강남역");
+        Station 삼성역 = new Station("삼성역");
+
+
+        Section 구간 = new Section(강남역, 삼성역, 100);
+
+        assertTrue(구간.isSameSection(강남역, 삼성역));
+        assertTrue(구간.isSameSection(삼성역, 강남역));
+    }
+
+    @DisplayName("역을 전달하여 동일하지않은 구간인지 확인하자")
+    @Test
+    void isDiffSection() {
+        Station 강남역 = new Station("강남역");
+        Station 삼성역 = new Station("삼성역");
+        Station 잠실역 = new Station("잠실역");
+
+
+        Section 구간 = new Section(강남역, 삼성역, 100);
+
+        assertFalse(구간.isSameSection(강남역, 잠실역));
+        assertFalse(구간.isSameSection(삼성역, 잠실역));
+    }
+
 }
