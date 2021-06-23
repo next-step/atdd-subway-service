@@ -1,6 +1,6 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.line.domain.wrapped.Distance;
+import nextstep.subway.wrapped.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;

@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.line.domain.wrapped.Distance;
+import nextstep.subway.wrapped.Distance;
 import nextstep.subway.line.domain.wrapped.LineColor;
 import nextstep.subway.line.domain.wrapped.LineName;
 import nextstep.subway.station.domain.Station;

@@ -5,7 +5,7 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.domain.*;
-import nextstep.subway.line.domain.wrapped.Distance;
+import nextstep.subway.wrapped.Distance;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
