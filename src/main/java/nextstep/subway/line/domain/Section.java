@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,7 +16,6 @@ public class Section extends BaseEntity {
 
     public static final String UP_AND_DOWN_STATIONS_CANNOT_BE_THE_SAME = "구간의 상행역과 하행역은 같을 수 없습니다.";
     public static final String DISTANCE_MUST_BE_AT_LEAST_MIN_DISTANCE = "거리는 %d 이상이어야 합니다.";
-    public static final String CANNOT_ADD_SECTION_GREATER_THAN_OR_EQUAL_DISTANCE = "기존 역 사이 길이보다 크거나 같은 구간은 추가할 수 없습니다.";
     public static final int MIN_DISTANCE = 0;
 
     @Id
@@ -34,9 +34,14 @@ public class Section extends BaseEntity {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
+    }
+
+    public Section(Station upStation, Station downStation, int distance) {
+        this(null, upStation, downStation, distance);
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
@@ -45,7 +50,7 @@ public class Section extends BaseEntity {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = new Distance(distance);
     }
 
     private void validationDistance(int distance) {
@@ -76,29 +81,22 @@ public class Section extends BaseEntity {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
+    public int getDistanceWeight() {
+        return distance.getValue();
+    }
+
+    public void updateUpStation(Station station, Distance newDistance) {
         this.upStation = station;
-        minusDistance(newDistance);
+        distance = distance.minus(newDistance);
     }
 
-    protected void minusDistance(int distance) {
-        if (isShortEqualThan(distance)) {
-            throw new IllegalArgumentException(CANNOT_ADD_SECTION_GREATER_THAN_OR_EQUAL_DISTANCE);
-        }
-        this.distance -= distance;
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
+    public void updateDownStation(Station station, Distance newDistance) {
         this.downStation = station;
-        plusDistance(newDistance);
-    }
-
-    protected void plusDistance(int distance) {
-        this.distance += distance;
+        distance = distance.plus(newDistance);
     }
 
     protected boolean isBefore(Section section) {
@@ -138,11 +136,18 @@ public class Section extends BaseEntity {
         return downStation.equals(station);
     }
 
-    private boolean isShortEqualThan(int distance) {
-        return this.distance <= distance;
-    }
-
     public void toLine(Line line) {
         this.line = line;
+    }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+            "id=" + id +
+            ", line=" + line +
+            ", upStation=" + upStation +
+            ", downStation=" + downStation +
+            ", distance=" + distance +
+            '}';
     }
 }

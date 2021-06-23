@@ -2,6 +2,8 @@ package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,6 +17,7 @@ import nextstep.subway.station.domain.Station;
 @Embeddable
 public class Sections {
 
+    public static final String SECTIONS_CANNOT_BE_NULL = "구간목록은 최소1개 이상이어야 합니다.";
     public static final String SECTION_ALREADY_EXISTS = "이미 상행역과 하행역으로 연결되는 구간이 등록되어 있습니다.";
     public static final String THERE_IS_NO_STATION_INCLUDED_BETWEEN_UP_AND_DOWN_STATIONS = "상행역과 하행역 둘중 포함되는 역이 없습니다.";
     public static final int ZERO = 0;
@@ -24,6 +27,13 @@ public class Sections {
     private List<Section> sections = new ArrayList<>();
 
     public Sections() {
+    }
+
+    public Sections(List<Section> sections) {
+        if (sections == null) {
+            throw new IllegalArgumentException(SECTIONS_CANNOT_BE_NULL);
+        }
+        this.sections = sections;
     }
 
     public boolean add(Section newSection) {
@@ -69,21 +79,16 @@ public class Sections {
     }
 
     public List<Station> findStationsInOrder() {
-        List<Station> results = new ArrayList<>();
-        Optional<Section> optionalSection = findFirstSection();
-
-        //첫번째 구간 찾기
-        if (optionalSection.isPresent()) {
-            Section firstSection = optionalSection.get();
-            List<Section> sortSections = new ArrayList<>(Arrays.asList(firstSection));
-
-            //재귀호출하여 구간 이어붙히기
-            recursiveSort(sortSections, firstSection);
-
-            //정렬된 역 목록 만들어서 반환하기
-            results.add(firstSection.getUpStation());
-            results.addAll(getDownStations(sortSections));
+        Section firstSection = findFirstSection();
+        if (firstSection == null) {
+            return new ArrayList<>();
         }
+        List<Section> sortSections = new ArrayList<>(Arrays.asList(firstSection));
+        recursiveSort(sortSections, firstSection);
+
+        List<Station> results = new ArrayList<>();
+        results.add(firstSection.getUpStation());
+        results.addAll(getDownStations(sortSections));
         return results;
     }
 
@@ -92,18 +97,16 @@ public class Sections {
             .filter(section -> section.isAfter(beforeSection))
             .findFirst()
             .ifPresent(section -> {
-                //뒤에 붙히기
                 sortSections.add(section);
-
-                //재귀호출
                 recursiveSort(sortSections, section);
             });
     }
 
-    private Optional<Section> findFirstSection() {
+    private Section findFirstSection() {
         return sections.stream()
             .filter(this::notExistPrevious)
-            .findFirst();
+            .findFirst()
+            .orElse(null);
     }
 
     private boolean notExistPrevious(Section dest) {
@@ -169,5 +172,9 @@ public class Sections {
         return foundSections.stream()
             .filter(section -> station.equals(section.getUpStation()))
             .findFirst();
+    }
+
+    public List<Section> getSections() {
+        return Collections.unmodifiableList(sections);
     }
 }

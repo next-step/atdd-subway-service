@@ -1,26 +1,30 @@
 package nextstep.subway.station;
 
-import io.restassured.RestAssured;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.AcceptanceTest;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import nextstep.subway.AcceptancePerMethodTest;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 관련 기능")
-public class StationAcceptanceTest extends AcceptanceTest {
+public class StationAcceptanceTest extends AcceptancePerMethodTest {
+
     private static final String 강남역 = "강남역";
-    private static final String 역삼역 = "역삼역";
+    public static final String 역삼역 = "역삼역";
+    public static final String 애오개역 = "애오개역";
+    public static final String 충정로역 = "충정로역";
+    public static final String 서대문역 = "서대문역";
+    public static final String 광화문역 = "광화문역";
+    public static final String 여의도역 = "여의도역";
+    public static final String 여의나루역 = "여의나루역";
 
     @DisplayName("지하철역을 생성한다.")
     @Test
@@ -78,33 +82,15 @@ public class StationAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
-        StationRequest stationRequest = new StationRequest(name);
-
-        return RestAssured
-                .given().log().all()
-                .body(stationRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/stations")
-                .then().log().all()
-                .extract();
+        return post(new StationRequest(name), "/stations");
     }
 
     public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
-        return RestAssured
-                .given().log().all()
-                .when().get("/stations")
-                .then().log().all()
-                .extract();
+        return get("/stations");
     }
 
     public static ExtractableResponse<Response> 지하철역_제거_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
-
-        return RestAssured
-                .given().log().all()
-                .when().delete(uri)
-                .then().log().all()
-                .extract();
+        return delete(response.header("Location"));
     }
 
     public static void 지하철역_생성됨(ExtractableResponse response) {
@@ -126,12 +112,12 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
         List<Long> expectedLineIds = createdResponses.stream()
-                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-                .collect(Collectors.toList());
+            .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
+            .collect(Collectors.toList());
 
         List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
-                .map(StationResponse::getId)
-                .collect(Collectors.toList());
+            .map(StationResponse::getId)
+            .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
