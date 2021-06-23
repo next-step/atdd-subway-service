@@ -34,8 +34,8 @@ class LineTest {
         Section firstSection = new Section(사호선, 회현역, 명동역, 30);
         Section secondSection = new Section(사호선, 서울역, 회현역, 30);
 
-        사호선.getSections().add(firstSection);
-        사호선.getSections().add(secondSection);
+        사호선.addSection(firstSection);
+        사호선.addSection(secondSection);
 
         //When
         List<Station> expectedStations = 사호선.getSortedStation();
@@ -52,10 +52,9 @@ class LineTest {
         Section firstSection = new Section(사호선, 회현역, 명동역, 30);
 
         //When
-        사호선.getSections().add(firstSection);
+        사호선.addSection(firstSection);
 
         //Then
         assertThat(사호선.getSections()).containsExactly(firstSection);
-
     }
 }
