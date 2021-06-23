@@ -1,7 +1,7 @@
 package nextstep.subway.member.ui;
 
-import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.application.AuthService;
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.dto.MemberRequest;
@@ -13,10 +13,12 @@ import java.net.URI;
 
 @RestController
 public class MemberController {
-    private MemberService memberService;
+    private final MemberService memberService;
+    private final AuthService authService;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, AuthService authService) {
         this.memberService = memberService;
+        this.authService = authService;
     }
 
     @PostMapping("/members")
@@ -44,8 +46,15 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(LoginMember loginMember) {
-        MemberResponse member = memberService.findMember(loginMember.getId());
+    public ResponseEntity<MemberResponse> findMemberOfMine(
+            @RequestHeader("Authorization") String auth) {
+
+        if (!auth.startsWith("Bearer")) {
+            throw new AuthorizationException("유효한 토큰이 아닙니다");
+        }
+
+        LoginMember token = authService.findMemberByToken(auth.split(" ")[1]);
+        MemberResponse member = memberService.findMember(token.getId());
         return ResponseEntity.ok().body(member);
     }
 
@@ -60,4 +69,8 @@ public class MemberController {
         memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }
+
+
+
+
 }

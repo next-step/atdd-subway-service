@@ -72,9 +72,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 3단계 - 인증을 통한 기능 구현
 
-- [ ] 토큰 발급
-  - [ ] 토큰 발급 인수 테스트 작성
-  - [ ] 토근 발급 기능 구현
+- [x] 토큰 발급
+  - [x] 토큰 발급 인수 테스트 작성
+  - [x] 토근 발급 기능 구현
 - [ ] 내 정보 조회 기능
   - [ ] 내 정보 조회 기능 인수 테스트 작성
   - [ ] 내 정보 조회 기능 기능 구현
