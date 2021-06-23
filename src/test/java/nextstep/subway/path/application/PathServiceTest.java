@@ -43,7 +43,7 @@ class PathServiceTest {
     PathResponse 최단거리응답 = 최단경로서비스.findShortestPath(교대역.getId(), 양재역.getId());
 
     //then
-    assertThat(최단거리응답).isEqualTo(new PathResponse(Arrays.asList(StationResponse.of(교대역), StationResponse.of(남부터미널역), StationResponse.of(양재역)), 5D));
+    assertThat(최단거리응답).isEqualTo(new PathResponse(Arrays.asList(StationResponse.of(교대역), StationResponse.of(남부터미널역), StationResponse.of(양재역)), 5D, 1_250));
   }
 
   @DisplayName("기존 최단거리역이 제거되었을 때")
@@ -58,7 +58,7 @@ class PathServiceTest {
     PathResponse 최단거리응답 = 최단경로서비스.findShortestPath(교대역.getId(), 양재역.getId());
 
     //then
-    assertThat(최단거리응답).isEqualTo(new PathResponse(Arrays.asList(StationResponse.of(교대역), StationResponse.of(강남역), StationResponse.of(양재역)), 20D));
+    assertThat(최단거리응답).isEqualTo(new PathResponse(Arrays.asList(StationResponse.of(교대역), StationResponse.of(강남역), StationResponse.of(양재역)), 20D, 1_450));
   }
 
   @DisplayName("출발역과 도착역을 같은 역으로 조회")
@@ -73,7 +73,7 @@ class PathServiceTest {
     PathResponse 최단거리응답 = 최단거리서비스.findShortestPath(교대역.getId(), 교대역.getId());
 
     //then
-    assertThat(최단거리응답).isEqualTo(new PathResponse(Arrays.asList(StationResponse.of(교대역)), 0D));
+    assertThat(최단거리응답).isEqualTo(new PathResponse(Arrays.asList(StationResponse.of(교대역)), 0D, 0));
   }
 
   @DisplayName("연결되지 않은 역과의 최단거리를 조회")

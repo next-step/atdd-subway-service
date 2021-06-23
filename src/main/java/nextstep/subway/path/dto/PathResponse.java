@@ -11,10 +11,12 @@ public class PathResponse {
 
   private final List<StationResponse> stations;
   private final Double distance;
+  private final long requireFee;
 
-  public PathResponse(List<StationResponse> stations, Double distance) {
+  public PathResponse(List<StationResponse> stations, Double distance, long requireFee) {
     this.stations = stations;
     this.distance = distance;
+    this.requireFee = requireFee;
   }
 
   public static PathResponse from(Path shortestPath) {
@@ -22,7 +24,7 @@ public class PathResponse {
                                             .stream()
                                             .map(StationResponse::of)
                                             .collect(Collectors.toList());
-    return new PathResponse(stationResponses, shortestPath.getDistance());
+    return new PathResponse(stationResponses, shortestPath.getDistance(), 0);
   }
 
   public List<StationResponse> getStations() {
@@ -31,6 +33,10 @@ public class PathResponse {
 
   public Double getDistance() {
     return distance;
+  }
+
+  public long getRequireFee() {
+    return requireFee;
   }
 
   @Override
