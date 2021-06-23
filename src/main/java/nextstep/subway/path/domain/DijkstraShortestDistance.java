@@ -49,7 +49,7 @@ public class DijkstraShortestDistance implements ShortestDistance {
         List<StationPair> stationPair = stations.getSectionPair();
 
         return new Lines(stationPair.stream()
-                .map(item -> lines.findShortestSectionBy(item))
+                .map(item -> lines.findCheapAndShortestBy(item))
                 .collect(Collectors.toList()));
     }
 

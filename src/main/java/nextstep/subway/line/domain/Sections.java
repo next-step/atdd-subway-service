@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.LineHasNotExistSectionException;
 import nextstep.subway.exception.LineHasNotExistStationException;
 import nextstep.subway.wrapped.Distance;
 import nextstep.subway.station.domain.Station;
@@ -131,10 +132,6 @@ public class Sections {
                 .anyMatch(predicate);
     }
 
-    public List<Section> toCollection() {
-        return Collections.unmodifiableList(sections);
-    }
-
     public boolean containsSection(StationPair stationPair) {
         boolean matched = sections.stream()
                 .anyMatch(item -> item.hasStationIgnoreDirection(stationPair));
@@ -142,12 +139,16 @@ public class Sections {
         return matched;
     }
 
-    public Distance getSectionDistanceOf(StationPair stationPair) {
+    public Section findSectionBy(StationPair stationPair) {
         Section section = sections.stream()
                 .filter(item -> item.hasStationIgnoreDirection(stationPair))
                 .findFirst()
-                .orElseThrow(LineHasNotExistStationException::new);
+                .orElseThrow(LineHasNotExistSectionException::new);
 
-        return section.getDistance();
+        return section;
+    }
+
+    public List<Section> toCollection() {
+        return Collections.unmodifiableList(sections);
     }
 }

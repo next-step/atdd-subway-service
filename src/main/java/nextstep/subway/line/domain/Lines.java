@@ -31,25 +31,25 @@ public class Lines {
                 .orElseThrow(NotExistMinimumFareLine::new);
     }
 
-    public Line findShortestSectionBy(StationPair stationPair) {
+    public Line findCheapAndShortestBy(StationPair stationPair) {
         List<Line> collect = lines.stream()
                 .filter(item -> item.containsSection(stationPair))
                 .collect(Collectors.toList());
 
         Distance minimumDistance = collect.stream()
-                .map(item -> item.getSectionDistanceOf(stationPair))
+                .map(item -> item.findSectionBy(stationPair).getDistance())
                 .min(Distance::compareTo)
                 .orElseThrow(NoRouteException::new);
 
         Money minimumMoney = collect.stream()
-                .filter(item -> item.getSectionDistanceOf(stationPair) == minimumDistance)
+                .filter(item -> item.findSectionBy(stationPair).getDistance() == minimumDistance)
                 .map(item -> item.getMoney())
                 .min(Money::compareTo)
                 .orElseThrow(NoRouteException::new);
 
 
         return collect.stream()
-                .filter(item -> item.getSectionDistanceOf(stationPair) == minimumDistance)
+                .filter(item -> item.findSectionBy(stationPair).getDistance() == minimumDistance)
                 .filter(item -> item.getMoney().equals(minimumMoney))
                 .findFirst()
                 .orElseThrow(NoRouteException::new);
