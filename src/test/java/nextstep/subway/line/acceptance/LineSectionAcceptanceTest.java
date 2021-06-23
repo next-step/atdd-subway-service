@@ -50,8 +50,8 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
         // then
         ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-        지하철_노선에_지하철역_등록됨(response);
-        지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 양재역, 광교역));
+        지하철_노선_조회됨(response, Arrays.asList(강남역, 양재역, 광교역));
+
     }
 
     @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
@@ -62,9 +62,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 강남역, 5);
 
         // then
-        ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-        지하철_노선에_지하철역_등록됨(response);
-        지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(정자역, 강남역, 양재역, 광교역));
+        지하철_노선_조회됨(LineAcceptanceTest.지하철_노선_조회_요청(신분당선), Arrays.asList(정자역, 강남역, 양재역, 광교역));
     }
 
     @DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
@@ -98,9 +96,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
 
         // then
-        지하철_노선에_지하철역_제외됨(removeResponse);
-        ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-        지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 정자역, 광교역));
+        지하철_노선에_지하철역_제외된_구간_조회됨(removeResponse, 신분당선, Arrays.asList(강남역, 정자역, 광교역));
     }
 
     @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
@@ -123,6 +119,11 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
                 .when().post("/lines/{lineId}/sections", line.getId())
                 .then().log().all()
                 .extract();
+    }
+
+    private void 지하철_노선_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
+        지하철_노선에_지하철역_등록됨(response);
+        지하철_노선에_지하철역_순서_정렬됨(response, expectedStations);
     }
 
     public static void 지하철_노선에_지하철역_등록됨(ExtractableResponse<Response> response) {
@@ -161,4 +162,10 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
+
+    private static void 지하철_노선에_지하철역_제외된_구간_조회됨(ExtractableResponse<Response> removeResponse, LineResponse line, List<StationResponse> stations) {
+        지하철_노선에_지하철역_제외됨(removeResponse);
+        지하철_노선에_지하철역_순서_정렬됨(LineAcceptanceTest.지하철_노선_조회_요청(line), stations);
+    }
+
 }
