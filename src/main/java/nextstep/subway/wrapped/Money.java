@@ -6,7 +6,7 @@ import java.util.Objects;
 import static java.lang.String.format;
 
 @Embeddable
-public class Money {
+public class Money implements Comparable<Money> {
     private static final int MINIMUM_MONEY = 0;
 
     private int money;
@@ -43,6 +43,10 @@ public class Money {
         return new Money(this.money / money.money);
     }
 
+    public int toInt() {
+        return money;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -56,7 +60,8 @@ public class Money {
         return Objects.hash(money);
     }
 
-    public int toInt() {
-        return money;
+    @Override
+    public int compareTo(Money o) {
+        return Integer.compare(this.money, o.money);
     }
 }

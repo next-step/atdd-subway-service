@@ -1,6 +1,8 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.NotExistMinimumFareLine;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.wrapped.Money;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,5 +19,12 @@ public class Lines {
                 .anyMatch(item -> item.containsStationsExactly(stations));
 
         return containsStations;
+    }
+
+    public Money findMinimumFare() {
+        return lines.stream()
+                .map(Line::getMoney)
+                .min(Money::compareTo)
+                .orElseThrow(NotExistMinimumFareLine::new);
     }
 }
