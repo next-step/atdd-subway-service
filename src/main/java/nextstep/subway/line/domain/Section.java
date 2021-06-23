@@ -107,4 +107,14 @@ public class Section {
         this.downStation = newSection.upStation;
         this.distance = distance.diff(newSection.distance);
     }
+
+    public void updateUpStation(Section newSection) {
+        this.upStation = newSection.downStation;
+        this.distance = distance.diff(newSection.distance);
+    }
+
+    public void updateDownStation(Section newSection) {
+        this.upStation = newSection.downStation;
+        this.distance = distance.diff(newSection.distance);
+    }
 }
