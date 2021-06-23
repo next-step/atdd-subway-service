@@ -33,4 +33,11 @@ class FareTest {
         assertThat(fare.getFare()).isEqualTo(totalFare);
     }
 
+    @DisplayName("추가운임이 존재할때 요금")
+    @CsvSource(value = {"1:900:2150", "5:500:1750", "10:0:1250"}, delimiter = ':')
+    @ParameterizedTest
+    void extraFare(int distance, int extraFare, int totalFare) {
+        Fare fare = new Fare(distance, extraFare);
+        assertThat(fare.getFare()).isEqualTo(totalFare);
+    }
 }
