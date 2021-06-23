@@ -59,7 +59,7 @@ public class Sections {
         Optional<Section> downSection = findDownSection(station);
 
         if (upSection.isPresent() && downSection.isPresent()) {
-            addMergeSections(line, upSection, downSection);
+            addMergeSections(line, upSection.get(), downSection.get());
         }
 
         upSection.ifPresent(it -> sections.remove(it));
@@ -75,10 +75,10 @@ public class Sections {
         }
     }
 
-    private void addMergeSections(Line line, Optional<Section> upSection, Optional<Section> downSection) {
-        Station newUpStation = upSection.get().getUpStation();
-        Station newDownStation = downSection.get().getDownStation();
-        int newDistance = upSection.get().getDistance() + downSection.get().getDistance();
+    private void addMergeSections(Line line, Section upSection, Section downSection) {
+        Station newUpStation = upSection.getUpStation();
+        Station newDownStation = downSection.getDownStation();
+        int newDistance = upSection.getDistance() + downSection.getDistance();
         sections.add(new Section(line, newUpStation, newDownStation, newDistance));
     }
 
