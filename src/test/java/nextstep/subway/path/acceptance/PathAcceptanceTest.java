@@ -1,20 +1,24 @@
-package nextstep.subway.path;
+package nextstep.subway.path.acceptance;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceStep.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceStep.지하철_노선에_지하철역_등록되어_있음;
-import static nextstep.subway.path.PathAcceptanceStep.지하철_최단_경로_조회_요청;
-import static nextstep.subway.path.PathAcceptanceStep.지하철_최단_경로_확인;
+import static nextstep.subway.path.acceptance.PathAcceptanceStep.*;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 경로 조회")
 class PathAcceptanceTest extends AcceptanceTest {
@@ -56,12 +60,15 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void path() {
         // given
-        List<StationResponse> expected = Arrays.asList(강남역, 양재역, 남부터미널역);
+        List<StationResponse> expectedStations = Arrays.asList(강남역, 양재역, 남부터미널역);
+        int expectedDistance = 12;
+        PathResponse expected = new PathResponse(expectedStations, expectedDistance);
 
         // When
-        List<StationResponse> 지하철_최단_경로_조회_요청_결과 = 지하철_최단_경로_조회_요청(강남역.getId(), 남부터미널역.getId());
+        ExtractableResponse<Response> 지하철_최단_경로_조회_요청_결과 = 지하철_최단_경로_조회_요청(강남역.getId(), 남부터미널역.getId());
 
         // Then
-        지하철_최단_경로_확인(지하철_최단_경로_조회_요청_결과, expected);
+        지하철_최단_경로_응답됨(지하철_최단_경로_조회_요청_결과);
+        지하철_최단_경로_확인(지하철_최단_경로_조회_요청_결과.as(PathResponse.class), expected);
     }
 }
