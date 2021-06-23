@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,15 +19,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("로그인 기능")
 public class AuthAcceptanceTest extends AcceptanceTest {
 
-    private String email = "joenggyu0@gmail.com";
-    private String password = "password";
+    private final String email = "joenggyu0@gmail.com";
+    private final String password = "password";
+    private final int age = 30;
+
     private TokenRequest request;
 
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
-        회원_생성을_요청(email, password, 30);
+        회원_생성을_요청(email, password, age);
         request = new TokenRequest(email, password);
     }
 
@@ -35,7 +38,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithBearerAuth() {
         ExtractableResponse<Response> response = 토큰을_요청한다(request);
         정상적으로_동작됨(response);
-        정상적으로_동작됨(토큰으로_로그인_요청함(response.as(TokenResponse.class)));
+        정상적으로_로그인됨(토큰으로_로그인_요청함(response.as(TokenResponse.class)));
 
     }
 
@@ -49,7 +52,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("토큰으로 로그인을 시도한다")
     @Test
     void tokenTest() {
-        정상적으로_동작됨(토큰을_요청한다(request));
+        정상적으로_로그인됨(토큰을_요청한다(request));
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
@@ -64,6 +67,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     private void 정상적으로_동작됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private void 정상적으로_로그인됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        MemberResponse memberResponse = response.as(MemberResponse.class);
+        assertThat(memberResponse.getEmail()).isEqualTo(email);
+        assertThat(memberResponse.getAge()).isEqualTo(age);
     }
 
     private ExtractableResponse<Response> 토큰으로_로그인_요청함(TokenResponse tokenResponse) {
