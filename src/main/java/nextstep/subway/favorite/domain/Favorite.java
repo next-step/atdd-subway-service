@@ -59,7 +59,7 @@ public class Favorite {
 
 	public void checkCreator(Member creator) {
 		if (!isCreateBy(creator)) {
-			throw new IllegalArgumentException("즐겨찾기를 한 사람이 아닙니다.");
+			throw new FavoriteException("즐겨찾기를 한 사람이 아닙니다.");
 		}
 	}
 
@@ -69,13 +69,13 @@ public class Favorite {
 
 	private void validateNotNull(Member member, Station source, Station target) {
 		if (isNull(member) || isNull(source) || isNull(target)) {
-			throw new IllegalArgumentException();
+			throw new FavoriteException("즐겨찾기를 할 수 없습니다.");
 		}
 	}
 
 	private void validateNotEqual(Station source, Station target) {
 		if (source.equals(target)) {
-			throw new IllegalArgumentException("같은 시작역과 도착역을 즐겨찾기 할 수 없습니다.");
+			throw new FavoriteException("같은 시작역과 도착역을 즐겨찾기 할 수 없습니다.");
 		}
 	}
 }

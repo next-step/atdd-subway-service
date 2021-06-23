@@ -22,20 +22,20 @@ class FavoriteTest {
 	@Test
 	void createWithNullTest() {
 		assertThatThrownBy(() -> Favorite.of(null, 강남역, 광교역))
-			.isInstanceOf(IllegalArgumentException.class);
+			.isInstanceOf(FavoriteException.class);
 
 		assertThatThrownBy(() -> Favorite.of(자바지기, null, 광교역))
-			.isInstanceOf(IllegalArgumentException.class);
+			.isInstanceOf(FavoriteException.class);
 
 		assertThatThrownBy(() -> Favorite.of(자바지기, 강남역, null))
-			.isInstanceOf(IllegalArgumentException.class);
+			.isInstanceOf(FavoriteException.class);
 	}
 
 	@DisplayName("즐겨찾기의 시작역과 도착역은 같을 수 없다.")
 	@Test
 	void createWithEqualSourceAndTargetTest() {
 		assertThatThrownBy(() -> Favorite.of(자바지기, 강남역, 강남역))
-			.isInstanceOf(IllegalArgumentException.class)
+			.isInstanceOf(FavoriteException.class)
 			.hasMessageContaining("같은 시작역과 도착역을 즐겨찾기 할 수 없습니다.");
 	}
 
