@@ -1,6 +1,5 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.domain.age_policy.AgeFarePolicy;
 import nextstep.subway.path.domain.age_policy.BasicAgeFarePolicy;
 import nextstep.subway.path.domain.age_policy.ChildAgeFarePolicy;
@@ -9,6 +8,8 @@ import nextstep.subway.path.domain.distance_policy.BasicDistanceFarePolicy;
 import nextstep.subway.path.domain.distance_policy.DistanceFarePolicy;
 import nextstep.subway.path.domain.distance_policy.Over10KmDistanceFarePolicy;
 import nextstep.subway.path.domain.distance_policy.Over50KmDistanceFarePolicy;
+
+import java.util.Set;
 
 public class FareCalculator {
 
@@ -19,8 +20,8 @@ public class FareCalculator {
     }
 
     public FareCalculator(int distance, int age) {
-        ageFarePolicy = setAgeFarePolicy(age);
-        distanceFarePolicy = setDistanceFarePolicy(distance);
+        this.ageFarePolicy = setAgeFarePolicy(age);
+        this.distanceFarePolicy = setDistanceFarePolicy(distance);
     }
 
     private AgeFarePolicy setAgeFarePolicy(int age) {
@@ -48,7 +49,14 @@ public class FareCalculator {
     }
 
     public int calculate() {
-        int fare =  distanceFarePolicy.calculateByDistance();
+        int fare = distanceFarePolicy.calculateByDistance();
+        fare = ageFarePolicy.calculateByAge(fare);
+        return fare;
+    }
+
+    public int calculate(Set<Long> lineIds) {
+        int additionalFee = LineAdditionalFee.LINE_BUNDANG.maximumAdditionalFee(lineIds);
+        int fare = distanceFarePolicy.calculateByDistance() + additionalFee;
         fare = ageFarePolicy.calculateByAge(fare);
         return fare;
     }

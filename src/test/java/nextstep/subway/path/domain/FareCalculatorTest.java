@@ -3,11 +3,16 @@ package nextstep.subway.path.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FareCalculatorTest {
 
-    FareCalculator fareCalculator;
+    private FareCalculator fareCalculator;
+    private Set<Long> lineIds = new HashSet<>(Arrays.asList(1L, 3L, 4L));
 
     @Test
     @DisplayName("일반인 10km 이하")
@@ -28,6 +33,13 @@ public class FareCalculatorTest {
     void 일반인_50km_이상() {
         fareCalculator = new FareCalculator(67, 30);
         assertThat(fareCalculator.calculate()).isEqualTo(2350);
+    }
+
+    @Test
+    @DisplayName("일반인 10km 이하 추가금액 400원")
+    void 일반인_10km_이하_추가금액_400원() {
+        fareCalculator = new FareCalculator(5, 30);
+        assertThat(fareCalculator.calculate(lineIds)).isEqualTo(1650);
     }
 
     @Test
@@ -52,6 +64,13 @@ public class FareCalculatorTest {
     }
 
     @Test
+    @DisplayName("청소년 10km초과 50km 미만 추가금액 400원")
+    void 청소년_10km_초과_50km_미만_추가금액_400원() {
+        fareCalculator = new FareCalculator(26, 17);
+        assertThat(fareCalculator.calculate(lineIds)).isEqualTo(1360);
+    }
+
+    @Test
     @DisplayName("어린이 10km 이하")
     void 어린이_10km_이하() {
         fareCalculator = new FareCalculator(5, 8);
@@ -70,5 +89,12 @@ public class FareCalculatorTest {
     void 어린이_50km_이상() {
         fareCalculator = new FareCalculator(67, 8);
         assertThat(fareCalculator.calculate()).isEqualTo(1000);
+    }
+
+    @Test
+    @DisplayName("어린이 50km 이상 추가금액 400원")
+    void 어린이_50km_이상_추가금액_400원() {
+        fareCalculator = new FareCalculator(67, 8);
+        assertThat(fareCalculator.calculate(lineIds)).isEqualTo(1200);
     }
 }
