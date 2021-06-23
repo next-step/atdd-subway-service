@@ -75,6 +75,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertThat(pathResponse.jsonPath().getObject(".", PathResponse.class).getDistance())
                 .isEqualTo(15);
+
+        assertThat(pathResponse.jsonPath().getObject(".", PathResponse.class).getFare())
+                .isEqualTo(1750);
     }
 
     @DisplayName("출발역과 도착역이 같을 때")
