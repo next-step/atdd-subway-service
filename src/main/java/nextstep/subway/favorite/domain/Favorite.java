@@ -57,7 +57,13 @@ public class Favorite {
 		return target;
 	}
 
-	public boolean isCreateBy(Member creator) {
+	public void checkCreator(Member creator) {
+		if (!isCreateBy(creator)) {
+			throw new IllegalArgumentException("즐겨찾기를 한 사람이 아닙니다.");
+		}
+	}
+
+	boolean isCreateBy(Member creator) {
 		return this.creator.equals(creator);
 	}
 

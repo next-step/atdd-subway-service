@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 
@@ -56,11 +57,24 @@ class FavoriteServiceTest {
 			.isInstanceOf(IllegalArgumentException.class);
 	}
 
-	@DisplayName("즐겨찾기 목록은 회원 ID 기준으로 가지고 온다.")
+	@DisplayName("즐겨찾기 목록은 로그인 회원 기준으로 가지고 온다.")
 	@Test
-	void getListTest() {
+	void findFavoritesTest() {
+		when(memberRepository.findById(1L)).thenReturn(Optional.of(자바지기));
 		favoriteService.findFavorites(1L);
 
-		verify(favoriteRepository).findAllWithStationByCreatorId(1L);
+		verify(favoriteRepository).findAllWithStationByCreator(자바지기);
+	}
+
+	@DisplayName("즐겨찾기를 한 사람이 아니면 지울 수 없다.")
+	@Test
+	void deleteFavoriteTest() {
+		Favorite favorite = mock(Favorite.class);
+		doThrow(IllegalArgumentException.class).when(favorite).checkCreator(자바지기);
+		when(favoriteRepository.findById(1L)).thenReturn(Optional.of(favorite));
+		when(memberRepository.findById(1L)).thenReturn(Optional.of(자바지기));
+
+		assertThatThrownBy(() -> favoriteService.deleteFavorite(1L, 1L))
+			.isInstanceOf(IllegalArgumentException.class);
 	}
 }

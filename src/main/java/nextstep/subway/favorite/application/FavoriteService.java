@@ -38,7 +38,15 @@ public class FavoriteService {
 
 	@Transactional(readOnly = true)
 	public List<FavoriteResponse> findFavorites(Long loginMemberId) {
-		List<Favorite> favorites = favoriteRepository.findAllWithStationByCreatorId(loginMemberId);
+		Member creator = memberRepository.findById(loginMemberId).orElseThrow(IllegalArgumentException::new);
+		List<Favorite> favorites = favoriteRepository.findAllWithStationByCreator(creator);
 		return FavoriteResponse.listOf(favorites);
+	}
+
+	public void deleteFavorite(Long loginMemberId, Long favoriteId) {
+		Member member = memberRepository.findById(loginMemberId).orElseThrow(IllegalArgumentException::new);
+		Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(IllegalArgumentException::new);
+		favorite.checkCreator(member);
+		favoriteRepository.delete(favorite);
 	}
 }
