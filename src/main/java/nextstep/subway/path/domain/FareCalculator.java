@@ -20,63 +20,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static nextstep.subway.path.domain.age.AgeCalculator.calcAge;
+import static nextstep.subway.path.domain.distance.DistanceCalculator.calcDistance;
+import static nextstep.subway.path.domain.line.LineCalculator.calcLines;
+
 public class FareCalculator {
-    public static Money calc(List<Line> lines, LoginMember loginMember, ShortestDistance shortestDistance) {
+    public static Money calc(LoginMember loginMember, ShortestDistance shortestDistance) {
         Money money = calcDistance(shortestDistance.shortestDistance(), new Money(0));
         money = calcAge(loginMember, money);
-        money = calcLines(getThroughLines(new Lines(lines), shortestDistance), money);
+        money = calcLines(shortestDistance.usedLines(), money);
 
         return money;
-    }
-
-    private static Money calcDistance(Distance distance, Money money) {
-        List<DistancePremiumPolicy> distancePremiumPolicies = Arrays.asList(new DefaultDistancePremiumPolicy(),
-                new MidRangeDistancePremiumPolicy(),
-                new LongRangeDistancePremiumPolicy());
-
-        for (DistancePremiumPolicy premiumPolicy : distancePremiumPolicies) {
-            if (premiumPolicy.isSupport(distance)) {
-                money = premiumPolicy.calcFare(distance, money);
-            }
-        }
-
-        return money;
-    }
-
-    private static Money calcAge(LoginMember loginMember, Money money) {
-        List<AgeDiscountPolicy> ageDiscountPolicies = Arrays.asList(
-                new DefaultAgeDiscountPolicy(),
-                new ChildDiscountPolicy(),
-                new TeenagerDiscountPolicy()
-        );
-
-        for (AgeDiscountPolicy discountPolicy : ageDiscountPolicies) {
-            if (discountPolicy.isSupport(loginMember)) {
-                money = discountPolicy.calcFare(loginMember, money);
-            }
-        }
-
-        return money;
-    }
-
-    private static Money calcLines(Lines lines, Money money) {
-        DefaultLinePremiumPolicy premiumPolicy = new DefaultLinePremiumPolicy();
-
-        if (premiumPolicy.isSupport(lines)) {
-            money = premiumPolicy.calcFare(lines, money);
-        }
-
-        return money;
-    }
-
-
-
-    private static Lines getThroughLines(Lines lines, ShortestDistance shortestDistance) {
-        Stations stations = shortestDistance.shortestRoute();
-        List<SimpleSection> simpleSection = stations.getSimpleSection();
-
-        return new Lines(simpleSection.stream()
-                .map(item -> lines.findShortestSectionBy(item))
-                .collect(Collectors.toList()));
     }
 }

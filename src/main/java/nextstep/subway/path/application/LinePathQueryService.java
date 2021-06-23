@@ -43,7 +43,7 @@ public class LinePathQueryService {
         return new LinePathResponse(
                 shortestDistance.shortestRoute(),
                 shortestDistance.shortestDistance(),
-                FareCalculator.calc(lines, loginMember, shortestDistance)
+                FareCalculator.calc(loginMember, shortestDistance)
         );
     }
 

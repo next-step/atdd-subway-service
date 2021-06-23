@@ -3,6 +3,8 @@ package nextstep.subway.path.domain;
 import nextstep.subway.exception.LineHasNotExistShortestException;
 import nextstep.subway.exception.NoRouteException;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
+import nextstep.subway.line.domain.SimpleSection;
 import nextstep.subway.wrapped.Distance;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
@@ -12,6 +14,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DijkstraShortestDistance implements ShortestDistance {
     private final List<Line> lines;
@@ -36,6 +39,18 @@ public class DijkstraShortestDistance implements ShortestDistance {
         validateShortestRoute();
 
         return new Stations(getShortestGraph().getVertexList());
+    }
+
+    @Override
+    public Lines usedLines() {
+        Lines lines = new Lines(this.lines);
+
+        Stations stations = shortestRoute();
+        List<SimpleSection> simpleSection = stations.getSimpleSection();
+
+        return new Lines(simpleSection.stream()
+                .map(item -> lines.findShortestSectionBy(item))
+                .collect(Collectors.toList()));
     }
 
     private GraphPath<Station, DefaultWeightedEdge> getShortestGraph() {
