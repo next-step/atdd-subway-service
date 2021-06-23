@@ -55,22 +55,18 @@ public class Sections {
     public void remove(Line line, Station station) {
         validateRemovable(station);
 
-        Optional<Section> upStationMatching = sections.stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downStationMatching = sections.stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
+        Optional<Section> upSection = findUpSection(station);
+        Optional<Section> downSection = findDownSection(station);
 
-        if (upStationMatching.isPresent() && downStationMatching.isPresent()) {
-            Station newUpStation = downStationMatching.get().getUpStation();
-            Station newDownStation = upStationMatching.get().getDownStation();
-            int newDistance = upStationMatching.get().getDistance() + downStationMatching.get().getDistance();
+        if (upSection.isPresent() && downSection.isPresent()) {
+            Station newUpStation = upSection.get().getUpStation();
+            Station newDownStation = downSection.get().getDownStation();
+            int newDistance = upSection.get().getDistance() + downSection.get().getDistance();
             sections.add(new Section(line, newUpStation, newDownStation, newDistance));
         }
 
-        upStationMatching.ifPresent(it -> sections.remove(it));
-        downStationMatching.ifPresent(it -> sections.remove(it));
+        upSection.ifPresent(it -> sections.remove(it));
+        downSection.ifPresent(it -> sections.remove(it));
     }
 
     private void validateRemovable(Station station) {
