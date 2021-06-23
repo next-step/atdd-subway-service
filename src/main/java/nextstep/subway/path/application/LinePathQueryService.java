@@ -31,9 +31,7 @@ public class LinePathQueryService {
         Station source = findStationById(linePathRequest.getSource());
         Station target = findStationById(linePathRequest.getTarget());
 
-        List<Line> lines = lineRepository.findAll();
-
-        ShortestDistance shortestDistance = new DijkstraShortestDistance(lines, source, target);
+        ShortestDistance shortestDistance = new DijkstraShortestDistance(lineRepository.findAll(), source, target);
 
         return new LinePathResponse(
                 shortestDistance.shortestRoute(),
