@@ -19,6 +19,7 @@ public class Sections implements Iterable<Section> {
     }
 
     public void add(Section section) {
+        validateAddable(section);
         if (isEmpty()) {
             sections.add(section);
             return;
@@ -29,6 +30,15 @@ public class Sections implements Iterable<Section> {
         mergeByUpStation(section);
         mergeByDownStation(section);
         sections.add(section);
+    }
+
+    private void validateAddable(Section section) {
+        if (contains(section.getUpStation()) && contains(section.getDownStation())) {
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
+        }
+        if (!isEmpty() && !contains(section.getUpStation()) && !contains(section.getDownStation())) {
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
+        }
     }
 
     private void mergeByUpStation(Section section) {

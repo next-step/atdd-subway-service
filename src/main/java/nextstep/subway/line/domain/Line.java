@@ -34,17 +34,7 @@ public class Line extends BaseEntity {
     }
 
     public void add(Station upStation, Station downStation, int distance) {
-        validateAddable(upStation, downStation);
         sections.add(new Section(this, upStation, downStation, distance));
-    }
-
-    private void validateAddable(Station upStation, Station downStation) {
-        if (contains(upStation) && contains(downStation)) {
-            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
-        }
-        if (!isEmpty() && !contains(upStation) && !contains(downStation)) {
-            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
-        }
     }
 
     public void update(Line line) {
@@ -58,14 +48,6 @@ public class Line extends BaseEntity {
 
     public List<Station> stations() {
         return sections.stations();
-    }
-
-    private boolean contains(Station station) {
-        return sections.contains(station);
-    }
-
-    private boolean isEmpty() {
-        return sections.isEmpty();
     }
 
     public Long getId() {
