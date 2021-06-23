@@ -23,6 +23,7 @@ public class DistanceCalculator {
         for (DistancePremiumPolicy premiumPolicy : distancePremiumPolicies) {
             money = calcFareIfSupported(premiumPolicy, distance, money);
         }
+
         return money;
     }
 
@@ -30,6 +31,7 @@ public class DistanceCalculator {
         if (premiumPolicy.isSupport(distance)) {
             money = premiumPolicy.calcFare(distance, money);
         }
+
         return money;
     }
 }

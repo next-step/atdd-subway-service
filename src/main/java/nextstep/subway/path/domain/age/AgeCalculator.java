@@ -29,6 +29,7 @@ public class AgeCalculator {
         if (discountPolicy.isSupport(loginMember)) {
             money = discountPolicy.calcFare(loginMember, money);
         }
+
         return money;
     }
 

@@ -48,9 +48,11 @@ public class DijkstraShortestDistance implements ShortestDistance {
         Stations stations = shortestRoute();
         List<StationPair> stationPair = stations.getSectionPair();
 
-        return new Lines(stationPair.stream()
+        List<Line> linesOfCheapShortestEachSection = stationPair.stream()
                 .map(item -> lines.findCheapAndShortestBy(item))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
+
+        return new Lines(linesOfCheapShortestEachSection);
     }
 
     private GraphPath<Station, DefaultWeightedEdge> getShortestGraph() {
