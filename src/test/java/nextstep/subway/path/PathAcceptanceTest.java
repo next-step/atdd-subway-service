@@ -65,7 +65,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     ExtractableResponse<Response> 경로_탐색_결과 = 최단거리_경로_탐색(교대역, 양재역);
 
     //then 최단거리가 반환됨
-    최단거리_조회됨(경로_탐색_결과, Arrays.asList(교대역, 남부터미널역, 양재역));
+    최단거리_조회됨(경로_탐색_결과, Arrays.asList(교대역, 남부터미널역, 양재역), 5D, 1_250);
 
     //when 새로운 최단거리를 가지는 경로가 추가됨
     지하철_노선_등록되어_있음(new LineRequest("최단거리선", "bg-grey-600", 교대역.getId(), 양재역.getId(), 3)).as(LineResponse.class);
@@ -74,13 +74,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     ExtractableResponse<Response> 새로운_최단거리_노선_추가_후_경로_탐색_결과 = 최단거리_경로_탐색(교대역, 양재역);
 
     //then 새로운 최단거리가 반환됨
-    최단거리_조회됨(새로운_최단거리_노선_추가_후_경로_탐색_결과, Arrays.asList(교대역, 양재역));
+    최단거리_조회됨(새로운_최단거리_노선_추가_후_경로_탐색_결과, Arrays.asList(교대역, 양재역), 3D, 1_250);
 
     //when 출발역과 도착역이 동일한 최단거리 조회
     ExtractableResponse<Response> 출발_도착이_동일한_경로_탐색_결과 = 최단거리_경로_탐색(교대역, 교대역);
 
     //then 거리가 0이고 역이 하나 뿐인 최단거리 반환됨
-    최단거리_조회됨(출발_도착이_동일한_경로_탐색_결과, Arrays.asList(교대역));
+    최단거리_조회됨(출발_도착이_동일한_경로_탐색_결과, Arrays.asList(교대역), 0D, 0);
     최단거리_기대한값(출발_도착이_동일한_경로_탐색_결과, 0);
 
     //when 기등록된 노선과 연결되지 않은 경로가 추가됨
@@ -102,9 +102,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     경로탐색_실패_존재하지_않는_역(존재하지_않는_역과_경로_탐색_결과);
   }
 
-
-
-
   @DisplayName("경로 탐색 시 최단거리로 갈 수있는 경로를 출발역부터 도착역까지 순서로 반환한다.")
   @Test
   void findPathTest() {
@@ -112,7 +109,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     ExtractableResponse<Response> 경로_탐색_결과 = 최단거리_경로_탐색(교대역, 양재역);
 
     //then
-    최단거리_조회됨(경로_탐색_결과, Arrays.asList(교대역, 남부터미널역, 양재역));
+    최단거리_조회됨(경로_탐색_결과, Arrays.asList(교대역, 남부터미널역, 양재역), 5D, 1_250);
   }
 
   @DisplayName("출발역과 도착역이 같다.")
@@ -125,7 +122,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     ExtractableResponse<Response> 경로_탐색_결과 = 최단거리_경로_탐색(교대역, 교대역);
 
     //then
-    최단거리_조회됨(경로_탐색_결과, Arrays.asList(교대역));
+    최단거리_조회됨(경로_탐색_결과, Arrays.asList(교대역), 0D, 0);
     최단거리_기대한값(경로_탐색_결과, 0);
   }
 
@@ -168,7 +165,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     assertThat(actual.getDistance()).isEqualTo(expectDistance);
   }
 
-  private void 최단거리_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectStations) {
+  private void 최단거리_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectStations, double expectDistance, int expectFee) {
     PathResponse actual = response.as(PathResponse.class);
     List<Long> actualStationIds = actual.getStations()
                                     .stream()
@@ -177,7 +174,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
     List<Long> expectedStationIds = expectStations.stream()
                                     .map(StationResponse::getId)
                                     .collect(Collectors.toList());
+    //최단거리 경로 응답
     assertThat(actualStationIds).containsExactlyElementsOf(expectedStationIds);
+    //총거리도 함께 응답
+    assertThat(actual.getDistance()).isEqualTo(expectDistance);
+    //지하철 이용 요금도 함께 응답
+    assertThat(actual.getRequireFee()).isEqualTo(expectFee);
   }
 
   private ExtractableResponse<Response> 최단거리_경로_탐색(StationResponse source, StationResponse target) {
