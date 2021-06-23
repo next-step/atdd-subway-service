@@ -72,6 +72,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         자허철_최단경로_조회됨(response);
         지하철_경로_역명이_동일함(response);
         지하철_노선_최단경로가_일치함(response);
+        지하철_요금_일치함(response);
     }
 
     @DisplayName("출발역과 도착역이 같은경우는 경로조회가 안됨")
@@ -118,6 +119,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         List<String> expectedNames = Arrays.asList(교대역, 남부터미널역, 양재역).stream().map(stationResponse -> stationResponse.getName()).collect(Collectors.toList());
         assertThat(stationNames).containsExactlyElementsOf(expectedNames);
+    }
+
+    private void 지하철_요금_일치함(ExtractableResponse<Response> response) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(1250);
     }
 
     private ExtractableResponse<Response> 지하철_경로를_조회(StationResponse source, StationResponse target) {
