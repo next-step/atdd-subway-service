@@ -5,7 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.Map;
-import nextstep.subway.AcceptanceTest;
+import nextstep.subway.AcceptancePerMethodTest;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineResponse;
@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 @DisplayName("지하철 구간 관련 기능")
-public class SectionAcceptanceTest extends AcceptanceTest {
+public class SectionAcceptanceTest extends AcceptancePerMethodTest {
 
     private Station aeogaeStation;
     private Station chungjeongnoStation;

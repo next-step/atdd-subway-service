@@ -1,10 +1,11 @@
 package nextstep.subway.auth.acceptance;
 
+import nextstep.subway.AcceptancePerMethodTest;
 import nextstep.subway.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class AuthAcceptanceTest extends AcceptanceTest {
+public class AuthAcceptanceTest extends AcceptancePerMethodTest {
 
     @DisplayName("Bearer Auth")
     @Test

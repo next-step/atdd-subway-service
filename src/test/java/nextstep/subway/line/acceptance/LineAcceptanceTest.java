@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import nextstep.subway.AcceptanceTest;
+import nextstep.subway.AcceptancePerMethodTest;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 @DisplayName("지하철 노선 관련 기능")
-public class LineAcceptanceTest extends AcceptanceTest {
+public class LineAcceptanceTest extends AcceptancePerMethodTest {
 
     public static final Line line3 = new Line("3호선", "orange");
     public static final Line line5 = new Line("5호선", "purple");

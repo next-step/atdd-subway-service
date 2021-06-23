@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.time.LocalDateTime;
-import nextstep.subway.AcceptanceTest;
+import nextstep.subway.AcceptancePerClassTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
@@ -13,14 +13,14 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 
 @DisplayName("지하철 경로 조회 인수테스트")
-public class PathAcceptanceTest extends AcceptanceTest {
+public class PathAcceptanceTest extends AcceptancePerClassTest {
 
     private StationResponse 서울역;
     private StationResponse 시청역;
@@ -40,7 +40,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 삼호선;
     private LineResponse 오호선;
 
-    @BeforeEach
+    @BeforeAll
     void setup() {
         //1호선
         서울역 = StationAcceptanceTest.지하철역_등록되어_있음("서울역").as(StationResponse.class);

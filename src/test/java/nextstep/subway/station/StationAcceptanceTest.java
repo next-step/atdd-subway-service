@@ -7,7 +7,7 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import nextstep.subway.AcceptanceTest;
+import nextstep.subway.AcceptancePerMethodTest;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 @DisplayName("지하철역 관련 기능")
-public class StationAcceptanceTest extends AcceptanceTest {
+public class StationAcceptanceTest extends AcceptancePerMethodTest {
 
     private static final String 강남역 = "강남역";
     public static final String 역삼역 = "역삼역";
