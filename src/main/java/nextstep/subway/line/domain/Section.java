@@ -86,17 +86,17 @@ public class Section extends BaseEntity {
     }
 
     public int getDistanceWeight() {
-        return distance.get();
+        return distance.getValue();
     }
 
     public void updateUpStation(Station station, Distance newDistance) {
         this.upStation = station;
-        distance.minusDistance(newDistance);
+        distance = distance.minus(newDistance);
     }
 
     public void updateDownStation(Station station, Distance newDistance) {
         this.downStation = station;
-        distance.plusDistance(newDistance);
+        distance = distance.plus(newDistance);
     }
 
     protected boolean isBefore(Section section) {

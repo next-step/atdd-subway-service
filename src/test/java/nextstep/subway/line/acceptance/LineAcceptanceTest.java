@@ -133,7 +133,7 @@ public class LineAcceptanceTest extends AcceptancePerMethodTest {
         params.put("color", line.getColor());
         params.put("upStationId", section.getUpStation().getId());
         params.put("downStationId", section.getDownStation().getId());
-        params.put("distance", section.getDistance().get());
+        params.put("distance", section.getDistanceWeight());
 
         return post(params, "/lines");
     }

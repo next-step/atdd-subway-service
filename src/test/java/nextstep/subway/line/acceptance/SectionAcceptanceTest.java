@@ -228,7 +228,7 @@ public class SectionAcceptanceTest extends AcceptancePerMethodTest {
         Map<String, Object> params = new HashMap<>();
         params.put("upStationId", section.getUpStation().getId());
         params.put("downStationId", section.getDownStation().getId());
-        params.put("distance", section.getDistance().get());
+        params.put("distance", section.getDistanceWeight());
 
         return post(params, "/lines/" + section.getLine().getId() + "/sections");
     }
