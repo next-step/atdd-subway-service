@@ -10,13 +10,14 @@ import nextstep.subway.station.domain.Station;
 
 class SectionTest {
 
+    Line line;
     Section section;
     Station upStation;
     Station downStation;
 
     @BeforeEach
     void setup() {
-        Line line = new Line("신분당선"
+        line = new Line("신분당선"
                 , "빨간색"
                 , new Station("강남역")
                 , new Station("선릉역")
@@ -55,25 +56,15 @@ class SectionTest {
         assertThat(section.isExistsStation(upStation)).isTrue();
     }
 
-    @DisplayName("상행역 수정")
+    @DisplayName("기존 구간에 하행을 새로운 구간의 상행과 연결")
     @Test
-    void updateUpStation() {
+    void connectSection() {
         //given
         Station station = new Station("임시역");
+        Section newSection = new Section(line, downStation, station, new Distance(3));
         //when
-        section.updateUpStation(station, new Distance(3));
+        section.connectUpStation(newSection);
         //then
-        assertThat(section.isUpStation(station)).isTrue();
-    }
-
-    @DisplayName("하행역 수정")
-    @Test
-    void updateDownStation() {
-        //given
-        Station station = new Station("임시역");
-        //when
-        section.updateDownStation(station, new Distance(3));
-        //then
-        assertThat(section.isDownStation(station)).isTrue();
+        assertThat(section.getDistance()).isEqualTo(new Distance(2));
     }
 }

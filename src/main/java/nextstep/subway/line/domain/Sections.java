@@ -71,14 +71,14 @@ public class Sections {
         sections.stream()
                 .filter(section -> section.isUpStation(newSection))
                 .findFirst()
-                .ifPresent(section -> section.updateUpStation(newSection));
+                .ifPresent(section -> section.connectUpStation(newSection));
     }
 
     private void updateDownStation(Section newSection) {
         sections.stream()
                 .filter(section -> section.isDownStation(newSection))
                 .findFirst()
-                .ifPresent(section -> section.updateDownStation(newSection));
+                .ifPresent(section -> section.connectDownStation(newSection));
     }
 
     public List<Station> getStations() {

@@ -90,26 +90,16 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, Distance newDistance) {
-        this.upStation = station;
-        this.distance = distance.diff(newDistance);
-    }
-
-    public void updateDownStation(Station station, Distance newDistance) {
-        this.downStation = station;
-        this.distance = distance.diff(newDistance);
-    }
-
     public Distance addDistance(Section downSection) {
         return distance.add(downSection.distance);
     }
 
-    public void updateUpStation(Section newSection) {
+    public void connectUpStation(Section newSection) {
         this.upStation = newSection.downStation;
         this.distance = distance.diff(newSection.distance);
     }
 
-    public void updateDownStation(Section newSection) {
+    public void connectDownStation(Section newSection) {
         this.downStation = newSection.upStation;
         this.distance = distance.diff(newSection.distance);
     }
