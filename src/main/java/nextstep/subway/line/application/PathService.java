@@ -63,8 +63,10 @@ public class PathService {
     }
 
     private Line getMaxExtraSectionLine(List<Section> sections, Station prevStation, Station nextStation) {
-        Section maxExtraFareSection = sections.stream().filter(section -> section.isSameSection(prevStation, nextStation))
-                .max(Comparator.comparing(section -> section.getLine().getExtraFare())).get();
+        Section maxExtraFareSection = sections.stream()
+                .filter(section -> section.isSameSection(prevStation, nextStation))
+                .max(Comparator.comparing(section -> section.getLine().getExtraFare()))
+                .orElseThrow(() -> new NoSuchElementException("일치하는 구간이 없습니다."));
         return maxExtraFareSection.getLine();
     }
 
