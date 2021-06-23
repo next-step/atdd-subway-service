@@ -36,7 +36,7 @@ public class LineSections {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = lineSections.stream()
-                .filter(it -> it.getUpStation() == finalDownStation)
+                .filter(it -> it.isUpStationEquals(finalDownStation))
                 .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
@@ -53,7 +53,7 @@ public class LineSections {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = lineSections.stream()
-                .filter(it -> it.getDownStation() == finalDownStation)
+                .filter(it -> it.isDownStationEquals(finalDownStation))
                 .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
@@ -92,20 +92,20 @@ public class LineSections {
 
     private void changeUpStation(Section section) {
         lineSections.stream()
-            .filter(it -> it.getUpStation() == section.getUpStation())
+            .filter(it -> it.isUpStationEquals(section.getUpStation()))
             .findFirst()
             .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
     }
 
     private void changeDownStation(Section section) {
         lineSections.stream()
-            .filter(it -> it.getDownStation() == section.getDownStation())
+            .filter(it -> it.isDownStationEquals(section.getDownStation()))
             .findFirst()
             .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
     }
 
     private boolean isStationExisted(List<Station> stations, Station station) {
-        return stations.stream().anyMatch(it -> it == station);
+        return stations.stream().anyMatch(it -> it.equals(station));
     }
 
     private void validateDuplicate(boolean isUpStationExisted, boolean isDownStationExisted) {
@@ -115,8 +115,8 @@ public class LineSections {
     }
 
     private void validateNotExist(List<Station> stations, Station upStation, Station downStation) {
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-            stations.stream().noneMatch(it -> it == downStation)) {
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it.equals(upStation)) &&
+            stations.stream().noneMatch(it -> it.equals(downStation))) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
     }
@@ -143,13 +143,13 @@ public class LineSections {
 
     private Optional<Section> findUpLineStation(Station station) {
         return lineSections.stream()
-            .filter(it -> it.getUpStation() == station)
+            .filter(it -> it.isUpStationEquals(station))
             .findFirst();
     }
 
     private Optional<Section> findDownLineStation(Station station) {
         return lineSections.stream()
-            .filter(it -> it.getDownStation() == station)
+            .filter(it -> it.isDownStationEquals(station))
             .findFirst();
     }
 
