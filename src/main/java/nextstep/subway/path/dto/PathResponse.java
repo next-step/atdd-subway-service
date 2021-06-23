@@ -1,5 +1,6 @@
 package nextstep.subway.path.dto;
 
+import nextstep.subway.path.domain.fee.RequireFee;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -24,7 +25,7 @@ public class PathResponse {
                                             .stream()
                                             .map(StationResponse::of)
                                             .collect(Collectors.toList());
-    return new PathResponse(stationResponses, shortestPath.getDistance(), 0);
+    return new PathResponse(stationResponses, shortestPath.getDistance(), RequireFee.getRequireFee(shortestPath.getDistance()));
   }
 
   public List<StationResponse> getStations() {
