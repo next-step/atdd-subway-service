@@ -24,8 +24,8 @@ public class Sections {
             sections.add(section);
             return;
         }
-        mergeByUpStation(section);
-        mergeByDownStation(section);
+        divideByUpStation(section);
+        divideByDownStation(section);
         sections.add(section);
     }
 
@@ -38,14 +38,14 @@ public class Sections {
         }
     }
 
-    private void mergeByUpStation(Section section) {
+    private void divideByUpStation(Section section) {
         sections.stream()
                 .filter(it -> it.getUpStation() == section.getUpStation())
                 .findFirst()
                 .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
     }
 
-    private void mergeByDownStation(Section section) {
+    private void divideByDownStation(Section section) {
         sections.stream()
                 .filter(it -> it.getDownStation() == section.getDownStation())
                 .findFirst()
