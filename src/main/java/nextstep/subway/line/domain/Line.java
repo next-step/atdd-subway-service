@@ -60,6 +60,10 @@ public class Line extends BaseEntity {
         return color;
     }
 
+    public int getAdditionalFare() {
+        return additionalFare;
+    }
+
     public Sections getSections() {
         return sections;
     }

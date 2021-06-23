@@ -31,7 +31,7 @@ public class LineService {
                 .orElseThrow(NoSuchElementException::new);
         Station downStation = stationRepository.findById(request.getDownStationId())
                 .orElseThrow(NoSuchElementException::new);
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), request.getAdditionalFare(), upStation, downStation, request.getDistance()));
         return LineResponse.of(persistLine);
     }
 
