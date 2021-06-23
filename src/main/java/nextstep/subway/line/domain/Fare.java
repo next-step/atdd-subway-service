@@ -30,13 +30,13 @@ public class Fare {
 
     private int calculateOverFare() {
         int fare = 0;
-        if(distance > STANDARD_LONG_DISTANCE) {
+        if (distance > STANDARD_LONG_DISTANCE) {
             int overDistance = distance - STANDARD_LONG_DISTANCE;
             fare += calculateOverFare(overDistance, 8);
             this.distance -= overDistance;
         }
 
-        if(distance > STANDARD_SHORT_DISTANCE) {
+        if (distance > STANDARD_SHORT_DISTANCE) {
             this.distance -= STANDARD_SHORT_DISTANCE;
             fare += calculateOverFare(distance, 5);
         }
