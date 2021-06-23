@@ -40,14 +40,14 @@ public class Sections {
 
     private void divideByUpStation(Section section) {
         sections.stream()
-                .filter(it -> it.getUpStation() == section.getUpStation())
+                .filter(it -> it.getUpStation().equals(section.getUpStation()))
                 .findFirst()
                 .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
     }
 
     private void divideByDownStation(Section section) {
         sections.stream()
-                .filter(it -> it.getDownStation() == section.getDownStation())
+                .filter(it -> it.getDownStation().equals(section.getDownStation()))
                 .findFirst()
                 .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
     }
