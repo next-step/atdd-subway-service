@@ -31,7 +31,7 @@ public class PathResponse {
                                                              .map(StationResponse::of)
                                                              .collect(toList());
 
-        return new PathResponse(stationResponses, shortestPath.getDistanceValue(), fare.getTotalFare());
+        return new PathResponse(stationResponses, shortestPath.getDistance().getValue(), fare.getTotalFare());
     }
 
     public List<StationResponse> getStations() {

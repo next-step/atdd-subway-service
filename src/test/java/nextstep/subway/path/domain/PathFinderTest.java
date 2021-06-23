@@ -74,7 +74,7 @@ class PathFinderTest {
 
         // then
         assertThat(shortestPath.getPath()).containsExactly(귤현역, 계양역);
-        assertThat(shortestPath.getDistanceValue()).isEqualTo(9);
+        assertThat(shortestPath.getDistance().getValue()).isEqualTo(9);
     }
 
     @DisplayName("경로 탐색 성공 - 다른 노선")
@@ -86,6 +86,6 @@ class PathFinderTest {
 
         // then
         assertThat(shortestPath.getPath()).containsExactly(귤현역, 계양역, 김포공항역, 마곡나루역);
-        assertThat(shortestPath.getDistanceValue()).isEqualTo(98);
+        assertThat(shortestPath.getDistance().getValue()).isEqualTo(98);
     }
 }

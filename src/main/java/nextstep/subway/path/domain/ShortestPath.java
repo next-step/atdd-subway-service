@@ -18,10 +18,6 @@ public class ShortestPath {
         return path;
     }
 
-    public int getDistanceValue() {
-        return distance.getValue();
-    }
-
     public Distance getDistance() {
         return distance;
     }
