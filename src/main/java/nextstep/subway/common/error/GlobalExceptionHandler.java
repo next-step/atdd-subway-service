@@ -3,6 +3,7 @@ package nextstep.subway.common.error;
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.application.MemberNotFoundException;
 import nextstep.subway.line.application.LineNotFoundException;
+import nextstep.subway.station.application.StationNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -43,6 +44,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(LineNotFoundException.class)
     public ErrorResponse handleLineNotFound(Exception e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(StationNotFoundException.class)
+    public ErrorResponse handleStationNotFound(Exception e) {
         return new ErrorResponse(e.getMessage());
     }
 
