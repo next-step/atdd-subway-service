@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 class DiscountStrategyTest {
 
@@ -31,5 +32,16 @@ class DiscountStrategyTest {
     void teenagerDiscountStrategyTest(int fare, int expect) {
         DiscountStrategy discountStrategy = new TeenagerDiscountStrategy();
         assertThat(discountStrategy.discount(fare)).isEqualTo(expect);
+    }
+
+    @DisplayName("할인된 최종 요금은 0원 이상의 정수여야 한다. 즉, 요금은 최소 350원 이상이어야 할인받을 수 있다.")
+    @ValueSource(ints = { 0, 10, 50, 100, 200, 300, 340, 349 })
+    @ParameterizedTest
+    void minimumFareTest(int fare) {
+        DiscountStrategy discountStrategy1 = new ChildDiscountStrategy();
+        assertThatIllegalArgumentException().isThrownBy(() -> discountStrategy1.discount(fare));
+
+        DiscountStrategy discountStrategy2 = new TeenagerDiscountStrategy();
+        assertThatIllegalArgumentException().isThrownBy(() -> discountStrategy2.discount(fare));
     }
 }

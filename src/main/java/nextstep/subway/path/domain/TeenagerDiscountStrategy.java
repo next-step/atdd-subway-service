@@ -4,6 +4,7 @@ public class TeenagerDiscountStrategy implements DiscountStrategy {
 
     @Override
     public int discount(int fare) {
+        verifyNotNegativeFare(fare);
         return (fare - COMMON_DISCOUNT_AMOUNT) / 5 * 4;
     }
 }
