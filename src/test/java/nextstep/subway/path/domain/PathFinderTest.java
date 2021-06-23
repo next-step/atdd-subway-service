@@ -1,5 +1,15 @@
 package nextstep.subway.path.domain;
 
+import static nextstep.subway.station.domain.StationFixtures.광화문역;
+import static nextstep.subway.station.domain.StationFixtures.서대문역;
+import static nextstep.subway.station.domain.StationFixtures.서울역;
+import static nextstep.subway.station.domain.StationFixtures.시청역;
+import static nextstep.subway.station.domain.StationFixtures.아현역;
+import static nextstep.subway.station.domain.StationFixtures.애오개역;
+import static nextstep.subway.station.domain.StationFixtures.을지로입구역;
+import static nextstep.subway.station.domain.StationFixtures.종각역;
+import static nextstep.subway.station.domain.StationFixtures.종로3가역;
+import static nextstep.subway.station.domain.StationFixtures.충정로역;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
@@ -18,33 +28,12 @@ import org.junit.jupiter.api.Test;
 @DisplayName("지하철 경로 조회 테스트")
 public class PathFinderTest {
 
-    private Station 서울역;
-    private Station 시청역;
-    private Station 종각역;
-    private Station 종로3가역;
-    private Station 아현역;
-    private Station 충정로역;
-    private Station 을지로입구역;
-    private Station 애오개역;
-    private Station 서대문역;
-    private Station 광화문역;
-
     private Line 일호선;
     private Line 이호선;
     private Line 오호선;
 
     @BeforeEach
     void setup() {
-        서울역 = new Station("서울역");
-        시청역 = new Station("시청역");
-        종각역 = new Station("종각역");
-        종로3가역 = new Station("종로3가역");
-        아현역 = new Station("아현역");
-        충정로역 = new Station("충정로역");
-        을지로입구역 = new Station("을지로입구역");
-        애오개역 = new Station("애오개역");
-        서대문역 = new Station("서대문역");
-        광화문역 = new Station("광화문역");
 
         일호선 = new Line("일호선", "blue");
         일호선.addSection(new Section(서울역, 시청역, 10));
@@ -90,13 +79,13 @@ public class PathFinderTest {
     }
 
     private void 지하철_최단_경로_목록_정렬됨(List<StationResponse> stationResponses, Station... expectStations) {
-        List<String> stationNames = stationResponses.stream()
-            .map(StationResponse::getName)
+        List<Long> stationIds = stationResponses.stream()
+            .map(StationResponse::getId)
             .collect(Collectors.toList());
-        List<String> expectStationNames = Arrays.stream(expectStations)
-            .map(Station::getName)
+        List<Long> expectStationIds = Arrays.stream(expectStations)
+            .map(Station::getId)
             .collect(Collectors.toList());
-        assertThat(stationNames).hasSameElementsAs(expectStationNames);
+        assertThat(stationIds).hasSameElementsAs(expectStationIds);
     }
 
 }

@@ -1,18 +1,17 @@
 package nextstep.subway.line.domain;
 
+import static nextstep.subway.station.domain.StationFixtures.광화문역;
+import static nextstep.subway.station.domain.StationFixtures.서대문역;
+import static nextstep.subway.station.domain.StationFixtures.충정로역;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("구간 테스트")
 public class SectionTest {
 
-    private static final Station 충정로역 = new Station("충정로역");
-    private static final Station 서대문역 = new Station("서대문역");
-    private static final Station 광화문역 = new Station("광화문역");
     private static final Line 오호선 = new Line("5호선", "purple");
 
     @DisplayName("구간의 거리가 0 이하인 경우 예외 발생")
