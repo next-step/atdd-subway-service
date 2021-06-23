@@ -32,6 +32,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
+    private LineResponse 사호선;
 
     @BeforeEach
     public void setUp() {
@@ -48,6 +49,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .as(LineResponse.class);
         삼호선 = 지하철_노선_생성_요청_및_검증(new LineRequest("3호선", "주황색", 강남역.getId(), 광교역.getId(), 2))
                 .as(LineResponse.class);
+        사호선 = 지하철_노선_생성_요청_및_검증(new LineRequest("4호선", "보라색", 강남역.getId(), 광교역.getId(), 20))
+                .as(LineResponse.class);
     }
 
     @TestFactory
@@ -61,6 +64,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 dynamicTest("3호선에 정자역을 추가한다", 지하철_노선에_지하철역_등록_요청_및_확인(삼호선, 광교역, 정자역, 1)),
                 dynamicTest("3호선에 정자역 추가를 확인한다", 지하철_노선에_지하철역_순서_정렬됨(삼호선, 강남역, 광교역, 정자역)),
                 dynamicTest("강남역과 정자역 최단거리를 확인한다", 지하철_최단거리_요청_및_확인(강남역, 정자역, Arrays.asList(강남역, 광교역, 정자역), 3))
+        );
+    }
+
+    @TestFactory
+    @DisplayName("환승을 하여 최단거리를 검색한다")
+    Stream<DynamicTest> 환승을_하여_최단거리를_검색한다() {
+        // 신분당선 -> 강남역 - 양재역 - 정자역
+        // 2호선 -> 강남역 - 정자역 - 광교역
+        // 신분당 + 2호선 => 10
+        // 4호선 -> 강남역 - 양재역 - 정자역 - 광교역
+        // 4호선 => 20
+        return Stream.of(
+                dynamicTest("신분당선에 정자역을 추가한다", 지하철_노선에_지하철역_등록_요청_및_확인(신분당선, 양재역, 정자역, 2)),
+                dynamicTest("신분당선에 정자역 추가를 확인한다", 지하철_노선에_지하철역_순서_정렬됨(신분당선, 강남역, 양재역, 정자역)),
+                dynamicTest("2호선에 광교역을 추가한다", 지하철_노선에_지하철역_등록_요청_및_확인(이호선, 정자역, 광교역, 5)),
+                dynamicTest("2호선에 양재역 추가를 확인한다", 지하철_노선에_지하철역_순서_정렬됨(이호선, 강남역, 정자역, 광교역)),
+                dynamicTest("4호선에 양재역을 추가한다", 지하철_노선에_지하철역_등록_요청_및_확인(사호선, 강남역, 양재역, 5)),
+                dynamicTest("4호선에 정자역을 추가한다", 지하철_노선에_지하철역_등록_요청_및_확인(사호선, 양재역, 정자역, 5)),
+                dynamicTest("4호선에 양재역 추가를 확인한다", 지하철_노선에_지하철역_순서_정렬됨(사호선, 강남역, 양재역, 정자역, 광교역)),
+                dynamicTest("강남역과 광교역 최단거리를 확인한다", 지하철_최단거리_요청_및_확인(강남역, 광교역, Arrays.asList(강남역, 양재역, 정자역, 광교역), 10))
         );
     }
 
