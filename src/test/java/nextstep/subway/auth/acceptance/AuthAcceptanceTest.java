@@ -49,10 +49,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         인증되지_않았음(response);
     }
 
-    @DisplayName("토큰으로 로그인을 시도한다")
+    @DisplayName("토큰으로 로그인을 시도")
     @Test
     void tokenTest() {
-        정상적으로_로그인됨(토큰을_요청한다(request));
+        정상적으로_동작됨(토큰을_요청한다(request));
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
