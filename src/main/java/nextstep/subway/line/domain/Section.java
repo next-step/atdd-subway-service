@@ -88,4 +88,7 @@ public class Section {
         line.addSection(this);
     }
 
+    public int additionalFare() {
+        return this.line.additionalFare();
+    }
 }

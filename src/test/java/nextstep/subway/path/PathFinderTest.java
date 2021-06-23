@@ -23,15 +23,15 @@ public class PathFinderTest {
     private Station 이번역;
     private Station 삼번역;
     private Station 사번역;
-    private int basicFare = 1250;
-    private int additionalFareOfLine1 = 1000;
-    private int additionalFareOfLine2 = 800;
-    private int additionalFareOfLine3 = 1300;
-    private int additionalFareOfLine4 = 300;
+    private int basicFare = ShortestPath.BASIC_FARE;
+    private int additionalFareOfLine1 = 800;
+    private int additionalFareOfLine2 = 1300;
+    private int additionalFareOfLine3 = 300;
+    private int additionalFareOfLine4 = 1000;
     private int distanceFromStation1to2 = 1;
-    private int distanceFromStation2to3 = 3;
+    private int distanceFromStation2to3 = 50;
     private int distanceFromStation3to4 = 5;
-    private int distanceFromStation4to1 = 56;
+    private int distanceFromStation4to1 = 7;
 
     /**
      * 1번역      ---      *1호선(+800)*    --- 2번역
@@ -79,11 +79,12 @@ public class PathFinderTest {
         ShortestPath shortestPath = pathFinder.executeDijkstra(일번역, 삼번역);
 
         // Then
-        assertThat(shortestPath.stations()).containsExactly(일번역, 이번역, 삼번역);
+        assertThat(shortestPath.stations()).containsExactly(일번역, 사번역, 삼번역);
 
         // And
-        assertThat(shortestPath.totalDistance()).isEqualTo(distanceFromStation1to2 + distanceFromStation2to3);
-        assertThat(shortestPath.fare()).isEqualTo(basicFare + additionalFareOfLine3);
+        assertThat(shortestPath.totalDistance()).isEqualTo(distanceFromStation4to1 + distanceFromStation3to4);
+        final int overFare = 100;
+        assertThat(shortestPath.fare()).isEqualTo(basicFare + overFare + additionalFareOfLine4);
     }
 
 }

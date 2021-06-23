@@ -1,14 +1,17 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.SectionEdge;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class ShortestPath {
 
-    private final int basicFare = 1250;
-    private final int basicDistance = 10;
+    public static final int BASIC_FARE = 1250;
+    public static final int BASIC_DISTANCE = 10;
 
     private List<Station> stations;
     private int totalDistance;
@@ -16,15 +19,29 @@ public class ShortestPath {
 
     public ShortestPath(GraphPath path) {
         validate(path);
+
         stations = path.getVertexList();
         totalDistance = (int) path.getWeight();
-        fare = basicFare + calculateOverFare(totalDistance - basicDistance);
+        fare = BASIC_FARE
+                + calculateOverFare(totalDistance - BASIC_DISTANCE)
+                + maxAdditionalFareIn(path);
     }
 
     private void validate(GraphPath path) {
         if (path == null) {
             throw new RuntimeException("최단경로가 Null 입니다.");
         }
+    }
+
+    private int maxAdditionalFareIn(GraphPath<Station, SectionEdge> path) {
+        List<SectionEdge> sectionEdges = path.getEdgeList();
+        sectionEdges.stream()
+                .forEach(sectionEdge -> System.out.println(sectionEdge.getAdditionalFare()));
+
+        return sectionEdges.stream()
+                .max(Comparator.comparing(sectionEdge -> sectionEdge.getAdditionalFare()))
+                .orElseThrow(NoSuchElementException::new)
+                .getAdditionalFare();
     }
 
     private int calculateOverFare(int distance) {

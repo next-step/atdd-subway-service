@@ -14,6 +14,7 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    private int additionalFare;
 
 
     @Embedded
@@ -23,13 +24,22 @@ public class Line extends BaseEntity {
     }
 
     public Line(String name, String color) {
+        this(name, color, 0);
+    }
+
+    public Line(String name, String color, int additionalFare) {
         this.name = name;
         this.color = color;
+        this.additionalFare = additionalFare;
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
+        this(name, color, 0);
+        sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public Line(String name, String color, int additionalFare, Station upStation, Station downStation, int distance) {
+        this(name, color, additionalFare);
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
@@ -122,5 +132,9 @@ public class Line extends BaseEntity {
             throw new RuntimeException();
         }
         sections.validateRemovableSize();
+    }
+
+    public int additionalFare() {
+        return additionalFare;
     }
 }

@@ -2,26 +2,26 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.SectionEdge;
+import nextstep.subway.line.domain.SectionMultigraph;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.alg.shortestpath.KShortestPaths;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class PathFinder {
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> weightedMultigraph;
+    private SectionMultigraph<Station, SectionEdge> weightedMultigraph;
 
     public PathFinder(List<Line> lines) {
         makeWeightedMultigraph(lines);
     }
 
     private void makeWeightedMultigraph(List<Line> lines) {
-        weightedMultigraph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        weightedMultigraph = new SectionMultigraph(SectionEdge.class);
         for (Line line : lines) {
             addVerticesAndEdgesOf(line);
         }
@@ -31,17 +31,18 @@ public class PathFinder {
         for (Section section : line.getSections().get()) {
             weightedMultigraph.addVertex(section.getUpStation());
             weightedMultigraph.addVertex(section.getDownStation());
-            weightedMultigraph.setEdgeWeight(
+            weightedMultigraph.setEdgeAdditionalFare(
                     weightedMultigraph.addEdge(section.getUpStation(), section.getDownStation()),
-                    section.getDistance());
+                    section.getDistance(),
+                    section.additionalFare());
         }
     }
 
     public ShortestPath executeDijkstra(Station sourceStation, Station targetStation) {
         validateSourceTarget(sourceStation, targetStation);
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath
+        DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath
                 = new DijkstraShortestPath(weightedMultigraph);
-        GraphPath<Station, DefaultWeightedEdge> path
+        GraphPath<Station, SectionEdge> path
                 = dijkstraShortestPath.getPath(sourceStation, targetStation);
 
         return new ShortestPath(path);
@@ -49,9 +50,9 @@ public class PathFinder {
 
     public List<ShortestPath> executeKShortest(Station sourceStation, Station targetStation) {
         validateSourceTarget(sourceStation, targetStation);
-        KShortestPaths<Station, DefaultWeightedEdge> kShortestPaths
+        KShortestPaths<Station, SectionEdge> kShortestPaths
                 = new KShortestPaths(weightedMultigraph, 5);
-        List<GraphPath<Station, DefaultWeightedEdge>> paths
+        List<GraphPath<Station, SectionEdge>> paths
                 = kShortestPaths.getPaths(sourceStation, targetStation);
 
         return paths.stream()
