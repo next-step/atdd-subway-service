@@ -32,7 +32,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
-    private LineResponse 사호선;
 
     @BeforeEach
     public void setUp() {
@@ -48,8 +47,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         이호선 = 지하철_노선_생성_요청_및_검증(new LineRequest("2호선", "초록색", 강남역.getId(), 정자역.getId(), 7))
                 .as(LineResponse.class);
         삼호선 = 지하철_노선_생성_요청_및_검증(new LineRequest("3호선", "주황색", 강남역.getId(), 광교역.getId(), 2))
-                .as(LineResponse.class);
-        사호선 = 지하철_노선_생성_요청_및_검증(new LineRequest("4호선", "보라색", 강남역.getId(), 광교역.getId(), 20))
                 .as(LineResponse.class);
     }
 
@@ -75,6 +72,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // 신분당 + 2호선 => 10
         // 4호선 -> 강남역 - 양재역 - 정자역 - 광교역
         // 4호선 => 20
+        LineResponse 사호선 = 지하철_노선_생성_요청_및_검증(new LineRequest("4호선", "보라색", 강남역.getId(), 광교역.getId(), 20))
+                .as(LineResponse.class);
+
         return Stream.of(
                 dynamicTest("신분당선에 정자역을 추가한다", 지하철_노선에_지하철역_등록_요청_및_확인(신분당선, 양재역, 정자역, 2)),
                 dynamicTest("신분당선에 정자역 추가를 확인한다", 지하철_노선에_지하철역_순서_정렬됨(신분당선, 강남역, 양재역, 정자역)),
@@ -99,9 +99,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @TestFactory
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않을경우 실패한다")
     Stream<DynamicTest> 출발역과_도착역이_연결이_되어_있지_않을경우_실패한다() {
+        StationResponse 쿄잉역 = StationAcceptanceTest.지하철역_등록되어_있음("쿄잉역").as(StationResponse.class);
+        StationResponse 코잉역 = StationAcceptanceTest.지하철역_등록되어_있음("코잉역").as(StationResponse.class);
+        지하철_노선_생성_요청_및_검증(new LineRequest("4호선", "보라색", 쿄잉역.getId(), 코잉역.getId(), 20));
+
         return Stream.of(
-                dynamicTest("신분당선에 정자역을 추가한다", 지하철_노선에_지하철역_등록_요청_및_확인(신분당선, 양재역, 정자역, 2)),
-                dynamicTest("정자역과 광교역 찾는다", 지하철_최단거리_요청_및_실패(정자역, 광교역))
+                dynamicTest("강남역과 쿄잉역 찾는다", 지하철_최단거리_요청_및_실패(강남역, 쿄잉역))
         );
     }
 
