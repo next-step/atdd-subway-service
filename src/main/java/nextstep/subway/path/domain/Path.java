@@ -3,16 +3,19 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Path {
-    private WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
     private Station source;
     private Station target;
+    private WeightedMultigraph<Station, LineSection> graph;
 
     public Path(Station source, Station target) {
         if (source.equals(target)){
@@ -20,13 +23,34 @@ public class Path {
         }
         this.source = source;
         this.target = target;
+        this.graph = new WeightedMultigraph(LineSection.class);
     }
 
-    public List<Station> assembleStations(List<Line> lines) {
-        return lines.stream()
-                .flatMap(it -> it.assembleStations().stream())
-                .distinct()
-                .collect(Collectors.toList());
+    public List<Station> findShortPath(List<Line> lines) {
+        List<Station> stations = assembleStations(lines);
+        validStations(stations);
+        addVertex(lines);
+        addEdge(lines);
+
+        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        List<Station> shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
+
+        return shortestPath;
+    }
+
+    private List<Station> toStationList(List<String> shortestPath, List<Station> stations) {
+        List<Station> resultStationList = new ArrayList<>();
+        for (String stationName: shortestPath) {
+            Optional<Station> station = toStation(stations, stationName);
+            resultStationList.add(station.get());
+        }
+        return resultStationList;
+    }
+
+    public Optional<Station> toStation(List<Station> stations, String stationName) {
+        return stations.stream()
+                .filter(station -> station.getName().equals(stationName))
+                .findFirst();
     }
 
     public void addVertex(List<Line> lines) {
@@ -34,30 +58,40 @@ public class Path {
                 .flatMap(it -> it.assembleStations().stream())
                 .distinct()
                 .collect(Collectors.toList())
-                .forEach(station -> graph.addVertex(station.getName()));
+                .forEach(station -> graph.addVertex(station));
     }
 
     public void addEdge(List<Line> lines) {
         for (Line line : lines) {
             line.getSections().stream()
-                    .forEach(it -> addEdgeWeight(it));
+                    .forEach(it -> addEdgeWeight(it, line));
         }
     }
 
-    private void addEdgeWeight(Section section) {
-        DefaultWeightedEdge test = graph.addEdge(section.upStation().getName(), section.downStation().getName());
-        graph.setEdgeWeight(test, section.distance());
+    private void addEdgeWeight(Section section, Line line) {
+        LineSection lineSection = new LineSection(section, line.getId());
+        graph.addEdge(section.upStation(), section.downStation(), lineSection);
+        graph.setEdgeWeight(lineSection, section.distance());
     }
 
-    public void validStations(List<Line> lines) {
-        List<Station> stations = assembleStations(lines);
-        if (!hasStations(stations)) {
-            throw new RuntimeException("역이 연결되지 않았습니다.");
+    public void validStations(List<Station> stations) {
+        boolean hasSourceStation = hasStations(stations, source);
+        boolean hasTargetStation = hasStations(stations, target);
+
+        if (!hasSourceStation || !hasTargetStation) {
+            throw new RuntimeException("역이 연결되지 않았거나 등록되지 않았습니다.");
         }
     }
 
-    private boolean hasStations(List<Station> stations) {
+    private boolean hasStations(List<Station> stations, Station inputStation) {
         return stations.stream()
-                .anyMatch(station -> station.equals(source) || station.equals(target));
+                .anyMatch(station -> station.equals(inputStation));
+    }
+
+    public List<Station> assembleStations(List<Line> lines) {
+        return lines.stream()
+                .flatMap(it -> it.assembleStations().stream())
+                .distinct()
+                .collect(Collectors.toList());
     }
 }
