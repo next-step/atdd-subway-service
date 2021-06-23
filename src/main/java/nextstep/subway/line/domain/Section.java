@@ -110,7 +110,7 @@ public class Section {
     }
 
     public void updateDownStation(Section newSection) {
-        this.upStation = newSection.downStation;
+        this.downStation = newSection.upStation;
         this.distance = distance.diff(newSection.distance);
     }
 }
