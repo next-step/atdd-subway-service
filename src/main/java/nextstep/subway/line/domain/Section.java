@@ -73,11 +73,11 @@ public class Section {
         this.distance = this.distance.minus(section.distance);
     }
 
-    Station getUpStation() {
+    public Station getUpStation() {
         return upStation;
     }
 
-    Station getDownStation() {
+    public Station getDownStation() {
         return downStation;
     }
 

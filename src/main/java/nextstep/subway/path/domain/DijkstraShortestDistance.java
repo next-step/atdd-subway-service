@@ -1,6 +1,7 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.domain;
 
 import nextstep.subway.exception.LineHasNotExistShortestException;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.wrapped.Distance;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;

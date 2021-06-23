@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.exception.LineHasNotExistShortestException;
+import nextstep.subway.path.domain.DijkstraShortestDistance;
 import nextstep.subway.wrapped.Distance;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;

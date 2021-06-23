@@ -130,7 +130,7 @@ public class Sections {
                 .anyMatch(predicate);
     }
 
-    List<Section> toCollection() {
+    public List<Section> toCollection() {
         return Collections.unmodifiableList(sections);
     }
 }

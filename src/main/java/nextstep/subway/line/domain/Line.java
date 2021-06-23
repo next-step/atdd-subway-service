@@ -86,7 +86,7 @@ public class Line extends BaseEntity {
         return sections.containsStation(station);
     }
 
-    Sections getSections() {
+    public Sections getSections() {
         return sections;
     }
 }
