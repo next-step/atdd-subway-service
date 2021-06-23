@@ -1,5 +1,9 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.CannotAddException;
+import nextstep.subway.exception.CannotDeleteException;
+import nextstep.subway.exception.DataAlreadyExistsException;
+import nextstep.subway.exception.Message;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -10,7 +14,7 @@ import java.util.*;
 @Embeddable
 public class Sections {
 
-    private final int MINIMUM_REMOVABLE_SIZE = 2;
+    private static final int MINIMUM_REMOVABLE_SIZE = 2;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new LinkedList<>();
@@ -89,11 +93,11 @@ public class Sections {
 
     private void validateSectionBeforeAdd(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간입니다.");
+            throw new DataAlreadyExistsException(Message.ERROR_SECTION_ALREADY_EXISTS);
         }
 
         if (!isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new CannotAddException(Message.ERROR_ONE_OF_STATION_SHOULD_BE_REGISTERED);
         }
     }
 
@@ -118,8 +122,9 @@ public class Sections {
     }
 
     public void removeStation(Station station) {
-        validateBeforeRemove(station);
-
+        if (!isRemovableStatus()) {
+            throw new CannotDeleteException(Message.ERROR_SECTIONS_SIZE_TOO_SMALL_TO_DELETE);
+        }
         Section inputStationIsUpStation = findSectionWhichUpStationIs(station);
         Section inputStationIsDownStation = findSectionWhichDownStationIs(station);
 
@@ -155,15 +160,5 @@ public class Sections {
     private void removeMiddleStationOf(Section upSection, Section downSection) {
         downSection.removeConnectionWith(upSection);
         sections.remove(upSection);
-    }
-
-    private void validateBeforeRemove(Station station) {
-        if (!getSortedStation().contains(station)) {
-            throw new RuntimeException();
-        }
-
-        if (!isRemovableStatus()) {
-            throw new RuntimeException();
-        }
     }
 }
