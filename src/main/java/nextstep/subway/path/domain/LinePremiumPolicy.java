@@ -6,4 +6,6 @@ import nextstep.subway.wrapped.Money;
 
 public interface LinePremiumPolicy {
     Money calcFare(Lines lines, Money money);
+
+    boolean isSupport(Lines lines);
 }

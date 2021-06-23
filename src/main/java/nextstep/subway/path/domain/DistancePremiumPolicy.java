@@ -6,4 +6,6 @@ import nextstep.subway.wrapped.Money;
 
 public interface DistancePremiumPolicy {
     Money calcFare(Distance distance, Money money);
+
+    boolean isSupport(Distance distance);
 }
