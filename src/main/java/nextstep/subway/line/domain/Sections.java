@@ -59,10 +59,6 @@ public class Sections {
         return downStation;
     }
 
-    public void add(Section section) {
-        values.add(section);
-    }
-
     public List<Section> values() {
         return values;
     }
