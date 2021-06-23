@@ -1,6 +1,9 @@
 package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -8,14 +11,18 @@ import org.junit.jupiter.api.Test;
 
 import nextstep.subway.station.domain.Station;
 
-import java.util.List;
-
 class SectionsTest {
     Sections sections;
+    Line line;
+    Station upStation;
+    Station downStation;
 
     @BeforeEach
     void setup() {
         sections = new Sections();
+        line = new Line("분당선", "노랑색");
+        upStation = new Station("선릉역");
+        downStation = new Station("한티역");
     }
 
     @DisplayName("구간 add")
@@ -51,9 +58,6 @@ class SectionsTest {
     @Test
     void addLineStation() {
         //given
-        Line line = new Line("분당선", "노랑색");
-        Station upStation = new Station("선릉역");
-        Station downStation = new Station("한티역");
         //when
         sections.addSection(line, upStation, downStation, new Distance(5));
         //then
@@ -64,11 +68,8 @@ class SectionsTest {
     @Test
     void getStations() {
         //given
-        Line line = new Line("분당선", "노랑색");
-        Station upStation = new Station("선릉역");
-        Station downStation = new Station("한티역");
-        sections.addSection(line, upStation, downStation, new Distance(5));
         //when
+        sections.addSection(line, upStation, downStation, new Distance(5));
         List<Station> stations = sections.getStations();
         //then
         assertThat(stations.size()).isEqualTo(2);
@@ -80,18 +81,53 @@ class SectionsTest {
     @Test
     void deleteStation() {
         //given
-        Line line = new Line("분당선", "노랑색");
-        Station upStation = new Station("선릉역");
         Station middleStation = new Station("한티역");
-        Station downStation = new Station("복정역");
         sections.addSection(line, upStation, middleStation, new Distance(5));
         sections.addSection(line, middleStation, downStation, new Distance(5));
         //when
         sections.removeStation(line, downStation);
-        List<Station> stations = sections.getStations();
         //then
+        List<Station> stations = sections.getStations();
         assertThat(stations.size()).isEqualTo(2);
         assertThat(stations.get(0)).isEqualTo(upStation);
         assertThat(stations.get(1)).isEqualTo(middleStation);
+    }
+
+    @DisplayName("역 제거 실패 - 구간이 하나")
+    @Test
+    void deleteStationFailed() {
+        //given
+        sections.addSection(line, upStation, downStation, new Distance(5));
+        //when
+        //then
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> sections.removeStation(line, downStation))
+                .withMessage(Sections.SECTIONS_HAVE_ONLY_ONE);
+    }
+
+    @DisplayName("구간 추가 실패 - 역이 이미 구간에 등록 됨")
+    @Test
+    void addSectionFailedByStation() {
+        //given
+        sections.addSection(line, upStation, downStation, new Distance(5));
+        //when
+        //then
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> sections.addSection(line, upStation, downStation, new Distance(5)))
+                .withMessage(Sections.SECTION_IS_ALREADY_ADD);
+    }
+
+    @DisplayName("구간 추가 실패 - 구간이 연결되지 않음")
+    @Test
+    void addSectionFailedBySection() {
+        //given
+        Station newUpStation = new Station("한티역");
+        Station newDownStation = new Station("복정역");
+        sections.addSection(line, upStation, downStation, new Distance(5));
+        //when
+        //then
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> sections.addSection(line, newUpStation, newDownStation, new Distance(5)))
+                .withMessage(Sections.CANT_ADD_THIS_SECTION);
     }
 }
