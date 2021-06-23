@@ -1,7 +1,6 @@
 package nextstep.subway.line.dto;
 
 import nextstep.subway.line.domain.Fare;
-import nextstep.subway.line.domain.Fare_bak;
 import nextstep.subway.station.dto.StationResponse;
 
 import java.util.List;
