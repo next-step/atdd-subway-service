@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.LineHasNotExistStationException;
 import nextstep.subway.wrapped.Distance;
 import nextstep.subway.station.domain.Station;
 
@@ -132,5 +133,21 @@ public class Sections {
 
     public List<Section> toCollection() {
         return Collections.unmodifiableList(sections);
+    }
+
+    public boolean containsSection(SimpleSection simpleSection) {
+        boolean matched = sections.stream()
+                .anyMatch(item -> item.isSameUpAndDownStation(simpleSection));
+
+        return matched;
+    }
+
+    public Distance getSectionDistanceOf(SimpleSection simpleSection) {
+        Section section = sections.stream()
+                .filter(item -> item.isSameUpAndDownStation(simpleSection))
+                .findFirst()
+                .orElseThrow(LineHasNotExistStationException::new);
+
+        return section.getDistance();
     }
 }

@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class LinesTest {
 
@@ -22,7 +21,7 @@ class LinesTest {
                 )
         );
 
-        assertThat(lines.findMinimumFare())
+        assertThat(lines.findExpensiveFare())
                 .isEqualTo(new Money(500));
     }
 }

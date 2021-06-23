@@ -7,7 +7,7 @@ import nextstep.subway.wrapped.Money;
 public class DefaultLinePremiumPolicy implements LinePremiumPolicy {
     @Override
     public Money calcFare(Lines lines, Money money) {
-        return money.minus(lines.findMinimumFare());
+        return money.plus(lines.findExpensiveFare());
     }
 
     @Override

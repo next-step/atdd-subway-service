@@ -1,16 +1,25 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.EntityNotExistException;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
+import nextstep.subway.line.domain.SimpleSection;
 import nextstep.subway.path.domain.DijkstraShortestDistance;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.FareCalculator;
 import nextstep.subway.path.domain.ShortestDistance;
 import nextstep.subway.path.dto.LinePathRequest;
 import nextstep.subway.path.dto.LinePathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
+import nextstep.subway.station.domain.Stations;
 import nextstep.subway.wrapped.Money;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -23,16 +32,18 @@ public class LinePathQueryService {
         this.stationRepository = stationRepository;
     }
 
-    public LinePathResponse findShortDistance(LinePathRequest linePathRequest) {
+    public LinePathResponse findShortDistance(LoginMember loginMember, LinePathRequest linePathRequest) {
         Station source = findStationById(linePathRequest.getSource());
         Station target = findStationById(linePathRequest.getTarget());
 
-        ShortestDistance shortestDistance = new DijkstraShortestDistance(lineRepository.findAll(), source, target);
+        List<Line> lines = lineRepository.findAll();
+
+        ShortestDistance shortestDistance = new DijkstraShortestDistance(lines, source, target);
 
         return new LinePathResponse(
                 shortestDistance.shortestRoute(),
                 shortestDistance.shortestDistance(),
-                new Money(1000)
+                FareCalculator.calc(lines, loginMember, shortestDistance)
         );
     }
 

@@ -170,7 +170,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         StationResponse 쿄잉역 = StationAcceptanceTest.지하철역_등록되어_있음("쿄잉역").as(StationResponse.class);
 
-        int fare = 1250 + (40 / 5 * 100) + (20 / 8 * 100);
+        int fare = 1250 + (40 / 5 * 100) + (30 / 8 * 100);
 
         return Stream.of(
                 dynamicTest("등록된 계정으로 로그인 시도시 성공한다.", 로그인_요청_성공됨(성인_계정_토큰, authToken)),

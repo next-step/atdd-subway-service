@@ -81,6 +81,11 @@ public class Section {
         return downStation;
     }
 
+    public boolean isSameUpAndDownStation(SimpleSection simpleSection) {
+        return isUpStationEquals(simpleSection.getUpStation()) &&
+                isDownStationEquals(simpleSection.getDownStation());
+    }
+
     public boolean isUpStationEquals(Station station) {
         return this.upStation == station;
     }

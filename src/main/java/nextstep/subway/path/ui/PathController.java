@@ -22,7 +22,7 @@ public class PathController {
     @GetMapping
     public ResponseEntity<LinePathResponse> paths(@AuthenticationPrincipal LoginMember loginMember, LinePathRequest linePathRequest) {
         return ResponseEntity.ok(
-                linePathQueryService.findShortDistance(linePathRequest)
+                linePathQueryService.findShortDistance(loginMember, linePathRequest)
         );
     }
 }
