@@ -106,34 +106,34 @@ public class Sections {
         Station downStation = lastStopOfUpBound();
         stations.add(downStation);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextDownSection = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextDownSection.isPresent()) {
-                break;
-            }
-            downStation = nextDownSection.get().getDownStation();
-            stations.add(downStation);
+        Optional<Section> downSection = findDownSection(downStation);
+        while (downSection.isPresent()) {
+            stations.add(downSection.get().getDownStation());
+            downSection = findDownSection(downSection.get().getDownStation());
         }
 
         return stations;
     }
 
     private Station lastStopOfUpBound() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextUpSection = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextUpSection.isPresent()) {
-                break;
-            }
-            downStation = nextUpSection.get().getUpStation();
+        Station lastStop = sections.get(0).getUpStation();
+        Optional<Section> upSection = findUpSection(lastStop);
+        while (upSection.isPresent()) {
+            lastStop = upSection.get().getUpStation();
+            upSection = findUpSection(lastStop);
         }
-        return downStation;
+        return lastStop;
     }
 
+    private Optional<Section> findUpSection(Station station) {
+        return sections.stream()
+                .filter(section -> section.getDownStation().equals(station))
+                .findFirst();
+    }
+
+    private Optional<Section> findDownSection(Station station) {
+        return sections.stream()
+                .filter(section -> section.getUpStation().equals(station))
+                .findFirst();
+    }
 }
