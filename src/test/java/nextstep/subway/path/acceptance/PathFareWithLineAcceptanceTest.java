@@ -35,8 +35,6 @@ public class PathFareWithLineAcceptanceTest extends AcceptanceTest {
     private StationResponse 정자역;
     private StationResponse 광교역;
 
-    private LineResponse 신분당선;
-
     private MemberRequest 성인_계정 = new MemberRequest("A@A.com", "qwe123", 30);
 
     private TokenRequest 성인_계정_토큰 = new TokenRequest("A@A.com", "qwe123");
@@ -52,7 +50,7 @@ public class PathFareWithLineAcceptanceTest extends AcceptanceTest {
         정자역 = StationAcceptanceTest.지하철역_등록되어_있음("정자역").as(StationResponse.class);
         광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_생성_요청_및_검증(new LineRequest("신분당선", "빨간색", 강남역.getId(), 양재역.getId(), 3, 2000))
+        지하철_노선_생성_요청_및_검증(new LineRequest("신분당선", "빨간색", 강남역.getId(), 양재역.getId(), 3, 2000))
                 .as(LineResponse.class);
         지하철_노선_생성_요청_및_검증(new LineRequest("2호선", "초록색", 양재역.getId(), 정자역.getId(), 3, 1000))
                 .as(LineResponse.class);
@@ -66,7 +64,8 @@ public class PathFareWithLineAcceptanceTest extends AcceptanceTest {
         AuthToken authToken = new AuthToken();
         return Stream.of(
                 dynamicTest("등록된 계정으로 로그인 시도시 성공한다.", 로그인_요청_성공됨(성인_계정_토큰, authToken)),
-                dynamicTest("강남역과 광교역 최단거리를 확인한다", 지하철_최단거리_요청_및_확인(authToken, 강남역, 광교역, Arrays.asList(강남역, 양재역, 정자역, 광교역), 8, 3250))
+                dynamicTest("강남역과 광교역 최단거리를 확인한다", 지하철_최단거리_요청_및_확인(authToken, 강남역, 광교역, Arrays.asList(강남역, 양재역, 정자역, 광교역), 8, 3250)),
+                dynamicTest("광교역과 강남역 최단거리를 확인한다", 지하철_최단거리_요청_및_확인(authToken, 광교역, 강남역, Arrays.asList(광교역, 정자역, 양재역, 강남역), 8, 3250))
         );
     }
 }

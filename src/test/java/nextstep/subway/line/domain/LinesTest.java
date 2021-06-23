@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class LinesTest {
 
     @Test
-    void findMinimumFare() {
+    void findExpensiveFare() {
         Lines lines = new Lines(
                 Arrays.asList(
                         new Line("1호선", "1호선", 1000),
@@ -22,6 +22,6 @@ class LinesTest {
         );
 
         assertThat(lines.findExpensiveFare())
-                .isEqualTo(new Money(500));
+                .isEqualTo(new Money(7000));
     }
 }

@@ -25,6 +25,6 @@ class DefaultLinePremiumPolicyTest {
         );
 
         assertThat(new DefaultLinePremiumPolicy().calcFare(lines, new Money(5000)))
-                .isEqualTo(new Money(4500));
+                .isEqualTo(new Money(12000));
     }
 }
