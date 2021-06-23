@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import javax.persistence.Embeddable;
 
+import nextstep.subway.line.exception.InvalidDistanceException;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -24,7 +25,7 @@ public class Distance {
 
 	private void validate(int distance) {
 		if (distance <= MIN_DISTANCE)
-			throw new RuntimeException("거리는 0보다 같거나 작을 수 없습니다.");
+			throw new InvalidDistanceException("거리는 0보다 같거나 작을 수 없습니다.");
 	}
 
 	public Distance plus(Distance distance) {
@@ -33,7 +34,7 @@ public class Distance {
 
 	public Distance minus(Distance distance) {
 		if(isLessThanOrEqual(distance)) {
-			throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+			throw new InvalidDistanceException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
 		}
 		return new Distance(this.distance - distance.distance);
 	}

@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import nextstep.subway.line.exception.InvalidSectionsException;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -32,50 +32,55 @@ public class Sections {
 
 	public void removeStation(Line line, Station station) {
 		validateRemoveStation(station);
-		Optional<Section> upLineStation = getSectionOptionalEqualsUpStation(station);
-		Optional<Section> downLineStation = getSectionOptionalEqualsDownStation(station);
-		updateSectionForRemove(line, upLineStation, downLineStation);
-		removeSection(upLineStation, downLineStation);
+		Section upSection = getSectionEqualsDownStation(station);
+		Section downSection = getSectionEqualsUpStation(station);
+		updateSectionForRemove(line, upSection, downSection);
+		removeSection(upSection);
+		removeSection(downSection);
 	}
 
 	public List<Station> getStations() {
 		List<Station> stations = new LinkedList<>();
-		if (findFirstSectionOptional().isPresent()) {
-			stations.add(findFirstSectionOptional().get().getUpStation());
+		if (!sections.isEmpty()) {
+			stations.add(getFirstSection());
 			addNextStation(stations);
 		}
 		return stations;
 	}
 
 	private void addNextStation(List<Station> stations) {
-		Optional<Section> currentOptionalSection = nextStationOptional(stations.stream().findFirst().get());
-		while (currentOptionalSection.isPresent()) {
-			Station currentStation = currentOptionalSection.get().getDownStation();
+		Section currentSection = nextSection(stations.stream().findFirst().get());
+		while (Objects.nonNull(currentSection)) {
+			Station currentStation = currentSection.getDownStation();
 			stations.add(currentStation);
-			currentOptionalSection = nextStationOptional(currentStation);
+			currentSection = nextSection(currentStation);
 		}
 	}
 
-	private Optional<Section> nextStationOptional(Station firstStation) {
+	private Section nextSection(Station firstStation) {
 		return sections.stream()
 			.filter(section -> section.isEqualsUpStation(firstStation))
-			.findFirst();
+			.findFirst()
+			.orElse(null);
 	}
 
-	private Optional<Section> findFirstSectionOptional() {
+	private Station getFirstSection() {
 		return sections.stream()
 			.filter(section -> isFirstSection(section))
-			.findFirst();
+			.map(section -> section.getUpStation())
+			.findFirst()
+			.orElseThrow(() -> new InvalidSectionsException("첫번째 역이 존재하지 않습니다."));
 	}
 
 	private void validateNotExistedStationInSections(Section newSection, List<Station> stations) {
 		if (!stations.isEmpty() && isNoneMatchSectionInSections(newSection, stations)) {
-			throw new RuntimeException("등록할 수 없는 구간 입니다.");
+			throw new InvalidSectionsException("등록할 수 없는 구간 입니다.");
 		}
 	}
 
 	private boolean isNoneMatchSectionInSections(Section newSection, List<Station> stations) {
-		return isNoneMatchUpStationInSections(newSection, stations) && isNoneMatchDownStationInSections(newSection, stations);
+		return isNoneMatchUpStationInSections(newSection, stations) && isNoneMatchDownStationInSections(newSection,
+			stations);
 	}
 
 	private boolean isNoneMatchUpStationInSections(Section newSection, List<Station> stations) {
@@ -87,33 +92,32 @@ public class Sections {
 	}
 
 	private void validateSection(Section section) {
-		if(!Objects.nonNull(section)) {
-			throw new RuntimeException("구간이 null 입니다.");
+		if (!Objects.nonNull(section)) {
+			throw new InvalidSectionsException("구간이 null 입니다.");
 		}
 	}
 
 	private void validateAlreadyExistedSection(Section newSection, List<Station> stations) {
 		if (newSection.isUpStationExisted(stations) && newSection.isDownStationExisted(stations)) {
-			throw new RuntimeException("이미 등록된 구간 입니다.");
+			throw new InvalidSectionsException("이미 등록된 구간 입니다.");
 		}
 	}
 
 	private void updateUpStation(Section newSection, List<Station> stations) {
-		if (newSection.isUpStationExisted(stations)) {
-			getSectionOptionalEqualsUpStation(newSection.getUpStation())
-				.ifPresent(it -> it.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
+		Section updateSection = getSectionEqualsUpStation(newSection.getUpStation());
+		if (newSection.isUpStationExisted(stations) && Objects.nonNull(updateSection)) {
+			updateSection.updateUpStation(newSection.getDownStation(), newSection.getDistance());
 		}
 	}
 
 	private void updateDownStation(Section newSection, List<Station> stations) {
-		if (newSection.isDownStationExisted(stations)) {
-			getSectionOptionalEqualsDownStation(newSection.getDownStation())
-				.ifPresent(it -> it.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
+		Section updateSection = getSectionEqualsDownStation(newSection.getDownStation());
+		if (newSection.isDownStationExisted(stations) && Objects.nonNull(updateSection)) {
+			updateSection.updateDownStation(newSection.getUpStation(), newSection.getDistance());
 		}
 	}
 
-	private void validateAddSection(Section newSection, List<Station> stations)
-	{
+	private void validateAddSection(Section newSection, List<Station> stations) {
 		validateSection(newSection);
 		validateAlreadyExistedSection(newSection, stations);
 		validateNotExistedStationInSections(newSection, stations);
@@ -126,45 +130,47 @@ public class Sections {
 
 	private void validateMinSizeSections() {
 		if (this.sections.size() <= MIN_SECTIONS_SIZE) {
-			throw new RuntimeException("구간이 하나 이하이므로 지울 수 없습니다.");
+			throw new InvalidSectionsException("구간이 하나 이하이므로 지울 수 없습니다.");
 		}
 	}
 
 	private void validateStation(Station station) {
-		if(!Objects.nonNull(station)) {
-			throw new RuntimeException("역이 null 인 경우 삭제할 수 없습니다.");
+		if (!Objects.nonNull(station)) {
+			throw new InvalidSectionsException("역이 null 인 경우 삭제할 수 없습니다.");
 		}
 	}
 
-	private void removeSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
-		upLineStation.ifPresent(it -> this.sections.remove(it));
-		downLineStation.ifPresent(it -> this.sections.remove(it));
-	}
-
-	private void updateSectionForRemove(Line line, Optional<Section> upLineStation, Optional<Section> downLineStation) {
-		if (upLineStation.isPresent() && downLineStation.isPresent()) {
-			Station newUpStation = downLineStation.get().getUpStation();
-			Station newDownStation = upLineStation.get().getDownStation();
-			Distance newDistance = upLineStation.get().getDistance().plus(downLineStation.get().getDistance());
-			this.sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+	private void removeSection(Section section) {
+		if (Objects.nonNull(section)) {
+			this.sections.remove(section);
 		}
 	}
 
-	private Optional<Section> getSectionOptionalEqualsDownStation(Station station) {
+	private void updateSectionForRemove(Line line, Section upSection, Section downSection) {
+		if (Objects.nonNull(downSection) && Objects.nonNull(upSection)) {
+			Station upStation = upSection.getUpStation();
+			Station downStation = downSection.getDownStation();
+			Distance distance = downSection.getDistance().plus(upSection.getDistance());
+			this.sections.add(new Section(line, upStation, downStation, distance));
+		}
+	}
+
+	private Section getSectionEqualsDownStation(Station station) {
 		return this.sections.stream()
 			.filter(section -> section.isEqualsDownStation(station))
-			.findFirst();
+			.findFirst()
+			.orElse(null);
 	}
 
-	private Optional<Section> getSectionOptionalEqualsUpStation(Station station) {
+	private Section getSectionEqualsUpStation(Station station) {
 		return this.sections.stream()
 			.filter(section -> section.isEqualsUpStation(station))
-			.findFirst();
+			.findFirst()
+			.orElse(null);
 	}
 
 	private boolean isFirstSection(Section otherSection) {
 		return sections.stream().noneMatch(section -> otherSection.isEqualsUpStation(section.getDownStation()));
 	}
-
 
 }

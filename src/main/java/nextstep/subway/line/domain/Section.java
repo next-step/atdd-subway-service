@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import nextstep.subway.line.exception.InvalidSectionsException;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -95,7 +96,7 @@ public class Section {
 	private void validate(Line line, Station upStation, Station downStation, Distance distance) {
 		if (!Objects.nonNull(line) || !Objects.nonNull(upStation) || !Objects.nonNull(downStation) || !Objects.nonNull(
 			distance)) {
-			throw new RuntimeException("노선 또는 상행역, 하행역, 거리가 비워져 있습니다.");
+			throw new InvalidSectionsException("노선 또는 상행역, 하행역, 거리가 비워져 있습니다.");
 		}
 
 	}

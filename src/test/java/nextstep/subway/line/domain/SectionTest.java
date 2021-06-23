@@ -9,6 +9,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.line.exception.InvalidDistanceException;
+import nextstep.subway.line.exception.InvalidSectionException;
+import nextstep.subway.line.exception.InvalidSectionsException;
 import nextstep.subway.station.domain.Station;
 
 //todo : 성수뚝섬구간.isFirstSection() -> 근데 이건 Sections 에서 해야되는거 아니냐
@@ -42,7 +45,7 @@ public class SectionTest {
 	void createLineNullException() {
 		assertThatThrownBy(() ->
 			new Section(null, 성수역, 뚝섬역, new Distance(10))
-		).isInstanceOf(RuntimeException.class);//todo : Exception 생성 Advise
+		).isInstanceOf(InvalidSectionsException.class);
 	}
 
 	@DisplayName("구간 생성 테스트 - UpStation null 경우 에러 발생")
@@ -50,7 +53,7 @@ public class SectionTest {
 	void createUpStationNullException() {
 		assertThatThrownBy(() ->
 			new Section(이호선, null, 뚝섬역, new Distance(10))
-		).isInstanceOf(RuntimeException.class);//todo : Exception 생성 Advise
+		).isInstanceOf(InvalidSectionsException.class);
 	}
 
 	@DisplayName("구간 생성 테스트 - DownStation null 경우 에러 발생")
@@ -58,7 +61,7 @@ public class SectionTest {
 	void createDownStationNullException() {
 		assertThatThrownBy(() ->
 			new Section(이호선, 성수역, null, new Distance(10))
-		).isInstanceOf(RuntimeException.class);//todo : Exception 생성 Advise
+		).isInstanceOf(InvalidSectionsException.class);
 	}
 
 	@DisplayName("구간 생성 테스트 - Distance null 경우 에러 발생")
@@ -66,7 +69,7 @@ public class SectionTest {
 	void createDistanceNullException() {
 		assertThatThrownBy(() ->
 			new Section(이호선, 성수역, 뚝섬역, null)
-		).isInstanceOf(RuntimeException.class);//todo : Exception 생성 Advise
+		).isInstanceOf(InvalidSectionsException.class);
 	}
 
 	@DisplayName("구간의 상행역과 같은지 확인 테스트")
@@ -121,7 +124,7 @@ public class SectionTest {
 		Station 건대입구역 = new Station("건대입구역");
 		assertThatThrownBy(() ->
 			성수뚝섬구간.updateUpStation(건대입구역, new Distance(10))
-		).isInstanceOf(RuntimeException.class); //todo: Exception 만들고 Advise 생성 필요
+		).isInstanceOf(InvalidDistanceException.class);
 	}
 
 	@DisplayName("하행역 변경하기")
@@ -140,6 +143,6 @@ public class SectionTest {
 		Station 건대입구역 = new Station("건대입구역");
 		assertThatThrownBy(() ->
 			성수뚝섬구간.updateDownStation(건대입구역, new Distance(10))
-		).isInstanceOf(RuntimeException.class); //todo : Exception 만들고 Advise
+		).isInstanceOf(InvalidDistanceException.class);
 	}
 }

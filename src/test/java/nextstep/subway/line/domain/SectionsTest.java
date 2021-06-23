@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.line.exception.InvalidSectionException;
+import nextstep.subway.line.exception.InvalidSectionsException;
 import nextstep.subway.station.domain.Station;
 
 public class SectionsTest {
@@ -86,7 +88,7 @@ public class SectionsTest {
 		sections.addSection(성수뚝섬구간);
 		assertThatThrownBy(
 			() -> sections.addSection(new Section(이호선, 강변역, 건대입구역, new Distance(10)))
-		).isInstanceOf(RuntimeException.class); // todo : Exception Advise 추가
+		).isInstanceOf(InvalidSectionsException.class);
 	}
 
 	@DisplayName("구간 추가 기능 테스트 - 이미 존재하는 구간 똑같이 추가하기 (에러 발생)")
@@ -97,7 +99,7 @@ public class SectionsTest {
 		sections.addSection(성수뚝섬구간);
 		assertThatThrownBy(
 			() -> sections.addSection(성수뚝섬구간)
-		).isInstanceOf(RuntimeException.class); // todo : Exception Advise 추가
+		).isInstanceOf(InvalidSectionsException.class);
 	}
 
 	@DisplayName("구간 추가 기능 테스트 - 구간이 null 경우 (에러 발생)")
@@ -106,7 +108,7 @@ public class SectionsTest {
 		Sections sections = new Sections();
 		assertThatThrownBy(
 			() -> sections.addSection(null)
-		).isInstanceOf(RuntimeException.class); // todo : Exception Advise 추가
+		).isInstanceOf(InvalidSectionsException.class);
 	}
 
 	@DisplayName("구간에 역 제거 기능 테스트")
@@ -125,7 +127,7 @@ public class SectionsTest {
 		Sections sections = new Sections();
 		assertThatThrownBy(
 			() -> sections.removeStation(이호선, null)
-		).isInstanceOf(RuntimeException.class); // todo : Exception Advise 추가
+		).isInstanceOf(InvalidSectionsException.class);
 	}
 
 	@DisplayName("구간에 역 제거 기능 테스트- 노선이 null 경우 (에러 발생)")
@@ -134,7 +136,7 @@ public class SectionsTest {
 		Sections sections = new Sections();
 		assertThatThrownBy(
 			() -> sections.removeStation(null, 성수역)
-		).isInstanceOf(RuntimeException.class); // todo : Exception Advise 추가
+		).isInstanceOf(InvalidSectionsException.class);
 	}
 
 }
