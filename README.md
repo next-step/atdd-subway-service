@@ -94,7 +94,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   		Then 지하철 구간 등록 오류
   ```
 
-- [ ] LineService 리팩터링 - 스프링 빈을 사용하는 객체와 의존하는 로직을 제외하고 도메인으로 이동
+- [x] LineService 리팩터링 - 스프링 빈을 사용하는 객체와 의존하는 로직을 제외하고 도메인으로 이동
   - [x] saveLine 리팩터링
     - getStations 도메인으로 이동 및 메서드 분리
     - LineEntity 개선 - List<Section> 일급컬렉션으로 분리 및 로직 이동
@@ -108,7 +108,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - 하행 구간 추가로직 이동
     - Distance 일급객체로 분리
     - List<Station> 일급컬렉션으로 분리
-  - [ ] removeLineStation 리팩터링
+  - [x] removeLineStation 리팩터링
+    - Sections 로 로직 이관
+    - 메서드 분리
 
 
 

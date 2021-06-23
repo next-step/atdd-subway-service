@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
-import org.assertj.core.api.Assertions;
+import static org.assertj.core.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,13 +36,13 @@ class SectionsTest {
 	@Test
 	void testGetStations() {
 		SortedStations stations = this.sections.getSortedStations();
-		Assertions.assertThat(stations.getStations()).containsExactly(역삼역, 강남역, 교대역, 서초역);
+		assertThat(stations.getStations()).containsExactly(역삼역, 강남역, 교대역, 서초역);
 	}
 
 	@DisplayName("이미 존재하는 구간에 새로운 구간을 추가하려는 경우 오류발생")
 	@Test
 	void testValidateAlreadyExist() {
-		Assertions.assertThatThrownBy(() -> {
+		assertThatThrownBy(() -> {
 			this.sections.addSection(new Section(this.line, this.강남역, this.서초역, 10));
 		}).isInstanceOf(RuntimeException.class)
 			.hasMessageContaining("이미 등록된 구간 입니다.");
@@ -52,16 +53,16 @@ class SectionsTest {
 	void testAddSection() {
 		Station 잠실역 = new Station("잠실역");
 		this.sections.addSection(new Section(this.line, 잠실역, this.역삼역, 10));
-		Assertions.assertThat(this.sections.getSortedStations().getStations()).containsExactly(잠실역, 역삼역, 강남역, 교대역, 서초역);
+		assertThat(this.sections.getSortedStations().getStations()).containsExactly(잠실역, 역삼역, 강남역, 교대역, 서초역);
 
 		Station 사당역 = new Station("사당역");
 		this.sections.addSection(new Section(this.line, this.서초역, 사당역, 10));
-		Assertions.assertThat(this.sections.getSortedStations().getStations())
+		assertThat(this.sections.getSortedStations().getStations())
 			.containsExactly(잠실역, 역삼역, 강남역, 교대역, 서초역, 사당역);
 
 		Station 삼성역 = new Station("삼성역");
 		this.sections.addSection(new Section(this.line, 삼성역, this.역삼역, 5));
-		Assertions.assertThat(this.sections.getSortedStations().getStations())
+		assertThat(this.sections.getSortedStations().getStations())
 			.containsExactly(잠실역, 삼성역, 역삼역, 강남역, 교대역, 서초역, 사당역);
 	}
 
@@ -70,10 +71,28 @@ class SectionsTest {
 	void testNotContainedStations() {
 		Station 없는역1 = new Station("test1");
 		Station 없는역2 = new Station("test2");
-		Assertions.assertThatThrownBy(() -> {
+		assertThatThrownBy(() -> {
 			this.sections.addSection(new Section(this.line, 없는역1, 없는역2, 10));
 		}).isInstanceOf(RuntimeException.class)
 			.hasMessageContaining("등록할 수 없는 구간 입니다.");
+	}
+
+	@DisplayName("구간 제거를 테스트")
+	@Test
+	void testRemoveSection() {
+		this.sections.removeSection(강남역);
+		assertThat(this.sections.getSortedStations().getStations()).containsExactly(역삼역, 교대역, 서초역);
+	}
+
+	@DisplayName("구간이 하나일때 제거시 오류")
+	@Test
+	void testRemoveError() {
+		this.sections.removeSection(강남역);
+		this.sections.removeSection(교대역);
+
+		assertThatThrownBy(() -> {
+			this.sections.removeSection(서초역);
+		}).isInstanceOf(RuntimeException.class);
 	}
 
 }

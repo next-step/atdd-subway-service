@@ -100,4 +100,46 @@ public class Sections {
 			.filter(section -> section.isLinkedUpSection(station))
 			.findFirst();
 	}
+
+	public int size() {
+		return this.sections.size();
+	}
+
+	public void removeSection(Station station) {
+		this.validateRemovableSection();
+		Optional<Section> downSectionOpt = this.findDownSectionByStation(station);
+		Optional<Section> upSectionOpt = this.findUpSectionByStation(station);
+
+		if (downSectionOpt.isPresent() && upSectionOpt.isPresent()) {
+			Section combineSection = combineSections(downSectionOpt.get(), upSectionOpt.get());
+			this.sections.add(combineSection);
+		}
+		downSectionOpt.ifPresent(section -> this.sections.remove(section));
+		upSectionOpt.ifPresent(section -> this.sections.remove(section));
+	}
+
+	private Section combineSections(Section downSection, Section upSection) {
+		Station newDownStation = downSection.getDownStation();
+		Station newUpStation = upSection.getUpStation();
+		int newDistance = downSection.getDistance().addDistance(upSection.getDistance());
+		return new Section(downSection.getLine(), newUpStation, newDownStation, newDistance);
+	}
+
+	private Optional<Section> findUpSectionByStation(Station station) {
+		return this.sections.stream()
+			.filter(section -> section.isLinkedUpSection(station))
+			.findFirst();
+	}
+
+	private Optional<Section> findDownSectionByStation(Station station) {
+		return this.sections.stream()
+			.filter(section -> section.isLinkedDownSection(station))
+			.findFirst();
+	}
+
+	private void validateRemovableSection() {
+		if (this.sections.size() <= 1) {
+			throw new RuntimeException();
+		}
+	}
 }

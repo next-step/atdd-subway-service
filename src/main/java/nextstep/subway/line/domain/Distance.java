@@ -25,4 +25,8 @@ public class Distance {
 	public void reduce(Distance distance) {
 		this.distance -= distance.getDistance();
 	}
+
+	public int addDistance(Distance distance) {
+		return this.distance + distance.getDistance();
+	}
 }
