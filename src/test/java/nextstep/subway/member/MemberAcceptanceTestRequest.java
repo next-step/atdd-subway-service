@@ -85,6 +85,10 @@ public class MemberAcceptanceTestRequest {
         };
     }
 
+    public static ExtractableResponse<Response> 회원_생성을_요청(MemberRequest request) {
+        return 회원_생성을_요청(request.getEmail(), request.getPassword(), request.getAge());
+    }
+
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
