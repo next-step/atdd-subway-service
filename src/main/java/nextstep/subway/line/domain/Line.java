@@ -40,10 +40,10 @@ public class Line extends BaseEntity {
 
     private void validateAddable(Station upStation, Station downStation) {
         if (contains(upStation) && contains(downStation)) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
         if (!isEmpty() && !contains(upStation) && !contains(downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
     }
 
