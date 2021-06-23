@@ -10,15 +10,13 @@ public class Fare {
 
     private final int fareByDistance;
     private final int surcharge;
-    private final DiscountStrategy discountStrategy;
 
-    public Fare(Distance distance, Collection<Line> lines, DiscountStrategy discountStrategy) {
+    public Fare(Distance distance, BelongLines belongLines) {
         this.fareByDistance = calculateFare(distance);
-        this.surcharge = extractMaxSurcharge(lines);
-        this.discountStrategy = discountStrategy;
+        this.surcharge = extractMaxSurcharge(belongLines.getLines());
     }
 
-    public int getTotalFare() {
+    public int getTotalFare(DiscountStrategy discountStrategy) {
         return discountStrategy.discount(fareByDistance + surcharge);
     }
 
