@@ -74,6 +74,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - When 지하철 구간 2개 삭제 요청
     - 실패! When 구간 중복 등록 요청
     - 실패! Then 구간 등록 실패
+    - 실패! When 존재하지 않는 역으로 구간 등록 요청
+    - 실패! Then 구간 등록 실패
     - 실패! When 존재하지 않는 역 삭제 요청
     - 실패! Then 역 삭제 실패
     - 실패! When 역이 두개일 때 역 삭제 요청
