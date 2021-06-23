@@ -59,10 +59,7 @@ public class Sections {
         Optional<Section> downSection = findDownSection(station);
 
         if (upSection.isPresent() && downSection.isPresent()) {
-            Station newUpStation = upSection.get().getUpStation();
-            Station newDownStation = downSection.get().getDownStation();
-            int newDistance = upSection.get().getDistance() + downSection.get().getDistance();
-            sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+            addMergeSections(line, upSection, downSection);
         }
 
         upSection.ifPresent(it -> sections.remove(it));
@@ -76,6 +73,13 @@ public class Sections {
         if (!contains(station)) {
             throw new IllegalArgumentException("구간에 존재하지 않는 역입니다. 삭제하고자 하는 역 정보를 확인해 주세요.");
         }
+    }
+
+    private void addMergeSections(Line line, Optional<Section> upSection, Optional<Section> downSection) {
+        Station newUpStation = upSection.get().getUpStation();
+        Station newDownStation = downSection.get().getDownStation();
+        int newDistance = upSection.get().getDistance() + downSection.get().getDistance();
+        sections.add(new Section(line, newUpStation, newDownStation, newDistance));
     }
 
     public boolean isEmpty() {
