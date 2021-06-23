@@ -1,6 +1,7 @@
 package nextstep.subway.line.application;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,6 +68,12 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.removeStation(station);
+    }
+
+    public List<Section> getAllSections() {
+        return lineRepository.findAll().stream()
+            .flatMap(line -> line.getSections().stream())
+            .collect(Collectors.toList());
     }
 
 }

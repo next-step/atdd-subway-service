@@ -15,7 +15,8 @@ import static nextstep.subway.station.domain.StationTest.잠실역;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -66,7 +67,16 @@ public class LinePathSearchTest {
 
         삼호선.addSection(new Section(삼호선, 남부터미널역, 양재역, 2));
         사호선.addSection(new Section(사호선, 오리역, 분당역, 10));
-        linePathSearch = LinePathSearch.of(Arrays.asList(이호선, 삼호선, 신분당선, 자바선, 호남선, 사호선, 서해선));
+        List<Section> sectinos = new ArrayList<>();
+        sectinos.addAll(이호선.getSections());
+        sectinos.addAll(삼호선.getSections());
+        sectinos.addAll(신분당선.getSections());
+        sectinos.addAll(자바선.getSections());
+        sectinos.addAll(호남선.getSections());
+        sectinos.addAll(사호선.getSections());
+        sectinos.addAll(서해선.getSections());
+
+        linePathSearch = LinePathSearch.of(sectinos);
 
     }
 

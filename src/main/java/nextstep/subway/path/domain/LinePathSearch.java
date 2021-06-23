@@ -7,7 +7,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import nextstep.subway.exception.path.PathException;
-import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
 public class LinePathSearch {
@@ -15,21 +15,20 @@ public class LinePathSearch {
     private WeightedMultigraph<Station, SectionEdge> weightedMultigraph;
     private DijkstraShortestPath<Station, SectionEdge> dijkstra;
 
-    private LinePathSearch(List<Line> lines) {
-        this.weightedMultigraph = settingGraph(lines);
+    private LinePathSearch(List<Section> sections) {
+        this.weightedMultigraph = settingGraph(sections);
         this.dijkstra = new DijkstraShortestPath<>(this.weightedMultigraph);
     }
 
-    private WeightedMultigraph<Station, SectionEdge> settingGraph(List<Line> lines) {
+    private WeightedMultigraph<Station, SectionEdge> settingGraph(List<Section> sections) {
         WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph<>(SectionEdge.class);
-        addAllToGraph(lines, graph);
+        addAllToGraph(sections, graph);
 
         return graph;
     }
 
-    private void addAllToGraph(List<Line> lines, WeightedMultigraph<Station, SectionEdge> graph) {
-        lines.stream()
-            .flatMap(line -> line.getSections().stream())
+    private void addAllToGraph(List<Section> sections, WeightedMultigraph<Station, SectionEdge> graph) {
+        sections.stream()
             .forEach(section -> {
                 SectionEdge edge = SectionEdge.of(section);
                 graph.addVertex(section.getUpStation());
@@ -39,8 +38,8 @@ public class LinePathSearch {
             });
     }
 
-    public static LinePathSearch of(List<Line> lines) {
-        return new LinePathSearch(lines);
+    public static LinePathSearch of(List<Section> sections) {
+        return new LinePathSearch(sections);
     }
 
     public Path searchPath(Station source, Station target) {
