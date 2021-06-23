@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.SectionEdge;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 
@@ -13,18 +14,13 @@ public class ShortestPath {
     public static final int BASIC_FARE = 1250;
     public static final int BASIC_DISTANCE = 10;
 
-    private List<Station> stations;
-    private int totalDistance;
-    private int fare;
+    private GraphPath path;
+    private User user;
 
     public ShortestPath(GraphPath path) {
         validate(path);
 
-        stations = path.getVertexList();
-        totalDistance = (int) path.getWeight();
-        fare = BASIC_FARE
-                + calculateOverFare(totalDistance - BASIC_DISTANCE)
-                + maxAdditionalFareIn(path);
+        this.path = path;
     }
 
     private void validate(GraphPath path) {
@@ -52,14 +48,33 @@ public class ShortestPath {
     }
 
     public List<Station> stations() {
-        return stations;
+        return path.getVertexList();
     }
 
     public int totalDistance() {
-        return totalDistance;
+        return (int) path.getWeight();
     }
 
     public int fare() {
-        return fare;
+        if (user == null) {
+            return totalFare();
+        }
+
+        return discountTotalFare();
+    }
+
+    private int discountTotalFare() {
+        return (int) user.discount(totalFare());
+    }
+
+    private int totalFare() {
+        return BASIC_FARE
+                + calculateOverFare(totalDistance() - BASIC_DISTANCE)
+                + maxAdditionalFareIn(path);
+    }
+
+    public ShortestPath withUser(Member member) {
+        user = User.typeOf(member);
+        return this;
     }
 }

@@ -99,6 +99,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return RestAssuredCRUD.postRequest("/members", memberRequest);
     }
 
+    public static ExtractableResponse<Response> 성인_회원_등록되어_있음(String email, String password) {
+        MemberRequest memberRequest = new MemberRequest(email, password, 33);
+        return RestAssuredCRUD.postRequest("/members", memberRequest);
+    }
+
+    public static ExtractableResponse<Response> 무료_회원_등록되어_있음(String email, String password) {
+        MemberRequest memberRequest = new MemberRequest(email, password, 65);
+        return RestAssuredCRUD.postRequest("/members", memberRequest);
+    }
+
     public static ExtractableResponse<Response> 어린이_회원_등록되어_있음(String email, String password) {
         MemberRequest memberRequest = new MemberRequest(email, password, 10);
         return RestAssuredCRUD.postRequest("/members", memberRequest);

@@ -54,4 +54,21 @@ public class Member extends BaseEntity {
             throw new AuthorizationException();
         }
     }
+
+    public boolean isFree() {
+        return age <= 5 || age >= 65;
+    }
+
+    public boolean isAdult() {
+        return id == null || (age <= 64 && age >= 19);
+    }
+
+    public boolean isYouth() {
+        return age >= 13 && age <= 18;
+    }
+
+    public boolean isChild() {
+        return age >= 6 && age <= 12;
+    }
+
 }

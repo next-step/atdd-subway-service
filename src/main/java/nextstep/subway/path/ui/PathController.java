@@ -3,7 +3,6 @@ package nextstep.subway.path.ui;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.application.MemberService;
-import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.path.application.PathService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,11 +21,10 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity findPath(@AuthenticationPrincipal LoginMember loginMember, @RequestParam Long source, @RequestParam Long target) {
-        if (loginMember.getId() != null) {
-            MemberResponse member = memberService.findMember(loginMember.getId());
-            return ResponseEntity.ok(pathService.findPath(source, target));
-        }
-        return ResponseEntity.ok(pathService.findPath(source, target));
+//        if (loginMember.getId() != null) {
+            return ResponseEntity.ok(pathService.findPath(loginMember.getId(), source, target));
+//        }
+//        return ResponseEntity.ok(pathService.findPath(source, target));
     }
 
 }

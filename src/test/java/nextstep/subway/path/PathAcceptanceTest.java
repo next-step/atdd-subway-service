@@ -49,6 +49,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private final int 성인과_비로그인유저_요금 = 3450;
     private final int 청소년_요금 = 2480;
     private final int 어린이_요금 = 1550;
+    private final int 무료_요금 = 0;
 //    private int distanceBetween강남역and양재역 = 27;
 //    private int distanceBetween교대역and강남역 = 30;
 //    private int distanceBetween교대역and양재역 = 5;
@@ -59,8 +60,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * 거리는: 11+17+10+21 = 59
      * 금액은
      *   비로그인/성인 : 3450 원 = 1250(기본요금) + 800(10~ 50km 5km당요금) + 200(50km 이상 8km당 요금) + 1200(노선별 요금 중 최고금액)
-     *   청소년       : 2480 원 = 3450 - 350 * 0.8
-     *   어린이       : 1550 원 = 3450 - 350 * 0.5
+     *   청소년       : 2480 원 = (3450 - 350) * 0.8
+     *   어린이       : 1550 원 = (3450 - 350) * 0.5
      *
      * 2호선 추가요금 1000원
      * 신분당선 추가요금 800원
@@ -156,7 +157,49 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void 두_역의_최단거리와_요금을_조회하는데_로그인을_안했거나_성인이다() {
+    void 두_역의_최단거리와_요금을_조회하는데_무료_로그인유저_이다() {
+        무료_회원_등록되어_있음(EMAIL, PASSWORD);
+        ExtractableResponse<Response> tokenResponse = 로그인_요청(EMAIL, PASSWORD);
+        String token = tokenResponse.as(TokenResponse.class).getAccessToken();
+        
+//        When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+        ExtractableResponse<Response> pathResponse = 로그인유저가_출발역과_도착역으로_최단경로를_찾는다(
+                token,
+                PathRequest.of(대교역.getId(), 널미터부남역.getId()));
+//        Then 최단 거리 경로를 응답
+        assertThat(pathResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        역_사이의_최단경로_역들을_확인한다(pathResponse, Arrays.asList(대교역, 강남역, 남강역, 양재역, 널미터부남역));
+
+//        And 총 거리도 함께 응답함
+        역_사이의_최단거리를_확인한다(pathResponse, 대교역에서_널미터부남역_최단거리);
+
+//        And ** 지하철 이용 요금도 함께 응답함 **
+        역_사이의_요금을_확인한다(pathResponse, 무료_요금);
+    }
+
+    @Test
+    void 두_역의_최단거리와_요금을_조회하는데_성인_로그인유저_이다() {
+        성인_회원_등록되어_있음(EMAIL, PASSWORD);
+        ExtractableResponse<Response> tokenResponse = 로그인_요청(EMAIL, PASSWORD);
+        String token = tokenResponse.as(TokenResponse.class).getAccessToken();
+        
+//        When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+        ExtractableResponse<Response> pathResponse = 로그인유저가_출발역과_도착역으로_최단경로를_찾는다(
+                token,
+                PathRequest.of(대교역.getId(), 널미터부남역.getId()));
+//        Then 최단 거리 경로를 응답
+        assertThat(pathResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        역_사이의_최단경로_역들을_확인한다(pathResponse, Arrays.asList(대교역, 강남역, 남강역, 양재역, 널미터부남역));
+
+//        And 총 거리도 함께 응답함
+        역_사이의_최단거리를_확인한다(pathResponse, 대교역에서_널미터부남역_최단거리);
+
+//        And ** 지하철 이용 요금도 함께 응답함 **
+        역_사이의_요금을_확인한다(pathResponse, 성인과_비로그인유저_요금);
+    }
+
+    @Test
+    void 두_역의_최단거리와_요금을_조회하는데_로그인을_안했다() {
 //        When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
         PathRequest pathRequest = PathRequest.of(대교역.getId(), 널미터부남역.getId());
         ExtractableResponse<Response> pathResponse = 출발역과_도착역으로_최단경로를_찾는다(pathRequest);
