@@ -6,7 +6,6 @@ import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
-import nextstep.subway.station.dto.StationResponse;
 import nextstep.subway.station.exception.CannotFoundStationException;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,7 @@ public class PathService {
         Station sourceStation = stationRepository.findById(source).orElseThrow(CannotFoundStationException::new);
         Station targetStation = stationRepository.findById(target).orElseThrow(CannotFoundStationException::new);
         PathFinder pathFinder = new PathFinder(new Lines(lineRepository.findAll()));
-        return new PathResponse(StationResponse.ofList(pathFinder.findPath(sourceStation, targetStation)));
+        return pathFinder.findPath(sourceStation, targetStation);
     }
 
 }

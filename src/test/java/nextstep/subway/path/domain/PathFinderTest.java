@@ -2,11 +2,15 @@ package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,10 +54,10 @@ public class PathFinderTest {
         PathFinder pathFinder = new PathFinder(new Lines(이호선, 오호선));
 
         // When
-        List<Station> stations = pathFinder.findPath(서대문역, 시청역);
+        PathResponse pathResponse = pathFinder.findPath(서대문역, 시청역);
 
         // Then
-        assertThat(stations).containsExactly(서대문역, 충정로역, 시청역);
+        지하철_최단_경로_목록_정렬됨(pathResponse.getStations(), 서대문역, 충정로역, 시청역);
     }
 
     @DisplayName("최단 경로 찾기 - 거쳐가는 지하철역 개수가 동일할 경우 가중치가 적은 경로 탐색")
@@ -63,10 +67,20 @@ public class PathFinderTest {
         PathFinder pathFinder = new PathFinder(new Lines(일호선, 이호선, 오호선));
 
         // When
-        List<Station> stations = pathFinder.findPath(광화문역, 시청역);
+        PathResponse pathResponse = pathFinder.findPath(광화문역, 시청역);
 
         // Then
-        assertThat(stations).containsExactly(광화문역, 종로3가역, 종각역, 시청역);
+        지하철_최단_경로_목록_정렬됨(pathResponse.getStations(), 광화문역, 종로3가역, 종각역, 시청역);
+    }
+
+    private void 지하철_최단_경로_목록_정렬됨(List<StationResponse> stationResponses, Station... expectStations) {
+        List<String> stationNames = stationResponses.stream()
+            .map(StationResponse::getName)
+            .collect(Collectors.toList());
+        List<String> expectStationNames = Arrays.stream(expectStations)
+            .map(Station::getName)
+            .collect(Collectors.toList());
+        assertThat(stationNames).hasSameElementsAs(expectStationNames);
     }
 
 }

@@ -3,9 +3,11 @@ package nextstep.subway.path.domain;
 import java.util.List;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.exception.CannotFoundPathException;
 import nextstep.subway.path.exception.SameOriginAndDestinationException;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -39,7 +41,7 @@ public class PathFinder {
         return graph.addEdge(section.getUpStation(), section.getDownStation());
     }
 
-    public List<Station> findPath(Station source, Station target) {
+    public PathResponse findPath(Station source, Station target) {
         if (source.equals(target)) {
             throw new SameOriginAndDestinationException();
         }
@@ -48,6 +50,7 @@ public class PathFinder {
         if (graphPath == null) {
             throw new CannotFoundPathException();
         }
-        return graphPath.getVertexList();
+        List<Station> stations = graphPath.getVertexList();
+        return new PathResponse(StationResponse.ofList(stations), (int) graphPath.getWeight());
     }
 }
