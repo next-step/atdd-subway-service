@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.jgrapht.GraphPath;
 
+import nextstep.subway.exception.path.PathException;
 import nextstep.subway.station.domain.Station;
 
 public class Path {
@@ -28,7 +29,14 @@ public class Path {
     }
 
     public static Path of(GraphPath<Station, SectionEdge> path) {
+        validatoin(path);
         return new Path(path.getVertexList(), path.getEdgeList());
+    }
+
+    private static void validatoin(GraphPath<Station, SectionEdge> path) {
+        if (path == null) {
+            throw new PathException(PathException.NOT_CONNECTED);
+        }
     }
 
 }

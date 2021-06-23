@@ -45,9 +45,6 @@ public class LinePathSearch {
     public Path searchPath(Station source, Station target) {
         validataionStation(source, target);
         GraphPath<Station, SectionEdge> path = dijkstra.getPath(source, target);
-        if (path == null) {
-            throw new PathException(PathException.NOT_CONNECTED);
-        }
         return Path.of(path);
     }
 
