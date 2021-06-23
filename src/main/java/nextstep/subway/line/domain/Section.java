@@ -59,15 +59,31 @@ public class Section {
     }
 
     public boolean isUpStation(Station station) {
-        return this.upStation == station;
+        return this.upStation.equals(station);
     }
 
     public boolean isDownStation(Station station) {
-        return this.downStation == station;
+        return this.downStation.equals(station);
+    }
+
+    public boolean isDownStation(Section section) {
+        return this.downStation.equals(section.downStation);
+    }
+
+    public boolean isUpStation(Section section) {
+        return this.upStation.equals(section.upStation);
+    }
+
+    public boolean isExistsUpStation(Section section) {
+        return upStation.equals(section.upStation) || downStation.equals(section.upStation);
+    }
+
+    public boolean isExistsDownStation(Section section) {
+        return upStation.equals(section.downStation) || downStation.equals(section.downStation);
     }
 
     public boolean isExistsStation(Station station) {
-        return upStation == station || downStation == station;
+        return upStation.equals(station) || downStation.equals(station);
     }
 
     public Distance getDistance() {
@@ -86,5 +102,15 @@ public class Section {
 
     public Distance addDistance(Section downSection) {
         return distance.add(downSection.distance);
+    }
+
+    public void updateUpStation(Section newSection) {
+        this.upStation = newSection.downStation;
+        this.distance = distance.diff(newSection.distance);
+    }
+
+    public void updateDownStation(Section newSection) {
+        this.upStation = newSection.downStation;
+        this.distance = distance.diff(newSection.distance);
     }
 }
