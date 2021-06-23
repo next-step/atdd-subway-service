@@ -27,24 +27,11 @@ public class SectionTest {
     }
 
     @Test
-    @DisplayName("두 구간이 병합가능한지 검증한다")
-    void isMergeableWith() {
+    @DisplayName("역을 포함하고 있는지 확인한다")
+    void contains() {
         // 노선순서: 강남-양재-광교중앙-광교
-        assertThat(강남_양재_100.isMergeableWith(양재_광교중앙_30)).isTrue();
-        assertThat(양재_광교중앙_30.isMergeableWith(강남_양재_100)).isTrue();
-        assertThat(광교중앙_광교_30.isMergeableWith(강남_양재_100)).isFalse();
-        assertThat(광교중앙_광교_30.isMergeableWith(광교중앙_광교_30)).isFalse();
-    }
-
-    @Test
-    @DisplayName("두 구간을 병합하고 결과를 확인한다")
-    void mergeWith() {
-        // 노선순서: 강남-양재-광교중앙-광교
-        Section newSection = 강남_양재_100.mergeWith(양재_광교중앙_30);
-
-        assertThat(newSection.getDistance()).isEqualTo(130);
-        assertThat(newSection.getUpStation()).isEqualTo(강남역);
-        assertThat(newSection.getDownStation()).isEqualTo(광교중앙역);
+        assertThat(강남_양재_100.contains(강남역)).isTrue();
+        assertThat(강남_양재_100.contains(광교역)).isFalse();
     }
 
     @Test
@@ -66,5 +53,26 @@ public class SectionTest {
         assertThat(강남_광교중앙_130.getDistance()).isEqualTo(30);
         assertThat(강남_광교중앙_130.getUpStation()).isEqualTo(양재역);
         assertThat(강남_광교중앙_130.getDownStation()).isEqualTo(광교중앙역);
+    }
+
+    @Test
+    @DisplayName("두 구간이 병합가능한지 검증한다")
+    void isMergeableWith() {
+        // 노선순서: 강남-양재-광교중앙-광교
+        assertThat(강남_양재_100.isMergeableWith(양재_광교중앙_30)).isTrue();
+        assertThat(양재_광교중앙_30.isMergeableWith(강남_양재_100)).isTrue();
+        assertThat(광교중앙_광교_30.isMergeableWith(강남_양재_100)).isFalse();
+        assertThat(광교중앙_광교_30.isMergeableWith(광교중앙_광교_30)).isFalse();
+    }
+
+    @Test
+    @DisplayName("두 구간을 병합하고 결과를 확인한다")
+    void mergeWith() {
+        // 노선순서: 강남-양재-광교중앙-광교
+        Section newSection = 강남_양재_100.mergeWith(양재_광교중앙_30);
+
+        assertThat(newSection.getDistance()).isEqualTo(130);
+        assertThat(newSection.getUpStation()).isEqualTo(강남역);
+        assertThat(newSection.getDownStation()).isEqualTo(광교중앙역);
     }
 }
