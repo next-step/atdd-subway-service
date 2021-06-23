@@ -59,7 +59,7 @@ class SectionsTest {
     void addLineStation() {
         //given
         //when
-        sections.addSection(line, upStation, downStation, new Distance(5));
+        sections.addSection(new Section(line, upStation, downStation, new Distance(5)));
         //then
         assertThat(sections.size()).isEqualTo(1);
     }
@@ -69,7 +69,7 @@ class SectionsTest {
     void getStations() {
         //given
         //when
-        sections.addSection(line, upStation, downStation, new Distance(5));
+        sections.addSection(new Section(line, upStation, downStation, new Distance(5)));
         List<Station> stations = sections.getStations();
         //then
         assertThat(stations.size()).isEqualTo(2);
@@ -81,9 +81,9 @@ class SectionsTest {
     @Test
     void deleteStation() {
         //given
-        Station middleStation = new Station("한티역");
-        sections.addSection(line, upStation, middleStation, new Distance(5));
-        sections.addSection(line, middleStation, downStation, new Distance(5));
+        Station middleStation = new Station("수서역");
+        sections.addSection(new Section(line, upStation, middleStation, new Distance(5)));
+        sections.addSection(new Section(line, middleStation, downStation, new Distance(5)));
         //when
         sections.removeStation(line, downStation);
         //then
@@ -97,7 +97,7 @@ class SectionsTest {
     @Test
     void deleteStationFailed() {
         //given
-        sections.addSection(line, upStation, downStation, new Distance(5));
+        sections.addSection(new Section(line, upStation, downStation, new Distance(5)));
         //when
         //then
         assertThatExceptionOfType(RuntimeException.class)
@@ -109,11 +109,11 @@ class SectionsTest {
     @Test
     void addSectionFailedByStation() {
         //given
-        sections.addSection(line, upStation, downStation, new Distance(5));
+        sections.addSection(new Section(line, upStation, downStation, new Distance(5)));
         //when
         //then
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> sections.addSection(line, upStation, downStation, new Distance(5)))
+                .isThrownBy(() -> sections.addSection(new Section(line, upStation, downStation, new Distance(5))))
                 .withMessage(Sections.SECTION_IS_ALREADY_ADD);
     }
 
@@ -121,13 +121,13 @@ class SectionsTest {
     @Test
     void addSectionFailedBySection() {
         //given
-        Station newUpStation = new Station("한티역");
+        Station newUpStation = new Station("수서역");
         Station newDownStation = new Station("복정역");
-        sections.addSection(line, upStation, downStation, new Distance(5));
+        sections.addSection(new Section(line, upStation, downStation, new Distance(5)));
         //when
         //then
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> sections.addSection(line, newUpStation, newDownStation, new Distance(5)))
+                .isThrownBy(() -> sections.addSection(new Section(line, newUpStation, newDownStation, new Distance(5))))
                 .withMessage(Sections.CANT_ADD_THIS_SECTION);
     }
 }
