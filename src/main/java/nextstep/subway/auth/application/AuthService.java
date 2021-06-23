@@ -1,5 +1,6 @@
 package nextstep.subway.auth.application;
 
+import nextstep.subway.auth.domain.Guest;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -7,7 +8,6 @@ import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
@@ -27,7 +27,11 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
+    public LoginMember findMemberByToken(String credentials, String uri) {
+        if (!jwtTokenProvider.validateToken(credentials) && uri.startsWith("/paths")) {
+            return new Guest();
+        }
+
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException("유효하지 않은 토큰입니다");
         }
