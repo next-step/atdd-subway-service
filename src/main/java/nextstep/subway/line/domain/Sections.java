@@ -10,6 +10,8 @@ import java.util.*;
 @Embeddable
 public class Sections {
 
+    private final int MINIMUM_REMOVABLE_SIZE = 2;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new LinkedList<>();
 
@@ -30,10 +32,7 @@ public class Sections {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Section nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation().equals(finalDownStation))
-                    .findFirst()
-                    .orElse(null);
+            Section nextLineStation = findSectionWhichUpStationIs(finalDownStation);
             if (nextLineStation == null) {
                 break;
             }
@@ -47,10 +46,7 @@ public class Sections {
         Station expectedFirstStationOfLine = sections.get(0).getUpStation();
         while (expectedFirstStationOfLine != null) {
             Station assumedFirstStation = expectedFirstStationOfLine;
-            Section nextSection = getSections().stream()
-                    .filter(it -> it.downStationSameWith(assumedFirstStation))
-                    .findFirst()
-                    .orElse(null);
+            Section nextSection = findSectionWhichDownStationIs(assumedFirstStation);
             if (nextSection == null) {
                 break;
             }
@@ -68,8 +64,8 @@ public class Sections {
         if (sections.contains(section)) {
             return;
         }
-        List<Station> stations = getSortedStation();
 
+        List<Station> stations = getSortedStation();
         boolean isUpStationExisted = validateUpStation(stations, section.getUpStation());
         boolean isDownStationExisted = validateDownStation(stations, section.getDownStation());
 
@@ -102,18 +98,72 @@ public class Sections {
     }
 
     private void addSectionWhenDownStationExists(Section section) {
-        sections.stream()
-                .filter(it -> it.hasEqualDownStationWith(section))
-                .findFirst()
-                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+        Section hasSameDownStation = findSectionWhichDownStationIs(section.getDownStation());
+        if (hasSameDownStation != null) {
+            hasSameDownStation.updateDownStation(section.getUpStation(), section.getDistance());
+        }
         sections.add(section);
     }
 
     private void addSectionWhenUpStationExists(Section section) {
-        sections.stream()
-                .filter(it -> it.hasEqualUpStationWith(section))
-                .findFirst()
-                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+        Section hasSameUpStation = findSectionWhichUpStationIs(section.getUpStation());
+        if (hasSameUpStation != null) {
+            hasSameUpStation.updateUpStation(section.getDownStation(), section.getDistance());
+        }
         sections.add(section);
+    }
+
+    public boolean isRemovableStatus() {
+        return sections.size() >= MINIMUM_REMOVABLE_SIZE;
+    }
+
+    public void removeStation(Station station) {
+        validateBeforeRemove(station);
+
+        Section inputStationIsUpStation = findSectionWhichUpStationIs(station);
+        Section inputStationIsDownStation = findSectionWhichDownStationIs(station);
+
+        if (inputStationIsUpStation != null && inputStationIsDownStation != null) {
+            removeMiddleStationOf(inputStationIsDownStation, inputStationIsUpStation);
+            return;
+        }
+
+        if (inputStationIsUpStation == null && inputStationIsDownStation != null) {
+            sections.remove(inputStationIsDownStation);
+            return;
+        }
+
+        if (inputStationIsUpStation != null) {
+            sections.remove(inputStationIsUpStation);
+        }
+    }
+
+    private Section findSectionWhichDownStationIs(Station station) {
+        return getSections().stream()
+                .filter(it -> it.hasDownStationSameWith(station))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private Section findSectionWhichUpStationIs(Station station) {
+        return getSections().stream()
+                .filter(it -> it.hasUpStationSameWith(station))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private void removeMiddleStationOf(Section upSection, Section downSection) {
+        downSection.removeConnectionWith(upSection);
+        sections.remove(upSection);
+    }
+
+    private void validateBeforeRemove(Station station) {
+        if (!getSortedStation().contains(station)) {
+            throw new RuntimeException();
+        }
+
+        if (!isRemovableStatus()) {
+            throw new RuntimeException();
+        }
     }
 }

@@ -57,4 +57,22 @@ class LineTest {
         //Then
         assertThat(사호선.getSections()).containsExactly(firstSection);
     }
+
+    @DisplayName("노선에서 구간 제거")
+    @Test
+    void 노선에서_구간_제거() {
+        //Given
+        Section firstSection = new Section(사호선, 서울역, 명동역, 30);
+        Section secondSection = new Section(사호선, 서울역, 회현역, 20);
+
+        사호선.addSection(firstSection);
+        사호선.addSection(secondSection);
+
+        //When
+        사호선.removeStation(회현역);
+
+        //Then
+        assertThat(사호선.getSections()).contains(firstSection);
+        assertThat(사호선.getSections().get(0).getDistance()).isEqualTo(30);
+    }
 }

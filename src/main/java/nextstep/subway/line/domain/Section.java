@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Section {
@@ -70,20 +71,42 @@ public class Section {
         this.distance -= newDistance;
     }
 
-    public boolean downStationSameWith(Station station) {
+    public boolean hasDownStationSameWith(Station station) {
         return downStation.equals(station);
     }
 
-    public boolean hasEqualUpStationWith(Section section) {
-        return this.upStation.equals(section.getUpStation());
-    }
-
-    public boolean hasEqualDownStationWith(Section section) {
-        return this.downStation.equals(section.getDownStation());
+    public boolean hasUpStationSameWith(Station station) {
+        return upStation.equals(station);
     }
 
     public void addLine(Line line) {
         this.line = line;
         line.newGetSections().add(this);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Section section = (Section) o;
+        return distance == section.distance
+                && Objects.equals(id, section.id)
+                && Objects.equals(line, section.line)
+                && Objects.equals(upStation, section.upStation)
+                && Objects.equals(downStation, section.downStation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, line, upStation, downStation, distance);
+    }
+
+    public void removeConnectionWith(Section upSection) {
+        this.upStation = upSection.getUpStation();
+        this.distance += upSection.getDistance();
     }
 }
