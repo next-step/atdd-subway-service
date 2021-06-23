@@ -21,23 +21,19 @@ public class Fare {
         int fare = DEFAULT_FARE;
         if(distance > STANDARD_LONG_DISTANCE) {
             int overDistance = distance - STANDARD_LONG_DISTANCE;
-            fare += calculateOverFareBy8km(overDistance);
+            fare += calculateOverFare(overDistance, 8);
             this.distance -= overDistance;
         }
 
         if(distance > STANDARD_SHORT_DISTANCE) {
             this.distance -= STANDARD_SHORT_DISTANCE;
-            fare += calculateOverFare(distance);
+            fare += calculateOverFare(distance, 5);
         }
 
         return fare;
     }
 
-    private int calculateOverFare(int distance) {
-        return (int) ((Math.ceil((distance - 1) / 5) + 1) * 100);
-    }
-
-    private int calculateOverFareBy8km(int distance) {
-        return (int) ((Math.ceil((distance - 1) / 8) + 1) * 100);
+    private int calculateOverFare(int distance, int distanceUnit) {
+        return (int) ((Math.ceil((distance - 1) / distanceUnit) + 1) * 100);
     }
 }
