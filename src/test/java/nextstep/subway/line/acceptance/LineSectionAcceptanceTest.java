@@ -1,5 +1,17 @@
 package nextstep.subway.line.acceptance;
 
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -9,18 +21,6 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 구간 관련 기능")
 public class LineSectionAcceptanceTest extends AcceptanceTest {
@@ -50,16 +50,16 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 		this.노선을_조회하고_해당노선의_지하철역_순서가_정렬됨을_확인한다(신분당선, Arrays.asList(강남역, 광교역));
 
 		//구간 등록
-        ExtractableResponse<Response> addResponse1 = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
-        지하철_노선에_지하철역_등록됨(addResponse1);
-        ExtractableResponse<Response> addResponse2 = 지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 강남역, 5);
-        지하철_노선에_지하철역_등록됨(addResponse2);
-		this.노선을_조회하고_해당노선의_지하철역_순서가_정렬됨을_확인한다(신분당선, Arrays.asList(정자역, 강남역, 양재역, 광교역));
+		ExtractableResponse<Response> addResponse1 = 지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 강남역, 3);
+		지하철_노선에_지하철역_등록됨(addResponse1);
+		ExtractableResponse<Response> addResponse2 = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 정자역, 5);
+		지하철_노선에_지하철역_등록됨(addResponse2);
+		this.노선을_조회하고_해당노선의_지하철역_순서가_정렬됨을_확인한다(신분당선, Arrays.asList(양재역, 강남역, 정자역, 광교역));
 
 		//구간 제거
 		ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
 		지하철_노선에_지하철역_제외됨(removeResponse);
-		this.노선을_조회하고_해당노선의_지하철역_순서가_정렬됨을_확인한다(신분당선, Arrays.asList(정자역, 강남역, 광교역));
+		this.노선을_조회하고_해당노선의_지하철역_순서가_정렬됨을_확인한다(신분당선, Arrays.asList(강남역, 정자역, 광교역));
 	}
 
 	@DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
@@ -117,11 +117,11 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 		List<StationResponse> expectedStations) {
 		LineResponse line = response.as(LineResponse.class);
 		List<Long> stationIds = line.getStations().stream()
-			.map(it -> it.getId())
+			.map(StationResponse::getId)
 			.collect(Collectors.toList());
 
 		List<Long> expectedStationIds = expectedStations.stream()
-			.map(it -> it.getId())
+			.map(StationResponse::getId)
 			.collect(Collectors.toList());
 
 		assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
@@ -144,7 +144,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 	}
 
 	private void 노선을_조회하고_해당노선의_지하철역_순서가_정렬됨을_확인한다(LineResponse line, List<StationResponse> stations) {
-		ExtractableResponse<Response> getLineResponse3 = LineAcceptanceTest.지하철_노선_조회_요청(line);
-		지하철_노선에_지하철역_순서_정렬됨(getLineResponse3, stations);
+		ExtractableResponse<Response> getLineResponse = LineAcceptanceTest.지하철_노선_조회_요청(line);
+		지하철_노선에_지하철역_순서_정렬됨(getLineResponse, stations);
 	}
 }

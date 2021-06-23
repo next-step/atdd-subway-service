@@ -57,7 +57,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ### Step1 - 인수 테스트 기반 리팩터링
 
-- [ ] LineSectionAcceptanceTest 리팩터링
+- [x] LineSectionAcceptanceTest 리팩터링
   - API 검증보다 시나리오, 흐름 검증 테스트로 리팩터링
   - 하나의 시나리오로 통합할 필요는 없음, 기능의 인수 조건을 설명할 때 하나 이상의 시나리오가 필요한 경우 여러개의 시나리오를 만들어 인수 테스트를 작성할 수 있음
   
@@ -95,12 +95,14 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   ```
 
 - [ ] LineService 리팩터링 - 스프링 빈을 사용하는 객체와 의존하는 로직을 제외하고 도메인으로 이동
-  - [ ] saveLine 리팩터링
-  - [ ] Line Entity 개선 - 일급 컬랙션
+  - [x] saveLine 리팩터링
+    - getStations 도메인으로 이동 및 메서드 분리
+    - LineEntity 개선 - List<Section> 일급컬렉션으로 분리 및 로직 이동
+    - lineResponse 개선
+  - [x] findLines 리팩터링
+  - [x] findLineResponseById 리팩터링
   - [ ] addLineStation 리팩터링
   - [ ] removeLineStation 리팩터링
-  - [ ] getStations 리팩터링
-  - [ ] findUpStation 리팩터링
 
 
 
