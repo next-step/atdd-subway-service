@@ -60,13 +60,23 @@ public class Section {
         return distance;
     }
 
+    public boolean contains(Station station) {
+        return upStation == station
+                || downStation == station;
+    }
+
     public boolean isLongerThan(Section section) {
         return this.distance > section.distance;
     }
 
     public boolean matchesOnlyOneEndOf(Section section) {
         return upStation == section.upStation
-            ^ downStation == section.downStation;
+                ^ downStation == section.downStation;
+    }
+
+    public boolean isMergeableWith(Section section) {
+        return upStation == section.downStation
+                ^ downStation == section.upStation;
     }
 
     public void updateSection(Section section) {
@@ -84,12 +94,30 @@ public class Section {
     }
 
     private void checkSection(Section section) {
-        if (!this.matchesOnlyOneEndOf(section)) {
+        if (!matchesOnlyOneEndOf(section)) {
             throw new InvalidSectionException("하나의 종단점만 일치해야 합니다.");
         }
 
-        if (!this.isLongerThan(section)) {
+        if (!isLongerThan(section)) {
             throw new InvalidSectionException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요.");
+        }
+    }
+
+    public Section mergeWith(Section section) {
+        checkMergeable(section);
+
+        if (this.upStation == section.downStation) {
+            return new Section(this.line,
+                section.upStation, this.downStation, this.distance + section.distance);
+        }
+
+        return new Section(this.line,
+            this.upStation, section.downStation, this.distance + section.distance);
+    }
+
+    private void checkMergeable(Section section) {
+        if (!isMergeableWith(section)) {
+            throw new InvalidSectionException("병합 조건을 만족하지 않습니다.");
         }
     }
 }

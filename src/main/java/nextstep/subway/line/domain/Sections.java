@@ -10,11 +10,16 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import nextstep.subway.line.exception.CannotRemoveException;
 import nextstep.subway.line.exception.InvalidSectionException;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.exception.NoSuchStationException;
 
 @Embeddable
 public class Sections {
+
+    private static final int REDUCIBLE_COUNT = 2;
+    private static final int SIZE_LOWER_LIMIT = 1;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> values = new ArrayList<>();
@@ -91,6 +96,49 @@ public class Sections {
     }
 
     public void removeStation(Station station) {
-        // TODO removeStation
+        checkStation(station);
+
+        Sections sections = new Sections();
+        values.stream()
+            .filter(s -> s.contains(station))
+            .forEach(sections::addSection);
+
+        values.add(sections.reduce());
+        values.removeAll(sections.values);
+    }
+
+    private Section reduce() {
+        checkReducible();
+        return values.stream()
+            .reduce(Section::mergeWith)
+            .orElseThrow(() -> new CannotRemoveException("구간 축약에 실패했습니다."));
+    }
+
+    private void checkReducible() {
+        if (!isReducible()) {
+            throw new CannotRemoveException("3개 이상의 구간을 축약할 수 없습니다.");
+        }
+    }
+
+    private boolean isReducible() {
+        return values.size() <= REDUCIBLE_COUNT;
+    }
+
+    private void checkStation(Station station) {
+        if (!contains(station)) {
+            throw new NoSuchStationException("노선에 해당 지하철 역이 존재하지 않습니다.");
+        }
+
+        if (!isRemovable()) {
+            throw new CannotRemoveException("마지막 남은 구간은 삭제할 수 없습니다.");
+        }
+    }
+
+    private boolean contains(Station station) {
+        return getStations().contains(station);
+    }
+
+    private boolean isRemovable() {
+        return values.size() > SIZE_LOWER_LIMIT;
     }
 }
