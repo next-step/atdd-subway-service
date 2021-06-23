@@ -85,6 +85,10 @@ public class Section extends BaseEntity {
         return distance;
     }
 
+    public int getDistanceWeight() {
+        return distance.get();
+    }
+
     public void updateUpStation(Station station, Distance newDistance) {
         this.upStation = station;
         distance.minusDistance(newDistance);
