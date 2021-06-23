@@ -124,7 +124,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             Then 지하철 구간 삭제 실패됨
   ```
     
-* [ ] LineService 리팩터링
+* [X] LineService 리팩터링
     * [X] Domain으로 옮길 로직 찾기
         * `getStations()` → `Line`, `Section` `Sections`에 위임
             * 노선에 등록되어 있는 구간을 찾음(`Line`)
@@ -142,5 +142,5 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             * 삭제하려는 구간 탐색 (`Sections`)
             * 거리 계산하여 구간 제거한 신규 구간 추가 (`Section`, `Sections`)
         
-    * [ ] Service 리팩토링 + Domain의 단위테스트 작성
+    * [X] Service 리팩토링 + Domain의 단위테스트 작성
     
