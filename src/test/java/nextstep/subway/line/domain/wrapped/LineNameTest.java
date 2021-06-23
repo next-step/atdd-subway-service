@@ -1,4 +1,4 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.line.domain.wrapped;
 
 import nextstep.subway.line.domain.wrapped.LineName;
 import org.junit.jupiter.api.DisplayName;

@@ -1,4 +1,4 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.wrapped;
 
 import nextstep.subway.wrapped.Distance;
 import org.junit.jupiter.api.DisplayName;
