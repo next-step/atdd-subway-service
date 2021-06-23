@@ -45,7 +45,7 @@ public class LinePathSearch {
     public Path searchPath(Station source, Station target) {
         validataionStation(source, target);
         GraphPath<Station, SectionEdge> path = dijkstra.getPath(source, target);
-        return Path.of(path);
+        return StationsDijkstraPath.of(path);
     }
 
     private void validataionStation(Station source, Station target) {
