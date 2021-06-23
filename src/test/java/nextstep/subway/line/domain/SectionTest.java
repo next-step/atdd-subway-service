@@ -1,10 +1,12 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.CustomException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.subway.exception.CustomExceptionMessage.OVER_DISTANCE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -34,8 +36,7 @@ class SectionTest {
 		강남_역삼_구간.updateUpStation(구디역, 5);
 
 		// then
-		assertThat(강남_역삼_구간.isMatchUpStation(구디역))
-			.isTrue();
+		assertThat(강남_역삼_구간.isMatchUpStation(구디역)).isTrue();
 	}
 
 	@DisplayName("연결된 하행선 업데이트 테스트")
@@ -48,8 +49,7 @@ class SectionTest {
 		강남_역삼_구간.updateDownStation(구디역, 5);
 
 		// then
-		assertThat(강남_역삼_구간.isMatchDownStation(구디역))
-			.isTrue();
+		assertThat(강남_역삼_구간.isMatchDownStation(구디역)).isTrue();
 	}
 
 	@DisplayName("기존 거리보다 큰 거리 업데이트 실패 테스트")
@@ -60,8 +60,8 @@ class SectionTest {
 
 		// when
 		assertThatThrownBy(() -> 강남_역삼_구간.updateUpStation(구디역, 15))
-			.isInstanceOf(RuntimeException.class)
-			.hasMessageContaining("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+			.isInstanceOf(CustomException.class)
+			.hasMessageContaining(OVER_DISTANCE.getMessage());
 	}
 
 }

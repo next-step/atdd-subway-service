@@ -1,10 +1,12 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.CustomException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.subway.exception.CustomExceptionMessage.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -47,8 +49,8 @@ class SectionsTest {
 	void addDuplicateSectionTest() {
 		// when
 		assertThatThrownBy(() -> 이호선_구간_집합.addSection(이호선, 강남역, 역삼역, 20))
-			.isInstanceOf(RuntimeException.class)
-			.hasMessageContaining("이미 등록된 구간 입니다.");
+			.isInstanceOf(CustomException.class)
+			.hasMessageContaining(EXIST_ALL_STATION_IN_SECTIONS.getMessage());
 	}
 
 	@DisplayName("연결할 지하철 역이 없는 구간 등록 테스트")
@@ -59,8 +61,8 @@ class SectionsTest {
 		Station 잠실역 = new Station();
 
 		assertThatThrownBy(() -> 이호선_구간_집합.addSection(이호선, 홍대역, 잠실역, 10))
-			.isInstanceOf(RuntimeException.class)
-			.hasMessageContaining("등록할 수 없는 구간 입니다.");
+			.isInstanceOf(CustomException.class)
+			.hasMessageContaining(NOT_EXIST_ALL_STATION_IN_SECTIONS.getMessage());
 	}
 
 	@DisplayName("구간에 등록된 지하철 역 제거 테스트")
@@ -88,7 +90,7 @@ class SectionsTest {
 
 		// when
 		assertThatThrownBy(() -> 새로운_이호선_구간_집합.removeSection(새로운_이호선, 신대방역))
-			.isInstanceOf(RuntimeException.class)
-			.hasMessageContaining("구간이 한개 일때는 삭제할 수 없습니다.");
+			.isInstanceOf(CustomException.class)
+			.hasMessageContaining(IMPOSSIBLE_MIN_SECTION_SIZE.getMessage());
 	}
 }

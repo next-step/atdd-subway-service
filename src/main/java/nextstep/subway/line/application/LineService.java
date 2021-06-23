@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.exception.CustomException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
@@ -12,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static nextstep.subway.exception.CustomExceptionMessage.NOT_FOUND_LINE;
 
 @Service
 @Transactional
@@ -43,7 +46,7 @@ public class LineService {
 
     public Line findLineById(Long id) {
         return lineRepository.findById(id)
-                             .orElseThrow(RuntimeException::new);
+                             .orElseThrow(() -> new CustomException(NOT_FOUND_LINE));
     }
 
     public LineResponse findLineResponseById(Long id) {

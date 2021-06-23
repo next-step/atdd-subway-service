@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.CustomException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -11,6 +12,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+
+import static nextstep.subway.exception.CustomExceptionMessage.*;
 
 @Embeddable
 public class Sections {
@@ -57,7 +60,7 @@ public class Sections {
 			connectToSectionOfDownStation(line, upStation, downStation, distance);
 			return;
 		}
-		throw new RuntimeException();
+		throw new CustomException(NONE);
 	}
 
 	public void removeSection(final Line line, final Station station) {
@@ -76,19 +79,19 @@ public class Sections {
 
 	private void checkMinSectionSize() {
 		if (this.sections.size() <= MIN_SECTION_COUNT) {
-			throw new RuntimeException("구간이 한개 일때는 삭제할 수 없습니다.");
+			throw new CustomException(IMPOSSIBLE_MIN_SECTION_SIZE);
 		}
 	}
 
 	private void checkExistedAllStations(final boolean isUpStationExisted, final boolean isDownStationExisted) {
 		if (isUpStationExisted && isDownStationExisted) {
-			throw new RuntimeException("이미 등록된 구간 입니다.");
+			throw new CustomException(EXIST_ALL_STATION_IN_SECTIONS);
 		}
 	}
 
 	private void checkNotExistedAllStations(final Station upStation, final Station downStation) {
 		if (isNotExistedStation(upStation) && isNotExistedStation(downStation)) {
-			throw new RuntimeException("등록할 수 없는 구간 입니다.");
+			throw new CustomException(NOT_EXIST_ALL_STATION_IN_SECTIONS);
 		}
 	}
 
