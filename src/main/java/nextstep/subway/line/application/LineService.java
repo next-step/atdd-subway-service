@@ -16,8 +16,8 @@ import java.util.stream.Collectors;
 
 import static nextstep.subway.exception.CustomExceptionMessage.NOT_FOUND_LINE;
 
-@Service
 @Transactional
+@Service
 public class LineService {
     private LineRepository lineRepository;
     private StationService stationService;
@@ -37,6 +37,7 @@ public class LineService {
         return new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance());
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
@@ -44,6 +45,7 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public Line findLineById(Long id) {
         return lineRepository.findById(id)
                              .orElseThrow(() -> new CustomException(NOT_FOUND_LINE));
