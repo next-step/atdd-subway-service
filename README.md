@@ -68,10 +68,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - And 지하철 노선 등록되어 있음
     - And 지하철 노선에 지하철역 등록되어 있음
   - Scenario: 지하철 구간을 관리
-    - When 지하철 구간 2개 등록 요청
-    - When 지하철 노선에 등록된 역 목록 조회 요청
-    - Then 등록한 지하철 구간이 반영된 역 목록이 조회됨
-    - When 지하철 구간 2개 삭제 요청
     - 실패! When 구간 중복 등록 요청
     - 실패! Then 구간 등록 실패
     - 실패! When 존재하지 않는 역으로 구간 등록 요청
@@ -80,6 +76,10 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - 실패! Then 역 삭제 실패
     - 실패! When 역이 두개일 때 역 삭제 요청
     - 실패! Then 역 삭제 실패
+    - When 지하철 구간 2개 등록 요청
+    - When 지하철 노선에 등록된 역 목록 조회 요청
+    - Then 등록한 지하철 구간이 반영된 역 목록이 조회됨
+    - When 지하철 구간 2개 삭제 요청
     - When 지하철 노선에 등록된 역 목록 조회 요청
     - Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
 
