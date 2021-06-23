@@ -3,7 +3,6 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
@@ -11,10 +10,10 @@ import java.util.NoSuchElementException;
 
 public class PathFinder {
 
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
+    private final DijkstraShortestPath<Station, SectionWeightedEdge> dijkstraShortestPath;
 
     public PathFinder(Lines lines, Stations stations) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, SectionWeightedEdge> graph = new WeightedMultigraph(SectionWeightedEdge.class);
 
         initStationVertex(stations, graph);
         initSectionEdge(lines, graph);
@@ -22,12 +21,17 @@ public class PathFinder {
         this.dijkstraShortestPath = new DijkstraShortestPath(graph);
     }
 
-    private void initSectionEdge(Lines lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private void initSectionEdge(Lines lines, WeightedMultigraph<Station, SectionWeightedEdge> graph) {
         lines.getSections()
-                .forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance()));
+                .forEach(section -> {
+                    SectionWeightedEdge sectionWeightedEdge = new SectionWeightedEdge(section);
+                    graph.addEdge(section.getUpStation(), section.getDownStation(), sectionWeightedEdge);
+                    graph.setEdgeWeight(sectionWeightedEdge, section.getDistance());
+
+                });
     }
 
-    private void initStationVertex(Stations stations, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private void initStationVertex(Stations stations, WeightedMultigraph<Station, SectionWeightedEdge> graph) {
         stations.getStations()
                 .forEach(station -> graph.addVertex(station));
     }
@@ -44,5 +48,9 @@ public class PathFinder {
 
     public int getWeight(Station source, Station target) {
         return (int) dijkstraShortestPath.getPath(source, target).getWeight();
+    }
+
+    public List<SectionWeightedEdge> getSectionWeightEdge(Station source, Station target) {
+        return dijkstraShortestPath.getPath(source, target).getEdgeList();
     }
 }

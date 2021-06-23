@@ -20,12 +20,10 @@ public class PathService {
 
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
-    private final SectionRepository sectionRepository;
 
-    public PathService(LineRepository lineRepository, StationRepository stationRepository, SectionRepository sectionRepository) {
+    public PathService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
-        this.sectionRepository = sectionRepository;
     }
 
     @Transactional(readOnly = true)
@@ -38,7 +36,11 @@ public class PathService {
 
         List<Station> stations = pathFinder.getPath(sourceStation, targetStation);
 
-        int extraFare = getMaxExtraFare(stations);
+        List<SectionWeightedEdge> sectionWeightEdge = pathFinder.getSectionWeightEdge(sourceStation, targetStation);
+        int extraFare = sectionWeightEdge.stream()
+                .max(Comparator.comparing(sectionWeightedEdge -> sectionWeightedEdge.getExtraFare()))
+                .map(sectionWeightedEdge -> sectionWeightedEdge.getExtraFare())
+                .orElse(0);
 
         List<StationResponse> stationResponses = stations
                 .stream()
@@ -48,28 +50,6 @@ public class PathService {
         int distance = pathFinder.getWeight(sourceStation, targetStation);
         return new PathResponse(stationResponses, distance,
                 new Fare(distance, extraFare, DefaultFare.of(loginMember.getAge()).fare()));
-    }
-
-    private int getMaxExtraFare(List<Station> stations) {
-        int extraFare = 0;
-
-        List<Section> sections = sectionRepository.findAll();
-        for (int i = 1; i < stations.size(); i++) {
-            Station prevStation = stations.get(i - 1);
-            Station nextStation = stations.get(i);
-
-            extraFare = Math.max(getMaxExtraSectionLine(sections, prevStation, nextStation).getExtraFare(), extraFare);
-        }
-
-        return extraFare;
-    }
-
-    private Line getMaxExtraSectionLine(List<Section> sections, Station prevStation, Station nextStation) {
-        Section maxExtraFareSection = sections.stream()
-                .filter(section -> section.isSameSection(prevStation, nextStation))
-                .min(Comparator.comparing(section -> section.getLine().getExtraFare()))
-                .orElseThrow(() -> new NoSuchElementException("일치하는 구간이 없습니다."));
-        return maxExtraFareSection.getLine();
     }
 
     private void validation(Long sourceStationId, Long targetStationId) {
