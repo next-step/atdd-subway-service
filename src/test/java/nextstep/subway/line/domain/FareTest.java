@@ -40,4 +40,12 @@ class FareTest {
         Fare fare = new Fare(distance, extraFare);
         assertThat(fare.getFare()).isEqualTo(totalFare);
     }
+
+    @DisplayName("기본운임이 달라질때 요금")
+    @CsvSource(value = {"1:1250:1250", "1:720:720", "10:450:450"}, delimiter = ':')
+    @ParameterizedTest
+    void deafultFare(int distance, int deafultFare, int totalFare) {
+        Fare fare = new Fare(distance, 0, deafultFare);
+        assertThat(fare.getFare()).isEqualTo(totalFare);
+    }
 }
