@@ -102,6 +102,10 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [x] findLines 리팩터링
   - [x] findLineResponseById 리팩터링
   - [ ] addLineStation 리팩터링
+    - 등록된 역 목록에 구간이 등록되어있는지 확인하는 로직을 분리
+    - 구간 등록의 예외처리로직 도메인으로 이동 - Sections로
+    - 상행 구간 추가로직 이동
+    - 하행 구간 추가로직 이동
   - [ ] removeLineStation 리팩터링
 
 
