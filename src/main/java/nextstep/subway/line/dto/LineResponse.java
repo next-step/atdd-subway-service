@@ -1,8 +1,8 @@
 package nextstep.subway.line.dto;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineColor;
-import nextstep.subway.line.domain.LineName;
+import nextstep.subway.line.domain.wrapped.LineColor;
+import nextstep.subway.line.domain.wrapped.LineName;
 import nextstep.subway.station.dto.StationResponse;
 
 import java.time.LocalDateTime;
