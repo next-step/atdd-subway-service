@@ -118,7 +118,7 @@ public class Sections {
         Station newUpStation = downSection.getUpStation();
         Station newDownStation = upSection.getDownStation();
         Distance newDistance = upSection.addDistance(downSection);
-        sections.add(createSection(line, newUpStation, newDownStation, newDistance));
+        sections.add(new Section(line, newUpStation, newDownStation, newDistance));
     }
 
     private Station findFirstStation() {
@@ -140,10 +140,6 @@ public class Sections {
         if (!sections.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
             throw new RuntimeException(CANT_ADD_THIS_SECTION);
         }
-    }
-
-    private Section createSection(Line line, Station upStation, Station downStation, Distance distance) {
-        return new Section(line, upStation, downStation, distance);
     }
 
     private boolean hasSectionByDownStation(Station station) {
