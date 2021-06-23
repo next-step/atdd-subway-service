@@ -61,7 +61,13 @@ public class Sections {
                 .forEach(sections::remove);
     }
 
-    public List<Section> getSections() {
+    public List<Integer> getDistances() {
+        return getSortSections().stream()
+                .map(Section::getDistance)
+                .collect(Collectors.toList());
+    }
+
+    private List<Section> getSortSections() {
         Map<Station, Section> collect = this.sections.stream()
                 .collect(Collectors.toMap(Section::getUpStation, section -> section));
         Station nextUpStation = findUpStation();

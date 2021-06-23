@@ -55,24 +55,12 @@ public class Line extends BaseEntity {
         return name;
     }
 
-    public String getColor() {
-        return color;
-    }
-
-    public List<Section> getSections() {
-        return sections.getSections();
-    }
-
     public void addSection(Section section) {
         this.sections.add(section);
     }
 
     public void removeSectionBy(Station station) {
         this.sections.removeStation(this, station);
-    }
-
-    public List<Station> getStations() {
-        return this.sections.getStations();
     }
 
     public LineResponse toLineResponse() {

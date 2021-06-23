@@ -59,10 +59,7 @@ class SectionsTest {
                     assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
                 },
                 () -> {
-                    List<Integer> distances = sections.getSections()
-                            .stream()
-                            .map(Section::getDistance)
-                            .collect(Collectors.toList());
+                    List<Integer> distances = sections.getDistances();
                     assertThat(isEqualsArraysValue(distances, Arrays.asList(3, 3, 3))).isTrue();
                 }
         );
@@ -83,10 +80,7 @@ class SectionsTest {
                     assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
                 },
                 () -> {
-                    List<Integer> distances = sections.getSections()
-                            .stream()
-                            .map(Section::getDistance)
-                            .collect(Collectors.toList());
+                    List<Integer> distances = sections.getDistances();
                     assertThat(isEqualsArraysValue(distances, Arrays.asList(3, 3, 4))).isTrue();
                 }
         );
@@ -107,10 +101,7 @@ class SectionsTest {
                     assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
                 },
                 () -> {
-                    List<Integer> distances = sections.getSections()
-                            .stream()
-                            .map(Section::getDistance)
-                            .collect(Collectors.toList());
+                    List<Integer> distances = sections.getDistances();
                     assertThat(isEqualsArraysValue(distances, Arrays.asList(3, 4, 3))).isTrue();
                 }
         );
@@ -130,10 +121,7 @@ class SectionsTest {
                     assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
                 },
                 () -> {
-                    List<Integer> distances = sections.getSections()
-                            .stream()
-                            .map(Section::getDistance)
-                            .collect(Collectors.toList());
+                    List<Integer> distances = sections.getDistances();
                     assertThat(isEqualsArraysValue(distances, Arrays.asList(2, 3))).isTrue();
                 }
         );
@@ -230,10 +218,7 @@ class SectionsTest {
                                 assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
                             },
                             () -> {
-                                List<Integer> distances = sections.getSections()
-                                        .stream()
-                                        .map(Section::getDistance)
-                                        .collect(Collectors.toList());
+                                List<Integer> distances = sections.getDistances();
                                 assertThat(isEqualsArraysValue(distances, Arrays.asList(3, 2, 3, 9, 6))).isTrue();
                             }
                     );
@@ -250,9 +235,7 @@ class SectionsTest {
                                 assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
                             },
                             () -> {
-                                List<Integer> distances = sections.getSections().stream()
-                                        .map(Section::getDistance)
-                                        .collect(Collectors.toList());
+                                List<Integer> distances = sections.getDistances();
                                 assertThat(isEqualsArraysValue(distances, Arrays.asList(2, 3, 9, 6))).isTrue();
                             }
                     );
@@ -269,9 +252,7 @@ class SectionsTest {
                                 assertThat(Arrays.equals(stations.toArray(), targetStations.toArray())).isTrue();
                             },
                             () -> {
-                                List<Integer> distances = sections.getSections().stream()
-                                        .map(Section::getDistance)
-                                        .collect(Collectors.toList());
+                                List<Integer> distances = sections.getDistances();
                                 assertThat(isEqualsArraysValue(distances, Arrays.asList(2, 3, 9))).isTrue();
                             }
                     );
