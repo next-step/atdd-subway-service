@@ -137,14 +137,14 @@ public class Sections {
 
     public boolean containsSection(StationPair stationPair) {
         boolean matched = sections.stream()
-                .anyMatch(item -> item.containsStations(stationPair));
+                .anyMatch(item -> item.hasStationIgnoreDirection(stationPair));
 
         return matched;
     }
 
     public Distance getSectionDistanceOf(StationPair stationPair) {
         Section section = sections.stream()
-                .filter(item -> item.containsStations(stationPair))
+                .filter(item -> item.hasStationIgnoreDirection(stationPair))
                 .findFirst()
                 .orElseThrow(LineHasNotExistStationException::new);
 

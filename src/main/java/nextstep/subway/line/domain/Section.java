@@ -81,7 +81,7 @@ public class Section {
         return downStation;
     }
 
-    public boolean containsStations(StationPair stationPair) {
+    public boolean hasStationIgnoreDirection(StationPair stationPair) {
         return (isUpStationEquals(stationPair.getUpStation()) && isDownStationEquals(stationPair.getDownStation())) ||
                 (isUpStationEquals(stationPair.getDownStation()) && isDownStationEquals(stationPair.getUpStation()));
     }
