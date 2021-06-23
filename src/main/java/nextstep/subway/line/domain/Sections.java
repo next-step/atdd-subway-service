@@ -24,16 +24,9 @@ public class Sections {
             sections.add(section);
             return;
         }
-        validateConnectable(section);
         mergeByUpStation(section);
         mergeByDownStation(section);
         sections.add(section);
-    }
-
-    private void validateConnectable(Section section) {
-        if (!contains(section.getUpStation()) && !contains(section.getDownStation())) {
-            throw new IllegalArgumentException("구간 추가를 위해서는 기존 구간과의 연결점이 필요합니다. 역 정보를 확인해주세요.");
-        }
     }
 
     private void validateAddable(Section section) {
@@ -41,7 +34,7 @@ public class Sections {
             throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
         if (!isEmpty() && !contains(section.getUpStation()) && !contains(section.getDownStation())) {
-            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException("구간 추가를 위해서는 기존 구간과의 연결점이 필요합니다. 역 정보를 확인해주세요.");
         }
     }
 
