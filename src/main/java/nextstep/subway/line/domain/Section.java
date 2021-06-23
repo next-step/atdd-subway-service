@@ -65,6 +65,14 @@ public class Section {
     }
 
     public boolean isSameSection(Station upStation, Station downStation) {
+        return isSameSectionForward(upStation, downStation) || isSameSectionReverse(downStation, upStation);
+    }
+
+    private boolean isSameSectionForward(Station upStation, Station downStation) {
+        return isSameUpStation(upStation) && isSameDownStation(downStation);
+    }
+
+    private boolean isSameSectionReverse(Station upStation, Station downStation) {
         return isSameUpStation(upStation) && isSameDownStation(downStation);
     }
 
