@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.station.domain.SortedStations;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -60,6 +61,14 @@ public class Line extends BaseEntity {
 	}
 
 	public List<Station> getStations() {
-		return this.sections.getStations();
+		return this.getSortedStations().getStations();
+	}
+
+	private SortedStations getSortedStations() {
+		return this.sections.getSortedStations();
+	}
+
+	public void addSection(Station upStation, Station downStation, int distance) {
+		this.sections.addSection(new Section(this, upStation, downStation, distance));
 	}
 }

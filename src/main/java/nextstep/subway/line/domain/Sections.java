@@ -1,7 +1,6 @@
 package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import nextstep.subway.station.domain.SortedStations;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -23,36 +23,58 @@ public class Sections {
 		return sections;
 	}
 
-	public void addSection(Section section) {
-		this.sections.add(section);
+	private void validateAlreadyExistSection(Section section) {
+		if (this.getSortedStations().containsAll(section)) {
+			throw new RuntimeException("이미 등록된 구간 입니다.");
+		}
 	}
 
-	public List<Station> getStations() {
+	private void validateNotContainedStations(Section section) {
+		if (this.getSortedStations().isUnRelatedSection(section)) {
+			throw new RuntimeException("등록할 수 없는 구간 입니다.");
+		}
+	}
+
+	public void addSection(Section newSection) {
+		this.validateAlreadyExistSection(newSection);
+		this.validateNotContainedStations(newSection);
+
+		if (this.getSortedStations().isEmpty()) {
+			this.sections.add(newSection);
+			return;
+		}
+		this.rebuildSection(newSection);
+	}
+
+	private void rebuildSection(Section newSection) {
+		this.sections.stream()
+			.filter(section -> section.isBuildable(newSection))
+			.findFirst()
+			.ifPresent(section -> section.rebuild(newSection));
+		this.sections.add(newSection);
+	}
+
+	public SortedStations getSortedStations() {
+		SortedStations sortedStations = new SortedStations();
 		if (this.sections.isEmpty()) {
-			return Collections.emptyList();
+			return sortedStations;
 		}
 
-		List<Station> stations = new ArrayList<>();
 		Station downStation = this.findUpStation();
-		stations.add(downStation);
+		sortedStations.addStation(downStation);
 
-		List<Station> nextStations = this.getSortedDownStations(downStation);
-		stations.addAll(nextStations);
-		return stations;
+		this.addDownStations(sortedStations, downStation);
+		return sortedStations;
 	}
 
-	private List<Station> getSortedDownStations(Station downStation) {
-		List<Station> nextStations = new ArrayList<>();
-		Station station = downStation;
-
-		Optional<Section> downSectionOpt = this.findDownSection(station);
+	private void addDownStations(SortedStations sortedStations, Station finalDownStation) {
+		Optional<Section> downSectionOpt = this.findDownSection(finalDownStation);
 		while (downSectionOpt.isPresent()) {
 			Section downSection = downSectionOpt.get();
-			station = downSection.getDownStation();
-			nextStations.add(station);
-			downSectionOpt = this.findDownSection(station);
+			finalDownStation = downSection.getDownStation();
+			sortedStations.addStation(finalDownStation);
+			downSectionOpt = this.findDownSection(finalDownStation);
 		}
-		return nextStations;
 	}
 
 	private Station findUpStation() {
