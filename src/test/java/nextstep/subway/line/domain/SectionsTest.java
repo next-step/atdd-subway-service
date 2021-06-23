@@ -82,7 +82,7 @@ class SectionsTest {
     void deleteStation() {
         //given
         Station middleStation = new Station("수서역");
-        sections.addSection(new Section(line, upStation, middleStation, new Distance(5)));
+        sections.addSection(new Section(line, upStation, middleStation, new Distance(10)));
         sections.addSection(new Section(line, middleStation, downStation, new Distance(5)));
         //when
         sections.removeStation(line, downStation);
