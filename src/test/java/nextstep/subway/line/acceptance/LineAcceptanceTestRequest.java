@@ -109,9 +109,14 @@ public class LineAcceptanceTestRequest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 지하철_노선_응답됨(ExtractableResponse<Response> response, ExtractableResponse<Response> createdResponse) {
+    public static void 지하철_노선_응답됨(ExtractableResponse<Response> response, LineRequest request) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(LineResponse.class)).isNotNull();
+
+        LineResponse lineResponse = response.as(LineResponse.class);
+        assertThat(lineResponse.getName()).isEqualTo(request.getName());
+        assertThat(lineResponse.getColor()).isEqualTo(request.getColor());
+        assertThat(lineResponse.getMoney()).isEqualTo(request.getMoney());
     }
 
     public static void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {

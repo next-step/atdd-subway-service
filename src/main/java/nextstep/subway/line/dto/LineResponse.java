@@ -56,6 +56,10 @@ public class LineResponse {
         return color;
     }
 
+    public int getMoney() {
+        return money;
+    }
+
     public List<StationResponse> getStations() {
         return stations;
     }
