@@ -35,14 +35,14 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        // Given: 지하철역 등록되어 있음
+        // given: 지하철역 등록되어 있음
         강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
         양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
         정자역 = 지하철역_등록되어_있음("정자역").as(StationResponse.class);
         광교역 = 지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
-        // And: 지하철 노선 등록되어 있음
-        // And: 지하철 노선에 지하철역 등록되어 있음
+        // and: 지하철 노선 등록되어 있음
+        // and: 지하철 노선에 지하철역 등록되어 있음
         LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
         신분당선 = 지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
@@ -51,26 +51,26 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 구간을 관리한다.")
     @Test
     void scenario1() {
-        // When: 지하철 구간 등록 요청
+        // when: 지하철 구간 등록 요청
         ExtractableResponse<Response> 강남역_양재역_등록된_신분당선 = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
         ExtractableResponse<Response> 양재역_정자역_등록된_신분당선 = 지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 정자역, 4);
-        // Then: 지하철 구간 등록됨
+        // then: 지하철 구간 등록됨
         지하철_노선에_지하철역_등록됨(강남역_양재역_등록된_신분당선);
         지하철_노선에_지하철역_등록됨(양재역_정자역_등록된_신분당선);
 
-        // When: 지하철 노선에 등록된 역 목록 조회 요청
+        // when: 지하철 노선에 등록된 역 목록 조회 요청
         ExtractableResponse<Response> 조회된_신분당선_역_목록 = 지하철_노선_조회_요청(신분당선);
-        // Then: 등록한 지하철 구간이 반영된 역 목록이 조회됨
+        // then: 등록한 지하철 구간이 반영된 역 목록이 조회됨
         지하철_노선에_지하철역_순서_정렬됨(조회된_신분당선_역_목록, Arrays.asList(강남역, 양재역, 정자역, 광교역));
 
-        // When: 지하철 구간 삭제 요청
+        // when: 지하철 구간 삭제 요청
         ExtractableResponse<Response> 양재역이_제외된_신분당선 = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
-        // Then: 지하철 구간 삭제됨
+        // then: 지하철 구간 삭제됨
         지하철_노선에_지하철역_제외됨(양재역이_제외된_신분당선);
 
-        // When: 지하철 노선에 등록된 역 목록 조회 요청
+        // when: 지하철 노선에 등록된 역 목록 조회 요청
         ExtractableResponse<Response> 양재역_제외_후_조회된_신분당선_역_목록 = 지하철_노선_조회_요청(신분당선);
-        // Then: 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+        // then: 삭제한 지하철 구간이 반영된 역 목록이 조회됨
         지하철_노선에_지하철역_순서_정렬됨(양재역_제외_후_조회된_신분당선_역_목록, Arrays.asList(강남역, 정자역, 광교역));
     }
 
@@ -150,7 +150,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     }
 
     private void 지하철_노선에_지하철역_등록_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
@@ -171,6 +171,6 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     }
 
     private void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

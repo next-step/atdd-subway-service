@@ -118,6 +118,10 @@ public class Section extends BaseEntity {
         return downStation;
     }
 
+    public Distance getDistance() {
+        return distance;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
