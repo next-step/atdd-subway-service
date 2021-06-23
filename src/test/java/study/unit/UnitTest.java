@@ -16,7 +16,7 @@ public class UnitTest {
 
         Station upStation = Station.of("강남역");
         Station downStation = Station.of("광교역");
-        Line line = new Line("신분당선", "RED", upStation, downStation, 10);
+        Line line = new Line("신분당선", "RED", 0, upStation, downStation, 10);
         Line newLine = new Line(newName, "GREEN");
 
         // when
