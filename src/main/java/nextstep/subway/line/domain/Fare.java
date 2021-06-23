@@ -4,28 +4,34 @@ package nextstep.subway.line.domain;
 public class Fare {
 
     private static final int DEFAULT_FARE = 1250;
+    private static final int DEFAULT_EXTRA_FARE = 0;
     private static final int STANDARD_LONG_DISTANCE = 50;
     private static final int STANDARD_SHORT_DISTANCE = 10;
 
+    private int defaultFare;
     private int distance;
     private int extraFare;
 
     public Fare(int distance) {
-        this.distance = distance;
+        this(distance, DEFAULT_EXTRA_FARE);
     }
 
     public Fare(int distance, int extraFare) {
-        this.distance = distance;
-        this.extraFare = extraFare;
+        this(distance, extraFare, DEFAULT_FARE);
     }
 
+    public Fare(int distance, int extraFare, int defaultFare) {
+        this.distance = distance;
+        this.extraFare = extraFare;
+        this.defaultFare = defaultFare;
+    }
+
+
     public int getFare() {
-        int fare = DEFAULT_FARE;
+        defaultFare += calculateOverFare();
+        defaultFare += extraFare;
 
-        fare += calculateOverFare();
-        fare += extraFare;
-
-        return fare;
+        return defaultFare;
     }
 
     private int calculateOverFare() {
