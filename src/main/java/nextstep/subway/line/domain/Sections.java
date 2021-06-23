@@ -43,28 +43,42 @@ public class Sections {
         return sections.size();
     }
 
-    public void addSection(Line line, Station upStation, Station downStation, Distance distance) {
+    public void addSection(Section newSection) {
         List<Station> stations = getStations();
-        boolean isUpStationExisted = isExistStation(upStation);
-        boolean isDownStationExisted = isExistStation(downStation);
+        boolean isUpStationExisted = isExistUpStation(newSection);
+        boolean isDownStationExisted = isExistDownStation(newSection);
 
-        checkValidStations(stations, isUpStationExisted, isDownStationExisted);
+        checkValidStations(isUpStationExisted, isDownStationExisted);
 
         if (stations.isEmpty()) {
-            sections.add(createSection(line, upStation, downStation, distance));
+            sections.add(newSection);
             return;
         }
         if (isUpStationExisted) {
-            findSectionByUpStation(upStation).ifPresent(section -> section.updateUpStation(downStation, distance));
-            sections.add(createSection(line, upStation, downStation, distance));
+            updateUpStation(newSection);
+            sections.add(newSection);
             return;
         }
         if (isDownStationExisted) {
-            findSectionByDownStation(downStation).ifPresent(section -> section.updateDownStation(upStation, distance));
-            sections.add(createSection(line, upStation, downStation, distance));
+            updateDownStation(newSection);
+            sections.add(newSection);
             return;
         }
         throw new RuntimeException();
+    }
+
+    private void updateUpStation(Section newSection) {
+        sections.stream()
+                .filter(section -> section.isUpStation(newSection))
+                .findFirst()
+                .ifPresent(section -> section.updateUpStation(newSection));
+    }
+
+    private void updateDownStation(Section newSection) {
+        sections.stream()
+                .filter(section -> section.isDownStation(newSection))
+                .findFirst()
+                .ifPresent(section -> section.updateDownStation(newSection));
     }
 
     public List<Station> getStations() {
@@ -118,12 +132,12 @@ public class Sections {
         return firstStation;
     }
 
-    private void checkValidStations(List<Station> stations, boolean isUpStationExisted, boolean isDownStationExisted) {
+    private void checkValidStations(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
             throw new RuntimeException(SECTION_IS_ALREADY_ADD);
         }
 
-        if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
+        if (!sections.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
             throw new RuntimeException(CANT_ADD_THIS_SECTION);
         }
     }
@@ -142,12 +156,6 @@ public class Sections {
                 .anyMatch(section -> section.isUpStation(station));
     }
 
-    private Optional<Section> findSectionByDownStation(Station station) {
-        return sections.stream()
-                .filter(section -> section.isDownStation(station))
-                .findFirst();
-    }
-
     private Optional<Section> findSectionByUpStation(Station station) {
         return sections.stream()
                 .filter(section -> section.isUpStation(station))
@@ -160,8 +168,19 @@ public class Sections {
         }
     }
 
-    private boolean isExistStation(Station station) {
+    private boolean isExistUpStation(Section targetSection) {
         return sections.stream()
-                .anyMatch(section -> section.isExistsStation(station));
+                .anyMatch(section -> section.isExistsUpStation(targetSection));
+    }
+
+    private boolean isExistDownStation(Section targetSection) {
+        return sections.stream()
+                .anyMatch(section -> section.isExistsDownStation(targetSection));
+    }
+
+    private Optional<Section> findSectionByDownStation(Station station) {
+        return sections.stream()
+                .filter(section -> section.isDownStation(station))
+                .findFirst();
     }
 }
