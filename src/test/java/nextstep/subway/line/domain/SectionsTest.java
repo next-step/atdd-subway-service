@@ -64,4 +64,15 @@ class SectionsTest {
                 .isThrownBy(() -> sections.findSectionBy(new StationPair(first, fourth)));
     }
 
+    @Test
+    void getSectionDistanceBy() {
+        Sections sections = new Sections();
+        sections.add(firstSecond);
+        sections.add(secondThird);
+        sections.add(thirdFourth);
+
+        assertThat(sections.getSectionDistanceBy(new StationPair(second, third)))
+                .isEqualTo(new Distance(10));
+
+    }
 }

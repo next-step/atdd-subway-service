@@ -43,7 +43,7 @@ public class DijkstraShortestDistance implements ShortestDistance {
 
     @Override
     public Lines usedLines() {
-        Lines lines = new Lines(this.lines);
+        EfficientLines lines = new EfficientLines(this.lines);
 
         Stations stations = shortestRoute();
         List<StationPair> stationPair = stations.getSectionPair();

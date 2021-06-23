@@ -139,6 +139,11 @@ public class Sections {
         return matched;
     }
 
+    public Distance getSectionDistanceBy(StationPair stationPair) {
+        return findSectionBy(stationPair)
+                .getDistance();
+    }
+
     public Section findSectionBy(StationPair stationPair) {
         Section section = sections.stream()
                 .filter(item -> item.hasStationIgnoreDirection(stationPair))

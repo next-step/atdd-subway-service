@@ -106,6 +106,11 @@ public class Line extends BaseEntity {
         return getSections().containsSection(stationPair);
     }
 
+    public Distance getSectionDistanceBy(StationPair stationPair) {
+        return getSections()
+                .getSectionDistanceBy(stationPair);
+    }
+
     public Section findSectionBy(StationPair stationPair) {
         return getSections()
                 .findSectionBy(stationPair);
