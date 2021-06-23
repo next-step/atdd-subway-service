@@ -135,16 +135,16 @@ public class Sections {
         return Collections.unmodifiableList(sections);
     }
 
-    public boolean containsSection(SimpleSection simpleSection) {
+    public boolean containsSection(StationPair stationPair) {
         boolean matched = sections.stream()
-                .anyMatch(item -> item.containsStations(simpleSection));
+                .anyMatch(item -> item.containsStations(stationPair));
 
         return matched;
     }
 
-    public Distance getSectionDistanceOf(SimpleSection simpleSection) {
+    public Distance getSectionDistanceOf(StationPair stationPair) {
         Section section = sections.stream()
-                .filter(item -> item.containsStations(simpleSection))
+                .filter(item -> item.containsStations(stationPair))
                 .findFirst()
                 .orElseThrow(LineHasNotExistStationException::new);
 

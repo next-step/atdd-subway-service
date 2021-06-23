@@ -4,11 +4,11 @@ import nextstep.subway.station.domain.Station;
 
 import java.util.Objects;
 
-public class SimpleSection {
+public class StationPair {
     private Station upStation;
     private Station downStation;
 
-    public SimpleSection(Station upStation, Station downStation) {
+    public StationPair(Station upStation, Station downStation) {
         this.upStation = upStation;
         this.downStation = downStation;
     }
@@ -25,7 +25,7 @@ public class SimpleSection {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SimpleSection that = (SimpleSection) o;
+        StationPair that = (StationPair) o;
         return Objects.equals(upStation, that.upStation) && Objects.equals(downStation, that.downStation);
     }
 

@@ -103,12 +103,12 @@ public class Line extends BaseEntity {
     }
 
 
-    public boolean containsSection(SimpleSection simpleSection) {
-        return getSections().containsSection(simpleSection);
+    public boolean containsSection(StationPair stationPair) {
+        return getSections().containsSection(stationPair);
     }
 
-    public Distance getSectionDistanceOf(SimpleSection simpleSection) {
+    public Distance getSectionDistanceOf(StationPair stationPair) {
         return getSections()
-                .getSectionDistanceOf(simpleSection);
+                .getSectionDistanceOf(stationPair);
     }
 }

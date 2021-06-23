@@ -1,12 +1,10 @@
 package nextstep.subway.station.domain;
 
-import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.SimpleSection;
+import nextstep.subway.line.domain.StationPair;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class Stations {
     private final List<Station> stations;
@@ -15,14 +13,14 @@ public class Stations {
         this.stations = new ArrayList<>(stations);
     }
 
-    public List<SimpleSection> getSimpleSection() {
-        List<SimpleSection> simpleSections = new ArrayList<>();
+    public List<StationPair> getSectionPair() {
+        List<StationPair> stationPairs = new ArrayList<>();
 
-        for (int i = 1; i <stations.size(); i++) {
-            simpleSections.add(new SimpleSection(stations.get(i - 1), stations.get(i)));
+        for (int i = 1; i < stations.size(); i++) {
+            stationPairs.add(new StationPair(stations.get(i - 1), stations.get(i)));
         }
 
-        return simpleSections;
+        return stationPairs;
     }
 
     public List<Station> toCollection() {

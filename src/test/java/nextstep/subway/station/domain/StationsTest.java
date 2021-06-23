@@ -1,17 +1,16 @@
 package nextstep.subway.station.domain;
 
-import nextstep.subway.line.domain.SimpleSection;
+import nextstep.subway.line.domain.StationPair;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class StationsTest {
 
     @Test
-    void getSimpleSection() {
+    void getSectionPair() {
         Station first = new Station("FIRST");
         Station second = new Station("SECOND");
         Station third = new Station("THIRD");
@@ -19,11 +18,11 @@ class StationsTest {
 
         Stations stations = new Stations(Arrays.asList(first, second, third, fourth));
 
-        assertThat(stations.getSimpleSection())
+        assertThat(stations.getSectionPair())
                 .containsExactly(
-                        new SimpleSection(first, second),
-                        new SimpleSection(second, third),
-                        new SimpleSection(third, fourth)
+                        new StationPair(first, second),
+                        new StationPair(second, third),
+                        new StationPair(third, fourth)
                 );
     }
 }
