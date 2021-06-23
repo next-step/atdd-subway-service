@@ -1,7 +1,6 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionDistance;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -27,6 +26,22 @@ public class Path {
                 });
     }
 
+    public Set<Station> stationSet() {
+        return graph.vertexSet();
+    }
+
+    public int findShortestPathDistance(List<Line> lines, Station source, Station target) {
+        DijkstraShortestPath shortestPath = getDijkstraShortestPath(lines);
+        getPath(source, target, shortestPath);
+        return (int)shortestPath.getPathWeight(source, target);
+    }
+
+    public List<Station> findShortestPathStations(List<Line> lines, Station source, Station target) {
+        DijkstraShortestPath shortestPath = getDijkstraShortestPath(lines);
+        GraphPath path = getPath(source, target, shortestPath);
+        return path.getVertexList();
+    }
+
     private void setSectionDistances(Line line) {
         line.getSections()
                 .forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation(),
@@ -38,27 +53,20 @@ public class Path {
                 .forEach(station -> graph.addVertex(station));
     }
 
-    public Set<Station> stationSet() {
-        return graph.vertexSet();
+    private GraphPath getPath(Station source, Station target, DijkstraShortestPath shortestPath) {
+        GraphPath path = shortestPath.getPath(source, target);
+        verifyAvailable(path);
+        return path;
     }
 
-    public List<Station> findShortestPathStations(List<Line> lines, Station source, Station target) {
+    private DijkstraShortestPath getDijkstraShortestPath(List<Line> lines) {
         build(lines);
-        DijkstraShortestPath shortestPath = new DijkstraShortestPath(graph);
-        GraphPath path = shortestPath.getPath(source, target);
+        return new DijkstraShortestPath(graph);
+    }
+
+    private void verifyAvailable(GraphPath path) {
         if (Objects.isNull(path)) {
             throw new IllegalArgumentException("경로가 존재하지 않습니다.");
         }
-        return path.getVertexList();
-    }
-
-    public int findShortestPathDistance(List<Line> lines, Station source, Station target) {
-        build(lines);
-        DijkstraShortestPath shortestPath = new DijkstraShortestPath(graph);
-        GraphPath path = shortestPath.getPath(source, target);
-        if (Objects.isNull(path)) {
-            throw new IllegalArgumentException("경로가 존재하지 않습니다.");
-        }
-        return (int)shortestPath.getPathWeight(source, target);
     }
 }
