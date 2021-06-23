@@ -1,8 +1,6 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Lines;
-import nextstep.subway.line.domain.PathFinder;
+import nextstep.subway.line.domain.*;
 import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -39,7 +37,8 @@ public class PathService {
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
 
-        return new PathResponse(stationResponses, pathFinder.getWeight(sourceStation, targetStation));
+        int distance = pathFinder.getWeight(sourceStation, targetStation);
+        return new PathResponse(stationResponses, distance, new Fare(distance));
     }
 
     private void validation(Long sourceStationId, Long targetStationId) {
