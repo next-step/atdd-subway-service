@@ -56,18 +56,14 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(Station upStation, Station downStation, Distance distance) {
-        sections.addSection(createSection(this, upStation, downStation, distance));
+        sections.addSection(createSection(upStation, downStation, distance));
     }
 
     public void removeStation(Station station) {
         sections.removeStation(this, station);
     }
 
-    private Section createSection(Line line, Station upStation, Station downStation, Distance distance) {
-        return new Section(line, upStation, downStation, distance);
-    }
-
-    public void addSection(Station upStation, Station downStation, int distance) {
-        sections.addLineStation(this, upStation, downStation, distance);
+    private Section createSection(Station upStation, Station downStation, Distance distance) {
+        return new Section(this, upStation, downStation, distance);
     }
 }
