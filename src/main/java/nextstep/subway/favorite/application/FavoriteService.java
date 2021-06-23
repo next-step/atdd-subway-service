@@ -1,5 +1,7 @@
 package nextstep.subway.favorite.application;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,14 +28,17 @@ public class FavoriteService {
 		this.stationRepository = stationRepository;
 	}
 
-	public FavoriteResponse createFavorite(Long loginMemberId, FavoriteRequest favoriteRequest) {
-		Member member = memberRepository.findById(loginMemberId)
-			.orElseThrow(IllegalArgumentException::new);
-		Station source = stationRepository.findById(favoriteRequest.getSource())
-			.orElseThrow(IllegalArgumentException::new);
-		Station target = stationRepository.findById(favoriteRequest.getTarget())
-			.orElseThrow(IllegalArgumentException::new);
-		Favorite persist = favoriteRepository.save(Favorite.of(member, source, target));
-		return FavoriteResponse.of(persist);
+	public Long createFavorite(Long loginMemberId, FavoriteRequest favoriteRequest) {
+		Member member = memberRepository.findById(loginMemberId).orElseThrow(IllegalArgumentException::new);
+		Station source = stationRepository.findById(favoriteRequest.getSource()).orElseThrow(IllegalArgumentException::new);
+		Station target = stationRepository.findById(favoriteRequest.getTarget()).orElseThrow(IllegalArgumentException::new);
+		Favorite persistFavorite = favoriteRepository.save(Favorite.of(member, source, target));
+		return persistFavorite.getId();
+	}
+
+	@Transactional(readOnly = true)
+	public List<FavoriteResponse> findFavorites(Long loginMemberId) {
+		List<Favorite> favorites = favoriteRepository.findAllWithStationByCreatorId(loginMemberId);
+		return FavoriteResponse.listOf(favorites);
 	}
 }

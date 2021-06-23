@@ -2,7 +2,6 @@ package nextstep.subway.favorite.application;
 
 import static nextstep.subway.member.MemberTest.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Optional;
@@ -16,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.StationRepository;
 
@@ -54,5 +54,13 @@ class FavoriteServiceTest {
 
 		assertThatThrownBy(() -> favoriteService.createFavorite(1L , new FavoriteRequest(1L, 2L)))
 			.isInstanceOf(IllegalArgumentException.class);
+	}
+
+	@DisplayName("즐겨찾기 목록은 회원 ID 기준으로 가지고 온다.")
+	@Test
+	void getListTest() {
+		favoriteService.findFavorites(1L);
+
+		verify(favoriteRepository).findAllWithStationByCreatorId(1L);
 	}
 }
