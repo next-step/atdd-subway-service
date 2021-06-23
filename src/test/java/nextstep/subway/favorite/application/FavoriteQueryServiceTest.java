@@ -41,7 +41,7 @@ class FavoriteQueryServiceTest {
     private Station savedStation2 = new Station("STATION_2");
     private Station savedStation3 = new Station("STATION_3");
 
-    private Line savedLine = new Line("LINE", "LINE", savedStation1, savedStation2, 10);
+    private Line savedLine = new Line("LINE", "LINE", 0, savedStation1, savedStation2, 10);
 
     private FavoriteQueryService favoriteQueryService;
 

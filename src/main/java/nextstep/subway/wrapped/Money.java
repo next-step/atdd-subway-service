@@ -1,13 +1,19 @@
 package nextstep.subway.wrapped;
 
+import javax.persistence.Embeddable;
 import java.util.Objects;
 
 import static java.lang.String.format;
 
+@Embeddable
 public class Money {
     private static final int MINIMUM_MONEY = 0;
 
     private int money;
+
+    protected Money() {
+        this.money = 0;
+    }
 
     public Money(int money) {
         validate(money);
@@ -48,5 +54,9 @@ public class Money {
     @Override
     public int hashCode() {
         return Objects.hash(money);
+    }
+
+    public int toInt() {
+        return money;
     }
 }

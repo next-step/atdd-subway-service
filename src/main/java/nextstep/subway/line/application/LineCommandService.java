@@ -27,6 +27,7 @@ public class LineCommandService {
         Line persistLine = lineRepository.save(
                 new Line(request.getName(),
                         request.getColor(),
+                        request.getMoney(),
                         createSection(request.getUpStationId(), request.getDownStationId(), request.getDistance())
                 ));
 
@@ -35,7 +36,7 @@ public class LineCommandService {
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor(), lineUpdateRequest.getMoney()));
     }
 
     public void deleteLineById(Long id) {
