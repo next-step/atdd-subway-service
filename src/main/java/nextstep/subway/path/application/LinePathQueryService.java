@@ -8,6 +8,7 @@ import nextstep.subway.path.dto.LinePathRequest;
 import nextstep.subway.path.dto.LinePathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
+import nextstep.subway.wrapped.Money;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,10 +29,10 @@ public class LinePathQueryService {
 
         ShortestDistance shortestDistance = new DijkstraShortestDistance(lineRepository.findAll(), source, target);
 
-
         return new LinePathResponse(
                 shortestDistance.shortestRoute(),
-                shortestDistance.shortestDistance()
+                shortestDistance.shortestDistance(),
+                new Money(1000)
         );
     }
 
