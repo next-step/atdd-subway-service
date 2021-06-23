@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import nextstep.subway.exception.station.NoStation;
+import nextstep.subway.exception.station.NoStationException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.LinePathSearch;
@@ -31,10 +31,10 @@ public class PathService {
         List<Line> lines = lineRepository.findAll();
 
         Station source = stationRepository.findById(sourceId)
-            .orElseThrow(() -> new NoStation(NoStation.NO_UPSTAION));
+            .orElseThrow(() -> new NoStationException(NoStationException.NO_UPSTAION));
 
         Station target = stationRepository.findById(targetId)
-            .orElseThrow(() -> new NoStation(NoStation.NO_DOWNSTATION));
+            .orElseThrow(() -> new NoStationException(NoStationException.NO_DOWNSTATION));
 
         Path path = LinePathSearch.of(lines).searchPath(source, target);
         return PathResponse.of(path.getStations(), path.getMinDistance());

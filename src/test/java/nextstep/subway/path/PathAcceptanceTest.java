@@ -126,7 +126,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 경로_요청_응답_실패(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 최단거리를_역을_확인한다(ExtractableResponse<Response> response, Long... stationsId) {
