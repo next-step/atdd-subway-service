@@ -41,6 +41,10 @@ public class Line extends BaseEntity {
         sections.addSection(section);
     }
 
+    public void removeStation(Station station) {
+        sections.removeStation(station);
+    }
+
     public Long getId() {
         return id;
     }
@@ -51,10 +55,6 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
-    }
-
-    public List<Section> getSections() {
-        return sections.values();
     }
 
     public List<Station> getStations() {
