@@ -39,8 +39,8 @@ public class Section {
     public static Section of(Section upSection, Section downSection) {
         final Section validUpSection = validUpSection(upSection);
         final Section validDownSection = validDownSection(downSection);
-        final Station newUpStation = validUpSection.getDownStation();
-        final Station newDownStation = validDownSection.getUpStation();
+        final Station newUpStation = validUpSection.getUpStation();
+        final Station newDownStation = validDownSection.getDownStation();
         final int distance = validUpSection.getDistance() + validDownSection.getDistance();
 
         return new Section(validUpSection.getLine(), newUpStation, newDownStation, distance);
