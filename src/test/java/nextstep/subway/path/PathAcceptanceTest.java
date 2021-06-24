@@ -130,10 +130,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
   @Test
   void noneConnectedStationTest() {
     //given
-    StationResponse 잠실역 = 지하철역_등록되어_있음("잠실역").as(StationResponse.class);
+    StationResponse 서울역 = 지하철역_등록되어_있음("서울역").as(StationResponse.class);
+    StationResponse 용산역 = 지하철역_등록되어_있음("용산역").as(StationResponse.class);
+    LineResponse 일호선 = 지하철_노선_등록되어_있음(new LineRequest("일호선", "bg-navy-600", 서울역.getId(), 용산역.getId(), 5)).as(LineResponse.class);
 
     //when
-    ExtractableResponse<Response> 경로_탐색_결과 = 최단거리_경로_탐색(교대역, 잠실역);
+    ExtractableResponse<Response> 경로_탐색_결과 = 최단거리_경로_탐색(교대역, 서울역);
 
     //then
     경로탐색_실패_연결되지_않은_역(경로_탐색_결과);
