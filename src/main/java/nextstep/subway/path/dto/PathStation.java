@@ -9,7 +9,9 @@ public class PathStation {
     private final Long id;
     private final String name;
     private final LocalDateTime createdAt;
-
+    
+    protected PathStation() {}
+    
     private PathStation(Long id, String name, LocalDateTime createdAt) {
         this.id = id;
         this.name = name;
