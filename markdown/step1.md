@@ -1,6 +1,6 @@
 ## 요구사항
--[ ] LineSectionAcceptanceTest 리팩터링
--[ ] LineService 리팩터링
+- [x] LineSectionAcceptanceTest 리팩터링
+- [x] LineService 리팩터링
 
 ## 요구사항 설명
 ### 인수 테스트 통합
