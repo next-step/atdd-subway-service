@@ -80,3 +80,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [X] 지하철 구간 최단거리를 조회
 - [X] 출발역과 도착역이 같은 경우 오류가 발생한다.
 - [X] 출발역과 도착역이 연결이 되어 있지 않은 경우 오류가 발생한다.
+- [X] 구간이 하나인 노선에서 마지막 구간을 제거할 때 제거할 수 없다.

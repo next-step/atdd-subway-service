@@ -17,12 +17,16 @@ public class StationResponse {
     }
 
     public static List<StationResponse> of(List<Station> stations) {
+    public static List<StationResponse> ofStationResponses(List<Station> stations) {
         return stations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
     protected StationResponse() {
+
+    public StationResponse() {
+
     }
 
     public StationResponse(Long id, String name, LocalDateTime createdDate, LocalDateTime modifiedDate) {

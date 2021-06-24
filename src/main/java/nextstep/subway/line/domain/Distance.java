@@ -7,6 +7,7 @@ public class Distance {
     public static final int DISTANCE_SIZE = 1;
 
     private int distance;
+    int distance;
 
     protected Distance() {}
 
