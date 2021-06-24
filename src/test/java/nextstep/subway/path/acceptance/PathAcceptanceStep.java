@@ -40,4 +40,8 @@ public class PathAcceptanceStep {
     public static void 지하철_최단_경로_응답됨(ExtractableResponse<Response> 지하철_최단_경로_조회_요청_결과) {
         assertThat(지하철_최단_경로_조회_요청_결과.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
+
+    public static void 지하철_최단_경로_예외_응답됨(ExtractableResponse<Response> 지하철_최단_경로_조회_요청_예외) {
+        assertThat(지하철_최단_경로_조회_요청_예외.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 }
