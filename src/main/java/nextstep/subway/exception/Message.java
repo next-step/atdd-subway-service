@@ -6,7 +6,10 @@ public enum Message {
     ERROR_ONE_OF_STATION_SHOULD_BE_REGISTERED("모든 지하철역이 노선에 속하지 않아 등록할 수 없는 구간 입니다."),
     ERROR_SECTIONS_SIZE_TOO_SMALL_TO_DELETE("등록된 구간의 갯수가 적어 삭제할 수 없습니다."),
     ERROR_INPUT_DISTANCE_SHOULD_BE_LESS_THAN_EXISTING_DISTANCE("역과 역 사이의 거리보다 좁은 거리를 입력해주세요."),
-    ERROR_DISTANCE_TOO_SHORT_TO_BE_CREATED("구간의 거리가 너무 짧습니다");
+    ERROR_DISTANCE_TOO_SHORT_TO_BE_CREATED("구간의 거리가 너무 짧습니다"),
+    ERROR_CANNOT_FIND_LINE("등록되지 않은 노선입니다."),
+    ERROR_CANNOT_FIND_MEMBER("등록되지 않은 사용자입니다."),
+    ERROR_CANNOT_FIND_STATION("등록되지 않은 지하철역입니다.");
 
     private String text;
 

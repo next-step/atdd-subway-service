@@ -1,5 +1,7 @@
 package nextstep.subway.member.application;
 
+import nextstep.subway.exception.CannotFindException;
+import nextstep.subway.exception.Message;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
@@ -20,13 +22,16 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
+    @Transactional(readOnly = true)
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new CannotFindException(Message.ERROR_CANNOT_FIND_MEMBER));
         return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new CannotFindException(Message.ERROR_CANNOT_FIND_MEMBER));
         member.update(param.toMember());
     }
 

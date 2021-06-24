@@ -67,8 +67,8 @@ public class Sections {
         }
 
         List<Station> stations = getSortedStation();
-        boolean isUpStationExisted = validateUpStation(stations, section.getUpStation());
-        boolean isDownStationExisted = validateDownStation(stations, section.getDownStation());
+        boolean isUpStationExisted = isIncludingUpstation(stations, section.getUpStation());
+        boolean isDownStationExisted = isIncludingDownstation(stations, section.getDownStation());
 
         validateSectionBeforeAdd(isUpStationExisted, isDownStationExisted);
         if (isUpStationExisted) {
@@ -80,11 +80,11 @@ public class Sections {
         }
     }
 
-    private boolean validateDownStation(List<Station> stations, Station downStation) {
+    private boolean isIncludingDownstation(List<Station> stations, Station downStation) {
         return downStation.isIncludedIn(stations);
     }
 
-    private boolean validateUpStation(List<Station> stations, Station upStation) {
+    private boolean isIncludingUpstation(List<Station> stations, Station upStation) {
         return upStation.isIncludedIn(stations);
     }
 
@@ -122,21 +122,21 @@ public class Sections {
         if (!isRemovableStatus()) {
             throw new CannotDeleteException(Message.ERROR_SECTIONS_SIZE_TOO_SMALL_TO_DELETE);
         }
-        Section inputStationIsUpStation = findSectionWhichUpStationIs(station);
-        Section inputStationIsDownStation = findSectionWhichDownStationIs(station);
+        Section sectionContainingUpStation = findSectionWhichUpStationIs(station);
+        Section sectionContainingDownStation = findSectionWhichDownStationIs(station);
 
-        if (inputStationIsUpStation != null && inputStationIsDownStation != null) {
-            removeMiddleStationOf(inputStationIsDownStation, inputStationIsUpStation);
+        if (sectionContainingUpStation != null && sectionContainingDownStation != null) {
+            removeMiddleStationOf(sectionContainingDownStation, sectionContainingUpStation);
             return;
         }
 
-        if (inputStationIsUpStation == null && inputStationIsDownStation != null) {
-            sections.remove(inputStationIsDownStation);
+        if (sectionContainingUpStation == null && sectionContainingDownStation != null) {
+            sections.remove(sectionContainingDownStation);
             return;
         }
 
-        if (inputStationIsUpStation != null) {
-            sections.remove(inputStationIsUpStation);
+        if (sectionContainingUpStation != null) {
+            sections.remove(sectionContainingUpStation);
         }
     }
 
