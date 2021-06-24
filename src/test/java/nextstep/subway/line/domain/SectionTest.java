@@ -36,21 +36,21 @@ public class SectionTest {
     @DisplayName("두 구간이 한쪽끝만 동일한지 확인한다")
     void matchesOnlyOneEndOf() {
         // 노선순서: 강남-양재-광교중앙-광교
-        assertThat(강남_양재_100.matchesOnlyOneEndOf(강남_광교중앙_130)).isTrue();
-        assertThat(강남_광교중앙_130.matchesOnlyOneEndOf(강남_양재_100)).isTrue();
-        assertThat(강남_양재_100.matchesOnlyOneEndOf(강남_양재_100)).isFalse();
-        assertThat(강남_양재_100.matchesOnlyOneEndOf(광교중앙_광교_30)).isFalse();
+        assertThat(강남_양재_100.matchesOnlyOneEndWith(강남_광교중앙_130)).isTrue();
+        assertThat(강남_광교중앙_130.matchesOnlyOneEndWith(강남_양재_100)).isTrue();
+        assertThat(강남_양재_100.matchesOnlyOneEndWith(강남_양재_100)).isFalse();
+        assertThat(강남_양재_100.matchesOnlyOneEndWith(광교중앙_광교_30)).isFalse();
     }
 
     @Test
-    @DisplayName("다른 구간에 의해 업데이트 된 결과를 확인한다")
+    @DisplayName("다른 구간에 의해 Shift 된 결과를 확인한다")
     void updateSection() {
         // 노선순서: 강남-양재-광교중앙-광교
-        강남_광교중앙_130.updateSection(강남_양재_100);
+        Section newSection = 강남_광교중앙_130.shiftedBy(강남_양재_100);
 
-        assertThat(강남_광교중앙_130.getDistance()).isEqualTo(30);
-        assertThat(강남_광교중앙_130.getUpStation()).isEqualTo(양재역);
-        assertThat(강남_광교중앙_130.getDownStation()).isEqualTo(광교중앙역);
+        assertThat(newSection.getDistance()).isEqualTo(30);
+        assertThat(newSection.getUpStation()).isEqualTo(양재역);
+        assertThat(newSection.getDownStation()).isEqualTo(광교중앙역);
     }
 
     @Test

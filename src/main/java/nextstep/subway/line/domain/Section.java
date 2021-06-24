@@ -79,7 +79,7 @@ public class Section {
         return this.distance > section.distance;
     }
 
-    public boolean matchesOnlyOneEndOf(Section section) {
+    public boolean matchesOnlyOneEndWith(Section section) {
         return upStation == section.upStation
                 ^ downStation == section.downStation;
     }
@@ -104,27 +104,25 @@ public class Section {
         }
     }
 
-    public void updateSection(Section section) {
+    public Section shiftedBy(Section section) {
         checkSection(section);
 
-        if (this.upStation == section.getUpStation()) {
-            this.upStation = section.getDownStation();
+        if (this.upStation == section.upStation) {
+            return new Section(this.line, section.downStation, this.downStation,
+                    this.distance - section.distance);
         }
 
-        if (this.downStation == section.getDownStation()) {
-            this.downStation = section.getUpStation();
-        }
-
-        this.distance -= section.getDistance();
+        return new Section(this.line, this.upStation, section.upStation,
+                this.distance - section.distance);
     }
 
     private void checkSection(Section section) {
-        if (!matchesOnlyOneEndOf(section)) {
+        if (!matchesOnlyOneEndWith(section)) {
             throw new InvalidSectionException("하나의 종단점만 일치해야 합니다.");
         }
 
         if (!isLongerThan(section)) {
-            throw new InvalidSectionException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요.");
+            throw new InvalidSectionException("0 이하로 축소할 수 없습니다.");
         }
     }
 

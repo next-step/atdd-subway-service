@@ -71,12 +71,18 @@ public class Sections {
     public void addSection(Section section) {
         checkSection(section);
 
-        values.stream()
-            .filter(s -> s.matchesOnlyOneEndOf(section))
-            .findAny()
-            .ifPresent(s -> s.updateSection(section));
-
+        updateSection(section);
         values.add(section);
+    }
+
+    private void updateSection(Section section) {
+        values.stream()
+            .filter(s -> s.matchesOnlyOneEndWith(section))
+            .findAny()
+            .ifPresent(oldSection -> {
+                values.remove(oldSection);
+                values.add(oldSection.shiftedBy(section));
+            });
     }
 
     private void checkSection(Section section) {
