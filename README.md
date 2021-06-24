@@ -62,3 +62,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
    - 출발지 도착지가 연결되어 있지 않을 경우 예외발생
    - 출발지 도착지가 존재하지 않은 역 검색할 경우 예외 발생
    - 최단 경로 구하기
+   - 최단 경로 거리값 구하기
