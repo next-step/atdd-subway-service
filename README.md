@@ -1,20 +1,59 @@
 # 인수 테스트 기반 TDD
-## 1단계 - 인수 테스트 기반 리팩터링
+## 2단계 - 경로 조회 기능
 
 ### 요구사항 정리
+- [ ] 최단 경로 조회 인수 테스트 만들기
+- [ ] 최단 경로 조회 기능 구현하기
 
-### 인수 테스트 통합 
-- 흐름을 검증하는 테스트로 리팩터링
+#
+### 요청 / 응답 포맷
+### REQUEST
+```http request
+HTTP/1.1 200 
+Request method:	GET
+Request URI:	http://localhost:55494/paths?source=1&target=6
+Headers: 	Accept=application/json
+		Content-Type=application/json; charset=UTF-8
+```
 
-### 인수 테스트 기반 리펙터링
-- LineService의 비즈니스 로직을 도메인으로 옮기기
-    - Domain 으로 옮길 로직 찾기
-    - 스프링 빈을 사용하는 객체와 의존하는 로직을 제외하고는 도메인으로 옮기기
-####
-- 한번에 많은 부분을 고치려 하지 말고 나눠서 부분부분 리팩터링
-    - 기존 로직을 지우지 말고 새로운 로직을 만들어 수행
-    - 정상 동작 확인 후 기존 로직 제거
-####    
-- 전체 기능은 인수 테스트로 보호한 뒤 세부 기능을 TDD로 리팩터링
-    - Domain 단위 테스트 작성
-        - 서비스 레이어에서 옮겨 올 로직의 기능을 테스트
+### RESPONSE
+```http request
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sat, 09 May 2020 14:54:11 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+    "stations": [
+        {
+            "id": 5,
+            "name": "양재시민의숲역",
+            "createdAt": "2020-05-09T23:54:12.007"
+        },
+        {
+            "id": 4,
+            "name": "양재역",
+            "createdAt": "2020-05-09T23:54:11.995"
+        },
+        {
+            "id": 1,
+            "name": "강남역",
+            "createdAt": "2020-05-09T23:54:11.855"
+        },
+        {
+            "id": 2,
+            "name": "역삼역",
+            "createdAt": "2020-05-09T23:54:11.876"
+        },
+        {
+            "id": 3,
+            "name": "선릉역",
+            "createdAt": "2020-05-09T23:54:11.893"
+        }
+    ],
+    "distance": 40
+}
+```
+
