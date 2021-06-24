@@ -42,7 +42,7 @@ public class PathFinderTest {
     PathFinder 경로_탐색_도메인 = PathFinder.init(전체_라인);
 
     //when
-    Path 최단경로 = 경로_탐색_도메인.findShortestPath(교대역.getId(), 양재역.getId());
+    Path 최단경로 = 경로_탐색_도메인.findShortestPath(교대역, 양재역);
 
     //then
     assertThat(최단경로).isEqualTo(new Path(Arrays.asList(교대역, 남부터미널역, 양재역), 5D));
@@ -57,7 +57,7 @@ public class PathFinderTest {
     PathFinder 경로_탐색_도메인 = PathFinder.init(새로운_전체_라인);
 
     //when
-    Path 최단경로 = 경로_탐색_도메인.findShortestPath(교대역.getId(), 양재역.getId());
+    Path 최단경로 = 경로_탐색_도메인.findShortestPath(교대역, 양재역);
 
     //then
     assertThat(최단경로).isEqualTo(new Path(Arrays.asList(교대역, 강남역, 양재역), 20D));
@@ -70,7 +70,7 @@ public class PathFinderTest {
     PathFinder 경로_탐색_도메인 = PathFinder.init(전체_라인);
 
     //when
-    Path 최단경로 = 경로_탐색_도메인.findShortestPath(교대역.getId(), 교대역.getId());
+    Path 최단경로 = 경로_탐색_도메인.findShortestPath(교대역, 교대역);
 
     //then
     assertThat(최단경로).isEqualTo(new Path(Arrays.asList(교대역), 0D));
@@ -87,7 +87,7 @@ public class PathFinderTest {
     PathFinder 경로_탐색_도메인 = PathFinder.init(새로운_전체_라인);
 
     //when & then
-    assertThatThrownBy(() -> 경로_탐색_도메인.findShortestPath(교대역.getId(), 서울역.getId())).isInstanceOf(StationsNotConnectedException.class);
+    assertThatThrownBy(() -> 경로_탐색_도메인.findShortestPath(교대역, 서울역)).isInstanceOf(StationsNotConnectedException.class);
   }
 
   @DisplayName("존재하지 않는 역과의 최단거리를 조회")
@@ -98,7 +98,7 @@ public class PathFinderTest {
     PathFinder 경로_탐색_도메인 = PathFinder.init(전체_라인);
 
     //when & then
-    assertThatThrownBy(() -> 경로_탐색_도메인.findShortestPath(교대역.getId(), 서울역.getId())).isInstanceOf(StationNotExistException.class);
+    assertThatThrownBy(() -> 경로_탐색_도메인.findShortestPath(교대역, 서울역)).isInstanceOf(StationNotExistException.class);
   }
 
 }

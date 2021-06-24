@@ -10,36 +10,29 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class PathFinder implements ShortestPathFinder {
 
-  private Map<Long, Station> wholeStations;
-  private WeightedMultigraph<Long, SectionEdge> pathGraph;
+  private WeightedMultigraph<Station, SectionEdge> pathGraph;
 
-  private PathFinder(Map<Long, Station> wholeStations, WeightedMultigraph<Long, SectionEdge> pathGraph) {
-    this.wholeStations = wholeStations;
+  private PathFinder(WeightedMultigraph<Station, SectionEdge> pathGraph) {
     this.pathGraph = pathGraph;
   }
 
   public static PathFinder init(Lines lines) {
-    WeightedMultigraph<Long, SectionEdge> pathGraph = new WeightedMultigraph<>(SectionEdge.class);
+    WeightedMultigraph<Station, SectionEdge> pathGraph = new WeightedMultigraph<>(SectionEdge.class);
     List<Station> allStations = lines.getAllStations();
     List<Section> allSections = lines.getAllSections();
     addVertexToGraph(pathGraph, allStations);
     addEdgesToGraph(pathGraph, allSections);
-    return new PathFinder(collectThroughId(allStations), pathGraph);
+    return new PathFinder(pathGraph);
   }
 
-  private static void addVertexToGraph(WeightedMultigraph<Long, SectionEdge> pathGraph, List<Station> wholeStations) {
-    wholeStations.stream()
-        .map(Station::getId)
-        .forEach(pathGraph::addVertex);
+  private static void addVertexToGraph(WeightedMultigraph<Station, SectionEdge> pathGraph, List<Station> wholeStations) {
+    wholeStations.forEach(pathGraph::addVertex);
   }
 
-  private static void addEdgesToGraph(WeightedMultigraph<Long, SectionEdge> pathGraph, List<Section> wholeSections) {
+  private static void addEdgesToGraph(WeightedMultigraph<Station, SectionEdge> pathGraph, List<Section> wholeSections) {
     wholeSections.forEach(section -> {
       SectionEdge sectionEdge = new SectionEdge(section);
       if (pathGraph.addEdge(sectionEdge.getSourceVertex(), sectionEdge.getTargetVertex(), sectionEdge)) {
@@ -48,36 +41,25 @@ public class PathFinder implements ShortestPathFinder {
     });
   }
 
-  private static Map<Long, Station> collectThroughId(List<Station> wholeStations) {
-    return wholeStations.stream()
-            .collect(Collectors.toMap(Station::getId, Function.identity()));
-  }
-
   @Override
-  public Path findShortestPath(Long sourceStationId, Long targetStationId) {
-    GraphPath<Long, SectionEdge> shortestPath = findPathGraph(sourceStationId, targetStationId);
+  public Path findShortestPath(Station sourceStation, Station targetStation) {
+    GraphPath<Station, SectionEdge> shortestPath = findPathGraph(sourceStation, targetStation);
     throwIfNotConnectedStations(shortestPath);
-    return new Path(getShortestPathStations(shortestPath.getVertexList()), shortestPath.getWeight());
+    return new Path(shortestPath.getVertexList(), shortestPath.getWeight());
   }
 
-  private GraphPath<Long, SectionEdge> findPathGraph(Long sourceStationId, Long targetStationId) {
-    DijkstraShortestPath<Long, SectionEdge> shortestPathFinder = new DijkstraShortestPath<>(pathGraph);
+  private GraphPath<Station, SectionEdge> findPathGraph(Station sourceStation, Station targetStation) {
+    DijkstraShortestPath<Station, SectionEdge> shortestPathFinder = new DijkstraShortestPath<>(pathGraph);
     try {
-      return shortestPathFinder.getPath(sourceStationId, targetStationId);
+      return shortestPathFinder.getPath(sourceStation, targetStation);
     } catch (IllegalArgumentException e) {
       throw new StationNotExistException(e);
     }
   }
 
-  private void throwIfNotConnectedStations(GraphPath<Long, SectionEdge> graphPath) {
+  private void throwIfNotConnectedStations(GraphPath<Station, SectionEdge> graphPath) {
     if (graphPath == null) {
       throw new StationsNotConnectedException();
     }
-  }
-
-  private List<Station> getShortestPathStations(List<Long> shortestPathStationIds) {
-    return shortestPathStationIds.stream()
-            .map(stationId -> wholeStations.get(stationId))
-            .collect(Collectors.toList());
   }
 }

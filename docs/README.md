@@ -48,3 +48,4 @@ Feature: 지하철 경로 검색
 
 #### 이전 코드리뷰 반영
 - [x] PathService에서 SectionRepository와 StationRepository를 모두 갖는 대신 LineRepository만 갖게 변경
+- [x] PathFinder에서 Vertex를 Station Id 대신 Station 객체로 갖게 변경 

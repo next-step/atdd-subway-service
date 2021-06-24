@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.station.domain.Station;
 
 public interface ShortestPathFinder {
 
@@ -8,5 +9,5 @@ public interface ShortestPathFinder {
     return PathFinder.init(lines);
   }
 
-  Path findShortestPath(Long sourceStationId, Long targetStationId);
+  Path findShortestPath(Station sourceStation, Station targetStation);
 }
