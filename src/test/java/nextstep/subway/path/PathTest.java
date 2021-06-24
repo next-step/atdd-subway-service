@@ -31,6 +31,7 @@ public class PathTest {
 
         신분당선 = new Line("신분당선", "red", 강남역, 양재역, 100);
         신분당선.addSection(SectionTest.구간을_생성함(양재역, 판교역, 10));
+
         이호선 = new Line("이호선", "green", 잠실역, 강남역, 20);
         이호선.addSection(SectionTest.구간을_생성함(잠실역, 양재역, 10));
     }
@@ -38,57 +39,94 @@ public class PathTest {
     @DisplayName("출발역 도착역 동일할 경우 예외 발생")
     @Test
     void 출발역_도착역_동일할경우_예외_발생() {
+        출발역_도착역_동일할경우_예외_발생함();
+    }
+
+    @DisplayName("출발역 도착역 연결 되어있지 않을 경우 예외 발생")
+    @Test
+    void 출발역_도착역_미연결시_예외_발생() {
+        List<Line> lines = 노선_목록_생성();
+        Station 정자역 = new Station("정자역");
+
+        Path path = new Path(정자역, 강남역);
+        List<Station> stations = 모든_노선의_역_리스트_조회(path, lines);
+
+        출발역_도착역_예외_발생함(path, stations);
+    }
+
+    @DisplayName("출발역이나 도착역이 노선에 등록되어있지 않는경우 예외 발생")
+    @Test
+    void 출발역_도착역_존재하지_않은경우_예외_발생() {
+        List<Line> lines = 노선_목록_생성();
+        Station 정자역 = new Station("정자역");
+        Station 교대역 = new Station("교대역");
+
+        Path path = new Path(정자역, 교대역);
+        List<Station> stations = 모든_노선의_역_리스트_조회(path, lines);
+
+        출발역_도착역_예외_발생함(path, stations);
+    }
+
+    /**
+     * 잠실 - 20 - 강남 - 100 - 양재 - 10 - 판교
+     * └---------- 10---------┘
+     *
+     */
+    @DisplayName("최단 경로 구하기")
+    @Test
+    void 최단경로_구하기() {
+        List<Line> lines = 노선_목록_생성();
+        Path path = new Path(잠실역, 판교역);
+        List<Station> shortPaths = path.findShortPath(lines);
+
+        최단경로_구함(shortPaths);
+    }
+
+    /**
+     * 잠실 - 20 - 강남 - 100 - 양재 - 10 - 판교
+     * └---------- 10---------┘
+     *
+     */
+    @DisplayName("최단 거리값 구하기")
+    @Test
+    void 최단거리값_구하기() {
+        List<Line> lines = 노선_목록_생성();
+        Path path = new Path(잠실역, 판교역);
+        List<Station> paths = path.findShortPath(lines);
+
+        최단거리값_구함(path, paths.size());
+    }
+
+    private List<Line> 노선_목록_생성() {
+        return Arrays.asList(신분당선, 이호선);
+    }
+
+    private void 출발역_도착역_동일할경우_예외_발생함() {
         assertThatThrownBy(() -> {
             new Path(잠실역, 잠실역);
         }).isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("출발지와 도착지가 같은 경로는 검색할수 없습니다.");
     }
 
-    @DisplayName("출발역 도착역 연결 되어있지 않을 경우 예외 발생")
-    @Test
-    void 출발역_도착역_미연결시_예외_발생() {
-        List<Line> lines = Arrays.asList(신분당선, 이호선);
-        Station 정자역 = new Station("정자역");
-        Station 교대역 = new Station("교대역");
-        Path path = new Path(정자역, 강남역);
-        List<Station> Stations = path.assembleStations(lines);
-
+    private void 출발역_도착역_예외_발생함(Path path, List<Station> station) {
         assertThatThrownBy(() -> {
-            path.validStations(Stations);
+            path.validStations(station);
         }).isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("역이 연결되지 않았거나 등록되지 않았습니다.");
     }
 
-    @DisplayName("출발역이나 도착역이 노선에 등록되어있지 않는경우 예외 발생")
-    @Test
-    void 출발역_도착역_존재하지_않은경우_예외_발생() {
-        List<Line> lines = Arrays.asList(신분당선, 이호선);
-        Station 정자역 = new Station("정자역");
-        Station 교대역 = new Station("교대역");
-        Path path = new Path(정자역, 교대역);
-        List<Station> Stations = path.assembleStations(lines);
-
-        assertThatThrownBy(() -> {
-            path.validStations(Stations);
-        }).isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("역이 연결되지 않았거나 등록되지 않았습니다.");
+    private List<Station> 모든_노선의_역_리스트_조회(Path path, List<Line> lines) {
+        return path.assembleStations(lines);
     }
 
-    /**
-     * 잠실 - 20 - 강남 - 100 - 양재 - 10 - 판교
-     * └---------- 10---------┘
-     * 잠실에서 판교까지 최단 경로 구하기
-     */
-    @DisplayName("최단 경로 구하기")
-    @Test
-    void 최단경로_구하기() {
-        List<Line> lines = Arrays.asList(신분당선, 이호선);
-        Path path = new Path(잠실역, 판교역);
-        List<Station> shortPaths = path.findShortPath(lines);
-
+    private void 최단경로_구함(List<Station> shortPaths) {
         assertThat(shortPaths).hasSize(3);
         assertThat(shortPaths).startsWith(잠실역);
         assertThat(shortPaths.get(1)).isEqualTo(양재역);
         assertThat(shortPaths).endsWith(판교역);
+    }
+
+    private void 최단거리값_구함(Path path, int k) {
+        assertThat(path.calculateDistance(k)).isEqualTo(20);
     }
 }
