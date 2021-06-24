@@ -41,9 +41,11 @@ class LineServiceTest {
     @Test
     void save() {
         //given
+        LineService lineService = mock(LineService.class);
         //when
-        when(lineRepository.save(any(Line.class)))
-                .thenReturn(new Line());
+        when(lineService.saveLine(any()))
+                .thenReturn(new LineResponse());
+
         //then
         assertThat(lineService.saveLine(new LineRequest("분당선", "노랑색", 1L, 1L, 5))).isNotNull();
     }
