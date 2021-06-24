@@ -12,6 +12,9 @@ public enum FareByAge {
     private final int discountRate;
     private final int discountBaseFare;
 
+    private static final int DEFAULT_FARE = 1250;
+    private static final int PERCENTAGE_UNIT = 100;
+
     FareByAge(int minAge, int maxAge, int discountRate, int discountBaseFare) {
         this.minAge = minAge;
         this.maxAge = maxAge;
@@ -20,7 +23,7 @@ public enum FareByAge {
     }
 
     public int fare() {
-        return ((1250 - discountBaseFare) * (100 - discountRate)) / 100;
+        return ((DEFAULT_FARE - discountBaseFare) * (PERCENTAGE_UNIT - discountRate)) / PERCENTAGE_UNIT;
     }
 
     public static FareByAge of(Integer age) {
