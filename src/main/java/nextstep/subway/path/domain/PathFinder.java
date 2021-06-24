@@ -42,7 +42,15 @@ public class PathFinder {
 	}
 
 	public Path getShortestPath(Station source, Station target) {
+		this.validateVertex(source, target);
+
 		GraphPath<Station, DefaultWeightedEdge> path = shortestPath.getPath(source, target);
 		return new Path(path.getVertexList(), path.getWeight());
+	}
+
+	private void validateVertex(Station source, Station target) {
+		if (source.equals(target)) {
+			throw new IllegalArgumentException("출발역과 도착역이 같아 경로를 조회할 수 없음");
+		}
 	}
 }

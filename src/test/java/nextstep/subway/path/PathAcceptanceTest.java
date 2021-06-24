@@ -64,6 +64,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		this.최단_경로_조회_확인(response, 12, Arrays.asList(강남역.getId(), 양재역.getId(), 남부터미널역.getId()));
 	}
 
+	@DisplayName("지하철 경로조회 실패 - 출발역과 도착역이 동일함")
+	@Test
+	void testGetShortestPathError() {
+		ExtractableResponse<Response> response = 최단_경로를_조회한다(강남역.getId(), 강남역.getId());
+		this.최단_경로_조회_실패(response);
+	}
+
+	private void 최단_경로_조회_실패(ExtractableResponse<Response> response) {
+		Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+	}
+
 	private void 최단_경로_조회_확인(ExtractableResponse<Response> response, int distance, List<Long> expectedIds) {
 		Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 		PathResponse pathResponse = response.as(PathResponse.class);

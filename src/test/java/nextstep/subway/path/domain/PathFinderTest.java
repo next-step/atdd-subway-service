@@ -48,4 +48,17 @@ class PathFinderTest {
 			.containsExactly(교대역, 남부터미널역, 양재역);
 		Assertions.assertThat(path.getDistance()).isEqualTo(5);
 	}
+
+	@DisplayName("출발역과 도착역이 같은경우 오류발생")
+	@Test
+	void testValidateVertex() {
+		List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선);
+		PathFinder pathFinder = new PathFinder(lines);
+
+		Assertions.assertThatThrownBy(() -> {
+			pathFinder.getShortestPath(교대역, 교대역);
+		}).isInstanceOf(RuntimeException.class)
+			.hasMessageContaining("출발역과 도착역이 같아 경로를 조회할 수 없음");
+
+	}
 }
