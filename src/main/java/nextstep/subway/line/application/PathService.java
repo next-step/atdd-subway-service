@@ -43,7 +43,7 @@ public class PathService {
 
         int distance = pathFinder.getWeight(sourceStation, targetStation);
         return new PathResponse(stationResponses, distance,
-                new Fare(distance, extraFare, DefaultFare.of(loginMember.getAge()).fare()));
+                new Fare(distance, extraFare, FareByAge.of(loginMember.getAge()).fare()));
     }
 
     private List<StationResponse> makeStationResponse(List<Station> stations) {

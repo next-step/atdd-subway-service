@@ -2,7 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.Arrays;
 
-public enum DefaultFare {
+public enum FareByAge {
     ADULT(0, 0, 0, 0),
     TEENAGER(13, 19, 20, 350),
     CHILD(6, 13, 50, 350);
@@ -12,7 +12,7 @@ public enum DefaultFare {
     private final int discountRate;
     private final int discountBaseFare;
 
-    DefaultFare(int minAge, int maxAge, int discountRate, int discountBaseFare) {
+    FareByAge(int minAge, int maxAge, int discountRate, int discountBaseFare) {
         this.minAge = minAge;
         this.maxAge = maxAge;
         this.discountRate = discountRate;
@@ -23,13 +23,13 @@ public enum DefaultFare {
         return ((1250 - discountBaseFare) * (100 - discountRate)) / 100;
     }
 
-    public static DefaultFare of(Integer age) {
+    public static FareByAge of(Integer age) {
         if (age == null) {
             return ADULT;
         }
 
         return Arrays.stream(values())
-                .filter(defaultFare -> defaultFare.minAge <= age && defaultFare.maxAge > age)
+                .filter(fareByAge -> fareByAge.minAge <= age && fareByAge.maxAge > age)
                 .findFirst()
                 .orElse(ADULT);
     }
