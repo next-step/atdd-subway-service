@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain.fee;
 
+import nextstep.subway.line.domain.Fee;
+
 public class FirstAdditionalCalculatedFee implements CalculatedFee {
 
   private static final double DISTANCE_UNTIL_BASE_FEE = 10D;
@@ -9,11 +11,11 @@ public class FirstAdditionalCalculatedFee implements CalculatedFee {
   private final BaseCalculatedFee baseFee;
   private final Double firstAdditionalSectionDistance;
 
-  FirstAdditionalCalculatedFee(Double distance) {
+  FirstAdditionalCalculatedFee(Double distance, Fee pathAdditionalFee) {
     if (distance <= DISTANCE_UNTIL_BASE_FEE) {
       throw new IllegalArgumentException("");
     }
-    this.baseFee = new BaseCalculatedFee();
+    this.baseFee = new BaseCalculatedFee(pathAdditionalFee);
     this.firstAdditionalSectionDistance = distance - DISTANCE_UNTIL_BASE_FEE;
   }
 

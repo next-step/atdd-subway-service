@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.exception.StationNotExistException;
 import nextstep.subway.exception.StationsNotConnectedException;
+import nextstep.subway.line.domain.Fee;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -9,6 +10,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class PathFinder implements ShortestPathFinder {
@@ -45,7 +47,7 @@ public class PathFinder implements ShortestPathFinder {
   public Path findShortestPath(Station sourceStation, Station targetStation) {
     GraphPath<Station, SectionEdge> shortestPath = findPathGraph(sourceStation, targetStation);
     throwIfNotConnectedStations(shortestPath);
-    return new Path(shortestPath.getVertexList(), shortestPath.getWeight());
+    return new Path(shortestPath.getVertexList(), shortestPath.getWeight(), getHighestLineAdditionalFeeInPath(shortestPath.getEdgeList()));
   }
 
   private GraphPath<Station, SectionEdge> findPathGraph(Station sourceStation, Station targetStation) {
@@ -55,6 +57,13 @@ public class PathFinder implements ShortestPathFinder {
     } catch (IllegalArgumentException e) {
       throw new StationNotExistException(e);
     }
+  }
+
+  private Fee getHighestLineAdditionalFeeInPath(List<SectionEdge> edges) {
+    return edges.stream()
+            .map(SectionEdge::getSectionLineAdditionalFee)
+            .max(Comparator.comparing(Fee::getAmount))
+            .orElse(Fee.ZERO_FEE);
   }
 
   private void throwIfNotConnectedStations(GraphPath<Station, SectionEdge> graphPath) {
