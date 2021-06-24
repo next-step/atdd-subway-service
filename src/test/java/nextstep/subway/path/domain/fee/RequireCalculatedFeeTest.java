@@ -2,6 +2,7 @@ package nextstep.subway.path.domain.fee;
 
 import nextstep.subway.line.domain.Fee;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.fee.discount.AgeDiscount;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -36,6 +37,18 @@ class RequireCalculatedFeeTest {
 
     //when & then
     assertThat(RequireFee.getRequireFee(givenPath)).isEqualTo(expectFee);
+  }
+
+  @DisplayName("연령대 별로 할인된 만큼의 요금이 반환된다.")
+  @CsvSource(value = {"TODDLER:0", "CHILDREN:450", "TEENAGER:720", "ADULT:1250"}, delimiter = ':')
+  @ParameterizedTest
+  void additionalFeeTest(AgeDiscount givenAgeDiscount, long expectFee) {
+    //given
+    Station givenStation = stationStaticFactoryForTestCode(1L, "교대역");
+    Path givenPath = new Path(Arrays.asList(givenStation), 1D, Fee.ZERO_FEE);
+
+    //when & then
+    assertThat(RequireFee.getRequireFeeWithDiscount(givenPath, givenAgeDiscount)).isEqualTo(expectFee);
   }
 
 }
