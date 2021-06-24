@@ -31,6 +31,14 @@ public abstract class AcceptanceTest {
             .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> get(String uri, String accessToken) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .when().get(uri)
+            .then().log().all().extract();
+    }
+
     public static ExtractableResponse<Response> post(Object params, String uri) {
         return RestAssured
             .given().log().all()
