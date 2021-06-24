@@ -1,5 +1,7 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import org.springframework.http.MediaType;
@@ -19,10 +21,18 @@ public class PathController {
     this.pathService = pathService;
   }
 
-  @GetMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
-  public ResponseEntity<PathResponse> findShortestPath(@RequestParam("source") Long sourceStationId, @RequestParam("target") Long targetStationId) {
+  @GetMapping(consumes = {MediaType.APPLICATION_JSON_VALUE}, headers = {"Authorization"})
+  public ResponseEntity<PathResponse> findShortestPath(@AuthenticationPrincipal LoginMember loginMember,
+                                                       @RequestParam("source") Long sourceStationId,
+                                                       @RequestParam("target") Long targetStationId) {
     PathResponse shortestPath = pathService.findShortestPath(sourceStationId, targetStationId);
     return ResponseEntity.ok(shortestPath);
   }
 
+  @GetMapping(consumes = {MediaType.APPLICATION_JSON_VALUE})
+  public ResponseEntity<PathResponse> findShortestPath(@RequestParam("source") Long sourceStationId,
+                                                       @RequestParam("target") Long targetStationId) {
+    PathResponse shortestPath = pathService.findShortestPath(sourceStationId, targetStationId);
+    return ResponseEntity.ok(shortestPath);
+  }
 }
