@@ -1,24 +1,20 @@
 package nextstep.subway.path.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.path.acceptance.step.PathAcceptanceStep.지하철_경로_응답됨;
+import static nextstep.subway.path.acceptance.step.PathAcceptanceStep.지하철_경로_조회_요청;
+import static nextstep.subway.path.acceptance.step.PathAcceptanceStep.지하철_시작_종료지점이_경로에_포함됨;
 import static nextstep.subway.station.step.StationAcceptanceStep.지하철역_등록되어_있음;
 
 
@@ -77,27 +73,24 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음(노선_등록_요청2).as(LineResponse.class);
         신분당선 = 지하철_노선_등록되어_있음(노선_등록_요청3).as(LineResponse.class);
 
-        지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+        지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 5);
     }
 
     /**
      * Scenario: 지하철 경로를 조회
      * When 지하철 경로를 요청
      * Then 지하철 경로 등록됨
+     * <p>
+     * 강남-양재 : 10 거리
+     * 강남-교대역-남부터미널-양재역: 20 거리
      */
     @Test
     void findPath() {
-
         // when
-        Map<String, String> params = new HashMap<>();
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("path/?source={source}&target={target}", 강남역.getId(), 양재역.getId())
-                .then().log().all().extract();
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(강남역, 양재역);
 
         // then
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        지하철_경로_응답됨(response);
+        지하철_시작_종료지점이_경로에_포함됨(response, 강남역, 양재역);
     }
 }
