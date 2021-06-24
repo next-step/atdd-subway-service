@@ -17,6 +17,8 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
+    private Fee lineAdditionalFee = Fee.ZERO_FEE;
+    @Embedded
     private Sections sections = new Sections();
 
     public Line() {
@@ -31,6 +33,13 @@ public class Line extends BaseEntity {
         this.name = name;
         this.color = color;
         sections.registerNewSection(new Section(this, upStation, downStation, distance));
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, Distance distance, Fee lineAdditionalFee) {
+        this.name = name;
+        this.color = color;
+        sections.registerNewSection(new Section(this, upStation, downStation, distance));
+        this.lineAdditionalFee = lineAdditionalFee;
     }
 
     public void update(Line line) {
@@ -48,6 +57,10 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public Fee getLineAdditionalFee() {
+        return lineAdditionalFee;
     }
 
     public List<Station> getEndToEndStations() {
