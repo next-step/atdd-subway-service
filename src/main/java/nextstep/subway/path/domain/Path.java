@@ -6,11 +6,13 @@ import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+@Component
 public class Path {
     private WeightedMultigraph<Station, SectionDistance> graph;
 
