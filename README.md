@@ -52,3 +52,95 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+
+---
+
+### 요구사항 정리
+
+* [X] LineSectionAcceptanceTest 리팩터링
+    * 목표 : 인수테스트 통합 → 시나리오, 흐름 위주의 테스트로 리팩토링
+    * **As-is** LineSectionAcceptanceTest
+  
+    ```markdown
+    ✅ Feature: 지하철 구간 관련 기능 
+        🔙 Background
+            Given 지하철역 등록되어 있음
+              And 지하철 노선 등록되어 있음
+              And 지하철 노선에 지하철역 등록되어 있음 
+          
+        1️⃣ Scenario : 지하철 구간을 등록한다
+            When 지하철 구간 등록 요청
+            Then 지하철 구간 등록됨
+            Then 지하철 구간 순서대로 정렬되어 조회됨
+      
+        2️⃣ Scenario : 지하철 노선에 이미 등록되어 있는 역을 등록한다
+            When 지하철 구간 등록 요청
+            Then 지하철 구간 등록 실패됨       
+      
+        3️⃣ Scenario : 지하철 노선에 등록되지 않은 역을 기준으로 등록한다
+            When 지하철 구간 등록 요청
+            Then 지하철 구간 등록 실패됨 
+      
+        4️⃣ Scenario : 지하철 노선에 등록된 지하철역을 제외한다
+            Given 지하철 구간 등록됨 
+            When 지하철 구간 삭제 요청
+            Then 지하철 구간 삭제됨
+            Then (삭제한 지하철 구간 반영되어) 지하철 구간 순서대로 정렬되어 조회됨
+           
+        5️⃣ Scenario : 지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다
+            When 지하철 구간 삭제 요청
+            Then 지하철 구간 삭제 실패됨
+    ```     
+
+  * **To-be** LineSectionAcceptanceTest
+  
+  ```markdown
+    ✅ Feature: 지하철 구간 관련 기능 
+        🔙 Background
+            Given 지하철역 등록되어 있음
+            And 지하철 노선 등록되어 있음
+            And 지하철 노선에 지하철역 등록되어 있음        
+
+        1️⃣ Scenario : 지하철 구간 등록 관련
+            When 지하철 구간 등록 요청
+            Then 지하철 구간 등록됨
+            Then 지하철 구간 순서대로 정렬되어 조회됨
+            
+            When (기존에 있는) 지하철 구간 등록 요청
+            Then  지하철 구간 등록 실패됨
+            
+            When (노선에 등록되지 않는 지하철 역을 이용하여) 지하철 구간 등록 요청
+            Then 지하철 구간 등록 실패됨 
+    
+        2️⃣ Scenario : 지하철 구간 제외 관련
+            Given 지하철 구간 등록 요청 
+            
+            When 지하철 구간 삭제 요청
+            Then 지하철 구간 삭제됨
+            Then (삭제한 지하철 구간 반영되어) 지하철 구간 순서대로 정렬되어 조회됨
+            
+            When (노선에 구간이 하나뿐일 때) 지하철 구간 삭제 요청
+            Then 지하철 구간 삭제 실패됨
+  ```
+    
+* [X] LineService 리팩터링
+    * [X] Domain으로 옮길 로직 찾기
+        * `getStations()` → `Line`, `Section` `Sections`에 위임
+            * 노선에 등록되어 있는 구간을 찾음(`Line`)
+            * 상행 종점 찾음 (`Sections`)
+            * 상행 종점을 시작으로 해서, 현재 지하철역을 upStation으로 가지는 구간이 있다면(`Section`) 
+            해당 구간의 downStation을 List<Station>에 add(`Sections`) 
+            
+        * `addLineStation()` → `Line`, `Section`, `Sections`에 위임
+            * 신규 구간의 `Station` 점검 (`Sections`)
+              * 양쪽 지하철역 모두 동일한 기존 구간이 있는지 등의 점검은 `Section`에서 담당  
+            * 점검 통과했을 경우 거리 고려하여 add (`Sections`)
+          
+        * `removeLineStation` → `Line`, `Section`, `Sections`에 위임
+            * 삭제 가능여부 점검 (`Sections`)
+            * 삭제하려는 구간 탐색 (`Sections`)
+            * 거리 계산하여 구간 제거한 신규 구간 추가 (`Section`, `Sections`)
+        
+    * [X] Service 리팩토링 + Domain의 단위테스트 작성
+    
