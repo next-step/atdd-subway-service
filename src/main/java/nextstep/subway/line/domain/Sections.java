@@ -24,7 +24,7 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> values = new ArrayList<>();
 
-    public List<Station> getStations() {
+    public List<Station> getStationsInOrder() {
         if (values.isEmpty()) {
             return Collections.emptyList();
         }
@@ -96,7 +96,7 @@ public class Sections {
     }
 
     private boolean allOrNothingMatches(Section section) { // XOR Existence Check
-        List<Station> stations = getStations();
+        List<Station> stations = getStationsInOrder();
         return stations.contains(section.getUpStation())
                 == stations.contains(section.getDownStation());
     }
@@ -141,7 +141,7 @@ public class Sections {
     }
 
     private boolean contains(Station station) {
-        return getStations().contains(station);
+        return getStationsInOrder().contains(station);
     }
 
     private boolean isRemovable() {
