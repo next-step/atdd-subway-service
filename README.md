@@ -55,8 +55,38 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 
 ---
+## 🚀 2단계 경로 조회 기능
+### 구현사항 정리
+* [ ] 최단 경로 조회 인수 테스트 만들기
+    ```markdown
+    ✅ Feature: 최단 경로 조회 기능 
+        🔙 Background
+            Given 지하철역 등록되어 있음 (2호선, 3호선, 4호선)
+              And 지하철 노선 등록되어 있음
+              And 지하철 노선에 지하철역 등록되어 있음 
+          
+        1️⃣ Scenario : 최단 경로를 조회한다 
+            When A역에서 B역까지 최단경로 조회 요청
+            Then 최단 경로인 지하철 목록 반환됨
+      
+        2️⃣ Scenario : 출발역과 도착역이 같다
+            When A역에서 A역까지 최단경로 조회 요청
+            Then 최단 경로 조회 실패함      
+      
+        3️⃣ Scenario : 출발역과 도착역이 연결되어 있지 않다
+            When A역에서 B역까지 최단경로 조회 요청
+            Then 최단 경로 조회 실패함
+      
+        4️⃣ Scenario : 출발역이나 도착역이 존재하지 않는다
+            When A역에서 B역까지 최단경로 조회 요청
+            Then 최단 경로 조회 실패함
+    ```     
 
-### 요구사항 정리
+* [ ] 최단 경로 조회 기능 구현하기
+
+
+## 🚀 1단계 인수 테스트 기반 리팩터링
+### 구현사항 정리
 
 * [X] LineSectionAcceptanceTest 리팩터링
     * 목표 : 인수테스트 통합 → 시나리오, 흐름 위주의 테스트로 리팩토링
