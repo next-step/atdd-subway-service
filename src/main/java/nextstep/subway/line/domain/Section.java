@@ -90,6 +90,10 @@ public class Section {
         return distance;
     }
 
+    public int distanceToInteger() {
+        return distance.toInt();
+    }
+
     public Distance addDistance(Section downSection) {
         return distance.add(downSection.distance);
     }

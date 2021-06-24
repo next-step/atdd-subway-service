@@ -25,6 +25,7 @@ public class Sections {
 
     public void add(Section section) {
         sections.add(section);
+        StationPath.addPath(section);
     }
 
     public boolean isEmpty() {
@@ -43,17 +44,17 @@ public class Sections {
         checkValidStations(isUpStationExisted, isDownStationExisted);
 
         if (stations.isEmpty()) {
-            sections.add(newSection);
+            add(newSection);
             return;
         }
         if (isUpStationExisted) {
             updateUpStation(newSection);
-            sections.add(newSection);
+            add(newSection);
             return;
         }
         if (isDownStationExisted) {
             updateDownStation(newSection);
-            sections.add(newSection);
+            add(newSection);
             return;
         }
         throw new RuntimeException();
@@ -102,8 +103,18 @@ public class Sections {
             mergeSection(line, upSection.get(), downSection.get());
         }
 
-        upSection.ifPresent(it -> sections.remove(it));
-        downSection.ifPresent(it -> sections.remove(it));
+        upSection.ifPresent(it -> {
+            sections.remove(it);
+            removePath(it);
+        });
+        downSection.ifPresent(it -> {
+            sections.remove(it);
+            removePath(it);
+        });
+    }
+
+    private void removePath(Section it) {
+        StationPath.removeStation(it);
     }
 
     public int size() {
