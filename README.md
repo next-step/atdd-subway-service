@@ -78,3 +78,12 @@ LineService의 비즈니스 로직을 도메인으로 옮기기
 *  시나리오, 흐름을 검증할 수 있도록 테스트 코드 리펙터링
 * service의 busniess 로직을 domain으로 옮기기
   * domain 으로 옮기면서 각 domain의 TDD 구현해보기
+   
+* LineService 도메인이 할 일 옮기기
+  - [ ] addLineStationNew 
+    - [ ] 리팩토링 후 commit
+    - [ ] 레거시 코드 제거
+  - [ ] exception Runtime 보다는 어떤 예외 인지 직관적으로 보여주기
+  - [ ] removeLineStationNew
+    - [ ] 리팩토 링 후 commit
+    - [ ] 레거시 코드 제거
