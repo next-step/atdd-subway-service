@@ -1,4 +1,4 @@
-package nextstep.subway.favorite;
+package nextstep.subway.favorite.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -20,7 +20,7 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인되어있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
-import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.acceptance.MemberAcceptanceTest.*;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 

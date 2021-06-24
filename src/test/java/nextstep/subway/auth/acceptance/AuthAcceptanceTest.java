@@ -14,7 +14,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.acceptance.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
