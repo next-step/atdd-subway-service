@@ -44,7 +44,7 @@ class SectionTest {
         section.updateUpStation(newSection);
 
         //then
-        assertThat(section.getDistance().getDistance()).isEqualTo(9);
+        assertThat(section.getDistance().getValue()).isEqualTo(9);
         assertThat(section.getUpStation()).isEqualTo(newSection.getDownStation());
     }
 
@@ -57,7 +57,7 @@ class SectionTest {
         section.updateDownStation(newSection);
 
         //then
-        assertThat(section.getDistance().getDistance()).isEqualTo(9);
+        assertThat(section.getDistance().getValue()).isEqualTo(9);
         assertThat(section.getDownStation()).isEqualTo(newSection.getUpStation());
     }
 

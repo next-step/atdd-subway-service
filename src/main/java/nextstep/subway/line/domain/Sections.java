@@ -123,4 +123,8 @@ public class Sections {
         nextSection.ifPresent(sections::remove);
         previousSection.ifPresent(sections::remove);
     }
+
+    public List<Section> getSections() {
+        return Collections.unmodifiableList(sections);
+    }
 }
