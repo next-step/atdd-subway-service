@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
-class StationPathTest {
+class PathTest {
     private Station 강남역;
     private Station 선릉역;
     private Line line;
@@ -33,7 +33,7 @@ class StationPathTest {
     void createLine() {
         //given
         //when
-        List<StationResponse> shortestPath = StationPath.findShortestPath(강남역, 선릉역);
+        List<StationResponse> shortestPath = Path.findShortestPath(강남역, 선릉역);
         //then
         assertThat(shortestPath).isNotNull();
         assertThat(shortestPath.size()).isEqualTo(2);
@@ -48,7 +48,7 @@ class StationPathTest {
         Station 교대역 = new Station("교대역");
         //when
         line.addSection(선릉역, 교대역, new Distance(10));
-        List<StationResponse> shortestPath = StationPath.findShortestPath(강남역, 교대역);
+        List<StationResponse> shortestPath = Path.findShortestPath(강남역, 교대역);
         //then
         assertThat(shortestPath).isNotNull();
         assertThat(shortestPath.size()).isEqualTo(3);
@@ -65,7 +65,7 @@ class StationPathTest {
         //when
         line.addSection(선릉역, 교대역, new Distance(10));
         line.removeStation(교대역);
-        List<StationResponse> shortestPath = StationPath.findShortestPath(강남역, 선릉역);
+        List<StationResponse> shortestPath = Path.findShortestPath(강남역, 선릉역);
         //then
         assertThat(shortestPath).isNotNull();
         assertThat(shortestPath.size()).isEqualTo(2);
