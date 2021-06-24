@@ -2,16 +2,18 @@ package nextstep.subway.line.domain;
 
 import java.nio.file.ProviderNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
 import nextstep.subway.exception.line.LineAlreadyExistException;
+import nextstep.subway.exception.line.NotFoundSectionException;
 import nextstep.subway.exception.line.NotFoundStationsException;
 import nextstep.subway.station.domain.Station;
 
@@ -33,40 +35,43 @@ public class Sections {
 
     public int getDistanceBetweenStations(Station upStation, Station downStation) {
         int distance = 0;
-        Optional<Section> nextSection = findByUpstation(upStation);
-        if (!nextSection.isPresent()) {
+        boolean isFinish = false;
+        List<Section> orderedSections = getSectionsWithOrder();
+        for (Section sectoin : orderedSections) {
+            distance = sumDistance(upStation, distance, isFinish, sectoin);
+            isFinish = sectoin.sameDownStation(downStation);
+        }
+
+        return distance;
+    }
+
+    private int sumDistance(Station upStation, int distance, boolean isFinish, Section sectoin) {
+        if (isFinish) {
             return distance;
         }
-        if (nextSection.get().getDownStation().equals(downStation)) {
-            return nextSection.get().getDistance();
-        }
-        while (nextSection.isPresent() && !nextSection.get().getDownStation().equals(downStation)) {
-            distance += nextSection.get().getDistance();
-            nextSection = findNextSection(nextSection.get());
-        }
 
-        if (nextSection.isPresent()) {
-            distance += nextSection.get().getDistance();
+        if (sectoin.sameUpStation(upStation) || distance != 0) {
+            distance += sectoin.getDistance();
         }
-
         return distance;
     }
 
     public void removeStation(Station station, Line line) {
         validationRemove();
 
-        Optional<Section> afterSection = findAfterSection(station);
-        Optional<Section> beforeSection = findBeforeSection(station);
+        Optional<Section> nullAbleAfterSection = findAfterSection(station);
+        Optional<Section> nullAbleBeforeSection = findBeforeSection(station);
 
-        if (afterSection.isPresent() && beforeSection.isPresent()) {
-            Station newUpStation = beforeSection.get().getUpStation();
-            Station newDownStation = afterSection.get().getDownStation();
-            int newDistance = afterSection.get().getDistance() + beforeSection.get().getDistance();
-            this.sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+        if (nullAbleAfterSection.isPresent() && nullAbleBeforeSection.isPresent()) {
+            Section afterSectoin = nullAbleAfterSection.get();
+            Section beforeSection = nullAbleBeforeSection.get();
+            int newDistance = afterSectoin.getDistance() + beforeSection.getDistance();
+            this.sections
+                .add(new Section(line, beforeSection.getUpStation(), afterSectoin.getDownStation(), newDistance));
         }
 
-        afterSection.ifPresent(it -> this.sections.remove(it));
-        beforeSection.ifPresent(it -> this.sections.remove(it));
+        nullAbleAfterSection.ifPresent(it -> this.sections.remove(it));
+        nullAbleBeforeSection.ifPresent(it -> this.sections.remove(it));
     }
 
     public void addSection(Section section) {
@@ -78,21 +83,30 @@ public class Sections {
     }
 
     public List<Station> getStations() {
-        Optional<Section> nextSection = findStartSection();
-        List<Station> stations = new ArrayList<>();
-
-        if (sections.isEmpty() || !nextSection.isPresent()) {
-            return Arrays.asList();
-        }
-
-        stations.add(nextSection.get().getUpStation());
-        while (nextSection.isPresent()) {
-            stations.add(nextSection.get().getDownStation());
-            nextSection = findNextSection(nextSection.get());
-        }
+        List<Station> stations = getSectionsWithOrder().stream()
+            .flatMap(section -> Stream.of(section.getUpStation(), section.getDownStation()))
+            .distinct()
+            .collect(Collectors.toList());
 
         return Collections.unmodifiableList(stations);
 
+    }
+
+    private List<Section> getSectionsWithOrder() {
+        List<Section> sortedSections = new ArrayList<>();
+        Section startSection = findStartSection();
+        sortedSections.add(startSection);
+        addSectionIfExist(sortedSections, findNextSection(startSection));
+        return sortedSections;
+    }
+
+    private void addSectionIfExist(List<Section> sortedSections, Optional<Section> nextSection) {
+        if (!nextSection.isPresent()) {
+            return;
+        }
+        Section section = nextSection.get();
+        sortedSections.add(section);
+        addSectionIfExist(sortedSections, findNextSection(section));
     }
 
     private Optional<Section> findNextSection(Section beforSection) {
@@ -100,10 +114,12 @@ public class Sections {
             .findFirst();
     }
 
-    private Optional<Section> findStartSection() {
+    private Section findStartSection() {
         return sections.stream()
             .filter(section -> !findSectionIsAnotherDownStation(section).isPresent())
-            .findFirst();
+            .findFirst()
+            .orElseThrow(NotFoundSectionException::new);
+
     }
 
     private Optional<Section> findSectionIsAnotherDownStation(Section beforeSection) {
@@ -158,10 +174,8 @@ public class Sections {
         }
     }
 
-    private Optional<Section> findByUpstation(Station upStation) {
-        return sections.stream()
-            .filter(section -> section.sameUpStation(upStation))
-            .findFirst();
+    public List<Section> getSections() {
+        return Collections.unmodifiableList(sections);
     }
 
 }

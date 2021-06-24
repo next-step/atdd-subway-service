@@ -1,5 +1,6 @@
 package nextstep.subway.station.application;
 
+import nextstep.subway.exception.station.NoStationException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
@@ -27,8 +28,8 @@ public class StationService {
         List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
-                .map(station -> StationResponse.of(station))
-                .collect(Collectors.toList());
+            .map(station -> StationResponse.of(station))
+            .collect(Collectors.toList());
     }
 
     public void deleteStationById(Long id) {
@@ -41,5 +42,9 @@ public class StationService {
 
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+    }
+
+    public Station findByIdWithError(Long id, NoStationException noStationException) {
+        return stationRepository.findById(id).orElseThrow(() -> noStationException);
     }
 }
