@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.exception.StationNotExistException;
 import nextstep.subway.exception.StationsNotConnectedException;
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -25,11 +26,13 @@ public class PathFinder implements ShortestPathFinder {
     this.pathGraph = pathGraph;
   }
 
-  public static PathFinder init(List<Station> wholeStations, List<Section> wholeSections) {
+  public static PathFinder init(Lines lines) {
     WeightedMultigraph<Long, DefaultWeightedEdge> pathGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-    addVertexToGraph(pathGraph, wholeStations);
-    addEdgesToGraph(pathGraph, wholeSections);
-    return new PathFinder(collectThroughId(wholeStations), pathGraph);
+    List<Station> allStations = lines.getAllStations();
+    List<Section> allSections = lines.getAllSections();
+    addVertexToGraph(pathGraph, allStations);
+    addEdgesToGraph(pathGraph, allSections);
+    return new PathFinder(collectThroughId(allStations), pathGraph);
   }
 
   private static void addVertexToGraph(WeightedMultigraph<Long, DefaultWeightedEdge> pathGraph, List<Station> wholeStations) {

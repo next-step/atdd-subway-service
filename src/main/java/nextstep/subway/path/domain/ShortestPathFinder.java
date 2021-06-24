@@ -1,14 +1,11 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.line.domain.Section;
-import nextstep.subway.station.domain.Station;
-
-import java.util.List;
+import nextstep.subway.line.domain.Lines;
 
 public interface ShortestPathFinder {
 
-  static ShortestPathFinder getDefault(List<Station> wholeStations, List<Section> wholeSections) {
-    return PathFinder.init(wholeStations, wholeSections);
+  static ShortestPathFinder getDefault(Lines lines) {
+    return PathFinder.init(lines);
   }
 
   Path findShortestPath(Long sourceStationId, Long targetStationId);

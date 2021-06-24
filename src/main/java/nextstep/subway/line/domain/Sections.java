@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.exception.EmptySectionException;
 import nextstep.subway.exception.IllegalSectionStateException;
 import nextstep.subway.exception.InvalidStationException;
 import nextstep.subway.station.domain.Station;
@@ -52,6 +51,10 @@ public class Sections {
       return;
     }
     removeStationNotEachEdge(stationIdForRemove);
+  }
+
+  public List<Section> getLineSections() {
+    return lineSections;
   }
 
   private void registerNewSectionToNotEmptySections(Section newSection) {
