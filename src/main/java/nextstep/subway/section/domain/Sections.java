@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -42,9 +43,7 @@ public class Sections {
         }
 
         if (isUpStationExisted) {
-            sections.stream()
-                .filter(it -> it.getUpStation() == section.getUpStation())
-                .findFirst()
+            findSection(it -> it.getUpStation() == section.getUpStation())
                 .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
 
             sections.add(section);
@@ -102,8 +101,32 @@ public class Sections {
     }
 
     private Optional<Section> findSection(Station station) {
+        return findSection(it -> it.getUpStation() == station);
+    }
+
+    public void remove(Station station) {
+        validateSectionsSize();
+
+        Optional<Section> maybeUpSection = findSection(it -> it.getDownStation() == station);
+        Optional<Section> maybeDownSection = findSection(it -> it.getUpStation() == station);
+
+        if (maybeUpSection.isPresent() && maybeDownSection.isPresent()) {
+            sections.add(Section.of(maybeUpSection.get(), maybeDownSection.get()));
+        }
+
+        maybeDownSection.ifPresent(sections::remove);
+        maybeUpSection.ifPresent(sections::remove);
+    }
+
+    private void validateSectionsSize() {
+        if (sections.size() <= 1) {
+            throw new RuntimeException();
+        }
+    }
+
+    private Optional<Section> findSection(Predicate<Section> predicate) {
         return sections.stream()
-            .filter(it -> it.getUpStation() == station)
+            .filter(predicate)
             .findFirst();
     }
 }

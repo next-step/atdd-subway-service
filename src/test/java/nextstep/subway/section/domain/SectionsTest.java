@@ -34,7 +34,7 @@ public class SectionsTest {
         List<Station> actual = sections.stations();
 
         // then
-        assertThat(actual).isEqualTo(Arrays.asList(upStation, newStation, downStation));
+        assertThat(actual).containsExactly(upStation, newStation, downStation);
     }
 
     @DisplayName("Section 을 추가했을 때 정상적으로 저장되는지 테스트")
@@ -82,5 +82,21 @@ public class SectionsTest {
 
         // then
         assertThat(throwable).isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void removeSection() {
+        // given
+        final Section firstSection = new Section(line, upStation, downStation, 100);
+        final Station newStation = new Station("시청역");
+        final Section secondSection = new Section(line, upStation, newStation, 10);
+        sections.add(firstSection);
+        sections.add(secondSection);
+
+        // when
+        sections.remove(newStation);
+
+        // then
+        assertThat(sections.stations()).containsExactly(upStation, downStation);
     }
 }

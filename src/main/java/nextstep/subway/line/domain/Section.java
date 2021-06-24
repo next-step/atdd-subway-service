@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import java.util.Optional;
+
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -32,6 +34,28 @@ public class Section {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static Section of(Section upSection, Section downSection) {
+        final Section validUpSection = validUpSection(upSection);
+        final Section validDownSection = validDownSection(downSection);
+        final Station newUpStation = validUpSection.getDownStation();
+        final Station newDownStation = validDownSection.getUpStation();
+        final int distance = validUpSection.getDistance() + validDownSection.getDistance();
+
+        return new Section(validUpSection.getLine(), newUpStation, newDownStation, distance);
+    }
+
+    private static Section validUpSection(Section upSection) {
+        return Optional.ofNullable(upSection)
+            .filter(it -> it.getDownStation() != null && it.getDistance() > 0)
+            .orElseThrow(RuntimeException::new);
+    }
+
+    private static Section validDownSection(Section downSection) {
+        return Optional.ofNullable(downSection)
+            .filter(it -> it.getUpStation() != null && it.getDistance() > 0)
+            .orElseThrow(RuntimeException::new);
     }
 
     public Long getId() {
