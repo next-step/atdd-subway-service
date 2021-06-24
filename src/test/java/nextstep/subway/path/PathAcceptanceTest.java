@@ -3,6 +3,10 @@ package nextstep.subway.path;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.*;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.*;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +19,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -55,12 +60,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	@DisplayName("지하철 최단경로를 조회한다")
 	@Test
 	void getShortestPath() {
-		ExtractableResponse<Response> response = 최단_경로를_조회한다(양재역.getId(), 교대역.getId());
-		this.최단_경로_조회_확인(response);
+		ExtractableResponse<Response> response = 최단_경로를_조회한다(강남역.getId(), 남부터미널역.getId());
+		this.최단_경로_조회_확인(response, 12, Arrays.asList(강남역.getId(), 양재역.getId(), 남부터미널역.getId()));
 	}
 
-	private void 최단_경로_조회_확인(ExtractableResponse<Response> response) {
+	private void 최단_경로_조회_확인(ExtractableResponse<Response> response, int distance, List<Long> expectedIds) {
 		Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+		PathResponse pathResponse = response.as(PathResponse.class);
+		Assertions.assertThat(pathResponse.getDistance()).isEqualTo(distance);
+		Assertions.assertThat(
+			pathResponse.getStations()
+				.stream()
+				.map(StationResponse::getId).collect(Collectors.toList()))
+			.containsExactlyElementsOf(expectedIds);
+
 	}
 
 	private static ExtractableResponse<Response> 최단_경로를_조회한다(long source, long target) {

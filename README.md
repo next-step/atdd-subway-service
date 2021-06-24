@@ -117,10 +117,10 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [x] 최단 경로 조회 인수 테스트 만들기
 - [ ] 최단 경로 조회 기능 구현하기
   - [x] 경로 요청 모델 생성(Response)
-  - [ ] directedGraph 초기화 기능 구현
-    - [ ] Station을 통해 Vertex 추가
-    - [ ] Section을 통해 Edge 추가
-  - [ ] source to target 최단경로 반환 메서드 구현
+  - [x] directedGraph 초기화 기능 구현
+    - [x] Station을 통해 Vertex 추가
+    - [x] Section을 통해 Edge 추가
+  - [x] source to target 최단경로 반환 메서드 구현
   - [ ] 예외 처리
     - [ ] 출발역과 도착역이 같은경우
     - [ ] 출발역과 도착역이 연결되어 있지 않은 경우
