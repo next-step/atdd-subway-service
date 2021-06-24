@@ -85,7 +85,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 토큰을_요청한다(TokenRequest request) {
+    public static ExtractableResponse<Response> 토큰을_요청한다(TokenRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
