@@ -4,11 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,10 +11,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.path.dto.PathRequest;
-import nextstep.subway.station.dto.StationResponse;
 
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
@@ -43,12 +39,10 @@ class PathServiceTest {
     void findPath() {
         //given
         //when
-        when(pathService.findPath(any())).thenReturn(new ArrayList<>(Arrays.asList(강남역.toResponse(), 선릉역.toResponse())));
-        List<StationResponse> path = pathService.findPath(new PathRequest(강남역.getId(), 선릉역.getId()));
+        when(pathService.findPath(any())).thenReturn(new PathResponse());
+        PathResponse response = pathService.findPath(new PathRequest(강남역.getId(), 선릉역.getId()));
         //then
-        assertThat(path).isNotNull();
-        assertThat(path.get(0).getName()).isEqualTo(강남역.getName());
-        assertThat(path.get(1).getName()).isEqualTo(선릉역.getName());
+        assertThat(response).isNotNull();
     }
 
     @DisplayName("역이 없을 경우")

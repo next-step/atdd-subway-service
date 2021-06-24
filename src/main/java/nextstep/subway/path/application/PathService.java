@@ -3,6 +3,7 @@ package nextstep.subway.path.application;
 import java.util.List;
 
 import nextstep.subway.line.domain.Path;
+import nextstep.subway.path.dto.PathResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,9 +23,9 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public List<StationResponse> findPath(PathRequest pathRequest) {
+    public PathResponse findPath(PathRequest pathRequest) {
         Station source = stationRepository.findById(pathRequest.getSource()).orElseThrow(() -> new RuntimeException(Sections.NOT_FOUND_SECTION));
         Station target = stationRepository.findById(pathRequest.getTarget()).orElseThrow(() -> new RuntimeException(Sections.NOT_FOUND_SECTION));
-        return Path.findShortestPath(source, target);
+        return PathResponse.of(Path.findShortestPath(source, target));
     }
 }

@@ -25,7 +25,7 @@ public class Sections {
 
     public void add(Section section) {
         sections.add(section);
-        StationPath.addPath(section);
+        Path.addPath(section);
     }
 
     public boolean isEmpty() {
@@ -114,7 +114,7 @@ public class Sections {
     }
 
     private void removePath(Section it) {
-        StationPath.removeStation(it);
+        Path.removeStation(it);
     }
 
     public int size() {

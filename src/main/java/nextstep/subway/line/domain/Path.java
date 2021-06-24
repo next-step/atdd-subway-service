@@ -9,7 +9,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class StationPath {
+public class Path {
     public static final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
     public static final DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
 
@@ -24,6 +24,11 @@ public class StationPath {
 
     public static List<StationResponse> findShortestPath(Station source, Station target) {
         List<Station> shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
+
+        if (shortestPath.isEmpty()) {
+            throw new RuntimeException(Sections.NOT_FOUND_SECTION);
+        }
+
         return shortestPath.stream().map(Station::toResponse).collect(Collectors.toList());
     }
 
