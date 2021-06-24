@@ -39,7 +39,7 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {
-        Section newSection = new Section(upStation, downStation, distance))
+        Section newSection = new Section(upStation, downStation, distance);
         if (!sections.isEmpty()) {
             checkSectionValidate(newSection);
         }
