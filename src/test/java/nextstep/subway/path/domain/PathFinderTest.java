@@ -25,6 +25,7 @@ class PathFinderTest {
     private Station 청계산입구역;
     private Station 서울역;
     private Station 용산역;
+    private Station 혜화역;
     private PathFinder pathFinder;
 
     /**
@@ -60,6 +61,8 @@ class PathFinderTest {
         ReflectionTestUtils.setField(서울역, "id", 11L);
         용산역 = new Station("용산역");
         ReflectionTestUtils.setField(용산역, "id", 12L);
+        혜화역 = new Station("혜화역");
+        ReflectionTestUtils.setField(혜화역, "id", 13L);
 
         Line 신분당선 = new Line("신분당선", "bg-red-600", 강남역, 청계산입구역, 20);
         신분당선.addSection(강남역, 양재역, 3);
@@ -171,5 +174,14 @@ class PathFinderTest {
         assertThatThrownBy(() -> pathFinder.findPath(서울역, 강남역))
                 .isInstanceOf(IllegalArgumentException.class) //then
                 .hasMessage(PathFinder.STATION_IS_NOT_CONNECTED_EXCEPTION_MESSAGE);
+    }
+
+    @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우 예외를 발생시킨다.")
+    @Test
+    void notExistStation() {
+        //when
+        assertThatThrownBy(() -> pathFinder.findPath(서울역, 혜화역))
+                .isInstanceOf(IllegalArgumentException.class) //then
+                .hasMessage(PathFinder.NOT_EXIST_STATION_EXCEPTION_MESSAGE);
     }
 }
