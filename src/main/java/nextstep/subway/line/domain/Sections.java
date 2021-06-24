@@ -1,10 +1,11 @@
 package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -12,6 +13,7 @@ import javax.persistence.OneToMany;
 
 import nextstep.subway.line.exception.CannotRemoveException;
 import nextstep.subway.line.exception.InvalidSectionException;
+import nextstep.subway.line.exception.TerminusNotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.exception.NoSuchStationException;
 
@@ -25,43 +27,38 @@ public class Sections {
     private List<Section> values = new ArrayList<>();
 
     public List<Station> getStationsInOrder() {
-        if (values.isEmpty()) {
-            return Collections.emptyList();
-        }
-
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = values.stream()
-                .filter(it -> it.getUpStation() == finalDownStation)
-                .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        Station station = findUpStation();
+        stations.add(station);
+
+        Optional<Section> maybeNext = getNextSection(station);
+        while (maybeNext.isPresent()) {
+            Section section = maybeNext.get();
+            stations.add(section.getDownStation());
+
+            maybeNext = getNextSection(section.getDownStation());
         }
 
         return stations;
     }
 
-    private Station findUpStation() {
-        Station downStation = values.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextSection = values.stream()
-                .filter(it -> it.getDownStation() == finalDownStation)
-                .findFirst();
-            if (!nextSection.isPresent()) {
-                break;
-            }
-            downStation = nextSection.get().getUpStation();
-        }
+    private Optional<Section> getNextSection(Station station) {
+        return values.stream()
+            .filter(it -> it.getUpStation() == station)
+            .findAny();
+    }
 
-        return downStation;
+    private Station findUpStation() {
+        Set<Station> downStations = values.stream()
+            .map(Section::getDownStation)
+            .collect(Collectors.toSet());
+        return values
+            .stream()
+            .map(Section::getUpStation)
+            .filter(station -> !downStations.contains(station))
+            .findAny()
+            .orElseThrow(() -> new TerminusNotFoundException("출발역이 존재하지 않습니다."));
     }
 
     public void addSection(Section section) {
