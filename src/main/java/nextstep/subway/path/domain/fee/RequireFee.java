@@ -6,11 +6,11 @@ import java.util.function.Predicate;
 
 public enum RequireFee {
   DEFAULT_FEE(distance -> distance > 0 && distance <= 10D,
-      distance -> new BaseFee().calculateFee()),
+      distance -> new BaseCalculatedFee().calculateFee()),
   FIRST_ADDITIONAL_FEE(distance -> distance > 10D && distance <= 50D,
-      distance -> new FirstAdditionalFee(distance).calculateFee()),
+      distance -> new FirstAdditionalCalculatedFee(distance).calculateFee()),
   SECOND_ADDITIONAL_FEE(distance -> distance > 50D,
-      distance -> new SecondAdditionalFee(distance).calculateFee());
+      distance -> new SecondAdditionalCalculatedFee(distance).calculateFee());
 
   private final Predicate<Double> selector;
   private final Function<Double, Long> calculator;

@@ -6,7 +6,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class RequireFeeTest {
+class RequireCalculatedFeeTest {
 
   @DisplayName("거리에 맞는 요금을 반환한다.")
   @CsvSource(value = {"0:0", "10:1250", "11:1350", "20:1450", "50:2050", "51:2150", "60:2250", "100:2750"}, delimiter = ':')

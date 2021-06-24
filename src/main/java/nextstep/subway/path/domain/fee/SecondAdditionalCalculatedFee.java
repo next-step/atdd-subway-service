@@ -1,19 +1,19 @@
 package nextstep.subway.path.domain.fee;
 
-public class SecondAdditionalFee implements Fee {
+public class SecondAdditionalCalculatedFee implements CalculatedFee {
 
   private static final double DISTANCE_UNTIL_FIRST_ADDITIONAL_FEE = 50D;
   private static final long FEE_ADDITIONAL_DISTANCE = 8L;
   private static final long ADDITIONAL_FEE_UNIT = 100L;
 
-  private final FirstAdditionalFee firstAdditionalFee;
+  private final FirstAdditionalCalculatedFee firstAdditionalFee;
   private final Double secondAdditionalSectionDistance;
 
-  SecondAdditionalFee(Double distance) {
+  SecondAdditionalCalculatedFee(Double distance) {
     if (distance <= DISTANCE_UNTIL_FIRST_ADDITIONAL_FEE) {
       throw new IllegalArgumentException("");
     }
-    this.firstAdditionalFee = new FirstAdditionalFee(DISTANCE_UNTIL_FIRST_ADDITIONAL_FEE);
+    this.firstAdditionalFee = new FirstAdditionalCalculatedFee(DISTANCE_UNTIL_FIRST_ADDITIONAL_FEE);
     this.secondAdditionalSectionDistance = distance - DISTANCE_UNTIL_FIRST_ADDITIONAL_FEE;
   }
 

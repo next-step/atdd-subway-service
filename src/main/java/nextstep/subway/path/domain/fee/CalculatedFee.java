@@ -1,6 +1,6 @@
 package nextstep.subway.path.domain.fee;
 
-public interface Fee {
+public interface CalculatedFee {
 
   long calculateFee();
 }

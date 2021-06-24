@@ -1,10 +1,10 @@
 package nextstep.subway.path.domain.fee;
 
-public class BaseFee implements Fee {
+public class BaseCalculatedFee implements CalculatedFee {
 
   private static final long ADULT_BASE_FEE = 1_250;
 
-  BaseFee() {
+  BaseCalculatedFee() {
 
   }
 
