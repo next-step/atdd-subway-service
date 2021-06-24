@@ -8,9 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class PathFinderTest {
@@ -24,8 +23,7 @@ class PathFinderTest {
     private Station 양재역;
     private Station 양재시민의숲역;
     private Station 청계산입구역;
-
-    private List<Line> lines;
+    private PathFinder pathFinder;
 
     /**
      * 방배역 -3- 서초역 -4- 교대역 -5- 강남역 -6- 역삼역 -12- 선릉역
@@ -70,24 +68,12 @@ class PathFinderTest {
         Line 삼호선 = new Line("삼호선", "bg-red-400", 교대역, 양재역, 7);
         삼호선.addSection(교대역, 남부터미널역, 3);
 
-        lines = Lists.newArrayList(신분당선, 이호선, 삼호선);
-    }
-
-    @Test
-    void create() {
-        //when
-        PathFinder pathFinder = new PathFinder(lines);
-
-        //then
-        assertThat(pathFinder).isNotNull();
+        pathFinder = new PathFinder(Lists.newArrayList(신분당선, 이호선, 삼호선));
     }
 
     @DisplayName("출발역과 도착역이 서로 같은 노선일 경우 최단 경로를 리턴한다. (신분당선)")
     @Test
     void findSameLinePath1() {
-        //given
-        PathFinder pathFinder = new PathFinder(lines);
-
         //when
         SubwayShortestPath actual = pathFinder.findPath(강남역, 청계산입구역);
 
@@ -106,9 +92,6 @@ class PathFinderTest {
     @DisplayName("출발역과 도착역이 서로 같은 노선일 경우 최단 경로를 리턴한다. (2호선)")
     @Test
     void findSameLinePath2() {
-        //given
-        PathFinder pathFinder = new PathFinder(lines);
-
         //when
         SubwayShortestPath actual = pathFinder.findPath(방배역, 선릉역);
 
@@ -129,9 +112,6 @@ class PathFinderTest {
     @DisplayName("출발역과 도착역이 서로 같은 노선일 경우 최단 경로를 리턴한다. (3호선)")
     @Test
     void findSameLinePath3() {
-        //given
-        PathFinder pathFinder = new PathFinder(lines);
-
         //when
         SubwayShortestPath actual = pathFinder.findPath(교대역, 양재역);
 
@@ -148,10 +128,7 @@ class PathFinderTest {
 
     @DisplayName("출발역과 도착역이 서로 다른 노선일 경우 최단 경로를 리턴한다. (2호선+3호선+신분당선)")
     @Test
-    void findPath2() {
-        //given
-        PathFinder pathFinder = new PathFinder(lines);
-
+    void findOtherPath() {
         //when
         SubwayShortestPath actual = pathFinder.findPath(방배역, 청계산입구역);
 
@@ -168,5 +145,14 @@ class PathFinderTest {
                     청계산입구역
             );
         });
+    }
+
+    @DisplayName("출발역과 도착역이 같은 경우 예외를 발생시킨다.")
+    @Test
+    void StartStationIsSameAsEndStation() {
+        //when
+        assertThatThrownBy(() -> pathFinder.findPath(강남역, 강남역))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(PathFinder.START_STATION_IS_SAME_AS_END_STATION_EXCEPTION_MESSAGE);
     }
 }
