@@ -107,9 +107,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         List<StationResponse> stationResponseList = pathResponse.getStations();
 
         assertThat(stationResponseList).hasSize(3);
-        assertThat(stationResponseList).startsWith(잠실역);
-        assertThat(stationResponseList.get(1)).isEqualTo(양재역);
-        assertThat(stationResponseList).endsWith(판교역);
+        assertThat(stationResponseList.get(0).getId()).isEqualTo(잠실역.getId());
+        assertThat(stationResponseList.get(1).getId()).isEqualTo(양재역.getId());
+        assertThat(stationResponseList.get(2).getId()).isEqualTo(판교역.getId());
 
         최단_거리값_확인됨(pathResponse.getDistance());
 
