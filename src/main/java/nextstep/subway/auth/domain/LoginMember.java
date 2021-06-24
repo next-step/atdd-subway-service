@@ -1,10 +1,8 @@
 package nextstep.subway.auth.domain;
 
 import java.util.Objects;
-import nextstep.subway.path.domain.ChildDiscountStrategy;
 import nextstep.subway.path.domain.DiscountStrategy;
 import nextstep.subway.path.domain.NoDiscountStrategy;
-import nextstep.subway.path.domain.TeenagerDiscountStrategy;
 
 public class LoginMember {
 
@@ -41,15 +39,7 @@ public class LoginMember {
             return new NoDiscountStrategy();
         }
 
-        if (age >= 6 && age < 13) {
-            return new ChildDiscountStrategy();
-        }
-
-        if (age >= 13 && age < 19) {
-            return new TeenagerDiscountStrategy();
-        }
-
-        return new NoDiscountStrategy();
+        return DiscountStrategy.of(age);
     }
 
     @Override

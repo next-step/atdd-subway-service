@@ -24,6 +24,7 @@ public class PathController {
     public ResponseEntity<PathResponse> findShortestPath(@FlexibleAuthPrinciple LoginMember loginMember,
                                                          @RequestParam("source") Long sourceId,
                                                          @RequestParam("target") Long targetId) {
+
         return ResponseEntity.ok().body(pathService.findShortestPath(loginMember.getDiscountStrategy(),
                                                                      sourceId, targetId));
     }
