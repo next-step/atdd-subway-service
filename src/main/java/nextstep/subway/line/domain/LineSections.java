@@ -124,15 +124,19 @@ public class LineSections {
     public void removeSection(Line line, Station station) {
         validateLineSectionsHasOnly();
 
-        Optional<Section> upLineStation = findUpLineStation(station);
-        Optional<Section> downLineStation = findDownLineStation(station);
+        Section upLineStation = findUpLineStation(station);
+        Section downLineStation = findDownLineStation(station);
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            addNewSection(line, upLineStation.get(), downLineStation.get());
+        if (upLineStation != null) {
+            lineSections.remove(upLineStation);
+        }
+        if (downLineStation != null) {
+            lineSections.remove(downLineStation);
         }
 
-        upLineStation.ifPresent(lineSections::remove);
-        downLineStation.ifPresent(lineSections::remove);
+        if (upLineStation != null && downLineStation != null) {
+            addNewSection(line, upLineStation, downLineStation);
+        }
     }
 
     private void validateLineSectionsHasOnly() {
@@ -141,16 +145,18 @@ public class LineSections {
         }
     }
 
-    private Optional<Section> findUpLineStation(Station station) {
+    private Section findUpLineStation(Station station) {
         return lineSections.stream()
             .filter(it -> it.isUpStationEquals(station))
-            .findFirst();
+            .findFirst()
+            .orElse(null);
     }
 
-    private Optional<Section> findDownLineStation(Station station) {
+    private Section findDownLineStation(Station station) {
         return lineSections.stream()
             .filter(it -> it.isDownStationEquals(station))
-            .findFirst();
+            .findFirst()
+            .orElse(null);
     }
 
     private void addNewSection(Line line, Section upLineStation, Section downLineStation) {
