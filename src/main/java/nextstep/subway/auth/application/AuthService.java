@@ -28,20 +28,23 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
-        }
-
-        String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
-    }
-
-    public LoginMember findAuthMemberByToken(String credentials) {
-        LoginMember requestMember = findMemberByToken(credentials);
-        if(!requestMember.isLogin()) {
             throw new AuthorizationException("유효하지 않은 토큰입니다.");
         }
 
-        return requestMember;
+        return getLoginMember(credentials);
+    }
+
+    public LoginMember findMemberByTokenOrElseGuestUser(String credentials) {
+        if (!jwtTokenProvider.validateToken(credentials)) {
+            return new LoginMember();
+        }
+
+        return getLoginMember(credentials);
+    }
+
+    private LoginMember getLoginMember(String credentials) {
+        String email = jwtTokenProvider.getPayload(credentials);
+        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }
