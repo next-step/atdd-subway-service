@@ -1,72 +1,102 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.station.domain.Station;
+import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
-import javax.persistence.*;
+import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Section {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "line_id")
-    private Line line;
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "line_id")
+	private Line line;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "up_station_id")
-    private Station upStation;
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "up_station_id")
+	private Station upStation;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "down_station_id")
-    private Station downStation;
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "down_station_id")
+	private Station downStation;
 
-    private int distance;
+	@Embedded
+	private Distance distance;
 
-    public Section() {
-    }
+	public Section() {
+	}
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
-        this.line = line;
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = distance;
-    }
+	public Section(Line line, Station upStation, Station downStation, int distance) {
+		this.line = line;
+		this.upStation = upStation;
+		this.downStation = downStation;
+		this.distance = new Distance(distance);
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public Line getLine() {
-        return line;
-    }
+	public Line getLine() {
+		return line;
+	}
 
-    public Station getUpStation() {
-        return upStation;
-    }
+	public Station getUpStation() {
+		return upStation;
+	}
 
-    public Station getDownStation() {
-        return downStation;
-    }
+	public Station getDownStation() {
+		return downStation;
+	}
 
-    public int getDistance() {
-        return distance;
-    }
+	public Distance getDistance() {
+		return distance;
+	}
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
-    }
+	public boolean isLinkedUpSection(Station station) {
+		return this.downStation.equals(station);
+	}
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
-    }
+	public boolean isLinkedDownSection(Station station) {
+		return this.upStation.equals(station);
+	}
+
+	private boolean isBuildableUpSection(Section newSection) {
+		return this.upStation.equals(newSection.getUpStation());
+	}
+
+	private boolean isBuildableDownSection(Section newSection) {
+		return this.downStation.equals(newSection.getDownStation());
+	}
+
+	public boolean isBuildable(Section newSection) {
+		return this.isBuildableUpSection(newSection) || this.isBuildableDownSection(newSection);
+	}
+
+	public void rebuild(Section newSection) {
+		this.validateRebuildDistance(newSection);
+		this.distance.reduce(newSection.getDistance());
+		if (this.isBuildableUpSection(newSection)) {
+			this.upStation = newSection.getDownStation();
+			return;
+		}
+		if (this.isBuildableDownSection(newSection)) {
+			this.downStation = newSection.getUpStation();
+		}
+	}
+
+	private void validateRebuildDistance(Section newSection) {
+		if (this.distance.isSmallerThan(newSection.getDistance())) {
+			throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+		}
+	}
 }

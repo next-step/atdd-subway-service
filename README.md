@@ -52,3 +52,65 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+## :pencil2: 요구사항 정리
+
+### Step1 - 인수 테스트 기반 리팩터링
+
+- [x] LineSectionAcceptanceTest 리팩터링
+  - API 검증보다 시나리오, 흐름 검증 테스트로 리팩터링
+  - 하나의 시나리오로 통합할 필요는 없음, 기능의 인수 조건을 설명할 때 하나 이상의 시나리오가 필요한 경우 여러개의 시나리오를 만들어 인수 테스트를 작성할 수 있음
+  
+  ```
+  Feature: 지하철 구간 관련 기능
+  
+    Background 
+      Given 지하철역 등록되어 있음
+      And 지하철 노선 등록되어 있음 강남-광교
+      And 지하철 노선에 지하철역 등록되어 있음
+  
+    Scenario: 지하철 구간을 순서 상관없이 등록하고 지하철역을 제거
+    	When 최초 추가된 노선 조회 요청
+      Then 노선에 등록된 역 목록 확인
+      When 지하철 구간 추가 등록
+      Then 지하철 구간 추가 등록됨
+      When 지하철 노선에 등록된 역 목록 조회 요청
+      Then 지하철 노선에 등록된 역 목록 조회 확인
+      When 지하철 구간 제거
+      Then 지하철 구간 추가 등록됨
+      When 지하철 노선에 등록된 역 목록 조회 요청
+      Then 등록한 지하철 구간이 반영된 역 목록이 조회됨
+  
+  	Scenario: 중복된 지하철 구간을 등록
+  		When 동일한 지하철 구간 등록
+  		Then 지하철 구간 등록 오류
+  
+  	Scenario: 노선과 관계없는 역을 기준으로 등록
+  		When 관계없는 지하철역 구간 등록
+  		Then 지하철 구간 등록 오류
+  	
+  	Scenario: 노선에 역이 두개 있을 때 제거
+  		When 최초 등록된 역중 하나로 제거
+  		Then 지하철 구간 등록 오류
+  ```
+
+- [x] LineService 리팩터링 - 스프링 빈을 사용하는 객체와 의존하는 로직을 제외하고 도메인으로 이동
+  - [x] saveLine 리팩터링
+    - getStations 도메인으로 이동 및 메서드 분리
+    - LineEntity 개선 - List<Section> 일급컬렉션으로 분리 및 로직 이동
+    - lineResponse 개선
+  - [x] findLines 리팩터링
+  - [x] findLineResponseById 리팩터링
+  - [x] addLineStation 리팩터링
+    - 등록된 역 목록에 구간이 등록되어있는지 확인하는 로직을 분리
+    - 구간 등록의 예외처리로직 도메인으로 이동 - Sections로
+    - 상행 구간 추가로직 이동
+    - 하행 구간 추가로직 이동
+    - Distance 일급객체로 분리
+    - List<Station> 일급컬렉션으로 분리
+  - [x] removeLineStation 리팩터링
+    - Sections 로 로직 이관
+    - 메서드 분리
+
+
+
