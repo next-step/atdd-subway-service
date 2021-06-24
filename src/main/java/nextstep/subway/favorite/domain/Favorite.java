@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.exception.favorite.NotFoundAnyThingException;
+import nextstep.subway.exception.favorite.SameStationException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -36,6 +37,25 @@ public class Favorite extends BaseEntity {
     public Favorite() {}
 
     public Favorite(Member member, Station source, Station target) {
-        
+        validation(member, source, target);
     }
+
+    private void validation(Member member, Station source, Station target) {
+        if (Objects.isNull(member) || Objects.isNull(source) || Objects.isNull(target)) {
+            throw new NotFoundAnyThingException();
+        }
+
+        if (source.equals(target)) {
+            throw new SameStationException();
+        }
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public static Favorite of(Member member, Station source, Station target) {
+        return new Favorite(member, source, target);
+    }
+
 }
