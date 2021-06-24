@@ -28,7 +28,7 @@ class SectionsTest {
     void add() {
         //given
         //when
-        sections.add(new Section());
+        sections.add(new Section(line, upStation, downStation, new Distance(10)));
         //then
         assertThat(sections.isEmpty()).isFalse();
     }
@@ -47,7 +47,7 @@ class SectionsTest {
     void size() {
         //given
         //when
-        sections.add(new Section());
+        sections.add(new Section(line, upStation, downStation, new Distance(10)));
         //then
         assertThat(sections.size()).isEqualTo(1);
     }
