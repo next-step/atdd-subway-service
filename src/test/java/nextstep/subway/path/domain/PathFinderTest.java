@@ -57,8 +57,23 @@ class PathFinderTest {
 
 		Assertions.assertThatThrownBy(() -> {
 			pathFinder.getShortestPath(교대역, 교대역);
-		}).isInstanceOf(RuntimeException.class)
+		}).isInstanceOf(IllegalArgumentException.class)
 			.hasMessageContaining("출발역과 도착역이 같아 경로를 조회할 수 없음");
+	}
 
+	@DisplayName("출발역과 도착역이 연결되어있지 않은 경우 오류발생")
+	@Test
+	void testUnLinkedStations() {
+		Station 수원역 = new Station("수원역");
+		Station 안양역 = new Station("안양역");
+		Line 일호선 = new Line("일호선", "blue", 수원역, 안양역, 10);
+
+		List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선, 일호선);
+		PathFinder pathFinder = new PathFinder(lines);
+
+		Assertions.assertThatThrownBy(() -> {
+			pathFinder.getShortestPath(강남역, 수원역);
+		}).isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("구간이 연결되어있지 않아 경로를 찾을 수 없음");
 	}
 }

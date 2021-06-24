@@ -66,8 +66,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 	@DisplayName("지하철 경로조회 실패 - 출발역과 도착역이 동일함")
 	@Test
-	void testGetShortestPathError() {
+	void testGetShortestPathError1() {
 		ExtractableResponse<Response> response = 최단_경로를_조회한다(강남역.getId(), 강남역.getId());
+		this.최단_경로_조회_실패(response);
+	}
+
+	@DisplayName("지하철 경로조회 실패 - 출발역과 도착역이 연결되지 않은경우")
+	@Test
+	void testGetShortestPathError2() {
+		StationResponse 수원역 = StationAcceptanceTest.지하철역_등록되어_있음("수원역").as(StationResponse.class);
+		StationResponse 안양역 = StationAcceptanceTest.지하철역_등록되어_있음("안양역").as(StationResponse.class);
+		LineResponse 일호선 = 지하철_노선_등록되어_있음(new LineRequest("일호선", "bg-red-600", 안양역.getId(), 수원역.getId(), 10)).as(
+			LineResponse.class);
+
+		ExtractableResponse<Response> response = 최단_경로를_조회한다(강남역.getId(), 안양역.getId());
 		this.최단_경로_조회_실패(response);
 	}
 

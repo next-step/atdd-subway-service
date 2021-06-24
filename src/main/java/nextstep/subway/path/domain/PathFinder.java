@@ -45,7 +45,15 @@ public class PathFinder {
 		this.validateVertex(source, target);
 
 		GraphPath<Station, DefaultWeightedEdge> path = shortestPath.getPath(source, target);
+		this.validatePath(path);
+		
 		return new Path(path.getVertexList(), path.getWeight());
+	}
+
+	private void validatePath(GraphPath<Station, DefaultWeightedEdge> path) {
+		if (path == null) {
+			throw new IllegalArgumentException("구간이 연결되어있지 않아 경로를 찾을 수 없음");
+		}
 	}
 
 	private void validateVertex(Station source, Station target) {
