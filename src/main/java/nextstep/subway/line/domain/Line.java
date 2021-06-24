@@ -2,11 +2,9 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 
 import javax.persistence.*;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Entity
 public class Line extends BaseEntity {
@@ -53,12 +51,6 @@ public class Line extends BaseEntity {
 
     public List<Section> getSections() {
         return sections.getSections();
-    }
-
-    public List<StationResponse> getStationsAsResponse() {
-        return getStations().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
     }
 
     public List<Station> getStations() {
