@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import java.util.Objects;
+
 import nextstep.subway.line.exception.InvalidSectionException;
 import nextstep.subway.station.domain.Station;
 
@@ -28,16 +30,24 @@ public class Section {
     public Section() {
     }
 
-    Section(Long id, Line line, Station upStation, Station downStation, int distance) {
+    public Section(Station upStation, Station downStation, int distance) {
+        this(null, null, upStation, downStation, distance);
+    }
+
+    Section(Long id, Station upStation, Station downStation, int distance) {
+        this(id, null, upStation, downStation, distance);
+    }
+
+    private Section(Line line, Station upStation, Station downStation, int distance) {
+        this(null, line, upStation, downStation, distance);
+    }
+
+    private Section(Long id, Line line, Station upStation, Station downStation, int distance) {
         this.id = id;
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
-    }
-
-    public Section(Line line, Station upStation, Station downStation, int distance) {
-        this(null, line, upStation, downStation, distance);
     }
 
     public Long getId() {
@@ -79,6 +89,21 @@ public class Section {
                 ^ downStation == section.upStation;
     }
 
+    public void setLine(Line line) {
+        checkLine(line);
+        this.line = line;
+    }
+
+    private void checkLine(Line line) {
+        if (Objects.isNull(line)) {
+            throw new IllegalArgumentException("소속 노선은 null 이 될 수 없습니다.");
+        }
+
+        if (!Objects.isNull(this.line)) {
+            throw new InvalidSectionException("소속 노선을 재 정의 할 수는 없습니다.");
+        }
+    }
+
     public void updateSection(Section section) {
         checkSection(section);
 
@@ -107,12 +132,12 @@ public class Section {
         checkMergeable(section);
 
         if (this.upStation == section.downStation) {
-            return new Section(this.line,
-                section.upStation, this.downStation, this.distance + section.distance);
+            return new Section(this.line, section.upStation, this.downStation,
+                    this.distance + section.distance);
         }
 
-        return new Section(this.line,
-            this.upStation, section.downStation, this.distance + section.distance);
+        return new Section(this.line, this.upStation, section.downStation,
+                this.distance + section.distance);
     }
 
     private void checkMergeable(Section section) {

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,9 +28,10 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line line = request.toLine();
-        line.addSection(new Section(line, upStation, downStation, request.getDistance()));
-        Line persistLine = lineRepository.save(line);
+
+        Line persistLine = lineRepository.save(request.toLine());
+        persistLine.addSection(new Section(upStation, downStation, request.getDistance()));
+
         return LineResponse.of(persistLine);
     }
 
@@ -65,7 +65,8 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        line.addSection(new Section(line, upStation, downStation, request.getDistance()));
+
+        line.addSection(new Section(upStation, downStation, request.getDistance()));
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
