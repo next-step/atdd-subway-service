@@ -102,6 +102,33 @@ public class PathAcceptanceTest extends AcceptanceTest {
     경로탐색_실패_존재하지_않는_역(존재하지_않는_역과_경로_탐색_결과);
   }
 
+  @DisplayName("추가요금이 있는 노선을 지나가는 경로를 조회")
+  @Test
+  void findPathWithAdditionalLineFeeTest() {
+    //given
+    StationResponse 시작역 = 지하철역_등록되어_있음("시작역").as(StationResponse.class);
+    StationResponse 중간역 = 지하철역_등록되어_있음("중간역").as(StationResponse.class);
+    StationResponse 끝역 = 지하철역_등록되어_있음("끝역").as(StationResponse.class);
+    LineResponse 추가요금_있는_노선 = 지하철_노선_등록되어_있음(new LineRequest("추가요금노선", "bg-black-600", 시작역.getId(), 중간역.getId(), 5, 1_000)).as(LineResponse.class);
+    LineResponse 추가요금_없는_노선 = 지하철_노선_등록되어_있음(new LineRequest("노선", "bg-white-600", 중간역.getId(), 끝역.getId(), 5)).as(LineResponse.class);
+
+    //when 추가요금이 있는 노선과 없는 노선을 경유하는 경로를 검색
+    ExtractableResponse<Response> 경로_탐색_결과 = 최단거리_경로_탐색(시작역, 끝역);
+
+    //then 이용요금 (1,250 원)에 노선 추가요금 (1,000원)이 더해진 요금이 조회됨
+    최단거리_조회됨(경로_탐색_결과, Arrays.asList(시작역, 중간역, 끝역), 10D, 2_250);
+
+    //given
+    StationResponse 새끝역 = 지하철역_등록되어_있음("새끝역").as(StationResponse.class);
+    LineResponse 저렴한_추가요금_노선 = 지하철_노선_등록되어_있음(new LineRequest("저렴한추가요금노선", "bg-grey-600", 중간역.getId(), 새끝역.getId(), 5, 500)).as(LineResponse.class);
+
+    //when 추가요금이 모두 있는 노선을 경유하는 경로를 검색
+    ExtractableResponse<Response> 모든_노선_추가요금_경로_탐색_결과 = 최단거리_경로_탐색(시작역, 새끝역);
+
+    //then 이용요금 (1,250 원)에 추가요금이 더 비싼 노선의 추가요금 (1,000원)이 더해진 요금이 조회됨
+    최단거리_조회됨(모든_노선_추가요금_경로_탐색_결과, Arrays.asList(시작역, 중간역, 새끝역), 10D, 2_250);
+  }
+
   @DisplayName("경로 탐색 시 최단거리로 갈 수있는 경로를 출발역부터 도착역까지 순서로 반환한다.")
   @Test
   void findPathTest() {
