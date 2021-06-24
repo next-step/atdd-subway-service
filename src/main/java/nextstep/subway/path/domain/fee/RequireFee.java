@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 
 public enum RequireFee {
   DEFAULT_FEE(distance -> distance > 0 && distance <= 10D,
-      distance -> new BaseFee(distance).calculateFee()),
+      distance -> new BaseFee().calculateFee()),
   FIRST_ADDITIONAL_FEE(distance -> distance > 10D && distance <= 50D,
       distance -> new FirstAdditionalFee(distance).calculateFee()),
   SECOND_ADDITIONAL_FEE(distance -> distance > 50D,

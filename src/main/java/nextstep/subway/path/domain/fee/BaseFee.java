@@ -1,15 +1,14 @@
 package nextstep.subway.path.domain.fee;
 
-public class BaseFee {
+public class BaseFee implements Fee {
 
   private static final long ADULT_BASE_FEE = 1_250;
 
-  protected final Double distance;
+  BaseFee() {
 
-  public BaseFee(Double distance) {
-    this.distance = distance;
   }
 
+  @Override
   public long calculateFee() {
     return ADULT_BASE_FEE;
   }

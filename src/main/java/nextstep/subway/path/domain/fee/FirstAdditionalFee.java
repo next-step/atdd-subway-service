@@ -1,22 +1,24 @@
 package nextstep.subway.path.domain.fee;
 
-public class FirstAdditionalFee extends BaseFee {
+public class FirstAdditionalFee implements Fee {
 
-  private static final double CALCULATE_LIMIT_DISTANCE = 50D;
-  private static final long DISTANCE_UNTIL_BASE_FEE = 10L;
+  private static final double DISTANCE_UNTIL_BASE_FEE = 10D;
   private static final long FEE_ADDITIONAL_DISTANCE = 5L;
   private static final long ADDITIONAL_FEE_UNIT = 100L;
 
-  public FirstAdditionalFee(Double distance) {
-    super(distance);
+  private final BaseFee baseFee;
+  private final Double firstAdditionalSectionDistance;
+
+  FirstAdditionalFee(Double distance) {
+    if (distance <= DISTANCE_UNTIL_BASE_FEE) {
+      throw new IllegalArgumentException("");
+    }
+    this.baseFee = new BaseFee();
+    this.firstAdditionalSectionDistance = distance - DISTANCE_UNTIL_BASE_FEE;
   }
 
   @Override
   public long calculateFee() {
-    double calculatingBaseDistance = distance;
-    if (distance > CALCULATE_LIMIT_DISTANCE) {
-      calculatingBaseDistance = CALCULATE_LIMIT_DISTANCE;
-    }
-    return super.calculateFee() + (long) Math.ceil((calculatingBaseDistance - DISTANCE_UNTIL_BASE_FEE) / FEE_ADDITIONAL_DISTANCE) * ADDITIONAL_FEE_UNIT;
+    return baseFee.calculateFee() + (long) Math.ceil((firstAdditionalSectionDistance) / FEE_ADDITIONAL_DISTANCE) * ADDITIONAL_FEE_UNIT;
   }
 }
