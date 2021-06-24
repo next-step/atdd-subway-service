@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Path {
-    public static final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-    public static final DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+    public static WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+    public static DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
 
     public static void addPath(Section section) {
         Station upStation = section.getUpStation();
@@ -34,5 +34,10 @@ public class Path {
 
     public static void removeStation(Section section) {
         graph.removeEdge(section.getUpStation(), section.getDownStation());
+    }
+
+    public static void clear() {
+        graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        dijkstraShortestPath = new DijkstraShortestPath(graph);
     }
 }
