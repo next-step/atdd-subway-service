@@ -32,6 +32,10 @@ public class Path {
         return shortestPath.stream().map(Station::toResponse).collect(Collectors.toList());
     }
 
+    public static int findPathWeight(Station source, Station target) {
+        return (int) dijkstraShortestPath.getPathWeight(source, target);
+    }
+
     public static void removeStation(Section section) {
         graph.removeEdge(section.getUpStation(), section.getDownStation());
     }

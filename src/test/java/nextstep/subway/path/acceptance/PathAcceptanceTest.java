@@ -11,7 +11,6 @@ import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -88,7 +87,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 지하철_경로_조회_요청_응답 = 지하철_경로_조회_요청(경로_조회_요청_내용);
         //then
         //지하철 경로 조회 응답 확인
-        지하철_노선에_지하철역_경로_결과(지하철_경로_조회_요청_응답, 강남역, 양재역, 교대역);
+        지하철_노선에_지하철역_경로_결과(지하철_경로_조회_요청_응답, 20, 강남역, 양재역, 교대역);
     }
 
     @DisplayName("경로 찾기 요청 정상 - 다른 값")
@@ -100,7 +99,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 지하철_경로_조회_요청_응답 = 지하철_경로_조회_요청(경로_조회_요청_내용);
         //then
         //지하철 경로 조회 응답 확인
-        지하철_노선에_지하철역_경로_결과(지하철_경로_조회_요청_응답, 교대역, 양재역, 강남역, 선릉역);
+        지하철_노선에_지하철역_경로_결과(지하철_경로_조회_요청_응답, 30, 교대역, 양재역, 강남역, 선릉역);
     }
 
     @DisplayName("경로 찾기 실패")
@@ -152,7 +151,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return new PathRequest(역_번호_추출(출발역), 역_번호_추출(도착역));
     }
 
-    private void 지하철_노선에_지하철역_경로_결과(ExtractableResponse<Response> 지하철_경로_조회_요청_응답, StationResponse... 역_경로) {
+    private void 지하철_노선에_지하철역_경로_결과(ExtractableResponse<Response> 지하철_경로_조회_요청_응답, int 거리, StationResponse... 역_경로) {
         List<StationResponse> stationResponses = Arrays.asList(역_경로);
         PathResponse path = 지하철_경로_조회_요청_응답.as(PathResponse.class);
         List<Long> stationIds = path.getStations().stream()
@@ -167,6 +166,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         for (int i = 0; i < stationResponses.size(); i++) {
             assertThat(stationIds.get(i)).isEqualTo(expectedStationIds.get(i));
         }
+        assertThat(path.getDistance()).isEqualTo(거리);
     }
 
     private void 역_생성_실패_체크(ExtractableResponse<Response> 없는역_조회_요청_응답) {

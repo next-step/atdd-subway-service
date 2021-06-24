@@ -11,7 +11,6 @@ import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
-import nextstep.subway.station.dto.StationResponse;
 
 
 @Service
@@ -26,6 +25,6 @@ public class PathService {
     public PathResponse findPath(PathRequest pathRequest) {
         Station source = stationRepository.findById(pathRequest.getSource()).orElseThrow(() -> new RuntimeException(Sections.NOT_FOUND_SECTION));
         Station target = stationRepository.findById(pathRequest.getTarget()).orElseThrow(() -> new RuntimeException(Sections.NOT_FOUND_SECTION));
-        return PathResponse.of(Path.findShortestPath(source, target));
+        return PathResponse.of(Path.findShortestPath(source, target), Path.findPathWeight(source, target));
     }
 }
