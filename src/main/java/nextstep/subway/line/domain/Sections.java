@@ -64,10 +64,6 @@ public class Sections {
         return downStation;
     }
 
-    public List<Section> values() {
-        return values;
-    }
-
     public void addSection(Section section) {
         checkSection(section);
 
