@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class LineService {
-    private LineRepository lineRepository;
-    private StationService stationService;
+    private final LineRepository lineRepository;
+    private final StationService stationService;
 
     public LineService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;
@@ -61,7 +61,7 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
-    public void addLineStation(Long lineId, SectionRequest request) {
+    public void addSection(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
@@ -69,7 +69,7 @@ public class LineService {
         line.addSection(new Section(upStation, downStation, request.getDistance()));
     }
 
-    public void removeLineStation(Long lineId, Long stationId) {
+    public void removeSection(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.removeStation(station);
