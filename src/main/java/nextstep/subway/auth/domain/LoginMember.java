@@ -2,11 +2,8 @@ package nextstep.subway.auth.domain;
 
 import java.util.Objects;
 import nextstep.subway.path.domain.DiscountStrategy;
-import nextstep.subway.path.domain.NoDiscountStrategy;
 
-public class LoginMember {
-
-    public static final LoginMember NO_LOGIN = new LoginMember();
+public class LoginMember implements User {
 
     private Long id;
     private String email;
@@ -35,10 +32,6 @@ public class LoginMember {
     }
 
     public DiscountStrategy getDiscountStrategy() {
-        if (this.equals(NO_LOGIN)) {
-            return new NoDiscountStrategy();
-        }
-
         return DiscountStrategy.of(age);
     }
 

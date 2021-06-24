@@ -3,7 +3,7 @@ package nextstep.subway.favorite.ui;
 import java.net.URI;
 import java.util.List;
 import nextstep.subway.auth.domain.StringAuthPrincipal;
-import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.domain.User;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
@@ -29,10 +29,10 @@ public class FavoriteController {
     }
 
     @PostMapping
-    public ResponseEntity<URI> createFavorite(@StringAuthPrincipal LoginMember loginMember,
+    public ResponseEntity<URI> createFavorite(@StringAuthPrincipal User user,
                                               @RequestBody FavoriteRequest favoriteRequest) {
 
-        Long id = favoriteService.save(loginMember.getId(),
+        Long id = favoriteService.save(user.getId(),
                                        favoriteRequest.getSource(),
                                        favoriteRequest.getTarget());
 
@@ -40,9 +40,9 @@ public class FavoriteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FavoriteResponse>> findFavorite(@StringAuthPrincipal LoginMember loginMember) {
+    public ResponseEntity<List<FavoriteResponse>> findFavorite(@StringAuthPrincipal User user) {
 
-        List<FavoriteResponse> responses = favoriteService.findAllByMember(loginMember.getId())
+        List<FavoriteResponse> responses = favoriteService.findAllByMember(user.getId())
                                                           .stream()
                                                           .map(FavoriteResponse::of)
                                                           .collect(toList());
@@ -51,9 +51,9 @@ public class FavoriteController {
     }
 
     @DeleteMapping(value = "/{favoriteId}")
-    public ResponseEntity<Void> deleteFavorite(@StringAuthPrincipal LoginMember loginMember,
+    public ResponseEntity<Void> deleteFavorite(@StringAuthPrincipal User user,
                                                @PathVariable Long favoriteId) {
-        favoriteService.delete(loginMember.getId(), favoriteId);
+        favoriteService.delete(user.getId(), favoriteId);
         return ResponseEntity.noContent().build();
     }
 }
