@@ -26,7 +26,6 @@ public class Fare {
         this.defaultFare = defaultFare;
     }
 
-
     public int getFare() {
         defaultFare += calculateOverFare();
         defaultFare += extraFare;
@@ -36,20 +35,24 @@ public class Fare {
 
     private int calculateOverFare() {
         int fare = 0;
-        if (distance > STANDARD_LONG_DISTANCE) {
-            int overDistance = distance - STANDARD_LONG_DISTANCE;
-            fare += calculateOverFare(overDistance, 8);
-            this.distance -= overDistance;
-        }
 
-        if (distance > STANDARD_SHORT_DISTANCE) {
-            this.distance -= STANDARD_SHORT_DISTANCE;
-            fare += calculateOverFare(distance, 5);
+        int remainDistance = distance;
+        int sectionDistance = 0;
+        DistanceFareUnit[] distanceFareUnits = DistanceFareUnit.values();
+        for (DistanceFareUnit distanceFareUnit : distanceFareUnits) {
+            sectionDistance = getCorrectionUnit(remainDistance - distanceFareUnit.ofBoundary()); //
+
+            fare += distanceFareUnit.fare(sectionDistance);   // 0
+
+            remainDistance -= sectionDistance;
         }
         return fare;
     }
 
-    private int calculateOverFare(int distance, int distanceUnit) {
-        return (int) ((Math.ceil((distance - 1) / distanceUnit) + 1) * 100);
+    private int getCorrectionUnit(int sectionDistance) {
+        if(sectionDistance < 0) {
+            sectionDistance = 0;
+        }
+        return sectionDistance;
     }
 }
