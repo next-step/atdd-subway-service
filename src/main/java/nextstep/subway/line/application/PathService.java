@@ -37,23 +37,31 @@ public class PathService {
         List<Station> stations = pathFinder.getPath(sourceStation, targetStation);
 
         List<SectionWeightedEdge> sectionWeightEdge = pathFinder.getSectionWeightEdge(sourceStation, targetStation);
-        int extraFare = sectionWeightEdge.stream()
-                .max(Comparator.comparing(sectionWeightedEdge -> sectionWeightedEdge.getExtraFare()))
-                .map(sectionWeightedEdge -> sectionWeightedEdge.getExtraFare())
-                .orElse(0);
+        int extraFare = getMaximumExtraFareFromLineEdge(sectionWeightEdge);
 
-        List<StationResponse> stationResponses = stations
-                .stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+        List<StationResponse> stationResponses = makeStationResponse(stations);
 
         int distance = pathFinder.getWeight(sourceStation, targetStation);
         return new PathResponse(stationResponses, distance,
                 new Fare(distance, extraFare, DefaultFare.of(loginMember.getAge()).fare()));
     }
 
+    private List<StationResponse> makeStationResponse(List<Station> stations) {
+        return stations
+                .stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    private Integer getMaximumExtraFareFromLineEdge(List<SectionWeightedEdge> sectionWeightEdge) {
+        return sectionWeightEdge.stream()
+                .max(Comparator.comparing(sectionWeightedEdge -> sectionWeightedEdge.getExtraFare()))
+                .map(sectionWeightedEdge -> sectionWeightedEdge.getExtraFare())
+                .orElse(0);
+    }
+
     private void validation(Long sourceStationId, Long targetStationId) {
-        if (sourceStationId == targetStationId) {
+        if (sourceStationId.equals(targetStationId)) {
             throw new IllegalArgumentException("출발역과 도착역이 같을수는 없습니다.");
         }
     }
