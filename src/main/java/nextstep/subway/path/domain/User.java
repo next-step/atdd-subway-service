@@ -18,9 +18,9 @@ public enum User {
     }
 
     public static User typeOf(Member member) {
-        if (member == null) {
-            return User.NONE;
-        }
+//        if (member == null) {
+//            return User.NONE;
+//        }
 
         if (member.isFree()) {
             return User.FREE;

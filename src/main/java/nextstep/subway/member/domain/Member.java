@@ -11,6 +11,15 @@ import javax.persistence.Id;
 
 @Entity
 public class Member extends BaseEntity {
+    public static final int FREE_USER_UNDER = 5;
+    public static final int FREE_USER_OVER = 65;
+    public static final int ADULT_USER_UPPER_BOUND = 64;
+    public static final int ADULT_USER_LOWER_BOUND = 19;
+    public static final int YOUTH_USER_UPPER_BOUND = 18;
+    public static final int YOUTH_USER_LOWER_BOUND = 13;
+    public static final int CHILD_USER_UPPER_BOUND = 12;
+    public static final int CHILD_USER_LOWER_BOUND = 6;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -56,19 +65,19 @@ public class Member extends BaseEntity {
     }
 
     public boolean isFree() {
-        return age <= 5 || age >= 65;
+        return age <= FREE_USER_UNDER || age >= FREE_USER_OVER;
     }
 
     public boolean isAdult() {
-        return id == null || (age <= 64 && age >= 19);
+        return id == null || (age <= ADULT_USER_UPPER_BOUND && age >= ADULT_USER_LOWER_BOUND);
     }
 
     public boolean isYouth() {
-        return age >= 13 && age <= 18;
+        return age >= YOUTH_USER_LOWER_BOUND && age <= YOUTH_USER_UPPER_BOUND;
     }
 
     public boolean isChild() {
-        return age >= 6 && age <= 12;
+        return age >= CHILD_USER_LOWER_BOUND && age <= CHILD_USER_UPPER_BOUND;
     }
 
 }

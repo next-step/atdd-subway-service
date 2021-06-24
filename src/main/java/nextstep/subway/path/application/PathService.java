@@ -3,7 +3,6 @@ package nextstep.subway.path.application;
 import nextstep.subway.exception.NoLoginUserException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.ShortestPath;
@@ -30,25 +29,20 @@ public class PathService {
         this.memberRepository = memberRepository;
     }
 
-//    public PathResponse findPath(Long sourceStationId, Long targetStationId) {
-//        ShortestPath shortestPath = findShortestPath(sourceStationId, targetStationId);
-//        return PathResponse.of(shortestPath);
-//    }
-
     @Transactional(readOnly = true)
     public PathResponse findPath(Long loginMemberId, Long sourceStationId, Long targetStationId) {
         ShortestPath shortestPath = findShortestPath(sourceStationId, targetStationId);
 
-        Member member = null;
         if (loginMemberId != null) {
-            member = memberRepository.findById(loginMemberId)
-                    .orElseThrow(NoLoginUserException::new);
+            return PathResponse.of(shortestPath.withUser(
+                    memberRepository.findById(loginMemberId).orElseThrow(NoLoginUserException::new))
+            );
         }
-        return PathResponse.of(shortestPath.withUser(member));
+        return PathResponse.of(shortestPath.withoutUser());
     }
 
     @Transactional(readOnly = true)
-    ShortestPath findShortestPath(Long sourceStationId, Long targetStationId) {
+    protected ShortestPath findShortestPath(Long sourceStationId, Long targetStationId) {
         Station sourceStation = stationRepository.findById(sourceStationId)
                 .orElseThrow(NoSuchElementException::new);
         Station targetStation = stationRepository.findById(targetStationId)

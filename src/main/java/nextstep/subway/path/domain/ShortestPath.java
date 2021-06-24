@@ -77,4 +77,9 @@ public class ShortestPath {
         user = User.typeOf(member);
         return this;
     }
+
+    public ShortestPath withoutUser() {
+        user = User.NONE;
+        return this;
+    }
 }
