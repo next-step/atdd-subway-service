@@ -1,19 +1,18 @@
 package nextstep.subway.path.domain.fee;
 
-import nextstep.subway.line.domain.Fee;
+import nextstep.subway.path.domain.fee.discount.Discount;
 
 public class BaseCalculatedFee implements CalculatedFee {
 
   private static final long ADULT_BASE_FEE = 1_250;
+  private final Discount discount;
 
-  private final Fee additionalFee;
-
-  BaseCalculatedFee(Fee pathAdditionalFee) {
-    this.additionalFee = pathAdditionalFee;
+  BaseCalculatedFee(Discount discount) {
+    this.discount = discount;
   }
 
   @Override
   public long calculateFee() {
-    return ADULT_BASE_FEE + additionalFee.getAmount();
+    return discount.discount(ADULT_BASE_FEE, this.getClass());
   }
 }

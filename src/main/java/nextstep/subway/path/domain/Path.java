@@ -25,8 +25,8 @@ public class Path {
     return distance;
   }
 
-  public Fee getPathAdditionalFee() {
-    return pathAdditionalFee;
+  public Long getAdditionalAmount() {
+    return pathAdditionalFee.getAmount();
   }
 
   @Override
