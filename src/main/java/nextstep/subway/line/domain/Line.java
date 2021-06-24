@@ -38,6 +38,50 @@ public class Line extends BaseEntity {
         this.color = line.getColor();
     }
 
+    public void addSection(Station upStation, Station downStation, int distance) {
+        Section newSection = new Section(upStation, downStation, distance))
+        if (!sections.isEmpty()) {
+            checkSectionValidate(newSection);
+        }
+        sections.add(newSection);
+    }
+
+    private void checkSectionValidate(Section newSection) {
+        int sectionIndex = 0;
+        boolean isSameUpStation = false;
+        boolean isSameDownStation = false;
+        Section oldSection;
+        while (!isSameUpStation && !isSameDownStation && sectionIndex < sections.size()) {
+            oldSection = sections.get(sectionIndex);
+            isSameUpStation = isSameUpStationOfSection(oldSection, newSection);
+            isSameDownStation = isSameDownStationOfSection(oldSection, newSection);
+            sectionIndex++;
+        }
+        if(isSameUpStation || isSameDownStation) return;
+        if(isUpFinalSection(newSection)) return;
+        if(isDownFinalSection(newSection)) return;
+        throw new RuntimeException("등록할 수 없는 구간 입니다.");
+    }
+
+    private boolean isUpFinalSection(Section newSection) {
+        return sections.stream()
+                .anyMatch(it -> it.isUpFinalSection(newSection));
+    }
+
+    private boolean isDownFinalSection(Section newSection) {
+        return sections.stream()
+                .anyMatch(it -> it.isDownFinalSection(newSection));
+    }
+
+    private boolean isSameUpStationOfSection(Section oldSection, Section newSection) {
+        oldSection.isSameSection(newSection);
+        return oldSection.isSameUpStationOfSection(newSection);
+    }
+
+    private boolean isSameDownStationOfSection(Section oldSection, Section newSection) {
+        return oldSection.isSameDownStationOfSection(newSection);
+    }
+
     public Long getId() {
         return id;
     }
