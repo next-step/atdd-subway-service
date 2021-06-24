@@ -30,7 +30,7 @@ public class SpringExtensionTest {
         LineQueryService lineService = new LineQueryService(lineRepository);
 
         // when
-        List<LineResponse> responses = lineService.findLines();
+        List<LineResponse> responses = lineService.findLineResponses();
 
         // then
         assertThat(responses).hasSize(1);

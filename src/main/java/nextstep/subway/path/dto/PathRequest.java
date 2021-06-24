@@ -1,10 +1,11 @@
 package nextstep.subway.path.dto;
 
 public class PathRequest {
+
     private Long source;
     private Long target;
 
-    public PathRequest() {
+    protected PathRequest() {
     }
 
     public PathRequest(Long source, Long target) {

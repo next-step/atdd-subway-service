@@ -20,9 +20,13 @@ public class LineQueryService {
         this.lineRepository = lineRepository;
     }
 
-    public List<LineResponse> findLines() {
-        List<Line> persistLines = lineRepository.findAll();
+    public List<LineResponse> findLineResponses() {
+        List<Line> persistLines = findLines();
         return LineResponse.ofList(persistLines);
+    }
+
+    public List<Line> findLines() {
+        return lineRepository.findAll();
     }
 
     public Line findLineById(Long id) {

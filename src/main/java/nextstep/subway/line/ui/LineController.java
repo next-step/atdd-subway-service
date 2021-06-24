@@ -31,7 +31,7 @@ public class LineController {
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineQueryService.findLines());
+        return ResponseEntity.ok(lineQueryService.findLineResponses());
     }
 
     @GetMapping("/{id}")

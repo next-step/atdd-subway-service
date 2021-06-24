@@ -60,7 +60,7 @@ class LineQueryServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(일호선, 이호선));
 
         //when
-        List<LineResponse> actual = lineQueryService.findLines();
+        List<LineResponse> actual = lineQueryService.findLineResponses();
 
         //then
         assertThat(actual).containsAll(Arrays.asList(LineResponse.of(일호선), LineResponse.of(이호선)));
@@ -68,7 +68,7 @@ class LineQueryServiceTest {
 
     @DisplayName("노선 ID를 요청하면 ID에 맞는 노선을 리턴한다.")
     @Test
-    void findLine() {
+    void findLineResponse() {
         //given
         when(lineRepository.findById(anyLong())).thenReturn(Optional.of(일호선));
 

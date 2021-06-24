@@ -85,8 +85,8 @@ class LineCommandServiceTest {
     void addLineStation() {
         //given
         when(lineQueryService.findLineById(any())).thenReturn(일호선);
-        when(stationService.findStationById(서울역.getId())).thenReturn(서울역);
-        when(stationService.findStationById(남영역.getId())).thenReturn(남영역);
+        when(stationService.findById(서울역.getId())).thenReturn(서울역);
+        when(stationService.findById(남영역.getId())).thenReturn(남영역);
 
         //when
         lineCommandService.addLineStation(일호선.getId(), new SectionRequest(서울역.getId(), 남영역.getId(), 1));
@@ -99,8 +99,8 @@ class LineCommandServiceTest {
     void removeLineStation() {
         //given
         when(lineQueryService.findLineById(any())).thenReturn(일호선);
-        when(stationService.findStationById(서울역.getId())).thenReturn(서울역);
-        when(stationService.findStationById(남영역.getId())).thenReturn(남영역);
+        when(stationService.findById(서울역.getId())).thenReturn(서울역);
+        when(stationService.findById(남영역.getId())).thenReturn(남영역);
         lineCommandService.addLineStation(일호선.getId(), new SectionRequest(서울역.getId(), 남영역.getId(), 1));
 
         //when

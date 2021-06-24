@@ -41,14 +41,14 @@ public class LineCommandService {
 
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = lineQueryService.findLineById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
+        Station upStation = stationService.findById(request.getUpStationId());
+        Station downStation = stationService.findById(request.getDownStationId());
         line.addSection(upStation, downStation, request.getDistance());
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = lineQueryService.findLineById(lineId);
-        Station station = stationService.findStationById(stationId);
+        Station station = stationService.findById(stationId);
         line.removeStation(station);
     }
 }
