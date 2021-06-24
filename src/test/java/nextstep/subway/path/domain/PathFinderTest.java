@@ -23,6 +23,8 @@ class PathFinderTest {
     private Station 양재역;
     private Station 양재시민의숲역;
     private Station 청계산입구역;
+    private Station 서울역;
+    private Station 용산역;
     private PathFinder pathFinder;
 
     /**
@@ -54,6 +56,10 @@ class PathFinderTest {
         ReflectionTestUtils.setField(양재시민의숲역, "id", 9L);
         청계산입구역 = new Station("청계산입구역");
         ReflectionTestUtils.setField(청계산입구역, "id", 10L);
+        서울역 = new Station("서울역");
+        ReflectionTestUtils.setField(서울역, "id", 11L);
+        용산역 = new Station("용산역");
+        ReflectionTestUtils.setField(용산역, "id", 12L);
 
         Line 신분당선 = new Line("신분당선", "bg-red-600", 강남역, 청계산입구역, 20);
         신분당선.addSection(강남역, 양재역, 3);
@@ -68,7 +74,9 @@ class PathFinderTest {
         Line 삼호선 = new Line("삼호선", "bg-red-400", 교대역, 양재역, 7);
         삼호선.addSection(교대역, 남부터미널역, 3);
 
-        pathFinder = new PathFinder(Lists.newArrayList(신분당선, 이호선, 삼호선));
+        Line 일호선 = new Line("일호선", "bg-red-300", 서울역, 용산역, 10);
+
+        pathFinder = new PathFinder(Lists.newArrayList(신분당선, 이호선, 삼호선, 일호선));
     }
 
     @DisplayName("출발역과 도착역이 서로 같은 노선일 경우 최단 경로를 리턴한다. (신분당선)")
@@ -149,10 +157,19 @@ class PathFinderTest {
 
     @DisplayName("출발역과 도착역이 같은 경우 예외를 발생시킨다.")
     @Test
-    void StartStationIsSameAsEndStation() {
+    void startStationIsSameAsEndStation() {
         //when
         assertThatThrownBy(() -> pathFinder.findPath(강남역, 강남역))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(IllegalArgumentException.class) //then
                 .hasMessage(PathFinder.START_STATION_IS_SAME_AS_END_STATION_EXCEPTION_MESSAGE);
+    }
+
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우 예외를 발생시킨다.")
+    @Test
+    void notConnectedStation() {
+        //when
+        assertThatThrownBy(() -> pathFinder.findPath(서울역, 강남역))
+                .isInstanceOf(IllegalArgumentException.class) //then
+                .hasMessage(PathFinder.STATION_IS_NOT_CONNECTED_EXCEPTION_MESSAGE);
     }
 }
