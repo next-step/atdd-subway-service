@@ -43,22 +43,29 @@ public class PathFinder {
 
 	public Path getShortestPath(Station source, Station target) {
 		this.validateVertex(source, target);
+		this.validateNotContainedStationInPath(source, target);
 
 		GraphPath<Station, DefaultWeightedEdge> path = shortestPath.getPath(source, target);
 		this.validatePath(path);
-		
+
 		return new Path(path.getVertexList(), path.getWeight());
 	}
 
 	private void validatePath(GraphPath<Station, DefaultWeightedEdge> path) {
 		if (path == null) {
-			throw new IllegalArgumentException("구간이 연결되어있지 않아 경로를 찾을 수 없음");
+			throw new IllegalArgumentException("구간이 연결되어있지 않아 경로를 찾을 수 없습니다.");
 		}
 	}
 
 	private void validateVertex(Station source, Station target) {
 		if (source.equals(target)) {
-			throw new IllegalArgumentException("출발역과 도착역이 같아 경로를 조회할 수 없음");
+			throw new IllegalArgumentException("출발역과 도착역이 같아 경로를 조회할 수 없습니다.");
+		}
+	}
+
+	private void validateNotContainedStationInPath(Station source, Station target) {
+		if (!pathGraph.containsVertex(source) || !pathGraph.containsVertex(target)) {
+			throw new IllegalArgumentException("경로에 해당 역이 존재하지 않습니다.");
 		}
 	}
 }

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
+@DisplayName("최단 경로 탐색 관련 테스트")
 class PathFinderTest {
 
 	private Station 강남역;
@@ -58,7 +59,7 @@ class PathFinderTest {
 		Assertions.assertThatThrownBy(() -> {
 			pathFinder.getShortestPath(교대역, 교대역);
 		}).isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("출발역과 도착역이 같아 경로를 조회할 수 없음");
+			.hasMessageContaining("출발역과 도착역이 같아 경로를 조회할 수 없습니다.");
 	}
 
 	@DisplayName("출발역과 도착역이 연결되어있지 않은 경우 오류발생")
@@ -74,6 +75,21 @@ class PathFinderTest {
 		Assertions.assertThatThrownBy(() -> {
 			pathFinder.getShortestPath(강남역, 수원역);
 		}).isInstanceOf(IllegalArgumentException.class)
-			.hasMessageContaining("구간이 연결되어있지 않아 경로를 찾을 수 없음");
+			.hasMessageContaining("구간이 연결되어있지 않아 경로를 찾을 수 없습니다.");
+	}
+
+	@DisplayName("출발역과 도착역이 존재하지 않는 역인 경우 오류발생")
+	@Test
+	void testNotContainedStationsInLines() {
+		List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선);
+		PathFinder pathFinder = new PathFinder(lines);
+
+		Station 수원역 = new Station("수원역");
+		Station 안양역 = new Station("안양역");
+
+		Assertions.assertThatThrownBy(() -> {
+			pathFinder.getShortestPath(수원역, 안양역);
+		}).isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("경로에 해당 역이 존재하지 않습니다.");
 	}
 }

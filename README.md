@@ -121,10 +121,10 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [x] Station을 통해 Vertex 추가
     - [x] Section을 통해 Edge 추가
   - [x] source to target 최단경로 반환 메서드 구현
-  - [ ] 예외 처리
+  - [x] 예외 처리
     - [x] 출발역과 도착역이 같은경우
     - [x] 출발역과 도착역이 연결되어 있지 않은 경우
-    - [ ] 존재하지 않는 출발역이나 도착역을 조회할 경우
+    - [x] 존재하지 않는 출발역이나 도착역을 조회할 경우
 
 
 

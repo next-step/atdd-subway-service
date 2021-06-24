@@ -83,6 +83,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		this.최단_경로_조회_실패(response);
 	}
 
+	@DisplayName("지하철 경로조회 실패 - 출발역과 도착역이 경로에 존재하지 않는경우")
+	@Test
+	void testGetShortestPathError3() {
+		StationResponse 수원역 = StationAcceptanceTest.지하철역_등록되어_있음("수원역").as(StationResponse.class);
+		StationResponse 안양역 = StationAcceptanceTest.지하철역_등록되어_있음("안양역").as(StationResponse.class);
+
+		ExtractableResponse<Response> response = 최단_경로를_조회한다(수원역.getId(), 안양역.getId());
+		this.최단_경로_조회_실패(response);
+	}
+
 	private void 최단_경로_조회_실패(ExtractableResponse<Response> response) {
 		Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
