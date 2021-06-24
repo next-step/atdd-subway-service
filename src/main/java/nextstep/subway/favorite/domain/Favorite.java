@@ -38,6 +38,21 @@ public class Favorite extends BaseEntity {
 
     public Favorite(Member member, Station source, Station target) {
         validation(member, source, target);
+        this.member = member;
+        this.source = source;
+        this.target = target;
+    }
+
+    public Station getSource() {
+        return source;
+    }
+
+    public Station getTarget() {
+        return target;
+    }
+
+    public Member getMember() {
+        return member;
     }
 
     private void validation(Member member, Station source, Station target) {

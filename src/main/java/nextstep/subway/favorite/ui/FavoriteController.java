@@ -1,7 +1,6 @@
 package nextstep.subway.favorite.ui;
 
 import java.net.URI;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -32,17 +31,20 @@ public class FavoriteController {
     @PostMapping
     public ResponseEntity createFavorite(@AuthenticationPrincipal LoginMember loginMember,
             @RequestBody FavoriteRequest request) {
-        return ResponseEntity.created(URI.create("/favorites/1")).build();
+        Long id = favoriteService.createFavorite(loginMember, request);
+        return ResponseEntity.created(URI.create("/favorites/" + id)).build();
     }
 
     @GetMapping
     public ResponseEntity<List<FavoriteResponse>> findFavorites(@AuthenticationPrincipal LoginMember loginMember) {
-        return ResponseEntity.ok().body(Arrays.asList(new FavoriteResponse()));
+        List<FavoriteResponse> response = favoriteService.findFavorites(loginMember);
+        return ResponseEntity.ok().body(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<MemberResponse> deleteMember(@AuthenticationPrincipal LoginMember loginMember,
+    public ResponseEntity<MemberResponse> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember,
             @PathVariable Long id) {
+        favoriteService.deleteFavorite(id);
         return ResponseEntity.noContent().build();
     }
 }
