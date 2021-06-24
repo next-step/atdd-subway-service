@@ -16,20 +16,20 @@ import java.util.List;
 public class PathService {
     private final StationRepository stationRepository;
     private final LineRepository lineRepository;
+    private final Path path;
 
-    public PathService(StationRepository stationRepository, LineRepository lineRepository) {
+    public PathService(StationRepository stationRepository, LineRepository lineRepository, Path path) {
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
+        this.path = path;
     }
 
     public PathResponse findShortestPath(Long sourceId, Long targetId) {
         Station source = findStationById(sourceId);
         Station target = findStationById(targetId);
         List<Line> lines = lineRepository.findAll();
-        Path path = new Path();
         List<Station> shortestPathStations = path.findShortestPathStations(lines, source, target);
         int shortestPathDistance = path.findShortestPathDistance(lines, source, target);
-
         return PathResponse.of(shortestPathStations, shortestPathDistance);
     }
 
