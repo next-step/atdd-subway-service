@@ -48,12 +48,6 @@ public class FareCalculator {
         return new Over50KmDistanceFarePolicy(distance);
     }
 
-    public int calculate() {
-        int fare = distanceFarePolicy.calculateByDistance();
-        fare = ageFarePolicy.calculateByAge(fare);
-        return fare;
-    }
-
     public int calculate(Set<Long> lineIds) {
         int additionalFee = LineAdditionalFee.LINE_BUNDANG.maximumAdditionalFee(lineIds);
         int fare = distanceFarePolicy.calculateByDistance() + additionalFee;
