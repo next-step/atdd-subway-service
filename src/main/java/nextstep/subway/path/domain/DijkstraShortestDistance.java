@@ -42,7 +42,7 @@ public class DijkstraShortestDistance implements ShortestDistance {
     }
 
     @Override
-    public Lines usedLines() {
+    public List<Line> usedLines() {
         EfficientLines lines = new EfficientLines(this.lines);
 
         Stations stations = shortestRoute();
@@ -52,7 +52,7 @@ public class DijkstraShortestDistance implements ShortestDistance {
                 .map(item -> lines.findCheapAndShortestBy(item))
                 .collect(Collectors.toList());
 
-        return new Lines(linesOfCheapShortestEachSection);
+        return linesOfCheapShortestEachSection;
     }
 
     private GraphPath<Station, DefaultWeightedEdge> getShortestGraph() {

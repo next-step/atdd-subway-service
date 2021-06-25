@@ -1,11 +1,14 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.station.domain.Stations;
 import nextstep.subway.wrapped.Distance;
 
+import java.util.List;
+
 public interface ShortestDistance {
     Distance shortestDistance();
     Stations shortestRoute();
-    Lines usedLines();
+    List<Line> usedLines();
 }

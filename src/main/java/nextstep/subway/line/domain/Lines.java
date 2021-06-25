@@ -20,11 +20,4 @@ public class Lines {
 
         return containsStations;
     }
-
-    public Money findExpensiveFare() {
-        return lines.stream()
-                .map(Line::getMoney)
-                .max(Money::compareTo)
-                .orElseThrow(NotExistMinimumFareLine::new);
-    }
 }

@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.exception.NoRouteException;
+import nextstep.subway.exception.NotExistMinimumFareLine;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.StationPair;
 import nextstep.subway.wrapped.Distance;
@@ -16,6 +17,13 @@ public class EfficientLines {
 
     public EfficientLines(List<Line> lines) {
         this.lines = new ArrayList<>(lines);
+    }
+
+    public Money findExpensiveFare() {
+        return lines.stream()
+                .map(Line::getMoney)
+                .max(Money::compareTo)
+                .orElseThrow(NotExistMinimumFareLine::new);
     }
 
     public Line findCheapAndShortestBy(StationPair stationPair) {

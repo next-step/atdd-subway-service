@@ -2,6 +2,7 @@ package nextstep.subway.path.domain.line;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.domain.EfficientLines;
 import nextstep.subway.wrapped.Money;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +14,7 @@ class DefaultLinePremiumPolicyTest {
 
     @Test
     void calcFare() {
-        Lines lines = new Lines(
+        EfficientLines lines = new EfficientLines(
                 Arrays.asList(
                         new Line("1호선", "1호선", 1000),
                         new Line("2호선", "2호선", 2000),
