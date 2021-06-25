@@ -48,4 +48,41 @@ public class LineRequest {
     public Line toLine(Station upStation, Station downStation) {
         return new Line(name, color, upStation, downStation, distance);
     }
+
+    public static class Builder {
+        private LineRequest lineRequest = new LineRequest();
+
+        public Builder name(String name) {
+            lineRequest.name = name;
+            return this;
+        }
+
+        public Builder color(String color) {
+            lineRequest.color = color;
+            return this;
+        }
+
+        public Builder upStationId(Long upStationId) {
+            lineRequest.upStationId = upStationId;
+            return this;
+        }
+
+        public Builder downStationId(Long downStationId) {
+            lineRequest.downStationId = downStationId;
+            return this;
+        }
+
+        public Builder distance(int distance) {
+            lineRequest.distance = distance;
+            return this;
+        }
+
+        public LineRequest build() {
+            return lineRequest;
+        }
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
 }

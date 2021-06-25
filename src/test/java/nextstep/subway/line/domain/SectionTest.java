@@ -17,7 +17,7 @@ class SectionTest {
     private Station station1 = new Station("강남역");
     private Station station2 = new Station("잠실역");
     private Station station3 = new Station("교대역");
-    private Section section = new Section(line, station1, station2, BEFORE_DISTANCE);
+    private Section section = Section.of(line, station1, station2, BEFORE_DISTANCE);
 
     @Nested
     @DisplayName("updateUpStation 메서드는")

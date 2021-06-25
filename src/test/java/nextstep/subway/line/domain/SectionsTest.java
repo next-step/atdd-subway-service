@@ -6,6 +6,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -16,7 +19,7 @@ class SectionsTest {
     private Station station3 = new Station("교대역");
     private Station station4 = new Station("선릉역");
 
-    private Section section = new Section(line, station1, station2, 10);
+    private Section section = Section.of(line, station1, station2, 10);
 
     @Nested
     @DisplayName("addSection 메서드는")
@@ -131,5 +134,24 @@ class SectionsTest {
                         .isInstanceOf(IllegalStateException.class);
             }
         }
+    }
+
+    @Test
+    void getSections() {
+        Sections sections = new Sections();
+        Line line = new Line("2호선", "green");
+        Station station1 = new Station("강남역");
+        Station station2 = new Station("교대역");
+        int distance = 10;
+
+        line.addSection(station1, station2, distance);
+
+        Line line2 = new Line("3호선", "orange");
+        Station station3 = new Station("남부터미널역");
+        int distance2 = 5;
+
+        line2.addSection(station1, station3, distance2);
+        List<Line> lines = Arrays.asList(line, line2);
+
     }
 }
