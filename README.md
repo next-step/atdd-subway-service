@@ -128,7 +128,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ### Step3 - 인증을 통한 기능 구현
 
-- [ ] MemberAcceptanceTest - manageMyInfo 인수테스트 작성
+- [x] MemberAcceptanceTest - manageMyInfo 인수테스트 작성
 
   ```
   Feature: 회원 관리 기능
@@ -143,7 +143,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
       Then 회원 정보가 제거됨
   ```
 
-- [ ] 토큰 발급 기능 (로그인) 인수 테스트
+- [x] 토큰 발급 기능 (로그인) 인수 테스트
 
   ```
   Feature: 로그인 기능
@@ -166,9 +166,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
       Then 로그인 실패
   ```
 
-- [ ] 인증 - 내 정보 조회 기능 구현
+- [x] 인증 - 내 정보 조회 기능 구현
 
-  - [ ] /members/me 요청시 토큰 확인하도록 수정
+  - [x] /members/me 요청시 토큰 확인하도록 수정
 
 - [ ] 인증 - 즐겨 찾기 기능 구현
 
