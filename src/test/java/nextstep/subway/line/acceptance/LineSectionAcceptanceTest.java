@@ -50,10 +50,8 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 		this.노선을_조회하고_해당노선의_지하철역_순서가_정렬됨을_확인한다(신분당선, Arrays.asList(강남역, 광교역));
 
 		//구간 등록
-		ExtractableResponse<Response> addResponse1 = 지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 강남역, 3);
-		지하철_노선에_지하철역_등록됨(addResponse1);
-		ExtractableResponse<Response> addResponse2 = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 정자역, 5);
-		지하철_노선에_지하철역_등록됨(addResponse2);
+		지하철_노선에_지하철역_등록되어_있음(신분당선, 양재역, 강남역, 3);
+		지하철_노선에_지하철역_등록되어_있음(신분당선, 강남역, 정자역, 5);
 		this.노선을_조회하고_해당노선의_지하철역_순서가_정렬됨을_확인한다(신분당선, Arrays.asList(양재역, 강남역, 정자역, 광교역));
 
 		//구간 제거
@@ -105,7 +103,10 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 			.extract();
 	}
 
-	public static void 지하철_노선에_지하철역_등록됨(ExtractableResponse<Response> response) {
+	public static void 지하철_노선에_지하철역_등록되어_있음(LineResponse line, StationResponse upStation,
+		StationResponse downStation, int distance) {
+
+		ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 	}
 
