@@ -56,25 +56,31 @@ public class Sections {
 		}
 
 		List<Station> stations = new ArrayList<>();
-		Station downStation = findFirstStation();
-		stations.add(downStation);
+		Station station = findFirstStation();
+		stations.add(station);
 
-		while (downStation != null) {
-			Station finalDownStation = downStation;
-			Optional<Section> nextLineStation = sections.stream()
-				.filter(it -> it.isUpStationEqualTo(finalDownStation))
-				.findFirst();
-			if (!nextLineStation.isPresent()) {
-				break;
-			}
-			downStation = nextLineStation.get().getDownStation();
-			stations.add(downStation);
+		while (hasNextStation(station)) {
+			station = findNextStation(station);
+			stations.add(station);
 		}
 
 		return stations;
 	}
 
+	private boolean hasNextStation(Station station) {
+		return findNextStation(station) != null;
+	}
+
+	private Station findNextStation(Station station) {
+		return sections.stream()
+			.filter(section -> section.isUpStationEqualTo(station))
+			.map(section -> section.getDownStation())
+			.findFirst()
+			.orElse(null);
+	}
+
 	public void addSection(Section section) {
+		boolean isStationsEmpty = isStationsEmpty();
 		boolean isUpStationExisted = isUpStationExisted(section.getUpStation());
 		boolean isDownStationExisted = isDownStationExisted(section.getDownStation());
 
@@ -82,12 +88,12 @@ public class Sections {
 			throw new RuntimeException("이미 등록된 구간 입니다.");
 		}
 
-		if (!isStationsEmpty() && isUpStationNoneMatch(section.getUpStation()) &&
+		if (!isStationsEmpty && isUpStationNoneMatch(section.getUpStation()) &&
 			isDownStationNoneMatch(section.getDownStation())) {
 			throw new RuntimeException("등록할 수 없는 구간 입니다.");
 		}
 
-		if (isStationsEmpty()) {
+		if (isStationsEmpty) {
 			sections.add(section);
 			return;
 		}
