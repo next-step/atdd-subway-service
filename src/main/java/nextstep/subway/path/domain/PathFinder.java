@@ -51,10 +51,10 @@ public class PathFinder {
 	}
 
 	private Path findStationPath(Station source, Station target) {
-		GraphPath<Station, SectionEdge> path = Optional
+		return Optional
 			.ofNullable(pathFindAlgorithm.getPath(source, target))
+			.map(path -> new Path(path.getVertexList(), path.getEdgeList()))
 			.orElseThrow(() -> new PathException("출발역과 도착역이 연결되어 있지 않습니다."));
-		return new Path(path.getVertexList(), path.getEdgeList());
 	}
 
 	private void validateExists(Station source, Station target) {
