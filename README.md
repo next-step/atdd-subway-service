@@ -87,3 +87,4 @@ LineService의 비즈니스 로직을 도메인으로 옮기기
   - [ ] removeLineStationNew
     - [ ] 리팩토 링 후 commit
     - [ ] 레거시 코드 제거
+  - [ ] getStation Refactoring
