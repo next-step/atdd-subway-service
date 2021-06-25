@@ -1,5 +1,6 @@
 package nextstep.subway.path.dto;
 
+import nextstep.subway.path.domain.ShortestDistance;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -18,11 +19,11 @@ public class PathResponse {
         this.distance = distance;
     }
 
-    public static PathResponse of(List<Station> shortestPathStations, int shortestPathDistance) {
+    public static PathResponse of(List<Station> shortestPathStations, ShortestDistance shortestPathDistance) {
         List<StationResponse> stationResponses = shortestPathStations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
-        return new PathResponse(stationResponses, shortestPathDistance);
+        return new PathResponse(stationResponses, shortestPathDistance.getDistance());
     }
 
     public List<StationResponse> getStations() {
