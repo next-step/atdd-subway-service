@@ -63,7 +63,7 @@ public class Sections {
         deleteUpOrDownSection( upSection, downSection);
     }
 
-    private List<Section> sections() {
+    public List<Section> sections() {
         return sections;
     }
 
