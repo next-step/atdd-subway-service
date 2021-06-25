@@ -1,7 +1,6 @@
 package nextstep.subway.path.dto;
 
 public class PathRequest {
-    private static final Long STATION_ID_MIN_VALUE = 1L;
     private Long source;
     private Long target;
 
