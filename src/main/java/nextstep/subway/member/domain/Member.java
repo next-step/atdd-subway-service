@@ -2,14 +2,11 @@ package nextstep.subway.member.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.subway.BaseEntity;
+import nextstep.subway.common.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 
 @Getter
 @NoArgsConstructor

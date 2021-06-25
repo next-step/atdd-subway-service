@@ -3,19 +3,24 @@ package nextstep.subway.station.domain;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.subway.BaseEntity;
+import nextstep.subway.common.BaseEntity;
 import javax.persistence.*;
-import java.util.Objects;
 
 @Getter
 @NoArgsConstructor
 @Entity
-@EqualsAndHashCode(of = {"id", "name"})
+@EqualsAndHashCode(callSuper = true, of = "name")
 public class Station extends BaseEntity {
+
     @Column(unique = true)
     private String name;
 
     public Station(String name) {
+        this.name = name;
+    }
+
+    public Station(final Long id, final String name) {
+        this.id = id;
         this.name = name;
     }
 

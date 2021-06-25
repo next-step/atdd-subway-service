@@ -17,7 +17,7 @@ public class StationService {
     private final StationRepository stationRepository;
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station persistStation = stationRepository.save(stationRequest.toStation());
+        Station persistStation = stationRepository.save(stationRequest.toEntity());
         return StationResponse.of(persistStation);
     }
 

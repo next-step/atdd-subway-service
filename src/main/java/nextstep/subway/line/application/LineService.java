@@ -1,24 +1,18 @@
 package nextstep.subway.line.application;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.LineNotFoundException;
+import nextstep.subway.line.domain.*;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.station.application.StationService;
+import nextstep.subway.line.dto.SectionResponse;
 import nextstep.subway.station.StationNotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class LineService {
     private final LineRepository lineRepository;
+    private final SectionRepository sectionRepository;
     private final StationRepository stationRepository;
 
     @Transactional(readOnly = true)
@@ -54,36 +49,51 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = findById(request.getUpStationId());
-        Station downStation = findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(
-            new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance())
-        );
+        Line persistLine = lineRepository.save(request.toEntity());
+
+        registerSection(request.toSectionRequest(), persistLine);
 
         return LineResponse.of(persistLine);
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    public void updateLine(Long id, LineRequest request) {
+        Line line = findLineById(id);
+
+        line.update(request.toEntity());
     }
 
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
 
-    public void addLineStation(Long lineId, SectionRequest request) {
+    public SectionResponse addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
-        Station upStation = findStationById(request.getUpStationId());
-        Station downStation = findStationById(request.getDownStationId());
 
-        line.addSection(upStation, downStation, request.getDistance());
+        Section section = registerSection(request, line);
+
+        return SectionResponse.of(section);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = findStationById(stationId);
 
-        line.removeStation(station);
+        Sections sections = line.getSections();
+        sections.remove(station);
+    }
+
+    private Section registerSection(final SectionRequest request, final Line line) {
+        Station upStation = findStationById(request.getUpStationId());
+        Station downStation = findStationById(request.getDownStationId());
+
+        Section section = Section.builder()
+                .upStation(upStation)
+                .downStation(downStation)
+                .distance(request.getDistance())
+                .build();
+
+        section.registerLine(line);
+
+        return sectionRepository.save(section);
     }
 }

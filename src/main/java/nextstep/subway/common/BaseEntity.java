@@ -1,4 +1,4 @@
-package nextstep.subway;
+package nextstep.subway.common;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

@@ -16,31 +16,37 @@ public class LineResponse {
     private String name;
     private String color;
     private List<StationResponse> stations;
+    private List<Integer> distances;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
     @Builder
-    private LineResponse(Long id, String name, String color, List<StationResponse> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    private LineResponse(final Long id, final String name, final String color, final List<StationResponse> stations, final List<Integer> distances, final LocalDateTime createdDate, final LocalDateTime modifiedDate) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.stations = stations;
+        this.distances = distances;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
     }
 
-    public static LineResponse of(Line line) {
-        List<StationResponse> stations = line.getStations().stream()
-                .map(it -> StationResponse.of(it))
+    public static LineResponse of(final Line line) {
+        List<StationResponse> stationResponse = line.getStations()
+                .stream()
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
+
+        List<Integer> distances = line.getDistances();
 
         return LineResponse.builder()
                 .id(line.getId())
                 .name(line.getName())
                 .color(line.getColor())
-                .stations(stations)
                 .createdDate(line.getCreatedDate())
                 .modifiedDate(line.getModifiedDate())
+                .stations(stationResponse)
+                .distances(distances)
                 .build();
     }
 }
