@@ -1,7 +1,9 @@
 package nextstep.subway.auth.application;
 
+import nextstep.subway.auth.domain.Guest;
 import nextstep.subway.auth.domain.InvalidTokenException;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.domain.User;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
@@ -28,13 +30,26 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
+    public User findMemberByTokenElseThrow(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new InvalidTokenException();
         }
 
+        return createLoginMemberFromToken(credentials);
+    }
+
+    public User findMemberByTokenElseDefault(String credentials) {
+        if (!jwtTokenProvider.validateToken(credentials)) {
+            return Guest.getInstance();
+        }
+
+        return createLoginMemberFromToken(credentials);
+    }
+
+    private User createLoginMemberFromToken(String credentials) {
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(NotFoundMemberException::new);
+        Member member = memberRepository.findByEmail(email)
+                                        .orElseThrow(NotFoundMemberException::new);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }

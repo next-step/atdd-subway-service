@@ -78,15 +78,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
-        MemberRequest memberRequest = new MemberRequest(email, password, age);
+        return 회원_생성을_요청(new MemberRequest(email, password, age));
+    }
 
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().post("/members")
-                .then().log().all()
-                .extract();
+    public static ExtractableResponse<Response> 회원_생성을_요청(MemberRequest memberRequest) {
+        return RestAssured.given().log().all()
+                          .contentType(MediaType.APPLICATION_JSON_VALUE)
+                          .body(memberRequest)
+                          .when().post("/members")
+                          .then().log().all()
+                          .extract();
     }
 
     public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
@@ -141,7 +142,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    private ExtractableResponse<Response> loginRequest(MemberRequest member) {
+    public static Executable createMember(MemberRequest memberRequest) {
+        return () -> 회원_생성을_요청(memberRequest);
+    }
+
+    private static ExtractableResponse<Response> loginRequest(MemberRequest member) {
         return RestAssured.given().log().all()
                           .body(member)
                           .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -150,7 +155,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                           .extract();
     }
 
-    private Executable loginAndGetToken(MemberRequest member, BearerAuthToken bearerAuthToken) {
+    public static Executable loginAndGetToken(MemberRequest member, BearerAuthToken bearerAuthToken) {
         return () -> {
             ExtractableResponse<Response> response = loginRequest(member);
             TokenResponse tokenResponse = response.as(TokenResponse.class);
@@ -218,15 +223,4 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         };
     }
 
-    private static class BearerAuthToken {
-        private String token;
-
-        public String getToken() {
-            return token;
-        }
-
-        public void changeTo(TokenResponse tokenResponse) {
-            this.token = tokenResponse.getAccessToken();
-        }
-    }
 }

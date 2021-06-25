@@ -10,10 +10,12 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathFinder {
 
+    private final List<Line> lines;
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
     public PathFinder(List<Line> lines) {
-        this.graph = initializeStationGraph(lines);
+        this.lines = lines;
+        this.graph = initializeStationGraph();
     }
 
     public ShortestPath findShortestPath(Station source, Station target) {
@@ -23,8 +25,10 @@ public class PathFinder {
         try {
             DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
             GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
+            List<Station> stations = path.getVertexList();
+            BelongLines belongLines = new BelongLines(lines, stations);
 
-            return new ShortestPath(path.getVertexList(), (int) path.getWeight());
+            return new ShortestPath(belongLines, stations, (int) path.getWeight());
         } catch (IllegalArgumentException e) {
             throw new NotFoundPathException("경로가 연결되어 있지 않습니다.");
         }
@@ -36,7 +40,7 @@ public class PathFinder {
         }
     }
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> initializeStationGraph(List<Line> lines) {
+    private WeightedMultigraph<Station, DefaultWeightedEdge> initializeStationGraph() {
         WeightedMultigraph<Station, DefaultWeightedEdge> weightedMultiGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         lines.stream()

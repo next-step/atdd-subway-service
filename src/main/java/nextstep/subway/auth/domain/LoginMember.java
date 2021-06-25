@@ -1,11 +1,16 @@
 package nextstep.subway.auth.domain;
 
-public class LoginMember {
+import java.util.Objects;
+import nextstep.subway.path.domain.DiscountStrategy;
+
+public class LoginMember implements User {
+
     private Long id;
     private String email;
     private Integer age;
 
-    public LoginMember() {
+    private LoginMember() {
+
     }
 
     public LoginMember(Long id, String email, Integer age) {
@@ -24,5 +29,27 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
+    }
+
+    public DiscountStrategy getDiscountStrategy() {
+        return DiscountStrategy.of(age);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        LoginMember that = (LoginMember) o;
+        return Objects.equals(id, that.id) && Objects.equals(email, that.email)
+            && Objects.equals(age, that.age);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, age);
     }
 }

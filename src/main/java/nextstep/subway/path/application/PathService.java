@@ -1,7 +1,11 @@
 package nextstep.subway.path.application;
 
+import java.util.List;
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.DiscountStrategy;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -18,12 +22,15 @@ public class PathService {
         this.lineService = lineService;
     }
 
-    public PathResponse findShortestPath(Long sourceId, Long targetId) {
+    public PathResponse findShortestPath(DiscountStrategy discountStrategy, Long sourceId, Long targetId) {
 
         Station source = stationService.findById(sourceId);
         Station target = stationService.findById(targetId);
+        List<Line> lines = lineService.findLines();
 
-        PathFinder pathFinder = new PathFinder(lineService.findLines());
-        return PathResponse.of(pathFinder.findShortestPath(source, target));
+        PathFinder pathFinder = new PathFinder(lines);
+        ShortestPath shortestPath = pathFinder.findShortestPath(source, target);
+
+        return PathResponse.of(shortestPath, discountStrategy);
     }
 }
