@@ -44,8 +44,8 @@ public class PathResponse {
 
     private int calculateTotalDistance() {
         return sectionEdges.stream()
-                .map(v -> v.getSection().getDistance())
-                .reduce(0, Integer::sum);
+                .mapToInt(v -> v.getSection().getDistance())
+                .sum();
     }
 
     public int getDistance() {
