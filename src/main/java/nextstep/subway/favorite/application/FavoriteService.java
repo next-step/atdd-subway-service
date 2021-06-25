@@ -32,11 +32,6 @@ public class FavoriteService {
         return repository.findAllByMember(getMember(member));
     }
 
-    private Member getMember(LoginMember member) {
-        return memberRepository.findById(member.getId())
-                .orElseThrow(() -> new RuntimeException("멤버를 찾지 못했습니다"));
-    }
-
     public Favorite register(LoginMember member, FavoriteRequest request) {
         Station sourceStation = getStation(request.getSource());
         Station targetStation = getStation(request.getTarget());
@@ -45,12 +40,19 @@ public class FavoriteService {
         return repository.save(favorite);
     }
 
-    private Station getStation(Long source) {
-        return stationRepository.findById(source).orElseThrow(() -> new RuntimeException("지하철 역을 찾지 못했습니다."));
+    public void deleteFavorite(LoginMember member, Long favoriteId) {
+        Favorite favorite = repository.findFavoriteByIdAndMember(favoriteId, getMember(member))
+                .orElseThrow(() -> new IllegalArgumentException("즐겨찾기를 찾지 못했습니다."));
+        repository.delete(favorite);
     }
 
-    public void deleteFavorite(LoginMember member, Long favoriteId) {
-        Optional<Favorite> favorite = repository.findFavoriteByIdAndMember(favoriteId, getMember(member));
-        favorite.ifPresent(repository::delete);
+    private Station getStation(Long source) {
+        return stationRepository.findById(source)
+                .orElseThrow(() -> new IllegalArgumentException("지하철 역을 찾지 못했습니다."));
+    }
+
+    private Member getMember(LoginMember member) {
+        return memberRepository.findById(member.getId())
+                .orElseThrow(() -> new IllegalArgumentException("멤버를 찾지 못했습니다"));
     }
 }

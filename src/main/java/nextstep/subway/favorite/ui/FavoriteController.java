@@ -45,4 +45,9 @@ public class FavoriteController {
         favoriteService.deleteFavorite(member, favoriteId);
         return ResponseEntity.noContent().build();
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity IllegalArgumentExceptionHandler() {
+        return ResponseEntity.badRequest().build();
+    }
 }

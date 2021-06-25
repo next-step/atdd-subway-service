@@ -66,6 +66,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     }
 
+    @Test
+    void 존재하지_않는_역을_즐겨찾기로_요청할_경우() {
+        long notLongId = -1;
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(notLongId, notLongId);
+        요청이_잘못됨(createResponse);
+    }
+
+    @Test
+    void 존재하지_않는_즐겨찾기을_삭제할_경우() {
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(-1L);
+        요청이_잘못됨(response);
+    }
+
+    private void 요청이_잘못됨(ExtractableResponse<Response> createResponse) {
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(Long source, Long target) {
         FavoriteRequest favoriteRequest = new FavoriteRequest(source, target);
         return RestAssured
@@ -102,6 +119,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete(uri)
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(Long id) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/favorites/" + id)
                 .then().log().all().extract();
     }
 
