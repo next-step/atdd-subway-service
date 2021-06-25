@@ -2,17 +2,22 @@ package nextstep.subway.line.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -118,6 +123,32 @@ public class LineServiceTest {
         추가_구간_등록됨();
         assertThatThrownBy(() -> lineService.removeLineStation(1L, 5L))
                 .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void sorted_stations_of_line() {
+        // when
+        // 역과 구간이 추가로 동록되어 있음
+        추가_역_등로됨();
+        추가_구간_등록됨();
+
+        // then
+        // 순서가 일치함 1L -> 3L -> 2L -> 4L
+        LineResponse lineResponse = lineService.findLine(1L);
+        List<StationResponse> stationsResponse = lineResponse.getStations();
+        List<StationResponse> expectedStationIds = Arrays.asList(
+                StationResponse.of(강남역), StationResponse.of(양재역), StationResponse.of(판교역), StationResponse.of(교대역)
+        );
+
+        List<String> response = stationsResponse.stream()
+                .map(it -> it.getName())
+                .collect(Collectors.toList());
+
+        List<String> expected = expectedStationIds.stream()
+                .map(it -> it.getName())
+                .collect(Collectors.toList());
+
+        assertThat(response).containsExactlyElementsOf(expected);
     }
 
     private void 추가_구간_등록됨() {

@@ -55,7 +55,7 @@ public class Section {
         return false;
     }
 
-    private boolean isSameUpStation(Station oldUpStation) {
+    public boolean isSameUpStation(Station oldUpStation) {
         return this.upStation.equals(oldUpStation);
     }
 
@@ -67,8 +67,8 @@ public class Section {
         return false;
     }
 
-    private boolean isSameDownStation(Station oldDownStation) {
-        return this.downStation.equals(oldDownStation);
+    public boolean isSameDownStation(Station downStation) {
+        return this.downStation.equals(downStation);
     }
 
     public void isSameSection(Section newSection) {
@@ -96,6 +96,10 @@ public class Section {
     public void connectNewSection(Section downSection) {
         this.downStation = downSection.getDownStation();
         this.distance += downSection.getDistance();
+    }
+
+    public boolean isExistUpSection(Station upStation) {
+        return this.downStation.equals(upStation);
     }
 
     public Long getId() {

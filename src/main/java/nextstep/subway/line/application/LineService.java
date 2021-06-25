@@ -40,6 +40,11 @@ public class LineService {
         return LineResponse.of(persistLine, stations);
     }
 
+    public LineResponse findLine(Long lineId) {
+        Line persistLine = findLineById(lineId);
+        return LineResponse.ofNew(persistLine);
+    }
+
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
@@ -51,11 +56,6 @@ public class LineService {
                 })
                 .collect(Collectors.toList());
     }
-
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(() -> new LineNotFoundException());
-    }
-
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
@@ -87,6 +87,9 @@ public class LineService {
         return line.removeStation(stationId);
     }
 
+    public Line findLineById(Long id) {
+        return lineRepository.findById(id).orElseThrow(() -> new LineNotFoundException());
+    }
 
     public List<Station> getStations(Line line) {
         if (line.getSections().isEmpty()) {

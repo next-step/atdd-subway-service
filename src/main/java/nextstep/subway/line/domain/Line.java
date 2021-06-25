@@ -127,6 +127,42 @@ public class Line extends BaseEntity {
         }
     }
 
+    public List<Station> getStations() {
+        List<Station> sortedStations = new ArrayList<>();
+        Section upFinalSection = getUpFinalStation();
+        sortedStations.add(upFinalSection.getUpStation());
+        Station nextStation;
+        Section nextSection = upFinalSection;
+        while (nextSection != null) {
+            nextStation = nextSection.getDownStation();
+            sortedStations.add(nextStation);
+            nextSection = getNextStation(nextStation);
+        }
+        return sortedStations;
+    }
+
+    private Section getUpFinalStation() {
+        return sections.stream()
+                .filter(it -> getDownStationOfUpStation(it.getUpStation()) == null)
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private Section getDownStationOfUpStation(Station upStation) {
+        return sections.stream()
+                .filter(it -> it.isSameDownStation(upStation))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private Section getNextStation(Station downStation) {
+        return sections.stream()
+                .filter(it -> it.isSameUpStation(downStation))
+                .findFirst()
+                .orElse(null);
+    }
+
+
     public Long getId() {
         return id;
     }
