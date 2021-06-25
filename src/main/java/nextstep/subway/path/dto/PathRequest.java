@@ -1,7 +1,18 @@
 package nextstep.subway.path.dto;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 public class PathRequest {
+    public static final long STATION_ID_MIN_VALUE = 1L;
+    public static final String INVALID_STATION_ID = "올바른 역 번호를 넣어주세요.";
+
+    @Min(value = STATION_ID_MIN_VALUE, message = INVALID_STATION_ID)
+    @NotNull(message = "올바른 역 번호를 넣어주세요.")
     private Long source;
+
+    @Min(value = STATION_ID_MIN_VALUE, message = INVALID_STATION_ID)
+    @NotNull(message = "올바른 역 번호를 넣어주세요.")
     private Long target;
 
     public PathRequest() {

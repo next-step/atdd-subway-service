@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Path {
+    public static final String SAME_STATION = "같은 역입니다.";
+
     private static final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
     private static final DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
     private static final List<Station> stations = new ArrayList<>();
@@ -30,6 +32,9 @@ public class Path {
     }
 
     public static List<StationResponse> findShortestPath(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new RuntimeException(SAME_STATION);
+        }
         List<Station> shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
 
         if (shortestPath.isEmpty()) {
