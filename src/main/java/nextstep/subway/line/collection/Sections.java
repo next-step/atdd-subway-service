@@ -17,6 +17,7 @@ public class Sections {
     public static final String NOT_REGISTERED_EXCEPTION = "등록할 수 없는 구간 입니다.";
     public static final String LINE_MINIMUM_SECTION_EXCEPTION = "노선의 구간의 최소 구간은 1구간입니다.";
     public static final int LINE_MINIMUM_SECTION = 1;
+    public static final String NOT_REGIST_STATION_TO_LINE_EXCEPTION = "이 노선에 등록되지 않은 역입니다.";
 
     @OneToMany(mappedBy = "line", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Section> sections;
@@ -74,7 +75,7 @@ public class Sections {
             throw new IllegalArgumentException(LINE_MINIMUM_SECTION_EXCEPTION);
         }
         if (sections.stream().noneMatch(it -> it.getSectionSameDownStation(stationId) || it.getSectionSameUpStation(stationId))) {
-            throw new IllegalArgumentException("이 노선에 등록되지 않은 역입니다.");
+            throw new IllegalArgumentException(NOT_REGIST_STATION_TO_LINE_EXCEPTION);
         }
     }
 
