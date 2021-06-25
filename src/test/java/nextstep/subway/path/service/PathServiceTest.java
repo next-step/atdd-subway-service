@@ -1,6 +1,5 @@
 package nextstep.subway.path.service;
 
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.dto.PathResponse;
@@ -46,9 +45,6 @@ class PathServiceTest {
 
     @Mock
     private PathSearch pathSearch;
-
-    private Line line1 = new Line("2호선", "green");
-    private Line line2 = new Line("3호선", "orange");
 
     private Station station1 = new Station("강남역");
     private Station station2 = new Station("교대역");
