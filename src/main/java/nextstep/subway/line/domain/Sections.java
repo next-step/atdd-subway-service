@@ -21,6 +21,11 @@ public class Sections {
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private List<Section> sections = new ArrayList<>();
 
+	// todo : 맘에안든다.
+	public List<Section> getSections () {
+		return this.sections;
+	}
+
 	public void addSection(Section newSection) {
 		List<Station> stations = this.getStations();
 		validateAddSection(newSection, stations);

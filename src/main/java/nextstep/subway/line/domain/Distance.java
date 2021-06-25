@@ -39,6 +39,11 @@ public class Distance {
 		return new Distance(this.distance - distance.distance);
 	}
 
+	//todo : 이상해
+	public int value() {
+		return this.distance;
+	}
+
 	private boolean isLessThanOrEqual(Distance distance) {
 		return this.distance <= distance.distance;
 	}

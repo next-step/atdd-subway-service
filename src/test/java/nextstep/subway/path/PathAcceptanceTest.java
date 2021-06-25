@@ -91,7 +91,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	}
 
 	private ExtractableResponse<Response> 최단_경로_조회_요청하기(String source, String target) {
-		return get("/path?source=" + source + "&target=" + target);
+		return get("/paths?source=" + source + "&target=" + target);
 	}
 
 	private void 최단_경로_조회하기_실패(ExtractableResponse<Response> response) {
