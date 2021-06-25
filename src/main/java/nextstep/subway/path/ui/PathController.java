@@ -14,6 +14,9 @@ import nextstep.subway.path.dto.PathRequest;
 @RequestMapping("/paths")
 public class PathController {
     public static final long STATION_ID_MIN_VALUE = 1L;
+    public static final String SAME_STATION = "같은 역입니다.";
+    public static final String INVALID_STATION_ID = "올바른 역 번호를 넣어주세요.";
+
     private final PathService pathService;
 
     public PathController(PathService pathService) {
@@ -23,10 +26,10 @@ public class PathController {
     @GetMapping
     public ResponseEntity findPath(@RequestBody PathRequest pathRequest) {
         if (pathRequest.getSource().equals(pathRequest.getTarget())) {
-            throw new IllegalArgumentException("같은 역입니다.");
+            throw new IllegalArgumentException(SAME_STATION);
         }
         if (pathRequest.getSource() < STATION_ID_MIN_VALUE || pathRequest.getTarget() < STATION_ID_MIN_VALUE) {
-            throw new IllegalArgumentException("올바른 역 번호를 넣어주세요.");
+            throw new IllegalArgumentException(INVALID_STATION_ID);
         }
         return ResponseEntity.ok(pathService.findPath(pathRequest));
     }
