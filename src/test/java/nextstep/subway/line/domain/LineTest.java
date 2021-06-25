@@ -35,12 +35,36 @@ class LineTest {
     void addLineSection() {
         // given
         Line 신분당선 = new Line("신분당선", "bg-red-600", 강남역, 광교역, 10);
-        신분당선.addStation(강남역, 양재역, 3);
 
         // when
-        List<Station> stations = 신분당선.getStations();
+        신분당선.addStation(강남역, 양재역, 3);
 
         // then
-        assertThat(stations).containsAll(Arrays.asList(강남역, 양재역, 광교역));
+        assertThat(신분당선.getStations()).containsAll(Arrays.asList(강남역, 양재역, 광교역));
+    }
+
+    @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
+    @Test
+    void removeLineSection1() {
+        // given
+        Line 신분당선 = new Line("신분당선", "bg-red-600", 강남역, 광교역, 10);
+        신분당선.addStation(강남역, 양재역, 2);
+        신분당선.addStation(양재역, 정자역, 2);
+
+        // when
+        신분당선.removeStation(양재역);
+
+        // then
+        assertThat(신분당선.getStations()).containsAll(Arrays.asList(강남역, 정자역, 광교역));
+    }
+
+    @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
+    @Test
+    void removeLineSection2() {
+        // given
+        Line 신분당선 = new Line("신분당선", "bg-red-600", 강남역, 광교역, 10);
+        
+        // when, then
+        assertThatThrownBy(() -> 신분당선.removeStation(강남역)).isInstanceOf(RuntimeException.class);
     }
 }

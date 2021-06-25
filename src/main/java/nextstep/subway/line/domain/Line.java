@@ -1,7 +1,6 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -131,5 +130,28 @@ public class Line extends BaseEntity {
         } else {
             throw new RuntimeException();
         }
+    }
+
+    public void removeStation(Station station) {
+        if (getSections().size() <= 1) {
+            throw new RuntimeException();
+        }
+
+        Optional<Section> upLineStation = getSections().stream()
+            .filter(it -> it.getUpStation() == station)
+            .findFirst();
+        Optional<Section> downLineStation = getSections().stream()
+            .filter(it -> it.getDownStation() == station)
+            .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            getSections().add(new Section(this, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> getSections().remove(it));
+        downLineStation.ifPresent(it -> getSections().remove(it));
     }
 }
