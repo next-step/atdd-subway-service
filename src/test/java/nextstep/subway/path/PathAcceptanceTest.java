@@ -27,9 +27,13 @@ import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
+
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
+    private LineResponse 오호선;
+    private LineResponse 육호선;
+
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
@@ -47,12 +51,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 사당역;
     private StationResponse 서울대역;
     private StationResponse 개성역;
+    private StationResponse 잠실나루역;
+    private StationResponse 강변역;
 
     /**                           개성역
      *                            |
      *                            *신분당선*(60)
      *                            |
-     * 교대역    --- *2호선*(10) ---   강남역  --- *2호선*(10) --- 선릉역--- *2호선*(5) --- 잠실역
+     * 교대역    --- *2호선*(10) ---   강남역  --- *2호선*(10) --- 선릉역--- *2호선*(5) --- 잠실역 --- 5호선(10)(추가요금 900) --- 잠실나루역 --- 6호선(20)(추가요금 1000) --- 강변역
      * |                          |                         |                     |
      * *3호선*(3)                  *신분당선*(10)              *자바선*(1)             *호남선*(10)
      * |                          |                         |                     |
@@ -84,11 +90,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         사당역 = 지하철역_등록되어_있음("사당역").as(StationResponse.class);
         서울대역 = 지하철역_등록되어_있음("서울대역").as(StationResponse.class);
         개성역 = 지하철역_등록되어_있음("개성역").as(StationResponse.class);
+        잠실나루역 = 지하철역_등록되어_있음("잠실나루역").as(StationResponse.class);
+        강변역 = 지하철역_등록되어_있음("강변역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
         사호선 = 지하철_노선_등록되어_있음("사호선", "bg-red-600", 양재역, 오리역, 7);
+        오호선 = 지하철_노선_등록되어_있음("오호선", "bg-red-600", 잠실역, 잠실나루역, 10, 900);
+        육호선 = 지하철_노선_등록되어_있음("육호선", "bg-red-600", 잠실나루역, 강변역, 10, 1000);
         자바선 = 지하철_노선_등록되어_있음("자바선", "bg-red-600", 선릉역, 오리역, 1);
         호남선 = 지하철_노선_등록되어_있음("호남선", "bg-red-600", 잠실역, 분당역, 10);
         서해선 = 지하철_노선_등록되어_있음("서해선", "bg-red-600", 시흥대야역, 은계역, 3);
@@ -123,6 +133,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         //then 50km초과 시 (8km마다 100원) 증가한다. 1250(10km) + 800(40km) + 100(10km)
         최단거리를_요금을_확인한다(response, 2150);
+
+        // When 최단거리 경로 요청 - 추가요금이 있는 노선
+        response = 최단거리_경로_요청(잠실역, 잠실나루역);
+
+        //then 추가 운임이 계산된다.
+        최단거리를_요금을_확인한다(response, 2150);
+
+        // When 최단거리 경로 요청 - 추가요금이 있는 노선 2개를 거치는 노선을 지나간다.
+        response = 최단거리_경로_요청(잠실역, 강변역);
+
+        //then 가장 높은 금액의 추가 요금만 적용된다.
+        최단거리를_요금을_확인한다(response, 2450);
+
     }
 
     @Test
@@ -207,10 +230,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStaion,
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStaion,
             StationResponse downStation, int distance) {
         return LineAcceptanceTest
             .지하철_노선_등록되어_있음(new LineRequest(name, color, upStaion.getId(), downStation.getId(), distance))
+            .as(LineResponse.class);
+    }
+
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStaion,
+            StationResponse downStation, int distance, int addFare) {
+        return LineAcceptanceTest
+            .지하철_노선_등록되어_있음(new LineRequest(name, color, upStaion.getId(), downStation.getId(), distance, addFare))
             .as(LineResponse.class);
     }
 }
