@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class StationService {
     private StationRepository stationRepository;
 
@@ -27,7 +28,7 @@ public class StationService {
         List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
-                .map(station -> StationResponse.of(station))
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -35,8 +36,8 @@ public class StationService {
         stationRepository.deleteById(id);
     }
 
-    public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+    public StationResponse findStationResponseById(Long id) {
+        return StationResponse.of(findById(id));
     }
 
     public Station findById(Long id) {

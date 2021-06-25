@@ -10,15 +10,15 @@ public class Distance {
     public static final String BIGGER_THAN_DISTANCE_EXCEPTION_MESSAGE = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요.";
 
     @Column(name = "distance")
-    private final int distance;
+    private final int value;
 
     protected Distance() {
-        distance = 0;
+        value = 0;
     }
 
     private Distance(int distance) {
         validate(distance);
-        this.distance = distance;
+        this.value = distance;
     }
 
     public static Distance valueOf(int distance) {
@@ -31,23 +31,23 @@ public class Distance {
         }
     }
 
-    public int getDistance() {
-        return distance;
+    public int getValue() {
+        return value;
     }
 
     public Distance minus(Distance distanceToMinus) {
         if (!isAvailableMinus(distanceToMinus)) {
             throw new IllegalArgumentException(BIGGER_THAN_DISTANCE_EXCEPTION_MESSAGE);
         }
-        return Distance.valueOf(distance - distanceToMinus.getDistance());
+        return Distance.valueOf(value - distanceToMinus.getValue());
     }
 
     private boolean isAvailableMinus(Distance distanceToMinus) {
-        return distance > distanceToMinus.getDistance();
+        return value > distanceToMinus.getValue();
     }
 
     public Distance plus(Distance distanceToPlus) {
-        return Distance.valueOf(distance + distanceToPlus.getDistance());
+        return Distance.valueOf(value + distanceToPlus.getValue());
     }
 
     @Override
@@ -55,11 +55,11 @@ public class Distance {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Distance distance1 = (Distance) o;
-        return distance == distance1.distance;
+        return value == distance1.value;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(distance);
+        return Objects.hash(value);
     }
 }

@@ -29,7 +29,7 @@ public class MockitoExtensionTest {
         LineQueryService lineQueryService = new LineQueryService(lineRepository);
 
         // when
-        List<LineResponse> responses = lineQueryService.findLines();
+        List<LineResponse> responses = lineQueryService.findLineResponses();
 
         // then
         assertThat(responses).hasSize(1);

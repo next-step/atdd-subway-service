@@ -60,4 +60,8 @@ public class Line extends BaseEntity {
         this.name = name;
         this.color = color;
     }
+
+    public List<Section> getUnmodifiableSectionList(){
+        return sections.getSections();
+    }
 }
