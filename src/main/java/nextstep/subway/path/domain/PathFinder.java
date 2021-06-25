@@ -11,36 +11,38 @@ import org.jgrapht.graph.WeightedMultigraph;
 import java.util.List;
 import java.util.Objects;
 
-public class PathFinder extends WeightedMultigraph<Station, DefaultWeightedEdge> {
+public class PathFinder {
     public static final String START_STATION_IS_SAME_AS_END_STATION_EXCEPTION_MESSAGE = "출발역과 도착역이 같을 수 없습니다.";
     public static final String STATION_IS_NOT_CONNECTED_EXCEPTION_MESSAGE = "출발역과 도착역이 연결이 되어 있지 않습니다.";
     public static final String NOT_EXIST_STATION_EXCEPTION_MESSAGE = "존재하지 않은 출발역이나 도착역을 조회 할 수 없습니다.";
 
+    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
     public PathFinder(List<Line> lines) {
-        super(DefaultWeightedEdge.class);
-        initializeGraph(lines);
-        dijkstraShortestPath = new DijkstraShortestPath<>(this);
+        this.graph = generateGraph(lines);
+        dijkstraShortestPath = new DijkstraShortestPath<>(this.graph);
     }
 
-    private void initializeGraph(List<Line> lines){
+    private WeightedMultigraph<Station, DefaultWeightedEdge> generateGraph(List<Line> lines) {
+        WeightedMultigraph<Station, DefaultWeightedEdge> weightedMultiGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         lines.stream()
                 .flatMap(line -> line.getUnmodifiableSectionList().stream())
                 .forEach(section -> {
-                    addVertex(section);
-                    addEdge(section);
+                    addVertex(weightedMultiGraph, section);
+                    addEdge(weightedMultiGraph, section);
                 });
+        return weightedMultiGraph;
     }
 
-    private void addEdge(Section section) {
-        DefaultWeightedEdge defaultWeightedEdge = this.addEdge(section.getUpStation(), section.getDownStation());
-        this.setEdgeWeight(defaultWeightedEdge, section.getDistance().getValue());
+    private void addEdge(WeightedMultigraph<Station, DefaultWeightedEdge> weightedMultiGraph, Section section) {
+        DefaultWeightedEdge defaultWeightedEdge = weightedMultiGraph.addEdge(section.getUpStation(), section.getDownStation());
+        weightedMultiGraph.setEdgeWeight(defaultWeightedEdge, section.getDistance().getValue());
     }
 
-    private void addVertex(Section section) {
-        this.addVertex(section.getUpStation());
-        this.addVertex(section.getDownStation());
+    private void addVertex(WeightedMultigraph<Station, DefaultWeightedEdge> weightedMultiGraph, Section section) {
+        weightedMultiGraph.addVertex(section.getUpStation());
+        weightedMultiGraph.addVertex(section.getDownStation());
     }
 
     public SubwayShortestPath findPath(Station startStation, Station endStation) {
@@ -60,7 +62,7 @@ public class PathFinder extends WeightedMultigraph<Station, DefaultWeightedEdge>
         if (startStation.equals(endStation)) {
             throw new IllegalArgumentException(START_STATION_IS_SAME_AS_END_STATION_EXCEPTION_MESSAGE);
         }
-        if (!this.containsVertex(startStation) || !this.containsVertex(endStation)) {
+        if (!graph.containsVertex(startStation) || !graph.containsVertex(endStation)) {
             throw new IllegalArgumentException(NOT_EXIST_STATION_EXCEPTION_MESSAGE);
         }
     }
