@@ -1,5 +1,7 @@
 package nextstep.subway.common.error;
 
+import nextstep.subway.line.exception.LineNotFoundException;
+import nextstep.subway.station.exception.StationNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,16 @@ public class GlobalExceptionAdvice {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity handleIllegalArgumentException(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().body(ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getMessage()));
+    }
+
+    @ExceptionHandler(StationNotFoundException.class)
+    public ResponseEntity handleStationNotFoundException(StationNotFoundException e) {
+        return ResponseEntity.badRequest().body(ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getMessage()));
+    }
+
+    @ExceptionHandler(LineNotFoundException.class)
+    public ResponseEntity handleLineNotFoundException(LineNotFoundException e) {
         return ResponseEntity.badRequest().body(ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getMessage()));
     }
 

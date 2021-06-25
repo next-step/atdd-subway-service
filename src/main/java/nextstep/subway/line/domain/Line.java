@@ -13,6 +13,7 @@ import javax.persistence.Id;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.domain.PathGraph;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -69,5 +70,12 @@ public class Line extends BaseEntity {
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
         return new LineResponse(id, name, color, stationResponses, getCreatedDate(), getModifiedDate());
+    }
+
+    public void setPathInfoTo(PathGraph graph) {
+        this.sections.getStations()
+                .forEach(graph::addVertexStation);
+        this.sections.getStream()
+                .forEach(graph::addEdgeWeight);
     }
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -150,5 +151,9 @@ public class Sections {
         if (this.sections.size() <= SECTIONS_MINIMUM_SIZE) {
             throw new IllegalStateException("지울 수 있는 구간이 없습니다.");
         }
+    }
+
+    public Stream<Section> getStream() {
+        return this.sections.stream();
     }
 }
