@@ -14,7 +14,7 @@ public class PathService {
 
     private final StationService stationService;
 
-    public PathService(StationService stationService){
+    public PathService(StationService stationService) {
         this.stationService = stationService;
     }
 
@@ -25,6 +25,6 @@ public class PathService {
         PathFinder pathFinder = new PathFinder();
         Path shortestPath = pathFinder.getDijkstraShortestPath(startStation, endStation);
 
-        return new PathResponse();
+        return PathResponse.of(shortestPath);
     }
 }
