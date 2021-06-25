@@ -1,4 +1,4 @@
-package nextstep.subway.path;
+package nextstep.subway.path.acceptance;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;

@@ -84,7 +84,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 * [ ] 최단 경로 조회 기능 구현하기
     * 미션 수행 순서
-        * [ ] 인수테스트 성공 시키기 : Mock 서버와 DTO를 정의하여 성공시키기
+        * [△] 인수테스트 성공 시키기 : Mock 서버와 DTO를 정의하여 성공시키기
+        * [ ] 기능 구현
+            * `PathController`에서부터 `PathService`로 Outside In 방식
 
 
 ## 🚀 1단계 인수 테스트 기반 리팩터링
