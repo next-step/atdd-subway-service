@@ -32,6 +32,14 @@ class SectionsTest {
     }
 
     @Test
+    void remove() {
+        line.addLineStation(secondStation, thirdStation, 4);
+        assertThat(line.getStations()).isEqualTo(Arrays.asList(firstStation, secondStation, thirdStation));
+        line.removeLineStation(secondStation);
+        assertThat(line.getStations()).isEqualTo(Arrays.asList(firstStation, thirdStation));
+    }
+
+    @Test
     void add_existentStation() {
         assertThatThrownBy(() -> line.addLineStation(firstStation, secondStation, 4))
                 .isInstanceOf(RuntimeException.class);
