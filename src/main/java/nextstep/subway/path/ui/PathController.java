@@ -19,9 +19,4 @@ public class PathController {
         return ResponseEntity.ok(pathService.findPath(source, target));
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity handleRuntimeException(RuntimeException e) {
-        return ResponseEntity.badRequest().build();
-    }
-
 }

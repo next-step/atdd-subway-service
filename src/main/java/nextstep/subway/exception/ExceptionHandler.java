@@ -38,4 +38,9 @@ public class ExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler(NotFoundMemberException.class)
+    public ResponseEntity handleNotFoundMemberException(NotFoundMemberException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
 }

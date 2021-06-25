@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import java.util.NoSuchElementException;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class NotFoundFavoritesException extends NoSuchElementException {
-    public NotFoundFavoritesException() {
+public class NotFoundMemberException extends NoSuchElementException {
+    public NotFoundMemberException() {
     }
 
-    public NotFoundFavoritesException(String message) {
+    public NotFoundMemberException(String message) {
         super(message);
     }
 }
