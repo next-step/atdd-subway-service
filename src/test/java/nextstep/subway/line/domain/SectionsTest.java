@@ -1,5 +1,12 @@
 package nextstep.subway.line.domain;
 
+import static nextstep.subway.station.domain.StationFixtures.공덕역;
+import static nextstep.subway.station.domain.StationFixtures.광화문역;
+import static nextstep.subway.station.domain.StationFixtures.서대문역;
+import static nextstep.subway.station.domain.StationFixtures.애오개역;
+import static nextstep.subway.station.domain.StationFixtures.을지로4가역;
+import static nextstep.subway.station.domain.StationFixtures.종로3가역;
+import static nextstep.subway.station.domain.StationFixtures.충정로역;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -13,15 +20,6 @@ import org.junit.jupiter.api.Test;
 
 @DisplayName("지하철 구간 테스트")
 public class SectionsTest {
-
-    //지하철역
-    private static final Station 공덕역 = new Station("공덕역");
-    private static final Station 애오개역 = new Station("애오개역");
-    private static final Station 충정로역 = new Station("충정로역");
-    private static final Station 서대문역 = new Station("서대문역");
-    private static final Station 광화문역 = new Station("광화문역");
-    private static final Station 종로3가역 = new Station("종로3가역");
-    private static final Station 을지로4가역 = new Station("을지로4가역");
 
     //노선
     private static final Line 오호선 = new Line("5호선", "purple");

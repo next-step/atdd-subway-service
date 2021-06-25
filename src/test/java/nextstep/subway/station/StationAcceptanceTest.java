@@ -17,7 +17,7 @@ import org.springframework.http.HttpStatus;
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptancePerMethodTest {
 
-    private static final String 강남역 = "강남역";
+    public static final String 강남역 = "강남역";
     public static final String 역삼역 = "역삼역";
     public static final String 애오개역 = "애오개역";
     public static final String 충정로역 = "충정로역";

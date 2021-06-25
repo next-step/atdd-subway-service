@@ -1,41 +1,43 @@
 package nextstep.subway.member;
 
-import io.restassured.RestAssured;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.나의_회원정보_조회_성공함;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_성공함;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.토큰으로_나의_회원정보_조회_요청;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptancePerMethodTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+@DisplayName("회원 관련 기능")
 public class MemberAcceptanceTest extends AcceptancePerMethodTest {
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final String NEW_EMAIL = "newemail@email.com";
-    public static final String NEW_PASSWORD = "newpassword";
-    public static final int AGE = 20;
-    public static final int NEW_AGE = 21;
+
+    public static final MemberRequest 회원 = new MemberRequest("jhh992000@gmail.com", "1234", 39);
+    public static final MemberRequest 수정회원 = new MemberRequest("newemail@email.com", "newpassword", 21);
+    public static final MemberRequest 비회원 = new MemberRequest("nonexistent@gmail.com", "1234", 20);
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
         // when
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(회원);
         // then
         회원_생성됨(createResponse);
 
         // when
         ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(createResponse);
         // then
-        회원_정보_조회됨(findResponse, EMAIL, AGE);
+        회원_정보_조회됨(findResponse, 회원);
 
         // when
-        ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, 수정회원);
         // then
         회원_정보_수정됨(updateResponse);
 
@@ -48,63 +50,70 @@ public class MemberAcceptanceTest extends AcceptancePerMethodTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // when
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(회원);
+        // then
+        회원_생성됨(createResponse);
 
+        // when
+        ExtractableResponse<Response> loginResponse = 로그인_요청(회원);
+        // then
+        TokenResponse tokenResponse = 로그인_성공함(loginResponse);
+
+        // when
+        ExtractableResponse<Response> response = 토큰으로_나의_회원정보_조회_요청(tokenResponse.getAccessToken());
+        // then
+        나의_회원정보_조회_성공함(response);
+
+        // when
+        ExtractableResponse<Response> updateResponse = 나의_회원_정보_수정_요청(수정회원, tokenResponse.getAccessToken());
+        // then
+        회원_정보_수정됨(updateResponse);
+
+        // when
+        ExtractableResponse<Response> newLoginResponse = 로그인_요청(수정회원);
+        // then
+        TokenResponse newTokenResponse = 로그인_성공함(newLoginResponse);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 회원_탈퇴_요청(newTokenResponse.getAccessToken());
+        // then
+        회원_탈퇴됨(deleteResponse);
     }
 
-    public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
-        MemberRequest memberRequest = new MemberRequest(email, password, age);
-
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().post("/members")
-                .then().log().all()
-                .extract();
+    public static ExtractableResponse<Response> 회원_생성을_요청(MemberRequest memberRequest) {
+        return post(memberRequest, "/members");
     }
 
     public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
-
-        return RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(uri)
-                .then().log().all()
-                .extract();
+        return get(response.header("Location"));
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
-        String uri = response.header("Location");
-        MemberRequest memberRequest = new MemberRequest(email, password, age);
+    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, MemberRequest memberRequest) {
+        return put(memberRequest, response.header("Location"));
+    }
 
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().put(uri)
-                .then().log().all()
-                .extract();
+    public static ExtractableResponse<Response> 나의_회원_정보_수정_요청(MemberRequest memberRequest, String accessToken) {
+        return put(memberRequest, "/members/me", accessToken);
     }
 
     public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
-        return RestAssured
-                .given().log().all()
-                .when().delete(uri)
-                .then().log().all()
-                .extract();
+        return delete(response.header("Location"));
+    }
+
+    public static ExtractableResponse<Response> 회원_탈퇴_요청(String accessToken) {
+        return delete("/members/me", accessToken);
     }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
+    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, MemberRequest memberRequest) {
         MemberResponse memberResponse = response.as(MemberResponse.class);
         assertThat(memberResponse.getId()).isNotNull();
-        assertThat(memberResponse.getEmail()).isEqualTo(email);
-        assertThat(memberResponse.getAge()).isEqualTo(age);
+        assertThat(memberResponse.getEmail()).isEqualTo(memberRequest.getEmail());
+        assertThat(memberResponse.getAge()).isEqualTo(memberRequest.getAge());
     }
 
     public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
@@ -112,6 +121,10 @@ public class MemberAcceptanceTest extends AcceptancePerMethodTest {
     }
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 회원_탈퇴됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }

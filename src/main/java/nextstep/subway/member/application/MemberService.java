@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class MemberService {
     private MemberRepository memberRepository;
 
@@ -18,6 +19,10 @@ public class MemberService {
     public MemberResponse createMember(MemberRequest request) {
         Member member = memberRepository.save(request.toMember());
         return MemberResponse.of(member);
+    }
+
+    public Member findById(Long id) {
+        return memberRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
     public MemberResponse findMember(Long id) {
