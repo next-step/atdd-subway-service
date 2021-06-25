@@ -3,6 +3,7 @@ package nextstep.subway.path;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.PathFinderUsingWeightedMultigraph;
 import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +37,7 @@ public class PathFinderTest {
     void kShortest_를_이용한_최단거리역_적용_테스트() {
 
         // When
-        PathFinder pathFinder = new PathFinder(Arrays.asList(line1));
+        PathFinder pathFinder = new PathFinderUsingWeightedMultigraph(Arrays.asList(line1));
         List<ShortestPath> shortestPaths = pathFinder.executeKShortest(source, target);
 
         System.out.println("getKShortestPaths");
@@ -50,7 +51,7 @@ public class PathFinderTest {
     void dijkstraShortest_를_이용한_최단거리역_적용_테스트() {
 
         // When
-        PathFinder pathFinder = new PathFinder(Arrays.asList(line1));
+        PathFinder pathFinder = new PathFinderUsingWeightedMultigraph(Arrays.asList(line1));
         ShortestPath shortestPath = pathFinder.executeDijkstra(source, target);
 
         // Then
