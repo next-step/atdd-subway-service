@@ -43,7 +43,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         역삼역 = 지하철역_등록되어_있음("역삼역").as(StationResponse.class);
         선릉역 = 지하철역_등록되어_있음("선릉역").as(StationResponse.class);
 
-        LineResponse 이호선 = 지하철_노선_등록되어_있음(new LineRequest("2호선", "green", 강남역.getId(), 역삼역.getId(), 5)).as(LineResponse.class);
+        LineResponse 이호선 = 지하철_노선_등록되어_있음(new LineRequest("2호선", "green", 강남역.getId(), 역삼역.getId(), 5, 400)).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(이호선, 역삼역, 선릉역, 5);
 
         회원_생성을_요청(EMAIL, PASSWORD, AGE);

@@ -6,7 +6,6 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.ui.SameSourceTargetException;
 import nextstep.subway.path.ui.SourceTargetNotConnectException;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.Stations;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,21 +52,21 @@ public class PathFinderTest {
 
         allStations = Arrays.asList(강남역, 역삼역, 선릉역, 교대역, 남부터미널역, 양재역, 매봉역, 도곡역, 한티역, 동춘역, 동막역);
 
-        Line 이호선 = new Line("이호선", "green", 강남역, 역삼역, 10);
+        Line 이호선 = new Line("이호선", "green", 강남역, 역삼역, 10, 200);
         이호선.addSection(new Section(역삼역, 선릉역, 10));
         이호선.addSection(new Section(교대역, 강남역, 10));
 
-        Line 삼호선 = new Line("삼호선", "orange", 교대역, 남부터미널역, 10);
+        Line 삼호선 = new Line("삼호선", "orange", 교대역, 남부터미널역, 10, 300);
         삼호선.addSection(new Section(남부터미널역, 양재역, 10));
         삼호선.addSection(new Section(양재역, 매봉역, 10));
         삼호선.addSection(new Section(매봉역, 도곡역, 10));
 
-        Line 분당선 = new Line("분당선", "yellow", 선릉역, 한티역, 10);
+        Line 분당선 = new Line("분당선", "yellow", 선릉역, 한티역, 10, 400);
         분당선.addSection(new Section(한티역, 도곡역, 10));
 
-        Line 신분당선 = new Line("신분당선", "red", 강남역, 양재역, 10);
+        Line 신분당선 = new Line("신분당선", "red", 강남역, 양재역, 10, 500);
 
-        Line 인천선 = new Line("인천선", "blue", 동춘역, 동막역, 10);
+        Line 인천선 = new Line("인천선", "blue", 동춘역, 동막역, 10, 0);
 
         lines = new Lines(Arrays.asList(이호선, 삼호선, 분당선, 신분당선, 인천선));
 
