@@ -50,4 +50,9 @@ public class Section extends BaseEntity {
         this.downStation = station;
         this.distance -= newDistance;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s - %s (%s)", upStation, downStation, distance);
+    }
 }
