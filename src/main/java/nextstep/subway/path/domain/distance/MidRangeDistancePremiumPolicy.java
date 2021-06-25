@@ -11,7 +11,7 @@ public class MidRangeDistancePremiumPolicy implements DistancePremiumPolicy {
     private static final Distance MAXIMUM_DISTANCE = new Distance(50);
 
     private static final Money PER_5KM_FARE = new Money(100);
-    private static final int PER_KM = 5;
+    private static final Money PER_KM = new Money(5);
 
     @Override
     public Money calcFare(Distance distance, Money money) {
@@ -21,7 +21,8 @@ public class MidRangeDistancePremiumPolicy implements DistancePremiumPolicy {
 
         int distanceOfMoney = calcAvailableDistance(distance);
 
-        return new Money(distanceOfMoney / PER_KM)
+        return new Money(distanceOfMoney)
+                .divide(PER_KM)
                 .multi(PER_5KM_FARE)
                 .plus(money);
     }

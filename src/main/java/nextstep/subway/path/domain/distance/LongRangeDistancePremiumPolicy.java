@@ -10,7 +10,7 @@ public class LongRangeDistancePremiumPolicy implements DistancePremiumPolicy {
     private static final Distance MINIMUM_DISTANCE = new Distance(50);
 
     private static final Money PER_8KM_FARE = new Money(100);
-    private static final int PER_KM = 8;
+    private static final Money PER_KM = new Money(8);
 
     @Override
     public Money calcFare(Distance distance, Money money) {
@@ -20,7 +20,8 @@ public class LongRangeDistancePremiumPolicy implements DistancePremiumPolicy {
 
         int distanceOfMoney = calcAvailableDistance(distance);
 
-        return new Money(distanceOfMoney / PER_KM)
+        return new Money(distanceOfMoney)
+                .divide(PER_KM)
                 .multi(PER_8KM_FARE)
                 .plus(money);
     }
