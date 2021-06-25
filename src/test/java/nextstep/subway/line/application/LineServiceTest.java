@@ -101,7 +101,7 @@ public class LineServiceTest {
         assertThat(stations.size()).isEqualTo(4);
 
         // when
-        boolean isRemoveStation = lineService.removeLineStationNew(1L, 2L);
+        boolean isRemoveStation = lineService.removeLineStation(1L, 2L);
 
         // then
         List<Station> expected = lineService.getStations(신분당선);
@@ -116,7 +116,7 @@ public class LineServiceTest {
         // 기존에 역과 일치하는 역이 없으면 오류 발생
         추가_역_등로됨();
         추가_구간_등록됨();
-        assertThatThrownBy(() -> lineService.removeLineStationNew(1L, 5L))
+        assertThatThrownBy(() -> lineService.removeLineStation(1L, 5L))
                 .isInstanceOf(RuntimeException.class);
     }
 
