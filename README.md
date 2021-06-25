@@ -62,3 +62,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ### 🚀 2단계 - 경로 조회 기능
 
 [바로가기](./markdown/step2.md)
+
+### 🚀 3단계 - 인증을 통한 기능 구현
+
+[바로가기](./markdown/step3.md)
