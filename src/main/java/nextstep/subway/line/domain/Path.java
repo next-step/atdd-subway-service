@@ -6,12 +6,17 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Path {
-    public static WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-    public static DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+    private static final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+    private static final DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+    private static final List<Station> stations = new ArrayList<>();
+
+    private Path() {
+    }
 
     public static void addPath(Section section) {
         Station upStation = section.getUpStation();
@@ -20,6 +25,8 @@ public class Path {
         graph.addVertex(upStation);
         graph.addVertex(downStation);
         graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.distanceToInteger());
+        stations.add(upStation);
+        stations.add(downStation);
     }
 
     public static List<StationResponse> findShortestPath(Station source, Station target) {
@@ -38,10 +45,13 @@ public class Path {
 
     public static void removeStation(Section section) {
         graph.removeEdge(section.getUpStation(), section.getDownStation());
+        stations.remove(section.getUpStation());
+        stations.remove(section.getDownStation());
     }
 
     public static void clear() {
-        graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        dijkstraShortestPath = new DijkstraShortestPath(graph);
+        for (Station station : stations) {
+            graph.removeVertex(station);
+        }
     }
 }
