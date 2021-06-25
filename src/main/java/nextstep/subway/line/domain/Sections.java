@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -32,8 +33,8 @@ public class Sections {
 
 	public void removeStation(Line line, Station station) {
 		validateRemoveStation(station);
-		Section upSection = getSectionEqualsDownStation(station);
-		Section downSection = getSectionEqualsUpStation(station);
+		Section upSection = getSectionEqualsStation(section -> section.isEqualsDownStation(station));
+		Section downSection = getSectionEqualsStation(section -> section.isEqualsUpStation(station));
 		updateSectionForRemove(line, upSection, downSection);
 		removeSection(upSection);
 		removeSection(downSection);
@@ -104,14 +105,16 @@ public class Sections {
 	}
 
 	private void updateUpStation(Section newSection, List<Station> stations) {
-		Section updateSection = getSectionEqualsUpStation(newSection.getUpStation());
+		Section updateSection = getSectionEqualsStation(
+			section -> section.isEqualsUpStation(newSection.getUpStation()));
 		if (newSection.isUpStationExisted(stations) && Objects.nonNull(updateSection)) {
 			updateSection.updateUpStation(newSection.getDownStation(), newSection.getDistance());
 		}
 	}
 
 	private void updateDownStation(Section newSection, List<Station> stations) {
-		Section updateSection = getSectionEqualsDownStation(newSection.getDownStation());
+		Section updateSection = getSectionEqualsStation(
+			section -> section.isEqualsDownStation(newSection.getDownStation()));
 		if (newSection.isDownStationExisted(stations) && Objects.nonNull(updateSection)) {
 			updateSection.updateDownStation(newSection.getUpStation(), newSection.getDistance());
 		}
@@ -155,16 +158,9 @@ public class Sections {
 		}
 	}
 
-	private Section getSectionEqualsDownStation(Station station) {
+	private Section getSectionEqualsStation(Predicate<Section> predicate) {
 		return this.sections.stream()
-			.filter(section -> section.isEqualsDownStation(station))
-			.findFirst()
-			.orElse(null);
-	}
-
-	private Section getSectionEqualsUpStation(Station station) {
-		return this.sections.stream()
-			.filter(section -> section.isEqualsUpStation(station))
+			.filter(predicate::test)
 			.findFirst()
 			.orElse(null);
 	}
