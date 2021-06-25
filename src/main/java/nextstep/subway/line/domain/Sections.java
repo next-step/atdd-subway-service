@@ -16,7 +16,24 @@ public class Sections {
     private final List<Section> sections = new ArrayList<>();
 
     public void add(Section section) {
-        sections.add(section);
+        List<Station> stations = getStations();
+        boolean isUpStationExisted = stations.stream().anyMatch(section::isSameUpStation);
+        boolean isDownStationExisted = stations.stream().anyMatch(section::isSameDownStation);
+
+        validateExistStations(isUpStationExisted, isDownStationExisted);
+        validateNotMatchedStations(section, stations);
+
+        if (stations.isEmpty()) {
+            sections.add(section);
+            return;
+        }
+
+        if (isUpStationExisted) {
+            connectSectionIfHasSameDownStation(section);
+            return;
+        }
+
+        connectSectionIfHasSameUpStation(section);
     }
 
     public List<Station> getStations() {
@@ -43,6 +60,39 @@ public class Sections {
         return stations;
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
+    private void connectSectionIfHasSameDownStation(Section section) {
+        sections.stream()
+                .filter(it -> section.isSameDownStation(it.getDownStation()))
+                .findFirst()
+                .ifPresent(it -> it.updateDownStationBySection(section));
+        sections.add(section);
+    }
+
+    private void connectSectionIfHasSameUpStation(Section section) {
+        sections.stream()
+                .filter(it -> section.isSameUpStation(it.getUpStation()))
+                .findFirst()
+                .ifPresent(it -> it.updateUpStationBySection(section));
+        sections.add(section);
+    }
+
+    private void validateNotMatchedStations(Section section, List<Station> stations) {
+        if (!stations.isEmpty() && stations.stream().noneMatch(section::isSameUpStation) &&
+                stations.stream().noneMatch(section::isSameDownStation)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void validateExistStations(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+    }
+
     private Station findUpStation() {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
@@ -57,9 +107,5 @@ public class Sections {
         }
 
         return downStation;
-    }
-
-    public List<Section> getSections() {
-        return sections;
     }
 }
