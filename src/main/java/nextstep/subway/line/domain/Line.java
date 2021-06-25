@@ -9,6 +9,7 @@ import java.util.List;
 
 @Entity
 public class Line extends BaseEntity {
+    public static final String NOT_REGISTERED_EXCEPTION = "등록할 수 없는 구간 입니다.";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,6 +45,7 @@ public class Line extends BaseEntity {
             checkSectionValidate(newSection);
         }
         sections.add(newSection);
+        newSection.setLine(this);
         return true;
     }
 
@@ -61,7 +63,7 @@ public class Line extends BaseEntity {
         if(isSameUpStation || isSameDownStation) return;
         if(isUpFinalSection(newSection)) return;
         if(isDownFinalSection(newSection)) return;
-        throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        throw new IllegalArgumentException(NOT_REGISTERED_EXCEPTION);
     }
 
     private boolean isUpFinalSection(Section newSection) {
