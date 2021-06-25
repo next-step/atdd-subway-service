@@ -1,9 +1,12 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,11 +32,13 @@ public class FavoriteServiceTest {
     @Mock
     private FavoriteRepository favoriteRepository;
     @Mock
+    private MemberRepository memberRepository;
+    @Mock
     private StationRepository stationRepository;
 
     @BeforeEach
     void setUp() {
-        favoriteService = new FavoriteService(favoriteRepository, stationRepository);
+        favoriteService = new FavoriteService(favoriteRepository, memberRepository, stationRepository);
     }
 
     @Test
@@ -45,8 +50,10 @@ public class FavoriteServiceTest {
                 .thenReturn(Optional.of(강남역), Optional.of(역삼역));
         when(favoriteRepository.save(any()))
                 .thenReturn(new Favorite(1L, 강남역, 역삼역));
+        when(memberRepository.findById(any()))
+                .thenReturn(Optional.of(new Member("email", "password", 30)));
 
-        FavoriteResponse response = favoriteService.save(new FavoriteRequest(1L, 2L));
+        FavoriteResponse response = favoriteService.save(new LoginMember(), new FavoriteRequest(1L, 2L));
         assertThat(response.getSource().getName()).isEqualTo("강남역");
         assertThat(response.getTarget().getName()).isEqualTo("역삼역");
     }

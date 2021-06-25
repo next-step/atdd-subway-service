@@ -63,6 +63,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         사용자 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
     }
 
+    @Test
+    void 잘못된_사용자가_즐겨찾기_만들기와_조회를_한다() {
+        // Given
+        TokenResponse 잘못된사용자 = new TokenResponse("잘못된사용자토큰");
+
+        // When
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(잘못된사용자, 강남역, 교대역);
+        // Then
+        즐겨찾기_생성_잘못된사용자라서_실패됨(createResponse);
+
+        // When
+        ExtractableResponse<Response> selectResponse = 즐겨찾기_목록_조회_요청(잘못된사용자);
+        // Then
+        즐겨찾기_목록_조회_잘못된사용자라서_실패됨(selectResponse);
+    }
+
     @DisplayName("즐겨찾기를 관리한다.")
     @Test
     void manageMember() {
@@ -109,6 +125,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    private void 즐겨찾기_생성_잘못된사용자라서_실패됨(ExtractableResponse<Response> createResponse) {
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(TokenResponse tokenResponse) {
         return RestAssuredCRUD.getWithOAuth("/favorites", tokenResponse.getAccessToken());
     }
@@ -117,11 +137,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(selectResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
+    private void 즐겨찾기_목록_조회_잘못된사용자라서_실패됨(ExtractableResponse<Response> selectResponse) {
+        assertThat(selectResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     private ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse tokenResponse, FavoriteResponse favoriteResponse) {
         return RestAssuredCRUD.deleteWithOAuth("/favorites/" + favoriteResponse.getId(), tokenResponse.getAccessToken());
     }
 
     private void 즐겨찾기_삭제됨(ExtractableResponse<Response> deleteResponse) {
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 즐겨찾기_삭제_없어서_못하고_실패됨(ExtractableResponse<Response> deleteResponse) {
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
