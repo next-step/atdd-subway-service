@@ -23,4 +23,8 @@ public class Path {
 			.mapToInt(SectionEdge::getDistance)
 			.sum();
 	}
+
+	public int calculateFare() {
+		return 1250;
+	}
 }
