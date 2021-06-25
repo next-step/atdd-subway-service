@@ -30,7 +30,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
-    public LineResponse saveLine(LineRequest request) {
+    public LineResponse saveLineOld(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
@@ -40,12 +40,19 @@ public class LineService {
         return LineResponse.of(persistLine, stations);
     }
 
+    public LineResponse saveLine(LineRequest request) {
+        Station upStation = stationService.findById(request.getUpStationId());
+        Station downStation = stationService.findById(request.getDownStationId());
+        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        return LineResponse.ofNew(persistLine);
+    }
+
     public LineResponse findLine(Long lineId) {
         Line persistLine = findLineById(lineId);
         return LineResponse.ofNew(persistLine);
     }
 
-    public List<LineResponse> findLines() {
+    public List<LineResponse> findLinesOld() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
                 .map(line -> {
@@ -55,6 +62,21 @@ public class LineService {
                     return LineResponse.of(line, stations);
                 })
                 .collect(Collectors.toList());
+    }
+
+    public List<LineResponse> findLines() {
+        List<Line> persistLines = lineRepository.findAll();
+        return persistLines.stream()
+                .map(line -> LineResponse.ofNew(line))
+                .collect(Collectors.toList());
+    }
+
+    public LineResponse findLineResponseByIdOld(Long id) {
+        Line persistLine = findLineById(id);
+        List<StationResponse> stations = getStations(persistLine).stream()
+                .map(it -> StationResponse.of(it))
+                .collect(Collectors.toList());
+        return LineResponse.of(persistLine, stations);
     }
 
     public LineResponse findLineResponseById(Long id) {
