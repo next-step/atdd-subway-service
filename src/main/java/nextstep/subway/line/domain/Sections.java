@@ -129,4 +129,8 @@ public class Sections {
                 .filter(s -> s.getDownStation() == downStation)
                 .findAny();
     }
+
+    public List<Section> getSections() {
+        return Collections.unmodifiableList(sections);
+    }
 }

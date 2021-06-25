@@ -1,9 +1,12 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.station.domain.Station;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Lines {
     private List<Line> lines;
@@ -18,6 +21,13 @@ public class Lines {
 
     public List<Line> getLines() {
         return Collections.unmodifiableList(lines);
+    }
+
+    public List<Station> getStations() {
+        return lines.stream()
+                .flatMap(v -> v.getStations().stream())
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     @Override
