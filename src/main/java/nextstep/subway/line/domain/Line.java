@@ -102,5 +102,62 @@ public class Line extends BaseEntity {
 
         return downStation;
     }
+
+    public void addSection(Section section) {
+        boolean isUpStationExisted = isUpStationExisted(section.getUpStation());
+        boolean isDownStationExisted = isDownStationExisted(section.getDownStation());
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!isStationsEmpty() && isUpStationNoneMatch(section.getUpStation()) &&
+            isDownStationNoneMatch(section.getDownStation())) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
+        if (isStationsEmpty()) {
+            sections.add(section);
+            return;
+        }
+
+        if (isUpStationExisted) {
+            sections.stream()
+                .filter(it -> it.getUpStation() == section.getUpStation())
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(section.getDownStation(), it.getDistance() - section.getDistance()));
+
+            sections.add(section);
+        } else if (isDownStationExisted) {
+            sections.stream()
+                .filter(it -> it.getDownStation() == section.getDownStation())
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(section.getUpStation(), it.getDistance() - section.getDistance()));
+
+            sections.add(section);
+        } else {
+            throw new RuntimeException();
+        }
+    }
+
+    private boolean isStationsEmpty() {
+        return getStations().isEmpty();
+    }
+
+    private boolean isDownStationNoneMatch(Station downStation) {
+        return getStations().stream().noneMatch(it -> it == downStation);
+    }
+
+    private boolean isUpStationNoneMatch(Station upStation) {
+        return getStations().stream().noneMatch(it -> it == upStation);
+    }
+
+    private boolean isDownStationExisted(Station downStation) {
+        return getStations().stream().anyMatch(it -> it == downStation);
+    }
+
+    private boolean isUpStationExisted(Station upStation) {
+        return getStations().stream().anyMatch(it -> it == upStation);
+    }
 }
 
