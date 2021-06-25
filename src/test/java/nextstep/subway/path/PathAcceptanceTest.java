@@ -30,7 +30,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 이호선;
     private LineResponse 삼호선;
     private LineResponse 칠호선;
-    private StationResponse 강남역;
+    private Response 강남역;
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남강역;
