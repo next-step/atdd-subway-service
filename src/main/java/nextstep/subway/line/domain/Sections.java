@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
+import java.util.function.Predicate;
 
 @Embeddable
 public class Sections {
@@ -22,40 +23,19 @@ public class Sections {
         if (sections.isEmpty()) {
             return Collections.emptyList();
         }
+        return getSortedStations();
+    }
 
+    private List<Station> getSortedStations() {
+        Collections.sort(sections);
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
-
-        while (Objects.nonNull(downStation)) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
-
+        stations.add(findFirstUpStation());
+        sections.forEach(section -> stations.add(section.getDownStation()));
         return stations;
     }
 
-    private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
+    private Station findFirstUpStation() {
+        return sections.get(0).getUpStation();
     }
 
     private boolean hasStation(Station station) {
@@ -64,27 +44,28 @@ public class Sections {
 
     public void addLineStation(Line line, Station upStation, Station downStation, int distance) {
         List<Station> stations = getStations();
-        boolean isUpStationExisted = hasStation(upStation);
-        boolean isDownStationExisted = hasStation(downStation);
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (!stations.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-
         if (stations.isEmpty()) {
             sections.add(new Section(line, upStation, downStation, distance));
             return;
         }
-
+        boolean isUpStationExisted = hasStation(upStation);
+        boolean isDownStationExisted = hasStation(downStation);
+        validateStationExistenceInStations(isUpStationExisted, isDownStationExisted);
         if (isUpStationExisted) {
             addUpStation(line, upStation, downStation, distance);
             return;
         }
-         addDownStation(line, upStation, downStation, distance);
+        addDownStation(line, upStation, downStation, distance);
+    }
+
+    private void validateStationExistenceInStations(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!isUpStationExisted && !isDownStationExisted) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
     }
 
     private void addDownStation(Line line, Station upStation, Station downStation, int distance) {
@@ -107,17 +88,10 @@ public class Sections {
 
 
     public void removeLineStation(Line line, Station station) {
-        if (sections.size() <= MINIMUM_SECTION_SIZE) {
-            throw new RuntimeException();
-        }
+        validateSectionSize();
 
-        Optional<Section> upLineStation = sections.stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = sections.stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
-
+        Optional<Section> upLineStation = getSectionByPredicate(section -> section.getUpStation() == station);
+        Optional<Section> downLineStation = getSectionByPredicate(section -> section.getDownStation() == station);
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
@@ -127,5 +101,17 @@ public class Sections {
 
         upLineStation.ifPresent(it -> sections.remove(it));
         downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
+    private void validateSectionSize() {
+        if (sections.size() <= MINIMUM_SECTION_SIZE) {
+            throw new RuntimeException();
+        }
+    }
+
+    private Optional<Section> getSectionByPredicate(Predicate<Section> predicate) {
+        return sections.stream()
+                .filter(predicate)
+                .findFirst();
     }
 }
