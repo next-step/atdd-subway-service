@@ -5,8 +5,7 @@ public class Over50KmDistanceFarePolicy extends DistanceFarePolicy {
     private static final int MIN_DISTANCE = 50;
     private static final int ADDITIONAL_FARE_UNTIL_50KM = 800;
 
-    public Over50KmDistanceFarePolicy(int distance) {
-        super(distance);
+    public Over50KmDistanceFarePolicy() {
     }
 
     @Override

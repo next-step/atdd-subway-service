@@ -8,11 +8,11 @@ public abstract class DistanceFarePolicy {
     public DistanceFarePolicy() {
     }
 
-    public DistanceFarePolicy(int distance) {
-        this.distance = distance;
-    }
-
     public int calculateByDistance() {
         return BASIC_FARE;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
     }
 }

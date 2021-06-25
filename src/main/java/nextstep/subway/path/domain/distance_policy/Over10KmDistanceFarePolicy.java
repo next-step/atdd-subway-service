@@ -2,8 +2,7 @@ package nextstep.subway.path.domain.distance_policy;
 
 public class Over10KmDistanceFarePolicy extends DistanceFarePolicy {
 
-    public Over10KmDistanceFarePolicy(int distance) {
-        super(distance);
+    public Over10KmDistanceFarePolicy() {
     }
 
     @Override
