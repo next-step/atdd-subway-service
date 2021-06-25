@@ -33,19 +33,19 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
-        return LineResponse.ofNew(persistLine);
+        Line persistLine = lineRepository.save(request.toLine(upStation, downStation));
+        return LineResponse.of(persistLine);
     }
 
     public LineResponse findLine(Long lineId) {
         Line persistLine = findLineById(lineId);
-        return LineResponse.ofNew(persistLine);
+        return LineResponse.of(persistLine);
     }
 
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
-                .map(line -> LineResponse.ofNew(line))
+                .map(line -> LineResponse.of(line))
                 .collect(Collectors.toList());
     }
 

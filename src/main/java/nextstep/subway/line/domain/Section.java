@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.collection.Distance;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -22,34 +23,32 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
 
-    public Section(Station upStation, Station downStation, int distance) {
+    public Section(Station upStation, Station downStation, Distance distance) {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    public Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
 
-    private void checkDistanceValidation(int oldDistance) {
-        if (this.distance >= oldDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.distance = oldDistance - this.distance;
+    private Distance measureOldDistance(Distance oldDistance, boolean isConnect) {
+        return this.distance.measureOldDistance(oldDistance, isConnect);
     }
 
     public boolean isSameUpStationOfSection(Section newSection) {
         if (newSection.isSameUpStation(this.upStation)) {
-            newSection.checkDistanceValidation(this.distance);
+            this.distance = newSection.measureOldDistance(this.distance, false);
             this.upStation = newSection.getDownStation();
         }
         return false;
@@ -61,7 +60,7 @@ public class Section {
 
     public boolean isSameDownStationOfSection(Section newSection) {
         if (newSection.isSameDownStation(this.downStation)) {
-            newSection.checkDistanceValidation(this.distance);
+            this.distance = newSection.measureOldDistance(this.distance, false);
             this.downStation = newSection.getUpStation();
         }
         return false;
@@ -95,11 +94,7 @@ public class Section {
 
     public void connectNewSection(Section downSection) {
         this.downStation = downSection.getDownStation();
-        this.distance += downSection.getDistance();
-    }
-
-    public boolean isExistUpSection(Station upStation) {
-        return this.downStation.equals(upStation);
+        this.distance = downSection.getDistance().measureOldDistance(this.distance, true);
     }
 
     public Long getId() {
@@ -118,7 +113,7 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 

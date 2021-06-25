@@ -31,7 +31,7 @@ public class LineResponse {
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
     }
 
-    public static LineResponse ofNew(Line persistLine) {
+    public static LineResponse of(Line persistLine) {
         List<StationResponse> stationResponses = persistLine.getStations()
                 .stream().map(it -> StationResponse.of(it))
                 .collect(Collectors.toList());

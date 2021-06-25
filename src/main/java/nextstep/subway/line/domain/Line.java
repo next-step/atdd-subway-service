@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.collection.Distance;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -33,7 +34,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        sections.add(new Section(this, upStation, downStation, new Distance(distance)));
     }
 
     public void update(Line line) {
@@ -42,7 +43,7 @@ public class Line extends BaseEntity {
     }
 
     public boolean addSection(Station upStation, Station downStation, int distance) {
-        Section newSection = new Section(upStation, downStation, distance);
+        Section newSection = new Section(upStation, downStation, new Distance(distance));
         if (!sections.isEmpty()) {
             checkSectionValidate(newSection);
         }
@@ -178,4 +179,5 @@ public class Line extends BaseEntity {
     public List<Section> getSections() {
         return sections;
     }
+
 }
