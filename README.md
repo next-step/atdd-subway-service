@@ -1,5 +1,14 @@
 # 🚀 1단계 - 인수 테스트 기반 리팩터링
 
+## 기능 목록
+ 1. 인수테스트 시나리오 통합
+ 2. 단위테스트 작성(LineTest)
+ 3. LineService 리팩토링
+    - 비즈니스 로직 domain 객체로 이동 (service layer - thin)
+ 4. 구간 목록을 Sections 일급컬렉션으로 통합
+    - SectionsTest 작성 
+    - 도메인 관계를 바꾸자 테스트 통과를 위한 수정사항이 넘쳐남...😥 (도메인 설계의 중요성)
+--- 
 ## 요구사항
 *   LineSectionAcceptanceTest 리팩터링
 *   LineService 리팩터링
