@@ -4,11 +4,14 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.PathResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,6 +41,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 구리역;
     private StationResponse 남부터미널역;
 
+    private String 성인_인증토큰;
+    private String 청소년_인증토큰;
+    private String 어린이_인증토큰;
+
     /**
      * 교대역    --- *2호선*(10) --- 강남역
      * |                        |
@@ -62,9 +69,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
         중앙선 = 지하철_노선_등록되어_있음("중앙선", "bg-red-600", 덕소역, 구리역, 5);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+
+
+        MemberAcceptanceTest.회원_생성을_요청("adult@email.com", "password", 20);
+        TokenRequest 성인_인증_토큰_요청 = new TokenRequest("adult@email.com", "password");
+        ExtractableResponse<Response> 성인_로그인_요청_결과 = AuthAcceptanceTest.로그인_요청(성인_인증_토큰_요청);
+        성인_인증토큰 = MemberAcceptanceTest.인증_토근_가져오기(성인_로그인_요청_결과);
+
+        MemberAcceptanceTest.회원_생성을_요청("teenager@email.com", "password", 15);
+        TokenRequest 청소년 = new TokenRequest("teenager@email.com", "password");
+        ExtractableResponse<Response> 청소년_로그인_요청_결과 = AuthAcceptanceTest.로그인_요청(청소년);
+        청소년_인증토큰 = MemberAcceptanceTest.인증_토근_가져오기(청소년_로그인_요청_결과);
+
+        MemberAcceptanceTest.회원_생성을_요청("child@email.com", "password", 8);
+        TokenRequest 어린이_인증_토큰_요청 = new TokenRequest("child@email.com", "password");
+        ExtractableResponse<Response> 어린이_로그인_요청_결과 = AuthAcceptanceTest.로그인_요청(어린이_인증_토큰_요청);
+        어린이_인증토큰 = MemberAcceptanceTest.인증_토근_가져오기(어린이_로그인_요청_결과);
+
     }
 
-    @DisplayName("최단경로를 찾아보자")
+    @DisplayName("최단경로를 찾아보자 (비로그인상태)")
     @Test
     void findShortPath() {
         ExtractableResponse<Response> response = 지하철_경로를_조회(교대역, 양재역);
@@ -72,6 +96,43 @@ public class PathAcceptanceTest extends AcceptanceTest {
         자허철_최단경로_조회됨(response);
         지하철_경로_역명이_동일함(response);
         지하철_노선_최단경로가_일치함(response);
+        지하철_요금_일치함(response);
+    }
+
+    @DisplayName("어른이 최단경로를 찾을 경우 요금확인")
+    @Test
+    void findShortPathForAdult() {
+
+        ExtractableResponse<Response> response = 로그인한_상태로_지하철_경로를_조회(성인_인증토큰, 교대역, 양재역);
+
+        자허철_최단경로_조회됨(response);
+        지하철_경로_역명이_동일함(response);
+        지하철_노선_최단경로가_일치함(response);
+        지하철_요금_일치함(response);
+    }
+
+    @DisplayName("청소년이 최단경로를 찾을 경우 요금확인")
+    @Test
+    void findShortPathForTeenager() {
+
+        ExtractableResponse<Response> response = 로그인한_상태로_지하철_경로를_조회(청소년_인증토큰, 교대역, 양재역);
+
+        자허철_최단경로_조회됨(response);
+        지하철_경로_역명이_동일함(response);
+        지하철_노선_최단경로가_일치함(response);
+        청소년_지하철_요금_일치함(response);
+    }
+
+    @DisplayName("어린이가 최단경로를 찾을 경우 요금확인")
+    @Test
+    void findShortPathForChild() {
+
+        ExtractableResponse<Response> response = 로그인한_상태로_지하철_경로를_조회(어린이_인증토큰, 교대역, 양재역);
+
+        자허철_최단경로_조회됨(response);
+        지하철_경로_역명이_동일함(response);
+        지하철_노선_최단경로가_일치함(response);
+        어린이_지하철_요금_일치함(response);
     }
 
     @DisplayName("출발역과 도착역이 같은경우는 경로조회가 안됨")
@@ -120,9 +181,35 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(stationNames).containsExactlyElementsOf(expectedNames);
     }
 
+    private void 지하철_요금_일치함(ExtractableResponse<Response> response) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(1250);
+    }
+
+    private void 청소년_지하철_요금_일치함(ExtractableResponse<Response> response) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(720);
+    }
+
+    private void 어린이_지하철_요금_일치함(ExtractableResponse<Response> response) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(450);
+    }
+
     private ExtractableResponse<Response> 지하철_경로를_조회(StationResponse source, StationResponse target) {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={source}&target={target}", source.getId(), target.getId())
+                .then().log().all().
+                        extract();
+        return response;
+    }
+
+    private ExtractableResponse<Response> 로그인한_상태로_지하철_경로를_조회(String token, StationResponse source, StationResponse target) {
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths?source={source}&target={target}", source.getId(), target.getId())
                 .then().log().all().

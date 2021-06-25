@@ -1,8 +1,7 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Lines;
-import nextstep.subway.line.domain.PathFinder;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.line.domain.*;
 import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -11,6 +10,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -27,23 +27,41 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(Long sourceStationId, Long targetStationId) {
+    public PathResponse findPath(LoginMember loginMember, Long sourceStationId, Long targetStationId) {
         PathFinder pathFinder = initPathFinder();
 
         validation(sourceStationId, targetStationId);
         Station sourceStation = findStation(sourceStationId);
         Station targetStation = findStation(targetStationId);
 
-        List<StationResponse> stationResponses = pathFinder.getPath(sourceStation, targetStation)
+        List<Station> stations = pathFinder.getPath(sourceStation, targetStation);
+
+        List<SectionWeightedEdge> sectionWeightEdge = pathFinder.getSectionWeightEdge(sourceStation, targetStation);
+        int extraFare = getMaximumExtraFareFromLineEdge(sectionWeightEdge);
+
+        List<StationResponse> stationResponses = makeStationResponse(stations);
+
+        int distance = pathFinder.getWeight(sourceStation, targetStation);
+        return new PathResponse(stationResponses, distance,
+                new Fare(distance, extraFare, FareByAge.of(loginMember.getAge()).fare()));
+    }
+
+    private List<StationResponse> makeStationResponse(List<Station> stations) {
+        return stations
                 .stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
+    }
 
-        return new PathResponse(stationResponses, pathFinder.getWeight(sourceStation, targetStation));
+    private Integer getMaximumExtraFareFromLineEdge(List<SectionWeightedEdge> sectionWeightEdge) {
+        return sectionWeightEdge.stream()
+                .max(Comparator.comparing(sectionWeightedEdge -> sectionWeightedEdge.getExtraFare()))
+                .map(sectionWeightedEdge -> sectionWeightedEdge.getExtraFare())
+                .orElse(0);
     }
 
     private void validation(Long sourceStationId, Long targetStationId) {
-        if (sourceStationId == targetStationId) {
+        if (sourceStationId.equals(targetStationId)) {
             throw new IllegalArgumentException("출발역과 도착역이 같을수는 없습니다.");
         }
     }

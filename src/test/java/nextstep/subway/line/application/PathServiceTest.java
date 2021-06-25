@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -49,10 +50,10 @@ class PathServiceTest {
         덕소역 = new Station("덕소역");
         구리역 = new Station("구리역");
 
-        Section 강남_삼성 = new Section(강남역, 삼성역, 50);
-        Section 삼성_잠실 = new Section(삼성역, 잠실역, 100);
+        Section 강남_삼성 = new Section(강남역, 삼성역, 5);
+        Section 삼성_잠실 = new Section(삼성역, 잠실역, 10);
 
-        Section 덕소_구리 = new Section(덕소역, 구리역, 30);
+        Section 덕소_구리 = new Section(덕소역, 구리역, 3);
 
         Line 이호선 = new Line("이호선", "빨강색");
         이호선.addSection(강남_삼성);
@@ -70,24 +71,67 @@ class PathServiceTest {
         stationRepository.save(구리역);
     }
 
-    @DisplayName("출발지와 목적지 사이의 경로를 찾아보자")
+    @DisplayName("출발지와 목적지 사이의 경로를 찾아보자(GuestMode)")
     @Test
-    void findPath() {
-        PathResponse response = pathService.findPath(강남역.getId(), 잠실역.getId());
+    void findPathGuestMode() {
+        PathResponse response = pathService.findPath(new LoginMember(), 강남역.getId(), 잠실역.getId());
 
         List<String> stationNames = response.getStations().stream()
                 .map(stationResponse -> stationResponse.getName())
                 .collect(Collectors.toList());
         assertThat(stationNames).containsExactly(강남역.getName(),
                 삼성역.getName(), 잠실역.getName());
-        assertThat(response.getDistance()).isEqualTo(150);
+        assertThat(response.getDistance()).isEqualTo(15);
+        assertThat(response.getFare()).isEqualTo(1350);
+    }
+
+    @DisplayName("출발지와 목적지 사이의 경로를 찾아보자(Adult)")
+    @Test
+    void findPathAdult() {
+        PathResponse response = pathService.findPath(new LoginMember(0L, "test@email.com", 20), 강남역.getId(), 잠실역.getId());
+
+        List<String> stationNames = response.getStations().stream()
+                .map(stationResponse -> stationResponse.getName())
+                .collect(Collectors.toList());
+        assertThat(stationNames).containsExactly(강남역.getName(),
+                삼성역.getName(), 잠실역.getName());
+        assertThat(response.getDistance()).isEqualTo(15);
+        assertThat(response.getFare()).isEqualTo(1350);
+    }
+
+    @DisplayName("출발지와 목적지 사이의 경로를 찾아보자(Teenager)")
+    @Test
+    void findPathTeenAger() {
+        PathResponse response = pathService.findPath(new LoginMember(0L, "test@email.com", 15), 강남역.getId(), 잠실역.getId());
+
+        List<String> stationNames = response.getStations().stream()
+                .map(stationResponse -> stationResponse.getName())
+                .collect(Collectors.toList());
+        assertThat(stationNames).containsExactly(강남역.getName(),
+                삼성역.getName(), 잠실역.getName());
+        assertThat(response.getDistance()).isEqualTo(15);
+        assertThat(response.getFare()).isEqualTo(820);
+    }
+
+    @DisplayName("출발지와 목적지 사이의 경로를 찾아보자(Child)")
+    @Test
+    void findPathChild() {
+        PathResponse response = pathService.findPath(new LoginMember(0L, "test@email.com", 10), 강남역.getId(), 잠실역.getId());
+
+        List<String> stationNames = response.getStations().stream()
+                .map(stationResponse -> stationResponse.getName())
+                .collect(Collectors.toList());
+        assertThat(stationNames).containsExactly(강남역.getName(),
+                삼성역.getName(), 잠실역.getName());
+        assertThat(response.getDistance()).isEqualTo(15);
+        assertThat(response.getFare()).isEqualTo(550);
     }
 
     @DisplayName("출발지와 목적지가 연결되지않는 경로를 찾으면 에러발생")
     @Test
     void notConnectedPath() {
         assertThatThrownBy(
-                () -> pathService.findPath(강남역.getId(), 덕소역.getId())
+                () -> pathService.findPath(new LoginMember(), 강남역.getId(), 덕소역.getId())
         ).isInstanceOf(NoSuchElementException.class);
     }
 
@@ -95,7 +139,7 @@ class PathServiceTest {
     @Test
     void notExistStation() {
         assertThatThrownBy(
-                () -> pathService.findPath(강남역.getId(), 0L)
+                () -> pathService.findPath(new LoginMember(), 강남역.getId(), 0L)
         ).isInstanceOf(NoSuchElementException.class);
     }
 
@@ -103,7 +147,7 @@ class PathServiceTest {
     @Test
     void findPathSameStation() {
         assertThatThrownBy(
-                () -> pathService.findPath(강남역.getId(), 강남역.getId())
+                () -> pathService.findPath(new LoginMember(), 강남역.getId(), 강남역.getId())
         ).isInstanceOf(IllegalArgumentException.class);
     }
 }

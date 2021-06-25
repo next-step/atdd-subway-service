@@ -34,6 +34,10 @@ dependencies {
 	testImplementation 'io.rest-assured:rest-assured:3.3.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+	// https://mvnrepository.com/artifact/org.mockito/mockito-inline
+	testImplementation group: 'org.mockito', name: 'mockito-inline', version: '3.8.0'
+
+
 	runtimeOnly 'com.h2database:h2'
 }
 
