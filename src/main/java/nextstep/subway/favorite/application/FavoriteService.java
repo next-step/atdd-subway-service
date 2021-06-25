@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.exception.NotFoundFavoritesException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -27,7 +28,7 @@ public class FavoriteService {
 
     @Transactional(readOnly = true)
     public Favorite findFavoriteById(Long id) {
-        return favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
+        return favoriteRepository.findById(id).orElseThrow(NotFoundFavoritesException::new);
     }
 
     @Transactional(readOnly = true)
