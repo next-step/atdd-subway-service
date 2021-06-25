@@ -73,7 +73,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .auth().oauth2(accessToken)
                 .body(favoriteRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/paths/favorites")
+                .when().post("/favorites")
                 .then().log().all().extract();
     }
 
@@ -86,7 +86,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths/favorites")
+                .when().get("/favorites")
                 .then().log().all().extract();
     }
 
