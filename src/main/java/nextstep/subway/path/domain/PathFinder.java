@@ -82,7 +82,7 @@ public class PathFinder {
         return graphPath(source, target)
                 .getEdgeList()
                 .stream()
-                .map(sectionEdge -> sectionEdge.getSection().getLine())
+                .map(SectionEdge::getLine)
                 .distinct()
                 .collect(Collectors.toList());
     }
