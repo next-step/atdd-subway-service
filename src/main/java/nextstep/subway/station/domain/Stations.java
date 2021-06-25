@@ -13,7 +13,7 @@ public class Stations {
         this.stations = new ArrayList<>(stations);
     }
 
-    public List<StationPair> getSectionPair() {
+    public List<StationPair> getSectionPairs() {
         List<StationPair> stationPairs = new ArrayList<>();
 
         for (int i = 1; i < stations.size(); i++) {

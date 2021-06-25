@@ -18,7 +18,7 @@ class StationsTest {
 
         Stations stations = new Stations(Arrays.asList(first, second, third, fourth));
 
-        assertThat(stations.getSectionPair())
+        assertThat(stations.getSectionPairs())
                 .containsExactly(
                         new StationPair(first, second),
                         new StationPair(second, third),

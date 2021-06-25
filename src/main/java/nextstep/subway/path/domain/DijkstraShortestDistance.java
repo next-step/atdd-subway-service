@@ -3,7 +3,6 @@ package nextstep.subway.path.domain;
 import nextstep.subway.exception.LineHasNotExistShortestException;
 import nextstep.subway.exception.NoRouteException;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.StationPair;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
@@ -46,7 +45,7 @@ public class DijkstraShortestDistance implements ShortestDistance {
         EfficientLines lines = new EfficientLines(this.lines);
 
         Stations stations = shortestRoute();
-        List<StationPair> stationPair = stations.getSectionPair();
+        List<StationPair> stationPair = stations.getSectionPairs();
 
         List<Line> linesOfCheapShortestEachSection = stationPair.stream()
                 .map(item -> lines.findCheapAndShortestBy(item))
