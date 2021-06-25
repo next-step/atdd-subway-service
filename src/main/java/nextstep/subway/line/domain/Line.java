@@ -38,12 +38,13 @@ public class Line extends BaseEntity {
         this.color = line.getColor();
     }
 
-    public void addSection(Station upStation, Station downStation, int distance) {
+    public boolean addSection(Station upStation, Station downStation, int distance) {
         Section newSection = new Section(upStation, downStation, distance);
         if (!sections.isEmpty()) {
             checkSectionValidate(newSection);
         }
         sections.add(newSection);
+        return true;
     }
 
     private void checkSectionValidate(Section newSection) {

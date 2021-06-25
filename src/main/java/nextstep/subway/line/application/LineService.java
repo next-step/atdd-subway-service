@@ -73,7 +73,7 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
-    public void addLineStation(Long lineId, SectionRequest request) {
+    public void addLineStation_old(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
@@ -114,11 +114,12 @@ public class LineService {
         }
     }
 
-    public void addLineStationNew(Long lineId, SectionRequest request) {
+    public boolean addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        line.addSection(upStation, downStation, request.getDistance());
+        boolean isAddSection = line.addSection(upStation, downStation, request.getDistance());
+        return isAddSection;
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
