@@ -12,12 +12,12 @@ import java.util.Objects;
 
 public class PathNavigation {
 
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> path;
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
-
     private static final String ERROR_MESSAGE_EQUALS_STATIONS = "동일한 역을 입력하였습니다.";
     private static final String ERROR_MESSAGE_NOT_EXISTED_STATIONS = "존재하지 않은 출발역이나 도착역이 있습니다.";
     private static final String ERROR_MESSAGE_NOT_CONNECTED_STATIONS = "역이 연결되어 있지 않습니다.";
+
+    private final DijkstraShortestPath<Station, DefaultWeightedEdge> path;
+    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
     private PathNavigation(List<Line> lines) {
         validateNotNull(lines);
