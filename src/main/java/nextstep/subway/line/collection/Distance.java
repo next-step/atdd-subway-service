@@ -25,7 +25,7 @@ public class Distance {
     }
 
     private int getDistanceOfNewSection(int newDistance, boolean isConnect) {
-        if(isConnect){
+        if (isConnect) {
             return this.distance + newDistance;
         }
         return this.distance - newDistance;
