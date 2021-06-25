@@ -102,14 +102,16 @@ public class LineServiceTest {
 
         // then
         // 구간 등록 됨
-        List<Station> stations = lineService.getStations(신분당선);
+        LineResponse lineResponse = lineService.findLine(1L);
+        List<StationResponse> stations = lineResponse.getStations();
         assertThat(stations.size()).isEqualTo(4);
 
         // when
         boolean isRemoveStation = lineService.removeLineStation(1L, 2L);
 
         // then
-        List<Station> expected = lineService.getStations(신분당선);
+        LineResponse expectedLineResponse = lineService.findLine(1L);
+        List<StationResponse> expected = expectedLineResponse.getStations();
         assertThat(isRemoveStation).isTrue();
         assertThat(expected.size()).isEqualTo(3);
         assertThat(expected.contains(2L)).isFalse();
