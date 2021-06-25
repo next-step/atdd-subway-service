@@ -73,9 +73,10 @@ public class AuthAcceptanceTest extends AcceptancePerClassTest {
         return post(new TokenRequest(memberRequest.getEmail(), memberRequest.getPassword()), "/login/token");
     }
 
-    public static void 로그인_성공함(ExtractableResponse<Response> response) {
+    public static TokenResponse 로그인_성공함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getString("accessToken")).isNotEmpty();
+        return response.as(TokenResponse.class);
     }
 
     public static void 로그인_실패함(ExtractableResponse<Response> response) {

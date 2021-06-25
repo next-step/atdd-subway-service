@@ -57,10 +57,28 @@ public abstract class AcceptanceTest {
             .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> put(Object params, String uri, String accessToken) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .body(params)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().put(uri)
+            .then().log().all().extract();
+    }
+
     public static ExtractableResponse<Response> delete(String uri) {
         return RestAssured.given().log().all()
             .when()
             .delete(uri)
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> delete(String uri, String accessToken) {
+        return RestAssured.given().log().all()
+            .auth().oauth2(accessToken)
+            .when().delete(uri)
             .then().log().all()
             .extract();
     }

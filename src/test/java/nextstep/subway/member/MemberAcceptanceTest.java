@@ -1,10 +1,15 @@
 package nextstep.subway.member;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.나의_회원정보_조회_성공함;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_성공함;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.토큰으로_나의_회원정보_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptancePerMethodTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -46,24 +51,34 @@ public class MemberAcceptanceTest extends AcceptancePerMethodTest {
     @Test
     void manageMyInfo() {
         // when
-        // 로그인 요청
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(회원);
         // then
-        // 로그인 성공 + 토큰수신
+        회원_생성됨(createResponse);
 
         // when
-        // 나의정보 조회
+        ExtractableResponse<Response> loginResponse = 로그인_요청(회원);
         // then
-        // 나의정보 조회 성공
+        TokenResponse tokenResponse = 로그인_성공함(loginResponse);
 
         // when
-        // 나의정보 수정
+        ExtractableResponse<Response> response = 토큰으로_나의_회원정보_조회_요청(tokenResponse.getAccessToken());
         // then
-        // 나의정보 수정 성공
+        나의_회원정보_조회_성공함(response);
 
         // when
-        // 회원탈퇴 요청
+        ExtractableResponse<Response> updateResponse = 나의_회원_정보_수정_요청(수정회원, tokenResponse.getAccessToken());
         // then
-        // 회원탈퇴 성공
+        회원_정보_수정됨(updateResponse);
+
+        // when
+        ExtractableResponse<Response> newLoginResponse = 로그인_요청(수정회원);
+        // then
+        TokenResponse newTokenResponse = 로그인_성공함(newLoginResponse);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 회원_탈퇴_요청(newTokenResponse.getAccessToken());
+        // then
+        회원_탈퇴됨(deleteResponse);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(MemberRequest memberRequest) {
@@ -78,8 +93,16 @@ public class MemberAcceptanceTest extends AcceptancePerMethodTest {
         return put(memberRequest, response.header("Location"));
     }
 
+    public static ExtractableResponse<Response> 나의_회원_정보_수정_요청(MemberRequest memberRequest, String accessToken) {
+        return put(memberRequest, "/members/me", accessToken);
+    }
+
     public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
         return delete(response.header("Location"));
+    }
+
+    public static ExtractableResponse<Response> 회원_탈퇴_요청(String accessToken) {
+        return delete("/members/me", accessToken);
     }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
@@ -98,6 +121,10 @@ public class MemberAcceptanceTest extends AcceptancePerMethodTest {
     }
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 회원_탈퇴됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
