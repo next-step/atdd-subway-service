@@ -29,11 +29,12 @@ public class Sections {
         }
 
         if (isUpStationExisted) {
-            connectSectionIfHasSameDownStation(section);
+            connectSectionIfHasSameUpStation(section);
             return;
         }
 
-        connectSectionIfHasSameUpStation(section);
+        connectSectionIfHasSameDownStation(section);
+
     }
 
     public List<Station> getStations() {
@@ -45,23 +46,51 @@ public class Sections {
         Station downStation = findUpStation();
         stations.add(downStation);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
+        while (hasNextSection(downStation)) {
+            Section nextLineStation = findNextSection(downStation);
+            downStation = nextLineStation.getDownStation();
             stations.add(downStation);
         }
-
         return stations;
     }
 
     public List<Section> getSections() {
         return sections;
+    }
+
+    private Station findUpStation() {
+        Station downStation = sections.get(0).getUpStation();
+        while (hasPreSection(downStation)) {
+            Section nextLineStation = findPreSection(downStation);
+            downStation = nextLineStation.getUpStation();
+        }
+        return downStation;
+    }
+
+    private Section findPreSection(Station section) {
+        return sections.stream()
+                .filter(it -> it.isSameDownStation(section))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private Section findNextSection(Station section) {
+        return sections.stream()
+                .filter(it -> it.isSameUpStation(section))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private boolean hasPreSection(Station section) {
+        return sections.stream()
+                .filter(it -> it.getDownStation() != null)
+                .anyMatch(it -> it.isSameDownStation(section));
+    }
+
+    private boolean hasNextSection(Station section) {
+        return sections.stream()
+                .filter(it -> it.getUpStation() != null)
+                .anyMatch(it -> it.isSameUpStation(section));
     }
 
     private void connectSectionIfHasSameDownStation(Section section) {
@@ -91,21 +120,5 @@ public class Sections {
         if (isUpStationExisted && isDownStationExisted) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
-    }
-
-    private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
     }
 }
