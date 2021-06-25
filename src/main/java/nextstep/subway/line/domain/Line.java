@@ -10,6 +10,8 @@ import java.util.List;
 @Entity
 public class Line extends BaseEntity {
     public static final String NOT_REGISTERED_EXCEPTION = "등록할 수 없는 구간 입니다.";
+    public static final String LINE_MINIMUM_SECTION_EXCEPTION = "노선의 구간의 최소 구간은 1구간입니다.";
+    public static final int LINE_MINIMUM_SECTION = 1;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -60,9 +62,9 @@ public class Line extends BaseEntity {
             isSameDownStation = isSameDownStationOfSection(oldSection, newSection);
             sectionIndex++;
         }
-        if(isSameUpStation || isSameDownStation) return;
-        if(isUpFinalSection(newSection)) return;
-        if(isDownFinalSection(newSection)) return;
+        if (isSameUpStation || isSameDownStation) return;
+        if (isUpFinalSection(newSection)) return;
+        if (isDownFinalSection(newSection)) return;
         throw new IllegalArgumentException(NOT_REGISTERED_EXCEPTION);
     }
 
@@ -83,6 +85,46 @@ public class Line extends BaseEntity {
 
     private boolean isSameDownStationOfSection(Section oldSection, Section newSection) {
         return oldSection.isSameDownStationOfSection(newSection);
+    }
+
+    public boolean removeStation(Long stationId) {
+        checkRemoveStationValidate(stationId);
+        Section upSection = getUpSection(stationId);
+        Section downSection = getDownSection(stationId);
+        if(downSection == null) {
+            sections.remove(upSection);
+            return true;
+        }
+        if(upSection == null) {
+            sections.remove(downSection);
+            return true;
+        }
+        upSection.connectNewSection(downSection);
+        sections.remove(downSection);
+        return true;
+    }
+
+    private Section getUpSection(Long stationId) {
+        return sections.stream()
+                .filter(it -> it.getSectionSameDownStation(stationId))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private Section getDownSection(Long stationId) {
+        return sections.stream()
+                .filter(it -> it.getSectionSameUpStation(stationId))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private void checkRemoveStationValidate(Long stationId) {
+        if (sections.size() <= LINE_MINIMUM_SECTION) {
+            throw new IllegalArgumentException(LINE_MINIMUM_SECTION_EXCEPTION);
+        }
+        if (sections.stream().noneMatch(it -> it.getSectionSameDownStation(stationId) || it.getSectionSameUpStation(stationId))) {
+            throw new IllegalArgumentException("이 노선에 등록되지 않은 역입니다.");
+        }
     }
 
     public Long getId() {

@@ -85,6 +85,19 @@ public class Section {
         return newSection.isSameUpStation(this.downStation);
     }
 
+    public boolean getSectionSameDownStation(Long stationId) {
+        return this.downStation.isThisStation(stationId);
+    }
+
+    public boolean getSectionSameUpStation(Long stationId) {
+        return this.upStation.isThisStation(stationId);
+    }
+
+    public void connectNewSection(Section downSection) {
+        this.downStation = downSection.getDownStation();
+        this.distance += downSection.getDistance();
+    }
+
     public Long getId() {
         return id;
     }
