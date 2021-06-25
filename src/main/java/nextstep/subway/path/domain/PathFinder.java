@@ -5,9 +5,11 @@ import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
+import java.util.List;
+
 public class PathFinder {
 
-    private ShortestPathAlgorithm algorithm;
+    private ShortestPathAlgorithm<Station, SectionEdge> algorithm;
     private WeightedGraph<Station, DefaultWeightedEdge> graph;
 
     public PathFinder() {
@@ -19,6 +21,8 @@ public class PathFinder {
     }
 
     public Path getDijkstraShortestPath(Station startStation, Station endStation) {
-        return new Path();
+        List<Station> path = algorithm.getPath(startStation, endStation).getVertexList();
+        int totalDistance = (int) algorithm.getPathWeight(startStation, endStation);
+        return new Path(path, totalDistance);
     }
 }
