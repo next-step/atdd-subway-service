@@ -88,3 +88,6 @@ LineService의 비즈니스 로직을 도메인으로 옮기기
     - [ ] 리팩토 링 후 commit
     - [ ] 레거시 코드 제거
   - [ ] getStation Refactoring
+  - [ ] Distance 원시값 포장
+  - [ ] List<Section>을 상태로 갖는 Sections 일급 컬렉션 구현
+  - [ ] Sections이 할 일들을 Line에서 하고 있기 때문에 메서드 이전
