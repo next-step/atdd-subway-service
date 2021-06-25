@@ -9,13 +9,15 @@ public class FareCalculator {
 
     private AgeFarePolicy ageFarePolicy;
     private DistanceFarePolicy distanceFarePolicy;
+    private int additionalFee;
 
     public FareCalculator() {
     }
 
-    public FareCalculator(int distance, int age) {
+    public FareCalculator(int distance, int age, int additionalFee) {
         this.ageFarePolicy = setAgeFarePolicy(age);
         this.distanceFarePolicy = setDistanceFarePolicy(distance);
+        this.additionalFee = additionalFee;
     }
 
     private AgeFarePolicy setAgeFarePolicy(int age) {
@@ -26,8 +28,7 @@ public class FareCalculator {
         return DistanceFareInformation.distanceFarePolicy(distance);
     }
 
-    public int calculate(Set<Long> lineIds) {
-        int additionalFee = LineAdditionalFee.LINE_BUNDANG.maximumAdditionalFee(lineIds);
+    public int calculate() {
         int fare = distanceFarePolicy.calculateByDistance() + additionalFee;
         fare = ageFarePolicy.calculateByAge(fare);
         return fare;

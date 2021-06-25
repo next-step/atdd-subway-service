@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,11 +39,13 @@ public class PathService {
 
         List<Station> shortestPath = pathFinder.shortestPath(sourceStation, targetStation);
         int distance = pathFinder.shortestWeight(sourceStation, targetStation);
-        Set<Long> lineIds = pathFinder.goThroughLinesId(sourceStation, targetStation);
 
-        FareCalculator fareCalculator = new FareCalculator(distance, loginMember.getAge());
+        Lines goThroughLines = new Lines(pathFinder.goThroughLines(sourceStation, targetStation));
+        int additionalFee = goThroughLines.maximumAdditionalFee();
 
-        int fare = fareCalculator.calculate(lineIds);
+        FareCalculator fareCalculator = new FareCalculator(distance, loginMember.getAge(), additionalFee);
+
+        int fare = fareCalculator.calculate();
 
         return new PathResponse(
                 shortestPath.stream().map(StationResponse::of).collect(Collectors.toList()),

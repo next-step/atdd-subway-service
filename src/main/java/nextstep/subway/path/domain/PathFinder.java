@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.ui.SameSourceTargetException;
@@ -10,7 +11,6 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class PathFinder {
@@ -78,11 +78,12 @@ public class PathFinder {
         }
     }
 
-    public Set<Long> goThroughLinesId(Station source, Station target) {
+    public List<Line> goThroughLines(Station source, Station target) {
         return graphPath(source, target)
                 .getEdgeList()
                 .stream()
-                .map(sectionEdge -> sectionEdge.getSection().getLine().getId())
-                .collect(Collectors.toSet());
+                .map(sectionEdge -> sectionEdge.getSection().getLine())
+                .distinct()
+                .collect(Collectors.toList());
     }
 }
