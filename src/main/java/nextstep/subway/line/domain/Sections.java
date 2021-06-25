@@ -102,13 +102,9 @@ public class Sections {
     }
 
     private Optional<Station> findNextStation(Station upStation) {
-        Optional<Section> maybeSection = findSection(upStation);
+        Optional<Section> maybeSection = findSection(it -> it.getUpStation() == upStation);
 
         return maybeSection.map(Section::getDownStation);
-    }
-
-    private Optional<Section> findSection(Station station) {
-        return findSection(it -> it.getUpStation() == station);
     }
 
     public void remove(Station station) {
