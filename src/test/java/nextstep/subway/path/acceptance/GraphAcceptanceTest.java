@@ -19,7 +19,7 @@ import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록�
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 경로 조회")
-public class PathAcceptanceTest extends AcceptanceTest {
+public class GraphAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
