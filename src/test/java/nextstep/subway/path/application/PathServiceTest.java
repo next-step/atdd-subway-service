@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import nextstep.subway.line.domain.LineRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,10 @@ import nextstep.subway.path.dto.PathRequest;
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
     @Mock
-    PathService pathService;
+    private PathService pathService;
+
+    @Mock
+    private LineRepository lineRepository;
 
     @Mock
     StationRepository stationRepository;
@@ -50,7 +54,7 @@ class PathServiceTest {
     void findPathFailed() {
         //given
         //when
-        pathService = new PathService(stationRepository);
+        pathService = new PathService(lineRepository, stationRepository);
         //then
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> pathService.findPath(new PathRequest(9L, 10L))

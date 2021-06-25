@@ -25,7 +25,10 @@ public class Sections {
 
     public void add(Section section) {
         sections.add(section);
-        Path.addPath(section);
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 
     public boolean isEmpty() {
@@ -103,18 +106,8 @@ public class Sections {
             mergeSection(line, upSection.get(), downSection.get());
         }
 
-        upSection.ifPresent(it -> {
-            sections.remove(it);
-            removePath(it);
-        });
-        downSection.ifPresent(it -> {
-            sections.remove(it);
-            removePath(it);
-        });
-    }
-
-    private void removePath(Section it) {
-        Path.removeStation(it);
+        upSection.ifPresent(it -> sections.remove(it));
+        downSection.ifPresent(it -> sections.remove(it));
     }
 
     public int size() {

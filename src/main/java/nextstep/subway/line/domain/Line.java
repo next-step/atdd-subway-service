@@ -17,7 +17,7 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
-    Sections sections = new Sections();
+    private Sections sections = new Sections();
 
     public Line() {
     }
@@ -49,6 +49,10 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public List<Section> sections() {
+        return sections.getSections();
     }
 
     public List<StationResponse> stationResponses() {
