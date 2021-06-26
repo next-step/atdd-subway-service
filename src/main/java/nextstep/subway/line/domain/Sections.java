@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import nextstep.subway.path.domain.PathGraph;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -66,6 +66,10 @@ public class Sections {
         return getSortSections().stream()
                 .map(Section::getDistance)
                 .collect(Collectors.toList());
+    }
+
+    public void addPathInfoTo(PathGraph graph) {
+        this.sections.forEach(graph::setPathInfoBy);
     }
 
     private List<Section> getSortSections() {
@@ -151,9 +155,5 @@ public class Sections {
         if (this.sections.size() <= SECTIONS_MINIMUM_SIZE) {
             throw new IllegalStateException("지울 수 있는 구간이 없습니다.");
         }
-    }
-
-    public Stream<Section> getStream() {
-        return this.sections.stream();
     }
 }

@@ -72,10 +72,7 @@ public class Line extends BaseEntity {
         return new LineResponse(id, name, color, stationResponses, getCreatedDate(), getModifiedDate());
     }
 
-    public void setPathInfoTo(PathGraph graph) {
-        this.sections.getStations()
-                .forEach(graph::addVertexStation);
-        this.sections.getStream()
-                .forEach(graph::addEdgeWeight);
+    public void addPathInfoTo(PathGraph graph) {
+        this.sections.addPathInfoTo(graph);
     }
 }

@@ -14,11 +14,9 @@ public class PathGraph {
         this.graph = new WeightedMultigraph(DefaultWeightedEdge.class);
     }
 
-    public void addVertexStation(Station station) {
-        this.graph.addVertex(station);
-    }
-
-    public void addEdgeWeight(Section section) {
+    public void setPathInfoBy(Section section) {
+        this.graph.addVertex(section.getUpStation());
+        this.graph.addVertex(section.getDownStation());
         DefaultWeightedEdge weightedEdge = graph.addEdge(section.getUpStation(), section.getDownStation());
         this.graph.setEdgeWeight(weightedEdge, section.getDistance());
     }
