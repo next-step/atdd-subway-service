@@ -6,11 +6,10 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static nextstep.subway.exception.CustomExceptionMessage.*;
@@ -23,25 +22,11 @@ public class Sections {
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private List<Section> sections = new ArrayList<>();
 
-
-	public List<Station> getStations() {
-		if (this.sections.isEmpty()) {
-			return Collections.emptyList();
-		}
-		List<Station> stations = new ArrayList<>();
-		Station downStation = findUpStation();
-		stations.add(downStation);
-		while (downStation != null) {
-			Station finalDownStation = downStation;
-			Optional<Section> nextSection = findSections(it -> it.isMatchUpStation(finalDownStation));
-			if (!nextSection.isPresent()) {
-				break;
-			}
-			downStation = nextSection.get().getDownStation();
-			stations.add(downStation);
-		}
-		return stations;
-	}
+    public List<Station> getStations() {
+        return findUpStation()
+            .map(this::getSortedStations)
+            .orElse(Collections.emptyList());
+    }
 
 	public void addSection(final Line line, final Station upStation, final Station downStation, final int distance) {
 		if (this.sections.isEmpty()) {
@@ -127,18 +112,34 @@ public class Sections {
 							.noneMatch(it -> it == station);
 	}
 
-	private Station findUpStation() {
-		Station downStation = this.sections.get(0).getUpStation();
-		while (downStation != null) {
-			Station finalDownStation = downStation;
-			Optional<Section> nextSection = findSections(it -> it.isMatchDownStation(finalDownStation));
-			if (!nextSection.isPresent()) {
-				break;
-			}
-			downStation = nextSection.get().getUpStation();
-		}
-		return downStation;
-	}
+    private Optional<Section> findUpStation() {
+        List<Station> downStations = downStations();
+        return sections.stream()
+                       .filter(section -> downStations.contains(section.getUpStation()) == false)
+                       .findFirst();
+    }
+
+    private List<Station> downStations() {
+        return sections.stream()
+                       .map(Section::getDownStation)
+                       .collect(Collectors.toList());
+    }
+
+    private List<Station> getSortedStations(Section nextSection) {
+        Map<Station, Section> upStationMap = groupByUpStation();
+        List<Station> stations = new ArrayList<>();
+        stations.add(nextSection.getUpStation());
+        do {
+            stations.add(nextSection.getDownStation());
+            nextSection = upStationMap.get(nextSection.getDownStation());
+        } while (nextSection != null);
+        return stations;
+    }
+
+    private Map<Station, Section> groupByUpStation() {
+        return sections.stream()
+                       .collect(Collectors.toMap(Section::getUpStation, Function.identity()));
+    }
 
 	private Optional<Section> findSections(Predicate<Section> condition) {
 		return this.sections.stream()

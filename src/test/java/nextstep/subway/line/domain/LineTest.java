@@ -17,8 +17,8 @@ class LineTest {
 	@BeforeEach
 	void setUp() {
 		// given
-		강남역 = new Station();
-		역삼역 = new Station();
+		강남역 = new Station("강남역");
+		역삼역 = new Station("역삼역");
 		이호선 = new Line("2호선", "bg-red-600", 강남역, 역삼역, 10);
 	}
 
@@ -35,8 +35,8 @@ class LineTest {
 	@Test
 	void addSectionTest() {
 		// given
-		Station 신림역 = new Station();
-		Station 구디역 = new Station();
+		Station 신림역 = new Station("신림역");
+		Station 구디역 = new Station("구디역");
 
 		// when
 		assertThatCode(() -> {
@@ -54,7 +54,7 @@ class LineTest {
 	@Test
 	void removeSectionTest() {
 		// given
-		Station 신림역 = new Station();
+		Station 신림역 = new Station("신림역");
 		이호선.addSection(강남역, 신림역, 5);
 
 		// when

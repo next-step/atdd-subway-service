@@ -19,8 +19,8 @@ import static nextstep.subway.exception.CustomExceptionMessage.NOT_FOUND_LINE;
 @Transactional
 @Service
 public class LineService {
-    private LineRepository lineRepository;
-    private StationService stationService;
+    private final LineRepository lineRepository;
+    private final StationService stationService;
 
     public LineService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;

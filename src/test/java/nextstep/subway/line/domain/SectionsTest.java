@@ -23,10 +23,10 @@ class SectionsTest {
 	@BeforeEach
 	void setUp() {
 		// given
-		강남역 = new Station();
-		역삼역 = new Station();
-		구디역 = new Station();
-		신림역 = new Station();
+		강남역 = new Station("강남역");
+		역삼역 = new Station("역삼역");
+		구디역 = new Station("구디역");
+		신림역 = new Station("신림역");
 
 		이호선 = new Line();
 		이호선_구간_집합 = new Sections();
@@ -39,7 +39,7 @@ class SectionsTest {
 	@Test
 	void getStationsTest() {
 		// when
-		assertThat(이호선_구간_집합.getStations())
+		assertThat(이호선_구간_집합.getStations()) // 강남, 구디, 역삼, 신림
 			.isNotEmpty()
 			.containsExactly(강남역, 구디역, 역삼역, 신림역);
 	}
@@ -57,8 +57,8 @@ class SectionsTest {
 	@Test
 	void addNotExistAllStationsTest() {
 		// given
-		Station 홍대역 = new Station();
-		Station 잠실역 = new Station();
+		Station 홍대역 = new Station("홍대역");
+		Station 잠실역 = new Station("잠실역");
 
 		assertThatThrownBy(() -> 이호선_구간_집합.addSection(이호선, 홍대역, 잠실역, 10))
 			.isInstanceOf(CustomException.class)
@@ -81,8 +81,8 @@ class SectionsTest {
 	@Test
 	void removeOnlyOneSectionTest() {
 		// given
-		Station 신대방역 = new Station();
-		Station 사당역 = new Station();
+		Station 신대방역 = new Station("신대방역");
+		Station 사당역 = new Station("사당역");
 
 		Line 새로운_이호선 = new Line();
 		Sections 새로운_이호선_구간_집합 = new Sections();

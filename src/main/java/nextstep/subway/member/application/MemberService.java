@@ -11,7 +11,7 @@ import static nextstep.subway.exception.CustomExceptionMessage.NOT_FOUND_MEMBER;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;

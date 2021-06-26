@@ -16,7 +16,7 @@ import static nextstep.subway.exception.CustomExceptionMessage.NOT_FOUND_STATION
 @Transactional
 @Service
 public class StationService {
-    private StationRepository stationRepository;
+    private final StationRepository stationRepository;
 
     public StationService(StationRepository stationRepository) {
         this.stationRepository = stationRepository;

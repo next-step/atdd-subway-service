@@ -19,10 +19,10 @@ class SectionTest {
 
 	@BeforeEach
 	void setUp() {
-		강남역 = new Station();
-		역삼역 = new Station();
+		강남역 = new Station("강남역");
+		역삼역 = new Station("역삼역");
 
-		강남_역삼_구간 = new Section(new Line(), 강남역, 역삼역, 10);
+		강남_역삼_구간 = new Section(new Line("이호선", "RED"), 강남역, 역삼역, 10);
 	}
 
 
@@ -30,7 +30,7 @@ class SectionTest {
 	@Test
 	void updateUpStationTest() {
 		// given
-		Station 구디역 = new Station();
+		Station 구디역 = new Station("구디역");
 
 		// when
 		강남_역삼_구간.updateUpStation(구디역, 5);
@@ -43,7 +43,7 @@ class SectionTest {
 	@Test
 	void updatedownStationTest() {
 		// given
-		Station 구디역 = new Station();
+		Station 구디역 = new Station("구디역");
 
 		// when
 		강남_역삼_구간.updateDownStation(구디역, 5);
@@ -56,7 +56,7 @@ class SectionTest {
 	@Test
 	void overDistanceTest() {
 		// given
-		Station 구디역 = new Station();
+		Station 구디역 = new Station("구디역");
 
 		// when
 		assertThatThrownBy(() -> 강남_역삼_구간.updateUpStation(구디역, 15))

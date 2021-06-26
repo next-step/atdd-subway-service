@@ -27,7 +27,8 @@ public class Section {
 
     private int distance;
 
-    public Section() {
+    protected Section() {
+        // empty;
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
@@ -58,18 +59,18 @@ public class Section {
     }
 
     public void updateUpStation(Station station, int newDistance) {
-        checkDistance(newDistance);
+        checkOverDistance(newDistance);
         this.upStation = station;
         this.distance -= newDistance;
     }
 
     public void updateDownStation(Station station, int newDistance) {
-        checkDistance(newDistance);
+        checkOverDistance(newDistance);
         this.downStation = station;
         this.distance -= newDistance;
     }
 
-    private void checkDistance(final int newDistance) {
+    private void checkOverDistance(final int newDistance) {
         if (this.distance <= newDistance) {
             throw new CustomException(OVER_DISTANCE);
         }
