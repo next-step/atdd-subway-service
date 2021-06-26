@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import nextstep.subway.path.exception.NoConnectedStationsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -123,24 +124,24 @@ class PathFinderTest {
         PathFinder finder = PathFinder.of(Arrays.asList(line2, line9));
 
         return Arrays.asList(
-                dynamicTest("동일한 출발역, 도착역 입력 시 오류", () -> {
-                    assertThatThrownBy(() -> finder.findPath(gangnam, gangnam))
-                            .isInstanceOf(IllegalStateException.class)
-                            .hasMessage("경로조회 출발역과 도착역이 같습니다.");
-                }),
-                dynamicTest("열견되지 않은 출발역, 도착역 입력 시 오류", () -> {
+                dynamicTest("연결되지 않은 출발역, 도착역 입력 시 오류", () -> {
                     assertThatThrownBy(() -> finder.findPath(gangnam, shinbanpo))
-                            .isInstanceOf(IllegalStateException.class)
-                            .hasMessage("출발역과 도착역이 연결되어 있지 않습니다.");
+                            .isInstanceOf(NoConnectedStationsException.class)
+                            .hasMessage("구간으로 연결되지 않은 역입니다.");
                 }),
                 dynamicTest("등록된 역이나 구간에 포함되지 않은 역 조회 시", () -> {
                     // given
                     Station nodle = new Station("노들역");
 
                     // then
-                    assertThatThrownBy(() -> finder.findPath(gangnam, nodle))
-                            .isInstanceOf(IllegalArgumentException.class)
-                            .hasMessage("구간으로 연결되지 않은 역입니다.");
+                    assertAll(
+                            () -> assertThatThrownBy(() -> finder.findPath(gangnam, nodle))
+                                    .isInstanceOf(IllegalArgumentException.class)
+                                    .hasMessage("도착역이 속하는 노선이 없습니다."),
+                            () -> assertThatThrownBy(() -> finder.findPath(nodle, gangnam))
+                                    .isInstanceOf(IllegalArgumentException.class)
+                                    .hasMessage("출발역이 속하는 노선이 없습니다.")
+                    );
                 })
         );
     }

@@ -2,36 +2,49 @@ package nextstep.subway.path.domain;
 
 import java.util.List;
 
+import org.jgrapht.Graph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
+import nextstep.subway.path.exception.NoConnectedStationsException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
 public class PathFinder {
-    private final DijkstraShortestPath dijkstraShortestPath;
+    private final Graph graph;
 
     public PathFinder(PathGraph pathGraph) {
-        this.dijkstraShortestPath = new DijkstraShortestPath(pathGraph.getGraph());
+        this.graph = pathGraph.getGraph();
     }
 
     public static PathFinder of(List<Line> lines) {
         PathGraph pathGraph = new PathGraph();
-        lines.forEach(line -> line.setPathInfoTo(pathGraph));
+        lines.forEach(line -> line.addPathInfoTo(pathGraph));
         return new PathFinder(pathGraph);
     }
 
     public Path findPath(Station sourceStation, Station targetStation) {
-        validateSameStations(sourceStation, targetStation);
-        try {
-            return new Path(this.dijkstraShortestPath.getPath(sourceStation, targetStation));
-        } catch (IllegalArgumentException exception) {
-            throw new IllegalArgumentException("구간으로 연결되지 않은 역입니다.");
+        validateExistStartStationInLine(sourceStation);
+        validateExistEndStationInLine(targetStation);
+        DijkstraShortestPath pathMaker = new DijkstraShortestPath(this.graph);
+        validateConnectedStations(pathMaker, sourceStation, targetStation);
+        return new Path(pathMaker.getPath(sourceStation, targetStation));
+    }
+
+    private void validateConnectedStations(DijkstraShortestPath pathMaker, Station sourceStation, Station targetStation) {
+        if (Double.isInfinite(pathMaker.getPathWeight(sourceStation, targetStation))) {
+            throw new NoConnectedStationsException();
         }
     }
 
-    private void validateSameStations(Station sourceStation, Station targetStation) {
-        if (sourceStation.equals(targetStation)) {
-            throw new IllegalStateException("경로조회 출발역과 도착역이 같습니다.");
+    private void validateExistEndStationInLine(Station targetStation) {
+        if (!this.graph.containsVertex(targetStation)) {
+            throw new IllegalArgumentException("도착역이 속하는 노선이 없습니다.");
+        }
+    }
+
+    private void validateExistStartStationInLine(Station sourceStation) {
+        if (!this.graph.containsVertex(sourceStation)) {
+            throw new IllegalArgumentException("출발역이 속하는 노선이 없습니다.");
         }
     }
 }

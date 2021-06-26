@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -113,5 +114,14 @@ class PathServiceTest {
                     assertThat(totalDistance).isEqualTo(12);
                 }
         );
+    }
+
+    @Test
+    @DisplayName("동일할 역을 출발열, 도착역으로 입력 시 오류")
+    void same_station_error() {
+        // when
+        assertThatThrownBy(() -> pathService.findShortestPath(1L, 1L))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("경로조회 출발역과 도착역이 같습니다.");
     }
 }

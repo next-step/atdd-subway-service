@@ -1,7 +1,6 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
-import java.util.Objects;
 
 import org.jgrapht.GraphPath;
 
@@ -11,7 +10,6 @@ public class Path {
     private final GraphPath graphPath;
 
     public Path(GraphPath graphPath) {
-        validateNullObject(graphPath);
         this.graphPath = graphPath;
     }
 
@@ -21,11 +19,5 @@ public class Path {
 
     public int getTotalDistance() {
         return (int) graphPath.getWeight();
-    }
-
-    private void validateNullObject(GraphPath graphPath) {
-        if (Objects.isNull(graphPath)) {
-            throw new IllegalStateException("출발역과 도착역이 연결되어 있지 않습니다.");
-        }
     }
 }
