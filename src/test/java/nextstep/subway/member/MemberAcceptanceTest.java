@@ -61,9 +61,12 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> updateResponse = 나의_정보_수정_요청(response.as(TokenResponse.class), NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
         회원_정보_수정됨(updateResponse);
+
+        ExtractableResponse<Response> refindResponse = 나의_정보_조회_요청(response.as(TokenResponse.class));
+        회원_정보_조회됨(refindResponse, NEW_EMAIL, NEW_AGE);
+
         ExtractableResponse<Response> deleteResponse = 나의_정보_삭제_요청(response.as(TokenResponse.class));
         회원_삭제됨(deleteResponse);
-
 
     }
 
