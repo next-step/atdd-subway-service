@@ -12,16 +12,16 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "memberId")
-    Member member;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @OneToOne
-    @JoinColumn(name = "sourceStationId")
+    @JoinColumn(name = "source_station_id")
     private Station source;
 
     @OneToOne
-    @JoinColumn(name = "targetStationId")
+    @JoinColumn(name = "target_station_id")
     private Station target;
 
     public Favorite() {
