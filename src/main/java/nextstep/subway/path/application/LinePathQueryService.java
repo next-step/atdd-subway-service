@@ -2,9 +2,9 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.EntityNotExistException;
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.DijkstraShortestDistance;
+import nextstep.subway.path.domain.DefaultFareCalculator;
 import nextstep.subway.path.domain.FareCalculator;
 import nextstep.subway.path.domain.ShortestDistance;
 import nextstep.subway.path.dto.LinePathRequest;
@@ -14,7 +14,7 @@ import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import static nextstep.subway.path.domain.FareCalculator.DEFAULT_CALCULATOR;
 
 @Service
 @Transactional(readOnly = true)
@@ -36,7 +36,7 @@ public class LinePathQueryService {
         return new LinePathResponse(
                 shortestDistance.shortestRoute(),
                 shortestDistance.shortestDistance(),
-                FareCalculator.calcFare(loginMember, shortestDistance)
+                DEFAULT_CALCULATOR.calcFare(loginMember, shortestDistance)
         );
     }
 

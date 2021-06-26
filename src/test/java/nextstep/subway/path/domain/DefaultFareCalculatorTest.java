@@ -6,7 +6,6 @@ import nextstep.subway.station.domain.Stations;
 import nextstep.subway.wrapped.Distance;
 import nextstep.subway.wrapped.Money;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -17,7 +16,7 @@ import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class FareCalculatorTest {
+class DefaultFareCalculatorTest {
     private static final int childAge = 6;
     private static final int teenagerAge = 13;
     private static final int normalAge = 19;
@@ -36,15 +35,17 @@ class FareCalculatorTest {
     private static final int distances[] = new int[]{shortDistance, midDistance, longDistance};
     private static final int distanceFares[] = new int[]{shortDistanceFare, midDistanceFare, longDistanceFare};
 
-    private static Function<Integer, Money> 어린이_할인_계산 = (money) -> new Money((money - 350) / 10 * 5);
-    private static Function<Integer, Money> 청소년_할인_계산 = (money) -> new Money((money - 350) / 10 * 8);
-    private static Function<Integer, Money> 일반_할인_계산 = (money) -> new Money(money);
+    private static final Function<Integer, Money> 어린이_할인_계산 = (money) -> new Money((money - 350) / 10 * 5);
+    private static final Function<Integer, Money> 청소년_할인_계산 = (money) -> new Money((money - 350) / 10 * 8);
+    private static final Function<Integer, Money> 일반_할인_계산 = (money) -> new Money(money);
+
+    private static final DefaultFareCalculator defaultFareCalculator = new DefaultFareCalculator();
 
     @ParameterizedTest
     @MethodSource("childCase")
     @DisplayName("어린이의 요금을 계산한다(짧은거리, 중간거리, 장거리, 환승, 비환승)")
     public void 어린이(FareCalculatorCase fareCalculatorCase) {
-        assertThat(FareCalculator.calcFare(new LoginMember(null, null, childAge), fareCalculatorCase.getShortestDistance()))
+        assertThat(defaultFareCalculator.calcFare(new LoginMember(null, null, childAge), fareCalculatorCase.getShortestDistance()))
                 .isEqualTo(fareCalculatorCase.getExceptMoney());
     }
 
@@ -52,7 +53,7 @@ class FareCalculatorTest {
     @MethodSource("teenagerCase")
     @DisplayName("청소년의 요금을 계산한다(짧은거리, 중간거리, 장거리, 환승, 비환승)")
     public void 청소년(FareCalculatorCase fareCalculatorCase) {
-        assertThat(FareCalculator.calcFare(new LoginMember(null, null, teenagerAge), fareCalculatorCase.getShortestDistance()))
+        assertThat(defaultFareCalculator.calcFare(new LoginMember(null, null, teenagerAge), fareCalculatorCase.getShortestDistance()))
                 .isEqualTo(fareCalculatorCase.getExceptMoney());
     }
 
@@ -60,7 +61,7 @@ class FareCalculatorTest {
     @MethodSource("defaultCase")
     @DisplayName("일반의 요금을 계산한다(짧은거리, 중간거리, 장거리, 환승, 비환승)")
     public void 일반(FareCalculatorCase fareCalculatorCase) {
-        assertThat(FareCalculator.calcFare(new LoginMember(null, null, normalAge), fareCalculatorCase.getShortestDistance()))
+        assertThat(defaultFareCalculator.calcFare(new LoginMember(null, null, normalAge), fareCalculatorCase.getShortestDistance()))
                 .isEqualTo(fareCalculatorCase.getExceptMoney());
     }
 
