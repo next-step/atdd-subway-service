@@ -33,7 +33,7 @@ public class LineResponse {
 
     public static LineResponse of(Line persistLine) {
         List<StationResponse> stationResponses = persistLine.getStations()
-                .stream().map(it -> StationResponse.of(it))
+                .stream().map(station -> StationResponse.of(station))
                 .collect(Collectors.toList());
         return new LineResponse(persistLine.getId(), persistLine.getName(), persistLine.getColor(), stationResponses, persistLine.getCreatedDate(), persistLine.getModifiedDate());
     }

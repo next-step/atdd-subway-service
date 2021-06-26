@@ -5,8 +5,9 @@ import java.util.Objects;
 
 @Embeddable
 public class Distance {
-    public static final String DISTANCE_ILLEGAL_EXCEPTION = "기존 역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
-    public static final int MINIMUM_DISTANCE = 1;
+    private static final String DISTANCE_ILLEGAL_EXCEPTION = "기존 역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
+    private static final int MINIMUM_DISTANCE = 1;
+
     private final int distance;
 
     private Distance() {
