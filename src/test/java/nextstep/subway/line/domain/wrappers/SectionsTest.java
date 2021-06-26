@@ -36,7 +36,7 @@ class SectionsTest {
         Section 강남역_교대역_구간 = new Section(신분당선, 강남역, 교대역, 5);
 
         Sections sections = new Sections(new ArrayList<>(Arrays.asList(교대역_광교역_구간)));
-        sections.addSection(강남역_교대역_구간);
+        sections.updateSections(강남역_교대역_구간);
         assertThat(sections.stations()).containsExactly(강남역, 교대역, 광교역);
     }
 
@@ -44,7 +44,7 @@ class SectionsTest {
     void 구간_정보_추가_middle() {
         Sections sections = new Sections(new ArrayList<>(Arrays.asList(구간)));
         Section section = new Section(신분당선, 강남역, 교대역, 5);
-        sections.addSection(section);
+        sections.updateSections(section);
         assertThat(sections.stations()).containsExactly(강남역, 교대역, 광교역);
     }
 
@@ -53,7 +53,7 @@ class SectionsTest {
         Section 강남역_교대역_구간 = new Section(신분당선, 강남역, 교대역, 5);
         Section 교대역_광교역_구간 = new Section(신분당선, 교대역, 광교역, 10);
         Sections sections = new Sections(new ArrayList<>(Arrays.asList(강남역_교대역_구간)));
-        sections.addSection(교대역_광교역_구간);
+        sections.updateSections(교대역_광교역_구간);
         assertThat(sections.stations()).containsExactly(강남역, 교대역, 광교역);
     }
 
@@ -67,12 +67,12 @@ class SectionsTest {
     @Test
     void 상행_하행_모두_포함되지않는_지하철역_구간_등록_요청_시_에러_발생() {
         Sections sections = new Sections(Arrays.asList(구간));
-        assertThatThrownBy(() -> sections.addSection(new Section(신분당선, 교대역, new Station(7L, "서울대입구역"), 10))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> sections.updateSections(new Section(신분당선, 교대역, new Station(7L, "서울대입구역"), 10))).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 구간_정보_추가시_이미_등록된_구간일_경우_에러_발생() {
         Sections sections = new Sections(Arrays.asList(구간));
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> sections.addSection(구간)).withMessage("강남역, 광교역 구간은 이미 등록된 구간 입니다.");
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> sections.updateSections(구간)).withMessage("강남역, 광교역 구간은 이미 등록된 구간 입니다.");
     }
 }

@@ -2,6 +2,7 @@ package nextstep.subway.line.dto;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.wrappers.Distance;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +28,7 @@ class SectionRequestTest {
         Station 양재역 = new Station("양재역");
 
         Section section = request.toSection(신분당선, 강남역, 양재역);
-        assertThat(section.getDistance()).isEqualTo(10);
+        assertThat(section.getDistance()).isEqualTo(new Distance(10));
         assertThat(section.getUpStation()).isEqualTo(강남역);
         assertThat(section.getDownStation()).isEqualTo(양재역);
 

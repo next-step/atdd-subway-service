@@ -23,7 +23,7 @@ class SectionTest {
     }
 
     @Test
-    void parameter로_주어진_구간_객체와_비교하여_상위_구간_반() {
+    void parameter로_주어진_구간_객체와_비교하여_상위_구간_반환() {
         assertThat(구간.calcFirstSection(new Section(신분당선, 양재역, 광교역, 10))).isEqualTo(구간);
         assertThat(구간.calcFirstSection(new Section(신분당선, 강남역, 양재역, 10))).isEqualTo(new Section(신분당선, 강남역, 양재역, 10));
     }

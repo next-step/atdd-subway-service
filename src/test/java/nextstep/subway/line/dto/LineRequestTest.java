@@ -21,12 +21,12 @@ class LineRequestTest {
 
     @Test
     void upStatin_downStation_정보를_이용하여_Line_entity_생성() {
-        Station 강남역 = new Station("강남역");
-        Station 양재역 = new Station("양재역");
+        Station 강남역 = new Station(1L, "강남역");
+        Station 양재역 = new Station(2L, "양재역");
         Line line = request.toLine(강남역, 양재역);
         assertThat(line.getName()).isEqualTo("신분당선");
         assertThat(line.getColor()).isEqualTo("red");
-        assertThat(line.getSections()).containsExactly(new Section(line, 강남역, 양재역, 10));
+        assertThat(line.getSections().stations()).containsExactly(강남역, 양재역);
     }
 
     @Test

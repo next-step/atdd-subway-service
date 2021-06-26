@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.domain.wrappers.Distance;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -7,7 +8,6 @@ import java.util.Objects;
 
 @Entity
 public class Section {
-    public static final String OUT_BOUND_DISTANCE_ERROR_MESSAGE = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,7 +24,8 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance = new Distance();
 
     public Section() {
     }
@@ -33,7 +34,18 @@ public class Section {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
+        this.distance = new Distance(distance);
+    }
+
+    public Section(Line line, Station upStation, Station downStation, Distance distance) {
+        this.line = line;
+        this.upStation = upStation;
+        this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public void lineBy(Line line) {
+        this.line = line;
     }
 
     public Long getId() {
@@ -52,18 +64,30 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        checkValidOutBoundDistance(newDistance);
+    public void updateUpStation(Station station, Distance newDistance) {
         this.upStation = station;
-        this.distance -= newDistance;
+        this.distance = newDistance;
+    }
+
+    public void updateDownStation(Station station, Distance newDistance) {
+        this.downStation = station;
+        this.distance = newDistance;
+    }
+
+    public Distance createNewDistanceBySubtract(Section other) {
+        return distance.subtractDistance(other.distance);
+    }
+
+    public Distance createNewDistanceBySum(Section other) {
+        return distance.sumDistance(other.distance);
     }
 
     public Section calcFirstSection(Section section) {
-        if (Objects.isNull(section) || downStation.isSame(section.upStation)) {
+        if (Objects.isNull(section) || downStation.isSame(section.upStation) || upStation.isSame(section.upStation)) {
             return this;
         }
         return section;
@@ -82,24 +106,20 @@ public class Section {
         return upStation.isSame(section.upStation);
     }
 
+    public boolean isSameUpStation(Station station) {
+        return upStation.isSame(station);
+    }
+
     public boolean isSameDownStation(Section section) {
         return downStation.isSame(section.downStation);
     }
 
+    public boolean isSameDownStation(Station station) {
+        return downStation.isSame(station);
+    }
+
     public boolean isSameStations(Section section) {
         return upStation.isSame(section.upStation) && downStation.isSame(section.downStation);
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
-        checkValidOutBoundDistance(newDistance);
-        this.downStation = station;
-        this.distance -= newDistance;
-    }
-
-    private void checkValidOutBoundDistance(int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException(OUT_BOUND_DISTANCE_ERROR_MESSAGE);
-        }
     }
 
     @Override
@@ -107,11 +127,11 @@ public class Section {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         Section section = (Section) object;
-        return distance == section.distance &&
-                Objects.equals(id, section.id) &&
+        return Objects.equals(id, section.id) &&
                 Objects.equals(line, section.line) &&
                 Objects.equals(upStation, section.upStation) &&
-                Objects.equals(downStation, section.downStation);
+                Objects.equals(downStation, section.downStation) &&
+                Objects.equals(distance, section.distance);
     }
 
     @Override
