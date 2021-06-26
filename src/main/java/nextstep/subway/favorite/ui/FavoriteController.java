@@ -4,7 +4,9 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,7 +36,12 @@ public class FavoriteController {
 
 	@GetMapping("/favorites")
 	public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
-		this.favoriteService.findFavorites(loginMember.getId());
-		return null;
+		return ResponseEntity.ok(this.favoriteService.findFavorites(loginMember.getId()));
+	}
+
+	@DeleteMapping("/favorites/{id}")
+	public ResponseEntity deleteFavorites(@AuthenticationPrincipal LoginMember loginMember, @PathVariable long id) {
+		this.favoriteService.removeFavorite(loginMember.getId(), id);
+		return ResponseEntity.noContent().build();
 	}
 }

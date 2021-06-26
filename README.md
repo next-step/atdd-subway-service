@@ -170,7 +170,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
   - [x] /members/me 요청시 토큰 확인하도록 수정
 
-- [ ] 인증 - 즐겨 찾기 기능 구현
+- [x] 인증 - 즐겨 찾기 기능 구현
 
   ```
   Feature: 즐겨찾기를 관리한다.
@@ -192,12 +192,11 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   ```
 
   - [x] 추가기능
-    - [x] 인수테스트 작성
     - [x] createFavorite 메서드 구현
   - [x] 조회기능
-    - [x] 인수테스트 작성
     - [x] findFavorites 메서드 구현
-  - [ ] 삭제기능
+  - [x] 삭제기능
+    - [x] removeFavorite 메서드 구현
 
 
 

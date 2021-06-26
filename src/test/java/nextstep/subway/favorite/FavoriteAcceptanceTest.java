@@ -1,8 +1,8 @@
 package nextstep.subway.favorite;
 
 import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static org.assertj.core.api.Assertions.*;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,24 +47,34 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	@DisplayName("즐겨찾기를 관리한다.")
 	@Test
 	void manageFavorites() {
-		// Scenario: 즐겨찾기를 관리
-		// When 즐겨찾기 생성을 요청
 		FavoriteRequest favoriteRequest = new FavoriteRequest(강남역.getId(), 광교역.getId());
 		ExtractableResponse<Response> postFavoriteResponse = this.즐겨찾기_생성을_요청(로그인토큰, favoriteRequest);
 		this.즐겨찾기가_생성됨을_확인(postFavoriteResponse);
 
-		// When 즐겨찾기 목록 조회 요청
-		ExtractableResponse<Response> findFavoritesResponse = 즐겨찾기_목록을_조회요청(로그인토큰);
+		String favoriteId = postFavoriteResponse.header("Location").split("/")[2];
+
+		ExtractableResponse<Response> findFavoritesResponse = this.즐겨찾기_목록을_조회요청(로그인토큰);
 		this.즐겨찾기_목록조회_확인(findFavoritesResponse);
 
-		// When 즐겨찾기 삭제 요청
+		ExtractableResponse<Response> deleteResponse = this.즐겨찾기_삭제_요청(로그인토큰, favoriteId);
+		this.즐겨찾기_삭제_확인(deleteResponse);
+	}
 
-		// Then 즐겨찾기 삭제됨
+	private ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse token, String deleteId) {
+		return RestAssured.given().log().all()
+			.auth().oauth2(token.getAccessToken())
+			.when()
+			.delete("/favorites/" + deleteId)
+			.then().log().all()
+			.extract();
+	}
 
+	private void 즐겨찾기_삭제_확인(ExtractableResponse<Response> deleteResponse) {
+		assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 	}
 
 	private void 즐겨찾기_목록조회_확인(ExtractableResponse<Response> findFavoritesResponse) {
-		Assertions.assertThat(findFavoritesResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+		assertThat(findFavoritesResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
 	}
 
 	private ExtractableResponse<Response> 즐겨찾기_목록을_조회요청(TokenResponse 로그인토큰) {
@@ -77,7 +87,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	}
 
 	private void 즐겨찾기가_생성됨을_확인(ExtractableResponse<Response> postFavoriteResponse) {
-		Assertions.assertThat(postFavoriteResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+		assertThat(postFavoriteResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 	}
 
 	private ExtractableResponse<Response> 즐겨찾기_생성을_요청(TokenResponse 로그인토큰, FavoriteRequest favoriteRequest) {

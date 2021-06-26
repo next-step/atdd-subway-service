@@ -69,4 +69,8 @@ public class Member extends BaseEntity {
 			throw new AuthorizationException();
 		}
 	}
+
+	public void removeFavorite(Favorite favorite) {
+		this.favorites.removeFavorite(favorite);
+	}
 }

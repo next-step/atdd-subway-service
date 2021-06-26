@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -15,6 +16,7 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 
 @Service
+@Transactional
 public class FavoriteService {
 
 	private final StationService stationService;
@@ -41,5 +43,11 @@ public class FavoriteService {
 		return member.getFavorites().getFavorites().stream()
 			.map(FavoriteResponse::of)
 			.collect(Collectors.toList());
+	}
+
+	public void removeFavorite(Long loginId, long id) {
+		Member member = this.memberRepository.findById(loginId).orElseThrow(RuntimeException::new);
+		Favorite favorite = this.favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
+		member.removeFavorite(favorite);
 	}
 }
