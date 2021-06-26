@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import nextstep.subway.line.domain.Fare;
 
+@DisplayName("나이별 할인 정책 테스트")
 class AgeDiscountGradeTest {
 
 	@DisplayName("5세 이하는 무료이다")
@@ -21,7 +22,7 @@ class AgeDiscountGradeTest {
 		assertThat(fare).isEqualTo(Fare.wonOf(0));
 	}
 
-	@DisplayName("6세 이상 13세 미만 나이는 원래 운임에서 350원을 공제한 금액의 20%를 할인해준다.")
+	@DisplayName("6세 이상 13세 미만 나이는 원래 운임에서 350원을 공제한 금액의 50%를 할인해준다.")
 	@ParameterizedTest
 	@ValueSource(ints = {6, 12})
 	void childrenDiscountFare(int childrenAge) {

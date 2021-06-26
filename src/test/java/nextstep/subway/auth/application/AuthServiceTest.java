@@ -58,7 +58,7 @@ class AuthServiceTest {
         assertThat(member.isAnonymous()).isTrue();
     }
 
-    @DisplayName("유효하지 않은 토큰 일때 예외를 던질 수 있다.")
+    @DisplayName("유효하지 않은 토큰 일때 예외가 발생할 수 있다.")
     @Test
     void invalidTokenTest() {
         when(jwtTokenProvider.validateToken(anyString())).thenReturn(false);
