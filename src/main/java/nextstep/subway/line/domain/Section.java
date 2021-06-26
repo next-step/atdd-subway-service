@@ -1,8 +1,11 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.CustomException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+
+import static nextstep.subway.exception.CustomExceptionMessage.OVER_DISTANCE;
 
 @Entity
 public class Section {
@@ -24,7 +27,8 @@ public class Section {
 
     private int distance;
 
-    public Section() {
+    protected Section() {
+        // empty;
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
@@ -55,18 +59,28 @@ public class Section {
     }
 
     public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+        checkOverDistance(newDistance);
         this.upStation = station;
         this.distance -= newDistance;
     }
 
     public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+        checkOverDistance(newDistance);
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    private void checkOverDistance(final int newDistance) {
+        if (this.distance <= newDistance) {
+            throw new CustomException(OVER_DISTANCE);
+        }
+    }
+
+    public boolean isMatchUpStation(final Station station) {
+        return this.upStation == station;
+    }
+
+    public boolean isMatchDownStation(final Station station) {
+        return this.downStation == station;
     }
 }
