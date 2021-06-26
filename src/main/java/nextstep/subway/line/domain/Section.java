@@ -14,18 +14,19 @@ import java.util.Optional;
 @Getter
 @NoArgsConstructor
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(name = "unique_section_station_info", columnNames={"line_id", "up_station_id", "down_station_id"}))
 public class Section extends BaseEntity {
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "line_id")
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @JoinColumn(name = "line_id", foreignKey = @ForeignKey(name = "fk_section_to_line"))
     private Line line;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "up_station_id")
+    @JoinColumn(name = "up_station_id", foreignKey = @ForeignKey(name = "fk_section_to_up_station"))
     private Station upStation;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "down_station_id")
+    @JoinColumn(name = "down_station_id", foreignKey = @ForeignKey(name = "fk_section_to_down_station"))
     private Station downStation;
 
     private int distance;

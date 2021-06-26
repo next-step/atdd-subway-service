@@ -10,9 +10,9 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Entity
 @EqualsAndHashCode(callSuper = true, of = "name")
+@Table(uniqueConstraints = @UniqueConstraint(name = "unique_station_name", columnNames={"name"}))
 public class Station extends BaseEntity {
 
-    @Column(unique = true)
     private String name;
 
     public Station(String name) {

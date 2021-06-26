@@ -7,10 +7,13 @@ import nextstep.subway.auth.application.AuthorizationException;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Getter
 @NoArgsConstructor
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(name = "unique_member_email", columnNames={"email"}))
 public class Member extends BaseEntity {
     private String email;
     private String password;

@@ -4,18 +4,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nextstep.subway.common.BaseEntity;
 import nextstep.subway.station.domain.Station;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
+
+import javax.persistence.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(name = "unique_line_name", columnNames={"name"}))
 public class Line extends BaseEntity {
 
-    @Column(unique = true)
     private String name;
 
     private String color;
