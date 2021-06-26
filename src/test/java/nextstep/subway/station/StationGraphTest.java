@@ -12,12 +12,13 @@ import org.junit.jupiter.api.Test;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationGraph;
+import nextstep.subway.station.excpetion.StationGraphException;
 
 public class StationGraphTest {
-
 
 	Station 성수역;
 	Station 뚝섬역;
@@ -32,6 +33,7 @@ public class StationGraphTest {
 	Section 건대강남구청역구간;
 	Section 강남구청왕십리구간;
 	Section 왕십리뚝섬구간;
+	StationGraph 역그래프;
 
 	/*
 	왕십리 -4- 뚝섬 -2- 성수 -2- 건대
@@ -65,25 +67,47 @@ public class StationGraphTest {
 		이호선.addLineStation(왕십리뚝섬구간);
 		칠호선.addLineStation(건대강남구청역구간);
 		수인분당선.addLineStation(강남구청왕십리구간);
+		역그래프 = new StationGraph(new Lines(Arrays.asList(이호선, 칠호선, 수인분당선)));
 	}
 
 	@DisplayName("StationGraph 생성")
 	@Test
 	void create() {
-		StationGraph stationGraph = new StationGraph(Arrays.asList(이호선, 칠호선, 수인분당선));
-		assertThat(stationGraph).isNotNull();
+		assertThat(역그래프).isNotNull();
 	}
 
 	@DisplayName("StationGraph 최단거리 구하기")
 	@Test
 	void getShortestDistance() {
-		StationGraph stationGraph = new StationGraph(Arrays.asList(이호선, 칠호선, 수인분당선));
-		GraphPath<Station, DefaultWeightedEdge> path = stationGraph.getShortestPath(성수역, 강남구청역);
-
+		GraphPath<Station, DefaultWeightedEdge> path = 역그래프.getShortestPath(성수역, 강남구청역);
 		assertThat(path.getWeight()).isEqualTo(8);
 		assertThat(path.getVertexList()).containsAll(Arrays.asList(성수역, 건대입구역, 강남구청역));
-
 	}
 
+	@DisplayName("StationGraph 최단거리 구하기 - 출발역과 도착역이 같은 경우(에러 발생)")
+	@Test
+	void getShortestDistanceSourceEqualsTarget() {
+		assertThatThrownBy(() -> 역그래프.getShortestPath(성수역, 성수역)).isInstanceOf(StationGraphException.class);
+	}
+
+	@DisplayName("StationGraph 최단거리 구하기 - 존재하지 않는 구간 조회(에러 발생)")
+	@Test
+	void getShortestDistanceNotExistStations() {
+		Station 신도림역 = new Station("신도림역");
+		Station 서울역 = new Station("서울역");
+		assertThatThrownBy(() -> 역그래프.getShortestPath(신도림역, 서울역)).isInstanceOf(StationGraphException.class);
+	}
+
+	@DisplayName("StationGraph 최단거리 구하기 - 연결되지 않는 구간 조회(에러 발생)")
+	@Test
+	void getShortestDistanceNotConnected() {
+		Station 신도림역 = new Station("신도림역");
+		Station 서울역 = new Station("서울역");
+		Line 일호선 = new Line("일호선", "파랑색");
+		Section 신도림서울역구간 = new Section(일호선, 신도림역, 서울역, new Distance(15));
+		일호선.addLineStation(신도림서울역구간);
+		역그래프 = new StationGraph(new Lines(Arrays.asList(일호선, 이호선, 칠호선, 수인분당선)));
+		assertThatThrownBy(() -> 역그래프.getShortestPath(성수역, 서울역)).isInstanceOf(StationGraphException.class);
+	}
 
 }
