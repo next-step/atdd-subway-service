@@ -1,15 +1,15 @@
 package nextstep.subway.path.domain;
 
-public class Distance {
+public class Fare {
 
     private int distance;
 
-    private Distance(int distance) {
+    private Fare(int distance) {
         this.distance = distance;
     }
 
-    public static Distance of(int distance) {
-        return new Distance(distance);
+    public static Fare of(int distance) {
+        return new Fare(distance);
     }
 
     public int getDistance() {

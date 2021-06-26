@@ -43,8 +43,8 @@ public class StationsDijkstraPath implements Path {
 
     @Override
     public int getPrice() {
-        Distance distance = Distance.of(getMinDistance());
-        return distance.getPrice();
+        Fare fare = Fare.of(getMinDistance());
+        return fare.getPrice();
     }
 
 }
