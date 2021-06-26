@@ -15,12 +15,11 @@ public class Lines {
     }
 
     public Station findStationById(Long id) {
-        Station findedStation = lines.stream()
+        return lines.stream()
                 .flatMap(line -> line.getStations().stream())
                 .filter(station -> station.isSameId(id))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("없는 역입니다."));
-        return findedStation;
     }
 
     public List<Line> getLines() {

@@ -1,51 +1,57 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.WeightedGraph;
-import org.jgrapht.graph.WeightedMultigraph;
+import org.jgrapht.graph.AbstractBaseGraph;
+import org.jgrapht.graph.DefaultWeightedEdge;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class SubwayMapData extends WeightedMultigraph<Station, SectionEdge> {
+public class SubwayMapData {
     private static final String NO_LINES_EXCEPTION = "경로 조회에 필요한 노선도 값이 조회되지 않습니다.";
+    private static final String NO_GRAPH_EXCEPTION = "조회를 위한 그래프 값은 빈 값이 올 수 없습니다.";
 
-    private final List<Line> lines;
+    private final Lines lines;
+    private final AbstractBaseGraph<Station, DefaultWeightedEdge> graph;
 
-    public SubwayMapData(List<Line> lines, Class<SectionEdge> edgeClass) {
-        super(edgeClass);
+    public SubwayMapData(Lines lines, AbstractBaseGraph graph) {
         validateLines(lines);
-        this.lines = Collections.unmodifiableList(lines);
+        validateGraph(graph);
+        this.lines = lines;
+        this.graph = graph;
     }
 
-    private void validateLines(List<Line> lines) {
-        if (lines.isEmpty()) {
-            throw new IllegalArgumentException(NO_LINES_EXCEPTION);
+    private void validateGraph(AbstractBaseGraph graph) {
+        if (Objects.isNull(graph)) {
+            throw new IllegalArgumentException(NO_GRAPH_EXCEPTION);
         }
     }
 
-    public WeightedGraph initData() {
+    public AbstractBaseGraph<Station, DefaultWeightedEdge> initData() {
         initVertex();
         initEdgeWeight();
-        return this;
+        return graph;
     }
 
     private void initVertex() {
-        lines.stream()
+        lines.getLines().stream()
                 .flatMap(line -> line.getStations().stream())
                 .collect(Collectors.toSet())
-                .forEach(this::addVertex);
+                .forEach(graph::addVertex);
     }
 
     private void initEdgeWeight() {
-        lines.stream()
-             .flatMap(line -> line.getSections().stream())
-             .forEach(section -> {
-                 SectionEdge sectionEdge = new SectionEdge(section);
-                 addEdge(section.getUpStation(), section.getDownStation(), sectionEdge);
-                 setEdgeWeight(sectionEdge, section.getDistance());
-             });
+        lines.getLines().stream()
+                .flatMap(line -> line.getSections().stream())
+                .collect(Collectors.toList())
+                .forEach(section -> graph.setEdgeWeight(
+                        graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance()));
+    }
+
+    private void validateLines(Lines lines) {
+        if (Objects.isNull(lines)) {
+            throw new IllegalArgumentException(NO_LINES_EXCEPTION);
+        }
     }
 }
