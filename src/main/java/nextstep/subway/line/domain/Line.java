@@ -61,4 +61,9 @@ public class Line extends BaseEntity {
     public List<Station> getStations() {
         return sections.getStationsInOrder();
     }
+
+    public List<Section> getSections() {
+        // TODO 추후 리팩터링
+        return sections.values();
+    }
 }

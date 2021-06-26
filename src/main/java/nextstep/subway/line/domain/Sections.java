@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import static java.util.Collections.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -139,5 +141,10 @@ public class Sections {
 
     private boolean isRemovable() {
         return values.size() > SIZE_LOWER_LIMIT;
+    }
+
+    public List<Section> values() {
+        // TODO 추후 리팩터링
+        return unmodifiableList(values);
     }
 }

@@ -15,6 +15,8 @@ public class SectionTest {
 
     public static final Section 강남_광교중앙_130 = new Section(4L, 강남역, 광교중앙역, 130);
 
+    public static final Section 강남_교대_30 = new Section(5L, 강남역, 교대역, 30);
+
 
     @Test
     @DisplayName("두 구간의 거리를 비교한다")
