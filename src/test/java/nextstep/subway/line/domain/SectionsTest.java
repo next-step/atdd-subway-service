@@ -37,7 +37,7 @@ class SectionsTest {
     void addSectionTest() {
 
         // then
-        assertThat(sections.getSections()).hasSize(1);
+        assertThat(sections.getStations()).hasSize(2);
     }
 
     @Test
@@ -86,5 +86,14 @@ class SectionsTest {
 
         // then
         assertThat(sections.getStations()).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("구간이 1개 이하인 경우 예외가 발생한다")
+    void removeStationLengthTest() {
+
+        // then
+        assertThatThrownBy(() -> sections.removeStation(이호선, 강남역))
+                .isInstanceOf(RuntimeException.class);
     }
 }

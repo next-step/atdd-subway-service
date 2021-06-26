@@ -53,8 +53,18 @@ public class Sections {
         return stations;
     }
 
-    public List<Section> getSections() {
-        return sections;
+    public void removeStation(Line line, Station station) {
+        validateRemovableLength();
+
+        Optional<Section> upLineStation = findOptionalUpLineStation(station);
+        Optional<Section> downLineStation = findOptionDownLineStation(station);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            connectSectionIfRemoveSection(line, upLineStation.get(), downLineStation.get());
+        }
+
+        upLineStation.ifPresent(sections::remove);
+        downLineStation.ifPresent(sections::remove);
     }
 
     private Station findUpStation() {
@@ -121,27 +131,26 @@ public class Sections {
         }
     }
 
-    public void removeStation(Line line, Station station) {
+    private Optional<Section> findOptionDownLineStation(Station station) {
+        return this.sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+    }
+
+    private Optional<Section> findOptionalUpLineStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+    }
+
+    private void connectSectionIfRemoveSection(Line line, Section upLineStation, Section downLineStation) {
+        int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
+        sections.add(new Section(line, downLineStation.getUpStation(), upLineStation.getDownStation(), newDistance));
+    }
+
+    private void validateRemovableLength() {
         if (sections.size() <= 1) {
             throw new RuntimeException("구간이 1개 이하인 경우 제거할 수 없습니다.");
         }
-
-        Optional<Section> upLineStation = sections.stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = this.getSections().stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            sections.add(new Section(line, newUpStation, newDownStation, newDistance));
-        }
-
-        upLineStation.ifPresent(sections::remove);
-        downLineStation.ifPresent(sections::remove);
     }
-
 }
