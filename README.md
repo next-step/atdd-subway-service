@@ -191,7 +191,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
       Then 즐겨찾기 삭제됨
   ```
 
-  - [ ] 추가기능
+  - [x] 추가기능
+    - [x] 인수테스트 작성
+    - [x] createFavorite 메서드 구현
   - [ ] 조회기능
   - [ ] 삭제기능
 
