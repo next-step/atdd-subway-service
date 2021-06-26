@@ -9,17 +9,33 @@ import java.util.*;
 @Embeddable
 public class Sections {
     private static final String DUPLICATE_SECTION_ERROR_MESSAGE = "%s, %s 구간은 이미 등록된 구간 입니다.";
+    public static final String NOT_CONTAIN_STATION_ERROR_MESSAGE = "등록할 수 없는 구간 입니다.";
     private List<Section> sections = new ArrayList<>();
 
     public Sections() {
     }
 
     public Sections(List<Section> sections) {
-        this.sections = new ArrayList<>(sections);
+        this.sections = sections;
     }
 
     public void addSection(Section section) {
         checkValidDuplicateSection(section);
+        checkValidContainStations(section);
+        Optional<Section> updateTargetSection = findSectionByUpStation(section);
+        if (updateTargetSection.isPresent()) {
+            Section targetSection = updateTargetSection.get();
+            int newDistance = targetSection.getDistance() - section.getDistance();
+            targetSection.updateUpStation(section.getDownStation(), newDistance);
+            sections.add(section);
+            return;
+        }
+        updateTargetSection = findSectionByDownStation(section);
+        if (updateTargetSection.isPresent()) {
+            Section targetSection = updateTargetSection.get();
+            int newDistance = targetSection.getDistance() - section.getDistance();
+            targetSection.updateDownStation(section.getUpStation(), newDistance);
+        }
         sections.add(section);
     }
 
@@ -38,8 +54,24 @@ public class Sections {
         return stations;
     }
 
+    private Optional<Section> findSectionByUpStation(Section section) {
+        return sections.stream().filter(st -> st.isSameUpStation(section)).findFirst();
+    }
+
+    private Optional<Section> findSectionByDownStation(Section section) {
+        return sections.stream().filter(st -> st.isSameDownStation(section)).findFirst();
+    }
+
+    private void checkValidContainStations(Section section) {
+        boolean isContainStation = sections.stream().noneMatch(st -> st.isContainStation(section));
+        if (isContainStation) {
+            throw new IllegalArgumentException(NOT_CONTAIN_STATION_ERROR_MESSAGE);
+        }
+
+    }
+
     private Section findFirstSection() {
-        Section section = new Section();
+        Section section = null;
         for (Section st : sections) {
             section = st.calcFirstSection(section);
         }
@@ -51,26 +83,11 @@ public class Sections {
     }
 
     private void checkValidDuplicateSection(Section section) {
-        if (sections.contains(section)) {
+        if (sections.stream().anyMatch(st -> st.isSameStations(section))) {
             throw new IllegalArgumentException(
-                    String.format(DUPLICATE_SECTION_ERROR_MESSAGE, section.getUpStation(), section.getDownStation()));
+                    String.format(DUPLICATE_SECTION_ERROR_MESSAGE,
+                            section.getUpStation().getName(), section.getDownStation().getName()));
         }
-    }
-
-    private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
     }
 
     @Override

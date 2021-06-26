@@ -62,6 +62,34 @@ public class Section {
         this.distance -= newDistance;
     }
 
+    public Section calcFirstSection(Section section) {
+        if (Objects.isNull(section) || downStation.isSame(section.upStation)) {
+            return this;
+        }
+        return section;
+    }
+
+    public boolean isNextSection(Section section) {
+        return upStation.isSame(section.downStation);
+    }
+
+    public boolean isContainStation(Section section) {
+        return upStation.isSame(section.upStation) || upStation.isSame(section.downStation)
+                || downStation.isSame(section.upStation) || downStation.isSame(section.downStation);
+    }
+
+    public boolean isSameUpStation(Section section) {
+        return upStation.isSame(section.upStation);
+    }
+
+    public boolean isSameDownStation(Section section) {
+        return downStation.isSame(section.downStation);
+    }
+
+    public boolean isSameStations(Section section) {
+        return upStation.isSame(section.upStation) && downStation.isSame(section.downStation);
+    }
+
     public void updateDownStation(Station station, int newDistance) {
         checkValidOutBoundDistance(newDistance);
         this.downStation = station;
@@ -89,16 +117,5 @@ public class Section {
     @Override
     public int hashCode() {
         return Objects.hash(id, line, upStation, downStation, distance);
-    }
-
-    public Section calcFirstSection(Section section) {
-        if (Objects.isNull(section.id) || downStation.isSame(section.upStation)) {
-            return this;
-        }
-        return section;
-    }
-
-    public boolean isNextSection(Section section) {
-        return upStation.isSame(section.downStation);
     }
 }

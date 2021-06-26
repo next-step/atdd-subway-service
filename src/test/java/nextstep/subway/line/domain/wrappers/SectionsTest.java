@@ -7,10 +7,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("구간 리스트 일급 컬렉션 객체 테스트")
 class SectionsTest {
@@ -30,10 +31,30 @@ class SectionsTest {
     }
 
     @Test
-    void 구간_정보_추가() {
-        Sections sections = new Sections();
-        sections.addSection(구간);
-        assertThat(sections).isEqualTo(new Sections(Arrays.asList(구간)));
+    void 구간_정보_추가_up() {
+        Section 교대역_광교역_구간 = new Section(신분당선, 교대역, 광교역, 10);
+        Section 강남역_교대역_구간 = new Section(신분당선, 강남역, 교대역, 5);
+
+        Sections sections = new Sections(new ArrayList<>(Arrays.asList(교대역_광교역_구간)));
+        sections.addSection(강남역_교대역_구간);
+        assertThat(sections.stations()).containsExactly(강남역, 교대역, 광교역);
+    }
+
+    @Test
+    void 구간_정보_추가_middle() {
+        Sections sections = new Sections(new ArrayList<>(Arrays.asList(구간)));
+        Section section = new Section(신분당선, 강남역, 교대역, 5);
+        sections.addSection(section);
+        assertThat(sections.stations()).containsExactly(강남역, 교대역, 광교역);
+    }
+
+    @Test
+    void 구간_정보_추가_down() {
+        Section 강남역_교대역_구간 = new Section(신분당선, 강남역, 교대역, 5);
+        Section 교대역_광교역_구간 = new Section(신분당선, 교대역, 광교역, 10);
+        Sections sections = new Sections(new ArrayList<>(Arrays.asList(강남역_교대역_구간)));
+        sections.addSection(교대역_광교역_구간);
+        assertThat(sections.stations()).containsExactly(강남역, 교대역, 광교역);
     }
 
     @Test
@@ -41,5 +62,17 @@ class SectionsTest {
         Sections sections = new Sections(Arrays.asList(구간, new Section(신분당선, 교대역, 강남역, 10)));
         List<Station> stations = sections.stations();
         assertThat(stations).containsExactly(교대역, 강남역, 광교역);
+    }
+
+    @Test
+    void 상행_하행_모두_포함되지않는_지하철역_구간_등록_요청_시_에러_발생() {
+        Sections sections = new Sections(Arrays.asList(구간));
+        assertThatThrownBy(() -> sections.addSection(new Section(신분당선, 교대역, new Station(7L, "서울대입구역"), 10))).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 구간_정보_추가시_이미_등록된_구간일_경우_에러_발생() {
+        Sections sections = new Sections(Arrays.asList(구간));
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> sections.addSection(구간)).withMessage("강남역, 광교역 구간은 이미 등록된 구간 입니다.");
     }
 }

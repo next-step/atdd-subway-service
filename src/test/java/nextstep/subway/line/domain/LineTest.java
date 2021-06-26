@@ -67,7 +67,7 @@ public class LineTest {
         Section section = new Section(신분당선, 강남역, 광교역, 10);
         assertThatThrownBy(() -> 신분당선.addSection(section))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessage("이미 등록된 구간 입니다.");
+                .hasMessage("강남역, 광교역 구간은 이미 등록된 구간 입니다.");
     }
 
     @Test
@@ -108,7 +108,7 @@ public class LineTest {
     }
 
     @Test
-    void 한개의_구간할때_구간_삭제_실행하면_에러_발생() {
+    void 한개의_구간일때_구간_삭제_실행하면_에러_발생() {
         assertThatThrownBy(() -> 신분당선.removeSection(강남역)).isInstanceOf(RuntimeException.class);
     }
 }

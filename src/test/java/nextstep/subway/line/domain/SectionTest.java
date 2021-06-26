@@ -34,4 +34,51 @@ class SectionTest {
         assertThat(section.isNextSection(구간)).isTrue();
         assertThat(구간.isNextSection(section)).isFalse();
     }
+
+    @Test
+    public void 구간에_포함된_지하철역을_가진_구간인지_확인_true() {
+        Section expected = new Section(신분당선, 강남역, 광교역, 4);
+        assertThat(구간.isContainStation(expected)).isTrue();
+    }
+
+    @Test
+    public void 구간에_포함된_지하철역을_가진_구간인지_확인_false() {
+        Section expected = new Section(신분당선, new Station(7L, "교대역"), 광교역, 4);
+        assertThat(구간.isContainStation(expected)).isFalse();
+    }
+
+    @Test
+    void 두개의_구간의_상행_지하철역이_일치하는지_확인_true() {
+        Section expected = new Section(신분당선, 강남역, 광교역, 4);
+        assertThat(구간.isSameUpStation(expected)).isTrue();
+    }
+
+    @Test
+    void 두개의_구간의_상행_지하철역이_일치하는지_확인_false() {
+        Section expected = new Section(신분당선, new Station(7L, "교대역"), 광교역, 4);
+        assertThat(구간.isSameUpStation(expected)).isFalse();
+    }
+
+    @Test
+    void 두개의_구간의_하행_지하철역이_일치하는지_확인_true() {
+        Section expected = new Section(신분당선, 광교역, 양재역, 4);
+        assertThat(구간.isSameDownStation(expected)).isTrue();
+    }
+
+    @Test
+    void 두개의_구간의_하행_지하철역이_일치하는지_확인_false() {
+        Section expected = new Section(신분당선, 양재역, 광교역, 4);
+        assertThat(구간.isSameDownStation(expected)).isFalse();
+    }
+
+    @Test
+    void 두개의_구간의_상하행_지하철역이_모두_같은지_확인_true() {
+        assertThat(구간.isSameStations(구간)).isTrue();
+    }
+
+    @Test
+    void 두개의_구간의_상하행_지하철역이_모두_같은지_확인_false() {
+        Section expected = new Section(신분당선, 광교역, 양재역, 4);
+        assertThat(구간.isSameStations(expected)).isFalse();
+    }
 }
