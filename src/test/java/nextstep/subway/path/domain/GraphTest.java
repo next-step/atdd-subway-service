@@ -2,7 +2,6 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.SectionDistance;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,10 +19,6 @@ public class GraphTest {
     private Station 강남역;
     private Station 양재역;
     private Station 남부터미널역;
-    private Section 이호선생성구간;
-    private Section 삼호선생성구간;
-    private Section 삼호선추가구간;
-    private Section 신분당선생성구간;
     private Line 이호선;
     private Line 삼호선;
     private Line 신분당선;
@@ -44,10 +39,10 @@ public class GraphTest {
         양재역 = new Station(3L, "양재역");
         남부터미널역 = new Station(4L, "남부터미널역");
 
-        이호선생성구간 = new Section(1L, 교대역, 강남역, 10);
-        삼호선생성구간 = new Section(2L, 교대역, 양재역, 5);
-        삼호선추가구간 = new Section(3L, 교대역, 남부터미널역, 3);
-        신분당선생성구간 = new Section(4L, 강남역, 양재역, 10);
+        Section 이호선생성구간 = new Section(1L, 교대역, 강남역, 10);
+        Section 삼호선생성구간 = new Section(2L, 교대역, 양재역, 5);
+        Section 삼호선추가구간 = new Section(3L, 교대역, 남부터미널역, 3);
+        Section 신분당선생성구간 = new Section(4L, 강남역, 양재역, 10);
 
         이호선 = new Line(1L, "이호선", "초록색");
         삼호선 = new Line(2L, "삼호선", "주황색");
@@ -60,7 +55,6 @@ public class GraphTest {
 
         graph = new Graph();
         lines = new ArrayList<>(Arrays.asList(이호선, 삼호선, 신분당선));
-        graph.build(lines);
     }
 
     @DisplayName("그래프 빌드")
@@ -70,15 +64,15 @@ public class GraphTest {
         graph.build(lines);
 
         //then
-        assertThat(graph.stationSet()).contains(교대역, 강남역, 양재역, 남부터미널역);
-        assertThat(graph.stationSet().size()).isEqualTo(4);
+        assertThat(graph.getVertexes()).contains(교대역, 강남역, 양재역, 남부터미널역);
+        assertThat(graph.getVertexes().size()).isEqualTo(4);
     }
 
     @DisplayName("최단경로 역목록 조회")
     @Test
     public void 최단경로_역목록조회_확인() throws Exception {
         //when
-        Path path = graph.findShortestPath(강남역, 남부터미널역);
+        Path path = graph.findShortestPath(lines, 강남역, 남부터미널역);
 
         //then
         assertThat(path.getStations()).containsExactly(강남역, 양재역, 남부터미널역);
@@ -88,7 +82,7 @@ public class GraphTest {
     @Test
     public void 최단경로_거리조회_확인() throws Exception {
         //when
-        Path path = graph.findShortestPath(강남역, 남부터미널역);
+        Path path = graph.findShortestPath(lines, 강남역, 남부터미널역);
 
         //then
         assertThat(path.getDistance()).isEqualTo(new ShortestDistance(12));
@@ -98,7 +92,7 @@ public class GraphTest {
     @Test
     public void 출발역과도착역이같은경우_최단경로거리_조회() {
         //when
-        Path path = graph.findShortestPath(강남역, 강남역);
+        Path path = graph.findShortestPath(lines, 강남역, 강남역);
 
         //then
         assertThat(path.getDistance()).isEqualTo(new ShortestDistance(0));
@@ -108,7 +102,7 @@ public class GraphTest {
     @Test
     public void 출발역과도착역이같은경우_최단경로역목록_조회() {
         //when
-        Path path = graph.findShortestPath(강남역, 강남역);
+        Path path = graph.findShortestPath(lines, 강남역, 강남역);
 
         //then
         assertThat(path.getStations()).containsExactly(강남역);
@@ -123,11 +117,10 @@ public class GraphTest {
         Line 새로운노선 = new Line(4L, "새로운노선", "새로운색");
         새로운노선.addSection(새로운노선생성구간);
         List<Line> lines = new ArrayList<>(Arrays.asList(이호선, 삼호선, 신분당선, 새로운노선));
-        graph.build(lines);
 
         //when
         //then
-        assertThatThrownBy(() -> graph.findShortestPath(강남역, 새로운상행종점역))
+        assertThatThrownBy(() -> graph.findShortestPath(lines, 강남역, 새로운상행종점역))
                 .hasMessage("경로가 존재하지 않습니다.")
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -141,11 +134,10 @@ public class GraphTest {
         Line 새로운노선 = new Line(4L, "새로운노선", "새로운색");
         새로운노선.addSection(새로운노선생성구간);
         List<Line> lines = new ArrayList<>(Arrays.asList(이호선, 삼호선, 신분당선, 새로운노선));
-        graph.build(lines);
 
         //when
         //then
-        assertThatThrownBy(() -> graph.findShortestPath(강남역, 새로운상행종점역))
+        assertThatThrownBy(() -> graph.findShortestPath(lines, 강남역, 새로운상행종점역))
                 .hasMessage("경로가 존재하지 않습니다.")
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -157,7 +149,7 @@ public class GraphTest {
 
         //when
         //then
-        assertThatThrownBy(() -> graph.findShortestPath(강남역, 존재하지않는역))
+        assertThatThrownBy(() -> graph.findShortestPath(lines, 강남역, 존재하지않는역))
                 .hasMessage("graph must contain the sink vertex")
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -169,7 +161,7 @@ public class GraphTest {
 
         //when
         //then
-        assertThatThrownBy(() -> graph.findShortestPath(존재하지않는역, 강남역))
+        assertThatThrownBy(() -> graph.findShortestPath(lines, 존재하지않는역, 강남역))
                 .hasMessage("graph must contain the source vertex")
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -181,7 +173,7 @@ public class GraphTest {
 
         //when
         //then
-        assertThatThrownBy(() -> graph.findShortestPath(강남역, 존재하지않는역))
+        assertThatThrownBy(() -> graph.findShortestPath(lines, 강남역, 존재하지않는역))
                 .hasMessage("graph must contain the sink vertex")
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -193,7 +185,7 @@ public class GraphTest {
 
         //when
         //then
-        assertThatThrownBy(() -> graph.findShortestPath(존재하지않는역, 강남역))
+        assertThatThrownBy(() -> graph.findShortestPath(lines, 존재하지않는역, 강남역))
                 .hasMessage("graph must contain the source vertex")
                 .isInstanceOf(IllegalArgumentException.class);
     }
