@@ -120,4 +120,28 @@ public class Sections {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
     }
+
+    public void removeStation(Line line, Station station) {
+        if (sections.size() <= 1) {
+            throw new RuntimeException("구간이 1개 이하인 경우 제거할 수 없습니다.");
+        }
+
+        Optional<Section> upLineStation = sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+        Optional<Section> downLineStation = this.getSections().stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(sections::remove);
+        downLineStation.ifPresent(sections::remove);
+    }
+
 }
