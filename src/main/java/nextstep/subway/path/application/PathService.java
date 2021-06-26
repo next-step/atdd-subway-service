@@ -4,9 +4,9 @@ import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.exception.PathNotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
-import nextstep.subway.station.exception.CannotFoundStationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,8 +21,8 @@ public class PathService {
     }
 
     public PathResponse findPath(Long source, Long target) {
-        Station sourceStation = stationRepository.findById(source).orElseThrow(CannotFoundStationException::new);
-        Station targetStation = stationRepository.findById(target).orElseThrow(CannotFoundStationException::new);
+        Station sourceStation = stationRepository.findById(source).orElseThrow(PathNotFoundException::new);
+        Station targetStation = stationRepository.findById(target).orElseThrow(PathNotFoundException::new);
         PathFinder pathFinder = new PathFinder(new Lines(lineRepository.findAll()));
         return pathFinder.findPath(sourceStation, targetStation);
     }

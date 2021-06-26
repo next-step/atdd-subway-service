@@ -4,7 +4,7 @@ import java.util.List;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.path.exception.CannotFoundPathException;
+import nextstep.subway.path.exception.PathNotFoundException;
 import nextstep.subway.path.exception.SameOriginAndDestinationException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -48,7 +48,7 @@ public class PathFinder {
 
         GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(source, target);
         if (graphPath == null) {
-            throw new CannotFoundPathException();
+            throw new PathNotFoundException();
         }
         List<Station> stations = graphPath.getVertexList();
         return new PathResponse(StationResponse.ofList(stations), (int) graphPath.getWeight());
