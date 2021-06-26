@@ -57,8 +57,6 @@ class PathServiceTest {
     void findShortestPath() {
         PathRequest pathRequest = new PathRequest(교대역.getId(), 양재역.getId());
         when(lineRepository.findAll()).thenReturn(Arrays.asList(삼호선));
-        when(stationRepository.findById(교대역.getId())).thenReturn(ofNullable(교대역));
-        when(stationRepository.findById(양재역.getId())).thenReturn(ofNullable(양재역));
 
         PathResponse shortestPath = pathService.findShortestPath(pathRequest);
 
