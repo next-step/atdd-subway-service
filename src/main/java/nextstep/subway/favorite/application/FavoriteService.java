@@ -1,12 +1,14 @@
 package nextstep.subway.favorite.application;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.application.StationService;
@@ -33,8 +35,11 @@ public class FavoriteService {
 		return this.favoriteRepository.save(new Favorite(member, sourceStation, targetStation));
 	}
 
-	public List<Favorite> findFavorites(Long loginId) {
+	public List<FavoriteResponse> findFavorites(Long loginId) {
+		Member member = this.memberRepository.findById(loginId).orElseThrow(RuntimeException::new);
 
-		return null;
+		return member.getFavorites().getFavorites().stream()
+			.map(FavoriteResponse::of)
+			.collect(Collectors.toList());
 	}
 }
