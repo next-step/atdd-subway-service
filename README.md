@@ -63,3 +63,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
    - 출발지 도착지가 존재하지 않은 역 검색할 경우 예외 발생
    - 최단 경로 구하기
    - 최단 경로 거리값 구하기
+3. 회원 기능 구현
+   - 토큰 발급 기능 구현
+   - 내 정보 조회 기능 구현
+   - 즐겨찾기 기능 구현
