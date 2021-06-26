@@ -11,7 +11,7 @@ import nextstep.subway.station.dto.StationResponse;
 public class PathResponse {
 
     private final List<StationResponse> stations;
-    private final double distance;
+    private final int distance;
 
     public static PathResponse of(Path path) {
         return new PathResponse(
@@ -24,14 +24,14 @@ public class PathResponse {
 
     public PathResponse(List<StationResponse> stations, double distance) {
         this.stations = stations;
-        this.distance = distance;
+        this.distance = (int)distance;
     }
 
     public List<StationResponse> getStations() {
         return unmodifiableList(stations);
     }
 
-    public double getDistance() {
+    public int getDistance() {
         return distance;
     }
 }

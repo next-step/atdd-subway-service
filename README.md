@@ -62,8 +62,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [ ] FAIL! 출발역과 도착역이 같은 경우
   - [ ] FAIL! 출발역과 도착역이 연결이 되어 있지 않은 경우
   - [ ] FAIL! 존재하지 않은 출발역이나 도착역을 조회 할 경우
-  - [ ] 최단 경로 역 목록과 총 거리를 반환한다
-- [ ] 최단 경로 조회 기능 구현하기
+  - [x] 최단 경로 역 목록과 총 거리를 반환한다
+- [x] 최단 경로 조회 기능 구현하기
 
 ### Step1
 - [x] 인수 테스트 통합

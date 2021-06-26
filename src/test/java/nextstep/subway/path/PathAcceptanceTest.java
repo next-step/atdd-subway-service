@@ -5,20 +5,19 @@ import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -102,7 +101,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void 최단_경로_역_목록과_총_거리를_반환한다() {
         // when
         ExtractableResponse<Response> response
-            = 지하철_경로_요청됨(교대역, 양재역);
+            = 지하철_경로_요청됨(강남역, 남부터미널역);
 
         // then
         지하철_경로_응답됨(response);
@@ -118,8 +117,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         params.put("target", target);
         ExtractableResponse<Response> response = RestAssured
             .given().log().all()
-            .body(params)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .params(params)
             .when().get("/paths")
             .then().log().all().extract();
 
@@ -129,13 +127,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private void 지하철_경로_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        // TODO 검증로직 구현 필요
-        assertThat(response.jsonPath().getInt("distance")).isEqualTo(-1);
-
-        List<StationResponse> stations = response.jsonPath()
-            .getList("stations", StationResponse.class);
-        assertThat(stations.size()).isEqualTo(-1);
-        assertThat(stations).containsExactly(null);
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getDistance()).isEqualTo(12);
+        assertThat(pathResponse.getStations()).containsExactly(강남역, 양재역, 남부터미널역);
     }
 
     private void 지하철_경로_응답_실패됨(ExtractableResponse<Response> response) {
