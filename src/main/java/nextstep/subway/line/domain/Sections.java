@@ -144,7 +144,6 @@ public class Sections {
     }
 
     public List<Section> values() {
-        // TODO 추후 리팩터링
         return unmodifiableList(values);
     }
 }

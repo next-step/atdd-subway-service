@@ -20,11 +20,10 @@ public class PathService {
 
     public PathResponse getShortestPath(Long sourceId, Long targetId) {
         List<Line> lines = lineService.findLinesEntities();
-        List<Station> stations = stationService.findStationEntities();
-        PathFinder finder = new PathFinder(stations, lines);
+        PathFinder pathFinder = new PathFinder(lines);
 
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
-        return PathResponse.of(finder.findPath(source, target));
+        return PathResponse.of(pathFinder.findPath(source, target));
     }
 }
