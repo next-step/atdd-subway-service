@@ -12,6 +12,7 @@ import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationGraph;
 import nextstep.subway.station.domain.StationRepository;
+import nextstep.subway.station.excpetion.StationGraphException;
 
 @Service
 @Transactional
@@ -34,6 +35,6 @@ public class PathService {
 	}
 
 	public Station findStationById(Long id) {
-		return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+		return stationRepository.findById(id).orElseThrow(() -> new StationGraphException("존재하지 않는 역을 조회합니다."));
 	}
 }
