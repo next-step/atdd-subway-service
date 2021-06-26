@@ -8,8 +8,8 @@ import nextstep.subway.line.domain.Fare;
 
 public enum AgeDiscountGrade {
 	TODDLER(1, 6, originFare -> ZERO),
-	CHILDREN(6, 13, originFare -> originFare.minus(YOUNG_DEFAULT_DISCOUNT).times(0.5)),
-	STUDENT(13, 19, originFare -> originFare.minus(YOUNG_DEFAULT_DISCOUNT).times(0.8)),
+	CHILDREN(6, 13, originFare -> originFare.minus(Fare.wonOf(350)).times(0.5)),
+	STUDENT(13, 19, originFare -> originFare.minus(Fare.wonOf(350)).times(0.8)),
 	ADULT(19, 100, originFare -> originFare);
 
 	private final int startAgeInclusive;
