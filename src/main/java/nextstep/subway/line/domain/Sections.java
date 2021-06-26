@@ -10,6 +10,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
+import java.util.function.Predicate;
 
 @Embeddable
 public class Sections {
@@ -31,26 +32,29 @@ public class Sections {
             return Arrays.asList();
         }
         List<Station> stations = new ArrayList<>();
-        Station downStation = newFindUpStation();
-        stations.add(downStation);
+        Station firstStation = newFindUpStation();
+        stations.add(firstStation);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Section nextLineStation = findSectionWhichUpStationIs(finalDownStation);
-            if (nextLineStation == null) {
-                break;
-            }
-            downStation = nextLineStation.getDownStation();
-            stations.add(downStation);
-        }
+        sortStationInOrder(stations, firstStation);
         return stations;
+    }
+
+    private void sortStationInOrder(List<Station> stations, Station station) {
+        Station startStation = station;
+
+        Section nextLineStation = findSectionByFilter(section -> section.hasUpStationSameWith(startStation));
+        if (nextLineStation != null) {
+            station = nextLineStation.getDownStation();
+            stations.add(station);
+            sortStationInOrder(stations, station);
+        }
     }
 
     private Station newFindUpStation() {
         Station expectedFirstStationOfLine = sections.get(0).getUpStation();
         while (expectedFirstStationOfLine != null) {
             Station assumedFirstStation = expectedFirstStationOfLine;
-            Section nextSection = findSectionWhichDownStationIs(assumedFirstStation);
+            Section nextSection = findSectionByFilter(section -> section.hasDownStationSameWith(assumedFirstStation));
             if (nextSection == null) {
                 break;
             }
@@ -67,8 +71,8 @@ public class Sections {
         }
 
         List<Station> stations = getSortedStation();
-        boolean isUpStationExisted = isIncludingUpstation(stations, section.getUpStation());
-        boolean isDownStationExisted = isIncludingDownstation(stations, section.getDownStation());
+        boolean isUpStationExisted = isIncludingStation(stations, section.getUpStation());
+        boolean isDownStationExisted = isIncludingStation(stations, section.getDownStation());
 
         validateSectionBeforeAdd(isUpStationExisted, isDownStationExisted);
         if (isUpStationExisted) {
@@ -80,12 +84,8 @@ public class Sections {
         }
     }
 
-    private boolean isIncludingDownstation(List<Station> stations, Station downStation) {
-        return downStation.isIncludedIn(stations);
-    }
-
-    private boolean isIncludingUpstation(List<Station> stations, Station upStation) {
-        return upStation.isIncludedIn(stations);
+    private boolean isIncludingStation(List<Station> stations, Station station){
+        return station.isIncludedIn(stations);
     }
 
     private void validateSectionBeforeAdd(boolean isUpStationExisted, boolean isDownStationExisted) {
@@ -99,7 +99,7 @@ public class Sections {
     }
 
     private void addSectionWhenDownStationExists(Section section) {
-        Section hasSameDownStation = findSectionWhichDownStationIs(section.getDownStation());
+        Section hasSameDownStation = findSectionByFilter(it -> it.hasDownStationSameWith(section.getDownStation()));
         if (hasSameDownStation != null) {
             hasSameDownStation.updateDownStation(section.getUpStation(), section.getDistance());
         }
@@ -107,7 +107,7 @@ public class Sections {
     }
 
     private void addSectionWhenUpStationExists(Section section) {
-        Section hasSameUpStation = findSectionWhichUpStationIs(section.getUpStation());
+        Section hasSameUpStation = findSectionByFilter(it -> it.hasUpStationSameWith(section.getUpStation()));
         if (hasSameUpStation != null) {
             hasSameUpStation.updateUpStation(section.getDownStation(), section.getDistance());
         }
@@ -122,8 +122,9 @@ public class Sections {
         if (!isRemovableStatus()) {
             throw new CannotDeleteException(Message.ERROR_SECTIONS_SIZE_TOO_SMALL_TO_DELETE);
         }
-        Section sectionContainingUpStation = findSectionWhichUpStationIs(station);
-        Section sectionContainingDownStation = findSectionWhichDownStationIs(station);
+
+        Section sectionContainingUpStation = findSectionByFilter(it -> it.hasUpStationSameWith(station));
+        Section sectionContainingDownStation = findSectionByFilter(it -> it.hasDownStationSameWith(station));
 
         if (sectionContainingUpStation != null && sectionContainingDownStation != null) {
             removeMiddleStationOf(sectionContainingDownStation, sectionContainingUpStation);
@@ -140,22 +141,15 @@ public class Sections {
         }
     }
 
-    private Section findSectionWhichDownStationIs(Station station) {
-        return getSections().stream()
-                .filter(it -> it.hasDownStationSameWith(station))
-                .findFirst()
-                .orElse(null);
-    }
-
-    private Section findSectionWhichUpStationIs(Station station) {
-        return getSections().stream()
-                .filter(it -> it.hasUpStationSameWith(station))
-                .findFirst()
-                .orElse(null);
-    }
-
     private void removeMiddleStationOf(Section upSection, Section downSection) {
         downSection.removeConnectionWith(upSection);
         sections.remove(upSection);
+    }
+
+    private Section findSectionByFilter(Predicate<Section> predicate){
+        return getSections().stream()
+                .filter(predicate)
+                .findFirst()
+                .orElse(null);
     }
 }
