@@ -82,13 +82,16 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             Then 최단 경로 조회 실패함
     ```     
 
-* [ ] 최단 경로 조회 기능 구현하기
+* [x] 최단 경로 조회 기능 구현하기
     * 미션 수행 순서
-        * [△] 인수테스트 성공 시키기 : Mock 서버와 DTO를 정의하여 성공시키기
-        * [ ] 기능 구현
+        * [x] 인수테스트 성공 시키기 : Mock 서버와 DTO를 정의하여 성공시키기
+        * [x] 기능 구현
             * `PathController`에서부터 `PathService`,`PathResponse` 도출 → `PathServiceTest` 작성   
             * `PathService`에서 시작하여 `PathFinder`, `Path`, `SectionEdge` 도출 → `PathFinderTest` 작성
-
+        * [x] 예외상황 처리 구현
+            * 출발역과 도착역이 동일한 경우
+            * 출발역과 도착역이 연결되어 있지 않은 경우
+            * 출발역이나 도착역이 존재하지 않는 경우
 
 ## 🚀 1단계 인수 테스트 기반 리팩터링
 ### 구현사항 정리

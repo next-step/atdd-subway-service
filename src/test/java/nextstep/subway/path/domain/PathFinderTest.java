@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.Message;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PathFinderTest {
 
@@ -55,5 +57,43 @@ class PathFinderTest {
         assertThat(shortestPath.getStations()).hasSize(3)
                 .containsExactly(불광역, 연신내역, 응암역);
         assertThat(shortestPath.getDistance()).isEqualTo(10);
+    }
+
+    @DisplayName("출발역과 도착역이 동일한 경우 예외발생")
+    @Test
+    void 예외상황_출발역_도착역_동일() {
+        //when+then
+        assertThatThrownBy(() -> pathFinder.getDijkstraShortestPath(불광역, 불광역))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(Message.ERROR_START_AND_END_STATIONS_ARE_SAME.showText());
+    }
+
+
+    @DisplayName("출발역이나 도착역이 등록되어 있지 않은 경우 예외발생")
+    @Test
+    void 예외상황_출발역_혹은_도착역_등록_안되어있음() {
+        Station 강남역 = new Station("강남역");
+
+        //when+then
+        assertThatThrownBy(() -> pathFinder.getDijkstraShortestPath(불광역, 강남역))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(Message.ERROR_START_OR_END_STATIONS_NOT_REGISTERED.showText());
+    }
+
+    @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우 예외발생")
+    @Test
+    void 예외상황_출발역_도착역_경로_없음() {
+        //Given
+        Station 강남역 = new Station("강남역");
+        Station 광교역 = new Station("광교역");
+        Line 신분당선 = new Line("신분당선", "빨간색", 강남역, 광교역, 10);
+
+        모든노선.add(신분당선);
+        PathFinder newPathFinder = new PathFinder(모든노선);
+
+        //when+then
+        assertThatThrownBy(() -> newPathFinder.getDijkstraShortestPath(불광역, 광교역))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(Message.ERROR_PATH_NOT_FOUND.showText());
     }
 }

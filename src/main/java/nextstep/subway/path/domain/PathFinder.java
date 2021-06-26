@@ -1,12 +1,15 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.Message;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
+import java.util.Set;
 
 public class PathFinder {
 
@@ -25,14 +28,16 @@ public class PathFinder {
         addEdge(lines, newGraph);
 
         return newGraph;
-
     }
 
-    /* 리팩토링 필요 */
     private void addEdge(List<Line> lines, WeightedGraph<Station, SectionEdge> graph) {
         lines.forEach(line -> line.getSections().getSections()
-                .forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance().getDistanceValue())));
+                .forEach(section -> setEdgeWithWeight(section, graph)));
+    }
 
+    private void setEdgeWithWeight(Section section, WeightedGraph<Station, SectionEdge> graph) {
+        SectionEdge sectionEdge = graph.addEdge(section.getUpStation(), section.getDownStation());
+        graph.setEdgeWeight(sectionEdge, section.getDistance().getDistanceValue());
     }
 
     private void addVertex(List<Line> lines, WeightedGraph<Station, SectionEdge> graph) {
@@ -41,8 +46,21 @@ public class PathFinder {
     }
 
     public Path getDijkstraShortestPath(Station startStation, Station endStation) {
-        List<Station> path = algorithm.getPath(startStation, endStation).getVertexList();
-        int totalDistance = (int) algorithm.getPathWeight(startStation, endStation);
-        return new Path(path, totalDistance);
+        validateStations(startStation, endStation);
+        return new Path(algorithm.getPath(startStation, endStation));
+    }
+
+    private void validateStations(Station startStation, Station endStation) {
+        if (startStation.equals(endStation)) {
+            throw new IllegalArgumentException(Message.ERROR_START_AND_END_STATIONS_ARE_SAME.showText());
+        }
+        checkStationsRegistered(startStation, endStation);
+    }
+
+    private void checkStationsRegistered(Station startStation, Station endStation) {
+        Set<Station> stations = graph.vertexSet();
+        if (!stations.contains(startStation) || !stations.contains(endStation)) {
+            throw new IllegalArgumentException(Message.ERROR_START_OR_END_STATIONS_NOT_REGISTERED.showText());
+        }
     }
 }

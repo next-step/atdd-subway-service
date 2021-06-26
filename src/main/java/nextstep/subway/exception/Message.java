@@ -9,7 +9,10 @@ public enum Message {
     ERROR_DISTANCE_TOO_SHORT_TO_BE_CREATED("구간의 거리가 너무 짧습니다"),
     ERROR_CANNOT_FIND_LINE("등록되지 않은 노선입니다."),
     ERROR_CANNOT_FIND_MEMBER("등록되지 않은 사용자입니다."),
-    ERROR_CANNOT_FIND_STATION("등록되지 않은 지하철역입니다.");
+    ERROR_CANNOT_FIND_STATION("등록되지 않은 지하철역입니다."),
+    ERROR_START_AND_END_STATIONS_ARE_SAME("출발역과 도착역이 동일합니다. 다른 역을 입력해주세요."),
+    ERROR_START_OR_END_STATIONS_NOT_REGISTERED("출발역이나 도착역이 등록되어 있지 않습니다."),
+    ERROR_PATH_NOT_FOUND("경로를 조회할 수 없습니다.");
 
     private String text;
 
