@@ -1,72 +1,106 @@
 package nextstep.subway.line.domain;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import nextstep.subway.common.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Objects;
+import java.util.Optional;
 
+
+@Getter
+@NoArgsConstructor
 @Entity
-public class Section {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Table(uniqueConstraints = @UniqueConstraint(name = "unique_section_station_info", columnNames={"line_id", "up_station_id", "down_station_id"}))
+public class Section extends BaseEntity {
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "line_id")
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @JoinColumn(name = "line_id", foreignKey = @ForeignKey(name = "fk_section_to_line"))
     private Line line;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "up_station_id")
+    @JoinColumn(name = "up_station_id", foreignKey = @ForeignKey(name = "fk_section_to_up_station"))
     private Station upStation;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "down_station_id")
+    @JoinColumn(name = "down_station_id", foreignKey = @ForeignKey(name = "fk_section_to_down_station"))
     private Station downStation;
 
     private int distance;
 
-    public Section() {
+    @Builder
+    public Section(final Long id, final Station upStation, final Station downStation, final int distance) {
+        this.id = id;
+        this.registerStation(upStation, downStation, distance);
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
-        this.line = line;
+    public void registerStation(final Station upStation, final Station downStation, final int distance) {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
 
-    public Long getId() {
-        return id;
+    public void registerLine(Line line) {
+        Optional.ofNullable(line).ifPresent(it -> {
+            this.line = line;
+            it.addSection(this);
+        });
     }
 
-    public Line getLine() {
-        return line;
+    protected boolean isBefore(Section section) {
+        return Objects.equals(downStation, section.getUpStation());
     }
 
-    public Station getUpStation() {
-        return upStation;
+    protected boolean isAfter(Section section) {
+        return Objects.equals(upStation, section.getDownStation());
     }
 
-    public Station getDownStation() {
-        return downStation;
+    protected boolean contains(Station station) {
+        return Objects.equals(upStation, station) || Objects.equals(downStation, station);
     }
 
-    public int getDistance() {
-        return distance;
+    protected boolean hasSameUpStation(Section section) {
+        return Objects.equals(upStation, section.getUpStation());
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    protected boolean hasSameDownStation(Section section) {
+        return Objects.equals(downStation, section.getDownStation());
+    }
+
+    protected void updateUpStation(final Section section) {
+        updateDistance(section);
+
+        this.upStation = section.downStation;
+    }
+
+    protected void updateDownStation(final Section section) {
+        updateDistance(section);
+
+        this.downStation = section.upStation;
+    }
+
+    private void updateDistance(final Section section) {
+        if (isUpdateDistance(section)) {
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.upStation = station;
-        this.distance -= newDistance;
+
+        this.distance = getIntervalDistance(section);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
+    private boolean isUpdateDistance(final Section section) {
+        int distance = getIntervalDistance(section);
+        return distance < 1;
+    }
+
+    private int getIntervalDistance(final Section section) {
+        return this.distance - section.getDistance();
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s - %s (%s)", upStation, downStation, distance);
     }
 }

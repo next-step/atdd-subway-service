@@ -1,56 +1,64 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.BaseEntity;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import nextstep.subway.common.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Getter
+@NoArgsConstructor
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(name = "unique_line_name", columnNames={"name"}))
 public class Line extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(unique = true)
+
     private String name;
+
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Sections sections = new Sections();
 
-    public Line() {
-    }
-
-    public Line(String name, String color) {
+    public Line(final String name, final String color) {
         this.name = name;
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public Line(final String name, final String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+
+        Section section = Section.builder()
+                .upStation(upStation)
+                .downStation(downStation)
+                .distance(distance)
+                .build();
+
+        section.registerLine(this);
     }
 
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
+    public void addSection(final Section section) {
+        sections.add(section);
     }
 
-    public Long getId() {
-        return id;
+    public void update(final Line line) {
+        this.name = line.name;
+        this.color = line.color;
+        this.sections.update(line.getSections());
     }
 
-    public String getName() {
-        return name;
+    public List<Station> getStations() {
+        return sections.sortedStations();
     }
 
-    public String getColor() {
-        return color;
+    public List<Integer> getDistances() {
+        return sections.sortedSections()
+                .stream()
+                .map(x -> x.getDistance())
+                .collect(Collectors.toList());
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
 }

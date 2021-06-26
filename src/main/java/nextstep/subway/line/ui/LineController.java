@@ -1,9 +1,11 @@
 package nextstep.subway.line.ui;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.line.dto.SectionResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,14 +13,14 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.util.List;
 
+import static nextstep.subway.PageController.URIMapping.LINE;
+import static nextstep.subway.PageController.URIMapping.SECTION;
+
+@RequiredArgsConstructor
 @RestController
-@RequestMapping("/lines")
+@RequestMapping(LINE)
 public class LineController {
     private final LineService lineService;
-
-    public LineController(final LineService lineService) {
-        this.lineService = lineService;
-    }
 
     @PostMapping
     public ResponseEntity createLine(@RequestBody LineRequest lineRequest) {
@@ -50,14 +52,17 @@ public class LineController {
 
     @PostMapping("/{lineId}/sections")
     public ResponseEntity addLineStation(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
-        lineService.addLineStation(lineId, sectionRequest);
-        return ResponseEntity.ok().build();
+        SectionResponse sectionResponse = lineService.addLineStation(lineId, sectionRequest);
+
+        String uri = String.format("%s/%s%s/%s", LINE, sectionResponse.getLineId(), SECTION, sectionResponse.getId());
+        return ResponseEntity.created(URI.create(uri)).body(sectionResponse);
+
     }
 
     @DeleteMapping("/{lineId}/sections")
     public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
