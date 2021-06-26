@@ -1,20 +1,30 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.line.domain.LineRepository;
+import java.util.List;
+
+import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.domain.StationRepository;
+import nextstep.subway.station.application.StationService;
+import nextstep.subway.station.domain.Station;
 
 public class PathService {
 
-    private final LineRepository lines;
-    private final StationRepository stations;
+    private final LineService lineService;
+    private final StationService stationService;
 
-    public PathService(LineRepository lines, StationRepository stations) {
-        this.lines = lines;
-        this.stations = stations;
+    public PathService(LineService lineService, StationService stationService) {
+        this.lineService = lineService;
+        this.stationService = stationService;
     }
 
-    public PathResponse getShortestPath(Long source, Long target) {
-        return null;
+    public PathResponse getShortestPath(Long sourceId, Long targetId) {
+        List<Line> lines = lineService.findLinesEntities();
+        List<Station> stations = stationService.findStationEntities();
+        PathFinder finder = new PathFinder(stations, lines);
+
+        Station source = stationService.findStationById(sourceId);
+        Station target = stationService.findStationById(targetId);
+        return PathResponse.of(finder.findPath(source, target));
     }
 }

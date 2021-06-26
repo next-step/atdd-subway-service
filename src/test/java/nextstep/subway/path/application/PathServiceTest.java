@@ -14,38 +14,46 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.SectionTest;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.domain.StationRepository;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("경로 찾기 단위 테스트")
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
+
+    private PathService pathService;
+
     @Mock
-    LineRepository lines;
+    LineService lineService;
     @Mock
-    StationRepository stations;
+    StationService stationService;
 
     private Line 신분당선;
     private Line 이호선;
 
     @BeforeEach
     void setUp() {
+        pathService = new PathService(lineService, stationService);
+
         신분당선 = mock(Line.class);
         이호선 = mock(Line.class);
         // 양재-강남-교대
     }
 
     @Test
+    @DisplayName("최단 경로를 찾고 결과 확인")
     void getShortestPath() {
         // given
-        when(lines.findAll()).thenReturn(Stream.of(신분당선, 이호선).collect(toList()));
+        when(lineService.findLinesEntities()).thenReturn(Stream.of(신분당선, 이호선).collect(toList()));
+        when(stationService.findStationEntities()).thenReturn(Stream.of(양재역, 강남역, 교대역).collect(toList()));
+        when(stationService.findStationById(양재역.getId())).thenReturn(양재역);
+        when(stationService.findStationById(교대역.getId())).thenReturn(교대역);
         when(신분당선.getSections()).thenReturn(Stream.of(SectionTest.강남_양재_100).collect(toList()));
         when(이호선.getSections()).thenReturn(Stream.of(SectionTest.강남_교대_30).collect(toList()));
-        PathService pathService = new PathService(lines, stations);
 
         // when
         PathResponse pathResponse = pathService.getShortestPath(양재역.getId(), 교대역.getId());

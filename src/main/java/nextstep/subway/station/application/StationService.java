@@ -31,6 +31,10 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
+    public List<Station> findStationEntities() {
+        return stationRepository.findAll();
+    }
+
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }

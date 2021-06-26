@@ -4,19 +4,26 @@ import static java.util.Collections.*;
 
 import java.util.List;
 
+import org.jgrapht.GraphPath;
+
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
 public class Path {
 
-    private List<Station> stations;
-    private int distance;
+    private final List<Station> stations;
+    private final double distance;
 
-    Path(List<Station> stations, int distance) {
+    Path(List<Station> stations, double distance) {
         this.stations = stations;
         this.distance = distance;
     }
 
-    public int getDistance() {
+    public static Path of(GraphPath<Station, Section> path) {
+        return new Path(path.getVertexList(), path.getWeight());
+    }
+
+    public double getDistance() {
         return distance;
     }
 
