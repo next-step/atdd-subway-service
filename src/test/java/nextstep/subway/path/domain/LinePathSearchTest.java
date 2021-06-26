@@ -164,9 +164,6 @@ public class LinePathSearchTest {
 
     private static Stream<Arguments> priceResultSet() {
         return Stream.of(
-            Arguments.of(양재역, 잠실역, 1250),
-            Arguments.of(교대역, 선릉역, 1450),
-            Arguments.of(개성역, 강남역, 2150),
             Arguments.of(잠실역, 잠실나루역, 2150),
             Arguments.of(잠실역, 강변역, 2450));
     }
