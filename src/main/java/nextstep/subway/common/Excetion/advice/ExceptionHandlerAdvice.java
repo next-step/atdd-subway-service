@@ -13,8 +13,13 @@ import java.util.DuplicateFormatFlagsException;
 @RestControllerAdvice
 public class ExceptionHandlerAdvice {
 
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
+        return ResponseEntity.badRequest().build();
+    }
+
     @ExceptionHandler(DuplicateFormatFlagsException.class)
-    public ResponseEntity handlerIllegalArgsException(DataIntegrityViolationException e) {
+    public ResponseEntity handlerIllegalArgsException(DuplicateFormatFlagsException e) {
         return ResponseEntity.badRequest().build();
     }
 
