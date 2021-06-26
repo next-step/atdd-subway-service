@@ -10,8 +10,8 @@ import static nextstep.subway.path.domain.line.LineCalculator.calcLines;
 public class FareCalculator {
     public static Money calcFare(LoginMember loginMember, ShortestDistance shortestDistance) {
         Money money = calcDistance(shortestDistance.shortestDistance());
-        money = calcAge(loginMember, money);
         money = calcLines(new EfficientLines(shortestDistance.usedLines()), money);
+        money = calcAge(loginMember, money);
 
         return money;
     }
