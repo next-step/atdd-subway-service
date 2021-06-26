@@ -9,7 +9,9 @@ import static org.mockito.BDDMockito.given;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
@@ -19,6 +21,7 @@ import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
+import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,10 +50,15 @@ public class FavoriteServiceTest {
     @DisplayName("즐겨찾기 생성")
     @Test
     void createFavorite() {
+
         // given
         given(memberService.findById(any())).willReturn(member);
-        given(stationService.findById(서대문역.getId())).willReturn(서대문역);
-        given(stationService.findById(광화문역.getId())).willReturn(광화문역);
+
+        Map<Long, Station> stationMap = new HashMap<>();
+        stationMap.put(서대문역.getId(), 서대문역);
+        stationMap.put(광화문역.getId(), 광화문역);
+        given(stationService.findMapByIds(서대문역.getId(), 광화문역.getId())).willReturn(stationMap);
+
         given(favoriteRepository.save(any())).willReturn(favorite);
 
         // when

@@ -1,6 +1,8 @@
 package nextstep.subway.station.application;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -42,5 +44,19 @@ public class StationService {
     public Station findById(Long id) {
         return stationRepository.findById(id)
             .orElseThrow(StationNotFoundException::new);
+    }
+
+    public Map<Long, Station> findMapByIds(Long... ids) {
+        List<Station> stations = findByIds(ids);
+        return stations
+            .stream()
+            .collect(Collectors.toMap(
+                Station::getId,
+                i2 -> i2)
+            );
+    }
+
+    public List<Station> findByIds(Long... ids) {
+        return stationRepository.findAllById(Arrays.asList(ids));
     }
 }

@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import java.util.List;
+import java.util.Map;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -28,11 +29,17 @@ public class FavoriteService {
     }
 
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
-        Member member = memberService.findById(loginMember.getId());
-        Station source = stationService.findById(request.getSource());
-        Station target = stationService.findById(request.getTarget());
-        Favorite persistFavorite = favoriteRepository.save(new Favorite(member, source, target));
+        Favorite newFavorite = makeFavorite(loginMember.getId(), request.getSource(), request.getTarget());
+        Favorite persistFavorite = favoriteRepository.save(newFavorite);
         return FavoriteResponse.of(persistFavorite);
+    }
+
+    private Favorite makeFavorite(long memberId, long sourceStationId, long targetStationId) {
+        Member member = memberService.findById(memberId);
+        Map<Long, Station> stationMap = stationService.findMapByIds(sourceStationId, targetStationId);
+        Station source = stationMap.get(sourceStationId);
+        Station target = stationMap.get(targetStationId);
+        return new Favorite(member, source, target);
     }
 
     public List<FavoriteResponse> findByMemberId(Long memberId) {
