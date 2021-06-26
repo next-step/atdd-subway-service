@@ -82,12 +82,20 @@ public class Section extends BaseEntity {
     }
 
     private void updateDistance(final Section section) {
-        int distance = this.distance - section.getDistance();
-        if (distance < 1) {
+        if (isUpdateDistance(section)) {
             throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
 
-        this.distance = distance;
+        this.distance = getIntervalDistance(section);
+    }
+
+    private boolean isUpdateDistance(final Section section) {
+        int distance = getIntervalDistance(section);
+        return distance < 1;
+    }
+
+    private int getIntervalDistance(final Section section) {
+        return this.distance - section.getDistance();
     }
 
     @Override

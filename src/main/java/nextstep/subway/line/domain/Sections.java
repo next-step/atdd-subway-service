@@ -26,11 +26,11 @@ public class Sections  {
         sections.add(newSection);
     }
 
-    public boolean isEmpty() {
+    private boolean isEmpty() {
         return sections.isEmpty();
     }
 
-    public boolean isNotEmpty() {
+    private boolean isNotEmpty() {
         return isEmpty() == false;
     }
 
@@ -201,7 +201,7 @@ public class Sections  {
             throw new IllegalArgumentException("구간의 최소 갯수는 1개입니다. 더이상 삭제할수 없습니다.");
         }
 
-        if (containsStation(deleteStation) == false) {
+        if (!containsStation(deleteStation)) {
             throw new IllegalArgumentException("존재하지 않는 역은 삭제할수 없습니다.");
         }
     }
