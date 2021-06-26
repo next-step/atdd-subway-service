@@ -32,4 +32,8 @@ public class AuthAcceptanceStep {
         TokenResponse actual = 로그인_요청_결과.as(TokenResponse.class);
         assertThat(actual.getAccessToken()).isNotNull();
     }
+
+    public static void 로그인_실패됨(ExtractableResponse<Response> 로그인_요청_실패_결과) {
+        assertThat(로그인_요청_실패_결과.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 }

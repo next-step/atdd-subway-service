@@ -7,10 +7,10 @@
 - [X] 토큰 발급 기능 (로그인) 인수 테스트 만들기
   - [X] 검증하는 인수 테스트 만들기
   - [X] AuthAcceptanceTest 인수 테스트 만들기
-- [ ] 로그인 기능 구현
-  - [ ] 이메일과 패스워드를 이용하여 요청 시 access token을 응답하는 기능을 구현하기
-  - [ ] AuthAcceptanceTest을 만족하도록 구현하면 됨
-  - [ ] AuthAcceptanceTest에서 제시하는 예외 케이스도 함께 고려하여 구현하기
+- [X] 로그인 기능 구현
+  - [X] 이메일과 패스워드를 이용하여 요청 시 access token을 응답하는 기능을 구현하기
+  - [X] AuthAcceptanceTest을 만족하도록 구현하면 됨
+  - [X] AuthAcceptanceTest에서 제시하는 예외 케이스도 함께 고려하여 구현하기
 - [ ] Bearer Auth 유효하지 않은 토큰 인수 테스트
   - [ ] 유효하지 않은 토큰으로 /members/me 요청을 보낼 경우에 대한 예외 처리
 

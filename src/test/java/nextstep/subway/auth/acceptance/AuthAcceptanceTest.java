@@ -12,7 +12,6 @@ import static nextstep.subway.member.MemberAcceptanceTest.회원_등록되어_�
 
 @DisplayName("로그인 기능")
 class AuthAcceptanceTest extends AcceptanceTest {
-
     private String email;
     private String password;
     private int age;
@@ -31,28 +30,20 @@ class AuthAcceptanceTest extends AcceptanceTest {
     void login() {
         // Given 회원 등록되어 있음
         회원_등록되어_있음(email, password, age);
+        // When 등록된 이메일이 아닌 다른 이메일로 요청
+        ExtractableResponse<Response> 로그인_요청_실패_결과1 = 로그인_요청("bad_email", password);
+        // Then 로그인 실패됨
+        로그인_실패됨(로그인_요청_실패_결과1);
+
+        // When 올바른 비밀번호가 아닌 것으로 요청
+        ExtractableResponse<Response> 로그인_요청_실패_결과2 = 로그인_요청(email, "bad_password");
+        // Then 로그인 실패됨
+        로그인_실패됨(로그인_요청_실패_결과2);
 
         // When 로그인 요청
         ExtractableResponse<Response> 로그인_요청_결과 = 로그인_요청(email, password);
-
         // Then 로그인 됨
         로그인_응답_됨(로그인_요청_결과);
         로그인_됨(로그인_요청_결과);
     }
-
-    @DisplayName("Bearer Auth")
-    @Test
-    void myInfoWithBearerAuth() {
-    }
-
-    @DisplayName("Bearer Auth 로그인 실패")
-    @Test
-    void myInfoWithBadBearerAuth() {
-    }
-
-    @DisplayName("Bearer Auth 유효하지 않은 토큰")
-    @Test
-    void myInfoWithWrongBearerAuth() {
-    }
-
 }
