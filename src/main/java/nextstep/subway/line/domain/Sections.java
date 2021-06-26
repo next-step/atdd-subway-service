@@ -34,7 +34,6 @@ public class Sections {
         }
 
         connectSectionIfHasSameDownStation(section);
-
     }
 
     public List<Station> getStations() {
