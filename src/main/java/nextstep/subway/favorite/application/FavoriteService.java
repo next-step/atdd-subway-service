@@ -47,7 +47,7 @@ public class FavoriteService {
     }
 
     public void deleteFavorite(Long memberId, Long favoriteId) {
-        Favorite favorite = favoriteRepository.findById(favoriteId)
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, memberId)
             .orElseThrow(FavoriteNotFoundException::new);
 
         if (!favorite.isOwner(memberId)) {

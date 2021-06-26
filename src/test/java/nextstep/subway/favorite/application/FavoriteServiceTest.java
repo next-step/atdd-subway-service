@@ -90,7 +90,7 @@ public class FavoriteServiceTest {
     @Test
     void deleteFavorite() {
         // given
-        given(favoriteRepository.findById(any())).willReturn(Optional.of(favorite));
+        given(favoriteRepository.findByIdAndMemberId(any(), any())).willReturn(Optional.of(favorite));
 
         // when
         favoriteService.deleteFavorite(member.getId(), favorite.getId());
