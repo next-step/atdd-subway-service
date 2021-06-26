@@ -8,6 +8,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Fare implements Comparable<Fare> {
 	public static final Fare ZERO = Fare.wonOf(0);
+	public static final Fare YOUNG_DEFAULT_DISCOUNT = Fare.wonOf(350);
 
 	@Column
 	private int amount;
@@ -23,12 +24,16 @@ public class Fare implements Comparable<Fare> {
 		return new Fare(amount);
 	}
 
-	public Fare times(int n) {
-		return Fare.wonOf(this.amount * n);
+	public Fare times(double n) {
+		return Fare.wonOf((int)(this.amount * n));
 	}
 
 	public Fare plus(Fare other) {
 		return Fare.wonOf(this.amount + other.amount);
+	}
+
+	public Fare minus(Fare other) {
+		return Fare.wonOf(this.amount - other.amount);
 	}
 
 	public int getAmount() {

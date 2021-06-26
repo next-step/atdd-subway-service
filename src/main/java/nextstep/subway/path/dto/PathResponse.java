@@ -2,6 +2,7 @@ package nextstep.subway.path.dto;
 
 import java.util.List;
 
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -18,9 +19,9 @@ public class PathResponse {
 
 	public PathResponse() {}
 
-	public static PathResponse of(Path subwayPath) {
+	public static PathResponse of(Path subwayPath, Fare fare) {
 		List<StationResponse> stationResponses = StationResponse.listOf(subwayPath.getStations());
-		return new PathResponse(stationResponses, subwayPath.sumTotalDistance(), subwayPath.calculateFare().getAmount());
+		return new PathResponse(stationResponses, subwayPath.sumTotalDistance(), fare.getAmount());
 	}
 
 	public List<StationResponse> getStations() {

@@ -1,10 +1,14 @@
 package nextstep.subway.path.application;
 
+import static nextstep.subway.path.domain.FareCalculator.*;
+
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.Path;
@@ -26,12 +30,13 @@ public class PathService {
 	}
 
 	@Transactional(readOnly = true)
-	public PathResponse findPath(Long sourceStationId, Long targetStationId) {
+	public PathResponse findPath(LoginMember loginMember, Long sourceStationId, Long targetStationId) {
 		List<Line> lines = lineRepository.findAll();
 		Station source = stationRepository.findById(sourceStationId).orElseThrow(() -> new PathException("출발역이 존재하지 않습니다."));
 		Station target = stationRepository.findById(targetStationId).orElseThrow(() -> new PathException("도착역이 존재하지 않습니다."));
 		PathFinder pathFinder = PathFinder.of(lines);
 		Path path = pathFinder.findPath(source, target);
-		return PathResponse.of(path);
+		Fare fare = calculateFare(path, loginMember);
+		return PathResponse.of(path, fare);
 	}
 }

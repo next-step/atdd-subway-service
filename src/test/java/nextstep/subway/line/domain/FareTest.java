@@ -1,11 +1,9 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import nextstep.subway.line.domain.Fare;
 
 class FareTest {
 
@@ -36,6 +34,17 @@ class FareTest {
 		Fare 오만오천원 = 오만원.plus(오천원);
 
 		assertThat(오만오천원).isEqualTo(Fare.wonOf(55000));
+	}
+
+	@DisplayName("요금에 요금을 뺄 수 있다.")
+	@Test
+	void minusTest() {
+		Fare 오만원 = Fare.wonOf(50000);
+		Fare 오천원 = Fare.wonOf(5000);
+
+		Fare 사만오천원 = 오만원.minus(오천원);
+
+		assertThat(사만오천원).isEqualTo(Fare.wonOf(45000));
 	}
 
 	@DisplayName("요금끼리 크기를 비교할 수 있다.")
