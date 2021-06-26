@@ -1,13 +1,12 @@
 package nextstep.subway.path.service;
 
-import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,24 +15,22 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Path 서비스테스트")
 @ExtendWith(MockitoExtension.class)
-
-public class PathServiceTest {
+class PathServiceTest {
 
     @Mock
     private LineRepository lineRepository;
 
     @Mock
-    private StationRepository stationRepository;
-
-    @Mock
     private StationService stationService;
-
-    @InjectMocks
-    private LineService lineService;
 
     @InjectMocks
     private PathService pathService;
@@ -55,6 +52,15 @@ public class PathServiceTest {
 
     @BeforeEach
     void setUp() {
+        when(stationService.findStationById(1L)).thenReturn(불광역);
+        when(stationService.findStationById(2L)).thenReturn(응암역);
+
+        삼호선.addSection(new Section(삼호선, 연신내역, 불광역, 5));
+        육호선.addSection(new Section(육호선, 연신내역, 응암역, 5));
+        육호선.addSection(new Section(육호선, 응암역, 불광역, 100));
+
+        List<Line> lines = new ArrayList<>(Arrays.asList(삼호선, 육호선));
+        when(lineRepository.findAll()).thenReturn(lines);
     }
 
     @DisplayName("최단경로를 찾는다")
@@ -68,6 +74,7 @@ public class PathServiceTest {
         assertThat(response.getPathStations()).hasSize(3); //불광역 --> 연신내역 --> 응암역
         assertThat(response.getPathStations()).extracting("name")
                 .containsExactly("불광역", "연신내역", "응암역");
+        assertThat(response.getDistance()).isEqualTo(10);
 
     }
 }

@@ -6,19 +6,19 @@ import java.util.List;
 
 public class Path {
 
-    private final List<Station> pathStations;
-    private final int totalDistance;
+    private final List<Station> stations;
+    private final int distance;
 
     public Path(List<Station> pathStations, int totalDistance) {
-        this.pathStations = pathStations;
-        this.totalDistance = totalDistance;
+        this.stations = pathStations;
+        this.distance = totalDistance;
     }
 
-    public List<Station> getPathStations() {
-        return this.pathStations;
+    public List<Station> getStations() {
+        return this.stations;
     }
 
-    public int getTotalDistance() {
-        return this.totalDistance;
+    public int getDistance() {
+        return this.distance;
     }
 }
