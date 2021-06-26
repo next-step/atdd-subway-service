@@ -38,8 +38,8 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(Section section) {
-        sections.addSection(section);
         section.setLine(this);
+        sections.addSection(section);
     }
 
     public void removeStation(Station station) {
