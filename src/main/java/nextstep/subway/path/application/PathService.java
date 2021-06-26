@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationGraph;
@@ -28,7 +29,7 @@ public class PathService {
 		List<Line> lines = lineRepository.findAll();
 		Station sourceStation = findStationById(source);
 		Station targetStation = findStationById(target);
-		StationGraph stationGraph = new StationGraph(lines);
+		StationGraph stationGraph = new StationGraph(new Lines(lines));
 		return PathResponse.of(stationGraph.getShortestPath(sourceStation, targetStation));
 	}
 

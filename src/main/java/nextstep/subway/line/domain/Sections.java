@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import javax.persistence.CascadeType;
@@ -20,11 +21,6 @@ public class Sections {
 
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private List<Section> sections = new ArrayList<>();
-
-	// todo : 맘에안든다.
-	public List<Section> getSections () {
-		return this.sections;
-	}
 
 	public void addSection(Section newSection) {
 		List<Station> stations = this.getStations();
@@ -52,6 +48,10 @@ public class Sections {
 			addNextStation(stations);
 		}
 		return stations;
+	}
+
+	public void forEach(Consumer<? super Section> action) {
+		sections.forEach(action);
 	}
 
 	private void addNextStation(List<Station> stations) {
