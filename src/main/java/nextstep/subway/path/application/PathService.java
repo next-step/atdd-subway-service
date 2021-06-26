@@ -7,8 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.domain.Fare;
-import nextstep.subway.path.domain.FareCalculator;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathException;
 import nextstep.subway.path.domain.PathFinder;
@@ -34,8 +32,6 @@ public class PathService {
 		Station target = stationRepository.findById(targetStationId).orElseThrow(() -> new PathException("도착역이 존재하지 않습니다."));
 		PathFinder pathFinder = PathFinder.of(lines);
 		Path path = pathFinder.findPath(source, target);
-		FareCalculator fareCalculator = FareCalculator.of(path);
-		Fare fare = fareCalculator.calculateFare();
-		return PathResponse.of(path, fare);
+		return PathResponse.of(path);
 	}
 }

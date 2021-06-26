@@ -3,7 +3,6 @@ package nextstep.subway.path.domain;
 import java.util.List;
 import java.util.Optional;
 
-import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -42,7 +41,7 @@ public class PathFinder {
 
 	private static void addVertexesAndEdges(WeightedMultigraph<Station, SectionEdge> graph, Line line) {
 		for (Section section : line.getSections()) {
-			SectionEdge edge = new SectionEdge(section);
+			SectionEdge edge = new SectionEdge(section, line.getExtraFare());
 			graph.addVertex(edge.getUpStation());
 			graph.addVertex(edge.getDownStation());
 			graph.addEdge(edge.getUpStation(), edge.getDownStation(), edge);

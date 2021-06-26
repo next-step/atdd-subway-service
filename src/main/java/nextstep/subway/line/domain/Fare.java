@@ -1,12 +1,18 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.line.domain;
 
 import java.util.Objects;
 
-public class Fare {
-	static final Fare BASIC = Fare.wonOf(1250);
-	static final Fare EXTRA_FARE_UNIT = Fare.wonOf(100);
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
-	private final int amount;
+@Embeddable
+public class Fare implements Comparable<Fare> {
+	public static final Fare ZERO = Fare.wonOf(0);
+
+	@Column
+	private int amount;
+
+	protected Fare() {}
 
 	private Fare(int amount) {
 		validateNonNegative(amount);
@@ -17,12 +23,16 @@ public class Fare {
 		return new Fare(amount);
 	}
 
-	Fare times(int n) {
+	public Fare times(int n) {
 		return Fare.wonOf(this.amount * n);
 	}
 
-	Fare plus(Fare other) {
+	public Fare plus(Fare other) {
 		return Fare.wonOf(this.amount + other.amount);
+	}
+
+	public int getAmount() {
+		return amount;
 	}
 
 	private void validateNonNegative(int amount) {
@@ -46,7 +56,15 @@ public class Fare {
 		return Objects.hash(amount);
 	}
 
-	public int getAmount() {
-		return amount;
+	@Override
+	public int compareTo(Fare other) {
+		return Integer.compare(this.amount, other.amount);
+	}
+
+	@Override
+	public String toString() {
+		return "Fare{" +
+			"amount=" + amount +
+			'}';
 	}
 }

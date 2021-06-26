@@ -11,17 +11,29 @@ public class Line extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String name;
+
     private String color;
+
     @Embedded
     private Sections sections = new Sections();
+
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "extra_fare"))
+    private Fare extraFare;
 
     protected Line() { }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
+        this(name, color, upStation, downStation, distance, 0);
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int extraFare) {
         this.name = name;
         this.color = color;
+        this.extraFare = Fare.wonOf(extraFare);
         addSection(upStation, downStation, distance);
     }
 
@@ -56,6 +68,10 @@ public class Line extends BaseEntity {
 
     public List<Section> getSections() {
         return sections.getSections();
+    }
+
+    public Fare getExtraFare() {
+        return extraFare;
     }
 }
 
