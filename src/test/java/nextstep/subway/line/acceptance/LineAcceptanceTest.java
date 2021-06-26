@@ -117,6 +117,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_삭제됨(response);
     }
 
+    public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(
+            String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
+        LineRequest params = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+        return 지하철_노선_등록되어_있음(params);
+    }
+
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest params) {
         return 지하철_노선_생성_요청(params);
     }
