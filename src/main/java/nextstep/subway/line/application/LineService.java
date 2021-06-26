@@ -62,15 +62,16 @@ public class LineService {
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
+        Map<Long, Station> stationMap = stationService.findMapByIds(request.getUpStationId(), request.getDownStationId());
+        Station upStation = stationMap.get(request.getUpStationId());
+        Station downStation = stationMap.get(request.getDownStationId());
         Line persistLine = findById(lineId);
         Section section = new Section(persistLine, upStation, downStation, request.getDistance());
         persistLine.addSection(section);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Station station = stationService.findStationById(stationId);
+        Station station = stationService.findById(stationId);
         Line line = findById(lineId);
         line.deleteStation(station);
     }

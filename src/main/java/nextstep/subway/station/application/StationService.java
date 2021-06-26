@@ -37,10 +37,6 @@ public class StationService {
         stationRepository.deleteById(id);
     }
 
-    public Station findStationById(Long id) {
-        return findById(id);
-    }
-
     public Station findById(Long id) {
         return stationRepository.findById(id)
             .orElseThrow(StationNotFoundException::new);
