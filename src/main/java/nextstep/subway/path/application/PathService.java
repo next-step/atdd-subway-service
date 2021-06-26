@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.station.NoStationException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Section;
@@ -27,14 +28,14 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPathBySourceAndTarget(Long sourceId, Long targetId) {
+    public PathResponse findPathBySourceAndTarget(Long sourceId, Long targetId, LoginMember loginMember) {
         List<Section> allSections = lineService.getAllSections();
         Station source = stationService.findByIdWithError(sourceId,
             new NoStationException(NoStationException.NO_UPSTAION));
         Station target = stationService.findByIdWithError(targetId,
             new NoStationException(NoStationException.NO_DOWNSTATION));
-        Path path = LinePathSearch.of(allSections).searchPath(source, target);
-        return PathResponse.of(path.getStations(), path.getMinDistance());
+        Path path = LinePathSearch.of(allSections, loginMember).searchPath(source, target);
+        return PathResponse.of(path.getStations(), path.getMinDistance(), path.getPrice());
     }
 
 }

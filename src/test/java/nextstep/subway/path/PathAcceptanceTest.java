@@ -123,7 +123,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단거리를_요금을_확인한다(response, 1250);
 
         // When 최단거리 경로 요청 20km
-        response = 최단거리_경로_요청(교대역, 선릉역);
+        response = 최단거리_경로_요청(강남역, 분당역);
 
         //then 10km초과∼50km까지(5km마다 100원)
         최단거리를_요금을_확인한다(response, 1450);
@@ -165,8 +165,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response_12세 = 최단거리_경로_요청(개성역, 강남역, 사용자_토큰_12세);
 
         //then 50km초과 시 (8km마다 100원) 증가한다. 1250(10km) + 800(40km) + 100(10km)
-        최단거리를_요금을_확인한다(response_13세, 1440);
-        최단거리를_요금을_확인한다(response_12세, 900);
+        최단거리를_요금을_확인한다(response_13세, 1720);
+        최단거리를_요금을_확인한다(response_12세, 1075);
     }
 
     @Test

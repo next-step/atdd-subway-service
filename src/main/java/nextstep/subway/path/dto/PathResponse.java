@@ -13,13 +13,14 @@ public class PathResponse {
 
     public PathResponse() {}
 
-    private PathResponse(List<StationResponse> stations, int distance) {
+    private PathResponse(List<StationResponse> stations, int distance, int fare) {
         this.stations = stations;
         this.distance = distance;
+        this.fare = fare;
     }
 
-    public static PathResponse of(List<Station> stations, int distance) {
-        return new PathResponse(toReseponse(stations), distance);
+    public static PathResponse of(List<Station> stations, int distance, int fare) {
+        return new PathResponse(toReseponse(stations), distance, fare);
     }
 
     private static List<StationResponse> toReseponse(List<Station> stations) {
