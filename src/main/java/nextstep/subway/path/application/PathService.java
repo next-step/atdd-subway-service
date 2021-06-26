@@ -9,8 +9,8 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationGraph;
 import nextstep.subway.station.domain.StationRepository;
-import nextstep.subway.utils.StationPathCalculator;
 
 @Service
 @Transactional
@@ -28,7 +28,8 @@ public class PathService {
 		List<Line> lines = lineRepository.findAll();
 		Station sourceStation = findStationById(source);
 		Station targetStation = findStationById(target);
-		return StationPathCalculator.findShortestDistance(lines, sourceStation, targetStation);
+		StationGraph stationGraph = new StationGraph(lines);
+		return PathResponse.of(stationGraph.getShortestPath(sourceStation, targetStation));
 	}
 
 	public Station findStationById(Long id) {

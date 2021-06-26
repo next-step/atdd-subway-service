@@ -34,9 +34,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	/**
 	 * 교대역    --- *2호선* ---   강남역
 	 * |                        |
-	 * *3호선*                   *신분당선*
+	 * *3호선*                  *신분당선*
 	 * |                        |
-	 * 남부터미널역  --- *3호선* ---   양재
+	 * 남부터미널역  --- *3호선*  ---   양재
 	 */
 	@BeforeEach
 	void pathSetUp() {
@@ -59,14 +59,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	@DisplayName("최단 경로 조회하기")
 	@Test
 	void 최단_경로_조회하기() {
-		ExtractableResponse<Response> response = 최단_경로_조회_요청하기(강남역.getId().toString(), 남부터미널역.getId().toString());
-		assertThat(response.body().jsonPath().getInt("distance")).isEqualTo(13);
+		ExtractableResponse<Response> response = 최단_경로_조회_요청하기(강남역.getId(), 남부터미널역.getId());
+		assertThat(response.body().jsonPath().getDouble("distance")).isEqualTo(12);
+		assertThat(response.body().jsonPath().getList("stations").size()).isEqualTo(3);
 	}
 
 	@DisplayName("최단 경로 조회하기 - 출발역과 도착역이 같은 경우(에러 발생)")
 	@Test
 	void 최단_경로_조회하기_출발역과_도착역이_같은_경우() {
-		ExtractableResponse<Response> response = 최단_경로_조회_요청하기(강남역.getId().toString(), 강남역.getId().toString());
+		ExtractableResponse<Response> response = 최단_경로_조회_요청하기(강남역.getId(), 강남역.getId());
 		최단_경로_조회하기_실패(response);
 
 	}
@@ -79,18 +80,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		LineResponse 일호선 = lineAcceptanceTest.지하철_노선_등록되어_있음(
 			new LineRequest("일호선", "bg-blue-600", 서울역.getId(), 신도림역.getId(), 5)).as(LineResponse.class);
 
-		ExtractableResponse<Response> response = 최단_경로_조회_요청하기(강남역.getId().toString(), 서울역.getId().toString());
+		ExtractableResponse<Response> response = 최단_경로_조회_요청하기(강남역.getId(), 서울역.getId());
 		최단_경로_조회하기_실패(response);
 	}
 
 	@DisplayName("최단 경로 조회하기 - 존재하지 않은 출발역이나 도착역을 조회 할 경우(에러 발생)")
 	@Test
 	void 최단_경로_조회하기_존재하지_않은_출발역이나_도착역을_조회_할_경우() {
-		ExtractableResponse<Response> response = 최단_경로_조회_요청하기("9", "10");
+		ExtractableResponse<Response> response = 최단_경로_조회_요청하기(9L, 10L);
 		최단_경로_조회하기_실패(response);
 	}
 
-	private ExtractableResponse<Response> 최단_경로_조회_요청하기(String source, String target) {
+	private ExtractableResponse<Response> 최단_경로_조회_요청하기(Long source, Long target) {
 		return get("/paths?source=" + source + "&target=" + target);
 	}
 
