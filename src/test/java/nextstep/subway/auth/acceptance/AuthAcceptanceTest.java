@@ -50,7 +50,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public static TokenResponse 로그인_되어_있음(String email, String password) {
-        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
+        TokenRequest tokenRequest = new TokenRequest(email, password);
         ExtractableResponse<Response> response = 로그인_요청(tokenRequest);
         return response.as(TokenResponse.class);
     }
