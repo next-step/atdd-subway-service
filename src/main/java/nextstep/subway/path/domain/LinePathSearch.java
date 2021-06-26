@@ -6,6 +6,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.path.PathException;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -14,10 +15,31 @@ public class LinePathSearch {
 
     private WeightedMultigraph<Station, SectionEdge> weightedMultigraph;
     private DijkstraShortestPath<Station, SectionEdge> dijkstra;
+    private LoginMember loginMember;
 
     private LinePathSearch(List<Section> sections) {
         this.weightedMultigraph = settingGraph(sections);
         this.dijkstra = new DijkstraShortestPath<>(this.weightedMultigraph);
+    }
+
+    private LinePathSearch(List<Section> sections, LoginMember loginMember) {
+        this.weightedMultigraph = settingGraph(sections);
+        this.dijkstra = new DijkstraShortestPath<>(this.weightedMultigraph);
+        this.loginMember = loginMember;
+    }
+
+    public static LinePathSearch of(List<Section> sections, LoginMember loginMember) {
+        return new LinePathSearch(sections, loginMember);
+    }
+
+    public static LinePathSearch of(List<Section> sections) {
+        return new LinePathSearch(sections);
+    }
+
+    public Path searchPath(Station source, Station target) {
+        validataionStation(source, target);
+        GraphPath<Station, SectionEdge> path = dijkstra.getPath(source, target);
+        return StationsDijkstraPath.of(path);
     }
 
     private WeightedMultigraph<Station, SectionEdge> settingGraph(List<Section> sections) {
@@ -36,16 +58,6 @@ public class LinePathSearch {
                 graph.addEdge(section.getUpStation(), section.getDownStation(), edge);
                 graph.setEdgeWeight(edge, section.getDistance());
             });
-    }
-
-    public static LinePathSearch of(List<Section> sections) {
-        return new LinePathSearch(sections);
-    }
-
-    public Path searchPath(Station source, Station target) {
-        validataionStation(source, target);
-        GraphPath<Station, SectionEdge> path = dijkstra.getPath(source, target);
-        return StationsDijkstraPath.of(path);
     }
 
     private void validataionStation(Station source, Station target) {
