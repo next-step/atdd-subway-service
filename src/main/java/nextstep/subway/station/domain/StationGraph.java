@@ -48,7 +48,7 @@ public class StationGraph {
 	}
 
 	private void validatePaths(List<GraphPath<Station, DefaultWeightedEdge>> paths) {
-		if (paths.size() == 0) {
+		if (paths.isEmpty()) {
 			throw new StationGraphException("출발역과 도착역이 연결되어 있지 않습니다.");
 		}
 	}

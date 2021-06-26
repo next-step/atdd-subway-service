@@ -72,8 +72,8 @@ public class Sections {
 
 	private Station getFirstSection() {
 		return sections.stream()
-			.filter(section -> isFirstSection(section))
-			.map(section -> section.getUpStation())
+			.filter(this::isFirstSection)
+			.map(Section::getUpStation)
 			.findFirst()
 			.orElseThrow(() -> new InvalidSectionsException("첫번째 역이 존재하지 않습니다."));
 	}
@@ -90,11 +90,11 @@ public class Sections {
 	}
 
 	private boolean isNoneMatchUpStationInSections(Section newSection, List<Station> stations) {
-		return stations.stream().noneMatch(it -> newSection.isEqualsUpStation(it));
+		return stations.stream().noneMatch(newSection::isEqualsUpStation);
 	}
 
 	private boolean isNoneMatchDownStationInSections(Section newSection, List<Station> stations) {
-		return stations.stream().noneMatch(it -> newSection.isEqualsDownStation(it));
+		return stations.stream().noneMatch(newSection::isEqualsDownStation);
 	}
 
 	private void validateSection(Section section) {
