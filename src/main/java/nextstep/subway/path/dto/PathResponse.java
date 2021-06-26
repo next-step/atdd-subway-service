@@ -43,4 +43,12 @@ public class PathResponse {
                 ", distance=" + distance +
                 '}';
     }
+
+    public List<StationResponse> getStationResponses() {
+        return stationResponses;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
 }
