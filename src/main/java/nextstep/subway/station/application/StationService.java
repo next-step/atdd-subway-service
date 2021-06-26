@@ -6,7 +6,6 @@ import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +16,7 @@ public class StationService {
     private final StationRepository stationRepository;
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station persistStation = stationRepository.save(stationRequest.toEntity());
+        Station persistStation = stationRepository.save(stationRequest.toStation());
         return StationResponse.of(persistStation);
     }
 

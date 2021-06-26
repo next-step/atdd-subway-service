@@ -3,12 +3,11 @@ package nextstep.subway.station.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.subway.common.BaseRequest;
 import nextstep.subway.station.domain.Station;
 
 @Getter
 @NoArgsConstructor
-public class StationRequest extends BaseRequest<Station> {
+public class StationRequest {
     private String name;
 
     @Builder
@@ -16,8 +15,7 @@ public class StationRequest extends BaseRequest<Station> {
         this.name = name;
     }
 
-    @Override
-    public Station toEntity() {
+    public Station toStation() {
         return new Station(name);
     }
 }

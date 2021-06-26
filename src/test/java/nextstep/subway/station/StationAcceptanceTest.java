@@ -110,7 +110,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> requestCreateStation(StationRequest param) {
-        return restAssuredTemplate.post(param.toMap());
+        return restAssuredTemplate.post(param);
     }
 
     public static ExtractableResponse<Response> requestCreateStation(String name) {

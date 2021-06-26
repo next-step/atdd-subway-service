@@ -294,7 +294,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     }
 
     public ExtractableResponse<Response> requestCreatedSection(final SectionRequest param) {
-        return restAssuredTemplate.post(param.toMap());
+        return restAssuredTemplate.post(param);
     }
 
     public ExtractableResponse<Response> requestShowSection(final Long id) {

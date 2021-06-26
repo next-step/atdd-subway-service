@@ -2,12 +2,11 @@ package nextstep.subway.member.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.subway.common.BaseRequest;
 import nextstep.subway.member.domain.Member;
 
 @Getter
 @NoArgsConstructor
-public class MemberRequest extends BaseRequest<Member> {
+public class MemberRequest {
     private String email;
     private String password;
     private Integer age;
@@ -18,8 +17,7 @@ public class MemberRequest extends BaseRequest<Member> {
         this.age = age;
     }
 
-    @Override
-    public Member toEntity() {
+    public Member toMember() {
         return new Member(email, password, age);
     }
 }

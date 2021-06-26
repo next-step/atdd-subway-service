@@ -263,11 +263,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> requestCreatedLine(final LineRequest param) {
-        return restAssuredTemplate.post(param.toMap());
+        return restAssuredTemplate.post(param);
     }
 
     public static ExtractableResponse<Response> requestUpdateLine(final Long id, final LineRequest param) {
-        return restAssuredTemplate.put(id, param.toMap());
+        return restAssuredTemplate.put(id, param);
     }
 
     public static ExtractableResponse<Response> requestDeleteLine(final Long id) {

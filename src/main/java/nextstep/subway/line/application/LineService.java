@@ -49,7 +49,7 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineRepository.save(request.toEntity());
+        Line persistLine = lineRepository.save(request.toLine());
 
         registerSection(request.toSectionRequest(), persistLine);
 
@@ -59,7 +59,7 @@ public class LineService {
     public void updateLine(Long id, LineRequest request) {
         Line line = findLineById(id);
 
-        line.update(request.toEntity());
+        line.update(request.toLine());
     }
 
     public void deleteLineById(Long id) {

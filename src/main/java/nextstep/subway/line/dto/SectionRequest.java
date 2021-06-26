@@ -3,12 +3,11 @@ package nextstep.subway.line.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.subway.common.BaseRequest;
 import nextstep.subway.line.domain.Section;
 
 @Getter
 @NoArgsConstructor
-public class SectionRequest extends BaseRequest<Section> {
+public class SectionRequest {
     private Long upStationId;
     private Long downStationId;
     private int distance;
@@ -20,8 +19,7 @@ public class SectionRequest extends BaseRequest<Section> {
         this.distance = distance;
     }
 
-    @Override
-    protected Section toEntity() {
+    protected Section toSection() {
         return new Section();
     }
 }

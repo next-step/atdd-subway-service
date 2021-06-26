@@ -3,12 +3,11 @@ package nextstep.subway.line.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.subway.common.BaseRequest;
 import nextstep.subway.line.domain.Line;
 
 @Getter
 @NoArgsConstructor
-public class LineRequest extends BaseRequest<Line> {
+public class LineRequest {
     private String name;
     private String color;
     private Long upStationId;
@@ -24,8 +23,7 @@ public class LineRequest extends BaseRequest<Line> {
         this.distance = distance;
     }
 
-    @Override
-    public Line toEntity() {
+    public Line toLine() {
         return new Line(name, color);
     }
 
