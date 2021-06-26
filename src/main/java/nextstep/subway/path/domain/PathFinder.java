@@ -11,27 +11,33 @@ import nextstep.subway.station.domain.Station;
 
 public class PathFinder {
     private final Graph graph;
+    private final DijkstraShortestPath pathMaker;
 
-    public PathFinder(PathGraph pathGraph) {
-        this.graph = pathGraph.getGraph();
+    private PathFinder(Graph graph, DijkstraShortestPath pathMaker) {
+        this.graph = graph;
+        this.pathMaker = pathMaker;
     }
 
     public static PathFinder of(List<Line> lines) {
         PathGraph pathGraph = new PathGraph();
         lines.forEach(line -> line.addPathInfoTo(pathGraph));
-        return new PathFinder(pathGraph);
+        return new PathFinder(pathGraph.getGraph(), new DijkstraShortestPath(pathGraph.getGraph()));
     }
 
     public Path findPath(Station sourceStation, Station targetStation) {
         validateExistStartStationInLine(sourceStation);
         validateExistEndStationInLine(targetStation);
-        DijkstraShortestPath pathMaker = new DijkstraShortestPath(this.graph);
-        validateConnectedStations(pathMaker, sourceStation, targetStation);
-        return new Path(pathMaker.getPath(sourceStation, targetStation));
+        validateConnectedStations(sourceStation, targetStation);
+        return new Path(this.pathMaker.getPath(sourceStation, targetStation));
     }
 
-    private void validateConnectedStations(DijkstraShortestPath pathMaker, Station sourceStation, Station targetStation) {
-        if (Double.isInfinite(pathMaker.getPathWeight(sourceStation, targetStation))) {
+    public boolean isConnectedPath(Station sourceStation, Station targetStation) {
+        return this.graph.containsVertex(sourceStation) && this.graph.containsVertex(targetStation)
+                && Double.isFinite(this.pathMaker.getPathWeight(sourceStation, targetStation));
+    }
+
+    private void validateConnectedStations(Station sourceStation, Station targetStation) {
+        if (Double.isInfinite(this.pathMaker.getPathWeight(sourceStation, targetStation))) {
             throw new NoConnectedStationsException();
         }
     }

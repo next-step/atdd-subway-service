@@ -80,6 +80,7 @@ class PathFinderTest {
         // given
         PathFinder finder = PathFinder.of(Arrays.asList(line2, line3, line4, line7));
         assertAll(
+                () -> assertThat(finder.isConnectedPath(seocho, naebang)).isTrue(),
                 () -> {
                     // when
                     Path path = finder.findPath(gangnam, namsung);
@@ -124,17 +125,19 @@ class PathFinderTest {
         PathFinder finder = PathFinder.of(Arrays.asList(line2, line9));
 
         return Arrays.asList(
-                dynamicTest("연결되지 않은 출발역, 도착역 입력 시 오류", () -> {
-                    assertThatThrownBy(() -> finder.findPath(gangnam, shinbanpo))
-                            .isInstanceOf(NoConnectedStationsException.class)
-                            .hasMessage("구간으로 연결되지 않은 역입니다.");
-                }),
+                dynamicTest("연결되지 않은 출발역, 도착역 입력 시 오류", () -> assertAll(
+                        () -> assertThat(finder.isConnectedPath(gangnam, shinbanpo)).isFalse(),
+                        () -> assertThatThrownBy(() -> finder.findPath(gangnam, shinbanpo))
+                                .isInstanceOf(NoConnectedStationsException.class)
+                                .hasMessage("구간으로 연결되지 않은 역입니다.")
+                )),
                 dynamicTest("등록된 역이나 구간에 포함되지 않은 역 조회 시", () -> {
                     // given
                     Station nodle = new Station("노들역");
 
                     // then
                     assertAll(
+                            () -> assertThat(finder.isConnectedPath(gangnam, nodle)).isFalse(),
                             () -> assertThatThrownBy(() -> finder.findPath(gangnam, nodle))
                                     .isInstanceOf(IllegalArgumentException.class)
                                     .hasMessage("도착역이 속하는 노선이 없습니다."),
