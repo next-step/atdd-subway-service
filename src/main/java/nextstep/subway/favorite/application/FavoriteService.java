@@ -45,7 +45,9 @@ public class FavoriteService {
 
         List<Favorite> favorites = favoriteRepository.findByMember(me);
 
-        return favorites.stream().map(FavoriteResponse::of).collect(Collectors.toList());
+        return favorites.stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
     }
 
     public void deleteFavorite(Long myId, Long id) {
@@ -53,8 +55,10 @@ public class FavoriteService {
 
         List<Favorite> favorites = favoriteRepository.findByMember(me);
 
-        favorites.stream().filter(favorite -> favorite.getId().equals(id))
-                .findAny().orElseThrow(AuthorizationException::new);
+        favorites.stream()
+                .filter(favorite -> favorite.getId().equals(id))
+                .findAny()
+                .orElseThrow(AuthorizationException::new);
 
         favoriteRepository.deleteById(id);
     }

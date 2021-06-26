@@ -5,7 +5,6 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,18 +46,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
         한티역 = 지하철역_등록되어_있음("한티역").as(StationResponse.class);
         공사중역 = 지하철역_등록되어_있음("공사중역").as(StationResponse.class);
 
-        LineResponse 이호선 = 지하철_노선_등록되어_있음(new LineRequest("2호선", "green", 강남역.getId(), 역삼역.getId(), 5)).as(LineResponse.class);
+        LineResponse 이호선 = 지하철_노선_등록되어_있음(new LineRequest("2호선", "green", 강남역.getId(), 역삼역.getId(), 5, 100)).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(이호선, 역삼역, 선릉역, 5);
         지하철_노선에_지하철역_등록_요청(이호선, 교대역, 강남역, 5);
 
-        LineResponse 삼호선 = 지하철_노선_등록되어_있음(new LineRequest("3호선", "orange", 교대역.getId(), 남부터미널역.getId(), 5)).as(LineResponse.class);
+        LineResponse 삼호선 = 지하철_노선_등록되어_있음(new LineRequest("3호선", "orange", 교대역.getId(), 남부터미널역.getId(), 5, 300)).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(삼호선, 남부터미널역, 양재역, 5);
         지하철_노선에_지하철역_등록_요청(삼호선, 양재역, 매봉역, 5);
         지하철_노선에_지하철역_등록_요청(삼호선, 매봉역, 도곡역, 5);
 
-        LineResponse 신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "red", 강남역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+        LineResponse 신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "red", 강남역.getId(), 양재역.getId(), 5, 400)).as(LineResponse.class);
 
-        LineResponse 분당선 = 지하철_노선_등록되어_있음(new LineRequest("분당선", "yellow", 선릉역.getId(), 한티역.getId(), 5)).as(LineResponse.class);
+        LineResponse 분당선 = 지하철_노선_등록되어_있음(new LineRequest("분당선", "yellow", 선릉역.getId(), 한티역.getId(), 5, 500)).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(분당선, 한티역, 도곡역, 5);
     }
 
@@ -75,6 +74,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertThat(pathResponse.jsonPath().getObject(".", PathResponse.class).getDistance())
                 .isEqualTo(15);
+
+        assertThat(pathResponse.jsonPath().getObject(".", PathResponse.class).getFare())
+                .isEqualTo(1850);
     }
 
     @DisplayName("출발역과 도착역이 같을 때")

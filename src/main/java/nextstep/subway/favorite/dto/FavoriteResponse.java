@@ -20,7 +20,7 @@ public class FavoriteResponse {
 
     public static FavoriteResponse of(Favorite favorite) {
         return new FavoriteResponse(
-                favorite.getMember().getId(),
+                favorite.getId(),
                 StationResponse.of(favorite.getSource()),
                 StationResponse.of(favorite.getTarget())
         );

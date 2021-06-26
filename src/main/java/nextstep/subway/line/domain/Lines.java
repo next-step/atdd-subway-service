@@ -14,4 +14,11 @@ public class Lines {
     public void handleLinesSection(Consumer<Section> consumer) {
         lines.forEach(line -> line.getSections().forEach(consumer));
     }
+
+    public int maximumAdditionalFee() {
+        return lines.stream()
+                .mapToInt(Line::getAdditionalFee)
+                .max()
+                .orElse(0);
+    }
 }

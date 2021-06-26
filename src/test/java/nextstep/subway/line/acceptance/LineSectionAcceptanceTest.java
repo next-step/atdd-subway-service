@@ -1,23 +1,17 @@
 package nextstep.subway.line.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.StationHelper;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static nextstep.subway.line.acceptance.LineHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,7 +33,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         정자역 = StationHelper.지하철역_등록되어_있음("정자역").as(StationResponse.class);
         광교역 = StationHelper.지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
-        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10, 500);
         신분당선 = 지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
