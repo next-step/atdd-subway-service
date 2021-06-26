@@ -71,8 +71,8 @@ class PathServiceTest {
 
         PathResponse response = pathService.findShortestPath(출발역_아이디, 도착역_아이디);
 
-        assertThat(response.getPathStations()).hasSize(3); //불광역 --> 연신내역 --> 응암역
-        assertThat(response.getPathStations()).extracting("name")
+        assertThat(response.getStations()).hasSize(3); //불광역 --> 연신내역 --> 응암역
+        assertThat(response.getStations()).extracting("name")
                 .containsExactly("불광역", "연신내역", "응암역");
         assertThat(response.getDistance()).isEqualTo(10);
 

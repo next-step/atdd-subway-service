@@ -112,9 +112,9 @@ class PathAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> 최단_경로_조회_요청함(StationResponse 출발역, StationResponse 도착역) {
         return RestAssured
                 .given().log().all()
-                .queryParam("start", 출발역.getId())
-                .queryParam("end", 도착역.getId())
-                .when().get("/path")
+                .queryParam("source", 출발역.getId())
+                .queryParam("target", 도착역.getId())
+                .when().get("/paths")
                 .then().log().all()
                 .extract();
     }

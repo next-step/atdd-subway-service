@@ -22,7 +22,7 @@ public class PathResponse {
         return new PathResponse(StationResponse.ofList(path.getStations()), path.getDistance());
     }
 
-    public List<StationResponse> getPathStations() {
+    public List<StationResponse> getStations() {
         return this.stations;
     }
 

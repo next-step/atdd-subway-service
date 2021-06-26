@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import nextstep.subway.path.dto.PathResponse;
 
 @RestController
-@RequestMapping("/path")
+@RequestMapping("/paths")
 public class PathController {
 
     private final PathService pathService;
@@ -20,9 +20,9 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findShortestPath(@RequestParam(value = "start") Long start,
-                                                         @RequestParam(value = "end") Long end) {
+    public ResponseEntity<PathResponse> findShortestPath(@RequestParam(value = "source") Long source,
+                                                         @RequestParam(value = "target") Long target) {
 
-        return ResponseEntity.ok().body(pathService.findShortestPath(start,end));
+        return ResponseEntity.ok().body(pathService.findShortestPath(source, target));
     }
 }
