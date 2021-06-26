@@ -77,20 +77,20 @@ class SectionsTest {
                 .build();
 
         assertAll(
-                () -> assertThat(appendSectionAndPrint(section1).firstSection()).isEqualTo(section1),
-                () -> assertThat(appendSectionAndPrint(section1).lastSection()).isEqualTo(section1),
-                () -> assertThat(appendSectionAndPrint(section1, section2).firstSection()).isEqualTo(section1),
-                () -> assertThat(appendSectionAndPrint(section1, section2).lastSection()).isEqualTo(section2),
+                () -> assertThat(appendSectionAndPrint(section1).upstreamSection()).isEqualTo(section1),
+                () -> assertThat(appendSectionAndPrint(section1).downstreamSection()).isEqualTo(section1),
+                () -> assertThat(appendSectionAndPrint(section1, section2).upstreamSection()).isEqualTo(section1),
+                () -> assertThat(appendSectionAndPrint(section1, section2).downstreamSection()).isEqualTo(section2),
 
-                () -> assertThat(appendSectionAndPrint(section1, section2, section3).firstSection()).isEqualTo(section1),
-                () -> assertThat(appendSectionAndPrint(section2, section1, section3).firstSection()).isEqualTo(section1),
-                () -> assertThat(appendSectionAndPrint(section2, section3, section1).firstSection()).isEqualTo(section1),
-                () -> assertThat(appendSectionAndPrint(section3, section2, section1).firstSection()).isEqualTo(section1),
+                () -> assertThat(appendSectionAndPrint(section1, section2, section3).upstreamSection()).isEqualTo(section1),
+                () -> assertThat(appendSectionAndPrint(section2, section1, section3).upstreamSection()).isEqualTo(section1),
+                () -> assertThat(appendSectionAndPrint(section2, section3, section1).upstreamSection()).isEqualTo(section1),
+                () -> assertThat(appendSectionAndPrint(section3, section2, section1).upstreamSection()).isEqualTo(section1),
 
-                () -> assertThat(appendSectionAndPrint(section1, section2, section3).lastSection()).isEqualTo(section3),
-                () -> assertThat(appendSectionAndPrint(section2, section1, section3).lastSection()).isEqualTo(section3),
-                () -> assertThat(appendSectionAndPrint(section2, section3, section1).lastSection()).isEqualTo(section3),
-                () -> assertThat(appendSectionAndPrint(section3, section2, section1).lastSection()).isEqualTo(section3)
+                () -> assertThat(appendSectionAndPrint(section1, section2, section3).downstreamSection()).isEqualTo(section3),
+                () -> assertThat(appendSectionAndPrint(section2, section1, section3).downstreamSection()).isEqualTo(section3),
+                () -> assertThat(appendSectionAndPrint(section2, section3, section1).downstreamSection()).isEqualTo(section3),
+                () -> assertThat(appendSectionAndPrint(section3, section2, section1).downstreamSection()).isEqualTo(section3)
         );
     }
 

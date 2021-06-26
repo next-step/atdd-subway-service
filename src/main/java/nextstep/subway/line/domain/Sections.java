@@ -7,7 +7,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 @Embeddable
@@ -43,20 +42,20 @@ public class Sections  {
         delete(deleteStation);
     }
 
-    public Section firstSection() {
+    public Section upstreamSection() {
         return firstSection(this.sections);
     }
 
-    public Section lastSection() {
+    public Section downstreamSection() {
         return lastSection(this.sections);
     }
 
     public Station firstStation() {
-        return firstSection().getUpStation();
+        return upstreamSection().getUpStation();
     }
 
     public Station lastStation() {
-        return lastSection().getDownStation();
+        return downstreamSection().getDownStation();
     }
 
     public boolean containsStation(final Station station) {
