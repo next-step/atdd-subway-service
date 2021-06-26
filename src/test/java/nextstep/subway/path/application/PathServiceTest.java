@@ -1,17 +1,23 @@
 package nextstep.subway.path.application;
 
+import static nextstep.subway.station.domain.StationFixtures.광화문역;
+import static nextstep.subway.station.domain.StationFixtures.서대문역;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
@@ -29,7 +35,7 @@ public class PathServiceTest {
     @Mock
     private LineRepository lineRepository;
     @Mock
-    private StationRepository stationRepository;
+    private StationService stationService;
     @InjectMocks
     private PathService pathService;
 
@@ -55,8 +61,11 @@ public class PathServiceTest {
         List<Line> allLines = new ArrayList<>(Arrays.asList(이호선, 오호선));
 
         when(lineRepository.findAll()).thenReturn(allLines);
-        when(stationRepository.findById(서대문역.getId())).thenReturn(Optional.of(서대문역));
-        when(stationRepository.findById(시청역.getId())).thenReturn(Optional.of(시청역));
+
+        Map<Long, Station> stationMap = new HashMap<>();
+        stationMap.put(서대문역.getId(), 서대문역);
+        stationMap.put(시청역.getId(), 시청역);
+        given(stationService.findMapByIds(서대문역.getId(), 시청역.getId())).willReturn(stationMap);
 
         // When
         PathResponse pathResponse = pathService.findPath(서대문역.getId(), 시청역.getId());
