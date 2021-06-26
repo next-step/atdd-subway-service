@@ -1,6 +1,7 @@
 package nextstep.subway.line.application;
 
 import java.util.List;
+import java.util.Map;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -26,10 +27,15 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        Line persistLine = lineRepository.save(makeLine(request));
         return LineResponse.of(persistLine);
+    }
+
+    private Line makeLine(LineRequest request) {
+        Map<Long, Station> stationMap = stationService.findMapByIds(request.getUpStationId(), request.getDownStationId());
+        Station upStation = stationMap.get(request.getUpStationId());
+        Station downStation = stationMap.get(request.getDownStationId());
+        return new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance());
     }
 
     public List<LineResponse> findLines() {
