@@ -44,6 +44,7 @@ public class Line extends BaseEntity {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.addFare = addFare;
         this.sections = Sections.of(new Section(this, upStation, downStation, distance));
     }
 

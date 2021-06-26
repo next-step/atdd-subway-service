@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.jgrapht.GraphPath;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.path.PathException;
 import nextstep.subway.station.domain.Station;
 
@@ -12,10 +13,14 @@ public class StationsDijkstraPath implements Path {
 
     private List<Station> stations;
     private List<SectionEdge> sectionEdges;
+    private int addMaxFare;
+    private LoginMember loginMember;
 
-    public StationsDijkstraPath(List<Station> stations, List<SectionEdge> sectionEdges) {
+    public StationsDijkstraPath(List<Station> stations, List<SectionEdge> sectionEdges, LoginMember loginMember) {
         this.stations = stations;
         this.sectionEdges = sectionEdges;
+        this.addMaxFare = checkAddFareLine(sectionEdges);
+        this.loginMember = loginMember;
     }
 
     @Override
@@ -30,9 +35,16 @@ public class StationsDijkstraPath implements Path {
         return Collections.unmodifiableList(stations);
     }
 
-    public static StationsDijkstraPath of(GraphPath<Station, SectionEdge> path) {
+    @Override
+    public int getPrice() {
+        double discountRate = loginMember.getDiscountRate();
+        Fare fare = Fare.of(getMinDistance(), addMaxFare, discountRate);
+        return fare.getPrice();
+    }
+
+    public static StationsDijkstraPath of(GraphPath<Station, SectionEdge> path, LoginMember loginMember) {
         validatoin(path);
-        return new StationsDijkstraPath(path.getVertexList(), path.getEdgeList());
+        return new StationsDijkstraPath(path.getVertexList(), path.getEdgeList(), loginMember);
     }
 
     private static void validatoin(GraphPath<Station, SectionEdge> path) {
@@ -41,10 +53,11 @@ public class StationsDijkstraPath implements Path {
         }
     }
 
-    @Override
-    public int getPrice() {
-        Fare fare = Fare.of(getMinDistance());
-        return fare.getPrice();
+    private int checkAddFareLine(List<SectionEdge> sectionEdges) {
+        return sectionEdges.stream()
+            .mapToInt(edge -> edge.getAddFare())
+            .max()
+            .orElse(0);
     }
 
 }

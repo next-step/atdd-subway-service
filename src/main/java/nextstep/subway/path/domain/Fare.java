@@ -4,13 +4,26 @@ public class Fare {
     private static final int BASE_FARE = 1250;
 
     private int distance;
+    private int addMaxFare;
 
-    private Fare(int distance) {
+    private double discountRate;
+
+    private Fare(int distance, int addMaxFare, double discountRate) {
         this.distance = distance;
+        this.addMaxFare = addMaxFare;
+        this.discountRate = discountRate;
     }
 
     public static Fare of(int distance) {
-        return new Fare(distance);
+        return new Fare(distance, 0, 1L);
+    }
+
+    public static Fare of(int distance, int addMaxFare) {
+        return new Fare(distance, addMaxFare, 1L);
+    }
+
+    public static Fare of(int distance, int addMaxFare, double discountRate) {
+        return new Fare(distance, addMaxFare, discountRate);
     }
 
     public int getDistance() {
@@ -18,7 +31,7 @@ public class Fare {
     }
 
     public int getPrice() {
-        int fare = BASE_FARE;
+        int fare = BASE_FARE + addMaxFare;
         int firstDistance = distance;
         Surcharge surcharge = Surcharge.findSurchargeByDistance(firstDistance);
         while (surcharge != Surcharge.NONE) {
@@ -30,7 +43,7 @@ public class Fare {
             surcharge = Surcharge.findSurchargeByDistance(firstDistance);
         }
 
-        return fare;
+        return (int)Math.ceil(fare * discountRate);
     }
 
     private int calculateOverFare(int distance, int divisor, int addFare) {

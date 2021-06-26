@@ -18,8 +18,7 @@ public class LinePathSearch {
     private LoginMember loginMember;
 
     private LinePathSearch(List<Section> sections) {
-        this.weightedMultigraph = settingGraph(sections);
-        this.dijkstra = new DijkstraShortestPath<>(this.weightedMultigraph);
+        this(sections, LoginMember.DEFAULT_USER);
     }
 
     private LinePathSearch(List<Section> sections, LoginMember loginMember) {
@@ -39,7 +38,7 @@ public class LinePathSearch {
     public Path searchPath(Station source, Station target) {
         validataionStation(source, target);
         GraphPath<Station, SectionEdge> path = dijkstra.getPath(source, target);
-        return StationsDijkstraPath.of(path);
+        return StationsDijkstraPath.of(path, loginMember);
     }
 
     private WeightedMultigraph<Station, SectionEdge> settingGraph(List<Section> sections) {

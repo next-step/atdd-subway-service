@@ -19,4 +19,8 @@ public class SectionEdge extends DefaultWeightedEdge {
     public int getDistance() {
         return section.getDistance();
     }
+
+    public int getAddFare() {
+        return section.getAddFare();
+    }
 }

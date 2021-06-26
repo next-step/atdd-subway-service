@@ -48,7 +48,7 @@ public class LinePathSearchTest {
     private Line 육호선;
     private LinePathSearch linePathSearch;
     private LinePathSearch linePathSearch_13세;
-    private LinePathSearch linePathSearch_14세;
+    private LinePathSearch linePathSearch_12세;
 
     /**                           개성역
      *                            |
@@ -100,11 +100,11 @@ public class LinePathSearchTest {
         sectinos.addAll(육호선.getSections());
 
         LoginMember 로그인_13세 = new LoginMember(1L, "7271kim@naver.com", 13);
-        LoginMember 로그인_14세 = new LoginMember(2L, "7271kim@naver.com", 14);
+        LoginMember 로그인_12세 = new LoginMember(2L, "7271kim@naver.com", 12);
 
         linePathSearch = LinePathSearch.of(sectinos);
         linePathSearch_13세 = LinePathSearch.of(sectinos, 로그인_13세);
-        linePathSearch_14세 = LinePathSearch.of(sectinos, 로그인_14세);
+        linePathSearch_12세 = LinePathSearch.of(sectinos, 로그인_12세);
 
     }
 
@@ -153,13 +153,13 @@ public class LinePathSearchTest {
     @Test
     @DisplayName(" 13세 이상~19세 미만은 청소년: 운임에서 350원을 공제한 금액의 20%할인 받는다")
     void discount13() {
-        assertThat(linePathSearch_13세.searchPath(개성역, 강남역).getPrice()).isEqualTo(1440);
+        assertThat(linePathSearch_13세.searchPath(개성역, 강남역).getPrice()).isEqualTo(1720);
     }
 
     @Test
     @DisplayName(" 6세 이상~ 13세 미만은 어린이: 운임에서 350원을 공제한 금액의 50%할인")
     void discount12() {
-        assertThat(linePathSearch_13세.searchPath(개성역, 강남역).getPrice()).isEqualTo(900);
+        assertThat(linePathSearch_12세.searchPath(개성역, 강남역).getPrice()).isEqualTo(1075);
     }
 
     private static Stream<Arguments> priceResultSet() {
