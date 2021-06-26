@@ -2,6 +2,7 @@ package nextstep.subway.path.application;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -11,6 +12,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.exception.NoSuchPathException;
 import nextstep.subway.station.domain.Station;
 
 public class PathFinder {
@@ -34,7 +36,10 @@ public class PathFinder {
 
     public Path findPath(Station source, Station target) {
         DijkstraShortestPath<Station, Section> dijkstraPath = new DijkstraShortestPath<>(graph);
-        GraphPath<Station, Section> path = dijkstraPath.getPaths(source).getPath(target);
-        return Path.of(path);
+        Optional<GraphPath<Station, Section>> maybePath
+            = Optional.ofNullable(dijkstraPath.getPaths(source).getPath(target));
+
+        return Path.of(maybePath
+            .orElseThrow(() -> new NoSuchPathException("두 역이 연결되어 있지 않습니다.")));
     }
 }
