@@ -1,9 +1,7 @@
 package nextstep.subway.line.domain;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.ArrayList;
 
 import javax.persistence.CascadeType;
@@ -29,16 +27,16 @@ public class Sections {
         sections.add(section);
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
     public boolean isEmpty() {
         return sections.isEmpty();
     }
 
     public List<StationResponse> stationResponse() {
         return getStations().toResponse();
-    }
-
-    public int size() {
-        return sections.size();
     }
 
     public void addSection(Section newSection) {
@@ -49,17 +47,17 @@ public class Sections {
         checkValidStations(isUpStationExisted, isDownStationExisted);
 
         if (stations.isEmpty()) {
-            sections.add(newSection);
+            add(newSection);
             return;
         }
         if (isUpStationExisted) {
             updateUpStation(newSection);
-            sections.add(newSection);
+            add(newSection);
             return;
         }
         if (isDownStationExisted) {
             updateDownStation(newSection);
-            sections.add(newSection);
+            add(newSection);
             return;
         }
         throw new RuntimeException();
@@ -110,6 +108,10 @@ public class Sections {
 
         upSection.ifPresent(it -> sections.remove(it));
         downSection.ifPresent(it -> sections.remove(it));
+    }
+
+    public int size() {
+        return sections.size();
     }
 
     private void mergeSection(Line line, Section upSection, Section downSection) {

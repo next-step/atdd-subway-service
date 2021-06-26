@@ -17,7 +17,7 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
-    Sections sections = new Sections();
+    private Sections sections = new Sections();
 
     public Line() {
     }
@@ -51,19 +51,23 @@ public class Line extends BaseEntity {
         return color;
     }
 
+    public List<Section> sections() {
+        return sections.getSections();
+    }
+
     public List<StationResponse> stationResponses() {
         return sections.stationResponse();
     }
 
     public void addSection(Station upStation, Station downStation, Distance distance) {
-        sections.addSection(createSection(this, upStation, downStation, distance));
+        sections.addSection(createSection(upStation, downStation, distance));
     }
 
     public void removeStation(Station station) {
         sections.removeStation(this, station);
     }
 
-    private Section createSection(Line line, Station upStation, Station downStation, Distance distance) {
-        return new Section(line, upStation, downStation, distance);
+    private Section createSection(Station upStation, Station downStation, Distance distance) {
+        return new Section(this, upStation, downStation, distance);
     }
 }

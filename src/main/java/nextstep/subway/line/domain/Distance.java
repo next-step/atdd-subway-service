@@ -17,6 +17,10 @@ public class Distance {
         this.value = value;
     }
 
+    public int toInt() {
+        return value;
+    }
+
     private void checkValidValue(int value) {
         if (value < Sections.SECTION_DELETABLE_MIN_SIZE) {
             throw new RuntimeException(INVALID_DISTANCE);
