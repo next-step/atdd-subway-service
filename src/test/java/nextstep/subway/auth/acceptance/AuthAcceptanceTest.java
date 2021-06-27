@@ -40,6 +40,15 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
+        //given
+        //when
+        ExtractableResponse<Response> 회원_로그인_요청_응답 = 회원_로그인_요청(EMAIL, "InvalidPassword");
+        //then
+        로그인_실패(회원_로그인_요청_응답);
+    }
+
+    private void 로그인_실패(ExtractableResponse<Response> 회원_로그인_요청_응답) {
+        assertThat(회원_로그인_요청_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
