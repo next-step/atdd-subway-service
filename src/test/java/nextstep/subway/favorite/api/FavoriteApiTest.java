@@ -1,22 +1,24 @@
-package nextstep.subway.favorite.acceptance;
+package nextstep.subway.favorite.api;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.AcceptanceTest;
-import nextstep.subway.auth.dto.TokenRequest;
-import nextstep.subway.auth.dto.TokenResponse;
+
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.line.dto.LineRequest;
-import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.station.StationAcceptanceTest;
-import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.line.dto.LineRequest;
+import nextstep.subway.member.dto.MemberRequest;
+import nextstep.subway.station.StationAcceptanceTest;
+import nextstep.subway.station.dto.StationResponse;
 
 import java.util.List;
 
@@ -24,7 +26,7 @@ import static nextstep.subway.member.MemberAcceptanceTest.BEARER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
-public class FavoriteAcceptanceTest extends AcceptanceTest {
+public class FavoriteApiTest extends AcceptanceTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     private static final int AGE = 20;
@@ -44,68 +46,35 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         토큰 = 회원_로그인_요청();
     }
 
-    @DisplayName("즐겨찾기 관리 - 생성 조회")
+    @DisplayName("즐겨찾기 추가")
     @Test
-    void favoriteAdd() {
+    void add() {
         //given
         //when
         ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성(토큰, 강남역, 광교역);
         //then
         즐겨찾기_생성_응답_확인(즐겨찾기_생성_응답);
-
-        //when
-        ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_조회(토큰);
-        //then
-        즐겨찾기_조회_응답_확인(즐겨찾기_조회_응답, 강남역, 광교역);
-
-        //when
-        즐겨찾기_제거(토큰);
-        ExtractableResponse<Response> 즐겨찾기_제거_후_조회_응답 = 즐겨찾기_조회(토큰);
-        //then
-        즐겨찾기_제거_후_조회_응답_확인(즐겨찾기_제거_후_조회_응답);
     }
 
-    @DisplayName("즐겨찾기 관리 - 생성 후 삭제 조회")
+    @DisplayName("즐겨찾기 조회")
     @Test
-    void favoriteRemove() {
+    void search() {
         //given
-        //when
-        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성(토큰, 강남역, 광교역);
-        //then
-        즐겨찾기_생성_응답_확인(즐겨찾기_생성_응답);
-
-        //given
-        즐겨찾기_제거(토큰);
-        //when
         즐겨찾기_생성(토큰, 강남역, 광교역);
+        //when
         ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_조회(토큰);
         //then
         즐겨찾기_조회_응답_확인(즐겨찾기_조회_응답, 강남역, 광교역);
     }
 
-    @DisplayName("즐겨찾기 생성 실패 - 중복")
+    @DisplayName("즐겨찾기 제거")
     @Test
-    void favoriteFailedByDuplication() {
+    void remove() {
         //given
+        즐겨찾기_생성(토큰, 강남역, 광교역);
         //when
-        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성(토큰, 강남역, 광교역);
+        즐겨찾기_제거(토큰);
         //then
-        즐겨찾기_생성_응답_확인(즐겨찾기_생성_응답);
-
-        //when
-        ExtractableResponse<Response> 중복_즐겨찾기_생성_응답 = 즐겨찾기_생성(토큰, 강남역, 광교역);
-        //then
-        중복_즐겨찾기_조회_응답_확인(중복_즐겨찾기_생성_응답);
-    }
-
-    @DisplayName("즐겨찾기 추가 실패 - 등록되지 않은 역")
-    @Test
-    void favoriteFailedByInvalidStation() {
-        //given
-        //when
-        ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성(토큰, 0L, 0L);
-        //then
-        즐겨찾기_생성_실패_응답_확인(즐겨찾기_생성_응답);
     }
 
     private ExtractableResponse<Response> 즐겨찾기_조회(String 토큰) {
@@ -145,8 +114,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         return response.as(TokenResponse.class).getAccessToken();
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_생성(String 토큰, Long 출발역, Long 도착역) {
-        FavoriteRequest favoriteRequest = new FavoriteRequest(출발역, 도착역);
+    private ExtractableResponse<Response> 즐겨찾기_생성(String 토큰, Long 강남역, Long 광교역) {
+        FavoriteRequest favoriteRequest = new FavoriteRequest(강남역, 광교역);
 
         return RestAssured
                 .given().header("authorization", BEARER + 토큰).log().all()
@@ -176,21 +145,5 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .when().delete("/favorites")
                 .then().log().all()
                 .extract();
-    }
-
-    private void 즐겨찾기_제거_후_조회_응답_확인(ExtractableResponse<Response> 즐겨찾기_조회_응답) {
-        즐겨찾기_조회_실패(즐겨찾기_조회_응답.statusCode());
-    }
-
-    private void 중복_즐겨찾기_조회_응답_확인(ExtractableResponse<Response> 즐겨찾기_조회_응답) {
-        즐겨찾기_조회_실패(즐겨찾기_조회_응답.statusCode());
-    }
-
-    private void 즐겨찾기_생성_실패_응답_확인(ExtractableResponse<Response> 즐겨찾기_생성_응답) {
-        즐겨찾기_조회_실패(즐겨찾기_생성_응답.statusCode());
-    }
-
-    private void 즐겨찾기_조회_실패(int 조회_응답_코드) {
-        assertThat(조회_응답_코드).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

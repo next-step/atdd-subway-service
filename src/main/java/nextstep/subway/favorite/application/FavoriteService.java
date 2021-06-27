@@ -37,7 +37,7 @@ public class FavoriteService {
         Station source = stationRepository.findById(favoriteRequest.getSource()).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_STATION));
         Station target = stationRepository.findById(favoriteRequest.getTarget()).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_STATION));
 
-        Optional<Favorite> favoriteOptional = favoriteRepository.findByMemberAndSourceAndTarget(member, source, target);
+        Optional<Favorite> favoriteOptional = favoriteRepository.findByMember(member);
         if (favoriteOptional.isPresent()) {
             throw new IllegalArgumentException(FAVORITE_ALREADY_ADDED);
         }
