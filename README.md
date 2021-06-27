@@ -100,6 +100,10 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 * Then 지하철 노선의 최단 경로가 조회가 실패한다.
 
 
+## 기능 목록
+1. 등록된 지하철 노선에서 최단 경로 찾는 기능
+
+
 ## API 명세
 
 * GET /paths 
