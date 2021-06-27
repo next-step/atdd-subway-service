@@ -1,11 +1,10 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.line.exeption.CanNotAddSectionException;
 import nextstep.subway.line.exeption.CanNotDeleteStateException;
-import nextstep.subway.line.exeption.RegisteredSectionException;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.exeption.NotFoundStationException;
+import nextstep.subway.station.exeption.CanNotAddStationException;
+import nextstep.subway.station.exeption.RegisteredStationException;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -102,41 +101,27 @@ public class Line extends BaseEntity {
         return downStation;
     }
     public void addStation(Station upStation, Station downStation, int distance) {
-        List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+        validateStation(upStation, downStation);
 
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RegisteredSectionException();
-        }
-
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-            stations.stream().noneMatch(it -> it == downStation)) {
-            throw new CanNotAddSectionException();
-        }
-
-        if (stations.isEmpty()) {
-            getSections().add(new Section(this, upStation, downStation, distance));
-            return;
-        }
-
-        if (isUpStationExisted) {
-            getSections().stream()
-                .filter(it -> it.getUpStation() == upStation)
+        sections.stream()
+                .filter(s -> s.getUpStation().equals(upStation) || s.getDownStation().equals(downStation))
                 .findFirst()
-                .ifPresent(it -> it.updateUpStation(downStation, distance));
+                .ifPresent(s -> {
+                    s.updateStation(upStation, downStation, distance);
+                });
+        sections.add(new Section(this, upStation, downStation, distance));
+    }
 
-            getSections().add(new Section(this, upStation, downStation, distance));
-        } else if (isDownStationExisted) {
-            getSections().stream()
-                .filter(it -> it.getDownStation() == downStation)
-                .findFirst()
-                .ifPresent(it -> it.updateDownStation(upStation, distance));
-
-            getSections().add(new Section(this, upStation, downStation, distance));
-        } else {
-            throw new NotFoundStationException();
+    private void validateStation(Station upStation, Station downStation) {
+        if (!sections.isEmpty() && containsStation(upStation) && containsStation(downStation)) {
+            throw new RegisteredStationException();
         }
+        if (!sections.isEmpty() &&!containsStation(upStation) && !containsStation(downStation)) {
+            throw new CanNotAddStationException();
+        }
+    }
+    public boolean containsStation(Station station) {
+        return sections.stream().anyMatch(s -> s.containStation(station));
     }
 
     public void removeStation(Station station) {
