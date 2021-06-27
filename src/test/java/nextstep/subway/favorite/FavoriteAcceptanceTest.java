@@ -13,6 +13,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.station.dto.StationResponse;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -47,9 +49,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void manageFavorite() {
         //     - When 즐겨찾기 생성을 요청
         // when
+        FavoriteRequest request = new FavoriteRequest(강남역.getId(), 광교역.getId());
         ExtractableResponse<Response> createResponse = RestAssured
             .given().log().all()
             .auth().oauth2(사용자.getAccessToken())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(request)
             .when().post("/favorites")
             .then().log().all().extract();
 
@@ -63,6 +68,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> queryResponse = RestAssured
             .given().log().all()
             .auth().oauth2(사용자.getAccessToken())
+            .accept(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/favorites")
             .then().log().all().extract();
 
@@ -72,8 +78,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         List<FavoriteResponse> favorite
             = queryResponse.jsonPath().getList(".", FavoriteResponse.class);
         assertThat(favorite.get(0).getId()).isNotNull();
-        assertThat(favorite.get(0).getSource()).isSameAs(강남역);
-        assertThat(favorite.get(0).getTarget()).isSameAs(광교역);
+        assertThat(favorite.get(0).getSource()).isEqualTo(강남역);
+        assertThat(favorite.get(0).getTarget()).isEqualTo(광교역);
 
         //     - When 즐겨찾기 삭제 요청
         // when
@@ -87,5 +93,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 //       - Then 즐겨찾기 삭제됨
         // then
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+
+        //     - When 즐겨찾기 목록 조회 요청
+        // when
+        ExtractableResponse<Response> emptyResponse = RestAssured
+            .given().log().all()
+            .auth().oauth2(사용자.getAccessToken())
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/favorites")
+            .then().log().all().extract();
+
+        //       - Then 즐겨찾기 빈 목록 조회됨
+        // then
+        assertThat(emptyResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(emptyResponse.as(List.class).isEmpty()).isTrue();
     }
 }

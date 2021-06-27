@@ -10,7 +10,10 @@ public class FavoriteResponse {
     private final StationResponse target;
 
     public static FavoriteResponse of(Favorite favorite) {
-        return null; // TODO
+        return new FavoriteResponse(
+            favorite.getId(),
+            StationResponse.of(favorite.getSource()),
+            StationResponse.of(favorite.getTarget()));
     }
 
     public FavoriteResponse(Long id, StationResponse source, StationResponse target) {
