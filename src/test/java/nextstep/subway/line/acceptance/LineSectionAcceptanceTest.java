@@ -50,25 +50,14 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @Test
     void first_scenario() {
 //        Scenario #1 : 지하철 구간 등록 관련
-//        When 지하철 구간 등록 요청
         ExtractableResponse<Response> 등록_성공한_노선 = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
-
-//        Then 지하철 구간 등록됨
         지하철_노선에_지하철역_등록됨(등록_성공한_노선);
-
-//        Then 지하철 구간 순서대로 정렬되어 조회됨
         지하철_노선에_지하철역_순서_정렬됨(신분당선, Arrays.asList(강남역, 양재역, 광교역));
 
-//        When (기존에 있는) 지하철 구간 등록 요청
         ExtractableResponse<Response> 등록_실패한_노선 = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
-
-//        Then  지하철 구간 등록 실패됨
         지하철_노선에_지하철역_등록_실패됨(등록_실패한_노선);
 
-//        When (노선에 등록되지 않는 지하철 역들을 이용하여) 지하철 구간 등록 요청
         등록_실패한_노선 = 지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 상현역, 5);
-
-//        Then 지하철 구간 등록 실패됨
         지하철_노선에_지하철역_등록_실패됨(등록_실패한_노선);
     }
 
@@ -76,22 +65,13 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @Test
     void second_scenario() {
 //        Scenario #2 : 지하철 구간 제외 관련
-//        Given 지하철 구간 등록 요청
         지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
 
-//        When 지하철 구간 삭제 요청
         ExtractableResponse<Response> 양재역_제외_요청됨 = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
-
-//        Then 지하철 구간 삭제됨
         지하철_노선에_지하철역_제외됨(양재역_제외_요청됨);
-
-//        Then (삭제한 지하철 구간이 반영되어) 지하철 구간 순서대로 정렬되어 조회됨
         지하철_노선에_지하철역_순서_정렬됨(신분당선, Arrays.asList(강남역, 광교역));
 
-//        When (노선에 구간이 하나뿐일 때) 지하철 구간 삭제 요청
         ExtractableResponse<Response> 광교역_제외_요청됨 = 지하철_노선에_지하철역_제외_요청(신분당선, 광교역);
-
-//        Then 지하철 구간 삭제 실패됨
         지하철_노선에_지하철역_제외_실패됨(광교역_제외_요청됨);
     }
 

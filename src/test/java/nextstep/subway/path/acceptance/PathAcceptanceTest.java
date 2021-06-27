@@ -88,24 +88,16 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("최단경로를 조회한다")
     @Test
     void 최단경로_조회() {
-        //when : 최단 경로 조회 요청
         ExtractableResponse<Response> 최단경로 = 최단_경로_조회_요청함(종로3가역, 충무로역);
-        //then : 최단 경로 지하철 목록이 반환됨
         최단_경로_지하철_목록_반환됨(최단경로);
 
-        //when : (출발역과 도착역이 같은 경우) 최단 경로 조회 요청
         ExtractableResponse<Response> 출발도착_동일_최단경로 = 최단_경로_조회_요청함(종로3가역, 종로3가역);
-        //then : 최단 경로 조회 실패함
         최단_경로_조회_실패함(출발도착_동일_최단경로);
 
-        //when : (출발역과 도착역이 연결되어 있지 않은 경우) 최단 경로 조회 요청
         ExtractableResponse<Response> 출발도착_연결안됨_최단경로 = 최단_경로_조회_요청함(종로3가역, 강남역);
-        //then : 최단 경로 조회 실패함
         최단_경로_조회_실패함(출발도착_연결안됨_최단경로);
 
-        //when : (출발역이나 도착역이 존재하지 않는 경우) 최단 경로 조회 요청
         ExtractableResponse<Response> 도착_등록안됨_최단경로 = 최단_경로_조회_요청함(종로3가역, 동작역);
-        //then : 최단 경로 조회 실패함
         최단_경로_조회_실패함(도착_등록안됨_최단경로);
     }
 
