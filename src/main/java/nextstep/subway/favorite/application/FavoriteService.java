@@ -1,9 +1,11 @@
 package nextstep.subway.favorite.application;
 
-import nextstep.subway.favorite.dto.FavoriteResponse;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.member.domain.Member;
@@ -12,8 +14,6 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
-
-import java.util.Optional;
 
 @Service
 @Transactional
