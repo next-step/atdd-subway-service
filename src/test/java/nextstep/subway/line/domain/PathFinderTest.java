@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 class PathFinderTest {
 
@@ -103,5 +104,24 @@ class PathFinderTest {
         // then
         assertThat(paths.size()).isEqualTo(5);
         assertThat(paths).isEqualTo(Arrays.asList(청계산역, 양재역, 남부터미널역, 교대역, 서초역));
+    }
+
+    @DisplayName("출발지와 도착지가 동일한 경우")
+    @Test
+    void sourceAndTargetAreSame() {
+        // given
+        신분당선.add(강남역, 양재역, 5);
+        신분당선.add(양재역, 청계산역, 10);
+        신분당선.add(청계산역, 판교역, 15);
+        신분당선.add(판교역, 정자역, 7);
+
+        List<Line> lines = new ArrayList<>();
+        lines.add(신분당선);
+
+        // when then
+        PathFinder pathFinder = new PathFinder(lines);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> pathFinder.findPaths(양재역, 양재역))
+                .withMessageMatching("출발지와 도착지가 동일합니다. 입력값을 확인해주세요.");
     }
 }
