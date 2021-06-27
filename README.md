@@ -77,7 +77,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
        - Then 수정된 정보로 표시 됨
        - When 내 정보 삭제
        - Then 내 정보 삭제 됨
-- [ ] 인증 - 즐겨 찾기 기능 완성하기
+- [x] 인증 - 즐겨 찾기 기능 완성하기
    - Feature: 즐겨찾기를 관리한다.
      - Background 
        - Given 지하철역 등록되어 있음
