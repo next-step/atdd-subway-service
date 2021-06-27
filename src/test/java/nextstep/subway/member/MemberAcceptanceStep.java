@@ -8,6 +8,7 @@ import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceStep.makeBearerToken;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -74,9 +75,6 @@ public class MemberAcceptanceStep {
                 .then().log().all().extract();
     }
 
-    private static String makeBearerToken(String token) {
-        return "Bearer " + token;
-    }
 
     public static ExtractableResponse<Response> 나의_정보_수정_요청(String accessToken, String newEmail, String newPassword, int newAge) {
         MemberRequest memberRequest = new MemberRequest(newEmail, newPassword, newAge);

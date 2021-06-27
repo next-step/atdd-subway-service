@@ -1,4 +1,4 @@
-package nextstep.subway.favorite;
+package nextstep.subway.favorite.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceStep.로그인_되어_있음;
-import static nextstep.subway.favorite.FavoriteAcceptanceStep.*;
+import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceStep.*;
 import static nextstep.subway.line.acceptance.LineAcceptanceStep.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceStep.지하철_노선에_지하철역_등록되어_있음;
 import static nextstep.subway.member.MemberAcceptanceStep.회원_등록되어_있음;

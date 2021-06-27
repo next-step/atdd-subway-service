@@ -13,6 +13,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AuthAcceptanceStep {
     public static final String LOGIN_TOKEN = "/login/token";
 
+    public static String makeBearerToken(String token) {
+        return "Bearer " + token;
+    }
+
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest tokenRequest = new TokenRequest(email, password);
 
