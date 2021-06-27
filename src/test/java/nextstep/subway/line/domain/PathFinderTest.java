@@ -1,12 +1,15 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -43,11 +46,14 @@ class PathFinderTest {
         
         // when
         PathFinder pathFinder = new PathFinder(lines);
-        List<Station> paths = pathFinder.findPaths(양재역, 정자역);
+        PathResponse paths = pathFinder.findPaths(양재역, 정자역);
+
 
         // then
-        assertThat(paths.size()).isEqualTo(4);
-        assertThat(paths).isEqualTo(Arrays.asList(양재역, 청계산역, 판교역, 정자역));
+        assertThat(paths.getStations().size()).isEqualTo(4);
+        assertThat(paths.getDistance()).isEqualTo(32);
+        List<String> stations = asNameList(paths);
+        assertThat(stations).isEqualTo(Arrays.asList("양재역", "청계산역", "판교역", "정자역"));
     }
 
     @DisplayName("최단경로 조회 - 두 개의 노선")
@@ -69,11 +75,13 @@ class PathFinderTest {
 
         // when
         PathFinder pathFinder = new PathFinder(lines);
-        List<Station> paths = pathFinder.findPaths(청계산역, 교대역);
+        PathResponse paths = pathFinder.findPaths(청계산역, 교대역);
 
         // then
-        assertThat(paths.size()).isEqualTo(4);
-        assertThat(paths).isEqualTo(Arrays.asList(청계산역, 양재역, 남부터미널역, 교대역));
+        assertThat(paths.getStations().size()).isEqualTo(4);
+        assertThat(paths.getDistance()).isEqualTo(13);
+        List<String> stations = asNameList(paths);
+        assertThat(stations).isEqualTo(Arrays.asList("청계산역", "양재역", "남부터미널역", "교대역"));
     }
 
     @DisplayName("최단경로 조회 - 세 개의 노선, 경로가 두 가지인 경우")
@@ -99,11 +107,13 @@ class PathFinderTest {
 
         // when
         PathFinder pathFinder = new PathFinder(lines);
-        List<Station> paths = pathFinder.findPaths(청계산역, 서초역);
+        PathResponse paths = pathFinder.findPaths(청계산역, 서초역);
 
         // then
-        assertThat(paths.size()).isEqualTo(5);
-        assertThat(paths).isEqualTo(Arrays.asList(청계산역, 양재역, 남부터미널역, 교대역, 서초역));
+        assertThat(paths.getStations().size()).isEqualTo(5);
+        assertThat(paths.getDistance()).isEqualTo(14);
+        List<String> stations = asNameList(paths);
+        assertThat(stations).isEqualTo(Arrays.asList("청계산역", "양재역", "남부터미널역", "교대역", "서초역"));
     }
 
     @DisplayName("출발지와 도착지가 동일한 경우")
@@ -145,5 +155,11 @@ class PathFinderTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> pathFinder.findPaths(양재역, 역삼역))
                 .withMessageMatching("두 역이 서로 연결되어 있지 않습니다. 경로를 조회할 수 없습니다.");
+    }
+
+    private List<String> asNameList(PathResponse paths) {
+        return paths.getStations().stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList());
     }
 }
