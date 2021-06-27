@@ -124,4 +124,26 @@ class PathFinderTest {
                 .isThrownBy(() -> pathFinder.findPaths(양재역, 양재역))
                 .withMessageMatching("출발지와 도착지가 동일합니다. 입력값을 확인해주세요.");
     }
+
+    @DisplayName("출발지와 도착지가 연결되어 있지 않은 경우")
+    @Test
+    void sourceAndTargetAreNotConnected() {
+        // given
+        신분당선.add(양재역, 청계산역, 10);
+        신분당선.add(청계산역, 판교역, 15);
+        신분당선.add(판교역, 정자역, 7);
+
+        LINE2.add(서초역, 교대역, 1);
+        LINE2.add(교대역, 역삼역, 3);
+
+        List<Line> lines = new ArrayList<>();
+        lines.add(신분당선);
+        lines.add(LINE2);
+
+        // when then
+        PathFinder pathFinder = new PathFinder(lines);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> pathFinder.findPaths(양재역, 역삼역))
+                .withMessageMatching("두 역이 서로 연결되어 있지 않습니다. 경로를 조회할 수 없습니다.");
+    }
 }
