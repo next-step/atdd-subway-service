@@ -129,25 +129,29 @@ public class Line extends BaseEntity {
             throw new CanNotDeleteStateException();
         }
 
-        Optional<Section> upLineStation = getSections().stream()
-            .filter(it -> it.getUpStation() == station)
-            .findFirst();
-        Optional<Section> downLineStation = getSections().stream()
-            .filter(it -> it.getDownStation() == station)
-            .findFirst();
+        Section upLineStation = sections.stream().filter(s -> s.getDownStation().equals(station))
+                                    .findFirst().map(s -> {
+                                        sections.remove(s);
+                                        return s;
+                                    }).orElse(null);
+        Section downLineStation = sections.stream().filter(s -> s.getUpStation().equals(station))
+                                    .findFirst().map(s -> {
+                                        sections.remove(s);
+                                        return s;
+                                    }).orElse(null);
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            getSections().add(new Section(this, newUpStation, newDownStation, newDistance));
+        if (existSections(upLineStation, downLineStation)) {
+            int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
+            Section section = new Section(this, upLineStation.getUpStation(), downLineStation.getDownStation(), newDistance);
+            sections.add(section);
         }
-
-        upLineStation.ifPresent(it -> getSections().remove(it));
-        downLineStation.ifPresent(it -> getSections().remove(it));
     }
 
     private boolean canNotDelete() {
         return sections.size() == MIN_SIZE;
+    }
+
+    private boolean existSections(Section ... sections) {
+        return Arrays.stream(sections).noneMatch(Objects::isNull);
     }
 }

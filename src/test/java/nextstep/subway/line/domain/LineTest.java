@@ -84,7 +84,7 @@ class LineTest {
         신분당선.removeStation(양재역);
 
         // then
-        assertThat(신분당선.getStations()).containsAll(Arrays.asList(강남역, 정자역, 광교역));
+        assertThat(신분당선.getStations()).containsExactly(강남역, 정자역, 광교역);
     }
 
     @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
