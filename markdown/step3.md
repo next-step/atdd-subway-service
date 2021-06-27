@@ -11,8 +11,8 @@
   - [X] 이메일과 패스워드를 이용하여 요청 시 access token을 응답하는 기능을 구현하기
   - [X] AuthAcceptanceTest을 만족하도록 구현하면 됨
   - [X] AuthAcceptanceTest에서 제시하는 예외 케이스도 함께 고려하여 구현하기
-- [ ] Bearer Auth 유효하지 않은 토큰 인수 테스트
-  - [ ] 유효하지 않은 토큰으로 /members/me 요청을 보낼 경우에 대한 예외 처리
+- [X] Bearer Auth 유효하지 않은 토큰 인수 테스트
+  - [X] 유효하지 않은 토큰으로 /members/me 요청을 보낼 경우에 대한 예외 처리
 
 ### 내정보 조회
 
