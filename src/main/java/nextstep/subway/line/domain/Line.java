@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -47,7 +48,11 @@ public class Line extends BaseEntity {
     }
 
     public Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
+        Station downStation = null;
+        if (!CollectionUtils.isEmpty(sections)) {
+            downStation = sections.get(0).getUpStation();
+        }
+
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = sections.stream()
@@ -105,9 +110,7 @@ public class Line extends BaseEntity {
 
         if (isUpStationExisted) {
             updateUpStation(upStation, downStation, distance);
-        }
-
-        if ((!isUpStationExisted) && isDownStationExisted) {
+        } else if (isDownStationExisted) {
             updateDownStation(upStation, downStation, distance);
         }
     }
