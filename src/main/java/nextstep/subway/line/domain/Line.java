@@ -9,12 +9,16 @@ import nextstep.subway.station.exeption.RegisteredStationException;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 @Entity
 public class Line extends BaseEntity {
 
+    public static final int FIRST_INDEX = 0;
     public static final int MIN_SIZE = 1;
 
     @Id
@@ -63,43 +67,39 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getStations() {
+        List<Section> searchList = createSearchSections();
+        Set<Station> stations = new LinkedHashSet<>();
+        for (Section section : searchList) {
+            sections.stream().filter(s -> isConnectUpStation(s, section))
+                    .findFirst()
+                    .ifPresent(s -> stations.addAll(Arrays.asList(s.getUpStation(), s.getDownStation())));
+            stations.addAll(Arrays.asList(section.getUpStation(), section.getDownStation()));
+        }
+        return new ArrayList<>(stations);
+    }
+
+    private List<Section> createSearchSections() {
         if (sections.isEmpty()) {
-            return Arrays.asList();
+            return new ArrayList<>();
         }
 
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
+        ArrayList<Section> searchList = new ArrayList<>(this.sections);
+        Section findSection = findFirstSection(sections.get(FIRST_INDEX));
+        searchList.remove(findSection);
+        searchList.add(FIRST_INDEX, findSection);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = getSections().stream()
-                .filter(it -> it.getUpStation() == finalDownStation)
-                .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
-
-        return stations;
+        return searchList;
     }
 
-    private Station findUpStation() {
-        Station downStation = getSections().get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = getSections().stream()
-                .filter(it -> it.getDownStation() == finalDownStation)
-                .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-        return downStation;
+    private Section findFirstSection(Section section) {
+        Section findSection = sections.stream().filter(s -> isConnectUpStation(s, section)).findFirst().orElse(null);
+        return Objects.isNull(findSection) ? section : findFirstSection(findSection);
     }
+
+    private boolean isConnectUpStation(Section target, Section compare) {
+        return !target.equals(compare) && target.getDownStation().equals(compare.getUpStation());
+    }
+
     public void addStation(Station upStation, Station downStation, int distance) {
         validateStation(upStation, downStation);
 
