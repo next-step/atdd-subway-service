@@ -1,7 +1,11 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.exeption.CanNotAddSectionException;
+import nextstep.subway.line.exeption.CanNotDeleteStateException;
+import nextstep.subway.line.exeption.RegisteredSectionException;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.exeption.NotFoundStationException;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,6 +15,9 @@ import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
+
+    public static final int MIN_SIZE = 1;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -100,12 +107,12 @@ public class Line extends BaseEntity {
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new RegisteredSectionException();
         }
 
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
             stations.stream().noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new CanNotAddSectionException();
         }
 
         if (stations.isEmpty()) {
@@ -128,13 +135,13 @@ public class Line extends BaseEntity {
 
             getSections().add(new Section(this, upStation, downStation, distance));
         } else {
-            throw new RuntimeException();
+            throw new NotFoundStationException();
         }
     }
 
     public void removeStation(Station station) {
-        if (getSections().size() <= 1) {
-            throw new RuntimeException();
+        if (canNotDelete()) {
+            throw new CanNotDeleteStateException();
         }
 
         Optional<Section> upLineStation = getSections().stream()
@@ -153,5 +160,9 @@ public class Line extends BaseEntity {
 
         upLineStation.ifPresent(it -> getSections().remove(it));
         downLineStation.ifPresent(it -> getSections().remove(it));
+    }
+
+    private boolean canNotDelete() {
+        return sections.size() == MIN_SIZE;
     }
 }
