@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.collection.Distance;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -22,16 +23,78 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    public Section(Station upStation, Station downStation, Distance distance) {
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
+    }
+
+    public Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    private Distance measureOldDistance(Distance oldDistance, boolean isConnect) {
+        return this.distance.measureOldDistance(oldDistance, isConnect);
+    }
+
+    public boolean isSameUpStationOfSection(Section newSection) {
+        if (newSection.isSameUpStation(this.upStation)) {
+            this.distance = newSection.measureOldDistance(this.distance, false);
+            this.upStation = newSection.getDownStation();
+        }
+        return false;
+    }
+
+    public boolean isSameUpStation(Station oldUpStation) {
+        return this.upStation.equals(oldUpStation);
+    }
+
+    public boolean isSameDownStationOfSection(Section newSection) {
+        if (newSection.isSameDownStation(this.downStation)) {
+            this.distance = newSection.measureOldDistance(this.distance, false);
+            this.downStation = newSection.getUpStation();
+        }
+        return false;
+    }
+
+    public boolean isSameDownStation(Station downStation) {
+        return this.downStation.equals(downStation);
+    }
+
+    public void isSameSection(Section newSection) {
+        if (newSection.isSameUpStation(this.upStation) && newSection.isSameDownStation(this.downStation)) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    public boolean isUpFinalSection(Section newSection) {
+        return newSection.isSameDownStation(this.upStation);
+    }
+
+    public boolean isDownFinalSection(Section newSection) {
+        return newSection.isSameUpStation(this.downStation);
+    }
+
+    public boolean getSectionSameDownStation(Long stationId) {
+        return this.downStation.isThisStation(stationId);
+    }
+
+    public boolean getSectionSameUpStation(Long stationId) {
+        return this.upStation.isThisStation(stationId);
+    }
+
+    public void connectNewSection(Section downSection) {
+        this.downStation = downSection.getDownStation();
+        this.distance = downSection.getDistance().measureOldDistance(this.distance, true);
     }
 
     public Long getId() {
@@ -50,23 +113,11 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
+    public void setLine(Line line) {
+        this.line = line;
     }
 }
