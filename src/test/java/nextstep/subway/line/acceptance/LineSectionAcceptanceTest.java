@@ -25,7 +25,7 @@ import nextstep.subway.station.dto.StationResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 
 @DisplayName("지하철 구간 관련 기능")
-class LineSectionAcceptanceTest extends AcceptanceTest {
+public class LineSectionAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private StationResponse 강남역;
     private StationResponse 양재역;
@@ -206,7 +206,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 지하철_구간_등록_요청(Long lineId, SectionRequest sectionRequest) {
+    public static ExtractableResponse<Response> 지하철_구간_등록_요청(Long lineId, SectionRequest sectionRequest) {
         return RestAssured.given().log().all()
                 .when()
                 .body(sectionRequest)

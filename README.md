@@ -17,6 +17,7 @@
 <br>
 
 ### [Step1. 인수 테스트 기반 리팩터링 - 요건 정리](STEP1_SUMMARY.md)
+### [Step2. 경로 조회 기능 - 요건 정리](STEP2_SUMMARY.md)
 
 ## 🚀 Getting Started
 

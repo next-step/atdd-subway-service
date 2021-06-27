@@ -11,6 +11,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import nextstep.subway.path.domain.PathGraph;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -65,6 +66,10 @@ public class Sections {
         return getSortSections().stream()
                 .map(Section::getDistance)
                 .collect(Collectors.toList());
+    }
+
+    public void addPathInfoTo(PathGraph graph) {
+        this.sections.forEach(graph::setPathInfoBy);
     }
 
     private List<Section> getSortSections() {
