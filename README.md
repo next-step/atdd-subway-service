@@ -53,6 +53,36 @@ npm run dev
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
 
+## 🚀 3단계 인증을 통한 기능 구현
+### 구현사항 정리
+* [ ] 토큰발급기능 인수테스트 작성
+    ```markdown
+    ✅ Feature: 토큰 발급 기능
+        🔙 Background
+            Given 회원으로 등록되어 있음 
+          
+        1️⃣ Scenario : 로그인을 시도한다 
+            When 로그인 요청
+            Then 로그인 성공함
+      
+        2️⃣ Scenario : 등록되지 않은 이메일로 로그인을 시도한다
+            When 로그인 요청
+            Then 로그인 실패함  
+      
+        3️⃣ Scenario : 잘못된 비밀번호로 로그인을 시도한다
+            When 로그인 요청
+            Then 로그인 실패함
+      
+        4️⃣ Scenario : 로그인 이후 15분(토큰 유효기간)이 경과하고 내 정보를 조회한다
+            When 내정보 조회 요청
+            Then 조회 실패함
+  
+        5️⃣ Scenario : 로그인 이후 15분이 경과하고 즐겨찾기를 조회한다
+            When 즐겨찾기 조회 요청
+            Then 조회 실패함  
+    ```    
+* [ ] 인증-내 정보 조회 기능 완성
+* [ ] 인증-즐겨찾기 기능 완성
 
 ---
 ## 🚀 2단계 경로 조회 기능
