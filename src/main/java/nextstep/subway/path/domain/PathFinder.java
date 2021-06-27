@@ -8,6 +8,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 public class PathFinder {
@@ -41,7 +42,7 @@ public class PathFinder {
 		stations.forEach(this.pathGraph::addVertex);
 	}
 
-	public Path getShortestPath(Station source, Station target) {
+	public Path getShortestPath(Member member, Station source, Station target) {
 		this.validateVertex(source, target);
 		this.validateNotContainedStationInPath(source, target);
 
