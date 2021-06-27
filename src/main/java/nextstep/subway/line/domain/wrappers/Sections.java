@@ -32,21 +32,18 @@ public class Sections {
     }
 
     public void updateSections(Section section) {
-        checkValidDuplicateSection(section);
-        checkValidContainStations(section);
+        validSection(section);
         Optional<Section> updateTargetSection = findSectionByUpStation(section);
         if (updateTargetSection.isPresent()) {
             Section targetSection = updateTargetSection.get();
-            Distance newDistance = targetSection.createNewDistanceBySubtract(section);
-            targetSection.updateUpStation(section.getDownStation(), newDistance);
+            updateSection(section, targetSection, targetSection.getDownStation());
             sections.add(section);
             return;
         }
         updateTargetSection = findSectionByDownStation(section);
         if (updateTargetSection.isPresent()) {
             Section targetSection = updateTargetSection.get();
-            Distance newDistance = targetSection.createNewDistanceBySubtract(section);
-            targetSection.updateDownStation(section.getUpStation(), newDistance);
+            updateSection(section, targetSection, targetSection.getUpStation());
         }
         sections.add(section);
     }
@@ -66,6 +63,16 @@ public class Sections {
 
         upLineStation.ifPresent(sections::remove);
         downLineStation.ifPresent(sections::remove);
+    }
+
+    private void updateSection(Section section, Section updateTargetSection, Station updateStation) {
+        Distance newDistance = updateTargetSection.createNewDistanceBySubtract(section);
+        updateTargetSection.updateUpStation(updateStation, newDistance);
+    }
+
+    private void validSection(Section section) {
+        checkValidDuplicateSection(section);
+        checkValidContainStations(section);
     }
 
     private Optional<Section> findSectionByDownStation(Station station) {
