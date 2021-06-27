@@ -97,7 +97,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> pathsResponse = 출발역과_도착역으로_최단경로를_찾는다(pathRequest);
 
         // Then
-        assertThat(pathsResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(pathsResponse.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     @Test

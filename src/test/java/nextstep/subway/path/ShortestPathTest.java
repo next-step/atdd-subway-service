@@ -1,5 +1,6 @@
 package nextstep.subway.path;
 
+import nextstep.subway.exception.InvalidPathSearchingException;
 import nextstep.subway.path.domain.ShortestPath;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +12,7 @@ public class ShortestPathTest {
     void validate() {
         assertThatThrownBy(() -> {
             ShortestPath shortestPath = new ShortestPath(null);
-        }).isInstanceOf(RuntimeException.class);
+        }).isInstanceOf(InvalidPathSearchingException.class);
     }
 
 }

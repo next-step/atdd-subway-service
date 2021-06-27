@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.InvalidPathSearchingException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -61,7 +62,7 @@ public class PathFinderUsingWeightedMultigraph implements PathFinder{
 
     public void validateSourceTarget(Station source, Station target) {
         if (source.equals(target)) {
-            throw new RuntimeException("경로를 검색하려는 출발역과 도착역이 같습니다.");
+            throw new InvalidPathSearchingException("경로를 검색하려는 출발역과 도착역이 같습니다.");
         }
     }
 }

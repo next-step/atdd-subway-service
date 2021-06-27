@@ -1,6 +1,8 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.exception.InvalidSectionException;
+import nextstep.subway.exception.NotRemovableException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -92,7 +94,7 @@ public class Line extends BaseEntity {
             return;
         }
 
-        throw new RuntimeException();
+        throw new InvalidSectionException("연결 불가능한 구간입니다.");
     }
 
     private void validateAddable(Section section) {
@@ -102,13 +104,13 @@ public class Line extends BaseEntity {
 
     private void checkExistedStationsOf(Section section) {
         if (sections.checkExistedStationsOf(section)) {
-            throw new RuntimeException("이미 등록된 역들을 가진 구간 입니다.");
+            throw new InvalidSectionException("이미 등록된 역들을 가진 구간 입니다.");
         }
     }
 
     private void hasStationCanBeConnectedIn(Section section) {
         if (!sections.hasStationCanBeConnectedIn(section)) {
-            throw new RuntimeException("연결 가능한 역이 하나도 없는 구간 입니다.");
+            throw new InvalidSectionException("연결 가능한 역이 하나도 없는 구간 입니다.");
         }
     }
 
@@ -119,7 +121,7 @@ public class Line extends BaseEntity {
 
     private void validateRemovable(Station station) {
         if (!getStations().contains(station)) {
-            throw new RuntimeException();
+            throw new NotRemovableException("지울 수 없는 역 입니다.");
         }
         sections.validateRemovableSize();
     }

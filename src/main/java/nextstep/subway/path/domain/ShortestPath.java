@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.InvalidPathSearchingException;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 
@@ -18,7 +19,7 @@ public class ShortestPath {
 
     private void validate(GraphPath path) {
         if (path == null) {
-            throw new RuntimeException("최단경로가 Null 입니다.");
+            throw new InvalidPathSearchingException("최단경로가 Null 입니다.");
         }
     }
 
