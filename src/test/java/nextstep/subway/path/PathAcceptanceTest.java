@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,6 +70,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_일치(response, Arrays.asList(양재역, 남부터미널역, 교대역));
     }
 
+    @DisplayName("최단경로 조회 - 존재하지 않는 역")
+    @Test
+    void findPaths_stationIsNotExists() {
+        // when
+        StationResponse 미등록역 = new StationResponse(999L, "미등록역", LocalDateTime.now(), LocalDateTime.now());
+        ExtractableResponse<Response> response = 최단경로_조회_요청(양재역, 미등록역);
+
+        // then
+        최단경로_조회_실패됨(response);
+    }
+
     private ExtractableResponse<Response> 최단경로_조회_요청(StationResponse source, StationResponse target) {
         return RestAssured
                 .given().log().all()
@@ -80,6 +92,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 최단경로_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private void 최단경로_조회_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private void 최단경로_일치(ExtractableResponse<Response> response, List<StationResponse> expectedList) {
