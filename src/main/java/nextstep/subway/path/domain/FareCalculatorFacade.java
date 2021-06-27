@@ -7,14 +7,15 @@ import nextstep.subway.path.domain.line.LineCalculator;
 import nextstep.subway.wrapped.Money;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class FareCalculatorFacade {
-    private static final List<Calculator> calculators = Arrays.asList(
+    private static final List<Calculator> calculators = Collections.unmodifiableList(Arrays.asList(
             new DistanceCalculator(),
             new LineCalculator(),
             new AgeCalculator()
-    );
+    ));
 
     public static Money calcFare(LoginMember loginMember, ShortestDistance shortestDistance) {
         Money money = new Money(0);
