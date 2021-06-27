@@ -107,13 +107,13 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     * [x] 지하철 구간 추가 및 조회 기능 인수테스트 코드 리펙터링
     * [x] 지하철 구간 삭제 기능 인수테스트 코드 리펙터링
 
-* [ ] LineService 리팩터링
+* [x] LineService 리팩터링
     * [x] Domain으로 옮길 로직을 찾기
         - Line
         - LineRequest
         - LineResponse
         - Sections 객체 신규 생성
-    * [ ] Domain 객체 단위 테스트 코드 작성
+    * [x] Domain 객체 단위 테스트 코드 작성
         * [x] LineRequest
             * [x] Station(up, down) 정보를 이용하여 Line entity 생성
             * [x] name, color 정보를 이용하여 Line entity 생성
