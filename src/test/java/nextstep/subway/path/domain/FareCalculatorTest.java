@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class DefaultFareCalculatorTest {
+class FareCalculatorTest {
     private static final int childAge = 6;
     private static final int teenagerAge = 13;
     private static final int normalAge = 19;
@@ -39,13 +39,13 @@ class DefaultFareCalculatorTest {
     private static final Function<Integer, Money> 청소년_할인_계산 = (money) -> new Money((money - 350) / 10 * 8);
     private static final Function<Integer, Money> 일반_할인_계산 = (money) -> new Money(money);
 
-    private static final DefaultFareCalculator defaultFareCalculator = new DefaultFareCalculator();
+    private static final FareCalculator FARE_CALCULATOR = new FareCalculator();
 
     @ParameterizedTest
     @MethodSource("childCase")
     @DisplayName("어린이의 요금을 계산한다(짧은거리, 중간거리, 장거리, 환승, 비환승)")
     public void 어린이(FareCalculatorCase fareCalculatorCase) {
-        assertThat(defaultFareCalculator.calcFare(new LoginMember(null, null, childAge), fareCalculatorCase.getShortestDistance()))
+        assertThat(FARE_CALCULATOR.calcFare(new LoginMember(null, null, childAge), fareCalculatorCase.getShortestDistance()))
                 .isEqualTo(fareCalculatorCase.getExceptMoney());
     }
 
@@ -53,7 +53,7 @@ class DefaultFareCalculatorTest {
     @MethodSource("teenagerCase")
     @DisplayName("청소년의 요금을 계산한다(짧은거리, 중간거리, 장거리, 환승, 비환승)")
     public void 청소년(FareCalculatorCase fareCalculatorCase) {
-        assertThat(defaultFareCalculator.calcFare(new LoginMember(null, null, teenagerAge), fareCalculatorCase.getShortestDistance()))
+        assertThat(FARE_CALCULATOR.calcFare(new LoginMember(null, null, teenagerAge), fareCalculatorCase.getShortestDistance()))
                 .isEqualTo(fareCalculatorCase.getExceptMoney());
     }
 
@@ -61,7 +61,7 @@ class DefaultFareCalculatorTest {
     @MethodSource("defaultCase")
     @DisplayName("일반의 요금을 계산한다(짧은거리, 중간거리, 장거리, 환승, 비환승)")
     public void 일반(FareCalculatorCase fareCalculatorCase) {
-        assertThat(defaultFareCalculator.calcFare(new LoginMember(null, null, normalAge), fareCalculatorCase.getShortestDistance()))
+        assertThat(FARE_CALCULATOR.calcFare(new LoginMember(null, null, normalAge), fareCalculatorCase.getShortestDistance()))
                 .isEqualTo(fareCalculatorCase.getExceptMoney());
     }
 
