@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.persistence.EntityNotFoundException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -35,6 +37,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = StationsNotExistException.class)
     public ResponseEntity handleStationsNotExistException(StationsNotExistException e) {
         LOG.error("GlobalExceptionHandler.handleStationsNotExistException : ", e);
+        return ResponseEntity.notFound().build();
+    }
+
+    @ExceptionHandler(value = EntityNotFoundException.class)
+    public ResponseEntity handleEntityNotFoundException(EntityNotFoundException e) {
+        LOG.error("GlobalExceptionHandler.handleEntityNotFoundException : ", e);
         return ResponseEntity.notFound().build();
     }
 }
