@@ -18,6 +18,16 @@
           placeholder="노선 이름"
           outlined
         ></v-text-field>
+        <div class="d-flex">
+          <v-text-field
+              v-model="lineEditForm.surcharge"
+              :rules="rules.section.surcharge"
+              color="grey darken-1"
+              label="추가요금"
+              placeholder="추가요금"
+              outlined
+          ></v-text-field>
+        </div>
         <div>
           <v-text-field
             v-model="lineEditForm.color"
@@ -96,6 +106,7 @@ export default {
       lineEditForm: {
         name: '',
         color: '',
+        surcharge: '',
         startTime: '',
         endTime: '',
         intervalTime: '',
