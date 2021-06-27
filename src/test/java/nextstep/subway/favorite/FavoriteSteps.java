@@ -30,6 +30,7 @@ public class FavoriteSteps {
         return RestAssured.given().log().all()
                 .auth()
                 .oauth2(token.getAccessToken())
+                .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get("/favorites")
                 .then().log().all()
