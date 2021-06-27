@@ -70,4 +70,16 @@ class FavoriteServiceTest {
         assertThat(favorites).isNotEmpty();
         assertThat(favorites.get(0).getSource()).isEqualTo(강남역);
     }
+
+    @DisplayName("즐겨찾기를 제거한다.")
+    @Test
+    void deleteFavorite() {
+        LoginMember loginMember = new LoginMember(1L, "bbbnam@naver.com", 24);
+        FavoriteRequest favoriteRequest = new FavoriteRequest(강남역.getId(), 교대역.getId());
+        FavoriteResponse favoriteResponse = favoriteService.saveFavorites(loginMember, favoriteRequest);
+
+        favoriteService.deleteFavorite(favoriteResponse.getId());
+
+        assertThat(favoriteService.findFavorites(loginMember)).isEmpty();
+    }
 }
