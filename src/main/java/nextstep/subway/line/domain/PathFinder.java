@@ -45,7 +45,14 @@ public class PathFinder {
     }
 
     public List<Station> findPaths(Station source, Station target) {
+        validateFindable(source, target);
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         return dijkstraShortestPath.getPath(source, target).getVertexList();
+    }
+
+    private void validateFindable(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException("출발지와 도착지가 동일합니다. 입력값을 확인해주세요.");
+        }
     }
 }
