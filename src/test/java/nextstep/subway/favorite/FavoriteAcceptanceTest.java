@@ -1,13 +1,19 @@
 package nextstep.subway.favorite;
 
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.TestToken;
+import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.auth.AuthSteps.로그인_요청;
 import static nextstep.subway.line.acceptance.LineSetionSteps.지하철_노선에_지하철역_등록_요청;
@@ -43,6 +49,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기를 관리")
     @Test
     void manageFavorites() {
+        ExtractableResponse<Response> response = 즐겨찾기_생성을_요청(사용자_토큰, 강남역, 정자역);
+        즐겨찾기_생성됨(response);
+    }
 
+    private ExtractableResponse<Response> 즐겨찾기_생성을_요청(TestToken token, StationResponse source, StationResponse target) {
+        FavoriteRequest favoriteRequest = new FavoriteRequest(source.getId(), target.getId());
+        return RestAssured.given().log().all()
+                .auth()
+                .oauth2(token.getAccessToken())
+                .body(favoriteRequest)
+                .when()
+                .post("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
+    private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
