@@ -67,14 +67,14 @@ public class LineService {
 
     public void addSection(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
+        Station upStation = stationService.findById(request.getUpStationId());
+        Station downStation = stationService.findById(request.getDownStationId());
         line.add(upStation, downStation, request.getDistance());
     }
 
     public void removeSection(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
-        Station station = stationService.findStationById(stationId);
+        Station station = stationService.findById(stationId);
         line.remove(station);
     }
 
