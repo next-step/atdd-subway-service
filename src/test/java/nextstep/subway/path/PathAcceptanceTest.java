@@ -117,13 +117,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 역으로 최단 경로를 조회한다.")
     @Test
     void findShortestPath_notFoundStation() {
-        //given
+        // given
         Long 존재하지않는_역_ID = 10000L;
 
-        //when
+        // when
         ExtractableResponse<Response> 조회된_최단_경로 = 최단_경로_조회_요청(교대역.getId(), 존재하지않는_역_ID);
 
-        //then
+        // then
         등록되지_않은_역들로_최단_경로_조회_실패(조회된_최단_경로);
     }
 
