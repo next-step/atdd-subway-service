@@ -9,6 +9,7 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -30,5 +31,9 @@ public class FavoriteService {
 
     private Station findStationById(Long id) {
         return stationRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    }
+
+    public List<Favorite> findFavorites(LoginMember loginMember) {
+        return null;
     }
 }

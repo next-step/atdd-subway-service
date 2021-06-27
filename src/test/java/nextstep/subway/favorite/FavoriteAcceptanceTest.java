@@ -49,7 +49,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createdResponse = 즐겨찾기_생성을_요청(사용자_토큰, 강남역, 정자역);
         즐겨찾기_생성됨(createdResponse);
 
-        //ExtractableResponse<Response> findedResponse = 즐겨찾기_목록_조회_요청(사용자_토큰);
-        //즐겨찾기_목록_조회됨(findedResponse);
+        ExtractableResponse<Response> findedResponse = 즐겨찾기_목록_조회_요청(사용자_토큰);
+        즐겨찾기_목록_조회됨(findedResponse);
     }
 }
