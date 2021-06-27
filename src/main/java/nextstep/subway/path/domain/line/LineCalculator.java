@@ -1,7 +1,6 @@
 package nextstep.subway.path.domain.line;
 
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.Calculator;
 import nextstep.subway.path.domain.EfficientLines;
 import nextstep.subway.path.domain.ShortestDistance;

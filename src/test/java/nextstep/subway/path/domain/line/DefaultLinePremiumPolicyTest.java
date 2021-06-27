@@ -1,7 +1,6 @@
 package nextstep.subway.path.domain.line;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.EfficientLines;
 import nextstep.subway.wrapped.Money;
 import org.junit.jupiter.api.Test;

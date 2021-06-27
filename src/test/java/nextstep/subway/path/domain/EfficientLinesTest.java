@@ -1,7 +1,6 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.StationPair;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.wrapped.Money;
@@ -9,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class EfficientLinesTest {

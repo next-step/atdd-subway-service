@@ -1,8 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.exception.NotExistMinimumFareLine;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.wrapped.Money;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -30,7 +30,7 @@ public class DistanceCalculator implements Calculator {
         return money;
     }
 
-    private static Money calcFareIfSupported(DistancePremiumPolicy premiumPolicy, Distance distance, Money money) {
+    private Money calcFareIfSupported(DistancePremiumPolicy premiumPolicy, Distance distance, Money money) {
         if (premiumPolicy.isSupport(distance)) {
             money = premiumPolicy.calcFare(distance, money);
         }
