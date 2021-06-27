@@ -33,9 +33,9 @@ public class PathService {
 
     private ShortestPath findShortestPath(Long source, Long target) {
         Lines lines = new Lines(lineRepository.findAll());
-        Map<Long, Station> stationMap = stationService.findMapByIds(source, target);
-        Station sourceStation = stationMap.get(source);
-        Station targetStation = stationMap.get(target);
+        Map<Long, Station> stations = stationService.findStationsByIds(source, target);
+        Station sourceStation = stations.get(source);
+        Station targetStation = stations.get(target);
         return new PathFinder(lines).findPath(sourceStation, targetStation);
     }
 

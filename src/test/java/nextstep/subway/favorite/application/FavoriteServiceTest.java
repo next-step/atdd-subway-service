@@ -7,7 +7,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -54,10 +53,10 @@ public class FavoriteServiceTest {
         // given
         given(memberService.findById(any())).willReturn(member);
 
-        Map<Long, Station> stationMap = new HashMap<>();
-        stationMap.put(서대문역.getId(), 서대문역);
-        stationMap.put(광화문역.getId(), 광화문역);
-        given(stationService.findMapByIds(서대문역.getId(), 광화문역.getId())).willReturn(stationMap);
+        Map<Long, Station> stations = new HashMap<>();
+        stations.put(서대문역.getId(), 서대문역);
+        stations.put(광화문역.getId(), 광화문역);
+        given(stationService.findStationsByIds(서대문역.getId(), 광화문역.getId())).willReturn(stations);
 
         given(favoriteRepository.save(any())).willReturn(favorite);
 

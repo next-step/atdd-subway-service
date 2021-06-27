@@ -42,7 +42,7 @@ public class StationService {
             .orElseThrow(StationNotFoundException::new);
     }
 
-    public Map<Long, Station> findMapByIds(Long... ids) {
+    public Map<Long, Station> findStationsByIds(Long... ids) {
         List<Station> stations = findByIds(ids);
         return stations
             .stream()

@@ -61,10 +61,10 @@ public class PathServiceTest {
 
         when(lineRepository.findAll()).thenReturn(allLines);
 
-        Map<Long, Station> stationMap = new HashMap<>();
-        stationMap.put(서대문역.getId(), 서대문역);
-        stationMap.put(시청역.getId(), 시청역);
-        given(stationService.findMapByIds(서대문역.getId(), 시청역.getId())).willReturn(stationMap);
+        Map<Long, Station> stations = new HashMap<>();
+        stations.put(서대문역.getId(), 서대문역);
+        stations.put(시청역.getId(), 시청역);
+        given(stationService.findStationsByIds(서대문역.getId(), 시청역.getId())).willReturn(stations);
 
         LoginMember loginMember = new LoginMember(ADULT.getMaxAge());
 

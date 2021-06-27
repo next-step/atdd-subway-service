@@ -36,9 +36,9 @@ public class FavoriteService {
 
     private Favorite makeFavorite(long memberId, long sourceStationId, long targetStationId) {
         Member member = memberService.findById(memberId);
-        Map<Long, Station> stationMap = stationService.findMapByIds(sourceStationId, targetStationId);
-        Station source = stationMap.get(sourceStationId);
-        Station target = stationMap.get(targetStationId);
+        Map<Long, Station> stations = stationService.findStationsByIds(sourceStationId, targetStationId);
+        Station source = stations.get(sourceStationId);
+        Station target = stations.get(targetStationId);
         return new Favorite(member, source, target);
     }
 

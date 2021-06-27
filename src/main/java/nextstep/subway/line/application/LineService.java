@@ -32,9 +32,9 @@ public class LineService {
     }
 
     private Line makeLine(LineRequest request) {
-        Map<Long, Station> stationMap = stationService.findMapByIds(request.getUpStationId(), request.getDownStationId());
-        Station upStation = stationMap.get(request.getUpStationId());
-        Station downStation = stationMap.get(request.getDownStationId());
+        Map<Long, Station> stations = stationService.findStationsByIds(request.getUpStationId(), request.getDownStationId());
+        Station upStation = stations.get(request.getUpStationId());
+        Station downStation = stations.get(request.getDownStationId());
         return new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance(), request.getSurcharge());
     }
 
@@ -62,9 +62,9 @@ public class LineService {
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
-        Map<Long, Station> stationMap = stationService.findMapByIds(request.getUpStationId(), request.getDownStationId());
-        Station upStation = stationMap.get(request.getUpStationId());
-        Station downStation = stationMap.get(request.getDownStationId());
+        Map<Long, Station> stations = stationService.findStationsByIds(request.getUpStationId(), request.getDownStationId());
+        Station upStation = stations.get(request.getUpStationId());
+        Station downStation = stations.get(request.getDownStationId());
         Line persistLine = findById(lineId);
         Section section = new Section(persistLine, upStation, downStation, request.getDistance());
         persistLine.addSection(section);
