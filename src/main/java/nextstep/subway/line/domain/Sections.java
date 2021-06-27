@@ -29,11 +29,11 @@ public class Sections {
         }
 
         if (isUpStationExisted) {
-            connectSectionIfHasSameUpStation(section);
+            connectSectionIfHasStation(section, true);
             return;
         }
 
-        connectSectionIfHasSameDownStation(section);
+        connectSectionIfHasStation(section, false);
     }
 
     public List<Station> getStations() {
@@ -45,8 +45,8 @@ public class Sections {
         Station downStation = findUpStation();
         stations.add(downStation);
 
-        while (hasNextSection(downStation)) {
-            Section nextLineStation = findNextSection(downStation);
+        while (hasStation(downStation, true)) {
+            Section nextLineStation = findSection(downStation, true);
             downStation = nextLineStation.getDownStation();
             stations.add(downStation);
         }
@@ -69,53 +69,39 @@ public class Sections {
 
     private Station findUpStation() {
         Station downStation = sections.get(0).getUpStation();
-        while (hasPreSection(downStation)) {
-            Section nextLineStation = findPreSection(downStation);
+        while (hasStation(downStation, false)) {
+            Section nextLineStation = findSection(downStation, false);
             downStation = nextLineStation.getUpStation();
         }
         return downStation;
     }
 
-    private Section findPreSection(Station section) {
+    private Section findSection(Station station, boolean hasUpStation) {
         return sections.stream()
-                .filter(it -> it.isSameDownStation(section))
+                .filter(it -> it.hasSameStation(station, hasUpStation))
                 .findFirst()
                 .orElse(null);
     }
 
-    private Section findNextSection(Station section) {
+    private boolean hasStation(Station station, boolean hasUpStation) {
         return sections.stream()
-                .filter(it -> it.isSameUpStation(section))
-                .findFirst()
-                .orElse(null);
+                .filter(it -> it.isExistStation(hasUpStation))
+                .anyMatch(it -> it.hasSameStation(station, hasUpStation));
     }
 
-    private boolean hasPreSection(Station section) {
-        return sections.stream()
-                .filter(it -> it.getDownStation() != null)
-                .anyMatch(it -> it.isSameDownStation(section));
-    }
-
-    private boolean hasNextSection(Station section) {
-        return sections.stream()
-                .filter(it -> it.getUpStation() != null)
-                .anyMatch(it -> it.isSameUpStation(section));
-    }
-
-    private void connectSectionIfHasSameDownStation(Section section) {
+    private void connectSectionIfHasStation(Section section, boolean hasUpStation) {
         sections.stream()
-                .filter(it -> section.isSameDownStation(it.getDownStation()))
+                .filter(it -> section.hasSameStation(getStation(it, hasUpStation), hasUpStation))
                 .findFirst()
-                .ifPresent(it -> it.updateDownStationBySection(section));
+                .ifPresent(it -> it.updateStationBySection(section, hasUpStation));
         sections.add(section);
     }
 
-    private void connectSectionIfHasSameUpStation(Section section) {
-        sections.stream()
-                .filter(it -> section.isSameUpStation(it.getUpStation()))
-                .findFirst()
-                .ifPresent(it -> it.updateUpStationBySection(section));
-        sections.add(section);
+    private Station getStation(Section section, boolean hasUpStation) {
+        if (hasUpStation) {
+            return section.getUpStation();
+        }
+        return section.getDownStation();
     }
 
     private void validateNotMatchedStations(Section section, List<Station> stations) {

@@ -54,24 +54,38 @@ public class Section {
         return distance;
     }
 
-    public void updateDownStationBySection(Section section) {
-        validateDistance(section.getDistance());
-        this.downStation = section.getUpStation();
-        this.distance -= section.getDistance();
-    }
-
-    public void updateUpStationBySection(Section section) {
-        validateDistance(section.getDistance());
-        this.upStation = section.getDownStation();
-        this.distance -= section.getDistance();
-    }
-
     public boolean isSameUpStation(Station station) {
         return station == upStation;
     }
 
     public boolean isSameDownStation(Station station) {
         return station == downStation;
+    }
+
+    public boolean hasSameStation(Station station, boolean hasUpStation) {
+        if (hasUpStation) {
+            return station == upStation;
+        }
+        return station == downStation;
+    }
+
+    public boolean isExistStation(boolean hasUpStation) {
+        if (hasUpStation) {
+            return upStation != null;
+        }
+        return downStation != null;
+    }
+
+    public void updateStationBySection(Section section, boolean hasUpStation) {
+        validateDistance(section.getDistance());
+        if (hasUpStation) {
+            this.upStation = section.getDownStation();
+            this.distance -= section.getDistance();
+            return;
+        }
+
+        this.downStation = section.getUpStation();
+        this.distance -= section.getDistance();
     }
 
     private void validateDistance(int distance) {
