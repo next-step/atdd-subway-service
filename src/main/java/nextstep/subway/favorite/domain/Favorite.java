@@ -1,19 +1,17 @@
 package nextstep.subway.favorite.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"member", "source", "target"})})
 public class Favorite {
 
     public Favorite() {
@@ -25,11 +23,12 @@ public class Favorite {
         this.target = target;
     }
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "member")
+    @JoinColumn(name = "member", unique = true)
     private Member member;
 
     @ManyToOne

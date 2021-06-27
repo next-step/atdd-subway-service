@@ -5,6 +5,7 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,5 +35,11 @@ public class FavoriteController {
     @GetMapping
     public ResponseEntity search(@AuthenticationPrincipal LoginMember loginMember) {
         return ResponseEntity.ok(favoriteService.search(loginMember));
+    }
+
+    @DeleteMapping
+    public ResponseEntity remove(@AuthenticationPrincipal LoginMember loginMember) {
+        favoriteService.remove(loginMember);
+        return ResponseEntity.noContent().build();
     }
 }

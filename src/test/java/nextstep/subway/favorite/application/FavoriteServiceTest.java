@@ -4,13 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.favorite.dto.FavoriteRequest;
-import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.domain.MemberRepository;
-import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,10 +13,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.domain.MemberRepository;
+import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 
-import java.util.Optional;
 
 @DisplayName("FavoriteService 협력객체 이용 테스트")
 @ExtendWith(MockitoExtension.class)
@@ -66,5 +67,17 @@ class FavoriteServiceTest {
         FavoriteResponse favoriteResponse = favoriteService.search(new LoginMember());
         //then
         assertThat(favoriteResponse).isNotNull();
+    }
+
+    @DisplayName("즐겨찾기 제거")
+    @Test
+    void remove() {
+        //given
+        //when
+        when(memberRepository.findById(any())).thenReturn(Optional.of(new Member()));
+        when(favoriteRepository.findByMember(any())).thenReturn(Optional.of(new Favorite(new Member(), new Station(), new Station())));
+        favoriteService.remove(new LoginMember());
+        //then
+        verify(favoriteRepository, times(1)).delete(any());
     }
 }

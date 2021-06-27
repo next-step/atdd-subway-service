@@ -47,12 +47,23 @@ public class FavoriteService {
 
     public FavoriteResponse search(LoginMember loginMember) {
         Member member = member(loginMember);
-        Favorite favorite = favoriteRepository.findByMember(member).orElseThrow(() -> new RuntimeException(NOT_FOUND_FAVORITE));
+        Favorite favorite = getFavorite(member);
 
         return FavoriteResponse.of(favorite);
     }
 
+    public void remove(LoginMember loginMember) {
+        Member member = member(loginMember);
+        Favorite favorite = getFavorite(member);
+
+        favoriteRepository.delete(favorite);
+    }
+
     private Member member(LoginMember loginMember) {
         return memberRepository.findById(loginMember.getId()).orElseThrow(RuntimeException::new);
+    }
+
+    private Favorite getFavorite(Member member) {
+        return favoriteRepository.findByMember(member).orElseThrow(() -> new RuntimeException(NOT_FOUND_FAVORITE));
     }
 }

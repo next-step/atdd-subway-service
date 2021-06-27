@@ -68,6 +68,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_조회_응답_확인(즐겨찾기_조회_응답, 강남역, 광교역);
     }
 
+    @DisplayName("즐겨찾기 제거")
+    @Test
+    void remove() {
+        //given
+        즐겨찾기_생성(토큰, 강남역, 광교역);
+        //when
+        즐겨찾기_제거(토큰);
+        //then
+    }
+
     private ExtractableResponse<Response> 즐겨찾기_조회(String 토큰) {
         FavoriteRequest favoriteRequest = new FavoriteRequest(강남역, 광교역);
 
@@ -127,5 +137,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(stations.size()).isEqualTo(2);
         assertThat(stations.get(0).getId()).isEqualTo(출발역_번호);
         assertThat(stations.get(1).getId()).isEqualTo(도착역_번호);
+    }
+
+    private void 즐겨찾기_제거(String 토큰) {
+        RestAssured
+                .given().header("authorization", BEARER + 토큰).log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/favorites")
+                .then().log().all()
+                .extract();
     }
 }
