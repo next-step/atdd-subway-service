@@ -85,8 +85,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .then().log().all().extract();
     }
 
-    public static ExtractableResponse<Response> 회원_로그인_되어_있음(String email, String password) {
-        return 회원_로그인_요청(email, password);
+    public static TokenResponse 회원_로그인_되어_있음(String email, String password) {
+        return 회원_로그인_요청(email, password).as(TokenResponse.class);
     }
 
     public static ExtractableResponse<Response> 회원_로그인_요청(String email, String password) {

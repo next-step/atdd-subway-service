@@ -54,7 +54,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_생성_되어_있음(EMAIL, PASSWORD, AGE);
 
         // given
-        ExtractableResponse<Response> tokenResponse
+        TokenResponse tokenResponse
             = AuthAcceptanceTest.회원_로그인_되어_있음(EMAIL, PASSWORD);
 
         // when
@@ -131,8 +131,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 내_정보_조회_요청(ExtractableResponse<Response> response) {
-        TokenResponse tokenResponse = response.as(TokenResponse.class);
+    public static ExtractableResponse<Response> 내_정보_조회_요청(TokenResponse tokenResponse) {
         return RestAssured
             .given().log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
@@ -142,9 +141,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static ExtractableResponse<Response> 내_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 내_정보_수정_요청(TokenResponse tokenResponse, String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
-        TokenResponse tokenResponse = response.as(TokenResponse.class);
         return RestAssured
             .given().log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
@@ -155,8 +153,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static ExtractableResponse<Response> 내_정보_삭제_요청(ExtractableResponse<Response> response) {
-        TokenResponse tokenResponse = response.as(TokenResponse.class);
+    public static ExtractableResponse<Response> 내_정보_삭제_요청(TokenResponse tokenResponse) {
         return RestAssured
             .given().log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
