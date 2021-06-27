@@ -34,6 +34,6 @@ public class FavoriteService {
     }
 
     public List<Favorite> findFavorites(LoginMember loginMember) {
-        return null;
+        return favoriteRepository.findByMemberId(loginMember.getId());
     }
 }
