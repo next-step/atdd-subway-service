@@ -1,7 +1,6 @@
 package nextstep.subway.path.application;
 
-import static nextstep.subway.station.domain.StationFixtures.광화문역;
-import static nextstep.subway.station.domain.StationFixtures.서대문역;
+import static nextstep.subway.path.domain.FarePolicy.ADULT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
@@ -11,15 +10,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -67,8 +66,10 @@ public class PathServiceTest {
         stationMap.put(시청역.getId(), 시청역);
         given(stationService.findMapByIds(서대문역.getId(), 시청역.getId())).willReturn(stationMap);
 
+        LoginMember loginMember = new LoginMember(ADULT.getMaxAge());
+
         // When
-        PathResponse pathResponse = pathService.findPath(서대문역.getId(), 시청역.getId());
+        PathResponse pathResponse = pathService.findPath(loginMember, new PathRequest(서대문역.getId(), 시청역.getId()));
 
         // Then
         지하철역_순서_정렬됨(pathResponse.getStations(), 서대문역, 충정로역, 시청역);

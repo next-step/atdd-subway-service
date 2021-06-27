@@ -35,7 +35,7 @@ public class LineService {
         Map<Long, Station> stationMap = stationService.findMapByIds(request.getUpStationId(), request.getDownStationId());
         Station upStation = stationMap.get(request.getUpStationId());
         Station downStation = stationMap.get(request.getDownStationId());
-        return new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance());
+        return new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance(), request.getSurcharge());
     }
 
     public List<LineResponse> findLines() {
@@ -54,7 +54,7 @@ public class LineService {
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = findById(id);
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor(), lineUpdateRequest.getSurcharge()));
     }
 
     public void deleteLineById(Long id) {

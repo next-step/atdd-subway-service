@@ -34,10 +34,13 @@ public class PathAcceptanceTest extends AcceptancePerClassTest {
     private StationResponse 애오개역;
     private StationResponse 서대문역;
     private StationResponse 광화문역;
+    private StationResponse 회현역;
+    private StationResponse 명동역;
 
     private LineResponse 일호선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
+    private LineResponse 사호선;
     private LineResponse 오호선;
 
     @BeforeAll
@@ -47,7 +50,7 @@ public class PathAcceptanceTest extends AcceptancePerClassTest {
         시청역 = StationAcceptanceTest.지하철역_등록되어_있음("시청역").as(StationResponse.class);
         종각역 = StationAcceptanceTest.지하철역_등록되어_있음("종각역").as(StationResponse.class);
         종로3가역 = StationAcceptanceTest.지하철역_등록되어_있음("종로3가역").as(StationResponse.class);
-        일호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("일호선", "blue", 서울역, 시청역, 10)).as(LineResponse.class);
+        일호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("일호선", "blue", 서울역, 시청역, 10, 500)).as(LineResponse.class);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 시청역, 종각역, 10);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 종각역, 종로3가역, 9);
 
@@ -64,6 +67,12 @@ public class PathAcceptanceTest extends AcceptancePerClassTest {
         경복궁역 = StationAcceptanceTest.지하철역_등록되어_있음("경복궁역").as(StationResponse.class);
         삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("삼호선", "orange", 독립문역, 경복궁역, 10)).as(LineResponse.class);
 
+        //4호선
+        회현역 = StationAcceptanceTest.지하철역_등록되어_있음("회현역").as(StationResponse.class);
+        명동역 = StationAcceptanceTest.지하철역_등록되어_있음("명동역").as(StationResponse.class);
+        사호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("사호선", "skyblue", 서울역, 회현역, 10, 900)).as(LineResponse.class);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(사호선, 회현역, 명동역, 10);
+
         //5호선
         애오개역 = StationAcceptanceTest.지하철역_등록되어_있음("애오개역").as(StationResponse.class);
         서대문역 = StationAcceptanceTest.지하철역_등록되어_있음("서대문역").as(StationResponse.class);
@@ -78,11 +87,12 @@ public class PathAcceptanceTest extends AcceptancePerClassTest {
     @Test
     void findPathByPoints() {
         // When
-        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(서대문역, 시청역);
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(광화문역, 명동역);
 
         // Then
         지하철_최단_경로_목록_응답됨(response);
-        지하철_최단_경로_목록_정렬됨(response, 서대문역, 충정로역, 시청역);
+        지하철_최단_경로_목록_정렬됨(response, 광화문역, 종로3가역, 종각역, 시청역, 서울역, 회현역, 명동역);
+        지하철_최단_경로에_요금이_포함됨(response, 3150);
     }
 
     @DisplayName("최단 경로 찾기 - 동일한 경로가 여럿인경우(거쳐가는 지하철역 개수가 동일) 짧은 거리를 기준")
@@ -142,6 +152,12 @@ public class PathAcceptanceTest extends AcceptancePerClassTest {
 
     private ExtractableResponse<Response> 지하철_최단_경로_조회_요청(StationResponse startStation, StationResponse endStation) {
         return get(String.format("/paths?source=%d&target=%d", startStation.getId(), endStation.getId()));
+    }
+
+    private void 지하철_최단_경로에_요금이_포함됨(ExtractableResponse<Response> response, int fare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isNotNull();
+        assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
 
 }
