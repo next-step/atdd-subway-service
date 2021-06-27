@@ -5,6 +5,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.PathFinderUsingWeightedMultigraph;
 import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -49,7 +50,7 @@ public class PathService {
                 .orElseThrow(NoSuchElementException::new);
         List<Line> lines = lineRepository.findAll();
 
-        PathFinder pathFinder = new PathFinder(lines);
+        PathFinder pathFinder = new PathFinderUsingWeightedMultigraph(lines);
         return pathFinder.executeDijkstra(sourceStation, targetStation);
     }
 }

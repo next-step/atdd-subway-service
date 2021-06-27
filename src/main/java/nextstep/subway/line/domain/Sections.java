@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.NotRemovableException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -80,7 +81,7 @@ public class Sections {
 
     public void validateRemovableSize() {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new NotRemovableException();
         }
     }
 

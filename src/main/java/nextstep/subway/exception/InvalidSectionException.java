@@ -3,13 +3,13 @@ package nextstep.subway.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.UNAUTHORIZED)
-public class AuthorizationException extends RuntimeException {
-    public AuthorizationException() {
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class InvalidSectionException extends RuntimeException {
+    public InvalidSectionException() {
         super();
     }
 
-    public AuthorizationException(String message) {
+    public InvalidSectionException(String message) {
         super(message);
     }
 }

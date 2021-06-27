@@ -221,7 +221,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> pathsResponse = 출발역과_도착역으로_최단경로를_찾는다(PathRequest.of(강남역.getId(), 등록안된역의_ID));
 
         // Then
-        assertThat(pathsResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(pathsResponse.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
