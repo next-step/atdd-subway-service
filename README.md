@@ -13,6 +13,7 @@
 <br>
 
 # 지하철 노선도 미션
+
 [ATDD 강의](https://edu.nextstep.camp/c/R89PYi5H) 실습을 위한 지하철 노선도 애플리케이션
 
 <br>
@@ -20,25 +21,34 @@
 ## 🚀 Getting Started
 
 ### Install
+
 #### npm 설치
+
 ```
 cd frontend
 npm install
 ```
+
 > `frontend` 디렉토리에서 수행해야 합니다.
 
 ### Usage
+
 #### webpack server 구동
+
 ```
 npm run dev
 ```
+
 #### application 구동
+
 ```
 ./gradlew bootRun
 ```
+
 <br>
 
 ## ✏️ Code Review Process
+
 [텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
 
 <br>
@@ -57,7 +67,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ### 요구사항
 
-* [ ] 최단 경로 조회 인수 테스트 만들기
-* [ ] 최단 경로 조회 기능 구현하기
-* [ ] 최단 경로 조회 예외 케이스 인수 테스트 만들기
-* [ ] 최단 경로 조회 예외 케이스 기능 구현하기
+* [x] 최단 경로 조회 인수 테스트 만들기
+* [x] 최단 경로 조회 기능 구현하기
+* [x] 최단 경로 조회 예외 케이스 인수 테스트 만들기
+* [x] 최단 경로 조회 예외 케이스 기능 구현하기
