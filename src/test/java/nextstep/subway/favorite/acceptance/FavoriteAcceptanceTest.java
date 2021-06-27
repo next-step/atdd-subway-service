@@ -4,11 +4,16 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceStep.로그인_되어_있음;
 import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceStep.*;
@@ -56,7 +61,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         // When 즐겨찾기 목록 조회 요청
         ExtractableResponse<Response> 즐겨찾기_목록_조회_요청_결과 = 즐겨찾기_목록_조회_요청(사용자);
         // Then 즐겨찾기 목록 조회됨
-        즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_요청_결과);
+        즐겨찾기_목록_조회_응답_됨(즐겨찾기_목록_조회_요청_결과);
+        즐겨찾기_목록_조회_포함_됨(즐겨찾기_목록_조회_요청_결과, Lists.newArrayList(new FavoriteResponse(1L, 잠실역, 강남역)));
 
         // When 즐겨찾기 삭제 요청
         ExtractableResponse<Response> 즐겨찾기_삭제_요청_결과 = 즐겨찾기_삭제_요청(사용자, 즐겨찾기_생성을_요청_결과);
