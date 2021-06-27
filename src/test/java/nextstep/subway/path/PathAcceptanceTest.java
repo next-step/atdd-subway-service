@@ -1,5 +1,7 @@
 package nextstep.subway.path;
 
+import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
@@ -15,11 +17,9 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
-import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 경로 조회")
@@ -64,18 +64,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
         //given
-        교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
-        강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        선릉역 = StationAcceptanceTest.지하철역_등록되어_있음("선릉역").as(StationResponse.class);
-        잠실역 = StationAcceptanceTest.지하철역_등록되어_있음("잠실역").as(StationResponse.class);
-        남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
-        양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
-        오리역 = StationAcceptanceTest.지하철역_등록되어_있음("오리역").as(StationResponse.class);
-        분당역 = StationAcceptanceTest.지하철역_등록되어_있음("분당역").as(StationResponse.class);
-        시흥대야역 = StationAcceptanceTest.지하철역_등록되어_있음("시흥대야역").as(StationResponse.class);
-        은계역 = StationAcceptanceTest.지하철역_등록되어_있음("은계역").as(StationResponse.class);
-        사당역 = StationAcceptanceTest.지하철역_등록되어_있음("사당역").as(StationResponse.class);
-        서울대역 = StationAcceptanceTest.지하철역_등록되어_있음("서울대역").as(StationResponse.class);
+        교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
+        강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
+        선릉역 = 지하철역_등록되어_있음("선릉역").as(StationResponse.class);
+        잠실역 = 지하철역_등록되어_있음("잠실역").as(StationResponse.class);
+        남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
+        오리역 = 지하철역_등록되어_있음("오리역").as(StationResponse.class);
+        분당역 = 지하철역_등록되어_있음("분당역").as(StationResponse.class);
+        시흥대야역 = 지하철역_등록되어_있음("시흥대야역").as(StationResponse.class);
+        은계역 = 지하철역_등록되어_있음("은계역").as(StationResponse.class);
+        사당역 = 지하철역_등록되어_있음("사당역").as(StationResponse.class);
+        서울대역 = 지하철역_등록되어_있음("서울대역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
@@ -85,10 +85,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         호남선 = 지하철_노선_등록되어_있음("호남선", "bg-red-600", 잠실역, 분당역, 10);
         서해선 = 지하철_노선_등록되어_있음("서해선", "bg-red-600", 시흥대야역, 은계역, 3);
 
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 강남역, 선릉역, 10);
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 선릉역, 잠실역, 5);
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(사호선, 오리역, 분당역, 10);
+        지하철_노선에_지하철역_등록_요청(이호선, 강남역, 선릉역, 10);
+        지하철_노선에_지하철역_등록_요청(이호선, 선릉역, 잠실역, 5);
+        지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+        지하철_노선에_지하철역_등록_요청(사호선, 오리역, 분당역, 10);
     }
 
     @Test
