@@ -64,5 +64,5 @@ public class ExceptionHandler {
     public ResponseEntity handleInvalidSectionException(InvalidSectionException e) {
         return ResponseEntity.badRequest().build();
     }
-
+  
 }

@@ -43,6 +43,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, EMAIL, PASSWORD, NEW_AGE);
+
         // then
         회원_정보_수정됨(updateResponse);
 
