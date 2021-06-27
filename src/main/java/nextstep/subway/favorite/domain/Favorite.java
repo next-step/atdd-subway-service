@@ -14,10 +14,12 @@ public class Favorite {
     @Column(name = "member_id")
     private Long memberId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "source_id")
     private Station source;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "target_id")
     private Station target;
 
     protected Favorite() {
