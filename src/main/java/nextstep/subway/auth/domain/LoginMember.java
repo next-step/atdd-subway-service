@@ -1,5 +1,7 @@
 package nextstep.subway.auth.domain;
 
+import nextstep.subway.exception.AuthorizationException;
+
 public class LoginMember {
     private Long id;
     private String email;
@@ -12,6 +14,12 @@ public class LoginMember {
         this.id = id;
         this.email = email;
         this.age = age;
+    }
+
+    public void validation() {
+        if (id == null) {
+            throw new AuthorizationException("로그인된 멤버가 없습니다.");
+        }
     }
 
     public Long getId() {
