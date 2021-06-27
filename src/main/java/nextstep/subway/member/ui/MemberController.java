@@ -1,17 +1,17 @@
 package nextstep.subway.member.ui;
 
-import nextstep.subway.auth.application.AuthorizationException;
-import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.auth.domain.AuthenticationPrincipal;
-import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.member.application.MemberService;
-import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.member.dto.MemberResponse;
+import java.net.URI;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
+import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.dto.MemberRequest;
+import nextstep.subway.member.dto.MemberResponse;
 
 @RestController
 public class MemberController {
