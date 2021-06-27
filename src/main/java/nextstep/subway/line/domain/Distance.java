@@ -17,7 +17,7 @@ public class Distance {
     protected Distance() {
     }
 
-    private Distance(int distance) {
+    protected Distance(int distance) {
         validateDistance(distance);
         this.distance = distance;
     }
@@ -36,6 +36,22 @@ public class Distance {
         return distance;
     }
 
+    public boolean isSameOrShorterThan(Distance newDistance) {
+        return distance <= newDistance.getDistanceValue();
+    }
+
+    public Distance minus(Distance newDistance) {
+        if (isSameOrShorterThan(newDistance)) {
+            throw new IllegalArgumentException(Message.ERROR_INPUT_DISTANCE_SHOULD_BE_LESS_THAN_EXISTING_DISTANCE.showText());
+        }
+
+        return new Distance(distance - newDistance.getDistanceValue());
+    }
+
+    public Distance plus(Distance newDistance) {
+        return new Distance(distance + newDistance.getDistanceValue());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -51,17 +67,5 @@ public class Distance {
     @Override
     public int hashCode() {
         return Objects.hash(distance);
-    }
-
-    public boolean isSameOrShorterThan(Distance newDistance) {
-        return distance <= newDistance.getDistanceValue();
-    }
-
-    public void minus(Distance newDistance) {
-        this.distance -= newDistance.getDistanceValue();
-    }
-
-    public void plus(Distance newDistance) {
-        this.distance += newDistance.getDistanceValue();
     }
 }

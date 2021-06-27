@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.exception.Message;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -58,19 +57,13 @@ public class Section {
     }
 
     public void updateUpStation(Station station, Distance newDistance) {
-        if (distance.isSameOrShorterThan(newDistance)) {
-            throw new IllegalArgumentException(Message.ERROR_INPUT_DISTANCE_SHOULD_BE_LESS_THAN_EXISTING_DISTANCE.showText());
-        }
         this.upStation = station;
         distance.minus(newDistance);
     }
 
     public void updateDownStation(Station station, Distance newDistance) {
-        if (distance.isSameOrShorterThan(newDistance)) {
-            throw new IllegalArgumentException(Message.ERROR_INPUT_DISTANCE_SHOULD_BE_LESS_THAN_EXISTING_DISTANCE.showText());
-        }
         this.downStation = station;
-        distance.minus(newDistance);
+        distance = distance.minus(newDistance);
     }
 
     public boolean hasDownStationSameWith(Station station) {

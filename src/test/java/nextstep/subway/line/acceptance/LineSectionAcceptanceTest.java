@@ -1,28 +1,31 @@
 package nextstep.subway.line.acceptance;
 
+import java.util.List;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
 import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.response.ExtractableResponse;
+
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import nextstep.subway.station.StationAcceptanceTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 구간 관련 기능")
-class LineSectionAcceptanceTest extends AcceptanceTest {
+public class LineSectionAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private StationResponse 강남역;
     private StationResponse 양재역;

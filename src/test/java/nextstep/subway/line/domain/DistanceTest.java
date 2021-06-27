@@ -1,7 +1,6 @@
-package nextstep.subway.line.acceptance;
+package nextstep.subway.line.domain;
 
 import nextstep.subway.exception.Message;
-import nextstep.subway.line.domain.Distance;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
