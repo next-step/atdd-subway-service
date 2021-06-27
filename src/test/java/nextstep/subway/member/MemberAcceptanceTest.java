@@ -63,19 +63,19 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // Then 나의 정보 수정 응답됨
         나의_정보_수정_응답됨(나의_정보_수정_요청_결과);
 
-        // When 나의 정보 재요청
-        ExtractableResponse<Response> 나의_정보_조회_재요청_결과 = 나의_정보_조회_요청(로그인_요청_결과.as(TokenResponse.class).getAccessToken());
-        // Then 나의 정보 확인
-        나의_정보_확인(나의_정보_조회_재요청_결과, NEW_EMAIL, NEW_AGE);
-
         // When 수정된 정보로 로그인 요청
         ExtractableResponse<Response> 로그인_재요청_결과 = 로그인_요청(NEW_EMAIL, NEW_PASSWORD);
         // Then 로그인 됨
         로그인_응답됨(로그인_재요청_결과);
         로그인_됨(로그인_재요청_결과);
 
+        // When 나의 정보 재요청
+        ExtractableResponse<Response> 나의_정보_조회_재요청_결과 = 나의_정보_조회_요청(로그인_재요청_결과.as(TokenResponse.class).getAccessToken());
+        // Then 나의 정보 확인
+        나의_정보_확인(나의_정보_조회_재요청_결과, NEW_EMAIL, NEW_AGE);
+
         // When 나의 정보 삭제
-        ExtractableResponse<Response> 나의_정보_삭제_요청_결과 = 나의_정보_삭제_요청(로그인_요청_결과.as(TokenResponse.class).getAccessToken());
+        ExtractableResponse<Response> 나의_정보_삭제_요청_결과 = 나의_정보_삭제_요청(로그인_재요청_결과.as(TokenResponse.class).getAccessToken());
         // Then 나의 정보 삭제 응답됨
         나의_정보_삭제_응답됨(나의_정보_삭제_요청_결과);
 
