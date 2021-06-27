@@ -12,8 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.auth.AuthSteps.로그인_요청;
-import static nextstep.subway.favorite.FavoriteSteps.즐겨찾기_생성됨;
-import static nextstep.subway.favorite.FavoriteSteps.즐겨찾기_생성을_요청;
+import static nextstep.subway.favorite.FavoriteSteps.*;
 import static nextstep.subway.line.acceptance.LineSetionSteps.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.line.acceptance.LineSteps.지하철_노선_등록되어_있음;
 import static nextstep.subway.member.MemeberSteps.회원_등록_되어_있음;
@@ -47,7 +46,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기를 관리")
     @Test
     void manageFavorites() {
-        ExtractableResponse<Response> response = 즐겨찾기_생성을_요청(사용자_토큰, 강남역, 정자역);
-        즐겨찾기_생성됨(response);
+        ExtractableResponse<Response> createdResponse = 즐겨찾기_생성을_요청(사용자_토큰, 강남역, 정자역);
+        즐겨찾기_생성됨(createdResponse);
+
+        //ExtractableResponse<Response> findedResponse = 즐겨찾기_목록_조회_요청(사용자_토큰);
+        //즐겨찾기_목록_조회됨(findedResponse);
     }
 }
