@@ -1,42 +1,42 @@
 package nextstep.subway.path.application;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
+import org.jgrapht.Graphs;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.exception.NoSuchPathException;
 import nextstep.subway.station.domain.Station;
 
 public class PathFinder {
 
-    private final WeightedMultigraph<Station, Section> graph;
+    private final Graph<Station, DefaultEdge> graph;
 
     public PathFinder(List<Line> lines) {
-        this.graph = new WeightedMultigraph<>(Section.class);
-        
-        lines.stream()
-            .map(Line::getStations)
-            .flatMap(Collection::stream)
-            .distinct()
-            .forEach(this.graph::addVertex);
+        this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+
         lines.stream()
             .map(Line::getSections)
-            .map(Sections::values)
-            .flatMap(Collection::stream)
-            .forEach(s -> this.graph.addEdge(s.getUpStation(), s.getDownStation(), s));
+            .forEach(s -> s.forEach(this::addEdgesWithVertices));
+    }
+
+    private void addEdgesWithVertices(Section section) {
+        Graphs.addEdgeWithVertices(
+            graph, section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 
     public Path findPath(Station source, Station target) {
-        DijkstraShortestPath<Station, Section> dijkstraPath = new DijkstraShortestPath<>(graph);
-        Optional<GraphPath<Station, Section>> maybePath
+        DijkstraShortestPath<Station, DefaultEdge> dijkstraPath = new DijkstraShortestPath<>(graph);
+        Optional<GraphPath<Station, DefaultEdge>> maybePath
             = Optional.ofNullable(dijkstraPath.getPaths(source).getPath(target));
 
         return Path.of(maybePath

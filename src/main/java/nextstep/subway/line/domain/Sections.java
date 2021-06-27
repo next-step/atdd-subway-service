@@ -8,15 +8,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-
-import org.jgrapht.Graph;
-import org.jgrapht.Graphs;
-import org.jgrapht.graph.EdgeSetFactory;
 
 import nextstep.subway.line.exception.CannotRemoveException;
 import nextstep.subway.line.exception.InvalidSectionException;
@@ -156,4 +153,7 @@ public class Sections {
         return unmodifiableList(values);
     }
 
+    public void forEach(Consumer<Section> action) {
+        values.forEach(action);
+    }
 }

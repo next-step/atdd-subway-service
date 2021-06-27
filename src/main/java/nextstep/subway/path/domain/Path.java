@@ -5,8 +5,8 @@ import static java.util.Collections.*;
 import java.util.List;
 
 import org.jgrapht.GraphPath;
+import org.jgrapht.graph.DefaultEdge;
 
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
 public class Path {
@@ -19,7 +19,7 @@ public class Path {
         this.distance = distance;
     }
 
-    public static Path of(GraphPath<Station, Section> path) {
+    public static Path of(GraphPath<Station, DefaultEdge> path) {
         return new Path(path.getVertexList(), path.getWeight());
     }
 
