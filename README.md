@@ -58,13 +58,24 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ---
 
 ### Step3
-- [ ] 토큰 발급 기능 (로그인) 인수 테스트 만들기
+- [x] 토큰 발급 기능 (로그인) 인수 테스트 만들기
    - Feature: 로그인 기능
      - Scenario: 로그인을 시도한다.
        - Given 회원 등록되어 있음
        - When 로그인 요청
-       - Then 로그인 됨
-- [ ] 인증 - 내 정보 조회 기능 완성하기
+       - When 내 정보 조회 요청
+       - Then 내 정보 조회 됨
+- [ ] 인증 - 내 정보 관련 기능 완성하기
+   - Feature: 내 정보 기능
+     - Scenario: 내 정보 관리
+       - Given 회원 등록되어 있음
+       - Given 로그인 되어있음
+       - When 내 정보 조회
+       - Then 내 정보 조회 됨
+       - When 내 정보 수정
+       - Then 내 정보 수정 됨
+       - When 내 정보 삭제
+       - Then 내 정보 삭제 됨
 - [ ] 인증 - 즐겨 찾기 기능 완성하기
    - Feature: 즐겨찾기를 관리한다.
      - Background 
