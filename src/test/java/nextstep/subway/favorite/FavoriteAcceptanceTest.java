@@ -63,7 +63,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> deleteResponse
-            = 즐겨찾기_삭제_요청(createResponse, 사용자);
+            = 즐겨찾기_삭제_요청(사용자, createResponse);
 
         // then
         즐겨찾기_삭제됨(deleteResponse);
@@ -86,7 +86,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private static ExtractableResponse<Response> 즐겨찾기_삭제_요청(
-                ExtractableResponse<Response> createResponse, TokenResponse tokenResponse) {
+                TokenResponse tokenResponse, ExtractableResponse<Response> createResponse) {
         String id = createResponse.header("Location").split("/")[2];
         ExtractableResponse<Response> deleteResponse = RestAssured
             .given().log().all()

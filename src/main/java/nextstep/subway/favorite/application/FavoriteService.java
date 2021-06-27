@@ -31,7 +31,7 @@ public class FavoriteService {
     }
 
     @Transactional
-    public FavoriteResponse createFavorite(FavoriteRequest request, LoginMember loginMember) {
+    public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Member member = memberService.findMemberEntity(loginMember.getId());
         Station source = stationService.findById(request.getSource());
         Station target = stationService.findById(request.getTarget());
@@ -48,7 +48,7 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void deleteFavorite(Long id, LoginMember loginMember) {
+    public void deleteFavorite(LoginMember loginMember, Long id) {
         favoriteRepository.deleteByIdAndMemberId(id, loginMember.getId());
     }
 }
