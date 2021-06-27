@@ -23,10 +23,25 @@ public class Favorite {
     protected Favorite() {
     }
 
-    public Favorite(Long id, Long memberId, Station source, Station target) {
-        this.id = id;
+    public Favorite(Long memberId, Station source, Station target) {
         this.memberId = memberId;
         this.source = source;
         this.target = target;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getMemberId() {
+        return memberId;
+    }
+
+    public Station getSource() {
+        return source;
+    }
+
+    public Station getTarget() {
+        return target;
     }
 }
