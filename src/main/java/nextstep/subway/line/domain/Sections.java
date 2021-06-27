@@ -27,10 +27,6 @@ public class Sections {
         sections.add(section);
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
     public boolean isEmpty() {
         return sections.isEmpty();
     }
@@ -182,9 +178,5 @@ public class Sections {
         return sections.stream()
                 .filter(section -> section.isDownStation(station))
                 .findFirst();
-    }
-
-    public int size() {
-        return sections.size();
     }
 }
