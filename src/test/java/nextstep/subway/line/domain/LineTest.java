@@ -85,7 +85,7 @@ public class LineTest {
         Station 양재역 = new Station(3L, "양재역");
         Section section = new Section(신분당선, 강남역, 양재역, 3);
         신분당선.addLineStation(section);
-        신분당선.newRemoveSection(양재역);
+        신분당선.removeSection(양재역);
         assertThat(신분당선.getStations()).containsExactly(강남역, 광교역);
     }
 
@@ -94,7 +94,7 @@ public class LineTest {
         Station 양재역 = new Station(3L, "양재역");
         Section section = new Section(신분당선, 강남역, 양재역, 3);
         신분당선.addLineStation(section);
-        신분당선.newRemoveSection(강남역);
+        신분당선.removeSection(강남역);
         assertThat(신분당선.getStations()).containsExactly(양재역, 광교역);
     }
 
@@ -103,13 +103,13 @@ public class LineTest {
         Station 양재역 = new Station(3L, "양재역");
         Section section = new Section(신분당선, 강남역, 양재역, 3);
         신분당선.addLineStation(section);
-        신분당선.newRemoveSection(광교역);
+        신분당선.removeSection(광교역);
         assertThat(신분당선.getStations()).containsExactly(강남역, 양재역);
     }
 
     @Test
     void 한개의_구간일때_구간_삭제_실행하면_에러_발생() {
-        assertThatThrownBy(() -> 신분당선.newRemoveSection(강남역))
+        assertThatThrownBy(() -> 신분당선.removeSection(강남역))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("구간이 하나만 존재하는 경우 삭제할 수 없습니다.");
     }
