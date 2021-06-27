@@ -13,6 +13,6 @@ public class BaseCalculatedFee implements CalculatedFee {
 
   @Override
   public long calculateFee() {
-    return discount.discount(ADULT_BASE_FEE, this.getClass());
+    return discount.discount(ADULT_BASE_FEE);
   }
 }

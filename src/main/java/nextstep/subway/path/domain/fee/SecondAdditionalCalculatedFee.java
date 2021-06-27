@@ -23,6 +23,6 @@ public class SecondAdditionalCalculatedFee implements CalculatedFee {
 
   @Override
   public long calculateFee() {
-    return firstAdditionalFee.calculateFee() + (long) Math.ceil((secondAdditionalSectionDistance) / FEE_ADDITIONAL_DISTANCE) * discount.discount(ADDITIONAL_FEE_UNIT, this.getClass());
+    return firstAdditionalFee.calculateFee() + (long) Math.ceil((secondAdditionalSectionDistance) / FEE_ADDITIONAL_DISTANCE) * discount.discount(ADDITIONAL_FEE_UNIT);
   }
 }

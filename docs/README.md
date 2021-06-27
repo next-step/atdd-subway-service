@@ -53,3 +53,4 @@ Feature: 지하철 경로 검색
 
 #### 코드리뷰 반영
 - [x] Fee -> Amount로 클래스 명 변경, Fee는 domain 클래스로 보기는 힘드므로 vo라는 패키지 분리
+- [x] AgeDiscount에서 CalculatedFee의 구현체에 대해 강한 의존을 만들어내던 부분 수정

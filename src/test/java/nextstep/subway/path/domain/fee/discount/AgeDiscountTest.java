@@ -25,7 +25,7 @@ class AgeDiscountTest {
     long expectFee = (long) (deductBaseFee(age, givenFee) * expectationAfterDiscountRatio);
 
     //when & then
-    assertThat(AgeDiscount.from(age).discount(givenFee, BaseCalculatedFee.class)).isEqualTo(expectFee);
+    assertThat(AgeDiscount.from(age).discount(givenFee)).isEqualTo(expectFee);
   }
 
   //성인이 아닐경우 기본 금액에서 350원 만큼 공제한다.
