@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.exeption.LimitDistanceException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -54,19 +55,24 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    public void updateStation(Station upStation, Station downStation, int newDistance) {
+        validateDistance(newDistance);
+        if (this.upStation.equals(upStation)) {
+            this.upStation = downStation;
         }
-        this.upStation = station;
+        if (this.downStation.equals(downStation)) {
+            this.downStation = upStation;
+        }
         this.distance -= newDistance;
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    private void validateDistance(int distance) {
+        if (this.distance <= distance) {
+            throw new LimitDistanceException(this.distance);
         }
-        this.downStation = station;
-        this.distance -= newDistance;
+    }
+
+    public boolean containStation(Station station) {
+        return upStation.equals(station) || downStation.equals(station);
     }
 }
