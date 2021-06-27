@@ -5,14 +5,14 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
+	private static final int FIRST_SECTION_INDEX = 0;
+	private static final int LEAST_SIZE_TO_REMOVE = 1;
+
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private List<Section> sections = new ArrayList<>();
 
@@ -53,7 +53,7 @@ public class Sections {
 	}
 
 	private Station findUpStation() {
-		Station upStation = sections.get(0).getUpStation();
+		Station upStation = sections.get(FIRST_SECTION_INDEX).getUpStation();
 		while (doesExistUpperSection(upStation)) {
 			Section upperSection = findUpperStation(upStation);
 			upStation = upperSection.getUpStation();
@@ -110,5 +110,40 @@ public class Sections {
 
 	private boolean doesExistStation(Station station) {
 		return getStations().stream().anyMatch(existedStation -> existedStation.equals(station));
+	}
+
+	public void removeStation(Line line, Station station) {
+		validateRemoving();
+
+		Optional<Section> upLineStation = getUpStationMatchedBy(station);
+		Optional<Section> downLineStation = getDownStationMatchedBy(station);
+
+		if (upLineStation.isPresent() && downLineStation.isPresent()) {
+			Station newUpStation = downLineStation.get().getUpStation();
+			Station newDownStation = upLineStation.get().getDownStation();
+			int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+			sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+		}
+
+		upLineStation.ifPresent(it -> line.getSections().remove(it));
+		downLineStation.ifPresent(it -> line.getSections().remove(it));
+	}
+
+	private Optional<Section> getDownStationMatchedBy(Station station) {
+		return sections.stream()
+				.filter(it -> it.getDownStation().equals(station))
+				.findFirst();
+	}
+
+	private Optional<Section> getUpStationMatchedBy(Station station) {
+		return sections.stream()
+				.filter(it -> it.getUpStation().equals(station))
+				.findFirst();
+	}
+
+	private void validateRemoving() {
+		if (sections.size() <= LEAST_SIZE_TO_REMOVE) {
+			throw new RuntimeException();
+		}
 	}
 }
