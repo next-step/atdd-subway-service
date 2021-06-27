@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
-    private MemberRepository memberRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public AuthService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
         this.memberRepository = memberRepository;
@@ -28,14 +28,22 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new AuthorizationException();
+    public LoginMember findMemberByToken(String credentials, boolean allowAnonymous) {
+        boolean invalidToken = !jwtTokenProvider.validateToken(credentials);
+        if (invalidToken && allowAnonymous) {
+            return LoginMember.ANONYMOUS;
         }
+        if (invalidToken) {
+            throw new AuthorizationException("유효하지 않은 사용자 입니다.");
+        }
+        return findMemberByToken(credentials);
+    }
 
+    private LoginMember findMemberByToken(String credentials) {
         String payLoad = jwtTokenProvider.getPayload(credentials);
         long memberId = Long.parseLong(payLoad);
-        Member member = memberRepository.findById(memberId).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new IllegalStateException("등록되지 않은 사용자 입니다."));
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }

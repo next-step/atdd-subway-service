@@ -64,6 +64,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		지하철경로_최단경로_조회됨(response);
 		지하철경로_최단경로가_포함됨(response, 교대역.getId(), 강남역.getId(), 양재역.getId());
 		지하철경로_최단경로의_거리가_포함됨(response, 2);
+		지하철경로_최단경로의_요금이_포함됨(response, 1250);
 	}
 
 	@DisplayName("지하철경로 출발역과 도착역이 같은 경우를 조회한다")
@@ -120,6 +121,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		int resultDistance = response.jsonPath().getInt("distance");
 
 		assertThat(resultDistance).isEqualTo(expectedDistance);
+	}
+
+	private void 지하철경로_최단경로의_요금이_포함됨(ExtractableResponse<Response> response, int expectedFare) {
+		int resultFare = response.jsonPath().getInt("fare");
+
+		assertThat(resultFare).isEqualTo(expectedFare);
 	}
 
 	private void 지하철경로_최단경로_실패함(ExtractableResponse<Response> response) {
