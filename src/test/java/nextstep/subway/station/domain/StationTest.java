@@ -16,7 +16,7 @@ class StationTest {
 
     @Test
     void 두개의_지하철역_아이디갑_일치여부_확인() {
-        assertThat(강남역.isSame(new Station(1L, "강남역"))).isTrue();
-        assertThat(강남역.isSame(new Station(2L, "양재역"))).isFalse();
+        assertThat(강남역.isSameId(new Station(1L, "강남역"))).isTrue();
+        assertThat(강남역.isSameId(new Station(2L, "양재역"))).isFalse();
     }
 }

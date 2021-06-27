@@ -33,7 +33,7 @@ public class Station extends BaseEntity {
         return name;
     }
 
-    public boolean isSame(Station other) {
+    public boolean isSameId(Station other) {
         return Objects.equals(id, other.getId());
     }
 

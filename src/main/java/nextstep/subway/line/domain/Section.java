@@ -87,39 +87,39 @@ public class Section {
     }
 
     public Section calcFirstSection(Section section) {
-        if (Objects.isNull(section) || downStation.isSame(section.upStation) || upStation.isSame(section.upStation)) {
+        if (Objects.isNull(section) || downStation.isSameId(section.upStation) || upStation.isSameId(section.upStation)) {
             return this;
         }
         return section;
     }
 
     public boolean isNextSection(Section section) {
-        return upStation.isSame(section.downStation);
+        return upStation.isSameId(section.downStation);
     }
 
     public boolean isContainStation(Section section) {
-        return upStation.isSame(section.upStation) || upStation.isSame(section.downStation)
-                || downStation.isSame(section.upStation) || downStation.isSame(section.downStation);
+        return upStation.isSameId(section.upStation) || upStation.isSameId(section.downStation)
+                || downStation.isSameId(section.upStation) || downStation.isSameId(section.downStation);
     }
 
     public boolean isSameUpStation(Section section) {
-        return upStation.isSame(section.upStation);
+        return upStation.isSameId(section.upStation);
     }
 
     public boolean isSameUpStation(Station station) {
-        return upStation.isSame(station);
+        return upStation.isSameId(station);
     }
 
     public boolean isSameDownStation(Section section) {
-        return downStation.isSame(section.downStation);
+        return downStation.isSameId(section.downStation);
     }
 
     public boolean isSameDownStation(Station station) {
-        return downStation.isSame(station);
+        return downStation.isSameId(station);
     }
 
     public boolean isSameStations(Section section) {
-        return upStation.isSame(section.upStation) && downStation.isSame(section.downStation);
+        return upStation.isSameId(section.upStation) && downStation.isSameId(section.downStation);
     }
 
     @Override
