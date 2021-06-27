@@ -100,7 +100,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("authorization", tokenResponse.getAccessToken())
+                .header("authorization", "Bearer", tokenResponse.getAccessToken())
                 .body(memberRequest)
                 .when().get("/members/me")
                 .then().log().all()
