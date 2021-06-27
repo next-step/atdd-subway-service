@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.favorite.application.exception.FavoriteNotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteResponse;
@@ -21,5 +22,9 @@ public class FavoriteQueryService {
     public List<FavoriteResponse> findFavoriteResponsesByMemberId(LoginMember loginMember) {
         List<Favorite> favorites = favoriteRepository.findByMemberId(loginMember.getId());
         return FavoriteResponse.ofList(favorites);
+    }
+
+    public Favorite findById(Long id) {
+        return favoriteRepository.findById(id).orElseThrow(FavoriteNotFoundException::new);
     }
 }

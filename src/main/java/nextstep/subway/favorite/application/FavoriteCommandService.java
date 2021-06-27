@@ -16,11 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class FavoriteCommandService {
     private final FavoriteRepository favoriteRepository;
+    private final FavoriteQueryService favoriteQueryService;
     private final MemberService memberService;
     private final StationService stationService;
 
-    public FavoriteCommandService(FavoriteRepository favoriteRepository, MemberService memberService, StationService stationService) {
+    public FavoriteCommandService(FavoriteRepository favoriteRepository, FavoriteQueryService favoriteQueryService, MemberService memberService, StationService stationService) {
         this.favoriteRepository = favoriteRepository;
+        this.favoriteQueryService = favoriteQueryService;
         this.memberService = memberService;
         this.stationService = stationService;
     }
@@ -31,5 +33,11 @@ public class FavoriteCommandService {
         Station targetStation = stationService.findById(Long.parseLong(request.getTarget()));
         Favorite favorite = favoriteRepository.save(new Favorite(sourceStation, targetStation, member));
         return FavoriteResponse.of(favorite);
+    }
+
+    public void deleteByIdAndLoginMember(Long id, LoginMember loginMember) {
+        Favorite favorite = favoriteQueryService.findById(id);
+        favorite.checkOwner(loginMember);
+        favoriteRepository.delete(favorite);
     }
 }

@@ -7,6 +7,7 @@ import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -48,6 +49,7 @@ class FavoriteQueryServiceTest {
         loginMember = new LoginMember(1L, EMAIL, AGE);
     }
 
+    @DisplayName("즐겨 찾기 목록 조회한다.")
     @Test
     void findFavoriteResponsesByMemberId() {
         //given

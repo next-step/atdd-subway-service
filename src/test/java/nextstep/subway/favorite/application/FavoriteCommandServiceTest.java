@@ -19,6 +19,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,25 +39,36 @@ class FavoriteCommandServiceTest {
     @Mock
     private FavoriteRepository favoriteRepository;
 
+    @Mock
+    private FavoriteQueryService favoriteQueryService;
+
+    private LoginMember loginMember;
+    private Member member;
+    private Station 강남역;
+    private Station 삼성역;
+    private Favorite favorite;
+    private FavoriteRequest request;
+
     @BeforeEach
     void setUp() {
-        favoriteCommandService = new FavoriteCommandService(favoriteRepository, memberService, stationService);
+        favoriteCommandService = new FavoriteCommandService(favoriteRepository, favoriteQueryService, memberService, stationService);
+
+        loginMember = new LoginMember(1L, EMAIL, AGE);
+        member = new Member(EMAIL, PASSWORD, AGE);
+        ReflectionTestUtils.setField(member, "id", 1L);
+        강남역 = new Station("강남역");
+        ReflectionTestUtils.setField(강남역, "id", 1L);
+        삼성역 = new Station("삼성역");
+        ReflectionTestUtils.setField(삼성역, "id", 2L);
+        favorite = new Favorite(강남역, 삼성역, member);
+        ReflectionTestUtils.setField(favorite, "id", 1L);
+        request = new FavoriteRequest("1", "2");
     }
 
-    @DisplayName("즐겨찾기를 등록한다.")
+    @DisplayName("즐겨 찾기를 등록한다.")
     @Test
     void createFavorite() {
         // given
-        LoginMember loginMember = new LoginMember(1L, EMAIL, AGE);
-        Member member = new Member(EMAIL, PASSWORD, AGE);
-        ReflectionTestUtils.setField(member, "id", 1L);
-        Station 강남역 = new Station("강남역");
-        ReflectionTestUtils.setField(member, "id", 1L);
-        Station 삼성역 = new Station("삼성역");
-        ReflectionTestUtils.setField(member, "id", 2L);
-        Favorite favorite = new Favorite(강남역, 삼성역, member);
-        ReflectionTestUtils.setField(favorite, "id", 1L);
-        FavoriteRequest request = new FavoriteRequest("1", "2");
         when(memberService.findByEmail(EMAIL)).thenReturn(member);
         when(stationService.findById(1L)).thenReturn(강남역);
         when(stationService.findById(2L)).thenReturn(삼성역);
@@ -70,5 +82,18 @@ class FavoriteCommandServiceTest {
         assertThat(favoriteResponse.getId()).isNotNull();
         assertThat(favoriteResponse.getSource().getName()).isEqualTo(강남역.getName());
         assertThat(favoriteResponse.getTarget().getName()).isEqualTo(삼성역.getName());
+    }
+
+    @DisplayName("즐겨 찾기를 삭제한다.")
+    @Test
+    void deleteByIdAndLoginMember() {
+        //given
+        when(favoriteQueryService.findById(any())).thenReturn(favorite);
+
+        //when
+        favoriteCommandService.deleteByIdAndLoginMember(1L, loginMember);
+
+        //then
+        verify(favoriteRepository).delete(favorite);
     }
 }

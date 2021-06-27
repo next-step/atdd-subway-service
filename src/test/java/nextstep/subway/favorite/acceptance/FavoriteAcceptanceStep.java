@@ -6,7 +6,6 @@ import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class FavoriteAcceptanceStep {
     private static final String FAVORITES = "/favorites";
     private static final String AUTHORIZATION = "Authorization";
+    private static final String LOCATION = "Location";
 
     public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(TokenResponse 사용자, StationResponse upStation, StationResponse downStation) {
         FavoriteRequest request = new FavoriteRequest(String.valueOf(upStation.getId()), String.valueOf(downStation.getId()));
@@ -42,6 +42,17 @@ public class FavoriteAcceptanceStep {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse 사용자, ExtractableResponse<Response> createResponse) {
+        String uri = createResponse.header(LOCATION);
+
+        return RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, makeBearerToken(사용자.getAccessToken()))
+                .when().delete(uri)
+                .then().log().all()
+                .extract();
+    }
+
     public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -52,7 +63,7 @@ public class FavoriteAcceptanceStep {
 
     public static void 즐겨찾기_목록_조회_포함_됨(ExtractableResponse<Response> response, List<FavoriteResponse> expected) {
         List<FavoriteResponse> actual = response.jsonPath().getList(".", FavoriteResponse.class);
-        assertAll(()->{
+        assertAll(() -> {
             assertThat(actual.size()).isEqualTo(expected.size());
             for (int i = 0; i < actual.size(); i++) {
                 assertThat(actual.get(i).getId()).isEqualTo(expected.get(i).getId());
@@ -62,11 +73,7 @@ public class FavoriteAcceptanceStep {
         });
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse 사용자, ExtractableResponse<Response> createResponse) {
-        return null;
-    }
-
     public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
-
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
