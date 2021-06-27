@@ -60,11 +60,6 @@ public class LineController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/paths")
-    public ResponseEntity findPaths(@RequestParam Long source, @RequestParam Long target) {
-        return ResponseEntity.ok(lineService.findPaths(source, target));
-    }
-
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
         return ResponseEntity.badRequest().build();
