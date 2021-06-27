@@ -30,4 +30,9 @@ public class FavoriteController {
         favoriteService.add(loginMember, favoriteRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @GetMapping
+    public ResponseEntity search(@AuthenticationPrincipal LoginMember loginMember) {
+        return ResponseEntity.ok(favoriteService.search(loginMember));
+    }
 }

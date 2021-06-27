@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,8 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
+
+import java.util.List;
 
 import static nextstep.subway.member.MemberAcceptanceTest.BEARER;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,6 +55,29 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성(토큰, 강남역, 광교역);
         //then
         즐겨찾기_생성_응답_확인(즐겨찾기_생성_응답);
+    }
+
+    @DisplayName("즐겨찾기 조회")
+    @Test
+    void search() {
+        //given
+        즐겨찾기_생성(토큰, 강남역, 광교역);
+        //when
+        ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_조회(토큰);
+        //then
+        즐겨찾기_조회_응답_확인(즐겨찾기_조회_응답, 강남역, 광교역);
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_조회(String 토큰) {
+        FavoriteRequest favoriteRequest = new FavoriteRequest(강남역, 광교역);
+
+        return RestAssured
+                .given().header("authorization", BEARER + 토큰).log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(favoriteRequest)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
     }
 
     private static ExtractableResponse<Response> 회원_생성을_요청() {
@@ -93,5 +119,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void 즐겨찾기_생성_응답_확인(ExtractableResponse<Response> 즐겨찾기_생성_응답) {
         assertThat(즐겨찾기_생성_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    private void 즐겨찾기_조회_응답_확인(ExtractableResponse<Response> 즐겨찾기_조회_응답, Long 출발역_번호, Long 도착역_번호) {
+        FavoriteResponse favoriteResponse = 즐겨찾기_조회_응답.as(FavoriteResponse.class);
+        List<StationResponse> stations = favoriteResponse.getStations();
+        assertThat(stations.size()).isEqualTo(2);
+        assertThat(stations.get(0).getId()).isEqualTo(출발역_번호);
+        assertThat(stations.get(1).getId()).isEqualTo(도착역_번호);
     }
 }

@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import java.util.Optional;
 public class FavoriteService {
     public static final String NOT_FOUND_STATION = "역을 찾을 수 없습니다.";
     public static final String FAVORITE_ALREADY_ADDED = "이미 생성 된 즐겨찾기 구간입니다.";
+    public static final String NOT_FOUND_FAVORITE = "즐겨 찾기로 설정 된 구간이 없습니다.";
 
     private final FavoriteRepository favoriteRepository;
     private final MemberRepository memberRepository;
@@ -31,7 +33,7 @@ public class FavoriteService {
     }
 
     public void add(LoginMember loginMember, FavoriteRequest favoriteRequest) {
-        Member member = memberRepository.findById(loginMember.getId()).orElseThrow(RuntimeException::new);
+        Member member = member(loginMember);
         Station source = stationRepository.findById(favoriteRequest.getSource()).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_STATION));
         Station target = stationRepository.findById(favoriteRequest.getTarget()).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_STATION));
 
@@ -41,5 +43,16 @@ public class FavoriteService {
         }
 
         favoriteRepository.save(new Favorite(member, source, target));
+    }
+
+    public FavoriteResponse search(LoginMember loginMember) {
+        Member member = member(loginMember);
+        Favorite favorite = favoriteRepository.findByMember(member).orElseThrow(() -> new RuntimeException(NOT_FOUND_FAVORITE));
+
+        return FavoriteResponse.of(favorite);
+    }
+
+    private Member member(LoginMember loginMember) {
+        return memberRepository.findById(loginMember.getId()).orElseThrow(RuntimeException::new);
     }
 }

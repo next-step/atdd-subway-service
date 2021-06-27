@@ -40,4 +40,11 @@ public class Favorite {
     @JoinColumn(name = "target")
     private Station target;
 
+    public Station getSource() {
+        return source;
+    }
+
+    public Station getTarget() {
+        return target;
+    }
 }

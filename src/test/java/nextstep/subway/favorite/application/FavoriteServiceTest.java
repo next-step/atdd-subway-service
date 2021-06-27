@@ -1,10 +1,12 @@
 package nextstep.subway.favorite.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
@@ -52,5 +54,17 @@ class FavoriteServiceTest {
         favoriteService.add(new LoginMember(), new FavoriteRequest());
         //then
         verify(favoriteRepository, times(1)).save(any());
+    }
+
+    @DisplayName("즐겨찾기 조회")
+    @Test
+    void search() {
+        //given
+        //when
+        when(memberRepository.findById(any())).thenReturn(Optional.of(new Member()));
+        when(favoriteRepository.findByMember(any())).thenReturn(Optional.of(new Favorite(new Member(), new Station(), new Station())));
+        FavoriteResponse favoriteResponse = favoriteService.search(new LoginMember());
+        //then
+        assertThat(favoriteResponse).isNotNull();
     }
 }

@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
     Optional<Favorite> findByMemberAndSourceAndTarget(Member member, Station source, Station target);
+    Optional<Favorite> findByMember(Member member);
 }
