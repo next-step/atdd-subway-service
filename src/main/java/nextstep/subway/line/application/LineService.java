@@ -2,6 +2,7 @@ package nextstep.subway.line.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.PathFinder;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.PathResponse;
@@ -12,7 +13,6 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,6 +79,13 @@ public class LineService {
     }
 
     public PathResponse findPaths(Long sourceStationId, Long targetStationId) {
-        return new PathResponse(Collections.emptyList());
+        Station sourceStation = stationService.findById(sourceStationId);
+        Station targetStation = stationService.findById(targetStationId);
+        List<Line> persistLines = lineRepository.findAll();
+
+        PathFinder pathFinder = new PathFinder(persistLines);
+        List<Station> paths = pathFinder.findPaths(sourceStation, targetStation);
+        List<StationResponse> stations = StationResponse.asList(paths);
+        return new PathResponse(stations);
     }
 }

@@ -12,4 +12,7 @@ public class PathResponse {
         this.stations = stations;
     }
 
+    public List<StationResponse> getStations() {
+        return stations;
+    }
 }
