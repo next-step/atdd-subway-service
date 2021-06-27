@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -30,33 +30,36 @@ public class Sections {
     }
 
     public List<Station> getStations() {
-        List<Section> searchList = createSearchSections();
+        List<Section> copyList = copySections();
+
         Set<Station> stations = new LinkedHashSet<>();
-        for (Section section : searchList) {
-            sections.stream().filter(s -> isConnectUpStation(s, section))
-                .findFirst()
-                .ifPresent(s -> stations.addAll(Arrays.asList(s.getUpStation(), s.getDownStation())));
+        for (Section section : copyList) {
+            copyList.stream().filter(s -> isConnectUpStation(s, section)).findFirst()
+                             .ifPresent(s -> stations.addAll(Arrays.asList(s.getUpStation(), s.getDownStation())));
             stations.addAll(Arrays.asList(section.getUpStation(), section.getDownStation()));
         }
+
         return new ArrayList<>(stations);
     }
 
-    private List<Section> createSearchSections() {
+    private List<Section> copySections() {
         if (sections.isEmpty()) {
             return new ArrayList<>();
         }
 
-        ArrayList<Section> searchList = new ArrayList<>(this.sections);
-        Section findSection = findFirstSection(sections.get(FIRST_INDEX));
-        searchList.remove(findSection);
-        searchList.add(FIRST_INDEX, findSection);
+        List<Section> copyList = new ArrayList<>(this.sections);
+        Section section = findFirstSection(sections.get(FIRST_INDEX));
+        copyList.remove(section);
+        copyList.add(FIRST_INDEX, section);
 
-        return searchList;
+        return copyList;
     }
 
     private Section findFirstSection(Section section) {
-        Section findSection = sections.stream().filter(s -> isConnectUpStation(s, section)).findFirst().orElse(null);
-        return Objects.isNull(findSection) ? section : findFirstSection(findSection);
+        return sections.stream().filter(s -> isConnectUpStation(s, section))
+                                .findFirst()
+                                .map(this::findFirstSection)
+                                .orElse(section);
     }
 
     private boolean isConnectUpStation(Section target, Section compare) {
@@ -67,11 +70,9 @@ public class Sections {
         validateStation(upStation, downStation);
 
         sections.stream()
-            .filter(s -> s.getUpStation().equals(upStation) || s.getDownStation().equals(downStation))
-            .findFirst()
-            .ifPresent(s -> {
-                s.updateStation(upStation, downStation, distance);
-            });
+                .filter(s -> s.getUpStation().equals(upStation) || s.getDownStation().equals(downStation))
+                .findFirst()
+                .ifPresent(s -> s.updateStation(upStation, downStation, distance));
         sections.add(new Section(line, upStation, downStation, distance));
     }
 
@@ -93,24 +94,22 @@ public class Sections {
             throw new CanNotDeleteStateException();
         }
 
-        Section upLineStation = sections.stream().filter(s -> s.getDownStation().equals(station))
-                                        .findFirst().map(this::remove).orElse(null);
-        Section downLineStation = sections.stream().filter(s -> s.getUpStation().equals(station))
-                                            .findFirst().map(this::remove).orElse(null);
+        Optional<Section> upLineSection = sections.stream().filter(s -> s.getDownStation().equals(station))
+                                                           .findFirst().map(this::remove);
+        Optional<Section> downLineSection = sections.stream().filter(s -> s.getUpStation().equals(station))
+                                                             .findFirst().map(this::remove);
 
-        if (existSections(upLineStation, downLineStation)) {
-            int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
-            Section section = new Section(line, upLineStation.getUpStation(), downLineStation.getDownStation(), newDistance);
-            sections.add(section);
+        if (upLineSection.isPresent() && downLineSection.isPresent()) {
+            int newDistance = upLineSection.get().getDistance() + downLineSection.get().getDistance();
+            Station upStation = upLineSection.get().getUpStation();
+            Station downStation = downLineSection.get().getDownStation();
+
+            sections.add(new Section(line, upStation, downStation, newDistance));
         }
     }
 
     private boolean canNotDelete() {
         return sections.size() == MIN_SIZE;
-    }
-
-    private boolean existSections(Section ... sections) {
-        return Arrays.stream(sections).noneMatch(Objects::isNull);
     }
 
     private Section remove(Section section) {
