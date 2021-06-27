@@ -6,7 +6,6 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -70,25 +69,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     void 지하철_노선_최단_경로_조회_테스트() {
-        // given
-        PathRequest request = new PathRequest(남부터미널역.getId(), 강남역.getId());
-
         // when
-        ExtractableResponse<Response> response = 지하철_노선_최단_경로_조회_요청(request);
+        ExtractableResponse<Response> response = 지하철_노선_최단_경로_조회_요청(남부터미널역.getId(), 강남역.getId());
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        지하철_노선_최단_경로에_해당_역들이_포함되어있음(response, Arrays.asList(양재역, 강남역));
+        지하철_노선_최단_경로에_해당_역들이_포함되어있음(response, Arrays.asList(남부터미널역, 양재역, 강남역));
         지하철_노선_최단_경로의_거리를_확인한다(response, 12);
     }
 
     @Test
     void 지하철_노선_조회시_출발역과_도착역이_같은_경우_테스트() {
-        // given
-        PathRequest request = new PathRequest(남부터미널역.getId(), 남부터미널역.getId());
-
         // when
-        ExtractableResponse<Response> response = 지하철_노선_최단_경로_조회_요청(request);
+        ExtractableResponse<Response> response = 지하철_노선_최단_경로_조회_요청(남부터미널역.getId(), 남부터미널역.getId());
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -96,11 +89,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     void 지하철_노선_조회시_출발역과_도착역이_연결_되어_있지_않은_경우_테스트() {
-        // given
-        PathRequest request = new PathRequest(남부터미널역.getId(), 혼자역.getId());
-
         // when
-        ExtractableResponse<Response> response = 지하철_노선_최단_경로_조회_요청(request);
+        ExtractableResponse<Response> response = 지하철_노선_최단_경로_조회_요청(남부터미널역.getId(), 혼자역.getId());
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -108,11 +98,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     void 지하철_노선_조회시_존재하지_않은_출발역을_조회할_경우_테스트() {
-        // given
-        PathRequest request = new PathRequest(유령역.getId(), 혼자역.getId());
-
         // when
-        ExtractableResponse<Response> response = 지하철_노선_최단_경로_조회_요청(request);
+        ExtractableResponse<Response> response = 지하철_노선_최단_경로_조회_요청(유령역.getId(), 혼자역.getId());
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -120,21 +107,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     void 지하철_노선_조회시_존재하지_않은_도착역을_조회할_경우_테스트() {
-        // given
-        PathRequest request = new PathRequest(남부터미널역.getId(), 유령역.getId());
-
         // when
-        ExtractableResponse<Response> response = 지하철_노선_최단_경로_조회_요청(request);
+        ExtractableResponse<Response> response = 지하철_노선_최단_경로_조회_요청(남부터미널역.getId(), 유령역.getId());
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_최단_경로_조회_요청(final PathRequest pathRequest) {
+    public static ExtractableResponse<Response> 지하철_노선_최단_경로_조회_요청(final Long source, final Long target) {
         // when
         return RestAssured
             .given().log().all()
-            .when().get("/paths?source={sourceStationId}&target={targetStationId}", pathRequest.getSource(), pathRequest.getTarget())
+            .when().get("/paths?source={sourceStationId}&target={targetStationId}", source, target)
             .then().log().all().extract();
     }
 
