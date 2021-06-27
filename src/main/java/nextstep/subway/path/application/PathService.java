@@ -17,20 +17,18 @@ import java.util.List;
 public class PathService {
     private final StationRepository stationRepository;
     private final LineRepository lineRepository;
-    private final Graph graph;
 
-    public PathService(StationRepository stationRepository, LineRepository lineRepository, Graph graph) {
+    public PathService(StationRepository stationRepository, LineRepository lineRepository) {
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
-        this.graph = graph;
     }
 
     public PathResponse findShortestPath(Long sourceId, Long targetId) {
         Station source = findStationById(sourceId);
         Station target = findStationById(targetId);
         List<Line> lines = lineRepository.findAll();
-        graph.build(lines);
-        Path path = graph.findShortestPath(source, target);
+        Graph graph = new Graph();
+        Path path = graph.findShortestPath(lines, source, target);
         return PathResponse.of(path.getStations(), path.getDistance());
     }
 

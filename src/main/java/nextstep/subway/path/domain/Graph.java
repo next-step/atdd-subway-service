@@ -6,13 +6,11 @@ import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-@Component
 public class Graph {
     private WeightedMultigraph<Station, SectionDistance> graph;
 
@@ -21,16 +19,16 @@ public class Graph {
     }
 
     public void build(List<Line> lines) {
-        lines.stream()
-                .forEach(line -> {
-                    addStations(line);
-                    setSectionDistances(line);
+        lines.forEach(line -> {
+                    addVertexes(line);
+                    setEdgeWeights(line);
                 });
     }
 
-    public Path findShortestPath(Station source, Station target) {
+    public Path findShortestPath(List<Line> lines, Station source, Station target) {
+        build(lines);
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath graphPath = dijkstraShortestPath.getPath(source, target);
+        GraphPath<Station, SectionDistance> graphPath = dijkstraShortestPath.getPath(source, target);
         verifyAvailable(graphPath);
 
         List<Station> stations = graphPath.getVertexList();
@@ -38,22 +36,22 @@ public class Graph {
         return new Path(stations, distance);
     }
 
-    public Set<Station> stationSet() {
+    public Set<Station> getVertexes() {
         return graph.vertexSet();
     }
 
-    private void setSectionDistances(Line line) {
+    private void setEdgeWeights(Line line) {
         line.getSections()
                 .forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation(),
                         section.getDownStation()), section.getDistance()));
     }
 
-    private void addStations(Line line) {
-        line.findStationsOrderUpToDown().stream()
+    private void addVertexes(Line line) {
+        line.findStationsOrderUpToDown()
                 .forEach(station -> graph.addVertex(station));
     }
 
-    private void verifyAvailable(GraphPath path) {
+    private void verifyAvailable(GraphPath<Station, SectionDistance> path) {
         if (Objects.isNull(path)) {
             throw new IllegalArgumentException("경로가 존재하지 않습니다.");
         }
