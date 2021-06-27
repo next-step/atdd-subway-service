@@ -8,11 +8,11 @@ public class PathRequest {
     public static final String INVALID_STATION_ID = "올바른 역 번호를 넣어주세요.";
 
     @Min(value = STATION_ID_MIN_VALUE, message = INVALID_STATION_ID)
-    @NotNull(message = "올바른 역 번호를 넣어주세요.")
+    @NotNull(message = INVALID_STATION_ID)
     private Long source;
 
     @Min(value = STATION_ID_MIN_VALUE, message = INVALID_STATION_ID)
-    @NotNull(message = "올바른 역 번호를 넣어주세요.")
+    @NotNull(message = INVALID_STATION_ID)
     private Long target;
 
     public PathRequest() {
