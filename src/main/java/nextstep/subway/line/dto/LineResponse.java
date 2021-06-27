@@ -5,7 +5,6 @@ import nextstep.subway.station.dto.StationResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -31,7 +30,7 @@ public class LineResponse {
 
     public static LineResponse of(final Line line) {
         List<StationResponse> stations = line.getSortedStations().stream()
-                .map(station -> StationResponse.of(station))
+                .map(StationResponse::of)
                 .collect(toList());
 
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stations,
