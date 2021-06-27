@@ -111,12 +111,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(stationResponseList.get(1).getId()).isEqualTo(양재역.getId());
         assertThat(stationResponseList.get(2).getId()).isEqualTo(판교역.getId());
 
-        최단_거리값_확인됨(pathResponse.getDistance());
+        최단_거리값_확인됨(pathResponse.getDistance(), 20);
 
     }
 
-    private void 최단_거리값_확인됨(int distance) {
-        assertThat(distance).isEqualTo(20);
+    private void 최단_거리값_확인됨(int distance, int resultDistance) {
+        assertThat(distance).isEqualTo(resultDistance);
     }
 
     private void 출발역_도착역_동일할_경우_예외_발생함(ExtractableResponse<Response> response) {
