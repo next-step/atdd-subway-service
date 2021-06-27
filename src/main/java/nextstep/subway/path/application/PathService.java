@@ -21,7 +21,7 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(final long source, final long target) {
-        final PathFinder pathFinder = new PathFinder(stationRepository.findAll(), sectionRepository.findAll());
+        final PathFinder pathFinder = new PathFinder(sectionRepository.findAll());
         final Station sourceStation = validStation(source);
         final Station targetStation = validStation(target);
         final Path path = pathFinder.findShortestPath(sourceStation, targetStation);

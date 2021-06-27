@@ -3,9 +3,11 @@ package nextstep.subway.line.domain;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -22,7 +24,14 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
 
-    public void add(Section section) {
+    protected Sections() {
+    }
+
+    public Sections(final List<Section> sections) {
+        this.sections.addAll(sections);
+    }
+
+    public void add(final Section section) {
         final List<Station> stationList = stations();
 
         if (stationList.isEmpty()) {
@@ -37,7 +46,7 @@ public class Sections {
         sections.add(section);
     }
 
-    private void updateStation(Section section, Stations stations) {
+    private void updateStation(final Section section, final Stations stations) {
         if (stations.contains(section.getUpStation())) {
             updateUpStationIfPresent(section);
             return;
@@ -46,17 +55,17 @@ public class Sections {
         updateDownStationIfPresent(section);
     }
 
-    private void updateUpStationIfPresent(Section section) {
+    private void updateUpStationIfPresent(final Section section) {
         findSection(it -> it.getUpStation() == section.getUpStation())
             .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
     }
 
-    private void updateDownStationIfPresent(Section section) {
+    private void updateDownStationIfPresent(final Section section) {
         findSection(it -> it.getDownStation() == section.getDownStation())
             .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
     }
 
-    private void validateSection(long match) {
+    private void validateSection(final long match) {
         if (match == 2) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
@@ -67,7 +76,7 @@ public class Sections {
     }
 
     public List<Section> toList() {
-        return sections;
+        return Collections.unmodifiableList(sections);
     }
 
     public List<Station> stations() {
@@ -75,7 +84,7 @@ public class Sections {
             return Collections.emptyList();
         }
 
-        List<Station> stations = new LinkedList<>();
+        final List<Station> stations = new LinkedList<>();
         final Station upStation = firstUpStation();
         stations.add(upStation);
         Optional<Station> maybeNextStation = findNextStation(upStation);
@@ -87,6 +96,17 @@ public class Sections {
         }
 
         return stations;
+    }
+
+    public List<Station> mergeStations() {
+        if (sections.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        final Set<Station> stations = new HashSet<>();
+        sections.forEach(it -> stations.addAll(it.toList()));
+
+        return new ArrayList<>(stations);
     }
 
     private Station firstUpStation() {
@@ -101,17 +121,17 @@ public class Sections {
             .orElseThrow(RuntimeException::new);
     }
 
-    private Optional<Station> findNextStation(Station upStation) {
-        Optional<Section> maybeSection = findSection(it -> it.getUpStation() == upStation);
+    private Optional<Station> findNextStation(final Station upStation) {
+        final Optional<Section> maybeSection = findSection(it -> it.getUpStation() == upStation);
 
         return maybeSection.map(Section::getDownStation);
     }
 
-    public void remove(Station station) {
+    public void remove(final Station station) {
         validateSectionsSize();
 
-        Optional<Section> maybeUpSection = findSection(it -> it.getDownStation() == station);
-        Optional<Section> maybeDownSection = findSection(it -> it.getUpStation() == station);
+        final Optional<Section> maybeUpSection = findSection(it -> it.getDownStation() == station);
+        final Optional<Section> maybeDownSection = findSection(it -> it.getUpStation() == station);
 
         if (maybeUpSection.isPresent() && maybeDownSection.isPresent()) {
             sections.add(Section.of(maybeUpSection.get(), maybeDownSection.get()));
@@ -127,7 +147,7 @@ public class Sections {
         }
     }
 
-    private Optional<Section> findSection(Predicate<Section> predicate) {
+    private Optional<Section> findSection(final Predicate<Section> predicate) {
         return sections.stream()
             .filter(predicate)
             .findFirst();

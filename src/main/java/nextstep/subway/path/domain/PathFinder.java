@@ -1,21 +1,32 @@
 package nextstep.subway.path.domain;
 
-import java.util.Arrays;
 import java.util.List;
 
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
+
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 
 public class PathFinder {
-    private final List<Station> stations;
-    private final List<Section> sections;
+    private final Sections sections;
 
-    public PathFinder(final List<Station> stations, final List<Section> sections) {
-        this.stations = stations;
-        this.sections = sections;
+    public PathFinder(final List<Section> sections) {
+        this.sections = new Sections(sections);
     }
 
     public Path findShortestPath(final Station source, final Station target) {
-        return new Path(Arrays.asList(new Station("강남역"), new Station("역삼역")), 100);
+        final GraphPath<Station, DefaultWeightedEdge> path = shortestPath(source, target);
+
+        return new Path(path.getVertexList(), (int)path.getWeight());
+    }
+
+    private GraphPath<Station, DefaultWeightedEdge> shortestPath(final Station source, final Station target) {
+        final SectionGraph sectionGraph = new SectionGraph(sections);
+
+        return new DijkstraShortestPath<>(sectionGraph.graph())
+            .getPath(source, target);
     }
 }
