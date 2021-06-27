@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,5 +56,18 @@ class FavoriteServiceTest {
         assertAll(
                 () -> assertThat(favoriteResponse).isNotNull(),
                 () -> assertThat(favoriteResponse.getSource()).isEqualTo(강남역));
+    }
+
+    @DisplayName("즐겨찾기 목록을 조회한다.")
+    @Test
+    void findFavorites() {
+        LoginMember loginMember = new LoginMember(1L, "bbbnam@naver.com", 24);
+        FavoriteRequest favoriteRequest = new FavoriteRequest(강남역.getId(), 교대역.getId());
+        favoriteService.saveFavorites(loginMember, favoriteRequest);
+
+        List<Favorite> favorites = favoriteService.findFavorites(loginMember);
+
+        assertThat(favorites).isNotEmpty();
+        assertThat(favorites.get(0).getSource()).isEqualTo(강남역);
     }
 }
