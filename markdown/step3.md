@@ -16,10 +16,10 @@
 
 ### 내정보 조회
 
-- [ ] 내정보 조회 인수 테스트 만들기
-  - [ ] MemberAcceptanceTest 클래스의 manageMyInfo메서드에 인수 테스트를 추가하기
-  - [ ] 내 정보 조회, 수정, 삭제 기능을 /members/me 라는 URI 요청으로 동작하도록 검증
-  - [ ] 로그인 후 발급 받은 토큰을 포함해서 요청 하기
+- [X] 내정보 조회 인수 테스트 만들기
+  - [X] MemberAcceptanceTest 클래스의 manageMyInfo메서드에 인수 테스트를 추가하기
+  - [X] 내 정보 조회, 수정, 삭제 기능을 /members/me 라는 URI 요청으로 동작하도록 검증
+  - [X] 로그인 후 발급 받은 토큰을 포함해서 요청 하기
 - [ ] 토큰을 통한 인증 - 내 정보 조회 기능 완성하기
   - [ ] /members/me 요청 시 토큰을 확인하여 로그인 정보를 받아올 수 있도록 하기
   - [ ] @AuthenticationPrincipal과 AuthenticationPrincipalArgumentResolver을 활용하기

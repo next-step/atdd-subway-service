@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class MemberAcceptanceStep {
     public static final String MEMBERS = "/members";
@@ -56,6 +57,15 @@ public class MemberAcceptanceStep {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
+        String uri = response.header(LOCATION);
+        return RestAssured
+                .given().log().all()
+                .when().delete(uri)
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 나의_정보_조회_요청(String token) {
         return RestAssured
                 .given().log().all()
@@ -64,17 +74,32 @@ public class MemberAcceptanceStep {
                 .then().log().all().extract();
     }
 
-    private static String makeBearerToken(String token){
+    private static String makeBearerToken(String token) {
         return "Bearer " + token;
     }
 
-    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
-        String uri = response.header(LOCATION);
+    public static ExtractableResponse<Response> 나의_정보_수정_요청(String accessToken, String newEmail, String newPassword, int newAge) {
+        MemberRequest memberRequest = new MemberRequest(newEmail, newPassword, newAge);
+
         return RestAssured
                 .given().log().all()
-                .when().delete(uri)
-                .then().log().all()
-                .extract();
+                .header(AUTHORIZATION, makeBearerToken(accessToken))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().put(MEMBERS_ME)
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 나의_정보_삭제_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, makeBearerToken(accessToken))
+                .when().delete(MEMBERS_ME)
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 회원_등록됨(String email, String password, int age) {
+        return 회원_생성을_요청(email, password, age);
     }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
@@ -102,5 +127,21 @@ public class MemberAcceptanceStep {
 
     public static void 나의_정보_응답됨(ExtractableResponse<Response> 나의_정보_조회_요청_결과) {
         assertThat(나의_정보_조회_요청_결과.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 나의_정보_확인(ExtractableResponse<Response> 나의_정보_조회_요청_결과, String email, int age) {
+        MemberResponse actual = 나의_정보_조회_요청_결과.as(MemberResponse.class);
+        assertAll(() -> {
+            assertThat(actual.getEmail()).isEqualTo(email);
+            assertThat(actual.getAge()).isEqualTo(age);
+        });
+    }
+
+    public static void 나의_정보_수정_응답됨(ExtractableResponse<Response> 나의_정보_수정_요청_결과) {
+        assertThat(나의_정보_수정_요청_결과.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 나의_정보_삭제_응답됨(ExtractableResponse<Response> 나의_정보_삭제_요청_결과) {
+        assertThat(나의_정보_삭제_요청_결과.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
