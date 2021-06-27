@@ -4,7 +4,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.application.AuthServiceTest;
-import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,9 +20,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithBearerAuth() {
         회원_등록_되어_있음(EMAIL, PASSWORD, AGE);
 
-        TokenResponse tokenResponse = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
-        
-        로그인_됨(tokenResponse);
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
+        TestToken token = response.as(TestToken.class);
+
+        로그인_됨(response);
+        내_회원_정보_조회됨(token);
     }
 
     @DisplayName("Bearer Auth 로그인 실패 - 등록되지 않은 회원 정보로 로그인시")
@@ -37,6 +38,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
-    }
+        TestToken token = new TestToken("ABC.ABC.123");
 
+        ExtractableResponse<Response> response = 내_정보_조회_요청_유효하지_않은_토큰(token);
+
+        내_정보_조회_실패됨(response);
+    }
 }
