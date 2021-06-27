@@ -5,10 +5,8 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Consumer;
 
 @Embeddable
 public class SectionGroup {
@@ -152,5 +150,16 @@ public class SectionGroup {
             findDownSection(section.getUpStation())
                     .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
         }
+    }
+
+    public void forEach(Consumer<? super Section> action) {
+        Objects.requireNonNull(action);
+        for (Section section : sections) {
+            action.accept(section);
+        }
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 }
