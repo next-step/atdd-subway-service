@@ -65,7 +65,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
        - When 로그인 요청
        - When 내 정보 조회 요청
        - Then 내 정보 조회 됨
-- [ ] 인증 - 내 정보 관련 기능 완성하기
+- [x] 인증 - 내 정보 관련 기능 완성하기
    - Feature: 내 정보 기능
      - Scenario: 내 정보 관리
        - Given 회원 등록되어 있음

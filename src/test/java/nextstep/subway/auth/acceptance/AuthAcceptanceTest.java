@@ -38,13 +38,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(memberInfoResponse);
     }
 
-    private void 회원_정보_조회됨(ExtractableResponse<Response> memberInfoResponse) {
-        assertThat(memberInfoResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        MemberResponse member = memberInfoResponse.as(MemberResponse.class);
-        assertThat(member.getAge()).isEqualTo(AGE);
-        assertThat(member.getEmail()).isEqualTo(EMAIL);
-    }
-
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
@@ -67,7 +60,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회_실패(response);
     }
 
-    private ExtractableResponse<Response> 회원_정보_조회(ExtractableResponse<Response> response) {
+    private static ExtractableResponse<Response> 회원_정보_조회(ExtractableResponse<Response> response) {
         TokenResponse tokenResponse = response.as(TokenResponse.class);
         return RestAssured.given().log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
@@ -76,7 +69,14 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> 회원_정보_조회_잘못된_토큰() {
+    private static void 회원_정보_조회됨(ExtractableResponse<Response> memberInfoResponse) {
+        assertThat(memberInfoResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        MemberResponse member = memberInfoResponse.as(MemberResponse.class);
+        assertThat(member.getAge()).isEqualTo(AGE);
+        assertThat(member.getEmail()).isEqualTo(EMAIL);
+    }
+
+    private static ExtractableResponse<Response> 회원_정보_조회_잘못된_토큰() {
         TokenResponse tokenResponse = new TokenResponse("INVALID_TOKEN");
         return RestAssured.given().log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
@@ -85,7 +85,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> 회원_로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 회원_로그인_되어_있음(String email, String password) {
+        return 회원_로그인_요청(email, password);
+    }
+
+    public static ExtractableResponse<Response> 회원_로그인_요청(String email, String password) {
         TokenRequest request = new TokenRequest(email, password);
         return RestAssured
             .given().log().all()
@@ -95,11 +99,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .then().log().all().extract();
     }
 
-    private void 회원_로그인_실패(ExtractableResponse<Response> response) {
+    private static void 회원_로그인_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    private void 회원_정보_조회_실패(ExtractableResponse<Response> response) {
+    private static void 회원_정보_조회_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
