@@ -55,7 +55,7 @@ class LineServiceTest {
     @DisplayName("노선을 조회한다")
     void findLineByIdTest() {
         // when
-        when(lineRepository.findById(anyLong())).thenReturn(Optional.of(new Line()));
+        when(lineRepository.findById(anyLong())).thenReturn(Optional.of(new Line("일호선", "레드")));
 
         // then
         assertThat(lineService.findLineResponseById(anyLong())).isNotNull();
@@ -64,8 +64,9 @@ class LineServiceTest {
     @Test
     @DisplayName("노선 목록을 조회한다")
     void findLinesTest() {
+
         // when
-        when(lineRepository.findAll()).thenReturn(Arrays.asList(new Line(), new Line()));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(new Line("일호선", "레드"), new Line("이호선", "그린")));
 
         // then
         assertThat(lineService.findLines()).hasSize(2);
