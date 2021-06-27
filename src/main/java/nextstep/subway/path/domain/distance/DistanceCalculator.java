@@ -1,6 +1,9 @@
 package nextstep.subway.path.domain.distance;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.path.domain.Calculator;
 import nextstep.subway.path.domain.DistancePremiumPolicy;
+import nextstep.subway.path.domain.ShortestDistance;
 import nextstep.subway.wrapped.Distance;
 import nextstep.subway.wrapped.Money;
 
@@ -8,7 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class DistanceCalculator {
+public class DistanceCalculator implements Calculator {
     private static final List<DistancePremiumPolicy> distancePremiumPolicies = Collections.unmodifiableList(
             Arrays.asList(
                     new DefaultDistancePremiumPolicy(),
@@ -17,11 +20,11 @@ public class DistanceCalculator {
             )
     );
 
-    public static Money calcDistance(Distance distance) {
-        Money money = new Money(0);
 
+    @Override
+    public Money calc(Money money, LoginMember loginMember, ShortestDistance shortestDistance) {
         for (DistancePremiumPolicy premiumPolicy : distancePremiumPolicies) {
-            money = calcFareIfSupported(premiumPolicy, distance, money);
+            money = calcFareIfSupported(premiumPolicy, shortestDistance.shortestDistance(), money);
         }
 
         return money;

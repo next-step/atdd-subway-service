@@ -4,7 +4,7 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.EntityNotExistException;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.DijkstraShortestDistance;
-import nextstep.subway.path.domain.FareCalculator;
+import nextstep.subway.path.domain.FareCalculatorFacade;
 import nextstep.subway.path.domain.ShortestDistance;
 import nextstep.subway.path.dto.LinePathRequest;
 import nextstep.subway.path.dto.LinePathResponse;
@@ -32,7 +32,7 @@ public class LinePathQueryService {
         return new LinePathResponse(
                 shortestDistance.shortestRoute(),
                 shortestDistance.shortestDistance(),
-                FareCalculator.calcFare(loginMember, shortestDistance)
+                FareCalculatorFacade.calcFare(loginMember, shortestDistance)
         );
     }
 

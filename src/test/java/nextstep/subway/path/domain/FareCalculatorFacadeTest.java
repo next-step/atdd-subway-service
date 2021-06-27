@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class FareCalculatorTest {
+class FareCalculatorFacadeTest {
     private static final int childAge = 6;
     private static final int teenagerAge = 13;
     private static final int normalAge = 19;
@@ -39,7 +39,7 @@ class FareCalculatorTest {
     private static final Function<Integer, Money> 청소년_할인_계산 = (money) -> new Money((money - 350) / 10 * 8);
     private static final Function<Integer, Money> 일반_할인_계산 = (money) -> new Money(money);
 
-    private static final FareCalculator FARE_CALCULATOR = new FareCalculator();
+    private static final FareCalculatorFacade FARE_CALCULATOR = new FareCalculatorFacade();
 
     @ParameterizedTest
     @MethodSource("childCase")
