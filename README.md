@@ -9,7 +9,6 @@
   </a>
   <img alt="GitHub" src="https://img.shields.io/github/license/next-step/atdd-subway-service">
 </p>
-
 <br>
 
 # 지하철 노선도 미션
@@ -198,5 +197,20 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [x] 삭제기능
     - [x] removeFavorite 메서드 구현
 
+### Step4 - 요금 조회
 
+- [ ] 경로 조회 시 거리 기준 요금 정보 포함하기
+  - 거리별 요금 정책
+    - 기본운임(10km이내) : 1250원
+    - 이용 거리초과 시 추가운임
+      - 10km초과 ~ 50km까지 : 5km당 100원
+      - 16km 이동은 기본운임 1250(기본) + 100(5km 초과) = 1350원
+- [ ] 노선별 추가 요금 정책 추가
+  - 노선에 추가 요금 필드 추가
+  - 추가요금 노선이용시 측정 요금에 추가요금 부과
+  - 경로 중 추가요금이 있는 노선 환승시 가장 높은 금액의 추가요금만 적용
+- [ ] 연령별 할인 정책 추가
+  - 청소년 : 13세 이상 ~ 19세 미만
+  - 어린이 : 6세 이상 ~ 13세 미만
+  - [ ] 로그인 사용자 정보를 활용하도록 API개선
 
