@@ -1,4 +1,4 @@
-package nextstep.subway;
+package nextstep.subway.common;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;

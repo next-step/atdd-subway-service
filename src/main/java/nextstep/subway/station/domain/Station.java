@@ -1,6 +1,6 @@
 package nextstep.subway.station.domain;
 
-import nextstep.subway.BaseEntity;
+import nextstep.subway.common.BaseEntity;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -20,12 +20,21 @@ public class Station extends BaseEntity {
         this.name = name;
     }
 
+    public Station(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }
 
     public String getName() {
         return name;
+    }
+
+    public boolean isSameId(Station other) {
+        return Objects.equals(id, other.getId());
     }
 
     @Override
