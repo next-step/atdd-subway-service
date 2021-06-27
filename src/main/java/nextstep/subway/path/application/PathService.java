@@ -3,6 +3,7 @@ package nextstep.subway.path.application;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.JgraphtFinder;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathStation;
@@ -24,7 +25,7 @@ public class PathService {
     public PathResponse findPath(Long source, Long target) {
         List<Line> lines = lineRepository.findAll();
         Sections sections = findSectionsInLines(lines);
-        PathFinder pathFinder = new PathFinder(sections);
+        PathFinder pathFinder = new JgraphtFinder(sections);
         PathStation sourceStation = PathStation.of(findStationInLines(source, lines));
         PathStation targetStation = PathStation.of(findStationInLines(target, lines));
         return PathResponse.of(pathFinder.findPath(sourceStation, targetStation), pathFinder.findShortestDistance(sourceStation, targetStation));
