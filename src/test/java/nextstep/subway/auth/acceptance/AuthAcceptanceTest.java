@@ -53,23 +53,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         //given
         ExtractableResponse<Response> 회원_로그인_요청_응답 = 회원_로그인_요청(EMAIL, PASSWORD);
         //when
-        ExtractableResponse<Response> 내_정보_가져오기 = 내_정보_가져오기(회원_로그인_요청_응답);
+        ExtractableResponse<Response> 내_정보_가져오기 = 내_정보_조회(회원_로그인_요청_응답);
         //then
         회원_인증_실패(내_정보_가져오기);
-    }
-
-    private ExtractableResponse<Response> 내_정보_가져오기(ExtractableResponse<Response> 회원_로그인_요청_응답) {
-        TokenResponse tokenResponse = 회원_로그인_요청_응답.as(TokenResponse.class);
-        MemberRequest memberRequest = new MemberRequest(EMAIL, PASSWORD, AGE);
-
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("authorization", tokenResponse.getAccessToken())
-                .body(memberRequest)
-                .when().get("/members/me")
-                .then().log().all()
-                .extract();
     }
 
     private static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -105,5 +91,19 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     private void 회원_인증_실패(ExtractableResponse<Response> 회원_로그인_요청_응답) {
         assertThat(회원_로그인_요청_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private ExtractableResponse<Response> 내_정보_조회(ExtractableResponse<Response> 회원_로그인_요청_응답) {
+        TokenResponse tokenResponse = 회원_로그인_요청_응답.as(TokenResponse.class);
+        MemberRequest memberRequest = new MemberRequest(EMAIL, PASSWORD, AGE);
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("authorization", tokenResponse.getAccessToken())
+                .body(memberRequest)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
     }
 }
