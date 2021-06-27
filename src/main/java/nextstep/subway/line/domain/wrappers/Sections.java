@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain.wrappers;
 
+import nextstep.subway.exception.ValidSectionException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -104,7 +105,7 @@ public class Sections {
 
     private void checkValidSingleSection() {
         if (sections.size() <= MINIMUM_SECTIONS_SIZE) {
-            throw new IllegalArgumentException(SINGLE_SECTION_NOT_REMOVE_ERROR_MESSAGE);
+            throw new ValidSectionException(SINGLE_SECTION_NOT_REMOVE_ERROR_MESSAGE);
         }
     }
 
@@ -119,7 +120,7 @@ public class Sections {
     private void checkValidContainStations(Section section) {
         boolean isContainStation = sections.stream().noneMatch(st -> st.isContainStation(section));
         if (sections.size() > 0 && isContainStation) {
-            throw new IllegalArgumentException(NOT_CONTAIN_STATION_ERROR_MESSAGE);
+            throw new ValidSectionException(NOT_CONTAIN_STATION_ERROR_MESSAGE);
         }
 
     }
@@ -138,9 +139,7 @@ public class Sections {
 
     private void checkValidDuplicateSection(Section section) {
         if (sections.stream().anyMatch(st -> st.isSameStations(section))) {
-            throw new IllegalArgumentException(
-                    String.format(DUPLICATE_SECTION_ERROR_MESSAGE,
-                            section.getUpStation().getName(), section.getDownStation().getName()));
+            throw new ValidSectionException(DUPLICATE_SECTION_ERROR_MESSAGE, section);
         }
     }
 

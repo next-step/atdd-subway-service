@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain.wrappers;
 
+import nextstep.subway.exception.BadDistanceException;
+
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
@@ -31,13 +33,13 @@ public class Distance {
 
     private void checkValidZeroOrNegative(int distance) {
         if (distance < MINIMUM_DISTANCE) {
-            throw new IllegalArgumentException(ZERO_OR_NEGATIVE_NUMBER_ERROR_MESSAGE);
+            throw new BadDistanceException(ZERO_OR_NEGATIVE_NUMBER_ERROR_MESSAGE);
         }
     }
 
     private void checkValidOutBoundDistance(int newDistance) {
         if (this.distance <= newDistance) {
-            throw new RuntimeException(OUT_BOUND_DISTANCE_ERROR_MESSAGE);
+            throw new BadDistanceException(OUT_BOUND_DISTANCE_ERROR_MESSAGE);
         }
     }
 

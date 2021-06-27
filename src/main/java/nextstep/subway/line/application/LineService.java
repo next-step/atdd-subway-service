@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.exception.NotFoundLineException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
@@ -40,7 +41,7 @@ public class LineService {
     public Line findLineById(Long id) {
         return lineRepository
                 .findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(String.format(NOT_FOUND_LINE_ERROR_MESSAGE, id)));
+                .orElseThrow(() -> new NotFoundLineException(NOT_FOUND_LINE_ERROR_MESSAGE, id));
     }
 
 
