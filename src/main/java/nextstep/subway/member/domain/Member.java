@@ -1,57 +1,76 @@
 package nextstep.subway.member.domain;
 
-import nextstep.subway.BaseEntity;
-import nextstep.subway.auth.application.AuthorizationException;
-import org.apache.commons.lang3.StringUtils;
-
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.apache.commons.lang3.StringUtils;
+
+import nextstep.subway.BaseEntity;
+import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.favorite.domain.Favorites;
+
 @Entity
 public class Member extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String email;
-    private String password;
-    private Integer age;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	private String email;
+	private String password;
+	private Integer age;
 
-    public Member() {
-    }
+	@Embedded
+	private Favorites favorites = new Favorites();
 
-    public Member(String email, String password, Integer age) {
-        this.email = email;
-        this.password = password;
-        this.age = age;
-    }
+	public Member() {
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public Member(String email, String password, Integer age) {
+		this.email = email;
+		this.password = password;
+		this.age = age;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public Integer getAge() {
-        return age;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void update(Member member) {
-        this.email = member.email;
-        this.password = member.password;
-        this.age = member.age;
-    }
+	public Integer getAge() {
+		return age;
+	}
 
-    public void checkPassword(String password) {
-        if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
-        }
-    }
+	public Favorites getFavorites() {
+		return favorites;
+	}
+
+	public void addFavorite(Favorite favorite) {
+		this.favorites.addFavorite(favorite);
+	}
+
+	public void update(Member member) {
+		this.email = member.email;
+		this.password = member.password;
+		this.age = member.age;
+	}
+
+	public void checkPassword(String password) {
+		if (!StringUtils.equals(this.password, password)) {
+			throw new AuthorizationException();
+		}
+	}
+
+	public void removeFavorite(Favorite favorite) {
+		this.favorites.removeFavorite(favorite);
+	}
 }

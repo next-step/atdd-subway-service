@@ -126,7 +126,77 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [x] 출발역과 도착역이 연결되어 있지 않은 경우
     - [x] 존재하지 않는 출발역이나 도착역을 조회할 경우
 
+### Step3 - 인증을 통한 기능 구현
 
+- [x] MemberAcceptanceTest - manageMyInfo 인수테스트 작성
+
+  ```
+  Feature: 회원 관리 기능
+  
+    Scenario: 회원을 수정, 삭제, 조회 시도
+      Given 회원 등록되어 있음
+      When 회원 수정 요청
+      Then 회원 정보가 수정됨
+  		When 회원 정보를 조회
+  		Then 회원 정보가 조회됨
+      When 회원을 삭제 요청
+      Then 회원 정보가 제거됨
+  ```
+
+- [x] 토큰 발급 기능 (로그인) 인수 테스트
+
+  ```
+  Feature: 로그인 기능
+  	Background
+  		Given 회원이 등록되어있음
+  
+    Scenario: 로그인을 시도한다.
+      Given 회원 등록되어 있음
+      When 로그인 요청
+      Then 로그인 됨
+    
+    Scenario: 등록되지 않은 회원으로 로그인을 시도하고 실패
+      Given 회원 등록되어 있지 않음
+      When 로그인 요청
+      Then 로그인 실패
+      
+    Scenario: 유효하지 않는 토큰으로 로그인 시도
+      Given 회원 등록되어 있음
+      When 로그인 요청
+      Then 로그인 실패
+  ```
+
+- [x] 인증 - 내 정보 조회 기능 구현
+
+  - [x] /members/me 요청시 토큰 확인하도록 수정
+
+- [x] 인증 - 즐겨 찾기 기능 구현
+
+  ```
+  Feature: 즐겨찾기를 관리한다.
+  
+    Background 
+      Given 지하철역 등록되어 있음
+      And 지하철 노선 등록되어 있음
+      And 지하철 노선에 지하철역 등록되어 있음
+      And 회원 등록되어 있음
+      And 로그인 되어있음
+  
+    Scenario: 즐겨찾기를 관리
+      When 즐겨찾기 생성을 요청
+      Then 즐겨찾기 생성됨
+      When 즐겨찾기 목록 조회 요청
+      Then 즐겨찾기 목록 조회됨
+      When 즐겨찾기 삭제 요청
+      Then 즐겨찾기 삭제됨
+  ```
+
+  - [x] 추가기능
+    - [x] createFavorite 메서드 구현
+  - [x] 조회기능
+    - [x] findFavorites 메서드 구현
+  - [x] 삭제기능
+    - [x] removeFavorite 메서드 구현
 
 
 
