@@ -92,6 +92,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
        - Then 즐겨찾기 목록 조회됨
        - When 즐겨찾기 삭제 요청
        - Then 즐겨찾기 삭제됨
+       - When 즐겨찾기 목록 조회 요청
+       - Then 즐겨찾기 빈 목록 조회됨
 
 ### Step2
 - [x] 최단 경로 조회 인수 테스트 만들기
