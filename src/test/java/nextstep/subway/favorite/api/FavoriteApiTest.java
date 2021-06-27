@@ -4,14 +4,19 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
-import nextstep.subway.favorite.dto.FavoriteRequest;
-import nextstep.subway.favorite.dto.FavoriteResponse;
+import static nextstep.subway.member.MemberAcceptanceTest.BEARER;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -20,18 +25,13 @@ import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 
-import java.util.List;
-
-import static nextstep.subway.member.MemberAcceptanceTest.BEARER;
-import static org.assertj.core.api.Assertions.assertThat;
-
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteApiTest extends AcceptanceTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     private static final int AGE = 20;
 
-    String 토큰;
+    private String 토큰;
     private Long 강남역;
     private Long 광교역;
 
@@ -50,6 +50,7 @@ public class FavoriteApiTest extends AcceptanceTest {
     @Test
     void add() {
         //given
+
         //when
         ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성(토큰, 강남역, 광교역);
         //then

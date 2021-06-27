@@ -32,7 +32,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "password";
     private static final int AGE = 20;
 
-    String 토큰;
+    private String 토큰;
     private Long 강남역;
     private Long 광교역;
 
@@ -51,6 +51,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void favoriteAdd() {
         //given
+
         //when
         ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성(토큰, 강남역, 광교역);
         //then
@@ -72,6 +73,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void favoriteRemove() {
         //given
+
         //when
         ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성(토큰, 강남역, 광교역);
         //then
@@ -90,6 +92,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void favoriteFailedByDuplication() {
         //given
+
         //when
         ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성(토큰, 강남역, 광교역);
         //then
@@ -105,6 +108,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void favoriteFailedByInvalidStation() {
         //given
+
         //when
         ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성(토큰, 0L, 0L);
         //then
