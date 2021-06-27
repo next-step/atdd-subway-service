@@ -1,7 +1,7 @@
 package nextstep.subway.line.dto;
 
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Fee;
+import nextstep.subway.line.domain.vo.Amount;
 import nextstep.subway.line.domain.Line;
 
 public class LineRequest {
@@ -61,8 +61,8 @@ public class LineRequest {
         return Distance.from(distance);
     }
 
-    public Fee toFeeDomain() {
-        return Fee.from(lineAdditionalFee);
+    public Amount toFeeDomain() {
+        return Amount.from(lineAdditionalFee);
     }
 
     public Line toLine() {

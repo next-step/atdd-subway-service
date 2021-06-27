@@ -2,7 +2,7 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.exception.StationNotExistException;
 import nextstep.subway.exception.StationsNotConnectedException;
-import nextstep.subway.line.domain.Fee;
+import nextstep.subway.line.domain.vo.Amount;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -59,11 +59,11 @@ public class PathFinder implements ShortestPathFinder {
     }
   }
 
-  private Fee getHighestLineAdditionalFeeInPath(List<SectionEdge> edges) {
+  private Amount getHighestLineAdditionalFeeInPath(List<SectionEdge> edges) {
     return edges.stream()
             .map(SectionEdge::getSectionLineAdditionalFee)
-            .max(Comparator.comparing(Fee::getAmount))
-            .orElse(Fee.ZERO_FEE);
+            .max(Comparator.comparing(Amount::getAmount))
+            .orElse(Amount.ZERO_AMOUNT);
   }
 
   private void throwIfNotConnectedStations(GraphPath<Station, SectionEdge> graphPath) {

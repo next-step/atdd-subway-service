@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.exception.StationNotExistException;
 import nextstep.subway.exception.StationsNotConnectedException;
 import nextstep.subway.line.domain.*;
+import nextstep.subway.line.domain.vo.Amount;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,7 +43,7 @@ public class PathFinderTest {
     Path 최단경로 = 경로_탐색_도메인.findShortestPath(교대역, 양재역);
 
     //then
-    assertThat(최단경로).isEqualTo(new Path(Arrays.asList(교대역, 남부터미널역, 양재역), 5D, Fee.ZERO_FEE));
+    assertThat(최단경로).isEqualTo(new Path(Arrays.asList(교대역, 남부터미널역, 양재역), 5D, Amount.ZERO_AMOUNT));
   }
 
   @DisplayName("기존 최단거리역이 제거되었을 때")
@@ -57,7 +58,7 @@ public class PathFinderTest {
     Path 최단경로 = 경로_탐색_도메인.findShortestPath(교대역, 양재역);
 
     //then
-    assertThat(최단경로).isEqualTo(new Path(Arrays.asList(교대역, 강남역, 양재역), 20D, Fee.ZERO_FEE));
+    assertThat(최단경로).isEqualTo(new Path(Arrays.asList(교대역, 강남역, 양재역), 20D, Amount.ZERO_AMOUNT));
   }
 
   @DisplayName("출발역과 도착역을 같은 역으로 조회")
@@ -70,7 +71,7 @@ public class PathFinderTest {
     Path 최단경로 = 경로_탐색_도메인.findShortestPath(교대역, 교대역);
 
     //then
-    assertThat(최단경로).isEqualTo(new Path(Arrays.asList(교대역), 0D, Fee.ZERO_FEE));
+    assertThat(최단경로).isEqualTo(new Path(Arrays.asList(교대역), 0D, Amount.ZERO_AMOUNT));
   }
 
   @DisplayName("연결되지 않은 역과의 최단거리를 조회")

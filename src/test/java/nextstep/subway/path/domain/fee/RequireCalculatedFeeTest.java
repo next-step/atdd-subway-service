@@ -1,6 +1,6 @@
 package nextstep.subway.path.domain.fee;
 
-import nextstep.subway.line.domain.Fee;
+import nextstep.subway.line.domain.vo.Amount;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.fee.discount.AgeDiscount;
 import nextstep.subway.station.domain.Station;
@@ -21,7 +21,7 @@ class RequireCalculatedFeeTest {
   void requireFeeTest(double givenDistance, long expectFee) {
     //given
     Station givenStation = stationStaticFactoryForTestCode(1L, "교대역");
-    Path givenPath = new Path(Arrays.asList(givenStation), givenDistance, Fee.ZERO_FEE);
+    Path givenPath = new Path(Arrays.asList(givenStation), givenDistance, Amount.ZERO_AMOUNT);
 
     //when & then
     assertThat(RequireFee.getRequireFee(givenPath)).isEqualTo(expectFee);
@@ -33,7 +33,7 @@ class RequireCalculatedFeeTest {
   void additionalFeeTest(long givenAdditionalFee, long expectFee) {
     //given
     Station givenStation = stationStaticFactoryForTestCode(1L, "교대역");
-    Path givenPath = new Path(Arrays.asList(givenStation), 1D, Fee.from(givenAdditionalFee));
+    Path givenPath = new Path(Arrays.asList(givenStation), 1D, Amount.from(givenAdditionalFee));
 
     //when & then
     assertThat(RequireFee.getRequireFee(givenPath)).isEqualTo(expectFee);
@@ -45,7 +45,7 @@ class RequireCalculatedFeeTest {
   void additionalFeeTest(AgeDiscount givenAgeDiscount, long expectFee) {
     //given
     Station givenStation = stationStaticFactoryForTestCode(1L, "교대역");
-    Path givenPath = new Path(Arrays.asList(givenStation), 1D, Fee.ZERO_FEE);
+    Path givenPath = new Path(Arrays.asList(givenStation), 1D, Amount.ZERO_AMOUNT);
 
     //when & then
     assertThat(RequireFee.getRequireFeeWithDiscount(givenPath, givenAgeDiscount)).isEqualTo(expectFee);
