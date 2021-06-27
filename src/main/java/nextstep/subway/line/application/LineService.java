@@ -82,10 +82,7 @@ public class LineService {
         Station sourceStation = stationService.findById(sourceStationId);
         Station targetStation = stationService.findById(targetStationId);
         List<Line> persistLines = lineRepository.findAll();
-
         PathFinder pathFinder = new PathFinder(persistLines);
-        List<Station> paths = pathFinder.findPaths(sourceStation, targetStation);
-        List<StationResponse> stations = StationResponse.asList(paths);
-        return new PathResponse(stations);
+        return pathFinder.findPaths(sourceStation, targetStation);
     }
 }

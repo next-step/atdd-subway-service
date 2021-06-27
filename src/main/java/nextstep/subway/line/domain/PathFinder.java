@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -45,14 +46,14 @@ public class PathFinder {
         graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
     }
 
-    public List<Station> findPaths(Station source, Station target) {
+    public PathResponse findPaths(Station source, Station target) {
         validateFindable(source, target);
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         GraphPath path = dijkstraShortestPath.getPath(source, target);
         if (path == null) {
             throw new IllegalArgumentException("두 역이 서로 연결되어 있지 않습니다. 경로를 조회할 수 없습니다.");
         }
-        return path.getVertexList();
+        return PathResponse.of(path);
     }
 
     private void validateFindable(Station source, Station target) {
