@@ -41,8 +41,8 @@ public class LineService {
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+                           .map(LineResponse::of)
+                           .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

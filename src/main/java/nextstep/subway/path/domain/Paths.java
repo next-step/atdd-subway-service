@@ -20,7 +20,7 @@ public class Paths {
         checkNotConnectedBetweenStations(graphPath);
         checkNotFoundPaths(graphPath.getWeight());
         this.shortestStationRoutes = graphPath.getVertexList();
-        this.totalDistance = Double.valueOf(graphPath.getWeight()).intValue();
+        this.totalDistance = (int) graphPath.getWeight();
     }
 
     public static Paths of(final GraphPath<Station, DefaultWeightedEdge> graphPath) {

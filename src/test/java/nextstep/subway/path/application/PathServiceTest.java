@@ -35,7 +35,6 @@ class PathServiceTest {
     @InjectMocks
     private PathService pathService;
 
-
     private final long 강남역 = 1l;
     private final long 남부터미널역 = 4l;
 

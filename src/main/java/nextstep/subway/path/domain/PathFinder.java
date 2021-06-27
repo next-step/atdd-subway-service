@@ -26,11 +26,11 @@ public class PathFinder {
     }
 
     private void createGraph() {
-        this.graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
     }
 
     private void createDijkstraShortestPath() {
-        this.shortestPathOfStations = new DijkstraShortestPath(this.graph);
+        this.shortestPathOfStations = new DijkstraShortestPath<>(this.graph);
     }
 
     private void addVertex(final List<Line> lines) {
