@@ -1,6 +1,5 @@
 package nextstep.subway.member;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -50,5 +49,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
         TestToken 생성된_토큰 = response.as(TestToken.class);
+
+        내_회원_정보_조회됨(생성된_토큰);
+
+        내_회원_정보_수정됨(생성된_토큰, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+
+        내_회원_정보_삭제됨(생성된_토큰);
     }
 }
