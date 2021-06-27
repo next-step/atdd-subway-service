@@ -45,7 +45,7 @@ public class MemberRepositoryTest {
         flushAndClear();
 
         //when
-        memberRepository.delete(member);
+        memberRepository.delete(saveMember);
         flushAndClear();
 
         //then
