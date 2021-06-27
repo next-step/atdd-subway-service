@@ -6,41 +6,44 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-import java.util.Collections;
 import java.util.List;
 
 public class PathFinder {
-    private List stations;
-    private double distance;
+    WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+    DijkstraShortestPath dijkstraShortestPath;
 
-    public static PathFinder of(Station sourceStation, Station targetStation, List<Station> stations, List<Section> sections) {
+    public static PathFinder of(List<Station> stations, List<Section> sections) {
         PathFinder pathFinder = new PathFinder();
-        pathFinder.validateEqualStation(sourceStation,targetStation);
-        pathFinder.init(sourceStation,targetStation,stations,sections);
+        pathFinder.init(stations, sections);
         return pathFinder;
     }
 
+    public Path getShortestPath(Station sourceStation, Station targetStation) {
+        validateEqualStation(sourceStation, targetStation);
+
+        List stations = dijkstraShortestPath.getPath(sourceStation, targetStation).getVertexList();
+        double distance = dijkstraShortestPath.getPath(sourceStation, targetStation).getWeight();
+        return new Path(stations, distance);
+    }
+
     private void validateEqualStation(Station sourceStation, Station targetStation) {
-        if(sourceStation.equals(targetStation)){
+        if (sourceStation.equals(targetStation)) {
             throw new IllegalArgumentException();
         }
     }
 
-    private void init(Station sourceStation, Station targetStation, List<Station> stations, List<Section> sections) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        stations.forEach(graph::addVertex);
+    private void init(List<Station> stations, List<Section> sections) {
+        graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        dijkstraShortestPath = new DijkstraShortestPath(graph);
+        addVertex(stations);
+        addEdge(sections);
+    }
+
+    private void addEdge(List<Section> sections) {
         sections.forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance()));
-
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        this.distance = dijkstraShortestPath.getPath(sourceStation, targetStation).getWeight();
-        this.stations = dijkstraShortestPath.getPath(sourceStation, targetStation).getVertexList();
     }
 
-    public List getStations() {
-        return Collections.unmodifiableList(stations);
-    }
-
-    public double getDistance() {
-        return distance;
+    private void addVertex(List<Station> stations) {
+        stations.forEach(graph::addVertex);
     }
 }
