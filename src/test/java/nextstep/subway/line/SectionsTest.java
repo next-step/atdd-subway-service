@@ -38,4 +38,14 @@ public class SectionsTest {
 
 		assertThat(stationsNamesOnLine).containsAll(Arrays.asList(강남역.getName(), 광교역.getName()));
 	}
+
+	@Test
+	@DisplayName("라인에 섹션을 추가한다.")
+	void addLineStationTest() {
+		신분당선.addSection(new Section(신분당선, 강남역, 광교역, 10));
+
+		List<String> stationsNamesOnLine = 신분당선.getStations().stream().map(Station::getName)
+				.collect(Collectors.toList());
+		assertThat(stationsNamesOnLine).containsAll(Arrays.asList(강남역.getName(), 광교역.getName()));
+	}
 }
