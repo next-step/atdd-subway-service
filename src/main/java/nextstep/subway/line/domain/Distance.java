@@ -8,7 +8,7 @@ public class Distance {
 
     public static final String CANNOT_ADD_SECTION_GREATER_THAN_OR_EQUAL_DISTANCE = "기존 역 사이 길이보다 크거나 같은 구간은 추가할 수 없습니다.";
 
-    @Column
+    @Column(name = "distance")
     private final int value;
 
     public Distance() {
