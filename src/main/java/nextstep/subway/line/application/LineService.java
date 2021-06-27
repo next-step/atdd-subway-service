@@ -2,10 +2,8 @@ package nextstep.subway.line.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.PathFinder;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -78,11 +76,4 @@ public class LineService {
         line.remove(station);
     }
 
-    public PathResponse findPaths(Long sourceStationId, Long targetStationId) {
-        Station sourceStation = stationService.findById(sourceStationId);
-        Station targetStation = stationService.findById(targetStationId);
-        List<Line> persistLines = lineRepository.findAll();
-        PathFinder pathFinder = new PathFinder(persistLines);
-        return pathFinder.findPaths(sourceStation, targetStation);
-    }
 }

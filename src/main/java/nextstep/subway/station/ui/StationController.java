@@ -36,6 +36,16 @@ public class StationController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/stations/paths")
+    public ResponseEntity findPaths(@RequestParam Long source, @RequestParam Long target) {
+        return ResponseEntity.ok(stationService.findPaths(source, target));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity handleIllegalArgsException(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().build();
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
         return ResponseEntity.badRequest().build();

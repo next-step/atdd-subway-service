@@ -1,5 +1,9 @@
 package nextstep.subway.station.application;
 
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.PathFinder;
+import nextstep.subway.station.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
@@ -11,10 +15,13 @@ import java.util.stream.Collectors;
 
 @Service
 public class StationService {
-    private StationRepository stationRepository;
 
-    public StationService(StationRepository stationRepository) {
+    private StationRepository stationRepository;
+    private LineRepository lineRepository;
+
+    public StationService(StationRepository stationRepository, LineRepository lineRepository) {
         this.stationRepository = stationRepository;
+        this.lineRepository = lineRepository;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
@@ -28,6 +35,14 @@ public class StationService {
         return stations.stream()
                 .map(station -> StationResponse.of(station))
                 .collect(Collectors.toList());
+    }
+
+    public PathResponse findPaths(Long sourceStationId, Long targetStationId) {
+        Station sourceStation = findById(sourceStationId);
+        Station targetStation = findById(targetStationId);
+        List<Line> persistLines = lineRepository.findAll();
+        PathFinder pathFinder = new PathFinder(persistLines);
+        return pathFinder.findPaths(sourceStation, targetStation);
     }
 
     public void deleteStationById(Long id) {

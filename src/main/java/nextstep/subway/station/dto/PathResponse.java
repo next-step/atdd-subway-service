@@ -1,7 +1,6 @@
-package nextstep.subway.line.dto;
+package nextstep.subway.station.dto;
 
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.jgrapht.GraphPath;
 
 import java.util.List;
