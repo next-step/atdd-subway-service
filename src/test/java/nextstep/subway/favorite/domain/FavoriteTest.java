@@ -40,11 +40,11 @@ public class FavoriteTest {
         });
 
         assertThrows(NotFoundAnyThingException.class, () -> {
-            Favorite.of(멤버, null, 양재역);
+            Favorite.of(멤버.getId(), null, 양재역);
         });
 
         assertThrows(NotFoundAnyThingException.class, () -> {
-            Favorite.of(멤버, 강남역, null);
+            Favorite.of(멤버.getId(), 강남역, null);
         });
     }
 
@@ -52,7 +52,7 @@ public class FavoriteTest {
     @DisplayName("동일한 역으로는 등록 불가능하다.")
     void 동일_역으로_생성한다() {
         assertThrows(SameStationException.class, () -> {
-            Favorite.of(멤버, 강남역, 강남역);
+            Favorite.of(멤버.getId(), 강남역, 강남역);
         });
     }
 

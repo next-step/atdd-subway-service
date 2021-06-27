@@ -13,7 +13,6 @@ import javax.persistence.ManyToOne;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.exception.favorite.NotFoundAnyThingException;
 import nextstep.subway.exception.favorite.SameStationException;
-import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -30,15 +29,13 @@ public class Favorite extends BaseEntity {
     @JoinColumn(name = "target_id")
     private Station target;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    private Long memberId;
 
     public Favorite() {}
 
-    public Favorite(Member member, Station source, Station target) {
-        validation(member, source, target);
-        this.member = member;
+    public Favorite(Long memberId, Station source, Station target) {
+        validation(memberId, source, target);
+        this.memberId = memberId;
         this.source = source;
         this.target = target;
     }
@@ -51,12 +48,12 @@ public class Favorite extends BaseEntity {
         return target;
     }
 
-    public Member getMember() {
-        return member;
+    public Long getMemberId() {
+        return memberId;
     }
 
-    private void validation(Member member, Station source, Station target) {
-        if (Objects.isNull(member) || Objects.isNull(source) || Objects.isNull(target)) {
+    private void validation(Long memberId, Station source, Station target) {
+        if (Objects.isNull(memberId) || Objects.isNull(source) || Objects.isNull(target)) {
             throw new NotFoundAnyThingException();
         }
 
@@ -69,8 +66,8 @@ public class Favorite extends BaseEntity {
         return id;
     }
 
-    public static Favorite of(Member member, Station source, Station target) {
-        return new Favorite(member, source, target);
+    public static Favorite of(Long memberId, Station source, Station target) {
+        return new Favorite(memberId, source, target);
     }
 
 }
