@@ -73,7 +73,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단경로_조회됨(response);
-        최단경로_일치(response, Arrays.asList(양재역, 남부터미널역, 교대역));
+        최단경로_일치(response, Arrays.asList(양재역, 남부터미널역, 교대역), 5);
     }
 
     @DisplayName("최단경로 조회 - 존재하지 않는 역")
@@ -124,7 +124,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private void 최단경로_일치(ExtractableResponse<Response> response, List<StationResponse> expectedList) {
+    private void 최단경로_일치(ExtractableResponse<Response> response, List<StationResponse> expectedList, int distance) {
         PathResponse pathResponse = response.as(PathResponse.class);
         List<String> actual = pathResponse.getStations().stream()
                 .map(StationResponse::getName)
@@ -133,6 +133,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .map(StationResponse::getName)
                 .collect(Collectors.toList());
         assertThat(actual).isEqualTo(expected);
+        assertThat(pathResponse.getDistance()).isEqualTo(distance);
     }
 
     private LineResponse 지하철_노선_등록되어_있음(String lineName, String lineColor, Long upStationId, Long downStationId, int distance) {
