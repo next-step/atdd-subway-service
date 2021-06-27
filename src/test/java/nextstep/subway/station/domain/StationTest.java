@@ -7,4 +7,6 @@ public class StationTest {
     public static final Station 광교중앙역 = new Station(3L, "광교중앙역");
     public static final Station 광교역 = new Station(4L, "광교역");
 
+    public static final Station 교대역 = new Station(5L, "교대역");
+
 }

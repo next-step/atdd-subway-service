@@ -21,6 +21,12 @@ public class Line extends BaseEntity {
     public Line() {
     }
 
+    Line(Long id, String name, String color) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+    }
+
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
@@ -38,8 +44,8 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(Section section) {
-        sections.addSection(section);
         section.setLine(this);
+        sections.addSection(section);
     }
 
     public void removeStation(Station station) {
@@ -60,5 +66,9 @@ public class Line extends BaseEntity {
 
     public List<Station> getStations() {
         return sections.getStationsInOrder();
+    }
+
+    public Sections getSections() {
+        return sections;
     }
 }

@@ -42,6 +42,10 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    public List<Line> findLinesEntities() {
+        return lineRepository.findAll();
+    }
+
     public Line findLineById(Long id) {
         return lineRepository.findById(id)
             .orElseThrow(RuntimeException::new);

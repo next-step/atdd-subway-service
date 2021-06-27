@@ -1,10 +1,14 @@
 package nextstep.subway.line.domain;
 
+import static java.util.Collections.*;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -27,6 +31,10 @@ public class Sections {
     private List<Section> values = new ArrayList<>();
 
     public List<Station> getStationsInOrder() {
+        if (values.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         List<Station> stations = new ArrayList<>();
 
         Station station = findUpStation();
@@ -139,5 +147,13 @@ public class Sections {
 
     private boolean isRemovable() {
         return values.size() > SIZE_LOWER_LIMIT;
+    }
+
+    public List<Section> values() {
+        return unmodifiableList(values);
+    }
+
+    public void forEach(Consumer<Section> action) {
+        values.forEach(action);
     }
 }
