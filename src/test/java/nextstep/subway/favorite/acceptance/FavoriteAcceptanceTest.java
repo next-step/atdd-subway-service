@@ -106,6 +106,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성(토큰, 0L, 0L);
         //then
         즐겨찾기_생성_실패_응답_확인(즐겨찾기_생성_응답);
+
+        //when
+        즐겨찾기_생성_응답 = 즐겨찾기_생성(토큰, 100L, 101L);
+        //then
+        즐겨찾기_생성_실패_응답_확인(즐겨찾기_생성_응답);
     }
 
     private ExtractableResponse<Response> 즐겨찾기_조회(String 토큰) {
