@@ -8,6 +8,12 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -17,12 +23,6 @@ import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.station.dto.StationResponse;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -47,65 +47,88 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("즐겨찾기를 관리 한다")
     void manageFavorite() {
-        //     - When 즐겨찾기 생성을 요청
         // when
-        FavoriteRequest request = new FavoriteRequest(강남역.getId(), 광교역.getId());
-        ExtractableResponse<Response> createResponse = RestAssured
-            .given().log().all()
-            .auth().oauth2(사용자.getAccessToken())
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(request)
-            .when().post("/favorites")
-            .then().log().all().extract();
+        ExtractableResponse<Response> createResponse
+            = 즐겨찾기_생성을_요청(사용자, 강남역, 광교역);
 
-        //       - Then 즐겨찾기 생성됨
         // then
-        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(createResponse.header("Location")).isNotBlank();
+        즐겨찾기_생성됨(createResponse);
 
-        //     - When 즐겨찾기 목록 조회 요청
         // when
-        ExtractableResponse<Response> queryResponse = RestAssured
-            .given().log().all()
-            .auth().oauth2(사용자.getAccessToken())
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when().get("/favorites")
-            .then().log().all().extract();
+        ExtractableResponse<Response> queryResponse
+            = 즐겨찾기_목록_조회_요청(사용자);
 
-//       - Then 즐겨찾기 목록 조회됨
         // then
+        즐겨찾기_목록_조회됨(queryResponse, 강남역, 광교역);
+
+        // when
+        ExtractableResponse<Response> deleteResponse
+            = 즐겨찾기_삭제_요청(createResponse, 사용자);
+
+        // then
+        즐겨찾기_삭제됨(deleteResponse);
+
+        // when
+        ExtractableResponse<Response> emptyResponse
+            = 즐겨찾기_목록_조회_요청(사용자);
+
+        // then
+        즐겨찾기_빈_목록_조회됨(emptyResponse);
+    }
+
+    private static void 즐겨찾기_빈_목록_조회됨(ExtractableResponse<Response> emptyResponse) {
+        assertThat(emptyResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(emptyResponse.as(List.class).isEmpty()).isTrue();
+    }
+
+    private static void 즐겨찾기_삭제됨(ExtractableResponse<Response> deleteResponse) {
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private static ExtractableResponse<Response> 즐겨찾기_삭제_요청(
+                ExtractableResponse<Response> createResponse, TokenResponse tokenResponse) {
+        String id = createResponse.header("Location").split("/")[2];
+        ExtractableResponse<Response> deleteResponse = RestAssured
+            .given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
+            .when().delete("/favorites/{id}", id)
+            .then().log().all().extract();
+        return deleteResponse;
+    }
+
+    private static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> queryResponse, StationResponse source, StationResponse target) {
         assertThat(queryResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         List<FavoriteResponse> favorite
             = queryResponse.jsonPath().getList(".", FavoriteResponse.class);
         assertThat(favorite.get(0).getId()).isNotNull();
-        assertThat(favorite.get(0).getSource()).isEqualTo(강남역);
-        assertThat(favorite.get(0).getTarget()).isEqualTo(광교역);
+        assertThat(favorite.get(0).getSource()).isEqualTo(source);
+        assertThat(favorite.get(0).getTarget()).isEqualTo(target);
+    }
 
-        //     - When 즐겨찾기 삭제 요청
-        // when
-        String id = createResponse.header("Location").split("/")[2];
-        ExtractableResponse<Response> deleteResponse = RestAssured
+    private static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(TokenResponse tokenResponse) {
+        return RestAssured
             .given().log().all()
-            .auth().oauth2(사용자.getAccessToken())
-            .when().delete("/favorites/{id}", id)
-            .then().log().all().extract();
-
-//       - Then 즐겨찾기 삭제됨
-        // then
-        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-
-        //     - When 즐겨찾기 목록 조회 요청
-        // when
-        ExtractableResponse<Response> emptyResponse = RestAssured
-            .given().log().all()
-            .auth().oauth2(사용자.getAccessToken())
+            .auth().oauth2(tokenResponse.getAccessToken())
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/favorites")
             .then().log().all().extract();
+    }
 
-        //       - Then 즐겨찾기 빈 목록 조회됨
-        // then
-        assertThat(emptyResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(emptyResponse.as(List.class).isEmpty()).isTrue();
+    private static void 즐겨찾기_생성됨(ExtractableResponse<Response> createResponse) {
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(createResponse.header("Location")).isNotBlank();
+    }
+
+    private static ExtractableResponse<Response> 즐겨찾기_생성을_요청(
+            TokenResponse tokenResponse, StationResponse source, StationResponse target) {
+        FavoriteRequest request = new FavoriteRequest(source.getId(), target.getId());
+        ExtractableResponse<Response> createResponse = RestAssured
+            .given().log().all()
+            .auth().oauth2(tokenResponse.getAccessToken())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(request)
+            .when().post("/favorites")
+            .then().log().all().extract();
+        return createResponse;
     }
 }
