@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import static java.util.Collections.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -12,6 +13,10 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+
+import org.jgrapht.Graph;
+import org.jgrapht.Graphs;
+import org.jgrapht.graph.EdgeSetFactory;
 
 import nextstep.subway.line.exception.CannotRemoveException;
 import nextstep.subway.line.exception.InvalidSectionException;
@@ -29,6 +34,10 @@ public class Sections {
     private List<Section> values = new ArrayList<>();
 
     public List<Station> getStationsInOrder() {
+        if (values.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         List<Station> stations = new ArrayList<>();
 
         Station station = findUpStation();
@@ -146,4 +155,5 @@ public class Sections {
     public List<Section> values() {
         return unmodifiableList(values);
     }
+
 }
