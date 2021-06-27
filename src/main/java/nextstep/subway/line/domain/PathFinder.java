@@ -14,11 +14,11 @@ public class PathFinder {
     private WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
     public PathFinder(List<Line> lines) {
-        addVertex(lines);
-        addEdge(lines);
+        addVertexes(lines);
+        addEdges(lines);
     }
 
-    private void addVertex(List<Line> lines) {
+    private void addVertexes(List<Line> lines) {
         for (Line line : lines) {
             addVertex(line);
         }
@@ -30,7 +30,7 @@ public class PathFinder {
         }
     }
 
-    private void addEdge(List<Line> lines) {
+    private void addEdges(List<Line> lines) {
         for (Line line : lines) {
             addEdge(line.sections());
         }
