@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,6 +12,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 import static nextstep.subway.auth.acceptance.AuthSteps.로그인_요청;
 import static nextstep.subway.auth.application.AuthServiceTest.*;
 import static nextstep.subway.favorite.FavoriteSteps.*;
@@ -70,6 +74,12 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        List<FavoriteResponse> favoriteResponses = response.jsonPath().getList(".", FavoriteResponse.class);
+        List<Long> expected = favoriteResponses.stream()
+                .map(FavoriteResponse::getId)
+                .collect(toList());
+        List<Long> actual = response.jsonPath().getList("id", Long.class);
+        assertThat(actual).containsExactlyElementsOf(expected);
     }
 
     public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
