@@ -19,6 +19,11 @@ class PathFinderTest {
     private Station 판교역 = new Station("판교역");
     private Station 정자역 = new Station("정자역");
 
+    private Line LINE3 = new Line("3호선", "orange");
+    private Station 남부터미널역 = new Station("남부터미널역");
+    private Station 교대역 = new Station("교대역");
+
+
     @DisplayName("최단경로 조회 - 단일 노선")
     @Test
     void findPaths() {
@@ -39,5 +44,31 @@ class PathFinderTest {
         // then
         assertThat(paths.size()).isEqualTo(4);
         assertThat(paths).isEqualTo(Arrays.asList(양재역, 청계산역, 판교역, 정자역));
+    }
+
+    @DisplayName("최단경로 조회 - 두 개의 노선")
+    @Test
+    void findPaths_twoLines() {
+
+        // given
+        신분당선.add(강남역, 양재역, 5);
+        신분당선.add(양재역, 청계산역, 10);
+        신분당선.add(청계산역, 판교역, 15);
+        신분당선.add(판교역, 정자역, 7);
+
+        LINE3.add(양재역, 남부터미널역, 2);
+        LINE3.add(남부터미널역, 교대역, 1);
+
+        List<Line> lines = new ArrayList<>();
+        lines.add(신분당선);
+        lines.add(LINE3);
+
+        // when
+        PathFinder pathFinder = new PathFinder(lines);
+        List<Station> paths = pathFinder.findPaths(청계산역, 교대역);
+
+        // then
+        assertThat(paths.size()).isEqualTo(4);
+        assertThat(paths).isEqualTo(Arrays.asList(청계산역, 양재역, 남부터미널역, 교대역));
     }
 }
