@@ -146,4 +146,8 @@ public class Sections {
 							.filter(condition)
 							.findFirst();
 	}
+
+    public List<Section> getSections() {
+        return this.sections;
+    }
 }
