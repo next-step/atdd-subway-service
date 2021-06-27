@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain.wrappers;
 
+import nextstep.subway.exception.ValidSectionException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -67,12 +68,12 @@ class SectionsTest {
     @Test
     void 상행_하행_모두_포함되지않는_지하철역_구간_등록_요청_시_에러_발생() {
         Sections sections = new Sections(Arrays.asList(구간));
-        assertThatThrownBy(() -> sections.updateSections(new Section(신분당선, 교대역, new Station(7L, "서울대입구역"), 10))).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> sections.updateSections(new Section(신분당선, 교대역, new Station(7L, "서울대입구역"), 10))).isInstanceOf(ValidSectionException.class);
     }
 
     @Test
     void 구간_정보_추가시_이미_등록된_구간일_경우_에러_발생() {
         Sections sections = new Sections(Arrays.asList(구간));
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> sections.updateSections(구간)).withMessage("강남역, 광교역 구간은 이미 등록된 구간 입니다.");
+        assertThatExceptionOfType(ValidSectionException.class).isThrownBy(() -> sections.updateSections(구간)).withMessage("강남역, 광교역 구간은 이미 등록된 구간 입니다.");
     }
 }

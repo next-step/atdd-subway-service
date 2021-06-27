@@ -37,14 +37,14 @@ public class Sections {
         Optional<Section> updateTargetSection = findSectionByUpStation(section);
         if (updateTargetSection.isPresent()) {
             Section targetSection = updateTargetSection.get();
-            updateSection(section, targetSection, targetSection.getDownStation());
+            updateSection(section, targetSection, section.getDownStation());
             sections.add(section);
             return;
         }
         updateTargetSection = findSectionByDownStation(section);
         if (updateTargetSection.isPresent()) {
             Section targetSection = updateTargetSection.get();
-            updateSection(section, targetSection, targetSection.getUpStation());
+            updateSection(section, targetSection, section.getUpStation());
         }
         sections.add(section);
     }

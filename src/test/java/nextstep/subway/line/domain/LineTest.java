@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.ValidSectionException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -110,7 +111,7 @@ public class LineTest {
     @Test
     void 한개의_구간일때_구간_삭제_실행하면_에러_발생() {
         assertThatThrownBy(() -> 신분당선.removeSection(강남역))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(ValidSectionException.class)
                 .hasMessage("구간이 하나만 존재하는 경우 삭제할 수 없습니다.");
     }
 }
