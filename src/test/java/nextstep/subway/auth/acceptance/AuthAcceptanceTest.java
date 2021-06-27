@@ -1,17 +1,16 @@
 package nextstep.subway.auth.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import static nextstep.subway.auth.acceptance.AuthSteps.로그인_요청;
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static nextstep.subway.member.MemberSteps.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 // Feature
@@ -70,22 +69,12 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithWrongBearerAuth() {
         // given
-        String 유효하지않은_토큰 = INVALID_TOKEN;
+        TokenResponse 유효하지않은_토큰 = new TokenResponse(INVALID_TOKEN);
 
         // when
         ExtractableResponse<Response> 조회된_내정보 = 내정보_조회_요청(유효하지않은_토큰);
 
         // then
         assertThat(조회된_내정보.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
-    private ExtractableResponse<Response> 내정보_조회_요청(String accessToken) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .get("/members/me")
-                .then().log().all()
-                .extract();
     }
 }
