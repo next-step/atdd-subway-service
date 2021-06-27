@@ -12,7 +12,7 @@ import io.restassured.response.Response;
 import nextstep.subway.utils.DatabaseCleanup;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AcceptanceTest<T>{
+public class AcceptanceTest {
 	@LocalServerPort
 	int port;
 
@@ -25,7 +25,7 @@ public class AcceptanceTest<T>{
 		databaseCleanup.execute();
 	}
 
-	protected ExtractableResponse<Response> post(T request, String uri) {
+	protected <T> ExtractableResponse<Response> post(T request, String uri) {
 		return RestAssured
 			.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -43,7 +43,7 @@ public class AcceptanceTest<T>{
 			.extract();
 	}
 
-	protected ExtractableResponse<Response> put(T request, String uri) {
+	protected <T> ExtractableResponse<Response> put(T request, String uri) {
 		return RestAssured
 			.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)

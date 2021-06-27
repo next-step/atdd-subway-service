@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -32,8 +34,8 @@ public class Sections {
 
 	public void removeStation(Line line, Station station) {
 		validateRemoveStation(station);
-		Section upSection = getSectionEqualsDownStation(station);
-		Section downSection = getSectionEqualsUpStation(station);
+		Section upSection = getSectionEqualsStation(section -> section.isEqualsDownStation(station));
+		Section downSection = getSectionEqualsStation(section -> section.isEqualsUpStation(station));
 		updateSectionForRemove(line, upSection, downSection);
 		removeSection(upSection);
 		removeSection(downSection);
@@ -46,6 +48,10 @@ public class Sections {
 			addNextStation(stations);
 		}
 		return stations;
+	}
+
+	public void forEach(Consumer<? super Section> action) {
+		sections.forEach(action);
 	}
 
 	private void addNextStation(List<Station> stations) {
@@ -66,8 +72,8 @@ public class Sections {
 
 	private Station getFirstSection() {
 		return sections.stream()
-			.filter(section -> isFirstSection(section))
-			.map(section -> section.getUpStation())
+			.filter(this::isFirstSection)
+			.map(Section::getUpStation)
 			.findFirst()
 			.orElseThrow(() -> new InvalidSectionsException("첫번째 역이 존재하지 않습니다."));
 	}
@@ -84,11 +90,11 @@ public class Sections {
 	}
 
 	private boolean isNoneMatchUpStationInSections(Section newSection, List<Station> stations) {
-		return stations.stream().noneMatch(it -> newSection.isEqualsUpStation(it));
+		return stations.stream().noneMatch(newSection::isEqualsUpStation);
 	}
 
 	private boolean isNoneMatchDownStationInSections(Section newSection, List<Station> stations) {
-		return stations.stream().noneMatch(it -> newSection.isEqualsDownStation(it));
+		return stations.stream().noneMatch(newSection::isEqualsDownStation);
 	}
 
 	private void validateSection(Section section) {
@@ -104,14 +110,16 @@ public class Sections {
 	}
 
 	private void updateUpStation(Section newSection, List<Station> stations) {
-		Section updateSection = getSectionEqualsUpStation(newSection.getUpStation());
+		Section updateSection = getSectionEqualsStation(
+			section -> section.isEqualsUpStation(newSection.getUpStation()));
 		if (newSection.isUpStationExisted(stations) && Objects.nonNull(updateSection)) {
 			updateSection.updateUpStation(newSection.getDownStation(), newSection.getDistance());
 		}
 	}
 
 	private void updateDownStation(Section newSection, List<Station> stations) {
-		Section updateSection = getSectionEqualsDownStation(newSection.getDownStation());
+		Section updateSection = getSectionEqualsStation(
+			section -> section.isEqualsDownStation(newSection.getDownStation()));
 		if (newSection.isDownStationExisted(stations) && Objects.nonNull(updateSection)) {
 			updateSection.updateDownStation(newSection.getUpStation(), newSection.getDistance());
 		}
@@ -155,16 +163,9 @@ public class Sections {
 		}
 	}
 
-	private Section getSectionEqualsDownStation(Station station) {
+	private Section getSectionEqualsStation(Predicate<Section> predicate) {
 		return this.sections.stream()
-			.filter(section -> section.isEqualsDownStation(station))
-			.findFirst()
-			.orElse(null);
-	}
-
-	private Section getSectionEqualsUpStation(Station station) {
-		return this.sections.stream()
-			.filter(section -> section.isEqualsUpStation(station))
+			.filter(predicate::test)
 			.findFirst()
 			.orElse(null);
 	}
