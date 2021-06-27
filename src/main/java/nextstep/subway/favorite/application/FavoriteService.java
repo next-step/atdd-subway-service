@@ -36,4 +36,8 @@ public class FavoriteService {
     public List<Favorite> findFavorites(LoginMember loginMember) {
         return favoriteRepository.findByMemberId(loginMember.getId());
     }
+
+    public void deleteFavorite(Long id) {
+        favoriteRepository.deleteById(id);
+    }
 }
