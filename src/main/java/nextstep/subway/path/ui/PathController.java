@@ -1,31 +1,37 @@
 package nextstep.subway.path.ui;
 
-import java.util.LinkedList;
-import java.util.List;
-
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import nextstep.subway.line.exception.NotFoundException;
+import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.domain.Station;
 
 @RestController
 @RequestMapping("/paths")
 public class PathController {
 
-    @GetMapping
-    public ResponseEntity<PathResponse> getShortestPath(@RequestParam long source, @RequestParam long target) {
-        List<Station> stations = new LinkedList<>();
-        stations.add(new Station("교대역"));
-        stations.add(new Station("남부터미널역"));
-        stations.add(new Station("양재역"));
-        int distance = 8;
+    private final PathService pathService;
 
-        PathResponse pathResponse = new PathResponse(stations, distance);
+    public PathController(final PathService pathService) {
+        this.pathService = pathService;
+    }
+
+    @GetMapping
+    public ResponseEntity<PathResponse> getShortestPath(@RequestParam final long source,
+        @RequestParam final long target) {
+        final PathResponse pathResponse = pathService.findShortestPath(source, target);
 
         return ResponseEntity.ok().body(pathResponse);
+    }
+
+    @ExceptionHandler({DataIntegrityViolationException.class, NotFoundException.class, IllegalArgumentException.class})
+    public ResponseEntity handleIllegalArgsException(final RuntimeException e) {
+        return ResponseEntity.badRequest().build();
     }
 }
