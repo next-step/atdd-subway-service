@@ -3,6 +3,7 @@ package nextstep.subway.path;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.JgraphtFinder;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathStation;
 import nextstep.subway.station.domain.Station;
@@ -20,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 @DataJpaTest
-public class PathFinderTest {
+public class JgraphtFinderTest {
     @Autowired
     StationRepository stationRepository;
 
@@ -64,7 +65,7 @@ public class PathFinderTest {
 
         List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선, 사호선);
         Sections sections = findSectionsInLines(lines);
-        pathFinder = new PathFinder(sections);
+        pathFinder = new JgraphtFinder(sections);
     }
 
     @Test
