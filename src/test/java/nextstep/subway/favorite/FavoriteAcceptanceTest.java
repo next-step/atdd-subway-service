@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.auth.AuthSteps.로그인_요청;
 import static nextstep.subway.favorite.FavoriteSteps.*;
+import static nextstep.subway.favorite.FavoriteSteps.즐겨찾기_목록_조회_요청;
 import static nextstep.subway.line.acceptance.LineSetionSteps.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.line.acceptance.LineSteps.지하철_노선_등록되어_있음;
 import static nextstep.subway.member.MemeberSteps.회원_등록_되어_있음;
@@ -51,5 +52,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> findedResponse = 즐겨찾기_목록_조회_요청(사용자_토큰);
         즐겨찾기_목록_조회됨(findedResponse);
+
+        ExtractableResponse<Response> deletedResponse = 즐겨찾기_삭제_요청(사용자_토큰, createdResponse);
+        즐겨찾기_삭제됨(deletedResponse);
     }
 }
