@@ -24,6 +24,10 @@ public class AuthAcceptanceStep {
                 .then().log().all().extract();
     }
 
+    public static TokenResponse 로그인_되어_있음(String email, String password) {
+        return 로그인_요청(email, password).as(TokenResponse.class);
+    }
+
     public static void 로그인_응답됨(ExtractableResponse<Response> 로그인_요청_결과) {
         assertThat(로그인_요청_결과.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
