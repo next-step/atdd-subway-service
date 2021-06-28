@@ -14,19 +14,23 @@ public class Path {
     public static final String SAME_STATION = "같은 역입니다.";
 
     private final DijkstraShortestPath<Station, Station> dijkstraShortestPath;
+    private final Fare lineExtraFare;
 
-    public Path(DijkstraShortestPath<Station, Station> dijkstraShortestPath) {
+    public Path(DijkstraShortestPath<Station, Station> dijkstraShortestPath, Fare lineExtraFare) {
         this.dijkstraShortestPath = dijkstraShortestPath;
+        this.lineExtraFare = lineExtraFare;
     }
 
     public static Path of(List<Line> lines) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        Fare mostExtraFare = new Fare();
 
         for (Line line : lines) {
             addPath(line.sections(), graph);
+            mostExtraFare = mostExtraFare.gt(line.extraFare());
         }
 
-        return new Path(new DijkstraShortestPath(graph));
+        return new Path(new DijkstraShortestPath(graph), mostExtraFare);
     }
 
     private static void addPath(List<Section> sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
@@ -43,18 +47,21 @@ public class Path {
 
     public PathResponse findShortestPath(Station source, Station target) {
         if (source.equals(target)) {
-            throw new RuntimeException(SAME_STATION);
+            throw new IllegalArgumentException(SAME_STATION);
         }
         List<Station> shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
 
         if (shortestPath.isEmpty()) {
-            throw new RuntimeException(Sections.NOT_FOUND_SECTION);
+            throw new IllegalArgumentException(Sections.NOT_FOUND_SECTION);
         }
 
-        return PathResponse.of(shortestPath.stream().map(Station::toResponse).collect(Collectors.toList()), findPathWeight(source, target));
+        int distance = findPathDistance(source, target);
+        int totalFare = this.lineExtraFare.calculateTotalFare(distance);
+
+        return PathResponse.of(shortestPath.stream().map(Station::toResponse).collect(Collectors.toList()), findPathDistance(source, target), totalFare);
     }
 
-    private int findPathWeight(Station source, Station target) {
+    private int findPathDistance(Station source, Station target) {
         return (int) dijkstraShortestPath.getPathWeight(source, target);
     }
 }

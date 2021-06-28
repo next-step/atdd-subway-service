@@ -89,4 +89,60 @@ class PathTest {
         assertThat(shortestPath.get(1).getName()).isEqualTo(선릉역.getName());
         assertThat(distance).isEqualTo(5);
     }
+
+    @DisplayName("구간 요금")
+    @Test
+    void fare() {
+        // given
+        Path path = Path.of(new ArrayList<>(Arrays.asList(line)));
+        // when
+        PathResponse pathResponse = path.findShortestPath(강남역, 선릉역);
+        // then
+        assertThat(pathResponse.getFare()).isEqualTo(2150);
+    }
+
+    @DisplayName("구간 요금")
+    @Test
+    void overFareNotLineFare() {
+        // given
+        Path path = Path.of(new ArrayList<>(Arrays.asList(line)));
+        // when
+        PathResponse pathResponse = path.findShortestPath(강남역, 선릉역);
+        // then
+        assertThat(pathResponse.getFare()).isEqualTo(2150);
+    }
+
+    @DisplayName("구간 추가 요금 - 10km 초과")
+    @Test
+    void overFare() {
+        // given
+        line = new Line("신분당선"
+                , "빨간색"
+                , 강남역
+                , 선릉역
+                , new Distance(12)
+                , new Fare(900));
+        Path path = Path.of(new ArrayList<>(Arrays.asList(line)));
+        // when
+        PathResponse pathResponse = path.findShortestPath(강남역, 선릉역);
+        // then
+        assertThat(pathResponse.getFare()).isEqualTo(2250);
+    }
+
+    @DisplayName("구간 추가 요금 - 50km 초과")
+    @Test
+    void overFareOtherDistance() {
+        // given
+        line = new Line("신분당선"
+                , "빨간색"
+                , 강남역
+                , 선릉역
+                , new Distance(58)
+                , new Fare());
+        Path path = Path.of(new ArrayList<>(Arrays.asList(line)));
+        // when
+        PathResponse pathResponse = path.findShortestPath(강남역, 선릉역);
+        // then
+        assertThat(pathResponse.getFare()).isEqualTo(2150);
+    }
 }
