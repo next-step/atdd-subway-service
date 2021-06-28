@@ -53,6 +53,16 @@
               outlined
           ></v-text-field>
         </div>
+        <div class="d-flex">
+          <v-text-field
+              v-model="lineForm.extraCharge"
+              :rules="rules.section.extraCharge"
+              color="grey darken-1"
+              label="노선 추가 요금"
+              placeholder="노선 추가 요금"
+              outlined
+          ></v-text-field>
+        </div>
         <div>
           <v-text-field v-model="lineForm.color" :rules="rules.line.color" :value="lineForm.color" label="노선 색상" filled disabled></v-text-field>
           <p>
