@@ -53,14 +53,8 @@ class PathNavigationTest {
         Line 삼호선 = new Line("삼호선", "gs-12345", 교대, 양재, 27);
         삼호선.addSection(new Section(삼호선, 교대, 남부터미널, 9));
         lines.add(삼호선);
+        lines.add(이호선);
         lines.add(new Line("중앙선", "gs-1123", 구리, 용산, 200));
-    }
-
-    @Test
-    void createByLine() {
-        List<Line> list = new ArrayList<>();
-        sut = PathNavigation.by(list);
-        assertThat(sut).isNotNull();
     }
 
     @Test
@@ -72,7 +66,7 @@ class PathNavigationTest {
 
         assertThat(shortestPath.stations()).contains(강남, 교대, 남부터미널);
         assertThat(shortestPath.distance()).isEqualTo(21);
-        assertThat(shortestPath.fee()).isEqualTo(1650);
+        assertThat(shortestPath.fee()).isEqualTo(1250);
     }
 
     @Test
@@ -93,16 +87,6 @@ class PathNavigationTest {
         Path shortestPath = sut.findShortestPath(A, B);
         assertThat(shortestPath.distance()).isEqualTo(500);
         assertThat(shortestPath.fee()).isEqualTo(2150);
-    }
-
-    @Test
-    void findShortestPath_58KM_1350Fee() {
-        이호선.addSection(new Section(이호선, C, A, 580));
-        lines.add(이호선);
-        sut = PathNavigation.by(lines);
-        Path shortestPath = sut.findShortestPath(C, A);
-        assertThat(shortestPath.distance()).isEqualTo(580);
-        assertThat(shortestPath.fee()).isEqualTo(2250);
     }
 
     @Test
