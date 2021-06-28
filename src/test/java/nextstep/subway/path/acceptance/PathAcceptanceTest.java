@@ -140,7 +140,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         StationResponse 쿄잉역 = StationAcceptanceTest.지하철역_등록되어_있음("쿄잉역").as(StationResponse.class);
 
-        int fare = 1250 + (40 / 5 * 100);
+        int fare = 2050; // 1250 + (40 / 5 * 100)
 
         return Stream.of(
                 dynamicTest("등록된 계정으로 로그인 시도시 성공한다.", 로그인_요청_성공됨(성인_계정_토큰, authToken)),
@@ -156,7 +156,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         StationResponse 쿄잉역 = StationAcceptanceTest.지하철역_등록되어_있음("쿄잉역").as(StationResponse.class);
 
-        int fare = 1250 + (40 / 5 * 100) + (30 / 8 * 100);
+        int fare = 2350; // 1250 + (40 / 5 * 100) + (30 / 8 * 100)
 
         return Stream.of(
                 dynamicTest("등록된 계정으로 로그인 시도시 성공한다.", 로그인_요청_성공됨(성인_계정_토큰, authToken)),
@@ -170,9 +170,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     Stream<DynamicTest> 성인은_할인을_받지_않는다() {
         AuthToken authToken = new AuthToken();
 
+        int fare = 1250;
+
         return Stream.of(
                 dynamicTest("등록된 계정으로 로그인 시도시 성공한다.", 로그인_요청_성공됨(성인_계정_토큰, authToken)),
-                dynamicTest("강남역과 정자역 최단거리 및 성인 운임을 확인한다", 지하철_최단거리_요청_및_확인(authToken, 강남역, 정자역, Arrays.asList(강남역, 정자역), 7, 1250))
+                dynamicTest("강남역과 정자역 최단거리 및 성인 운임을 확인한다", 지하철_최단거리_요청_및_확인(authToken, 강남역, 정자역, Arrays.asList(강남역, 정자역), 7, fare))
         );
     }
 
@@ -180,7 +182,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("청소년은 운임 할인을 받는다 ((운임 - 350) * 0.8 ")
     Stream<DynamicTest> 청소년은_운임_할인을_받는다() {
         AuthToken authToken = new AuthToken();
-        int fare = (int) ((1250 - 350) * 0.8);
+        int fare = 720; // (int) ((1250 - 350) * 0.8)
 
         return Stream.of(
                 dynamicTest("등록된 계정으로 로그인 시도시 성공한다.", 로그인_요청_성공됨(청소년_계정_토큰, authToken)),
@@ -192,7 +194,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("어린이는 운임 할인을 받는다 ((운임 - 350) * 0.5 ")
     Stream<DynamicTest> 어린이는_운임_할인을_받는다() {
         AuthToken authToken = new AuthToken();
-        int fare = (int) ((1250 - 350) * 0.5);
+        int fare = 450;// (int) ((1250 - 350) * 0.5);
 
         return Stream.of(
                 dynamicTest("등록된 계정으로 로그인 시도시 성공한다.", 로그인_요청_성공됨(어린이_계정_토큰, authToken)),
