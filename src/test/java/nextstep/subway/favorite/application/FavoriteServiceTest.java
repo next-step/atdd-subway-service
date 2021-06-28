@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.dto.FavoriteRequest;
-import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.favorite.dto.FavoritesResponse;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
@@ -63,10 +65,10 @@ class FavoriteServiceTest {
         //given
         //when
         when(memberRepository.findById(any())).thenReturn(Optional.of(new Member()));
-        when(favoriteRepository.findByMember(any())).thenReturn(Optional.of(new Favorite(new Member(), new Station(), new Station())));
-        FavoriteResponse favoriteResponse = favoriteService.search(new LoginMember());
+        when(favoriteRepository.findByMember(any())).thenReturn(new ArrayList<>());
+        FavoritesResponse favoritesResponse = favoriteService.search(new LoginMember());
         //then
-        assertThat(favoriteResponse).isNotNull();
+        assertThat(favoritesResponse).isNotNull();
     }
 
     @DisplayName("즐겨찾기 제거")
@@ -75,7 +77,8 @@ class FavoriteServiceTest {
         //given
         //when
         when(memberRepository.findById(any())).thenReturn(Optional.of(new Member()));
-        when(favoriteRepository.findByMember(any())).thenReturn(Optional.of(new Favorite(new Member(), new Station(), new Station())));
+        when(favoriteRepository.findByMember(any())).thenReturn(new ArrayList<>(Arrays.asList(new Favorite())));
+
         favoriteService.remove(new LoginMember());
         //then
         verify(favoriteRepository, times(1)).delete(any());

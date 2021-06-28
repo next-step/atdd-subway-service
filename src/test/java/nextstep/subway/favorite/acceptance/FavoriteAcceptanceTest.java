@@ -15,11 +15,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
-import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.favorite.dto.FavoritesResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -174,11 +175,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 즐겨찾기_조회_응답_확인(ExtractableResponse<Response> 즐겨찾기_조회_응답, Long 출발역_번호, Long 도착역_번호) {
-        FavoriteResponse favoriteResponse = 즐겨찾기_조회_응답.as(FavoriteResponse.class);
-        List<StationResponse> stations = favoriteResponse.getStations();
-        assertThat(stations.size()).isEqualTo(2);
-        assertThat(stations.get(0).getId()).isEqualTo(출발역_번호);
-        assertThat(stations.get(1).getId()).isEqualTo(도착역_번호);
+        FavoritesResponse favoritesResponse = 즐겨찾기_조회_응답.as(FavoritesResponse.class);
+        List<FavoriteResponse> favoriteResponses = favoritesResponse.getFavoriteResponses();
+        assertThat(favoriteResponses.get(0).getSource().getId()).isEqualTo(출발역_번호);
+        assertThat(favoriteResponses.get(0).getTarget().getId()).isEqualTo(도착역_번호);
     }
 
     private void 즐겨찾기_제거(String 토큰) {
@@ -191,7 +191,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 즐겨찾기_제거_후_조회_응답_확인(ExtractableResponse<Response> 즐겨찾기_조회_응답) {
-        즐겨찾기_조회_실패(즐겨찾기_조회_응답.statusCode());
+        FavoritesResponse favoritesResponse = 즐겨찾기_조회_응답.as(FavoritesResponse.class);
+        List<FavoriteResponse> favoriteResponses = favoritesResponse.getFavoriteResponses();
+        assertThat(favoriteResponses.size()).isEqualTo(0);
     }
 
     private void 중복_즐겨찾기_조회_응답_확인(ExtractableResponse<Response> 즐겨찾기_조회_응답) {

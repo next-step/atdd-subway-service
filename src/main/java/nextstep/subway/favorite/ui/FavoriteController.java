@@ -16,7 +16,7 @@ import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.dto.FavoriteRequest;
-import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.favorite.dto.FavoritesResponse;
 import nextstep.subway.favorite.application.FavoriteService;
 
 @RestController
@@ -29,31 +29,26 @@ public class FavoriteController {
     }
 
     @PostMapping
-    public ResponseEntity<FavoriteResponse> add(@AuthenticationPrincipal LoginMember loginMember,
-                              @Valid @RequestBody FavoriteRequest favoriteRequest) {
+    public ResponseEntity<FavoritesResponse> add(@AuthenticationPrincipal LoginMember loginMember,
+                                                 @Valid @RequestBody FavoriteRequest favoriteRequest) {
         favoriteService.add(loginMember, favoriteRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
-    public ResponseEntity<FavoriteResponse> search(@AuthenticationPrincipal LoginMember loginMember) {
-        return ResponseEntity.ok(favoriteService.search(loginMember));
+    public ResponseEntity<FavoritesResponse> search(@AuthenticationPrincipal LoginMember loginMember) {
+        FavoritesResponse search = favoriteService.search(loginMember);
+        return ResponseEntity.ok(search);
     }
 
     @DeleteMapping
-    public ResponseEntity<FavoriteResponse> remove(@AuthenticationPrincipal LoginMember loginMember) {
+    public ResponseEntity<FavoritesResponse> remove(@AuthenticationPrincipal LoginMember loginMember) {
         favoriteService.remove(loginMember);
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler({AuthorizationException.class})
-    public ResponseEntity<FavoriteResponse> authorizationException(RuntimeException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .build();
-    }
-
-    @ExceptionHandler({RuntimeException.class})
-    public ResponseEntity<FavoriteResponse> handleRuntimeException(RuntimeException e) {
+    @ExceptionHandler({IllegalArgumentException.class})
+    public ResponseEntity<FavoritesResponse> handleRuntimeException(RuntimeException e) {
         return ResponseEntity.badRequest()
                 .build();
     }
