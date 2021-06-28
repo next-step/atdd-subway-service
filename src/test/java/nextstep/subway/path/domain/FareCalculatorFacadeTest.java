@@ -7,107 +7,103 @@ import nextstep.subway.wrapped.Distance;
 import nextstep.subway.wrapped.Money;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.CsvSource;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
 import static nextstep.subway.path.domain.age.AgePolicyFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class FareCalculatorFacadeTest {
-
-    private static final int shortDistance = 10;
-    private static final int midDistance = 50;
-    private static final int longDistance = 80;
-
-    private static final int shortDistanceFare = 1250;
-    private static final int midDistanceFare = shortDistanceFare + ((midDistance - shortDistance) / 5 * 100);
-    private static final int longDistanceFare = midDistanceFare + ((longDistance - midDistance) / 8 * 100);
-
-    private static final int transFare = 7000;
-    private static final int noTransFare = 3000;
-
-    private static final int distances[] = new int[]{shortDistance, midDistance, longDistance};
-    private static final int distanceFares[] = new int[]{shortDistanceFare, midDistanceFare, longDistanceFare};
-
-    private static final Function<Integer, Money> 어린이_할인_계산 = (money) -> new Money((money - 350) / 10 * 5);
-    private static final Function<Integer, Money> 청소년_할인_계산 = (money) -> new Money((money - 350) / 10 * 8);
-    private static final Function<Integer, Money> 일반_할인_계산 = (money) -> new Money(money);
     @ParameterizedTest
-    @MethodSource("childCase")
-    @DisplayName("어린이의 요금을 계산한다(짧은거리, 중간거리, 장거리, 환승, 비환승)")
-    public void 어린이(FareCalculatorCase fareCalculatorCase) {
-        assertThat(FareCalculatorFacade.calcFare(new LoginMember(null, null, CHILD_AGE), fareCalculatorCase.getShortestDistance()))
-                .isEqualTo(fareCalculatorCase.getExceptMoney());
+    @CsvSource(value = {"10, 1950", "50, 2350", "80, 2500"})
+    @DisplayName("어린이 비환승 요금을 조회한다")
+    public void 어린이_비환승_요금을_조회한다(int km, int exceptMoney) {
+        // given
+        ShortestDistance shortestDistance = 비환승_케이스(km);
+        LoginMember loginMember = new LoginMember(null, null, CHILD_AGE);
+
+        // when
+        Money money = FareCalculatorFacade.calcFare(loginMember, shortestDistance);
+
+        // then
+        assertThat(money).isEqualTo(new Money(exceptMoney));
     }
 
     @ParameterizedTest
-    @MethodSource("teenagerCase")
-    @DisplayName("청소년의 요금을 계산한다(짧은거리, 중간거리, 장거리, 환승, 비환승)")
-    public void 청소년(FareCalculatorCase fareCalculatorCase) {
-        assertThat(FareCalculatorFacade.calcFare(new LoginMember(null, null, TEENAGER_AGE), fareCalculatorCase.getShortestDistance()))
-                .isEqualTo(fareCalculatorCase.getExceptMoney());
+    @CsvSource(value = {"10, 3950", "50, 4350", "80, 4500"})
+    @DisplayName("어린이 환승 요금을 조회한다")
+    public void 어린이_환승_요금을_조회한다(int km, int exceptMoney) {
+        // given
+        ShortestDistance shortestDistance = 환승_케이스(km);
+        LoginMember loginMember = new LoginMember(null, null, CHILD_AGE);
+
+        // when
+        Money money = FareCalculatorFacade.calcFare(loginMember, shortestDistance);
+
+        // then
+        assertThat(money).isEqualTo(new Money(exceptMoney));
     }
 
     @ParameterizedTest
-    @MethodSource("defaultCase")
-    @DisplayName("일반의 요금을 계산한다(짧은거리, 중간거리, 장거리, 환승, 비환승)")
-    public void 일반(FareCalculatorCase fareCalculatorCase) {
-        assertThat(FareCalculatorFacade.calcFare(new LoginMember(null, null, NORMAL_AGE), fareCalculatorCase.getShortestDistance()))
-                .isEqualTo(fareCalculatorCase.getExceptMoney());
+    @CsvSource(value = {"10, 3120", "50, 3760", "80, 4000"})
+    @DisplayName("청소년 비환승 요금을 조회한다")
+    public void 청소년_비환승_요금을_조회한다(int km, int exceptMoney) {
+        // given
+        ShortestDistance shortestDistance = 비환승_케이스(km);
+        LoginMember loginMember = new LoginMember(null, null, TEENAGER_AGE);
+
+        // when
+        Money money = FareCalculatorFacade.calcFare(loginMember, shortestDistance);
+
+        // then
+        assertThat(money).isEqualTo(new Money(exceptMoney));
     }
 
-    public static List<FareCalculatorCase> childCase() {
-        return createCase(어린이_할인_계산);
+    @ParameterizedTest
+    @CsvSource(value = {"10, 6320", "50, 6960", "80, 7200"})
+    @DisplayName("청소년 환승 요금을 조회한다")
+    public void 청소년_환승_요금을_조회한다(int km, int exceptMoney) {
+        // given
+        ShortestDistance shortestDistance = 환승_케이스(km);
+        LoginMember loginMember = new LoginMember(null, null, TEENAGER_AGE);
+
+        // when
+        Money money = FareCalculatorFacade.calcFare(loginMember, shortestDistance);
+
+        // then
+        assertThat(money).isEqualTo(new Money(exceptMoney));
     }
 
-    public static List<FareCalculatorCase> teenagerCase() {
-        return createCase(청소년_할인_계산);
+    @ParameterizedTest
+    @CsvSource(value = {"10, 4250", "50, 5050", "80, 5350"})
+    @DisplayName("일반 비환승 요금을 조회한다")
+    public void 일반_비환승_요금을_조회한다(int km, int exceptMoney) {
+        // given
+        ShortestDistance shortestDistance = 비환승_케이스(km);
+        LoginMember loginMember = new LoginMember(null, null, NORMAL_AGE);
+
+        // when
+        Money money = FareCalculatorFacade.calcFare(loginMember, shortestDistance);
+
+        // then
+        assertThat(money).isEqualTo(new Money(exceptMoney));
     }
 
-    public static List<FareCalculatorCase> defaultCase() {
-        return createCase(일반_할인_계산);
-    }
+    @ParameterizedTest
+    @CsvSource(value = {"10, 8250", "50, 9050", "80, 9350"})
+    @DisplayName("일반 환승 요금을 조회한다")
+    public void 일반_환승_요금을_조회한다(int km, int exceptMoney) {
+        // given
+        ShortestDistance shortestDistance = 환승_케이스(km);
+        LoginMember loginMember = new LoginMember(null, null, NORMAL_AGE);
 
-    public static List<FareCalculatorCase> createCase(Function<Integer, Money> calc) {
-        List<FareCalculatorCase> results = new ArrayList<>();
-        for (int i = 0; i < distances.length; i++) {
-            results.add(
-                    new FareCalculatorCase(
-                            비환승_케이스(distances[i]),
-                            calc.apply(noTransFare + distanceFares[i])
-                    )
-            );
-            results.add(
-                    new FareCalculatorCase(
-                            환승_케이스(distances[i]),
-                            calc.apply(transFare + distanceFares[i])
-                    )
-            );
-        }
+        // when
+        Money money = FareCalculatorFacade.calcFare(loginMember, shortestDistance);
 
-        return results;
-    }
-
-    static class FareCalculatorCase {
-        private ShortestDistance shortestDistance;
-        private Money exceptMoney;
-
-        public FareCalculatorCase(ShortestDistance shortestDistance, Money exceptMoney) {
-            this.shortestDistance = shortestDistance;
-            this.exceptMoney = exceptMoney;
-        }
-
-        public ShortestDistance getShortestDistance() {
-            return shortestDistance;
-        }
-
-        public Money getExceptMoney() {
-            return exceptMoney;
-        }
+        // then
+        assertThat(money).isEqualTo(new Money(exceptMoney));
     }
 
     private static ShortestDistance 환승_케이스(int distance) {
