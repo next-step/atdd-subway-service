@@ -2,6 +2,7 @@ package nextstep.subway.favorite.ui;
 
 import javax.validation.Valid;
 
+import nextstep.subway.favorite.dto.FavoriteRemoveRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -42,8 +42,9 @@ public class FavoriteController {
     }
 
     @DeleteMapping
-    public ResponseEntity<FavoritesResponse> remove(@AuthenticationPrincipal LoginMember loginMember) {
-        favoriteService.remove(loginMember);
+    public ResponseEntity<FavoritesResponse> remove(@AuthenticationPrincipal LoginMember loginMember,
+                                                    @Valid @RequestBody FavoriteRemoveRequest favoriteRemoveRequest) {
+        favoriteService.remove(loginMember, favoriteRemoveRequest);
         return ResponseEntity.noContent().build();
     }
 

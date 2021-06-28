@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import nextstep.subway.favorite.dto.FavoriteRemoveRequest;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoritesResponse;
@@ -79,7 +80,7 @@ class FavoriteServiceTest {
         when(memberRepository.findById(any())).thenReturn(Optional.of(new Member()));
         when(favoriteRepository.findByMember(any())).thenReturn(new ArrayList<>(Arrays.asList(new Favorite())));
 
-        favoriteService.remove(new LoginMember());
+        favoriteService.remove(new LoginMember(), new FavoriteRemoveRequest());
         //then
         verify(favoriteRepository, times(1)).delete(any());
     }

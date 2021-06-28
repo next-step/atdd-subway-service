@@ -3,11 +3,10 @@ package nextstep.subway.favorite.application;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.NoResultException;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.favorite.dto.FavoriteRemoveRequest;
 import nextstep.subway.favorite.dto.FavoritesResponse;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -59,17 +58,10 @@ public class FavoriteService {
         return FavoritesResponse.of(favorites.stream().map(Favorite::toResponse).collect(Collectors.toList()));
     }
 
-    public void remove(LoginMember loginMember) {
-        Member member = member(loginMember);
-        List<Favorite> favorites = getFavorites(member);
-
-        if (favorites.isEmpty()) {
-            throw new NoResultException(NOT_FOUND_FAVORITE);
-        }
-
-        for (Favorite favorite : favorites) {
-            favoriteRepository.delete(favorite);
-        }
+    public void remove(LoginMember loginMember, FavoriteRemoveRequest favoriteRemoveRequest) {
+        member(loginMember);
+        Favorite favorite = favoriteRepository.findById(favoriteRemoveRequest.getId()).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_FAVORITE));
+        favoriteRepository.delete(favorite);
     }
 
     private Member member(LoginMember loginMember) {
