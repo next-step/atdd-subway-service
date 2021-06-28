@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceRequest.로그인_요청_성공됨;
+import static nextstep.subway.auth.acceptance.AuthRequestFixture.*;
 import static nextstep.subway.line.acceptance.LineAcceptanceTestRequest.지하철_노선_생성_요청_및_검증;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestRequest.지하철_노선에_지하철역_등록_요청_및_확인;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestRequest.지하철_노선에_지하철역_순서_정렬됨;
@@ -38,14 +39,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
-
-    private MemberRequest 성인_계정 = new MemberRequest("A@A.com", "qwe123", 30);
-    private MemberRequest 청소년_계정 = new MemberRequest("B@B.com", "qwe123", 13);
-    private MemberRequest 어린이_계정 = new MemberRequest("C@C.com", "qwe123", 6);
-
-    private TokenRequest 성인_계정_토큰 = new TokenRequest("A@A.com", "qwe123");
-    private TokenRequest 청소년_계정_토큰 = new TokenRequest("B@B.com", "qwe123");
-    private TokenRequest 어린이_계정_토큰 = new TokenRequest("C@C.com", "qwe123");
 
     @BeforeEach
     public void setUp() {

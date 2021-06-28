@@ -17,6 +17,8 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceRequest.로그인_요청_성공됨;
+import static nextstep.subway.auth.acceptance.AuthRequestFixture.성인_계정;
+import static nextstep.subway.auth.acceptance.AuthRequestFixture.성인_계정_토큰;
 import static nextstep.subway.line.acceptance.LineAcceptanceTestRequest.지하철_노선_생성_요청_및_검증;
 import static nextstep.subway.member.MemberAcceptanceTestRequest.회원_생성됨;
 import static nextstep.subway.member.MemberAcceptanceTestRequest.회원_생성을_요청;
@@ -30,10 +32,6 @@ public class PathFareWithLineAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 정자역;
     private StationResponse 광교역;
-
-    private MemberRequest 성인_계정 = new MemberRequest("A@A.com", "qwe123", 30);
-
-    private TokenRequest 성인_계정_토큰 = new TokenRequest("A@A.com", "qwe123");
 
     @BeforeEach
     public void setUp() {
