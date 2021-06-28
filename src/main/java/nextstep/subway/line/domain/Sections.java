@@ -179,8 +179,4 @@ public class Sections {
                 .filter(section -> section.isDownStation(station))
                 .findFirst();
     }
-
-    public int size() {
-        return sections.size();
-    }
 }
