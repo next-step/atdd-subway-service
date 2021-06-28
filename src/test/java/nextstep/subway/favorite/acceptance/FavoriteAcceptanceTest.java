@@ -68,5 +68,11 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 즐겨찾기_삭제_요청_결과 = 즐겨찾기_삭제_요청(사용자, 즐겨찾기_생성을_요청_결과);
         // Then 즐겨찾기 삭제됨
         즐겨찾기_삭제됨(즐겨찾기_삭제_요청_결과);
+
+        // When 삭제된 즐겨찾기 목록 조회 요청
+        ExtractableResponse<Response> 삭제된_즐겨찾기_목록_조회_요청 = 즐겨찾기_목록_조회_요청(사용자);
+        // Then 삭제된 즐겨찾기 목록 확인
+        즐겨찾기_목록_조회_응답_됨(삭제된_즐겨찾기_목록_조회_요청);
+        즐겨찾기_목록_조회_포함_됨(삭제된_즐겨찾기_목록_조회_요청, Lists.emptyList());
     }
 }
