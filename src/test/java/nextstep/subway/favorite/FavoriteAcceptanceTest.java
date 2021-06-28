@@ -30,7 +30,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private FavoriteRequest 강남역_양재역_즐겨찾기;
 
     private AuthToken 인증_정보;
-    private AuthToken 비로그인_정보 = new AuthToken();
+    private AuthToken 비로그인_정보;
 
     private StationResponse 강남역;
     private StationResponse 양재역;
@@ -44,6 +44,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         회원_생성됨(회원_생성을_요청(EMAIL, PASSWORD, AGE));
 
         인증_정보 = new AuthToken(로그인_요청_및_전체_검증(등록된_계정_토큰_요청).getAccessToken());
+        비로그인_정보 = new AuthToken();
 
         강남역 = 지하철역_생성_요청_및_검증("강남역").as(StationResponse.class);
         양재역 = 지하철역_생성_요청_및_검증("양재역").as(StationResponse.class);
