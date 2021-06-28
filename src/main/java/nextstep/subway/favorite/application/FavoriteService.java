@@ -43,8 +43,7 @@ public class FavoriteService {
 
         List<Favorite> favorites = favoriteRepository.findByMember(member);
         boolean isPresent = favorites.stream()
-                .map(favorite -> favorite.getSource().equals(source) && favorite.getTarget().equals(target))
-                .findAny().isPresent();
+                .anyMatch(favorite -> favorite.getSource().equals(source) && favorite.getTarget().equals(target));
 
         if (isPresent) {
             throw new IllegalArgumentException(FAVORITE_ALREADY_ADDED);

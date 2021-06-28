@@ -121,6 +121,31 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성_실패_응답_확인(즐겨찾기_생성_응답);
     }
 
+    @DisplayName("즐겨찾기 구간 2개 추가")
+    @Test
+    void addFavorites() {
+        // given
+        Long 판교역 = StationAcceptanceTest.지하철역_등록되어_있음("판교역").as(StationResponse.class).getId();
+        Long 정자역 = StationAcceptanceTest.지하철역_등록되어_있음("정자역").as(StationResponse.class).getId();
+        즐겨찾기_생성(토큰, 강남역, 광교역);
+        즐겨찾기_생성(토큰, 판교역, 정자역);
+        // then
+        ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_조회(토큰);
+        // when
+        즐겨찾기_목록_조회_응답_확인(즐겨찾기_조회_응답, 판교역, 정자역);
+    }
+
+    private void 즐겨찾기_목록_조회_응답_확인(ExtractableResponse<Response> 즐겨찾기_조회_응답, Long 두번째_출발역, Long 두번째_도착역) {
+        FavoritesResponse favoritesResponse = 즐겨찾기_조회_응답.as(FavoritesResponse.class);
+        List<FavoriteResponse> favoriteResponses = favoritesResponse.getFavoriteResponses();
+        assertThat(favoriteResponses.size()).isEqualTo(2);
+        assertThat(favoriteResponses.get(0).getSource().getId()).isEqualTo(강남역);
+        assertThat(favoriteResponses.get(0).getTarget().getId()).isEqualTo(광교역);
+
+        assertThat(favoriteResponses.get(1).getSource().getId()).isEqualTo(두번째_출발역);
+        assertThat(favoriteResponses.get(1).getTarget().getId()).isEqualTo(두번째_도착역);
+    }
+
     private ExtractableResponse<Response> 즐겨찾기_조회(String 토큰) {
         FavoriteRequest favoriteRequest = new FavoriteRequest(강남역, 광교역);
 
