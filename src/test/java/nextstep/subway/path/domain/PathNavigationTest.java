@@ -23,6 +23,11 @@ class PathNavigationTest {
     private Station 양재;
     private Station 교대;
     private Station 남부터미널;
+    private Line 이호선;
+    private Station B;
+    private Station 강변;
+    private Station A;
+    private Station C;
 
     @BeforeEach
     void setUp() {
@@ -34,9 +39,17 @@ class PathNavigationTest {
         교대 = new Station(6L, "교대");
         남부터미널 = new Station(7L, "남부터미널");
 
+        B = new Station(8L, "충정로");
+        강변 = new Station(9L, "강변");
+        A = new Station(10L, "많이-먼-역");
+        C = new Station(11L, "많이-더-먼-역");
+
         lines = new ArrayList<>();
         lines.add(new Line("신분당선", "gs-1123", 강남, 양재, 15));
-        lines.add(new Line("이호선", "gs-12345", 교대, 강남, 12));
+        이호선 = new Line("이호선", "gs-12345", 교대, 강남, 12);
+        이호선.addSection(new Section(이호선, 강변, 교대, 107));
+        이호선.addSection(new Section(이호선, B, 강변, 134));
+
         Line 삼호선 = new Line("삼호선", "gs-12345", 교대, 양재, 27);
         삼호선.addSection(new Section(삼호선, 교대, 남부터미널, 9));
         lines.add(삼호선);
@@ -59,6 +72,37 @@ class PathNavigationTest {
 
         assertThat(shortestPath.stations()).contains(강남, 교대, 남부터미널);
         assertThat(shortestPath.distance()).isEqualTo(21);
+        assertThat(shortestPath.fee()).isEqualTo(1650);
+    }
+
+    @Test
+    void findShortestPath_25KM_1350Fee() {
+        lines.add(이호선);
+        sut = PathNavigation.by(lines);
+        Path shortestPath = sut.findShortestPath(B, 남부터미널);
+        assertThat(shortestPath.distance()).isEqualTo(250);
+        assertThat(shortestPath.fee()).isEqualTo(1650);
+    }
+
+    @Test
+    void findShortestPath_50KM_1350Fee() {
+
+        이호선.addSection(new Section(이호선, A, B, 500));
+        lines.add(이호선);
+        sut = PathNavigation.by(lines);
+        Path shortestPath = sut.findShortestPath(A, B);
+        assertThat(shortestPath.distance()).isEqualTo(500);
+        assertThat(shortestPath.fee()).isEqualTo(2150);
+    }
+
+    @Test
+    void findShortestPath_58KM_1350Fee() {
+        이호선.addSection(new Section(이호선, C, A, 580));
+        lines.add(이호선);
+        sut = PathNavigation.by(lines);
+        Path shortestPath = sut.findShortestPath(C, A);
+        assertThat(shortestPath.distance()).isEqualTo(580);
+        assertThat(shortestPath.fee()).isEqualTo(2250);
     }
 
     @Test

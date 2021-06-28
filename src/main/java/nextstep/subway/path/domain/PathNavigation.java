@@ -12,9 +12,11 @@ import java.util.Objects;
 
 public class PathNavigation {
 
+    public static final int BASIC_FEE = 1250;
     private static final String ERROR_MESSAGE_EQUALS_STATIONS = "동일한 역을 입력하였습니다.";
     private static final String ERROR_MESSAGE_NOT_EXISTED_STATIONS = "존재하지 않은 출발역이나 도착역이 있습니다.";
     private static final String ERROR_MESSAGE_NOT_CONNECTED_STATIONS = "역이 연결되어 있지 않습니다.";
+    public static final int BASIC_FEE_OVER_50KM = 2050;
 
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> path;
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
@@ -37,19 +39,32 @@ public class PathNavigation {
         return new PathNavigation(lines);
     }
 
+
     public Path findShortestPath(Station source, Station target) {
         validateStations(source, target);
 
         GraphPath<Station, DefaultWeightedEdge> shortestPath = this.path.getPath(source, target);
         validateShortestPathIsNull(shortestPath);
 
-
         int distance = (int) shortestPath.getWeight();
-        int fee = 0;
+
         if (distance <= 10) {
-            fee = 1250;
+            return Path.of(shortestPath.getVertexList(), distance, BASIC_FEE);
         }
-        return Path.of(shortestPath.getVertexList(), distance, fee);
+
+        if (distance > 100 && distance <= 500) {
+            return Path.of(shortestPath.getVertexList(), distance, BASIC_FEE + calculateOver10KmFare(distance));
+        }
+
+        return Path.of(shortestPath.getVertexList(), distance, BASIC_FEE_OVER_50KM + calculateOver50KmFare(distance));
+    }
+
+    private int calculateOver10KmFare(int distance) {
+        return (int) ((Math.ceil((distance - 100) / 50) + 1) * 100);
+    }
+
+    private int calculateOver50KmFare(int distance) {
+        return (int) ((Math.ceil((distance - 500) / 80) + 1) * 100);
     }
 
     private void validateShortestPathIsNull(GraphPath<Station, DefaultWeightedEdge> shortestPath) {
