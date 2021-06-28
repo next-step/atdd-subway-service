@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class FareTest {
 
@@ -40,58 +42,20 @@ class FareTest {
         assertThat(expect).isEqualTo(mostFare);
     }
 
-    @DisplayName("요금 추가 금액 계산 - 10km")
-    @Test
-    void calculateOverFare() {
+    @DisplayName("요금 추가 금액 계산")
+    @ParameterizedTest()
+    @CsvSource({"10, 1250",
+            "30, 1650",
+            "50, 2050",
+            "58, 2150",
+            "106, 2750"
+    })
+    void calculateOverFare(int 거리, int 요금) {
         // given
         Fare fare = new Fare();
         // when
-        int totalFare = fare.calculateTotalFare(10);
+        int totalFare = fare.calculateTotalFare(거리);
         // then
-        assertThat(totalFare).isEqualTo(1250);
-    }
-
-    @DisplayName("요금 추가 금액 계산 - 30km")
-    @Test
-    void calculateOverFareDistance30() {
-        // given
-        Fare fare = new Fare();
-        // when
-        int totalFare = fare.calculateTotalFare(30);
-        // then
-        assertThat(totalFare).isEqualTo(1650);
-    }
-
-    @DisplayName("요금 추가 금액 계산 - 50km")
-    @Test
-    void calculateOverFareDistance50() {
-        // given
-        Fare fare = new Fare();
-        // when
-        int totalFare = fare.calculateTotalFare(50);
-        // then
-        assertThat(totalFare).isEqualTo(2050);
-    }
-
-    @DisplayName("요금 추가 금액 계산 - 58km")
-    @Test
-    void calculateOverFareDistance58() {
-        // given
-        Fare fare = new Fare();
-        // when
-        int totalFare = fare.calculateTotalFare(58);
-        // then
-        assertThat(totalFare).isEqualTo(2150);
-    }
-
-    @DisplayName("요금 추가 금액 계산 - 106km")
-    @Test
-    void calculateOverFareDistance106() {
-        // given
-        Fare fare = new Fare();
-        // when
-        int totalFare = fare.calculateTotalFare(106);
-        // then
-        assertThat(totalFare).isEqualTo(2750);
+        assertThat(totalFare).isEqualTo(요금);
     }
 }
