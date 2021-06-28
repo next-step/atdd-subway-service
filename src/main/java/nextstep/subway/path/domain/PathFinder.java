@@ -2,81 +2,73 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.exception.StationNotExistException;
 import nextstep.subway.exception.StationsNotConnectedException;
-import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.vo.Amount;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class PathFinder implements ShortestPathFinder {
 
-  private Map<Long, Station> wholeStations;
-  private WeightedMultigraph<Long, DefaultWeightedEdge> pathGraph;
+  private WeightedMultigraph<Station, SectionEdge> pathGraph;
 
-  private PathFinder(Map<Long, Station> wholeStations, WeightedMultigraph<Long, DefaultWeightedEdge> pathGraph) {
-    this.wholeStations = wholeStations;
+  private PathFinder(WeightedMultigraph<Station, SectionEdge> pathGraph) {
     this.pathGraph = pathGraph;
   }
 
-  public static PathFinder init(List<Station> wholeStations, List<Section> wholeSections) {
-    WeightedMultigraph<Long, DefaultWeightedEdge> pathGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-    addVertexToGraph(pathGraph, wholeStations);
-    addEdgesToGraph(pathGraph, wholeSections);
-    return new PathFinder(collectThroughId(wholeStations), pathGraph);
+  public static PathFinder init(Lines lines) {
+    WeightedMultigraph<Station, SectionEdge> pathGraph = new WeightedMultigraph<>(SectionEdge.class);
+    List<Station> allStations = lines.getAllStations();
+    List<Section> allSections = lines.getAllSections();
+    addVertexToGraph(pathGraph, allStations);
+    addEdgesToGraph(pathGraph, allSections);
+    return new PathFinder(pathGraph);
   }
 
-  private static void addVertexToGraph(WeightedMultigraph<Long, DefaultWeightedEdge> pathGraph, List<Station> wholeStations) {
-    wholeStations.stream()
-        .map(Station::getId)
-        .forEach(pathGraph::addVertex);
+  private static void addVertexToGraph(WeightedMultigraph<Station, SectionEdge> pathGraph, List<Station> wholeStations) {
+    wholeStations.forEach(pathGraph::addVertex);
   }
 
-  private static void addEdgesToGraph(WeightedMultigraph<Long, DefaultWeightedEdge> pathGraph, List<Section> wholeSections) {
+  private static void addEdgesToGraph(WeightedMultigraph<Station, SectionEdge> pathGraph, List<Section> wholeSections) {
     wholeSections.forEach(section -> {
-      Station sourceStation = section.getUpStation();
-      Station targetStation = section.getDownStation();
-      Distance sectionDistance = section.getDistance();
-      pathGraph.setEdgeWeight(pathGraph.addEdge(sourceStation.getId(), targetStation.getId()), sectionDistance.intValue());
+      SectionEdge sectionEdge = new SectionEdge(section);
+      if (pathGraph.addEdge(sectionEdge.getSourceVertex(), sectionEdge.getTargetVertex(), sectionEdge)) {
+        pathGraph.setEdgeWeight(sectionEdge, sectionEdge.getEdgeWeight());
+      }
     });
   }
 
-  private static Map<Long, Station> collectThroughId(List<Station> wholeStations) {
-    return wholeStations.stream()
-            .collect(Collectors.toMap(Station::getId, Function.identity()));
-  }
-
   @Override
-  public Path findShortestPath(Long sourceStationId, Long targetStationId) {
-    GraphPath<Long, DefaultWeightedEdge> shortestPath = findPathGraph(sourceStationId, targetStationId);
+  public Path findShortestPath(Station sourceStation, Station targetStation) {
+    GraphPath<Station, SectionEdge> shortestPath = findPathGraph(sourceStation, targetStation);
     throwIfNotConnectedStations(shortestPath);
-    return new Path(getShortestPathStations(shortestPath.getVertexList()), shortestPath.getWeight());
+    return new Path(shortestPath.getVertexList(), shortestPath.getWeight(), getHighestLineAdditionalFeeInPath(shortestPath.getEdgeList()));
   }
 
-  private GraphPath<Long, DefaultWeightedEdge> findPathGraph(Long sourceStationId, Long targetStationId) {
-    DijkstraShortestPath<Long, DefaultWeightedEdge> shortestPathFinder = new DijkstraShortestPath<>(pathGraph);
+  private GraphPath<Station, SectionEdge> findPathGraph(Station sourceStation, Station targetStation) {
+    DijkstraShortestPath<Station, SectionEdge> shortestPathFinder = new DijkstraShortestPath<>(pathGraph);
     try {
-      return shortestPathFinder.getPath(sourceStationId, targetStationId);
+      return shortestPathFinder.getPath(sourceStation, targetStation);
     } catch (IllegalArgumentException e) {
       throw new StationNotExistException(e);
     }
   }
 
-  private void throwIfNotConnectedStations(GraphPath<Long, DefaultWeightedEdge> graphPath) {
+  private Amount getHighestLineAdditionalFeeInPath(List<SectionEdge> edges) {
+    return edges.stream()
+            .map(SectionEdge::getSectionLineAdditionalFee)
+            .max(Comparator.comparing(Amount::getAmount))
+            .orElse(Amount.ZERO_AMOUNT);
+  }
+
+  private void throwIfNotConnectedStations(GraphPath<Station, SectionEdge> graphPath) {
     if (graphPath == null) {
       throw new StationsNotConnectedException();
     }
-  }
-
-  private List<Station> getShortestPathStations(List<Long> shortestPathStationIds) {
-    return shortestPathStationIds.stream()
-            .map(stationId -> wholeStations.get(stationId))
-            .collect(Collectors.toList());
   }
 }

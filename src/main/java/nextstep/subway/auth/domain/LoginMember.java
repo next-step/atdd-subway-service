@@ -1,5 +1,8 @@
 package nextstep.subway.auth.domain;
 
+import nextstep.subway.path.domain.fee.discount.AgeDiscount;
+import nextstep.subway.path.domain.fee.discount.Discount;
+
 public class LoginMember {
     private Long id;
     private String email;
@@ -24,5 +27,9 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
+    }
+
+    public Discount buildAgeDiscount() {
+        return AgeDiscount.from(age);
     }
 }

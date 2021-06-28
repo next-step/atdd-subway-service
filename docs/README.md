@@ -1,124 +1,56 @@
 # 인수 테스트 기반 TDD
-## 3단계 - 경로 조회 기능
+## 4단계 - 요금 조회
 
 ### 요구사항
-- [x] 토큰 발급 기능 (로그인) 인수 테스트 만들기
-- [x] 인증 - 내 정보 조회 기능 완성하기
-- [x] 인증 - 즐겨 찾기 기능 완성하기
+- [x] 경로 조회 시 거리 기준 요금 정보 포함하기
+- [x] 노선별 추가 요금 정책 추가
+- [x] 연령별 할인 정책 추가
 
-### 요청/응답
-#### 토큰 발급
-**request**
-```http request
-POST /login/token HTTP/1.1
-content-type: application/json; charset=UTF-8
-accept: application/json
-{
-    "password": "password",
-    "email": "email@email.com"
-}
-```
-**response**
-```http request
-HTTP/1.1 200
-Content-Type: application/json
-Transfer-Encoding: chunked
-Date: Sun, 27 Dec 2020 04:32:26 GMT
-Keep-Alive: timeout=60
-Connection: keep-alive
+### 요구사항 설명
 
-{
-    "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY"
-}
+---
+#### 거리별 요금정책
+* 기본운임(10㎞ 이내) : 기본운임 1,250원
+* 이용 거리초과 시 추가운임 부과
+    * 10km 초과 ∼ 50km 까지(5km 마다 100원)
+    * 50km 초과 시 (8km 마다 100원)
+#### 수정된 인수 조건
+```shell
+Feature: 지하철 경로 검색
+
+  Scenario: 두 역의 최단 거리 경로를 조회
+    Given: 지하철역이 등록되어있음
+    And: 지하철 노선이 등록되어있음
+    And: 지하철 노선에 지하철역이 등록되어있음
+    When: 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+    Then: 최단 거리 경로를 응답
+    And: 총 거리도 함께 응답함
+    And: ** 지하철 이용 요금도 함께 응답함 **
 ```
 
-#### 즐겨 찾기 생성
-**request**
-```http request
-POST /favorites HTTP/1.1
-authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY
-accept: */*
-content-type: application/json; charset=UTF-8
-content-length: 27
-host: localhost:50336
-connection: Keep-Alive
-user-agent: Apache-HttpClient/4.5.13 (Java/14.0.2)
-accept-encoding: gzip,deflate
-{
-    "source": "1",
-    "target": "3"
-}
-```
-**response**
-```http request
-HTTP/1.1 201 Created
-Keep-Alive: timeout=60
-Connection: keep-alive
-Content-Length: 0
-Date: Sun, 27 Dec 2020 04:32:26 GMT
-Location: /favorites/1
+#### 노선별 추가 요금 정책
+* 노선에 `추가 요금` 필드를 추가
+* 추가 요금이 있는 노선을 이용 할 경우 측정된 요금에 추가
+    * ex) 900원 추가 요금이 있는 노선 8km 이용 시 1,250원 -> 2,150원
+    * ex) 900원 추가 요금이 있는 노선 12km 이용 시 1,350원 -> 2,250원
+* 경로 중 추가요금이 있는 노선을 환승 하여 이용 할 경우 가장 높은 금액의 추가 요금만 적용
+    * ex) 0원, 500원, 900원의 추가 요금이 있는 노선들을 경유하여 8km 이용 시 1,250원 -> 2,150원
+    
+#### 로그인 사용자의 경우 연령별 요금 할인 적용
+* 청소년: 운임에서 350원을 공제한 금액의 20%할인
+* 어린이: 운임에서 350원을 공제한 금액의 50%할인
+```shell
+- 청소년: 13세 이상~19세 미만
+- 어린이: 6세 이상~ 13세 미만
 ```
 
-#### 즐겨 찾기 목록조회
-**request**
-```http request
-GET /favorites HTTP/1.1
-authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY
-accept: application/json
-host: localhost:50336
-connection: Keep-Alive
-user-agent: Apache-HttpClient/4.5.13 (Java/14.0.2)
-accept-encoding: gzip,deflate
-```
 
-**response**
-```http request
-HTTP/1.1 200 
-Content-Type: application/json
-Transfer-Encoding: chunked
-Date: Sun, 27 Dec 2020 04:32:26 GMT
-Keep-Alive: timeout=60
-Connection: keep-alive
 
-[
-    {
-        "id": 1,
-        "source": {
-            "id": 1,
-            "name": "강남역",
-            "createdDate": "2020-12-27T13:32:26.364439",
-            "modifiedDate": "2020-12-27T13:32:26.364439"
-        },
-        "target": {
-            "id": 3,
-            "name": "정자역",
-            "createdDate": "2020-12-27T13:32:26.486256",
-            "modifiedDate": "2020-12-27T13:32:26.486256"
-        }
-    }
-]
-```
+#### 이전 코드리뷰 반영
+- [x] PathService에서 SectionRepository와 StationRepository를 모두 갖는 대신 LineRepository만 갖게 변경
+- [x] PathFinder에서 Vertex를 Station Id 대신 Station 객체로 갖게 변경 
 
-#### 즐겨 찾기 삭제
-**request**
-```http request
-DELETE /favorites/1 HTTP/1.1
-authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY
-accept: */*
-host: localhost:50336
-connection: Keep-Alive
-user-agent: Apache-HttpClient/4.5.13 (Java/14.0.2)
-accept-encoding: gzip,deflate
-```
-
-**response**
-```http request
-HTTP/1.1 204 No Content
-Keep-Alive: timeout=60
-Connection: keep-alive
-Date: Sun, 27 Dec 2020 04:32:26 GMT
-```
 
 #### 코드리뷰 반영
-- [x] Favorite에서 member 간접참조하게 변경
-- [x] 나의 정보 관리 인수테스트에 실패 케이스도 추가
+- [x] Fee -> Amount로 클래스 명 변경, Fee는 domain 클래스로 보기는 힘드므로 vo라는 패키지 분리
+- [x] AgeDiscount에서 CalculatedFee의 구현체에 대해 강한 의존을 만들어내던 부분 수정

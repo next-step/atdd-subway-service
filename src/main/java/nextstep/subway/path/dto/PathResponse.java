@@ -1,6 +1,8 @@
 package nextstep.subway.path.dto;
 
+import nextstep.subway.path.domain.fee.RequireFee;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.fee.discount.Discount;
 import nextstep.subway.station.dto.StationResponse;
 
 import java.util.List;
@@ -11,10 +13,12 @@ public class PathResponse {
 
   private final List<StationResponse> stations;
   private final Double distance;
+  private final long requireFee;
 
-  public PathResponse(List<StationResponse> stations, Double distance) {
+  public PathResponse(List<StationResponse> stations, Double distance, long requireFee) {
     this.stations = stations;
     this.distance = distance;
+    this.requireFee = requireFee;
   }
 
   public static PathResponse from(Path shortestPath) {
@@ -22,7 +26,15 @@ public class PathResponse {
                                             .stream()
                                             .map(StationResponse::of)
                                             .collect(Collectors.toList());
-    return new PathResponse(stationResponses, shortestPath.getDistance());
+    return new PathResponse(stationResponses, shortestPath.getDistance(), RequireFee.getRequireFee(shortestPath));
+  }
+
+  public static PathResponse of(Discount discount, Path shortestPath) {
+    List<StationResponse> stationResponses = shortestPath.getStations()
+        .stream()
+        .map(StationResponse::of)
+        .collect(Collectors.toList());
+    return new PathResponse(stationResponses, shortestPath.getDistance(), RequireFee.getRequireFeeWithDiscount(shortestPath, discount));
   }
 
   public List<StationResponse> getStations() {
@@ -31,6 +43,10 @@ public class PathResponse {
 
   public Double getDistance() {
     return distance;
+  }
+
+  public long getRequireFee() {
+    return requireFee;
   }
 
   @Override

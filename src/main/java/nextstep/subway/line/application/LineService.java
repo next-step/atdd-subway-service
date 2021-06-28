@@ -67,7 +67,7 @@ public class LineService {
     private Line initializeNewLine(LineRequest request) {
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        return new Line(request.getName(), request.getColor(), upStation, downStation, request.toDistanceDomain());
+        return new Line(request.getName(), request.getColor(), upStation, downStation, request.toDistanceDomain(), request.toFeeDomain());
     }
 
     private Section initializeSection(Line line, SectionRequest request) {
