@@ -79,14 +79,34 @@ class PathNavigationTest {
     }
 
     @Test
-    void findShortestPath_50KM_1350Fee() {
-
-        이호선.addSection(new Section(이호선, A, B, 500));
+    void findShortestPath_50KM_2150Fee() {
+        Section newSection = new Section(이호선, A, B, 500);
+        이호선.addSection(newSection);
         lines.add(이호선);
         sut = PathNavigation.by(lines);
         Path shortestPath = sut.findShortestPath(A, B);
         assertThat(shortestPath.distance()).isEqualTo(500);
         assertThat(shortestPath.fee()).isEqualTo(2150);
+    }
+
+    @Test
+    void findShortestPath_57KM_2150Fee() {
+        이호선.addSection(new Section(이호선, A, B, 570));
+        lines.add(이호선);
+        sut = PathNavigation.by(lines);
+        Path shortestPath = sut.findShortestPath(A, B);
+        assertThat(shortestPath.distance()).isEqualTo(570);
+        assertThat(shortestPath.fee()).isEqualTo(2150);
+    }
+
+    @Test
+    void findShortestPath_58KM_2250Fee() {
+        이호선.addSection(new Section(이호선, A, B, 580));
+        lines.add(이호선);
+        sut = PathNavigation.by(lines);
+        Path shortestPath = sut.findShortestPath(A, B);
+        assertThat(shortestPath.distance()).isEqualTo(580);
+        assertThat(shortestPath.fee()).isEqualTo(2250);
     }
 
     @Test
