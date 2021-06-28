@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -30,9 +31,16 @@ public class FavoriteService {
     @Transactional
     public FavoriteResponse saveFavorite(Long memberId, FavoriteRequest param) {
         Member member = findMemberById(memberId);
-        Station source = findStationById(param.getSource());
-        Station target = findStationById(param.getTarget());
-        Favorite persistFavorite = favoriteRepository.save(Favorite.of(member, source, target));
+        List<Station> stations = stationRepository.findBySourceAndTarget(Arrays.asList(param.getSource(), param.getTarget()));
+        Station sourceStation = stations.stream()
+                .filter(station -> station.getId().equals(param.getSource()))
+                .findFirst()
+                .orElseThrow(EntityNotFoundException::new);
+        Station targetStation = stations.stream()
+                .filter(station -> station.getId().equals(param.getTarget()))
+                .findFirst()
+                .orElseThrow(EntityNotFoundException::new);
+        Favorite persistFavorite = favoriteRepository.save(Favorite.of(member, sourceStation, targetStation));
         return FavoriteResponse.from(persistFavorite);
     }
 
@@ -57,9 +65,5 @@ public class FavoriteService {
 
     private Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId).orElseThrow(EntityNotFoundException::new);
-    }
-
-    private Station findStationById(Long stationId) {
-        return stationRepository.findById(stationId).orElseThrow(EntityNotFoundException::new);
     }
 }
