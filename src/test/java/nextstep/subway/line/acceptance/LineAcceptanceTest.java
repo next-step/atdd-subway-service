@@ -18,6 +18,7 @@ import static nextstep.subway.line.acceptance.LineAcceptanceTestRequest.*;
 public class LineAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
     private StationResponse 광교역;
+
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
 
