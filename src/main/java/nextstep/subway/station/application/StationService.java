@@ -3,9 +3,9 @@ package nextstep.subway.station.application;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.PathFinder;
-import nextstep.subway.station.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
+import nextstep.subway.station.dto.PathResponse;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
@@ -31,15 +31,14 @@ public class StationService {
 
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
-
         return stations.stream()
-                .map(station -> StationResponse.of(station))
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
     public PathResponse findPaths(Long sourceStationId, Long targetStationId) {
-        Station sourceStation = findById(sourceStationId);
-        Station targetStation = findById(targetStationId);
+        Station sourceStation = getOne(sourceStationId);
+        Station targetStation = getOne(targetStationId);
         List<Line> persistLines = lineRepository.findAll();
         PathFinder pathFinder = new PathFinder(persistLines);
         return pathFinder.findPaths(sourceStation, targetStation);
@@ -49,7 +48,7 @@ public class StationService {
         stationRepository.deleteById(id);
     }
 
-    public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+    public Station getOne(Long id) {
+        return stationRepository.getOne(id);
     }
 }
