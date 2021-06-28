@@ -38,14 +38,11 @@ class FareCalculatorFacadeTest {
     private static final Function<Integer, Money> 어린이_할인_계산 = (money) -> new Money((money - 350) / 10 * 5);
     private static final Function<Integer, Money> 청소년_할인_계산 = (money) -> new Money((money - 350) / 10 * 8);
     private static final Function<Integer, Money> 일반_할인_계산 = (money) -> new Money(money);
-
-    private static final FareCalculatorFacade FARE_CALCULATOR = new FareCalculatorFacade();
-
     @ParameterizedTest
     @MethodSource("childCase")
     @DisplayName("어린이의 요금을 계산한다(짧은거리, 중간거리, 장거리, 환승, 비환승)")
     public void 어린이(FareCalculatorCase fareCalculatorCase) {
-        assertThat(FARE_CALCULATOR.calcFare(new LoginMember(null, null, childAge), fareCalculatorCase.getShortestDistance()))
+        assertThat(FareCalculatorFacade.calcFare(new LoginMember(null, null, childAge), fareCalculatorCase.getShortestDistance()))
                 .isEqualTo(fareCalculatorCase.getExceptMoney());
     }
 
@@ -53,7 +50,7 @@ class FareCalculatorFacadeTest {
     @MethodSource("teenagerCase")
     @DisplayName("청소년의 요금을 계산한다(짧은거리, 중간거리, 장거리, 환승, 비환승)")
     public void 청소년(FareCalculatorCase fareCalculatorCase) {
-        assertThat(FARE_CALCULATOR.calcFare(new LoginMember(null, null, teenagerAge), fareCalculatorCase.getShortestDistance()))
+        assertThat(FareCalculatorFacade.calcFare(new LoginMember(null, null, teenagerAge), fareCalculatorCase.getShortestDistance()))
                 .isEqualTo(fareCalculatorCase.getExceptMoney());
     }
 
@@ -61,7 +58,7 @@ class FareCalculatorFacadeTest {
     @MethodSource("defaultCase")
     @DisplayName("일반의 요금을 계산한다(짧은거리, 중간거리, 장거리, 환승, 비환승)")
     public void 일반(FareCalculatorCase fareCalculatorCase) {
-        assertThat(FARE_CALCULATOR.calcFare(new LoginMember(null, null, normalAge), fareCalculatorCase.getShortestDistance()))
+        assertThat(FareCalculatorFacade.calcFare(new LoginMember(null, null, normalAge), fareCalculatorCase.getShortestDistance()))
                 .isEqualTo(fareCalculatorCase.getExceptMoney());
     }
 
