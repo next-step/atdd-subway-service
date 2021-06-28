@@ -7,7 +7,7 @@ import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.station.application.StationService;
+import nextstep.subway.station.application.StationQueryService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +36,7 @@ class LineCommandServiceTest {
     private LineQueryService lineQueryService;
 
     @Mock
-    private StationService stationService;
+    private StationQueryService stationQueryService;
 
     private LineRequest lineRequest1;
     private Line 일호선;
@@ -47,7 +47,7 @@ class LineCommandServiceTest {
 
     @BeforeEach
     void setUp() {
-        lineCommandService = new LineCommandService(lineQueryService, stationService, lineRepository);
+        lineCommandService = new LineCommandService(stationQueryService, lineQueryService, lineRepository);
         lineRequest1 = new LineRequest("1호선", "blue", 1L, 2L, 10);
         용산역 = new Station("용산역");
         ReflectionTestUtils.setField(용산역, "id", 1L);
@@ -65,8 +65,8 @@ class LineCommandServiceTest {
     @Test
     void saveLine() {
         //given
-        when(stationService.findById(용산역.getId())).thenReturn(용산역);
-        when(stationService.findById(남영역.getId())).thenReturn(남영역);
+        when(stationQueryService.findStationById(용산역.getId())).thenReturn(용산역);
+        when(stationQueryService.findStationById(남영역.getId())).thenReturn(남영역);
         when(lineRepository.save(any())).thenReturn(일호선);
 
         //when
@@ -85,8 +85,8 @@ class LineCommandServiceTest {
     void addLineStation() {
         //given
         when(lineQueryService.findLineById(any())).thenReturn(일호선);
-        when(stationService.findById(서울역.getId())).thenReturn(서울역);
-        when(stationService.findById(남영역.getId())).thenReturn(남영역);
+        when(stationQueryService.findStationById(서울역.getId())).thenReturn(서울역);
+        when(stationQueryService.findStationById(남영역.getId())).thenReturn(남영역);
 
         //when
         lineCommandService.addLineStation(일호선.getId(), new SectionRequest(서울역.getId(), 남영역.getId(), 1));
@@ -99,8 +99,8 @@ class LineCommandServiceTest {
     void removeLineStation() {
         //given
         when(lineQueryService.findLineById(any())).thenReturn(일호선);
-        when(stationService.findById(서울역.getId())).thenReturn(서울역);
-        when(stationService.findById(남영역.getId())).thenReturn(남영역);
+        when(stationQueryService.findStationById(서울역.getId())).thenReturn(서울역);
+        when(stationQueryService.findStationById(남영역.getId())).thenReturn(남영역);
         lineCommandService.addLineStation(일호선.getId(), new SectionRequest(서울역.getId(), 남영역.getId(), 1));
 
         //when

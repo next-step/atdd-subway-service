@@ -1,9 +1,9 @@
 package nextstep.subway.station.ui;
 
-import nextstep.subway.station.application.StationService;
+import nextstep.subway.station.application.StationCommandService;
+import nextstep.subway.station.application.StationQueryService;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,32 +12,30 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequestMapping("/stations")
 public class StationController {
-    private StationService stationService;
+    private final StationQueryService stationQueryService;
+    private final StationCommandService stationCommandService;
 
-    public StationController(StationService stationService) {
-        this.stationService = stationService;
+    public StationController(StationQueryService stationQueryService, StationCommandService stationCommandService) {
+        this.stationQueryService = stationQueryService;
+        this.stationCommandService = stationCommandService;
     }
 
-    @PostMapping("/stations")
+    @PostMapping
     public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
-        StationResponse station = stationService.saveStation(stationRequest);
+        StationResponse station = stationCommandService.saveStation(stationRequest);
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
     }
 
-    @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(stationService.findAllStations());
+        return ResponseEntity.ok().body(stationQueryService.findAllStationResponses());
     }
 
-    @DeleteMapping("/stations/{id}")
-    public ResponseEntity deleteStation(@PathVariable Long id) {
-        stationService.deleteStationById(id);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
+        stationCommandService.deleteStationById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
-        return ResponseEntity.badRequest().build();
     }
 }

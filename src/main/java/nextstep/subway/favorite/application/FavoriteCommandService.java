@@ -5,9 +5,9 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.application.MemberQueryService;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.station.application.StationService;
+import nextstep.subway.station.application.StationQueryService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,20 +17,20 @@ import org.springframework.transaction.annotation.Transactional;
 public class FavoriteCommandService {
     private final FavoriteRepository favoriteRepository;
     private final FavoriteQueryService favoriteQueryService;
-    private final MemberService memberService;
-    private final StationService stationService;
+    private final MemberQueryService memberQueryService;
+    private final StationQueryService stationQueryService;
 
-    public FavoriteCommandService(FavoriteRepository favoriteRepository, FavoriteQueryService favoriteQueryService, MemberService memberService, StationService stationService) {
+    public FavoriteCommandService(FavoriteRepository favoriteRepository, FavoriteQueryService favoriteQueryService, MemberQueryService memberQueryService, StationQueryService stationQueryService) {
         this.favoriteRepository = favoriteRepository;
         this.favoriteQueryService = favoriteQueryService;
-        this.memberService = memberService;
-        this.stationService = stationService;
+        this.memberQueryService = memberQueryService;
+        this.stationQueryService = stationQueryService;
     }
 
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
-        Member member = memberService.findByEmail(loginMember.getEmail());
-        Station sourceStation = stationService.findById(request.getSource());
-        Station targetStation = stationService.findById(request.getTarget());
+        Member member = memberQueryService.findMemberByEmail(loginMember.getEmail());
+        Station sourceStation = stationQueryService.findStationById(request.getSource());
+        Station targetStation = stationQueryService.findStationById(request.getTarget());
         Favorite favorite = favoriteRepository.save(new Favorite(sourceStation, targetStation, member));
         return FavoriteResponse.of(favorite);
     }

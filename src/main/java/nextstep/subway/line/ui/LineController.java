@@ -62,9 +62,4 @@ public class LineController {
         lineCommandService.removeLineStation(lineId, stationId);
         return ResponseEntity.ok().build();
     }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<Void> handleIllegalArgsException(DataIntegrityViolationException e) {
-        return ResponseEntity.badRequest().build();
-    }
 }

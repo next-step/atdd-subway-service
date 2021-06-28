@@ -1,13 +1,10 @@
 package nextstep.subway.favorite.application.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-@ResponseStatus(HttpStatus.BAD_REQUEST)
 public class FavoriteNotFoundException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
+    private static final String DEFAULT_EXCEPTION_MESSAGE = "요청한 정보에 해당하는 즐겨 찾기를 찾을 수 없습니다.";
 
     public FavoriteNotFoundException(){
+        super(DEFAULT_EXCEPTION_MESSAGE);
     }
 
     public FavoriteNotFoundException(String message) {

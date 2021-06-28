@@ -41,7 +41,11 @@ public class AuthAcceptanceStep {
         assertThat(actual.getAccessToken()).isNotNull();
     }
 
-    public static void 로그인_실패됨(ExtractableResponse<Response> 로그인_요청_실패_결과) {
+    public static void 로그인_비밀번호_실패됨(ExtractableResponse<Response> 로그인_요청_실패_결과) {
         assertThat(로그인_요청_실패_결과.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    public static void 로그인_이메일_실패됨(ExtractableResponse<Response> 로그인_요청_실패_결과) {
+        assertThat(로그인_요청_실패_결과.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 }

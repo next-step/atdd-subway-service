@@ -24,12 +24,12 @@ class AuthAcceptanceTest extends AcceptanceTest {
         // When 등록된 이메일이 아닌 다른 이메일로 요청
         ExtractableResponse<Response> 로그인_요청_실패_결과1 = 로그인_요청("bad_email", PASSWORD);
         // Then 로그인 실패됨
-        로그인_실패됨(로그인_요청_실패_결과1);
+        로그인_이메일_실패됨(로그인_요청_실패_결과1);
 
         // When 올바른 비밀번호가 아닌 것으로 요청
         ExtractableResponse<Response> 로그인_요청_실패_결과2 = 로그인_요청(EMAIL, "bad_password");
         // Then 로그인 실패됨
-        로그인_실패됨(로그인_요청_실패_결과2);
+        로그인_비밀번호_실패됨(로그인_요청_실패_결과2);
 
         // When 로그인 요청
         ExtractableResponse<Response> 로그인_요청_결과 = 로그인_요청(EMAIL, PASSWORD);

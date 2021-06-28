@@ -5,9 +5,9 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.application.MemberQueryService;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.station.application.StationService;
+import nextstep.subway.station.application.StationQueryService;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,10 +31,10 @@ class FavoriteCommandServiceTest {
     private FavoriteCommandService favoriteCommandService;
 
     @Mock
-    private MemberService memberService;
+    private MemberQueryService memberQueryService;
 
     @Mock
-    private StationService stationService;
+    private StationQueryService stationQueryService;
 
     @Mock
     private FavoriteRepository favoriteRepository;
@@ -51,7 +51,7 @@ class FavoriteCommandServiceTest {
 
     @BeforeEach
     void setUp() {
-        favoriteCommandService = new FavoriteCommandService(favoriteRepository, favoriteQueryService, memberService, stationService);
+        favoriteCommandService = new FavoriteCommandService(favoriteRepository, favoriteQueryService, memberQueryService, stationQueryService);
 
         loginMember = new LoginMember(1L, EMAIL, AGE);
         member = new Member(EMAIL, PASSWORD, AGE);
@@ -69,9 +69,9 @@ class FavoriteCommandServiceTest {
     @Test
     void createFavorite() {
         // given
-        when(memberService.findByEmail(EMAIL)).thenReturn(member);
-        when(stationService.findById(1L)).thenReturn(강남역);
-        when(stationService.findById(2L)).thenReturn(삼성역);
+        when(memberQueryService.findMemberByEmail(EMAIL)).thenReturn(member);
+        when(stationQueryService.findStationById(1L)).thenReturn(강남역);
+        when(stationQueryService.findStationById(2L)).thenReturn(삼성역);
         when(favoriteRepository.save(any())).thenReturn(favorite);
 
         // when
