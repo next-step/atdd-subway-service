@@ -29,8 +29,8 @@ public class FavoriteCommandService {
 
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Member member = memberService.findByEmail(loginMember.getEmail());
-        Station sourceStation = stationService.findById(Long.parseLong(request.getSource()));
-        Station targetStation = stationService.findById(Long.parseLong(request.getTarget()));
+        Station sourceStation = stationService.findById(request.getSource());
+        Station targetStation = stationService.findById(request.getTarget());
         Favorite favorite = favoriteRepository.save(new Favorite(sourceStation, targetStation, member));
         return FavoriteResponse.of(favorite);
     }

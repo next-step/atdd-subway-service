@@ -12,11 +12,11 @@ public class FavoriteRequest {
         this.target = target;
     }
 
-    public String getSource() {
-        return source;
+    public Long getSource() {
+        return Long.parseLong(source);
     }
 
-    public String getTarget() {
-        return target;
+    public Long getTarget() {
+        return Long.parseLong(target);
     }
 }
