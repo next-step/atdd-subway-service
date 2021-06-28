@@ -25,15 +25,12 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.path.PathException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.station.domain.Station;
 
 public class LinePathSearchTest {
 
@@ -99,12 +96,10 @@ public class LinePathSearchTest {
         sectinos.addAll(오호선.getSections());
         sectinos.addAll(육호선.getSections());
 
-        LoginMember 로그인_13세 = new LoginMember(1L, "7271kim@naver.com", 13);
-        LoginMember 로그인_12세 = new LoginMember(2L, "7271kim@naver.com", 12);
+        new LoginMember(1L, "7271kim@naver.com", 13);
+        new LoginMember(2L, "7271kim@naver.com", 12);
 
         linePathSearch = LinePathSearch.of(sectinos);
-        linePathSearch_13세 = LinePathSearch.of(sectinos, 로그인_13세);
-        linePathSearch_12세 = LinePathSearch.of(sectinos, 로그인_12세);
 
     }
 
@@ -141,25 +136,6 @@ public class LinePathSearchTest {
             linePathSearch.searchPath(사당역, 서울대역);
         });
         assertThat(exception.getMessage()).isEqualTo(PathException.NO_REGISTRATION);
-    }
-
-    @ParameterizedTest
-    @DisplayName("구간에 대해 가격을 계산한다.")
-    @MethodSource("priceResultSet")
-    void calculatorTest(Station source, Station target, int result) {
-        assertThat(linePathSearch.searchPath(source, target).getPrice()).isEqualTo(result);
-    }
-
-    @Test
-    @DisplayName(" 13세 이상~19세 미만은 청소년: 운임에서 350원을 공제한 금액의 20%할인 받는다")
-    void discount13() {
-        assertThat(linePathSearch_13세.searchPath(개성역, 강남역).getPrice()).isEqualTo(1720);
-    }
-
-    @Test
-    @DisplayName(" 6세 이상~ 13세 미만은 어린이: 운임에서 350원을 공제한 금액의 50%할인")
-    void discount12() {
-        assertThat(linePathSearch_12세.searchPath(개성역, 강남역).getPrice()).isEqualTo(1075);
     }
 
     private static Stream<Arguments> priceResultSet() {

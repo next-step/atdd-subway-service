@@ -26,11 +26,4 @@ public class LoginMember {
     public Integer getAge() {
         return age;
     }
-
-    public double getDiscountRate() {
-        if (null == age || age == 0) {
-            return 1;
-        }
-        return DiscountRate.findDiscountRateByAge(age).getDicountRate();
-    }
 }
