@@ -45,7 +45,7 @@ class LineServiceTest {
         when(lineRepository.save(any(Line.class)))
                 .thenReturn(new Line());
         //then
-        assertThat(lineService.saveLine(new LineRequest("분당선", "노랑색", 1L, 1L, 5))).isNotNull();
+        assertThat(lineService.saveLine(new LineRequest("분당선", "노랑색", 1L, 1L, 5, 900))).isNotNull();
     }
 
     @DisplayName("라인을 id로 찾기")

@@ -21,7 +21,8 @@ class SectionTest {
                 , "빨간색"
                 , new Station("강남역")
                 , new Station("선릉역")
-                , new Distance(5));
+                , new Distance(5)
+                , new Fee(900));
 
         upStation = new Station("선릉역");
         downStation = new Station("한티역");

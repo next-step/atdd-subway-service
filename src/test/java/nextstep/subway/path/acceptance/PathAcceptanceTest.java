@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
+import nextstep.subway.line.domain.Fee;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -53,13 +54,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         천호역 = StationAcceptanceTest.지하철역_등록되어_있음("천호역").as(StationResponse.class);
         군자역 = StationAcceptanceTest.지하철역_등록되어_있음("군자역").as(StationResponse.class);
 
-        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10);
+        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 900);
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
-        lineRequest = new LineRequest("이호선", "bg-red-600", 강남역.getId(), 선릉역.getId(), 10);
+        lineRequest = new LineRequest("이호선", "bg-red-600", 강남역.getId(), 선릉역.getId(), 10, 900);
         이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
-        lineRequest = new LineRequest("삼호선", "bg-red-600", 양재역.getId(), 교대역.getId(), 10);
+        lineRequest = new LineRequest("삼호선", "bg-red-600", 양재역.getId(), 교대역.getId(), 10, 900);
         삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
-        lineRequest = new LineRequest("오호선", "bg-red-600", 천호역.getId(), 군자역.getId(), 10);
+        lineRequest = new LineRequest("오호선", "bg-red-600", 천호역.getId(), 군자역.getId(), 10, 900);
         오호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 광교역, 10);

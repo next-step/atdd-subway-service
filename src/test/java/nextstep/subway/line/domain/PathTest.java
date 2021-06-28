@@ -28,7 +28,8 @@ class PathTest {
                 , "빨간색"
                 , 강남역
                 , 선릉역
-                , new Distance(5));
+                , new Distance(5)
+                , new Fee(900));
 
     }
 

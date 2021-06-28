@@ -41,7 +41,7 @@ public class FavoriteApiTest extends AcceptanceTest {
 
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class).getId();
         광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class).getId();
-        new LineRequest("신분당선", "bg-red-600", 강남역, 광교역, 10);
+        new LineRequest("신분당선", "bg-red-600", 강남역, 광교역, 10, 900);
 
         토큰 = 회원_로그인_요청();
     }

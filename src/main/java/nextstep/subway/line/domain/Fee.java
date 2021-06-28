@@ -1,11 +1,14 @@
 package nextstep.subway.line.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
 @Embeddable
 public class Fee {
     public static final int DEFAULT_FEE_AMOUNT = 900;
+
+    @Column(name = "fee")
     private final int amount;
 
     public Fee() {
