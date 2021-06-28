@@ -7,16 +7,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.dto.FavoriteRequest;
-import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.favorite.dto.FavoritesResponse;
 import nextstep.subway.favorite.application.FavoriteService;
 
 @RestController
@@ -29,31 +29,26 @@ public class FavoriteController {
     }
 
     @PostMapping
-    public ResponseEntity<FavoriteResponse> add(@AuthenticationPrincipal LoginMember loginMember,
-                              @Valid @RequestBody FavoriteRequest favoriteRequest) {
+    public ResponseEntity<FavoritesResponse> add(@AuthenticationPrincipal LoginMember loginMember,
+                                                 @Valid @RequestBody FavoriteRequest favoriteRequest) {
         favoriteService.add(loginMember, favoriteRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
-    public ResponseEntity<FavoriteResponse> search(@AuthenticationPrincipal LoginMember loginMember) {
-        return ResponseEntity.ok(favoriteService.search(loginMember));
+    public ResponseEntity<FavoritesResponse> search(@AuthenticationPrincipal LoginMember loginMember) {
+        FavoritesResponse search = favoriteService.search(loginMember);
+        return ResponseEntity.ok(search);
     }
 
-    @DeleteMapping
-    public ResponseEntity<FavoriteResponse> remove(@AuthenticationPrincipal LoginMember loginMember) {
-        favoriteService.remove(loginMember);
+    @DeleteMapping("/{favoriteId}")
+    public ResponseEntity<FavoritesResponse> remove(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long favoriteId) {
+        favoriteService.remove(loginMember, favoriteId);
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler({AuthorizationException.class})
-    public ResponseEntity<FavoriteResponse> authorizationException(RuntimeException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .build();
-    }
-
-    @ExceptionHandler({RuntimeException.class})
-    public ResponseEntity<FavoriteResponse> handleRuntimeException(RuntimeException e) {
+    @ExceptionHandler({IllegalArgumentException.class})
+    public ResponseEntity<FavoritesResponse> handleRuntimeException(RuntimeException e) {
         return ResponseEntity.badRequest()
                 .build();
     }

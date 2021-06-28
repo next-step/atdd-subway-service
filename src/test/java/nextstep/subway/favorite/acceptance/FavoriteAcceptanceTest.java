@@ -15,11 +15,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
-import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.favorite.dto.FavoritesResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -63,7 +64,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_조회_응답_확인(즐겨찾기_조회_응답, 강남역, 광교역);
 
         //when
-        즐겨찾기_제거(토큰);
+        즐겨찾기_제거(토큰, 즐겨찾기_단건_ID_추출(즐겨찾기_조회_응답));
         ExtractableResponse<Response> 즐겨찾기_제거_후_조회_응답 = 즐겨찾기_조회(토큰);
         //then
         즐겨찾기_제거_후_조회_응답_확인(즐겨찾기_제거_후_조회_응답);
@@ -76,14 +77,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         //when
         ExtractableResponse<Response> 즐겨찾기_생성_응답 = 즐겨찾기_생성(토큰, 강남역, 광교역);
+        ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_조회(토큰);
         //then
         즐겨찾기_생성_응답_확인(즐겨찾기_생성_응답);
 
-        //given
-        즐겨찾기_제거(토큰);
         //when
         즐겨찾기_생성(토큰, 강남역, 광교역);
-        ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_조회(토큰);
+        즐겨찾기_제거(토큰, 즐겨찾기_단건_ID_추출(즐겨찾기_조회_응답));
         //then
         즐겨찾기_조회_응답_확인(즐겨찾기_조회_응답, 강남역, 광교역);
     }
@@ -118,6 +118,47 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성_응답 = 즐겨찾기_생성(토큰, 100L, 101L);
         //then
         즐겨찾기_생성_실패_응답_확인(즐겨찾기_생성_응답);
+    }
+
+    @DisplayName("즐겨찾기 구간 2개 추가")
+    @Test
+    void addFavorites() {
+        // given
+        Long 판교역 = StationAcceptanceTest.지하철역_등록되어_있음("판교역").as(StationResponse.class).getId();
+        Long 정자역 = StationAcceptanceTest.지하철역_등록되어_있음("정자역").as(StationResponse.class).getId();
+        즐겨찾기_생성(토큰, 강남역, 광교역);
+        즐겨찾기_생성(토큰, 판교역, 정자역);
+        // then
+        ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_조회(토큰);
+        // when
+        즐겨찾기_목록_조회_응답_확인(즐겨찾기_조회_응답, 판교역, 정자역);
+    }
+
+    @DisplayName("즐겨찾기 1개 제거")
+    @Test
+    void favoriteRemoveOne() {
+        // given
+        Long 판교역 = StationAcceptanceTest.지하철역_등록되어_있음("판교역").as(StationResponse.class).getId();
+        Long 정자역 = StationAcceptanceTest.지하철역_등록되어_있음("정자역").as(StationResponse.class).getId();
+        즐겨찾기_생성(토큰, 강남역, 광교역);
+        ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_조회(토큰);
+        즐겨찾기_생성(토큰, 판교역, 정자역);
+        // then
+        즐겨찾기_제거(토큰, 즐겨찾기_단건_ID_추출(즐겨찾기_조회_응답));
+        즐겨찾기_조회_응답 = 즐겨찾기_조회(토큰);
+        // when
+        즐겨찾기_조회_응답_확인(즐겨찾기_조회_응답, 판교역, 정자역);
+    }
+
+    private void 즐겨찾기_목록_조회_응답_확인(ExtractableResponse<Response> 즐겨찾기_조회_응답, Long 두번째_출발역, Long 두번째_도착역) {
+        FavoritesResponse favoritesResponse = 즐겨찾기_조회_응답.as(FavoritesResponse.class);
+        List<FavoriteResponse> favoriteResponses = favoritesResponse.getFavoriteResponses();
+        assertThat(favoriteResponses.size()).isEqualTo(2);
+        assertThat(favoriteResponses.get(0).getSource().getId()).isEqualTo(강남역);
+        assertThat(favoriteResponses.get(0).getTarget().getId()).isEqualTo(광교역);
+
+        assertThat(favoriteResponses.get(1).getSource().getId()).isEqualTo(두번째_출발역);
+        assertThat(favoriteResponses.get(1).getTarget().getId()).isEqualTo(두번째_도착역);
     }
 
     private ExtractableResponse<Response> 즐겨찾기_조회(String 토큰) {
@@ -174,24 +215,25 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 즐겨찾기_조회_응답_확인(ExtractableResponse<Response> 즐겨찾기_조회_응답, Long 출발역_번호, Long 도착역_번호) {
-        FavoriteResponse favoriteResponse = 즐겨찾기_조회_응답.as(FavoriteResponse.class);
-        List<StationResponse> stations = favoriteResponse.getStations();
-        assertThat(stations.size()).isEqualTo(2);
-        assertThat(stations.get(0).getId()).isEqualTo(출발역_번호);
-        assertThat(stations.get(1).getId()).isEqualTo(도착역_번호);
+        FavoritesResponse favoritesResponse = 즐겨찾기_조회_응답.as(FavoritesResponse.class);
+        List<FavoriteResponse> favoriteResponses = favoritesResponse.getFavoriteResponses();
+        assertThat(favoriteResponses.get(0).getSource().getId()).isEqualTo(출발역_번호);
+        assertThat(favoriteResponses.get(0).getTarget().getId()).isEqualTo(도착역_번호);
     }
 
-    private void 즐겨찾기_제거(String 토큰) {
+    private void 즐겨찾기_제거(String 토큰, Long 즐겨찾기_번호) {
         RestAssured
                 .given().header("authorization", BEARER + 토큰).log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/favorites")
+                .when().delete("/favorites/" + 즐겨찾기_번호)
                 .then().log().all()
                 .extract();
     }
 
     private void 즐겨찾기_제거_후_조회_응답_확인(ExtractableResponse<Response> 즐겨찾기_조회_응답) {
-        즐겨찾기_조회_실패(즐겨찾기_조회_응답.statusCode());
+        FavoritesResponse favoritesResponse = 즐겨찾기_조회_응답.as(FavoritesResponse.class);
+        List<FavoriteResponse> favoriteResponses = favoritesResponse.getFavoriteResponses();
+        assertThat(favoriteResponses.size()).isEqualTo(0);
     }
 
     private void 중복_즐겨찾기_조회_응답_확인(ExtractableResponse<Response> 즐겨찾기_조회_응답) {
@@ -204,5 +246,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void 즐겨찾기_조회_실패(int 조회_응답_코드) {
         assertThat(조회_응답_코드).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private Long 즐겨찾기_단건_ID_추출(ExtractableResponse<Response> 즐겨찾기_생성_응답) {
+        FavoritesResponse favoritesResponse = 즐겨찾기_생성_응답.as(FavoritesResponse.class);
+        return favoritesResponse.getFavoriteResponses().get(0).getId();
     }
 }

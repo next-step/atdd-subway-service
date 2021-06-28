@@ -1,11 +1,12 @@
 package nextstep.subway.favorite.application;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.favorite.dto.FavoritesResponse;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.member.domain.Member;
@@ -14,6 +15,7 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
+
 
 @Service
 @Transactional
@@ -37,33 +39,35 @@ public class FavoriteService {
         Station source = stationRepository.findById(favoriteRequest.getSource()).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_STATION));
         Station target = stationRepository.findById(favoriteRequest.getTarget()).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_STATION));
 
-        Optional<Favorite> favoriteOptional = favoriteRepository.findByMember(member);
-        if (favoriteOptional.isPresent()) {
+        List<Favorite> favorites = favoriteRepository.findByMember(member);
+        boolean isPresent = favorites.stream()
+                .anyMatch(favorite -> favorite.getSource().equals(source) && favorite.getTarget().equals(target));
+
+        if (isPresent) {
             throw new IllegalArgumentException(FAVORITE_ALREADY_ADDED);
         }
 
         favoriteRepository.save(new Favorite(member, source, target));
     }
 
-    public FavoriteResponse search(LoginMember loginMember) {
+    public FavoritesResponse search(LoginMember loginMember) {
         Member member = member(loginMember);
-        Favorite favorite = getFavorite(member);
+        List<Favorite> favorites = getFavorites(member);
 
-        return FavoriteResponse.of(favorite);
+        return FavoritesResponse.of(favorites.stream().map(Favorite::toResponse).collect(Collectors.toList()));
     }
 
-    public void remove(LoginMember loginMember) {
-        Member member = member(loginMember);
-        Favorite favorite = getFavorite(member);
-
+    public void remove(LoginMember loginMember, Long favoriteId) {
+        member(loginMember);
+        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_FAVORITE));
         favoriteRepository.delete(favorite);
     }
 
     private Member member(LoginMember loginMember) {
-        return memberRepository.findById(loginMember.getId()).orElseThrow(RuntimeException::new);
+        return memberRepository.findById(loginMember.getId()).orElseThrow(IllegalArgumentException::new);
     }
 
-    private Favorite getFavorite(Member member) {
-        return favoriteRepository.findByMember(member).orElseThrow(() -> new RuntimeException(NOT_FOUND_FAVORITE));
+    private List<Favorite> getFavorites(Member member) {
+        return favoriteRepository.findByMember(member);
     }
 }
