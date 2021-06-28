@@ -38,25 +38,25 @@ class FavoriteQueryServiceTest {
     @Autowired
     private FavoriteRepository favoriteRepository;
 
-    private Member savedMember = new Member("EMAIL@EMAIL.com", "PASSWORD", 25);
+    private Member savedMember;
 
-    private Station savedStation1 = new Station("STATION_1");
-    private Station savedStation2 = new Station("STATION_2");
-    private Station savedStation3 = new Station("STATION_3");
+    private Station savedStation1;
+    private Station savedStation2;
+    private Station savedStation3;
 
-    private Line savedLine = new Line("LINE", "LINE", 0, savedStation1, savedStation2, 10);
+    private Line savedLine;
 
     private FavoriteQueryService favoriteQueryService;
 
     @BeforeEach
     void setUp() {
-        savedMember = memberRepository.save(savedMember);
+        savedMember = memberRepository.save(new Member("EMAIL@EMAIL.com", "PASSWORD", 25));
 
-        savedStation1 = stationRepository.save(savedStation1);
-        savedStation2 = stationRepository.save(savedStation2);
-        savedStation3 = stationRepository.save(savedStation3);
+        savedStation1 = stationRepository.save(new Station("STATION_1"));
+        savedStation2 = stationRepository.save(new Station("STATION_2"));
+        savedStation3 = stationRepository.save(new Station("STATION_3"));
 
-        savedLine = lineRepository.save(savedLine);
+        savedLine = lineRepository.save(new Line("LINE", "LINE", 0, savedStation1, savedStation2, 10));
 
         favoriteQueryService = new FavoriteQueryService(favoriteRepository);
     }
@@ -81,7 +81,6 @@ class FavoriteQueryServiceTest {
         List<FavoriteResponse> allFavorites = favoriteQueryService.findAllByMember(loginMember);
 
         // then
-
         assertThat(allFavorites).hasSize(3);
         assertThat(allFavorites)
                 .containsExactlyInAnyOrder(
