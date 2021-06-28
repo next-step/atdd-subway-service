@@ -100,11 +100,13 @@ class FavoriteCommandServiceTest {
     @Test
     @DisplayName("본인의 즐겨찾기가 아닌것을 삭제하려 하면 NotOwnerException이 발생한다")
     void 본인의_즐겨찾기가_아닌것을_삭제하려_하면_ApproveException이_발생한다() {
+        // given
         Member newMember = memberRepository.save(new Member("NEWNEW@EMAIL.com", "NEWNEW", 11));
         LoginMember newLoginMember = new LoginMember(newMember.getId(), newMember.getEmail(), newMember.getAge());
 
         FavoriteResponse favorite = favoriteCommandService.createFavorite(savedLoginMember, new FavoriteRequest(savedStation1.getId(), savedStation2.getId()));
 
+        // when & then
         assertThatExceptionOfType(ApproveException.class)
                 .isThrownBy(() -> favoriteCommandService.deleteById(newLoginMember, favorite.getId()));
     }
@@ -120,10 +122,13 @@ class FavoriteCommandServiceTest {
     @Test
     @DisplayName("등록되지 않은 즐겨찾기를 삭제하려 하면 EntityNotExistException 발생한다")
     void 등록되지_않은_즐겨찾기를_삭제하려_하면_EntityNotExistException이_발생한다() {
+        // given
         FavoriteResponse favorite = favoriteCommandService.createFavorite(savedLoginMember, new FavoriteRequest(savedStation1.getId(), savedStation2.getId()));
 
+        // when
         favoriteCommandService.deleteById(savedLoginMember, favorite.getId());
 
+        // then
         assertThatExceptionOfType(EntityNotExistException.class)
                 .isThrownBy(() -> favoriteCommandService.deleteById(savedLoginMember, favorite.getId()));
     }

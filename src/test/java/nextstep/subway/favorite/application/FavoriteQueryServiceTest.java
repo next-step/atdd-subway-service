@@ -64,13 +64,14 @@ class FavoriteQueryServiceTest {
     @Test
     @DisplayName("등록된 계정이 조회하려 하면 조회가 성공한다")
     void 등록된_계정이_조회하려_하면_조회가_성공한다() {
+        // given
         Member newMember = memberRepository.save(new Member("NEWNEW@EMAIL.com", "NEWNEW", 11));
         LoginMember loginMember = new LoginMember(savedMember.getId(), savedMember.getEmail(), savedMember.getAge());
         Lines lines = new Lines(Arrays.asList(savedLine));
 
         savedLine.addSection(new Section(savedStation2, savedStation3, new Distance(10)));
 
-
+        // when
         Favorite favorite1 = favoriteRepository.save(Favorite.create(lines, savedMember, savedStation1, savedStation2));
         Favorite favorite2 = favoriteRepository.save(Favorite.create(lines, savedMember, savedStation2, savedStation3));
         Favorite favorite3 = favoriteRepository.save(Favorite.create(lines, savedMember, savedStation1, savedStation3));
@@ -78,6 +79,8 @@ class FavoriteQueryServiceTest {
         favoriteRepository.save(Favorite.create(lines, newMember, savedStation1, savedStation3));
 
         List<FavoriteResponse> allFavorites = favoriteQueryService.findAllByMember(loginMember);
+
+        // then
 
         assertThat(allFavorites).hasSize(3);
         assertThat(allFavorites)
