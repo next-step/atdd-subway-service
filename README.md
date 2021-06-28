@@ -226,7 +226,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - 추가요금 노선이용시 측정 요금에 추가요금 부과
   - 경로 중 추가요금이 있는 노선 환승시 가장 높은 금액의 추가요금만 적용
 
-- [ ] 연령별 할인 정책 추가
+- [x] 연령별 할인 정책 추가
 
   - 청소년 : 13세 이상 ~ 19세 미만
   - 어린이 : 6세 이상 ~ 13세 미만

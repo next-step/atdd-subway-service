@@ -38,4 +38,13 @@ class DistanceFareTest {
 		Assertions.assertThat(distanceFare).isEqualTo(DistanceFare.SECOND_EXTRA);
 		Assertions.assertThat(fare).isEqualTo(2250);
 	}
+
+	@DisplayName("범위 밖의 거리 입력시 오류")
+	@Test
+	void testInvalidDistance() {
+		Assertions.assertThatThrownBy(() -> {
+			DistanceFare.findByDistance(20000);
+		}).isInstanceOf(IllegalArgumentException.class)
+			.hasMessageContaining("요금을 적용할 수 없는 거리입니다.");
+	}
 }
