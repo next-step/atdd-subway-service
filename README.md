@@ -199,7 +199,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ### Step4 - 요금 조회
 
-- [ ] 경로 조회 시 거리 기준 요금 정보 포함하기
+- [x] 경로 조회 시 거리 기준 요금 정보 포함하기
 
   ```
   Feature: 지하철 경로 검색
