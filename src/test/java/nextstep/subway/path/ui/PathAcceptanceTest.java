@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,16 +57,17 @@ class PathAcceptanceTest extends AcceptanceTest {
         용산역 = StationAcceptanceTest.지하철역_등록되어_있음("용산역").as(StationResponse.class);
         중앙선 = 지하철_노선_등록되어_있음(new LineRequest("중앙선", "bg-red-300", 구리역.getId(), 도농역.getId(), 100)).as(LineResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-300", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-400", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-500", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
-        지하철_노선에_지하철역_등록됨(지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3));
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-300", 강남역.getId(), 양재역.getId(), 15)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-400", 교대역.getId(), 강남역.getId(), 12)).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-500", 교대역.getId(), 양재역.getId(), 27)).as(LineResponse.class);
+        지하철_노선에_지하철역_등록됨(지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 9));
     }
 
     @DisplayName("최단 경로를 조회한다")
     @Test
     void getShortestPath() {
-        최단_경로가_조회됨(최단_경로를_조회(강남역.getId(), 남부터미널역.getId()), 12);
+        ExtractableResponse<Response> response = 최단_경로를_조회(강남역.getId(), 남부터미널역.getId());
+        최단_경로가_조회됨(response, 21, 1250);
     }
 
     private ExtractableResponse<Response> 최단_경로를_조회(long source, long target) {
@@ -78,8 +80,11 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private static void 최단_경로가_조회됨(ExtractableResponse response, int distance) {
+    private static void 최단_경로가_조회됨(ExtractableResponse response, int distance, int fee) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        PathResponse as = response.as(PathResponse.class);
+        assertThat(as.getDistance()).isEqualTo(distance);
+        assertThat(as.getFee()).isEqualTo(fee);
     }
 
     @Test

@@ -11,12 +11,20 @@ public class PathResponse {
 
     private final List<StationResponse> stationResponses;
     private final int distance;
+    private final int fee;
 
     public PathResponse(Path shortestPath) {
         this.stationResponses = shortestPath.stations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
         this.distance = shortestPath.distance();
+        this.fee = shortestPath.fee();
+    }
+
+    public PathResponse(List<StationResponse> stationResponses, int distance, int fee) {
+        this.stationResponses = stationResponses;
+        this.distance = distance;
+        this.fee = fee;
     }
 
     public static PathResponse of(Path shortestPath) {
@@ -50,5 +58,9 @@ public class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getFee() {
+        return fee;
     }
 }

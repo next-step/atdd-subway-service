@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,15 +20,26 @@ class PathNavigationTest {
     private Station 구리;
     private Station 용산;
     private List<Line> lines;
+    private Station 양재;
+    private Station 교대;
+    private Station 남부터미널;
 
     @BeforeEach
     void setUp() {
         강남 = new Station(1L, "강남");
         광교 = new Station(2L, "광교");
-        구리 = new Station(3L, "광교");
+        구리 = new Station(3L, "구리");
         용산 = new Station(4L, "용산");
+        양재 = new Station(5L, "양재");
+        교대 = new Station(6L, "교대");
+        남부터미널 = new Station(7L, "남부터미널");
+
         lines = new ArrayList<>();
-        lines.add(new Line("신분당선", "gs-1123", 강남, 광교, 100));
+        lines.add(new Line("신분당선", "gs-1123", 강남, 양재, 15));
+        lines.add(new Line("이호선", "gs-12345", 교대, 강남, 12));
+        Line 삼호선 = new Line("삼호선", "gs-12345", 교대, 양재, 27);
+        삼호선.addSection(new Section(삼호선, 교대, 남부터미널, 9));
+        lines.add(삼호선);
         lines.add(new Line("중앙선", "gs-1123", 구리, 용산, 200));
     }
 
@@ -43,10 +55,10 @@ class PathNavigationTest {
 
         sut = PathNavigation.by(lines);
 
-        Path shortestPath = sut.findShortestPath(강남, 광교);
+        Path shortestPath = sut.findShortestPath(강남, 남부터미널);
 
-        assertThat(shortestPath.stations()).contains(강남, 광교);
-        assertThat(shortestPath.distance()).isEqualTo(100);
+        assertThat(shortestPath.stations()).contains(강남, 교대, 남부터미널);
+        assertThat(shortestPath.distance()).isEqualTo(21);
     }
 
     @Test

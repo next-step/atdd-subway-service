@@ -42,7 +42,14 @@ public class PathNavigation {
 
         GraphPath<Station, DefaultWeightedEdge> shortestPath = this.path.getPath(source, target);
         validateShortestPathIsNull(shortestPath);
-        return Path.of(shortestPath.getVertexList(), (int) shortestPath.getWeight());
+
+
+        int distance = (int) shortestPath.getWeight();
+        int fee = 0;
+        if (distance <= 10) {
+            fee = 1250;
+        }
+        return Path.of(shortestPath.getVertexList(), distance, fee);
     }
 
     private void validateShortestPathIsNull(GraphPath<Station, DefaultWeightedEdge> shortestPath) {
