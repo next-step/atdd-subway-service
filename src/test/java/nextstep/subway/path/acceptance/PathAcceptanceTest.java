@@ -1,6 +1,7 @@
-package nextstep.subway.path;
+package nextstep.subway.path.acceptance;
 
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.station.domain.Station;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -31,5 +32,25 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 = dijkstraShortestPath.getPath("v3", "v1").getVertexList();
 
         assertThat(shortestPath.size()).isEqualTo(3);
+    }
+
+    @Test
+    void jgrapht_station() {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        Station 강남역 = new Station(1L, "강남역");
+        Station 서울역 = new Station(2L, "서울역");
+        Station 천안역 = new Station(3L, "천안역");
+
+        graph.addVertex(강남역);
+        graph.addVertex(서울역);
+        graph.addVertex(천안역);
+        graph.setEdgeWeight(graph.addEdge(강남역, 서울역), 2);
+        graph.setEdgeWeight(graph.addEdge(서울역, 천안역), 2);
+        graph.setEdgeWeight(graph.addEdge(강남역, 천안역), 2);
+
+        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        List<Station> shortestPath = dijkstraShortestPath.getPath(강남역, 천안역).getVertexList();
+
+        assertThat(shortestPath.size()).isEqualTo(2);
     }
 }
