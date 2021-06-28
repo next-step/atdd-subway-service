@@ -17,6 +17,7 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 
 @Service
+@Transactional
 public class FavoriteService {
 
     private final MemberService memberService;
@@ -30,7 +31,6 @@ public class FavoriteService {
         this.favoriteRepository = favoriteRepository;
     }
 
-    @Transactional
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
         Member member = memberService.findMemberEntity(loginMember.getId());
         Station source = stationService.findById(request.getSource());
@@ -47,7 +47,6 @@ public class FavoriteService {
             .collect(Collectors.toList());
     }
 
-    @Transactional
     public void deleteFavorite(LoginMember loginMember, Long id) {
         favoriteRepository.deleteByIdAndMemberId(id, loginMember.getId());
     }
