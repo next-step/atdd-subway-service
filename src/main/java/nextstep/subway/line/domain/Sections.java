@@ -27,12 +27,12 @@ public class Sections {
         sections.add(section);
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
     public boolean isEmpty() {
         return sections.isEmpty();
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 
     public List<StationResponse> stationResponse() {

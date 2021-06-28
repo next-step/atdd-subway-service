@@ -1,9 +1,9 @@
-package nextstep.subway.path.dto;
+package nextstep.subway.favorite.dto;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-public class PathRequest {
+public class FavoriteRequest {
     public static final long STATION_ID_MIN_VALUE = 1L;
     public static final String INVALID_STATION_ID = "올바른 역 번호를 넣어주세요.";
 
@@ -15,10 +15,10 @@ public class PathRequest {
     @NotNull(message = INVALID_STATION_ID)
     private Long target;
 
-    public PathRequest() {
+    public FavoriteRequest() {
     }
 
-    public PathRequest(Long source, Long target) {
+    public FavoriteRequest(Long source, Long target) {
         this.source = source;
         this.target = target;
     }
