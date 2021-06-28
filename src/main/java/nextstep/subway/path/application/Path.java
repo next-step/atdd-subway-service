@@ -24,12 +24,22 @@ public class Path {
     }
 
     public Path findOptimalPath(Station sourceStation, Station targetStation, Sections sections) {
+        if(sourceStation.equals(targetStation)){
+            throw new IllegalArgumentException("출발역과 도착역이 동일합니다.");
+        }
         sections.getSections().forEach(section -> {
             addVerTex(section);
             setEdgeWeight(section);
         });
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(optimalPath);
-        return new Path(dijkstraShortestPath.getPath(sourceStation, targetStation).getVertexList());
+        return new Path(getStationList(sourceStation, targetStation));
+    }
+
+    private List<Station> getStationList(Station sourceStation, Station targetStation) {
+        try {
+            return new DijkstraShortestPath(optimalPath).getPath(sourceStation, targetStation).getVertexList();
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException("연결되어 있지 않은 역입니다.");
+        }
     }
 
     private void setEdgeWeight(Section section) {
