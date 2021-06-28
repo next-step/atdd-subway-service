@@ -14,16 +14,10 @@ import java.util.stream.Stream;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceRequest.로그인_요청_성공됨;
 import static nextstep.subway.member.MemberAcceptanceTestRequest.*;
+import static nextstep.subway.member.MemberFixture.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final String NEW_EMAIL = "newemail@email.com";
-    public static final String NEW_PASSWORD = "newpassword";
-    public static final int AGE = 20;
-    public static final int NEW_AGE = 21;
-
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {

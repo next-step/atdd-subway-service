@@ -3,8 +3,8 @@ package nextstep.subway.auth.acceptance;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.member.dto.MemberRequest;
 
-import static nextstep.subway.member.MemberAcceptanceTest.*;
-import static nextstep.subway.member.MemberAcceptanceTest.NEW_PASSWORD;
+import static nextstep.subway.member.MemberFixture.*;
+
 
 public class AuthRequestFixture {
     public static final MemberRequest 성인_계정 = new MemberRequest("A@A.com", "qwe123", 30);

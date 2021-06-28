@@ -1,7 +1,6 @@
 package nextstep.subway.auth.acceptance;
 
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.auth.dto.TokenRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -13,8 +12,8 @@ import static nextstep.subway.auth.acceptance.AuthAcceptanceRequest.로그인_�
 import static nextstep.subway.auth.acceptance.AuthAcceptanceRequest.로그인_요청_실패함;
 import static nextstep.subway.auth.acceptance.AuthRequestFixture.등록되지_않은_계정_토큰_요청;
 import static nextstep.subway.auth.acceptance.AuthRequestFixture.등록된_계정_토큰_요청;
-import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static nextstep.subway.member.MemberAcceptanceTestRequest.*;
+import static nextstep.subway.member.MemberFixture.*;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
