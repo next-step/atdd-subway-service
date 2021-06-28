@@ -106,7 +106,7 @@ class FareCalculatorFacadeTest {
         assertThat(money).isEqualTo(new Money(exceptMoney));
     }
 
-    private static ShortestDistance 환승_케이스(int distance) {
+    private ShortestDistance 환승_케이스(int distance) {
         return new ShortestDistance() {
 
             @Override
@@ -126,7 +126,7 @@ class FareCalculatorFacadeTest {
         };
     }
 
-    private static ShortestDistance 비환승_케이스(int distance) {
+    private ShortestDistance 비환승_케이스(int distance) {
         return new ShortestDistance() {
 
             @Override
