@@ -216,6 +216,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     private void 제거된_내_정보_응답_확인(ExtractableResponse<Response> 내_정보_수정) {
-        assertThat(내_정보_수정.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(내_정보_수정.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
