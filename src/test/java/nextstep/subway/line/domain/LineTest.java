@@ -14,10 +14,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class LineTest {
-    private Station 강남역 = new Station("강남역");
-    private Station 양재역 = new Station("양재역");
-    private Station 판교역 = new Station("판교역");
-    private Station 정자역 = new Station("정자역");
+    private Station 강남역;
+    private Station 양재역;
+    private Station 판교역;
+    private Station 정자역;
 
     @BeforeEach
     void setUp() {
@@ -31,11 +31,13 @@ class LineTest {
     @Test
     @DisplayName("섞여있어도 정렬하여 가져올 수 있다.")
     void 섞여있어도_정렬하여_가져올_수_있다() {
+        // given
         Line line = new Line("신분당", "RED", 0, 양재역, 판교역, 3);
 
         line.addSection(new Section(판교역, 정자역, new Distance(3)));
         line.addSection(new Section(강남역, 양재역, new Distance(3)));
 
+        // when
         List<Station> stations = line.sortedStation()
                 .toCollection();
 

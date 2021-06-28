@@ -42,7 +42,7 @@ class TopSectionTest {
 
         // when
         boolean hasTopSection = topSection.hasTopSection();
-        
+
         // then
         assertThat(hasTopSection)
                 .isFalse();
