@@ -14,7 +14,6 @@ import static nextstep.subway.request.AcceptanceTestRequest.post;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceRequest {
-
     public static Executable 로그인_요청_성공됨(TokenRequest request, AuthToken authToken) {
         return () -> {
             TokenResponse tokenResponse = 로그인_요청_및_전체_검증(request);
