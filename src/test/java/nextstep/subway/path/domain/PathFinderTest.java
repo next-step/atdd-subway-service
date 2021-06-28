@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.exception.Message;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +45,7 @@ class PathFinderTest {
         모든노선.add(삼호선);
         모든노선.add(육호선);
 
-        pathFinder = new PathFinder(모든노선);
+        pathFinder = new PathFinder(new Lines(모든노선));
     }
 
     @DisplayName("다익스트라 알고리즘 이용하여 최단경로 조회")
@@ -89,7 +90,7 @@ class PathFinderTest {
         Line 신분당선 = new Line("신분당선", "빨간색", 강남역, 광교역, 10);
 
         모든노선.add(신분당선);
-        PathFinder newPathFinder = new PathFinder(모든노선);
+        PathFinder newPathFinder = new PathFinder(new Lines(모든노선));
 
         //when+then
         assertThatThrownBy(() -> newPathFinder.getDijkstraShortestPath(불광역, 광교역))

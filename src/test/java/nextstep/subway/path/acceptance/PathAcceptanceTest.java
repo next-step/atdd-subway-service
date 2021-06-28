@@ -1,8 +1,8 @@
 package nextstep.subway.path.acceptance;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+import nextstep.subway.path.dto.PathRequest;
+import nextstep.subway.path.dto.PathResponse;
+import org.junit.jupiter.api.*;
 import org.springframework.http.HttpStatus;
 
 import io.restassured.RestAssured;
@@ -17,8 +17,14 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("지하철 경로 조회")
 class PathAcceptanceTest extends AcceptanceTest {
 
@@ -54,7 +60,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     *
     *
     */
-    @BeforeEach
+    @BeforeAll
     public void setUp() {
         super.setUp();
 
@@ -74,7 +80,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         //지하철 노선 등록되어 있음
         일호선 = 지하철_노선_등록되어_있음("일호선", "남색", 시청역, 서울역, 10);
         이호선 = 지하철_노선_등록되어_있음("이호선", "초록색", 시청역, 을지로입구역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "주황색", 종로3가역, 을지로3가역, 10);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "주황색", 종로3가역, 을지로입구역, 10);
         사호선 = 지하철_노선_등록되어_있음("사호선", "파란색", 서울역, 회현역, 10);
 
         //지하철 노선에 지하철역 등록되어 있음
@@ -89,7 +95,10 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void 최단경로_조회() {
         ExtractableResponse<Response> 최단경로 = 최단_경로_조회_요청함(종로3가역, 충무로역);
-        최단_경로_지하철_목록_반환됨(최단경로);
+        List<String> 예상최단경로 = new ArrayList<>(Arrays.asList(종로3가역.getName(), 을지로입구역.getName(), 시청역.getName(),
+                서울역.getName(), 회현역.getName(), 명동역.getName(), 충무로역.getName()));
+        최단_경로_조회_성공함(최단경로);
+        최단_경로_지하철_목록_반환됨(최단경로, 예상최단경로);
 
         ExtractableResponse<Response> 출발도착_동일_최단경로 = 최단_경로_조회_요청함(종로3가역, 종로3가역);
         최단_경로_조회_실패함(출발도착_동일_최단경로);
@@ -111,8 +120,15 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 최단_경로_지하철_목록_반환됨(ExtractableResponse<Response> response) {
+    private void 최단_경로_조회_성공함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private void 최단_경로_지하철_목록_반환됨(ExtractableResponse<Response> response, List<String> expectedStations) {
+        List<String> stations = response.jsonPath().getList("stations", StationResponse.class)
+                .stream().map(StationResponse::getName)
+                .collect(Collectors.toList());
+        assertThat(stations).hasSameElementsAs(expectedStations);
     }
 
     private void 최단_경로_조회_실패함(ExtractableResponse<Response> response) {
