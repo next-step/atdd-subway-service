@@ -12,6 +12,9 @@ import nextstep.subway.auth.application.AuthService;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Parameter;
+
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private AuthService authService;
@@ -28,6 +31,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
-        return authService.findMemberByToken(credentials);
+        boolean required = AuthorizationExtractor.isRequired(parameter);
+
+        return authService.findMemberByToken(credentials, required);
     }
 }

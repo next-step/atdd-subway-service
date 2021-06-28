@@ -2,6 +2,9 @@ package nextstep.subway.path.ui;
 
 import javax.validation.Valid;
 
+import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,8 +25,8 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity findPath(@Valid @RequestBody PathRequest pathRequest) {
-        return ResponseEntity.ok(pathService.findPath(pathRequest));
+    public ResponseEntity findPath(@AuthenticationPrincipal(required = false) LoginMember loginMember, @Valid @RequestBody PathRequest pathRequest) {
+        return ResponseEntity.ok(pathService.findPath(loginMember, pathRequest));
     }
 
     @ExceptionHandler({RuntimeException.class})

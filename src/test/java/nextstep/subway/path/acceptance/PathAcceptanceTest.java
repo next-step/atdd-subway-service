@@ -4,10 +4,15 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.acceptance.FavoriteAcceptanceTest;
+import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -22,6 +27,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.auth.application.AuthServiceTest.EMAIL;
+import static nextstep.subway.auth.application.AuthServiceTest.PASSWORD;
+import static nextstep.subway.member.MemberAcceptanceTest.BEARER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -121,6 +129,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
         역_생성_실패_체크(연결_되지_않은_구간_요청_응답);
     }
 
+    @DisplayName("로그인 후 할인 요금으로 측정 - 청소년")
+    @Test
+    void findPathWithKid() {
+        // given
+        회원_생성을_요청(16);
+        String 토큰 = "123";//회원_로그인_요청();
+        즐겨찾기_생성(토큰, 강남역, 광교역);
+        // when
+        PathRequest 경로_조회_요청_내용 = 경로_조회_요청_내용(강남역, 광교역);
+        // then
+    }
+
     private static Long 역_번호_추출(StationResponse 역) {
         return 역.getId();
     }
@@ -171,5 +191,42 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 역_생성_실패_체크(ExtractableResponse<Response> 없는역_조회_요청_응답) {
         assertThat(없는역_조회_요청_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private static ExtractableResponse<Response> 회원_생성을_요청(int age) {
+        MemberRequest memberRequest = new MemberRequest(EMAIL, PASSWORD, age);
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().post("/members")
+                .then().log().all()
+                .extract();
+    }
+
+    private static String 회원_로그인_요청() {
+        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
+
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(tokenRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .extract();
+        return response.as(TokenResponse.class).getAccessToken();
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_생성(String 토큰, StationResponse 출발역, StationResponse 도착역) {
+        FavoriteRequest favoriteRequest = new FavoriteRequest(출발역.getId(), 도착역.getId());
+
+        return RestAssured
+                .given().header("authorization", BEARER + 토큰).log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(favoriteRequest)
+                .when().post("/favorites")
+                .then().log().all()
+                .extract();
     }
 }

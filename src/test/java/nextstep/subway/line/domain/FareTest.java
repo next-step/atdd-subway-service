@@ -52,10 +52,10 @@ class FareTest {
     })
     void calculateOverFare(int 거리, int 요금) {
         // given
-        Fare fare = new Fare();
+        Fare fare = new Fare(Fare.DEFAULT_USE_FARE_AMOUNT);
         // when
-        int totalFare = fare.calculateTotalFare(거리);
+        Fare totalFare = fare.calculateTotalFare(거리);
         // then
-        assertThat(totalFare).isEqualTo(요금);
+        assertThat(totalFare.amount()).isEqualTo(요금);
     }
 }

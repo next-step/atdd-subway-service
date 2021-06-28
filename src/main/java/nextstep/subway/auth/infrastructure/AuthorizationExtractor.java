@@ -1,5 +1,8 @@
 package nextstep.subway.auth.infrastructure;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import org.springframework.core.MethodParameter;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 
@@ -24,5 +27,10 @@ public class AuthorizationExtractor {
         }
 
         return null;
+    }
+
+    public static boolean isRequired(MethodParameter parameter) {
+        AuthenticationPrincipal annotation = (AuthenticationPrincipal) parameter.getParameterAnnotations()[0];
+        return annotation.required();
     }
 }

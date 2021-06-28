@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.LineRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,8 +44,8 @@ class PathServiceTest {
     void findPath() {
         //given
         //when
-        when(pathService.findPath(any())).thenReturn(new PathResponse());
-        PathResponse response = pathService.findPath(new PathRequest(강남역.getId(), 선릉역.getId()));
+        when(pathService.findPath(any(), any())).thenReturn(new PathResponse());
+        PathResponse response = pathService.findPath(new LoginMember(), new PathRequest(강남역.getId(), 선릉역.getId()));
         //then
         assertThat(response).isNotNull();
     }
@@ -57,7 +58,7 @@ class PathServiceTest {
         pathService = new PathService(lineRepository, stationRepository);
         //then
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> pathService.findPath(new PathRequest(9L, 10L))
+                .isThrownBy(() -> pathService.findPath(new LoginMember(), new PathRequest(9L, 10L))
         ).withMessage(Sections.NOT_FOUND_SECTION);
     }
 }

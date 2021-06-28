@@ -1,8 +1,13 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.domain;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nextstep.subway.line.domain.Fare;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.farePolicy.MemberDiscountPolicyService;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -30,7 +35,7 @@ public class Path {
             mostExtraFare = mostExtraFare.gt(line.extraFare());
         }
 
-        return new Path(new DijkstraShortestPath(graph), mostExtraFare);
+        return new Path(new DijkstraShortestPath(graph), mostExtraFare.sum(new Fare(Fare.DEFAULT_USE_FARE_AMOUNT)));
     }
 
     private static void addPath(List<Section> sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
@@ -56,12 +61,29 @@ public class Path {
         }
 
         int distance = findPathDistance(source, target);
-        int totalFare = this.lineExtraFare.calculateTotalFare(distance);
+        Fare totalFare = this.lineExtraFare.calculateTotalFare(distance);
 
-        return PathResponse.of(shortestPath.stream().map(Station::toResponse).collect(Collectors.toList()), findPathDistance(source, target), totalFare);
+        return PathResponse.of(shortestPath.stream().map(Station::toResponse).collect(Collectors.toList()), findPathDistance(source, target), totalFare.amount());
     }
 
     private int findPathDistance(Station source, Station target) {
         return (int) dijkstraShortestPath.getPathWeight(source, target);
+    }
+
+    public PathResponse findShortestPath(Station source, Station target, MemberDiscountPolicyService memberDiscountPolicyService) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException(SAME_STATION);
+        }
+        List<Station> shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
+
+        if (shortestPath.isEmpty()) {
+            throw new IllegalArgumentException(Sections.NOT_FOUND_SECTION);
+        }
+
+        int distance = findPathDistance(source, target);
+        Fare fare = lineExtraFare.calculateTotalFare(distance);
+        Fare totalFare = memberDiscountPolicyService.discount(fare);
+
+        return PathResponse.of(shortestPath.stream().map(Station::toResponse).collect(Collectors.toList()), findPathDistance(source, target), totalFare.amount());
     }
 }

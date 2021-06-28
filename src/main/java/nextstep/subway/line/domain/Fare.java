@@ -14,11 +14,11 @@ public class Fare {
     private final int amount;
 
     public Fare() {
-        this.amount = DEFAULT_USE_FARE_AMOUNT;
+        this.amount = 0;
     }
 
     public Fare(int amount) {
-        this.amount = amount + DEFAULT_USE_FARE_AMOUNT;
+        this.amount = amount;
     }
 
     public Fare gt(Fare fare) {
@@ -28,12 +28,16 @@ public class Fare {
         return fare;
     }
 
-    public int calculateTotalFare(int distance) {
-        int overFare = calculateOverFare(distance);
-        return amount + overFare;
+    public Fare sum(Fare fare) {
+        return new Fare(amount + fare.amount);
     }
 
-    private int calculateOverFare(int distance) {
+    public Fare calculateTotalFare(int distance) {
+        Fare overFare = calculateOverFare(distance);
+        return new Fare(amount + overFare.amount);
+    }
+
+    private Fare calculateOverFare(int distance) {
         int overAmount = 0;
         if (DISTANCE_10_KM < distance) {
             overAmount += (int) ((Math.ceil((Math.min(distance, DISTANCE_50_KM) - DISTANCE_10_KM - 1) / 5) + 1) * 100);
@@ -41,7 +45,7 @@ public class Fare {
         if (DISTANCE_50_KM < distance) {
             overAmount += (int) ((Math.ceil((distance - DISTANCE_50_KM - 1) / 8) + 1) * 100);
         }
-        return overAmount;
+        return new Fare(overAmount);
     }
 
     @Override

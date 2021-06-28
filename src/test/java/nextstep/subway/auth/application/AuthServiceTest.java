@@ -54,7 +54,7 @@ public class AuthServiceTest {
         //when
         //then
         assertThatThrownBy(() -> {
-            authService.findMemberByToken("invalid");
+            authService.findMemberByToken("invalid", true);
         }).isInstanceOf(AuthorizationException.class);
     }
 }
