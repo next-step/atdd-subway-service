@@ -46,7 +46,6 @@ public class PathApiTest extends AcceptanceTest {
         ExtractableResponse<Response> 지하철_경로_조회_요청 = 지하철_경로_조회_요청(경로_조회_요청_내용);
         //then
         //지하철 경로 조회 응답 확인
-        //임시로 응답 상태 코드만 체크
         assertThat(지하철_경로_조회_요청.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
@@ -59,7 +58,6 @@ public class PathApiTest extends AcceptanceTest {
         ExtractableResponse<Response> 지하철_경로_조회_요청 = 지하철_경로_조회_요청(경로_조회_요청_내용);
         //then
         //지하철 경로 조회 응답 확인
-        //임시로 응답 상태 코드만 체크
         assertThat(지하철_경로_조회_요청.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
@@ -72,7 +70,19 @@ public class PathApiTest extends AcceptanceTest {
         ExtractableResponse<Response> 지하철_경로_조회_요청 = 지하철_경로_조회_요청(경로_조회_요청_내용);
         //then
         //지하철 경로 조회 응답 확인
-        //임시로 응답 상태 코드만 체크
+        assertThat(지하철_경로_조회_요청.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("경로 요금 체크")
+    @Test
+    void checkFee() {
+        //given
+        PathRequest 경로_조회_요청_내용 = 경로_조회_요청_내용(0L, 0L);
+        //when
+        ExtractableResponse<Response> 지하철_경로_조회_요청 = 지하철_경로_조회_요청(경로_조회_요청_내용);
+        //then
+        //지하철 경로 조회 응답 확인
+        //TODO 응답에서 요금을 받고 응답체크 할 것
         assertThat(지하철_경로_조회_요청.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 

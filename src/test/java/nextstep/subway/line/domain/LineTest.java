@@ -22,7 +22,7 @@ class LineTest {
                 , new Station("강남역")
                 , new Station("선릉역")
                 , new Distance(5)
-                , new Fee(900));
+                , new Fare(900));
         //when
         List<StationResponse> stationResponse = line.stationResponses();
         //then

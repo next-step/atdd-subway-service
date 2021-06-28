@@ -16,7 +16,7 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
     @Embedded
-    private Fee fee;
+    private Fare fare;
 
     @Embedded
     private Sections sections = new Sections();
@@ -29,12 +29,12 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, Distance distance, Fee fee) {
+    public Line(String name, String color, Station upStation, Station downStation, Distance distance, Fare fare) {
         this.name = name;
         this.color = color;
         Section section = new Section(this, upStation, downStation, distance);
         sections.add(section);
-        this.fee = fee;
+        this.fare = fare;
     }
 
     public void update(Line line) {

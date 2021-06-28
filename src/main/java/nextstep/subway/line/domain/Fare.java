@@ -5,17 +5,17 @@ import javax.persistence.Embeddable;
 import java.util.Objects;
 
 @Embeddable
-public class Fee {
-    public static final int DEFAULT_FEE_AMOUNT = 900;
+public class Fare {
+    public static final int DEFAULT_FARE_AMOUNT = 900;
 
-    @Column(name = "fee")
+    @Column(name = "fare")
     private final int amount;
 
-    public Fee() {
-        this.amount = DEFAULT_FEE_AMOUNT;
+    public Fare() {
+        this.amount = DEFAULT_FARE_AMOUNT;
     }
 
-    public Fee(int amount) {
+    public Fare(int amount) {
         this.amount = amount;
     }
 
@@ -23,8 +23,8 @@ public class Fee {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Fee fee = (Fee) o;
-        return amount == fee.amount;
+        Fare fare = (Fare) o;
+        return amount == fare.amount;
     }
 
     @Override

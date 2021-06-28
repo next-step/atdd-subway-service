@@ -5,27 +5,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class FeeTest {
+class FareTest {
 
     @DisplayName("요금 생성")
     @Test
     void create() {
         //given
-        Fee fee = new Fee();
+        Fare fare = new Fare();
         //when
-        Fee defaultFee = new Fee(Fee.DEFAULT_FEE_AMOUNT);
+        Fare defaultFare = new Fare(Fare.DEFAULT_FARE_AMOUNT);
         //then
-        assertThat(fee).isEqualTo(defaultFee);
+        assertThat(fare).isEqualTo(defaultFare);
     }
 
     @DisplayName("요금 생성 - 값 지정")
     @Test
     void createFeeAmount() {
         //given
-        Fee fee = new Fee(100);
+        Fare fare = new Fare(100);
         //when
-        Fee specifyFee = new Fee(100);
+        Fare specifyFare = new Fare(100);
         //then
-        assertThat(fee).isEqualTo(specifyFee);
+        assertThat(fare).isEqualTo(specifyFare);
     }
 }
