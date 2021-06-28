@@ -43,21 +43,6 @@ public class Path {
         addEdge(lines);
     }
 
-    private List<Station> toStationList(List<String> shortestPath, List<Station> stations) {
-        List<Station> resultStationList = new ArrayList<>();
-        for (String stationName: shortestPath) {
-            Optional<Station> station = toStation(stations, stationName);
-            resultStationList.add(station.get());
-        }
-        return resultStationList;
-    }
-
-    public Optional<Station> toStation(List<Station> stations, String stationName) {
-        return stations.stream()
-                .filter(station -> station.getName().equals(stationName))
-                .findFirst();
-    }
-
     public void addVertex(List<Line> lines) {
         lines.stream()
                 .flatMap(it -> it.assembleStations().stream())
