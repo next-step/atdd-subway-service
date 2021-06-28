@@ -54,19 +54,43 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
+    public boolean isSameUpStation(Station station) {
+        return station == upStation;
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
+    public boolean isSameDownStation(Station station) {
+        return station == downStation;
+    }
+
+    public boolean hasSameStation(Station station, boolean hasUpStation) {
+        if (hasUpStation) {
+            return station == upStation;
+        }
+        return station == downStation;
+    }
+
+    public boolean isExistStation(boolean hasUpStation) {
+        if (hasUpStation) {
+            return upStation != null;
+        }
+        return downStation != null;
+    }
+
+    public void updateStationBySection(Section section, boolean hasUpStation) {
+        validateDistance(section.getDistance());
+        if (hasUpStation) {
+            this.upStation = section.getDownStation();
+            this.distance -= section.getDistance();
+            return;
+        }
+
+        this.downStation = section.getUpStation();
+        this.distance -= section.getDistance();
+    }
+
+    private void validateDistance(int distance) {
+        if (this.distance <= distance) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.downStation = station;
-        this.distance -= newDistance;
     }
 }
