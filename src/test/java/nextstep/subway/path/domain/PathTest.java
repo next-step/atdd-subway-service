@@ -33,11 +33,4 @@ class PathTest {
         PathNavigation pn = PathNavigation.by(lines);
         sut = pn.findShortestPath(강남, 광교);
     }
-
-    @Test
-    void create() {
-        Path.of(new ArrayList<>(), 10);
-
-
-    }
 }
