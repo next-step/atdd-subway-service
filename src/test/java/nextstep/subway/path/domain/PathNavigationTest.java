@@ -45,16 +45,16 @@ class PathNavigationTest {
         C = new Station(11L, "많이-더-먼-역");
 
         lines = new ArrayList<>();
-        lines.add(new Line("신분당선", "gs-1123", 강남, 양재, 15));
-        이호선 = new Line("이호선", "gs-12345", 교대, 강남, 12);
+        lines.add(new Line("신분당선", "gs-1123",0, 강남, 양재, 15));
+        이호선 = new Line("이호선", "gs-12345", 0,교대, 강남, 12);
         이호선.addSection(new Section(이호선, 강변, 교대, 107));
         이호선.addSection(new Section(이호선, B, 강변, 134));
 
-        Line 삼호선 = new Line("삼호선", "gs-12345", 교대, 양재, 27);
+        Line 삼호선 = new Line("삼호선", "gs-12345",0, 교대, 양재, 27);
         삼호선.addSection(new Section(삼호선, 교대, 남부터미널, 9));
         lines.add(삼호선);
         lines.add(이호선);
-        lines.add(new Line("중앙선", "gs-1123", 구리, 용산, 200));
+        lines.add(new Line("중앙선", "gs-1123", 0, 구리, 용산, 200));
     }
 
     @Test

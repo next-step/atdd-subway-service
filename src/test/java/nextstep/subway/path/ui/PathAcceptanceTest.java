@@ -86,6 +86,8 @@ class PathAcceptanceTest extends AcceptanceTest {
         assertThat(as.getDistance()).isEqualTo(distance);
         assertThat(as.getFee()).isEqualTo(fee);
     }
+    
+    
 
     @Test
     @DisplayName("출발역과 도착역이 같은 경우")

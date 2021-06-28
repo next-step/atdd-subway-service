@@ -19,6 +19,8 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
+    private int additionalCharge;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @OrderBy("sequence ASC")
     private List<Section> sections = new LinkedList<>();
@@ -26,14 +28,14 @@ public class Line extends BaseEntity {
     public Line() {
     }
 
-    public Line(String name, String color) {
+    public Line(String name, String color, int additionalCharge) {
         this.name = name;
         this.color = color;
+        this.additionalCharge = additionalCharge;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
+    public Line(String name, String color, int additionalCharge, Station upStation, Station downStation, int distance) {
+        this(name, color, additionalCharge);
         Section e = new Section(this, upStation, downStation, distance, 0);
         sections.add(e);
     }
@@ -57,6 +59,10 @@ public class Line extends BaseEntity {
 
     public List<Section> getSections() {
         return sections;
+    }
+
+    public int getAdditionalCharge() {
+        return additionalCharge;
     }
 
     public void addSection(Section newSection) {

@@ -29,7 +29,7 @@ class PathTest {
         강남 = new Station(1L, "강남");
         광교 = new Station(2L, "광교");
         lines = new ArrayList<>();
-        lines.add(new Line("신분당선", "gs-1123", 강남, 광교, 100));
+        lines.add(new Line("신분당선", "gs-1123",0, 강남, 광교, 100));
         PathNavigation pn = PathNavigation.by(lines);
         sut = pn.findShortestPath(강남, 광교);
     }
