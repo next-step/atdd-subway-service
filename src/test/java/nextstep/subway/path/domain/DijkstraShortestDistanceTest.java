@@ -15,10 +15,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 
 class DijkstraShortestDistanceTest {
-    private Station 강남역 = new Station("강남역");
-    private Station 양재역 = new Station("양재역");
-    private Station 광교역 = new Station("광교역");
-    private Station 정자역 = new Station("정자역");
+    private Station 강남역;
+    private Station 양재역;
+    private Station 광교역;
+    private Station 정자역;
 
     @BeforeEach
     void setUp() {
@@ -31,6 +31,7 @@ class DijkstraShortestDistanceTest {
     @Test
     @DisplayName("없는 역이면 IllegalArgumentException이 발생한다")
     void 없는_역이면_IllegalArgumentException이_발생한다() {
+        // given
         Line 신분당선 = new Line("신분당", "RED", 0, 양재역, 정자역, 3);
         Line 분당선 = new Line("분당", "YELLO", 0, 광교역, 양재역, 3);
 
@@ -38,6 +39,8 @@ class DijkstraShortestDistanceTest {
         분당선.addSection(new Section(양재역, 정자역, new Distance(1)));
 
         List<Line> lines = Arrays.asList(신분당선, 분당선);
+
+        // when & then
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new DijkstraShortestDistance(lines, 강남역, 양재역).shortestDistance());
@@ -48,11 +51,13 @@ class DijkstraShortestDistanceTest {
     @Test
     @DisplayName("연결되지 않은 역이면 NoRouteException이 발생한다")
     void 연결되지_않은_역이면_IllegalArgumentException이_발생한다() {
+        // given
         Line 신분당선 = new Line("신분당", "RED", 0, 강남역, 정자역, 3);
         Line 분당선 = new Line("분당", "YELLO", 0, 광교역, 양재역, 3);
 
         List<Line> lines = Arrays.asList(신분당선, 분당선);
 
+        // when & then
         assertThatExceptionOfType(NoRouteException.class)
                 .isThrownBy(() -> new DijkstraShortestDistance(lines, 강남역, 양재역).shortestDistance());
         assertThatExceptionOfType(NoRouteException.class)
@@ -62,6 +67,7 @@ class DijkstraShortestDistanceTest {
     @Test
     @DisplayName("최단거리를 구해올 수 있다")
     void 최단거리를_구해올_수_있다() {
+        // given
         Line 신분당선 = new Line("신분당", "RED", 0, 강남역, 양재역, 3);
         Line 이호선 = new Line("이호선", "YELLO", 0, 강남역, 정자역, 7);
         Line 삼호선 = new Line("삼호선", "ORANGE", 0, 강남역, 광교역, 2);
@@ -72,17 +78,23 @@ class DijkstraShortestDistanceTest {
 
         List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선);
 
+        // when
         DijkstraShortestDistance dijkstraShortestDistance = new DijkstraShortestDistance(lines, 강남역, 정자역);
 
-        assertThat(dijkstraShortestDistance.shortestRoute().toCollection())
+        List<Station> shortestStations = dijkstraShortestDistance.shortestRoute().toCollection();
+        Distance shortestDistance = dijkstraShortestDistance.shortestDistance();
+
+        // then
+        assertThat(shortestStations)
                 .containsExactly(강남역, 광교역, 정자역);
-        assertThat(dijkstraShortestDistance.shortestDistance())
+        assertThat(shortestDistance)
                 .isEqualTo(new Distance(3));
     }
 
     @Test
     @DisplayName("환승을 하여 최단거리를 구할 수 있다")
     void 환승을_하여_최단거리를_구할_수_있다() {
+        // given
         Line 신분당선 = new Line("신분당", "RED", 0, 강남역, 양재역, 1);
         Line 이호선 = new Line("이호선", "YELLO", 0, 양재역, 정자역, 5);
         Line 삼호선 = new Line("삼호선", "ORANGE", 0, 강남역, 광교역, 10);
@@ -91,11 +103,16 @@ class DijkstraShortestDistanceTest {
 
         List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선);
 
+        // when
         DijkstraShortestDistance dijkstraShortestDistance = new DijkstraShortestDistance(lines, 강남역, 광교역);
 
-        assertThat(dijkstraShortestDistance.shortestRoute().toCollection())
+        List<Station> shortestStations = dijkstraShortestDistance.shortestRoute().toCollection();
+        Distance shortestDistance = dijkstraShortestDistance.shortestDistance();
+
+        // then
+        assertThat(shortestStations)
                 .containsExactly(강남역, 양재역, 정자역, 광교역);
-        assertThat(dijkstraShortestDistance.shortestDistance())
+        assertThat(shortestDistance)
                 .isEqualTo(new Distance(8));
     }
 }
