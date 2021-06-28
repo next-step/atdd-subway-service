@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceRequest.로그인_요청_및_전체_검증;
 import static nextstep.subway.auth.acceptance.AuthRequestFixture.등록된_계정_토큰_요청;
 import static nextstep.subway.favorite.FavoriteAcceptanceRequest.*;
-import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static nextstep.subway.member.MemberAcceptanceTestRequest.회원_생성됨;
 import static nextstep.subway.member.MemberAcceptanceTestRequest.회원_생성을_요청;
 import static nextstep.subway.member.MemberFixture.*;

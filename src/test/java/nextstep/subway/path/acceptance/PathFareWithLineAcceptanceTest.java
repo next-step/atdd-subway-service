@@ -2,10 +2,8 @@ package nextstep.subway.path.acceptance;
 
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthToken;
-import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;

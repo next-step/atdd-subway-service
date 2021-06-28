@@ -1,13 +1,10 @@
 package nextstep.subway.path.domain.line;
 
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.EfficientLines;
 import nextstep.subway.path.domain.LinePremiumPolicy;
 import nextstep.subway.wrapped.Money;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
