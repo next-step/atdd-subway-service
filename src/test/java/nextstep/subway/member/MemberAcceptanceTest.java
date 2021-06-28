@@ -19,7 +19,10 @@ import org.springframework.http.HttpStatus;
 @DisplayName("회원 관련 기능")
 public class MemberAcceptanceTest extends AcceptancePerMethodTest {
 
-    public static final MemberRequest 회원 = new MemberRequest("jhh992000@gmail.com", "1234", 39);
+    public static final MemberRequest 성인_회원 = new MemberRequest("jhh992000@gmail.com", "1234", 39);
+    public static final MemberRequest 청소년_회원 = new MemberRequest("teenager@gmail.com", "1234", 18);
+    public static final MemberRequest 어린이_회원 = new MemberRequest("child@gmail.com", "1234", 12);
+    public static final MemberRequest 아기_회원 = new MemberRequest("baby@gmail.com", "1234", 5);
     public static final MemberRequest 수정회원 = new MemberRequest("newemail@email.com", "newpassword", 21);
     public static final MemberRequest 비회원 = new MemberRequest("nonexistent@gmail.com", "1234", 20);
 
@@ -27,14 +30,14 @@ public class MemberAcceptanceTest extends AcceptancePerMethodTest {
     @Test
     void manageMember() {
         // when
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(회원);
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(성인_회원);
         // then
         회원_생성됨(createResponse);
 
         // when
         ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(createResponse);
         // then
-        회원_정보_조회됨(findResponse, 회원);
+        회원_정보_조회됨(findResponse, 성인_회원);
 
         // when
         ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, 수정회원);
@@ -51,12 +54,12 @@ public class MemberAcceptanceTest extends AcceptancePerMethodTest {
     @Test
     void manageMyInfo() {
         // when
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(회원);
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(성인_회원);
         // then
         회원_생성됨(createResponse);
 
         // when
-        ExtractableResponse<Response> loginResponse = 로그인_요청(회원);
+        ExtractableResponse<Response> loginResponse = 로그인_요청(성인_회원);
         // then
         TokenResponse tokenResponse = 로그인_성공함(loginResponse);
 

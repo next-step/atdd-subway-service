@@ -2,7 +2,7 @@ package nextstep.subway.favorite;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_성공함;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
-import static nextstep.subway.member.MemberAcceptanceTest.회원;
+import static nextstep.subway.member.MemberAcceptanceTest.성인_회원;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성됨;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -11,7 +11,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import nextstep.subway.AcceptancePerClassTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -40,9 +39,9 @@ public class FavoriteAcceptanceTest extends AcceptancePerClassTest {
         광화문역 = StationAcceptanceTest.지하철역_등록되어_있음("광화문역").as(StationResponse.class);
         오호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("오호선", "purple", 서대문역, 광화문역, 10)).as(LineResponse.class);
 
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(회원);
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(성인_회원);
         회원_생성됨(createResponse);
-        ExtractableResponse<Response> loginResponse = 로그인_요청(회원);
+        ExtractableResponse<Response> loginResponse = 로그인_요청(성인_회원);
         로그인_성공함(loginResponse);
         loginAccessToken = loginResponse.as(TokenResponse.class).getAccessToken();
     }
