@@ -1,8 +1,7 @@
 package nextstep.subway.favorite;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.*;
+import static nextstep.subway.auth.acceptance.AuthTest.*;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.*;
-import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static nextstep.subway.station.StationAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -26,6 +25,9 @@ import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private static final int AGE = 10;
 
     TokenResponse 사용자;
 
@@ -40,8 +42,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         광교역 = 지하철역_등록되어_있음("광교역").as(StationResponse.class);
         지하철_노선_등록되어_있음(new LineRequest("신분당선", "레드", 강남역.getId(), 광교역.getId(), 10));
 
-        회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        사용자 = 회원_로그인_되어_있음(EMAIL, PASSWORD);
+        사용자 = 로그인_된_회원(EMAIL, PASSWORD, AGE);
     }
 
     @Test

@@ -1,6 +1,6 @@
 package nextstep.subway.auth.acceptance;
 
-import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.auth.acceptance.AuthTest.*;
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -18,21 +18,20 @@ import nextstep.subway.member.dto.MemberResponse;
 
 @DisplayName("Auth 관련 인수 테스트")
 public class AuthAcceptanceTest extends AcceptanceTest {
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private static final int AGE = 10;
 
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
         // given
-        ExtractableResponse<Response> joinResponse
-            = 회원_생성_되어_있음(EMAIL, PASSWORD, AGE);
-
-        // when
-        ExtractableResponse<Response> loginResponse
-            = 회원_로그인_요청(EMAIL, PASSWORD);
+        TokenResponse tokenResponse
+            = 로그인_된_회원(EMAIL, PASSWORD, AGE);
 
         // when
         ExtractableResponse<Response> memberInfoResponse
-            = 회원_정보_조회(loginResponse);
+            = 회원_정보_조회(tokenResponse);
 
         // then
         회원_정보_조회됨(memberInfoResponse);
@@ -43,7 +42,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithBadBearerAuth() {
         // when
         ExtractableResponse<Response> response
-            = 회원_로그인_요청(NEW_EMAIL, NEW_PASSWORD);
+            = 회원_로그인_요청("no@email.com", "bad");
 
         // then
         회원_로그인_실패(response);
@@ -60,8 +59,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회_실패(response);
     }
 
-    private static ExtractableResponse<Response> 회원_정보_조회(ExtractableResponse<Response> response) {
-        TokenResponse tokenResponse = response.as(TokenResponse.class);
+    private static ExtractableResponse<Response> 회원_정보_조회(TokenResponse tokenResponse) {
         return RestAssured.given().log().all()
             .auth().oauth2(tokenResponse.getAccessToken())
             .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -83,10 +81,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/members/me")
             .then().log().all().extract();
-    }
-
-    public static TokenResponse 회원_로그인_되어_있음(String email, String password) {
-        return 회원_로그인_요청(email, password).as(TokenResponse.class);
     }
 
     public static ExtractableResponse<Response> 회원_로그인_요청(String email, String password) {

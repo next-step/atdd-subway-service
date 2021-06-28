@@ -4,7 +4,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
@@ -13,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -51,11 +51,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMyInfo() {
         // given
-        회원_생성_되어_있음(EMAIL, PASSWORD, AGE);
-
-        // given
         TokenResponse tokenResponse
-            = AuthAcceptanceTest.회원_로그인_되어_있음(EMAIL, PASSWORD);
+            = 로그인_된_회원(EMAIL, PASSWORD, AGE);
 
         // when
         ExtractableResponse<Response> queryResponse
@@ -80,10 +77,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         회원_삭제됨(deleteResponse);
-    }
-
-    public static ExtractableResponse<Response> 회원_생성_되어_있음(String email, String password, Integer age) {
-        return 회원_생성을_요청(email, password, age);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
