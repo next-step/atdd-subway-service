@@ -33,20 +33,8 @@ public class FavoriteService {
     }
 
     @Transactional(readOnly = true)
-    public Favorite findFavoriteById(Long id) {
-        return favoriteRepository.findById(id).orElseThrow(NotFoundFavoritesException::new);
-    }
-
-    @Transactional(readOnly = true)
-    public FavoriteResponse findFavoriteResponseById(Long id) {
-        Favorite persistFavorite = findFavoriteById(id);
-        return FavoriteResponse.of(persistFavorite);
-    }
-
-    @Transactional(readOnly = true)
-    public List<FavoriteResponse> findAllFavorites(LoginMember loginMember) {
-        Member persistMember = memberRepository.findById(loginMember.getId()).orElseThrow(NoSuchElementException::new);
-        List<Favorite> favorites = persistMember.favorites();
+    public List<FavoriteResponse> findAllFavoritesOf(LoginMember loginMember) {
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(loginMember.getId());
         return favorites.stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
@@ -58,16 +46,12 @@ public class FavoriteService {
                 .orElseThrow(NoSuchElementException::new);
         Station targetStation = stationRepository.findById(favoriteRequest.getTarget())
                 .orElseThrow(NoSuchElementException::new);
-        Favorite persistFavorite = favoriteRepository.save(new Favorite(sourceStation, targetStation));
-        persistMember.addFavorite(persistFavorite);
+        Favorite persistFavorite = favoriteRepository.save(new Favorite(persistMember.getId(), sourceStation, targetStation));
         return FavoriteResponse.of(persistFavorite);
     }
 
     public void deleteFavoriteById(LoginMember loginMember, Long id) {
-        Member persistMember = memberRepository.findById(loginMember.getId()).orElseThrow(NoSuchElementException::new);
-        Favorite favorite = favoriteRepository.findById(id).orElseThrow(NoSuchElementException::new);
-        persistMember.remove(favorite);
-//        favoriteRepository.deleteById(id);
+        favoriteRepository.deleteById(id);
     }
 
 }

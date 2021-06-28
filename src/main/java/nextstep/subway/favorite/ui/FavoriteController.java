@@ -28,15 +28,9 @@ public class FavoriteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FavoriteResponse>> findAllFavorites(@AuthenticationPrincipal LoginMember loginMember) {
+    public ResponseEntity<List<FavoriteResponse>> findAllFavoritesOf(@AuthenticationPrincipal LoginMember loginMember) {
         loginMember.validation();
-        return ResponseEntity.ok(favoriteService.findAllFavorites(loginMember));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<FavoriteResponse> findFavoriteById(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id) {
-        loginMember.validation();
-        return ResponseEntity.ok(favoriteService.findFavoriteResponseById(id));
+        return ResponseEntity.ok(favoriteService.findAllFavoritesOf(loginMember));
     }
 
     @DeleteMapping("/{id}")

@@ -12,6 +12,8 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long memberId;
+
     @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "source_id")
     private Station source;
@@ -22,13 +24,15 @@ public class Favorite {
 
     public Favorite() { }
 
-    public Favorite(Station sourceStation, Station targetStation) {
+    public Favorite(Long memberId, Station sourceStation, Station targetStation) {
+        this.memberId = memberId;
         this.source = sourceStation;
         this.target = targetStation;
     }
 
-    public Favorite(Long id, Station sourceStation, Station targetStation) {
+    public Favorite(Long id, Long memberId, Station sourceStation, Station targetStation) {
         this.id = id;
+        this.memberId = memberId;
         this.source = sourceStation;
         this.target = targetStation;
     }
@@ -45,16 +49,20 @@ public class Favorite {
         return target;
     }
 
+    public Long getMemberId() {
+        return memberId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Favorite favorite = (Favorite) o;
-        return Objects.equals(id, favorite.id) && Objects.equals(source, favorite.source) && Objects.equals(target, favorite.target);
+        return Objects.equals(id, favorite.id) && Objects.equals(memberId, favorite.memberId) && Objects.equals(source, favorite.source) && Objects.equals(target, favorite.target);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, source, target);
+        return Objects.hash(id, memberId, source, target);
     }
 }

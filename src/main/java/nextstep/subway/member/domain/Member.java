@@ -2,12 +2,9 @@ package nextstep.subway.member.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.exception.AuthorizationException;
-import nextstep.subway.favorite.domain.Favorite;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class Member extends BaseEntity {
@@ -32,9 +29,6 @@ public class Member extends BaseEntity {
 
     @Column
     private Integer age;
-
-    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE, CascadeType.MERGE }, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Favorite> favorites = new ArrayList<>();
 
     public Member() {
     }
@@ -87,18 +81,6 @@ public class Member extends BaseEntity {
 
     public boolean isChild() {
         return age >= CHILD_USER_LOWER_BOUND && age <= CHILD_USER_UPPER_BOUND;
-    }
-
-    public List<Favorite> favorites() {
-        return favorites;
-    }
-
-    public void addFavorite(Favorite favorite) {
-        favorites.add(favorite);
-    }
-
-    public void remove(Favorite favorite) {
-        favorites.remove(favorite);
     }
 
 }
