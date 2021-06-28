@@ -77,7 +77,7 @@ class FavoriteServiceTest {
         //given
         //when
         when(memberRepository.findById(any())).thenReturn(Optional.of(new Member()));
-        when(favoriteRepository.findByMember(any())).thenReturn(new ArrayList<>(Arrays.asList(new Favorite())));
+        when(favoriteRepository.findById(any())).thenReturn(Optional.of(new Favorite()));
 
         favoriteService.remove(new LoginMember(), 1L);
         //then
