@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -34,15 +35,15 @@ public class PathFinder {
     }
 
     private void addVertex(final List<Line> lines) {
-        lines.stream()
-             .flatMap(line -> line.getStations().stream())
-             .forEach(graph::addVertex);
+        lines.forEach(line -> line.getStations().forEach(graph::addVertex));
     }
 
     private void addEdgeWeight(final List<Line> lines) {
-        lines.stream()
-             .flatMap(line -> line.getSections().stream())
-             .forEach(section -> graph.setEdgeWeight(addEdge(section.getUpStation(), section.getDownStation()), section.getDistance()));
+        lines.forEach(line -> line.getSections().forEach(this::setEdgeWeightToGraph));
+    }
+
+    private void setEdgeWeightToGraph(final Section section) {
+        this.graph.setEdgeWeight(addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
     }
 
     private DefaultWeightedEdge addEdge(final Station upStation, final Station downStation) {

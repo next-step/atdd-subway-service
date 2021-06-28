@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -60,6 +61,10 @@ public class Sections {
         }
         upSection.ifPresent(this::removeSectionInstance);
         downSection.ifPresent(this::removeSectionInstance);
+    }
+
+    public void forEach(final Consumer<Section> accepter) {
+        this.sections.forEach(accepter);
     }
 
     private void checkMinSectionSize() {
