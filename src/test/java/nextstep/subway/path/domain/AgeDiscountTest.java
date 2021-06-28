@@ -11,7 +11,7 @@ class AgeDiscountTest {
 	void testInfantDiscount() {
 
 		AgeDiscount ageDiscount = AgeDiscount.findByAge(3);
-		int discountedFare = ageDiscount.discountedFare(2000);
+		int discountedFare = ageDiscount.getDiscountedFare(2000);
 
 		Assertions.assertThat(ageDiscount).isEqualTo(AgeDiscount.INFANT);
 		Assertions.assertThat(discountedFare).isEqualTo(0);
@@ -21,7 +21,7 @@ class AgeDiscountTest {
 	@Test
 	void testChildrenDiscount() {
 		AgeDiscount ageDiscount = AgeDiscount.findByAge(9);
-		int discountedFare = ageDiscount.discountedFare(2000);
+		int discountedFare = ageDiscount.getDiscountedFare(2000);
 
 		Assertions.assertThat(ageDiscount).isEqualTo(AgeDiscount.CHILDREN);
 		Assertions.assertThat(discountedFare).isEqualTo(825);
@@ -31,7 +31,7 @@ class AgeDiscountTest {
 	@Test
 	void testTeenagerDiscount() {
 		AgeDiscount ageDiscount = AgeDiscount.findByAge(15);
-		int discountedFare = ageDiscount.discountedFare(2000);
+		int discountedFare = ageDiscount.getDiscountedFare(2000);
 
 		Assertions.assertThat(ageDiscount).isEqualTo(AgeDiscount.TEENAGER);
 		Assertions.assertThat(discountedFare).isEqualTo(1320);

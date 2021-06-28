@@ -18,7 +18,7 @@ public enum AgeDiscount {
 		this.discountStrategy = discountStrategy;
 	}
 
-	public int discountedFare(int fare) {
+	public int getDiscountedFare(int fare) {
 		return this.discountStrategy.discount(fare);
 	}
 

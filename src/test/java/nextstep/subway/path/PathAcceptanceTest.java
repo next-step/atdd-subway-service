@@ -71,7 +71,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	void getShortestPath() {
 		ExtractableResponse<Response> response = 최단_경로를_조회한다(tokenResponse.getAccessToken(), 강남역.getId(),
 			남부터미널역.getId());
-		this.최단_경로_조회_확인(response, 12, 1250, Arrays.asList(강남역.getId(), 양재역.getId(), 남부터미널역.getId()));
+		this.최단_경로_조회_확인(response, 12, 1350, Arrays.asList(강남역.getId(), 양재역.getId(), 남부터미널역.getId()));
 	}
 
 	@DisplayName("지하철 경로조회 실패 - 출발역과 도착역이 동일함")

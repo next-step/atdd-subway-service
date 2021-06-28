@@ -22,6 +22,8 @@ public class Line extends BaseEntity {
 	private String name;
 	private String color;
 
+	private int extraCharge;
+
 	@Embedded
 	private Sections sections = new Sections();
 
@@ -37,6 +39,10 @@ public class Line extends BaseEntity {
 		this.name = name;
 		this.color = color;
 		sections.addSection(new Section(this, upStation, downStation, distance));
+	}
+
+	public int getExtraCharge() {
+		return extraCharge;
 	}
 
 	public void update(Line line) {

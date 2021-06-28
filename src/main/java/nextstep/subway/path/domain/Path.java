@@ -6,7 +6,7 @@ import nextstep.subway.station.domain.Station;
 
 public class Path {
 	private static final int DEFAULT_FARE = 1250;
-	
+
 	private List<Station> stations;
 	private double distance;
 	private int fare;
@@ -14,10 +14,10 @@ public class Path {
 	protected Path() {
 	}
 
-	public Path(List<Station> stations, double distance) {
+	public Path(List<Station> stations, double distance, int fare) {
 		this.stations = stations;
 		this.distance = distance;
-		this.fare = DEFAULT_FARE;
+		this.fare = fare;
 	}
 
 	public List<Station> getStations() {

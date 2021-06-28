@@ -39,6 +39,6 @@ public enum DistanceFare {
 	}
 
 	private boolean matches(int distance) {
-		return this.start <= distance && this.end > distance;
+		return this.start <= distance && this.end >= distance;
 	}
 }

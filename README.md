@@ -220,7 +220,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
       - 10km초과 ~ 50km까지 : 5km당 100원
       - 16km 이동은 기본운임 1250(기본) + 100(5km 초과) = 1350원
 
-- [ ] 노선별 추가 요금 정책 추가
+- [x] 노선별 추가 요금 정책 추가
 
   - 노선에 추가 요금 필드 추가
   - 추가요금 노선이용시 측정 요금에 추가요금 부과
