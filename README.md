@@ -230,5 +230,5 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
   - 청소년 : 13세 이상 ~ 19세 미만
   - 어린이 : 6세 이상 ~ 13세 미만
-  - [ ] 로그인 사용자 정보를 활용하도록 API개선
+  - [x] 로그인 사용자 정보를 활용하도록 API개선
 

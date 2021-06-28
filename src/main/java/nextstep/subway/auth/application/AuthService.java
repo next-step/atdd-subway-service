@@ -11,6 +11,7 @@ import nextstep.subway.member.domain.Member;
 
 @Service
 public class AuthService {
+	private static final String GUEST_EMAIL = "guest@guest.com";
 	private MemberService memberService;
 	private JwtTokenProvider jwtTokenProvider;
 
@@ -29,7 +30,8 @@ public class AuthService {
 
 	public LoginMember findMemberByToken(String credentials) {
 		if (!jwtTokenProvider.validateToken(credentials)) {
-			throw new AuthorizationException("유효하지 않은 token입니다.");
+			Member member = memberService.findByEmail(GUEST_EMAIL);
+			return new LoginMember(member.getId(), GUEST_EMAIL, 30);
 		}
 
 		String email = jwtTokenProvider.getPayload(credentials);
