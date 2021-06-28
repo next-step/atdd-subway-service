@@ -11,21 +11,36 @@ import org.junit.jupiter.params.provider.CsvSource;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MidRangeDistancePremiumPolicyTest {
-    @Test
-    @DisplayName("거리에 따라 지원여부가 틀리다 10Km")
-    void 거리에_따라_지원여부가_틀리다_10Km() {
-        assertThat(new MidRangeDistancePremiumPolicy().isSupport(new Distance(20)))
-                .isTrue();
-        assertThat(new MidRangeDistancePremiumPolicy().isSupport(new Distance(10)))
-                .isFalse();
+    @ParameterizedTest
+    @CsvSource({"10, false", "20, true"})
+    @DisplayName("거리에 따라 지원여부가 다르다")
+    void 거리에_따라_지원여부가_다르다(int km, boolean isSupport) {
+        // given
+        DistancePremiumPolicy distancePremiumPolicy = new MidRangeDistancePremiumPolicy();
+        Distance distance = new Distance(km);
+
+        // when
+        boolean support = distancePremiumPolicy.isSupport(distance);
+
+        // then
+        assertThat(support)
+                .isEqualTo(isSupport);
     }
 
     @ParameterizedTest
     @CsvSource(value = {"11, 1250", "15, 1350", "21, 1450", "49, 1950", "50, 2050", "55, 2050"}, delimiter = ',')
-    void calcFare(int km, int fare) {
+    @DisplayName("운임을 계산한다")
+    void 운임을_계산한다(int km, int except) {
+        // given
         DistancePremiumPolicy distancePremiumPolicy = new MidRangeDistancePremiumPolicy();
+        Distance distance = new Distance(km);
+        Money defaultMoney = new Money(1250);
 
-        assertThat(distancePremiumPolicy.calcFare(new Distance(km), new Money(1250)))
-                .isEqualTo(new Money(fare));
+        // when
+        Money result = distancePremiumPolicy.calcFare(distance, defaultMoney);
+
+        // then
+        assertThat(result)
+                .isEqualTo(new Money(except));
     }
 }
