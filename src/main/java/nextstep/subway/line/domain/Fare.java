@@ -6,7 +6,7 @@ import java.util.Objects;
 
 @Embeddable
 public class Fare {
-    public static final int DEFAULT_FARE_AMOUNT = 900;
+    public static final int DEFAULT_FARE_AMOUNT = 0;
 
     @Column(name = "fare")
     private final int amount;
