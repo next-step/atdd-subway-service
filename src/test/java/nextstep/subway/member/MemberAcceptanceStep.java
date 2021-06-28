@@ -142,4 +142,12 @@ public class MemberAcceptanceStep {
     public static void 나의_정보_삭제_응답됨(ExtractableResponse<Response> 나의_정보_삭제_요청_결과) {
         assertThat(나의_정보_삭제_요청_결과.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    public static void 회원_수정_실패됨(ExtractableResponse<Response> duplicateUpdateResponse) {
+        assertThat(duplicateUpdateResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 회원_생성_실패됨(ExtractableResponse<Response> duplicateCreateResponse) {
+        assertThat(duplicateCreateResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 }

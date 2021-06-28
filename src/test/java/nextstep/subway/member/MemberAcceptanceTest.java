@@ -12,8 +12,10 @@ import static nextstep.subway.member.MemberAcceptanceStep.*;
 
 class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
+    public static final String DUPLICATE_EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final String NEW_EMAIL = "newemail@email.com";
+    public static final String DUPLICATE_NEW_EMAIL = "newemail@email.com";
     public static final String NEW_PASSWORD = "newpassword";
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
@@ -31,10 +33,20 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // then
         회원_정보_조회됨(findResponse, EMAIL, AGE);
 
+        // when 회원 정보 중복 이메일 생성
+        ExtractableResponse<Response> duplicateCreateResponse = 회원_생성을_요청(DUPLICATE_EMAIL, PASSWORD, AGE);
+        // then
+        회원_생성_실패됨(duplicateCreateResponse);
+
         // when
         ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
         // then
         회원_정보_수정됨(updateResponse);
+
+        // when 회원 정보 중복 이메일 수정
+        ExtractableResponse<Response> duplicateUpdateResponse = 회원_정보_수정_요청(createResponse, DUPLICATE_NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        // then
+        회원_수정_실패됨(duplicateUpdateResponse);
 
         // when
         ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
@@ -82,6 +94,6 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // When 삭제된 정보로 로그인 요청
         ExtractableResponse<Response> 삭제된_로그인_재요청_결과 = 로그인_요청(NEW_EMAIL, NEW_PASSWORD);
         // Then 나의 정보 확인
-        로그인_실패됨(삭제된_로그인_재요청_결과);
+        로그인_이메일_실패됨(삭제된_로그인_재요청_결과);
     }
 }
