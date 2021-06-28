@@ -8,6 +8,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import static nextstep.subway.favorite.domain.Favorite.NOT_OWNER_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class FavoriteTest {
 
@@ -24,5 +25,18 @@ class FavoriteTest {
         assertThatThrownBy(() -> favorite.checkOwner(loginMember))
                 .isInstanceOf(IllegalArgumentException.class) //then
                 .hasMessage(NOT_OWNER_EXCEPTION_MESSAGE);
+    }
+
+    @DisplayName("로그인한 유저의 즐겨찾기가 본인인지 확인한다.")
+    @Test
+    void checkOwner() {
+        //given
+        Member member = new Member("email", "password", 20);
+        ReflectionTestUtils.setField(member, "id", 1L);
+        Favorite favorite = new Favorite(null, null, member);
+        LoginMember loginMember = new LoginMember(1L, "email", 20);
+
+        //when
+        assertDoesNotThrow(() -> favorite.checkOwner(loginMember)); //then
     }
 }
