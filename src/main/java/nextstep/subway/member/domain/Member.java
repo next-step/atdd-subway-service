@@ -3,6 +3,7 @@ package nextstep.subway.member.domain;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.favorite.domain.FavoriteGroup;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
@@ -74,7 +75,9 @@ public class Member extends BaseEntity {
         }
     }
 
-    public void removeFavorite(Favorite favorite) {
+    public void removeFavoriteById(Long favoriteId) {
+        Favorite favorite = favorites.findFavoriteById(favoriteId)
+                .orElseThrow(() -> new IllegalArgumentException("즐겨찾기가 존재하지 않습니다."));
         favorites.remove(favorite);
     }
 }

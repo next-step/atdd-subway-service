@@ -1,4 +1,4 @@
-package nextstep.subway.member.domain;
+package nextstep.subway.favorite.domain;
 
 import nextstep.subway.favorite.domain.Favorite;
 
@@ -7,13 +7,14 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Embeddable
 public class FavoriteGroup {
     @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Favorite> favorites = new ArrayList<>();
 
-    public FavoriteGroup() {
+    protected FavoriteGroup() {
     }
 
     public FavoriteGroup(List<Favorite> favorites) {
@@ -34,5 +35,11 @@ public class FavoriteGroup {
 
     public void remove(Favorite favorite) {
         favorites.remove(favorite);
+    }
+
+    public Optional<Favorite> findFavoriteById(Long favoriteId) {
+        return favorites.stream()
+                .filter(favorite -> favorite.getId().equals(favoriteId))
+                .findFirst();
     }
 }

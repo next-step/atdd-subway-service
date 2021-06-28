@@ -48,8 +48,7 @@ public class FavoriteService {
 
     public void removeFavorite(LoginMember loginMember, Long favoriteId) {
         Member member = findMemberById(loginMember.getId());
-        Favorite favorite = findFavoriteById(favoriteId);
-        member.removeFavorite(favorite);
+        member.removeFavoriteById(favoriteId);
     }
 
     private Station findStationById(Long id) {

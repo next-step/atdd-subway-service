@@ -48,23 +48,14 @@ public class FavoriteTest {
         assertThat(사용자.getFavorites()).containsExactly(favorite);
     }
 
-    @DisplayName("즐겨찾기 생성 - 아이디가 같은 즐겨찾기 등록")
+    @DisplayName("즐겨찾기 생성 - 같은 즐겨찾기는 한 번만 등록되야한다." +
+            "같은 즐겨찾기는 아이디가 같은 경우 or 사용자, 출발역, 도착역이 같은 경우이다.")
     @Test
-    public void 아이디가같은즐겨찾기_등록_확인() throws Exception {
+    public void 같은즐겨찾기_추가_확인() throws Exception {
         //when
         Favorite favorite1 = new Favorite(1L, 사용자, 방화역, 하남검단산역);
         Favorite favorite2 = new Favorite(1L, 사용자, 방화역, 하남검단산역);
-
-        //then
-        assertThat(사용자.getFavorites()).containsExactly(favorite1);
-    }
-
-    @DisplayName("즐겨찾기 생성 - 아이디는 다르지만 사용자, 출발역, 도착역이 같은 경우")
-    @Test
-    public void 깉은즐겨찾기_등록_확인() throws Exception {
-        //when
-        Favorite favorite1 = new Favorite(1L, 사용자, 방화역, 하남검단산역);
-        Favorite favorite2 = new Favorite(2L, 사용자, 방화역, 하남검단산역);
+        Favorite favorite3 = new Favorite(2L, 사용자, 방화역, 하남검단산역);
 
         //then
         assertThat(사용자.getFavorites()).containsExactly(favorite1);

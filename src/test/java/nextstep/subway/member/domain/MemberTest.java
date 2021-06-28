@@ -61,7 +61,7 @@ public class MemberTest {
         Favorite favorite3 = new Favorite(3L, 사용자, 방화역, 하남검단산역);
 
         //when
-        사용자.removeFavorite(favorite1);
+        사용자.removeFavoriteById(1L);
 
         //then
         assertThat(사용자.getFavorites()).containsExactly(favorite2, favorite3);

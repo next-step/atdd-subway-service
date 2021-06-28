@@ -21,14 +21,14 @@ public class FavoriteController {
     }
 
     @PostMapping
-    public ResponseEntity createFavorite(@AuthenticationPrincipal LoginMember loginMember,
+    public ResponseEntity<FavoriteResponse> createFavorite(@AuthenticationPrincipal LoginMember loginMember,
                                          @RequestBody FavoriteRequest favoriteRequest) {
         FavoriteResponse favoriteResponse = favoriteService.createFavorite(loginMember, favoriteRequest);
         return ResponseEntity.created(URI.create("/favorites/" + favoriteResponse.getId())).body(favoriteResponse);
     }
 
     @GetMapping
-    public ResponseEntity findFavorites(@AuthenticationPrincipal LoginMember loginMember) {
+    public ResponseEntity<List<FavoriteResponse>> findFavorites(@AuthenticationPrincipal LoginMember loginMember) {
         List<FavoriteResponse> favoriteResponses = favoriteService.findFavorites(loginMember);
         return ResponseEntity.ok(favoriteResponses);
     }
