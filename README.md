@@ -57,6 +57,44 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ---
 
+### Step3
+- [x] 토큰 발급 기능 (로그인) 인수 테스트 만들기
+   - Feature: 로그인 기능
+     - Scenario: 로그인을 시도한다.
+       - Given 회원 등록되어 있음
+       - When 로그인 요청
+       - When 내 정보 조회 요청
+       - Then 내 정보 조회 됨
+- [x] 인증 - 내 정보 관련 기능 완성하기
+   - Feature: 내 정보 기능
+     - Scenario: 내 정보 관리
+       - Given 회원 등록되어 있음
+       - Given 로그인 되어있음
+       - When 내 정보 조회
+       - Then 내 정보 조회 됨
+       - When 내 정보 수정
+       - When 내 정보 조회
+       - Then 수정된 정보로 표시 됨
+       - When 내 정보 삭제
+       - Then 내 정보 삭제 됨
+- [x] 인증 - 즐겨 찾기 기능 완성하기
+   - Feature: 즐겨찾기를 관리한다.
+     - Background 
+       - Given 지하철역 등록되어 있음
+       - And 지하철 노선 등록되어 있음
+       - And 지하철 노선에 지하철역 등록되어 있음
+       - And 회원 등록되어 있음
+       - And 로그인 되어있음
+     - Scenario: 즐겨찾기를 관리
+       - When 즐겨찾기 생성을 요청
+       - Then 즐겨찾기 생성됨
+       - When 즐겨찾기 목록 조회 요청
+       - Then 즐겨찾기 목록 조회됨
+       - When 즐겨찾기 삭제 요청
+       - Then 즐겨찾기 삭제됨
+       - When 즐겨찾기 목록 조회 요청
+       - Then 즐겨찾기 빈 목록 조회됨
+
 ### Step2
 - [x] 최단 경로 조회 인수 테스트 만들기
   - [x] FAIL! 출발역과 도착역이 같은 경우

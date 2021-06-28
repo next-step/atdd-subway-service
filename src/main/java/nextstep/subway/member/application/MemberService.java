@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class MemberService {
     private MemberRepository memberRepository;
 
@@ -23,6 +24,10 @@ public class MemberService {
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
+    }
+
+    public Member findMemberEntity(Long id) {
+        return memberRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
     public void updateMember(Long id, MemberRequest param) {
