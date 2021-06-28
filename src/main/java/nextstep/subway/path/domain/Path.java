@@ -1,5 +1,6 @@
-package nextstep.subway.path.application;
+package nextstep.subway.path.domain;
 
+import nextstep.subway.common.Excetion.NotConnectStationException;
 import nextstep.subway.line.collection.Sections;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -38,7 +39,7 @@ public class Path {
         try {
             return new DijkstraShortestPath(optimalPath).getPath(sourceStation, targetStation).getVertexList();
         } catch (NullPointerException e) {
-            throw new IllegalArgumentException("연결되어 있지 않은 역입니다.");
+            throw new NotConnectStationException();
         }
     }
 
