@@ -1,13 +1,11 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.collection.Distance;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
-import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.station.application.StationService;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
@@ -25,7 +23,6 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @DisplayName("지하철 경로 조회 테스트")
@@ -81,8 +78,8 @@ public class PathServiceTest {
         when(stationRepository.findById(5L)).thenReturn(Optional.ofNullable(홍대역));
 
         // then
-        Path path = pathService.findOptimalPath(1L, 5L);
-        List<Station> stations = path.getStations();
+        PathResponse pathResponse = pathService.findOptimalPath(1L, 5L);
+        List<StationResponse> stations = pathResponse.getStations();
         List<Station> expectedStations = Arrays.asList(
                 신도림역, 문래역, 영등포구청역, 홍대역
         );
@@ -108,7 +105,7 @@ public class PathServiceTest {
         // then
         // 예외 발생
         assertThatThrownBy(() -> pathService.findOptimalPath(1L, 1L))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
