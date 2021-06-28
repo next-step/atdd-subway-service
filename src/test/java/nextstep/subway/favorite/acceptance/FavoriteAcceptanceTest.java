@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import nextstep.subway.favorite.dto.FavoriteRemoveRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
@@ -223,12 +222,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 즐겨찾기_제거(String 토큰, Long 즐겨찾기_번호) {
-        FavoriteRemoveRequest favoriteRemoveRequest = new FavoriteRemoveRequest(즐겨찾기_번호);
         RestAssured
                 .given().header("authorization", BEARER + 토큰).log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(favoriteRemoveRequest)
-                .when().delete("/favorites")
+                .when().delete("/favorites/" + 즐겨찾기_번호)
                 .then().log().all()
                 .extract();
     }

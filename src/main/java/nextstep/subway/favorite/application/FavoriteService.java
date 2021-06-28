@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import nextstep.subway.favorite.dto.FavoriteRemoveRequest;
 import nextstep.subway.favorite.dto.FavoritesResponse;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -58,9 +57,9 @@ public class FavoriteService {
         return FavoritesResponse.of(favorites.stream().map(Favorite::toResponse).collect(Collectors.toList()));
     }
 
-    public void remove(LoginMember loginMember, FavoriteRemoveRequest favoriteRemoveRequest) {
+    public void remove(LoginMember loginMember, Long favoriteId) {
         member(loginMember);
-        Favorite favorite = favoriteRepository.findById(favoriteRemoveRequest.getId()).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_FAVORITE));
+        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_FAVORITE));
         favoriteRepository.delete(favorite);
     }
 
