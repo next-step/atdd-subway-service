@@ -14,12 +14,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
+import static nextstep.subway.path.domain.age.AgePolicyFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class FareCalculatorFacadeTest {
-    private static final int childAge = 6;
-    private static final int teenagerAge = 13;
-    private static final int normalAge = 19;
 
     private static final int shortDistance = 10;
     private static final int midDistance = 50;
@@ -42,7 +40,7 @@ class FareCalculatorFacadeTest {
     @MethodSource("childCase")
     @DisplayName("어린이의 요금을 계산한다(짧은거리, 중간거리, 장거리, 환승, 비환승)")
     public void 어린이(FareCalculatorCase fareCalculatorCase) {
-        assertThat(FareCalculatorFacade.calcFare(new LoginMember(null, null, childAge), fareCalculatorCase.getShortestDistance()))
+        assertThat(FareCalculatorFacade.calcFare(new LoginMember(null, null, CHILD_AGE), fareCalculatorCase.getShortestDistance()))
                 .isEqualTo(fareCalculatorCase.getExceptMoney());
     }
 
@@ -50,7 +48,7 @@ class FareCalculatorFacadeTest {
     @MethodSource("teenagerCase")
     @DisplayName("청소년의 요금을 계산한다(짧은거리, 중간거리, 장거리, 환승, 비환승)")
     public void 청소년(FareCalculatorCase fareCalculatorCase) {
-        assertThat(FareCalculatorFacade.calcFare(new LoginMember(null, null, teenagerAge), fareCalculatorCase.getShortestDistance()))
+        assertThat(FareCalculatorFacade.calcFare(new LoginMember(null, null, TEENAGER_AGE), fareCalculatorCase.getShortestDistance()))
                 .isEqualTo(fareCalculatorCase.getExceptMoney());
     }
 
@@ -58,7 +56,7 @@ class FareCalculatorFacadeTest {
     @MethodSource("defaultCase")
     @DisplayName("일반의 요금을 계산한다(짧은거리, 중간거리, 장거리, 환승, 비환승)")
     public void 일반(FareCalculatorCase fareCalculatorCase) {
-        assertThat(FareCalculatorFacade.calcFare(new LoginMember(null, null, normalAge), fareCalculatorCase.getShortestDistance()))
+        assertThat(FareCalculatorFacade.calcFare(new LoginMember(null, null, NORMAL_AGE), fareCalculatorCase.getShortestDistance()))
                 .isEqualTo(fareCalculatorCase.getExceptMoney());
     }
 

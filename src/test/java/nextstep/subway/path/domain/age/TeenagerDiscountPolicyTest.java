@@ -5,6 +5,7 @@ import nextstep.subway.wrapped.Money;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import static nextstep.subway.path.domain.age.AgePolicyFixture.TEENAGER_AGE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class TeenagerDiscountPolicyTest {
@@ -18,7 +19,7 @@ class TeenagerDiscountPolicyTest {
     @ParameterizedTest
     @CsvSource(value = {"1250, 720", "1550, 960", "2300, 1560"})
     void calcFare(int money, int except) {
-        assertThat(new TeenagerDiscountPolicy().calcFare(new LoginMember(null, null, 13), new Money(money)))
+        assertThat(new TeenagerDiscountPolicy().calcFare(new LoginMember(null, null, TEENAGER_AGE), new Money(money)))
                 .isEqualTo(new Money(except));
     }
 }
