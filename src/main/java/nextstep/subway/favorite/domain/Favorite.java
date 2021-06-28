@@ -5,6 +5,7 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Favorite {
@@ -54,6 +55,6 @@ public class Favorite {
     }
 
     private boolean isOwner(LoginMember loginMember) {
-        return member.getId().equals(loginMember.getId());
+        return Objects.equals(member.getId(), loginMember.getId());
     }
 }
