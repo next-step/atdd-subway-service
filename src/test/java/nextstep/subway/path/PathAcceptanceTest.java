@@ -97,14 +97,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("최단 경로 역 목록과 총 거리를 반환한다")
+    @DisplayName("두 역의 최단 거리 경로를 조회")
     void 최단_경로_역_목록과_총_거리를_반환한다() {
         // when
         ExtractableResponse<Response> response
             = 지하철_경로_요청됨(강남역, 남부터미널역);
 
         // then
-        지하철_경로_응답됨(response);
+        지하철_경로_역목록_응답됨(response);
+
+        // then
+        지하철_경로_거리_응답됨(response);
+
+        // then
+        지하철_경로_요금_응답됨(response);
     }
 
     private ExtractableResponse<Response> 지하철_경로_요청됨(StationResponse source, StationResponse target) {
@@ -124,12 +130,21 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return response;
     }
 
-    private void 지하철_경로_응답됨(ExtractableResponse<Response> response) {
+    private void 지하철_경로_역목록_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getDistance()).isEqualTo(12);
         assertThat(pathResponse.getStations()).containsExactly(강남역, 양재역, 남부터미널역);
+    }
+
+    private void 지하철_경로_거리_응답됨(ExtractableResponse<Response> response) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getDistance()).isEqualTo(12);
+    }
+
+    private void 지하철_경로_요금_응답됨(ExtractableResponse<Response> response) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(2250);
     }
 
     private void 지하철_경로_응답_실패됨(ExtractableResponse<Response> response) {

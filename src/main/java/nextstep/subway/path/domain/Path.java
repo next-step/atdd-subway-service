@@ -30,4 +30,8 @@ public class Path {
     public List<Station> getStations() {
         return unmodifiableList(stations);
     }
+
+    public int getFare() {
+        return 0;
+    }
 }
