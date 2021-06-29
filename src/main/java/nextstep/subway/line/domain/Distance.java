@@ -30,11 +30,11 @@ public class Distance {
         }
     }
 
-    public void subtractDistance(int newDistance) {
+    public Distance subtractDistance(int newDistance) {
         if (this.distance <= newDistance) {
             throw new RuntimeException(NOT_ENOUGH_DISTANCE);
         }
-        this.distance -= newDistance;
+        return new Distance(this.distance - newDistance);
     }
 
     public int toNumber() {
