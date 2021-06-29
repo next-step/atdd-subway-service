@@ -7,18 +7,16 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.alg.shortestpath.KShortestPaths;
 import org.jgrapht.graph.WeightedMultigraph;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class Path {
-    private static final String SAME_SOURCE_TARGET_EXCEPTION = "출발지와 도착지가 같은 경로는 검색할수 없습니다.";
-    private static final String SOURCE_TARGET_EXCEPTION = "역이 연결되지 않았거나 등록되지 않았습니다.";
+import static nextstep.subway.path.common.PathConstants.*;
 
+public class Path {
     private Station source;
     private Station target;
     private WeightedMultigraph<Station, LineSection> graph;
+    private DijkstraShortestPath dijkstraShortestPath;
 
     public Path(Station source, Station target) {
         if (source.equals(target)){
@@ -32,7 +30,7 @@ public class Path {
 
     public List<Station> findShortPath(List<Line> lines) {
         setUpPath(lines);
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        dijkstraShortestPath = new DijkstraShortestPath(graph);
         return dijkstraShortestPath.getPath(source, target).getVertexList();
     }
 
@@ -59,7 +57,7 @@ public class Path {
     }
 
     private void addEdgeWeight(Section section, Line line) {
-        LineSection lineSection = new LineSection(section, line.getId());
+        LineSection lineSection = new LineSection(section, line);
         graph.addEdge(section.upStation(), section.downStation(), lineSection);
         graph.setEdgeWeight(lineSection, section.distance());
     }
@@ -90,5 +88,72 @@ public class Path {
         return paths.stream()
                 .mapToInt(it -> (int)it.getWeight())
                 .sum();
+    }
+
+    public int calculateFare(int distance, int age) {
+        int totalFare= calculateDistanceFare(distance);
+        totalFare = calculateAagFare(age, totalFare);
+        return totalFare + findMaxLineFares();
+    }
+
+    private int calculateDistanceFare(int distance) {
+        int totalFare = DEFAULT_FARE;
+        if (isLessFiftyKm(distance)) {
+            return DEFAULT_FARE + calculateOverFare(distance - DEFAULT_KM, FIVE_KM);
+        }
+        if (isMoreFiftyKm(distance)) {
+            return DEFAULT_FARE + calculateOverFare(distance - DEFAULT_KM, EIGHT_KM);
+        }
+        return totalFare;
+    }
+
+
+    private int calculateAagFare(int age, int totalFare) {
+        if (isBetweenThirteenAndNineteenAge(age)) {
+            return (int) ((totalFare-DEDUCTIBLE_FARE) * DISCOUNT_TEENAGER);
+        }
+        if (isBetweenSixAndThirteenAge(age)) {
+            return (int) ((totalFare-DEDUCTIBLE_FARE) * DISCOUNT_CHILDREN);
+        }
+        return totalFare;
+    }
+    private boolean isLessFiftyKm(int distance) {
+        if (distance >= DEFAULT_KM && distance <= FIFTY_KM) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isMoreFiftyKm(int distance) {
+        if (distance > FIFTY_KM) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isBetweenThirteenAndNineteenAge(int age) {
+        if (THIRTEEN_AGE <= age && age < NINETEEN_AGE) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isBetweenSixAndThirteenAge(int age) {
+        if (SIX_AGE <= age && age < THIRTEEN_AGE) {
+            return true;
+        }
+        return false;
+    }
+
+    private int calculateOverFare(int distance, int km) {
+        return (int) ((Math.ceil((distance - ONE) / km) + ONE) * DEFAULT_ADD_FARE);
+    }
+
+    private int findMaxLineFares() {
+        List<LineSection> lineSections = dijkstraShortestPath.getPath(source, target).getEdgeList();
+        return lineSections.stream()
+                .mapToInt(it -> it.getLineFare())
+                .max()
+                .orElse(ZEOR);
     }
 }

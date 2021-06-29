@@ -23,11 +23,9 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findPath(Long source, Long target, int age) {
         Station sourceStation = stationRepository.findById(source).orElseThrow(RuntimeException::new);
         Station targetStation = stationRepository.findById(target).orElseThrow(RuntimeException::new);
-        Path path = new Path(sourceStation, targetStation);
-        List<Line> lines = lineRepository.findAll();
-        return PathResponse.of(path.findShortPath(lines), path.calculateDistance(lines.size()));
+        return PathResponse.of(new Path(sourceStation, targetStation), lineRepository.findAll(), age);
     }
 }
