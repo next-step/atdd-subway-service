@@ -84,7 +84,7 @@ public class MemberAcceptanceStep {
     public static ExtractableResponse<Response> 내_회원_정보_조회_요청(TokenResponse tokenResponse) {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
-                .header("Authorization", "Bearer " + tokenResponse.getAccessToken())
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .when().get("/members/me")
                 .then().log().all().extract();
         return response;
@@ -95,7 +95,7 @@ public class MemberAcceptanceStep {
 
         return RestAssured
                 .given().log().all()
-                .header("Authorization", "Bearer " + tokenResponse.getAccessToken())
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
                 .when().put("/members/me")
@@ -107,7 +107,7 @@ public class MemberAcceptanceStep {
 
         return RestAssured
                 .given().log().all()
-                .header("Authorization", "Bearer " + tokenResponse.getAccessToken())
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .when().delete("/members/me")
                 .then().log().all()
                 .extract();
