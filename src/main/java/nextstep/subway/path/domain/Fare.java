@@ -38,13 +38,17 @@ public class Fare {
     private Fare calculateOverFare(Distance distance) {
         int overAmount = DEFAULT_USE_FARE_AMOUNT;
         int distanceToInt = distance.toInt();
-        if (DISTANCE_10_KM < distance.toInt()) {
-            overAmount += (int) ((Math.ceil((Math.min(distanceToInt, DISTANCE_50_KM) - DISTANCE_10_KM - 1) / 5) + 1) * 100);
+        if (distance.isOver(DISTANCE_10_KM)) {
+            overAmount += calculateOverFare((Math.min(distanceToInt, DISTANCE_50_KM)), DISTANCE_10_KM, 5);
         }
-        if (DISTANCE_50_KM < distance.toInt()) {
-            overAmount += (int) ((Math.ceil((distanceToInt - DISTANCE_50_KM - 1) / 8) + 1) * 100);
+        if (distance.isOver(DISTANCE_50_KM)) {
+            overAmount += calculateOverFare(distanceToInt, DISTANCE_50_KM, 8);
         }
         return new Fare(overAmount);
+    }
+
+    private int calculateOverFare(int distance, int overDistance, int discountPer) {
+        return (int) ((Math.ceil((distance - overDistance - 1) / discountPer) + 1) * 100);
     }
 
     @Override

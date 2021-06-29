@@ -17,6 +17,10 @@ public class Distance {
         this.value = value;
     }
 
+    public boolean isOver(int value) {
+        return value < this.value;
+    }
+
     public int toInt() {
         return value;
     }
