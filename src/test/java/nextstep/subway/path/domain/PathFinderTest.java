@@ -3,12 +3,16 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
-import org.assertj.core.api.Assertions;
+import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PathFinderTest {
 
@@ -42,14 +46,24 @@ class PathFinderTest {
     @Test
     @DisplayName("출발역과 도착역이 같은 경우 예외가 발생한다")
     void sameSourceTargetTest() {
-        Assertions.assertThatThrownBy(() -> pathFinder.findPaths(역삼역, 역삼역))
+        assertThatThrownBy(() -> pathFinder.findPaths(역삼역, 역삼역))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우 예외가 발생한다")
     void notConnectedSourceTargetTest() {
-        Assertions.assertThatThrownBy(() -> pathFinder.findPaths(역삼역, 계양역))
+        assertThatThrownBy(() -> pathFinder.findPaths(역삼역, 계양역))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("최단경로를 조회한다")
+    void findPathTest() {
+        // when
+        List<StationResponse> paths = pathFinder.findPaths(남부터미널역, 역삼역);
+
+        // then
+        assertThat(paths).hasSize(4);
     }
 }
