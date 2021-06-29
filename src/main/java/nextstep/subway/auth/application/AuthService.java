@@ -31,7 +31,7 @@ public class AuthService {
         if (!jwtTokenProvider.validateToken(credentials) && required) {
             throw new AuthorizationException();
         }
-        if (!required) {
+        if (!jwtTokenProvider.validateToken(credentials) && !required) {
             return new LoginMember();
         }
 
