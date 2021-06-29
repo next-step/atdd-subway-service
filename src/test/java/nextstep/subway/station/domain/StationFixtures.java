@@ -14,5 +14,7 @@ public class StationFixtures {
     public static final Station 서대문역 = new Station(12L,"서대문역");
     public static final Station 광화문역 = new Station(13L,"광화문역");
     public static final Station 을지로4가역 = new Station(14L,"을지로4가역");
+    public static final Station 회현역 = new Station(15L,"회현역");
+    public static final Station 명동역 = new Station(16L,"명동역");
 
 }

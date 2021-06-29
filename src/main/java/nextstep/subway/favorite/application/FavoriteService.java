@@ -1,11 +1,13 @@
 package nextstep.subway.favorite.application;
 
 import java.util.List;
+import java.util.Map;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.favorite.exception.FavoriteNotFoundException;
 import nextstep.subway.favorite.exception.NotMineFavoriteException;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
@@ -27,11 +29,17 @@ public class FavoriteService {
     }
 
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
-        Member member = memberService.findById(loginMember.getId());
-        Station source = stationService.findById(request.getSource());
-        Station target = stationService.findById(request.getTarget());
-        Favorite persistFavorite = favoriteRepository.save(new Favorite(member, source, target));
+        Favorite newFavorite = makeFavorite(loginMember.getId(), request.getSource(), request.getTarget());
+        Favorite persistFavorite = favoriteRepository.save(newFavorite);
         return FavoriteResponse.of(persistFavorite);
+    }
+
+    private Favorite makeFavorite(long memberId, long sourceStationId, long targetStationId) {
+        Member member = memberService.findById(memberId);
+        Map<Long, Station> stations = stationService.findStationsByIds(sourceStationId, targetStationId);
+        Station source = stations.get(sourceStationId);
+        Station target = stations.get(targetStationId);
+        return new Favorite(member, source, target);
     }
 
     public List<FavoriteResponse> findByMemberId(Long memberId) {
@@ -39,7 +47,9 @@ public class FavoriteService {
     }
 
     public void deleteFavorite(Long memberId, Long favoriteId) {
-        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(RuntimeException::new);
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, memberId)
+            .orElseThrow(FavoriteNotFoundException::new);
+
         if (!favorite.isOwner(memberId)) {
             throw new NotMineFavoriteException("자신의 즐겨찾기만 삭제 가능합니다");
         }

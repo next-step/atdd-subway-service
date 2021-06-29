@@ -1,7 +1,7 @@
 package nextstep.subway.auth.acceptance;
 
 import static nextstep.subway.member.MemberAcceptanceTest.비회원;
-import static nextstep.subway.member.MemberAcceptanceTest.회원;
+import static nextstep.subway.member.MemberAcceptanceTest.성인_회원;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성됨;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,14 +23,14 @@ public class AuthAcceptanceTest extends AcceptancePerClassTest {
 
     @BeforeAll
     void setup() {
-        회원_생성됨(회원_생성을_요청(회원));
+        회원_생성됨(회원_생성을_요청(성인_회원));
     }
 
     @DisplayName("로그인 성공")
     @Test
     void loginSuccess() {
         // When
-        ExtractableResponse<Response> response = 로그인_요청(회원);
+        ExtractableResponse<Response> response = 로그인_요청(성인_회원);
 
         // Then
         로그인_성공함(response);
@@ -50,7 +50,7 @@ public class AuthAcceptanceTest extends AcceptancePerClassTest {
     @Test
     void myInfoWithBearerAuth() {
         // Given
-        TokenResponse tokenResponse = 로그인_요청(회원).as(TokenResponse.class);
+        TokenResponse tokenResponse = 로그인_요청(성인_회원).as(TokenResponse.class);
 
         // When
         ExtractableResponse<Response> response = 토큰으로_나의_회원정보_조회_요청(tokenResponse.getAccessToken());
@@ -80,7 +80,7 @@ public class AuthAcceptanceTest extends AcceptancePerClassTest {
     }
 
     public static void 로그인_실패함(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static ExtractableResponse<Response> 토큰으로_나의_회원정보_조회_요청(String accessToken) {
@@ -90,11 +90,11 @@ public class AuthAcceptanceTest extends AcceptancePerClassTest {
     public static void 나의_회원정보_조회_성공함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         MemberResponse memberResponse = response.as(MemberResponse.class);
-        assertThat(memberResponse.getEmail()).isEqualTo(회원.getEmail());
+        assertThat(memberResponse.getEmail()).isEqualTo(성인_회원.getEmail());
     }
 
     private static void 나의_회원정보_조회_실패함(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
 }

@@ -9,6 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.member.domain.Member;
+import nextstep.subway.path.exception.SameOriginAndDestinationException;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -34,16 +35,21 @@ public class Favorite extends BaseEntity {
     }
 
     public Favorite(Member member, Station source, Station target) {
+        this(null, member, source, target);
+    }
+
+    public Favorite(Long id, Member member, Station source, Station target) {
+        validationStations(source, target);
+        this.id = id;
         this.member = member;
         this.source = source;
         this.target = target;
     }
 
-    public Favorite(Long id, Member member, Station source, Station target) {
-        this.id = id;
-        this.member = member;
-        this.source = source;
-        this.target = target;
+    private void validationStations(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new SameOriginAndDestinationException();
+        }
     }
 
     public Long getId() {

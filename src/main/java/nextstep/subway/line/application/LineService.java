@@ -1,13 +1,14 @@
 package nextstep.subway.line.application;
 
 import java.util.List;
-import javax.persistence.EntityNotFoundException;
+import java.util.Map;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.line.exception.LineNotFoundException;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -26,10 +27,15 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        Line persistLine = lineRepository.save(makeLine(request));
         return LineResponse.of(persistLine);
+    }
+
+    private Line makeLine(LineRequest request) {
+        Map<Long, Station> stations = stationService.findStationsByIds(request.getUpStationId(), request.getDownStationId());
+        Station upStation = stations.get(request.getUpStationId());
+        Station downStation = stations.get(request.getDownStationId());
+        return new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance(), request.getSurcharge());
     }
 
     public List<LineResponse> findLines() {
@@ -42,12 +48,13 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public Line findById(Long id) {
-        return lineRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        return lineRepository.findById(id)
+            .orElseThrow(LineNotFoundException::new);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = findById(id);
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor(), lineUpdateRequest.getSurcharge()));
     }
 
     public void deleteLineById(Long id) {
@@ -55,15 +62,16 @@ public class LineService {
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
+        Map<Long, Station> stations = stationService.findStationsByIds(request.getUpStationId(), request.getDownStationId());
+        Station upStation = stations.get(request.getUpStationId());
+        Station downStation = stations.get(request.getDownStationId());
         Line persistLine = findById(lineId);
         Section section = new Section(persistLine, upStation, downStation, request.getDistance());
         persistLine.addSection(section);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Station station = stationService.findStationById(stationId);
+        Station station = stationService.findById(stationId);
         Line line = findById(lineId);
         line.deleteStation(station);
     }

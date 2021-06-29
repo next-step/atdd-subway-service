@@ -50,7 +50,7 @@ public class Section extends BaseEntity {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = new Distance(distance);
+        this.distance = Distance.valueOf(distance);
     }
 
     private void validationDistance(int distance) {

@@ -1,19 +1,29 @@
 package nextstep.subway.path.application;
 
+import static nextstep.subway.path.domain.FarePolicy.ADULT;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.stream.Collectors;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.impl.ShortestPath;
+import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +39,11 @@ public class PathServiceTest {
     @Mock
     private LineRepository lineRepository;
     @Mock
-    private StationRepository stationRepository;
+    private StationService stationService;
+    @Mock
+    private PathFinder pathFinder;
+    @Mock
+    private ShortestPath shortestPath;
     @InjectMocks
     private PathService pathService;
 
@@ -55,11 +69,19 @@ public class PathServiceTest {
         List<Line> allLines = new ArrayList<>(Arrays.asList(이호선, 오호선));
 
         when(lineRepository.findAll()).thenReturn(allLines);
-        when(stationRepository.findById(서대문역.getId())).thenReturn(Optional.of(서대문역));
-        when(stationRepository.findById(시청역.getId())).thenReturn(Optional.of(시청역));
+
+        Map<Long, Station> findStations = new HashMap<>();
+        findStations.put(서대문역.getId(), 서대문역);
+        findStations.put(시청역.getId(), 시청역);
+        given(stationService.findStationsByIds(any(), any())).willReturn(findStations);
+        given(shortestPath.getDistance()).willReturn(20);
+        given(shortestPath.getStations()).willReturn(new ArrayList<>(Arrays.asList(서대문역, 충정로역, 시청역)));
+        given(pathFinder.findPath(any(), any(), any())).willReturn(shortestPath);
+
+        LoginMember loginMember = new LoginMember(ADULT.getMaxAge());
 
         // When
-        PathResponse pathResponse = pathService.findPath(서대문역.getId(), 시청역.getId());
+        PathResponse pathResponse = pathService.findPath(loginMember, new PathRequest(서대문역.getId(), 시청역.getId()));
 
         // Then
         지하철역_순서_정렬됨(pathResponse.getStations(), 서대문역, 충정로역, 시청역);

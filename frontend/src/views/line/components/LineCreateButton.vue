@@ -53,6 +53,16 @@
               outlined
           ></v-text-field>
         </div>
+        <div class="d-flex">
+          <v-text-field
+              v-model="lineForm.surcharge"
+              :rules="rules.section.surcharge"
+              color="grey darken-1"
+              label="추가요금"
+              placeholder="추가요금"
+              outlined
+          ></v-text-field>
+        </div>
         <div>
           <v-text-field v-model="lineForm.color" :rules="rules.line.color" :value="lineForm.color" label="노선 색상" filled disabled></v-text-field>
           <p>
@@ -148,7 +158,8 @@ export default {
         color: '',
         upStationId: '',
         downStationId: '',
-        distance: ''
+        distance: '',
+        surcharge: '0'
       },
       valid: false,
       lineColors: [...LINE_COLORS],
