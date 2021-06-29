@@ -33,8 +33,21 @@ public class AuthService {
             throw new AuthorizationException();
         }
 
+        return getLoginUser(credentials);
+    }
+
+    public LoginMember findMemberByTokenOrElseGuest(String credentials) {
+        if (!jwtTokenProvider.validateToken(credentials)) {
+            return LoginMember.DEFAULT_USER;
+        }
+
+        return getLoginUser(credentials);
+    }
+
+    private LoginMember getLoginUser(String credentials) {
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
+
 }

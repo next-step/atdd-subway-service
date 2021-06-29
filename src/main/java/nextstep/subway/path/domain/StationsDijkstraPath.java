@@ -30,6 +30,11 @@ public class StationsDijkstraPath implements Path {
         return Collections.unmodifiableList(stations);
     }
 
+    @Override
+    public List<SectionEdge> getsectionEdges() {
+        return Collections.unmodifiableList(sectionEdges);
+    }
+
     public static StationsDijkstraPath of(GraphPath<Station, SectionEdge> path) {
         validatoin(path);
         return new StationsDijkstraPath(path.getVertexList(), path.getEdgeList());

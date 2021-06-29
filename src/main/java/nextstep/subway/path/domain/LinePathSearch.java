@@ -20,6 +20,16 @@ public class LinePathSearch {
         this.dijkstra = new DijkstraShortestPath<>(this.weightedMultigraph);
     }
 
+    public static LinePathSearch of(List<Section> sections) {
+        return new LinePathSearch(sections);
+    }
+
+    public Path searchPath(Station source, Station target) {
+        validataionStation(source, target);
+        GraphPath<Station, SectionEdge> path = dijkstra.getPath(source, target);
+        return StationsDijkstraPath.of(path);
+    }
+
     private WeightedMultigraph<Station, SectionEdge> settingGraph(List<Section> sections) {
         WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph<>(SectionEdge.class);
         addAllToGraph(sections, graph);
@@ -36,16 +46,6 @@ public class LinePathSearch {
                 graph.addEdge(section.getUpStation(), section.getDownStation(), edge);
                 graph.setEdgeWeight(edge, section.getDistance());
             });
-    }
-
-    public static LinePathSearch of(List<Section> sections) {
-        return new LinePathSearch(sections);
-    }
-
-    public Path searchPath(Station source, Station target) {
-        validataionStation(source, target);
-        GraphPath<Station, SectionEdge> path = dijkstra.getPath(source, target);
-        return StationsDijkstraPath.of(path);
     }
 
     private void validataionStation(Station source, Station target) {

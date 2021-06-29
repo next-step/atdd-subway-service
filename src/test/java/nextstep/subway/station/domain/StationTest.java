@@ -14,5 +14,8 @@ public class StationTest {
     public static Station 은계역 = new Station(10L, "은계역");
     public static Station 사당역 = new Station(11L, "사당역");
     public static Station 서울대역 = new Station(12L, "서울대역");
+    public static Station 잠실나루역 = new Station(13L, "잠실나루역");
+    public static Station 강변역 = new Station(14L, "강변역");
+    public static Station 개성역 = new Station(14L, "개성역");
 
 }

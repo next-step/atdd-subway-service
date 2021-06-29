@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import nextstep.subway.auth.domain.AuthenticationNonePrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 
@@ -20,9 +22,10 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findPathBySourceAndTarget(@RequestParam Long source,
+    public ResponseEntity<PathResponse> findPathBySourceAndTarget(@AuthenticationNonePrincipal LoginMember loginMember,
+            @RequestParam Long source,
             @RequestParam Long target) {
 
-        return ResponseEntity.ok(pathService.findPathBySourceAndTarget(source, target));
+        return ResponseEntity.ok(pathService.findPathBySourceAndTarget(source, target, loginMember));
     }
 }

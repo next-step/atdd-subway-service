@@ -10,4 +10,6 @@ public interface Path {
 
     public List<Station> getStations();
 
+    public List<SectionEdge> getsectionEdges();
+
 }

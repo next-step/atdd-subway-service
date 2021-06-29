@@ -53,6 +53,16 @@
               outlined
           ></v-text-field>
         </div>
+        <div class="d-flex">
+          <v-text-field
+              v-model="lineForm.addFare"
+              :rules="rules.section.addFare"
+              color="grey darken-1"
+              label="추가요금"
+              placeholder="추가요금"
+              outlined
+          ></v-text-field>
+        </div>
         <div>
           <v-text-field v-model="lineForm.color" :rules="rules.line.color" :value="lineForm.color" label="노선 색상" filled disabled></v-text-field>
           <p>
@@ -113,7 +123,8 @@ export default {
           color: '',
           upStationId: '',
           downStationId: '',
-          distance: ''
+          distance: '',
+          addFare:''
         }
         this.$refs.lineForm.resetValidation()
         this.closeDialog()
@@ -148,7 +159,8 @@ export default {
         color: '',
         upStationId: '',
         downStationId: '',
-        distance: ''
+        distance: '',
+        addFare:''
       },
       valid: false,
       lineColors: [...LINE_COLORS],

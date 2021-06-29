@@ -24,32 +24,50 @@ public class Line extends BaseEntity {
 
     private String color;
 
+    private int addFare = 0;
+
     @Embedded
     private Sections sections = new Sections();
 
     public Line() {}
 
-    public Line(String name, String color) {
+    public Line(String name, String color, int addFare) {
         this.name = name;
         this.color = color;
+        this.addFare = addFare;
+    }
+
+    public Line(String name, String color) {
+        this(name, color, 0);
     }
 
     public Line(Long id, String name, String color, Station upStation, Station downStation, int distance) {
+        this(id, name, color, upStation, downStation, distance, 0);
+    }
+
+    public Line(Long id, String name, String color, Station upStation, Station downStation, int distance, int addFare) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.addFare = addFare;
         this.sections = Sections.of(new Section(this, upStation, downStation, distance));
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
+        this(name, color, upStation, downStation, distance, 0);
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int addFare) {
         this.name = name;
         this.color = color;
+        this.addFare = addFare;
         this.sections = Sections.of(new Section(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+        this.addFare = line.getAddFare();
     }
 
     public Long getId() {
@@ -62,6 +80,10 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public int getAddFare() {
+        return addFare;
     }
 
     public void removeStation(Station station) {
