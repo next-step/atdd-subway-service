@@ -11,24 +11,24 @@ public class FareTest {
     @DisplayName("무료 확인")
     @Test
     void isFree() {
-        assertThat(new Fare(0).isFree()).isTrue();
+        assertThat(Fare.wonOf(0).isFree()).isTrue();
     }
 
     @DisplayName("더하기")
     @Test
     void plus() {
-        assertThat(new Fare(1).plus(2)).isEqualTo(new Fare(3));
+        assertThat(Fare.wonOf(1).plus(2)).isEqualTo(Fare.wonOf(3));
     }
 
     @DisplayName("빼기")
     @Test
     void minus() {
-        assertThat(new Fare(3).minus(2)).isEqualTo(new Fare(1));
+        assertThat(Fare.wonOf(3).minus(2)).isEqualTo(Fare.wonOf(1));
     }
 
     @DisplayName("할인율 적용")
     @Test
     void applyDiscountRate() {
-        assertThat(new Fare(100).applyDiscountRate(50)).isEqualTo(new Fare(50));
+        assertThat(Fare.wonOf(100).applyDiscountRate(50)).isEqualTo(Fare.wonOf(50));
     }
 }

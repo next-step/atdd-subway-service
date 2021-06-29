@@ -1,19 +1,34 @@
 package nextstep.subway.path.domain;
 
-import static nextstep.subway.path.domain.FarePolicy.ADULT;
-
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
+@Embeddable
 public class Fare {
 
+    public static final String FARE_CANNOT_BE_NEGATIVE = "요금은 음수일 수 없습니다.";
+
+    @Column(name = "fare")
     private final int amount;
 
-    public Fare() {
-        amount = ADULT.getDefaultAmount();
+    protected Fare() {
+        amount = 0;
     }
 
-    public Fare(int amount) {
+    private Fare(int amount) {
+        validationNegativeNumber(amount);
         this.amount = amount;
+    }
+
+    private void validationNegativeNumber(int amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException(FARE_CANNOT_BE_NEGATIVE);
+        }
+    }
+
+    public static Fare wonOf(int amount) {
+        return new Fare(amount);
     }
 
     public int getAmount() {
@@ -25,16 +40,24 @@ public class Fare {
     }
 
     public Fare plus(int amount) {
-        return new Fare(this.amount + amount);
+        return plus(Fare.wonOf(amount));
+    }
+
+    public Fare plus(Fare fare) {
+        return Fare.wonOf(this.amount + fare.amount);
     }
 
     public Fare minus(int amount) {
-        return new Fare(this.amount - amount);
+        return minus(Fare.wonOf(amount));
+    }
+
+    public Fare minus(Fare fare) {
+        return Fare.wonOf(this.amount - fare.amount);
     }
 
     public Fare applyDiscountRate(int discountRate) {
         double actually = amount - ((discountRate * 0.01) * amount);
-        return new Fare((int) actually);
+        return Fare.wonOf((int) actually);
     }
 
     @Override

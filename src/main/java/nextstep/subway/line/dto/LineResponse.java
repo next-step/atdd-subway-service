@@ -34,7 +34,7 @@ public class LineResponse {
             .findStationsInOrder().stream()
             .map(StationResponse::of)
             .collect(Collectors.toList());
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate(), line.getSurcharge());
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate(), line.getSurchargeAmount());
     }
 
     public static List<LineResponse> ofList(List<Line> persistLines) {

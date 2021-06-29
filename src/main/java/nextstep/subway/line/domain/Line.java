@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -7,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -21,8 +23,9 @@ public class Line extends BaseEntity {
 
     private String color;
 
-    @Column
-    private int surcharge = 0;
+    @Embedded
+    @AttributeOverride(name = "amount", column = @Column(name = "surcharge"))
+    private Fare surcharge = Fare.wonOf(0);
 
     @Embedded
     private Sections sections = new Sections();
@@ -42,7 +45,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, int surcharge) {
         this.name = name;
         this.color = color;
-        this.surcharge = surcharge;
+        this.surcharge = Fare.wonOf(surcharge);
     }
 
     public Line(Long id, String name, String color) {
@@ -61,7 +64,7 @@ public class Line extends BaseEntity {
         this.name = name;
         this.color = color;
         sections.add(new Section(this, upStation, downStation, distance));
-        this.surcharge = surcharge;
+        this.surcharge = Fare.wonOf(surcharge);
     }
 
     public void update(Line line) {
@@ -82,8 +85,12 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public int getSurcharge() {
+    public Fare getSurcharge() {
         return surcharge;
+    }
+
+    public int getSurchargeAmount() {
+        return surcharge.getAmount();
     }
 
     public void addSection(Section section) {

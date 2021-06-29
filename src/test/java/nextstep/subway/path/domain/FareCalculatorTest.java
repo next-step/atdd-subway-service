@@ -33,7 +33,7 @@ public class FareCalculatorTest {
             "171:3650", "178:3650"
         })
     void calculateByDistance(int distance, int amount) {
-        assertThat(new FareCalculator(성인).calculate(distance, 0)).isEqualTo(new Fare(amount));
+        assertThat(new FareCalculator(성인).calculate(distance, 0)).isEqualTo(Fare.wonOf(amount));
     }
 
     @DisplayName("거리별 추가운임 + 노선추가요금")
@@ -49,31 +49,31 @@ public class FareCalculatorTest {
             "171:3750", "178:3750"
         })
     void calculateByDistanceAndSurcharge(int distance, int amount) {
-        assertThat(new FareCalculator(성인).calculate(distance, 100)).isEqualTo(new Fare(amount));
+        assertThat(new FareCalculator(성인).calculate(distance, 100)).isEqualTo(Fare.wonOf(amount));
     }
 
     @DisplayName("성인일때 요금 계산")
     @Test
     void calculateAsAdult() {
-        assertThat(new FareCalculator(성인).calculate(59, 0)).isEqualTo(new Fare(2_250));
+        assertThat(new FareCalculator(성인).calculate(59, 0)).isEqualTo(Fare.wonOf(2_250));
     }
 
     @DisplayName("청소년일때 요금 계산")
     @Test
     void calculateAsTeenager() {
-        assertThat(new FareCalculator(청소년).calculate(59, 0)).isEqualTo(new Fare(1_520));
+        assertThat(new FareCalculator(청소년).calculate(59, 0)).isEqualTo(Fare.wonOf(1_520));
     }
 
     @DisplayName("어린이일때 요금 계산")
     @Test
     void calculateAsChild() {
-        assertThat(new FareCalculator(어린이).calculate(59, 0)).isEqualTo(new Fare(950));
+        assertThat(new FareCalculator(어린이).calculate(59, 0)).isEqualTo(Fare.wonOf(950));
     }
 
     @DisplayName("유아일때 요금 계산")
     @Test
     void calculateAsBady() {
-        assertThat(new FareCalculator(유아).calculate(59, 0)).isEqualTo(new Fare(0));
+        assertThat(new FareCalculator(유아).calculate(59, 0)).isEqualTo(Fare.wonOf(0));
     }
 
 }

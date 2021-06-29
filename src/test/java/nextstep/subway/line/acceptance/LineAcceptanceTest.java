@@ -134,7 +134,7 @@ public class LineAcceptanceTest extends AcceptancePerMethodTest {
         params.put("upStationId", section.getUpStation().getId());
         params.put("downStationId", section.getDownStation().getId());
         params.put("distance", section.getDistanceWeight());
-        params.put("surcharge", line.getSurcharge());
+        params.put("surcharge", line.getSurchargeAmount());
 
         return post(params, "/lines");
     }
