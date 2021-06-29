@@ -1,22 +1,20 @@
 package nextstep.subway.path.application;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.farePolicy.MemberDiscountPolicyService;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
-
-import java.util.List;
-import java.util.Optional;
-
 
 @Service
 @Transactional(readOnly = true)

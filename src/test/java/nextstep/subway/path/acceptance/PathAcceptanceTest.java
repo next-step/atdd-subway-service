@@ -1,12 +1,26 @@
 package nextstep.subway.path.acceptance;
 
+import static nextstep.subway.auth.application.AuthServiceTest.*;
+import static nextstep.subway.member.MemberAcceptanceTest.BEARER;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.favorite.acceptance.FavoriteAcceptanceTest;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
@@ -17,28 +31,10 @@ import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static nextstep.subway.auth.application.AuthServiceTest.EMAIL;
-import static nextstep.subway.auth.application.AuthServiceTest.PASSWORD;
-import static nextstep.subway.member.MemberAcceptanceTest.BEARER;
-import static org.assertj.core.api.Assertions.assertThat;
-
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
-    private LineResponse 이호선;
-    private LineResponse 삼호선;
-    private LineResponse 오호선;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 정자역;
@@ -64,11 +60,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 900);
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
         lineRequest = new LineRequest("이호선", "bg-red-600", 강남역.getId(), 선릉역.getId(), 10, 900);
-        이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
+        LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
         lineRequest = new LineRequest("삼호선", "bg-red-600", 양재역.getId(), 교대역.getId(), 10, 900);
-        삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
+        LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
         lineRequest = new LineRequest("오호선", "bg-red-600", 천호역.getId(), 군자역.getId(), 10, 900);
-        오호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
+        LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 광교역, 10);
         지하철_노선에_지하철역_등록_요청(신분당선, 광교역, 정자역, 10);

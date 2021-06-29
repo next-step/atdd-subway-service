@@ -4,10 +4,10 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
-import nextstep.subway.path.domain.Fare;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 

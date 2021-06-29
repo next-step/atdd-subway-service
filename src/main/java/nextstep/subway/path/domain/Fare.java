@@ -1,11 +1,12 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.line.domain.Distance;
-import nextstep.subway.path.fomular.OverFare;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.util.Objects;
+
+import nextstep.subway.line.domain.Distance;
+import nextstep.subway.path.fomular.OverFare;
 
 @Embeddable
 public class Fare {

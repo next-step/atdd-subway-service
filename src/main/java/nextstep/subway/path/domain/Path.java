@@ -3,15 +3,15 @@ package nextstep.subway.path.domain;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
+
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.farePolicy.MemberDiscountPolicyService;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
-
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 
