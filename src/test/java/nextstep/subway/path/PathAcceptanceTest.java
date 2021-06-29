@@ -55,18 +55,18 @@ public class PathAcceptanceTest extends AcceptancePerClassTest {
     private LineResponse 사호선;
     private LineResponse 오호선;
 
-    private int 기본요금 = 1_250;
-    private int 일호선_요금 = 500;
-    private int 사호선_요금 = 900;
-    private int 거리_29KM = 29;
-    private int 거리_59KM = 59;
-    private int 거리_29KM_초과요금 = 400;
-    private int 거리_59KM_초과요금 = 1000;
-    private int 청소년_기본할인_요금 = -350;
-    private int 청소년_추가_할인율 = 20;
-    private int 어린이_기본할인_요금 = -350;
-    private int 어린이_추가_할인율 = 50;
-    private int 무료 = 0;
+    public static int 기본요금 = 1_250;
+    public static int 일호선_요금 = 500;
+    public static int 사호선_요금 = 900;
+    public static int 거리_29KM = 29;
+    public static int 거리_59KM = 59;
+    public static int 거리_29KM_초과요금 = 400;
+    public static int 거리_59KM_초과요금 = 1000;
+    public static int 청소년_기본할인_요금 = -350;
+    public static int 청소년_추가_할인율 = 20;
+    public static int 어린이_기본할인_요금 = -350;
+    public static int 어린이_추가_할인율 = 50;
+    public static int 무료 = 0;
 
     @BeforeAll
     void setup() {

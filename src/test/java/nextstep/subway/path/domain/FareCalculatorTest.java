@@ -1,12 +1,22 @@
 package nextstep.subway.path.domain;
 
+import static nextstep.subway.path.PathAcceptanceTest.거리_59KM_초과요금;
+import static nextstep.subway.path.PathAcceptanceTest.기본요금;
+import static nextstep.subway.path.PathAcceptanceTest.일호선_요금;
 import static nextstep.subway.path.domain.FarePolicy.ADULT;
 import static nextstep.subway.path.domain.FarePolicy.BABY;
 import static nextstep.subway.path.domain.FarePolicy.CHILD;
 import static nextstep.subway.path.domain.FarePolicy.TEENAGER;
+import static nextstep.subway.station.domain.StationFixtures.서울역;
+import static nextstep.subway.station.domain.StationFixtures.시청역;
+import static nextstep.subway.station.domain.StationFixtures.종각역;
+import static nextstep.subway.station.domain.StationFixtures.종로3가역;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
+import nextstep.subway.line.domain.Section;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -50,6 +60,25 @@ public class FareCalculatorTest {
         })
     void calculateByDistanceAndSurcharge(int distance, int amount) {
         assertThat(new FareCalculator(성인).calculate(distance, 100)).isEqualTo(Fare.wonOf(amount));
+    }
+
+    @DisplayName("지하철 구간의 최단경로를 구했을때 요금 계산 (성인, 노선요금, 59km 초과 추가요금 적용)")
+    @Test
+    void calculateByShortestPath() {
+        //Given
+        Line 일호선 = new Line("일호선", "blue", 일호선_요금);
+        일호선.addSection(new Section(서울역, 시청역, 30));
+        일호선.addSection(new Section(시청역, 종각역, 9));
+        일호선.addSection(new Section(종각역, 종로3가역, 20));
+        PathFinder pathFinder = new PathFinder(new Lines(일호선));
+        ShortestPath shortestPath = pathFinder.findPath(서울역, 종로3가역);
+
+        //When
+        FareCalculator fareCalculator = new FareCalculator(성인);
+        Fare fare = fareCalculator.calculate(shortestPath.getDistance(), 일호선.getSurcharge());
+
+        //Then
+        assertThat(fare).isEqualTo(Fare.wonOf(기본요금 + 일호선_요금 + 거리_59KM_초과요금));
     }
 
     @DisplayName("성인일때 요금 계산")
