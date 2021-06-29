@@ -1,6 +1,6 @@
 package nextstep.subway.member;
 
-import nextstep.subway.member.dto.MemberResponse;
+import nextstep.subway.member.domain.Member;
 
 public class MemberTest {
     public static final String EMAIL = "email@email.com";
@@ -12,7 +12,7 @@ public class MemberTest {
     public static final int TEENAGER = 18;
     public static final int CHILD = 12;
 
-    public static final MemberResponse 일반_사용자 = new MemberResponse(1L, EMAIL, AGE);
-    public static final MemberResponse 청소년_사용자 = new MemberResponse(2L, EMAIL, TEENAGER);
-    public static final MemberResponse 어린이_사용자 = new MemberResponse(3L, EMAIL, CHILD);
+    public static final Member 일반_멤버 = new Member(1L, EMAIL, PASSWORD, AGE);
+    public static final Member 청소년_멤버 = new Member(2L, EMAIL, PASSWORD, TEENAGER);
+    public static final Member 어린이_멤버 = new Member(3L, EMAIL, PASSWORD, CHILD);
 }

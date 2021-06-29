@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.jgrapht.GraphPath;
 
-import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 public class Path {
@@ -33,8 +33,8 @@ public class Path {
     /*
     TODO 객체지향 생활체조 적용 필요
      */
-    public int totalFareOf(LoginMember loginMember) {
-        return applyDiscount(loginMember.getAge());
+    public int totalFareOf(Member member) {
+        return applyDiscount(member.getAge());
     }
 
     private int getFare() {

@@ -3,6 +3,7 @@ package nextstep.subway.path.application;
 import static java.util.stream.Collectors.*;
 import static nextstep.subway.auth.acceptance.AuthTest.*;
 import static nextstep.subway.line.domain.LineTest.*;
+import static nextstep.subway.member.MemberTest.*;
 import static nextstep.subway.station.domain.StationTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -17,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.member.application.MemberService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.dto.StationResponse;
@@ -28,13 +30,15 @@ class PathServiceTest {
     private PathService pathService;
 
     @Mock
+    MemberService memberService;
+    @Mock
     LineService lineService;
     @Mock
     StationService stationService;
 
     @BeforeEach
     void setUp() {
-        pathService = new PathService(lineService, stationService);
+        pathService = new PathService(memberService, lineService, stationService);
 
         // given
         when(lineService.findLinesEntities()).thenReturn(Stream.of(신분당선, 이호선).collect(toList()));
@@ -46,6 +50,7 @@ class PathServiceTest {
         // given
         when(stationService.findStationById(양재역.getId())).thenReturn(양재역);
         when(stationService.findStationById(교대역.getId())).thenReturn(교대역);
+        when(memberService.findMemberEntity(로그인_일반_사용자.getId())).thenReturn(일반_멤버);
 
         // when
         PathResponse pathResponse = pathService.getShortestPath(로그인_일반_사용자, 양재역.getId(), 교대역.getId());
@@ -66,6 +71,7 @@ class PathServiceTest {
         when(stationService.findStationById(양재역.getId())).thenReturn(양재역);
         when(stationService.findStationById(강남역.getId())).thenReturn(강남역);
         when(stationService.findStationById(교대역.getId())).thenReturn(교대역);
+        when(memberService.findMemberEntity(로그인_일반_사용자.getId())).thenReturn(일반_멤버);
 
         // when
         PathResponse pathResponse1
@@ -88,6 +94,7 @@ class PathServiceTest {
         // given
         when(stationService.findStationById(강남역.getId())).thenReturn(강남역);
         when(stationService.findStationById(교대역.getId())).thenReturn(교대역);
+        when(memberService.findMemberEntity(로그인_청소년_사용자.getId())).thenReturn(청소년_멤버);
 
         // when
         PathResponse pathResponse = pathService.getShortestPath(로그인_청소년_사용자, 강남역.getId(), 교대역.getId());
@@ -102,6 +109,7 @@ class PathServiceTest {
         // given
         when(stationService.findStationById(강남역.getId())).thenReturn(강남역);
         when(stationService.findStationById(교대역.getId())).thenReturn(교대역);
+        when(memberService.findMemberEntity(로그인_어린이_사용자.getId())).thenReturn(어린이_멤버);
 
         // when
         PathResponse pathResponse = pathService.getShortestPath(로그인_어린이_사용자, 강남역.getId(), 교대역.getId());

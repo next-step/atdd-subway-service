@@ -10,8 +10,8 @@ import io.restassured.response.Response;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.member.dto.MemberResponse;
 
 public class AuthTest {
 
@@ -19,8 +19,8 @@ public class AuthTest {
     public static final LoginMember 로그인_청소년_사용자 = new LoginMember(2L, EMAIL, TEENAGER);
     public static final LoginMember 로그인_어린이_사용자 = new LoginMember(3L, EMAIL, CHILD);
 
-    public static TokenResponse 로그인_된_회원(MemberResponse memberResponse) {
-        return 로그인_된_회원(memberResponse.getEmail(), "SOME_PASSWD", memberResponse.getAge());
+    public static TokenResponse 로그인_된_회원(Member member) {
+        return 로그인_된_회원(member.getEmail(), member.getPassword(), member.getAge());
     }
 
     public static TokenResponse 로그인_된_회원(String email, String password, int age) {
