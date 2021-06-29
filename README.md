@@ -232,8 +232,8 @@ Connection: keep-alive
         * when: 출발역 강남역, 도착역 과천역의 경로를 조회한다.
         * then: 경로 조회가 실패한다.(출발역과 도착역이 연결이 되어 있지 않은 경우)
 ## 기능 구현 목록
-* [ ] 작성한 인수테스트 시나리오 기반으로 인수테스트 작성
-* [ ] outside In 방식으로 경로 조회 TDD
+* [x] 작성한 인수테스트 시나리오 기반으로 인수테스트 작성
+* [x] outside In 방식으로 경로 조회 TDD
     * 전체 지하철 노선 조회 기능(lineRepository mock)
     * source 기준 지하철역 정보 조회 기능(StationRepository mock)
     * target 기준 지하철역 정보 조회 기능(StationRepository mock)
