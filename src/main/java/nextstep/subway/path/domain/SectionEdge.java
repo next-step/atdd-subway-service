@@ -19,8 +19,8 @@ public class SectionEdge extends DefaultWeightedEdge {
         this.distance = distance;
     }
 
-    public int getLineFare() {
-        return line.additionalFare();
+    public Line getLine() {
+        return line;
     }
 
     @Override

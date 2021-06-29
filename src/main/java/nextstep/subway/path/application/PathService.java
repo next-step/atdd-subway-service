@@ -9,6 +9,7 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -37,6 +38,6 @@ public class PathService {
         Path path = pathFinder.findPath(source, target);
 
         Member member = memberService.findMemberEntity(loginMember.getId());
-        return PathResponse.of(path, path.totalFareOf(member));
+        return PathResponse.of(path, member.pays(Fare.of(path)));
     }
 }
