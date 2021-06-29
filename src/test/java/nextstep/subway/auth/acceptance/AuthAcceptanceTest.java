@@ -80,7 +80,7 @@ public class AuthAcceptanceTest extends AcceptancePerClassTest {
     }
 
     public static void 로그인_실패함(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static ExtractableResponse<Response> 토큰으로_나의_회원정보_조회_요청(String accessToken) {
@@ -94,7 +94,7 @@ public class AuthAcceptanceTest extends AcceptancePerClassTest {
     }
 
     private static void 나의_회원정보_조회_실패함(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
 }

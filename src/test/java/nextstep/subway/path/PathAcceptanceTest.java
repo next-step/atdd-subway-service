@@ -248,7 +248,7 @@ public class PathAcceptanceTest extends AcceptancePerClassTest {
     }
 
     private void 지하철_최단_경로_조회_실패함(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectStationResponses, int distance, int fare) {
