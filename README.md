@@ -38,6 +38,25 @@ npm run dev
 ```
 <br>
 
+## TODO
+
+* 경로 조회 기능
+    - 출발역과 도착역을 요청하면, 최단거리의 구간을 반환한다.
+    - 예외 상황
+        - 출발역과 도착역이 같은 경우
+        - 출발역과 도착역이 연결이 되어 있지 않은 경우
+        - 존재하지 않은 출발역이나 도착역을 조회 할 경우
+    
+* 인증을 통한 기능 구현
+    - TODO
+    
+* 요금 조회
+    - TODO
+
+## 참고
+[그래프 알고리즘 라이브러리](https://jgrapht.org/guide/UserOverview#graph-algorithms)
+
+
 ## ✏️ Code Review Process
 [텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
 
