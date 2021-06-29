@@ -35,7 +35,7 @@ public class Path {
             mostExtraFare = mostExtraFare.gt(line.extraFare());
         }
 
-        return new Path(new DijkstraShortestPath(graph), mostExtraFare.sum(new Fare(Fare.DEFAULT_USE_FARE_AMOUNT)));
+        return new Path(new DijkstraShortestPath(graph), mostExtraFare);
     }
 
     public PathResponse findShortestPath(Station source, Station target, MemberDiscountPolicyService memberDiscountPolicyService) {
@@ -50,7 +50,7 @@ public class Path {
 
         int distance = findPathDistance(source, target);
         Fare fare = lineExtraFare.calculateTotalFare(distance);
-        Fare totalFare = memberDiscountPolicyService.discount(fare);
+        Fare totalFare = memberDiscountPolicyService.applyDiscount(fare);
 
         return PathResponse.of(shortestPath.stream().map(Station::toResponse).collect(Collectors.toList()), findPathDistance(source, target), totalFare.amount());
     }

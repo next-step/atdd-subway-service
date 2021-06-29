@@ -9,9 +9,11 @@ public class TeenagersDiscountPolicy implements MemberDiscountPolicyService{
     private static final int DEFAULT_DISCOUNT_FARE = 350;
 
     @Override
-    public Fare discount(Fare fare) {
-        return new Fare(
-                fare.amount() - DEFAULT_DISCOUNT_FARE -
-                        (int) Math.ceil(((fare.amount() - DEFAULT_DISCOUNT_FARE) * DISCOUNT_PER)));
+    public Fare applyDiscount(Fare fare) {
+        return new Fare(fare.amount() - DEFAULT_DISCOUNT_FARE - discount(fare));
+    }
+
+    private int discount(Fare fare) {
+        return (int) Math.ceil(((fare.amount() - DEFAULT_DISCOUNT_FARE) * DISCOUNT_PER));
     }
 }

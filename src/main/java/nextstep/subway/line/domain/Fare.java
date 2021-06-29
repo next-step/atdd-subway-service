@@ -28,17 +28,13 @@ public class Fare {
         return fare;
     }
 
-    public Fare sum(Fare fare) {
-        return new Fare(amount + fare.amount);
-    }
-
     public Fare calculateTotalFare(int distance) {
         Fare overFare = calculateOverFare(distance);
         return new Fare(amount + overFare.amount);
     }
 
     private Fare calculateOverFare(int distance) {
-        int overAmount = 0;
+        int overAmount = DEFAULT_USE_FARE_AMOUNT;
         if (DISTANCE_10_KM < distance) {
             overAmount += (int) ((Math.ceil((Math.min(distance, DISTANCE_50_KM) - DISTANCE_10_KM - 1) / 5) + 1) * 100);
         }
