@@ -2,6 +2,7 @@ package nextstep.subway.member;
 
 import static org.assertj.core.api.Assertions.*;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 
@@ -21,6 +24,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 	public static final String NEW_PASSWORD = "newpassword";
 	public static final int AGE = 20;
 	public static final int NEW_AGE = 21;
+	AuthAcceptanceTest authAcceptanceTest;
+	TokenResponse 토큰;
+
+	@BeforeEach
+	void memberSetUp() {
+		authAcceptanceTest = new AuthAcceptanceTest();
+		회원_생성을_요청("taminging@kakao.com", "taminging", 20);
+		토큰 = authAcceptanceTest.로그인("taminging@kakao.com", "taminging").as(TokenResponse.class);
+	}
+
 
 
 	@DisplayName("회원 정보를 관리한다.")
@@ -50,6 +63,20 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 	@DisplayName("나의 정보를 관리한다.")
 	@Test
 	void manageMyInfo() {
+		// 조회
+		ExtractableResponse<Response> response = get("/members/me", 토큰.getAccessToken());
+		MemberResponse memberResponse = response.as(MemberResponse.class);
+		assertThat(memberResponse.getEmail()).isEqualTo("taminging@kakao.com");
+		assertThat(memberResponse.getAge()).isEqualTo(20);
+
+		// 수정
+		MemberRequest memberRequest = new MemberRequest("taminging2@kakao.com", "taminging2", 21);
+		ExtractableResponse updateResponse = put(memberRequest,"/members/me", 토큰.getAccessToken());
+		assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+		// 삭제
+		ExtractableResponse deleteResponse = delete("/members/me", 토큰.getAccessToken());
+		assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 
 	}
 

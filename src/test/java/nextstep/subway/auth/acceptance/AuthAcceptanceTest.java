@@ -30,16 +30,15 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	@DisplayName("Bearer Auth")
 	@Test
 	void myInfoWithBearerAuth() {
-		TokenRequest tokenRequest = new TokenRequest("taminging@kakao.com", "taminging");
-		ExtractableResponse<Response> response =  post(tokenRequest,"/login/token");
+		ExtractableResponse<Response> response = 로그인("taminging@kakao.com", "taminging");
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+		assertThat(response.body().jsonPath().getString("accessToken")).isNotEmpty();
 	}
 
 	@DisplayName("Bearer Auth 로그인 실패")
 	@Test
 	void myInfoWithBadBearerAuth() {
-		TokenRequest tokenRequest = new TokenRequest("taminging@kakao.com", "taminging2");
-		ExtractableResponse<Response> response =  post(tokenRequest,"/login/token");
+		ExtractableResponse<Response> response = 로그인("taminging@kakao.com", "taminging2");
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 
@@ -47,15 +46,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	@Test
 	void myInfoWithWrongBearerAuth() {
 		String invalidAccessToken = "invalid access token";
-		ExtractableResponse<Response> response = RestAssured
-			.given().log().all()
-			.auth().oauth2(invalidAccessToken)
-			.when()
-			.get("/members/me")
-			.then().log().all()
-			.extract();
-
+		ExtractableResponse<Response> response = get("/members/me", invalidAccessToken);
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+	}
+
+	public ExtractableResponse<Response> 로그인(String email, String password) {
+		TokenRequest tokenRequest = new TokenRequest(email, password);
+		return post(tokenRequest,"/login/token");
 	}
 
 }

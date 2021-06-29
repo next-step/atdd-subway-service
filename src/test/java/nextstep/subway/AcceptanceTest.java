@@ -62,4 +62,43 @@ public class AcceptanceTest {
 			.extract();
 	}
 
+	protected <T> ExtractableResponse<Response> post(T request, String uri, String accessToken) {
+		return RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(request)
+			.when().post(uri)
+			.then().log().all()
+			.extract();
+	}
+
+	protected ExtractableResponse<Response> delete(String uri, String accessToken) {
+		return RestAssured
+			.given().log().all()
+			.auth().oauth2(accessToken)
+			.when().delete(uri)
+			.then().log().all()
+			.extract();
+	}
+
+	protected <T> ExtractableResponse<Response> put(T request, String uri, String accessToken) {
+		return RestAssured
+			.given().log().all()
+			.auth().oauth2(accessToken)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(request)
+			.when().put(uri)
+			.then().log().all()
+			.extract();
+	}
+
+	protected ExtractableResponse<Response> get(String uri, String accessToken) {
+		return RestAssured
+			.given().log().all()
+			.auth().oauth2(accessToken)
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when().get(uri)
+			.then().log().all()
+			.extract();
+	}
 }
