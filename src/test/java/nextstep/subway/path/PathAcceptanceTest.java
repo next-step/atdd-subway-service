@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -25,6 +26,7 @@ import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 경로 조회")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class PathAcceptanceTest extends AcceptanceTest {
 
     private LineResponse 신분당선;
