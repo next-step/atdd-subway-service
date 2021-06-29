@@ -55,7 +55,7 @@ class FareTest {
         // given
         Fare fare = new Fare();
         // when
-        Fare totalFare = fare.calculateTotalFare(거리);
+        Fare totalFare = fare.calculateTotalFare(new Distance(거리));
         // then
         assertThat(totalFare.amount()).isEqualTo(요금);
     }

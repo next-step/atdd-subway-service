@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Distance;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;
@@ -28,18 +30,19 @@ public class Fare {
         return fare;
     }
 
-    public Fare calculateTotalFare(int distance) {
+    public Fare calculateTotalFare(Distance distance) {
         Fare overFare = calculateOverFare(distance);
         return new Fare(amount + overFare.amount);
     }
 
-    private Fare calculateOverFare(int distance) {
+    private Fare calculateOverFare(Distance distance) {
         int overAmount = DEFAULT_USE_FARE_AMOUNT;
-        if (DISTANCE_10_KM < distance) {
-            overAmount += (int) ((Math.ceil((Math.min(distance, DISTANCE_50_KM) - DISTANCE_10_KM - 1) / 5) + 1) * 100);
+        int distanceToInt = distance.toInt();
+        if (DISTANCE_10_KM < distance.toInt()) {
+            overAmount += (int) ((Math.ceil((Math.min(distanceToInt, DISTANCE_50_KM) - DISTANCE_10_KM - 1) / 5) + 1) * 100);
         }
-        if (DISTANCE_50_KM < distance) {
-            overAmount += (int) ((Math.ceil((distance - DISTANCE_50_KM - 1) / 8) + 1) * 100);
+        if (DISTANCE_50_KM < distance.toInt()) {
+            overAmount += (int) ((Math.ceil((distanceToInt - DISTANCE_50_KM - 1) / 8) + 1) * 100);
         }
         return new Fare(overAmount);
     }

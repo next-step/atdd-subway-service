@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
@@ -47,11 +48,11 @@ public class Path {
             throw new IllegalArgumentException(Sections.NOT_FOUND_SECTION);
         }
 
-        int distance = findPathDistance(source, target);
+        Distance distance = findPathDistance(source, target);
         Fare fare = lineExtraFare.calculateTotalFare(distance);
         Fare totalFare = memberDiscountPolicyService.applyDiscount(fare);
 
-        return PathResponse.of(shortestPath.stream().map(Station::toResponse).collect(Collectors.toList()), findPathDistance(source, target), totalFare.amount());
+        return PathResponse.of(shortestPath.stream().map(Station::toResponse).collect(Collectors.toList()), findPathDistance(source, target), totalFare);
     }
 
     private static void addPath(List<Section> sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
@@ -66,7 +67,7 @@ public class Path {
         }
     }
 
-    private int findPathDistance(Station source, Station target) {
-        return (int) dijkstraShortestPath.getPathWeight(source, target);
+    private Distance findPathDistance(Station source, Station target) {
+        return new Distance((int) dijkstraShortestPath.getPathWeight(source, target));
     }
 }
