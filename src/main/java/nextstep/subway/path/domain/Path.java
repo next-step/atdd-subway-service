@@ -33,6 +33,17 @@ public class Path {
         return fee;
     }
 
+    public void applyAgeFeeStrategy(int age) {
+        if (age >= 13 && age < 19){
+            // 청소년 요금
+            this.fee = (int) ((fee - 350) * 0.8);
+        }
+
+        if (age >= 6 && age < 12){
+            this.fee = (int) ((fee - 350) * 0.5);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -52,20 +63,5 @@ public class Path {
                 "stations=" + stations +
                 ", distance=" + distance +
                 '}';
-    }
-
-    public void apply(int age) {
-        if (Objects.isNull(fee)){
-            throw new RuntimeException("금액이 산정되지 않았습니다");
-        }
-
-        if (age >= 13 && age < 19){
-            // 청소년 요금
-            this.fee = (int) ((fee - 350) * 0.8);
-        }
-
-        if (age >= 6 && age < 12){
-            this.fee = (int) ((fee - 350) * 0.5);
-        }
     }
 }
