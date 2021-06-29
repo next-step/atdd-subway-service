@@ -233,5 +233,10 @@ Connection: keep-alive
         * then: 경로 조회가 실패한다.(출발역과 도착역이 연결이 되어 있지 않은 경우)
 ## 기능 구현 목록
 * [ ] 작성한 인수테스트 시나리오 기반으로 인수테스트 작성
-* [ ] 인수테스트 코드가 성공할 수 있도록 mock서버와 dto를 정의하여 인수 테스트 성공 시키기
-* [ ] 기능 구현
+* [ ] outside In 방식으로 경로 조회 TDD
+    * 전체 지하철 노선 조회 기능(lineRepository mock)
+    * source 기준 지하철역 정보 조회 기능(StationRepository mock)
+    * target 기준 지하철역 정보 조회 기능(StationRepository mock)
+    * 노선, source, target 기준으로 경로 조회 기능(PathFinder mock)
+* [ ] inside Out 방식으로 경로 조회 TDD
+    * pathFinder component 구현
