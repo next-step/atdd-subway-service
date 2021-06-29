@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.section.domain.Sections;
 import nextstep.subway.station.domain.Station;
 
 @Entity

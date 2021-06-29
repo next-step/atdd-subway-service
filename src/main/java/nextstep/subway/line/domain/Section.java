@@ -1,10 +1,18 @@
 package nextstep.subway.line.domain;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
-import nextstep.subway.station.domain.Station;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
-import javax.persistence.*;
+import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Section {
@@ -29,14 +37,14 @@ public class Section {
     public Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    public Section(final Line line, final Station upStation, final Station downStation, final int distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
 
-    public static Section of(Section upSection, Section downSection) {
+    public static Section of(final Section upSection, final Section downSection) {
         final Section validUpSection = validUpSection(upSection);
         final Section validDownSection = validDownSection(downSection);
         final Station newUpStation = validUpSection.getUpStation();
@@ -46,13 +54,13 @@ public class Section {
         return new Section(validUpSection.getLine(), newUpStation, newDownStation, distance);
     }
 
-    private static Section validUpSection(Section upSection) {
+    private static Section validUpSection(final Section upSection) {
         return Optional.ofNullable(upSection)
             .filter(it -> it.getDownStation() != null && it.getDistance() > 0)
             .orElseThrow(RuntimeException::new);
     }
 
-    private static Section validDownSection(Section downSection) {
+    private static Section validDownSection(final Section downSection) {
         return Optional.ofNullable(downSection)
             .filter(it -> it.getUpStation() != null && it.getDistance() > 0)
             .orElseThrow(RuntimeException::new);
@@ -78,7 +86,7 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
+    public void updateUpStation(final Station station, final int newDistance) {
         if (this.distance <= newDistance) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
@@ -86,11 +94,15 @@ public class Section {
         this.distance -= newDistance;
     }
 
-    public void updateDownStation(Station station, int newDistance) {
+    public void updateDownStation(final Station station, final int newDistance) {
         if (this.distance <= newDistance) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public List<Station> toList() {
+        return Arrays.asList(upStation, downStation);
     }
 }
