@@ -5,6 +5,8 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,8 +34,17 @@ class FavoriteServiceTest {
     private StationRepository stationRepository;
 
     @Autowired
+    private MemberRepository memberRepository;
+
+    @Autowired
     private FavoriteService favoriteService;
 
+    private static final String EMAIL = "bbbnam@naver.com";
+    private static final String PASSWORD = "12345";
+    private static final int AGE = 24;
+
+    private Member 가입된_회원;
+    private LoginMember 로그인된_회원;
     private Station 강남역;
     private Station 역삼역;
     private Station 교대역;
@@ -43,15 +54,16 @@ class FavoriteServiceTest {
         강남역 = stationRepository.save(new Station("강남역"));
         역삼역 = stationRepository.save(new Station("역삼역"));
         교대역 = stationRepository.save(new Station("교대역"));
+        가입된_회원 = memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
+        로그인된_회원 = new LoginMember(가입된_회원.getId(), 가입된_회원.getEmail(), 가입된_회원.getAge());
     }
 
     @DisplayName("즐겨찾기를 저장한다.")
     @Test
     void saveFavorites() {
-        LoginMember loginMember = new LoginMember(1L, "bbbnam@naver.com", 24);
         FavoriteRequest favoriteRequest = new FavoriteRequest(강남역.getId(), 교대역.getId());
 
-        FavoriteResponse favoriteResponse = favoriteService.saveFavorites(loginMember, favoriteRequest);
+        FavoriteResponse favoriteResponse = favoriteService.saveFavorites(로그인된_회원, favoriteRequest);
 
         assertAll(
                 () -> assertThat(favoriteResponse).isNotNull(),
@@ -61,11 +73,10 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기 목록을 조회한다.")
     @Test
     void findFavorites() {
-        LoginMember loginMember = new LoginMember(1L, "bbbnam@naver.com", 24);
         FavoriteRequest favoriteRequest = new FavoriteRequest(강남역.getId(), 교대역.getId());
-        favoriteService.saveFavorites(loginMember, favoriteRequest);
+        favoriteService.saveFavorites(로그인된_회원, favoriteRequest);
 
-        List<Favorite> favorites = favoriteService.findFavorites(loginMember);
+        List<Favorite> favorites = favoriteService.findFavorites(로그인된_회원);
 
         assertThat(favorites).isNotEmpty();
         assertThat(favorites.get(0).getSource()).isEqualTo(강남역);
@@ -74,12 +85,11 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기를 제거한다.")
     @Test
     void deleteFavorite() {
-        LoginMember loginMember = new LoginMember(1L, "bbbnam@naver.com", 24);
         FavoriteRequest favoriteRequest = new FavoriteRequest(강남역.getId(), 교대역.getId());
-        FavoriteResponse favoriteResponse = favoriteService.saveFavorites(loginMember, favoriteRequest);
+        FavoriteResponse favoriteResponse = favoriteService.saveFavorites(로그인된_회원, favoriteRequest);
 
         favoriteService.deleteFavorite(favoriteResponse.getId());
 
-        assertThat(favoriteService.findFavorites(loginMember)).isEmpty();
+        assertThat(favoriteService.findFavorites(로그인된_회원)).isEmpty();
     }
 }
