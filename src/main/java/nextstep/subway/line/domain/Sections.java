@@ -24,6 +24,10 @@ public class Sections {
     protected Sections() {
     }
 
+    public Sections(List<Section> sections) {
+        this.sections = sections;
+    }
+
     public void add(Section section) {
         if (sections.isEmpty()) {
             sections.add(section);

@@ -40,8 +40,11 @@ public class SubwayMapData {
 
     private void initEdgeWeight() {
         lines.getSections()
-                .forEach(section -> graph.setEdgeWeight(
-                        graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance()));
+                .forEach(section -> {
+                    SectionEdge sectionEdge = new SectionEdge(section);
+                    graph.addEdge(section.getUpStation(), section.getDownStation(), sectionEdge);
+                    graph.setEdgeWeight(sectionEdge, section.getDistance());
+                });
     }
 
     private void validateLines(Lines lines) {

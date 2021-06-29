@@ -1,19 +1,17 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.*;
+import nextstep.subway.path.domain.policy.FarePolicy;
+import nextstep.subway.path.domain.policy.distance.DistancePolicyFactory;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 
 @Service
 public class PathService {
@@ -28,9 +26,8 @@ public class PathService {
         Lines lines = findLines();
         Station source = lines.findStationById(pathRequest.getSource());
         Station target = lines.findStationById(pathRequest.getTarget());
-        SubwayMapData subwayMapData = new SubwayMapData(lines, new WeightedMultigraph(DefaultWeightedEdge.class));
         PathFinder pathFinder = new StationPathFinder(
-                new DijkstraShortestPath(subwayMapData.initData()),
+                new DijkstraShortestPath(new SubwayMapData(lines, new WeightedMultigraph(SectionEdge.class)).initData()),
                 new Direction(source, target));
         PathResult paths = pathFinder.findPaths();
         Fare fare = new Fare();
