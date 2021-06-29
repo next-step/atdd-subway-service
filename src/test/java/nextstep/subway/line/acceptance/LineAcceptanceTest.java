@@ -53,7 +53,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLineWithDuplicateName() {
         // given
-        지하철_노선_등록되어_있음(lineRequest1);
+        지하철_노선_생성_요청(lineRequest1);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
@@ -66,8 +66,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLines() {
         // given
-        ExtractableResponse<Response> createResponse1 = 지하철_노선_등록되어_있음(lineRequest1);
-        ExtractableResponse<Response> createResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
+        ExtractableResponse<Response> createResponse1 = 지하철_노선_생성_요청(lineRequest1);
+        ExtractableResponse<Response> createResponse2 = 지하철_노선_생성_요청(lineRequest2);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
@@ -81,7 +81,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLine() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_등록되어_있음(lineRequest1);
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(lineRequest1);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청(createResponse);
@@ -95,7 +95,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     void updateLine() {
         // given
         String name = "신분당선";
-        ExtractableResponse<Response> createResponse = 지하철_노선_등록되어_있음(lineRequest1);
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(lineRequest1);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_수정_요청(createResponse, lineRequest2);
@@ -108,7 +108,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLine() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_등록되어_있음(lineRequest1);
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(lineRequest1);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_제거_요청(createResponse);
@@ -117,8 +117,17 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_삭제됨(response);
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest params) {
-        return 지하철_노선_생성_요청(params);
+    @DisplayName("지하철 노선에 추가요금이 포함된 노선을 생성한다.")
+    @Test
+    void addLineFare() {
+        // given
+        LineRequest lineRequest = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15, 300);
+
+        // when
+        ExtractableResponse<Response> createResponse = 지하철_노선_생성_요청(lineRequest);
+
+        // then
+        지하철_노선_생성됨(createResponse);
     }
 
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {

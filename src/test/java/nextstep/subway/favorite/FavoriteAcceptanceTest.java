@@ -46,12 +46,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         잠실역 = StationAcceptanceTest.지하철역_등록되어_있음("잠실역").as(StationResponse.class);
 
         LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10);
-        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
+        신분당선 = LineAcceptanceTest.지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 100);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 판교역, 10);
 
         LineRequest lineRequest2 = new LineRequest("이호선", "green", 잠실역.getId(), 강남역.getId(), 10);
-        이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest2).as(LineResponse.class);
+        이호선 = LineAcceptanceTest.지하철_노선_생성_요청(lineRequest2).as(LineResponse.class);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 잠실역, 양재역, 10);
 
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);

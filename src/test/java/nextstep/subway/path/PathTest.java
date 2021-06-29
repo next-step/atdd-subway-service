@@ -7,6 +7,9 @@ import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -97,6 +100,37 @@ public class PathTest {
         최단거리값_구함(path, paths.size());
     }
 
+    @DisplayName("최단 거리 요금 구하기")
+    @ParameterizedTest
+    @CsvSource(value = {"6:550", "18:880", "30:1450"}, delimiter = ':')
+    void 최단거리_요금_구하기(int age, int resultFare) {
+        List<Line> lines = 노선_목록_생성();
+        Path path = new Path(잠실역, 판교역);
+        path.findShortPath(lines);
+
+        int distance = path.calculateDistance(lines.size());
+        int fare = path.calculateFare(distance, age);
+
+        최단거리_요금_구함(fare, resultFare);
+    }
+
+    @DisplayName("노선별 추가요금 최단 거리 요금 구하기")
+    @ParameterizedTest
+    @CsvSource(value = {"6:1150", "18:1480", "30:2050"}, delimiter = ':')
+    void 노선별_추가요금_최단거리_요금_구하기(int age, int resultFare) {
+        신분당선.addFare(300);
+        이호선.addFare(600);
+
+        List<Line> lines = 노선_목록_생성();
+        Path path = new Path(잠실역, 판교역);
+        path.findShortPath(lines);
+
+        int distance = path.calculateDistance(lines.size());
+        int fare = path.calculateFare(distance, age);
+
+        최단거리_요금_구함(fare, resultFare);
+    }
+
     private List<Line> 노선_목록_생성() {
         return Arrays.asList(신분당선, 이호선);
     }
@@ -128,5 +162,9 @@ public class PathTest {
 
     private void 최단거리값_구함(Path path, int k) {
         assertThat(path.calculateDistance(k)).isEqualTo(20);
+    }
+
+    private void 최단거리_요금_구함(int fare, int resultFare) {
+        assertThat(fare).isEqualTo(resultFare);
     }
 }
