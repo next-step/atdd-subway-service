@@ -34,8 +34,8 @@ public class LineTest {
 		Station 일산역 = new Station("일산역");
 		Line line = new Line("경의선", "BLUE",운정역, 일산역, 15);
 
-		assertThatThrownBy(() -> line.addSection(new Section(line, 운정역, 일산역, 15))).isInstanceOf(RuntimeException.class).hasMessage("이미 등록된 구간 입니다.");
-		assertThatThrownBy(() -> line.addSection(new Section(line, 야당역, 탄현역, 15))).isInstanceOf(RuntimeException.class).hasMessage("등록할 수 없는 구간 입니다.");
+		assertThatThrownBy(() -> line.addSection(운정역, 일산역, 15)).isInstanceOf(RuntimeException.class).hasMessage("이미 등록된 구간 입니다.");
+		assertThatThrownBy(() -> line.addSection(야당역, 탄현역, 15)).isInstanceOf(RuntimeException.class).hasMessage("등록할 수 없는 구간 입니다.");
 	}
 
 	@DisplayName("구간 삭제 - 예외")
