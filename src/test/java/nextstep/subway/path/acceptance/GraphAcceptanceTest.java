@@ -10,13 +10,13 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
-import static io.restassured.RestAssured.given;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.OK;
+
 
 @DisplayName("지하철 경로 조회")
 public class GraphAcceptanceTest extends AcceptanceTest {
@@ -72,18 +72,10 @@ public class GraphAcceptanceTest extends AcceptanceTest {
     }
 
     private void 지하철_경로찾기_조회됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertHttpStatus(response, OK);
     }
 
     private ExtractableResponse<Response> 지하철_경로찾기_조회_요청(StationResponse source, StationResponse target) {
-        return given()
-                .log().all()
-                .queryParam("source", source.getId())
-                .queryParam("target", target.getId())
-                .when()
-                .get("/paths")
-                .then()
-                .log().all()
-                .extract();
+        return get("/paths?source=" + source.getId() + "&target=" + target.getId());
     }
 }
