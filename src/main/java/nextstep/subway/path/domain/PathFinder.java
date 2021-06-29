@@ -33,11 +33,15 @@ public class PathFinder {
     }
 
     public GraphPath<Station, DefaultWeightedEdge> findShortestPath(Station source, Station target) {
-        if (source.equals(target)) {
-            throw new IllegalArgumentException(SAME_SOURCE_TARGET);
-        }
+        checkSameStation(source, target);
 
         return Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
             .orElseThrow(() -> new IllegalArgumentException(NOT_PATH_CONNECTED));
+    }
+
+    private void checkSameStation(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException(SAME_SOURCE_TARGET);
+        }
     }
 }
