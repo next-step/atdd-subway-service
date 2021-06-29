@@ -64,11 +64,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths?source={}&target={}", 남부터미널역.getId(), 역삼역.getId())
+                .when().get("/paths?source={source}&target={target}", 남부터미널역.getId(), 역삼역.getId())
                 .then().log().all().extract();
 
         // then
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        Assertions.assertThat(response.jsonPath().getList(".stations[*]")).hasSize(3);
+        Assertions.assertThat(response.jsonPath().getList("$.stations")).hasSize(3);
     }
 }
