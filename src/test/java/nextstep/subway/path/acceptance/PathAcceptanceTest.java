@@ -68,6 +68,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         최단경로_조회됨(response);
         assertThat(response.jsonPath().getObject(".", PathResponse.class).getStations()).hasSize(4);
+        assertThat(response.jsonPath().getObject(".", PathResponse.class).getDistance()).isEqualTo(15);
     }
 
     @Test

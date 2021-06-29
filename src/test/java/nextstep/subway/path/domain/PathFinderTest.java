@@ -66,4 +66,14 @@ class PathFinderTest {
         // then
         assertThat(paths).hasSize(4);
     }
+
+    @Test
+    @DisplayName("최단거리를 조회한다")
+    void findPathsDistanceTest() {
+        // when
+        double pathsDistance = pathFinder.getPathsDistance(남부터미널역, 역삼역);
+
+        // then
+        assertThat(pathsDistance).isEqualTo(14);
+    }
 }
