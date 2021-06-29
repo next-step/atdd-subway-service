@@ -8,57 +8,61 @@ import java.util.List;
 
 @Entity
 public class Line extends BaseEntity {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	@Column(unique = true)
-	private String name;
-	private String color;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(unique = true)
+    private String name;
+    private String color;
 
-	@Embedded
-	private Sections sections = new Sections();
+    @Embedded
+    private Sections sections = new Sections();
 
-	protected Line() {
-	    // empty
-	}
+    protected Line() {
+        // empty
+    }
 
-	public Line(String name, String color) {
-		this.name = name;
-		this.color = color;
-	}
+    public Line(String name, String color) {
+        this.name = name;
+        this.color = color;
+    }
 
-	public Line(String name, String color, Station upStation, Station downStation, int distance) {
-		this.name = name;
-		this.color = color;
-		sections.addSection(this, upStation, downStation, distance);
-	}
+    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+        this.name = name;
+        this.color = color;
+        sections.addSection(this, upStation, downStation, distance);
+    }
 
-	public void update(Line line) {
-		this.name = line.name;
-		this.color = line.color;
-	}
+    public void update(Line line) {
+        this.name = line.name;
+        this.color = line.color;
+    }
 
-	public List<Station> getStations() {
-		return this.sections.getStations();
-	}
+    public List<Station> getStations() {
+        return this.sections.getStations();
+    }
 
-	public void addSection(final Station upStation, final Station downStation, final int distance) {
-		this.sections.addSection(this, upStation, downStation, distance);
-	}
+    public Sections getSections() {
+        return this.sections;
+    }
 
-	public void removeSection(final Station station) {
-		this.sections.removeSection(this, station);
-	}
+    public void addSection(final Station upStation, final Station downStation, final int distance) {
+        this.sections.addSection(this, upStation, downStation, distance);
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public void removeSection(final Station station) {
+        this.sections.removeSection(this, station);
+    }
 
-	public String getName() {
-		return name;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public String getColor() {
-		return color;
-	}
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
+    }
 }

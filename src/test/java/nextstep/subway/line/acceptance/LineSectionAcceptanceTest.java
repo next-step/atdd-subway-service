@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 구간 관련 기능")
-class LineSectionAcceptanceTest extends AcceptanceTest {
+public class LineSectionAcceptanceTest extends AcceptanceTest {
 	private LineResponse 신분당선;
 	private StationResponse 강남역;
 	private StationResponse 양재역;
@@ -155,7 +155,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
 	}
 
 	public static void 지하철_노선에_지하철역_등록_실패됨(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 
 	public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
@@ -184,6 +184,6 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
 	}
 
 	public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 }

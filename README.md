@@ -55,8 +55,10 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 
 ## 요구사항 
-*[ ] LineSectionAcceptanceTest 리팩터링
-*[ ] LineService 리팩터링
+*[x] LineSectionAcceptanceTest 리팩터링
+*[x] LineService 리팩터링
+*[ ] 최단 경로 조회 인수 테스트 만들기
+*[ ] 최단 경로 조회 기능 구현하기
 
 
 ## 작업 목록
@@ -69,3 +71,62 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 3. 로직을 옮기기<br>
    기존 로직을 지우지 말고 새로운 로직을 만들어 수행<br>
    정상 동작 확인 후 기존 로직 제거
+
+## 시나리오
+### Feature: 지하철 노선 관련 기능
+#### Scenario: 지하철 노선의 최단 경로를 조회한다.
+* Given 지하철 노선과 지하철역이 등록되어있다.
+* When 지하철 노선의 최단 경로 조회를 요청한다.
+* Then 지하철 노선의 최단 경로가 조회된다.
+
+#### Scenario: 출발역과 도착역이 같게 최단 경로를 조회한다.
+* Given 지하철 노선과 지하철역이 등록되어있다.
+* When 출발역과 도착역이 같게 최단 경로 조회를 요청한다.
+* Then 지하철 노선의 최단 경로가 조회가 실패한다.
+
+#### Scenario: 출발역과 도착역이 연결되지 않게 최단 경로를 조회한다.
+* Given 지하철 노선과 지하철역이 등록되어있다.
+* When 연결되지 않은 출발역과 도착역으로 최단 경로 조회를 요청한다.
+* Then 지하철 노선의 최단 경로가 조회가 실패한다.
+
+#### Scenario: 존재하지 않은 출발역으로 최단 경로를 조회한다.
+* Given 지하철 노선과 지하철역이 등록되어있다.
+* When 존재하지 않은 출발역으로 최단 경로 조회를 요청한다.
+* Then 지하철 노선의 최단 경로가 조회가 실패한다.
+
+#### Scenario: 존재하지 않은 도착역으로 최단 경로를 조회한다.
+* Given 지하철 노선과 지하철역이 등록되어있다.
+* When 존재하지 않은 도착역으로 최단 경로 조회를 요청한다.
+* Then 지하철 노선의 최단 경로가 조회가 실패한다.
+
+
+## 기능 목록
+1. 등록된 지하철 노선에서 최단 경로 찾는 기능
+
+
+## API 명세
+
+* GET /paths 
+  * Request
+    1. long "source" // 출발역
+    2. long "target" // 도착역
+    <br>
+  * Response
+    ```json
+    {
+      "stations": 
+      [
+        {
+          "id": 1,
+          "name": "강남역",
+          "createdAt": "2020-05-09T23:54:12.007"
+        },
+        {
+          "id": 6,
+          "name": "양재역",
+          "createdAt": "2020-05-10T23:54:12.007"
+        }
+      ],
+      "distance": 10
+    }
+    ```
