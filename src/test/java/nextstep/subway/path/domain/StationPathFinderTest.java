@@ -71,8 +71,8 @@ class StationPathFinderTest {
                 new DijkstraShortestPath(subwayMapData.initData()),
                 new Direction(강남역, 남부터미널역));
 
-        List<Station> stations = new ArrayList<>(stationPathFinder.findPaths());
-        assertThat(stations).containsExactly(강남역, 양재역, 남부터미널역);
+        PathResult pathResult = stationPathFinder.findPaths();
+        assertThat(pathResult.getStations()).containsExactly(강남역, 양재역, 남부터미널역);
     }
 
     @DisplayName("경로 내의 지하철역 조회시 예외발생 - case 1 : 출발역과 도착역이 같은 경우")
