@@ -40,10 +40,10 @@ public class Path {
     }
 
     private int getFare() {
-        return 1250 + calculateAdditionalFare(distance);
+        return 1250 + calculateOverFare(distance);
     }
 
-    private int calculateAdditionalFare(double distance) {
+    private int calculateOverFare(double distance) {
         if (distance <= 10) {
             return 0;
         }

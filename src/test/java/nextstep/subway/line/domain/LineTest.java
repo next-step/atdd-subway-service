@@ -3,7 +3,7 @@ package nextstep.subway.line.domain;
 import static nextstep.subway.line.domain.SectionTest.*;
 
 public class LineTest {
-    public static final Line 신분당선 = new Line(1L, "신분당선", "레드");
+    public static final Line 신분당선 = new Line(1L, "신분당선", "레드", 300);
     public static final Line 이호선 = new Line(2L, "이호선", "그린");
 
     static {
