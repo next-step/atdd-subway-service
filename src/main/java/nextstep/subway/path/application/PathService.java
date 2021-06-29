@@ -25,8 +25,6 @@ public class PathService {
     }
 
     public PathResponse getShortestPath(LoginMember loginMember, Long sourceId, Long targetId) {
-        checkPathEndpoints(sourceId, targetId);
-
         List<Line> lines = lineService.findLinesEntities();
         PathFinder pathFinder = new PathFinder(lines);
 
@@ -34,11 +32,5 @@ public class PathService {
         Station target = stationService.findStationById(targetId);
         Path path = pathFinder.findPath(source, target);
         return PathResponse.of(path, path.totalFareOf(loginMember));
-    }
-
-    private void checkPathEndpoints(Long sourceId, Long targetId) {
-        if (sourceId.equals(targetId)) {
-            throw new SameEndpointException("출발지와 목적지가 동일하여 경로를 탐색할 수 없습니다.");
-        }
     }
 }

@@ -13,6 +13,7 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.SectionEdge;
 import nextstep.subway.path.exception.NoSuchPathException;
+import nextstep.subway.path.exception.SameEndpointException;
 import nextstep.subway.station.domain.Station;
 
 public class PathFinder {
@@ -34,11 +35,19 @@ public class PathFinder {
     }
 
     public Path findPath(Station source, Station target) {
+        checkPathEndpoints(source, target);
+
         DijkstraShortestPath<Station, SectionEdge> dijkstraPath = new DijkstraShortestPath<>(graph);
         Optional<GraphPath<Station, SectionEdge>> maybePath
             = Optional.ofNullable(dijkstraPath.getPaths(source).getPath(target));
 
         return Path.of(maybePath
             .orElseThrow(() -> new NoSuchPathException("두 역이 연결되어 있지 않습니다.")));
+    }
+
+    private void checkPathEndpoints(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new SameEndpointException("출발지와 목적지가 동일하여 경로를 탐색할 수 없습니다.");
+        }
     }
 }
