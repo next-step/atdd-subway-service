@@ -20,7 +20,7 @@ public class PathResponse {
                 .stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList()),
-            path.getDistance(),
+            path.distance(),
             fare);
     }
 

@@ -11,24 +11,22 @@ import nextstep.subway.station.domain.Station;
 
 public class Path {
 
-    private final List<Station> stations;
-    private final double distance;
+    private final GraphPath<Station, SectionEdge> value;
 
-    Path(List<Station> stations, double distance) {
-        this.stations = stations;
-        this.distance = distance;
+    Path(GraphPath<Station, SectionEdge> value) {
+        this.value = value;
     }
 
     public static Path of(GraphPath<Station, SectionEdge> path) {
-        return new Path(path.getVertexList(), path.getWeight());
+        return new Path(path);
     }
 
-    public double getDistance() {
-        return distance;
+    public double distance() {
+        return value.getWeight();
     }
 
     public List<Station> getStations() {
-        return unmodifiableList(stations);
+        return unmodifiableList(value.getVertexList());
     }
 
     /*
@@ -39,7 +37,7 @@ public class Path {
     }
 
     private int getFare() {
-        return 1250 + calculateOverFare(distance);
+        return 1250 + calculateOverFare(distance());
     }
 
     private int calculateOverFare(double distance) {
