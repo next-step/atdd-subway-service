@@ -6,22 +6,22 @@ import nextstep.subway.station.dto.StationResponse;
 
 public class PathResponse {
     private List<StationResponse> stations;
-    private Long distance;
+    private int distance;
 
-    protected PathResponse(List<StationResponse> stations, Long distance) {
+    protected PathResponse(List<StationResponse> stations, int distance) {
         this.stations = stations;
         this.distance = distance;
     }
 
     public static PathResponse of(List<StationResponse> stations, double distance) {
-        return new PathResponse(stations, (long) distance);
+        return new PathResponse(stations, (int) distance);
     }
 
     public List<StationResponse> getStations() {
         return stations;
     }
 
-    public Long getDistance() {
+    public int getDistance() {
         return distance;
     }
 }
