@@ -1,6 +1,6 @@
 package nextstep.subway.path.farePolicy;
 
-import nextstep.subway.line.domain.Fare;
+import nextstep.subway.path.domain.Fare;
 
 public class KidsDiscountPolicy implements MemberDiscountPolicyService{
     public static final int MIN_AGE = 6;

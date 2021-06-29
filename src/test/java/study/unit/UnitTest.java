@@ -1,7 +1,7 @@
 package study.unit;
 
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Fare;
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;

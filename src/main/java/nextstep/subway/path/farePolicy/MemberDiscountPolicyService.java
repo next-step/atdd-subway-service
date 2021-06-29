@@ -1,6 +1,6 @@
 package nextstep.subway.path.farePolicy;
 
-import nextstep.subway.line.domain.Fare;
+import nextstep.subway.path.domain.Fare;
 
 public interface MemberDiscountPolicyService {
     Fare applyDiscount(Fare fare);

@@ -1,4 +1,4 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.path.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

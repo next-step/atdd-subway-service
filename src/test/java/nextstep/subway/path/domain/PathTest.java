@@ -7,9 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.farePolicy.KidsDiscountPolicy;
 import nextstep.subway.path.farePolicy.NoneDiscountPolicy;

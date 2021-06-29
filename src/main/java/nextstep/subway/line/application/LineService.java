@@ -3,7 +3,7 @@ package nextstep.subway.line.application;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nextstep.subway.line.domain.Fare;
+import nextstep.subway.path.domain.Fare;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

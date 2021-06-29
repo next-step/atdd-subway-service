@@ -2,7 +2,7 @@ package nextstep.subway;
 
 import com.google.common.collect.Lists;
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Fare;
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.member.domain.Member;
