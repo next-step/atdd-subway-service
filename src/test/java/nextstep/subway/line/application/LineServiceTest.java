@@ -46,13 +46,13 @@ class LineServiceTest {
         역삼역 = stationRepository.save(new Station("역삼역"));
         교대역 = stationRepository.save(new Station("교대역"));
         양재역 = stationRepository.save(new Station("양재역"));
-        이호선 = new Line("2호선", "green", 강남역, 역삼역, 10);
+        이호선 = new Line("2호선", "green", 0, 강남역, 역삼역, 10);
         lineRepository.save(이호선);
     }
 
     @Test
     void saveLine() {
-        LineRequest request = new LineRequest("3호선", "orange", 교대역.getId(), 양재역.getId(), 10);
+        LineRequest request = new LineRequest("3호선", "orange", 0, 교대역.getId(), 양재역.getId(), 10);
 
         LineResponse lineResponse = lineService.saveLine(request);
 
@@ -62,7 +62,7 @@ class LineServiceTest {
 
     @Test
     void findLines() {
-        Line 삼호선 = new Line("3호선", "orange", 교대역, 양재역, 10);
+        Line 삼호선 = new Line("3호선", "orange", 0, 교대역, 양재역, 10);
         lineRepository.saveAll(Arrays.asList(이호선, 삼호선));
 
         List<LineResponse> lines = lineService.findLines();
@@ -90,7 +90,7 @@ class LineServiceTest {
 
     @Test
     void updateLine() {
-        LineRequest updateRequest = new LineRequest("3호선", "orange",
+        LineRequest updateRequest = new LineRequest("3호선", "orange", 0,
                 강남역.getId(), 역삼역.getId(), 15);
 
         lineService.updateLine(이호선.getId(), updateRequest);

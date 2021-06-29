@@ -12,7 +12,7 @@ class LineTest {
     private Station 강남역 = new Station("강남역");
     private Station 역삼역 = new Station("역삼역");
     private Station 양재역 = new Station("양재역");
-    private Line 이호선 = new Line("2호선", "green", 강남역, 역삼역, 10);
+    private Line 이호선 = new Line("2호선", "green", 0, 강남역, 역삼역, 10);
 
     @DisplayName("지하철역 목록을 가져온다.")
     @Test

@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SectionsTest {
 
-    private Line line = new Line("2호선", "green");
+    private Line line = new Line("2호선", "green", 0);
     private Station 강남역 = new Station("강남역");
     private Station 역삼역 = new Station("역삼역");
     private Station 교대역 = new Station("교대역");
