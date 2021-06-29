@@ -1,7 +1,9 @@
 package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import nextstep.subway.errorMessage.ErrorEnum;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -59,5 +61,17 @@ class FareTest {
         Fare totalFare = fare.calculateTotalFare(new Distance(거리));
         // then
         assertThat(totalFare.amount()).isEqualTo(요금);
+    }
+
+    @DisplayName("요금 음수 생성")
+    @Test
+    void invalidAmount() {
+        // given
+        // when
+        // then
+        assertThatThrownBy(() -> new Fare(-10))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorEnum.INVALID_FARE_AMOUNT.message());
+
     }
 }

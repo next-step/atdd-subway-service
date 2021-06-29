@@ -10,13 +10,15 @@ public enum ErrorEnum {
     NOT_FOUND_SECTION("구간을 찾을 수 없습니다."),
     SECTIONS_HAVE_ONLY_ONE("구간이 1개밖에 없습니다."),
     SAME_STATION("같은 역입니다."),
+    INVALID_FARE_AMOUNT("요금은 음수가 될 수 없습니다."),
     ;
+
 
     ErrorEnum(String message) {
         this.message = message;
     }
 
-    private String message;
+    private final String message;
 
     public String message() {
         return message;
