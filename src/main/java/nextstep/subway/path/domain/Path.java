@@ -7,17 +7,15 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import nextstep.subway.errorMessage.ErrorEnum;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.farePolicy.MemberDiscountPolicyService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 
 public class Path {
-    public static final String SAME_STATION = "같은 역입니다.";
-
     private final DijkstraShortestPath<Station, Station> dijkstraShortestPath;
     private final Fare lineExtraFare;
 
@@ -40,19 +38,19 @@ public class Path {
 
     public PathResponse findShortestPath(Station source, Station target, MemberDiscountPolicyService memberDiscountPolicyService) {
         if (source.equals(target)) {
-            throw new IllegalArgumentException(SAME_STATION);
+            throw new IllegalArgumentException(ErrorEnum.SAME_STATION.message());
         }
         List<Station> shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
 
         if (shortestPath.isEmpty()) {
-            throw new IllegalArgumentException(Sections.NOT_FOUND_SECTION);
+            throw new IllegalArgumentException(ErrorEnum.NOT_FOUND_SECTION.message());
         }
 
         Distance distance = findPathDistance(source, target);
         Fare fare = lineExtraFare.calculateTotalFare(distance);
-        Fare totalFare = memberDiscountPolicyService.applyDiscount(fare);
+        Fare resultFare = memberDiscountPolicyService.applyDiscount(fare);
 
-        return PathResponse.of(shortestPath.stream().map(Station::toResponse).collect(Collectors.toList()), findPathDistance(source, target), totalFare);
+        return PathResponse.of(shortestPath.stream().map(Station::toResponse).collect(Collectors.toList()), findPathDistance(source, target), resultFare);
     }
 
     private static void addPath(List<Section> sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {

@@ -2,6 +2,7 @@ package nextstep.subway.path.ui;
 
 import javax.validation.Valid;
 
+import nextstep.subway.path.dto.PathResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,12 +25,12 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity findPath(@AuthenticationPrincipal(required = false) LoginMember loginMember, @Valid @RequestBody PathRequest pathRequest) {
+    public ResponseEntity<PathResponse> findPath(@AuthenticationPrincipal(required = false) LoginMember loginMember, @Valid @RequestBody PathRequest pathRequest) {
         return ResponseEntity.ok(pathService.findPath(loginMember, pathRequest));
     }
 
     @ExceptionHandler({RuntimeException.class})
-    public ResponseEntity handleRuntimeException() {
+    public ResponseEntity<PathResponse> handleRuntimeException() {
         return ResponseEntity.badRequest()
                 .build();
     }

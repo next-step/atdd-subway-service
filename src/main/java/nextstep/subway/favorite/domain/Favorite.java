@@ -16,7 +16,6 @@ import nextstep.subway.station.domain.Station;
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames={"member","source","target"}))
 public class Favorite {
-
     public Favorite() {
     }
 

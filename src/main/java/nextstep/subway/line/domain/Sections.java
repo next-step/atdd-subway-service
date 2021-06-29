@@ -8,17 +8,13 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import nextstep.subway.errorMessage.ErrorEnum;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
 @Embeddable
 public class Sections {
-
     public static final int SECTION_DELETABLE_MIN_SIZE = 1;
-    public static final String SECTION_IS_ALREADY_ADD = "이미 등록된 구간 입니다.";
-    public static final String CANT_ADD_THIS_SECTION = "등록할 수 없는 구간 입니다.";
-    public static final String NOT_FOUND_SECTION = "구간을 찾을 수 없습니다.";
-    public static final String SECTIONS_HAVE_ONLY_ONE = "구간이 1개밖에 없습니다.";
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -89,7 +85,7 @@ public class Sections {
         while (hasSectionByUpStation(firstStation)) {
             Station tempStation = firstStation;
             Section nextLineSection = findSectionByUpStation(tempStation)
-                    .orElseThrow(() -> new RuntimeException(NOT_FOUND_SECTION));
+                    .orElseThrow(() -> new RuntimeException(ErrorEnum.NOT_FOUND_SECTION.message()));
             firstStation = nextLineSection.getDownStation();
             stations.add(firstStation);
         }
@@ -126,7 +122,7 @@ public class Sections {
         while (hasSectionByDownStation(firstStation)) {
             Station tempStation = firstStation;
             Section nextLineSection = findSectionByDownStation(tempStation)
-                    .orElseThrow(() -> new RuntimeException(NOT_FOUND_SECTION));
+                    .orElseThrow(() -> new RuntimeException(ErrorEnum.NOT_FOUND_SECTION.message()));
             firstStation = nextLineSection.getUpStation();
         }
         return firstStation;
@@ -134,11 +130,11 @@ public class Sections {
 
     private void checkValidStations(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException(SECTION_IS_ALREADY_ADD);
+            throw new RuntimeException(ErrorEnum.SECTION_IS_ALREADY_ADD.message());
         }
 
         if (!sections.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException(CANT_ADD_THIS_SECTION);
+            throw new RuntimeException(ErrorEnum.CANT_ADD_THIS_SECTION.message());
         }
     }
 
@@ -160,7 +156,7 @@ public class Sections {
 
     private void checkDeletable() {
         if (sections.size() <= SECTION_DELETABLE_MIN_SIZE) {
-            throw new RuntimeException(SECTIONS_HAVE_ONLY_ONE);
+            throw new RuntimeException(ErrorEnum.SECTIONS_HAVE_ONLY_ONE.message());
         }
     }
 

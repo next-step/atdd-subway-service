@@ -1,4 +1,4 @@
-package nextstep.subway.path.fomular;
+package nextstep.subway.path.calculator;
 
 import nextstep.subway.line.domain.Distance;
 

@@ -6,7 +6,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.path.fomular.OverFare;
+import nextstep.subway.path.calculator.OverFare;
 
 @Embeddable
 public class Fare {

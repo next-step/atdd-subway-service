@@ -1,12 +1,11 @@
 package nextstep.subway.path.application;
 
-import static nextstep.subway.errorMessage.ErrorMessage.NOT_FOUND_STATION;
-
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.errorMessage.ErrorEnum;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -29,8 +28,8 @@ public class PathService {
     }
 
     public PathResponse findPath(LoginMember loginMember, PathRequest pathRequest) {
-        Station source = stationRepository.findById(pathRequest.getSource()).orElseThrow(() -> new RuntimeException(NOT_FOUND_STATION));
-        Station target = stationRepository.findById(pathRequest.getTarget()).orElseThrow(() -> new RuntimeException(NOT_FOUND_STATION));
+        Station source = stationRepository.findById(pathRequest.getSource()).orElseThrow(() -> new RuntimeException(ErrorEnum.NOT_FOUND_STATION.message()));
+        Station target = stationRepository.findById(pathRequest.getTarget()).orElseThrow(() -> new RuntimeException(ErrorEnum.NOT_FOUND_STATION.message()));
 
         List<Line> lines = lineRepository.findAll();
 
