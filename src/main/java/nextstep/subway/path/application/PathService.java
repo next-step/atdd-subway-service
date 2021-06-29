@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.*;
@@ -31,9 +32,10 @@ public class PathService {
         PathFinder pathFinder = new StationPathFinder(
                 new DijkstraShortestPath(subwayMapData.initData()),
                 new Direction(source, target));
-        return PathResponse.of(
-                new ArrayList<Station>(pathFinder.findPaths()),
-                pathFinder.measureDistance());
+        PathResult paths = pathFinder.findPaths();
+        Fare fare = new Fare();
+        FarePolicy distancePolicy = DistancePolicyFactory.findPolicy(paths.getTotalDistance());
+        return PathResponse.of(paths, distancePolicy.calculate(fare.getFareValue()));
     }
 
     private Lines findLines() {
