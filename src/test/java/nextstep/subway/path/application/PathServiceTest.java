@@ -2,8 +2,9 @@ package nextstep.subway.path.application;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
+import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,9 +20,10 @@ import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.path.dto.PathRequest;
 
+import java.util.Optional;
+
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
-    @Mock
     private PathService pathService;
 
     @Mock
@@ -43,11 +45,13 @@ class PathServiceTest {
     @Test
     void findPath() {
         //given
+        pathService = new PathService(lineRepository, stationRepository);
         //when
-        when(pathService.findPath(any(), any())).thenReturn(new PathResponse());
-        PathResponse response = pathService.findPath(new LoginMember(), new PathRequest(강남역.getId(), 선릉역.getId()));
+        when(pathService.findPath(new LoginMember(), new PathRequest(1L, 2L))).thenReturn(new PathResponse());
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(new Station()));
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(new Station()));
         //then
-        assertThat(response).isNotNull();
+        verify(pathService, times(1)).findPath(new LoginMember(), new PathRequest(강남역.getId(), 선릉역.getId()));
     }
 
     @DisplayName("역이 없을 경우")

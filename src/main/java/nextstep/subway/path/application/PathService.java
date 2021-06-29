@@ -1,5 +1,7 @@
 package nextstep.subway.path.application;
 
+import static nextstep.subway.errorMessage.ErrorMessage.NOT_FOUND_STATION;
+
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -11,7 +13,6 @@ import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.farePolicy.MemberDiscountPolicyService;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -28,8 +29,8 @@ public class PathService {
     }
 
     public PathResponse findPath(LoginMember loginMember, PathRequest pathRequest) {
-        Station source = stationRepository.findById(pathRequest.getSource()).orElseThrow(() -> new RuntimeException(Sections.NOT_FOUND_SECTION));
-        Station target = stationRepository.findById(pathRequest.getTarget()).orElseThrow(() -> new RuntimeException(Sections.NOT_FOUND_SECTION));
+        Station source = stationRepository.findById(pathRequest.getSource()).orElseThrow(() -> new RuntimeException(NOT_FOUND_STATION));
+        Station target = stationRepository.findById(pathRequest.getTarget()).orElseThrow(() -> new RuntimeException(NOT_FOUND_STATION));
 
         List<Line> lines = lineRepository.findAll();
 

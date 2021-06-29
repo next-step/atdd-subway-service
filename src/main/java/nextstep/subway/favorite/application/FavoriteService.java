@@ -1,5 +1,7 @@
 package nextstep.subway.favorite.application;
 
+import static nextstep.subway.errorMessage.ErrorMessage.NOT_FOUND_STATION;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,11 +18,9 @@ import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 
-
 @Service
 @Transactional
 public class FavoriteService {
-    public static final String NOT_FOUND_STATION = "역을 찾을 수 없습니다.";
     public static final String FAVORITE_ALREADY_ADDED = "이미 생성 된 즐겨찾기 구간입니다.";
     public static final String NOT_FOUND_FAVORITE = "즐겨 찾기로 설정 된 구간이 없습니다.";
 
