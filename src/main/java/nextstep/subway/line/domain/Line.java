@@ -22,21 +22,29 @@ public class Line extends BaseEntity {
 	private String name;
 	private String color;
 
+	private int extraCharge;
+
 	@Embedded
 	private Sections sections = new Sections();
 
 	protected Line() {
 	}
 
-	public Line(String name, String color) {
+	public Line(String name, String color, int extraCharge) {
 		this.name = name;
 		this.color = color;
+		this.extraCharge = extraCharge;
 	}
 
-	public Line(String name, String color, Station upStation, Station downStation, int distance) {
+	public Line(String name, String color, Station upStation, Station downStation, int distance, int extraCharge) {
 		this.name = name;
 		this.color = color;
+		this.extraCharge = extraCharge;
 		sections.addSection(new Section(this, upStation, downStation, distance));
+	}
+
+	public int getExtraCharge() {
+		return extraCharge;
 	}
 
 	public void update(Line line) {

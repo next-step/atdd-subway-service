@@ -10,8 +10,8 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 
@@ -20,25 +20,25 @@ import nextstep.subway.station.domain.Station;
 public class FavoriteService {
 
 	private final StationService stationService;
-	private final MemberRepository memberRepository;
+	private final MemberService memberService;
 	private final FavoriteRepository favoriteRepository;
 
-	public FavoriteService(StationService stationService, MemberRepository memberRepository,
+	public FavoriteService(StationService stationService, MemberService memberService,
 		FavoriteRepository favoriteRepository) {
 		this.stationService = stationService;
-		this.memberRepository = memberRepository;
+		this.memberService = memberService;
 		this.favoriteRepository = favoriteRepository;
 	}
 
 	public Favorite createFavorite(Long loginId, FavoriteRequest request) {
-		Member member = this.memberRepository.findById(loginId).orElseThrow(RuntimeException::new);
-		Station sourceStation = this.stationService.findById(request.getSource());
-		Station targetStation = this.stationService.findById(request.getTarget());
-		return this.favoriteRepository.save(new Favorite(member, sourceStation, targetStation));
+		Member member = memberService.findById(loginId);
+		Station sourceStation = stationService.findById(request.getSource());
+		Station targetStation = stationService.findById(request.getTarget());
+		return favoriteRepository.save(new Favorite(member, sourceStation, targetStation));
 	}
 
 	public List<FavoriteResponse> findFavorites(Long loginId) {
-		Member member = this.memberRepository.findById(loginId).orElseThrow(RuntimeException::new);
+		Member member = memberService.findById(loginId);
 
 		return member.getFavorites().getFavorites().stream()
 			.map(FavoriteResponse::of)
@@ -46,8 +46,9 @@ public class FavoriteService {
 	}
 
 	public void removeFavorite(Long loginId, long id) {
-		Member member = this.memberRepository.findById(loginId).orElseThrow(RuntimeException::new);
-		Favorite favorite = this.favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
+		Member member = memberService.findById(loginId);
+
+		Favorite favorite = favoriteRepository.findById(id).orElseThrow(RuntimeException::new);
 		member.removeFavorite(favorite);
 	}
 }

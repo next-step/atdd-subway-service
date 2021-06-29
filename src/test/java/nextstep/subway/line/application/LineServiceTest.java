@@ -48,7 +48,7 @@ class LineServiceTest {
 	@Test
 	void testSaveLine() {
 		LineService lineService = new LineService(this.lineRepository, this.stationService);
-		LineRequest lineRequest = new LineRequest("신분당선", "red", 1L, 2L, 10);
+		LineRequest lineRequest = new LineRequest("신분당선", "red", 1L, 2L, 10, 0);
 
 		Mockito.when(this.stationService.findById(Mockito.eq(1L))).thenReturn(this.강남역);
 		Mockito.when(this.stationService.findById(Mockito.eq(2L))).thenReturn(this.광교역);

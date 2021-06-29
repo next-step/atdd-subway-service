@@ -4,19 +4,20 @@ import java.util.List;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 public class PathFinder {
 
-	private final WeightedMultigraph<Station, DefaultWeightedEdge> pathGraph;
-	private final DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath;
+	private final WeightedMultigraph<Station, SectionWeightedEdge> pathGraph;
+	private final DijkstraShortestPath<Station, SectionWeightedEdge> shortestPath;
 
 	public PathFinder(List<Line> lines) {
-		this.pathGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+		this.pathGraph = new WeightedMultigraph<>(SectionWeightedEdge.class);
 		for (Line line : lines) {
 			this.initVertex(line);
 			this.initEdge(line);
@@ -25,15 +26,16 @@ public class PathFinder {
 	}
 
 	private void initEdge(Line line) {
-		line.getSections()
-			.getSections()
-			.forEach(section -> {
-				Station sourceVertex = section.getUpStation();
-				Station targetVertex = section.getDownStation();
-				int weight = section.getDistance().getDistance();
-				this.pathGraph.setEdgeWeight(
-					this.pathGraph.addEdge(sourceVertex, targetVertex), weight);
-			});
+		for (Section section : line.getSections().getSections()) {
+			Station sourceVertex = section.getUpStation();
+			Station targetVertex = section.getDownStation();
+			int weight = section.getDistance().getDistance();
+
+			SectionWeightedEdge sectionWeightedEdge = new SectionWeightedEdge(sourceVertex, targetVertex,
+				line.getExtraCharge());
+			this.pathGraph.addEdge(sourceVertex, targetVertex, sectionWeightedEdge);
+			this.pathGraph.setEdgeWeight(sectionWeightedEdge, weight);
+		}
 	}
 
 	private void initVertex(Line line) {
@@ -41,17 +43,18 @@ public class PathFinder {
 		stations.forEach(this.pathGraph::addVertex);
 	}
 
-	public Path getShortestPath(Station source, Station target) {
+	public Path getShortestPath(Member member, Station source, Station target) {
 		this.validateVertex(source, target);
 		this.validateNotContainedStationInPath(source, target);
 
-		GraphPath<Station, DefaultWeightedEdge> path = shortestPath.getPath(source, target);
+		GraphPath<Station, SectionWeightedEdge> path = shortestPath.getPath(source, target);
 		this.validatePath(path);
 
-		return new Path(path.getVertexList(), path.getWeight());
+		int fare = new FareCalculator().calculateFare(path, member);
+		return new Path(path.getVertexList(), path.getWeight(), fare);
 	}
 
-	private void validatePath(GraphPath<Station, DefaultWeightedEdge> path) {
+	private void validatePath(GraphPath<Station, SectionWeightedEdge> path) {
 		if (path == null) {
 			throw new IllegalArgumentException("구간이 연결되어있지 않아 경로를 찾을 수 없습니다.");
 		}

@@ -6,21 +6,22 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.domain.MemberRepository;
 
 @Service
 public class AuthService {
-	private MemberRepository memberRepository;
+	private static final String GUEST_EMAIL = "guest@guest.com";
+	private MemberService memberService;
 	private JwtTokenProvider jwtTokenProvider;
 
-	public AuthService(MemberRepository memberRepository, JwtTokenProvider jwtTokenProvider) {
-		this.memberRepository = memberRepository;
+	public AuthService(MemberService memberService, JwtTokenProvider jwtTokenProvider) {
+		this.memberService = memberService;
 		this.jwtTokenProvider = jwtTokenProvider;
 	}
 
 	public TokenResponse login(TokenRequest request) {
-		Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(AuthorizationException::new);
+		Member member = memberService.findByEmail(request.getEmail());
 		member.checkPassword(request.getPassword());
 
 		String token = jwtTokenProvider.createToken(request.getEmail());
@@ -29,11 +30,12 @@ public class AuthService {
 
 	public LoginMember findMemberByToken(String credentials) {
 		if (!jwtTokenProvider.validateToken(credentials)) {
-			throw new AuthorizationException("유효하지 않은 token입니다.");
+			Member member = memberService.findByEmail(GUEST_EMAIL);
+			return new LoginMember(member.getId(), GUEST_EMAIL, 30);
 		}
 
 		String email = jwtTokenProvider.getPayload(credentials);
-		Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+		Member member = memberService.findByEmail(email);
 		return new LoginMember(member.getId(), member.getEmail(), member.getAge());
 	}
 }
