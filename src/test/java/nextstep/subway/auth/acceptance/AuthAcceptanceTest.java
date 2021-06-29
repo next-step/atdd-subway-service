@@ -1,14 +1,38 @@
 package nextstep.subway.auth.acceptance;
 
-import nextstep.subway.AcceptanceTest;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
+
+@DisplayName("로그인, 인증 관련 기능")
 public class AuthAcceptanceTest extends AcceptanceTest {
-
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
+        // given
+        String 이메일 = "ehdgml3206@gmail.com";
+        String 비밀번호 = "1234";
+        int 나이 = 31;
+        회원_등록되어_있음(이메일, 비밀번호, 나이);
+
+        // when
+        ExtractableResponse<Response> response = 로그인_요청(이메일, 비밀번호);
+
+        // then
+        로그인_됨(response);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
@@ -21,4 +45,22 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithWrongBearerAuth() {
     }
 
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        return RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(params)
+            .when().post("/login/token")
+            .then().log().all()
+            .extract();
+    }
+
+    private void 로그인_됨(ExtractableResponse<Response> response) {
+        assertThat(HttpStatus.OK.value()).isEqualTo(response.statusCode());
+        String token = response.as(TokenResponse.class).getAccessToken();
+        assertThat(token).isNotNull();
+    }
 }
