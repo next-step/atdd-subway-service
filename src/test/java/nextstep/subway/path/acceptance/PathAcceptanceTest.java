@@ -88,5 +88,8 @@ class PathAcceptanceTest extends AcceptanceTest {
         // Then 최단 경로 확인
         지하철_최단_경로_응답됨(지하철_최단_경로_조회_요청_결과);
         지하철_최단_경로_확인(지하철_최단_경로_조회_요청_결과.as(PathResponse.class), new PathResponse(Arrays.asList(강남역, 양재역, 남부터미널역), 12));
+
+        // And 지하철 요금 확인
+        지하철_요금_확인(지하철_최단_경로_조회_요청_결과.as(PathResponse.class), 1350);
     }
 }
