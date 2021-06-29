@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.net.URI;
 import java.util.List;
 
@@ -34,6 +35,21 @@ public class StationController {
     public ResponseEntity deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/stations/paths")
+    public ResponseEntity findPaths(@RequestParam Long source, @RequestParam Long target) {
+        return ResponseEntity.ok(stationService.findPaths(source, target));
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity handleIllegalArgsException(EntityNotFoundException e) {
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity handleIllegalArgsException(IllegalArgumentException e) {
+        return ResponseEntity.badRequest().build();
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

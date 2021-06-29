@@ -1,6 +1,6 @@
 import ApiService from '@/api'
 
-const BASE_URL = '/paths'
+const BASE_URL = '/stations/paths'
 
 const PathService = {
   get({ source, target }) {

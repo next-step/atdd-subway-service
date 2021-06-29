@@ -8,7 +8,7 @@ import javax.persistence.OneToMany;
 import java.util.*;
 
 @Embeddable
-public class Sections {
+public class Sections implements Iterable<Section> {
 
     private static final int MIN_SECTIONS_SIZE = 1;
 
@@ -128,5 +128,10 @@ public class Sections {
         return sections.stream()
                 .filter(section -> section.getUpStation().equals(station))
                 .findFirst();
+    }
+
+    @Override
+    public Iterator<Section> iterator() {
+        return sections.iterator();
     }
 }
