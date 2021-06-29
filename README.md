@@ -57,8 +57,11 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ## 요구사항 
 *[x] LineSectionAcceptanceTest 리팩터링
 *[x] LineService 리팩터링
-*[ ] 최단 경로 조회 인수 테스트 만들기
-*[ ] 최단 경로 조회 기능 구현하기
+*[x] 최단 경로 조회 인수 테스트 만들기
+*[x] 최단 경로 조회 기능 구현하기
+*[ ] 토큰 발급 기능(로그인) 인수 테스트 만들기
+*[ ] 인증 - 내 정보 조회 기능 완성하기
+*[ ] 인증 - 즐겨찾기 기능 완성하기
 
 
 ## 작업 목록
@@ -98,6 +101,26 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 * Given 지하철 노선과 지하철역이 등록되어있다.
 * When 존재하지 않은 도착역으로 최단 경로 조회를 요청한다.
 * Then 지하철 노선의 최단 경로가 조회가 실패한다.
+
+### Feature: 로그인 기능
+#### Scenario: 로그인을 시도한다.
+* Given 회원 등록되어 있음
+* When 로그인 요청
+* Then 로그인이 성공한다.
+
+#### Scenario: 등록되지 않은 이메일로 로그인을 시도한다.
+* When 등록되지 않은 이메일로 로그인 요청
+* Then 로그인이 실패한다. ( 토큰 발급 실패 )
+
+#### Scenario: 등록되지 않은 패스워드로 로그인을 시도한다.
+* Given 회원 등록되어 있음
+* When 등록되지 않은 패스워드로 로그인 요청
+* Then 로그인이 실패한다. ( 토큰 발급 실패 )
+
+#### Scenario: 유효하지 않은 토큰으로 정보 조회 
+* Given 회원 등록되어 있음 ( 토큰 발급 )
+* When 유효하지 않은 토큰으로 내 정보 조회 요청
+* Then 조회가 실패한다.
 
 
 ## 기능 목록
