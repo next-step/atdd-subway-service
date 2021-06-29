@@ -1,4 +1,4 @@
-package nextstep.subway.favorite;
+package nextstep.subway.favorite.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -61,7 +61,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(TokenResponse tokenResponse, StationResponse source, StationResponse target) {
-        FavoriteRequest favoriteRequest = new FavoriteRequest(source.getId().toString(), target.getId().toString());
+        FavoriteRequest favoriteRequest = new FavoriteRequest(source.getId(), target.getId());
 
         return RestAssured
                 .given().log().all()
