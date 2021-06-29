@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
@@ -24,7 +25,6 @@ import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 경로 조회")
 public class PathApiTest extends AcceptanceTest {
-    private LineResponse 신분당선;
     private StationResponse 강남역;
     private StationResponse 양재역;
 
@@ -36,7 +36,7 @@ public class PathApiTest extends AcceptanceTest {
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
 
         LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 900);
-        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
+        LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
     @DisplayName("경로 찾기 요청")
@@ -77,15 +77,15 @@ public class PathApiTest extends AcceptanceTest {
 
     @DisplayName("경로 요금 체크")
     @Test
-    void checkFee() {
+    void checkFare() {
         //given
-        PathRequest 경로_조회_요청_내용 = 경로_조회_요청_내용(0L, 0L);
+        PathRequest 경로_조회_요청_내용 = 경로_조회_요청_내용(강남역, 양재역);
         //when
         ExtractableResponse<Response> 지하철_경로_조회_요청 = 지하철_경로_조회_요청(경로_조회_요청_내용);
         //then
         //지하철 경로 조회 응답 확인
-        //TODO 응답에서 요금을 받고 응답체크 할 것
-        assertThat(지하철_경로_조회_요청.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(지하철_경로_조회_요청.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(지하철_경로_조회_요청.as(PathResponse.class).getFare()).isEqualTo(2150);
     }
 
     private static ExtractableResponse<Response> 지하철_경로_조회_요청(PathRequest params) {
