@@ -9,6 +9,12 @@ public class Fare {
     public static final int FREE = 0;
     public static final int BASIC_FARE = 1250;
 
+    private static final int DISTANCE_FARE = 100;
+
+    private static final int YOUTH_DISCOUNT = 350;
+    private static final double TEENAGER_PAY_RATE = 0.8;
+    private static final double CHILD_PAY_RATE = 0.5;
+
     private final int value;
 
     public static Fare of(Path path) {
@@ -34,16 +40,16 @@ public class Fare {
             .orElse(0);
     }
 
-    private static int calculateOverFare(double distance) { // TODO 리팩터링 대상
+    private static int calculateOverFare(double distance) {
         if (distance <= 10) {
             return 0;
         }
 
         if (distance <= 50) {
-            return (int) ((Math.ceil((distance - 10) / 5)) * 100);
+            return (int) (Math.ceil((distance - 10) / 5) * DISTANCE_FARE);
         }
 
-        return 100 * 8 + (int) ((Math.ceil((distance - 50) / 8)) * 100);
+        return (int) ((Math.ceil((distance - 50) / 8) + 8) * DISTANCE_FARE);
     }
 
     public int adultFare() {
@@ -51,10 +57,10 @@ public class Fare {
     }
 
     public int teenagerFare() {
-        return (int) ((value - 350) * 0.8);
+        return (int) ((value - YOUTH_DISCOUNT) * TEENAGER_PAY_RATE);
     }
 
     public int childFare() {
-        return (int) ((value - 350) * 0.5);
+        return (int) ((value - YOUTH_DISCOUNT) * CHILD_PAY_RATE);
     }
 }
