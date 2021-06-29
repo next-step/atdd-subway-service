@@ -14,10 +14,10 @@ import nextstep.subway.station.excpetion.StationGraphException;
 
 public class StationGraph {
 
-	WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph;
+	private WeightedMultigraph<Station, DefaultWeightedEdge> stationGraph;
 
 	public StationGraph(Lines lines) {
-		stationGraph = new WeightedMultigraph(DefaultWeightedEdge.class);
+		stationGraph = new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class);
 		setVertexes(lines.getStations());
 		setEdges(lines.getSectionsByLine());
 	}
@@ -68,7 +68,7 @@ public class StationGraph {
 	}
 
 	private List<GraphPath<Station, DefaultWeightedEdge>> getPaths(Station sourceStation, Station targetStation) {
-		return new KShortestPaths(stationGraph, 100).getPaths(sourceStation, targetStation);
+		return new KShortestPaths<Station, DefaultWeightedEdge>(stationGraph, 100).getPaths(sourceStation, targetStation);
 	}
 
 	private void setVertexes(List<Station> stations) {
