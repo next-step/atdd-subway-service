@@ -38,38 +38,6 @@ public class Path {
         return new Path(new DijkstraShortestPath(graph), mostExtraFare.sum(new Fare(Fare.DEFAULT_USE_FARE_AMOUNT)));
     }
 
-    private static void addPath(List<Section> sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        for (Section section : sections) {
-
-            Station upStation = section.getUpStation();
-            Station downStation = section.getDownStation();
-
-            graph.addVertex(upStation);
-            graph.addVertex(downStation);
-            graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.distanceToInteger());
-        }
-    }
-
-    public PathResponse findShortestPath(Station source, Station target) {
-        if (source.equals(target)) {
-            throw new IllegalArgumentException(SAME_STATION);
-        }
-        List<Station> shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
-
-        if (shortestPath.isEmpty()) {
-            throw new IllegalArgumentException(Sections.NOT_FOUND_SECTION);
-        }
-
-        int distance = findPathDistance(source, target);
-        Fare totalFare = this.lineExtraFare.calculateTotalFare(distance);
-
-        return PathResponse.of(shortestPath.stream().map(Station::toResponse).collect(Collectors.toList()), findPathDistance(source, target), totalFare.amount());
-    }
-
-    private int findPathDistance(Station source, Station target) {
-        return (int) dijkstraShortestPath.getPathWeight(source, target);
-    }
-
     public PathResponse findShortestPath(Station source, Station target, MemberDiscountPolicyService memberDiscountPolicyService) {
         if (source.equals(target)) {
             throw new IllegalArgumentException(SAME_STATION);
@@ -85,5 +53,21 @@ public class Path {
         Fare totalFare = memberDiscountPolicyService.discount(fare);
 
         return PathResponse.of(shortestPath.stream().map(Station::toResponse).collect(Collectors.toList()), findPathDistance(source, target), totalFare.amount());
+    }
+
+    private static void addPath(List<Section> sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        for (Section section : sections) {
+
+            Station upStation = section.getUpStation();
+            Station downStation = section.getDownStation();
+
+            graph.addVertex(upStation);
+            graph.addVertex(downStation);
+            graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.distanceToInteger());
+        }
+    }
+
+    private int findPathDistance(Station source, Station target) {
+        return (int) dijkstraShortestPath.getPathWeight(source, target);
     }
 }
