@@ -9,7 +9,7 @@ public class Path {
 
     private final List<Station> stations;
     private final int distance;
-    private final int fee;
+    private int fee;
 
     private Path(List<Station> stations, int distance, int fee) {
         this.stations = stations;
@@ -52,5 +52,20 @@ public class Path {
                 "stations=" + stations +
                 ", distance=" + distance +
                 '}';
+    }
+
+    public void apply(int age) {
+        if (Objects.isNull(fee)){
+            throw new RuntimeException("금액이 산정되지 않았습니다");
+        }
+
+        if (age >= 13 && age < 19){
+            // 청소년 요금
+            this.fee = (int) ((fee - 350) * 0.8);
+        }
+
+        if (age >= 6 && age < 12){
+            this.fee = (int) ((fee - 350) * 0.5);
+        }
     }
 }

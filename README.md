@@ -91,7 +91,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
    - 이용 거리 초과 시 추가운임 부과
      - 10Km 초과 ~ 50Km까지 (5km마다 100원)
      - 50Km 초과 시 (8km마다 100원)
- - [ ] 노선별 추가 요금 정책 추가
- - [ ] 연령별 할인 정책 추가
+ - [x] 노선별 추가 요금 정책 추가
+ - [x] 연령별 할인 정책 추가
 
 

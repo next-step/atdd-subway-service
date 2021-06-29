@@ -13,6 +13,7 @@ public class PathNavigation {
     public static final int BASIC_FEE = 1250;
     public static final int BASIC_FEE_OVER_50KM = 2050;
 
+    private static final int ADULT_AGE = 20;
     private static final String ERROR_MESSAGE_EQUALS_STATIONS = "동일한 역을 입력하였습니다.";
     private static final String ERROR_MESSAGE_NOT_EXISTED_STATIONS = "존재하지 않은 출발역이나 도착역이 있습니다.";
     private static final String ERROR_MESSAGE_NOT_CONNECTED_STATIONS = "역이 연결되어 있지 않습니다.";
@@ -34,27 +35,67 @@ public class PathNavigation {
     }
 
 
-    public Path findShortestPath(Station source, Station target) {
+    public Path findShortestPath(Station source, Station target, int age) {
         validateStations(source, target);
 
         GraphPath<Station, SubwayWeightedEdge> shortestPath = this.path.getPath(source, target);
         validateShortestPathIsNull(shortestPath);
-        Integer additionalCharge = shortestPath.getEdgeList().stream().map(SubwayWeightedEdge::getLine)
+        int additionalCharge = shortestPath.getEdgeList().stream().map(SubwayWeightedEdge::getLine)
                 .map(Line::getAdditionalCharge)
                 .max(Integer::compareTo)
                 .orElse(0);
 
+        List<Station> Stations = shortestPath.getVertexList();
         int distance = (int) shortestPath.getWeight();
 
         if (distance <= 100) {
-            return Path.of(shortestPath.getVertexList(), distance, BASIC_FEE + additionalCharge);
+            int fee = BASIC_FEE + additionalCharge;
+            return getPathOf(Stations, distance, fee, age);
         }
 
         if (distance <= 500) {
-            return Path.of(shortestPath.getVertexList(), distance, BASIC_FEE + calculateOver10KmFare(distance) + additionalCharge);
+            int fee = BASIC_FEE + calculateOver10KmFare(distance) + additionalCharge;
+            return getPathOf(Stations, distance, fee, age);
         }
 
-        return Path.of(shortestPath.getVertexList(), distance, BASIC_FEE_OVER_50KM + calculateOver50KmFare(distance) + additionalCharge);
+        int fee = BASIC_FEE_OVER_50KM + calculateOver50KmFare(distance) + additionalCharge;
+
+        return getPathOf(Stations, distance, fee, age);
+    }
+
+    public Path findShortestPath(Station source, Station target) {
+        int age = ADULT_AGE;
+        validateStations(source, target);
+
+        GraphPath<Station, SubwayWeightedEdge> shortestPath = this.path.getPath(source, target);
+        validateShortestPathIsNull(shortestPath);
+        int additionalCharge = shortestPath.getEdgeList().stream().map(SubwayWeightedEdge::getLine)
+                .map(Line::getAdditionalCharge)
+                .max(Integer::compareTo)
+                .orElse(0);
+
+        List<Station> Stations = shortestPath.getVertexList();
+        int distance = (int) shortestPath.getWeight();
+
+        if (distance <= 100) {
+            int fee = BASIC_FEE + additionalCharge;
+            return getPathOf(Stations, distance, fee, age);
+        }
+
+        if (distance <= 500) {
+            int fee = BASIC_FEE + calculateOver10KmFare(distance) + additionalCharge;
+            return getPathOf(Stations, distance, fee, age);
+        }
+
+        int fee = BASIC_FEE_OVER_50KM + calculateOver50KmFare(distance) + additionalCharge;
+
+        return getPathOf(Stations, distance, fee, age);
+    }
+
+    private Path getPathOf(List<Station> stations, int distance, int fee, int age) {
+        Path path = Path.of(stations, distance, fee);
+        path.apply(age);
+        return path;
     }
 
     private int calculateOver10KmFare(int distance) {

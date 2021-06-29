@@ -56,15 +56,19 @@ class additionalChargePathNavigationTest {
         lines.addAll(Lists.list(경춘선, 사호선, 분당선));
 
         Path path = PathNavigation.by(lines).findShortestPath(양평, 가평);
+        assertThat(path.distance()).isEqualTo(120);
         assertThat(path.fee()).isEqualTo(1250 + 900 + 100);
 
         Path path2 = PathNavigation.by(lines).findShortestPath(광나루역, 천호역);
+        assertThat(path2.distance()).isEqualTo(200);
         assertThat(path2.fee()).isEqualTo(1250 + 900 + 300);
 
         Path path3 = PathNavigation.by(lines).findShortestPath(오리역, 미금역);
+        assertThat(path3.distance()).isEqualTo(500);
         assertThat(path3.fee()).isEqualTo(1250 + 900 + 900);
 
         Path path4 = PathNavigation.by(lines).findShortestPath(오리역, 죽전역);
+        assertThat(path3.distance()).isEqualTo(580);
         assertThat(path4.fee()).isEqualTo(1250 + 900 + 1000);
     }
 

@@ -18,12 +18,11 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public Path findShortestPath(long source, long target) {
+    public Path findShortestPath(long source, long target, int age) {
         PathNavigation navigation = PathNavigation.by(lineRepository.findAll());
         Station sourceStation = stationRepository.findById(source).orElseThrow(RuntimeException::new);
         Station targetStation = stationRepository.findById(target).orElseThrow(RuntimeException::new);
-        Path shortestPath = navigation.findShortestPath(sourceStation, targetStation);
 
-        return shortestPath;
+        return navigation.findShortestPath(sourceStation, targetStation, age);
     }
 }
