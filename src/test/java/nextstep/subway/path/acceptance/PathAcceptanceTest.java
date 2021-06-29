@@ -11,7 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceStep.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceStep.지하철_노선에_지하철역_등록되어_있음;
@@ -65,11 +64,6 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 최단 경로를 관리")
     @Test
     void path() {
-        // given
-        List<StationResponse> expectedStations = Arrays.asList(강남역, 양재역, 남부터미널역);
-        int expectedDistance = 12;
-        PathResponse expected = new PathResponse(expectedStations, expectedDistance);
-
         // When 출발역과 도착역이 같은 경로 조회 요청
         ExtractableResponse<Response> 지하철_최단_경로_조회_요청_예외1 = 지하철_최단_경로_조회_요청(강남역.getId(), 강남역.getId());
 
@@ -93,6 +87,6 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         // Then 최단 경로 확인
         지하철_최단_경로_응답됨(지하철_최단_경로_조회_요청_결과);
-        지하철_최단_경로_확인(지하철_최단_경로_조회_요청_결과.as(PathResponse.class), expected);
+        지하철_최단_경로_확인(지하철_최단_경로_조회_요청_결과.as(PathResponse.class), new PathResponse(Arrays.asList(강남역, 양재역, 남부터미널역), 12));
     }
 }

@@ -4,7 +4,7 @@ import nextstep.subway.line.application.LineQueryService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.application.StationService;
+import nextstep.subway.station.application.StationQueryService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.assertj.core.util.Lists;
@@ -25,7 +25,7 @@ class PathServiceTest {
     private PathService pathService;
 
     @Mock
-    private StationService stationService;
+    private StationQueryService stationQueryService;
 
     @Mock
     private LineQueryService lineQueryService;
@@ -48,7 +48,7 @@ class PathServiceTest {
      */
     @BeforeEach
     public void setUp() {
-        pathService = new PathService(stationService, lineQueryService);
+        pathService = new PathService(stationQueryService, lineQueryService);
 
         강남역 = new Station("강남역");
         ReflectionTestUtils.setField(강남역, "id", 1L);
@@ -71,8 +71,8 @@ class PathServiceTest {
     void findPath() {
         //given
         when(lineQueryService.findLines()).thenReturn(lines);
-        when(stationService.findById(강남역.getId())).thenReturn(강남역);
-        when(stationService.findById(남부터미널역.getId())).thenReturn(남부터미널역);
+        when(stationQueryService.findStationById(강남역.getId())).thenReturn(강남역);
+        when(stationQueryService.findStationById(남부터미널역.getId())).thenReturn(남부터미널역);
         PathRequest pathRequest = new PathRequest(강남역.getId(), 남부터미널역.getId());
 
         //when

@@ -1,22 +1,21 @@
 package nextstep.subway.member;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.member.dto.MemberResponse;
+import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceStep.*;
+import static nextstep.subway.member.MemberAcceptanceStep.*;
 
-public class MemberAcceptanceTest extends AcceptanceTest {
+class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
+    public static final String DUPLICATE_EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final String NEW_EMAIL = "newemail@email.com";
+    public static final String DUPLICATE_NEW_EMAIL = "newemail@email.com";
     public static final String NEW_PASSWORD = "newpassword";
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
@@ -34,10 +33,20 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then
         회원_정보_조회됨(findResponse, EMAIL, AGE);
 
+        // when 회원 정보 중복 이메일 생성
+        ExtractableResponse<Response> duplicateCreateResponse = 회원_생성을_요청(DUPLICATE_EMAIL, PASSWORD, AGE);
+        // then
+        회원_생성_실패됨(duplicateCreateResponse);
+
         // when
         ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
         // then
         회원_정보_수정됨(updateResponse);
+
+        // when 회원 정보 중복 이메일 수정
+        ExtractableResponse<Response> duplicateUpdateResponse = 회원_정보_수정_요청(createResponse, DUPLICATE_NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        // then
+        회원_수정_실패됨(duplicateUpdateResponse);
 
         // when
         ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
@@ -48,70 +57,43 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // Given 회원 등록됨
+        회원_등록됨(EMAIL, PASSWORD, AGE);
+        // When 로그인 요청
+        ExtractableResponse<Response> 로그인_요청_결과 = 로그인_요청(EMAIL, PASSWORD);
+        // Then 로그인 됨
+        로그인_응답됨(로그인_요청_결과);
+        로그인_됨(로그인_요청_결과);
 
-    }
+        // When 나의 정보 요청
+        ExtractableResponse<Response> 나의_정보_조회_요청_결과 = 나의_정보_조회_요청(로그인_요청_결과.as(TokenResponse.class).getAccessToken());
+        // Then 나의 정보 확인
+        나의_정보_확인(나의_정보_조회_요청_결과, EMAIL, AGE);
 
-    public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
-        MemberRequest memberRequest = new MemberRequest(email, password, age);
+        // When 나의 정보 수정
+        ExtractableResponse<Response> 나의_정보_수정_요청_결과 = 나의_정보_수정_요청(로그인_요청_결과.as(TokenResponse.class).getAccessToken(), NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        // Then 나의 정보 수정 응답됨
+        나의_정보_수정_응답됨(나의_정보_수정_요청_결과);
 
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().post("/members")
-                .then().log().all()
-                .extract();
-    }
+        // When 수정된 정보로 로그인 요청
+        ExtractableResponse<Response> 로그인_재요청_결과 = 로그인_요청(NEW_EMAIL, NEW_PASSWORD);
+        // Then 로그인 됨
+        로그인_응답됨(로그인_재요청_결과);
+        로그인_됨(로그인_재요청_결과);
 
-    public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
+        // When 나의 정보 재요청
+        ExtractableResponse<Response> 나의_정보_조회_재요청_결과 = 나의_정보_조회_요청(로그인_재요청_결과.as(TokenResponse.class).getAccessToken());
+        // Then 나의 정보 확인
+        나의_정보_확인(나의_정보_조회_재요청_결과, NEW_EMAIL, NEW_AGE);
 
-        return RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(uri)
-                .then().log().all()
-                .extract();
-    }
+        // When 나의 정보 삭제
+        ExtractableResponse<Response> 나의_정보_삭제_요청_결과 = 나의_정보_삭제_요청(로그인_재요청_결과.as(TokenResponse.class).getAccessToken());
+        // Then 나의 정보 삭제 응답됨
+        나의_정보_삭제_응답됨(나의_정보_삭제_요청_결과);
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
-        String uri = response.header("Location");
-        MemberRequest memberRequest = new MemberRequest(email, password, age);
-
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().put(uri)
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
-        return RestAssured
-                .given().log().all()
-                .when().delete(uri)
-                .then().log().all()
-                .extract();
-    }
-
-    public static void 회원_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
-        MemberResponse memberResponse = response.as(MemberResponse.class);
-        assertThat(memberResponse.getId()).isNotNull();
-        assertThat(memberResponse.getEmail()).isEqualTo(email);
-        assertThat(memberResponse.getAge()).isEqualTo(age);
-    }
-
-    public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 회원_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        // When 삭제된 정보로 로그인 요청
+        ExtractableResponse<Response> 삭제된_로그인_재요청_결과 = 로그인_요청(NEW_EMAIL, NEW_PASSWORD);
+        // Then 나의 정보 확인
+        로그인_이메일_실패됨(삭제된_로그인_재요청_결과);
     }
 }
