@@ -39,27 +39,25 @@ class FavoriteCommandServiceTest {
     @Autowired
     private FavoriteRepository favoriteRepository;
 
-    private Member savedMember = new Member("EMAIL@EMAIL.com", "PASSWORD", 25);
-    private LoginMember savedLoginMember = null;
+    private Member savedMember;
+    private LoginMember savedLoginMember;
 
-    private Station savedStation1 = new Station("STATION_1");
-    private Station savedStation2 = new Station("STATION_2");
-    private Station savedStation3 = new Station("STATION_3");
-
-    private Line savedLine = new Line("LINE", "LINE", savedStation1, savedStation2, 10);
+    private Station savedStation1;
+    private Station savedStation2;
+    private Station savedStation3;
 
     private FavoriteCommandService favoriteCommandService;
 
     @BeforeEach
     void setUp() {
-        savedMember = memberRepository.save(savedMember);
+        savedMember = memberRepository.save(new Member("EMAIL@EMAIL.com", "PASSWORD", 25));
         savedLoginMember = new LoginMember(savedMember.getId(), savedMember.getEmail(), savedMember.getAge());
 
-        savedStation1 = stationRepository.save(savedStation1);
-        savedStation2 = stationRepository.save(savedStation2);
-        savedStation3 = stationRepository.save(savedStation3);
+        savedStation1 = stationRepository.save(new Station("STATION_1"));
+        savedStation2 = stationRepository.save(new Station("STATION_2"));
+        savedStation3 = stationRepository.save(new Station("STATION_3"));
 
-        savedLine = lineRepository.save(savedLine);
+        lineRepository.save(new Line("LINE", "LINE", 0, savedStation1, savedStation2, 10));
 
         favoriteCommandService = new FavoriteCommandService(stationRepository, lineRepository, memberRepository, favoriteRepository);
     }
@@ -67,31 +65,40 @@ class FavoriteCommandServiceTest {
     @Test
     @DisplayName("등록되지 않은 회원이 등록하려 하면 AuthorizationException이 발생한다")
     void 등록되지_않은_회원이_등록하려_하면_AuthorizationException이_발생한다() {
+        // given
+        LoginMember loginMember = new LoginMember(1L, "NONE@MAIL.com", 25);
+        FavoriteRequest favoriteRequest = new FavoriteRequest(savedStation1.getId(), savedStation2.getId());
+
+        // when & then
         assertThatExceptionOfType(AuthorizationException.class)
-                .isThrownBy(() -> favoriteCommandService.createFavorite(new LoginMember(1L, "NONE@MAIL.com", 25), new FavoriteRequest(savedStation1.getId(), savedStation2.getId())));
+                .isThrownBy(() -> favoriteCommandService.createFavorite(loginMember, favoriteRequest));
     }
 
     @Test
     @DisplayName("연결되지 않은 역을 등록하려 하면 LineHasNotExistStationException이 발생한다")
     void 연결되지_않은_역을_등록하려_하면_LineHasNotExistStationException이_발생한다() {
+        // given
+        FavoriteRequest favoriteRequest_1_to_3 = new FavoriteRequest(savedStation1.getId(), savedStation3.getId());
+        FavoriteRequest favoriteRequest_3_to_1 = new FavoriteRequest(savedStation3.getId(), savedStation1.getId());
+
+        // when & then
         assertThatExceptionOfType(LineHasNotExistStationException.class)
-                .isThrownBy(() -> favoriteCommandService.createFavorite(savedLoginMember, new FavoriteRequest(savedStation1.getId(), savedStation3.getId())));
+                .isThrownBy(() -> favoriteCommandService.createFavorite(savedLoginMember, favoriteRequest_1_to_3));
 
         assertThatExceptionOfType(LineHasNotExistStationException.class)
-                .isThrownBy(() -> favoriteCommandService.createFavorite(
-                        savedLoginMember,
-                        new FavoriteRequest(savedStation3.getId(), savedStation1.getId()))
-                );
+                .isThrownBy(() -> favoriteCommandService.createFavorite(savedLoginMember, favoriteRequest_3_to_1));
     }
 
     @Test
     @DisplayName("등록된 계정이며, 연결된 역을 등록하려 하면 성공한다")
     void 등록된_계정이며_연결된_역을_등록하려_하면_성공한다() {
-        FavoriteResponse favoriteResponse = assertDoesNotThrow(() -> favoriteCommandService.createFavorite(
-                savedLoginMember,
-                new FavoriteRequest(savedStation1.getId(), savedStation2.getId()))
-        );
+        // given
+        FavoriteRequest favoriteRequest = new FavoriteRequest(savedStation1.getId(), savedStation2.getId());
 
+        // when
+        FavoriteResponse favoriteResponse = favoriteCommandService.createFavorite(savedLoginMember, favoriteRequest);
+
+        // then
         assertThat(favoriteResponse.getId()).isNotNull();
         assertThat(favoriteResponse.getSource()).isEqualTo(StationResponse.of(savedStation1));
         assertThat(favoriteResponse.getTarget()).isEqualTo(StationResponse.of(savedStation2));
@@ -100,11 +107,13 @@ class FavoriteCommandServiceTest {
     @Test
     @DisplayName("본인의 즐겨찾기가 아닌것을 삭제하려 하면 NotOwnerException이 발생한다")
     void 본인의_즐겨찾기가_아닌것을_삭제하려_하면_ApproveException이_발생한다() {
+        // given
         Member newMember = memberRepository.save(new Member("NEWNEW@EMAIL.com", "NEWNEW", 11));
         LoginMember newLoginMember = new LoginMember(newMember.getId(), newMember.getEmail(), newMember.getAge());
 
         FavoriteResponse favorite = favoriteCommandService.createFavorite(savedLoginMember, new FavoriteRequest(savedStation1.getId(), savedStation2.getId()));
 
+        // when & then
         assertThatExceptionOfType(ApproveException.class)
                 .isThrownBy(() -> favoriteCommandService.deleteById(newLoginMember, favorite.getId()));
     }
@@ -120,10 +129,13 @@ class FavoriteCommandServiceTest {
     @Test
     @DisplayName("등록되지 않은 즐겨찾기를 삭제하려 하면 EntityNotExistException 발생한다")
     void 등록되지_않은_즐겨찾기를_삭제하려_하면_EntityNotExistException이_발생한다() {
+        // given
         FavoriteResponse favorite = favoriteCommandService.createFavorite(savedLoginMember, new FavoriteRequest(savedStation1.getId(), savedStation2.getId()));
 
+        // when
         favoriteCommandService.deleteById(savedLoginMember, favorite.getId());
 
+        // then
         assertThatExceptionOfType(EntityNotExistException.class)
                 .isThrownBy(() -> favoriteCommandService.deleteById(savedLoginMember, favorite.getId()));
     }

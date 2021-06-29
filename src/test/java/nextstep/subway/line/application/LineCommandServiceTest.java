@@ -37,7 +37,6 @@ class LineCommandServiceTest {
     private Station 양재역;
     private Station 판교역;
     private Station 정자역;
-
     private Station 야탑역;
     private Station 모란역;
     private Station 수진역;
@@ -49,7 +48,6 @@ class LineCommandServiceTest {
         양재역 = new Station("양재역");
         판교역 = new Station("판교역");
         정자역 = new Station("정자역");
-
         야탑역 = new Station("야탑역");
         모란역 = new Station("모란역");
         수진역 = new Station("수진역");
@@ -65,15 +63,15 @@ class LineCommandServiceTest {
     void 저장을_하면_정렬된_역의_Response가_같이_나온다() {
         // given
         stationRepository.saveAll(Arrays.asList(양재역, 판교역));
-        LineRequest lineRequest = new LineRequest("신분당선", "빨간색", 양재역.getId(), 판교역.getId(), 3);
+        LineRequest 신분당_요청 = new LineRequest("신분당선", "빨간색", 양재역.getId(), 판교역.getId(), 3);
 
         // when
-        LineResponse lineResponse = lineCommandService.saveLine(lineRequest);
+        LineResponse 신분당_응답 = lineCommandService.saveLine(신분당_요청);
 
         // then
-        assertThat(lineResponse.getName()).isEqualTo(lineRequest.getName());
-        assertThat(lineResponse.getColor()).isEqualTo(lineRequest.getColor());
-        assertThat(lineResponse.getStations())
+        assertThat(신분당_응답.getName()).isEqualTo(신분당_요청.getName());
+        assertThat(신분당_응답.getColor()).isEqualTo(신분당_요청.getColor());
+        assertThat(신분당_응답.getStations())
                 .map(StationResponse::getId)
                 .containsExactly(양재역.getId(), 판교역.getId());
     }
@@ -84,19 +82,19 @@ class LineCommandServiceTest {
         // given
         stationRepository.saveAll(Arrays.asList(강남역, 양재역, 판교역, 정자역));
 
-        LineRequest lineRequest = new LineRequest("신분당선", "빨간색", 양재역.getId(), 판교역.getId(), 3);
+        LineRequest 신분당_요청 = new LineRequest("신분당선", "빨간색", 양재역.getId(), 판교역.getId(), 3);
 
-        LineResponse lineResponse = lineCommandService.saveLine(lineRequest);
-        lineCommandService.addLineStation(lineResponse.getId(), new SectionRequest(강남역.getId(), 양재역.getId(), 3));
-        lineCommandService.addLineStation(lineResponse.getId(), new SectionRequest(판교역.getId(), 정자역.getId(), 3));
+        LineResponse 신분당_응답 = lineCommandService.saveLine(신분당_요청);
+        lineCommandService.addLineStation(신분당_응답.getId(), new SectionRequest(강남역.getId(), 양재역.getId(), 3));
+        lineCommandService.addLineStation(신분당_응답.getId(), new SectionRequest(판교역.getId(), 정자역.getId(), 3));
 
         // when
-        LineResponse lineResponseById = lineQueryService.findLineResponseById(lineResponse.getId());
+        LineResponse 신분당_DB_응답 = lineQueryService.findLineResponseById(신분당_응답.getId());
 
         // then
-        assertThat(lineResponseById.getName()).isEqualTo(lineRequest.getName());
-        assertThat(lineResponseById.getColor()).isEqualTo(lineRequest.getColor());
-        assertThat(lineResponseById.getStations())
+        assertThat(신분당_DB_응답.getName()).isEqualTo(신분당_요청.getName());
+        assertThat(신분당_DB_응답.getColor()).isEqualTo(신분당_요청.getColor());
+        assertThat(신분당_DB_응답.getStations())
                 .map(StationResponse::getId)
                 .containsExactly(강남역.getId(), 양재역.getId(), 판교역.getId(), 정자역.getId());
     }
@@ -146,11 +144,9 @@ class LineCommandServiceTest {
         // given
         stationRepository.saveAll(Arrays.asList(강남역, 양재역, 판교역, 정자역));
 
-        LineRequest 신분당_요청 = new LineRequest("신분당선", "빨간색", 양재역.getId(), 판교역.getId(), 3);
+        LineResponse 신분당_응답 = lineCommandService.saveLine(new LineRequest("신분당선", "빨간색", 양재역.getId(), 판교역.getId(), 3));
 
-        LineResponse 신분당_응답 = lineCommandService.saveLine(신분당_요청);
-
-        // when
+        // when & then
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> lineCommandService.removeLineStation(신분당_응답.getId(), 양재역.getId()));
     }
@@ -161,18 +157,16 @@ class LineCommandServiceTest {
         // given
         stationRepository.saveAll(Arrays.asList(강남역, 양재역, 판교역, 정자역));
 
-        LineRequest 신분당_요청 = new LineRequest("신분당선", "빨간색", 양재역.getId(), 판교역.getId(), 3);
-
-        LineResponse 신분당_응답 = lineCommandService.saveLine(신분당_요청);
+        LineResponse 신분당_응답 = lineCommandService.saveLine(new LineRequest("신분당선", "빨간색", 양재역.getId(), 판교역.getId(), 3));
         lineCommandService.addLineStation(신분당_응답.getId(), new SectionRequest(강남역.getId(), 양재역.getId(), 3));
 
         // when
         lineCommandService.removeLineStation(신분당_응답.getId(), 양재역.getId());
 
         // then
-        LineResponse lineResponse = lineQueryService.findLineResponseById(신분당_응답.getId());
+        LineResponse 신분당_DB_응답 = lineQueryService.findLineResponseById(신분당_응답.getId());
 
-        assertThat(lineResponse.getStations())
+        assertThat(신분당_DB_응답.getStations())
                 .map(StationResponse::getId)
                 .containsExactly(강남역.getId(), 판교역.getId());
     }
@@ -183,8 +177,7 @@ class LineCommandServiceTest {
         // given
         stationRepository.saveAll(Arrays.asList(강남역, 정자역));
 
-        LineRequest 신분당_요청 = new LineRequest("신분당선", "빨간색", 강남역.getId(), 정자역.getId(), 3);
-        LineResponse 신분당_응답 = lineCommandService.saveLine(신분당_요청);
+        LineResponse 신분당_응답 = lineCommandService.saveLine(new LineRequest("신분당선", "빨간색", 강남역.getId(), 정자역.getId(), 3));
 
         // when
         assertThatExceptionOfType(RuntimeException.class)
@@ -198,8 +191,7 @@ class LineCommandServiceTest {
         // given
         stationRepository.saveAll(Arrays.asList(강남역, 양재역, 판교역, 정자역));
 
-        LineRequest 신분당_요청 = new LineRequest("신분당선", "빨간색", 강남역.getId(), 정자역.getId(), 3);
-        LineResponse 신분당_응답 = lineCommandService.saveLine(신분당_요청);
+        LineResponse 신분당_응답 = lineCommandService.saveLine(new LineRequest("신분당선", "빨간색", 강남역.getId(), 정자역.getId(), 3));
 
         // when
         assertThatExceptionOfType(RuntimeException.class)
@@ -212,14 +204,15 @@ class LineCommandServiceTest {
     void 노선에_아무_역도_없을경우_등록된다() {
         // given
         stationRepository.saveAll(Arrays.asList(강남역, 양재역));
-        Line save = lineRepository.save(new Line("신분당선", "빨간색"));
+        Line 신분당 = lineRepository.save(new Line("신분당선", "빨간색"));
 
         // when
-        lineCommandService.addLineStation(save.getId(), new SectionRequest(강남역.getId(), 양재역.getId(), 3));
+        lineCommandService.addLineStation(신분당.getId(), new SectionRequest(강남역.getId(), 양재역.getId(), 3));
 
         // then
-        LineResponse lineById = lineQueryService.findLineResponseById(save.getId());
-        assertThat(lineById.getStations())
+        LineResponse 신분당_DB_응답 = lineQueryService.findLineResponseById(신분당.getId());
+
+        assertThat(신분당_DB_응답.getStations())
                 .map(StationResponse::getId)
                 .containsExactly(강남역.getId(), 양재역.getId());
     }
@@ -230,16 +223,15 @@ class LineCommandServiceTest {
         // given
         stationRepository.saveAll(Arrays.asList(강남역, 양재역, 판교역));
 
-        LineRequest 신분당_요청 = new LineRequest("신분당선", "빨간색", 양재역.getId(), 판교역.getId(), 3);
-        LineResponse 신분당_응답 = lineCommandService.saveLine(신분당_요청);
+        LineResponse 신분당_응답 = lineCommandService.saveLine(new LineRequest("신분당선", "빨간색", 양재역.getId(), 판교역.getId(), 3));
 
         // when
         lineCommandService.addLineStation(신분당_응답.getId(), new SectionRequest(강남역.getId(), 양재역.getId(), 3));
 
         // then
-        LineResponse lineResponse = lineQueryService.findLineResponseById(신분당_응답.getId());
+        LineResponse 신분당_DB_응답 = lineQueryService.findLineResponseById(신분당_응답.getId());
 
-        assertThat(lineResponse.getStations())
+        assertThat(신분당_DB_응답.getStations())
                 .map(StationResponse::getId)
                 .containsExactly(강남역.getId(), 양재역.getId(), 판교역.getId());
     }
@@ -250,16 +242,15 @@ class LineCommandServiceTest {
         // given
         stationRepository.saveAll(Arrays.asList(양재역, 판교역, 정자역));
 
-        LineRequest 신분당_요청 = new LineRequest("신분당선", "빨간색", 양재역.getId(), 판교역.getId(), 3);
-        LineResponse 신분당_응답 = lineCommandService.saveLine(신분당_요청);
+        LineResponse 신분당_응답 = lineCommandService.saveLine(new LineRequest("신분당선", "빨간색", 양재역.getId(), 판교역.getId(), 3));
 
         // when
         lineCommandService.addLineStation(신분당_응답.getId(), new SectionRequest(판교역.getId(), 정자역.getId(), 3));
 
         // then
-        LineResponse lineResponse = lineQueryService.findLineResponseById(신분당_응답.getId());
+        LineResponse 신분당_DB_응답 = lineQueryService.findLineResponseById(신분당_응답.getId());
 
-        assertThat(lineResponse.getStations())
+        assertThat(신분당_DB_응답.getStations())
                 .map(StationResponse::getId)
                 .containsExactly(양재역.getId(), 판교역.getId(), 정자역.getId());
     }
@@ -270,8 +261,7 @@ class LineCommandServiceTest {
         // given
         stationRepository.saveAll(Arrays.asList(양재역, 판교역, 정자역));
 
-        LineRequest 신분당_요청 = new LineRequest("신분당선", "빨간색", 양재역.getId(), 판교역.getId(), 3);
-        LineResponse 신분당_응답 = lineCommandService.saveLine(신분당_요청);
+        LineResponse 신분당_응답 = lineCommandService.saveLine(new LineRequest("신분당선", "빨간색", 양재역.getId(), 판교역.getId(), 3));
 
         // when
         assertThatExceptionOfType(RuntimeException.class)
@@ -285,8 +275,7 @@ class LineCommandServiceTest {
         // given
         stationRepository.saveAll(Arrays.asList(양재역, 판교역, 정자역));
 
-        LineRequest 신분당_요청 = new LineRequest("신분당선", "빨간색", 판교역.getId(), 정자역.getId(), 3);
-        LineResponse 신분당_응답 = lineCommandService.saveLine(신분당_요청);
+        LineResponse 신분당_응답 = lineCommandService.saveLine(new LineRequest("신분당선", "빨간색", 판교역.getId(), 정자역.getId(), 3));
 
         // when
         assertThatExceptionOfType(RuntimeException.class)
@@ -300,16 +289,15 @@ class LineCommandServiceTest {
         // given
         stationRepository.saveAll(Arrays.asList(양재역, 판교역, 정자역));
 
-        LineRequest 신분당_요청 = new LineRequest("신분당선", "빨간색", 양재역.getId(), 정자역.getId(), 3);
-        LineResponse 신분당_응답 = lineCommandService.saveLine(신분당_요청);
+        LineResponse 신분당_응답 = lineCommandService.saveLine(new LineRequest("신분당선", "빨간색", 양재역.getId(), 정자역.getId(), 3));
 
         // when
         lineCommandService.addLineStation(신분당_응답.getId(), new SectionRequest(양재역.getId(), 판교역.getId(), 1));
 
         // then
-        LineResponse lineResponse = lineQueryService.findLineResponseById(신분당_응답.getId());
+        LineResponse 신분당_DB_응답 = lineQueryService.findLineResponseById(신분당_응답.getId());
 
-        assertThat(lineResponse.getStations())
+        assertThat(신분당_DB_응답.getStations())
                 .map(StationResponse::getId)
                 .containsExactly(양재역.getId(), 판교역.getId(), 정자역.getId());
     }
@@ -320,16 +308,15 @@ class LineCommandServiceTest {
         // given
         stationRepository.saveAll(Arrays.asList(양재역, 판교역, 정자역));
 
-        LineRequest 신분당_요청 = new LineRequest("신분당선", "빨간색", 양재역.getId(), 정자역.getId(), 3);
-        LineResponse 신분당_응답 = lineCommandService.saveLine(신분당_요청);
+        LineResponse 신분당_응답 = lineCommandService.saveLine(new LineRequest("신분당선", "빨간색", 양재역.getId(), 정자역.getId(), 3));
 
         // when
         lineCommandService.addLineStation(신분당_응답.getId(), new SectionRequest(판교역.getId(), 정자역.getId(), 1));
 
         // then
-        LineResponse lineResponse = lineQueryService.findLineResponseById(신분당_응답.getId());
+        LineResponse 신분당_DB_응답 = lineQueryService.findLineResponseById(신분당_응답.getId());
 
-        assertThat(lineResponse.getStations())
+        assertThat(신분당_DB_응답.getStations())
                 .map(StationResponse::getId)
                 .containsExactly(양재역.getId(), 판교역.getId(), 정자역.getId());
     }

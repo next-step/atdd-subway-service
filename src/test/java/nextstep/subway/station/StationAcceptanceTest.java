@@ -19,8 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
-    private static final String 강남역 = "강남역";
-    private static final String 역삼역 = "역삼역";
+    private final String 강남역 = "강남역";
+    private final String 역삼역 = "역삼역";
 
     @DisplayName("지하철역을 생성한다.")
     @Test

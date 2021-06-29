@@ -1,6 +1,5 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -9,6 +8,7 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.wrapped.Distance;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +27,7 @@ public class LineCommandService {
         Line persistLine = lineRepository.save(
                 new Line(request.getName(),
                         request.getColor(),
+                        request.getMoney(),
                         createSection(request.getUpStationId(), request.getDownStationId(), request.getDistance())
                 ));
 
@@ -35,7 +36,7 @@ public class LineCommandService {
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor(), lineUpdateRequest.getMoney()));
     }
 
     public void deleteLineById(Long id) {

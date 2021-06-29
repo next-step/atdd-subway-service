@@ -1,7 +1,11 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.domain.wrapped.LineColor;
+import nextstep.subway.line.domain.wrapped.LineName;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.wrapped.Distance;
+import nextstep.subway.wrapped.Money;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,35 +22,42 @@ public class Line extends BaseEntity {
     private LineName name;
     private LineColor color;
 
+    private Money money;
+
     private Sections sections = new Sections();
 
     protected Line() {
     }
 
-    public Line(String name, String color) {
-        this(new LineName(name), new LineColor(color));
+
+    public Line(String name, String color, int money, Station upStation, Station downStation, int distance) {
+        this(name, color, money, new Section(upStation, downStation, new Distance(distance)));
     }
 
-    public Line(String name, String color, Section section) {
-        this(name, color);
+    public Line(String name, String color, int money, Section section) {
+        this(name, color, money);
 
         addSection(section);
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this(new LineName(name), new LineColor(color));
-
-        addSection(new Section(this, upStation, downStation, new Distance(distance)));
+    public Line(String name, String color) {
+        this(name, color, 0);
     }
 
-    public Line(LineName name, LineColor color) {
+    public Line(String name, String color, int money) {
+        this(new LineName(name), new LineColor(color), new Money(money));
+    }
+
+    public Line(LineName name, LineColor color, Money money) {
         this.name = name;
         this.color = color;
+        this.money = money;
     }
 
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+        this.money = line.getMoney();
     }
 
     public Long getId() {
@@ -59,6 +70,10 @@ public class Line extends BaseEntity {
 
     public LineColor getColor() {
         return color;
+    }
+
+    public Money getMoney() {
+        return money;
     }
 
     public SortedStations sortedStation() {
@@ -83,7 +98,21 @@ public class Line extends BaseEntity {
         return sections.containsStation(station);
     }
 
-    Sections getSections() {
+    public Sections getSections() {
         return sections;
+    }
+
+    public boolean containsSection(StationPair stationPair) {
+        return getSections().containsSection(stationPair);
+    }
+
+    public Distance getSectionDistanceBy(StationPair stationPair) {
+        return getSections()
+                .getSectionDistanceBy(stationPair);
+    }
+
+    public Section findSectionBy(StationPair stationPair) {
+        return getSections()
+                .findSectionBy(stationPair);
     }
 }

@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.wrapped.Distance;
 
 import javax.persistence.*;
 
@@ -72,12 +73,17 @@ public class Section {
         this.distance = this.distance.minus(section.distance);
     }
 
-    Station getUpStation() {
+    public Station getUpStation() {
         return upStation;
     }
 
-    Station getDownStation() {
+    public Station getDownStation() {
         return downStation;
+    }
+
+    public boolean hasStationIgnoreDirection(StationPair stationPair) {
+        return (isUpStationEquals(stationPair.getFistStation()) && isDownStationEquals(stationPair.getSecondStation())) ||
+                (isUpStationEquals(stationPair.getSecondStation()) && isDownStationEquals(stationPair.getFistStation()));
     }
 
     public boolean isUpStationEquals(Station station) {

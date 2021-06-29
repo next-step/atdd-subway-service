@@ -1,9 +1,10 @@
 package nextstep.subway.line.dto;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineColor;
-import nextstep.subway.line.domain.LineName;
+import nextstep.subway.line.domain.wrapped.LineColor;
+import nextstep.subway.line.domain.wrapped.LineName;
 import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.wrapped.Money;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,6 +14,7 @@ public class LineResponse {
     private Long id;
     private String name;
     private String color;
+    private int money;
     private List<StationResponse> stations;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
@@ -20,10 +22,11 @@ public class LineResponse {
     public LineResponse() {
     }
 
-    public LineResponse(Long id, LineName name, LineColor color, List<StationResponse> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public LineResponse(Long id, LineName name, LineColor color, Money money, List<StationResponse> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.name = toStringIfNotnull(name);
         this.color = toStringIfNotnull(color);
+        this.money = money.toInt();
         this.stations = stations;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
@@ -38,7 +41,7 @@ public class LineResponse {
     }
 
     public static LineResponse of(Line line, List<StationResponse> stations) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getMoney(), stations, line.getCreatedDate(), line.getModifiedDate());
     }
 
     public Long getId() {
@@ -51,6 +54,10 @@ public class LineResponse {
 
     public String getColor() {
         return color;
+    }
+
+    public int getMoney() {
+        return money;
     }
 
     public List<StationResponse> getStations() {

@@ -1,4 +1,4 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.wrapped;
 
 import javax.persistence.Embeddable;
 import java.util.Objects;
@@ -34,6 +34,10 @@ public class Distance {
 
     public Distance plus(Distance distance) {
         return new Distance(this.distance + distance.distance);
+    }
+
+    public Distance divide(Distance distance) {
+        return new Distance(this.distance / distance.distance);
     }
 
     private void validate(int distance) {

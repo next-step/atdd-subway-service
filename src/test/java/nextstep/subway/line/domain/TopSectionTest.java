@@ -37,9 +37,14 @@ class TopSectionTest {
     @Test
     @DisplayName("Top Section이 없으면 hasTopSection은 false다")
     void Top_Section이_없으면_hasTopSection은_false다() {
+        // given
         TopSection topSection = new TopSection(new ArrayList<>());
 
-        assertThat(topSection.hasTopSection())
+        // when
+        boolean hasTopSection = topSection.hasTopSection();
+
+        // then
+        assertThat(hasTopSection)
                 .isFalse();
     }
 

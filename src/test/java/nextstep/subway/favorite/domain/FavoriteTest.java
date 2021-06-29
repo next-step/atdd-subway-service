@@ -20,7 +20,7 @@ class FavoriteTest {
     @Test
     @DisplayName("라인에 등록된 역이 없을경우 LineHasNotExistStationException이 발생한다")
     void 라인에_등록된_역이_없을경우_LineHasNotExistStationException이_발생한다() {
-        Line line = new Line("LINE", "COLOR", 야탑역, 분당역, 10);
+        Line line = new Line("LINE", "COLOR", 0, 야탑역, 분당역, 10);
         Lines lines = new Lines(Arrays.asList(line));
 
         assertThatExceptionOfType(LineHasNotExistStationException.class)
@@ -29,7 +29,7 @@ class FavoriteTest {
     @Test
     @DisplayName("라인에 등록된 역으로 등록시 정상 등록된다")
     void 라인에_등록된_역으로_등록시_정상_등록된다() {
-        Line line = new Line("LINE", "COLOR", 야탑역, 분당역, 10);
+        Line line = new Line("LINE", "COLOR", 0, 야탑역, 분당역, 10);
         Lines lines = new Lines(Arrays.asList(line));
 
         assertDoesNotThrow(() -> Favorite.create(lines, null, 야탑역, 분당역));
