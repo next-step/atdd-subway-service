@@ -10,8 +10,8 @@ public class FareCalculator {
         this.farePolicy = FarePolicy.get(loginMember.getAge());
     }
 
-    public Fare calculate(ShortestPath shortestPath) {
-        return this.calculate(shortestPath.getDistance(), shortestPath.getSurcharge());
+    public Fare calculate(Path path) {
+        return this.calculate(path.getDistance(), path.getSurcharge());
     }
 
     protected Fare calculate(int distance, int lineSurcharge) {

@@ -17,6 +17,7 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.impl.ShortestPathFinder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -70,12 +71,12 @@ public class FareCalculatorTest {
         일호선.addSection(new Section(서울역, 시청역, 30));
         일호선.addSection(new Section(시청역, 종각역, 9));
         일호선.addSection(new Section(종각역, 종로3가역, 20));
-        PathFinder pathFinder = new PathFinder(new Lines(일호선));
-        ShortestPath shortestPath = pathFinder.findPath(서울역, 종로3가역);
+        PathFinder pathFinder = new ShortestPathFinder();
+        Path path = pathFinder.findPath(new Lines(일호선), 서울역, 종로3가역);
 
         //When
         FareCalculator fareCalculator = new FareCalculator(성인);
-        Fare fare = fareCalculator.calculate(shortestPath.getDistance(), 일호선.getSurcharge());
+        Fare fare = fareCalculator.calculate(path.getDistance(), 일호선.getSurcharge());
 
         //Then
         assertThat(fare).isEqualTo(Fare.wonOf(기본요금 + 일호선_요금 + 거리_59KM_초과요금));

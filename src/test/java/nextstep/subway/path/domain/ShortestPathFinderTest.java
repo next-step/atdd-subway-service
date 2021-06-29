@@ -20,13 +20,15 @@ import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.impl.ShortestPath;
+import nextstep.subway.path.domain.impl.ShortestPathFinder;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("지하철 경로 조회 테스트")
-public class PathFinderTest {
+public class ShortestPathFinderTest {
 
     private Line 일호선;
     private Line 이호선;
@@ -61,10 +63,11 @@ public class PathFinderTest {
     @Test
     void findPathByPoints() {
         // Given
-        PathFinder pathFinder = new PathFinder(new Lines(이호선, 오호선));
+        ShortestPathFinder shortestPathFinder = new ShortestPathFinder();
+        Lines 전체노선 = new Lines(일호선, 이호선, 사호선, 오호선);
 
         // When
-        ShortestPath shortestPath = pathFinder.findPath(서대문역, 시청역);
+        ShortestPath shortestPath = shortestPathFinder.findPath(전체노선, 서대문역, 시청역);
 
         // Then
         지하철_최단_경로_목록_정렬됨(shortestPath.getStations(), 서대문역, 충정로역, 시청역);
@@ -74,10 +77,11 @@ public class PathFinderTest {
     @Test
     void findPathByPointsWithDistance() {
         // Given
-        PathFinder pathFinder = new PathFinder(new Lines(일호선, 이호선, 사호선, 오호선));
+        ShortestPathFinder shortestPathFinder = new ShortestPathFinder();
+        Lines 전체노선 = new Lines(일호선, 이호선, 사호선, 오호선);
 
         // When
-        ShortestPath shortestPath = pathFinder.findPath(광화문역, 명동역);
+        ShortestPath shortestPath = shortestPathFinder.findPath(전체노선, 광화문역, 명동역);
 
         // Then
         지하철_최단_경로_목록_정렬됨(shortestPath.getStations(), 광화문역, 종로3가역, 종각역, 시청역, 서울역, 회현역, 명동역);

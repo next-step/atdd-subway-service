@@ -1,11 +1,13 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.domain.impl;
 
 import java.util.List;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.SectionEdge;
 import nextstep.subway.path.exception.PathNotFoundException;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 
-public class ShortestPath {
+public class ShortestPath implements Path {
 
     GraphPath<Station, SectionEdge> graphPath;
 

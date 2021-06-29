@@ -2,6 +2,7 @@ package nextstep.subway.path.application;
 
 import static nextstep.subway.path.domain.FarePolicy.ADULT;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
@@ -14,7 +15,11 @@ import java.util.stream.Collectors;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.impl.ShortestPath;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -35,6 +40,10 @@ public class PathServiceTest {
     private LineRepository lineRepository;
     @Mock
     private StationService stationService;
+    @Mock
+    private PathFinder pathFinder;
+    @Mock
+    private ShortestPath shortestPath;
     @InjectMocks
     private PathService pathService;
 
@@ -61,10 +70,13 @@ public class PathServiceTest {
 
         when(lineRepository.findAll()).thenReturn(allLines);
 
-        Map<Long, Station> stations = new HashMap<>();
-        stations.put(서대문역.getId(), 서대문역);
-        stations.put(시청역.getId(), 시청역);
-        given(stationService.findStationsByIds(서대문역.getId(), 시청역.getId())).willReturn(stations);
+        Map<Long, Station> findStations = new HashMap<>();
+        findStations.put(서대문역.getId(), 서대문역);
+        findStations.put(시청역.getId(), 시청역);
+        given(stationService.findStationsByIds(any(), any())).willReturn(findStations);
+        given(shortestPath.getDistance()).willReturn(20);
+        given(shortestPath.getStations()).willReturn(new ArrayList<>(Arrays.asList(서대문역, 충정로역, 시청역)));
+        given(pathFinder.findPath(any(), any(), any())).willReturn(shortestPath);
 
         LoginMember loginMember = new LoginMember(ADULT.getMaxAge());
 
