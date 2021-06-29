@@ -9,9 +9,7 @@ import java.util.Objects;
 
 @Embeddable
 public class Fare {
-    public static final int DEFAULT_USE_FARE_AMOUNT = 1250;
-    public static final int DISTANCE_10_KM = 10;
-    public static final int DISTANCE_50_KM = 50;
+
 
     @Column(name = "fare")
     private final int amount;
@@ -32,20 +30,8 @@ public class Fare {
     }
 
     public Fare calculateTotalFare(Distance distance) {
-        Fare overFare = calculateOverFare(distance);
+        Fare overFare = new Fare(OverFare.calculate(distance));
         return new Fare(amount + overFare.amount);
-    }
-
-    private Fare calculateOverFare(Distance distance) {
-        int overAmount = DEFAULT_USE_FARE_AMOUNT;
-        int distanceToInt = distance.toInt();
-        if (distance.isOver(DISTANCE_10_KM)) {
-            overAmount += OverFare.DISTANCE_10_KM.calculateOverFare((Math.min(distanceToInt, DISTANCE_50_KM)));
-        }
-        if (distance.isOver(DISTANCE_50_KM)) {
-            overAmount += OverFare.DISTANCE_50_KM.calculateOverFare(distanceToInt);
-        }
-        return new Fare(overAmount);
     }
 
     @Override
