@@ -18,17 +18,25 @@ public enum OverFare {
 
     public static int calculate(Distance distance) {
         int overAmount = DEFAULT_USE_FARE_AMOUNT;
-        if (isOver(distance, DISTANCE_10_KM.overDistance)) {
-            overAmount += OverFare.DISTANCE_10_KM.calculateOverFare((Math.min(distance.toInt(), DISTANCE_50_KM.overDistance)));
-        }
-        if (isOver(distance, DISTANCE_50_KM.overDistance)) {
-            overAmount += OverFare.DISTANCE_50_KM.calculateOverFare(distance.toInt());
+        for (OverFare overFare : values()) {
+            overAmount += overFare.calculateOverFare(distance);
         }
         return overAmount;
     }
 
-    public int calculateOverFare(int distance) {
-        return (int) ((Math.ceil((distance - this.overDistance - 1) / this.discountPer) + 1) * 100);
+    private int calculateOverFare(Distance distance) {
+        int distanceToInt = toDistanceToInt(distance);
+        if (isOver(distance, this.overDistance)) {
+            return (int) ((Math.ceil((distanceToInt - this.overDistance - 1) / this.discountPer) + 1) * 100);
+        }
+        return 0;
+    }
+
+    private int toDistanceToInt(Distance distance) {
+        if (this.equals(DISTANCE_10_KM)) {
+            return (Math.min(distance.toInt(), DISTANCE_50_KM.overDistance));
+        }
+        return distance.toInt();
     }
 
     private static boolean isOver(Distance distance, int overDistance) {

@@ -10,7 +10,6 @@ import java.util.Objects;
 @Embeddable
 public class Fare {
 
-
     @Column(name = "fare")
     private final int amount;
 
