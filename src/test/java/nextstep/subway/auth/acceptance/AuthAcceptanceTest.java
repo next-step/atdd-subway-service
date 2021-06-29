@@ -7,9 +7,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.member.domain.MemberRepository;
@@ -44,6 +46,16 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	@DisplayName("Bearer Auth 유효하지 않은 토큰")
 	@Test
 	void myInfoWithWrongBearerAuth() {
+		String invalidAccessToken = "invalid access token";
+		ExtractableResponse<Response> response = RestAssured
+			.given().log().all()
+			.auth().oauth2(invalidAccessToken)
+			.when()
+			.get("/members/me")
+			.then().log().all()
+			.extract();
+
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 
 }
