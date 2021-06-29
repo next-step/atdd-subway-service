@@ -56,10 +56,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestPath() {
         int expectedDistance = 5;
+        int expectedFare = 0;
         ExtractableResponse<Response> response = 지하철_노선_최단경로_조회_요청(교대역, 양재역);
 
         지하철_노선_최단경로_조회됨(response);
         지하철_노선_최단경로_목록_정렬됨(response, Arrays.asList(교대역, 남부터미널역, 양재역));
         지하철_노선_최단경로_거리_응답됨(response, expectedDistance);
+        지하철_노선_최단경로_이용_요금_응답됨(response, expectedFare);
     }
 }

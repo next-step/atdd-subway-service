@@ -45,7 +45,10 @@ public class PathSteps {
     }
 
     public static void 지하철_노선_최단경로_거리_응답됨(ExtractableResponse<Response> response, int expectedDistance) {
-        PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getDistance()).isEqualTo(expectedDistance);
+        assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(expectedDistance);
+    }
+
+    public static void 지하철_노선_최단경로_이용_요금_응답됨(ExtractableResponse<Response> response, int expectedFare) {
+        assertThat(response.as(PathResponse.class).getFare()).isEqualTo(expectedFare);
     }
 }
