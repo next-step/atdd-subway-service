@@ -139,4 +139,8 @@ public class Sections {
             throw new RuntimeException("구간이 1개 이하인 경우 제거할 수 없습니다.");
         }
     }
+
+    public List<Section> getSections() {
+        return sections;
+    }
 }
