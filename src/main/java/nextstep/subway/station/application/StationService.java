@@ -42,4 +42,8 @@ public class StationService {
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(() -> new StationNotFoundException("존재하지 않는 역입니다."));
     }
+
+    public List<Station> findAllByIds(List<Long> stationIds) {
+        return stationRepository.findAllById(stationIds);
+    }
 }
