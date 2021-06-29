@@ -54,17 +54,7 @@ public class StationGraph {
 	}
 
 	private GraphPath<Station, DefaultWeightedEdge> getMinPath(List<GraphPath<Station, DefaultWeightedEdge>> paths) {
-		double minWeight = getMinWeight(paths);
-		return paths.stream().filter(path -> path.getWeight() == minWeight).findFirst().get();
-	}
-
-	private Double getMinWeight(List<GraphPath<Station, DefaultWeightedEdge>> paths) {
-		return paths.stream()
-			.map(GraphPath::getWeight)
-			.collect(Collectors.toList())
-			.stream()
-			.min(Double::compareTo)
-			.orElseThrow(RuntimeException::new);
+		return paths.stream().sorted((path1, path2) -> (int)(path1.getWeight()- path2.getWeight())).findFirst().get();
 	}
 
 	private List<GraphPath<Station, DefaultWeightedEdge>> getPaths(Station sourceStation, Station targetStation) {
