@@ -1,6 +1,6 @@
 package nextstep.subway.auth.domain;
 
-import nextstep.subway.exception.AuthorizationException;
+import nextstep.subway.exception.NotFoundLoginMemberException;
 
 public class LoginMember {
     private Long id;
@@ -18,7 +18,7 @@ public class LoginMember {
 
     public void validation() {
         if (id == null) {
-            throw new AuthorizationException("로그인된 멤버가 없습니다.");
+            throw new NotFoundLoginMemberException("로그인된 멤버가 없습니다.");
         }
     }
 

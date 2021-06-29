@@ -10,12 +10,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FavoriteTest {
 
     private Long id = 1L;
+    private Long memberId = 1L;
     private String stationName1 = "역1";
     private String stationName2 = "역2";
 
     @Test
     void create() {
-        Favorite favorite = new Favorite(id, Station.of(stationName1), Station.of(stationName2));
+        Favorite favorite = new Favorite(id, memberId, Station.of(stationName1), Station.of(stationName2));
 
         assertThat(favorite.getId()).isEqualTo(id);
         assertThat(favorite.getSource().getName()).isEqualTo(stationName1);

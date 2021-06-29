@@ -1,6 +1,8 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.exception.InvalidSectionException;
+import nextstep.subway.exception.NotRemovableException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -11,10 +13,15 @@ public class Line extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String name;
+
+    @Column
     private String color;
 
+    @Embedded
+    private AdditionalFare additionalFare;
 
     @Embedded
     private Sections sections = new Sections();
@@ -23,13 +30,17 @@ public class Line extends BaseEntity {
     }
 
     public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
+        this(name, color, 0);
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public Line(String name, String color, int additionalFare) {
         this.name = name;
         this.color = color;
+        this.additionalFare = AdditionalFare.of(additionalFare);
+    }
+
+    public Line(String name, String color, int additionalFare, Station upStation, Station downStation, int distance) {
+        this(name, color, additionalFare);
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
@@ -92,7 +103,7 @@ public class Line extends BaseEntity {
             return;
         }
 
-        throw new RuntimeException();
+        throw new InvalidSectionException("연결 불가능한 구간입니다.");
     }
 
     private void validateAddable(Section section) {
@@ -102,13 +113,13 @@ public class Line extends BaseEntity {
 
     private void checkExistedStationsOf(Section section) {
         if (sections.checkExistedStationsOf(section)) {
-            throw new RuntimeException("이미 등록된 역들을 가진 구간 입니다.");
+            throw new InvalidSectionException("이미 등록된 역들을 가진 구간 입니다.");
         }
     }
 
     private void hasStationCanBeConnectedIn(Section section) {
         if (!sections.hasStationCanBeConnectedIn(section)) {
-            throw new RuntimeException("연결 가능한 역이 하나도 없는 구간 입니다.");
+            throw new InvalidSectionException("연결 가능한 역이 하나도 없는 구간 입니다.");
         }
     }
 
@@ -119,8 +130,12 @@ public class Line extends BaseEntity {
 
     private void validateRemovable(Station station) {
         if (!getStations().contains(station)) {
-            throw new RuntimeException();
+            throw new NotRemovableException("지울 수 없는 역 입니다.");
         }
         sections.validateRemovableSize();
+    }
+
+    public int additionalFare() {
+        return additionalFare.get();
     }
 }

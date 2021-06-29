@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,7 +26,7 @@ public class StationService {
 
     @Transactional(readOnly = true)
     public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+        return stationRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
     @Transactional(readOnly = true)

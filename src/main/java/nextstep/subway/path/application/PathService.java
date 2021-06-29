@@ -1,7 +1,9 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.exception.NoLoginUserException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.PathFinderUsingWeightedMultigraph;
 import nextstep.subway.path.domain.ShortestPath;
@@ -20,14 +22,28 @@ public class PathService {
 
     private LineRepository lineRepository;
     private StationRepository stationRepository;
+    private MemberRepository memberRepository;
 
-    public PathService(LineRepository lineRepository, StationRepository stationRepository) {
+    public PathService(LineRepository lineRepository, StationRepository stationRepository, MemberRepository memberRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.memberRepository = memberRepository;
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(Long sourceStationId, Long targetStationId) {
+    public PathResponse findPath(Long loginMemberId, Long sourceStationId, Long targetStationId) {
+        ShortestPath shortestPath = findShortestPath(sourceStationId, targetStationId);
+
+        if (loginMemberId != null) {
+            return PathResponse.of(shortestPath.withUser(
+                    memberRepository.findById(loginMemberId).orElseThrow(NoLoginUserException::new))
+            );
+        }
+        return PathResponse.of(shortestPath.withoutUser());
+    }
+
+    @Transactional(readOnly = true)
+    protected ShortestPath findShortestPath(Long sourceStationId, Long targetStationId) {
         Station sourceStation = stationRepository.findById(sourceStationId)
                 .orElseThrow(NoSuchElementException::new);
         Station targetStation = stationRepository.findById(targetStationId)
@@ -35,9 +51,6 @@ public class PathService {
         List<Line> lines = lineRepository.findAll();
 
         PathFinder pathFinder = new PathFinderUsingWeightedMultigraph(lines);
-        ShortestPath shortestPath = pathFinder.executeDijkstra(sourceStation, targetStation);
-
-        return PathResponse.of(shortestPath);
+        return pathFinder.executeDijkstra(sourceStation, targetStation);
     }
-
 }

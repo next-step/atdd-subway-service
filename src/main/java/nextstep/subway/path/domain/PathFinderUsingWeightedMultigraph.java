@@ -1,7 +1,10 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.InvalidPathSearchingException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.SectionEdge;
+import nextstep.subway.line.domain.SectionMultigraph;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -14,14 +17,14 @@ import java.util.stream.Collectors;
 
 public class PathFinderUsingWeightedMultigraph implements PathFinder{
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> weightedMultigraph;
+    private SectionMultigraph<Station, SectionEdge> weightedMultigraph;
 
     public PathFinderUsingWeightedMultigraph(List<Line> lines) {
         makeGraph(lines);
     }
 
     public void makeGraph(List<Line> lines) {
-        weightedMultigraph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        weightedMultigraph = new SectionMultigraph(SectionEdge.class);
         for (Line line : lines) {
             addVerticesAndEdgesOf(line);
         }
@@ -31,9 +34,10 @@ public class PathFinderUsingWeightedMultigraph implements PathFinder{
         for (Section section : line.getSections().get()) {
             weightedMultigraph.addVertex(section.getUpStation());
             weightedMultigraph.addVertex(section.getDownStation());
-            weightedMultigraph.setEdgeWeight(
+            weightedMultigraph.setEdgeAdditionalFare(
                     weightedMultigraph.addEdge(section.getUpStation(), section.getDownStation()),
-                    section.getDistance());
+                    section.getDistance(),
+                    section.additionalFare());
         }
     }
 
@@ -61,7 +65,7 @@ public class PathFinderUsingWeightedMultigraph implements PathFinder{
 
     public void validateSourceTarget(Station source, Station target) {
         if (source.equals(target)) {
-            throw new RuntimeException("경로를 검색하려는 출발역과 도착역이 같습니다.");
+            throw new InvalidPathSearchingException("경로를 검색하려는 출발역과 도착역이 같습니다.");
         }
     }
 }

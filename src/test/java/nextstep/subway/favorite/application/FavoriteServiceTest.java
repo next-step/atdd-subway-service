@@ -49,7 +49,7 @@ public class FavoriteServiceTest {
         when(stationRepository.findById(anyLong()))
                 .thenReturn(Optional.of(강남역), Optional.of(역삼역));
         when(favoriteRepository.save(any()))
-                .thenReturn(new Favorite(1L, 강남역, 역삼역));
+                .thenReturn(new Favorite(1L, 1L, 강남역, 역삼역));
         when(memberRepository.findById(any()))
                 .thenReturn(Optional.of(new Member("email", "password", 30)));
 

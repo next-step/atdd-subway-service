@@ -16,4 +16,5 @@ public interface PathFinder {
     List<ShortestPath> executeKShortest(Station sourceStation, Station targetStation);
 
     void validateSourceTarget(Station source, Station target);
+
 }

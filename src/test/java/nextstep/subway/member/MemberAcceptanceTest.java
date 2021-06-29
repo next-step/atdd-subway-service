@@ -42,7 +42,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(findResponse, EMAIL, AGE);
 
         // when
-        ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, EMAIL, NEW_PASSWORD, NEW_AGE);
+        ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, EMAIL, PASSWORD, NEW_AGE);
+
         // then
         회원_정보_수정됨(updateResponse);
 
@@ -67,14 +68,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // When
         ExtractableResponse<Response> updateResponse = 내_정보_수정_요청(
-                new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE), token);
+                new MemberRequest(EMAIL, PASSWORD, NEW_AGE), token);
         // Then
         회원_정보_수정됨(updateResponse);
-        // And 바뀐 이메일에 맞게 토큰 재발급
-        tokenResponse = 로그인_요청(NEW_EMAIL, NEW_PASSWORD);
-        token = tokenResponse.as(TokenResponse.class).getAccessToken();
         meResponse = 내_정보_조회(token);
-        회원_정보_조회됨(meResponse, NEW_EMAIL, NEW_AGE);
+        회원_정보_조회됨(meResponse, EMAIL, NEW_AGE);
 
         // When
         ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(token);
@@ -96,6 +94,26 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 회원_등록되어_있음(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
+        return RestAssuredCRUD.postRequest("/members", memberRequest);
+    }
+
+    public static ExtractableResponse<Response> 성인_회원_등록되어_있음(String email, String password) {
+        MemberRequest memberRequest = new MemberRequest(email, password, 33);
+        return RestAssuredCRUD.postRequest("/members", memberRequest);
+    }
+
+    public static ExtractableResponse<Response> 무료_회원_등록되어_있음(String email, String password) {
+        MemberRequest memberRequest = new MemberRequest(email, password, 65);
+        return RestAssuredCRUD.postRequest("/members", memberRequest);
+    }
+
+    public static ExtractableResponse<Response> 어린이_회원_등록되어_있음(String email, String password) {
+        MemberRequest memberRequest = new MemberRequest(email, password, 10);
+        return RestAssuredCRUD.postRequest("/members", memberRequest);
+    }
+
+    public static ExtractableResponse<Response> 청소년_회원_등록되어_있음(String email, String password) {
+        MemberRequest memberRequest = new MemberRequest(email, password, 17);
         return RestAssuredCRUD.postRequest("/members", memberRequest);
     }
 
