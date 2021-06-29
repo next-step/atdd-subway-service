@@ -22,70 +22,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 	public static final int AGE = 20;
 	public static final int NEW_AGE = 21;
 
-	public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
-		MemberRequest memberRequest = new MemberRequest(email, password, age);
-
-		return RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(memberRequest)
-			.when().post("/members")
-			.then().log().all()
-			.extract();
-	}
-
-	public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
-		String uri = response.header("Location");
-
-		return RestAssured
-			.given().log().all()
-			.accept(MediaType.APPLICATION_JSON_VALUE)
-			.when().get(uri)
-			.then().log().all()
-			.extract();
-	}
-
-	public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email,
-		String password, Integer age) {
-		String uri = response.header("Location");
-		MemberRequest memberRequest = new MemberRequest(email, password, age);
-
-		return RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(memberRequest)
-			.when().put(uri)
-			.then().log().all()
-			.extract();
-	}
-
-	public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
-		String uri = response.header("Location");
-		return RestAssured
-			.given().log().all()
-			.when().delete(uri)
-			.then().log().all()
-			.extract();
-	}
-
-	public static void 회원_생성됨(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-	}
-
-	public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
-		MemberResponse memberResponse = response.as(MemberResponse.class);
-		assertThat(memberResponse.getId()).isNotNull();
-		assertThat(memberResponse.getEmail()).isEqualTo(email);
-		assertThat(memberResponse.getAge()).isEqualTo(age);
-	}
-
-	public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-	}
-
-	public static void 회원_삭제됨(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-	}
 
 	@DisplayName("회원 정보를 관리한다.")
 	@Test
@@ -116,4 +52,48 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 	void manageMyInfo() {
 
 	}
+
+	public ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
+		MemberRequest memberRequest = new MemberRequest(email, password, age);
+
+		return post(memberRequest, "members");
+	}
+
+	public ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
+		String uri = response.header("Location");
+		return get(uri);
+	}
+
+	public ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email,
+		String password, Integer age) {
+		String uri = response.header("Location");
+		MemberRequest memberRequest = new MemberRequest(email, password, age);
+
+		return put(memberRequest, uri);
+	}
+
+	public ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
+		String uri = response.header("Location");
+		return delete(uri);
+	}
+
+	public void 회원_생성됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+	}
+
+	public void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
+		MemberResponse memberResponse = response.as(MemberResponse.class);
+		assertThat(memberResponse.getId()).isNotNull();
+		assertThat(memberResponse.getEmail()).isEqualTo(email);
+		assertThat(memberResponse.getAge()).isEqualTo(age);
+	}
+
+	public void 회원_정보_수정됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+	}
+
+	public void 회원_삭제됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+	}
+
 }
