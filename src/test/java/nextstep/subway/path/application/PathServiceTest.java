@@ -54,7 +54,7 @@ class PathServiceTest {
         StationResponse[] expectedStations = Stream.of(양재역, 강남역, 교대역)
             .map(StationResponse::of)
             .toArray(StationResponse[]::new);
-        assertThat(pathResponse.getFare()).isEqualTo(3550);
+        assertThat(pathResponse.getFare()).isEqualTo(3350);
         assertThat(pathResponse.getDistance()).isEqualTo(130);
         assertThat(pathResponse.getStations()).containsExactly(expectedStations);
     }

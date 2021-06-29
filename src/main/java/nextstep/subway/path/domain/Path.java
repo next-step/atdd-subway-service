@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import static java.util.Collections.*;
+import static java.util.Comparator.*;
 
 import java.util.List;
 
@@ -37,7 +38,14 @@ public class Path {
     }
 
     private int getFare() {
-        return 1250 + calculateOverFare(distance());
+        return 1250 + calculateOverFare(distance()) + getMaxLineFare();
+    }
+
+    private int getMaxLineFare() {
+        return value.getEdgeList().stream()
+            .map(SectionEdge::getLineFare)
+            .max(naturalOrder())
+            .orElse(0);
     }
 
     private int calculateOverFare(double distance) {

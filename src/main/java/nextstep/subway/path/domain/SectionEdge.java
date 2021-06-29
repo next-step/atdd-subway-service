@@ -8,6 +8,8 @@ import nextstep.subway.station.domain.Station;
 
 public class SectionEdge extends DefaultWeightedEdge {
 
+    private static final int NO_LINE_FARE = 0;
+
     private final Line line;
     private final Station upStation;
     private final Station downStation;
@@ -23,6 +25,14 @@ public class SectionEdge extends DefaultWeightedEdge {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public int getLineFare() {
+        if (line.hasAdditionalFare()) {
+            return line.getAdditionalFare();
+        }
+
+        return NO_LINE_FARE;
     }
 
     @Override
