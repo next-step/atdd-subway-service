@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.common.Excetion.NotConnectStationException;
 import nextstep.subway.line.collection.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
@@ -123,6 +124,6 @@ public class PathServiceTest {
         // then
         // 예외 발생
         assertThatThrownBy(() -> pathService.findOptimalPath(1L, 6L))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NotConnectStationException.class);
     }
 }

@@ -8,24 +8,22 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Path {
-    private List<Station> stations;
-    private WeightedMultigraph<Station, DefaultWeightedEdge> optimalPath;
+    private static List<Station> stations;
+    private static WeightedMultigraph<Station, DefaultWeightedEdge> optimalPath;
 
-    public Path() {
-        this.stations = new ArrayList<>();
-        this.optimalPath = new WeightedMultigraph(DefaultWeightedEdge.class);
+    private Path() {
     }
 
     public Path(List<Station> stations) {
         this.stations = stations;
     }
 
-    public Path findOptimalPath(Station sourceStation, Station targetStation, Sections sections) {
-        if(sourceStation.equals(targetStation)){
+    public static Path findOptimalPath(Station sourceStation, Station targetStation, Sections sections) {
+        optimalPath = new WeightedMultigraph(DefaultWeightedEdge.class);
+        if (sourceStation.equals(targetStation)) {
             throw new IllegalArgumentException("출발역과 도착역이 동일합니다.");
         }
         sections.getSections().forEach(section -> {
@@ -35,7 +33,7 @@ public class Path {
         return new Path(getStationList(sourceStation, targetStation));
     }
 
-    private List<Station> getStationList(Station sourceStation, Station targetStation) {
+    private static List<Station> getStationList(Station sourceStation, Station targetStation) {
         try {
             return new DijkstraShortestPath(optimalPath).getPath(sourceStation, targetStation).getVertexList();
         } catch (NullPointerException e) {
@@ -43,11 +41,11 @@ public class Path {
         }
     }
 
-    private void setEdgeWeight(Section section) {
+    private static void setEdgeWeight(Section section) {
         optimalPath.setEdgeWeight(optimalPath.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance().getDistance());
     }
 
-    private void addVerTex(Section section) {
+    private static void addVerTex(Section section) {
         optimalPath.addVertex(section.getUpStation());
         optimalPath.addVertex(section.getDownStation());
     }

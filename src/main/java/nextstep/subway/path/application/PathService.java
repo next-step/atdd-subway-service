@@ -25,12 +25,8 @@ public class PathService {
     public PathResponse findOptimalPath(Long sourceStationId, Long targetStationId) {
         Station sourceStation = findStation(sourceStationId);
         Station targetStation = findStation(targetStationId);
-        Sections sections = new Sections(getAllSection());
-        return PathResponse.of(new Path().findOptimalPath(sourceStation, targetStation,sections));
-    }
-
-    private List<Section> getAllSection() {
-        return sectionRepository.findAll();
+        Sections sections = new Sections(sectionRepository.findAll());
+        return PathResponse.of(Path.findOptimalPath(sourceStation, targetStation,sections));
     }
 
     private Station findStation(Long stationId) {
