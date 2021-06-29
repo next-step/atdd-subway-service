@@ -1,10 +1,13 @@
 package nextstep.subway.path.domain.calculator;
 
+import org.springframework.stereotype.Service;
+
 import nextstep.subway.path.domain.Surcharge;
 
-public class DistanceCalculator {
+@Service
+public class DistanceCalculatorService {
 
-    public static int getDistanceFare(int distance) {
+    public int getDistanceFare(int distance) {
         int firstDistance = distance;
         int fare = 0;
         Surcharge surcharge = Surcharge.findSurchargeByDistance(firstDistance);
@@ -13,7 +16,7 @@ public class DistanceCalculator {
         return fare;
     }
 
-    private static int addDistanceRangeFare(int firstDistance, int fare, Surcharge surcharge) {
+    private int addDistanceRangeFare(int firstDistance, int fare, Surcharge surcharge) {
         if (surcharge == Surcharge.NONE) {
             return fare;
         }

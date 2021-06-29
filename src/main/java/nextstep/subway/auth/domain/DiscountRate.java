@@ -3,7 +3,7 @@ package nextstep.subway.auth.domain;
 import java.util.Arrays;
 
 public enum DiscountRate {
-    ADULT(19, 1),
+    ADULT(18, 1),
     TEENAGER(12, 0.8),
     CHILD(5, 0.5),
     NONE(0, 0);

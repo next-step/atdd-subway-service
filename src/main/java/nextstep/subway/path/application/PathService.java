@@ -12,7 +12,7 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.LinePathSearch;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.SectionEdge;
-import nextstep.subway.path.domain.calculator.FareCalculator;
+import nextstep.subway.path.domain.calculator.FareCalculatorService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -23,10 +23,13 @@ public class PathService {
 
     private final LineService lineService;
     private final StationService stationService;
+    private FareCalculatorService fareCalculatorService;
 
-    public PathService(LineService lineService, StationService stationService) {
+    public PathService(LineService lineService, StationService stationService,
+            FareCalculatorService fareCalculatorService) {
         this.lineService = lineService;
         this.stationService = stationService;
+        this.fareCalculatorService = fareCalculatorService;
     }
 
     @Transactional(readOnly = true)
@@ -40,7 +43,7 @@ public class PathService {
             new NoStationException(NoStationException.NO_DOWNSTATION));
         Path path = LinePathSearch.of(allSections).searchPath(source, target);
         int lineAddPrice = checkAddFareLine(path.getsectionEdges());
-        int subwayFare = FareCalculator.getPrice(path.getMinDistance(), loginMember, lineAddPrice);
+        int subwayFare = fareCalculatorService.getPrice(path.getMinDistance(), loginMember, lineAddPrice);
 
         return PathResponse.of(path.getStations(), path.getMinDistance(), subwayFare);
     }

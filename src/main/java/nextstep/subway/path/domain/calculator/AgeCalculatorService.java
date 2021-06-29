@@ -1,15 +1,14 @@
 package nextstep.subway.path.domain.calculator;
 
+import org.springframework.stereotype.Service;
+
 import nextstep.subway.auth.domain.DiscountRate;
 import nextstep.subway.auth.domain.LoginMember;
 
-public class AgeCalculator {
+@Service
+public class AgeCalculatorService {
 
-    public static int discountRate(int fare, LoginMember member) {
-        return (int)Math.ceil(fare * getDiscountRate(member));
-    }
-
-    public static double getDiscountRate(LoginMember member) {
+    public double getDiscountRate(LoginMember member) {
         Integer age = member.getAge();
         if (age == null || age == 0) {
             return 1;
