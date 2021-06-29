@@ -1,4 +1,4 @@
-package nextstep.subway.path;
+package nextstep.subway.path.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -70,5 +70,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         Assertions.assertThat(response.jsonPath().getList("$.stations")).hasSize(3);
+    }
+
+    @Test
+    @DisplayName("출발역과 도착역이 같은 경우 예외가 발생한다")
+    void sameSourceTargetTest() {
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={source}&target={target}", 역삼역.getId(), 역삼역.getId())
+                .then().log().all().extract();
+
+        // then
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

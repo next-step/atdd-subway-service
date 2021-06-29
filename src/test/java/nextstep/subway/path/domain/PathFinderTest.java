@@ -43,13 +43,13 @@ class PathFinderTest {
     @DisplayName("출발역과 도착역이 같은 경우 예외가 발생한다")
     void sameSourceTargetTest() {
         Assertions.assertThatThrownBy(() -> pathFinder.findPaths(역삼역, 역삼역))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우 예외가 발생한다")
     void notConnectedSourceTargetTest() {
         Assertions.assertThatThrownBy(() -> pathFinder.findPaths(역삼역, 계양역))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
