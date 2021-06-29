@@ -51,6 +51,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     }
 
+    public static ExtractableResponse<Response> 개인_정보_조회_요청(final String accessToken) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .when().get("/members/me")
+            .then()
+            .log().all()
+            .extract();
+    }
+
     public static ExtractableResponse<Response>  회원_등록되어_있음(String email, String password, int age) {
         return 회원_생성을_요청(email, password, age);
     }
