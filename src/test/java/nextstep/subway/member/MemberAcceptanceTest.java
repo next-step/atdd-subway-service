@@ -142,7 +142,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 내_정보_삭제_요청(TokenResponse tokenResponse) {
         return RestAssured.given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .when()
                 .delete("/members/me")
@@ -153,7 +152,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> 내_정보_수정_요청(TokenResponse tokenResponse, String email, String password, int age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
         return RestAssured.given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .body(memberRequest)
                 .when()
