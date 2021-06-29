@@ -14,8 +14,8 @@ public class FareCalculator {
         return this.calculate(shortestPath.getDistance(), shortestPath.getSurcharge());
     }
 
-    protected Fare calculate(int distance, int surcharge) {
-        return calculate(distance, Fare.wonOf(surcharge));
+    protected Fare calculate(int distance, int lineSurcharge) {
+        return calculate(distance, Fare.wonOf(lineSurcharge));
     }
 
     protected Fare calculate(int distance, Fare lineSurcharge) {
