@@ -57,6 +57,34 @@ class PathNavigationTest {
         lines.add(new Line("중앙선", "gs-1123", 0, 구리, 용산, 200));
     }
 
+
+    @Test
+    void IllegalArgumentException_when_add_EqualsStations() {
+        sut = PathNavigation.by(lines);
+
+        assertThatThrownBy(() -> sut.findShortestPath(강남, 강남))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("동일한 역을 입력하였습니다");
+    }
+
+    @Test
+    void IllegalArgumentException_when_path_is_not_connected() {
+        sut = PathNavigation.by(lines);
+
+        assertThatThrownBy(() -> sut.findShortestPath(강남, 용산))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("역이 연결되어 있지 않습니다.");
+    }
+
+    @Test
+    void IllegalArgumentException_when_path_is_not_registered() {
+        sut = PathNavigation.by(lines);
+        Station 없는역 = new Station(10L,"없는역");
+        assertThatThrownBy(() -> sut.findShortestPath(강남, 없는역))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("존재하지 않은 출발역이나 도착역이 있습니다.");
+    }
+
     @Test
     void findShortestPath() {
 
@@ -110,29 +138,15 @@ class PathNavigationTest {
     }
 
     @Test
-    void IllegalArgumentException_when_add_EqualsStations() {
-        sut = PathNavigation.by(lines);
+    void _일호선은_900원_추가요금이_붙는_호선이다() {
+        Station 양평 = new Station(10L, "양평");
+        Station 가평 = new Station(11L, "가평");
+        Line 경춘선 = new Line("경춘선", "gs-12345", 900, 양평, 가평, 15);
+        lines.add(경춘선);
 
-        assertThatThrownBy(() -> sut.findShortestPath(강남, 강남))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("동일한 역을 입력하였습니다");
+        Path path = PathNavigation.by(lines).findShortestPath(양평, 가평);
+        assertThat(path.fee()).isEqualTo(1250 + 900);
     }
 
-    @Test
-    void IllegalArgumentException_when_path_is_not_connected() {
-        sut = PathNavigation.by(lines);
-
-        assertThatThrownBy(() -> sut.findShortestPath(강남, 용산))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("역이 연결되어 있지 않습니다.");
-    }
-
-    @Test
-    void IllegalArgumentException_when_path_is_not_registered() {
-        sut = PathNavigation.by(lines);
-        Station 없는역 = new Station(10L,"없는역");
-        assertThatThrownBy(() -> sut.findShortestPath(강남, 없는역))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("존재하지 않은 출발역이나 도착역이 있습니다.");
-    }
+    
 }

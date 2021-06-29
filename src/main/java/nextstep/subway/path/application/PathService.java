@@ -22,6 +22,8 @@ public class PathService {
         PathNavigation navigation = PathNavigation.by(lineRepository.findAll());
         Station sourceStation = stationRepository.findById(source).orElseThrow(RuntimeException::new);
         Station targetStation = stationRepository.findById(target).orElseThrow(RuntimeException::new);
-        return navigation.findShortestPath(sourceStation, targetStation);
+        Path shortestPath = navigation.findShortestPath(sourceStation, targetStation);
+
+        return shortestPath;
     }
 }

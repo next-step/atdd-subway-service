@@ -39,18 +39,22 @@ public class PathNavigation {
 
         GraphPath<Station, SubwayWeightedEdge> shortestPath = this.path.getPath(source, target);
         validateShortestPathIsNull(shortestPath);
+        Integer additionalCharge = shortestPath.getEdgeList().stream().map(SubwayWeightedEdge::getLine)
+                .map(Line::getAdditionalCharge)
+                .max(Integer::compareTo)
+                .orElse(0);
 
         int distance = (int) shortestPath.getWeight();
 
         if (distance <= 100) {
-            return Path.of(shortestPath.getVertexList(), distance, BASIC_FEE);
+            return Path.of(shortestPath.getVertexList(), distance, BASIC_FEE + additionalCharge);
         }
 
         if (distance <= 500) {
-            return Path.of(shortestPath.getVertexList(), distance, BASIC_FEE + calculateOver10KmFare(distance));
+            return Path.of(shortestPath.getVertexList(), distance, BASIC_FEE + calculateOver10KmFare(distance) + additionalCharge);
         }
 
-        return Path.of(shortestPath.getVertexList(), distance, BASIC_FEE_OVER_50KM + calculateOver50KmFare(distance));
+        return Path.of(shortestPath.getVertexList(), distance, BASIC_FEE_OVER_50KM + calculateOver50KmFare(distance) + additionalCharge);
     }
 
     private int calculateOver10KmFare(int distance) {

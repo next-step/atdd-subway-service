@@ -1,23 +1,24 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class SubwayWeightedEdge extends DefaultWeightedEdge {
     private Section section;
-    private Long lineId;
+    private Line line;
 
-    public SubwayWeightedEdge(Section section, Long lineId) {
+    public SubwayWeightedEdge(Section section, Line line) {
         this.section = section;
-        this.lineId = lineId;
+        this.line = line;
     }
 
     public Section getSection() {
         return section;
     }
 
-    public Long getLineId() {
-        return lineId;
+    public Line getLine() {
+        return line;
     }
 
     @Override
