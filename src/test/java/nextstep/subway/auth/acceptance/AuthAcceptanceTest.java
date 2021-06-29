@@ -34,7 +34,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             = 회원_정보_조회(tokenResponse);
 
         // then
-        회원_정보_조회됨(memberInfoResponse);
+        회원_정보_조회됨(memberInfoResponse, EMAIL, AGE);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
@@ -67,11 +67,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .then().log().all().extract();
     }
 
-    private static void 회원_정보_조회됨(ExtractableResponse<Response> memberInfoResponse) {
+    private static void 회원_정보_조회됨(ExtractableResponse<Response> memberInfoResponse, String email, int age) {
         assertThat(memberInfoResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         MemberResponse member = memberInfoResponse.as(MemberResponse.class);
-        assertThat(member.getAge()).isEqualTo(AGE);
-        assertThat(member.getEmail()).isEqualTo(EMAIL);
+        assertThat(member.getAge()).isEqualTo(age);
+        assertThat(member.getEmail()).isEqualTo(email);
     }
 
     private static ExtractableResponse<Response> 회원_정보_조회_잘못된_토큰() {
