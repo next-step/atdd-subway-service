@@ -14,14 +14,14 @@ public class PathResponse {
     private final int distance;
     private final int fare;
 
-    public static PathResponse of(Path path) {
+    public static PathResponse of(Path path, int fare) {
         return new PathResponse(
             path.getStations()
                 .stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList()),
             path.getDistance(),
-            path.getFare());
+            fare);
     }
 
     public PathResponse(List<StationResponse> stations, double distance, int fare) {

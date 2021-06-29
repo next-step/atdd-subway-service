@@ -7,6 +7,7 @@ import java.util.List;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultEdge;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.station.domain.Station;
 
 public class Path {
@@ -31,7 +32,42 @@ public class Path {
         return unmodifiableList(stations);
     }
 
-    public int getFare() {
+    /*
+    TODO 객체지향 생활체조 적용 필요
+     */
+    public int totalFareOf(LoginMember loginMember) {
+        return applyDiscount(loginMember.getAge());
+    }
+
+    private int getFare() {
+        return 1250 + calculateAdditionalFare(distance);
+    }
+
+    private int calculateAdditionalFare(double distance) {
+        if (distance <= 10) {
+            return 0;
+        }
+
+        if (distance <= 50) {
+            return (int) ((Math.ceil((distance - 10) / 5)) * 100);
+        }
+
+        return 100 * 8 + (int) ((Math.ceil((distance - 50) / 8)) * 100);
+    }
+
+    private int applyDiscount(int age) {
+        if (age >= 20) {
+            return getFare();
+        }
+
+        if (13 <= age && age < 19) {
+            return (int) ((getFare() - 350) * 0.8);
+        }
+
+        if (6 <= age && age < 13) {
+            return (int) ((getFare() - 350) * 0.5);
+        }
+
         return 0;
     }
 }

@@ -1,15 +1,28 @@
 package nextstep.subway.auth.acceptance;
 
+import static nextstep.subway.member.MemberTest.*;
+
 import org.springframework.http.MediaType;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
+import nextstep.subway.member.dto.MemberResponse;
 
 public class AuthTest {
+
+    public static final LoginMember 로그인_일반_사용자 = new LoginMember(1L, EMAIL, AGE);
+    public static final LoginMember 로그인_청소년_사용자 = new LoginMember(2L, EMAIL, TEENAGER);
+    public static final LoginMember 로그인_어린이_사용자 = new LoginMember(3L, EMAIL, CHILD);
+
+    public static TokenResponse 로그인_된_회원(MemberResponse memberResponse) {
+        return 로그인_된_회원(memberResponse.getEmail(), "SOME_PASSWD", memberResponse.getAge());
+    }
+
     public static TokenResponse 로그인_된_회원(String email, String password, int age) {
         회원_생성을_요청(email, password, age);
 

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.Path;
@@ -23,7 +24,7 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse getShortestPath(Long sourceId, Long targetId) {
+    public PathResponse getShortestPath(LoginMember loginMember, Long sourceId, Long targetId) {
         checkPathEndpoints(sourceId, targetId);
 
         List<Line> lines = lineService.findLinesEntities();
@@ -32,7 +33,7 @@ public class PathService {
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
         Path path = pathFinder.findPath(source, target);
-        return PathResponse.of(path);
+        return PathResponse.of(path, path.totalFareOf(loginMember));
     }
 
     private void checkPathEndpoints(Long sourceId, Long targetId) {
