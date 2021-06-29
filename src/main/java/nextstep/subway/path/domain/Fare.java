@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.path.fomular.OverFare;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -39,16 +40,12 @@ public class Fare {
         int overAmount = DEFAULT_USE_FARE_AMOUNT;
         int distanceToInt = distance.toInt();
         if (distance.isOver(DISTANCE_10_KM)) {
-            overAmount += calculateOverFare((Math.min(distanceToInt, DISTANCE_50_KM)), DISTANCE_10_KM, 5);
+            overAmount += OverFare.DISTANCE_10_KM.calculateOverFare((Math.min(distanceToInt, DISTANCE_50_KM)));
         }
         if (distance.isOver(DISTANCE_50_KM)) {
-            overAmount += calculateOverFare(distanceToInt, DISTANCE_50_KM, 8);
+            overAmount += OverFare.DISTANCE_50_KM.calculateOverFare(distanceToInt);
         }
         return new Fare(overAmount);
-    }
-
-    private int calculateOverFare(int distance, int overDistance, int discountPer) {
-        return (int) ((Math.ceil((distance - overDistance - 1) / discountPer) + 1) * 100);
     }
 
     @Override
