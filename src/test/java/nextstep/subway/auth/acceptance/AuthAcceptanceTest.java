@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.subway.auth.acceptance.step.AuthAcceptanceStep.로그인_되어_있음;
 import static nextstep.subway.auth.acceptance.step.AuthAcceptanceStep.로그인_됨;
 import static nextstep.subway.auth.acceptance.step.AuthAcceptanceStep.로그인_요청;
 import static nextstep.subway.auth.acceptance.step.AuthAcceptanceStep.로그인_요청_실패됨;
@@ -24,6 +23,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final int GIVEN_AGE = 10;
     private static final String INVALID_EMAIL = GIVEN_EMAIL + "_INVALID";
     private static final String INVALID_PASSWORD = GIVEN_PASSWORD + "_INVALID";
+    private static final String INVALID_TOKEN = "INVALID_TOKEN";
 
     /**
      * Background
@@ -45,7 +45,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithBearerAuth() {
         // when
         ExtractableResponse<Response> 로그인_요청_응답 = 로그인_요청(GIVEN_EMAIL, GIVEN_PASSWORD);
-
         // then
         로그인_됨(로그인_요청_응답);
     }
@@ -59,7 +58,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBadBearerAuth() {
         ExtractableResponse<Response> 로그인_요청_응답 = 로그인_요청(INVALID_EMAIL, INVALID_PASSWORD);
-
         // then
         로그인_요청_실패됨(로그인_요청_응답);
     }
@@ -72,11 +70,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
-        TokenResponse badTokenResponse = 로그인_되어_있음(GIVEN_EMAIL, GIVEN_PASSWORD);
-
+        TokenResponse badTokenResponse = new TokenResponse(INVALID_TOKEN);
         // when
         ExtractableResponse<Response> response = 내_회원_정보_조회_요청(badTokenResponse);
-
         // then
         토큰_인증_실패(response);
     }
