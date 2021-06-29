@@ -63,7 +63,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("역과 역 사이의 최단 경로를 조회한다")
     void findPathTest() {
         // when
-        ExtractableResponse<Response> response = 최단경로_조회_요청(남부터미널역, 역삼역);
+        ExtractableResponse<Response> response = 최단경로_조회_요청(남부터미널역.getId(), 역삼역.getId());
 
         // then
         최단경로_조회됨(response);
@@ -74,7 +74,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("출발역과 도착역이 같은 경우 예외가 발생한다")
     void sameSourceTargetTest() {
         // when
-        ExtractableResponse<Response> response = 최단경로_조회_요청(역삼역, 역삼역);
+        ExtractableResponse<Response> response = 최단경로_조회_요청(역삼역.getId(), 역삼역.getId());
 
         // then
         최단경로_조회_실패됨(response);
@@ -84,7 +84,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우 예외가 발생한다")
     void notConnectedSourceTargetTest() {
         // when
-        ExtractableResponse<Response> response = 최단경로_조회_요청(역삼역, 공덕역);
+        ExtractableResponse<Response> response = 최단경로_조회_요청(역삼역.getId(), 공덕역.getId());
+
+        // then
+        최단경로_조회_실패됨(response);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 출발역이나 도착역인 경우 예외가 발생한다")
+    void notExistStationTest() {
+        // when
+        ExtractableResponse<Response> response = 최단경로_조회_요청(역삼역.getId(), 10L);
 
         // then
         최단경로_조회_실패됨(response);
@@ -98,12 +108,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private ExtractableResponse<Response> 최단경로_조회_요청(StationResponse source, StationResponse target) {
+    private ExtractableResponse<Response> 최단경로_조회_요청(Long sourceId, Long targetId) {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths?source={source}&target={target}", source.getId(), target.getId())
+                .when().get("/paths?source={source}&target={target}", sourceId, targetId)
                 .then().log().all().extract();
     }
 }
