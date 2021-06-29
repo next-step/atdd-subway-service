@@ -7,7 +7,7 @@ public class LinePolicyFactory {
 
     public static FarePolicy findPolicy(int fare) {
         if (fare > BASIC_LINE_FARE) {
-            return new AdditionalLineFarePolicy();
+            return new AdditionalLineFarePolicy(fare);
         }
         return new DefaultLineFarePolicy();
     }
