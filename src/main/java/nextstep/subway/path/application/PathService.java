@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -29,12 +30,12 @@ public class PathService {
         this.lineRepository = lineRepository;
     }
 
-    public PathResponse findPath(Long source, Long target) {
-        final Station sourceStation = stationRepository.findById(source)
+    public PathResponse findPath(PathRequest pathRequest) {
+        Station sourceStation = stationRepository.findById(pathRequest.getSource())
             .orElseThrow(NoSuchElementException::new);
-        final Station targetStation = stationRepository.findById(target)
+        Station targetStation = stationRepository.findById(pathRequest.getTarget())
             .orElseThrow(NoSuchElementException::new);
-        final List<Section> allSections = lineRepository.findAll().stream()
+        List<Section> allSections = lineRepository.findAll().stream()
             .flatMap(line -> line.getSections().stream())
             .collect(toList());
 

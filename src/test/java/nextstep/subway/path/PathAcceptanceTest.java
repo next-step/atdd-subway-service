@@ -21,6 +21,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -116,10 +117,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse sourceStation, StationResponse targetStation) {
-        return RestAssured.given().log().all()
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .queryParam("source", sourceStation.getId())
-            .queryParam("target", targetStation.getId())
+        PathRequest pathRequest = new PathRequest(sourceStation.getId(), targetStation.getId());
+
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(pathRequest)
             .when().get("/paths")
             .then().log().all()
             .extract();
