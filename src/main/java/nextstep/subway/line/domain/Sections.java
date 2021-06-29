@@ -128,4 +128,10 @@ public class Sections {
     public List<Section> getSections() {
         return new ArrayList<>(sections);
     }
+
+    public int measureDistance() {
+        return sections.stream()
+                .mapToInt(sectionEdge -> sectionEdge.getDistance())
+                .sum();
+    }
 }

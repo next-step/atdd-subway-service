@@ -26,6 +26,6 @@ public class PathResult {
     }
 
     public int getTotalDistance() {
-        return 0;
+        return sections.measureDistance();
     }
 }
