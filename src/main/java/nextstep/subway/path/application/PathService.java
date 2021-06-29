@@ -35,12 +35,7 @@ public class PathService {
 
         List<Line> lines = lineRepository.findAll();
 
-        int age = 0;
-        if (loginMember.getAge() != null) {
-            age = loginMember.getAge();
-        }
-
         Path path = Path.of(lines);
-        return path.findShortestPath(source, target, MemberDiscountPolicyService.getPolicy(age));
+        return path.findShortestPath(source, target, MemberDiscountPolicyService.getPolicy(loginMember));
     }
 }
