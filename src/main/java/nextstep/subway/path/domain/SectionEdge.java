@@ -4,35 +4,23 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.station.domain.Station;
 
 public class SectionEdge extends DefaultWeightedEdge {
 
-    private static final int NO_LINE_FARE = 0;
-
     private final Line line;
-    private final Station upStation;
-    private final Station downStation;
     private final int distance;
 
     public static SectionEdge of(Section section) {
-        return new SectionEdge(section.getLine(),
-            section.getUpStation(), section.getDownStation(), section.getDistance());
+        return new SectionEdge(section.getLine(), section.getDistance());
     }
 
-    public SectionEdge(Line line, Station upStation, Station downStation, int distance) {
+    public SectionEdge(Line line, int distance) {
         this.line = line;
-        this.upStation = upStation;
-        this.downStation = downStation;
         this.distance = distance;
     }
 
     public int getLineFare() {
-        if (line.hasAdditionalFare()) {
-            return line.getAdditionalFare();
-        }
-
-        return NO_LINE_FARE;
+        return line.additionalFare();
     }
 
     @Override

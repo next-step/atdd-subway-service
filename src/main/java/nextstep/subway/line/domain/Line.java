@@ -16,6 +16,9 @@ import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Line extends BaseEntity {
+
+    private static final int NO_LINE_FARE = 0;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -65,7 +68,15 @@ public class Line extends BaseEntity {
         sections.removeStation(station);
     }
 
-    public boolean hasAdditionalFare() {
+    public Integer additionalFare() {
+        if (hasAdditionalFare()) {
+            return additionalFare;
+        }
+
+        return NO_LINE_FARE;
+    }
+
+    private boolean hasAdditionalFare() {
         return nonNull(additionalFare);
     }
 
@@ -79,10 +90,6 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
-    }
-
-    public Integer getAdditionalFare() {
-        return additionalFare;
     }
 
     public List<Station> getStations() {
