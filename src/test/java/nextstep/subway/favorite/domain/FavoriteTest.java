@@ -52,10 +52,15 @@ public class FavoriteTest {
             "같은 즐겨찾기는 아이디가 같은 경우 or 사용자, 출발역, 도착역이 같은 경우이다.")
     @Test
     public void 같은즐겨찾기_추가_확인() throws Exception {
+        //given
+        Favorite favorite1 = new Favorite(1L, 방화역, 하남검단산역);
+        Favorite favorite2 = new Favorite(1L, 방화역, 하남검단산역);
+        Favorite favorite3 = new Favorite(2L, 방화역, 하남검단산역);
+
         //when
-        Favorite favorite1 = new Favorite(1L, 사용자, 방화역, 하남검단산역);
-        Favorite favorite2 = new Favorite(1L, 사용자, 방화역, 하남검단산역);
-        Favorite favorite3 = new Favorite(2L, 사용자, 방화역, 하남검단산역);
+        사용자.addFavorite(favorite1);
+        사용자.addFavorite(favorite2);
+        사용자.addFavorite(favorite3);
 
         //then
         assertThat(사용자.getFavorites()).containsExactly(favorite1);
