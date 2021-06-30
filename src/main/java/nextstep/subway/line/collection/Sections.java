@@ -138,10 +138,6 @@ public class Sections {
                 .findFirst();
     }
 
-    public List<Section> getSections(){
-        return this.sections;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

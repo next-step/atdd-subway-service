@@ -1,7 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.common.Excetion.NotConnectStationException;
-import nextstep.subway.line.collection.Sections;
+import nextstep.subway.line.collection.Distance;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -9,6 +9,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
+import java.util.Map;
 
 public class Path {
     private static List<Station> stations;
@@ -21,12 +22,12 @@ public class Path {
         this.stations = stations;
     }
 
-    public static Path findOptimalPath(Station sourceStation, Station targetStation, Sections sections) {
+    public static Path findOptimalPath(Station sourceStation, Station targetStation, List<Section> sections) {
         optimalPath = new WeightedMultigraph(DefaultWeightedEdge.class);
         if (sourceStation.equals(targetStation)) {
             throw new IllegalArgumentException("출발역과 도착역이 동일합니다.");
         }
-        sections.getSections().forEach(section -> {
+        sections.forEach(section -> {
             addVerTex(section);
             setEdgeWeight(section);
         });
@@ -42,7 +43,8 @@ public class Path {
     }
 
     private static void setEdgeWeight(Section section) {
-        optimalPath.setEdgeWeight(optimalPath.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance().getDistance());
+        Map<Section, Integer> sectionMap = section.ofSectionMap();
+        optimalPath.setEdgeWeight(optimalPath.addEdge(section.getUpStation(), section.getDownStation()), sectionMap.get(section));
     }
 
     private static void addVerTex(Section section) {

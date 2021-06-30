@@ -1,6 +1,10 @@
 package nextstep.subway.line.collection;
 
+import nextstep.subway.line.domain.Section;
+
 import javax.persistence.Embeddable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Embeddable
@@ -38,8 +42,10 @@ public class Distance {
         }
     }
 
-    public int getDistance() {
-        return distance;
+    public Map<Section, Integer> ofSectionMap(Section section) {
+        Map<Section, Integer> sectionMap = new HashMap<>();
+        sectionMap.put(section, distance);
+        return sectionMap;
     }
 
     @Override

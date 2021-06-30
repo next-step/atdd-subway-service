@@ -4,6 +4,7 @@ import nextstep.subway.line.collection.Distance;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Map;
 
 @Entity
 public class Section {
@@ -119,5 +120,9 @@ public class Section {
 
     public void setLine(Line line) {
         this.line = line;
+    }
+
+    public Map<Section, Integer> ofSectionMap() {
+        return distance.ofSectionMap(this);
     }
 }
