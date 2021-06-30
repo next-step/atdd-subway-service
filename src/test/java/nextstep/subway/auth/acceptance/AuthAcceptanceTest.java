@@ -78,6 +78,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
+    public static String 로그인_되어_있음(String email, String password) {
+        ExtractableResponse<Response> findResponse = 로그인_요청(email, password);
+        TokenResponse tokenResponse = findResponse.as(TokenResponse.class);
+        return tokenResponse.getAccessToken();
+    }
+
     private void 로그인_됨(ExtractableResponse<Response> response) {
         assertThat(HttpStatus.OK.value()).isEqualTo(response.statusCode());
         String token = response.as(TokenResponse.class).getAccessToken();
