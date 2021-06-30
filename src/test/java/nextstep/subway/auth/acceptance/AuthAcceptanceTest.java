@@ -14,7 +14,7 @@ import org.springframework.http.MediaType;
 import java.util.HashMap;
 import java.util.Map;
 
-import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.acceptance.MemberAcceptanceTest.*;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
     public static final String BAD_TOKEN = "badtoken";
@@ -51,7 +51,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         //given
         로그인_요청_성공(EMAIL, PASSWORD);
         //when
-        ExtractableResponse<Response> response= 토큰을_이용한_내정보_조회(new TokenResponse("badtoken"));
+        ExtractableResponse<Response> response = 토큰을_이용한_내정보_조회(new TokenResponse("badtoken"));
         //then
         회원_정보_조회_실패됨(response);
     }
