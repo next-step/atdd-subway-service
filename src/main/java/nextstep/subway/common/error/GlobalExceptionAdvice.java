@@ -1,5 +1,6 @@
 package nextstep.subway.common.error;
 
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.line.exception.LineNotFoundException;
 import nextstep.subway.path.exception.NoConnectedStationsException;
 import nextstep.subway.station.exception.StationNotFoundException;
@@ -42,8 +43,13 @@ public class GlobalExceptionAdvice {
         return ResponseEntity.badRequest().body(ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getMessage()));
     }
 
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthorizationException(AuthorizationException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.of(HttpStatus.UNAUTHORIZED, e.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException() {
+    public ResponseEntity<ErrorResponse> handleException(Exception exception) {
         return ResponseEntity.badRequest().body(ErrorResponse.of(HttpStatus.BAD_REQUEST));
     }
 }
