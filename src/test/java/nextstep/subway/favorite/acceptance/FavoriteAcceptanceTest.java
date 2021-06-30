@@ -50,8 +50,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         배드_토큰 = new TokenResponse("bad");
     }
 
-    // 교대역 - 남부터미널역 - 양재역
-
     @TestFactory
     @DisplayName("즐겨찾기를 관리한다")
     Stream<DynamicTest> manageFavorite() {
