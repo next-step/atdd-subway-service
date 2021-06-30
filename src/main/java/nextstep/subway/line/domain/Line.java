@@ -17,7 +17,7 @@ import nextstep.subway.station.domain.Station;
 @Entity
 public class Line extends BaseEntity {
 
-    private static final int NO_LINE_FARE = 0;
+    private static final int NO_ADDITIONAL_FARE = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -73,7 +73,7 @@ public class Line extends BaseEntity {
             return additionalFare;
         }
 
-        return NO_LINE_FARE;
+        return NO_ADDITIONAL_FARE;
     }
 
     private boolean hasAdditionalFare() {
