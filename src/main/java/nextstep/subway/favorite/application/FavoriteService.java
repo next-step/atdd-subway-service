@@ -1,6 +1,8 @@
 package nextstep.subway.favorite.application;
 
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,5 +39,13 @@ public class FavoriteService {
         Favorite savedFavorite = favoriteRepository.save(favorite);
 
         return FavoriteResponse.of(savedFavorite.getId(), savedFavorite.getSource(), savedFavorite.getTarget());
+    }
+
+    @Transactional(readOnly = true)
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(loginMember.getId());
+        return favorites.stream()
+            .map(FavoriteResponse::of)
+            .collect(Collectors.toList());
     }
 }
