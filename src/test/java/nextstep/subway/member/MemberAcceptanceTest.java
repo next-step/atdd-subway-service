@@ -13,9 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -64,14 +61,26 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         TokenResponse token = AuthAcceptanceTest.로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
 
         // when
-        ExtractableResponse<Response> loginResponse = 내_정보_조회_요청(token.getAccessToken());
+        ExtractableResponse<Response> findResponse = 내_정보_조회_요청(token.getAccessToken());
 
         // then
-        내_정보_조회_성공(loginResponse);
+        내_정보_조회_성공함(findResponse);
+
+        // when
+        ExtractableResponse<Response> updateResponse = 내_정보_변경_요청(token.getAccessToken(), new MemberRequest(EMAIL, PASSWORD, NEW_AGE));
+
+        // then
+        내_정보_변경_성공함(updateResponse);
     }
 
-    private void 내_정보_조회_성공(ExtractableResponse<Response> loginResponse) {
-        assertThat(loginResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+    public static ExtractableResponse<Response> 내_정보_변경_요청(String token, MemberRequest request) {
+        return RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, "Bearer " + token)
+                .body(request)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().put("/members/me")
+                .then().log().all().extract();
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -149,5 +158,13 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 내_정보_조회_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private void 내_정보_조회_성공함(ExtractableResponse<Response> loginResponse) {
+        assertThat(loginResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private void 내_정보_변경_성공함(ExtractableResponse<Response> updateResponse) {
+        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
