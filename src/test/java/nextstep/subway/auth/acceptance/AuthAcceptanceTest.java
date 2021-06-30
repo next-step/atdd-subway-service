@@ -5,16 +5,18 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static nextstep.subway.TestFixture.*;
+import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTest.즐겨찾기_조회_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.내_정보_조회_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
-
 
     private static final String INVALID_TOKEN = "invalidToken";
 
@@ -43,7 +45,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("잘못된 비밀번호로 로그인한다")
     @Test
     void 잘못된_비밀번호로_로그인_시도() {
-        //로그인_요청
         String 틀린_비밀번호 = "wrong password";
         ExtractableResponse<Response> 로그인응답 = 로그인_요청(EMAIL, 틀린_비밀번호);
 
@@ -53,17 +54,15 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("유효하지 않은 토큰으로 내 정보를 조회한다")
     @Test
     void 유효하지_않은_토큰으로_내정보_조회() {
-        //내정보_조회_요청
-        ExtractableResponse<Response> 조회응답 = 내정보_조회_요청(INVALID_TOKEN);
+        ExtractableResponse<Response> 조회응답 = 내_정보_조회_요청(new TokenResponse(INVALID_TOKEN));
         조회_실패(조회응답);
-
     }
 
     @DisplayName("유효하지 않은 토큰으로 즐겨찾기를 조회한다")
     @Test
     void 유효하지_않은_토큰으로_즐겨찾기_조회() {
-        //즐겨찾기_조회_요청
-        //조회_실패
+        ExtractableResponse<Response> 조회응답 = 즐겨찾기_조회_요청(new TokenResponse(INVALID_TOKEN));
+        조회_실패(조회응답);
     }
 
     private void 로그인_성공(ExtractableResponse<Response> response) {
@@ -88,17 +87,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .body(tokenRequest)
                 .when()
                 .post("/login/token")
-                .then().log().all()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> 내정보_조회_요청(String token) {
-
-        return RestAssured.given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .auth().oauth2(token)
-                .when()
-                .get("/members/me")
                 .then().log().all()
                 .extract();
     }

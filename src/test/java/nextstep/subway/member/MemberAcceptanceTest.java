@@ -128,7 +128,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    private ExtractableResponse<Response> 내_정보_조회_요청(TokenResponse tokenResponse) {
+    public static ExtractableResponse<Response> 내_정보_조회_요청(TokenResponse tokenResponse) {
         return RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(tokenResponse.getAccessToken())
