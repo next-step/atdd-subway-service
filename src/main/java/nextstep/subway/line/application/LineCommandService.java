@@ -23,11 +23,10 @@ public class LineCommandService {
         this.lineRepository = lineRepository;
     }
 
-
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationQueryService.findStationById(request.getUpStationId());
         Station downStation = stationQueryService.findStationById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance(), request.getCharge()));
         return LineResponse.of(persistLine);
     }
 

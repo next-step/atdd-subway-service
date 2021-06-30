@@ -29,11 +29,12 @@ class PathFinderTest {
     private PathFinder pathFinder;
 
     /**
-     * 방배역 -3- 서초역 -4- 교대역 -5- 강남역 -6- 역삼역 -12- 선릉역
+     * 방배역 -3- 서초역 -4- 교대역 -5- 강남역 -6- 역삼역 -12- 선릉역 (2호선 800원)
      *                      |         |
      *                      3         3
      *                      |         |
-     *                남부터미널역 -4- 양재역 -4- 양재시민의숲 -13- 청계산입구
+     *                남부터미널역 -4- 양재역 -4- 양재시민의숲 -13- 청계산입구 (신분당선 900원)
+     *                 (3호선 700원)
      */
     @BeforeEach
     public void setUp() {
@@ -64,17 +65,17 @@ class PathFinderTest {
         혜화역 = new Station("혜화역");
         ReflectionTestUtils.setField(혜화역, "id", 13L);
 
-        Line 신분당선 = new Line("신분당선", "bg-red-600", 강남역, 청계산입구역, 20);
+        Line 신분당선 = new Line("신분당선", "bg-red-600", 강남역, 청계산입구역, 20, 900);
         신분당선.addSection(강남역, 양재역, 3);
         신분당선.addSection(양재역, 양재시민의숲역, 4);
 
-        Line 이호선 = new Line("이호선", "bg-red-500", 방배역, 선릉역, 30);
+        Line 이호선 = new Line("이호선", "bg-red-500", 방배역, 선릉역, 30, 800);
         이호선.addSection(방배역, 서초역, 3);
         이호선.addSection(서초역, 교대역, 4);
         이호선.addSection(교대역, 강남역, 5);
         이호선.addSection(강남역, 역삼역, 6);
 
-        Line 삼호선 = new Line("삼호선", "bg-red-400", 교대역, 양재역, 7);
+        Line 삼호선 = new Line("삼호선", "bg-red-400", 교대역, 양재역, 7, 700);
         삼호선.addSection(교대역, 남부터미널역, 3);
 
         Line 일호선 = new Line("일호선", "bg-red-300", 서울역, 용산역, 10);
@@ -183,5 +184,15 @@ class PathFinderTest {
         assertThatThrownBy(() -> pathFinder.findPath(서울역, 혜화역))
                 .isInstanceOf(IllegalArgumentException.class) //then
                 .hasMessage(PathFinder.NOT_EXIST_STATION_EXCEPTION_MESSAGE);
+    }
+
+    @DisplayName("경로 중 추가요금이 있는 노선을 환승 하여 이용 할 경우 가장 높은 금액의 추가 요금만 적용한다.")
+    @Test
+    void transferFare() {
+        //when 2호선+신분당선
+        SubwayShortestPath actual = pathFinder.findPath(강남역, 청계산입구역);
+
+        //then 거리 20, 노선 최고금액 800
+        assertThat(actual.getFare()).isEqualTo(2350);
     }
 }

@@ -5,7 +5,6 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
@@ -16,16 +15,16 @@ public class PathFinder {
     public static final String STATION_IS_NOT_CONNECTED_EXCEPTION_MESSAGE = "출발역과 도착역이 연결이 되어 있지 않습니다.";
     public static final String NOT_EXIST_STATION_EXCEPTION_MESSAGE = "존재하지 않은 출발역이나 도착역을 조회 할 수 없습니다.";
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
+    private final WeightedMultigraph<Station, SectionEdge> graph;
+    private final DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath;
 
     public PathFinder(List<Line> lines) {
         this.graph = generateGraph(lines);
         dijkstraShortestPath = new DijkstraShortestPath<>(this.graph);
     }
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> generateGraph(List<Line> lines) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> weightedMultiGraph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private WeightedMultigraph<Station, SectionEdge> generateGraph(List<Line> lines) {
+        WeightedMultigraph<Station, SectionEdge> weightedMultiGraph = new WeightedMultigraph<>(SectionEdge.class);
         lines.stream()
                 .flatMap(line -> line.getUnmodifiableSectionList().stream())
                 .forEach(section -> {
@@ -35,26 +34,31 @@ public class PathFinder {
         return weightedMultiGraph;
     }
 
-    private void addEdge(WeightedMultigraph<Station, DefaultWeightedEdge> weightedMultiGraph, Section section) {
-        DefaultWeightedEdge defaultWeightedEdge = weightedMultiGraph.addEdge(section.getUpStation(), section.getDownStation());
-        weightedMultiGraph.setEdgeWeight(defaultWeightedEdge, section.getDistance().getValue());
+    private void addEdge(WeightedMultigraph<Station, SectionEdge> weightedMultiGraph, Section section) {
+        SectionEdge sectionEdge = SectionEdge.of(section);
+        weightedMultiGraph.addEdge(section.getUpStation(), section.getDownStation(), sectionEdge);
+        weightedMultiGraph.setEdgeWeight(sectionEdge, section.getDistance().getValue());
     }
 
-    private void addVertex(WeightedMultigraph<Station, DefaultWeightedEdge> weightedMultiGraph, Section section) {
+    private void addVertex(WeightedMultigraph<Station, SectionEdge> weightedMultiGraph, Section section) {
         weightedMultiGraph.addVertex(section.getUpStation());
         weightedMultiGraph.addVertex(section.getDownStation());
     }
 
     public SubwayShortestPath findPath(Station startStation, Station endStation) {
         validateStation(startStation, endStation);
-        GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(startStation, endStation);
+        GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(startStation, endStation);
         validatePathIsNull(path);
         int distance = (int) path.getWeight();
         int fare = DistanceFare.findDistanceFareByDistance(distance).calculateFare(distance);
-        return new SubwayShortestPath(path.getVertexList(), distance, fare);
+        Integer extraFare = path.getEdgeList().stream()
+                .map(SectionEdge::getCharge)
+                .max(Integer::compareTo)
+                .orElseThrow(() -> new IllegalArgumentException("노선 추가 요금 조회 실패하였습니다."));
+        return new SubwayShortestPath(path.getVertexList(), distance, fare + extraFare);
     }
 
-    private void validatePathIsNull(GraphPath<Station, DefaultWeightedEdge> path) {
+    private void validatePathIsNull(GraphPath<Station, SectionEdge> path) {
         if (Objects.isNull(path)) {
             throw new IllegalArgumentException(STATION_IS_NOT_CONNECTED_EXCEPTION_MESSAGE);
         }
