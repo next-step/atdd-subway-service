@@ -30,10 +30,9 @@ public class AuthService {
     }
 
     public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+        if (jwtTokenProvider.invalidToken(credentials)) {
+            throw new AuthorizationException();
         }
-
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email)
                                         .orElseThrow(() -> new CustomException(NOT_FOUND_MEMBER));
