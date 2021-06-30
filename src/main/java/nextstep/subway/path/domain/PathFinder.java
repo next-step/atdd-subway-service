@@ -31,8 +31,8 @@ public class PathFinder {
         return Optional.of(getShortestPaths(source, target)).orElseThrow(() -> new IllegalArgumentException("출발역과 도착역이 연결되어 있지 않습니다."));
     }
 
-    public double getPathsDistance(Station source, Station target) {
-        return dijkstraShortestPath.getPathWeight(source, target);
+    public int getPathsDistance(Station source, Station target) {
+        return (int) dijkstraShortestPath.getPathWeight(source, target);
     }
 
     private List<StationResponse> getShortestPaths(Station source, Station target) {
