@@ -5,6 +5,7 @@ import static java.util.Comparator.*;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PayZone;
 
 public class FareCalculator {
 
@@ -29,14 +30,7 @@ public class FareCalculator {
     }
 
     private static int calculateOverFare(double distance) {
-        if (distance <= 10) {
-            return 0;
-        }
-
-        if (distance <= 50) {
-            return (int) (Math.ceil((distance - 10) / 5) * DISTANCE_FARE);
-        }
-
-        return (int) ((Math.ceil((distance - 50) / 8) + 8) * DISTANCE_FARE);
+        PayZone payZone = PayZone.of(distance);
+        return payZone.totalPoint(distance) * DISTANCE_FARE;
     }
 }
