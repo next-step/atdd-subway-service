@@ -17,7 +17,6 @@ import java.util.Map;
 import static nextstep.subway.member.acceptance.MemberAcceptanceTest.*;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
-    public static final String BAD_TOKEN = "badtoken";
 
     @Override
     @BeforeEach
