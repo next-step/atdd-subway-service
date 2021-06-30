@@ -13,27 +13,22 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static nextstep.subway.member.MemberAcceptanceTest.내_정보_조회_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("인증 관련 기능")
 public class AuthAcceptanceTest extends AcceptanceTest {
 
-    private String email;
-    private String password;
-
     @BeforeEach
     void setup() {
-        email = "yjs2952@gmail.com";
-        password = "1234";
-        MemberAcceptanceTest.회원_생성을_요청(email, password, 20);
+        MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, 20);
     }
 
     @DisplayName("Bearer Auth 로그인을 한다")
     @Test
     void myInfoWithBearerAuth() {
         // when
-        ExtractableResponse<Response> response = 로그인_요청(email, password);
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
 
         // then
         로그인_됨(response);
@@ -42,7 +37,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
-        ExtractableResponse<Response> response = 로그인_요청(email, "4321");
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, "4321");
 
         로그인_실패됨(response);
     }
@@ -50,7 +45,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
-        TokenResponse 토큰 = 로그인_요청(email, password).as(TokenResponse.class);
+        TokenResponse 토큰 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
 
         // when
         ExtractableResponse<Response> response = 내_정보_조회_요청(토큰.getAccessToken() + "!23123123");
@@ -68,16 +63,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private void 로그인_됨(ExtractableResponse<Response> response) {
+    public static void 로그인_됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private void 로그인_실패됨(ExtractableResponse<Response> response) {
+    public static void 로그인_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
-
-    private void 내_정보_조회_실패됨(ExtractableResponse<Response> response) {
-        로그인_실패됨(response);
-    }
-
 }
