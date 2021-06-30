@@ -81,8 +81,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             When 즐겨찾기 조회 요청
             Then 조회 실패함  
     ```    
-* [ ] 인증-내 정보 조회 기능 완성
-* [ ] 인증-즐겨찾기 기능 완성
+* [X] 인증-내 정보 조회 기능 완성
+* [X] 인증-즐겨찾기 기능 완성
 
 ---
 ## 🚀 2단계 경로 조회 기능
