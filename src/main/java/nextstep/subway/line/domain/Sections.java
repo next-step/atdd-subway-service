@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 @Embeddable
 public class Sections {
@@ -29,11 +31,11 @@ public class Sections {
         }
 
         if (isUpStationExisted) {
-            connectSectionIfHasStation(section, true);
+            connectSectionIfHasSameUpStation(section);
             return;
         }
 
-        connectSectionIfHasStation(section, false);
+        connectSectionIfHasSameDownStation(section);
     }
 
     public List<Station> getStations() {
@@ -45,8 +47,8 @@ public class Sections {
         Station downStation = findUpStation();
         stations.add(downStation);
 
-        while (hasStation(downStation, true)) {
-            Section nextLineStation = findSection(downStation, true);
+        while (hasNextSection(downStation)) {
+            Section nextLineStation = findNextSection(downStation);
             downStation = nextLineStation.getDownStation();
             stations.add(downStation);
         }
@@ -56,8 +58,8 @@ public class Sections {
     public void removeStation(Line line, Station station) {
         validateRemovableLength();
 
-        Optional<Section> upLineStation = findOptionalUpLineStation(station);
-        Optional<Section> downLineStation = findOptionDownLineStation(station);
+        Optional<Section> upLineStation = findOptionalSectionByCondition(it -> it.getUpStation() == station);
+        Optional<Section> downLineStation = findOptionalSectionByCondition(it -> it.getDownStation() == station);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             connectSectionIfRemoveSection(line, upLineStation.get(), downLineStation.get());
@@ -67,41 +69,62 @@ public class Sections {
         downLineStation.ifPresent(sections::remove);
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
     private Station findUpStation() {
         Station downStation = sections.get(0).getUpStation();
-        while (hasStation(downStation, false)) {
-            Section nextLineStation = findSection(downStation, false);
+        while (hasPreSection(downStation)) {
+            Section nextLineStation = findPreSection(downStation);
             downStation = nextLineStation.getUpStation();
         }
         return downStation;
     }
 
-    private Section findSection(Station station, boolean hasUpStation) {
+    private Section findPreSection(Station station) {
+        return findFirstSection(it -> it.isSameDownStation(station));
+    }
+
+    private Section findNextSection(Station station) {
+        return findFirstSection(it -> it.isSameUpStation(station));
+    }
+
+    private Section findFirstSection(Predicate<Section> predicate) {
         return sections.stream()
-                .filter(it -> it.hasSameStation(station, hasUpStation))
+                .filter(predicate)
                 .findFirst()
                 .orElse(null);
     }
 
-    private boolean hasStation(Station station, boolean hasUpStation) {
-        return sections.stream()
-                .filter(it -> it.isExistStation(hasUpStation))
-                .anyMatch(it -> it.hasSameStation(station, hasUpStation));
+    private boolean hasNextSection(Station station) {
+        return hasMatchedSection(it -> it.getUpStation() != null, it -> it.isSameUpStation(station));
     }
 
-    private void connectSectionIfHasStation(Section section, boolean hasUpStation) {
+    private boolean hasPreSection(Station station) {
+        return hasMatchedSection(it -> it.getDownStation() != null, it -> it.isSameDownStation(station));
+    }
+
+    private boolean hasMatchedSection(Predicate<Section> filter, Predicate<Section> anyMatch) {
+        return sections.stream()
+                .filter(filter)
+                .anyMatch(anyMatch);
+    }
+
+    private void connectSectionIfHasSameDownStation(Section section) {
         sections.stream()
-                .filter(it -> section.hasSameStation(getStation(it, hasUpStation), hasUpStation))
+                .filter(it -> section.isSameDownStation(it.getDownStation()))
                 .findFirst()
-                .ifPresent(it -> it.updateStationBySection(section, hasUpStation));
+                .ifPresent(it -> it.updateDownStationBySection(section));
         sections.add(section);
     }
 
-    private Station getStation(Section section, boolean hasUpStation) {
-        if (hasUpStation) {
-            return section.getUpStation();
-        }
-        return section.getDownStation();
+    private void connectSectionIfHasSameUpStation(Section section) {
+        sections.stream()
+                .filter(it -> section.isSameUpStation(it.getUpStation()))
+                .findFirst()
+                .ifPresent(it -> it.updateUpStationBySection(section));
+        sections.add(section);
     }
 
     private void validateNotMatchedStations(Section section, List<Station> stations) {
@@ -117,15 +140,9 @@ public class Sections {
         }
     }
 
-    private Optional<Section> findOptionDownLineStation(Station station) {
-        return this.sections.stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
-    }
-
-    private Optional<Section> findOptionalUpLineStation(Station station) {
+    private Optional<Section> findOptionalSectionByCondition(Predicate<Section> predicate) {
         return sections.stream()
-                .filter(it -> it.getUpStation() == station)
+                .filter(predicate)
                 .findFirst();
     }
 
@@ -138,9 +155,5 @@ public class Sections {
         if (sections.size() <= 1) {
             throw new RuntimeException("구간이 1개 이하인 경우 제거할 수 없습니다.");
         }
-    }
-
-    public List<Section> getSections() {
-        return sections;
     }
 }
