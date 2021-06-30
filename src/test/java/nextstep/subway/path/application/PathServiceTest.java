@@ -58,7 +58,7 @@ class PathServiceTest {
         PathRequest pathRequest = new PathRequest(교대역.getId(), 양재역.getId());
         when(lineRepository.findAll()).thenReturn(Arrays.asList(삼호선));
 
-        PathResponse shortestPath = pathService.findShortestPath(pathRequest, new LoginMember());
+        PathResponse shortestPath = pathService.findShortestPath(pathRequest, new LoginMember(1L, "test@email.com", 24));
 
         Assertions.assertThat(shortestPath.getStations())
                 .containsExactlyElementsOf(Arrays.asList(교대역, 남부터미널역, 양재역));
