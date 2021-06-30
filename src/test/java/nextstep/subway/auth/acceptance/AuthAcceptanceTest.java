@@ -30,7 +30,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         MemberAcceptanceTest.회원_생성됨(회원_생성_결과);
     }
 
-
     @DisplayName("로그인 테스트")
     @Test
     void loginTest() {
@@ -82,24 +81,24 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth가 없는 경우")
     @Test
     void myInfoWithBadBearerAuth() {
-    	// when
-	    ExtractableResponse<Response> 내정보_조회_결과 = 토큰_없는_내정보_조회_요청();
+        // when
+        ExtractableResponse<Response> 내정보_조회_결과 = 토큰_없는_내정보_조회_요청();
 
-	    MemberAcceptanceTest.내정보_조회_실패(내정보_조회_결과);
+        MemberAcceptanceTest.내정보_조회_실패(내정보_조회_결과);
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
-	    // given
-	    ExtractableResponse<Response> response = 로그인_요청(email, password);
-	    로그인_성공(response);
+        // given
+        ExtractableResponse<Response> response = 로그인_요청(email, password);
+        로그인_성공(response);
 
-	    // when
-	    ExtractableResponse<Response> 내정보_조회_결과 = MemberAcceptanceTest.내정보_조회_요청("test123");
+        // when
+        ExtractableResponse<Response> 내정보_조회_결과 = MemberAcceptanceTest.내정보_조회_요청("test123");
 
-	    // then
-	    MemberAcceptanceTest.내정보_조회_실패(내정보_조회_결과);
+        // then
+        MemberAcceptanceTest.내정보_조회_실패(내정보_조회_결과);
     }
 
     public static ExtractableResponse<Response> 로그인_요청(final String email, final String password) {
@@ -127,10 +126,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-	public static ExtractableResponse<Response> 토큰_없는_내정보_조회_요청() {
-		return RestAssured
-			.given().log().all()
-			.when().get("/members/me")
-			.then().log().all().extract();
-	}
+    public static ExtractableResponse<Response> 토큰_없는_내정보_조회_요청() {
+        return RestAssured
+            .given().log().all()
+            .when().get("/members/me")
+            .then().log().all().extract();
+    }
 }

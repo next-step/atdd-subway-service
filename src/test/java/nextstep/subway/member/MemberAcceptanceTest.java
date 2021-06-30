@@ -129,9 +129,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return response.as(MemberResponse.class);
     }
 
-	public static void 내정보_조회_실패(final ExtractableResponse<Response> response) {
-		// then
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-	}
+    public static void 내정보_조회_실패(final ExtractableResponse<Response> response) {
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
 
 }
