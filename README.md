@@ -156,15 +156,18 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ## 기능 목록
 1. 등록된 지하철 노선에서 최단 경로 찾는 기능
 2. 토큰 기반으로 로그인 멤버를 가져오는 기능
-
+3. 즐겨찾기 추가 기능
+4. 즐겨찾기 조회 기능
+5. 즐겨찾기 삭제 기능
 
 ## API 명세
 
+#### 최단 거리 조회
 * GET /paths 
   * Request
     1. long "source" // 출발역
     2. long "target" // 도착역
-    <br>
+    <br><br>
   * Response
     ```json
     {
@@ -184,3 +187,50 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
       "distance": 10
     }
     ```
+    
+<br><br>
+
+#### 즐겨찾기 추가
+* POST /favorites
+    * Header: "authorization"
+    * Request
+        * long "source" // 출발역
+        * long "target" // 도착역
+      <br><br>
+    * Response
+      * HTTP/1.1 201 Created
+<br><br>
+
+#### 즐겨찾기 조회
+* GET /favorites
+    * Header: "authorization"
+    * Response
+        ```json
+        [
+            {
+                "id": 1,
+                "source": {
+                    "id": 1,
+                    "name": "강남역",
+                    "createdDate": "2020-12-27T13:32:26.364439",
+                    "modifiedDate": "2020-12-27T13:32:26.364439"
+                },
+                "target": {
+                    "id": 3,
+                    "name": "정자역",
+                    "createdDate": "2020-12-27T13:32:26.486256",
+                    "modifiedDate": "2020-12-27T13:32:26.486256"
+                }
+            }
+        ]
+        ```
+    
+<br><br>
+
+#### 즐겨찾기 삭제
+* DELETE /favorites/{favoriteId}
+    * Header: "authorization"
+    * Response
+        * HTTP/1.1 204 No Content
+
+    
