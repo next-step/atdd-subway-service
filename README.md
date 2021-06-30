@@ -122,6 +122,21 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 * When 유효하지 않은 토큰으로 내 정보 조회 요청
 * Then 조회가 실패한다.
 
+### Feature: 내 정보 관리 기능 관련 전체 인수 테스트
+#### Scenario: 내 정보를 관리 한다.
+* Given 회원 등록되어 있음
+* When 로그인 요청
+* Then 로그인 성공
+* When 내 정보 조회 요청
+* Then 내 정보 조회 성공
+* When 내 정보 업데이트 요청
+* Then 내 정보 업데이트 성공
+* When 내 정보 삭제 요청
+* Then 내 정보 삭제 성공
+* When 로그인 요청
+* Then 로그인 실패
+
+
 
 ## 기능 목록
 1. 등록된 지하철 노선에서 최단 경로 찾는 기능
