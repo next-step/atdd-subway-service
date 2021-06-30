@@ -1,7 +1,6 @@
 package nextstep.subway.path.ui;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.subway.line.application.LineService;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;

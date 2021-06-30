@@ -1,5 +1,6 @@
 package nextstep.subway.path.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nextstep.subway.station.domain.Station;
@@ -10,9 +11,10 @@ import java.util.List;
 @NoArgsConstructor
 public class PathResponse {
     private List<Station> stationList;
-    private int distance;
+    private double distance;
 
-    public PathResponse(final List<Station> stationList, final int distance) {
+    @Builder
+    private PathResponse(final List<Station> stationList, final double distance) {
         this.stationList = stationList;
         this.distance = distance;
     }
