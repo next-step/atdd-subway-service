@@ -67,6 +67,13 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         회원_정보_조회됨(findResponse, EMAIL, AGE);
+
+        // when
+        ExtractableResponse<Response> updateResponse = 개인_정보_수정_요청(token, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+
+        // then
+        회원_정보_수정됨(updateResponse);
+
     }
 
     public static ExtractableResponse<Response> 개인_정보_조회_요청(final String accessToken) {
@@ -76,6 +83,19 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .when().get("/members/me")
             .then()
             .log().all()
+            .extract();
+    }
+
+    private ExtractableResponse<Response> 개인_정보_수정_요청(String accessToken, String email, String password, int age) {
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(memberRequest)
+            .when()
+            .put("/members/me")
+            .then().log().all()
             .extract();
     }
 
