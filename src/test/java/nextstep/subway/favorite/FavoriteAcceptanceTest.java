@@ -6,25 +6,19 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
@@ -80,17 +74,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> 즐겨찾기_생성_요청_결과 = 즐겨찾기_생성_요청(로그인_유저_토큰.getAccessToken(), 남부터미널역.getId(), 강남역.getId());
         // then
-        즐겨찾기_생성_성공(즐겨찾기_생성_요청_결과);
+        FavoriteResponse 생성된_즐겨찾기 = 즐겨찾기_생성_성공(즐겨찾기_생성_요청_결과);
 
         // when
         ExtractableResponse<Response> 즐겨찾기_목록_조회_결과 = 즐겨찾기_목록_조회(로그인_유저_토큰.getAccessToken());
         // then
-        FavoriteResponse 즐겨찾기_조회_목록 = 즐겨찾기_목록_조회_성공(즐겨찾기_목록_조회_결과);
-        // then
-        즐겨찾기_목록에_포함되어_있음(즐겨찾기_조회_목록, Arrays.asList(new Favorite(남부터미널역.getId(), 강남역.getId())));
+        즐겨찾기_목록_조회_성공(즐겨찾기_목록_조회_결과);
 
         // when
-        ExtractableResponse<Response> 즐겨찾기_삭제_결과 = 즐겨찾기_삭제_요청(로그인_유저_토큰.getAccessToken(), 즐겨찾기_조회_목록.getFavorites().get(0).getId());
+        ExtractableResponse<Response> 즐겨찾기_삭제_결과 = 즐겨찾기_삭제_요청(로그인_유저_토큰.getAccessToken(), 생성된_즐겨찾기.getId());
         // then
         즐겨찾기_삭제_성공(즐겨찾기_삭제_결과);
     }
@@ -108,8 +100,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             .then().log().all().extract();
     }
 
-    public static void 즐겨찾기_생성_성공(ExtractableResponse<Response> response) {
+    public static FavoriteResponse 즐겨찾기_생성_성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        return response.as(FavoriteResponse.class);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_목록_조회(final String accessToken) {
@@ -121,16 +114,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             .then().log().all().extract();
     }
 
-    public static FavoriteResponse 즐겨찾기_목록_조회_성공(final ExtractableResponse<Response> response) {
+    public static void 즐겨찾기_목록_조회_성공(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-
-        return response.as(FavoriteResponse.class);
-    }
-
-    public static void 즐겨찾기_목록에_포함되어_있음(final FavoriteResponse response, List<Favorite> expectedList) {
-        assertThat(response.getFavorites())
-            .isNotEmpty()
-            .containsExactlyElementsOf(expectedList);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(final String accessToken, final Long favoriteId) {

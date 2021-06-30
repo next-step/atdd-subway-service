@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 
 public enum CustomExceptionMessage {
     NONE(HttpStatus.INTERNAL_SERVER_ERROR, ""),
+    INVALID_PARAMS(HttpStatus.INTERNAL_SERVER_ERROR, "필수 파라미터가 없습니다."),
     NOT_FOUND_LINE(HttpStatus.BAD_REQUEST, "해당 라인을 찾을 수 없습니다."),
     NOT_FOUND_MEMBER(HttpStatus.BAD_REQUEST, "해당 멤버를 찾을 수 없습니다."),
     NOT_FOUND_STATION(HttpStatus.BAD_REQUEST, "해당 지하철 역을 찾을 수 없습니다."),
