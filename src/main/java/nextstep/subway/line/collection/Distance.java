@@ -14,7 +14,7 @@ public class Distance {
 
     private final int distance;
 
-    private Distance() {
+    protected Distance() {
         this.distance = MINIMUM_DISTANCE;
     }
 
