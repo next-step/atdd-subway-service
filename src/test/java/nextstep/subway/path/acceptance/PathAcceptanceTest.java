@@ -1,12 +1,19 @@
-package nextstep.subway.path;
+package nextstep.subway.path.acceptance;
+
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.station.dto.StationResponse;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +34,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
 			.then().log().all().extract();
 
 		// then
-		Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+		List<StationResponse> stationResponses = response.jsonPath().getList("stations", StationResponse.class);
+		assertThat(stationResponses).extracting("name").containsExactly("서울역", "광명역", "대전역", "동대구역", "부산역");
+
+		int distance = response.jsonPath().getInt("distance");
+		assertThat(distance).isEqualTo(40);
 	}
 
 }
