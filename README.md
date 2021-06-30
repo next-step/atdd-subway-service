@@ -54,7 +54,8 @@ npm run dev
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
 
 ---
-## 1단계 - 1단계 - 인수 테스트 기반 리팩터링
+<details>
+<summary style="font-Weight:bold; font-size:25px;"> 1단계 - 1단계 - 인수 테스트 기반 리팩터링 </summary>
 
 ### 요구사항
 * LineSectionAcceptanceTest 리팩터링
@@ -73,21 +74,45 @@ LineService의 비즈니스 로직을 도메인으로 옮기기
 3. 로직을 옮기기
    기존 로직을 지우지 말고 새로운 로직을 만들어 수행
    정상 동작 확인 후 기존 로직 제거
-   
-### 구현 리스트 
+
+### 구현 리스트
 *  시나리오, 흐름을 검증할 수 있도록 테스트 코드 리펙터링
 * service의 busniess 로직을 domain으로 옮기기
-  * domain 으로 옮기면서 각 domain의 TDD 구현해보기
-   
+    * domain 으로 옮기면서 각 domain의 TDD 구현해보기
+
 * LineService 도메인이 할 일 옮기기
-  - [ ] addLineStationNew 
-    - [ ] 리팩토링 후 commit
-    - [ ] 레거시 코드 제거
-  - [ ] exception Runtime 보다는 어떤 예외 인지 직관적으로 보여주기
-  - [ ] removeLineStationNew
-    - [ ] 리팩토 링 후 commit
-    - [ ] 레거시 코드 제거
-  - [ ] getStation Refactoring
-  - [ ] Distance 원시값 포장
-  - [ ] List<Section>을 상태로 갖는 Sections 일급 컬렉션 구현
-  - [ ] Sections이 할 일들을 Line에서 하고 있기 때문에 메서드 이전
+    - [ ] addLineStationNew
+        - [ ] 리팩토링 후 commit
+        - [ ] 레거시 코드 제거
+    - [ ] exception Runtime 보다는 어떤 예외 인지 직관적으로 보여주기
+    - [ ] removeLineStationNew
+        - [ ] 리팩토 링 후 commit
+        - [ ] 레거시 코드 제거
+    - [ ] getStation Refactoring
+    - [ ] Distance 원시값 포장
+    - [ ] List<Section>을 상태로 갖는 Sections 일급 컬렉션 구현
+    - [ ] Sections이 할 일들을 Line에서 하고 있기 때문에 메서드 이전
+</details>
+
+---
+
+## 2단계 - 경로 조회 기능
+
+### 요구사항
+* 최단 경로 조회 인수 테스트 만들기
+* 최단 경로 조회 기능 구현하기
+
+### 구현 리스트
+* jgrapt를 이용하여 최단 경로 찾기 인수 테스트
+    -[ ] PathAcceptanceSevice 구현하여 인수테스트
+        -[ ] 출발역과 도착역이 같은 경우 예외발생
+        -[ ] 출발역과 도착역이 연결이 되어 있지 않은 경우 예외발생
+        -[ ] 존재하지 않은 출발역이나 도착역을 조회 할 경우 예외발생
+        -[ ] 예외처리 후 최단 경로 찾기
+    
+* 구현 순서 Outside - in 방식으로 구현
+    * controller 생성
+    * service 구현 시 mock과 dto를 이용하여 인수테스트 및 기능 구현
+    * ___외부라이브러리는 가급적 실제 객체를 이용___
+    
+    

@@ -1,6 +1,10 @@
 package nextstep.subway.line.collection;
 
+import nextstep.subway.line.domain.Section;
+
 import javax.persistence.Embeddable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Embeddable
@@ -10,7 +14,7 @@ public class Distance {
 
     private final int distance;
 
-    private Distance() {
+    protected Distance() {
         this.distance = MINIMUM_DISTANCE;
     }
 
@@ -36,6 +40,12 @@ public class Distance {
         if (distance <= newDistance) {
             throw new IllegalArgumentException(DISTANCE_ILLEGAL_EXCEPTION);
         }
+    }
+
+    public Map<Section, Integer> ofSectionMap(Section section) {
+        Map<Section, Integer> sectionMap = new HashMap<>();
+        sectionMap.put(section, distance);
+        return sectionMap;
     }
 
     @Override
