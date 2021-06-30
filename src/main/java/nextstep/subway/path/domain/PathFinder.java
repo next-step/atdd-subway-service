@@ -50,12 +50,8 @@ public class PathFinder {
         GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(startStation, endStation);
         validatePathIsNull(path);
         int distance = (int) path.getWeight();
-        int fare = DistanceFare.findDistanceFareByDistance(distance).calculateFare(distance);
-        Integer extraFare = path.getEdgeList().stream()
-                .map(SectionEdge::getCharge)
-                .max(Integer::compareTo)
-                .orElseThrow(() -> new IllegalArgumentException("노선 추가 요금 조회 실패하였습니다."));
-        return new SubwayShortestPath(path.getVertexList(), distance, fare + extraFare);
+        int fare = FareCalculator.newInstance().calculateFare(path, distance);
+        return new SubwayShortestPath(path.getVertexList(), distance, fare);
     }
 
     private void validatePathIsNull(GraphPath<Station, SectionEdge> path) {
