@@ -45,5 +45,6 @@ public class PathAcceptanceStep {
     }
 
     public static void 지하철_요금_확인(PathResponse 지하철_최단_경로_조회_요청_결과, int fare) {
+        assertThat(지하철_최단_경로_조회_요청_결과.getFare()).isEqualTo(fare);
     }
 }
