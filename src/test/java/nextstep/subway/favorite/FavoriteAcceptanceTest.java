@@ -76,8 +76,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_목록_조회됨(findResponse);
         즐겨찾기_목록에_포함됨(findResponse,  Arrays.asList(createdResponse, createdResponse2));
 
-        // 즐겨찾기 삭제 요청
-        // 즐겨찾기 삭제됨
+        // when
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, createdResponse);
+
+        // then
+        즐겨찾기_삭제됨(deleteResponse);
+
+        // when
+        ExtractableResponse<Response> findResponseAfterDelete = 즐겨찾기_목록_조회_요청(accessToken);
+
+        // then
+        즐겨찾기_목록_조회됨(findResponseAfterDelete);
+        즐겨찾기_목록에_포함됨(findResponseAfterDelete,  Arrays.asList(createdResponse2));
     }
 
     private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
@@ -102,6 +112,18 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
+    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, ExtractableResponse<Response> response) {
+        String uri = response.header("Location");
+
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .when().delete(uri)
+            .then()
+            .log().all()
+            .extract();
+    }
+
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(HttpStatus.CREATED.value()).isEqualTo(response.statusCode());
     }
@@ -120,5 +142,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
+    }
+
+    private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(HttpStatus.NO_CONTENT.value()).isEqualTo(response.statusCode());
     }
 }
