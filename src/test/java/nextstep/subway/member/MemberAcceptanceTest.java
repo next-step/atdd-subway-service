@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -49,6 +51,35 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // Given
+        MemberRequest updateMemberRequest = new MemberRequest("joojimin@naver.com", "123123", 30);
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> 로그인_요청_결과 = AuthAcceptanceTest.로그인_요청(EMAIL, PASSWORD);
+        // then
+        TokenResponse 토큰 = AuthAcceptanceTest.로그인_성공(로그인_요청_결과);
+
+        // when
+        ExtractableResponse<Response> 내정보_조회_결과 = 내정보_조회_요청(토큰.getAccessToken());
+        // then
+        내정보_조회_성공(내정보_조회_결과);
+
+        // when
+        ExtractableResponse<Response> 내정보_업데이트_결과 = 내정보_업데이트_요청(토큰.getAccessToken(), updateMemberRequest);
+        // then
+        내정보_업데이트_성공(내정보_업데이트_결과, updateMemberRequest);
+
+        // when
+        ExtractableResponse<Response> 내정보_삭제_결과 = 내정보_삭제_요청(토큰.getAccessToken());
+        // then
+        내정보_삭제_성공(내정보_삭제_결과);
+
+        // when
+        ExtractableResponse<Response> 삭제후_로그인_결과 = AuthAcceptanceTest.로그인_요청("joojimin@naver.com", "123123");
+        // then
+        AuthAcceptanceTest.로그인_실패(삭제후_로그인_결과);
 
     }
 
@@ -132,6 +163,40 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static void 내정보_조회_실패(final ExtractableResponse<Response> response) {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static ExtractableResponse<Response> 내정보_업데이트_요청(final String accessToken, final MemberRequest request) {
+        // when
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .body(request)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().put("/members/me")
+            .then().log().all().extract();
+    }
+
+    public static void 내정보_업데이트_성공(final ExtractableResponse<Response> response, final MemberRequest request) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        MemberResponse 업데이트된_멤버_정보 = response.as(MemberResponse.class);
+        assertAll(() -> {
+            assertThat(업데이트된_멤버_정보.getEmail()).isEqualTo(request.getEmail());
+            assertThat(업데이트된_멤버_정보.getAge()).isEqualTo(request.getAge());
+        });
+    }
+
+    public static ExtractableResponse<Response> 내정보_삭제_요청(final String accessToken) {
+        // when
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete("/members/me")
+                .then().log().all().extract();
+    }
+
+    public static void 내정보_삭제_성공(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
 }

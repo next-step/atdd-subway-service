@@ -27,9 +27,10 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public void updateMember(Long id, MemberRequest param) {
+    public MemberResponse updateMember(Long id, MemberRequest param) {
         Member member = findMemberById(id);
         member.update(param.toMember());
+        return MemberResponse.of(member);
     }
 
     public void deleteMember(Long id) {
