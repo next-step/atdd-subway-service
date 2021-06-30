@@ -24,22 +24,15 @@ public class PathFinder {
         dijkstraShortestPath = new DijkstraShortestPath<>(graph);
     }
 
-    public List<StationResponse> findPaths(Station source, Station target) {
+    public List<Station> findPaths(Station source, Station target) {
         if (source.equals(target)) {
             throw new IllegalArgumentException("출발역과 도착역은 같을 수 없습니다.");
         }
-        return Optional.of(getShortestPaths(source, target)).orElseThrow(() -> new IllegalArgumentException("출발역과 도착역이 연결되어 있지 않습니다."));
+        return Optional.of(dijkstraShortestPath.getPath(source, target).getVertexList()).orElseThrow(() -> new IllegalArgumentException("출발역과 도착역이 연결되어 있지 않습니다."));
     }
 
     public int getPathsDistance(Station source, Station target) {
         return (int) dijkstraShortestPath.getPathWeight(source, target);
-    }
-
-    private List<StationResponse> getShortestPaths(Station source, Station target) {
-        List<Station> shortestPaths = dijkstraShortestPath.getPath(source, target).getVertexList();
-        return shortestPaths.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
     }
 
     private void setVertexAndEdgeWeight(List<Section> sections) {

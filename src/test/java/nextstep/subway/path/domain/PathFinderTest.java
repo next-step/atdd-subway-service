@@ -61,7 +61,7 @@ class PathFinderTest {
     @DisplayName("최단경로를 조회한다")
     void findPathTest() {
         // when
-        List<StationResponse> paths = pathFinder.findPaths(남부터미널역, 역삼역);
+        List<Station> paths = pathFinder.findPaths(남부터미널역, 역삼역);
 
         // then
         assertThat(paths).hasSize(4);

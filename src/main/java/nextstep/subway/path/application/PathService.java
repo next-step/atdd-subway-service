@@ -25,8 +25,8 @@ public class PathService {
         Station source = stationRepository.findById(sourceId).orElseThrow(() -> new IllegalArgumentException("출발역이 존재하지 않습니다."));
         Station target = stationRepository.findById(targetId).orElseThrow(() -> new IllegalArgumentException("도착역이 존재하지 않습니다."));
         PathFinder pathFinder = new PathFinder(lineRepository.findAll());
-        List<StationResponse> shortestPaths = pathFinder.findPaths(source, target);
+        List<Station> shortestPaths = pathFinder.findPaths(source, target);
         int pathsDistance = pathFinder.getPathsDistance(source, target);
-        return new PathResponse(shortestPaths, pathsDistance);
+        return PathResponse.of(shortestPaths, pathsDistance);
     }
 }
