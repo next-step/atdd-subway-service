@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -57,7 +58,7 @@ class PathServiceTest {
         PathRequest pathRequest = new PathRequest(교대역.getId(), 양재역.getId());
         when(lineRepository.findAll()).thenReturn(Arrays.asList(삼호선));
 
-        PathResponse shortestPath = pathService.findShortestPath(pathRequest);
+        PathResponse shortestPath = pathService.findShortestPath(pathRequest, new LoginMember());
 
         Assertions.assertThat(shortestPath.getStations())
                 .containsExactlyElementsOf(Arrays.asList(교대역, 남부터미널역, 양재역));
