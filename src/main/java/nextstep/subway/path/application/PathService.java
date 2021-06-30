@@ -14,7 +14,7 @@ import java.util.List;
 public class PathService {
 
     private final StationRepository stationRepository;
-    public final LineRepository lineRepository;
+    private final LineRepository lineRepository;
 
     public PathService(StationRepository stationRepository, LineRepository lineRepository) {
         this.stationRepository = stationRepository;
