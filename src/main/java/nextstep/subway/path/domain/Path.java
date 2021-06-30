@@ -33,15 +33,22 @@ public class Path {
         return fee;
     }
 
-    public void applyAgeFeeStrategy(int age) {
-        if (age >= 13 && age < 19){
-            // 청소년 요금
+    public void applyDiscountAgeStrategy(int age) {
+        if (isTeenagerAge(age)){
             this.fee = (int) ((fee - 350) * 0.8);
         }
 
-        if (age >= 6 && age < 12){
+        if (isChildAge(age)){
             this.fee = (int) ((fee - 350) * 0.5);
         }
+    }
+
+    private boolean isChildAge(int age) {
+        return age >= 6 && age < 12;
+    }
+
+    private boolean isTeenagerAge(int age) {
+        return age >= 13 && age < 19;
     }
 
     @Override
