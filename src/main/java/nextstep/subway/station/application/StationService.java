@@ -9,7 +9,9 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,5 +50,10 @@ public class StationService {
     public Station findById(Long id) {
         return stationRepository.findById(id)
                 .orElseThrow(() -> new CannotFindException(Message.ERROR_CANNOT_FIND_STATION));
+    }
+
+    public Map<Long, Station> findStations(Long... ids) {
+        List<Station> stations = stationRepository.findAllById(Arrays.asList(ids));
+        return stations.stream().collect(Collectors.toMap(Station::getId, station -> station));
     }
 }
