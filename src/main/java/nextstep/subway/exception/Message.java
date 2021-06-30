@@ -15,7 +15,8 @@ public enum Message {
     ERROR_PATH_NOT_FOUND("경로를 조회할 수 없습니다."),
     ERROR_MEMBER_NOT_REGISTERED("등록되지 않은 사용자입니다."),
     ERROR_WRONG_PASSWORD("비밀번호가 일치하지 않습니다."),
-    ERROR_CANNOT_FIND_FAVORITE("즐겨찾기를 찾을 수 없습니다.");
+    ERROR_CANNOT_FIND_FAVORITE("즐겨찾기를 찾을 수 없습니다."),
+    ERROR_FAVORITE_ALREADY_EXISTS("이미 존재하는 즐겨찾기입니다.");
 
     private String text;
 

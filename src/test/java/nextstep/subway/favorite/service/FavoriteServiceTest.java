@@ -1,5 +1,7 @@
 package nextstep.subway.favorite.service;
 
+import nextstep.subway.exception.CannotAddException;
+import nextstep.subway.exception.Message;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -20,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -46,8 +49,10 @@ public class FavoriteServiceTest {
     private static final Long SOURCE_STATION_ID = 1L;
     private static final Long TARGET_STATION_ID = 2L;
 
-    private Member 사용자 = new Member(EMAIL, PASSWORD, AGE);
-    private Favorite 강남_광교_즐겨찾기 = new Favorite(1L, 사용자, 강남역, 광교역);
+    private final Member 사용자 = new Member(EMAIL, PASSWORD, AGE);
+    private final Station 강남역 = new Station(SOURCE_STATION_ID, "강남역");
+    private final Station 광교역 = new Station(TARGET_STATION_ID, "광교역");
+    private final Favorite 강남_광교_즐겨찾기 = new Favorite(MEMBER_ID, 사용자, 강남역, 광교역);
 
     @BeforeEach
     void setUp() {
@@ -109,5 +114,25 @@ public class FavoriteServiceTest {
         //then
         verify(favoriteRepository).delete(강남_광교_즐겨찾기);
         assertThat(즐겨찾기목록).isEmpty();
+    }
+
+    @DisplayName("이미 등록되어 있는 즐겨찾기 다시 추가")
+    @Test
+    void 예외상황_이미_등록되어_있는_즐겨찾기() {
+        //given
+        Map<Long, Station> stations = new HashMap<>();
+        stations.put(SOURCE_STATION_ID, 강남역);
+        stations.put(TARGET_STATION_ID, 광교역);
+
+        when(memberService.findById(MEMBER_ID)).thenReturn(사용자);
+        when(stationService.findStations(SOURCE_STATION_ID, TARGET_STATION_ID)).thenReturn(stations);
+        when(favoriteRepository.existsBySourceIdAndTargetId(SOURCE_STATION_ID, TARGET_STATION_ID)).thenReturn(true);
+
+        FavoriteRequest 강남_광교_요청 = new FavoriteRequest(SOURCE_STATION_ID, TARGET_STATION_ID);
+
+        //when
+        assertThatThrownBy(() -> favoriteService.createFavorite(MEMBER_ID, 강남_광교_요청))
+                .isInstanceOf(CannotAddException.class)
+                .hasMessage(Message.ERROR_FAVORITE_ALREADY_EXISTS.showText());
     }
 }

@@ -8,8 +8,6 @@ public class TestFixture {
     public static final String PASSWORD = "mango";
     public static final int AGE = 20;
 
-    public static final Station 강남역 = new Station("강남역");
-    public static final Station 광교역 = new Station("광교역");
     public static final Station 회현역 = new Station("회현역");
     public static final Station 명동역 = new Station("명동역");
     public static final Station 서울역 = new Station("서울역");

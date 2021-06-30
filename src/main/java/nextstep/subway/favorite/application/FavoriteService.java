@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.exception.CannotAddException;
 import nextstep.subway.exception.CannotFindException;
 import nextstep.subway.exception.Message;
 import nextstep.subway.favorite.domain.Favorite;
@@ -34,8 +35,11 @@ public class FavoriteService {
         Station source = stations.get(request.getSource());
         Station target = stations.get(request.getTarget());
 
-        Favorite favorite = new Favorite(member, source, target);
+        if(favoriteRepository.existsBySourceIdAndTargetId(source.getId(), target.getId())){
+            throw new CannotAddException(Message.ERROR_FAVORITE_ALREADY_EXISTS);
+        }
 
+        Favorite favorite = new Favorite(member, source, target);
         return FavoriteResponse.of(favoriteRepository.save(favorite));
     }
 
