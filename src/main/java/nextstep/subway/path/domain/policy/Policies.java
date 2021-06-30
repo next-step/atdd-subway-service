@@ -20,6 +20,10 @@ public class Policies {
     }
 
     public int calculate(int fareValue) {
-        return 0;
+        int calculatedFare = fareValue;
+        for (FarePolicy policy : policies) {
+            calculatedFare = policy.calculate(calculatedFare);
+        }
+        return calculatedFare;
     }
 }
