@@ -48,14 +48,14 @@ public class Sections {
 
     private void addInsideCaseEqualDownStation(Section section) {
         sections.stream()
-                .filter(preSection -> preSection.hasSameDownStation(section))
+                .filter(preSection -> preSection.sameLine(section) && preSection.hasSameDownStation(section))
                 .findFirst()
                 .ifPresent(preSection -> preSection.updateDownStation(section));
     }
 
     private void addInsideCaseEqualUpStation(Section section) {
         sections.stream()
-                .filter(preSection -> preSection.hasSameUpStation(section))
+                .filter(preSection -> preSection.sameLine(section) && preSection.hasSameUpStation(section))
                 .findFirst()
                 .ifPresent(preSection -> preSection.updateUpStation(section));
     }
@@ -133,5 +133,12 @@ public class Sections {
         return sections.stream()
                 .mapToInt(sectionEdge -> sectionEdge.getDistance())
                 .sum();
+    }
+
+    public int findMaxLineFare() {
+        return sections.stream()
+                .map(section -> section.getLineFare())
+                .max(Integer::compareTo)
+                .orElse(0);
     }
 }

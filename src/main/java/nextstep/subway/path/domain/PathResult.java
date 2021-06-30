@@ -28,4 +28,8 @@ public class PathResult {
     public int getTotalDistance() {
         return sections.measureDistance();
     }
+
+    public int getMaxLineFare() {
+        return sections.findMaxLineFare();
+    }
 }
