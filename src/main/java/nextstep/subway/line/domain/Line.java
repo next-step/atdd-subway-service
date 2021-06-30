@@ -33,7 +33,7 @@ public class Line extends BaseEntity {
     public Line() {
     }
 
-    public Line(Long id, String name, String color, Integer additionalFare) {
+    Line(Long id, String name, String color, Integer additionalFare) {
         this.id = id;
         this.name = name;
         this.color = color;
