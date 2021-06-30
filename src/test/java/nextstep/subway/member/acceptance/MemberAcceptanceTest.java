@@ -1,4 +1,4 @@
-package nextstep.subway.member;
+package nextstep.subway.member.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -9,25 +9,25 @@ import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.auth.acceptance.step.AuthAcceptanceStep.로그인_요청;
 import static nextstep.subway.auth.acceptance.step.AuthAcceptanceStep.로그인_토큰_정보;
-import static nextstep.subway.member.step.MemberAcceptanceStep.내_회원_삭제_요청;
-import static nextstep.subway.member.step.MemberAcceptanceStep.내_회원_정보_수정_요청;
-import static nextstep.subway.member.step.MemberAcceptanceStep.내_회원_정보_조회_요청;
-import static nextstep.subway.member.step.MemberAcceptanceStep.회원_삭제_요청;
-import static nextstep.subway.member.step.MemberAcceptanceStep.회원_삭제됨;
-import static nextstep.subway.member.step.MemberAcceptanceStep.회원_생성됨;
-import static nextstep.subway.member.step.MemberAcceptanceStep.회원_생성을_요청;
-import static nextstep.subway.member.step.MemberAcceptanceStep.회원_정보_수정_요청;
-import static nextstep.subway.member.step.MemberAcceptanceStep.회원_정보_수정됨;
-import static nextstep.subway.member.step.MemberAcceptanceStep.회원_정보_조회_요청;
-import static nextstep.subway.member.step.MemberAcceptanceStep.회원_정보_조회됨;
+import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.내_회원_삭제_요청;
+import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.내_회원_정보_수정_요청;
+import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.내_회원_정보_조회_요청;
+import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_삭제_요청;
+import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_삭제됨;
+import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_생성됨;
+import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_생성을_요청;
+import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_정보_수정_요청;
+import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_정보_수정됨;
+import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_정보_조회_요청;
+import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_정보_조회됨;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final String NEW_EMAIL = "newemail@email.com";
-    public static final String NEW_PASSWORD = "newpassword";
-    public static final int AGE = 20;
-    public static final int NEW_AGE = 21;
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private static final String NEW_EMAIL = "newemail@email.com";
+    private static final String NEW_PASSWORD = "newpassword";
+    private static final int AGE = 20;
+    private static final int NEW_AGE = 21;
 
     @DisplayName("회원 정보를 관리한다.")
     @Test

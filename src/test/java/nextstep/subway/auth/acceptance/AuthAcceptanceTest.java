@@ -12,8 +12,8 @@ import static nextstep.subway.auth.acceptance.step.AuthAcceptanceStep.로그인_
 import static nextstep.subway.auth.acceptance.step.AuthAcceptanceStep.로그인_요청;
 import static nextstep.subway.auth.acceptance.step.AuthAcceptanceStep.로그인_요청_실패됨;
 import static nextstep.subway.auth.acceptance.step.AuthAcceptanceStep.토큰_인증_실패;
-import static nextstep.subway.member.step.MemberAcceptanceStep.내_회원_정보_조회_요청;
-import static nextstep.subway.member.step.MemberAcceptanceStep.회원_등록되어_있음;
+import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.내_회원_정보_조회_요청;
+import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_등록되어_있음;
 
 @DisplayName("인증 관련 기능")
 public class AuthAcceptanceTest extends AcceptanceTest {

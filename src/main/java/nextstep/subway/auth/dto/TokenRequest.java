@@ -17,7 +17,7 @@ public class TokenRequest implements PasswordSupplier {
     public String getEmail() {
         return email;
     }
-
+    @Override
     public String getPassword() {
         return password;
     }
