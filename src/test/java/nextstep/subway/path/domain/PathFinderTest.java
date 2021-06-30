@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.assertj.core.util.Lists;
@@ -27,6 +28,9 @@ class PathFinderTest {
     private Station 용산역;
     private Station 혜화역;
     private PathFinder pathFinder;
+    private LoginMember loginMember;
+    private LoginMember 어린이;
+    private LoginMember 청소년;
 
     /**
      * 방배역 -3- 서초역 -4- 교대역 -5- 강남역 -6- 역삼역 -12- 선릉역 (2호선 800원)
@@ -81,13 +85,16 @@ class PathFinderTest {
         Line 일호선 = new Line("일호선", "bg-red-300", 서울역, 용산역, 10);
 
         pathFinder = new PathFinder(Lists.newArrayList(신분당선, 이호선, 삼호선, 일호선));
+        loginMember = new LoginMember(1L, "email@nexstep.com", 30);
+        어린이 = new LoginMember(2L, "email@nexstep.com", 7);
+        청소년 = new LoginMember(3L, "email@nexstep.com", 15);
     }
 
     @DisplayName("출발역과 도착역이 서로 같은 노선일 경우 최단 경로를 리턴한다. (신분당선)")
     @Test
     void findSameLinePath1() {
         //when
-        SubwayShortestPath actual = pathFinder.findPath(강남역, 청계산입구역);
+        SubwayShortestPath actual = pathFinder.findPath(강남역, 청계산입구역, loginMember);
 
         //then
         assertAll(() -> {
@@ -105,7 +112,7 @@ class PathFinderTest {
     @Test
     void findSameLinePath2() {
         //when
-        SubwayShortestPath actual = pathFinder.findPath(방배역, 선릉역);
+        SubwayShortestPath actual = pathFinder.findPath(방배역, 선릉역, loginMember);
 
         //then
         assertAll(() -> {
@@ -125,7 +132,7 @@ class PathFinderTest {
     @Test
     void findSameLinePath3() {
         //when
-        SubwayShortestPath actual = pathFinder.findPath(교대역, 양재역);
+        SubwayShortestPath actual = pathFinder.findPath(교대역, 양재역, loginMember);
 
         //then
         assertAll(() -> {
@@ -142,7 +149,7 @@ class PathFinderTest {
     @Test
     void findOtherPath() {
         //when
-        SubwayShortestPath actual = pathFinder.findPath(방배역, 청계산입구역);
+        SubwayShortestPath actual = pathFinder.findPath(방배역, 청계산입구역, loginMember);
 
         //then
         assertAll(() -> {
@@ -163,7 +170,7 @@ class PathFinderTest {
     @Test
     void startStationIsSameAsEndStation() {
         //when
-        assertThatThrownBy(() -> pathFinder.findPath(강남역, 강남역))
+        assertThatThrownBy(() -> pathFinder.findPath(강남역, 강남역, loginMember))
                 .isInstanceOf(IllegalArgumentException.class) //then
                 .hasMessage(PathFinder.START_STATION_IS_SAME_AS_END_STATION_EXCEPTION_MESSAGE);
     }
@@ -172,7 +179,7 @@ class PathFinderTest {
     @Test
     void notConnectedStation() {
         //when
-        assertThatThrownBy(() -> pathFinder.findPath(서울역, 강남역))
+        assertThatThrownBy(() -> pathFinder.findPath(서울역, 강남역, loginMember))
                 .isInstanceOf(IllegalArgumentException.class) //then
                 .hasMessage(PathFinder.STATION_IS_NOT_CONNECTED_EXCEPTION_MESSAGE);
     }
@@ -181,7 +188,7 @@ class PathFinderTest {
     @Test
     void notExistStation() {
         //when
-        assertThatThrownBy(() -> pathFinder.findPath(서울역, 혜화역))
+        assertThatThrownBy(() -> pathFinder.findPath(서울역, 혜화역, loginMember))
                 .isInstanceOf(IllegalArgumentException.class) //then
                 .hasMessage(PathFinder.NOT_EXIST_STATION_EXCEPTION_MESSAGE);
     }
@@ -190,9 +197,29 @@ class PathFinderTest {
     @Test
     void transferFare() {
         //when 2호선+신분당선
-        SubwayShortestPath actual = pathFinder.findPath(강남역, 청계산입구역);
+        SubwayShortestPath actual = pathFinder.findPath(강남역, 청계산입구역, loginMember);
 
         //then 거리 20, 노선 최고금액 800
         assertThat(actual.getFare()).isEqualTo(2350);
+    }
+
+    @DisplayName("어린이는 운임에서 350원을 공제한 금액의 50% 할인된 요금을 적용한다.")
+    @Test
+    void transferFareWithChild() {
+        //when 2호선+신분당선
+        SubwayShortestPath actual = pathFinder.findPath(강남역, 청계산입구역, 어린이);
+
+        //then 거리 20, 노선 최고금액 800 -> 2350
+        assertThat(actual.getFare()).isEqualTo(1000);
+    }
+
+    @DisplayName("청소년은 운임에서 350원을 공제한 금액의 20% 할인된 요금을 적용한다.")
+    @Test
+    void transferFareWithTeenager() {
+        //when 2호선+신분당선
+        SubwayShortestPath actual = pathFinder.findPath(강남역, 청계산입구역, 청소년);
+
+        //then 거리 20, 노선 최고금액 800 -> 2350
+        assertThat(actual.getFare()).isEqualTo(1600);
     }
 }

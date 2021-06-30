@@ -3,10 +3,12 @@ package nextstep.subway.path.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.path.dto.PathResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceStep.makeBearerToken;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -14,10 +16,16 @@ public class PathAcceptanceStep {
     public static final String PATHS = "/paths";
     public static final String SOURCE = "source";
     public static final String TARGET = "target";
+    public static final String AUTHORIZATION = "Authorization";
 
-    public static ExtractableResponse<Response> 지하철_최단_경로_조회_요청(Long startStationId, Long endStationId) {
+    public static String makeBearerToken(String token) {
+        return "Bearer " + token;
+    }
+
+    public static ExtractableResponse<Response> 지하철_최단_경로_조회_요청(Long startStationId, Long endStationId, TokenResponse 사용자) {
         return RestAssured
                 .given().log().all()
+                .header(AUTHORIZATION, makeBearerToken(사용자.getAccessToken()))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .param(SOURCE, startStationId)
                 .param(TARGET, endStationId)
