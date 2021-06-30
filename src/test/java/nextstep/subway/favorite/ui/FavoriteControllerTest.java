@@ -23,7 +23,9 @@ import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -38,9 +40,10 @@ class FavoriteControllerTest {
             "9tIiwiaWF0IjoxNjI0OTUwMzc1LCJleHAiOjE2MjQ5NTAzNzV9.tdP5i5LV8VrQkfADPBgGFCMLYc3MkqPXZm74zGa8wQ8";
     private static final Long SOURCE = 1L;
     private static final Long TARGET = 2L;
-    private static final Long givenLoginMemberId = 1L;
-    private static final String givenEmail = "test@test.com";
-    private static final int givenAge = 20;
+    private static final Long GIVEN_LOGIN_MEMBER_ID = 1L;
+    private static final Long GIVEN_FAVORITE_ID = 1L;
+    private static final String GIVEN_EMAIL = "test@test.com";
+    private static final int GIVEN_AGE = 20;
 
     @Autowired
     private MockMvc mockMvc;
@@ -65,8 +68,8 @@ class FavoriteControllerTest {
     @BeforeEach
     void setUp() {
         favoriteRequest = new FavoriteRequest(SOURCE, TARGET);
-        loginMember = new LoginMember(givenLoginMemberId, givenEmail, givenAge);
-        favorite = new Favorite(1L, givenLoginMemberId, SOURCE, TARGET);
+        loginMember = new LoginMember(GIVEN_LOGIN_MEMBER_ID, GIVEN_EMAIL, GIVEN_AGE);
+        favorite = new Favorite(1L, GIVEN_LOGIN_MEMBER_ID, SOURCE, TARGET);
         favoriteResponse = new FavoriteResponse(
                 favorite, StationResponse.of(new Station("강남역")), StationResponse.of(new Station("정자역"))
         );
@@ -108,5 +111,16 @@ class FavoriteControllerTest {
                 .andExpect(content().string(
                         objectMapper.writeValueAsString(Collections.singletonList(favoriteResponse)))
                 );
+    }
+
+    @Test
+    void deleteFavorite() throws Exception {
+        mockMvc.perform(
+                delete("/favorites/{id}", GIVEN_FAVORITE_ID)
+                        .header("Authorization", "Bearer " + VALID_TOKEN)
+        )
+                .andExpect(status().isNoContent());
+
+        verify(favoriteService).deleteFavorite(anyLong(), anyLong());
     }
 }

@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class FavoriteService {
+    private static final String FAVORITE_NOT_EXIST = "존재하지 않는 즐겨찾기";
     private final FavoriteRepository favoriteRepository;
     private final StationRepository stationRepository;
 
@@ -37,6 +38,13 @@ public class FavoriteService {
         Set<Long> stationIds = getStationIds(favorites);
         Map<Long, Station> stations = getStations(stationIds);
         return toFavoriteResponse(favorites, stations);
+    }
+
+    @Transactional
+    public void deleteFavorite(Long loginMemberId, Long favoriteId) {
+        Favorite findFavorite = favoriteRepository.findByIdAndMemberId(favoriteId, loginMemberId)
+                .orElseThrow(() -> new FavoriteNotFoundException(FAVORITE_NOT_EXIST));
+        favoriteRepository.delete(findFavorite);
     }
 
     private List<FavoriteResponse> toFavoriteResponse(List<Favorite> favorites, Map<Long, Station> stations) {

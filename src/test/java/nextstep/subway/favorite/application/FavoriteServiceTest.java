@@ -14,11 +14,13 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,6 +29,7 @@ class FavoriteServiceTest {
     private static final Long SOURCE = 1L;
     private static final Long TARGET2 = 3L;
     private static final Long LOGIN_MEMBER_ID = 1L;
+    private static final Long GIVEN_FAVORITE_ID = 1L;
 
     @Mock
     private FavoriteRepository favoriteRepository;
@@ -78,5 +81,15 @@ class FavoriteServiceTest {
         List<FavoriteResponse> actual = favoriteService.getFavorites(LOGIN_MEMBER_ID);
         // then
         assertThat(actual.size()).isNotZero();
+    }
+
+    @Test
+    void deleteFavorite() {
+        when(favoriteRepository.findByIdAndMemberId(anyLong(), anyLong()))
+                .thenReturn(Optional.ofNullable(favorite1));
+
+        favoriteService.deleteFavorite(LOGIN_MEMBER_ID, GIVEN_FAVORITE_ID);
+
+        verify(favoriteRepository).delete(any(Favorite.class));
     }
 }
