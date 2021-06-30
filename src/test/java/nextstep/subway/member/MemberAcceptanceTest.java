@@ -6,9 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -33,8 +31,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 		회원_생성을_요청("taminging@kakao.com", "taminging", 20);
 		토큰 = authAcceptanceTest.로그인("taminging@kakao.com", "taminging").as(TokenResponse.class);
 	}
-
-
 
 	@DisplayName("회원 정보를 관리한다.")
 	@Test
@@ -64,20 +60,65 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 	@Test
 	void manageMyInfo() {
 		// 조회
-		ExtractableResponse<Response> response = get("/members/me", 토큰.getAccessToken());
+		ExtractableResponse<Response> selectResponse = 로그인된_회원_정보_조회_요청();
+		로그인된_회원_정보_조회_확인(selectResponse);
+
+		// 수정
+		ExtractableResponse<Response> updateResponse = 로그인된_회원_정보_수정_요청("taminging2@kakao.com", "password2", 21);
+		로그인된_회원_정보_수정_확인(updateResponse);
+
+		// 삭제
+		ExtractableResponse deleteResponse = 로그인된_회원_정보_삭제_요청();
+		로그인된_회원_정보_삭제_확인(deleteResponse);
+
+	}
+
+	@DisplayName("로그인된 회원 정보 조회하기")
+	@Test
+	void 로그인된_회원_정보_조회하기() {
+		ExtractableResponse<Response> selectResponse = 로그인된_회원_정보_조회_요청();
+		로그인된_회원_정보_조회_확인(selectResponse);
+	}
+
+	@DisplayName("로그인된 회원 정보 수정하기")
+	@Test
+	void 로그인된_회원_정보_수정하기() {
+		ExtractableResponse<Response> updateResponse = 로그인된_회원_정보_수정_요청("taminging2@kakao.com", "password2", 21);
+		로그인된_회원_정보_수정_확인(updateResponse);
+	}
+
+	@DisplayName("로그인된 회원 정보 삭제하기")
+	@Test
+	void 로그인된_회원_정보_삭제하기() {
+		ExtractableResponse deleteResponse = 로그인된_회원_정보_삭제_요청();
+		로그인된_회원_정보_삭제_확인(deleteResponse);
+	}
+
+	ExtractableResponse<Response> 로그인된_회원_정보_조회_요청() {
+		return get("/members/me", 토큰.getAccessToken());
+	}
+
+	void 로그인된_회원_정보_조회_확인(ExtractableResponse<Response> response) {
 		MemberResponse memberResponse = response.as(MemberResponse.class);
 		assertThat(memberResponse.getEmail()).isEqualTo("taminging@kakao.com");
 		assertThat(memberResponse.getAge()).isEqualTo(20);
+	}
 
-		// 수정
-		MemberRequest memberRequest = new MemberRequest("taminging2@kakao.com", "taminging2", 21);
-		ExtractableResponse updateResponse = put(memberRequest,"/members/me", 토큰.getAccessToken());
-		assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+	ExtractableResponse<Response> 로그인된_회원_정보_수정_요청(String email, String password, int age) {
+		MemberRequest memberRequest = new MemberRequest(email, password, age);
+		return put(memberRequest, "/members/me", 토큰.getAccessToken());
+	}
 
-		// 삭제
-		ExtractableResponse deleteResponse = delete("/members/me", 토큰.getAccessToken());
-		assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+	void 로그인된_회원_정보_수정_확인(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+	}
 
+	ExtractableResponse<Response> 로그인된_회원_정보_삭제_요청() {
+		return delete("/members/me", 토큰.getAccessToken());
+	}
+
+	void 로그인된_회원_정보_삭제_확인(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 	}
 
 	public ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
