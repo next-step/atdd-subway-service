@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -94,6 +95,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .when().delete(uri)
                 .then().log().all()
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_조회_요청(String token) {
+        return RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all().extract();
     }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
