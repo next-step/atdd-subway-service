@@ -30,7 +30,7 @@ export const SNACKBAR_MESSAGES = {
       FAIL: '😰 즐겨찾기에 추가하는 과정에 오류가 발생했습니다.'
     },
     DELETE: {
-      SUCCESS: '😀 성공적으로 삭제 하습니다.',
+      SUCCESS: '😀 성공적으로 삭제 하였습니다.',
       FAIL: '😰 즐겨찾기 항목을 삭제하는 과정에 오류가 발생했습니다.'
     }
   },
