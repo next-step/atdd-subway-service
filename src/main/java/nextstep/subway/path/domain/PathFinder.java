@@ -49,7 +49,9 @@ public class PathFinder {
         validateStation(startStation, endStation);
         GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(startStation, endStation);
         validatePathIsNull(path);
-        return new SubwayShortestPath(path.getVertexList(), (int) path.getWeight());
+        int distance = (int) path.getWeight();
+        int fare = DistanceFare.findDistanceFareByDistance(distance).calculateFare(distance);
+        return new SubwayShortestPath(path.getVertexList(), distance, fare);
     }
 
     private void validatePathIsNull(GraphPath<Station, DefaultWeightedEdge> path) {

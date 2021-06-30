@@ -25,7 +25,7 @@ public class PathResponse {
     }
 
     public static PathResponse of(SubwayShortestPath path) {
-        return new PathResponse(StationResponse.ofList(path.getStations()), path.getDistance());
+        return new PathResponse(StationResponse.ofList(path.getStations()), path.getDistance(), path.getFare());
     }
 
     public List<StationResponse> getStations() {
