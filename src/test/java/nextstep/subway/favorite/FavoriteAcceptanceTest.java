@@ -15,12 +15,10 @@ import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.station.StationAcceptanceTest;
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("즐겨찾기 관련 기능")
@@ -64,7 +62,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		//생성
 		FavoriteRequest favoriteRequest = new FavoriteRequest(강남역.getId().toString(), 남부터미널역.getId().toString());
 		ExtractableResponse<Response> createResponse = post(favoriteRequest, "/favorite", 토큰.getAccessToken());
-		assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+		assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+
 		assertThat(createResponse.body().jsonPath().getString("source.name")).isEqualTo(강남역.getName());
 		assertThat(createResponse.body().jsonPath().getString("target.name")).isEqualTo(남부터미널역.getName());
 
@@ -75,7 +74,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		assertThat(selectResponse.body().jsonPath().getString("[0].target.name")).isEqualTo(남부터미널역.getName());
 
 		//삭제
-		ExtractableResponse<Response> deleteResponse = delete("/favorite", 토큰.getAccessToken());
+		Long id = createResponse.body().jsonPath().getLong("id");
+		ExtractableResponse<Response> deleteResponse = delete("/favorite/" + id, 토큰.getAccessToken());
 		assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 	}
 }
