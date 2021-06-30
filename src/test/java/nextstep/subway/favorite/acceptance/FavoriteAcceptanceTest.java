@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.TestFixture.*;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
@@ -28,11 +29,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private StationResponse 광교역;
     private TokenResponse 사용자토큰;
 
-    private static final String EMAIL = "email@email.com";
-    private static final String PASSWORD = "password";
     private static final String LOCATION = "Location";
     private static final String BASE_URI = "/favorites";
-    private static final int AGE = 20;
 
     @BeforeEach
     void before() {

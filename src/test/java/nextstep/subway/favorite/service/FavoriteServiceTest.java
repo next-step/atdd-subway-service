@@ -7,10 +7,8 @@ import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,18 +23,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static nextstep.subway.TestFixture.*;
 
 @DisplayName("즐겨찾기 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 public class FavoriteServiceTest {
 
     @Mock
-    private MemberRepository memberRepository;
-    @Mock
     private MemberService memberService;
 
-    @Mock
-    private StationRepository stationRepository;
     @Mock
     private StationService stationService;
 
@@ -46,29 +41,17 @@ public class FavoriteServiceTest {
     @InjectMocks
     private FavoriteService favoriteService;
 
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final int AGE = 10;
 
     private static final Long MEMBER_ID = 1L;
     private static final Long SOURCE_STATION_ID = 1L;
     private static final Long TARGET_STATION_ID = 2L;
 
-
     private Member 사용자 = new Member(EMAIL, PASSWORD, AGE);
-    private Station 강남역 = new Station("강남역");
-    private Station 광교역 = new Station("광교역");
-    private Station 회현역 = new Station("회현역");
-    private Station 명동역 = new Station("명동역");
-
     private Favorite 강남_광교_즐겨찾기 = new Favorite(1L, 사용자, 강남역, 광교역);
 
     @BeforeEach
     void setUp() {
-
         favoriteService = new FavoriteService(favoriteRepository, stationService, memberService);
-
-
     }
 
     @DisplayName("즐겨찾기 생성")
@@ -117,7 +100,6 @@ public class FavoriteServiceTest {
     @Test
     void 즐겨찾기_목록_삭제_성공() {
         //given
-//        Favorite 강남_광교 = new Favorite(사용자, 강남역, 광교역);
         when(favoriteRepository.findByIdAndMemberId(1L, MEMBER_ID)).thenReturn(Optional.of(강남_광교_즐겨찾기));
 
         //when

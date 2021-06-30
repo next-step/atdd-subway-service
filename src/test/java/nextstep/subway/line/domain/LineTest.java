@@ -7,22 +7,17 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static nextstep.subway.TestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class LineTest {
 
     private Line 사호선;
-    Station 회현역;
-    Station 서울역;
-    Station 명동역;
+
 
     @BeforeEach
     void setUp() {
         사호선 = new Line("사호선", "파란색");
-
-        회현역 = new Station("회현역");
-        서울역 = new Station("서울역");
-        명동역 = new Station("명동역");
     }
 
     @DisplayName("입력한 순서대로 지하철역 반환")

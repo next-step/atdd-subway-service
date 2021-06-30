@@ -9,14 +9,13 @@ import org.junit.jupiter.api.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.TestFixture.*;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
 
-    private static final String EMAIL = "apple2021@email.com";
-    private static final String PASSWORD = "mango";
-    private static final int AGE = 20;
+
     private static final String INVALID_TOKEN = "invalidToken";
 
     @BeforeEach

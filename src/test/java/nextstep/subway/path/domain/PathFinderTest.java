@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static nextstep.subway.TestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -21,9 +22,6 @@ class PathFinderTest {
 
     private Line 육호선 = new Line("6호선", "갈색");
     private Line 삼호선 = new Line("3호선", "주황색");
-    private Station 연신내역 = new Station("연신내역");
-    private Station 불광역 = new Station("불광역"); //출발
-    private Station 응암역 = new Station("응암역"); //도착
 
     private List<Line> 모든노선 = new ArrayList<>();
 

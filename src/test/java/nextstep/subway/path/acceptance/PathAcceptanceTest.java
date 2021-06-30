@@ -1,7 +1,5 @@
 package nextstep.subway.path.acceptance;
 
-import nextstep.subway.path.dto.PathRequest;
-import nextstep.subway.path.dto.PathResponse;
 import org.junit.jupiter.api.*;
 import org.springframework.http.HttpStatus;
 

@@ -6,7 +6,6 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
-import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static nextstep.subway.TestFixture.*;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,9 +37,6 @@ class PathServiceTest {
 
     private Line 육호선 = new Line("6호선", "갈색");
     private Line 삼호선 = new Line("3호선", "주황색");
-    private Station 연신내역 = new Station("연신내역");
-    private Station 불광역 = new Station("불광역");
-    private Station 응암역 = new Station("응암역");
 
     /*
      *       연신내역ㅡ(5)ㅡ불광역
