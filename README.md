@@ -125,6 +125,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ## 기능 목록
 1. 등록된 지하철 노선에서 최단 경로 찾는 기능
+2. 토큰 기반으로 로그인 멤버를 가져오는 기능
 
 
 ## API 명세
