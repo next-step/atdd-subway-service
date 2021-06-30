@@ -116,7 +116,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         // When 같은 최단 경로 청소년 조회 요청
         ExtractableResponse<Response> 지하철_최단_경로_청소년_조회_요청_결과 = 지하철_최단_경로_조회_요청(강남역.getId(), 남부터미널역.getId(), 청소년);
 
-        // Then 할인된 어린이 지하철 요금 확인
+        // Then 할인된 청소년 지하철 요금 확인
         지하철_요금_확인(지하철_최단_경로_청소년_조회_요청_결과.as(PathResponse.class), 800);
     }
 }
