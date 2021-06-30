@@ -1,5 +1,13 @@
 package nextstep.subway.member;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.*;
+import static org.assertj.core.api.Assertions.*;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -7,13 +15,6 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -74,6 +75,17 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then
         회원_정보_수정됨(updateResponse);
 
+        // when
+        ExtractableResponse<Response> reLoginResponse = 로그인_요청(NEW_EMAIL, NEW_PASSWORD);
+
+        // then
+        token = reLoginResponse.as(TokenResponse.class).getAccessToken();
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 개인_정보_삭제_요청(token);
+
+        // then
+        회원_삭제됨(deleteResponse);
     }
 
     public static ExtractableResponse<Response> 개인_정보_조회_요청(final String accessToken) {
@@ -95,6 +107,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .body(memberRequest)
             .when()
             .put("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
+    private ExtractableResponse<Response> 개인_정보_삭제_요청(String accessToken) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .when().delete("/members/me")
             .then().log().all()
             .extract();
     }
