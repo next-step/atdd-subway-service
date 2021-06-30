@@ -48,4 +48,9 @@ public class FavoriteService {
             .map(FavoriteResponse::of)
             .collect(Collectors.toList());
     }
+
+    public void deleteFavorite(Long id) {
+        Favorite favorite = favoriteRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        favoriteRepository.delete(favorite);
+    }
 }
