@@ -1,4 +1,4 @@
-package nextstep.subway.favorite;
+package nextstep.subway.favorite.acceptance;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.*;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.*;
