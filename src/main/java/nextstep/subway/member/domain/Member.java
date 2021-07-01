@@ -61,4 +61,8 @@ public class Member extends BaseEntity {
             throw new AuthorizationException();
         }
     }
+
+    public boolean isEquals(Long memberId) {
+        return this.id.equals(memberId);
+    }
 }

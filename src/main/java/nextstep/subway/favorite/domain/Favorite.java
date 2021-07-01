@@ -50,6 +50,6 @@ public class Favorite {
     }
 
     public boolean isOwner(Long memberId) {
-        return this.member.getId().equals(memberId);
+        return this.member.isEquals(memberId);
     }
 }
