@@ -37,7 +37,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         광교역 = 지하철역_등록되어_있음("광교역").as(StationResponse.class);
         정자역 = 지하철역_등록되어_있음("정자역").as(StationResponse.class);
 
-        LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600", 0, 강남역.getId(), 광교역.getId(), 10);
         신분당선 = 지하철_노선_등록되어_있음(lineRequest1).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 정자역, 5);
         회원_등록_되어_있음(EMAIL, PASSWORD, AGE);

@@ -52,10 +52,10 @@ class StationPathFinderTest {
         춘천역 = initStation("춘천역", 5L);
         강원역 = initStation("강원역", 6L);
 
-        이호선 = new Line("2호선", "green", 교대역, 강남역, 10);
-        삼호선 = new Line("3호선", "orange", 교대역, 양재역, 17);
-        신분당선 = new Line("신분당선", "red", 강남역, 양재역, 4);
-        춘천강원선 = new Line("춘천강원선", "sky", 춘천역, 강원역, 20);
+        이호선 = new Line("2호선", "green", 0, 교대역, 강남역, 10);
+        삼호선 = new Line("3호선", "orange", 0, 교대역, 양재역, 17);
+        신분당선 = new Line("신분당선", "red", 0, 강남역, 양재역, 4);
+        춘천강원선 = new Line("춘천강원선", "sky", 0, 춘천역, 강원역, 20);
 
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, 7));
         노선도 = new Lines(Arrays.asList(이호선, 삼호선, 신분당선, 춘천강원선));
@@ -71,8 +71,8 @@ class StationPathFinderTest {
                 new DijkstraShortestPath(subwayMapData.initData()),
                 new Direction(강남역, 남부터미널역));
 
-        List<Station> stations = new ArrayList<>(stationPathFinder.findPaths());
-        assertThat(stations).containsExactly(강남역, 양재역, 남부터미널역);
+        PathResult pathResult = stationPathFinder.findPaths();
+        assertThat(pathResult.getStations()).containsExactly(강남역, 양재역, 남부터미널역);
     }
 
     @DisplayName("경로 내의 지하철역 조회시 예외발생 - case 1 : 출발역과 도착역이 같은 경우")

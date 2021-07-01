@@ -25,7 +25,7 @@ class SubwayMapDataTest {
     void setUp() {
         교대역 = initStation("교대역", 1L);
         강남역 = initStation("강남역", 2L);
-        이호선 = new Line("2호선", "green", 교대역, 강남역, 10);
+        이호선 = new Line("2호선", "green", 0, 교대역, 강남역, 10);
 
         노선도 = new Lines(Arrays.asList(이호선));
     }

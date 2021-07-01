@@ -3,6 +3,8 @@ package nextstep.subway.path;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
+import nextstep.subway.auth.acceptance.TestToken;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -15,15 +17,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class PathSteps {
 
+    public static ExtractableResponse<Response> 지하철_노선_최단경로_조회_요청_with로그인(
+            StationResponse source, StationResponse target, TestToken token) {
+        return getRequestSpecForFindPath(source, target)
+                .auth()
+                .oauth2(token.getAccessToken())
+                .get("/paths")
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 지하철_노선_최단경로_조회_요청(
             StationResponse source, StationResponse target) {
-        return RestAssured.given().log().all()
-                .queryParam("source", source.getId())
-                .queryParam("target", target.getId())
+        return getRequestSpecForFindPath(source, target)
                 .when()
                 .get("/paths")
                 .then().log().all()
                 .extract();
+    }
+
+    private static RequestSpecification getRequestSpecForFindPath(StationResponse source, StationResponse target) {
+        return RestAssured.given().log().all()
+                .queryParam("source", source.getId())
+                .queryParam("target", target.getId());
     }
 
     public static void 지하철_노선_최단경로_조회됨(ExtractableResponse<Response> response) {
@@ -45,7 +61,10 @@ public class PathSteps {
     }
 
     public static void 지하철_노선_최단경로_거리_응답됨(ExtractableResponse<Response> response, int expectedDistance) {
-        PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getDistance()).isEqualTo(expectedDistance);
+        assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(expectedDistance);
+    }
+
+    public static void 지하철_노선_최단경로_이용_요금_응답됨(ExtractableResponse<Response> response, int expectedFare) {
+        assertThat(response.as(PathResponse.class).getFare()).isEqualTo(expectedFare);
     }
 }

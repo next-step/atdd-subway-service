@@ -6,7 +6,6 @@ import org.jgrapht.graph.AbstractBaseGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class SubwayMapData {
     private static final String NO_LINES_EXCEPTION = "경로 조회에 필요한 노선도 값이 조회되지 않습니다.";
@@ -35,18 +34,17 @@ public class SubwayMapData {
     }
 
     private void initVertex() {
-        lines.getLines().stream()
-                .flatMap(line -> line.getStations().stream())
-                .collect(Collectors.toSet())
+        lines.getStations()
                 .forEach(graph::addVertex);
     }
 
     private void initEdgeWeight() {
-        lines.getLines().stream()
-                .flatMap(line -> line.getSections().stream())
-                .collect(Collectors.toList())
-                .forEach(section -> graph.setEdgeWeight(
-                        graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance()));
+        lines.getSections()
+                .forEach(section -> {
+                    SectionEdge sectionEdge = new SectionEdge(section);
+                    graph.addEdge(section.getUpStation(), section.getDownStation(), sectionEdge);
+                    graph.setEdgeWeight(sectionEdge, section.getDistance());
+                });
     }
 
     private void validateLines(Lines lines) {

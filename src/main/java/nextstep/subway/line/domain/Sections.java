@@ -24,6 +24,10 @@ public class Sections {
     protected Sections() {
     }
 
+    public Sections(List<Section> sections) {
+        this.sections = sections;
+    }
+
     public void add(Section section) {
         if (sections.isEmpty()) {
             sections.add(section);
@@ -44,14 +48,14 @@ public class Sections {
 
     private void addInsideCaseEqualDownStation(Section section) {
         sections.stream()
-                .filter(preSection -> preSection.hasSameDownStation(section))
+                .filter(preSection -> preSection.sameLine(section) && preSection.hasSameDownStation(section))
                 .findFirst()
                 .ifPresent(preSection -> preSection.updateDownStation(section));
     }
 
     private void addInsideCaseEqualUpStation(Section section) {
         sections.stream()
-                .filter(preSection -> preSection.hasSameUpStation(section))
+                .filter(preSection -> preSection.sameLine(section) && preSection.hasSameUpStation(section))
                 .findFirst()
                 .ifPresent(preSection -> preSection.updateUpStation(section));
     }
@@ -123,5 +127,18 @@ public class Sections {
 
     public List<Section> getSections() {
         return new ArrayList<>(sections);
+    }
+
+    public int measureDistance() {
+        return sections.stream()
+                .mapToInt(sectionEdge -> sectionEdge.getDistance())
+                .sum();
+    }
+
+    public int findMaxLineFare() {
+        return sections.stream()
+                .map(section -> section.getLineFare())
+                .max(Integer::compareTo)
+                .orElse(0);
     }
 }

@@ -21,7 +21,7 @@ class LinesTest {
     void setUp() {
         강남역 = new Station("강남역");
         잠실역 = new Station("잠실역");
-        이호선 = new Line("2호선", "green", 강남역, 잠실역, 20);
+        이호선 = new Line("2호선", "green", 0, 강남역, 잠실역, 20);
         ReflectionTestUtils.setField(강남역, "id", 1L);
         ReflectionTestUtils.setField(잠실역, "id", 2L);
     }

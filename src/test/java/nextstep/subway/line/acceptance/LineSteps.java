@@ -16,10 +16,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class LineSteps {
 
-    public static LineResponse 지하철_노선_등록되어_있음(String lineName, String lineColor,
+    public static LineResponse 지하철_노선_등록되어_있음(String lineName, String lineColor, int fare,
                                               StationResponse upStation, StationResponse downStation, int distance) {
         return 지하철_노선_생성_요청(
-                new LineRequest(lineName, lineColor, upStation.getId(), downStation.getId(), distance)
+                new LineRequest(lineName, lineColor, fare, upStation.getId(), downStation.getId(), distance)
         ).as(LineResponse.class);
     }
 

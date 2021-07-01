@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -47,7 +48,7 @@ class PathServiceTest {
         양재역 = initStation("양재역", 2L);
         교대역 = initStation("교대역", 3L);
         남부터미널역 = initStation("남부터미널역", 4L);
-        삼호선 = initLine("3호선", "green", 교대역, 양재역, 5);
+        삼호선 = initLine("3호선", "green", 0, 교대역, 양재역, 5);
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, 3));
     }
 
@@ -57,7 +58,7 @@ class PathServiceTest {
         PathRequest pathRequest = new PathRequest(교대역.getId(), 양재역.getId());
         when(lineRepository.findAll()).thenReturn(Arrays.asList(삼호선));
 
-        PathResponse shortestPath = pathService.findShortestPath(pathRequest);
+        PathResponse shortestPath = pathService.findShortestPath(pathRequest, new LoginMember(1L, "test@email.com", 24));
 
         Assertions.assertThat(shortestPath.getStations())
                 .containsExactlyElementsOf(Arrays.asList(교대역, 남부터미널역, 양재역));
@@ -69,9 +70,9 @@ class PathServiceTest {
         return station;
     }
 
-    private Line initLine(String lineName, String color,
+    private Line initLine(String lineName, String color, int fare,
                           Station upStation, Station downStation, int distance) {
-        Line line = new Line(lineName, color, upStation, downStation, distance);
+        Line line = new Line(lineName, color, fare, upStation, downStation, distance);
         ReflectionTestUtils.setField(line, "id", 1L);
         return line;
     }

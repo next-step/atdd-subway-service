@@ -128,4 +128,12 @@ public class Section {
     public boolean isAfterSectionThan(Section newSection) {
         return upStation.equals(newSection.downStation);
     }
+
+    public boolean sameLine(Section section) {
+        return this.line.equals(section.line);
+    }
+
+    public int getLineFare() {
+        return this.line.getFare();
+    }
 }
