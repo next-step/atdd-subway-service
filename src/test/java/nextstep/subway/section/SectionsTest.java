@@ -8,16 +8,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.subway.TestFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class SectionsTest {
 
     private Line 사호선;
-    private Station 서울역;
-    private Station 회현역;
-    private Station 명동역;
-    private Station 충무로역;
 
     private Sections sections;
     private Section 서울_명동;
@@ -26,10 +23,6 @@ class SectionsTest {
     void setUp() {
         사호선 = new Line("사호선", "파란색");
 
-        서울역 = new Station("서울역");
-        회현역 = new Station("회현역");
-        명동역 = new Station("명동역");
-        충무로역 = new Station("충무로역");
 
         sections = new Sections();
         서울_명동 = new Section(사호선, 서울역, 명동역, 20);

@@ -1,7 +1,7 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
@@ -10,7 +10,7 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -25,9 +25,11 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(Long start, Long end) {
-        Station startStation = stationService.findStationById(start);
-        Station endStation = stationService.findStationById(end);
-        List<Line> lines = lineRepository.findAll();
+        Map<Long, Station> stations = stationService.findStations(start, end);
+
+        Station startStation = stations.get(start);
+        Station endStation = stations.get(end);
+        Lines lines = new Lines(lineRepository.findAll());
 
         PathFinder pathFinder = new PathFinder(lines);
         Path shortestPath = pathFinder.getDijkstraShortestPath(startStation, endStation);

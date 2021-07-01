@@ -32,7 +32,7 @@ public class Sections {
             return Arrays.asList();
         }
         List<Station> stations = new ArrayList<>();
-        Station firstStation = newFindUpStation();
+        Station firstStation = findUpMostStation();
         stations.add(firstStation);
 
         sortStationInOrder(stations, firstStation);
@@ -42,15 +42,15 @@ public class Sections {
     private void sortStationInOrder(List<Station> stations, Station station) {
         Station startStation = station;
 
-        Section nextLineStation = findSectionByFilter(section -> section.hasUpStationSameWith(startStation));
-        if (nextLineStation != null) {
-            station = nextLineStation.getDownStation();
+        Section nextSection = findSectionByFilter(section -> section.hasUpStationSameWith(startStation));
+        if (nextSection != null) {
+            station = nextSection.getDownStation();
             stations.add(station);
             sortStationInOrder(stations, station);
         }
     }
 
-    private Station newFindUpStation() {
+    private Station findUpMostStation() {
         Station expectedFirstStationOfLine = sections.get(0).getUpStation();
         while (expectedFirstStationOfLine != null) {
             Station assumedFirstStation = expectedFirstStationOfLine;

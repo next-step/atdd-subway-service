@@ -15,10 +15,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
+import static nextstep.subway.TestFixture.*;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -37,9 +36,8 @@ class PathServiceTest {
 
     private Line 육호선 = new Line("6호선", "갈색");
     private Line 삼호선 = new Line("3호선", "주황색");
-    private Station 연신내역 = new Station("연신내역");
-    private Station 불광역 = new Station("불광역");
-    private Station 응암역 = new Station("응암역");
+    private static final Long SOURCE_STATION_ID = 1L;
+    private static final Long TARGET_STATION_ID = 2L;
 
     /*
      *       연신내역ㅡ(5)ㅡ불광역
@@ -52,8 +50,11 @@ class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        when(stationService.findStationById(1L)).thenReturn(불광역);
-        when(stationService.findStationById(2L)).thenReturn(응암역);
+        Map<Long, Station> stations = new HashMap<>();
+        stations.put(SOURCE_STATION_ID, 불광역);
+        stations.put(TARGET_STATION_ID, 응암역);
+
+        when(stationService.findStations(SOURCE_STATION_ID, TARGET_STATION_ID)).thenReturn(stations);
 
         삼호선.addSection(new Section(삼호선, 연신내역, 불광역, 5));
         육호선.addSection(new Section(육호선, 연신내역, 응암역, 5));

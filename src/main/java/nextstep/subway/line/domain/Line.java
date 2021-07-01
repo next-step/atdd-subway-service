@@ -56,6 +56,10 @@ public class Line extends BaseEntity {
         return sections;
     }
 
+    public List<Section> getSectionList() {
+        return sections.getSections();
+    }
+
     public List<Station> getSortedStation() {
         return sections.getSortedStation();
     }
