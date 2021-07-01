@@ -1,8 +1,12 @@
 package nextstep.subway.path.domain;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.error.CustomException;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -17,41 +21,32 @@ import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 
 public class Path {
-    private final DijkstraShortestPath<Station, Station> dijkstraShortestPath;
-    private final Fare lineExtraFare;
+    private Path() {}
 
-    public Path(DijkstraShortestPath<Station, Station> dijkstraShortestPath, Fare lineExtraFare) {
-        this.dijkstraShortestPath = dijkstraShortestPath;
-        this.lineExtraFare = lineExtraFare;
-    }
-
-    public static Path of(List<Line> lines) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        Fare mostExtraFare = new Fare();
-
-        for (Line line : lines) {
-            addPath(line.sections(), graph);
-            mostExtraFare = mostExtraFare.gt(line.extraFare());
-        }
-
-        return new Path(new DijkstraShortestPath(graph), mostExtraFare);
-    }
-
-    public PathResponse findShortestPath(Station source, Station target, MemberDiscountPolicy memberDiscountPolicy) {
-        if (source.equals(target)) {
-            throw new CustomException(ErrorMessage.SAME_STATION);
-        }
+    public static PathResponse findShortestPath(List<Line> lines, Station source, Station target, LoginMember loginMember) {
+        DijkstraShortestPath<Station, Station> dijkstraShortestPath = init(lines);
         List<Station> shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
 
         if (shortestPath.isEmpty()) {
             throw new CustomException(ErrorMessage.NOT_FOUND_SECTION);
         }
 
-        Distance distance = findPathDistance(source, target);
-        Fare fare = lineExtraFare.calculateTotalFare(distance);
-        Fare resultFare = memberDiscountPolicy.applyDiscount(fare);
+        MemberDiscountPolicy policy = MemberDiscountPolicy.getPolicy(loginMember);
+        Distance distance = new Distance((int) dijkstraShortestPath.getPathWeight(source, target));
 
-        return PathResponse.of(shortestPath.stream().map(Station::toResponse).collect(Collectors.toList()), findPathDistance(source, target), resultFare);
+        Fare lineExtraFare = setupLineOverFare(lines, shortestPath);
+        Fare fare = lineExtraFare.calculateTotalFare(distance);
+        Fare resultFare = policy.applyDiscount(fare);
+
+        return PathResponse.of(shortestPath.stream().map(Station::toResponse).collect(Collectors.toList()), distance, resultFare);
+    }
+
+    private static DijkstraShortestPath<Station, Station> init(List<Line> lines) {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        for (Line line : lines) {
+            addPath(line.sections(), graph);
+        }
+         return new DijkstraShortestPath(graph);
     }
 
     private static void addPath(List<Section> sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
@@ -66,7 +61,17 @@ public class Path {
         }
     }
 
-    private Distance findPathDistance(Station source, Station target) {
-        return new Distance((int) dijkstraShortestPath.getPathWeight(source, target));
+    private static Fare setupLineOverFare(List<Line> lines, List<Station> stations) {
+        Fare mostExtraFare = new Fare();
+        Set<Line> stationContainLines = new HashSet<>();
+        for (Station station : stations) {
+            stationContainLines.addAll(lines.stream().filter(line -> line.isContainStation(station))
+                    .collect(Collectors.toSet()));
+        }
+
+        for (Line line : stationContainLines) {
+            mostExtraFare = line.extraFare().gt(mostExtraFare);
+        }
+        return mostExtraFare;
     }
 }

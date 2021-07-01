@@ -75,6 +75,10 @@ public class Line extends BaseEntity {
         sections.removeStation(this, station);
     }
 
+    public boolean isContainStation(Station station) {
+        return sections.getStations().contain(station);
+    }
+
     private Section createSection(Station upStation, Station downStation, Distance distance) {
         return new Section(this, upStation, downStation, distance);
     }

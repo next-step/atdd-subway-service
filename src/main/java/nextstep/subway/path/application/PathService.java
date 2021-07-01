@@ -32,9 +32,12 @@ public class PathService {
         Station source = stationRepository.findById(pathRequest.getSource()).orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_STATION));
         Station target = stationRepository.findById(pathRequest.getTarget()).orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_STATION));
 
+        if (source.equals(target)) {
+            throw new CustomException(ErrorMessage.SAME_STATION);
+        }
+
         List<Line> lines = lineRepository.findAll();
 
-        Path path = Path.of(lines);
-        return path.findShortestPath(source, target, MemberDiscountPolicy.getPolicy(loginMember));
+        return Path.findShortestPath(lines, source, target, loginMember);
     }
 }

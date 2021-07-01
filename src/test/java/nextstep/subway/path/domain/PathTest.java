@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import nextstep.subway.auth.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,9 +16,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.path.farePolicy.KidsDiscountPolicy;
-import nextstep.subway.path.farePolicy.NoneDiscountPolicy;
-import nextstep.subway.path.farePolicy.TeenagersDiscountPolicy;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -25,6 +23,9 @@ class PathTest {
     private Station 강남역;
     private Station 선릉역;
     private Line line;
+    private LoginMember 어린이;
+    private LoginMember 청소년;
+    private LoginMember 일반;
 
     @BeforeEach
     void setup() {
@@ -37,15 +38,16 @@ class PathTest {
                 , 선릉역
                 , new Distance(5)
                 , new Fare(900));
-
+        어린이 = new LoginMember(1L, "", 8);
+        청소년 = new LoginMember(1L, "", 16);
+        일반 = new LoginMember(1L, "", 35);
     }
 
     @DisplayName("라인 생성시 경로 추가")
     @Test
     void createLine() {
         //given
-        Path path = Path.of(new ArrayList<>(Arrays.asList(line)));
-        PathResponse pathResponse = path.findShortestPath(강남역, 선릉역, new NoneDiscountPolicy());
+        PathResponse pathResponse = Path.findShortestPath(new ArrayList<>(Arrays.asList(line)), 강남역, 선릉역, 일반);
         //when
         List<StationResponse> shortestPath = pathResponse.getStations();
         int distance = pathResponse.getDistance();
@@ -63,9 +65,8 @@ class PathTest {
         //given
         Station 교대역 = new Station("교대역");
         line.addSection(선릉역, 교대역, new Distance(10));
-        Path path = Path.of(new ArrayList<>(Arrays.asList(line)));
         //when
-        PathResponse pathResponse = path.findShortestPath(강남역, 교대역, new NoneDiscountPolicy());
+        PathResponse pathResponse = Path.findShortestPath(new ArrayList<>(Arrays.asList(line)), 강남역, 교대역, 일반);
         List<StationResponse> shortestPath = pathResponse.getStations();
         int distance = pathResponse.getDistance();
         //then
@@ -84,9 +85,8 @@ class PathTest {
         Station 교대역 = new Station("교대역");
         line.addSection(선릉역, 교대역, new Distance(10));
         line.removeStation(교대역);
-        Path path = Path.of(new ArrayList<>(Arrays.asList(line)));
         //when
-        PathResponse pathResponse = path.findShortestPath(강남역, 선릉역, new NoneDiscountPolicy());
+        PathResponse pathResponse = Path.findShortestPath(new ArrayList<>(Arrays.asList(line)), 강남역, 선릉역, 일반);
         List<StationResponse> shortestPath = pathResponse.getStations();
         int distance = pathResponse.getDistance();
         //then
@@ -101,9 +101,8 @@ class PathTest {
     @Test
     void fare() {
         // given
-        Path path = Path.of(new ArrayList<>(Arrays.asList(line)));
         // when
-        PathResponse pathResponse = path.findShortestPath(강남역, 선릉역, new NoneDiscountPolicy());
+        PathResponse pathResponse = Path.findShortestPath(new ArrayList<>(Arrays.asList(line)), 강남역, 선릉역, 일반);
         // then
         assertThat(pathResponse.getFare()).isEqualTo(2150);
     }
@@ -112,9 +111,8 @@ class PathTest {
     @Test
     void overFareNotLineFare() {
         // given
-        Path path = Path.of(new ArrayList<>(Arrays.asList(line)));
         // when
-        PathResponse pathResponse = path.findShortestPath(강남역, 선릉역, new NoneDiscountPolicy());
+        PathResponse pathResponse = Path.findShortestPath(new ArrayList<>(Arrays.asList(line)), 강남역, 선릉역, 일반);
         // then
         assertThat(pathResponse.getFare()).isEqualTo(2150);
     }
@@ -129,9 +127,8 @@ class PathTest {
                 , 선릉역
                 , new Distance(12)
                 , new Fare(900));
-        Path path = Path.of(new ArrayList<>(Arrays.asList(line)));
         // when
-        PathResponse pathResponse = path.findShortestPath(강남역, 선릉역, new NoneDiscountPolicy());
+        PathResponse pathResponse = Path.findShortestPath(new ArrayList<>(Arrays.asList(line)), 강남역, 선릉역, 일반);
         // then
         assertThat(pathResponse.getFare()).isEqualTo(2250);
     }
@@ -146,9 +143,8 @@ class PathTest {
                 , 선릉역
                 , new Distance(58)
                 , new Fare());
-        Path path = Path.of(new ArrayList<>(Arrays.asList(line)));
         // when
-        PathResponse pathResponse = path.findShortestPath(강남역, 선릉역, new NoneDiscountPolicy());
+        PathResponse pathResponse = Path.findShortestPath(new ArrayList<>(Arrays.asList(line)), 강남역, 선릉역, 일반);
         // then
         assertThat(pathResponse.getFare()).isEqualTo(2150);
     }
@@ -164,8 +160,7 @@ class PathTest {
                 , new Distance(5)
                 , new Fare(0));
         // when
-        Path path = Path.of(new ArrayList<>(Arrays.asList(line)));
-        PathResponse pathResponse = path.findShortestPath(강남역, 선릉역, new KidsDiscountPolicy());
+        PathResponse pathResponse = Path.findShortestPath(new ArrayList<>(Arrays.asList(line)), 강남역, 선릉역, 어린이);
         // then
         assertThat(pathResponse.getFare()).isEqualTo(450);
     }
@@ -182,8 +177,7 @@ class PathTest {
                 , new Distance(distance)
                 , new Fare(0));
         // when
-        Path path = Path.of(new ArrayList<>(Arrays.asList(line)));
-        PathResponse pathResponse = path.findShortestPath(강남역, 선릉역, new KidsDiscountPolicy());
+        PathResponse pathResponse = Path.findShortestPath(new ArrayList<>(Arrays.asList(line)), 강남역, 선릉역, 어린이);
         // then
         assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
@@ -199,8 +193,7 @@ class PathTest {
                 , new Distance(15)
                 , new Fare(900));
         // when
-        Path path = Path.of(new ArrayList<>(Arrays.asList(line)));
-        PathResponse pathResponse = path.findShortestPath(강남역, 선릉역, new KidsDiscountPolicy());
+        PathResponse pathResponse = Path.findShortestPath(new ArrayList<>(Arrays.asList(line)), 강남역, 선릉역, 어린이);
         // then
         assertThat(pathResponse.getFare()).isEqualTo(950);
     }
@@ -217,8 +210,7 @@ class PathTest {
                 , new Distance(distance)
                 , new Fare(0));
         // when
-        Path path = Path.of(new ArrayList<>(Arrays.asList(line)));
-        PathResponse pathResponse = path.findShortestPath(강남역, 선릉역, new TeenagersDiscountPolicy());
+        PathResponse pathResponse = Path.findShortestPath(new ArrayList<>(Arrays.asList(line)), 강남역, 선릉역, 청소년);
         // then
         assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
