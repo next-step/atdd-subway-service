@@ -10,13 +10,13 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static nextstep.subway.path.domain.PathNavigation.BASIC_FEE;
-import static nextstep.subway.path.domain.PathNavigation.BASIC_FEE_OVER_50KM;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PathNavigationTest {
 
+    private static final int BASIC_FEE = 1250;
+    private static final int BASIC_FEE_OVER_50KM = 2050;
     PathNavigation sut;
     private Station 강남;
     private Station 광교;

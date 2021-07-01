@@ -5,6 +5,8 @@ import nextstep.subway.station.domain.Station;
 import java.util.List;
 import java.util.Objects;
 
+import static nextstep.subway.path.domain.DiscountAgeStrategy.*;
+
 public class Path {
 
     private final List<Station> stations;
@@ -34,21 +36,7 @@ public class Path {
     }
 
     public void applyDiscountAgeStrategy(int age) {
-        if (isTeenagerAge(age)){
-            this.fee = (int) ((fee - 350) * 0.8);
-        }
-
-        if (isChildAge(age)){
-            this.fee = (int) ((fee - 350) * 0.5);
-        }
-    }
-
-    private boolean isChildAge(int age) {
-        return age >= 6 && age < 12;
-    }
-
-    private boolean isTeenagerAge(int age) {
-        return age >= 13 && age < 19;
+        this.fee = getAgeType(age).calculate(fee);
     }
 
     @Override

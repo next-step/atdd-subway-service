@@ -68,7 +68,7 @@ class additionalChargePathNavigationTest {
         assertThat(path3.fee()).isEqualTo(1250 + 900 + 900);
 
         Path path4 = PathNavigation.by(lines).findShortestPath(오리역, 죽전역);
-        assertThat(path3.distance()).isEqualTo(580);
+        assertThat(path4.distance()).isEqualTo(580);
         assertThat(path4.fee()).isEqualTo(1250 + 900 + 1000);
     }
 
