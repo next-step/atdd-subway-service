@@ -138,9 +138,9 @@ feat (feature)
     - [x] 3-1.step01.md 초안 작성
     - [x] 3-2.ATDD 작성
 - [ ] 4.구현
-    - [ ] 4-1.인수테스트 리팩터링
-        - [ ] 4-1-1.`LineAcceptanceTest`
-        - [ ] 4-1-2.`LineSectionAcceptanceTest`
+    - [x] 4-1.인수테스트 리팩터링
+        - [x] 4-1-1.`LineAcceptanceTest`
+        - [x] 4-1-2.`LineSectionAcceptanceTest`
     - [ ] 4-2.지하철 노선 생성
     - [ ] 4-3.지하철 노선 생성 실패
     - [ ] 4-4.지하철 노선 목록 조회
