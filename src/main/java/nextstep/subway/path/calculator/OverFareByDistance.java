@@ -2,24 +2,26 @@ package nextstep.subway.path.calculator;
 
 import nextstep.subway.line.domain.Distance;
 
-public enum OverFare {
-    DISTANCE_10_KM(10, 5),
-    DISTANCE_50_KM(50, 8);
+public enum OverFareByDistance {
+    DISTANCE_10_KM(10, 5, 100),
+    DISTANCE_50_KM(50, 8, 100);
 
     private static final int DEFAULT_USE_FARE_AMOUNT = 1250;
 
-    int overDistance;
-    int discountPer;
+    private final int overDistance;
+    private final int addPercent;
+    private final int overFare;
 
-    OverFare(int overDistance, int discountPer) {
+    OverFareByDistance(int overDistance, int addPercent, int overFare) {
         this.overDistance = overDistance;
-        this.discountPer = discountPer;
+        this.addPercent = addPercent;
+        this.overFare = overFare;
     }
 
     public static int calculate(Distance distance) {
         int overAmount = DEFAULT_USE_FARE_AMOUNT;
-        for (OverFare overFare : values()) {
-            overAmount += overFare.calculateOverFare(distance);
+        for (OverFareByDistance overFareByDistance : values()) {
+            overAmount += overFareByDistance.calculateOverFare(distance);
         }
         return overAmount;
     }
@@ -27,7 +29,7 @@ public enum OverFare {
     private int calculateOverFare(Distance distance) {
         int distanceToInt = toDistanceToInt(distance);
         if (isOver(distance, this.overDistance)) {
-            return (int) ((Math.ceil((distanceToInt - this.overDistance - 1) / this.discountPer) + 1) * 100);
+            return (int) ((Math.ceil((distanceToInt - this.overDistance - 1) / this.addPercent) + 1) * this.overFare);
         }
         return 0;
     }

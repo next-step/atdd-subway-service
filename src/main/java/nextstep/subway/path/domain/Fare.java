@@ -8,7 +8,7 @@ import javax.persistence.Embeddable;
 import nextstep.subway.error.CustomException;
 import nextstep.subway.error.ErrorMessage;
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.path.calculator.OverFare;
+import nextstep.subway.path.calculator.OverFareByDistance;
 
 @Embeddable
 public class Fare {
@@ -35,7 +35,7 @@ public class Fare {
     }
 
     public Fare calculateTotalFare(Distance distance) {
-        Fare overFare = new Fare(OverFare.calculate(distance));
+        Fare overFare = new Fare(OverFareByDistance.calculate(distance));
         return new Fare(amount + overFare.amount);
     }
 
