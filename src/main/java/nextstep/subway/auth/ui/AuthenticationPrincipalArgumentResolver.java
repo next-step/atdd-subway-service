@@ -33,6 +33,10 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
         boolean required = AuthorizationExtractor.isRequired(parameter);
 
-        return authService.findMemberByToken(credentials, required);
+        if (required) {
+            authService.checkValidToken(credentials);
+        }
+
+        return authService.findMemberByToken(credentials);
     }
 }

@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
+import nextstep.subway.auth.domain.LoginMember;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,9 +53,8 @@ public class AuthServiceTest {
     void findMemberByInvalidToken() {
         //given
         //when
+        LoginMember loginMember = authService.findMemberByToken("invalid");
         //then
-        assertThatThrownBy(() -> {
-            authService.findMemberByToken("invalid", true);
-        }).isInstanceOf(AuthorizationException.class);
+        assertThat(loginMember.getId()).isNull();
     }
 }
