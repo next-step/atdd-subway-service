@@ -30,18 +30,8 @@ public class ExceptionHandlerAdvice {
         return ResponseEntity.badRequest().body(ErrorResponse.of(e.getMessage()));
     }
 
-    @ExceptionHandler(NotConnectStationException.class)
-    public ResponseEntity handlerIllegalArgsException(NotConnectStationException e) {
+    @ExceptionHandler({NotConnectStationException.class, AuthorizationException.class, UnableTokenException.class})
+    public ResponseEntity handlerAuthorizedException(Exception e) {
         return ResponseEntity.badRequest().body(ErrorResponse.of(e.getMessage()));
-    }
-
-    @ExceptionHandler(AuthorizationException.class)
-    public ResponseEntity handlerIllegalArgsException(AuthorizationException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.of(e.getMessage()));
-    }
-
-    @ExceptionHandler(UnableTokenException.class)
-    public ResponseEntity handlerIllegalArgsException(UnableTokenException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.of(e.getMessage()));
     }
 }
