@@ -1,12 +1,13 @@
 package nextstep.subway.common.Excetion.advice;
 
-import nextstep.subway.common.Excetion.LineNotFoundException;
-import nextstep.subway.common.Excetion.NotConnectStationException;
-import nextstep.subway.common.Excetion.StationNotFoundException;
+import io.jsonwebtoken.JwtException;
+import nextstep.subway.common.Excetion.*;
 import nextstep.subway.common.Excetion.dto.ErrorResponse;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.DuplicateFormatFlagsException;
@@ -32,5 +33,15 @@ public class ExceptionHandlerAdvice {
     @ExceptionHandler(NotConnectStationException.class)
     public ResponseEntity handlerIllegalArgsException(NotConnectStationException e) {
         return ResponseEntity.badRequest().body(ErrorResponse.of(e.getMessage()));
+    }
+
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity handlerIllegalArgsException(AuthorizationException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.of(e.getMessage()));
+    }
+
+    @ExceptionHandler(UnableTokenException.class)
+    public ResponseEntity handlerIllegalArgsException(UnableTokenException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.of(e.getMessage()));
     }
 }
