@@ -15,7 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import nextstep.subway.errorMessage.ErrorEnum;
+import nextstep.subway.error.ErrorMessage;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.Fare;
@@ -72,6 +72,6 @@ class PathServiceTest {
         //then
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> pathService.findPath(new LoginMember(), new PathRequest(9L, 10L))
-        ).withMessage(ErrorEnum.NOT_FOUND_STATION.message());
+        ).withMessage(ErrorMessage.NOT_FOUND_STATION.toString());
     }
 }

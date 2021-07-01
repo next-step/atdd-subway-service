@@ -5,7 +5,7 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import nextstep.subway.errorMessage.ErrorEnum;
+import nextstep.subway.error.ErrorMessage;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.path.calculator.OverFare;
 
@@ -21,7 +21,7 @@ public class Fare {
 
     public Fare(int amount) {
         if (amount < 0) {
-            throw new IllegalArgumentException(ErrorEnum.INVALID_FARE_AMOUNT.message());
+            throw new IllegalArgumentException(ErrorMessage.INVALID_FARE_AMOUNT.toString());
         }
         this.amount = amount;
     }

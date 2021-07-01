@@ -1,6 +1,6 @@
-package nextstep.subway.errorMessage;
+package nextstep.subway.error;
 
-public enum ErrorEnum {
+public enum ErrorMessage {
     NOT_FOUND_STATION("역을 찾을 수 없습니다."),
     FAVORITE_ALREADY_ADDED("이미 생성 된 즐겨찾기 구간입니다."),
     NOT_FOUND_FAVORITE("즐겨 찾기로 설정 된 구간이 없습니다."),
@@ -14,14 +14,14 @@ public enum ErrorEnum {
     ;
 
 
-    ErrorEnum(String message) {
+    ErrorMessage(String message) {
         this.message = message;
     }
 
     private final String message;
 
-    public String message() {
+    @Override
+    public String toString() {
         return message;
     }
-
 }

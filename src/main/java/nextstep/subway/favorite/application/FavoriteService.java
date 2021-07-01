@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import nextstep.subway.errorMessage.ErrorEnum;
+import nextstep.subway.error.ErrorMessage;
 import nextstep.subway.favorite.dto.FavoritesResponse;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -32,15 +32,15 @@ public class FavoriteService {
 
     public void add(LoginMember loginMember, FavoriteRequest favoriteRequest) {
         Member member = member(loginMember);
-        Station source = stationRepository.findById(favoriteRequest.getSource()).orElseThrow(() -> new IllegalArgumentException(ErrorEnum.NOT_FOUND_STATION.message()));
-        Station target = stationRepository.findById(favoriteRequest.getTarget()).orElseThrow(() -> new IllegalArgumentException(ErrorEnum.NOT_FOUND_STATION.message()));
+        Station source = stationRepository.findById(favoriteRequest.getSource()).orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_FOUND_STATION.toString()));
+        Station target = stationRepository.findById(favoriteRequest.getTarget()).orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_FOUND_STATION.toString()));
 
         List<Favorite> favorites = favoriteRepository.findByMember(member);
         boolean isPresent = favorites.stream()
                 .anyMatch(favorite -> favorite.getSource().equals(source) && favorite.getTarget().equals(target));
 
         if (isPresent) {
-            throw new IllegalArgumentException(ErrorEnum.FAVORITE_ALREADY_ADDED.message());
+            throw new IllegalArgumentException(ErrorMessage.FAVORITE_ALREADY_ADDED.toString());
         }
 
         favoriteRepository.save(new Favorite(member, source, target));
@@ -55,7 +55,7 @@ public class FavoriteService {
 
     public void remove(LoginMember loginMember, Long favoriteId) {
         member(loginMember);
-        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(() -> new IllegalArgumentException(ErrorEnum.NOT_FOUND_FAVORITE.message()));
+        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_FOUND_FAVORITE.toString()));
         favoriteRepository.delete(favorite);
     }
 

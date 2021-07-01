@@ -3,7 +3,7 @@ package nextstep.subway.line.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
-import nextstep.subway.errorMessage.ErrorEnum;
+import nextstep.subway.error.ErrorMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -101,7 +101,7 @@ class SectionsTest {
         //then
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> sections.removeStation(line, downStation))
-                .withMessage(ErrorEnum.SECTIONS_HAVE_ONLY_ONE.message());
+                .withMessage(ErrorMessage.SECTIONS_HAVE_ONLY_ONE.toString());
     }
 
     @DisplayName("구간 추가 실패 - 역이 이미 구간에 등록 됨")
@@ -113,7 +113,7 @@ class SectionsTest {
         //then
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> sections.addSection(new Section(line, upStation, downStation, new Distance(5))))
-                .withMessage(ErrorEnum.SECTION_IS_ALREADY_ADD.message());
+                .withMessage(ErrorMessage.SECTION_IS_ALREADY_ADD.toString());
     }
 
     @DisplayName("구간 추가 실패 - 구간이 연결되지 않음")
@@ -127,6 +127,6 @@ class SectionsTest {
         //then
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> sections.addSection(new Section(line, newUpStation, newDownStation, new Distance(5))))
-                .withMessage(ErrorEnum.CANT_ADD_THIS_SECTION.message());
+                .withMessage(ErrorMessage.CANT_ADD_THIS_SECTION.toString());
     }
 }

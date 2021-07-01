@@ -7,7 +7,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-import nextstep.subway.errorMessage.ErrorEnum;
+import nextstep.subway.error.ErrorMessage;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
@@ -38,12 +38,12 @@ public class Path {
 
     public PathResponse findShortestPath(Station source, Station target, MemberDiscountPolicyService memberDiscountPolicyService) {
         if (source.equals(target)) {
-            throw new IllegalArgumentException(ErrorEnum.SAME_STATION.message());
+            throw new IllegalArgumentException(ErrorMessage.SAME_STATION.toString());
         }
         List<Station> shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
 
         if (shortestPath.isEmpty()) {
-            throw new IllegalArgumentException(ErrorEnum.NOT_FOUND_SECTION.message());
+            throw new IllegalArgumentException(ErrorMessage.NOT_FOUND_SECTION.toString());
         }
 
         Distance distance = findPathDistance(source, target);

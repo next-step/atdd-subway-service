@@ -8,7 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
-import nextstep.subway.errorMessage.ErrorEnum;
+import nextstep.subway.error.ErrorMessage;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -85,7 +85,7 @@ public class Sections {
         while (hasSectionByUpStation(firstStation)) {
             Station tempStation = firstStation;
             Section nextLineSection = findSectionByUpStation(tempStation)
-                    .orElseThrow(() -> new RuntimeException(ErrorEnum.NOT_FOUND_SECTION.message()));
+                    .orElseThrow(() -> new RuntimeException(ErrorMessage.NOT_FOUND_SECTION.toString()));
             firstStation = nextLineSection.getDownStation();
             stations.add(firstStation);
         }
@@ -122,7 +122,7 @@ public class Sections {
         while (hasSectionByDownStation(firstStation)) {
             Station tempStation = firstStation;
             Section nextLineSection = findSectionByDownStation(tempStation)
-                    .orElseThrow(() -> new RuntimeException(ErrorEnum.NOT_FOUND_SECTION.message()));
+                    .orElseThrow(() -> new RuntimeException(ErrorMessage.NOT_FOUND_SECTION.toString()));
             firstStation = nextLineSection.getUpStation();
         }
         return firstStation;
@@ -130,11 +130,11 @@ public class Sections {
 
     private void checkValidStations(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException(ErrorEnum.SECTION_IS_ALREADY_ADD.message());
+            throw new RuntimeException(ErrorMessage.SECTION_IS_ALREADY_ADD.toString());
         }
 
         if (!sections.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException(ErrorEnum.CANT_ADD_THIS_SECTION.message());
+            throw new RuntimeException(ErrorMessage.CANT_ADD_THIS_SECTION.toString());
         }
     }
 
@@ -156,7 +156,7 @@ public class Sections {
 
     private void checkDeletable() {
         if (sections.size() <= SECTION_DELETABLE_MIN_SIZE) {
-            throw new RuntimeException(ErrorEnum.SECTIONS_HAVE_ONLY_ONE.message());
+            throw new RuntimeException(ErrorMessage.SECTIONS_HAVE_ONLY_ONE.toString());
         }
     }
 

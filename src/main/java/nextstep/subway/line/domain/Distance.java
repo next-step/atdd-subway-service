@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.errorMessage.ErrorEnum;
+import nextstep.subway.error.ErrorMessage;
 
 import java.util.Objects;
 
@@ -28,7 +28,7 @@ public class Distance {
 
     private void checkValidValue(int value) {
         if (value < Sections.SECTION_DELETABLE_MIN_SIZE) {
-            throw new RuntimeException(ErrorEnum.INVALID_DISTANCE.message());
+            throw new RuntimeException(ErrorMessage.INVALID_DISTANCE.toString());
         }
     }
 
@@ -48,7 +48,7 @@ public class Distance {
     public Distance diff(Distance request) {
         int newValue = Math.abs(value - request.value);
         if (value < newValue) {
-            throw new RuntimeException(ErrorEnum.INVALID_DISTANCE.message());
+            throw new RuntimeException(ErrorMessage.INVALID_DISTANCE.toString());
         }
         return new Distance(newValue);
     }
