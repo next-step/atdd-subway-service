@@ -1,12 +1,13 @@
 package nextstep.subway.member.application;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.member.exception.MemberNotFoundException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
@@ -36,7 +37,7 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    private Member findMemberById(Long id) {
+    public Member findMemberById(Long id) {
         return memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
     }
 }

@@ -1,6 +1,7 @@
 package nextstep.subway.common.error;
 
 import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.favorite.exception.FavoriteNotFoundException;
 import nextstep.subway.line.exception.LineNotFoundException;
 import nextstep.subway.path.exception.NoConnectedStationsException;
 import nextstep.subway.station.exception.StationNotFoundException;
@@ -40,6 +41,11 @@ public class GlobalExceptionAdvice {
 
     @ExceptionHandler(NoConnectedStationsException.class)
     public ResponseEntity<ErrorResponse> handleNoConnectedSectionException(NoConnectedStationsException e) {
+        return ResponseEntity.badRequest().body(ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getMessage()));
+    }
+
+    @ExceptionHandler(FavoriteNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleFavoriteNotFoundException(FavoriteNotFoundException e) {
         return ResponseEntity.badRequest().body(ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getMessage()));
     }
 

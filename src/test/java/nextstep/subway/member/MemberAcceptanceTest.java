@@ -1,11 +1,21 @@
 package nextstep.subway.member;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
@@ -14,10 +24,6 @@ import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
-
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -65,29 +71,38 @@ public class MemberAcceptanceTest extends AcceptanceTest {
      * Then 로그인 사용자 정보 삭제됨
      */
     @DisplayName("나의 정보를 관리한다.")
-    @Test
-    void manageMyInfo() {
+    @TestFactory
+    List<DynamicTest> manageMyInfo() {
         // given
-        MemberRequest memberRequest = new MemberRequest("hi@gmail.com", "1234", 37);
+        MemberRequest memberRequest = new MemberRequest(EMAIL, PASSWORD, AGE);
         회원_등록되어_있음(memberRequest);
         String accessToken = AuthAcceptanceTest.로그인_되어_있음(new TokenRequest(memberRequest.getEmail(), memberRequest.getPassword()))
                 .as(TokenResponse.class)
                 .getAccessToken();
 
-        // when
-        ExtractableResponse<Response> 로그인_사용자_정보조회_결과 = 로그인_사용자_정보조회_요청(accessToken);
-        // then
-        로그인_사용자_정보_조회됨(로그인_사용자_정보조회_결과);
+        return Arrays.asList(
+                dynamicTest("로그인 사용자 정보조회", () -> {
+                    // when
+                    ExtractableResponse<Response> 로그인_사용자_정보조회_결과 = 로그인_사용자_정보조회_요청(accessToken);
 
-        // when
-        ExtractableResponse<Response> 로그인_사용자_정보수정_결과 = 로그인_사용자_정보수정_요청(accessToken, new MemberRequest(memberRequest.getEmail(), memberRequest.getPassword(), 32));
-        // then
-        로그인_사용자_정보_수정됨(로그인_사용자_정보수정_결과);
+                    // then
+                    로그인_사용자_정보_조회됨(로그인_사용자_정보조회_결과);
+                }),
+                dynamicTest("로그인 사용자 정보수정", () -> {
+                    // when
+                    ExtractableResponse<Response> 로그인_사용자_정보수정_결과 = 로그인_사용자_정보수정_요청(accessToken, new MemberRequest(memberRequest.getEmail(), MemberAcceptanceTest.NEW_PASSWORD, NEW_AGE));
 
-        // when
-        ExtractableResponse<Response> 로그인_사용자_정보삭제_결과 = 로그인_사용자_정보삭제_요청(accessToken);
-        // then
-        로그인_사용자_정보_삭제됨(로그인_사용자_정보삭제_결과);
+                    // then
+                    로그인_사용자_정보_수정됨(로그인_사용자_정보수정_결과);
+                }),
+                dynamicTest("로그인 사용자 정보삭제", () -> {
+                    // when
+                    ExtractableResponse<Response> 로그인_사용자_정보삭제_결과 = 로그인_사용자_정보삭제_요청(accessToken);
+
+                    // then
+                    로그인_사용자_정보_삭제됨(로그인_사용자_정보삭제_결과);
+                })
+        );
     }
 
     private ExtractableResponse<Response> 로그인_사용자_정보조회_요청(String accessToken) {
@@ -135,7 +150,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    private ExtractableResponse<Response> 회원_등록되어_있음(MemberRequest memberRequest) {
+    public static ExtractableResponse<Response> 회원_등록되어_있음(MemberRequest memberRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

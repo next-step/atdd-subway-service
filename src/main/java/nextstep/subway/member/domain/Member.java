@@ -1,13 +1,18 @@
 package nextstep.subway.member.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.auth.application.AuthorizationException;
 
 @Entity
@@ -18,6 +23,9 @@ public class Member extends BaseEntity {
     private String email;
     private String password;
     private Integer age;
+
+    @OneToMany(mappedBy = "member")
+    private List<Favorite> favorites = new ArrayList<>();
 
     public Member() {
     }
@@ -42,6 +50,10 @@ public class Member extends BaseEntity {
 
     public Integer getAge() {
         return age;
+    }
+
+    public void addFavorite(Favorite favorite) {
+        this.favorites.add(favorite);
     }
 
     public void update(Member member) {
