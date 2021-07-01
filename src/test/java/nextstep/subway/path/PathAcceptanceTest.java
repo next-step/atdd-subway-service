@@ -22,7 +22,7 @@ import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.path.dto.VertexStationResponse;
+import nextstep.subway.path.dto.VertexResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -178,7 +178,7 @@ class PathAcceptanceTest extends AcceptanceTest {
 
                     // then
                     지하철_역_사이의_최단구간_조회_실패함(지하철_역사이의_최단_구간_조회_요청);
-                    요청_실패_메시지_확인됨(지하철_역사이의_최단_구간_조회_요청, "구간으로 연결되지 않은 역입니다.");
+                    요청_실패_메시지_확인됨(지하철_역사이의_최단_구간_조회_요청, "대상들이 연결되어 있지 않습니다.");
                 }),
                 dynamicTest("등록되지 않은 역 사이의 최단경로 조회할 경우", () -> {
                     // when
@@ -197,7 +197,7 @@ class PathAcceptanceTest extends AcceptanceTest {
 
                     // then
                     지하철_역_사이의_최단구간_조회_실패함(지하철_역사이의_최단_구간_조회_요청);
-                    요청_실패_메시지_확인됨(지하철_역사이의_최단_구간_조회_요청, "도착역이 속하는 노선이 없습니다.");
+                    요청_실패_메시지_확인됨(지하철_역사이의_최단_구간_조회_요청, "도착점이 경로에 포함되어 있지 않습니다.");
                 })
         );
     }
@@ -219,9 +219,9 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     private void 지하철_최단경로에_포함된_역들이_확인됨(ExtractableResponse<Response> response, List<StationResponse> stations) {
         Stream<String> stationNames = response.jsonPath()
-                .getList("stations", VertexStationResponse.class)
+                .getList("stations", VertexResponse.class)
                 .stream()
-                .map(VertexStationResponse::getName);
+                .map(VertexResponse::getName);
         List<String> targetStationNames = stations.stream()
                 .map(StationResponse::getName)
                 .collect(Collectors.toList());
@@ -233,12 +233,12 @@ class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 지하철_역_사이의_최단_구간_조회_요청(Long source, Long target) {
-        return RestAssured.given()
+        return RestAssured.given().log().all()
                 .when()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .get("/paths?source=" + source + "&target=" + target)
-                .then()
+                .then().log().all()
                 .extract();
     }
 
