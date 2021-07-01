@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -71,8 +72,12 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기 삭제 테스트")
     @Test
     void removeFavoriteTest() {
+        // given
+        Mockito.when(favoriteRepository.findById(1l))
+               .thenReturn(Optional.of(new Favorite(1l, 2l, 1l)));
+
         // when
-        favoriteService.removeFavorite(1l);
+        favoriteService.removeFavorite(1l, 1l);
 
         // then
         Mockito.verify(favoriteRepository).deleteById(Mockito.any());

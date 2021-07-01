@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.exception.CustomException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -11,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static nextstep.subway.exception.CustomExceptionMessage.NOT_FOUND_FAVORITE;
+import static nextstep.subway.exception.CustomExceptionMessage.NOT_OWNER_TO_FAVORITE;
 
 @Service
 @Transactional
@@ -37,8 +41,17 @@ public class FavoriteService {
         return FavoriteResponse.of(persistFavorite);
     }
 
-    public void removeFavorite(final Long favoriteId) {
+    public void removeFavorite(final Long memberId, final Long favoriteId) {
+        Favorite favorite = findFavoriteById(favoriteId);
+        if (!favorite.isOwner(memberId)) {
+            throw new CustomException(NOT_OWNER_TO_FAVORITE);
+        }
         favoriteRepository.deleteById(favoriteId);
+    }
+
+    private Favorite findFavoriteById(final Long favoriteId) {
+        return favoriteRepository.findById(favoriteId)
+                                 .orElseThrow(() -> new CustomException(NOT_FOUND_FAVORITE));
     }
 
     private List<FavoriteResponse> convertToFavoriteResponse(List<Favorite> favorites) {
