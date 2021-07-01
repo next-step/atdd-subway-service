@@ -1,5 +1,6 @@
 package nextstep.subway.path.acceptance;
 
+import nextstep.subway.line.domain.Section;
 import org.junit.jupiter.api.*;
 import org.springframework.http.HttpStatus;
 
@@ -92,11 +93,18 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("최단경로를 조회한다")
     @Test
     void 최단경로_조회() {
+        List<StationResponse> stationResponses = new ArrayList<>(Arrays.asList(종로3가역, 을지로입구역, 시청역, 서울역, 회현역, 명동역, 충무로역));
         ExtractableResponse<Response> 최단경로 = 최단_경로_조회_요청함(종로3가역, 충무로역);
-        List<String> 예상최단경로 = new ArrayList<>(Arrays.asList(종로3가역.getName(), 을지로입구역.getName(), 시청역.getName(),
-                서울역.getName(), 회현역.getName(), 명동역.getName(), 충무로역.getName()));
+        List<String> 예상최단경로_지하철역_이름 = stationResponses.stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList());
+        int 예상최단거리 = 60;
+        int 예상요금 = 1250 + (50 / 5) * 100; //거리별 추가요금만 반영
+
         최단_경로_조회_성공함(최단경로);
-        최단_경로_지하철_목록_반환됨(최단경로, 예상최단경로);
+        최단_경로_지하철_목록_반환됨(최단경로, 예상최단경로_지하철역_이름);
+        최단_경로_거리_반환됨(최단경로, 예상최단거리);
+        최단_경로_요금_반환됨(최단경로, 예상요금);
 
         ExtractableResponse<Response> 출발도착_동일_최단경로 = 최단_경로_조회_요청함(종로3가역, 종로3가역);
         최단_경로_조회_실패함(출발도착_동일_최단경로);
@@ -127,6 +135,14 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .stream().map(StationResponse::getName)
                 .collect(Collectors.toList());
         assertThat(stations).hasSameElementsAs(expectedStations);
+    }
+
+    private void 최단_경로_거리_반환됨(ExtractableResponse<Response> response, int expectedDistance) {
+        assertThat(response.jsonPath().getInt("distance")).isEqualTo(expectedDistance);
+    }
+
+    private void 최단_경로_요금_반환됨(ExtractableResponse<Response> response, int expectedFare) {
+        assertThat(response.jsonPath().getInt("fare")).isEqualTo(expectedFare);
     }
 
     private void 최단_경로_조회_실패함(ExtractableResponse<Response> response) {
