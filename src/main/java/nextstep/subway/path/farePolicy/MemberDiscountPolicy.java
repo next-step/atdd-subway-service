@@ -13,10 +13,10 @@ public interface MemberDiscountPolicy {
 
         int age = loginMember.getAge();
 
-        if (KidsDiscountPolicy.MIN_AGE <= age && age < KidsDiscountPolicy.MAX_AGE) {
+        if (KidsDiscountPolicy.isAvailable(age)) {
             return new KidsDiscountPolicy();
         }
-        if (TeenagersDiscountPolicy.MIN_AGE <= age && age < TeenagersDiscountPolicy.MAX_AGE) {
+        if (TeenagersDiscountPolicy.isAvailable(age)) {
             return new TeenagersDiscountPolicy();
         }
 

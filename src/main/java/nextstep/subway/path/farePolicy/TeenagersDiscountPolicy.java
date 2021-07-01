@@ -13,7 +13,13 @@ public class TeenagersDiscountPolicy implements MemberDiscountPolicy {
         return new Fare(fare.amount() - DEFAULT_DISCOUNT_FARE - discount(fare));
     }
 
+    public static boolean isAvailable(int age) {
+        return MIN_AGE <= age && age < MAX_AGE;
+    }
+
     private int discount(Fare fare) {
         return (int) Math.ceil(((fare.amount() - DEFAULT_DISCOUNT_FARE) * DISCOUNT_PER));
     }
+
+
 }
