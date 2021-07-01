@@ -1,4 +1,4 @@
-package nextstep.subway.path.farePolicy;
+package nextstep.subway.path.memberfarepolicy;
 
 import nextstep.subway.path.domain.Fare;
 
