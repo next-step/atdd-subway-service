@@ -141,7 +141,7 @@ feat (feature)
     - [x] 4-1.인수테스트 리팩터링
         - [x] 4-1-1.`LineAcceptanceTest`
         - [x] 4-1-2.`LineSectionAcceptanceTest`
-    - [ ] 4-2.지하철 노선 생성
+    - [x] 4-2.지하철 노선 생성
     - [ ] 4-3.지하철 노선 생성 실패
     - [ ] 4-4.지하철 노선 목록 조회
     - [ ] 4-5.지하철 노선 조회

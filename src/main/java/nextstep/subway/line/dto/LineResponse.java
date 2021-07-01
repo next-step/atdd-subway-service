@@ -14,7 +14,7 @@ public class LineResponse {
 	private LocalDateTime createdDate;
 	private LocalDateTime modifiedDate;
 
-	public LineResponse() {
+	protected LineResponse() {
 	}
 
 	public LineResponse(Long id, String name, String color, List<StationResponse> stations, LocalDateTime createdDate,
@@ -28,7 +28,16 @@ public class LineResponse {
 	}
 
 	public static LineResponse of(Line line, List<StationResponse> stations) {
-		return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(),
+		return new LineResponse(line.id(), line.name(), line.color(), stations, line.getCreatedDate(),
+			line.getModifiedDate());
+	}
+
+	public static LineResponse of(Line line) {
+		return new LineResponse(line.id(),
+			line.name(),
+			line.color(),
+			StationResponse.of(line.stations()),
+			line.getCreatedDate(),
 			line.getModifiedDate());
 	}
 
