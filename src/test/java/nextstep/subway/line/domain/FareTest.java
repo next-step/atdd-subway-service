@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import nextstep.subway.error.CustomException;
 import nextstep.subway.error.ErrorMessage;
+import nextstep.subway.path.memberfarepolicy.NoneDiscountPolicy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -59,7 +60,7 @@ class FareTest {
         // given
         Fare fare = new Fare();
         // when
-        Fare totalFare = fare.calculateTotalFare(new Distance(거리));
+        Fare totalFare = fare.calculateTotalFare(new Distance(거리), new NoneDiscountPolicy());
         // then
         assertThat(totalFare.amount()).isEqualTo(요금);
     }

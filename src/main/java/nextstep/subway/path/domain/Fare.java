@@ -9,6 +9,7 @@ import nextstep.subway.error.CustomException;
 import nextstep.subway.error.ErrorMessage;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.path.calculator.OverFareByDistance;
+import nextstep.subway.path.memberfarepolicy.MemberDiscountPolicy;
 
 @Embeddable
 public class Fare {
@@ -34,9 +35,9 @@ public class Fare {
         return fare;
     }
 
-    public Fare calculateTotalFare(Distance distance) {
-        Fare overFare = new Fare(OverFareByDistance.calculate(distance));
-        return new Fare(amount + overFare.amount);
+    public Fare calculateTotalFare(Distance distance, MemberDiscountPolicy policy) {
+        Fare totalFare = new Fare(amount + OverFareByDistance.calculate(distance));
+        return policy.applyDiscount(totalFare);
     }
 
     @Override

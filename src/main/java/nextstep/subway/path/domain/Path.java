@@ -1,17 +1,16 @@
 package nextstep.subway.path.domain;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.error.CustomException;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import nextstep.subway.error.CustomException;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.error.ErrorMessage;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
@@ -34,9 +33,8 @@ public class Path {
         MemberDiscountPolicy policy = MemberDiscountPolicy.getPolicy(loginMember);
         Distance distance = new Distance((int) dijkstraShortestPath.getPathWeight(source, target));
 
-        Fare lineExtraFare = setupLineOverFare(lines, shortestPath);
-        Fare fare = lineExtraFare.calculateTotalFare(distance);
-        Fare resultFare = policy.applyDiscount(fare);
+        Fare lineOverFare = setupLineOverFare(lines, shortestPath);
+        Fare resultFare = lineOverFare.calculateTotalFare(distance, policy);
 
         return PathResponse.of(shortestPath.stream().map(Station::toResponse).collect(Collectors.toList()), distance, resultFare);
     }
