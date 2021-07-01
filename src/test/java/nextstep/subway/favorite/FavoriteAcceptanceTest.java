@@ -106,7 +106,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	}
 
 	ExtractableResponse<Response> 즐겨찾기_생성_요청(Long sourceId, Long targetId) {
-		FavoriteRequest favoriteRequest = new FavoriteRequest(sourceId.toString(), targetId.toString());
+		FavoriteRequest favoriteRequest = new FavoriteRequest(sourceId, targetId);
 		return post(favoriteRequest, "/favorite", 토큰.getAccessToken());
 	}
 

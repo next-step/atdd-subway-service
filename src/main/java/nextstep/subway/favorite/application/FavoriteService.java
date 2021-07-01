@@ -30,8 +30,8 @@ public class FavoriteService {
 
 	public FavoriteResponse saveFavorite(Long memberId, FavoriteRequest favoriteRequest) {
 		Member member = memberRepository.findById(memberId).orElseThrow(RuntimeException::new);
-		Station source = stationRepository.findById(Long.parseLong(favoriteRequest.getSource())).orElseThrow(RuntimeException::new);
-		Station target = stationRepository.findById(Long.parseLong(favoriteRequest.getTarget())).orElseThrow(RuntimeException::new);
+		Station source = stationRepository.findById(favoriteRequest.getSource()).orElseThrow(RuntimeException::new);
+		Station target = stationRepository.findById(favoriteRequest.getTarget()).orElseThrow(RuntimeException::new);
 		Favorite favorite = favoriteRepository.save(FavoriteRequest.toFavorite(member, source, target));
 		return FavoriteResponse.of(favorite);
 	}
