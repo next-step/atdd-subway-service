@@ -3,10 +3,10 @@ package nextstep.subway.path.farePolicy;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.domain.Fare;
 
-public interface MemberDiscountPolicyService {
+public interface MemberDiscountPolicy {
     Fare applyDiscount(Fare fare);
 
-    static MemberDiscountPolicyService getPolicy(LoginMember loginMember) {
+    static MemberDiscountPolicy getPolicy(LoginMember loginMember) {
         if (loginMember.getId() == null) {
             return new NoneDiscountPolicy();
         }

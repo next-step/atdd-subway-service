@@ -10,7 +10,7 @@ import nextstep.subway.error.ErrorMessage;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.farePolicy.MemberDiscountPolicyService;
+import nextstep.subway.path.farePolicy.MemberDiscountPolicy;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathRequest;
@@ -35,6 +35,6 @@ public class PathService {
         List<Line> lines = lineRepository.findAll();
 
         Path path = Path.of(lines);
-        return path.findShortestPath(source, target, MemberDiscountPolicyService.getPolicy(loginMember));
+        return path.findShortestPath(source, target, MemberDiscountPolicy.getPolicy(loginMember));
     }
 }

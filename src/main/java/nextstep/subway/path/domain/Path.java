@@ -12,7 +12,7 @@ import nextstep.subway.error.ErrorMessage;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.farePolicy.MemberDiscountPolicyService;
+import nextstep.subway.path.farePolicy.MemberDiscountPolicy;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 
@@ -37,7 +37,7 @@ public class Path {
         return new Path(new DijkstraShortestPath(graph), mostExtraFare);
     }
 
-    public PathResponse findShortestPath(Station source, Station target, MemberDiscountPolicyService memberDiscountPolicyService) {
+    public PathResponse findShortestPath(Station source, Station target, MemberDiscountPolicy memberDiscountPolicy) {
         if (source.equals(target)) {
             throw new CustomException(ErrorMessage.SAME_STATION);
         }
@@ -49,7 +49,7 @@ public class Path {
 
         Distance distance = findPathDistance(source, target);
         Fare fare = lineExtraFare.calculateTotalFare(distance);
-        Fare resultFare = memberDiscountPolicyService.applyDiscount(fare);
+        Fare resultFare = memberDiscountPolicy.applyDiscount(fare);
 
         return PathResponse.of(shortestPath.stream().map(Station::toResponse).collect(Collectors.toList()), findPathDistance(source, target), resultFare);
     }

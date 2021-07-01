@@ -2,7 +2,7 @@ package nextstep.subway.path.farePolicy;
 
 import nextstep.subway.path.domain.Fare;
 
-public class TeenagersDiscountPolicy implements MemberDiscountPolicyService{
+public class TeenagersDiscountPolicy implements MemberDiscountPolicy {
     public static final int MIN_AGE = 13;
     public static final int MAX_AGE = 19;
     private static final double DISCOUNT_PER = 0.2d;
