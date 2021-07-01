@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
+import nextstep.subway.error.CustomException;
 import nextstep.subway.error.ErrorMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -52,7 +53,7 @@ class DistanceTest {
         //given
         //when
         //then
-        assertThatExceptionOfType(RuntimeException.class)
+        assertThatExceptionOfType(CustomException.class)
                 .isThrownBy(() -> new Distance(-10)).withMessage(ErrorMessage.INVALID_DISTANCE.toString());
     }
 

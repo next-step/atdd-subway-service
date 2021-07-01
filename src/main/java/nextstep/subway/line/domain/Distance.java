@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.error.CustomException;
 import nextstep.subway.error.ErrorMessage;
 
 import java.util.Objects;
@@ -28,7 +29,7 @@ public class Distance {
 
     private void checkValidValue(int value) {
         if (value < Sections.SECTION_DELETABLE_MIN_SIZE) {
-            throw new RuntimeException(ErrorMessage.INVALID_DISTANCE.toString());
+            throw new CustomException(ErrorMessage.INVALID_DISTANCE);
         }
     }
 
@@ -48,7 +49,7 @@ public class Distance {
     public Distance diff(Distance request) {
         int newValue = Math.abs(value - request.value);
         if (value < newValue) {
-            throw new RuntimeException(ErrorMessage.INVALID_DISTANCE.toString());
+            throw new CustomException(ErrorMessage.INVALID_DISTANCE);
         }
         return new Distance(newValue);
     }

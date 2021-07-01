@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nextstep.subway.error.CustomException;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -38,12 +39,12 @@ public class Path {
 
     public PathResponse findShortestPath(Station source, Station target, MemberDiscountPolicyService memberDiscountPolicyService) {
         if (source.equals(target)) {
-            throw new IllegalArgumentException(ErrorMessage.SAME_STATION.toString());
+            throw new CustomException(ErrorMessage.SAME_STATION);
         }
         List<Station> shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
 
         if (shortestPath.isEmpty()) {
-            throw new IllegalArgumentException(ErrorMessage.NOT_FOUND_SECTION.toString());
+            throw new CustomException(ErrorMessage.NOT_FOUND_SECTION);
         }
 
         Distance distance = findPathDistance(source, target);

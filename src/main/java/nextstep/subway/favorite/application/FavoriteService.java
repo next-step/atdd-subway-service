@@ -3,6 +3,7 @@ package nextstep.subway.favorite.application;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nextstep.subway.error.CustomException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +41,7 @@ public class FavoriteService {
                 .anyMatch(favorite -> favorite.getSource().equals(source) && favorite.getTarget().equals(target));
 
         if (isPresent) {
-            throw new IllegalArgumentException(ErrorMessage.FAVORITE_ALREADY_ADDED.toString());
+            throw new CustomException(ErrorMessage.FAVORITE_ALREADY_ADDED);
         }
 
         favoriteRepository.save(new Favorite(member, source, target));
@@ -55,7 +56,7 @@ public class FavoriteService {
 
     public void remove(LoginMember loginMember, Long favoriteId) {
         member(loginMember);
-        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_FOUND_FAVORITE.toString()));
+        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_FAVORITE));
         favoriteRepository.delete(favorite);
     }
 

@@ -2,6 +2,7 @@ package nextstep.subway.path.application;
 
 import java.util.List;
 
+import nextstep.subway.error.CustomException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,8 +29,8 @@ public class PathService {
     }
 
     public PathResponse findPath(LoginMember loginMember, PathRequest pathRequest) {
-        Station source = stationRepository.findById(pathRequest.getSource()).orElseThrow(() -> new RuntimeException(ErrorMessage.NOT_FOUND_STATION.toString()));
-        Station target = stationRepository.findById(pathRequest.getTarget()).orElseThrow(() -> new RuntimeException(ErrorMessage.NOT_FOUND_STATION.toString()));
+        Station source = stationRepository.findById(pathRequest.getSource()).orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_STATION));
+        Station target = stationRepository.findById(pathRequest.getTarget()).orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_STATION));
 
         List<Line> lines = lineRepository.findAll();
 

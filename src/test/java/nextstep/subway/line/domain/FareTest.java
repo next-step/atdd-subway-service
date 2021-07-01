@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import nextstep.subway.error.CustomException;
 import nextstep.subway.error.ErrorMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,7 +71,7 @@ class FareTest {
         // when
         // then
         assertThatThrownBy(() -> new Fare(-10))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(CustomException.class)
                 .hasMessage(ErrorMessage.INVALID_FARE_AMOUNT.toString());
 
     }

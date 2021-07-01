@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import nextstep.subway.error.CustomException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,7 +71,7 @@ class PathServiceTest {
         //when
         pathService = new PathService(lineRepository, stationRepository);
         //then
-        assertThatExceptionOfType(RuntimeException.class)
+        assertThatExceptionOfType(CustomException.class)
                 .isThrownBy(() -> pathService.findPath(new LoginMember(), new PathRequest(9L, 10L))
         ).withMessage(ErrorMessage.NOT_FOUND_STATION.toString());
     }

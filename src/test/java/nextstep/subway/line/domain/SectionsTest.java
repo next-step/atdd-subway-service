@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import nextstep.subway.error.CustomException;
 import nextstep.subway.error.ErrorMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -99,7 +100,7 @@ class SectionsTest {
         sections.addSection(new Section(line, upStation, downStation, new Distance(5)));
         //when
         //then
-        assertThatExceptionOfType(RuntimeException.class)
+        assertThatExceptionOfType(CustomException.class)
                 .isThrownBy(() -> sections.removeStation(line, downStation))
                 .withMessage(ErrorMessage.SECTIONS_HAVE_ONLY_ONE.toString());
     }
@@ -111,7 +112,7 @@ class SectionsTest {
         sections.addSection(new Section(line, upStation, downStation, new Distance(5)));
         //when
         //then
-        assertThatExceptionOfType(RuntimeException.class)
+        assertThatExceptionOfType(CustomException.class)
                 .isThrownBy(() -> sections.addSection(new Section(line, upStation, downStation, new Distance(5))))
                 .withMessage(ErrorMessage.SECTION_IS_ALREADY_ADD.toString());
     }

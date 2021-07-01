@@ -8,6 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import nextstep.subway.error.CustomException;
 import nextstep.subway.error.ErrorMessage;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -85,7 +86,7 @@ public class Sections {
         while (hasSectionByUpStation(firstStation)) {
             Station tempStation = firstStation;
             Section nextLineSection = findSectionByUpStation(tempStation)
-                    .orElseThrow(() -> new RuntimeException(ErrorMessage.NOT_FOUND_SECTION.toString()));
+                    .orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_SECTION));
             firstStation = nextLineSection.getDownStation();
             stations.add(firstStation);
         }
@@ -122,7 +123,7 @@ public class Sections {
         while (hasSectionByDownStation(firstStation)) {
             Station tempStation = firstStation;
             Section nextLineSection = findSectionByDownStation(tempStation)
-                    .orElseThrow(() -> new RuntimeException(ErrorMessage.NOT_FOUND_SECTION.toString()));
+                    .orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_SECTION));
             firstStation = nextLineSection.getUpStation();
         }
         return firstStation;
@@ -130,11 +131,11 @@ public class Sections {
 
     private void checkValidStations(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException(ErrorMessage.SECTION_IS_ALREADY_ADD.toString());
+            throw new CustomException(ErrorMessage.SECTION_IS_ALREADY_ADD);
         }
 
         if (!sections.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException(ErrorMessage.CANT_ADD_THIS_SECTION.toString());
+            throw new CustomException(ErrorMessage.CANT_ADD_THIS_SECTION);
         }
     }
 
@@ -156,7 +157,7 @@ public class Sections {
 
     private void checkDeletable() {
         if (sections.size() <= SECTION_DELETABLE_MIN_SIZE) {
-            throw new RuntimeException(ErrorMessage.SECTIONS_HAVE_ONLY_ONE.toString());
+            throw new CustomException(ErrorMessage.SECTIONS_HAVE_ONLY_ONE);
         }
     }
 
