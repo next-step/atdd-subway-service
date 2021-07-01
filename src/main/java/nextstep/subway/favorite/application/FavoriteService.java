@@ -34,14 +34,12 @@ public class FavoriteService {
         Station sourceStation = stationService.findById(favoriteRequest.getSource());
         Station targetStation = stationService.findById(favoriteRequest.getTarget());
         Member member = memberService.findMemberById(memberId);
-        Favorite favorite = new Favorite(member, sourceStation, targetStation);
-        favoriteRepository.save(favorite);
-        return FavoriteResponse.of(favorite);
+        return FavoriteResponse.of(favoriteRepository.save(new Favorite(member, sourceStation, targetStation)));
     }
 
     public List<FavoriteResponse> findAllFavoriteByMemberId(Long memberId) {
-        List<Favorite> favorites = favoriteRepository.findByMemberId(memberId);
-        return favorites.stream()
+        return favoriteRepository.findByMemberId(memberId)
+                .stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
     }

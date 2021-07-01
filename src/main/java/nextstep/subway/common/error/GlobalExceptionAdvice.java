@@ -61,7 +61,7 @@ public class GlobalExceptionAdvice {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception exception) {
+    public ResponseEntity<ErrorResponse> handleException() {
         return ResponseEntity.badRequest().body(ErrorResponse.of(HttpStatus.BAD_REQUEST));
     }
 }

@@ -1,8 +1,5 @@
 package nextstep.subway.favorite.domain;
 
-import nextstep.subway.member.domain.Member;
-import nextstep.subway.station.domain.Station;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -10,6 +7,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import nextstep.subway.member.domain.Member;
+import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Favorite {
