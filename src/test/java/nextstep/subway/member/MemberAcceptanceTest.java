@@ -71,6 +71,21 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         내_정보_변경_성공함(updateResponse);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(token.getAccessToken());
+
+        // then
+        내_정보_삭제_성공함(deleteResponse);
+    }
+
+    private ExtractableResponse<Response> 내_정보_삭제_요청(String token) {
+        return RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/members/me")
+                .then().log().all().extract();
     }
 
     public static ExtractableResponse<Response> 내_정보_변경_요청(String token, MemberRequest request) {
@@ -137,15 +152,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    public static void 회원_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
         MemberResponse memberResponse = response.as(MemberResponse.class);
         assertThat(memberResponse.getId()).isNotNull();
         assertThat(memberResponse.getEmail()).isEqualTo(email);
         assertThat(memberResponse.getAge()).isEqualTo(age);
+    }
+
+    public static void 회원_생성됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
@@ -166,5 +181,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     private void 내_정보_변경_성공함(ExtractableResponse<Response> updateResponse) {
         assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private void 내_정보_삭제_성공함(ExtractableResponse<Response> deleteResponse) {
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
