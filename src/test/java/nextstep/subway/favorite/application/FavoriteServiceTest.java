@@ -19,7 +19,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -45,23 +44,28 @@ class FavoriteServiceTest {
     private Station station2;
     private Station station3;
 
-
     @BeforeEach
     void setUp() {
         favoriteService = new FavoriteService(favoriteRepository, stationRepository);
-        favorite1 = new Favorite(1L, LOGIN_MEMBER_ID, SOURCE, TARGET);
-        favorite2 = new Favorite(2L, LOGIN_MEMBER_ID, SOURCE, TARGET2);
+
         station1 = new Station("강남역");
         ReflectionTestUtils.setField(station1, "id", 1L);
         station2 = new Station("교대역");
         ReflectionTestUtils.setField(station2, "id", 2L);
         station3 = new Station("양재역");
         ReflectionTestUtils.setField(station3, "id", 3L);
+
+        favorite1 = new Favorite(1L, LOGIN_MEMBER_ID, station1, station2);
+        favorite2 = new Favorite(2L, LOGIN_MEMBER_ID, station1, station3);
     }
 
     @Test
     void saveFavorite() {
         // given
+        when(stationRepository.findById(anyLong()))
+                .thenReturn(Optional.ofNullable(station1));
+        when(stationRepository.findById(anyLong()))
+                .thenReturn(Optional.ofNullable(station2));
         when(favoriteRepository.save(any(Favorite.class)))
                 .thenReturn(favorite1);
         // when
@@ -75,8 +79,6 @@ class FavoriteServiceTest {
         // given
         when(favoriteRepository.findAllByMemberId(anyLong()))
                 .thenReturn(Arrays.asList(favorite1, favorite2));
-        when(stationRepository.findAllById(anySet()))
-                .thenReturn(Arrays.asList(station1, station2, station3));
         // when
         List<FavoriteResponse> actual = favoriteService.getFavorites(LOGIN_MEMBER_ID);
         // then

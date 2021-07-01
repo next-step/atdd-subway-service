@@ -65,11 +65,16 @@ class FavoriteControllerTest {
     private LoginMember loginMember;
     private FavoriteResponse favoriteResponse;
 
+    private Station station1;
+    private Station station2;
+
     @BeforeEach
     void setUp() {
         favoriteRequest = new FavoriteRequest(SOURCE, TARGET);
+        station1 = new Station("강남역");
+        station2 = new Station("교대역");
         loginMember = new LoginMember(GIVEN_LOGIN_MEMBER_ID, GIVEN_EMAIL, GIVEN_AGE);
-        favorite = new Favorite(1L, GIVEN_LOGIN_MEMBER_ID, SOURCE, TARGET);
+        favorite = new Favorite(1L, GIVEN_LOGIN_MEMBER_ID, station1, station2);
         favoriteResponse = new FavoriteResponse(
                 favorite, StationResponse.of(new Station("강남역")), StationResponse.of(new Station("정자역"))
         );
