@@ -35,9 +35,9 @@ public class DistanceTest {
         // given
         Distance distance = Distance.of(10);
         // when
-        distance.subtractDistance(input);
+        Distance subtractDistance = distance.subtractDistance(input);
         // then
-        assertThat(distance.toNumber()).isEqualTo(expected);
+        assertThat(subtractDistance.toNumber()).isEqualTo(expected);
     }
 
     @ParameterizedTest(name = "현재 거리보다 같거나 긴 경우 수정 불가능 테스트")

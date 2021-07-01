@@ -1,17 +1,20 @@
 package nextstep.subway.member;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import nextstep.subway.AcceptanceTest;
-import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.member.dto.MemberResponse;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.*;
+import static org.assertj.core.api.Assertions.*;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.dto.MemberRequest;
+import nextstep.subway.member.dto.MemberResponse;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -48,7 +51,77 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // when
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
 
+        // then
+        회원_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, PASSWORD);
+
+        // then
+        String token = loginResponse.as(TokenResponse.class).getAccessToken();
+
+        // when
+        ExtractableResponse<Response> findResponse = 개인_정보_조회_요청(token);
+
+        // then
+        회원_정보_조회됨(findResponse, EMAIL, AGE);
+
+        // when
+        ExtractableResponse<Response> updateResponse = 개인_정보_수정_요청(token, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+
+        // then
+        회원_정보_수정됨(updateResponse);
+
+        // when
+        ExtractableResponse<Response> reLoginResponse = 로그인_요청(NEW_EMAIL, NEW_PASSWORD);
+
+        // then
+        token = reLoginResponse.as(TokenResponse.class).getAccessToken();
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 개인_정보_삭제_요청(token);
+
+        // then
+        회원_삭제됨(deleteResponse);
+    }
+
+    public static ExtractableResponse<Response> 개인_정보_조회_요청(final String accessToken) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .when().get("/members/me")
+            .then()
+            .log().all()
+            .extract();
+    }
+
+    private ExtractableResponse<Response> 개인_정보_수정_요청(String accessToken, String email, String password, int age) {
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(memberRequest)
+            .when()
+            .put("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
+    private ExtractableResponse<Response> 개인_정보_삭제_요청(String accessToken) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .when().delete("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response>  회원_등록되어_있음(String email, String password, int age) {
+        return 회원_생성을_요청(email, password, age);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
