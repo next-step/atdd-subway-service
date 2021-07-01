@@ -6,7 +6,7 @@ public enum OverFareByDistance {
     DISTANCE_10_KM(10, 5, 100),
     DISTANCE_50_KM(50, 8, 100);
 
-    private static final int DEFAULT_USE_FARE_AMOUNT = 1250;
+    public static final int DEFAULT_USE_FARE_AMOUNT = 1250;
 
     private final int overDistance;
     private final int addPercent;

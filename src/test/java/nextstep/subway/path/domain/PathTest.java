@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import static nextstep.subway.path.calculator.OverFareByDistance.DEFAULT_USE_FARE_AMOUNT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
@@ -22,15 +23,19 @@ import nextstep.subway.station.dto.StationResponse;
 class PathTest {
     private Station 강남역;
     private Station 선릉역;
-    private Line line;
     private LoginMember 어린이;
     private LoginMember 청소년;
     private LoginMember 일반;
+    private Line line;
 
     @BeforeEach
     void setup() {
         강남역 = new Station("강남역");
         선릉역 = new Station("선릉역");
+
+        어린이 = new LoginMember(1L, "", 8);
+        청소년 = new LoginMember(1L, "", 16);
+        일반 = new LoginMember(1L, "", 35);
 
         line = new Line("신분당선"
                 , "빨간색"
@@ -38,9 +43,6 @@ class PathTest {
                 , 선릉역
                 , new Distance(5)
                 , new Fare(900));
-        어린이 = new LoginMember(1L, "", 8);
-        청소년 = new LoginMember(1L, "", 16);
-        일반 = new LoginMember(1L, "", 35);
     }
 
     @DisplayName("라인 생성시 경로 추가")
@@ -213,5 +215,26 @@ class PathTest {
         PathResponse pathResponse = Path.findShortestPath(new ArrayList<>(Arrays.asList(line)), 강남역, 선릉역, 청소년);
         // then
         assertThat(pathResponse.getFare()).isEqualTo(fare);
+    }
+
+    @DisplayName("라인 구간 요금 책정 테스트")
+    @Test
+    void lineFare() {
+        // given
+        Station 정자역 = new Station("정자역");
+        Station 복정역 = new Station("복정역");
+
+        Line newLine = new Line("분당선"
+                , "노란색"
+                , 정자역
+                , 복정역
+                , new Distance(5)
+                , new Fare(0));
+        // when
+        // when
+        PathResponse pathResponse = Path.findShortestPath(new ArrayList<>(Arrays.asList(line, newLine)), 정자역, 복정역, 일반);
+        // then
+        assertThat(pathResponse.getDistance()).isEqualTo(5);
+        assertThat(pathResponse.getFare()).isEqualTo(DEFAULT_USE_FARE_AMOUNT);
     }
 }
