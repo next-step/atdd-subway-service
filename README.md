@@ -53,6 +53,47 @@ npm run dev
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
 
+---
+## 🚀 4단계 요금 조회
+### 요구사항 정리
+* [ ] 경로 조회 시 거리 기준 요금 정보 포함하기
+* [ ] 노선별 추가 요금 정책 추가
+* [ ] 연령별 할인 정책 추가
+
+### 구현사항 정리
+* [ ] 경로 조회 시 거리 기준 요금 정보 포함하기
+    * [ ] 경로 인수테스트 추가 
+        ```
+        ✅ Feature: 지하철 경로 검색
+            🔙 Background
+                Given 지하철역이 등록되어있음
+                And 지하철 노선이 등록되어있음
+                And 지하철 노선에 지하철역이 등록되어있음
+            1️⃣ Scenario : 두 역의 최단거리 경로를 조회
+                When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+                Then 최단거리 경로 응답
+                Then 총 거리도 함께 응답
+                Then ✨지하철 이용 요금도 함께 응답함✨
+        ```  
+    * [ ] 거리별 요금정책을 담은 `enum` 설계 및 생성
+        - Functional Interface를 활용하여 요금Calculator 생성?
+        - 거리를 입력받으면 구간 결정은 내부적으로 하고, 그 구간에 따라 요금도 결정하도록!
+        - [링크](https://jojoldu.tistory.com/137?category=635881) 참고 
+    * [ ] `Path`/`PathResponse` 클래스에 `요금(fare)` 변수 추가 → `거리(distance)`에 따라 결정됨
+        - `PathTest` 업데이트
+* [ ] 노선별 추가 요금 정책 추가
+    * [ ] `Line` 클래스에  `추가요금(ExtraCharge)` 변수 추가 
+    * [ ] `PathFinder` 클래스에서 최단경로 구할 때, 
+        * 거리에 따라 `요금`을 계산하고 
+        *  환승구간에 따라 `추가요금` 반영
+            * 만약 여러 노선을 거친다면, 가장 큰 금액의 추가요금만을 더한다
+            * 이를 위해, `graph`에 `edge`를 추가할 때, `line`의 `추가요금`을 같이 넣어준다. 
+            그리고 차후에 `Path`를 리턴하기 전에 해당 요금을 함께 리턴
+* [ ] 연령별 할인 정책 추가(단, 로그인 사용자인 경우)
+    * [ ] 연령별 요금정책을 담은 `enum` 설계 및 생성
+        - 거리별 요금정책과 마찬가지로 Functional Interface를 활용하여 요금 Caculator 생성
+        - 매개변수로 `LoginMember`를 받아서 유효한 값을 가진 경우에만 할인 적용됨
+---
 ## 🚀 3단계 인증을 통한 기능 구현
 ### 구현사항 정리
 * [ ] 토큰발급기능 인수테스트 작성
