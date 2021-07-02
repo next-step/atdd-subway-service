@@ -1,6 +1,5 @@
-package nextstep.subway.fare.domain;
+package nextstep.subway.extracharge;
 
-import java.util.function.Function;
 import java.util.function.IntFunction;
 
 import static nextstep.subway.fare.domain.Fare.*;

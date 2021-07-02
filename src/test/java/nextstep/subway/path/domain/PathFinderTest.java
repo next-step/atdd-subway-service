@@ -86,7 +86,7 @@ class PathFinderTest {
         //Given
         Station 강남역 = new Station("강남역");
         Station 광교역 = new Station("광교역");
-        Line 신분당선 = new Line("신분당선", "빨간색", 강남역, 광교역, 10);
+        Line 신분당선 = new Line("신분당선", "빨간색", 강남역, 광교역, 10, 300);
 
         모든노선.add(신분당선);
         PathFinder newPathFinder = new PathFinder(new Lines(모든노선));
@@ -105,5 +105,17 @@ class PathFinderTest {
 
         //then
         assertThat(shortestPath.getFare()).isEqualTo(BASE_FARE + 500);
+    }
+
+    @DisplayName("환승 시, 최대 추가요금 반영")
+    @Test
+    void 여러_노선_환승시_추가요금_최대값만_반영() {
+        //when
+        Path shortestPath = pathFinder.getDijkstraShortestPath(연신내역, 회현역);
+
+        //then
+        assertThat(shortestPath.getFare()).isEqualTo(BASE_FARE + 1000);
+        assertThat(shortestPath.getStations()).hasSize(3)
+                .containsExactly(연신내역, 응암역, 회현역);
     }
 }

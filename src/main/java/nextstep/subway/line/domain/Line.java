@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.extracharge.ExtraCharge;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -21,6 +22,9 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
+    @Embedded
+    private ExtraCharge extraCharge;
+
     public Line() {
     }
 
@@ -33,6 +37,13 @@ public class Line extends BaseEntity {
         this.name = name;
         this.color = color;
         sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int extraCharge) {
+        this.name = name;
+        this.color = color;
+        sections.add(new Section(this, upStation, downStation, distance));
+        this.extraCharge = new ExtraCharge(extraCharge);
     }
 
     public void update(Line line) {
@@ -62,6 +73,10 @@ public class Line extends BaseEntity {
 
     public List<Station> getSortedStation() {
         return sections.getSortedStation();
+    }
+
+    public int getExtraCharge() {
+        return extraCharge.getExtraCharge();
     }
 
     public void addSection(Section section) {
