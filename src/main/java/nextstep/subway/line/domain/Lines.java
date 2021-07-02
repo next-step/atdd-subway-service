@@ -16,12 +16,20 @@ public class Lines {
     }
 
     public List<Station> getStationAll() {
-        List<Station> stations = collectItem(it -> it.getSections().unSortedStations().stream());
+        List<Station> stations = line.stream()
+            .flatMap(it -> it.getSections().unSortedStations().stream())
+            .distinct()
+            .collect(Collectors.toList());
+
         return Collections.unmodifiableList(stations);
     }
 
     public List<Section> getSectionsAll() {
-        List<Section> sections = collectItem(it -> it.getSections().sortedSections().stream());
+        List<Section> sections = line.stream()
+            .flatMap(it -> it.getSections().sortedSections().stream())
+            .distinct()
+            .collect(Collectors.toList());
+
         return Collections.unmodifiableList(sections);
     }
 
@@ -29,10 +37,4 @@ public class Lines {
         return line.size();
     }
 
-    private <T> List<T> collectItem(Function<Line, Stream<? extends T>> mapper) {
-        return line.stream()
-            .flatMap(mapper)
-            .distinct()
-            .collect(Collectors.toList());
-    }
 }

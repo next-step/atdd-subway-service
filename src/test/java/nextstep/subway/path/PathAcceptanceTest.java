@@ -26,32 +26,32 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class PathAcceptanceTest extends AcceptanceTest {
     public static final RestAssuredTemplate restAssuredTemplate = new RestAssuredTemplate(PATH);
 
-    private long 강남역, 양재역, 교대역, 남부터미널역, 없는역;
+    private long 강남역ID, 양재역ID, 교대역ID, 남부터미널역ID, 없는역ID;
 
     @BeforeEach
     public void register() {
         //역 추가
-        강남역 = StationAcceptanceTest.requestCreateStation("강남역").as(StationResponse.class).getId();
-        양재역 = StationAcceptanceTest.requestCreateStation("양재역").as(StationResponse.class).getId();
-        교대역 = StationAcceptanceTest.requestCreateStation("교대역").as(StationResponse.class).getId();
-        남부터미널역 = StationAcceptanceTest.requestCreateStation("남부터미널역").as(StationResponse.class).getId();
+        강남역ID = StationAcceptanceTest.requestCreateStation("강남역").as(StationResponse.class).getId();
+        양재역ID = StationAcceptanceTest.requestCreateStation("양재역").as(StationResponse.class).getId();
+        교대역ID = StationAcceptanceTest.requestCreateStation("교대역").as(StationResponse.class).getId();
+        남부터미널역ID = StationAcceptanceTest.requestCreateStation("남부터미널역").as(StationResponse.class).getId();
 
-        없는역 = StationAcceptanceTest.requestCreateStation("없는역").as(StationResponse.class).getId();
+        없는역ID = StationAcceptanceTest.requestCreateStation("없는역").as(StationResponse.class).getId();
 
         //노선 추가
-        long 신분당선 = createLine("신분당선", 강남역, 양재역, 10).as(LineResponse.class).getId();
-        long 이호선 = createLine("이호선", 교대역, 강남역, 10).as(LineResponse.class).getId();
-        long 삼호선 = createLine("삼호선", 교대역, 양재역, 5).as(LineResponse.class).getId();
+        long 신분당선ID = createLine("신분당선", 강남역ID, 양재역ID, 10).as(LineResponse.class).getId();
+        long 이호선ID = createLine("이호선", 교대역ID, 강남역ID, 10).as(LineResponse.class).getId();
+        long 삼호선ID = createLine("삼호선", 교대역ID, 양재역ID, 5).as(LineResponse.class).getId();
 
         //경로 추가
-        appendSection(삼호선, 교대역, 남부터미널역, 3);
+        appendSection(삼호선ID, 교대역ID, 남부터미널역ID, 3);
     }
 
     @Test
     @DisplayName("지하철 최단경로를 조회한다.")
     public void requestPath() {
         // when
-        ExtractableResponse<Response> response = requestPath(getDefaultParam(강남역, 양재역));
+        ExtractableResponse<Response> response = requestPath(getDefaultParam(강남역ID, 양재역ID));
 
         // then
         assertAll(
@@ -65,8 +65,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 최단경로를 조회시 잘못된 출발역과 도착역일 경우 예외가 발생한다.")
     public void requestPathException() {
         assertAll(
-            () -> assertThat(requestPath(getDefaultParam(강남역, 강남역)).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-            () -> assertThat(requestPath(getDefaultParam(강남역, 없는역)).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
+            () -> assertThat(requestPath(getDefaultParam(강남역ID, 강남역ID)).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+            () -> assertThat(requestPath(getDefaultParam(강남역ID, 없는역ID)).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
         );
     }
 

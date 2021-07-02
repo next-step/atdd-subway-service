@@ -21,7 +21,7 @@ public class Path<T> {
         return paths.get(0);
     }
 
-    public T getTrget() {
+    public T getTarget() {
         return paths.get(size() - 1);
     }
 }

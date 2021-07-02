@@ -12,7 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -76,7 +75,7 @@ public class PathFinderTest {
             () -> assertThat(path.size()).isEqualTo(3),
             () -> assertThat(path.getPaths()).containsExactly(A, B, C),
             () -> assertThat(path.getSource()).isEqualTo(A),
-            () -> assertThat(path.getTrget()).isEqualTo(C),
+            () -> assertThat(path.getTarget()).isEqualTo(C),
             () -> assertThat(path.getDistance()).isEqualTo(200)
         );
     }
@@ -95,7 +94,7 @@ public class PathFinderTest {
             () -> assertThat(path.size()).isEqualTo(5),
             () -> assertThat(path.getPaths()).containsExactly(A, a, b, c, C),
             () -> assertThat(path.getSource()).isEqualTo(A),
-            () -> assertThat(path.getTrget()).isEqualTo(C),
+            () -> assertThat(path.getTarget()).isEqualTo(C),
             () -> assertThat(path.getDistance()).isEqualTo(6)
         );
     }

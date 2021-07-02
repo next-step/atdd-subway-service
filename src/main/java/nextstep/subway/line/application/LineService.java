@@ -25,12 +25,12 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(LineNotFoundException::new);
+        return lineRepository.findById(id).orElseThrow(() -> new LineNotFoundException(id));
     }
 
     @Transactional(readOnly = true)
     public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(StationNotFoundException::new);
+        return stationRepository.findById(id).orElseThrow(() -> new StationNotFoundException(id));
     }
 
     @Transactional(readOnly = true)

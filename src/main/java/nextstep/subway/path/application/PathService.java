@@ -3,8 +3,6 @@ package nextstep.subway.path.application;
 import lombok.RequiredArgsConstructor;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
-import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathRequest;
@@ -15,8 +13,6 @@ import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -26,8 +22,8 @@ public class PathService {
     private final LineRepository lineRepository;
 
     @Transactional(readOnly = true)
-    public Station findStationById(long id) {
-        return stationRepository.findById(id).orElseThrow(() -> new StationNotFoundException());
+    public Station getStationById(long id) {
+        return stationRepository.findById(id).orElseThrow(() -> new StationNotFoundException(id));
     }
 
     @Transactional(readOnly = true)
@@ -35,6 +31,7 @@ public class PathService {
         return new Lines(lineRepository.findAll());
     }
 
+    @Transactional(readOnly = true)
     public PathResponse searchPath(final PathRequest request) {
         Path<Station> path = getPath(request);
 
@@ -45,8 +42,8 @@ public class PathService {
     }
 
     private Path<Station> getPath(final PathRequest request) {
-        Station source = findStationById(request.getSource());
-        Station target = findStationById(request.getTarget());
+        Station source = getStationById(request.getSource());
+        Station target = getStationById(request.getTarget());
 
         return new PathFinder(findLines()).getPath(source, target);
     }
