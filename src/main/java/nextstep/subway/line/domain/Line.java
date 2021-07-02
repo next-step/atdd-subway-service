@@ -1,7 +1,5 @@
 package nextstep.subway.line.domain;
 
-import static java.util.Objects.*;
-
 import java.util.List;
 
 import javax.persistence.Column;
@@ -17,7 +15,7 @@ import nextstep.subway.station.domain.Station;
 @Entity
 public class Line extends BaseEntity {
 
-    private static final int NO_ADDITIONAL_FARE = 0;
+    public static final int NO_ADDITIONAL_FARE = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +23,7 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
-    private Integer additionalFare;
+    private int additionalFare = NO_ADDITIONAL_FARE;
 
     @Embedded
     private Sections sections = new Sections();
@@ -68,16 +66,8 @@ public class Line extends BaseEntity {
         sections.removeStation(station);
     }
 
-    public Integer additionalFare() {
-        if (hasAdditionalFare()) {
-            return additionalFare;
-        }
-
-        return NO_ADDITIONAL_FARE;
-    }
-
-    private boolean hasAdditionalFare() {
-        return nonNull(additionalFare);
+    public int additionalFare() {
+        return additionalFare;
     }
 
     public Long getId() {

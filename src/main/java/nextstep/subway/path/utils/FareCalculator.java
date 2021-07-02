@@ -9,7 +9,7 @@ import nextstep.subway.path.domain.PayZone;
 
 public class FareCalculator {
 
-    public static final int BASIC_FARE = 1250;
+    private static final int BASIC_FARE = 1250;
     private static final int DISTANCE_FARE = 100;
 
     private FareCalculator() {
@@ -26,7 +26,7 @@ public class FareCalculator {
             .stream()
             .map(Line::additionalFare)
             .max(naturalOrder())
-            .orElse(0);
+            .orElse(Line.NO_ADDITIONAL_FARE);
     }
 
     private static int calculateOverFare(double distance) {
