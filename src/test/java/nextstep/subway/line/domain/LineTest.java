@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.NotValidateRemovalSectionsSizeException;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -161,7 +162,7 @@ class LineTest {
         Line 첫번째_라인 = new Line("2호선", "green", 강남역, 잠실역, 25);
 
         //when
-        assertThrows(RuntimeException.class,
+        assertThrows(NotValidateRemovalSectionsSizeException.class,
                 () -> 첫번째_라인.validateAndRemoveByStation(잠실역)
 
         );
