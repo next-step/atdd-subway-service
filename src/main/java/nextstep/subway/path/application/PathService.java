@@ -10,7 +10,6 @@ import nextstep.subway.error.ErrorMessage;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.memberfarepolicy.MemberDiscountPolicy;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathRequest;

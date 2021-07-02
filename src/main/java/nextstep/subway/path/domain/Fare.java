@@ -7,9 +7,6 @@ import javax.persistence.Embeddable;
 
 import nextstep.subway.error.CustomException;
 import nextstep.subway.error.ErrorMessage;
-import nextstep.subway.line.domain.Distance;
-import nextstep.subway.path.calculator.OverFareByDistance;
-import nextstep.subway.path.memberfarepolicy.MemberDiscountPolicy;
 
 @Embeddable
 public class Fare {
@@ -28,16 +25,23 @@ public class Fare {
         this.amount = amount;
     }
 
+    public Fare sum(Fare fare) {
+        return new Fare(amount + fare.amount);
+    }
+
+    public Fare sub(Fare fare) {
+        return new Fare(amount - fare.amount);
+    }
+
+    public Fare discountFare(double discountPer) {
+        return new Fare((int) Math.ceil(amount * discountPer));
+    }
+
     public Fare gt(Fare fare) {
         if (this.amount > fare.amount) {
             return this;
         }
         return fare;
-    }
-
-    public Fare calculateTotalFare(Distance distance, MemberDiscountPolicy policy) {
-        Fare totalFare = new Fare(amount + OverFareByDistance.calculate(distance));
-        return policy.applyDiscount(totalFare);
     }
 
     @Override

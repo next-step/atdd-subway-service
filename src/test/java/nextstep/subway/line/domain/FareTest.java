@@ -5,11 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import nextstep.subway.error.CustomException;
 import nextstep.subway.error.ErrorMessage;
-import nextstep.subway.path.memberfarepolicy.NoneDiscountPolicy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 import nextstep.subway.path.domain.Fare;
 
@@ -48,23 +45,6 @@ class FareTest {
         assertThat(expect).isEqualTo(mostFare);
     }
 
-    @DisplayName("요금 추가 금액 계산")
-    @ParameterizedTest()
-    @CsvSource({"10, 1250",
-            "30, 1650",
-            "50, 2050",
-            "58, 2150",
-            "106, 2750"
-    })
-    void calculateOverFare(int 거리, int 요금) {
-        // given
-        Fare fare = new Fare();
-        // when
-        Fare totalFare = fare.calculateTotalFare(new Distance(거리), new NoneDiscountPolicy());
-        // then
-        assertThat(totalFare.amount()).isEqualTo(요금);
-    }
-
     @DisplayName("요금 음수 생성")
     @Test
     void invalidAmount() {
@@ -75,5 +55,16 @@ class FareTest {
                 .isInstanceOf(CustomException.class)
                 .hasMessage(ErrorMessage.INVALID_FARE_AMOUNT.toString());
 
+    }
+
+    @DisplayName("요금 더하기")
+    @Test
+    void sum() {
+        // given
+        Fare fare = new Fare(100);
+        // when
+        Fare expect = fare.sum(new Fare(200));
+        // then
+        assertThat(expect).isEqualTo(new Fare(300));
     }
 }

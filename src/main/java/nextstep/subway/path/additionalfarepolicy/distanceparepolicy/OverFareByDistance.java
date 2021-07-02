@@ -1,6 +1,7 @@
-package nextstep.subway.path.calculator;
+package nextstep.subway.path.additionalfarepolicy.distanceparepolicy;
 
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.path.domain.Fare;
 
 public enum OverFareByDistance {
     DISTANCE_10_KM(10, 5, 100),
@@ -18,12 +19,12 @@ public enum OverFareByDistance {
         this.overFare = overFare;
     }
 
-    public static int calculate(Distance distance) {
+    public static Fare calculate(Distance distance) {
         int overAmount = DEFAULT_USE_FARE_AMOUNT;
         for (OverFareByDistance overFareByDistance : values()) {
             overAmount += overFareByDistance.calculateOverFare(distance);
         }
-        return overAmount;
+        return new Fare(overAmount);
     }
 
     private int calculateOverFare(Distance distance) {

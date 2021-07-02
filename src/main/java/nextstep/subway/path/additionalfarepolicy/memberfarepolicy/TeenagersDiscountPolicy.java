@@ -1,4 +1,4 @@
-package nextstep.subway.path.memberfarepolicy;
+package nextstep.subway.path.additionalfarepolicy.memberfarepolicy;
 
 import nextstep.subway.path.domain.Fare;
 
@@ -6,19 +6,19 @@ public class TeenagersDiscountPolicy implements MemberDiscountPolicy {
     public static final int MIN_AGE = 13;
     public static final int MAX_AGE = 19;
     private static final double DISCOUNT_PER = 0.2d;
-    private static final int DEFAULT_DISCOUNT_FARE = 350;
+    private static final Fare DEFAULT_DISCOUNT_FARE = new Fare(350);
 
     @Override
     public Fare applyDiscount(Fare fare) {
-        return new Fare(fare.amount() - DEFAULT_DISCOUNT_FARE - discount(fare));
+        return fare.sub(DEFAULT_DISCOUNT_FARE).sub(discount(fare));
     }
 
     public static boolean isAvailable(int age) {
         return MIN_AGE <= age && age < MAX_AGE;
     }
 
-    private int discount(Fare fare) {
-        return (int) Math.ceil(((fare.amount() - DEFAULT_DISCOUNT_FARE) * DISCOUNT_PER));
+    private Fare discount(Fare fare) {
+        return fare.sub(DEFAULT_DISCOUNT_FARE).discountFare(DISCOUNT_PER);
     }
 
 

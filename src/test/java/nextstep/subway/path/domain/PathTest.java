@@ -1,6 +1,6 @@
 package nextstep.subway.path.domain;
 
-import static nextstep.subway.path.calculator.OverFareByDistance.DEFAULT_USE_FARE_AMOUNT;
+import static nextstep.subway.path.additionalfarepolicy.distanceparepolicy.OverFareByDistance.DEFAULT_USE_FARE_AMOUNT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import nextstep.subway.path.additionalfarepolicy.AdditionalFarePolicy;
+import nextstep.subway.path.additionalfarepolicy.AdditionalFareCalculator;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -15,7 +17,7 @@ import nextstep.subway.error.ErrorMessage;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.memberfarepolicy.MemberDiscountPolicy;
+import nextstep.subway.path.additionalfarepolicy.memberfarepolicy.MemberDiscountPolicy;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 
@@ -30,11 +32,13 @@ public class Path {
             throw new CustomException(ErrorMessage.NOT_FOUND_SECTION);
         }
 
-        MemberDiscountPolicy policy = MemberDiscountPolicy.getPolicy(loginMember);
+        Fare lineFare = setupLineFare(lines, shortestPath);
         Distance distance = new Distance((int) dijkstraShortestPath.getPathWeight(source, target));
 
-        Fare lineOverFare = setupLineOverFare(lines, shortestPath);
-        Fare resultFare = lineOverFare.calculateTotalFare(distance, policy);
+        MemberDiscountPolicy policy = MemberDiscountPolicy.getPolicy(loginMember);
+        AdditionalFarePolicy additionalFarePolicy = new AdditionalFareCalculator();
+
+        Fare resultFare = additionalFarePolicy.calculate(lineFare, distance, policy);
 
         return PathResponse.of(shortestPath.stream().map(Station::toResponse).collect(Collectors.toList()), distance, resultFare);
     }
@@ -59,7 +63,7 @@ public class Path {
         }
     }
 
-    private static Fare setupLineOverFare(List<Line> lines, List<Station> stations) {
+    private static Fare setupLineFare(List<Line> lines, List<Station> stations) {
         Fare mostExtraFare = new Fare();
         Set<Line> stationContainLines = new HashSet<>();
         for (Station station : stations) {
