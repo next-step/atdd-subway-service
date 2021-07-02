@@ -254,22 +254,37 @@ public class LineAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    /**
+     * @see nextstep.subway.line.ui.LineController#findAllLines
+     */
     public static ExtractableResponse<Response> requestShowLines() {
         return restAssuredTemplate.get();
     }
 
+    /**
+     * @see nextstep.subway.line.ui.LineController#findLineById
+     */
     public static ExtractableResponse<Response> requestShowLines(final Long id) {
         return restAssuredTemplate.get(id);
     }
 
+    /**
+     * @see nextstep.subway.line.ui.LineController#createLine
+     */
     public static ExtractableResponse<Response> requestCreatedLine(final LineRequest param) {
         return restAssuredTemplate.post(param);
     }
 
+    /**
+     * @see nextstep.subway.line.ui.LineController#updateLine
+     */
     public static ExtractableResponse<Response> requestUpdateLine(final Long id, final LineRequest param) {
         return restAssuredTemplate.put(id, param);
     }
 
+    /**
+     * @see nextstep.subway.line.ui.LineController#deleteLine
+     */
     public static ExtractableResponse<Response> requestDeleteLine(final Long id) {
         return restAssuredTemplate.delete(id);
     }

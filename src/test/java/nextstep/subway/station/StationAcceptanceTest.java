@@ -105,10 +105,16 @@ public class StationAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    /**
+     * @see nextstep.subway.station.ui.StationController#showStations
+     */
     public static ExtractableResponse<Response> requestShowStations() {
         return restAssuredTemplate.get();
     }
 
+    /**
+     * @see nextstep.subway.station.ui.StationController#createStation
+     */
     public static ExtractableResponse<Response> requestCreateStation(StationRequest param) {
         return restAssuredTemplate.post(param);
     }
@@ -117,6 +123,9 @@ public class StationAcceptanceTest extends AcceptanceTest {
         return requestCreateStation(new StationRequest(name));
     }
 
+    /**
+     * @see nextstep.subway.station.ui.StationController#deleteStation
+     */
     public static ExtractableResponse<Response> requestDeleteStation(String uri) {
         return restAssuredTemplate.delete(uri);
     }

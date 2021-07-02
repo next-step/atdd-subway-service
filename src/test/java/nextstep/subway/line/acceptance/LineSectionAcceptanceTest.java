@@ -293,18 +293,16 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    /**
+     * @see nextstep.subway.line.ui.LineController#addLineStation
+     */
     public ExtractableResponse<Response> requestCreatedSection(final SectionRequest param) {
         return restAssuredTemplate.post(param);
     }
 
-    public ExtractableResponse<Response> requestShowSection(final Long id) {
-        return restAssuredTemplate.get(id);
-    }
-
-    public ExtractableResponse<Response> requestShowSection() {
-        return restAssuredTemplate.get();
-    }
-
+    /**
+     * @see nextstep.subway.line.ui.LineController#removeLineStation
+     */
     public ExtractableResponse<Response> requestDeleteSection(final Long lineId, Long stationId) {
         String uri = String.format("%s/%s/sections?stationId=%s", LINE, lineId, stationId);
         return restAssuredTemplate.delete(uri);

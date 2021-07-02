@@ -76,22 +76,34 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    /**
+     * @see nextstep.subway.member.ui.MemberController#createMember
+     */
     public static ExtractableResponse<Response> requestCreateMember(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return restAssuredTemplate.post(memberRequest);
     }
 
+    /**
+     * @see nextstep.subway.member.ui.MemberController#findMember
+     */
     public static ExtractableResponse<Response> requestFindMember(Long id) {
         return restAssuredTemplate.get(id);
     }
 
+    /**
+     * @see nextstep.subway.member.ui.MemberController#updateMember
+     */
     public static ExtractableResponse<Response> requestUpdateMemberInfo(Long id, String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return restAssuredTemplate.put(id, memberRequest);
     }
 
+    /**
+     * @see nextstep.subway.member.ui.MemberController#deleteMember
+     */
     public static ExtractableResponse<Response> requestDeleteMember(Long id) {
         return restAssuredTemplate.delete(id);
     }

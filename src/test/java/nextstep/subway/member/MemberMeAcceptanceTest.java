@@ -1,6 +1,9 @@
 package nextstep.subway.member;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.utils.RestAssuredTemplate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +30,29 @@ public class MemberMeAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteMyInfo() {
 
+    }
+
+    /**
+     * @see nextstep.subway.member.ui.MemberController#findMemberOfMine
+     */
+    public static ExtractableResponse<Response> requestFindMyInfo(final Long id) {
+        return restAssuredTemplate.get(id);
+    }
+
+    /**
+     * @see nextstep.subway.member.ui.MemberController#updateMemberOfMine
+     */
+    public static ExtractableResponse<Response> requestUpdateInfo(final Long id, final String email, final String password, final Integer age) {
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+
+        return restAssuredTemplate.put(id, memberRequest);
+    }
+
+    /**
+     * @see nextstep.subway.member.ui.MemberController#deleteMemberOfMine
+     */
+    public static ExtractableResponse<Response> requestDeleteMyInfo(final Long id) {
+        return restAssuredTemplate.delete(id);
     }
 
 }
