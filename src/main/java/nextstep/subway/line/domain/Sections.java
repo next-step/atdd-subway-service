@@ -22,9 +22,15 @@ public class Sections {
         sections.add(section);
     }
 
-    public Optional<Section> findHaveDownStation(Station finalDownStation) {
+    public Optional<Section> findNextSectionByUpStation(Station finalDownStation) {
         return sections.stream()
                 .filter(it -> it.getUpStation().equals(finalDownStation))
+                .findFirst();
+    }
+
+    public Optional<Section> findNextSectionByDownStation(Station finalDownStation) {
+        return sections.stream()
+                .filter(it -> it.getDownStation().equals(finalDownStation))
                 .findFirst();
     }
 
@@ -34,5 +40,9 @@ public class Sections {
 
     public List<Section> getSections() {
         return sections;
+    }
+
+    public boolean isEmpty() {
+        return sections.isEmpty();
     }
 }

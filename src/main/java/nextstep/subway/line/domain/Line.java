@@ -44,7 +44,7 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getStations() {
-        if (sections == null) {
+        if (sections.isEmpty()) {
             return Arrays.asList();
         }
 
@@ -54,7 +54,7 @@ public class Line extends BaseEntity {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.findHaveDownStation(finalDownStation);
+            Optional<Section> nextLineStation = sections.findNextSectionByUpStation(finalDownStation);
             if (nextLineStation.isEmpty()) {
                 break;
             }
@@ -67,19 +67,24 @@ public class Line extends BaseEntity {
     }
 
     private Station findUpStation() {
-        Station downStation = sections.getFirstUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
+        Station firstUpStation = sections.getFirstUpStation();
 
-            Optional<Section> nextLineStation = sections.findHaveDownStation(finalDownStation);
+        while (firstUpStation != null) {
+            Station finalDownStation = firstUpStation;
+
+            Optional<Section> nextLineStation = sections.findNextSectionByDownStation(finalDownStation);
             if (nextLineStation.isEmpty()) {
                 break;
             }
 
-            downStation = nextLineStation.get().getUpStation();
+            firstUpStation = nextLineStation.get().getUpStation();
         }
 
-        return downStation;
+        return firstUpStation;
+    }
+
+    public void addSection(Section section) {
+        sections.add(section);
     }
 
     public void update(Line line) {
