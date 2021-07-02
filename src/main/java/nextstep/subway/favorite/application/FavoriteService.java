@@ -3,6 +3,7 @@ package nextstep.subway.favorite.application;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nextstep.subway.favorite.exception.FavoriteAlreadyExistsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,10 @@ public class FavoriteService {
     }
 
     public FavoriteResponse saveFavorite(Long memberId, FavoriteRequest favoriteRequest) {
+        favoriteRepository.findBySourceStationIdAndTargetStationId(favoriteRequest.getSource(), favoriteRequest.getTarget())
+                .ifPresent(favorite -> {
+                    throw new FavoriteAlreadyExistsException();
+                });
         Station sourceStation = stationService.findById(favoriteRequest.getSource());
         Station targetStation = stationService.findById(favoriteRequest.getTarget());
         Member member = memberService.findMemberById(memberId);

@@ -18,6 +18,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.common.error.ErrorResponse;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -68,6 +69,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
      *
      * When 즐겨찾기 생성을 요청
      * Then 즐겨찾기 생성됨
+     * When 동일한 즐겨찾기 생성을 요청
+     * Then 즐겨찾기 생성 실패됨
      * When 즐겨찾기 목록 조회 요청
      * Then 즐겨찾기 목록 조회됨
      * When 즐겨찾기 삭제 요청
@@ -83,6 +86,14 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
                     // then
                     즐겨찾기_생성됨(즑겨찾기_생성_요청_결과);
+                }),
+                dynamicTest("동일한 즐겨찾기 생성", () -> {
+                    // when
+                    ExtractableResponse<Response> 동일한_즑겨찾기_생성_요청_결과 = 즐겨찾기_생성을_요청(로그인_사용자, new FavoriteRequest(강남역.getId(), 광교역.getId()));
+
+                    // then
+                    즐겨찾기_생성_실패됨(동일한_즑겨찾기_생성_요청_결과);
+                    오류_메시지_확인됨(동일한_즑겨찾기_생성_요청_결과, "이미 등록된 즐겨찾기 구간입니다.");
                 }),
                 dynamicTest("즐겨찾기 목록 조회", () -> {
                     // when
@@ -102,6 +113,14 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
                     즐겨찾기_삭제됨(즐겨찾기_삭제_요청_결과);
                 })
         );
+    }
+
+    private void 오류_메시지_확인됨(ExtractableResponse<Response> response, String errorMessage) {
+        assertThat(response.as(ErrorResponse.class).getErrorMessage()).isEqualTo(errorMessage);
+    }
+
+    private void 즐겨찾기_생성_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성을_요청(TokenResponse loginUser, FavoriteRequest favoriteRequest) {

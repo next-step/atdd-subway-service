@@ -1,12 +1,17 @@
 package nextstep.subway.auth.infrastructure;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -16,22 +21,27 @@ public class JwtTokenProvider {
     private String secretKey;
     @Value("${security.jwt.token.expire-length}")
     private long validityInMilliseconds;
+    private JwtParser jwtParser;
+
+    @Autowired
+    public JwtTokenProvider(JwtParser jwtParser) {
+        this.jwtParser = jwtParser;
+    }
 
     public String createToken(String payload) {
         Claims claims = Jwts.claims().setSubject(payload);
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime validity = now.plus(validityInMilliseconds, ChronoUnit.MILLIS);
         return Jwts.builder()
                 .setClaims(claims)
-                .setIssuedAt(now)
-                .setExpiration(validity)
+                .setIssuedAt(toDate(now))
+                .setExpiration(toDate(validity))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 
     public String getPayload(String token) {
-        return Jwts.parser()
-                .setSigningKey(secretKey)
+        return this.jwtParser
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
@@ -39,15 +49,18 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            return !Jwts.parser()
-                    .setSigningKey(secretKey)
+            return !this.jwtParser
                     .parseClaimsJws(token)
                     .getBody()
                     .getExpiration()
-                    .before(new Date());
+                    .before(toDate(LocalDateTime.now()));
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
+    }
+
+    private Date toDate(LocalDateTime localDateTime) {
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 }
 

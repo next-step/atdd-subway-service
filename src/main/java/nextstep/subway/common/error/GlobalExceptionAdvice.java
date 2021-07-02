@@ -1,6 +1,7 @@
 package nextstep.subway.common.error;
 
 import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.favorite.exception.FavoriteAlreadyExistsException;
 import nextstep.subway.favorite.exception.FavoriteNotFoundException;
 import nextstep.subway.line.exception.LineNotFoundException;
 import nextstep.subway.path.exception.NoConnectedVertexesException;
@@ -42,6 +43,11 @@ public class GlobalExceptionAdvice {
 
     @ExceptionHandler(FavoriteNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleFavoriteNotFoundException(FavoriteNotFoundException e) {
+        return ResponseEntity.badRequest().body(ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getMessage()));
+    }
+
+    @ExceptionHandler(FavoriteAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleFavoriteAlreadyExistsException(FavoriteAlreadyExistsException e) {
         return ResponseEntity.badRequest().body(ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getMessage()));
     }
 
