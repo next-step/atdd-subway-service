@@ -27,6 +27,7 @@ public class PageController {
         public static final String STATION = "/stations";
         public static final String SECTION = "/sections";
         public static final String PATH = "/path";
+        public static final String MEMBERS = "/members";
 
         private URIMapping() {}
     }
