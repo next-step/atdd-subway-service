@@ -41,7 +41,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         삼성역 = 지하철역_등록되어_있음("삼성역").as(StationResponse.class);
         강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
         // And 지하철 노선 등록되어 있음
-        LineResponse lineResponse = 지하철_노선_등록되어_있음("이호선", "green", 잠실역, 삼성역, 10);
+        LineResponse lineResponse = 지하철_노선_등록되어_있음("이호선", "green", 잠실역, 삼성역, 10, 800);
         // And 지하철 노선에 지하철역 등록되어 있음
         지하철_노선에_지하철역_등록되어_있음(lineResponse, 삼성역, 강남역, 3);
         // And 회원 등록되어 있음

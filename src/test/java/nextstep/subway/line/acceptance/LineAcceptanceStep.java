@@ -23,8 +23,8 @@ public class LineAcceptanceStep {
         return 지하철_노선_생성_요청(params);
     }
 
-    public static LineResponse 지하철_노선_등록되어_있음(String lineName, String lineColor, StationResponse upStation, StationResponse downStation, int distance) {
-        LineRequest params = new LineRequest(lineName, lineColor, upStation.getId(), downStation.getId(), distance);
+    public static LineResponse 지하철_노선_등록되어_있음(String lineName, String lineColor, StationResponse upStation, StationResponse downStation, int distance, int charge) {
+        LineRequest params = new LineRequest(lineName, lineColor, upStation.getId(), downStation.getId(), distance, charge);
         return 지하철_노선_생성_요청(params).as(LineResponse.class);
     }
 
