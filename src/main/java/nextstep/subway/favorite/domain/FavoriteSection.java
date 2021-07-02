@@ -34,4 +34,16 @@ public class FavoriteSection {
     public void setMember(Member member) {
         this.member = member;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Station getSourceStation() {
+        return sourceStation;
+    }
+
+    public Station getTargetStation() {
+        return targetStation;
+    }
 }

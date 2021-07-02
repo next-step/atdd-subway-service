@@ -39,19 +39,41 @@ public class FavoriteServiceTest {
     @BeforeEach
     public void setUp() {
         favoriteService = new FavoriteService(memberRepository, stationRepository);
+
+        // given
+        // 회원과 역이 등록되어 있음
+        when(memberRepository.findById(any())).thenReturn(Optional.ofNullable(new Member(EMAIL, PASSWORD, AGE)));
+        when(stationRepository.findById(1L)).thenReturn(Optional.ofNullable(new Station("강남역")));
+        when(stationRepository.findById(2L)).thenReturn(Optional.ofNullable(new Station("교대역")));
     }
 
     @Test
     public void 즐겨찾기_생성_요청() {
         // when
-        // 즐겨찾기 생성
-        when(memberRepository.findById(any())).thenReturn(Optional.ofNullable(new Member(EMAIL, PASSWORD, AGE)));
-        when(stationRepository.findById(1L)).thenReturn(Optional.ofNullable(new Station("강남역")));
-        when(stationRepository.findById(2L)).thenReturn(Optional.ofNullable(new Station("교대역")));
-
-        // then
         // 즐겨찾기 생성이 됨
         FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
-        favoriteService.addFavoriteSection(new LoginMember(1L, EMAIL,AGE), favoriteRequest);
+        favoriteService.addFavoriteSection(new LoginMember(1L, EMAIL, AGE), favoriteRequest);
+
+        // then
+        // 즐겨찾기 저장 됨
+        List<FavoriteResponse> favoriteResponses = favoriteService.findFavoriteSection(new LoginMember(1L, EMAIL, AGE));
+        assertThat(favoriteResponses.size()).isNotZero();
+    }
+
+    @Test
+    public void 즐겨찾기_조회_요청() {
+        // when
+        // 즐겨찾기 생성이 됨
+        FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
+        favoriteService.addFavoriteSection(new LoginMember(1L, EMAIL, AGE), favoriteRequest);
+
+        // when
+        // 즐겨찾기 조회 요청
+        List<FavoriteResponse> favoriteResponses = favoriteService.findFavoriteSection(new LoginMember(1L, EMAIL, AGE));
+
+        // then
+        // 즐겨찾기 조회 됨
+        assertThat(favoriteResponses.get(0).getSource().getName()).isEqualTo("강남역");
+        assertThat(favoriteResponses.get(0).getTarget().getName()).isEqualTo("교대역");
     }
 }
