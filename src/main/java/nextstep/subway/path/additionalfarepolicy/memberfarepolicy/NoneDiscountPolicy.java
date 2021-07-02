@@ -7,4 +7,9 @@ public class NoneDiscountPolicy implements MemberDiscountPolicy {
     public Fare applyDiscount(Fare fare) {
         return fare;
     }
+
+    @Override
+    public boolean isAvailable(int age) {
+        return true;
+    }
 }

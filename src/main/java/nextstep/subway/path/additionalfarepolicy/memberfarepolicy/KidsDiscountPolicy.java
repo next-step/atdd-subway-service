@@ -13,7 +13,8 @@ public class KidsDiscountPolicy implements MemberDiscountPolicy {
         return fare.sub(DEFAULT_DISCOUNT_FARE).sub(discount(fare));
     }
 
-    public static boolean isAvailable(int age) {
+    @Override
+    public boolean isAvailable(int age) {
         return MIN_AGE <= age && age < MAX_AGE;
     }
 
