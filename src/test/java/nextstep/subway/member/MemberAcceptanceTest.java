@@ -136,7 +136,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(responseEmail).isEqualTo(EMAIL);
     }
 
-    private ExtractableResponse<Response> 나의_정보를_요청(String tokenMine) {
+    public static ExtractableResponse<Response> 나의_정보를_요청(String tokenMine) {
         return RestAssured.given().log().all()
                 .auth().oauth2(tokenMine)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -149,7 +149,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(responseForToken.jsonPath().getString("accessToken")).isNotBlank();
     }
 
-    private ExtractableResponse<Response> 토큰_발급을_요청(String email, String password) {
+    public static ExtractableResponse<Response> 토큰_발급을_요청(String email, String password) {
         TokenRequest tokenRequest = new TokenRequest(email, password);
 
         return RestAssured.given().log().all()
