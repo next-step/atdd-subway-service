@@ -57,8 +57,11 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ## 요구사항 
 *[x] LineSectionAcceptanceTest 리팩터링
 *[x] LineService 리팩터링
-*[ ] 최단 경로 조회 인수 테스트 만들기
-*[ ] 최단 경로 조회 기능 구현하기
+*[x] 최단 경로 조회 인수 테스트 만들기
+*[x] 최단 경로 조회 기능 구현하기
+*[ ] 토큰 발급 기능(로그인) 인수 테스트 만들기
+*[ ] 인증 - 내 정보 조회 기능 완성하기
+*[ ] 인증 - 즐겨찾기 기능 완성하기
 
 
 ## 작업 목록
@@ -99,18 +102,72 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 * When 존재하지 않은 도착역으로 최단 경로 조회를 요청한다.
 * Then 지하철 노선의 최단 경로가 조회가 실패한다.
 
+### Feature: 로그인 기능
+#### Scenario: 로그인을 시도한다.
+* Given 회원 등록되어 있음
+* When 로그인 요청
+* Then 로그인이 성공한다.
+
+#### Scenario: 등록되지 않은 이메일로 로그인을 시도한다.
+* When 등록되지 않은 이메일로 로그인 요청
+* Then 로그인이 실패한다. ( 토큰 발급 실패 )
+
+#### Scenario: 등록되지 않은 패스워드로 로그인을 시도한다.
+* Given 회원 등록되어 있음
+* When 등록되지 않은 패스워드로 로그인 요청
+* Then 로그인이 실패한다. ( 토큰 발급 실패 )
+
+#### Scenario: 유효하지 않은 토큰으로 정보 조회 
+* Given 회원 등록되어 있음 ( 토큰 발급 )
+* When 유효하지 않은 토큰으로 내 정보 조회 요청
+* Then 조회가 실패한다.
+
+### Feature: 내 정보 관리 기능 관련 전체 인수 테스트
+#### Scenario: 내 정보를 관리 한다.
+* Given 회원 등록되어 있음
+* When 로그인 요청
+* Then 로그인 성공
+* When 내 정보 조회 요청
+* Then 내 정보 조회 성공
+* When 내 정보 업데이트 요청
+* Then 내 정보 업데이트 성공
+* When 내 정보 삭제 요청
+* Then 내 정보 삭제 성공
+* When 로그인 요청
+* Then 로그인 실패
+
+### Feature: 즐겨찾기를 관리한다.
+#### Background
+* Given 지하철역 등록되어 있음
+* And 지하철 노선 등록되어 있음
+* And 지하철 노선에 지하철역 등록되어 있음
+* And 회원 등록되어 있음
+* And 로그인 되어있음
+
+#### Scenario: 즐겨찾기를 관리
+* When 즐겨찾기 생성을 요청
+* Then 즐겨찾기 생성됨
+* When 즐겨찾기 목록 조회 요청
+* Then 즐겨찾기 목록 조회됨
+* When 즐겨찾기 삭제 요청
+* Then 즐겨찾기 삭제됨
+
 
 ## 기능 목록
 1. 등록된 지하철 노선에서 최단 경로 찾는 기능
-
+2. 토큰 기반으로 로그인 멤버를 가져오는 기능
+3. 즐겨찾기 추가 기능
+4. 즐겨찾기 조회 기능
+5. 즐겨찾기 삭제 기능
 
 ## API 명세
 
+#### 최단 거리 조회
 * GET /paths 
   * Request
     1. long "source" // 출발역
     2. long "target" // 도착역
-    <br>
+    <br><br>
   * Response
     ```json
     {
@@ -130,3 +187,50 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
       "distance": 10
     }
     ```
+    
+<br><br>
+
+#### 즐겨찾기 추가
+* POST /favorites
+    * Header: "authorization"
+    * Request
+        * long "source" // 출발역
+        * long "target" // 도착역
+      <br><br>
+    * Response
+      * HTTP/1.1 201 Created
+<br><br>
+
+#### 즐겨찾기 조회
+* GET /favorites
+    * Header: "authorization"
+    * Response
+        ```json
+        [
+            {
+                "id": 1,
+                "source": {
+                    "id": 1,
+                    "name": "강남역",
+                    "createdDate": "2020-12-27T13:32:26.364439",
+                    "modifiedDate": "2020-12-27T13:32:26.364439"
+                },
+                "target": {
+                    "id": 3,
+                    "name": "정자역",
+                    "createdDate": "2020-12-27T13:32:26.486256",
+                    "modifiedDate": "2020-12-27T13:32:26.486256"
+                }
+            }
+        ]
+        ```
+    
+<br><br>
+
+#### 즐겨찾기 삭제
+* DELETE /favorites/{favoriteId}
+    * Header: "authorization"
+    * Response
+        * HTTP/1.1 204 No Content
+
+    

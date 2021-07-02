@@ -39,5 +39,9 @@ public class JwtTokenProvider {
             return false;
         }
     }
+
+    public boolean invalidToken(final String token) {
+        return validateToken(token) == false;
+    }
 }
 

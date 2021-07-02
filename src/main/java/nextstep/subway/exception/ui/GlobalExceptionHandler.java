@@ -1,5 +1,6 @@
 package nextstep.subway.exception.ui;
 
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.exception.CustomException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     private final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<Void> handleAuthorizationException(AuthorizationException e) {
+    	log.error(e.getMessage(), e);
+    	return ResponseEntity.badRequest().build();
+    }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Void> handleIllegalArgsException(DataIntegrityViolationException e) {
