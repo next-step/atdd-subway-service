@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -10,6 +11,19 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ShortestPathFinderTest {
+	@Test
+	@DisplayName("")
+	void name() {
+
+	}
+
+
+	@Test
+	@DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우 익셉션 발생")
+	void findPathValidationTest() {
+	}
+
+
 	@Test
 	void getShortestPath() {
 		WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);

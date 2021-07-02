@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PathFinder {
-	public PathResponse find() {
+	public PathResponse find(Long sourceStationId, Long targetStationId) {
 
 		return null;
 	}
