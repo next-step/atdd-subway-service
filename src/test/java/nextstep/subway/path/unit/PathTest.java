@@ -34,23 +34,26 @@ public class PathTest {
 		신분당선 = new Line("신분당선", "red", 강남역, 양재역, 10);
 		이호선 = new Line("이호선", "blue", 교대역, 강남역, 10);
 		삼호선 = new Line("삼호선", "black", 교대역, 양재역, 5);
-
 		삼호선.addSection(교대역, 남부터미널역, 3);
 	}
 
 	@DisplayName("짧은 경로에 속한 역 목록")
 	@Test
 	void getShortestStations() {
-		Path path = new Path(Arrays.asList(신분당선, 이호선, 삼호선));
-
-		assertThat(path.getShortestStations(교대역, 양재역)).extracting("name").containsExactly("교대역", "남부터미널역", "양재역");
+		Path path = new Path(Arrays.asList(신분당선, 이호선, 삼호선), 교대역, 양재역);
+		assertThat(path.getShortestStations()).extracting("name").containsExactly("교대역", "남부터미널역", "양재역");
 	}
 
 	@DisplayName("짧은 경로의 길이")
 	@Test
 	void getShortestDistance() {
-		Path path = new Path(Arrays.asList(신분당선, 이호선, 삼호선));
+		Path path = new Path(Arrays.asList(신분당선, 이호선, 삼호선), 교대역, 양재역);
+		assertThat(path.getShortestDistance()).isEqualTo(5);
+	}
 
-		assertThat(path.getShortestDistance(교대역, 양재역)).isEqualTo(5);
+	@DisplayName("예외사항 - 시작역과 종료역이 같은 경우")
+	@Test
+	void 시작역과_종료역이_같은_경우() {
+		assertThatIllegalArgumentException().isThrownBy(() -> new Path(Arrays.asList(신분당선, 이호선, 삼호선), 교대역, 교대역)).withMessage("시작역과 종료역이 같습니다.");
 	}
 }

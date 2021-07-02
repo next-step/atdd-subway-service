@@ -35,13 +35,13 @@ public class PathService {
 	}
 
 	private PathResponse dijkstraShortestPath(List<Line> lines, Station sourceStation, Station targetStation) {
-		Path path = new Path(lines);
+		Path path = new Path(lines, sourceStation, targetStation);
 
-		List<StationResponse> stationResponses = path.getShortestStations(sourceStation, targetStation).stream()
+		List<StationResponse> stationResponses = path.getShortestStations().stream()
 			.map(StationResponse::of)
 			.collect(Collectors.toList());
 
-		int shortestDistance = path.getShortestDistance(sourceStation, targetStation);
+		int shortestDistance = path.getShortestDistance();
 
 		return PathResponse.of(stationResponses, shortestDistance);
 	}
