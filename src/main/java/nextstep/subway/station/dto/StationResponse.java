@@ -21,6 +21,9 @@ public class StationResponse {
                 .collect(Collectors.toList());
     }
 
+    public StationResponse() {
+    }
+
     public StationResponse(Long id, String name, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.name = name;

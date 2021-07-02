@@ -22,6 +22,6 @@ public class PathController {
 			@RequestParam(name = "source") Long sourceStationId,
 			@RequestParam(name = "target") Long targetStationId
 	) {
-		return ResponseEntity.ok(pathFinder.find(sourceStationId, targetStationId));
+		return ResponseEntity.ok(pathFinder.findPath(sourceStationId, targetStationId));
 	}
 }
