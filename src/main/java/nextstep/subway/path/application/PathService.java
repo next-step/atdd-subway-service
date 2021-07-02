@@ -1,7 +1,9 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
+import nextstep.subway.path.domain.FarePolicyService;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
@@ -23,7 +25,7 @@ public class PathService {
         this.sectionRepository = sectionRepository;
     }
 
-    public PathResponse findPath(long sourceId, long targetId) {
+    public PathResponse findPath(LoginMember loginMember, long sourceId, long targetId) {
         Station sourceStation = stationRepository.findById(sourceId)
                 .orElseThrow(IllegalArgumentException::new);
         Station targetStation = stationRepository.findById(targetId)
@@ -34,6 +36,11 @@ public class PathService {
 
         PathFinder pathFinder = PathFinder.of(stations, sections);
         Path path = pathFinder.getShortestPath(sourceStation, targetStation);
-        return new PathResponse(path.getStations(), path.getDistance());
+        //TODO
+        //노선별 추가 요금 정책
+        //연령별 할인 요금 정책
+        double fare = FarePolicyService.calculateFare(loginMember, sections, path);
+
+        return new PathResponse(path.getStations(), path.getDistance(), fare);
     }
 }
