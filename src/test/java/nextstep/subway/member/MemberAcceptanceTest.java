@@ -11,9 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import static nextstep.subway.PageController.URIMapping.MEMBERS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
+@DisplayName("회원 정보를 관리한다.")
 public class MemberAcceptanceTest extends AcceptanceTest {
-    public static final RestAssuredTemplate restAssuredTemplate  = new RestAssuredTemplate(MEMBERS);
+    public static final RestAssuredTemplate restAssuredTemplate = new RestAssuredTemplate(MEMBERS);
 
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
@@ -22,36 +24,56 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
 
-    @DisplayName("회원 정보를 관리한다.")
+    @DisplayName("회원 정보를 생성한다.")
     @Test
-    void manageMember() {
+    void createMember() {
         // when
         ExtractableResponse<Response> createResponse = requestCreateMember(EMAIL, PASSWORD, AGE);
-        long 회원_ID = RestAssuredTemplate.getLocationId(createResponse);
 
         // then
         회원_생성됨(createResponse);
 
         // when
+        long 회원_ID = RestAssuredTemplate.getLocationId(createResponse);
         ExtractableResponse<Response> findResponse = requestFindMember(회원_ID);
-        // then
-        회원_정보_조회됨(findResponse, EMAIL, AGE);
 
-        // when
-        ExtractableResponse<Response> updateResponse = requestUpdateMemberInfo(회원_ID, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
         // then
-        회원_정보_수정됨(updateResponse);
-
-        // when
-        ExtractableResponse<Response> deleteResponse = requestDeleteMember(회원_ID);
-        // then
-        회원_삭제됨(deleteResponse);
+        MemberResponse memberResponse = findResponse.as(MemberResponse.class);
+        assertAll(
+                () -> assertThat(memberResponse.getId()).isNotNull(),
+                () -> assertThat(memberResponse.getEmail()).isEqualTo(EMAIL),
+                () -> assertThat(memberResponse.getAge()).isEqualTo(AGE)
+        );
     }
 
-    @DisplayName("나의 정보를 관리한다.")
+    @DisplayName("회원 정보를 수정한다.")
     @Test
-    void manageMyInfo() {
+    void manageMember() {
+        // given
+        ExtractableResponse<Response> createResponse = requestCreateMember(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
 
+        // when
+        long 회원_ID = RestAssuredTemplate.getLocationId(createResponse);
+        ExtractableResponse<Response> updateResponse = requestUpdateMemberInfo(회원_ID, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+
+        // then
+        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @DisplayName("회원 정보를 삭제한다.")
+    @Test
+    void deleteMember() {
+        // given
+        ExtractableResponse<Response> createResponse = requestCreateMember(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        // when
+        long 회원_ID = RestAssuredTemplate.getLocationId(createResponse);
+        ExtractableResponse<Response> deleteResponse = requestDeleteMember(회원_ID);
+
+        // then
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     public static ExtractableResponse<Response> requestCreateMember(String email, String password, Integer age) {
@@ -76,20 +98,5 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
-        MemberResponse memberResponse = response.as(MemberResponse.class);
-        assertThat(memberResponse.getId()).isNotNull();
-        assertThat(memberResponse.getEmail()).isEqualTo(email);
-        assertThat(memberResponse.getAge()).isEqualTo(age);
-    }
-
-    public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 회원_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
