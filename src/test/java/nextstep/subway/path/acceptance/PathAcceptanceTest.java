@@ -1,6 +1,5 @@
 package nextstep.subway.path.acceptance;
 
-import nextstep.subway.line.domain.Section;
 import org.junit.jupiter.api.*;
 import org.springframework.http.HttpStatus;
 
@@ -21,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.fare.domain.Fare.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -99,7 +99,9 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .map(StationResponse::getName)
                 .collect(Collectors.toList());
         int 예상최단거리 = 60;
-        int 예상요금 = 1250 + (50 / 5) * 100; //거리별 추가요금만 반영
+        int 예상요금 = BASE_FARE +
+                (60 - 50) / DISTANCE_SECOND_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE +
+                (50 - 10) / DISTANCE_FIRST_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE; //거리별 추가요금만 반영
 
         최단_경로_조회_성공함(최단경로);
         최단_경로_지하철_목록_반환됨(최단경로, 예상최단경로_지하철역_이름);
