@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class FareOfDistancePolicyTest {
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "거리에 따른 요금 계산, distance={0}, expectedTotalFare={1}")
     @MethodSource
     void calculateTest(int distance, int expectedTotalFare) {
         // when

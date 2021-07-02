@@ -1,13 +1,13 @@
 package nextstep.subway.path.domain.fare;
 
-import nextstep.subway.path.common.FareOfDistanceUtils;
+import nextstep.subway.path.domain.common.FareCalculateUtils;
 
 public class FirstAdditionalFareCalculator implements FareCalculator {
 
     private static final int MIN_DISTANCE = 10;
     private static final int MAX_DISTANCE = 50;
     private static final int INTERVAL_OF_DISTANCE = 5;
-    private static final int INTERVAL_RATE = 100;
+    private static final int INTERVAL_FARE = 100;
 
     @Override
     public int calculate(int distance) {
@@ -17,7 +17,7 @@ public class FirstAdditionalFareCalculator implements FareCalculator {
         }
         targetDistance = targetDistance - MIN_DISTANCE;
         if (targetDistance > 0) {
-            return FareOfDistanceUtils.getIntervalRateOfDistance(targetDistance, INTERVAL_OF_DISTANCE, INTERVAL_RATE);
+            return FareCalculateUtils.getTotalFareOfDistance(targetDistance, INTERVAL_OF_DISTANCE, INTERVAL_FARE);
         }
         return 0;
     }
