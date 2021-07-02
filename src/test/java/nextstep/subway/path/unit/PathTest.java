@@ -24,14 +24,12 @@ public class PathTest {
 	private Station 교대역;
 	private Station 남부터미널역;
 
-
-
 	@BeforeEach
 	void setUp() {
 		강남역 = new Station("강남역");
 		양재역 = new Station("양재역");
 		교대역 = new Station("교대역");
-		남부터미널역 = new Station("남부터미역");
+		남부터미널역 = new Station("남부터미널역");
 
 		신분당선 = new Line("신분당선", "red", 강남역, 양재역, 10);
 		이호선 = new Line("이호선", "blue", 교대역, 강남역, 10);
@@ -40,11 +38,19 @@ public class PathTest {
 		삼호선.addSection(교대역, 남부터미널역, 3);
 	}
 
-	@DisplayName("겹치지 않는 역 목록 반환")
+	@DisplayName("짧은 경로에 속한 역 목록")
 	@Test
-	void getNodes() {
+	void getShortestStations() {
 		Path path = new Path(Arrays.asList(신분당선, 이호선, 삼호선));
-		assertThat(path.getNodes()).contains(강남역, 양재역, 교대역, 남부터미널역).hasSize(4);
+
+		assertThat(path.getShortestStations(교대역, 양재역)).extracting("name").containsExactly("교대역", "남부터미널역", "양재역");
 	}
 
+	@DisplayName("짧은 경로의 길이")
+	@Test
+	void getShortestDistance() {
+		Path path = new Path(Arrays.asList(신분당선, 이호선, 삼호선));
+
+		assertThat(path.getShortestDistance(교대역, 양재역)).isEqualTo(5);
+	}
 }
