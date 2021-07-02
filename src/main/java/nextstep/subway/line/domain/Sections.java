@@ -13,24 +13,61 @@ import java.util.Optional;
 @Embeddable
 public class Sections {
 
+    public static final int MINIMUM_REMOVAL_SIZE = 1;
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
     public Sections() {
     }
 
+    void removeByStation(Station station, Line line) {
+        Optional<Section> upLineStation = findSectionByUpStation(station);
+        Optional<Section> downLineStation = findSectionByDownStation(station);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Section downSection = downLineStation.get();
+            Section upSection = upLineStation.get();
+
+            Station newUpStation = downSection.getUpStation();
+            Station newDownStation = upSection.getDownStation();
+
+            int newDistance = upSection.addDistance(downSection);
+
+            add(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(this::remove);
+        downLineStation.ifPresent(this::remove);
+    }
+
+    Optional<Section> findSectionByUpStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+    }
+
+    Optional<Section> findSectionByDownStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+    }
+
     public void add(Section section) {
         sections.add(section);
     }
 
-    public void updateUpToDownStationWhenExist(SectionRequest request, Station upStation, Station downStation) {
+    void remove(Section section) {
+        sections.remove(section);
+    }
+
+    void updateUpToDownStationWhenExist(SectionRequest request, Station upStation, Station downStation) {
         sections.stream()
                 .filter(it -> it.getUpStation() == upStation)
                 .findFirst()
                 .ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
     }
 
-    public void updateDownToUpStationWhenExist(SectionRequest request, Station upStation, Station downStation) {
+    void updateDownToUpStationWhenExist(SectionRequest request, Station upStation, Station downStation) {
         sections.stream()
                 .filter(it -> it.getDownStation() == downStation)
                 .findFirst()
@@ -38,20 +75,27 @@ public class Sections {
     }
 
 
-    public Optional<Section> findNextSectionByUpStation(Station finalDownStation) {
+    Optional<Section> findNextSectionByUpStation(Station finalDownStation) {
         return sections.stream()
                 .filter(it -> it.getUpStation().equals(finalDownStation))
                 .findFirst();
     }
 
-    public Optional<Section> findNextSectionByDownStation(Station finalDownStation) {
+    Optional<Section> findNextSectionByDownStation(Station finalDownStation) {
         return sections.stream()
                 .filter(it -> it.getDownStation().equals(finalDownStation))
                 .findFirst();
     }
 
-    public Station getFirstUpStation() {
+    Station getFirstUpStation() {
         return sections.get(0).getUpStation();
+    }
+
+
+    void validateRemovalSectionsSize() {
+        if (sections.size() <= MINIMUM_REMOVAL_SIZE) {
+            throw new RuntimeException();
+        }
     }
 
     public List<Section> getSections() {

@@ -1,6 +1,8 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.exception.DuplicateSectionException;
+import nextstep.subway.exception.NotMatchStationException;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
@@ -77,7 +79,7 @@ public class Line extends BaseEntity {
         if (!stations.isEmpty()
                 && haveStation(upStation, stations)
                 && haveStation(downStation, stations)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new NotMatchStationException();
         }
     }
 
@@ -87,7 +89,7 @@ public class Line extends BaseEntity {
 
     private void validateDuplicateStations(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new DuplicateSectionException();
         }
     }
 
@@ -143,6 +145,11 @@ public class Line extends BaseEntity {
         }
 
         return firstUpStation;
+    }
+
+    public void validateAndRemoveByStation(Station station) {
+        sections.validateRemovalSectionsSize();
+        sections.removeByStation(station, this);
     }
 
     public void addSection(Section section) {

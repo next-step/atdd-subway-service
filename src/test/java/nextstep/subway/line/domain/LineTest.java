@@ -31,7 +31,6 @@ class LineTest {
     void extractStations_test() {
         Station 왕십리역 = new Station(2L, "왕십리역");
         Line 첫번째_라인 = new Line("2호선", "red", 강남역, 왕십리역, 10);
-
         Station 청량리역 = new Station(2L, "청량리역");
         첫번째_라인.addSection(new Section(첫번째_라인, 왕십리역, 청량리역, 15));
 
@@ -49,7 +48,6 @@ class LineTest {
     void extractStationToResponse_test() {
         Station 왕십리역 = new Station(2L, "왕십리역");
         Line 첫번째_라인 = new Line("2호선", "red", 강남역, 왕십리역, 10);
-
         Station 청량리역 = new Station(2L, "청량리역");
         첫번째_라인.addSection(new Section(첫번째_라인, 왕십리역, 청량리역, 15));
 
@@ -62,13 +60,11 @@ class LineTest {
         );
     }
 
-
     @Test
     @DisplayName("구간 추가 시 상행,하행 모두 일치하는 역이 없는 경우 예외처리한다.")
     void validateNonMatchStations_test() {
         //given
         Line 첫번째_라인 = new Line("2호선", "green", 강남역, 잠실역, 25);
-
         Station 영등포구청 = new Station(3L, "영등포구청");
         Station 대림역 = new Station(4L, "대림역");
 
@@ -95,15 +91,13 @@ class LineTest {
     void updatedUpToDownStation_test() {
         //given
         Line 첫번째_라인 = new Line("2호선", "green", 강남역, 잠실역, 25);
-
         Station 삼성역 = new Station(1L, "삼성역");
 
         //when
         첫번째_라인.validateAndAddSection(request, 강남역, 삼성역);
 
-        Section section = 첫번째_라인.getSections().get(0);
-
         //then
+        Section section = 첫번째_라인.getSections().get(0);
         assertAll(
                 () -> assertThat(section.getUpStation()).isEqualTo(삼성역),
                 () -> assertThat(section.getDistance()).isEqualTo(15)
@@ -115,18 +109,61 @@ class LineTest {
     void updatedDownToUpStation_test() {
         //given
         Line 첫번째_라인 = new Line("2호선", "green", 강남역, 잠실역, 25);
-
         Station 삼성역 = new Station(1L, "삼성역");
 
         //when
         첫번째_라인.validateAndAddSection(request, 삼성역, 잠실역);
 
-        Section section = 첫번째_라인.getSections().get(0);
-
         //then
+        Section section = 첫번째_라인.getSections().get(0);
         assertAll(
                 () -> assertThat(section.getDownStation()).isEqualTo(삼성역),
                 () -> assertThat(section.getDistance()).isEqualTo(15)
+        );
+    }
+
+    @Test
+    @DisplayName("역에 해당하는 구간을 제거한다.")
+    void removeByUpStation_test() {
+        //given
+        Line 첫번째_라인 = new Line("2호선", "green", 강남역, 잠실역, 25);
+        Station 삼성역 = new Station(1L, "삼성역");
+        첫번째_라인.validateAndAddSection(request, 강남역, 삼성역);
+
+        //when
+        첫번째_라인.validateAndRemoveByStation(강남역);
+
+        //then
+        List<Section> sections = 첫번째_라인.getSections();
+        assertThat(sections.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("역에 해당하는 구간을 제거한다.")
+    void removeByDownStation_test() {
+        //given
+        Line 첫번째_라인 = new Line("2호선", "green", 강남역, 잠실역, 25);
+        Station 삼성역 = new Station(1L, "삼성역");
+        첫번째_라인.validateAndAddSection(request, 강남역, 삼성역);
+
+        //when
+        첫번째_라인.validateAndRemoveByStation(잠실역);
+
+        //then
+        List<Section> sections = 첫번째_라인.getSections();
+        assertThat(sections.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("역에 존재하는 구간이 1개이하인 경우 예외처리한다.")
+    void validateRemovalSectionsSize_test() {
+        //given
+        Line 첫번째_라인 = new Line("2호선", "green", 강남역, 잠실역, 25);
+
+        //when
+        assertThrows(RuntimeException.class,
+                () -> 첫번째_라인.validateAndRemoveByStation(잠실역)
+
         );
     }
 }

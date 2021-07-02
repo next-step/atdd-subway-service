@@ -34,6 +34,10 @@ public class Section {
         this.distance = distance;
     }
 
+    int addDistance(Section section) {
+        return distance + section.getDistance();
+    }
+
     public Long getId() {
         return id;
     }
