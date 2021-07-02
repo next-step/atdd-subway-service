@@ -1,10 +1,12 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -48,17 +50,43 @@ class SectionsTest {
 
     @Test
     void add_성공_케이스1() {
+        // given
+        Stations stations = new Stations(asList(영등포구청역, 신길역));
+
         // when
-        assertDoesNotThrow(() -> sections.add(구간_영등포구청역_신길역));
+        sections.add(구간_영등포구청역_신길역);
+
+        // then
         assertThat(sections.size()).isEqualTo(1);
+        assertThat(sections.toStations()).isEqualTo(stations);
     }
 
     @Test
     void add_성공_케이스2() {
+        // given
+        Stations stations = new Stations(asList(양평역, 영등포구청역, 영등포시장역, 신길역));
+
         // when
-        assertDoesNotThrow(() -> sections.add(구간_영등포구청역_신길역));
-        assertDoesNotThrow(() -> sections.add(구간_영등포구청역_영등포시장역));
-        assertDoesNotThrow(() -> sections.add(구간_양평역_영등포구청역));
+        sections.add(구간_영등포구청역_신길역);
+        sections.add(구간_영등포구청역_영등포시장역);
+        sections.add(구간_양평역_영등포구청역);
+
+        // then
+        assertThat(sections.size()).isEqualTo(3);
+        assertThat(sections.toStations()).isEqualTo(stations);
+    }
+
+    @Test
+    void toStations_성공() {
+        // given
+        Stations stations = new Stations();
+
+        // when
+        sections.add(구간_영등포구청역_신길역);
+        sections.add(구간_영등포구청역_영등포시장역);
+        sections.add(구간_양평역_영등포구청역);
+
+        // then
         assertThat(sections.size()).isEqualTo(3);
     }
 }

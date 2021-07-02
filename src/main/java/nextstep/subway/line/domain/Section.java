@@ -74,6 +74,36 @@ public class Section {
         this.distance = this.distance.minus(newDistance);
     }
 
+    public boolean isIncludeStation(Station station) {
+        return this.upStation.equals(station) || this.downStation.equals(station);
+    }
+
+    public void connectSectionBetween(Section section) {
+        replaceUpStationIfSameUpStation(section);
+        replaceDownStationIfSameDownStation(section);
+        this.distance = this.distance.minus(section.distance);
+    }
+
+    public boolean isSameStationWithUpStation(Station station) {
+        return this.upStation.equals(station);
+    }
+
+    public boolean isSameStationWithDownStation(Station station) {
+        return this.downStation.equals(station);
+    }
+
+    private void replaceUpStationIfSameUpStation(Section section) {
+        if (this.upStation.equals(section.getUpStation())) {
+            this.upStation = section.getDownStation();
+        }
+    }
+
+    private void replaceDownStationIfSameDownStation(Section section) {
+        if (this.downStation.equals(section.getDownStation())) {
+            this.downStation = section.getUpStation();
+        }
+    }
+
     private void validateLessDistance(Distance newDistance) {
         if(this.distance.isLessThan(newDistance)){
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
