@@ -8,7 +8,7 @@ import java.util.List;
 
 public class PathResponse {
     private int distance;
-    private int totalFare;
+    private int fare;
     private List<Station> stations;
 
     public PathResponse() {
@@ -18,15 +18,15 @@ public class PathResponse {
     public PathResponse(final Paths paths, final LoginMember loginMember) {
         this.distance = paths.getTotalDistance();
         this.stations = paths.getShortestStationRoutes();
-        this.totalFare = paths.calculateFare(loginMember);
+        this.fare = paths.calculateFare(loginMember);
     }
 
     public int getDistance() {
         return distance;
     }
 
-    public int getTotalFare() {
-        return totalFare;
+    public int getFare() {
+        return fare;
     }
 
     public List<Station> getStations() {

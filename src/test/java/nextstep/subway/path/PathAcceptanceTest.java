@@ -148,6 +148,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선_최단_경로에_이용_요금을_확인한다(ExtractableResponse<Response> response, int expectFare) {
         PathResponse pathResponse = response.as(PathResponse.class);
-        assertThat(pathResponse.getTotalFare()).isEqualTo(expectFare);
+        assertThat(pathResponse.getFare()).isEqualTo(expectFare);
     }
 }
