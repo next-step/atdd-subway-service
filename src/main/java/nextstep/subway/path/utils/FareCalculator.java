@@ -30,7 +30,6 @@ public class FareCalculator {
     }
 
     private static int calculateOverFare(double distance) {
-        PayZone payZone = PayZone.of(distance);
-        return payZone.totalPoint(distance) * DISTANCE_FARE;
+        return PayZone.totalPoint(distance) * DISTANCE_FARE;
     }
 }
