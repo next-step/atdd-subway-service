@@ -2,9 +2,11 @@
 ## 요구사항
 
 ## 요구사항
-- [ ] LineSectionAcceptanceTest 리팩터링
+- [x] LineSectionAcceptanceTest 리팩터링
 - [ ] LineService 리팩터링
 
 ## 기능 구현 목록
-- [ ] LineSectionAcceptanceTest 리팩터링
-  - [ ] TestFactory 사용
+- [x] LineSectionAcceptanceTest 리팩터링
+  - [x] TestFactory 사용
+    
+
