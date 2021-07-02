@@ -35,6 +35,16 @@ public final class RestAssuredTemplate {
                 .extract();
     }
 
+    public <T> ExtractableResponse<Response> get(final Map<String, T> queryMap) {
+        return RestAssured.given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .queryParams(queryMap)
+                .when()
+                .get(baseUrl)
+                .then().log().all()
+                .extract();
+    }
+
     public <T> ExtractableResponse<Response> post(final T body) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

@@ -169,7 +169,7 @@ public class Sections  {
                 .ifPresent(section -> section.updateDownStation(newSection));
     }
 
-    private List<Station> unSortedStations() {
+    protected List<Station> unSortedStations() {
         Set<Station> stationLink = new LinkedHashSet<>();
 
         for (Section section : sections) {

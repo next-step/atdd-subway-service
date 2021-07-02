@@ -12,7 +12,7 @@ public class PageController {
             STATION,
             LINE,
             SECTION,
-            "/path",
+            PATH,
             "/login",
             "/join",
             "/mypage",
@@ -26,8 +26,8 @@ public class PageController {
         public static final String LINE = "/lines";
         public static final String STATION = "/stations";
         public static final String SECTION = "/sections";
+        public static final String PATH = "/path";
 
-        private URIMapping() {
-        }
+        private URIMapping() {}
     }
 }
