@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.NotValidateRemovalSectionsSizeException;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.domain.Station;
 
@@ -32,7 +33,6 @@ public class Sections {
             Station newDownStation = upSection.getDownStation();
 
             int newDistance = upSection.addDistance(downSection);
-
             add(new Section(line, newUpStation, newDownStation, newDistance));
         }
 
@@ -94,7 +94,7 @@ public class Sections {
 
     void validateRemovalSectionsSize() {
         if (sections.size() <= MINIMUM_REMOVAL_SIZE) {
-            throw new RuntimeException();
+            throw new NotValidateRemovalSectionsSizeException();
         }
     }
 
