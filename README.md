@@ -12,6 +12,9 @@
 - [ ] LineService 리팩토링
   - [x] Service 내에 orElseThrow 메소드가 던지는 예외가 RuntimeException인 경우 EntityNotFound로 대체
   - [ ] getStations 도메인 추출 및 리팩토링
+    - [x] Line 도메인 내 sections를 1급 콜렉션으로 대체
+    - [ ] Line 도메인 내 getStations 메소드 구현
+    - [ ] getStations 메소드가 반환하는 List<Station>을 1급 콜렉션인 Stations 구현 및 대체
   - [ ] findUpStation 도메인 추출 및 리팩토링
   - [ ] SaveLine 리팩토링
     - [ ] ***도메인 추출*** LineRequest의 도메인 프로세스 전환 메소드 구현
