@@ -95,9 +95,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - [링크](https://jojoldu.tistory.com/137?category=635881) 참고
     * [X] `Path`/`PathResponse` 클래스에 `요금(fare)` 변수 추가 → `거리(distance)`에 따라 결정됨
         - `PathTest` 업데이트
-* [ ] 노선별 추가 요금 정책 추가
-    * [ ] `Line` 클래스에  `추가요금(ExtraCharge)` 변수 추가
-    * [ ] `PathFinder` 클래스에서 최단경로 구할 때,
+* [X] 노선별 추가 요금 정책 추가
+    * [X] `Line` 클래스에  `추가요금(ExtraCharge)` 변수 추가
+    * [X] `PathFinder` 클래스에서 최단경로 구할 때,
         * 거리에 따라 `요금`을 계산하고
         * 환승구간에 따라 `추가요금` 반영
             * 만약 여러 노선을 거친다면, 가장 큰 금액의 추가요금만을 더한다

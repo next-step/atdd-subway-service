@@ -45,15 +45,15 @@ class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 동작역;
 
     /*
-           (*출발*)종로3가역
-                    |
-                   (10) 
-                    |
-     시청역ㅡ(10)ㅡ을지로입구역ㅡㅡㅡ(100)ㅡㅡㅡ을지로3가역
-         |                                      |
-        (10)                                  (10)
-         |                                      |
-      서울역-(10)-회현역-(10)-명동역-(10)-(*도착*)충무로역
+           (*출발*)(삼호선)종로3가역
+                            |
+                           (10)
+                            |
+     (일,이호선)시청역ㅡ(10)ㅡ을지로입구역ㅡㅡㅡ(100)ㅡㅡㅡㅡㅡㅡ(이호선,삼호선)을지로3가역
+         |                                                               |
+        (10)                                                            (10)
+         |                                                               |
+      (일호선,사호선)서울역-(10)-회현역-(10)-명동역-(10)-(*도착*)(사호선, 삼호선)충무로역
 
                             교대역ㅡ(10)ㅡ강남역
     *
@@ -77,10 +77,10 @@ class PathAcceptanceTest extends AcceptanceTest {
         동작역 = 지하철역_등록되어_있음("동작역");
 
         //지하철 노선 등록되어 있음
-        일호선 = 지하철_노선_등록되어_있음("일호선", "남색", 시청역, 서울역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "초록색", 시청역, 을지로입구역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "주황색", 종로3가역, 을지로입구역, 10);
-        사호선 = 지하철_노선_등록되어_있음("사호선", "파란색", 서울역, 회현역, 10);
+        일호선 = 지하철_노선_등록되어_있음("일호선", "남색", 시청역, 서울역, 10, 100);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "초록색", 시청역, 을지로입구역, 10, 200);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "주황색", 종로3가역, 을지로입구역, 10, 300);
+        사호선 = 지하철_노선_등록되어_있음("사호선", "파란색", 서울역, 회현역, 10, 400);
 
         //지하철 노선에 지하철역 등록되어 있음
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 을지로입구역, 을지로3가역, 100);
@@ -101,7 +101,8 @@ class PathAcceptanceTest extends AcceptanceTest {
         int 예상최단거리 = 60;
         int 예상요금 = BASE_FARE +
                 (60 - 50) / DISTANCE_SECOND_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE +
-                (50 - 10) / DISTANCE_FIRST_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE; //거리별 추가요금만 반영
+                (50 - 10) / DISTANCE_FIRST_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE +
+                사호선.getExtraCharge();
 
         최단_경로_조회_성공함(최단경로);
         최단_경로_지하철_목록_반환됨(최단경로, 예상최단경로_지하철역_이름);
@@ -151,8 +152,9 @@ class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
-    private LineResponse 지하철_노선_등록되어_있음(String lineName, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        LineRequest lineRequest = new LineRequest(lineName, color, upStation.getId(), downStation.getId(), distance);
+    private LineResponse 지하철_노선_등록되어_있음(String lineName, String color, StationResponse upStation, StationResponse downStation,
+                                        int distance, int extraCharge) {
+        LineRequest lineRequest = new LineRequest(lineName, color, upStation.getId(), downStation.getId(), distance, extraCharge);
         return LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 

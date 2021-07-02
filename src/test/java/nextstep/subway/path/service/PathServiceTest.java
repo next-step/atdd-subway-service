@@ -34,8 +34,8 @@ class PathServiceTest {
     @InjectMocks
     private PathService pathService;
 
-    private Line 육호선 = new Line("6호선", "갈색");
-    private Line 삼호선 = new Line("3호선", "주황색");
+    private Line 육호선 = new Line("6호선", "갈색", 연신내역, 응암역, 5, 600);
+    private Line 삼호선 = new Line("3호선", "주황색", 연신내역, 불광역, 5, 300);
     private static final Long SOURCE_STATION_ID = 1L;
     private static final Long TARGET_STATION_ID = 2L;
 
@@ -56,8 +56,6 @@ class PathServiceTest {
 
         when(stationService.findStations(SOURCE_STATION_ID, TARGET_STATION_ID)).thenReturn(stations);
 
-        삼호선.addSection(new Section(삼호선, 연신내역, 불광역, 5));
-        육호선.addSection(new Section(육호선, 연신내역, 응암역, 5));
         육호선.addSection(new Section(육호선, 응암역, 불광역, 100));
 
         List<Line> lines = new ArrayList<>(Arrays.asList(삼호선, 육호선));
