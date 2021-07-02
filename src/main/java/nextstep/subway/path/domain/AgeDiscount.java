@@ -12,16 +12,16 @@ public enum AgeDiscount {
 
     private final int minAge;
     private final int maxAge;
-    private final DistanceFareStrategy distanceFareStrategy;
+    private final AgeDiscountStrategy ageDiscountStrategy;
 
-    AgeDiscount(int minAge, int maxAge, DistanceFareStrategy distanceFareStrategy) {
+    AgeDiscount(int minAge, int maxAge, AgeDiscountStrategy ageDiscountStrategy) {
         this.minAge = minAge;
         this.maxAge = maxAge;
-        this.distanceFareStrategy = distanceFareStrategy;
+        this.ageDiscountStrategy = ageDiscountStrategy;
     }
 
     public int discountFare(int fare) {
-        return distanceFareStrategy.calculateDistanceFare(fare);
+        return ageDiscountStrategy.discount(fare);
     }
 
     public static AgeDiscount findAgeDiscountByAge(int age){
