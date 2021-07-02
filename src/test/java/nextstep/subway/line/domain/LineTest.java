@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,8 +28,7 @@ class LineTest {
 
     @Test
     @DisplayName("Line에 존재하는 역들을 추출한다.")
-    void getStations_test() {
-        Station 강남역 = new Station(1L, "강남역");
+    void extractStations_test() {
         Station 왕십리역 = new Station(2L, "왕십리역");
         Line 첫번째_라인 = new Line("2호선", "red", 강남역, 왕십리역, 10);
 
@@ -43,6 +43,25 @@ class LineTest {
                 청량리역
         );
     }
+
+    @Test
+    @DisplayName("Line에 존재하는 역들을 StationResponse Dto 형태로 추출한다.")
+    void extractStationToResponse_test() {
+        Station 왕십리역 = new Station(2L, "왕십리역");
+        Line 첫번째_라인 = new Line("2호선", "red", 강남역, 왕십리역, 10);
+
+        Station 청량리역 = new Station(2L, "청량리역");
+        첫번째_라인.addSection(new Section(첫번째_라인, 왕십리역, 청량리역, 15));
+
+        List<StationResponse> stationResponses = 첫번째_라인.extractStationToResponse();
+
+        assertThat(stationResponses).containsExactly(
+                StationResponse.of(강남역),
+                StationResponse.of(왕십리역),
+                StationResponse.of(청량리역)
+        );
+    }
+
 
     @Test
     @DisplayName("구간 추가 시 상행,하행 모두 일치하는 역이 없는 경우 예외처리한다.")
