@@ -16,7 +16,7 @@ class LineTest {
     void setUp() {
         firstStation = new Station("1번역");
         secondStation = new Station("2번역");
-        line = new Line("1번노선","색깔", firstStation, secondStation,10);
+        line = new Line("1번노선", "색깔", firstStation, secondStation, 10, 0);
         thirdStation = new Station("3번역");
     }
 
@@ -27,13 +27,13 @@ class LineTest {
 
     @Test
     void addLineStation() {
-        line.addLineStation(secondStation, thirdStation,4);
+        line.addLineStation(secondStation, thirdStation, 4);
         assertThat(line.getStations().size()).isEqualTo(3);
     }
 
     @Test
     void removeLineStation() {
-        line.addLineStation(secondStation, thirdStation,4);
+        line.addLineStation(secondStation, thirdStation, 4);
         line.removeLineStation(firstStation);
         assertThat(line.getStations().size()).isEqualTo(2);
     }
