@@ -20,6 +20,10 @@ public class Path {
 			throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
 		}
 
+		if (lines.stream().flatMap(line -> line.getStations().stream()).distinct().noneMatch(station -> station.equals(source) && station.equals(target))) {
+			throw new IllegalArgumentException("출발역 또는 도착역이 존재하지 않습니다.");
+		}
+
 		addVertexes(lines);
 		addEdgeWeights(lines);
 

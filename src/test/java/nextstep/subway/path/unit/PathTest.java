@@ -70,4 +70,16 @@ public class PathTest {
 		Path path = new Path(Arrays.asList(A_Line, B_Line), A1, B2);
 		assertThatIllegalArgumentException().isThrownBy(() -> path.getShortestDistance()).withMessage("출발역과 도착역이 연결되어 있지 않습니다.");
 	}
+
+	@DisplayName("예외사항 - 존재하지 않은 출발역이나 도착역을 조회 할 경우")
+	@Test
+	void 존재하지_않은_출발역이나_도착역을_조회_할_경우() {
+		Station A1 = new Station("A1");
+		Station A2 = new Station("A2");
+
+		Station unregistered = new Station("unregistered");
+
+		Line A_Line = new Line("A", "white", A1, A2, 10);
+		assertThatIllegalArgumentException().isThrownBy(() -> new Path(Arrays.asList(A_Line), A1, unregistered)).withMessage("출발역 또는 도착역이 존재하지 않습니다.");
+	}
 }
