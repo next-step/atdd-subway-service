@@ -167,6 +167,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 6. 조건부 토큰 검사 기능
 7. 거리에 따른 이용 요금 계산 기능
 8. 연령에 따른 이용 요금 할인 계산 기능
+9. 각 노선별 추가요금 적용 기능
 
 ## API 명세
 
@@ -192,7 +193,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
           "createdAt": "2020-05-10T23:54:12.007"
         }
       ],
-      "distance": 10
+      "distance": 10,
+      "fare": 1250
     }
     ```
     
