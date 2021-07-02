@@ -1,4 +1,4 @@
-package nextstep.subway.path.service;
+package nextstep.subway.path.application;
 
 import nextstep.subway.component.PathFinder;
 import nextstep.subway.component.domain.SubwayPath;
@@ -32,14 +32,7 @@ public class PathsService {
         List<Line> lines = lineRepository.findAll();
         Optional<Station> sourceStation = stationRepository.findById(source);
         Optional<Station> targetStation = stationRepository.findById(target);
-        LocalDateTime now = LocalDateTime.now();
-
         SubwayPath subwayPath = pathFinder.shortestPath(lines, sourceStation, targetStation);
-        return new PathResponse(
-                Arrays.asList(
-                    new StationResponse(source, "광교역", now, now),
-                    new StationResponse(1L, "강남역", now, now),
-                    new StationResponse(target, "교대역", now, now)
-                ), 15);
+        return PathResponse.of(subwayPath);
     }
 }

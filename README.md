@@ -238,5 +238,5 @@ Connection: keep-alive
     * source 기준 지하철역 정보 조회 기능(StationRepository mock)
     * target 기준 지하철역 정보 조회 기능(StationRepository mock)
     * 노선, source, target 기준으로 경로 조회 기능(PathFinder mock)
-* [ ] inside Out 방식으로 경로 조회 TDD
+* [x] inside Out 방식으로 경로 조회 TDD
     * pathFinder component 구현

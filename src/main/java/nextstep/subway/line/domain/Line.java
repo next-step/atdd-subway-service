@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.common.BaseEntity;
+import nextstep.subway.component.domain.SectionWeightedEdge;
 import nextstep.subway.line.domain.wrappers.Sections;
 import nextstep.subway.station.domain.Station;
 
@@ -40,6 +41,11 @@ public class Line extends BaseEntity {
         sections.addSection(new Section(this, upStation, downStation, distance));
     }
 
+    public Line(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public void update(Line line) {
         this.name = line.name;
         this.color = line.color;
@@ -77,4 +83,5 @@ public class Line extends BaseEntity {
     public void removeSection(Station station) {
         sections.removeSection(station, this);
     }
+
 }

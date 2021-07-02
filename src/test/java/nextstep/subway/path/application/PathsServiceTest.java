@@ -1,9 +1,11 @@
-package nextstep.subway.path.service;
+package nextstep.subway.path.application;
 
 import nextstep.subway.component.PathFinder;
+import nextstep.subway.component.domain.SectionWeightedEdge;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.component.domain.SubwayPath;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -56,7 +58,11 @@ class PathsServiceTest {
         when(stationRepository.findById(target)).thenReturn(targetStation);
 
         // 노선, source, target 기준으로 경로 조회
-        SubwayPath subwayPath = new SubwayPath(Arrays.asList(광교역, 강남역, 교대역), 15);
+        List<SectionWeightedEdge> sectionWeightedEdges = Arrays.asList(
+                new SectionWeightedEdge(new Section(신분당선, 강남역, 광교역, 10), 신분당선.getId()),
+                new SectionWeightedEdge(new Section(삼호선, 교대역, 강남역, 5), 삼호선.getId())
+        );
+        SubwayPath subwayPath = new SubwayPath(sectionWeightedEdges, Arrays.asList(강남역, 광교역, 교대역));
         when(pathFinder.shortestPath(lines, sourceStation, targetStation)).thenReturn(subwayPath);
 
         // when
@@ -67,6 +73,6 @@ class PathsServiceTest {
         assertThat(pathResponse.getDistance()).isEqualTo(15);
         assertThat(pathResponse.getStations().size()).isEqualTo(3);
         List<Long> stationNames = pathResponse.getStations().stream().map(StationResponse::getId).collect(Collectors.toList());
-        assertThat(stationNames).containsExactly(광교역.getId(), 강남역.getId(), 교대역.getId());
+        assertThat(stationNames).containsExactly(강남역.getId(), 광교역.getId(), 교대역.getId());
     }
 }
