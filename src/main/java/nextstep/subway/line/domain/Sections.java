@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -21,6 +22,21 @@ public class Sections {
     public void add(Section section) {
         sections.add(section);
     }
+
+    public void updateUpToDownStationWhenExist(SectionRequest request, Station upStation, Station downStation) {
+        sections.stream()
+                .filter(it -> it.getUpStation() == upStation)
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
+    }
+
+    public void updateDownToUpStationWhenExist(SectionRequest request, Station upStation, Station downStation) {
+        sections.stream()
+                .filter(it -> it.getDownStation() == downStation)
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
+    }
+
 
     public Optional<Section> findNextSectionByUpStation(Station finalDownStation) {
         return sections.stream()
