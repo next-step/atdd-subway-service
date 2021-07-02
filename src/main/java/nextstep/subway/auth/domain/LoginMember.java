@@ -1,6 +1,8 @@
 package nextstep.subway.auth.domain;
 
 public class LoginMember {
+    private static final long DEFAULT_ID = -1L;
+
     private Long id;
     private String email;
     private Integer age;
@@ -24,5 +26,9 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
+    }
+
+    public static LoginMember createDefaultLoginMember() {
+        return new LoginMember(DEFAULT_ID, "", 0);
     }
 }
