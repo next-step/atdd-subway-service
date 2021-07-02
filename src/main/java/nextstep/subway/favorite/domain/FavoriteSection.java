@@ -25,8 +25,14 @@ public class FavoriteSection {
 
     protected FavoriteSection() {
     }
-
     public FavoriteSection(Station sourceStation, Station targetStation) {
+        this.sourceStation = sourceStation;
+        this.targetStation = targetStation;
+    }
+
+    public FavoriteSection(Long id, Member member, Station sourceStation, Station targetStation) {
+        this.id = id;
+        this.member = member;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
     }

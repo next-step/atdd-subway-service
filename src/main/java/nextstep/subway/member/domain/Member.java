@@ -25,6 +25,13 @@ public class Member extends BaseEntity {
     public Member() {
     }
 
+    public Member(Long id, String email, String password, Integer age) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.age = age;
+    }
+
     public Member(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
@@ -65,5 +72,9 @@ public class Member extends BaseEntity {
 
     public FavoriteSections getFavoriteSections() {
         return this.favoriteSections;
+    }
+
+    public void removeFavoriteSection(FavoriteSection favoriteSection) {
+        favoriteSections.remove(favoriteSection);
     }
 }

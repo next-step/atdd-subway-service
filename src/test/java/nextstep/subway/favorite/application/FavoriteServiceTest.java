@@ -1,7 +1,9 @@
-package nextstep.subway.favorite.acceptance;
+package nextstep.subway.favorite.application;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
+import nextstep.subway.favorite.domain.FavoriteSection;
+import nextstep.subway.favorite.domain.FavoriteSectionRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.domain.Member;
@@ -27,6 +29,10 @@ public class FavoriteServiceTest {
     private static final String PASSWORD = "1234";
     private static final int AGE = 19;
 
+    private static final Member MEMBER = new Member(1L, EMAIL, PASSWORD, AGE);
+    private static final Station 강남역 = new Station("강남역");
+    private static final Station 교대역 = new Station("교대역");
+
     private FavoriteService favoriteService;
 
     @Mock
@@ -35,16 +41,18 @@ public class FavoriteServiceTest {
     @Mock
     private StationRepository stationRepository;
 
+    @Mock
+    private FavoriteSectionRepository favoriteSectionRepository;
 
     @BeforeEach
     public void setUp() {
-        favoriteService = new FavoriteService(memberRepository, stationRepository);
+        favoriteService = new FavoriteService(favoriteSectionRepository, memberRepository, stationRepository);
 
         // given
         // 회원과 역이 등록되어 있음
-        when(memberRepository.findById(any())).thenReturn(Optional.ofNullable(new Member(EMAIL, PASSWORD, AGE)));
-        when(stationRepository.findById(1L)).thenReturn(Optional.ofNullable(new Station("강남역")));
-        when(stationRepository.findById(2L)).thenReturn(Optional.ofNullable(new Station("교대역")));
+        when(memberRepository.findById(any())).thenReturn(Optional.ofNullable(MEMBER));
+        when(stationRepository.findById(1L)).thenReturn(Optional.ofNullable(강남역));
+        when(stationRepository.findById(2L)).thenReturn(Optional.ofNullable(교대역));
     }
 
     @Test
@@ -52,11 +60,11 @@ public class FavoriteServiceTest {
         // when
         // 즐겨찾기 생성이 됨
         FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
-        favoriteService.addFavoriteSection(new LoginMember(1L, EMAIL, AGE), favoriteRequest);
+        favoriteService.addFavoriteSection(1L, favoriteRequest);
 
         // then
         // 즐겨찾기 저장 됨
-        List<FavoriteResponse> favoriteResponses = favoriteService.findFavoriteSection(new LoginMember(1L, EMAIL, AGE));
+        List<FavoriteResponse> favoriteResponses = favoriteService.findFavoriteSection(1L);
         assertThat(favoriteResponses.size()).isNotZero();
     }
 
@@ -65,11 +73,11 @@ public class FavoriteServiceTest {
         // when
         // 즐겨찾기 생성이 됨
         FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
-        favoriteService.addFavoriteSection(new LoginMember(1L, EMAIL, AGE), favoriteRequest);
+        favoriteService.addFavoriteSection(1L, favoriteRequest);
 
-        // when
+        // and
         // 즐겨찾기 조회 요청
-        List<FavoriteResponse> favoriteResponses = favoriteService.findFavoriteSection(new LoginMember(1L, EMAIL, AGE));
+        List<FavoriteResponse> favoriteResponses = favoriteService.findFavoriteSection(1L);
 
         // then
         // 즐겨찾기 조회 됨

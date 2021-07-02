@@ -11,7 +11,7 @@ import java.util.List;
 
 @Embeddable
 public class FavoriteSections {
-    @OneToMany(mappedBy = "line", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<FavoriteSection> favoriteSections;
 
     public FavoriteSections() {
@@ -29,5 +29,9 @@ public class FavoriteSections {
     public void addFavoriteSection(Member member, FavoriteSection favoriteSection) {
         favoriteSections.add(favoriteSection);
         favoriteSection.setMember(member);
+    }
+
+    public void remove(FavoriteSection favoriteSection) {
+        System.out.println(favoriteSections.remove(favoriteSection));
     }
 }

@@ -1,8 +1,11 @@
-package nextstep.subway.favorite;
+package nextstep.subway.favorite.acceptance;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
@@ -15,6 +18,12 @@ import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,7 +58,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         영등포역 = 지하철역_생성_요청("영등포역");
 
         일호선 = LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("1호선", "green", 1L, 3L, 10)).as(LineResponse.class);
-        LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("2호선", "puple", 5L, 6L, 10));
+        LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("2호선", "purple", 5L, 6L, 10));
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 잠실역, 교대역, 10);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 교대역, 삼성역, 10);
@@ -72,41 +81,74 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(myInfo.getEmail()).isEqualTo(EMAIL);
 
         // when
-        ExtractableResponse<Response> responseForFavorite = 즐겨찾기_생성을_요청(token, 3L, 4L);
+        ExtractableResponse<Response> responseForFavorite = 즐겨찾기_생성을_요청(token, new FavoriteRequest(3L, 4L));
         // then
         즐겨찾기_생성됨(responseForFavorite);
 
         // when
         ExtractableResponse<Response> responseForFavoriteList = 즐겨찾기_목록을_요청(token);
         // then
-        즐겨찾기_목록_조회됨(responseForFavoriteList);
+        즐겨찾기_목록_조회됨(responseForFavoriteList, 1);
 
         // when
         ExtractableResponse<Response> responseForDeleteFavorite = 즐겨찾기_삭제를_요청(token, 1L);
         // then
         즐겨찾기_삭제됨(responseForDeleteFavorite);
+
+        // when
+        responseForFavoriteList = 즐겨찾기_목록을_요청(token);
+        // then
+        즐겨찾기_목록_조회됨(responseForFavoriteList, 0);
     }
 
     private void 즐겨찾기_삭제됨(ExtractableResponse<Response> responseForDeleteFavorite) {
+        assertThat(responseForDeleteFavorite.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_삭제를_요청(String token, long l) {
-        return null;
+    private ExtractableResponse<Response> 즐겨찾기_삭제를_요청(String token, Long deleteFavoriteId) {
+        Map<String, Long> deletePram = new HashMap<>();
+        deletePram.put("deleteFavoriteId", deleteFavoriteId);
+
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .body(deletePram)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/favorites")
+                .then().log().all()
+                .extract();
     }
 
-    private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> responseForFavoriteList) {
+    private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> responseForFavoriteList, int favoriteCount) {
+        List<FavoriteResponse> favoriteResponses = responseForFavoriteList.jsonPath().getList(".", FavoriteResponse.class);
 
+        assertThat(favoriteResponses.size()).isEqualTo(favoriteCount);
+        if(favoriteCount != 0) {
+            assertThat(favoriteResponses.get(0).getSource().getName()).isEqualTo("잠실역");
+            assertThat(favoriteResponses.get(0).getTarget().getName()).isEqualTo("삼성역");
+        }
     }
 
     private ExtractableResponse<Response> 즐겨찾기_목록을_요청(String token) {
-        return null;
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
     }
 
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> responseForFavorite) {
+        assertThat(responseForFavorite.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_생성을_요청(String token, long l, long l1) {
-        return null;
+    private ExtractableResponse<Response> 즐겨찾기_생성을_요청(String token, FavoriteRequest favoriteRequest) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .body(favoriteRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/favorites")
+                .then().log().all()
+                .extract();
     }
 
     private StationResponse 지하철역_생성_요청(String name) {
