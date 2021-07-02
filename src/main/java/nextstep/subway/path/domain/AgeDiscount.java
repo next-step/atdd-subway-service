@@ -8,8 +8,6 @@ public enum AgeDiscount {
     TEENAGER(13, 18, fare -> (int) ((fare - 350) * 0.8)),
     ADULT(18, Integer.MAX_VALUE, fare -> fare);
 
-    public static final String NEGATIVE_AGE_EXCEPTION_MESSAGE = "나이가 한살 미만일 수 없습니다.";
-
     private final int minAge;
     private final int maxAge;
     private final AgeDiscountStrategy ageDiscountStrategy;
@@ -28,7 +26,7 @@ public enum AgeDiscount {
         return Arrays.stream(AgeDiscount.values())
                 .filter(ageDiscount -> ageDiscount.isWithinRange(age))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException(NEGATIVE_AGE_EXCEPTION_MESSAGE));
+                .orElseThrow(() -> new IllegalArgumentException(String.format("나이: %2d - 할인 범위를 벗어났습니다.", age)));
     }
 
     private boolean isWithinRange(int age) {
