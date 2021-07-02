@@ -16,8 +16,8 @@ public class Path {
 	private final Station target;
 
 	public Path(List<Line> lines, Station source, Station target) {
-		if(source.equals(target)) {
-			throw new IllegalArgumentException("시작역과 종료역이 같습니다.");
+		if (source.equals(target)) {
+			throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
 		}
 
 		addVertexes(lines);
@@ -42,10 +42,18 @@ public class Path {
 	}
 
 	public List<Station> getShortestStations() {
+		validateConnectedSourceToTarget();
 		return dijkstraShortestPath.getPath(source, target).getVertexList();
 	}
 
+	private void validateConnectedSourceToTarget() {
+		if (dijkstraShortestPath.getPath(source, target) == null) {
+			throw new IllegalArgumentException("출발역과 도착역이 연결되어 있지 않습니다.");
+		}
+	}
+
 	public int getShortestDistance() {
+		validateConnectedSourceToTarget();
 		return (int) dijkstraShortestPath.getPath(source, target).getWeight();
 	}
 }

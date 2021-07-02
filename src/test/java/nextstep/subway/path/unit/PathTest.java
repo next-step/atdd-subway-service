@@ -51,9 +51,23 @@ public class PathTest {
 		assertThat(path.getShortestDistance()).isEqualTo(5);
 	}
 
-	@DisplayName("예외사항 - 시작역과 종료역이 같은 경우")
+	@DisplayName("예외사항 - 출발역과 도착역이 같은 경우")
 	@Test
-	void 시작역과_종료역이_같은_경우() {
-		assertThatIllegalArgumentException().isThrownBy(() -> new Path(Arrays.asList(신분당선, 이호선, 삼호선), 교대역, 교대역)).withMessage("시작역과 종료역이 같습니다.");
+	void 출발역과_도착역이_같은_경우() {
+		assertThatIllegalArgumentException().isThrownBy(() -> new Path(Arrays.asList(신분당선, 이호선, 삼호선), 교대역, 교대역)).withMessage("출발역과 도착역이 같습니다.");
+	}
+
+	@DisplayName("예외사항 - 출발역과 도착역이 연결이 되어 있지 않은 경우")
+	@Test
+	void 출발역과_도착역이_연결이_되어_있지_않은_경우() {
+		Station A1 = new Station("A1");
+		Station A2 = new Station("A2");
+		Station B1 = new Station("B1");
+		Station B2 = new Station("B2");
+		Line A_Line = new Line("A", "white", A1, A2, 10);
+		Line B_Line = new Line("B", "black", B1, B2, 10);
+
+		Path path = new Path(Arrays.asList(A_Line, B_Line), A1, B2);
+		assertThatIllegalArgumentException().isThrownBy(() -> path.getShortestDistance()).withMessage("출발역과 도착역이 연결되어 있지 않습니다.");
 	}
 }
