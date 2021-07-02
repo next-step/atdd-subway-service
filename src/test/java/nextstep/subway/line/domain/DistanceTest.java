@@ -27,13 +27,6 @@ class DistanceTest {
                 .isThrownBy(() -> new Distance(param));
     }
 
-    @Test
-    void new_예외_파라미터_없이_생성_불가() {
-        new Distance();
-        assertThatExceptionOfType(IllegalStateException.class)
-                .isThrownBy(() -> new Distance());
-    }
-
     @CsvSource(value = {"3:1:4", "4:2:6", "5:3:8"}, delimiterString = ":")
     @ParameterizedTest
     void add_성공(int value1, int value2, int expectedResult) {

@@ -15,7 +15,6 @@ public class Distance {
     private int value;
 
     protected Distance() {
-        throw new IllegalStateException("구간은 파라미터 없이 생성 될 수 없습니다.");
     }
 
     public Distance(int value) {
