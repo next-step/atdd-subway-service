@@ -164,6 +164,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 3. 즐겨찾기 추가 기능
 4. 즐겨찾기 조회 기능
 5. 즐겨찾기 삭제 기능
+6. 조건부 토큰 검사 기능
+7. 거리에 따른 이용 요금 계산 기능
+8. 연령에 따른 이용 요금 할인 계산 기능
 
 ## API 명세
 
