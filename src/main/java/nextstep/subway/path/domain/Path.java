@@ -12,10 +12,18 @@ import nextstep.subway.station.domain.Station;
 
 public class Path {
 
-    private final GraphPath<Station, SectionEdge> value;
+    private final List<Station> stations;
+    private final List<Line> passingLines;
+    private final double distance;
 
-    Path(GraphPath<Station, SectionEdge> value) {
-        this.value = value;
+    Path(GraphPath<Station, SectionEdge> graphPath) {
+        this.stations = graphPath.getVertexList();
+        this.passingLines = graphPath.getEdgeList()
+            .stream()
+            .map(SectionEdge::getLine)
+            .distinct()
+            .collect(toList());
+        this.distance = graphPath.getWeight();
     }
 
     public static Path of(GraphPath<Station, SectionEdge> value) {
@@ -23,17 +31,14 @@ public class Path {
     }
 
     public List<Station> getStations() {
-        return unmodifiableList(value.getVertexList());
+        return unmodifiableList(stations);
     }
 
     public List<Line> getPassingLines() {
-        return value.getEdgeList().stream()
-            .map(SectionEdge::getLine)
-            .distinct()
-            .collect(toList());
+        return unmodifiableList(passingLines);
     }
 
     public double distance() {
-        return value.getWeight();
+        return distance;
     }
 }
