@@ -33,8 +33,8 @@ public class FavoriteService {
 
     public void add(LoginMember loginMember, FavoriteRequest favoriteRequest) {
         Member member = member(loginMember);
-        Station source = stationRepository.findById(favoriteRequest.getSource()).orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_FOUND_STATION.toString()));
-        Station target = stationRepository.findById(favoriteRequest.getTarget()).orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_FOUND_STATION.toString()));
+        Station source = stationRepository.findById(favoriteRequest.getSource()).orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_STATION));
+        Station target = stationRepository.findById(favoriteRequest.getTarget()).orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_STATION));
 
         List<Favorite> favorites = favoriteRepository.findByMember(member);
         boolean isPresent = favorites.stream()
