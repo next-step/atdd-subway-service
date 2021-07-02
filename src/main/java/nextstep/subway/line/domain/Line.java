@@ -5,7 +5,6 @@ import nextstep.subway.exception.DuplicateSectionException;
 import nextstep.subway.exception.NotMatchStationException;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.Stations;
 import nextstep.subway.station.dto.StationResponse;
 
 import javax.persistence.*;
@@ -45,7 +44,6 @@ public class Line extends BaseEntity {
 
     public void validateAndAddSection(SectionRequest request, Station upStation, Station downStation) {
         List<Station> stations = extractStations();
-        new Stations(stations);
 
         boolean isUpStationExisted = isStationExisted(stations, upStation);
         boolean isDownStationExisted = isStationExisted(stations, downStation);
