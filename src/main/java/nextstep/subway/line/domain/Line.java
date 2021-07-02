@@ -39,7 +39,9 @@ public class Line extends BaseEntity {
     }
 
     Line(Long id, String name, String color) {
-        this(id, name, color, null);
+        this.id = id;
+        this.name = name;
+        this.color = color;
     }
 
     public Line(String name, String color) {
