@@ -13,11 +13,14 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.lang.String.format;
 
 @Service
 @Transactional
@@ -52,13 +55,14 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+    private Line findById(Long id) {
+        return lineRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(format("id %d인 노선을 찾을 수 없습니다.", id)));
     }
 
 
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
+        Line persistLine = this.findById(id);
         List<StationResponse> stations = getStations(persistLine).stream()
                 .map(it -> StationResponse.of(it))
                 .collect(Collectors.toList());
@@ -66,7 +70,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = this.findById(id);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
@@ -75,9 +79,9 @@ public class LineService {
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
-        Line line = findLineById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
+        Line line = this.findById(lineId);
+        Station upStation = stationService.findById(request.getUpStationId());
+        Station downStation = stationService.findById(request.getDownStationId());
         List<Station> stations = getStations(line);
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
@@ -116,8 +120,8 @@ public class LineService {
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = findLineById(lineId);
-        Station station = stationService.findStationById(stationId);
+        Line line = this.findById(lineId);
+        Station station = stationService.findById(stationId);
         if (line.getSections().size() <= 1) {
             throw new RuntimeException();
         }
