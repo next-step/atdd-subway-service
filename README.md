@@ -10,7 +10,7 @@
   - [x] TestFactory 사용
   
 - [ ] LineService 리팩토링
-  - [ ] Service 내에 orElseThrow 메소드가 던지는 예외가 RuntimeException인 경우 EntityNotFound로 대체
+  - [x] Service 내에 orElseThrow 메소드가 던지는 예외가 RuntimeException인 경우 EntityNotFound로 대체
   - [ ] getStations 도메인 추출 및 리팩토링
   - [ ] findUpStation 도메인 추출 및 리팩토링
   - [ ] SaveLine 리팩토링
