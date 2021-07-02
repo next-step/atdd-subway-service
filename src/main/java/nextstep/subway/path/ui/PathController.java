@@ -22,7 +22,7 @@ public class PathController {
     public ResponseEntity<PathResponse> getPaths(@AuthenticationPrincipal(required = false) LoginMember loginMember,
                                                  @RequestParam(value = "source") Long sourceStationId,
                                                  @RequestParam(value = "target") Long targetStationId) {
-        PathResponse pathResponse = pathService.getPaths(sourceStationId, targetStationId);
+        PathResponse pathResponse = pathService.getPaths(loginMember, sourceStationId, targetStationId);
         return ResponseEntity.ok(pathResponse);
     }
 }

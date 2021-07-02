@@ -1,5 +1,7 @@
 package nextstep.subway.auth.domain;
 
+import java.util.Objects;
+
 public class LoginMember {
     private static final long DEFAULT_ID = -1L;
 
@@ -30,5 +32,16 @@ public class LoginMember {
 
     public static LoginMember createDefaultLoginMember() {
         return new LoginMember(DEFAULT_ID, "", 0);
+    }
+
+    public boolean isLogin() {
+        if (Objects.isNull(this.id) || this.id.equals(DEFAULT_ID)) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isNotLogin() {
+        return isLogin() == false;
     }
 }

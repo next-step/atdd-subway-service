@@ -1,6 +1,9 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.CustomException;
+import nextstep.subway.path.domain.fare.FareOfAgePolicy;
+import nextstep.subway.path.domain.fare.FareOfDistancePolicy;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -20,7 +23,7 @@ public class Paths {
         checkNotConnectedBetweenStations(graphPath);
         checkNotFoundPaths(graphPath.getWeight());
         this.shortestStationRoutes = graphPath.getVertexList();
-        this.totalDistance = (int) graphPath.getWeight();
+        this.totalDistance = (int)graphPath.getWeight();
     }
 
     public static Paths of(final GraphPath<Station, DefaultWeightedEdge> graphPath) {
@@ -33,6 +36,14 @@ public class Paths {
 
     public int getTotalDistance() {
         return this.totalDistance;
+    }
+
+    public int calculateFare(final LoginMember loginMember) {
+        int totalFare = FareOfDistancePolicy.calculate(this.totalDistance);
+        if (loginMember.isLogin()) {
+            return FareOfAgePolicy.discount(loginMember.getAge(), totalFare);
+        }
+        return totalFare;
     }
 
     private void checkNotConnectedBetweenStations(final GraphPath<Station, DefaultWeightedEdge> graphPath) {

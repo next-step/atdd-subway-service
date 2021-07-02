@@ -26,10 +26,9 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse getPaths(final long sourceStationId, final long targetStationId) {
+    public PathResponse getPaths(final LoginMember loginMember, final long sourceStationId, final long targetStationId) {
         Paths paths = getShortestPaths(sourceStationId, targetStationId);
-
-        return new PathResponse(paths);
+        return new PathResponse(paths, loginMember);
     }
 
     private Paths getShortestPaths(final long sourceStationId, final long targetStationId) {

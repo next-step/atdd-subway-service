@@ -76,7 +76,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         지하철_노선_최단_경로에_해당_역들이_포함되어있음(response, Arrays.asList(남부터미널역, 양재역, 강남역));
         지하철_노선_최단_경로의_거리를_확인한다(response, 12);
-        지하철_노선_최단_경로에_이용_요금을_확인한다(response, 1250);
+        지하철_노선_최단_경로에_이용_요금을_확인한다(response, 1350);
     }
 
     @Test
@@ -148,7 +148,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선_최단_경로에_이용_요금을_확인한다(ExtractableResponse<Response> response, int expectFare) {
         PathResponse pathResponse = response.as(PathResponse.class);
-
         assertThat(pathResponse.getTotalFare()).isEqualTo(expectFare);
     }
 }

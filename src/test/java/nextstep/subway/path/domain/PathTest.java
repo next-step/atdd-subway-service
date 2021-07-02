@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.CustomException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
@@ -14,7 +15,7 @@ import static nextstep.subway.exception.CustomExceptionMessage.NOT_CONNECTED_SOU
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class PathFinderTest {
+class PathTest {
 
     private Station 강남역;
     private Station 양재역;
@@ -62,6 +63,18 @@ class PathFinderTest {
             .isNotEmpty()
             .containsExactly(남부터미널역, 양재역, 강남역);
         assertThat(paths.getTotalDistance()).isEqualTo(12);
+    }
+
+    @DisplayName("지하철 노선, 최단 경로를 찾아 요금 계산 테스트")
+    @Test
+    void calculateFareTest() {
+        // when
+        Paths paths = PathFinder.of(lines).getShortestPaths(남부터미널역, 강남역);
+
+        // then
+        assertThat(paths.getTotalDistance()).isEqualTo(12);
+        assertThat(paths.calculateFare(new LoginMember())).isEqualTo(1350); // 1250 + 100
+        assertThat(paths.calculateFare(new LoginMember(1l, "joojimin@naver.com", 14))).isEqualTo(800); // ((1250+100)-350) * 0.2
     }
 
     @DisplayName("연결 되어있지 않은 두 역의 경로를 조회")
