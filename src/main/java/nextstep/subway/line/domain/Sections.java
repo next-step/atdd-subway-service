@@ -74,7 +74,6 @@ public class Sections {
                 .ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
     }
 
-
     Optional<Section> findNextSectionByUpStation(Station finalDownStation) {
         return sections.stream()
                 .filter(it -> it.getUpStation().equals(finalDownStation))
@@ -90,7 +89,6 @@ public class Sections {
     Station getFirstUpStation() {
         return sections.get(0).getUpStation();
     }
-
 
     void validateRemovalSectionsSize() {
         if (sections.size() <= MINIMUM_REMOVAL_SIZE) {

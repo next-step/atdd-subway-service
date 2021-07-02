@@ -107,7 +107,7 @@ public class Line extends BaseEntity {
                 .collect(Collectors.toList());
     }
 
-    public List<Station> extractStations() {
+    List<Station> extractStations() {
         if (sections.isEmpty()) {
             return Arrays.asList();
         }
@@ -152,7 +152,7 @@ public class Line extends BaseEntity {
         sections.removeByStation(station, this);
     }
 
-    public void addSection(Section section) {
+    void addSection(Section section) {
         sections.add(section);
     }
 
