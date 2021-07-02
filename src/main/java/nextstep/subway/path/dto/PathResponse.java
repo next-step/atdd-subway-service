@@ -7,10 +7,12 @@ import java.util.List;
 public class PathResponse {
     private List<StationResponse> stations;
     private double distance;
+    private double fare;
 
-    public PathResponse(List<StationResponse> stationList, double distance) {
+    public PathResponse(List<StationResponse> stationList, double distance, double fare) {
         this.stations = stationList;
         this.distance = distance;
+        this.fare = fare;
     }
 
     public double getDistance() {
@@ -19,5 +21,9 @@ public class PathResponse {
 
     public List<StationResponse> getStations() {
         return this.stations;
+    }
+
+    public double getFare() {
+        return this.fare;
     }
 }
