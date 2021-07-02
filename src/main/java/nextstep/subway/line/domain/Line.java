@@ -38,12 +38,12 @@ public class Line extends BaseEntity {
     }
 
     public List<StationResponse> extractStationToResponse() {
-        return getStations().stream()
+        return extractStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public List<Station> getStations() {
+    public List<Station> extractStations() {
         if (sections.isEmpty()) {
             return Arrays.asList();
         }

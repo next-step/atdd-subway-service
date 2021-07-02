@@ -20,7 +20,7 @@ class LineTest {
         Station 청량리역 = new Station(2L, "청량리역");
         첫번째_라인.addSection(new Section(첫번째_라인, 왕십리역, 청량리역, 15));
 
-        List<Station> 지하철역들 = 첫번째_라인.getStations();
+        List<Station> 지하철역들 = 첫번째_라인.extractStations();
 
         assertThat(지하철역들).containsExactly(
                 강남역,
