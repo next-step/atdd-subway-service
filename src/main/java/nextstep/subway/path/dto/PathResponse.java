@@ -14,6 +14,7 @@ public class PathResponse {
     private List<StationResponse> stations;
     private List<SectionEdge> sectionEdges;
     private int distance;
+    private int fare;
 
     public PathResponse() {
     }
@@ -50,6 +51,10 @@ public class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getFare() {
+        return fare;
     }
 
     public List<StationResponse> getStations() {
