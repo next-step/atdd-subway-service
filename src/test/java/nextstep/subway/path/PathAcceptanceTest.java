@@ -32,7 +32,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	 * |                        |
 	 * *3호선*                   *신분당선*
 	 * |                        |
-	 * 남부터미널역  --- *3호선* ---   양재
+	 * 남부터미널역  --- *3호선* --- 양재역
 	 */
 	@BeforeEach
 	public void setUp() {
@@ -58,7 +58,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 	private void 경로_조회_요청이_최단_경로를_반환한다(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-		// assertThat(response.jsonPath().getInt("distance")).isEqualTo(5);
+		assertThat(response.jsonPath().getInt("distance")).isEqualTo(5);
 	}
 
 	private ExtractableResponse<Response> 최단_경로_조회_요청을_한다(StationResponse sourceStation, StationResponse targetStation) {
