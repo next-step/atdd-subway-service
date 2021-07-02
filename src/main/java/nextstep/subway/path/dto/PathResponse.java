@@ -7,6 +7,7 @@ import java.util.List;
 
 public class PathResponse {
     private int distance;
+    private int totalFare;
     private List<Station> stations;
 
     public PathResponse() {
@@ -20,6 +21,10 @@ public class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getTotalFare() {
+        return totalFare;
     }
 
     public List<Station> getStations() {
