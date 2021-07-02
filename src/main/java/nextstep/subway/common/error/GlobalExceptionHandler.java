@@ -2,6 +2,7 @@ package nextstep.subway.common.error;
 
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.application.MemberNotFoundException;
+import nextstep.subway.favorite.application.FavoriteNotFoundException;
 import nextstep.subway.line.application.LineNotFoundException;
 import nextstep.subway.station.application.StationNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -11,12 +12,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    private static final String NOT_AUTHORIZED = "권한이 없습니다.";
-    private static final String MEMBER_NOT_FOUND = "사용자가 존재하지 않습니다.";
-    private static final String NOT_VALID_INPUT = "올바르지 않은 입력입니다.";
-    private static final String SERVER_ERROR = "에러가 발생했습니다.";
-    private static final String LINE_NOT_FOUND = "노선이 존재하지 않습니다.";
-
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(AuthorizationException.class)
     public ErrorResponse handleAuthorization(Exception e) {
@@ -50,6 +45,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(StationNotFoundException.class)
     public ErrorResponse handleStationNotFound(Exception e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(FavoriteNotFoundException.class)
+    public ErrorResponse handleFavoriteNotFound(Exception e) {
         return new ErrorResponse(e.getMessage());
     }
 

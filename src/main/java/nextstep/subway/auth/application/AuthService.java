@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AuthService {
     private static final String EMAIL_NOT_FOUND = "회원 이메일을 찾을 수 없습니다";
+    private static final String INVALID_CREDENTIALS = "invalid credentials : ";
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -31,7 +32,7 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            throw new AuthorizationException(INVALID_CREDENTIALS + credentials);
         }
         final String email = jwtTokenProvider.getPayload(credentials);
         final Member member = getMember(email);
