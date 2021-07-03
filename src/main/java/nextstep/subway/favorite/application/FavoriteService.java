@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FavoriteService {
@@ -35,6 +36,15 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findAll(Long id) {
-        return null;
+        List<Favorite> favorites = favoriteRepository.findByMemberId(id).orElseThrow(() -> new IllegalArgumentException("즐겨찾기가 없습니다."));
+        return getFavoriteResponses(favorites);
     }
+
+    private List<FavoriteResponse> getFavoriteResponses(List<Favorite> favorites) {
+        return favorites.stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
+    }
+
+
 }

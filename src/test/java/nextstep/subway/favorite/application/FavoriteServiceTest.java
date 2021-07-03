@@ -15,6 +15,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,5 +53,15 @@ class FavoriteServiceTest {
 
         assertThat(favorite.getSource().getName()).isEqualTo("강남역");
         assertThat(favorite.getTarget().getName()).isEqualTo("역삼역");
+    }
+
+    @Test
+    void findAllTest() {
+        when(favoriteRepository.findByMemberId(1L)).thenReturn(Optional.of(Arrays.asList(
+                new Favorite(new Member("", "", 1), new Station("강남역"), new Station("서초역"))
+                , new Favorite(new Member("", "", 1), new Station("강남역"), new Station("광교역")))));
+
+        List<FavoriteResponse> favorites = favoriteService.findAll(1L);
+        assertThat(favorites).hasSize(2);
     }
 }
