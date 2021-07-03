@@ -66,6 +66,6 @@ public class LineControllerAdvice {
                 .get(0)
                 .getDefaultMessage();
 
-        return new ResponseEntity<LineExceptionResponse>(new LineExceptionResponse(errorMessage), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new LineExceptionResponse(errorMessage), HttpStatus.BAD_REQUEST);
     }
 }
