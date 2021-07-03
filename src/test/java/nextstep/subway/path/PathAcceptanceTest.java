@@ -99,6 +99,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return LineAcceptanceTest.requestCreatedLine(lineRequest);
     }
 
+
+    /**
+     * @see nextstep.subway.path.ui.PathController#findLineById
+     */
     public static ExtractableResponse<Response> requestPath(Map<String, Long> query) {
         return restAssuredTemplate.get(query);
     }

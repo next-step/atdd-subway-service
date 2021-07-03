@@ -13,11 +13,12 @@ public class PageController {
             LINE,
             SECTION,
             PATH,
+            FAVORITES,
             "/login",
             "/join",
             "/mypage",
-            "/mypage/edit",
-            "/favorites"}, produces = MediaType.TEXT_HTML_VALUE)
+            "/mypage/edit"
+            }, produces = MediaType.TEXT_HTML_VALUE)
     public String index() {
         return "index";
     }
@@ -27,6 +28,8 @@ public class PageController {
         public static final String STATION = "/stations";
         public static final String SECTION = "/sections";
         public static final String PATH = "/path";
+        public static final String MEMBERS = "/members";
+        public static final String FAVORITES = "/favorites";
 
         private URIMapping() {}
     }

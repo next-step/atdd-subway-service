@@ -1,19 +1,23 @@
 package nextstep.subway.member;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import nextstep.subway.utils.RestAssuredTemplate;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
+import static nextstep.subway.PageController.URIMapping.MEMBERS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
+@DisplayName("회원 정보를 관리한다.")
 public class MemberAcceptanceTest extends AcceptanceTest {
+    public static final RestAssuredTemplate restAssuredTemplate = new RestAssuredTemplate(MEMBERS);
+
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final String NEW_EMAIL = "newemail@email.com";
@@ -21,97 +25,93 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
 
-    @DisplayName("회원 정보를 관리한다.")
+    private ExtractableResponse<Response> createResponse;
+
+    @BeforeEach
+    public void setup() {
+        createResponse = requestCreateMember(EMAIL, PASSWORD, AGE);
+    }
+
+    @DisplayName("회원 정보를 조회한다.")
     @Test
-    void manageMember() {
-        // when
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        // then
+    void createMember() {
+        //given
         회원_생성됨(createResponse);
 
         // when
-        ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(createResponse);
-        // then
-        회원_정보_조회됨(findResponse, EMAIL, AGE);
+        long 회원_ID = RestAssuredTemplate.getLocationId(createResponse);
+        ExtractableResponse<Response> findResponse = requestFindMember(회원_ID);
 
-        // when
-        ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
         // then
-        회원_정보_수정됨(updateResponse);
-
-        // when
-        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
-        // then
-        회원_삭제됨(deleteResponse);
+        MemberResponse memberResponse = findResponse.as(MemberResponse.class);
+        assertAll(
+                () -> assertThat(memberResponse.getId()).isNotNull(),
+                () -> assertThat(memberResponse.getEmail()).isEqualTo(EMAIL),
+                () -> assertThat(memberResponse.getAge()).isEqualTo(AGE)
+        );
     }
 
-    @DisplayName("나의 정보를 관리한다.")
+    @DisplayName("회원 정보를 수정한다.")
     @Test
-    void manageMyInfo() {
+    void manageMember() {
+        //given
+        회원_생성됨(createResponse);
 
+        // when
+        long 회원_ID = RestAssuredTemplate.getLocationId(createResponse);
+        ExtractableResponse<Response> updateResponse = requestUpdateMemberInfo(회원_ID, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+
+        // then
+        assertThat(updateResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
+    @DisplayName("회원 정보를 삭제한다.")
+    @Test
+    void deleteMember() {
+        //given
+        회원_생성됨(createResponse);
+
+        // when
+        long 회원_ID = RestAssuredTemplate.getLocationId(createResponse);
+        ExtractableResponse<Response> deleteResponse = requestDeleteMember(회원_ID);
+
+        // then
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    /**
+     * @see nextstep.subway.member.ui.MemberController#createMember
+     */
+    public static ExtractableResponse<Response> requestCreateMember(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().post("/members")
-                .then().log().all()
-                .extract();
+        return restAssuredTemplate.post(memberRequest);
     }
 
-    public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
-
-        return RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(uri)
-                .then().log().all()
-                .extract();
+    /**
+     * @see nextstep.subway.member.ui.MemberController#findMember
+     */
+    public static ExtractableResponse<Response> requestFindMember(Long id) {
+        return restAssuredTemplate.get(id);
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
-        String uri = response.header("Location");
+    /**
+     * @see nextstep.subway.member.ui.MemberController#updateMember
+     */
+    public static ExtractableResponse<Response> requestUpdateMemberInfo(Long id, String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().put(uri)
-                .then().log().all()
-                .extract();
+        return restAssuredTemplate.put(id, memberRequest);
     }
 
-    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
-        return RestAssured
-                .given().log().all()
-                .when().delete(uri)
-                .then().log().all()
-                .extract();
+    /**
+     * @see nextstep.subway.member.ui.MemberController#deleteMember
+     */
+    public static ExtractableResponse<Response> requestDeleteMember(Long id) {
+        return restAssuredTemplate.delete(id);
     }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
-        MemberResponse memberResponse = response.as(MemberResponse.class);
-        assertThat(memberResponse.getId()).isNotNull();
-        assertThat(memberResponse.getEmail()).isEqualTo(email);
-        assertThat(memberResponse.getAge()).isEqualTo(age);
-    }
-
-    public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 회원_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
