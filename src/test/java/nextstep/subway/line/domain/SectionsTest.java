@@ -22,7 +22,7 @@ public class SectionsTest {
         사당역 = new Station("사당역");
 
         이호선 = new Line("2호선","green", 강남역, 사당역, 10);
-        이호선_최초구간 = 이호선.getSectionsNew();
+        이호선_최초구간 = 이호선.getSections();
 
     }
 

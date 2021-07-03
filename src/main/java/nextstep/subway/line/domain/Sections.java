@@ -7,7 +7,7 @@ import java.util.*;
 
 @Embeddable
 public class Sections {
-    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
     public Sections() {
@@ -196,5 +196,9 @@ public class Sections {
         if (sections.size() <= 1) {
             throw new RuntimeException();
         }
+    }
+
+    public List<Section> values() {
+        return sections;
     }
 }
