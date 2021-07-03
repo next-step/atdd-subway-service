@@ -22,20 +22,22 @@ public class Line extends BaseEntity {
 	@Column(unique = true)
 	private String name;
 	private String color;
+	private int extraFee;
 	@Embedded
 	private Sections sections = new Sections();
 
 	protected Line() {
 	}
 
-	public Line(String name, String color) {
+	public Line(String name, String color, int extraFee) {
 		validateLine(name, color);
 		this.name = name;
 		this.color = color;
+		this.extraFee = extraFee;
 	}
 
-	public Line(Long id, String name, String color) {
-		this(name, color);
+	public Line(Long id, String name, String color, int extraFee) {
+		this(name, color, extraFee);
 		this.id = id;
 	}
 
@@ -58,6 +60,10 @@ public class Line extends BaseEntity {
 		return color;
 	}
 
+	public int getExtraFee() {
+		return extraFee;
+	}
+
 	public List<Station> getStations() {
 		return this.sections.getStations();
 	}
@@ -75,7 +81,7 @@ public class Line extends BaseEntity {
 	}
 
 	private void validateLine(String name, String color) {
-		if(name.isEmpty() || color.isEmpty()) {
+		if (name.isEmpty() || color.isEmpty()) {
 			throw new InvalidLineException("노선의 이름이나 색깔이 비워져있을 수 없습니다.");
 		}
 	}
