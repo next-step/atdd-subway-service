@@ -11,6 +11,7 @@ import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
 
 @Service
 public class FavoriteService {
@@ -31,5 +32,9 @@ public class FavoriteService {
 
         Favorite savedFavorite = favoriteRepository.save(new Favorite(member, source, target));
         return FavoriteResponse.of(savedFavorite);
+    }
+
+    public List<FavoriteResponse> findAll(Long id) {
+        return null;
     }
 }

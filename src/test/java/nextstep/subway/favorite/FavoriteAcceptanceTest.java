@@ -17,6 +17,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어_있음;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.member.MemberAcceptanceTest.*;
@@ -51,14 +54,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void manageFavoriteTest() {
 
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_추가_요청(사용자.getAccessToken(), new FavoriteRequest(강남역.getId(), 광교역.getId()));
+        ExtractableResponse<Response> createResponse = 즐겨찾기_추가_요청(사용자.getAccessToken(), new FavoriteRequest(강남역.getId(), 광교역.getId()));
 
         // then
-        즐겨찾기_추가됨(response);
-    }
+        즐겨찾기_추가됨(createResponse);
 
-    private void 즐겨찾기_추가됨(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        // when
+        ExtractableResponse<Response> findAllResponse = 즐겨찾기_목록_조회_요청(사용자.getAccessToken());
+
+        // then
+        즐겨찾기_목록_조회됨(findAllResponse);
     }
 
     private ExtractableResponse<Response> 즐겨찾기_추가_요청(String token, FavoriteRequest request) {
@@ -69,5 +74,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/favorites")
                 .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String token) {
+        return RestAssured
+                .given().log().all()
+                .header(AUTHORIZATION, "Bearer " + token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all().extract();
+    }
+
+    private void 즐겨찾기_추가됨(ExtractableResponse<Response> response) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> findAllResponse) {
+        Assertions.assertThat(findAllResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
