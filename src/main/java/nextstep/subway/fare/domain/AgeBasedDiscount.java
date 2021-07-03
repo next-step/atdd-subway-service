@@ -1,5 +1,7 @@
 package nextstep.subway.fare.domain;
 
+import nextstep.subway.auth.domain.User;
+
 import java.util.function.IntFunction;
 
 import static nextstep.subway.fare.domain.Fare.*;
@@ -8,7 +10,7 @@ public enum AgeBasedDiscount {
 
     CHILD(6, 13, value -> (int) Math.round((value - AGE_DISCOUNT_DEDUCTION_FARE) * (1 - AGE_CHILD_DISCOUNT_RATE))),
     TEENAGER(13, 19, value -> (int) Math.round((value - AGE_DISCOUNT_DEDUCTION_FARE) * (1 - AGE_TEENAGER_DISCOUNT_RATE))),
-    ADULT(20, 200, value -> value);
+    ADULT(20, User.ADULT_MAX_AGE, value -> value);
 
     private int startingPoint;
     private int endingPoint;
