@@ -3,7 +3,7 @@ package nextstep.subway.path.additionalfarepolicy.distanceparepolicy;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.path.domain.Fare;
 
-public enum OverFareByDistance {
+public enum DistanceOverFarePolicy {
     DISTANCE_10_KM(10, 50, 5, 100),
     DISTANCE_50_KM(50, Integer.MAX_VALUE, 8, 100);
 
@@ -14,7 +14,7 @@ public enum OverFareByDistance {
     private final int addPercent;
     private final int overFare;
 
-    OverFareByDistance(int startDistance, int endDistance, int addPercent, int overFare) {
+    DistanceOverFarePolicy(int startDistance, int endDistance, int addPercent, int overFare) {
         this.startDistance = startDistance;
         this.endDistance = endDistance;
         this.addPercent = addPercent;
@@ -23,8 +23,8 @@ public enum OverFareByDistance {
 
     public static Fare calculate(Distance distance) {
         int overAmount = DEFAULT_USE_FARE_AMOUNT;
-        for (OverFareByDistance overFareByDistance : values()) {
-            overAmount += overFareByDistance.calculateOverFare(distance);
+        for (DistanceOverFarePolicy distanceOverFarePolicy : values()) {
+            overAmount += distanceOverFarePolicy.calculateOverFare(distance);
         }
         return new Fare(overAmount);
     }
