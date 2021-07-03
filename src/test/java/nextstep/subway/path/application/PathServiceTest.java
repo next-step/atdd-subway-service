@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class PathsServiceTest {
+class PathServiceTest {
 
     @Mock
     LineRepository lineRepository;
@@ -37,7 +37,7 @@ class PathsServiceTest {
     void findPath() {
         // PathResponse 객첵를 리턴
         // given
-        PathsService patchService = new PathsService(lineRepository, stationRepository, pathFinder);
+        PathService patchService = new PathService(lineRepository, stationRepository, pathFinder);
         Station 강남역 = new Station(1L, "강남역");
         Station 광교역 = new Station(2L, "광교역");
         Station 교대역 = new Station(3L, "교대역");
