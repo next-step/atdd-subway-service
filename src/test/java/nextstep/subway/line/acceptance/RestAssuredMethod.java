@@ -8,7 +8,7 @@ import io.restassured.response.Response;
 
 public class RestAssuredMethod {
 	public static ExtractableResponse<Response> post(String path, Object params) {
-		return io.restassured.RestAssured
+		return RestAssured
 			.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(params)

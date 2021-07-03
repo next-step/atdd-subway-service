@@ -1,14 +1,25 @@
 package nextstep.subway.path;
 
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionTestMethod;
 import nextstep.subway.line.acceptance.LineTestMethod;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -32,7 +43,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
 		LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10);
-		LineRequest lineRequest2 = new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10);
+		LineRequest lineRequest2 = new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 4);
 		LineRequest lineRequest3 = new LineRequest("삼호선", "bg-orange-600", 교대역.getId(), 양재역.getId(), 5);
 
 		신분당선 = LineTestMethod.지하철_노선_등록되어_있음(lineRequest1).as(LineResponse.class);
@@ -52,11 +63,81 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 		// Scenario : 다양한 지하철 최단 경로 조회
 		// When : 미환승역에서 환승역으로 최단거리 조회
+		ExtractableResponse<Response> shortestPathResponse1 = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when().get("/path?source=" + 남부터미널역.getId() + "&target=" + 강남역.getId())
+			.then().log().all()
+			.extract();
 		// Then : 해당 역 리스트 리턴
+		PathResponse path1 = shortestPathResponse1.as(PathResponse.class);
+		List<Long> stationIds = path1.getStations().stream()
+			.map(it -> it.getId())
+			.collect(Collectors.toList());
+
+		List<Long> expectedStationIds = Arrays.asList(남부터미널역, 교대역, 강남역).stream()
+			.map(it -> it.getId())
+			.collect(Collectors.toList());
+
+		assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
 		// When : 환승역에서 미환승역으로 최단거리 조회
+		ExtractableResponse<Response> shortestPathResponse2 = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when().get("/path?source=" + 강남역.getId() + "&target=" + 남부터미널역.getId())
+			.then().log().all()
+			.extract();
 		// Then : 해당 역 리스트 리턴
+		PathResponse path2 = shortestPathResponse2.as(PathResponse.class);
+		List<Long> stationIds2 = path2.getStations().stream()
+			.map(it -> it.getId())
+			.collect(Collectors.toList());
+
+		List<Long> expectedStationIds2 = Arrays.asList(강남역, 교대역, 남부터미널역).stream()
+			.map(it -> it.getId())
+			.collect(Collectors.toList());
+
+		assertThat(stationIds2).containsExactlyElementsOf(expectedStationIds2);
 		// When : 환승역에서 환승역으로 최단거리 조회
+		ExtractableResponse<Response> shortestPathResponse3 = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when().get("/path?source=" + 교대역.getId() + "&target=" + 양재역.getId())
+			.then().log().all()
+			.extract();
 		// Then : 해당 역 리스트 리턴
+		PathResponse path3 = shortestPathResponse3.as(PathResponse.class);
+		List<Long> stationIds3 = path3.getStations().stream()
+			.map(it -> it.getId())
+			.collect(Collectors.toList());
+
+		List<Long> expectedStationIds3 = Arrays.asList(양재역, 남부터미널역, 교대역).stream()
+			.map(it -> it.getId())
+			.collect(Collectors.toList());
+
+		assertThat(stationIds3).containsExactlyElementsOf(expectedStationIds3);
+		// When : 최단거리의 역방향의 최단거리 조회
+		ExtractableResponse<Response> shortestPathResponse4 = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when().get("/path?source=" + 교대역.getId() + "&target=" + 양재역.getId())
+			.then().log().all()
+			.extract();
+		ExtractableResponse<Response> shortestPathResponse5 = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when().get("/path?source=" + 양재역.getId() + "&target=" + 교대역.getId())
+			.then().log().all()
+			.extract();
+		// Then : 각각의 최단거리는 같음
+		PathResponse path4 = shortestPathResponse4.as(PathResponse.class);
+		PathResponse path5 = shortestPathResponse5.as(PathResponse.class);
+		assertThat(path4.getDistance()).isEqualTo(path5.getDistance());
 	}
 
 	@DisplayName("최단 경로 조회 시 오류 시나리오")
