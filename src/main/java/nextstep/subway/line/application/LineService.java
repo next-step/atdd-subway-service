@@ -17,7 +17,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class LineService {
-    public static final String NOT_FOUND_LINE_ERROR_MESSAGE = "id %s와 일치하는 노선을 찾을 수 없습니다.";
+    private static final String NOT_FOUND_LINE_ERROR_MESSAGE = "id %s와 일치하는 노선을 찾을 수 없습니다.";
+
     private LineRepository lineRepository;
     private StationService stationService;
 
