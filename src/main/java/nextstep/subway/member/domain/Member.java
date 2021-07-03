@@ -1,13 +1,14 @@
 package nextstep.subway.member.domain;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.common.Excetion.AuthorizationException;
+import nextstep.subway.favorite.domain.FavoriteSection;
+import nextstep.subway.favorite.domain.FavoriteSections;
+import nextstep.subway.station.domain.Station;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Member extends BaseEntity {
@@ -18,7 +19,17 @@ public class Member extends BaseEntity {
     private String password;
     private Integer age;
 
+    @Embedded
+    private FavoriteSections favoriteSections = new FavoriteSections();
+
     public Member() {
+    }
+
+    public Member(Long id, String email, String password, Integer age) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+        this.age = age;
     }
 
     public Member(String email, String password, Integer age) {
@@ -53,5 +64,17 @@ public class Member extends BaseEntity {
         if (!StringUtils.equals(this.password, password)) {
             throw new AuthorizationException();
         }
+    }
+
+    public void addFavoriteSection(Station source, Station target) {
+        this.favoriteSections.addFavoriteSection(this, new FavoriteSection(source, target));
+    }
+
+    public FavoriteSections getFavoriteSections() {
+        return this.favoriteSections;
+    }
+
+    public void removeFavoriteSection(FavoriteSection favoriteSection) {
+        favoriteSections.remove(favoriteSection);
     }
 }

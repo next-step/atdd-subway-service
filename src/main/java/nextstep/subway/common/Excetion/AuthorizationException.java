@@ -1,11 +1,8 @@
-package nextstep.subway.auth.application;
+package nextstep.subway.common.Excetion;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-@ResponseStatus(HttpStatus.UNAUTHORIZED)
 public class AuthorizationException extends RuntimeException {
     public AuthorizationException() {
+        super("인증되지 않은 계정입니다.");
     }
 
     public AuthorizationException(String message) {
