@@ -5,18 +5,24 @@ import nextstep.subway.fare.utils.FareCalculator;
 
 public class Fare {
 
+    private static final int BASIC_FARE = 1250;
+
     private final int value;
 
     public static Fare of(Path path) {
         return FareCalculator.calculate(path);
     }
 
-    private Fare(double value) {
-        this((int) value);
+    public Fare() {
+        this.value = BASIC_FARE;
     }
 
-    public Fare(int value) { // TODO default로 변경 필요
+    public Fare(int value) { // TODO
         this.value = value;
+    }
+
+    public Fare add(int amount) {
+        return new Fare(value + amount);
     }
 
     public Fare subtract(int amount) {
@@ -24,7 +30,7 @@ public class Fare {
     }
 
     public Fare multiplyBy(double ratio) {
-        return new Fare(value * ratio);
+        return new Fare((int) (value * ratio));
     }
 
     public int getValue() {
