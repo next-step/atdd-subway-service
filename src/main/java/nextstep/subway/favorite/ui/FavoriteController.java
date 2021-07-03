@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/stations/favorite")
+@RequestMapping("/favorite")
 public class FavoriteController {
     private final FavoriteService favoriteService;
 
@@ -24,6 +24,6 @@ public class FavoriteController {
     @PostMapping
     public ResponseEntity createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest favoriteRequest) {
         Long favoriteId = favoriteService.saveFavorite(loginMember, favoriteRequest);
-        return ResponseEntity.created(URI.create("/stations/favorite/" + favoriteId)).build();
+        return ResponseEntity.created(URI.create("/favorite/" + favoriteId)).build();
     }
 }
