@@ -60,4 +60,69 @@ public class Sections {
 
         return downStation;
     }
+
+    public void addStation(Line line, Station upStation, Station downStation, int distance) {
+        List<Station> stations = getStations();
+        duplicateCheck(isUpStationExisted(upStation, stations), isDownStationExisted(downStation, stations));
+        validateCheck(upStation, downStation, stations);
+        addNewSection(line, upStation, downStation, stations, distance);
+    }
+
+    private void duplicateCheck(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    private void validateCheck(Station upStation, Station downStation, List<Station> stations) {
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
+                stations.stream().noneMatch(it -> it == downStation)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void addNewSection(Line line, Station upStation, Station downStation, List<Station> stations, int distance) {
+        if (stations.isEmpty()) {
+            sections.add(new Section(line, upStation, downStation, distance));
+            return;
+        }
+        if (isUpStationExisted(upStation, stations)) {
+            updateUpStation(line, upStation, downStation, distance);
+            return;
+        }
+        if (isDownStationExisted(downStation, stations)) {
+            updateDownStation(line, upStation, downStation, distance);
+            return;
+        }
+        throw new RuntimeException("등록할 수 없는 구간 입니다.");
+    }
+
+    private boolean isUpStationExisted(Station upStation, List<Station> stations) {
+        return stations.stream().anyMatch(it -> it == upStation);
+    }
+
+    private boolean isDownStationExisted(Station downStation, List<Station> stations) {
+        return stations.stream().anyMatch(it -> it == downStation);
+    }
+
+
+    private void updateUpStation(Line line, Station upStation, Station downStation, int distance) {
+        sections.stream()
+                .filter(it -> it.getUpStation() == upStation)
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(downStation, distance));
+
+        sections.add(new Section(line, upStation, downStation, distance));
+    }
+
+    private void updateDownStation(Line line, Station upStation, Station downStation, int distance) {
+        sections.stream()
+                .filter(it -> it.getDownStation() == downStation)
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(upStation, distance));
+
+        sections.add(new Section(line, upStation, downStation, distance));
+    }
+
+
 }
