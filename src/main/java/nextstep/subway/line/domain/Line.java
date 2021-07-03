@@ -165,4 +165,47 @@ public class Line extends BaseEntity {
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
+    public void removeStation(Station station) {
+        CheckSectionSize();
+
+        Optional<Section> upLineStation = getUpLineStation(station);
+
+        Optional<Section> downLineStation = getDownLineStation(station);
+
+        removeStationInLine(upLineStation, downLineStation);
+    }
+
+    private Optional<Section> getUpLineStation(Station station) {
+        return getSections().stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+    }
+
+    private Optional<Section> getDownLineStation(Station station) {
+        return getSections().stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+    }
+
+    private void removeStationInLine(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        addNewMiddleSection(upLineStation, downLineStation);
+
+        upLineStation.ifPresent(it -> this.getSections().remove(it));
+        downLineStation.ifPresent(it -> this.getSections().remove(it));
+    }
+
+    private void addNewMiddleSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            getSections().add(new Section(this, newUpStation, newDownStation, newDistance));
+        }
+    }
+
+    private void CheckSectionSize() {
+        if (getSections().size() <= 1) {
+            throw new RuntimeException();
+        }
+    }
 }

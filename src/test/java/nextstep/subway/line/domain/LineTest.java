@@ -73,5 +73,49 @@ public class LineTest {
         assertThat(이호선.getStations()).containsExactly(강남역, 사당역, 교대역);
     }
 
+    @DisplayName("노선에 상행역을 삭제한다")
+    public void removeUpStation() {
+        //given
+        Station 교대역 = new Station("교대역");
+        이호선.addStation(강남역, 교대역, 5);
+        assertThat(이호선.getStations()).containsExactly(강남역, 교대역, 사당역);
+
+        //when
+        이호선.removeStation(강남역);
+
+        //then
+        assertThat(이호선.getStations()).containsExactly(교대역, 사당역);
+    }
+
+    @DisplayName("노선에 중간역을 삭제한다")
+    @Test
+    public void removeMiddleStation() {
+        //given
+        Station 교대역 = new Station("교대역");
+        이호선.addStation(강남역, 교대역, 5);
+        assertThat(이호선.getStations()).containsExactly(강남역, 교대역, 사당역);
+
+        //when
+        이호선.removeStation(교대역);
+
+        //then
+        assertThat(이호선.getStations()).containsExactly(강남역, 사당역);
+    }
+
+    @DisplayName("노선에 하행역을 삭제한다")
+    @Test
+    public void removeBelowStation() {
+        //given
+        Station 교대역 = new Station("교대역");
+        이호선.addStation(강남역, 교대역, 5);
+        assertThat(이호선.getStations()).containsExactly(강남역, 교대역, 사당역);
+
+        //when
+        이호선.removeStation(사당역);
+
+        //then
+        assertThat(이호선.getStations()).containsExactly(강남역, 교대역);
+    }
+
 
 }
