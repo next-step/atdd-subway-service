@@ -16,16 +16,16 @@ public class PathFinder {
 
     public PathFinder(Lines lines) {
         graph = new ExtendedWeightedGraph<>(SectionEdge.class);
-        generateGraph(lines, graph);
+        generateGraph(lines);
         this.algorithm = new DijkstraShortestPath<>(graph);
     }
 
-    private void generateGraph(Lines lines, ExtendedWeightedGraph<Station, SectionEdge> graph) {
-        addVertex(lines, graph);
-        addEdge(lines, graph);
+    private void generateGraph(Lines lines) {
+        addVertex(lines);
+        addEdge(lines);
     }
 
-    private void addEdge(Lines lines, ExtendedWeightedGraph<Station, SectionEdge> graph) {
+    private void addEdge(Lines lines) {
         lines.getAllSections()
                 .forEach(section -> setEdgeWithWeight(section, graph));
     }
@@ -35,7 +35,7 @@ public class PathFinder {
         graph.setEdgeWeight(sectionEdge, section.getDistance().getDistanceValue());
     }
 
-    private void addVertex(Lines lines, ExtendedWeightedGraph<Station, SectionEdge> graph) {
+    private void addVertex(Lines lines) {
         lines.getAllStations()
                 .forEach(graph::addVertex);
     }
