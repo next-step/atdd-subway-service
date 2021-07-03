@@ -70,7 +70,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .auth().oauth2(tokenResponse.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
-                .when().post("/favorite")
+                .when().post("/favorites")
                 .then().log().all()
                 .extract();
     }
