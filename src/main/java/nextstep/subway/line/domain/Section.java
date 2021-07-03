@@ -1,8 +1,11 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.exception.UnmergeableSectionException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+
+import static java.lang.String.format;
 
 @Entity
 public class Section {
@@ -63,6 +66,13 @@ public class Section {
         return distance;
     }
 
+    public void mergeSection(Section downSection) {
+        validateMergingSection(downSection);
+
+        this.downStation = downSection.getDownStation();
+        this.distance = this.distance.add(downSection.distance);
+    }
+
     public void updateUpStation(Station station, Distance newDistance) {
         validateLessDistance(newDistance);
         this.upStation = station;
@@ -108,6 +118,15 @@ public class Section {
     private void validateLessDistance(Distance newDistance) {
         if(this.distance.isLessThan(newDistance)){
             throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+    }
+
+    private void validateMergingSection(Section downSection) {
+        if(!this.downStation.equals(downSection.getUpStation())
+                || this.upStation.equals(downSection.getDownStation())) {
+            throw new UnmergeableSectionException(format("%s-%s 구간과 %s-%s구간은 합칠 수 없습니다.",
+                    this.upStation, this.downStation,
+                    downSection.upStation, downSection.downStation));
         }
     }
 }

@@ -14,6 +14,7 @@ public class Line extends BaseEntity {
     private Long id;
     @Column(unique = true)
     private String name;
+    
     private String color;
 
     @Embedded
@@ -51,6 +52,14 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
+    public void addSection(Section section) {
+        this.sections.add(section);
+    }
+
+    public void deleteStation(Station station) {
+        sections.deleteStation(station);
+    }
+
     public Long getId() {
         return id;
     }
@@ -69,9 +78,5 @@ public class Line extends BaseEntity {
 
     public Stations getStations() {
         return sections.toStations();
-    }
-
-    public void addSection(Section section) {
-        this.sections.add(section);
     }
 }
