@@ -146,6 +146,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_생성됨(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isNotBlank();
     }
 
     public static void 회원_정보_조회됨(final ExtractableResponse<Response> response, final User user) {
@@ -172,6 +173,18 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             this.email = email;
             this.password = password;
             this.age = age;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public int getAge() {
+            return age;
         }
     }
 }
