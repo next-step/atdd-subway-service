@@ -4,6 +4,8 @@ import nextstep.subway.station.domain.Station;
 
 import java.time.LocalDateTime;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+
 public class StationResponse {
     private Long id;
     private String name;
@@ -24,7 +26,7 @@ public class StationResponse {
         this.modifiedDate = modifiedDate;
     }
 
-    public Long getId() {
+	public Long getId() {
         return id;
     }
 

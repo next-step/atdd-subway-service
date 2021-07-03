@@ -18,7 +18,7 @@ public class SectionsTest {
 	@Test
 	void add() {
 		Sections sections = new Sections();
-		sections.add(new Section());
+		sections.addSection(new Section());
 		assertThat(sections.isEmpty()).isFalse();
 	}
 

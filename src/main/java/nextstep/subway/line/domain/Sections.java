@@ -10,6 +10,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
+
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -22,10 +25,6 @@ public class Sections {
 
 	public Sections(List<Section> sections) {
 		this.sections = sections;
-	}
-
-	public void add(Section section) {
-		sections.add(section);
 	}
 
 	public boolean isEmpty() {
@@ -41,6 +40,7 @@ public class Sections {
 			Optional<Section> nextLineStation = sections.stream()
 				.filter(it -> it.getDownStation() == finalDownStation)
 				.findFirst();
+			
 			if (!nextLineStation.isPresent()) {
 				break;
 			}
@@ -84,22 +84,12 @@ public class Sections {
 		boolean isUpStationExisted = isUpStationExisted(section.getUpStation());
 		boolean isDownStationExisted = isDownStationExisted(section.getDownStation());
 
-		if (isUpStationExisted && isDownStationExisted) {
-			throw new RuntimeException("이미 등록된 구간 입니다.");
-		}
-
-		if (!isStationsEmpty && isUpStationNoneMatch(section.getUpStation()) &&
-			isDownStationNoneMatch(section.getDownStation())) {
-			throw new RuntimeException("등록할 수 없는 구간 입니다.");
-		}
+		validAlreadyExist(isUpStationExisted, isDownStationExisted);
+		validMatchedUpOrDownStation(isStationsEmpty, isUpStationExisted, isDownStationExisted);
 
 		if (isStationsEmpty) {
 			sections.add(section);
 			return;
-		}
-
-		if (!isUpStationExisted && !isDownStationExisted) {
-			throw new RuntimeException("구간을 추가할 수 없습니다.");
 		}
 
 		if (isUpStationExisted) {
@@ -121,16 +111,21 @@ public class Sections {
 		}
 	}
 
+	private void validMatchedUpOrDownStation(boolean isStationsEmpty, boolean isUpStationExisted, boolean isDownStationExisted) {
+		if (!isStationsEmpty && !isUpStationExisted &&
+			!isDownStationExisted) {
+			throw new RuntimeException("등록할 수 없는 구간 입니다.");
+		}
+	}
+
+	private void validAlreadyExist(boolean isUpStationExisted, boolean isDownStationExisted) {
+		if (isUpStationExisted && isDownStationExisted) {
+			throw new RuntimeException("이미 등록된 구간 입니다.");
+		}
+	}
+
 	private boolean isStationsEmpty() {
 		return getStations().isEmpty();
-	}
-
-	private boolean isDownStationNoneMatch(Station downStation) {
-		return getStations().stream().noneMatch(it -> it == downStation);
-	}
-
-	private boolean isUpStationNoneMatch(Station upStation) {
-		return getStations().stream().noneMatch(it -> it == upStation);
 	}
 
 	private boolean isDownStationExisted(Station downStation) {
@@ -162,5 +157,16 @@ public class Sections {
 
 		upSection.ifPresent(it -> sections.remove(it));
 		downSection.ifPresent(it -> sections.remove(it));
+	}
+
+	public int size() {
+		return sections.size();
+	}
+
+	public void setEdgeWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+		for (int i = 0; i < sections.size(); i++) {
+			Section section = sections.get(i);
+			graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+		}
 	}
 }
