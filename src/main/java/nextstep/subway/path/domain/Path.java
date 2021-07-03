@@ -53,4 +53,8 @@ public class Path {
     public int getFare() {
         return fare.getFare();
     }
+
+    public void updateFare(int finalFare) {
+        this.fare = new Fare(finalFare);
+    }
 }

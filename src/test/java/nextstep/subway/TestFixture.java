@@ -5,6 +5,8 @@ import nextstep.subway.station.domain.Station;
 public class TestFixture {
 
     public static final String EMAIL = "apple2021@email.com";
+    public static final String TEENAGER_EMAIL = "carrot2021@email.com";
+    public static final String CHILD_EMAIL = "watermelon2021@email.com";
     public static final String PASSWORD = "mango";
     public static final int ADULT_AGE = 20;
     public static final int TEENAGER_AGE = 18;

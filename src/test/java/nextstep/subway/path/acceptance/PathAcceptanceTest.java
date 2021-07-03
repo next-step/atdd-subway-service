@@ -101,47 +101,42 @@ class PathAcceptanceTest extends AcceptanceTest {
         예상최단경로_지하철역_이름 = stationResponses.stream()
                 .map(StationResponse::getName)
                 .collect(Collectors.toList());
-
-
     }
 
     @DisplayName("최단경로를 조회한다")
     @Test
     void 최단경로_조회() {
-        회원_생성을_요청(EMAIL, PASSWORD, ADULT_AGE);
+
         int 예상최단거리 = 60;
         int 예상요금 = BASE_FARE +
-                (60 - 50) / DISTANCE_SECOND_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE +
-                (50 - 10) / DISTANCE_FIRST_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE +
+                (60 - 50) / DISTANCE_SECOND_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE_UNIT +
+                (50 - 10) / DISTANCE_FIRST_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE_UNIT +
                 사호선.getExtraCharge();
 
-        ExtractableResponse<Response> 최단경로 = 최단_경로_조회_요청함(사용자토큰, 종로3가역, 충무로역);
+        ExtractableResponse<Response> 최단경로 = 최단_경로_조회_요청함(종로3가역, 충무로역);
 
         최단_경로_조회_성공함(최단경로);
         최단_경로_지하철_목록_반환됨(최단경로, 예상최단경로_지하철역_이름);
         최단_경로_거리_반환됨(최단경로, 예상최단거리);
         최단_경로_요금_반환됨(최단경로, 예상요금);
 
-        ExtractableResponse<Response> 출발도착_동일_최단경로 = 최단_경로_조회_요청함(사용자토큰, 종로3가역, 종로3가역);
+        ExtractableResponse<Response> 출발도착_동일_최단경로 = 최단_경로_조회_요청함(종로3가역, 종로3가역);
         최단_경로_조회_실패함(출발도착_동일_최단경로);
 
-        ExtractableResponse<Response> 출발도착_연결안됨_최단경로 = 최단_경로_조회_요청함(사용자토큰, 종로3가역, 강남역);
+        ExtractableResponse<Response> 출발도착_연결안됨_최단경로 = 최단_경로_조회_요청함(종로3가역, 강남역);
         최단_경로_조회_실패함(출발도착_연결안됨_최단경로);
 
-        ExtractableResponse<Response> 도착_등록안됨_최단경로 = 최단_경로_조회_요청함(사용자토큰, 종로3가역, 동작역);
+        ExtractableResponse<Response> 도착_등록안됨_최단경로 = 최단_경로_조회_요청함(종로3가역, 동작역);
         최단_경로_조회_실패함(도착_등록안됨_최단경로);
     }
 
     @DisplayName("청소년 로그인 사용자 : 최단경로를 조회한다")
     @Test
     void 최단경로_조회_청소년_로그인사용자() {
-        회원_생성을_요청(EMAIL, PASSWORD, TEENAGER_AGE);
-        사용자토큰 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
+        회원_생성을_요청(TEENAGER_EMAIL, PASSWORD, TEENAGER_AGE);
+        사용자토큰 = 로그인_요청(TEENAGER_EMAIL, PASSWORD).as(TokenResponse.class);
         int 예상최단거리 = 60;
-        int 예상요금 = BASE_FARE +
-                (60 - 50) / DISTANCE_SECOND_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE +
-                (50 - 10) / DISTANCE_FIRST_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE +
-                사호선.getExtraCharge();
+        int 예상요금 = (int) ((2150 + 사호선.getExtraCharge() - AGE_DISCOUNT_DEDUCTION_FARE) * (1 - AGE_TEENAGER_DISCOUNT_RATE));
 
         ExtractableResponse<Response> 최단경로 = 최단_경로_조회_요청함(사용자토큰, 종로3가역, 충무로역);
 
@@ -153,14 +148,11 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("어린이 로그인 사용자 : 최단경로를 조회한다")
     @Test
-    void 최단경로_조회_청소년_어린이사용자() {
-        회원_생성을_요청(EMAIL, PASSWORD, CHILD_AGE);
-        사용자토큰 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
+    void 최단경로_조회_어린이_로그인사용자() {
+        회원_생성을_요청(CHILD_EMAIL, PASSWORD, CHILD_AGE);
+        사용자토큰 = 로그인_요청(CHILD_EMAIL, PASSWORD).as(TokenResponse.class);
         int 예상최단거리 = 60;
-        int 예상요금 = BASE_FARE +
-                (60 - 50) / DISTANCE_SECOND_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE +
-                (50 - 10) / DISTANCE_FIRST_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE +
-                사호선.getExtraCharge();
+        int 예상요금 = (int) ((2150 + 사호선.getExtraCharge() - AGE_DISCOUNT_DEDUCTION_FARE) * (1 - AGE_CHILD_DISCOUNT_RATE));
 
         ExtractableResponse<Response> 최단경로 = 최단_경로_조회_요청함(사용자토큰, 종로3가역, 충무로역);
 
@@ -170,9 +162,20 @@ class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_요금_반환됨(최단경로, 예상요금);
     }
 
+    private ExtractableResponse<Response> 최단_경로_조회_요청함(StationResponse 출발역, StationResponse 도착역) {
+        return RestAssured
+                .given().log().all()
+                .queryParam("source", 출발역.getId())
+                .queryParam("target", 도착역.getId())
+                .when().get("/paths")
+                .then().log().all()
+                .extract();
+    }
+
     private ExtractableResponse<Response> 최단_경로_조회_요청함(TokenResponse 토큰, StationResponse 출발역, StationResponse 도착역) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(토큰.getAccessToken())
                 .queryParam("source", 출발역.getId())
                 .queryParam("target", 도착역.getId())
                 .when().get("/paths")

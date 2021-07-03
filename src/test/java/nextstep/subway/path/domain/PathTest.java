@@ -55,8 +55,8 @@ public class PathTest {
         //Given
         Path 경로 = new Path(stations, 58);
         Fare 예상요금 = new Fare(BASE_FARE +
-                ((50 - 10) / DISTANCE_FIRST_INTERVAL_DIVIDER) * DISTANCE_EXTRA_CHARGE +
-                ((58 - 50) / DISTANCE_SECOND_INTERVAL_DIVIDER) * DISTANCE_EXTRA_CHARGE);
+                ((50 - 10) / DISTANCE_FIRST_INTERVAL_DIVIDER) * DISTANCE_EXTRA_CHARGE_UNIT +
+                ((58 - 50) / DISTANCE_SECOND_INTERVAL_DIVIDER) * DISTANCE_EXTRA_CHARGE_UNIT);
 
         //When
         Fare 실제요금 = new Fare(경로.getFare());

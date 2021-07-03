@@ -9,9 +9,9 @@ public enum DistanceBasedExtraCharge {
     BASE(0, 10,
             distance -> ZERO_EXTRA_CHARGE),
     FIRST_INTERVAL(11, 50,
-            distance -> (distance - BASE.endingPoint) / DISTANCE_FIRST_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE),
+            distance -> (distance - BASE.endingPoint) / DISTANCE_FIRST_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE_UNIT),
     SECOND_INTERVAL(51, Integer.MAX_VALUE,
-            distance -> (distance - FIRST_INTERVAL.endingPoint) / DISTANCE_SECOND_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE +
+            distance -> (distance - FIRST_INTERVAL.endingPoint) / DISTANCE_SECOND_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE_UNIT +
                     calculate(FIRST_INTERVAL.endingPoint));
 
     private int startingPoint;

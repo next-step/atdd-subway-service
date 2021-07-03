@@ -102,8 +102,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         * 환승구간에 따라 `추가요금` 반영
             * 만약 여러 노선을 거친다면, 가장 큰 금액의 추가요금만을 더한다
             * 이를 위해, `graph`에 `edge`를 추가할 때, `line`의 `추가요금`을 같이 넣어준다. 그리고 차후에 `Path`를 리턴하기 전에 해당 요금을 함께 리턴
-* [ ] 연령별 할인 정책 추가(단, 로그인 사용자인 경우)
-    * [ ] 연령별 요금정책을 담은 `enum` 설계 및 생성
+* [X] 연령별 할인 정책 추가(단, 로그인 사용자인 경우)
+    * [X] 연령별 요금정책을 담은 `enum` 설계 및 생성
         - 거리별 요금정책과 마찬가지로 Functional Interface를 활용하여 요금 Caculator 생성
         - 매개변수로 `LoginMember`를 받아서 유효한 값을 가진 경우에만 할인 적용됨
 
@@ -113,7 +113,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ### 구현사항 정리
 
-* [ ] 토큰발급기능 인수테스트 작성
+* [X] 토큰발급기능 인수테스트 작성
     ```markdown
     ✅ Feature: 토큰 발급 기능
         🔙 Background
