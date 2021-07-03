@@ -20,9 +20,9 @@ class CustomerPolicyTest {
         CustomerPolicy teenagerPolicy = CustomerType.getPolicy(MemberTest.청소년_멤버);
         CustomerPolicy childPolicy = CustomerType.getPolicy(MemberTest.어린이_멤버);
 
-        Fare fare = new Fare(2050);
-        assertThat(adultPolicy.apply(fare).getValue()).isEqualTo(2050);
-        assertThat(teenagerPolicy.apply(fare).getValue()).isEqualTo(1360);
-        assertThat(childPolicy.apply(fare).getValue()).isEqualTo(850);
+        Fare fare = new Fare();
+        assertThat(adultPolicy.apply(fare).getValue()).isEqualTo(1250);
+        assertThat(teenagerPolicy.apply(fare).getValue()).isEqualTo(720);
+        assertThat(childPolicy.apply(fare).getValue()).isEqualTo(450);
     }
 }

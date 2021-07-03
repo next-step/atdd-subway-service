@@ -17,7 +17,7 @@ public class Fare {
         this.value = BASIC_FARE;
     }
 
-    public Fare(int value) { // TODO
+    private Fare(int value) {
         this.value = value;
     }
 
