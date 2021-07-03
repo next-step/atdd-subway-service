@@ -22,7 +22,8 @@ import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 
 public class Path {
-    private Path() {}
+    private Path() {
+    }
 
     public static PathResponse findShortestPath(List<Line> lines, Station source, Station target, LoginMember loginMember) {
         DijkstraShortestPath<Station, Station> dijkstraShortestPath = init(lines);
@@ -48,7 +49,7 @@ public class Path {
         for (Line line : lines) {
             addPath(line.sections(), graph);
         }
-         return new DijkstraShortestPath(graph);
+        return new DijkstraShortestPath(graph);
     }
 
     private static void addPath(List<Section> sections, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
@@ -66,14 +67,21 @@ public class Path {
     private static Fare setupLineFare(List<Line> lines, List<Station> stations) {
         Fare mostExtraFare = new Fare();
         Set<Line> stationContainLines = new HashSet<>();
-        for (Station station : stations) {
-            stationContainLines.addAll(lines.stream().filter(line -> line.isContainStation(station))
-                    .collect(Collectors.toSet()));
+
+        for (int i = 0; i < stations.size() - 1; i++) {
+            stationContainLines.add(lineContainUpAndDownStation(lines, stations.get(i), stations.get(i + 1)));
         }
 
         for (Line line : stationContainLines) {
             mostExtraFare = line.extraFare().gt(mostExtraFare);
         }
         return mostExtraFare;
+    }
+
+    private static Line lineContainUpAndDownStation(List<Line> lines, Station upStation, Station downStation) {
+        return lines.stream()
+                .filter(line -> line.isContainStation(upStation) && line.isContainStation(downStation))
+                .findFirst()
+                .orElseThrow(() -> new CustomException(ErrorMessage.NOT_FOUND_SECTION));
     }
 }

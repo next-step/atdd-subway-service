@@ -237,4 +237,24 @@ class PathTest {
         assertThat(pathResponse.getDistance()).isEqualTo(5);
         assertThat(pathResponse.getFare()).isEqualTo(DEFAULT_USE_FARE_AMOUNT);
     }
+
+    @DisplayName("환승하지 않은 라인 구간 요금 책정 테스트")
+    @Test
+    void nonUseLineFare() {
+        // given
+        Station 복정역 = new Station("복정역");
+
+        Line newLine = new Line("분당선"
+                , "노란색"
+                , 선릉역
+                , 복정역
+                , new Distance(5)
+                , new Fare(0));
+        // when
+        // when
+        PathResponse pathResponse = Path.findShortestPath(new ArrayList<>(Arrays.asList(line, newLine)), 선릉역, 복정역, 일반);
+        // then
+        assertThat(pathResponse.getDistance()).isEqualTo(5);
+        assertThat(pathResponse.getFare()).isEqualTo(DEFAULT_USE_FARE_AMOUNT);
+    }
 }
