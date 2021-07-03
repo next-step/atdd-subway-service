@@ -92,6 +92,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> 즐겨찾기_목록조회() {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/favorites")
                 .then().log().all()
@@ -106,6 +107,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         String uri = response.header("Location");
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .when().delete(uri)
                 .then().log().all()
                 .extract();
