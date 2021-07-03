@@ -25,12 +25,31 @@ public final class PrivateRestAssuredTemplate {
                 .extract();
     }
 
-    public <T> ExtractableResponse<Response> delete() {
+    public <T> ExtractableResponse<Response> post(final T body) {
         return RestAssured.given().log().all()
                 .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when()
+                .post(baseUrl)
+                .then().log().all()
+                .extract();
+    }
+
+    public ExtractableResponse<Response> delete() {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
                 .when()
                 .delete(baseUrl)
+                .then().log().all()
+                .extract();
+    }
+
+    public ExtractableResponse<Response> delete(Long id) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .when()
+                .delete(String.format("%s/%s", baseUrl, id))
                 .then().log().all()
                 .extract();
     }
@@ -45,4 +64,6 @@ public final class PrivateRestAssuredTemplate {
                 .then().log().all()
                 .extract();
     }
+
+
 }
