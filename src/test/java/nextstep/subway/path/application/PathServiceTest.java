@@ -20,9 +20,9 @@ import nextstep.subway.path.exception.DuplicatePathException;
 import nextstep.subway.path.exception.NotConnectedPathException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
-import nextstep.subway.station.exeption.CanNotAddStationException;
 import nextstep.subway.station.exeption.NotFoundStationException;
 
+@DisplayName("경로 서비스 관련 기능")
 @ExtendWith(SpringExtension.class)
 class PathServiceTest {
 
@@ -32,7 +32,7 @@ class PathServiceTest {
     private StationRepository stationRepository;
 
     private Station 강남역, 양재역, 교대역, 남부터미널역;
-    Line 신분당선, 삼호선;
+    private Line 신분당선, 삼호선;
 
     @BeforeEach
     void setup() {
