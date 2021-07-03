@@ -9,7 +9,6 @@ public enum OverFareByDistance {
 
     public static final int DEFAULT_USE_FARE_AMOUNT = 1250;
 
-//    private final int overDistance;
     private final int startDistance;
     private final int endDistance;
     private final int addPercent;
@@ -21,12 +20,6 @@ public enum OverFareByDistance {
         this.addPercent = addPercent;
         this.overFare = overFare;
     }
-
-//    OverFareByDistance(int overDistance, int addPercent, int overFare) {
-//        this.overDistance = overDistance;
-//        this.addPercent = addPercent;
-//        this.overFare = overFare;
-//    }
 
     public static Fare calculate(Distance distance) {
         int overAmount = DEFAULT_USE_FARE_AMOUNT;

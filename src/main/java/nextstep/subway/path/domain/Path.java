@@ -5,19 +5,17 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import nextstep.subway.path.additionalfarepolicy.AdditionalFarePolicy;
-import nextstep.subway.path.additionalfarepolicy.AdditionalFareCalculator;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import nextstep.subway.path.additionalfarepolicy.AdditionalFareCalculator;
 import nextstep.subway.error.CustomException;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.error.ErrorMessage;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.additionalfarepolicy.memberfarepolicy.MemberDiscountPolicy;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 
@@ -35,11 +33,7 @@ public class Path {
 
         Fare lineFare = setupLineFare(lines, shortestPath);
         Distance distance = new Distance((int) dijkstraShortestPath.getPathWeight(source, target));
-
-        MemberDiscountPolicy policy = MemberDiscountPolicy.getPolicy(loginMember);
-        AdditionalFarePolicy additionalFarePolicy = new AdditionalFareCalculator();
-
-        Fare resultFare = additionalFarePolicy.calculate(lineFare, distance, policy);
+        Fare resultFare = AdditionalFareCalculator.calculate(lineFare, distance, loginMember);
 
         return PathResponse.of(shortestPath.stream().map(Station::toResponse).collect(Collectors.toList()), distance, resultFare);
     }

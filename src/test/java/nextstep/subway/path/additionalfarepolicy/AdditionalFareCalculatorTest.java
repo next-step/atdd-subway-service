@@ -1,5 +1,6 @@
 package nextstep.subway.path.additionalfarepolicy;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.path.additionalfarepolicy.memberfarepolicy.NoneDiscountPolicy;
 import nextstep.subway.path.domain.Fare;
@@ -22,8 +23,7 @@ class AdditionalFareCalculatorTest {
         // given
         Fare fare = new Fare();
         // when
-        AdditionalFarePolicy additionalFarePolicy = new AdditionalFareCalculator();
-        Fare totalFare = additionalFarePolicy.calculate(fare, new Distance(거리), new NoneDiscountPolicy());
+        Fare totalFare = AdditionalFareCalculator.calculate(fare, new Distance(거리), new LoginMember());
         // then
         assertThat(totalFare.amount()).isEqualTo(요금);
     }
