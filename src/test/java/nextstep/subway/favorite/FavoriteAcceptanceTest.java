@@ -5,8 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -62,6 +62,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         즐겨찾기_생성됨(createResponse);
         즐겨찾기_생성됨(createResponse2);
+        
+        // when
+        ExtractableResponse<Response> findAllResponse = 즐겨찾기_목록조회();
+        // then
+        즐겨찾기_조회됨(findAllResponse);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제(createResponse);
+        // then
+        즐겨찾기_삭제됨(deleteResponse);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(FavoriteRequest request) {
@@ -77,5 +87,31 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_목록조회() {
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
+    private void 즐겨찾기_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_삭제(ExtractableResponse<Response> response) {
+        String uri = response.header("Location");
+        return RestAssured
+                .given().log().all()
+                .when().delete(uri)
+                .then().log().all()
+                .extract();
+    }
+
+    private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
