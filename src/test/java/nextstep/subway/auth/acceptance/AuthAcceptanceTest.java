@@ -63,6 +63,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
+    public static ExtractableResponse<Response> 로그인_되어_있음(String email, String password) {
+        return 로그인_요청(email, password);
+    }
+
     public static void 로그인_됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
