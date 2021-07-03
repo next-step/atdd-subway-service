@@ -6,7 +6,7 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.fare.domain.Fare;
 
 @Component
-public class TeenagerCustomerPolicy extends CustomerPolicy {
+public class TeenagerPolicy extends CustomerPolicy {
 
     private static final int MINIMUM_AGE = 13;
     private static final int MAXIMUM_AGE = 20;
@@ -14,7 +14,7 @@ public class TeenagerCustomerPolicy extends CustomerPolicy {
     private static final int FIXED_DISCOUNT = 350;
     private static final double PAYMENT_RATIO = 0.8;
 
-    private TeenagerCustomerPolicy() {
+    private TeenagerPolicy() {
         addPolicy(this);
     }
 
