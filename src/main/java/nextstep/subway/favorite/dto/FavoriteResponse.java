@@ -1,21 +1,35 @@
 package nextstep.subway.favorite.dto;
 
-import java.util.List;
-
 import nextstep.subway.favorite.FavoriteSection;
+import nextstep.subway.station.domain.Station;
 
 public class FavoriteResponse {
-    private final List<FavoriteSection> favoriteSections;
+    private Long id;
+    private Station source;
+    private Station target;
 
-    public FavoriteResponse(final List<FavoriteSection> favoriteSections) {
-        this.favoriteSections = favoriteSections;
+    public FavoriteResponse() {
     }
 
-    public int size() {
-        return favoriteSections.size();
+    public FavoriteResponse(final FavoriteSection favoriteSection) {
+        id = favoriteSection.getId();
+        source = favoriteSection.getSource();
+        target = favoriteSection.getTarget();
     }
 
-    public FavoriteSection get(final int index) {
-        return favoriteSections.get(index);
+    public static FavoriteResponse of(final FavoriteSection favoriteSection) {
+        return new FavoriteResponse(favoriteSection);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Station getSource() {
+        return source;
+    }
+
+    public Station getTarget() {
+        return target;
     }
 }
