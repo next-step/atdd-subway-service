@@ -42,7 +42,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         사용자토큰 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
     }
 
-
     @DisplayName("즐겨찾기를 관리한다.")
     @Test
     void manageFavorite() {
