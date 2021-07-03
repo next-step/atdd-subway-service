@@ -20,7 +20,7 @@
     - [x] LineResponse에 Line to LineResponse 메소드 구현
     - [x] StationResponse에 Stations to List<StationResponse> 메소드 구현
     - [x] StationResponse에 Line to StationResponse 메소드 구현
-  - [ ] findUpStation 도메인 추출 및 리팩토링
+  - [x] findUpStation 도메인 추출 및 리팩토링
   - [x] SaveLine 리팩토링
     - [x] ***도메인 추출*** LineRequest의 도메인 프로세스 전환 메소드 구현
     - [x] ***도메인 추출*** 특정 노선에 속한 역을 등록된 구간을 기준으로 정렬하여 반환
