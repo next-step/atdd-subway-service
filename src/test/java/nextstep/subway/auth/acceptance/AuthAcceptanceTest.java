@@ -70,6 +70,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         토큰인증_실패(authResponse);
     }
 
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
+        TokenRequest params = new TokenRequest(email, password);
+        return 로그인_요청(params);
+    }
+
     public static ExtractableResponse<Response> 로그인_요청(TokenRequest params) {
         return RestAssured
                 .given().log().all()
