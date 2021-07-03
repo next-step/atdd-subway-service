@@ -21,7 +21,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     private final String email = "test@test.com";
     private final String password = "1111";
-    private final String incorrectPassword = "2222";
 
     @Override
     @BeforeEach
@@ -29,10 +28,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         // given
-        final Integer age = 20;
+        final int age = 20;
+        final User user = new User(email, password, age);
 
         // when
-        final ExtractableResponse<Response> response = 회원_생성을_요청(email, password, age);
+        final ExtractableResponse<Response> response = 회원_생성을_요청(user);
 
         // then
         회원_생성됨(response);
@@ -51,6 +51,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
+        // given
+        final String incorrectPassword = "2222";
+
         // when
         final ExtractableResponse<Response> loginResponse = 로그인_요청(email, incorrectPassword);
 
@@ -75,7 +78,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    private void 로그인_됨(final ExtractableResponse<Response> response) {
+    public static void 로그인_됨(final ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         final TokenResponse tokenResponse = response.as(TokenResponse.class);
         assertThat(tokenResponse.getAccessToken()).isNotNull();
