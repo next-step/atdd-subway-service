@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
+import static nextstep.subway.line.dto.LineResponse.ofLines;
 
 @Service
 @Transactional
@@ -42,12 +43,7 @@ public class LineService {
     }
 
     public List<LineResponse> findLines() {
-        List<Line> persistLines = lineRepository.findAll();
-        List<LineResponse> lineResponses = persistLines.stream()
-                .map(LineResponse::of)
-                .collect(toList());
-
-        return lineResponses;
+        return ofLines(lineRepository.findAll());
     }
 
     private Line findById(Long id) {

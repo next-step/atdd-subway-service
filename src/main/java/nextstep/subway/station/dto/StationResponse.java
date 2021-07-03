@@ -1,8 +1,13 @@
 package nextstep.subway.station.dto;
 
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
+
+import static java.util.stream.Collectors.toList;
 
 public class StationResponse {
     private Long id;
@@ -12,6 +17,12 @@ public class StationResponse {
 
     public static StationResponse of(Station station) {
         return new StationResponse(station.getId(), station.getName(), station.getCreatedDate(), station.getModifiedDate());
+    }
+
+    public static List<StationResponse> of(Stations stations) {
+        return stations.get().stream()
+                .map(station -> of(station))
+                .collect(toList());
     }
 
     public StationResponse() {
@@ -45,5 +56,18 @@ public class StationResponse {
 
     public LocalDateTime getModifiedDate() {
         return modifiedDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StationResponse that = (StationResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(createdDate, that.createdDate) && Objects.equals(modifiedDate, that.modifiedDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, createdDate, modifiedDate);
     }
 }
