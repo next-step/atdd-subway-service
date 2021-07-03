@@ -3,13 +3,13 @@
 
 ## 요구사항
 - [x] LineSectionAcceptanceTest 리팩터링
-- [ ] LineService 리팩터링
+- [x] LineService 리팩터링
 
 ## 기능 구현 목록
 - [x] LineSectionAcceptanceTest 리팩터링
   - [x] TestFactory 사용
   
-- [ ] LineService 리팩토링
+- [x] LineService 리팩토링
   - [x] Service 내에 orElseThrow 메소드가 던지는 예외가 RuntimeException인 경우 EntityNotFound로 대체
   - [x] getStations 도메인 추출 및 리팩토링
     - [x] Line 도메인 내 sections를 1급 콜렉션으로 대체
@@ -32,6 +32,6 @@
   - [x] updateLine 리팩토링
     - [x] Line 도메인 내에 update하는 메소드 구현 후 적용
   - [x] ***도메인 추출*** addLineStation 리팩토링
-  - [ ] ***도메인 추출*** removeLineStation 리팩토링
+  - [x] ***도메인 추출*** removeLineStation 리팩토링
     
   
