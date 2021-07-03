@@ -116,4 +116,8 @@ public class Sections {
         sections.remove(section);
         return section;
     }
+
+    public List<Section> getSections() {
+        return new ArrayList<>(this.sections);
+    }
 }
