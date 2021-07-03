@@ -46,6 +46,7 @@ public class FavoriteServiceTest {
 
 
     private static final Long MEMBER_ID = 1L;
+    private static final Long ANOTHER_MEMBER_ID = 2L;
     private static final Long SOURCE_STATION_ID = 1L;
     private static final Long TARGET_STATION_ID = 2L;
 
@@ -123,10 +124,13 @@ public class FavoriteServiceTest {
         Map<Long, Station> stations = new HashMap<>();
         stations.put(SOURCE_STATION_ID, 강남역);
         stations.put(TARGET_STATION_ID, 광교역);
+        Member 다른_사용자 = new Member(TEENAGER_EMAIL, PASSWORD, TEENAGER_AGE);
 
         when(memberService.findById(MEMBER_ID)).thenReturn(사용자);
+        when(memberService.findById(ANOTHER_MEMBER_ID)).thenReturn(다른_사용자);
         when(stationService.findStations(SOURCE_STATION_ID, TARGET_STATION_ID)).thenReturn(stations);
-        when(favoriteRepository.existsBySourceIdAndTargetId(SOURCE_STATION_ID, TARGET_STATION_ID)).thenReturn(true);
+        when(favoriteRepository.existsByMemberIdAndSourceIdAndTargetId(MEMBER_ID, SOURCE_STATION_ID, TARGET_STATION_ID)).thenReturn(true);
+        when(favoriteRepository.save(any())).thenReturn(강남_광교_즐겨찾기);
 
         FavoriteRequest 강남_광교_요청 = new FavoriteRequest(SOURCE_STATION_ID, TARGET_STATION_ID);
 
@@ -134,5 +138,8 @@ public class FavoriteServiceTest {
         assertThatThrownBy(() -> favoriteService.createFavorite(MEMBER_ID, 강남_광교_요청))
                 .isInstanceOf(CannotAddException.class)
                 .hasMessage(Message.ERROR_FAVORITE_ALREADY_EXISTS.showText());
+
+        FavoriteResponse 다른_회원_강남_광교_응답 = favoriteService.createFavorite(ANOTHER_MEMBER_ID, 강남_광교_요청);
+        assertThat(다른_회원_강남_광교_응답.getSource().getName()).isEqualTo("강남역");
     }
 }

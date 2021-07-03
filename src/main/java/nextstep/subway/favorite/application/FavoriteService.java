@@ -37,7 +37,7 @@ public class FavoriteService {
         Station source = stations.get(request.getSource());
         Station target = stations.get(request.getTarget());
 
-        if (favoriteRepository.existsBySourceIdAndTargetId(source.getId(), target.getId())) {
+        if (favoriteRepository.existsByMemberIdAndSourceIdAndTargetId(memberId, source.getId(), target.getId())) {
             throw new CannotAddException(Message.ERROR_FAVORITE_ALREADY_EXISTS);
         }
 
