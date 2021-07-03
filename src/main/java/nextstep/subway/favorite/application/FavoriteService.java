@@ -47,4 +47,7 @@ public class FavoriteService {
     }
 
 
+    public void deleteFavorite(Long memberId, Long favoriteId) {
+
+    }
 }
