@@ -37,6 +37,11 @@ public class LineController {
         return ResponseEntity.ok(lineService.findLines());
     }
 
+    @GetMapping("/new")
+    public ResponseEntity<List<LineResponse>> findAllLinesNew() {
+        return ResponseEntity.ok(lineService.findLinesNew());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
         return ResponseEntity.ok(lineService.findLineResponseById(id));

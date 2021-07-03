@@ -44,6 +44,7 @@ public class LineService {
         return LineResponse.of(persistLine, persistLine.getStationResponses());
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
@@ -54,6 +55,12 @@ public class LineService {
                     return LineResponse.of(line, stations);
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<LineResponse> findLinesNew() {
+        List<Line> persistLines = lineRepository.findAll();
+        return LineResponse.listOf(persistLines);
     }
 
     public Line findLineById(Long id) {
