@@ -1,12 +1,9 @@
 package nextstep.subway.fare.policy.customer;
 
-import org.springframework.stereotype.Component;
-
-import nextstep.subway.member.domain.Member;
 import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.member.domain.Member;
 
-@Component
-public class TeenagerPolicy extends CustomerPolicy {
+public class TeenagerPolicy implements CustomerPolicy {
 
     private static final int MINIMUM_AGE = 13;
     private static final int MAXIMUM_AGE = 20;
@@ -14,8 +11,7 @@ public class TeenagerPolicy extends CustomerPolicy {
     private static final int FIXED_DISCOUNT = 350;
     private static final double PAYMENT_RATIO = 0.8;
 
-    private TeenagerPolicy() {
-        addPolicy(this);
+    TeenagerPolicy() {
     }
 
     @Override
