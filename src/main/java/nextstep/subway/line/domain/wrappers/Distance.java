@@ -11,6 +11,7 @@ public class Distance {
     private static final int MINIMUM_DISTANCE = 1;
     private static final String ZERO_OR_NEGATIVE_NUMBER_ERROR_MESSAGE = "구간 거리 값은 0보다 큰값만 입력 가능 합니다.";
     private static final String OUT_BOUND_DISTANCE_ERROR_MESSAGE = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
+
     private int distance;
 
     public Distance() {
@@ -41,6 +42,10 @@ public class Distance {
         if (this.distance <= newDistance) {
             throw new BadDistanceException(OUT_BOUND_DISTANCE_ERROR_MESSAGE);
         }
+    }
+
+    public int distance() {
+        return distance;
     }
 
     @Override
