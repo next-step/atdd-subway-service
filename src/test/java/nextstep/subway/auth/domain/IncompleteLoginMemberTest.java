@@ -41,7 +41,7 @@ class IncompleteLoginMemberTest {
     @Test
     void toCompleteLoginMemberException() {
         //given
-        IncompleteLoginMember incompleteLoginMember = new IncompleteLoginMember(null);
+        IncompleteLoginMember incompleteLoginMember = IncompleteLoginMember.ofNull();
 
         //when
         assertThatThrownBy(incompleteLoginMember::toCompleteLoginMember)

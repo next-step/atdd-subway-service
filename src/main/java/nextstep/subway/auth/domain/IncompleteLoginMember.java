@@ -11,6 +11,10 @@ public class IncompleteLoginMember {
         this.loginMember = loginMember;
     }
 
+    public static IncompleteLoginMember ofNull(){
+        return new IncompleteLoginMember(null);
+    }
+
     public LoginMember toCompleteLoginMember() {
         if (!isCompleteLoginMember()) {
             throw new AuthorizationException("토큰 검증에 실패하여 멤버 정보를 확인할 수 없습니다.");

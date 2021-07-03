@@ -32,7 +32,7 @@ public class AuthService {
 
     public IncompleteLoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new IncompleteLoginMember(null);
+            return IncompleteLoginMember.ofNull();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
