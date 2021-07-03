@@ -1,5 +1,6 @@
 package nextstep.subway.component.domain;
 
+import nextstep.subway.exception.SubwayPatchException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class SubwayGraphTest {
     private Station 강남역;
@@ -51,13 +53,22 @@ public class SubwayGraphTest {
     }
 
     @Test
-    void subwatGraph_객첵를_이용하여_최단_거리_경로_조회() {
+    void subwayGraph_객첵를_이용하여_최단_거리_경로_조회() {
         List<Line> lines = Arrays.asList(신분당선, 삼호선);
         SubwayGraph subwayGraph = new SubwayGraph(SectionWeightedEdge.class);
         subwayGraph.addVertexesAndEdge(lines);
 
         SubwayPath subwayPath = subwayGraph.calcShortestPath(광교역, 교대역);
         assertThat(subwayPath.getStations()).containsExactly(광교역, 강남역, 교대역);
+    }
+
+    @Test
+    void subwayGraph_객체의_출발역과_도차역이_같은경우_에러_발생() {
+        SubwayGraph subwayGraph = new SubwayGraph(SectionWeightedEdge.class);
+
+        assertThatThrownBy(() -> subwayGraph.checkValidSameStation(광교역, 광교역))
+                .isInstanceOf(SubwayPatchException.class)
+                .hasMessage("출발역과 도착역이 일치하면 경로를 찾을 수 없습니다.");
 
     }
 }

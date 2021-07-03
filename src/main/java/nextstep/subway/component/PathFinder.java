@@ -13,8 +13,8 @@ import java.util.List;
 public class PathFinder {
     public SubwayPath shortestPath(List<Line> lines, Station source, Station target) {
         SubwayGraph subwayGraph = new SubwayGraph(SectionWeightedEdge.class);
+        subwayGraph.checkValidSameStation(source, target);
         subwayGraph.addVertexesAndEdge(lines);
         return subwayGraph.calcShortestPath(source, target);
     }
-
 }

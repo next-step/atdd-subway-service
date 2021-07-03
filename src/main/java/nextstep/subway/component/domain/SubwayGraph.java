@@ -1,5 +1,6 @@
 package nextstep.subway.component.domain;
 
+import nextstep.subway.exception.SubwayPatchException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -10,6 +11,8 @@ import org.jgrapht.graph.WeightedMultigraph;
 import java.util.List;
 
 public class SubwayGraph {
+
+    private  static final String SAME_STATION_ERROR_MESSAGE = "출발역과 도착역이 일치하면 경로를 찾을 수 없습니다.";
 
     private final WeightedMultigraph<Station, SectionWeightedEdge> graph;
 
@@ -44,5 +47,11 @@ public class SubwayGraph {
 
     public WeightedMultigraph<Station, SectionWeightedEdge> getGraph() {
         return graph;
+    }
+
+    public void checkValidSameStation(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new SubwayPatchException(SAME_STATION_ERROR_MESSAGE);
+        }
     }
 }

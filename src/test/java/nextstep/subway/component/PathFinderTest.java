@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,7 +35,5 @@ class PathFinderTest {
         // then
         assertThat(subwayPath.calcTotalDistance()).isGreaterThan(0);
         assertThat(subwayPath.getStations().size()).isGreaterThan(0);
-
-
     }
 }
