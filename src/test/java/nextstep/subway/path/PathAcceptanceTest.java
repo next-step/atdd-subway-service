@@ -141,9 +141,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
 			.when().get("/path?source=" + 양재역.getId() + "&target=" + 교대역.getId())
 			.then().log().all()
 			.extract();
-		// Then : 각각의 최단거리는 같음
+		// Then : 각각의 최단거리는 같음, 각각의 최단경로는 같음
 		PathResponse path4 = shortestPathResponse4.as(PathResponse.class);
+		List<Long> stationIds4 = path4.getStations().stream()
+			.map(it -> it.getId())
+			.collect(Collectors.toList());
+
 		PathResponse path5 = shortestPathResponse5.as(PathResponse.class);
+		List<Long> stationIds5 = path5.getStations().stream()
+			.map(it -> it.getId())
+			.collect(Collectors.toList());
+
+		assertThat(stationIds4).containsExactlyElementsOf(stationIds5);
 		assertThat(path4.getDistance()).isEqualTo(path5.getDistance());
 	}
 
