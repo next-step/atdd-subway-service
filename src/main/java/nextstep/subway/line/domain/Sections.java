@@ -8,7 +8,7 @@ import java.util.*;
 @Embeddable
 public class Sections {
     @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Section> sections = new LinkedList<>();
+    private List<Section> sections = new ArrayList<>();
 
     public Sections() {
     }
@@ -26,39 +26,68 @@ public class Sections {
             return Arrays.asList();
         }
 
+        return getSortedStation();
+    }
+
+    private List<Station> getSortedStation() {
         List<Station> stations = new ArrayList<>();
+
         Station downStation = findUpStation();
         stations.add(downStation);
 
+        stations.addAll(addNextStation(downStation));
+
+        return stations;
+    }
+
+    private List<Station> addNextStation(Station downStation) {
+        List<Station> stations = new ArrayList<>();
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = sections.stream()
                     .filter(it -> it.getUpStation() == finalDownStation)
                     .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
 
+            downStation = addNextDownStationAndReturn(stations, nextLineStation);
+        }
         return stations;
+    }
+
+    private Station addNextDownStationAndReturn(List<Station> stations, Optional<Section> nextLineStation) {
+        if (!nextLineStation.isPresent()) {
+            return null;
+        }
+        Station downStation = nextLineStation.get().getDownStation();
+        stations.add(downStation);
+        return downStation;
     }
 
     private Station findUpStation() {
         Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
+        boolean hasNext = true;
+        while (hasNext) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = sections.stream()
                     .filter(it -> it.getDownStation() == finalDownStation)
                     .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
+            hasNext = checkHasNext(nextLineStation);
+            downStation = getLastDownStation(hasNext, downStation, nextLineStation);
         }
-
         return downStation;
+    }
+
+    private Station getLastDownStation(boolean hasNext, Station downStation, Optional<Section> nextLineStation) {
+        if (hasNext) {
+            return nextLineStation.get().getUpStation();
+        }
+            return downStation;
+    }
+
+    private boolean checkHasNext(Optional<Section> nextLineStation) {
+        if (!nextLineStation.isPresent()) {
+            return false;
+        }
+        return true;
     }
 
     public void addStation(Line line, Station upStation, Station downStation, int distance) {
