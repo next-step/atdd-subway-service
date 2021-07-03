@@ -71,4 +71,18 @@ public class SubwayGraphTest {
                 .hasMessage("출발역과 도착역이 일치하면 경로를 찾을 수 없습니다.");
 
     }
+
+    @Test
+    void subwayGraph_객첵를_이용하여_최단_거리_경로_조회_시_연결되어있지않는_경로_조회_요청_시_에러_발생() {
+        Station 사당역 = new Station(100L, "사당역");
+        Station 과천역 = new Station(99L, "과천역");
+        Line 사호선 = new Line(9L, "사호선", 사당역, 과천역, 10);
+        List<Line> lines = Arrays.asList(신분당선, 삼호선, 사호선);
+        SubwayGraph subwayGraph = new SubwayGraph(SectionWeightedEdge.class);
+        subwayGraph.addVertexesAndEdge(lines);
+
+        assertThatThrownBy(() -> subwayGraph.calcShortestPath(사당역, 교대역))
+                .isInstanceOf(SubwayPatchException.class)
+                .hasMessage("경로를 찾을 수 없습니다. 출발역과 도착역이 노선으로 연결되어 있는지 확인해주세요.");
+    }
 }
