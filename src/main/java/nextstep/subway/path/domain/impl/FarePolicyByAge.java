@@ -1,4 +1,7 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.domain.impl;
+
+import nextstep.subway.path.domain.enums.AgeCategory;
+import nextstep.subway.path.domain.FarePolicy;
 
 /**
  * ### 로그인 사용자의 경우 연령별 요금 할인 적용
@@ -16,12 +19,6 @@ public class FarePolicyByAge implements FarePolicy {
 
     @Override
     public double calculate(double fare) {
-        if (age >= 6 && age < 13) {
-            return (fare - 350) * 0.5;
-        }
-        if (age >= 13 && age < 19) {
-            return (fare - 350) * 0.8;
-        }
-        return fare;
+        return AgeCategory.findCategory(age).calculate(fare);
     }
 }

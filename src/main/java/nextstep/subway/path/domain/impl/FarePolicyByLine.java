@@ -1,6 +1,7 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.domain.impl;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.FarePolicy;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  */
 
 public class FarePolicyByLine implements FarePolicy {
-
+    private static final double ZERO = 0D;
     private final List<Line> lines;
 
     public FarePolicyByLine(List<Line> lines) {
@@ -24,8 +25,8 @@ public class FarePolicyByLine implements FarePolicy {
     @Override
     public double calculate(double fare) {
         return fare + lines.stream()
-                .map(line -> line.getExtraFare())
+                .map(Line::getExtraFare)
                 .max(Double::compareTo)
-                .orElse(0D);
+                .orElse(ZERO);
     }
 }

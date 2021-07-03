@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.domain.impl;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

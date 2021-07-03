@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.domain.impl;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
@@ -8,7 +8,7 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class FarePolicyByLineTest {
+public class FarePolicyByLineTest {
     @Test
     void calculate() {
         //given
