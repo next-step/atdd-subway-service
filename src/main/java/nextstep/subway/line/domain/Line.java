@@ -33,6 +33,12 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
+    public Line(String name, String color, ExtraCharge extraCharge) {
+        this.name = name;
+        this.color = color;
+        this.extraCharge = extraCharge;
+    }
+
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
@@ -49,6 +55,7 @@ public class Line extends BaseEntity {
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+        this.extraCharge = line.extraCharge;
     }
 
     public Long getId() {

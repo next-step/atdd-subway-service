@@ -32,7 +32,7 @@ public class AuthService {
     }
 
     public User findMemberByToken(String credentials) {
-        if (credentials == null) {
+        if (credentials == null || credentials.isEmpty()) {
             return new User();
         }
         if (!jwtTokenProvider.validateToken(credentials)) {

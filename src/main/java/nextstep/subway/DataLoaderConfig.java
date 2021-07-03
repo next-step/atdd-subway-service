@@ -29,10 +29,10 @@ public class DataLoaderConfig implements CommandLineRunner {
         Station 회현역 = new Station("회현역");
         Station 명동역 = new Station("명동역");
 
-        Line 신분당선 = new Line("신분당선", "red lighten-1", 강남역, 양재역, 30);
-        Line 이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, 10);
-        Line 삼호선 = new Line("3호선", "orange darken-1", 교대역, 양재역, 100);
-        Line 사호선 = new Line("4호선", "blue lighten-3", 회현역, 명동역, 50);
+        Line 신분당선 = new Line("신분당선", "red lighten-1", 강남역, 양재역, 30,900);
+        Line 이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, 10,200);
+        Line 삼호선 = new Line("3호선", "orange darken-1", 교대역, 양재역, 100,300);
+        Line 사호선 = new Line("4호선", "blue lighten-3", 회현역, 명동역, 50,400);
 
         lineRepository.saveAll(Lists.newArrayList(신분당선, 이호선, 삼호선, 사호선));
 
