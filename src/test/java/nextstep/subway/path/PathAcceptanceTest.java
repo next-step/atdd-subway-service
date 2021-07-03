@@ -7,6 +7,7 @@ import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -51,7 +52,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 최단경로를 조회한다.")
     public void requestPath() {
         // when
-        ExtractableResponse<Response> response = requestPath(getDefaultParam(강남역ID, 양재역ID));
+        ExtractableResponse<Response> response = requestPath(getPathRequestParamMap(강남역ID, 양재역ID));
 
         // then
         assertAll(
@@ -65,12 +66,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 최단경로를 조회시 잘못된 출발역과 도착역일 경우 예외가 발생한다.")
     public void requestPathException() {
         assertAll(
-            () -> assertThat(requestPath(getDefaultParam(강남역ID, 강남역ID)).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-            () -> assertThat(requestPath(getDefaultParam(강남역ID, 없는역ID)).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
+            () -> assertThat(requestPath(getPathRequestParamMap(강남역ID, 강남역ID)).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+            () -> assertThat(requestPath(getPathRequestParamMap(강남역ID, 없는역ID)).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
         );
     }
 
-    private Map<String, Long> getDefaultParam(long source, long target) {
+    public static Map<String, Long> getPathRequestParamMap(long source, long target) {
         return new HashMap<String, Long>() {
             {
                 put("source",source);
@@ -101,7 +102,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 
     /**
-     * @see nextstep.subway.path.ui.PathController#findLineById
+     * @see nextstep.subway.path.ui.PathController#findLineById(PathRequest request)
      */
     public static ExtractableResponse<Response> requestPath(Map<String, Long> query) {
         return restAssuredTemplate.get(query);
