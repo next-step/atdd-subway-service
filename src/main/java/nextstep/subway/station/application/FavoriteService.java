@@ -1,6 +1,6 @@
-package nextstep.subway.favorite.application;
+package nextstep.subway.station.application;
 
-import nextstep.subway.favorite.domain.FavoriteRepository;
+import nextstep.subway.station.domain.FavoriteRepository;
 import org.springframework.stereotype.Service;
 
 @Service
