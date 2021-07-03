@@ -152,7 +152,7 @@ public class Sections {
 
 
     public void removeStation(Line line, Station station) {
-        CheckSectionSize();
+        checkSectionSize();
 
         Optional<Section> upLineStation = getUpLineStation(station);
 
@@ -189,7 +189,7 @@ public class Sections {
         }
     }
 
-    private void CheckSectionSize() {
+    private void checkSectionSize() {
         if (sections.size() <= 1) {
             throw new RuntimeException("삭제할 구간이 없습니다.");
         }
