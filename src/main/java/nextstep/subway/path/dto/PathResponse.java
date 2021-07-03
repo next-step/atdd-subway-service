@@ -9,10 +9,17 @@ public class PathResponse {
     private double distance;
     private double fare;
 
-    public PathResponse(List<StationResponse> stationList, double distance, double fare) {
-        this.stations = stationList;
+    public PathResponse() {
+    }
+
+    private PathResponse(List<StationResponse> stations, double distance, double fare) {
+        this.stations = stations;
         this.distance = distance;
         this.fare = fare;
+    }
+
+    public static PathResponse of(List<StationResponse> stationResponses, double distance, double fare) {
+        return new PathResponse(stationResponses, distance, fare);
     }
 
     public double getDistance() {
