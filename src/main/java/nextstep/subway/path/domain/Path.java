@@ -10,12 +10,6 @@ public class Path {
     private final List<Station> stations;
     private final double distance;
 
-    public Path(List<Station> stations, double distance) {
-        this.stations = stations;
-        this.distance = distance;
-        this.transferLines = null;
-    }
-
     public Path(List<Station> stations, double distance, List<Line> transferLines) {
         this.stations = stations;
         this.distance = distance;
