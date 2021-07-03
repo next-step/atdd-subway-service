@@ -4,11 +4,23 @@ import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class LineRequest {
+    @NotBlank(message = "노선의 이름을 공백일 수 없습니다.")
     private String name;
+    @NotBlank(message = "노선의 색깔은 공백일 수 없습니다.")
     private String color;
+    @NotNull(message = "상행 역의 아이디를 넣어주세요.")
+    @Min(value = 1, message = "상행 역의 아이디는 0이하 일 수 없습니다.")
     private Long upStationId;
+    @NotNull(message = "하행 역의 아이디를 넣어주세요.")
+    @Min(value = 1, message = "하행 역의 아이디는 0이하 일 수 없습니다.")
     private Long downStationId;
+    @NotNull
+    @Min(value = 1, message = "노선에 속한 구간의 거리는 0이하 일 수 없습니다.")
     private int distance;
 
     public LineRequest() {

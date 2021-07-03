@@ -11,12 +11,16 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -60,6 +64,28 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_생성_실패됨(response);
+    }
+
+    @DisplayName("노선 도메인의 변수를 빈값으로 해서 지하철 노선을 생성한다.")
+    @MethodSource("methodSource_createLineWithEmptyValue")
+    @ParameterizedTest
+    void createLineWithEmptyValue(LineRequest illegalLineRequest) {
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(illegalLineRequest);
+
+        // then
+        지하철_노선_생성_실패됨(response);
+    }
+
+    static Stream<Arguments> methodSource_createLineWithEmptyValue() {
+        return Stream.of(
+                Arguments.of(new LineRequest("", "bg-red-600", 1L, 2L, 15)),
+                Arguments.of(new LineRequest("오호선", "", 1L, 2L, 15)),
+                Arguments.of(new LineRequest("오호선", "bg-red-600", 0L, 2L, 15)),
+                Arguments.of(new LineRequest("오호선", "bg-red-600", 1L, 0L, 15)),
+                Arguments.of(new LineRequest("오호선", "bg-red-600", 1L, 2L, 0))
+        );
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")
