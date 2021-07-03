@@ -9,20 +9,15 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.lang.String.format;
-import static java.util.stream.Collectors.toList;
-import static nextstep.subway.line.dto.LineResponse.ofLines;
+import static nextstep.subway.line.dto.LineResponse.of;
 
 @Service
 @Transactional
@@ -43,7 +38,7 @@ public class LineService {
     }
 
     public List<LineResponse> findLines() {
-        return ofLines(lineRepository.findAll());
+        return of(lineRepository.findAll());
     }
 
     private Line findById(Long id) {

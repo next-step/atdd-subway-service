@@ -7,6 +7,9 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -35,7 +38,7 @@ class LineResponseTest {
     }
 
     @Test
-    void of_성공() {
+    void of_성공_케이스1() {
         // when
         LineResponse lineResponse = LineResponse.of(오호선);
 
@@ -46,5 +49,24 @@ class LineResponseTest {
                 () -> assertThat(lineResponse.getColor()).isEqualTo(오호선.getColor()),
                 () -> assertThat(lineResponse.getStations()).isEqualTo(StationResponse.of(오호선.getStations()))
         );
+    }
+
+    @Test
+    void of_성공_케이스2() {
+        // when
+        List<Line> lines = asList(오호선, 육호선);
+        List<LineResponse> lineResponses = LineResponse.of(lines);
+
+        // then
+        for(int i = 0; i < lines.size(); i++) {
+            int finalI = i;
+            assertAll(
+                    () -> assertThat(lineResponses.get(finalI).getId()).isEqualTo(lines.get(finalI).getId()),
+                    () -> assertThat(lineResponses.get(finalI).getName()).isEqualTo(lines.get(finalI).getName()),
+                    () -> assertThat(lineResponses.get(finalI).getColor()).isEqualTo(lines.get(finalI).getColor()),
+                    () -> assertThat(lineResponses.get(finalI).getStations()).isEqualTo(StationResponse.of(lines.get(finalI).getStations()))
+            );
+        }
+
     }
 }
