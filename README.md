@@ -15,7 +15,11 @@
     - [x] Line 도메인 내 sections를 1급 콜렉션으로 대체
     - [x] Line 도메인 내 getStations 메소드 구현
     - [x] getStations 메소드가 반환하는 List<Station>을 1급 콜렉션인 Stations 구현 및 대체
-  - [ ] LineResponse 내에 List<Line> to List<LineResponse> 메소드 구현
+  - [ ] 도메인 to DTO 메소드 구현
+    - [x] LineResponse에 List<Line> to List<LineResponse> 메소드 구현
+    - [x] LineResponse에 Line to LineResponse 메소드 구현
+    - [x] StationResponse에 Stations to List<StationResponse> 메소드 구현
+    - [x] StationResponse에 Line to StationResponse 메소드 구현
   - [ ] findUpStation 도메인 추출 및 리팩토링
   - [x] SaveLine 리팩토링
     - [x] ***도메인 추출*** LineRequest의 도메인 프로세스 전환 메소드 구현
