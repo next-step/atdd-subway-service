@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @DisplayName("Sections 도메인 테스트")
 class SectionsTest {
@@ -112,6 +111,7 @@ class SectionsTest {
     void toStations_성공() {
         // given
         Stations stations = new Stations();
+
 
         // when
         sections.add(구간_영등포구청역_신길역.get());
