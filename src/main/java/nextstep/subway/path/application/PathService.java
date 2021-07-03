@@ -20,7 +20,6 @@ import java.util.List;
 public class PathService {
 
     private static final String FIND_SAME_STATION_ERROR = "두 역은 같은 역일 수 없습니다.";
-    private static final String NOT_CONNECTED_STATIONS_ERROR = "두 역이 연결되어 있지 않습니다.";
 
     private final LineService lineService;
     private final StationService stationService;
@@ -45,7 +44,7 @@ public class PathService {
         subwayGraph.addAllEdge(lines);
 
         GraphPath<Station, SectionEdge> path = new DijkstraShortestPath(subwayGraph).getPath(sourceStation, targetStation);
-        validateConnect(path);
+
         return new PathResponse(new SubwayPath(path));
     }
 
@@ -54,11 +53,4 @@ public class PathService {
             throw new IllegalArgumentException(FIND_SAME_STATION_ERROR);
         }
     }
-
-    private void validateConnect(GraphPath<Station, SectionEdge> path) {
-        if (path == null) {
-            throw new IllegalArgumentException(NOT_CONNECTED_STATIONS_ERROR);
-        }
-    }
-
 }
