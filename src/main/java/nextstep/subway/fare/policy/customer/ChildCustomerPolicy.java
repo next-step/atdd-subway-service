@@ -11,8 +11,8 @@ public class ChildCustomerPolicy extends CustomerPolicy {
     private static final int MINIMUM_AGE = 6;
     private static final int MAXIMUM_AGE = 13;
 
-    private static final int CHILD_DISCOUNT = 350;
-    private static final double PAY_RATE = 0.5;
+    private static final int FIXED_DISCOUNT = 350;
+    private static final double PAYMENT_RATIO = 0.5;
 
     private ChildCustomerPolicy() {
         addPolicy(this);
@@ -20,7 +20,9 @@ public class ChildCustomerPolicy extends CustomerPolicy {
 
     @Override
     public Fare apply(Fare fare) {
-        return Fare.of((fare.getValue() - CHILD_DISCOUNT) * PAY_RATE);
+        return fare
+            .subtract(FIXED_DISCOUNT)
+            .multiplyBy(PAYMENT_RATIO);
     }
 
     @Override

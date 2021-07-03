@@ -17,13 +17,22 @@ public class Fare {
         return FareCalculator.calculate(path);
     }
 
-    public static Fare of(double fare) {
-        return new Fare((int) fare);
+    private Fare(double value) {
+        this((int) value);
     }
 
-    public Fare(int value) {
+    public Fare(int value) { // TODO default로 변경 필요
         this.value = value;
     }
+
+    public Fare subtract(int amount) {
+        return new Fare(value - amount);
+    }
+
+    public Fare multiplyBy(double ratio) {
+        return new Fare(value * ratio);
+    }
+
     public int getValue() {
         return value;
     }
