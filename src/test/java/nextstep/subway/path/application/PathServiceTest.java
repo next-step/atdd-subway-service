@@ -80,7 +80,6 @@ class PathServiceTest {
 
         //then
         assertThat(pathResponse).isNotNull();
-        assertThat(pathResponse.getStations()).isEqualTo(Arrays.asList(교대역, 남부터미널역, 양재역));
         assertThat(pathResponse.getDistance()).isEqualTo(5);
         assertThat(pathResponse.getFare()).isEqualTo(1250);
     }
