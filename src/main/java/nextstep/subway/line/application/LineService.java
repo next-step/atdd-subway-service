@@ -36,8 +36,12 @@ public class LineService {
         return LineResponse.of(persistLine, StationResponse.ofList(persistLine.stations()));
     }
 
+    public List<Line> fineAllLines() {
+        return lineRepository.findAll();
+    }
+
     public List<LineResponse> findLines() {
-        return lineRepository.findAll().stream()
+        return fineAllLines().stream()
                 .map(line -> LineResponse.of(line, StationResponse.ofList(line.stations())))
                 .collect(Collectors.toList());
     }
