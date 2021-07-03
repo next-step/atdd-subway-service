@@ -26,7 +26,6 @@ public class LineTest {
     @Test
     public void getStationsTest() {
         //given
-        //setup
 
         //when
         List<Station> stations = 이호선.getStations();
@@ -39,9 +38,7 @@ public class LineTest {
     @Test
     public void addStationInMiddle() {
         //given
-        //setup
         Station 교대역 = new Station("교대역");
-
 
         //when
         이호선.addStation(강남역, 교대역, 5);
@@ -54,9 +51,7 @@ public class LineTest {
     @Test
     public void addStationOnTop() {
         //given
-        //setup
         Station 교대역 = new Station("교대역");
-
 
         //when
         이호선.addStation(교대역, 강남역, 5);
@@ -69,7 +64,6 @@ public class LineTest {
     @Test
     public void addStationBelow() {
         //given
-        //setup
         Station 교대역 = new Station("교대역");
 
         //when

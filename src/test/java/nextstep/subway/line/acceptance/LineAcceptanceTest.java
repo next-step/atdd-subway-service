@@ -39,6 +39,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
     }
 
+    @DisplayName("수정한 서비스로 지하철 노선을 생성한다.")
+    @Test
+    void createLineNew() {
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청_New(lineRequest1);
+
+        // then
+        지하철_노선_생성됨(response);
+    }
+
     @DisplayName("지하철 노선을 생성한다.")
     @Test
     void createLine() {
@@ -127,6 +137,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/lines")
+                .then().log().all().
+                        extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_생성_요청_New(LineRequest params) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/lines/new")
                 .then().log().all().
                         extract();
     }

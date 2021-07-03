@@ -26,6 +26,12 @@ public class LineController {
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
+    @PostMapping("/new")
+    public ResponseEntity createLineNew(@RequestBody LineRequest lineRequest) {
+        LineResponse line = lineService.saveLineNew(lineRequest);
+        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+    }
+
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
         return ResponseEntity.ok(lineService.findLines());
