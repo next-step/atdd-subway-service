@@ -43,7 +43,7 @@ public class LineService {
 
     private Line findById(Long id) {
         return lineRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(format("id %d인 노선을 찾을 수 없습니다.", id)));;
+                .orElseThrow(() -> new EntityNotFoundException(format("id %d인 노선을 찾을 수 없습니다.", id)));
     }
 
 
@@ -53,8 +53,7 @@ public class LineService {
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = this.findById(id);
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
-
+        persistLine.update(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
     }
 
     public void deleteLineById(Long id) {
