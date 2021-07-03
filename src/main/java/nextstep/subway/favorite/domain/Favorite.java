@@ -34,6 +34,10 @@ public class Favorite extends BaseEntity {
         this.targetStation = targetStation;
     }
 
+    public boolean isOwner(Member member) {
+        return this.member.equals(member);
+    }
+
     public Long getId() {
         return id;
     }

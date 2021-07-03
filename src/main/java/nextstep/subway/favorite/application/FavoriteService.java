@@ -40,7 +40,12 @@ public class FavoriteService {
         return FavoriteResponse.asList(favorites);
     }
 
-    public void deleteFavoriteById(Long id) {
+    public void deleteFavoriteById(LoginMember loginMember, Long id) {
+        Member member = memberRepository.getOne(loginMember.getId());
+        Favorite favorite = favoriteRepository.getOne(id);
+        if (!favorite.isOwner(member)) {
+            throw new IllegalArgumentException("즐겨찾기는 소유자의 경우에만 삭제가 가능합니다.");
+        }
         favoriteRepository.deleteById(id);
     }
 }
