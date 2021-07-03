@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.IncompleteLoginMember;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineQueryService;
 import nextstep.subway.line.domain.Line;
@@ -24,11 +25,11 @@ public class PathService {
         this.lineQueryService = lineQueryService;
     }
 
-    public PathResponse findPath(LoginMember loginMember, PathRequest pathRequest) {
+    public PathResponse findPath(IncompleteLoginMember incompleteLoginMember, PathRequest pathRequest) {
         List<Line> lines = lineQueryService.findLines();
         Station startStation = stationQueryService.findStationById(pathRequest.getSource());
         Station endStation = stationQueryService.findStationById(pathRequest.getTarget());
         PathFinder pathFinder = new PathFinder(lines);
-        return PathResponse.of(pathFinder.findPath(startStation, endStation, loginMember));
+        return PathResponse.of(pathFinder.findPath(startStation, endStation, incompleteLoginMember));
     }
 }

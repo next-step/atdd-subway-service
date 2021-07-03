@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.IncompleteLoginMember;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
@@ -46,11 +47,11 @@ public class PathFinder {
         weightedMultiGraph.addVertex(section.getDownStation());
     }
 
-    public SubwayShortestPath findPath(Station startStation, Station endStation, LoginMember loginMember) {
+    public SubwayShortestPath findPath(Station startStation, Station endStation, IncompleteLoginMember incompleteLoginMember) {
         validateStation(startStation, endStation);
         GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(startStation, endStation);
         validatePathIsNull(path);
-        return new SubwayShortestPath(path.getVertexList(), (int) path.getWeight(), FareCalculator.newInstance().calculateFare(path, loginMember));
+        return new SubwayShortestPath(path.getVertexList(), (int) path.getWeight(), FareCalculator.newInstance().calculateFare(path, incompleteLoginMember));
     }
 
     private void validatePathIsNull(GraphPath<Station, SectionEdge> path) {
