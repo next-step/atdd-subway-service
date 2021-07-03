@@ -72,7 +72,7 @@ public class LineService {
         Line line = this.findById(lineId);
         Station station = stationService.findById(stationId);
         if (line.getSections().size() <= 1) {
-            throw new RuntimeException();
+            throw new IllegalArgumentException();
         }
 
         Optional<Section> upLineStation = line.getSections().stream()

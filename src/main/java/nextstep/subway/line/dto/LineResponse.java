@@ -1,13 +1,10 @@
 package nextstep.subway.line.dto;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.station.domain.Stations;
 import nextstep.subway.station.dto.StationResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -41,7 +38,7 @@ public class LineResponse {
 
     public static List<LineResponse> of(List<Line> lines) {
         return lines.stream()
-                .map(line -> of(line))
+                .map(LineResponse::of)
                 .collect(toList());
     }
 

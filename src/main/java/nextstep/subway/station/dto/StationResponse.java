@@ -21,7 +21,7 @@ public class StationResponse {
 
     public static List<StationResponse> of(Stations stations) {
         return stations.get().stream()
-                .map(station -> of(station))
+                .map(StationResponse::of)
                 .collect(toList());
     }
 
