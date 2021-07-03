@@ -23,4 +23,8 @@ public class Fare {
     public double getFare() {
         return fare;
     }
+
+    public static double getBasicFare() {
+        return BASIC_FARE;
+    }
 }
