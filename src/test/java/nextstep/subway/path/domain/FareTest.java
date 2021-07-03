@@ -4,6 +4,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.fare.domain.Fare;
+
 @DisplayName("요금 객체 단위 테스트")
 class FareTest {
     @Test

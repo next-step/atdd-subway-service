@@ -9,8 +9,9 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.path.domain.Fare;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.fare.policy.customer.CustomerPolicy;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -38,6 +39,7 @@ public class PathService {
         Path path = pathFinder.findPath(source, target);
 
         Member member = memberService.findMemberEntity(loginMember.getId());
-        return PathResponse.of(path, member.pays(Fare.of(path)));
+        CustomerPolicy policy = CustomerPolicy.getCustomerPolicy(member);
+        return PathResponse.of(path, policy.apply(Fare.of(path)));
     }
 }

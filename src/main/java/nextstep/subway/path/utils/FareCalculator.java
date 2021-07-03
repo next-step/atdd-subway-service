@@ -3,7 +3,7 @@ package nextstep.subway.path.utils;
 import static java.util.Comparator.*;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.domain.Fare;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PayZone;
 

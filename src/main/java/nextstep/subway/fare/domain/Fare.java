@@ -1,5 +1,6 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.fare.domain;
 
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.utils.FareCalculator;
 
 public class Fare {
@@ -16,8 +17,15 @@ public class Fare {
         return FareCalculator.calculate(path);
     }
 
+    public static Fare of(double fare) {
+        return new Fare((int) fare);
+    }
+
     public Fare(int value) {
         this.value = value;
+    }
+    public int getValue() {
+        return value;
     }
 
     public int adultFare() {
