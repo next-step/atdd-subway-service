@@ -14,15 +14,15 @@ import java.util.Objects;
 @Table(uniqueConstraints = @UniqueConstraint(name = "unique_favorite", columnNames={"member_id", "source", "target"}))
 public class Favorite extends BaseEntity {
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_favorite_to_member"))
     private Member member;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "source", foreignKey = @ForeignKey(name = "fk_favorite_to_source"))
     private Station source;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target", foreignKey = @ForeignKey(name = "fk_favorite_to_target"))
     private Station target;
 
