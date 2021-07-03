@@ -8,7 +8,7 @@ import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.fare.exception.PolicyNotFoundException;
 
 public abstract class CustomerPolicy {
-    protected static final List<CustomerPolicy> policies = new ArrayList<>();
+    private static final List<CustomerPolicy> policies = new ArrayList<>();
 
     public abstract Fare apply(Fare fare);
     public abstract boolean isAvailable(Member member);
@@ -26,5 +26,4 @@ public abstract class CustomerPolicy {
             .findAny()
             .orElseThrow(() -> new PolicyNotFoundException("해당 고객의 가격정책이 확인되지 않습니다."));
     }
-
 }
