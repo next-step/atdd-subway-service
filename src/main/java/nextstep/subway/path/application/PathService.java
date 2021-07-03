@@ -18,8 +18,8 @@ import nextstep.subway.station.excpetion.StationGraphException;
 @Transactional
 public class PathService {
 
-	LineRepository lineRepository;
-	StationRepository stationRepository;
+	private LineRepository lineRepository;
+	private StationRepository stationRepository;
 
 	public PathService(LineRepository lineRepository, StationRepository stationRepository) {
 		this.lineRepository = lineRepository;

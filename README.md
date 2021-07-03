@@ -79,3 +79,30 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     2. Domain의 단위 테스트를 작성하기
     3. 로직을 옮기기
 
+- 토큰 발급 기능 (로그인) 인수 테스트 만들기
+    - 토큰 발급(로그인)을 검증하는 인수 테스트 만들기
+    - AuthAcceptanceTest 인수 테스트 만들기
+    - request 
+        ```jsonpath
+        POST /login/token HTTP/1.1
+        content-type: application/json; charset=UTF-8
+        accept: application/json
+        {
+            "password": "password",
+            "email": "email@email.com"
+        }
+        ```
+    - response 
+        ```jsonpath
+        HTTP/1.1 200
+        Content-Type: application/json
+        Transfer-Encoding: chunked
+        Date: Sun, 27 Dec 2020 04:32:26 GMT
+        Keep-Alive: timeout=60
+        Connection: keep-alive
+        {
+            "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY"
+        }
+        ```
+- 인증 - 내 정보 조회 기능 완성하기
+- 인증 - 즐겨 찾기 기능 완성하기
