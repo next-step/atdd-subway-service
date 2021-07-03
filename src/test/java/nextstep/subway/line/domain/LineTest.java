@@ -72,7 +72,6 @@ public class LineTest {
         //setup
         Station 교대역 = new Station("교대역");
 
-
         //when
         이호선.addStation(사당역, 교대역, 5);
 
