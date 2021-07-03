@@ -1,13 +1,19 @@
 package nextstep.subway.member.domain;
 
-import nextstep.subway.BaseEntity;
-import nextstep.subway.auth.application.AuthorizationException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import nextstep.subway.BaseEntity;
+import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.auth.application.AuthorizationException;
 
 @Entity
 public class Member extends BaseEntity {
@@ -17,6 +23,9 @@ public class Member extends BaseEntity {
     private String email;
     private String password;
     private Integer age;
+
+    @OneToMany(mappedBy = "member")
+    private List<Favorite> favorites = new ArrayList<>();
 
     public Member() {
     }
@@ -43,6 +52,10 @@ public class Member extends BaseEntity {
         return age;
     }
 
+    public void addFavorite(Favorite favorite) {
+        this.favorites.add(favorite);
+    }
+
     public void update(Member member) {
         this.email = member.email;
         this.password = member.password;
@@ -51,7 +64,7 @@ public class Member extends BaseEntity {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
+            throw new AuthorizationException("비밀번호가 맞지 않습니다.");
         }
     }
 }

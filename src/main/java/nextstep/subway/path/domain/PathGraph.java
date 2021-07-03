@@ -4,21 +4,19 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-import nextstep.subway.line.domain.Section;
-import nextstep.subway.station.domain.Station;
-
 public class PathGraph {
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+    private final WeightedMultigraph<PathVertex, DefaultWeightedEdge> graph;
 
     public PathGraph() {
         this.graph = new WeightedMultigraph(DefaultWeightedEdge.class);
     }
 
-    public void setPathInfoBy(Section section) {
-        this.graph.addVertex(section.getUpStation());
-        this.graph.addVertex(section.getDownStation());
-        DefaultWeightedEdge weightedEdge = graph.addEdge(section.getUpStation(), section.getDownStation());
-        this.graph.setEdgeWeight(weightedEdge, section.getDistance());
+    public void setPathInfoBy(GraphEdgeWeight graphEdgeWeight) {
+        this.graph.addVertex(graphEdgeWeight.getSourceVertex());
+        this.graph.addVertex(graphEdgeWeight.getTargetVertex());
+        DefaultWeightedEdge weightedEdge = graph.addEdge(graphEdgeWeight.getSourceVertex(),
+                graphEdgeWeight.getTargetVertex());
+        this.graph.setEdgeWeight(weightedEdge, graphEdgeWeight.getWeight());
     }
 
     public Graph getGraph() {

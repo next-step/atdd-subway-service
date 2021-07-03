@@ -24,7 +24,7 @@ import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.dto.VertexStationResponse;
+import nextstep.subway.path.dto.VertexResponse;
 import nextstep.subway.station.domain.StationRepository;
 
 /**
@@ -102,7 +102,7 @@ class PathServiceTest {
                 () -> {
                     List<String> stationNames = shortestPath.getStations()
                             .stream()
-                            .map(VertexStationResponse::getName)
+                            .map(VertexResponse::getName)
                             .collect(Collectors.toList());
                     List<String> targetStationNames = Stream.of(gangnam, gyodae, seocho, bangbae, sadang, chongshin)
                             .map(Station::getName)

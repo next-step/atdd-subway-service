@@ -1,7 +1,11 @@
 package nextstep.subway.common.error;
 
+import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.favorite.exception.FavoriteAlreadyExistsException;
+import nextstep.subway.favorite.exception.FavoriteNotFoundException;
 import nextstep.subway.line.exception.LineNotFoundException;
-import nextstep.subway.path.exception.NoConnectedStationsException;
+import nextstep.subway.path.exception.NoConnectedVertexesException;
+import nextstep.subway.path.exception.NotContainVertexException;
 import nextstep.subway.station.exception.StationNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -37,8 +41,28 @@ public class GlobalExceptionAdvice {
         return ResponseEntity.badRequest().body(ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getMessage()));
     }
 
-    @ExceptionHandler(NoConnectedStationsException.class)
-    public ResponseEntity<ErrorResponse> handleNoConnectedSectionException(NoConnectedStationsException e) {
+    @ExceptionHandler(FavoriteNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleFavoriteNotFoundException(FavoriteNotFoundException e) {
+        return ResponseEntity.badRequest().body(ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getMessage()));
+    }
+
+    @ExceptionHandler(FavoriteAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleFavoriteAlreadyExistsException(FavoriteAlreadyExistsException e) {
+        return ResponseEntity.badRequest().body(ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getMessage()));
+    }
+
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthorizationException(AuthorizationException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.of(HttpStatus.UNAUTHORIZED, e.getMessage()));
+    }
+
+    @ExceptionHandler(NoConnectedVertexesException.class)
+    public ResponseEntity<ErrorResponse> handleNoConnectedSectionException(NoConnectedVertexesException e) {
+        return ResponseEntity.badRequest().body(ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getMessage()));
+    }
+
+    @ExceptionHandler(NotContainVertexException.class)
+    public ResponseEntity<ErrorResponse> handleNotContainVertexException(NotContainVertexException e) {
         return ResponseEntity.badRequest().body(ErrorResponse.of(HttpStatus.BAD_REQUEST, e.getMessage()));
     }
 

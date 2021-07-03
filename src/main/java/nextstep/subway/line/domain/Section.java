@@ -8,10 +8,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import nextstep.subway.path.domain.GraphEdgeWeight;
+import nextstep.subway.path.domain.PathVertex;
 import nextstep.subway.station.domain.Station;
 
 @Entity
-public class Section {
+public class Section implements GraphEdgeWeight {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -101,5 +103,20 @@ public class Section {
         if (this.distance <= section.distance) {
             throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
+    }
+
+    @Override
+    public PathVertex getSourceVertex() {
+        return this.upStation;
+    }
+
+    @Override
+    public PathVertex getTargetVertex() {
+        return this.downStation;
+    }
+
+    @Override
+    public Double getWeight() {
+        return Double.valueOf(this.distance);
     }
 }

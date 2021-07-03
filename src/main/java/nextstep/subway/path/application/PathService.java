@@ -5,6 +5,7 @@ import java.util.Arrays;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -26,11 +27,11 @@ public class PathService {
         validateSameStations(source, target);
         Station sourceStation = stationService.findById(source);
         Station targetStation = stationService.findById(target);
-        PathFinder finder = PathFinder.of(lineRepository.findByStationIdIn(Arrays.asList(source, target)));
+        PathFinder finder = PathFinder.of(new Lines(lineRepository.findByStationIdIn(Arrays.asList(source, target))));
         if (finder.isConnectedPath(sourceStation, targetStation)) {
             return PathResponse.of(finder.findPath(sourceStation, targetStation));
         }
-        return PathResponse.of(PathFinder.of(lineRepository.findAll())
+        return PathResponse.of(PathFinder.of(new Lines(lineRepository.findAll()))
                 .findPath(sourceStation, targetStation));
     }
 

@@ -12,6 +12,9 @@ public class ErrorResponse {
     private int status;
     private String errorMessage;
 
+    protected ErrorResponse() {
+    }
+
     private ErrorResponse(int statusCode, String timestamp, String errorMessage) {
         this.status = statusCode;
         this.errorMessage = errorMessage;

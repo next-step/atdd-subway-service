@@ -28,7 +28,7 @@ public class StationService {
         List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
-                .map(station -> StationResponse.of(station))
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -37,10 +37,10 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(() -> new StationNotFoundException("조회된 역이 없습니다."));
+        return stationRepository.findById(id).orElseThrow(StationNotFoundException::new);
     }
 
     public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(() -> new StationNotFoundException("조회된 역이 없습니다."));
+        return stationRepository.findById(id).orElseThrow(StationNotFoundException::new);
     }
 }

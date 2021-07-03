@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.jgrapht.GraphPath;
 
-import nextstep.subway.station.domain.Station;
-
 public class Path {
     private final GraphPath graphPath;
 
@@ -13,7 +11,7 @@ public class Path {
         this.graphPath = graphPath;
     }
 
-    public List<Station> getStations() {
+    public List<PathVertex> getPathVertexes() {
         return graphPath.getVertexList();
     }
 

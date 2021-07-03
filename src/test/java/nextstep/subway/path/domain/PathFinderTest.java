@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import nextstep.subway.path.exception.NoConnectedStationsException;
+import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.exception.NoConnectedVertexesException;
+import nextstep.subway.path.exception.NotContainVertexException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
@@ -78,7 +80,7 @@ class PathFinderTest {
     @DisplayName("환승역을 포함한 최단경로 조회 테스트")
     void find_shortestPath() {
         // given
-        PathFinder finder = PathFinder.of(Arrays.asList(line2, line3, line4, line7));
+        PathFinder finder = PathFinder.of(new Lines(Arrays.asList(line2, line3, line4, line7)));
         assertAll(
                 () -> assertThat(finder.isConnectedPath(seocho, naebang)).isTrue(),
                 () -> {
@@ -86,9 +88,9 @@ class PathFinderTest {
                     Path path = finder.findPath(gangnam, namsung);
 
                     // then
-                    List<String> pathStationNames = path.getStations()
+                    List<String> pathStationNames = path.getPathVertexes()
                             .stream()
-                            .map(Station::getName)
+                            .map(PathVertex::getName)
                             .collect(Collectors.toList());
                     List<String> targetStationNames = Stream.of(gangnam, gyodae, seocho, bangbae, sadang, chongshin, namsung)
                             .map(Station::getName)
@@ -103,9 +105,9 @@ class PathFinderTest {
                     Path path = finder.findPath(seocho, naebang);
 
                     // then
-                    List<String> pathStationNames = path.getStations()
+                    List<String> pathStationNames = path.getPathVertexes()
                             .stream()
-                            .map(Station::getName)
+                            .map(PathVertex::getName)
                             .collect(Collectors.toList());
                     List<String> targetStationNames = Stream.of(seocho, gyodae, goter, naebang)
                             .map(Station::getName)
@@ -122,14 +124,14 @@ class PathFinderTest {
     @DisplayName("예외처리")
     List<DynamicTest> same_stations_error() {
         // given
-        PathFinder finder = PathFinder.of(Arrays.asList(line2, line9));
+        PathFinder finder = PathFinder.of(new Lines(Arrays.asList(line2, line9)));
 
         return Arrays.asList(
                 dynamicTest("연결되지 않은 출발역, 도착역 입력 시 오류", () -> assertAll(
                         () -> assertThat(finder.isConnectedPath(gangnam, shinbanpo)).isFalse(),
                         () -> assertThatThrownBy(() -> finder.findPath(gangnam, shinbanpo))
-                                .isInstanceOf(NoConnectedStationsException.class)
-                                .hasMessage("구간으로 연결되지 않은 역입니다.")
+                                .isInstanceOf(NoConnectedVertexesException.class)
+                                .hasMessage("대상들이 연결되어 있지 않습니다.")
                 )),
                 dynamicTest("등록된 역이나 구간에 포함되지 않은 역 조회 시", () -> {
                     // given
@@ -139,11 +141,11 @@ class PathFinderTest {
                     assertAll(
                             () -> assertThat(finder.isConnectedPath(gangnam, nodle)).isFalse(),
                             () -> assertThatThrownBy(() -> finder.findPath(gangnam, nodle))
-                                    .isInstanceOf(IllegalArgumentException.class)
-                                    .hasMessage("도착역이 속하는 노선이 없습니다."),
+                                    .isInstanceOf(NotContainVertexException.class)
+                                    .hasMessage("도착점이 경로에 포함되어 있지 않습니다."),
                             () -> assertThatThrownBy(() -> finder.findPath(nodle, gangnam))
-                                    .isInstanceOf(IllegalArgumentException.class)
-                                    .hasMessage("출발역이 속하는 노선이 없습니다.")
+                                    .isInstanceOf(NotContainVertexException.class)
+                                    .hasMessage("시작점이 경로에 포함되어 있지 않습니다.")
                     );
                 })
         );
