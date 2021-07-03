@@ -94,8 +94,8 @@ class PathServiceTest {
     void findPathOccurNotFoundStationException() {
         // given
         Station 잠실역 = new Station("잠실역");
-
         when(stationRepository.findById(1L)).thenReturn(Optional.of(강남역));
+        when(stationRepository.findById(5L)).thenReturn(Optional.of(잠실역));
 
         // when
         PathService pathService = new PathService(stationRepository, lineRepository);
