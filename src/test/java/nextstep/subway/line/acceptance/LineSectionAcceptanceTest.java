@@ -105,6 +105,18 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 양재역, 광교역));
     }
 
+    @DisplayName("리팩토링 메서드를 활용하여 지하철 구간을 등록한다.")
+    @Test
+    void addLineSectionNew() {
+        // when
+        지하철_노선에_지하철역_등록_요청_New(신분당선, 강남역, 양재역, 3);
+
+        // then
+        ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+        지하철_노선에_지하철역_등록됨(response);
+        지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 양재역, 광교역));
+    }
+
     @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
     @Test
     void addLineSection2() {
@@ -162,6 +174,18 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청_New(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+        SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(sectionRequest)
+                .when().post("/lines/{lineId}/sections/new", line.getId())
+                .then().log().all()
+                .extract();
     }
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
