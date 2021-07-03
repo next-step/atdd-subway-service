@@ -1,4 +1,4 @@
-package nextstep.subway.favorite;
+package nextstep.subway.favorite.application;
 
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;

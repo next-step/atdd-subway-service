@@ -1,13 +1,12 @@
 package nextstep.subway.line.application;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.subway.line.LineNotFoundException;
 import nextstep.subway.line.domain.*;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.line.dto.SectionResponse;
-import nextstep.subway.station.StationNotFoundException;
+import nextstep.subway.station.application.StationNotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;

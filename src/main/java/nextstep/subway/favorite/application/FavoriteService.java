@@ -2,15 +2,14 @@ package nextstep.subway.favorite.application;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.subway.auth.application.ForbiddenException;
-import nextstep.subway.favorite.FavoriteNotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.member.MemberNotFoundException;
+import nextstep.subway.member.application.MemberNotFoundException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
-import nextstep.subway.station.StationNotFoundException;
+import nextstep.subway.station.application.StationNotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;

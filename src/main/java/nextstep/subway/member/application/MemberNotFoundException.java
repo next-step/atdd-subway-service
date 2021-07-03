@@ -1,4 +1,4 @@
-package nextstep.subway.member;
+package nextstep.subway.member.application;
 
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
