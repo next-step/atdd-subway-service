@@ -5,7 +5,7 @@ import static java.util.Comparator.*;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.path.domain.Path;
-import nextstep.subway.path.domain.PayZone;
+import nextstep.subway.fare.policy.path.PayZone;
 
 public class FareCalculator {
 

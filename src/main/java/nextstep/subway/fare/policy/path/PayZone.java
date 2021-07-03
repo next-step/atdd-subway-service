@@ -1,8 +1,8 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.fare.policy.path;
 
 import java.util.Arrays;
 
-import nextstep.subway.path.exception.PayZoneFaultException;
+import nextstep.subway.fare.exception.PayZoneFaultException;
 
 public enum PayZone {
     FIRST(10, 50, 5),
