@@ -26,7 +26,7 @@ public class SectionTest {
 	void setUp() {
 		성수역 = new Station(1L, "성수역");
 		뚝섬역 = new Station(2L, "뚝섬역");
-		이호선 = new Line(1L, "2호선", "초록색");
+		이호선 = new Line(1L, "2호선", "초록색", 100);
 		성수뚝섬구간 = new Section(이호선, 성수역, 뚝섬역, new Distance(10));
 	}
 

@@ -47,11 +47,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		교대역 = stationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
 		남부터미널역 = stationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-		신분당선 = lineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10))
+		신분당선 = lineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 500))
 			.as(LineResponse.class);
-		이호선 = lineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10))
+		이호선 = lineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, 700))
 			.as(LineResponse.class);
-		삼호선 = lineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5))
+		삼호선 = lineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5, 1000))
 			.as(LineResponse.class);
 		lineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 남부터미널역, 양재역, 3);
 	}
@@ -62,6 +62,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> response = 최단_경로_조회_요청하기(강남역.getId(), 남부터미널역.getId());
 		assertThat(response.body().jsonPath().getDouble("distance")).isEqualTo(12);
 		assertThat(response.body().jsonPath().getList("stations").size()).isEqualTo(3);
+		assertThat(response.body().jsonPath().getList("fee").size()).isEqualTo(1350);
 	}
 
 	@DisplayName("최단 경로 조회하기 - 출발역과 도착역이 같은 경우(에러 발생)")
@@ -78,7 +79,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		StationResponse 서울역 = stationAcceptanceTest.지하철역_등록되어_있음("서울역").as(StationResponse.class);
 		StationResponse 신도림역 = stationAcceptanceTest.지하철역_등록되어_있음("신도림역").as(StationResponse.class);
 		LineResponse 일호선 = lineAcceptanceTest.지하철_노선_등록되어_있음(
-			new LineRequest("일호선", "bg-blue-600", 서울역.getId(), 신도림역.getId(), 5)).as(LineResponse.class);
+			new LineRequest("일호선", "bg-blue-600", 서울역.getId(), 신도림역.getId(), 5, 100)).as(LineResponse.class);
 
 		ExtractableResponse<Response> response = 최단_경로_조회_요청하기(강남역.getId(), 서울역.getId());
 		최단_경로_조회하기_실패(response);

@@ -19,9 +19,9 @@ public class UnitTest {
 
 		Station upStation = new Station("강남역");
 		Station downStation = new Station("광교역");
-		Line line = new Line("신분당선", "RED");
+		Line line = new Line("신분당선", "RED", 100);
 		line.addLineStation(new Section(line, upStation, downStation, new Distance(10)));
-		Line newLine = new Line(newName, "GREEN");
+		Line newLine = new Line(newName, "GREEN", 200);
 
 		// when
 		line.update(newLine);

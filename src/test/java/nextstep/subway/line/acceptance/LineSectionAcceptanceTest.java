@@ -45,7 +45,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 		성수역 = stationAcceptanceTest.지하철역_등록되어_있음("성수역").as(StationResponse.class);
 		뚝섬역 = stationAcceptanceTest.지하철역_등록되어_있음("뚝섬역").as(StationResponse.class);
 
-		LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+		LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10, 500);
 		신분당선 = lineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
 	}
 
