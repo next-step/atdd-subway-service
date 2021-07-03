@@ -20,6 +20,9 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
+    @Embedded
+    private Sections sectionsNew = new Sections();
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
@@ -207,5 +210,9 @@ public class Line extends BaseEntity {
         if (getSections().size() <= 1) {
             throw new RuntimeException();
         }
+    }
+
+    public Sections getSectionsNew() {
+        return new Sections(sections);
     }
 }
