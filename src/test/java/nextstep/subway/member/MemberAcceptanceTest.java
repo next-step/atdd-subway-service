@@ -6,6 +6,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.utils.RestAssuredTemplate;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -24,13 +25,17 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
 
-    @DisplayName("회원 정보를 생성한다.")
+    private ExtractableResponse<Response> createResponse;
+
+    @BeforeEach
+    public void setup() {
+        createResponse = requestCreateMember(EMAIL, PASSWORD, AGE);
+    }
+
+    @DisplayName("회원 정보를 조회한다.")
     @Test
     void createMember() {
-        // when
-        ExtractableResponse<Response> createResponse = requestCreateMember(EMAIL, PASSWORD, AGE);
-
-        // then
+        //given
         회원_생성됨(createResponse);
 
         // when
@@ -49,8 +54,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("회원 정보를 수정한다.")
     @Test
     void manageMember() {
-        // given
-        ExtractableResponse<Response> createResponse = requestCreateMember(EMAIL, PASSWORD, AGE);
+        //given
         회원_생성됨(createResponse);
 
         // when
@@ -64,8 +68,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("회원 정보를 삭제한다.")
     @Test
     void deleteMember() {
-        // given
-        ExtractableResponse<Response> createResponse = requestCreateMember(EMAIL, PASSWORD, AGE);
+        //given
         회원_생성됨(createResponse);
 
         // when
