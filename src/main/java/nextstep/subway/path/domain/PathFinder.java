@@ -19,15 +19,27 @@ public class PathFinder {
         return pathFinder;
     }
 
-    public Path getShortestPath(Station sourceStation, Station targetStation) {
+    public Path getPath(Station sourceStation, Station targetStation) {
         validateEqualStation(sourceStation, targetStation);
 
-        List stations = dijkstraShortestPath.getPath(sourceStation, targetStation).getVertexList();
-        double distance = dijkstraShortestPath.getPath(sourceStation, targetStation).getWeight();
-        List<Line> transferLine = dijkstraShortestPath.getPath(sourceStation, targetStation).getEdgeList().stream()
+        List<Station> travelStations = getTravelStations(sourceStation, targetStation);
+        double distance = getDistance(sourceStation, targetStation);
+        List<Line> transferLine = getTransferLine(sourceStation, targetStation);
+        return Path.of(travelStations, distance, transferLine);
+    }
+
+    private List<Line> getTransferLine(Station sourceStation, Station targetStation) {
+        return dijkstraShortestPath.getPath(sourceStation, targetStation).getEdgeList().stream()
                 .map(sectionEdge -> sectionEdge.getSection().getLine())
                 .collect(Collectors.toList());
-        return Path.of(stations, distance, transferLine);
+    }
+
+    private double getDistance(Station sourceStation, Station targetStation) {
+        return dijkstraShortestPath.getPath(sourceStation, targetStation).getWeight();
+    }
+
+    private List<Station> getTravelStations(Station sourceStation, Station targetStation) {
+        return dijkstraShortestPath.getPath(sourceStation, targetStation).getVertexList();
     }
 
     private void validateEqualStation(Station sourceStation, Station targetStation) {

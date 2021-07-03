@@ -48,7 +48,7 @@ class PathFinderTest {
     @Test
     void findShortestPath() {
         PathFinder pathFinder = PathFinder.of(전체역, 전체구간);
-        Path path = pathFinder.getShortestPath(교대역, 양재역);
+        Path path = pathFinder.getPath(교대역, 양재역);
         assertThat(path.getStations()).isEqualTo(Arrays.asList(교대역, 남부터미널역, 양재역));
         assertThat(path.getDistance()).isEqualTo(5);
     }
