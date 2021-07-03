@@ -36,6 +36,7 @@ public class Section {
     }
 
     public Section(Long id, Line line, Station upStation, Station downStation, Distance distance) {
+        this.id = id;
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
