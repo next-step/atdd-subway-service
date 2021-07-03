@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import io.restassured.RestAssured;
@@ -55,7 +56,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 	@DisplayName("최단 경로 조회 시나리오")
 	@Test
-	void shortestPathFindScenario() {
+	void findShortestPathScenario() {
 		// Backgroud
 		// Given : 지하철역 등록되어 있음
 		// And : 지하철 노선 등록되어 있음
@@ -81,6 +82,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 			.collect(Collectors.toList());
 
 		assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+		assertThat(path1.getDistance()).isEqualTo(7);
+
 		// When : 환승역에서 미환승역으로 최단거리 조회
 		ExtractableResponse<Response> shortestPathResponse2 = RestAssured
 			.given().log().all()
@@ -100,6 +103,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 			.collect(Collectors.toList());
 
 		assertThat(stationIds2).containsExactlyElementsOf(expectedStationIds2);
+		assertThat(path1.getDistance()).isEqualTo(7);
+
 		// When : 환승역에서 환승역으로 최단거리 조회
 		ExtractableResponse<Response> shortestPathResponse3 = RestAssured
 			.given().log().all()
@@ -119,6 +124,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 			.collect(Collectors.toList());
 
 		assertThat(stationIds3).containsExactlyElementsOf(expectedStationIds3);
+		assertThat(path1.getDistance()).isEqualTo(5);
+
 		// When : 최단거리의 역방향의 최단거리 조회
 		ExtractableResponse<Response> shortestPathResponse4 = RestAssured
 			.given().log().all()
@@ -142,7 +149,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 	@DisplayName("최단 경로 조회 시 오류 시나리오")
 	@Test
-	void shortestPathFindErrorScenario() {
+	void findShortestPathErrorScenario() {
 		// Backgroud
 		// Given : 지하철역 등록되어 있음
 		// And : 지하철 노선 등록되어 있음
@@ -150,10 +157,48 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 		// Scenario : 최단 경로 조회 시 오류 시나리오
 		// When : 출발역과 도착역이 같은 경우
+		ExtractableResponse<Response> shortestPathResponse1 = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when().get("/path?source=" + 남부터미널역.getId() + "&target=" + 남부터미널역.getId())
+			.then().log().all()
+			.extract();
 		// Then : 에러 발생
+		assertThat(shortestPathResponse1.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
 		// When : 출발역과 도착역이 연결되어 있지 않음
+		StationResponse 신촌역 = StationAcceptanceTest.지하철역_등록되어_있음("신촌역").as(StationResponse.class);
+		ExtractableResponse<Response> shortestPathResponse2 = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when().get("/path?source=" + 남부터미널역.getId() + "&target=" + 신촌역.getId())
+			.then().log().all()
+			.extract();
 		// Then : 에러 발생
-		// When : 출발역 혹은 도착역이 존재하지 않음
+		assertThat(shortestPathResponse2.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+		// When : 출발역이 존재하지 않음
+		ExtractableResponse<Response> shortestPathResponse3 = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when().get("/path?source=" + 남부터미널역.getId() + "&target=-1")
+			.then().log().all()
+			.extract();
 		// Then : 에러 발생
+		assertThat(shortestPathResponse3.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+		// When : 도착역이 존재하지 않음
+		ExtractableResponse<Response> shortestPathResponse4 = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when().get("/path?source=-1&target=" + 남부터미널역.getId())
+			.then().log().all()
+			.extract();
+		// Then : 에러 발생
+		assertThat(shortestPathResponse4.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 }
