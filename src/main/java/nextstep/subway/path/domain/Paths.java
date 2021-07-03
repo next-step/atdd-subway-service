@@ -32,11 +32,11 @@ public class Paths {
     }
 
     public int calculateFare(final LoginMember loginMember) {
-        int totalFare = FareOfDistancePolicy.calculate(this.totalDistance);
+        int totalFare = FareOfDistancePolicy.calculate(this.totalDistance) + this.maxAdditionalFare;
         if (loginMember.isLogin()) {
             return FareOfAgePolicy.discount(loginMember.getAge(), totalFare);
         }
-        return totalFare + this.maxAdditionalFare;
+        return totalFare;
     }
 
     public List<Station> getShortestStationRoutes() {

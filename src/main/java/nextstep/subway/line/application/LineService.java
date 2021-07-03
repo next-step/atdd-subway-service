@@ -34,7 +34,12 @@ public class LineService {
     private Line createLine(LineRequest request) {
         Station upStation = findStation(request.getUpStationId());
         Station downStation = findStation(request.getDownStationId());
-        return new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance());
+        return new Line.Builder(request.getName()).color(request.getColor())
+                                                  .additionalFare(request.getAdditionalFare())
+                                                  .upStation(upStation)
+                                                  .downStation(downStation)
+                                                  .distance(request.getDistance())
+                                                  .build();
     }
 
     @Transactional(readOnly = true)
