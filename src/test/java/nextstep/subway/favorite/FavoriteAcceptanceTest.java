@@ -8,6 +8,8 @@ import static nextstep.subway.station.StationAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +19,9 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
@@ -31,6 +35,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
     private StationResponse 교대역;
     private StationResponse 시청역;
+    private RequestSpecification given;
 
     @Override
     @BeforeEach
@@ -49,7 +54,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // given
         final User user = new User("test@test.com", "password", 20);
         // when
-        final ExtractableResponse<Response> createResponse = 회원_생성을_요청(given(), user);
+        final ExtractableResponse<Response> createResponse = 회원_생성을_요청(user);
         // then
         회원_생성됨(createResponse);
 
@@ -57,30 +62,43 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         final ExtractableResponse<Response> loginResponse = 로그인_요청(user.getEmail(), user.getPassword());
         // then
         로그인_됨(loginResponse);
+
+        given = given(loginResponse.as(TokenResponse.class));
+    }
+
+    private RequestSpecification given(final TokenResponse tokenResponse) {
+        return RestAssured.given()
+            .log()
+            .all()
+            .auth()
+            .oauth2(tokenResponse.getAccessToken());
     }
 
     @DisplayName("즐겨찾기를 관리한다")
     @Test
     void manageFavorite() {
         // when
-        final ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(강남역.getId(), 교대역.getId());
+        final ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(given, 강남역.getId(), 교대역.getId());
         // then
         즐겨찾기_생성됨(createResponse);
 
         // when
-        final ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청();
-        // then
+        final ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(given);
+        // // then
         즐겨찾기_목록_조회됨(findResponse);
 
+        // given
+        final FavoriteResponse favoriteResponse = favoriteResponses(findResponse).get(0);
         // when
-        final ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청();
+        final ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(given, favoriteResponse.getId());
         // then
         회원_삭제됨(deleteResponse);
     }
 
-    public ExtractableResponse<Response> 즐겨찾기_생성_요청(final long sourceId, final long targetId) {
-        return RestAssured
-            .given().log().all()
+    public ExtractableResponse<Response> 즐겨찾기_생성_요청(final RequestSpecification given,
+        final long sourceId, final long targetId) {
+
+        return given
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(new FavoriteRequest(sourceId, targetId))
             .when().post("/favorites")
@@ -88,21 +106,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public ExtractableResponse<Response> 즐겨찾기_목록_조회_요청() {
-        return RestAssured
-            .given().log().all()
-            .log().all()
+    public ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(final RequestSpecification given) {
+        return given
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/favorites")
             .then().log().all()
             .extract();
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청() {
-        return RestAssured
-            .given().log().all()
-            .log().all()
-            .when().delete("/favorites")
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(final RequestSpecification given, final Long id) {
+        return given
+            .when().delete("/favorites/" + id)
             .then().log().all()
             .extract();
     }
@@ -113,16 +127,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     public void 즐겨찾기_목록_조회됨(final ExtractableResponse<Response> response) {
-        final FavoriteResponse favoriteResponse = response.as(FavoriteResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(favoriteResponse.size()).isEqualTo(1);
+        final List<FavoriteResponse> favoriteResponses = favoriteResponses(response);
 
-        final FavoriteSection favorite = favoriteResponse.get(0);
+        assertThat(favoriteResponses.size()).isEqualTo(1);
+        final FavoriteResponse favorite = favoriteResponses.get(0);
+
         assertAll(
             () -> assertThat(favorite.getId()).isEqualTo(1),
             () -> assertThat(favorite.getSource().getName()).isEqualTo(강남역.getName()),
             () -> assertThat(favorite.getTarget().getName()).isEqualTo(교대역.getName())
         );
+    }
+
+    private List<FavoriteResponse> favoriteResponses(final ExtractableResponse<Response> response) {
+        return response.jsonPath()
+            .getList(".", FavoriteResponse.class);
     }
 
     public static void 회원_삭제됨(final ExtractableResponse<Response> response) {

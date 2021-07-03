@@ -104,6 +104,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return RestAssured.given();
     }
 
+    public static ExtractableResponse<Response> 회원_생성을_요청(final User user) {
+        return 회원_생성을_요청(given(), user);
+    }
+
     public static ExtractableResponse<Response> 회원_생성을_요청(final RequestSpecification given, final User user) {
         return given
             .log().all()
