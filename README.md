@@ -29,9 +29,9 @@
     - [x] ***도메인 추출*** 특정 노선에 속한 역을 등록된 구간을 기준으로 정렬하여 반환
   - [x] findLineResponseById 리팩토링
     - [x] ***도메인 추출*** 특정 노선에 속한 역을 등록된 구간을 기준으로 정렬하여 반환링
-  - [ ] updateLine 리팩토링
-    - [ ] Line 도메인 내에 update하는 메소드 구현 후 적용
-  - [ ] addLineStation 리팩토링
-  - [ ] removeLineStation 리팩토링
+  - [x] updateLine 리팩토링
+    - [x] Line 도메인 내에 update하는 메소드 구현 후 적용
+  - [x] ***도메인 추출*** addLineStation 리팩토링
+  - [ ] ***도메인 추출*** removeLineStation 리팩토링
     
   
