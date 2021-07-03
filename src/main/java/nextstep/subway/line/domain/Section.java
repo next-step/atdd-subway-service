@@ -104,7 +104,9 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
-        return distance.getDistance();
+    public SectionDistance getDistance() {
+        return distance;
     }
+
+    public double getWeight() { return distance.getWeight(); }
 }

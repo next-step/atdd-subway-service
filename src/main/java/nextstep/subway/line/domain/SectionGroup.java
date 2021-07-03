@@ -114,7 +114,7 @@ public class SectionGroup {
     private void createNewSection(Line line, Optional<Section> upSection, Optional<Section> downSection) {
         Station newUpStation = downSection.get().getUpStation();
         Station newDownStation = upSection.get().getDownStation();
-        int newDistance = upSection.get().getDistance() + downSection.get().getDistance();
+        int newDistance = upSection.get().getDistance().value() + downSection.get().getDistance().value();
         sections.add(new Section(line, newUpStation, newDownStation, newDistance));
     }
 
@@ -141,14 +141,14 @@ public class SectionGroup {
     private void changeDownStationIfExists(Section section, boolean isDownStationExisted) {
         if (isDownStationExisted) {
             findUpSection(section.getDownStation())
-                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance().value()));
         }
     }
 
     private void changeUpStationIfExists(Section section, boolean isUpStationExisted) {
         if (isUpStationExisted) {
             findDownSection(section.getUpStation())
-                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance().value()));
         }
     }
 
@@ -157,9 +157,5 @@ public class SectionGroup {
         for (Section section : sections) {
             action.accept(section);
         }
-    }
-
-    public List<Section> getSections() {
-        return sections;
     }
 }

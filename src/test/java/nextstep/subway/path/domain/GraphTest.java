@@ -26,11 +26,11 @@ public class GraphTest {
     private List<Line> lines;
 
     /**
-     * 교대역 -- *2호선 거리:10* -- 강남역
+     * 교대역 -- *2호선 거리:100* -- 강남역
      * |                        |
-     * *3호선 거리:3*            *신분당선 거리:10*
+     * *3호선 거리:8*            *신분당선 거리:30*
      * |                        |
-     * 남부터미널역-- *3호선 거리:2* --양재
+     * 남부터미널역-- *3호선 거리:65* --양재
      */
     @BeforeEach
     public void setUp() {
@@ -39,14 +39,14 @@ public class GraphTest {
         양재역 = new Station(3L, "양재역");
         남부터미널역 = new Station(4L, "남부터미널역");
 
-        Section 이호선생성구간 = new Section(1L, 교대역, 강남역, 10);
-        Section 삼호선생성구간 = new Section(2L, 교대역, 양재역, 5);
-        Section 삼호선추가구간 = new Section(3L, 교대역, 남부터미널역, 3);
-        Section 신분당선생성구간 = new Section(4L, 강남역, 양재역, 10);
+        Section 이호선생성구간 = new Section(1L, 교대역, 강남역, 100);
+        Section 삼호선생성구간 = new Section(2L, 교대역, 양재역, 73);
+        Section 삼호선추가구간 = new Section(3L, 교대역, 남부터미널역, 8);
+        Section 신분당선생성구간 = new Section(4L, 강남역, 양재역, 30);
 
-        이호선 = new Line(1L, "이호선", "초록색");
-        삼호선 = new Line(2L, "삼호선", "주황색");
-        신분당선 = new Line(3L, "신분당선", "빨간색");
+        이호선 = new Line(1L, "이호선", "초록색", 200);
+        삼호선 = new Line(2L, "삼호선", "주황색", 300);
+        신분당선 = new Line(3L, "신분당선", "빨간색", 900);
 
         이호선.addSection(이호선생성구간);
         삼호선.addSection(삼호선생성구간);
@@ -85,7 +85,7 @@ public class GraphTest {
         Path path = graph.findShortestPath(lines, 강남역, 남부터미널역);
 
         //then
-        assertThat(path.getDistance()).isEqualTo(new ShortestDistance(12));
+        assertThat(path.getDistance()).isEqualTo(new ShortestDistance(95));
     }
 
     @DisplayName("최단경로 거리 조회 - 출발역과 도착역이 같은 경우")

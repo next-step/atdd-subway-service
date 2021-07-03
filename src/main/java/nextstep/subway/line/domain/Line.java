@@ -19,6 +19,9 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
+    private OverFare overFare;
+
+    @Embedded
     private SectionGroup sections = new SectionGroup(new ArrayList<>());
 
     /**
@@ -32,9 +35,19 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
+    public Line(String name, String color, int overFare) {
+        this(name, color);
+        this.overFare = new OverFare(overFare);
+    }
+
     public Line(Long id, String name, String color) {
         this(name, color);
         this.id = id;
+    }
+
+    public Line(Long id, String name, String color, int overFare) {
+        this(id, name, color);
+        this.overFare = new OverFare(overFare);
     }
 
     public Line(Long id, String name, String color, SectionGroup sections) {
@@ -87,4 +100,8 @@ public class Line extends BaseEntity {
     }
 
     public SectionGroup getSections() { return sections; }
+
+    public OverFare getOverFare() {
+        return overFare;
+    }
 }
