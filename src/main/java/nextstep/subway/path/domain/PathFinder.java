@@ -24,7 +24,10 @@ public class PathFinder {
 
         List stations = dijkstraShortestPath.getPath(sourceStation, targetStation).getVertexList();
         double distance = dijkstraShortestPath.getPath(sourceStation, targetStation).getWeight();
-        return new Path(stations, distance);
+        List<Line> transferLine = dijkstraShortestPath.getPath(sourceStation, targetStation).getEdgeList().stream()
+                .map(sectionEdge -> sectionEdge.getSection().getLine())
+                .collect(Collectors.toList());
+        return Path.of(stations, distance, transferLine);
     }
 
     private void validateEqualStation(Station sourceStation, Station targetStation) {
