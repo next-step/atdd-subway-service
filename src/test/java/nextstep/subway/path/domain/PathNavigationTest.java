@@ -93,21 +93,21 @@ class PathNavigationTest {
     }
 
     @Test
-    void when_25KM_1350Fee_findShortestPath() {
+    void when_25KM_1550Fee_findShortestPath() {
         sut = PathNavigation.by(lines);
         Path shortestPath = sut.findShortestPath(B, 남부터미널);
         assertThat(shortestPath.distance()).isEqualTo(250);
-        assertThat(shortestPath.fee()).isEqualTo(BASIC_FEE + 400);
+        assertThat(shortestPath.fee()).isEqualTo(BASIC_FEE + 300);
     }
 
     @Test
-    void when_50KM_2150Fee_findShortestPath() {
+    void when_50KM_2050Fee_findShortestPath() {
         Section newSection = new Section(이호선, A, B, 500);
         이호선.addSection(newSection);
         lines.add(이호선);
         Path shortestPath = PathNavigation.by(lines).findShortestPath(A, B);
         assertThat(shortestPath.distance()).isEqualTo(500);
-        assertThat(shortestPath.fee()).isEqualTo(BASIC_FEE_OVER_50KM + 100);
+        assertThat(shortestPath.fee()).isEqualTo(BASIC_FEE_OVER_50KM);
     }
 
     @Test
@@ -121,12 +121,12 @@ class PathNavigationTest {
     }
 
     @Test
-    void when_58KM_2250Fee_findShortestPath() {
+    void when_58KM_2150Fee_findShortestPath() {
         final int distance = 580;
         이호선.addSection(new Section(이호선, A, B, distance));
         lines.add(이호선);
         Path shortestPath = PathNavigation.by(lines).findShortestPath(A, B);
         assertThat(shortestPath.distance()).isEqualTo(distance);
-        assertThat(shortestPath.fee()).isEqualTo(BASIC_FEE_OVER_50KM + 200);
+        assertThat(shortestPath.fee()).isEqualTo(BASIC_FEE_OVER_50KM + 100);
     }
 }
