@@ -15,13 +15,14 @@
     - [x] Line 도메인 내 sections를 1급 콜렉션으로 대체
     - [x] Line 도메인 내 getStations 메소드 구현
     - [x] getStations 메소드가 반환하는 List<Station>을 1급 콜렉션인 Stations 구현 및 대체
+  - [ ] LineResponse 내에 List<Line> to List<LineResponse> 메소드 구현
   - [ ] findUpStation 도메인 추출 및 리팩토링
-  - [ ] SaveLine 리팩토링
-    - [ ] ***도메인 추출*** LineRequest의 도메인 프로세스 전환 메소드 구현
-    - [ ] ***도메인 추출*** 특정 노선에 속한 역을 등록된 구간을 기준으로 정렬하여 반환
-  - [ ] fineLines 리팩토링
-    - [ ] ***도메인 추출*** LineResponse 내 팩토리 메소드로 Line을 변환 후 반환
-    - [ ] ***도메인 추출*** 특정 노선에 속한 역을 등록된 구간을 기준으로 정렬하여 반환
+  - [x] SaveLine 리팩토링
+    - [x] ***도메인 추출*** LineRequest의 도메인 프로세스 전환 메소드 구현
+    - [x] ***도메인 추출*** 특정 노선에 속한 역을 등록된 구간을 기준으로 정렬하여 반환
+  - [x] fineLines 리팩토링
+    - [x] ***도메인 추출*** LineResponse 내 팩토리 메소드로 Line을 변환 후 반환
+    - [x] ***도메인 추출*** 특정 노선에 속한 역을 등록된 구간을 기준으로 정렬하여 반환
   - [ ] findLineResponseById 리팩토링
     - [ ] ***도메인 추출*** 특정 노선에 속한 역을 등록된 구간을 기준으로 정렬하여 반환링
   - [ ] updateLine 리팩토링
