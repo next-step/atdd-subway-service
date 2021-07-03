@@ -38,7 +38,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         광교역 = 지하철역_등록되어_있음("광교역").as(StationResponse.class);
         지하철_노선_등록되어_있음(new LineRequest("신분당선", "빨간색", 강남역.getId(), 광교역.getId(), 10));
 
-        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성을_요청(EMAIL, PASSWORD, ADULT_AGE);
         사용자토큰 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
     }
 

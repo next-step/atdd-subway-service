@@ -25,14 +25,14 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMember() {
         // when
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, ADULT_AGE);
         // then
         회원_생성됨(createResponse);
 
         // when
         ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(createResponse);
         // then
-        회원_정보_조회됨(findResponse, EMAIL, AGE);
+        회원_정보_조회됨(findResponse, EMAIL, ADULT_AGE);
 
         // when
         ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
@@ -50,11 +50,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void manageMyInfo() {
 
         // given
-        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성을_요청(EMAIL, PASSWORD, ADULT_AGE);
         TokenResponse 로그인_응답 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
 
         ExtractableResponse<Response> 조회_응답 = 내_정보_조회_요청(로그인_응답);
-        조회_성공(조회_응답, EMAIL, AGE);
+        조회_성공(조회_응답, EMAIL, ADULT_AGE);
 
         ExtractableResponse<Response> 수정_응답 = 내_정보_수정_요청(로그인_응답, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
         수정_성공(수정_응답);

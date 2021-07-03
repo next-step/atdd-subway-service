@@ -6,7 +6,9 @@ public class TestFixture {
 
     public static final String EMAIL = "apple2021@email.com";
     public static final String PASSWORD = "mango";
-    public static final int AGE = 20;
+    public static final int ADULT_AGE = 20;
+    public static final int TEENAGER_AGE = 18;
+    public static final int CHILD_AGE = 8;
 
     public static final Station 회현역 = new Station("회현역");
     public static final Station 명동역 = new Station("명동역");

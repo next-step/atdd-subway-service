@@ -36,4 +36,17 @@ public class PathService {
 
         return PathResponse.of(shortestPath);
     }
+
+    public PathResponse findShortestPath(Long memberId, Long start, Long end) {
+        Map<Long, Station> stations = stationService.findStations(start, end);
+
+        Station startStation = stations.get(start);
+        Station endStation = stations.get(end);
+        Lines lines = new Lines(lineRepository.findAll());
+
+        PathFinder pathFinder = new PathFinder(lines);
+        Path shortestPath = pathFinder.getDijkstraShortestPath(startStation, endStation);
+
+        return PathResponse.of(shortestPath);
+    }
 }

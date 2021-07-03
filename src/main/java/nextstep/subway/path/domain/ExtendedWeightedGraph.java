@@ -10,7 +10,7 @@ public class ExtendedWeightedGraph<V, E> extends WeightedMultigraph {
         super(edgeClass);
     }
 
-    public SectionEdge addEdgeWithAddionalFare(Section section) {
+    public SectionEdge addEdgeWithExtraCharge(Section section) {
         SectionEdge sectionEdge = (SectionEdge) super.addEdge(section.getUpStation(), section.getDownStation());
         sectionEdge.extraCharge = section.getExtraCharge();
         return sectionEdge;

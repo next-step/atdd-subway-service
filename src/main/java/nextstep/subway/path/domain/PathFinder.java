@@ -31,7 +31,7 @@ public class PathFinder {
     }
 
     private void setEdgeWithWeight(Section section, ExtendedWeightedGraph<Station, SectionEdge> graph) {
-        SectionEdge sectionEdge = graph.addEdgeWithAddionalFare(section);
+        SectionEdge sectionEdge = graph.addEdgeWithExtraCharge(section);
         graph.setEdgeWeight(sectionEdge, section.getDistance().getDistanceValue());
     }
 

@@ -49,7 +49,7 @@ public class FavoriteServiceTest {
     private static final Long SOURCE_STATION_ID = 1L;
     private static final Long TARGET_STATION_ID = 2L;
 
-    private final Member 사용자 = new Member(EMAIL, PASSWORD, AGE);
+    private final Member 사용자 = new Member(EMAIL, PASSWORD, ADULT_AGE);
     private final Station 강남역 = new Station(SOURCE_STATION_ID, "강남역");
     private final Station 광교역 = new Station(TARGET_STATION_ID, "광교역");
     private final Favorite 강남_광교_즐겨찾기 = new Favorite(MEMBER_ID, 사용자, 강남역, 광교역);

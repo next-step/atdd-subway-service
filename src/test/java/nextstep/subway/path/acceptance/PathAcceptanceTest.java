@@ -1,5 +1,6 @@
 package nextstep.subway.path.acceptance;
 
+import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.*;
 import org.springframework.http.HttpStatus;
 
@@ -20,7 +21,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.TestFixture.*;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.fare.domain.Fare.*;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -43,6 +47,10 @@ class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
     private StationResponse 교대역;
     private StationResponse 동작역;
+
+    private List<StationResponse> stationResponses;
+    private List<String> 예상최단경로_지하철역_이름;
+    private TokenResponse 사용자토큰;
 
     /*
            (*출발*)(삼호선)종로3가역
@@ -88,38 +96,81 @@ class PathAcceptanceTest extends AcceptanceTest {
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(사호선, 회현역, 명동역, 10);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(사호선, 명동역, 충무로역, 10);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 강남역, 교대역, 10);
+
+        stationResponses = new ArrayList<>(Arrays.asList(종로3가역, 을지로입구역, 시청역, 서울역, 회현역, 명동역, 충무로역));
+        예상최단경로_지하철역_이름 = stationResponses.stream()
+                .map(StationResponse::getName)
+                .collect(Collectors.toList());
+
+
     }
 
     @DisplayName("최단경로를 조회한다")
     @Test
     void 최단경로_조회() {
-        List<StationResponse> stationResponses = new ArrayList<>(Arrays.asList(종로3가역, 을지로입구역, 시청역, 서울역, 회현역, 명동역, 충무로역));
-        ExtractableResponse<Response> 최단경로 = 최단_경로_조회_요청함(종로3가역, 충무로역);
-        List<String> 예상최단경로_지하철역_이름 = stationResponses.stream()
-                .map(StationResponse::getName)
-                .collect(Collectors.toList());
+        회원_생성을_요청(EMAIL, PASSWORD, ADULT_AGE);
         int 예상최단거리 = 60;
         int 예상요금 = BASE_FARE +
                 (60 - 50) / DISTANCE_SECOND_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE +
                 (50 - 10) / DISTANCE_FIRST_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE +
                 사호선.getExtraCharge();
 
+        ExtractableResponse<Response> 최단경로 = 최단_경로_조회_요청함(사용자토큰, 종로3가역, 충무로역);
+
         최단_경로_조회_성공함(최단경로);
         최단_경로_지하철_목록_반환됨(최단경로, 예상최단경로_지하철역_이름);
         최단_경로_거리_반환됨(최단경로, 예상최단거리);
         최단_경로_요금_반환됨(최단경로, 예상요금);
 
-        ExtractableResponse<Response> 출발도착_동일_최단경로 = 최단_경로_조회_요청함(종로3가역, 종로3가역);
+        ExtractableResponse<Response> 출발도착_동일_최단경로 = 최단_경로_조회_요청함(사용자토큰, 종로3가역, 종로3가역);
         최단_경로_조회_실패함(출발도착_동일_최단경로);
 
-        ExtractableResponse<Response> 출발도착_연결안됨_최단경로 = 최단_경로_조회_요청함(종로3가역, 강남역);
+        ExtractableResponse<Response> 출발도착_연결안됨_최단경로 = 최단_경로_조회_요청함(사용자토큰, 종로3가역, 강남역);
         최단_경로_조회_실패함(출발도착_연결안됨_최단경로);
 
-        ExtractableResponse<Response> 도착_등록안됨_최단경로 = 최단_경로_조회_요청함(종로3가역, 동작역);
+        ExtractableResponse<Response> 도착_등록안됨_최단경로 = 최단_경로_조회_요청함(사용자토큰, 종로3가역, 동작역);
         최단_경로_조회_실패함(도착_등록안됨_최단경로);
     }
 
-    private ExtractableResponse<Response> 최단_경로_조회_요청함(StationResponse 출발역, StationResponse 도착역) {
+    @DisplayName("청소년 로그인 사용자 : 최단경로를 조회한다")
+    @Test
+    void 최단경로_조회_청소년_로그인사용자() {
+        회원_생성을_요청(EMAIL, PASSWORD, TEENAGER_AGE);
+        사용자토큰 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
+        int 예상최단거리 = 60;
+        int 예상요금 = BASE_FARE +
+                (60 - 50) / DISTANCE_SECOND_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE +
+                (50 - 10) / DISTANCE_FIRST_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE +
+                사호선.getExtraCharge();
+
+        ExtractableResponse<Response> 최단경로 = 최단_경로_조회_요청함(사용자토큰, 종로3가역, 충무로역);
+
+        최단_경로_조회_성공함(최단경로);
+        최단_경로_지하철_목록_반환됨(최단경로, 예상최단경로_지하철역_이름);
+        최단_경로_거리_반환됨(최단경로, 예상최단거리);
+        최단_경로_요금_반환됨(최단경로, 예상요금);
+    }
+
+    @DisplayName("어린이 로그인 사용자 : 최단경로를 조회한다")
+    @Test
+    void 최단경로_조회_청소년_어린이사용자() {
+        회원_생성을_요청(EMAIL, PASSWORD, CHILD_AGE);
+        사용자토큰 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
+        int 예상최단거리 = 60;
+        int 예상요금 = BASE_FARE +
+                (60 - 50) / DISTANCE_SECOND_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE +
+                (50 - 10) / DISTANCE_FIRST_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE +
+                사호선.getExtraCharge();
+
+        ExtractableResponse<Response> 최단경로 = 최단_경로_조회_요청함(사용자토큰, 종로3가역, 충무로역);
+
+        최단_경로_조회_성공함(최단경로);
+        최단_경로_지하철_목록_반환됨(최단경로, 예상최단경로_지하철역_이름);
+        최단_경로_거리_반환됨(최단경로, 예상최단거리);
+        최단_경로_요금_반환됨(최단경로, 예상요금);
+    }
+
+    private ExtractableResponse<Response> 최단_경로_조회_요청함(TokenResponse 토큰, StationResponse 출발역, StationResponse 도착역) {
         return RestAssured
                 .given().log().all()
                 .queryParam("source", 출발역.getId())
