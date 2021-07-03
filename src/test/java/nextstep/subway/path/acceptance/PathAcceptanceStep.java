@@ -22,10 +22,21 @@ public class PathAcceptanceStep {
         return "Bearer " + token;
     }
 
-    public static ExtractableResponse<Response> 지하철_최단_경로_조회_요청(Long startStationId, Long endStationId, TokenResponse 사용자) {
+    public static ExtractableResponse<Response> 로그인_유저의_지하철_최단_경로_조회_요청(Long startStationId, Long endStationId, TokenResponse 사용자) {
         return RestAssured
                 .given().log().all()
                 .header(AUTHORIZATION, makeBearerToken(사용자.getAccessToken()))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .param(SOURCE, startStationId)
+                .param(TARGET, endStationId)
+                .when().get(PATHS)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 비로그인_지하철_최단_경로_조회_요청(Long startStationId, Long endStationId) {
+        return RestAssured
+                .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .param(SOURCE, startStationId)
                 .param(TARGET, endStationId)
