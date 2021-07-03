@@ -5,6 +5,7 @@ import nextstep.subway.common.ErrorMessageResponse;
 import nextstep.subway.enums.ErrorCode;
 import nextstep.subway.exception.BadDistanceException;
 import nextstep.subway.exception.NotFoundLineException;
+import nextstep.subway.exception.SubwayPatchException;
 import nextstep.subway.exception.ValidSectionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,6 +81,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ValidSectionException.class)
     public ResponseEntity<ErrorMessageResponse> handleValidSectionException(ValidSectionException e) {
         logger.error("handleValidSectionException", e);
+        return ErrorCode.INVALID_INPUT_VALUE.createResponseEntity();
+    }
+
+    @ExceptionHandler(SubwayPatchException.class)
+    public ResponseEntity<ErrorMessageResponse> handleSubwayPatchException(SubwayPatchException e) {
+        logger.error("handleSubwayPatchException", e);
         return ErrorCode.INVALID_INPUT_VALUE.createResponseEntity();
     }
 }

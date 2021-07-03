@@ -123,11 +123,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // and: 4호선이 사당역-10-과천역이 등록되어 있음.
         LineResponse 사호선 = 지하철_노선_등록되어_있음("사호선", "blue", 사당역, 과천역, 10);
 
-        // when: 출발역 강남역 도착역 강남역의 경로를 조회한다
-        ExtractableResponse<Response> 출발역과_도착역이_같은_경우 = 지하철_경로_조회(강남역, 강남역);
-        // then: 경로 조회가 실패한다.(출발역과 도착역이 같은 경우)
-        경로_조회가_실패됨(출발역과_도착역이_같은_경우);
-
         // when: 출발역 교대역, 도착역 압구정역의 경로를 조회한다.
         StationResponse 압구정역 = new StationResponse(99L, "압구정역", LocalDateTime.now(), LocalDateTime.now());
         ExtractableResponse<Response> 도착역_존재하지_않는_경우 = 지하철_경로_조회(교대역, 압구정역);
@@ -137,7 +132,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // when: 출발역 압구정역, 도착역 교대역의 경로를 조회한다.
         ExtractableResponse<Response> 출발역_존재하지_않는_경우 = 지하철_경로_조회(압구정역, 교대역);
         // then: 경로 조회가 실패한다.(존재하지 않은 출발역이나 도착역을 조회할 경우)
-        경로_조회가_실패됨(도착역_존재하지_않는_경우);
+        경로_조회가_실패됨(출발역_존재하지_않는_경우);
+
+        // when: 출발역 강남역 도착역 강남역의 경로를 조회한다
+        ExtractableResponse<Response> 출발역과_도착역이_같은_경우 = 지하철_경로_조회(강남역, 강남역);
+        // then: 경로 조회가 실패한다.(출발역과 도착역이 같은 경우)
+        경로_조회가_실패됨(출발역과_도착역이_같은_경우);
+
 
         // when: 출발역 강남역, 도착역 과천역의 경로를 조회한다.
         ExtractableResponse<Response> 출발역과_도착역이_연결_되어있지않은_경우 = 지하철_경로_조회(강남역, 과천역);

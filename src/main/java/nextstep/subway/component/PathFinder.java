@@ -8,14 +8,13 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class PathFinder {
-    public SubwayPath shortestPath(List<Line> lines, Optional<Station> source, Optional<Station> target) {
+    public SubwayPath shortestPath(List<Line> lines, Station source, Station target) {
         SubwayGraph subwayGraph = new SubwayGraph(SectionWeightedEdge.class);
         subwayGraph.addVertexesAndEdge(lines);
-        return subwayGraph.calcShortestPath(source.get(), target.get());
+        return subwayGraph.calcShortestPath(source, target);
     }
 
 }

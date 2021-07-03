@@ -31,7 +31,7 @@ class PathFinderTest {
 
         // when
         // jgrapht 라이브러리를 이용하여 최단 거리 경로를 계산한다.
-        SubwayPath subwayPath = pathFinder.shortestPath(lines, Optional.of(광교역), Optional.of(교대역));
+        SubwayPath subwayPath = pathFinder.shortestPath(lines, 광교역, 교대역);
 
         // then
         assertThat(subwayPath.calcTotalDistance()).isGreaterThan(0);

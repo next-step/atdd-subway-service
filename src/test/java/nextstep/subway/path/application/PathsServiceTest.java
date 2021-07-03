@@ -63,7 +63,7 @@ class PathsServiceTest {
                 new SectionWeightedEdge(new Section(삼호선, 교대역, 강남역, 5), 삼호선.getId())
         );
         SubwayPath subwayPath = new SubwayPath(sectionWeightedEdges, Arrays.asList(강남역, 광교역, 교대역));
-        when(pathFinder.shortestPath(lines, sourceStation, targetStation)).thenReturn(subwayPath);
+        when(pathFinder.shortestPath(lines, sourceStation.get(), targetStation.get())).thenReturn(subwayPath);
 
         // when
         PathResponse pathResponse = patchService.findPath(source, target);
