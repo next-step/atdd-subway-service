@@ -34,7 +34,7 @@ public class LineService {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, new Distance(request.getDistance())));
-        return LineResponse.of(persistLine);
+        return of(persistLine);
     }
 
     public List<LineResponse> findLines() {
@@ -42,13 +42,13 @@ public class LineService {
     }
 
     private Line findById(Long id) {
-        return lineRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(format("id %d인 노선을 찾을 수 없습니다.", id)));
+        return lineRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(format("id %d인 노선을 찾을 수 없습니다.", id)));;
     }
 
 
     public LineResponse findLineResponseById(Long id) {
-        return LineResponse.of(this.findById(id));
+        return of(this.findById(id));
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
