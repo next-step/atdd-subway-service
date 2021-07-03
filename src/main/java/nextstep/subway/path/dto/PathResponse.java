@@ -12,10 +12,12 @@ import java.util.List;
 public class PathResponse {
     private List<Station> stationList;
     private double distance;
+    private int charges;
 
     @Builder
-    private PathResponse(final List<Station> stationList, final double distance) {
+    private PathResponse(final List<Station> stationList, final double distance, final int charges) {
         this.stationList = stationList;
         this.distance = distance;
+        this.charges = charges;
     }
 }

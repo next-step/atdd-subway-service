@@ -38,6 +38,7 @@ public class PathService {
         return PathResponse.builder()
                 .stationList(path.getPaths())
                 .distance(path.getDistance())
+                .charges(path.getCharges())
                 .build();
     }
 

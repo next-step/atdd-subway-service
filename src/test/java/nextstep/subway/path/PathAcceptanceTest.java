@@ -58,7 +58,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
             () -> assertThat(response.as(PathResponse.class).getStationList()).isNotNull(),
-            () -> assertThat(response.as(PathResponse.class).getDistance()).isNotNull()
+            () -> assertThat(response.as(PathResponse.class).getDistance()).isNotNull(),
+            () -> assertThat(response.as(PathResponse.class).getCharges()).isNotNull()
         );
     }
 

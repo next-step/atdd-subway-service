@@ -7,10 +7,12 @@ import java.util.List;
 public class Path<T> {
     private final List<T> paths;
     private final double distance;
+    private final int charges;
 
-    public Path(final List<T> paths, final double distance) {
+    public Path(final List<T> paths, final double distance, final int charges) {
         this.paths = paths;
         this.distance = distance;
+        this.charges = charges;
     }
 
     public int size() {

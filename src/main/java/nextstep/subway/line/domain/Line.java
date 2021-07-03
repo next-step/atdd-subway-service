@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nextstep.subway.common.BaseEntity;
 import nextstep.subway.station.domain.Station;
-
 import javax.persistence.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +17,9 @@ public class Line extends BaseEntity {
     private String name;
 
     private String color;
+
+    @Embedded
+    private Charges charges = new Charges();
 
     @Embedded
     private Sections sections = new Sections();
@@ -42,6 +44,10 @@ public class Line extends BaseEntity {
 
     public void addSection(final Section section) {
         sections.add(section);
+    }
+
+    public void setAdditionalCharge(final int charges) {
+        this.charges = new Charges(charges);
     }
 
     public void update(final Line line) {
