@@ -13,8 +13,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -67,27 +65,22 @@ class ShortestPathFinderTest {
 	@Test
 	@DisplayName("최단 경로를 조회한다.")
 	void findShortestPathTest() {
-		List<Section> sections = 신분당선.getSections();
-		sections.addAll(Stream.concat(이호선.getSections().stream(), 삼호선.getSections().stream()).collect(Collectors.toList()));
-		List<Station> stations = Arrays.asList(강남역, 양재역, 교대역, 남부터미널역);
+		List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선);
 		Station sourceStation = 교대역;
 		Station targetStation = 양재역;
 
-		PathResponse response = shortestPathFinder.findPath(sections, stations, sourceStation, targetStation);
+		PathResponse response = shortestPathFinder.findPath(lines, sourceStation, targetStation);
 		assertThat(response.getDistance()).isEqualTo(5);
 	}
 
 	@Test
 	@DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우 익셉션 발생")
 	void findPathValidationTest() {
-		List<Section> sections = 신분당선.getSections();
-		sections.addAll(Stream.concat(이호선.getSections().stream(), 삼호선.getSections().stream()).collect(Collectors.toList()));
-		sections.addAll(오호선.getSections());
-		List<Station> stations = Arrays.asList(강남역, 양재역, 교대역, 남부터미널역, 광화문역, 서대문역);
+		List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선);
 		Station sourceStation = 교대역;
 		Station targetStation = 광화문역;
 
-		assertThatThrownBy(() -> shortestPathFinder.findPath(sections, stations, sourceStation, targetStation))
+		assertThatThrownBy(() -> shortestPathFinder.findPath(lines, sourceStation, targetStation))
 				.isInstanceOf(RuntimeException.class);
 	}
 

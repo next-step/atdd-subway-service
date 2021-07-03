@@ -28,16 +28,7 @@ class FindPathValidatorTest {
 	void findPathValidationTest() {
 		long sourceStationId = 1L;
 		long targetStationId = 1L;
-		assertThatThrownBy(() -> findPathValidator.validate(sourceStationId, targetStationId, stations))
-				.isInstanceOf(RuntimeException.class);
-	}
-
-	@Test
-	@DisplayName("존재하지 않는 출발역이나 도착역을 조회 할 경우 익셉션 발생")
-	void findPathValidationTest2() {
-		long sourceStationId = 1L;
-		long targetStationId = 3L;
-		assertThatThrownBy(() -> findPathValidator.validate(sourceStationId, targetStationId, stations))
+		assertThatThrownBy(() -> findPathValidator.validate(sourceStationId, targetStationId))
 				.isInstanceOf(RuntimeException.class);
 	}
 }

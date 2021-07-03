@@ -1,6 +1,6 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -13,14 +13,15 @@ import java.util.List;
 
 @Service
 public class ShortestPathFinder {
-	public PathResponse findPath(List<Section> sections, List<Station> stations, Station sourceStation, Station targetStation) {
+	public PathResponse findPath(List<Line> lines, Station sourceStation, Station targetStation) {
 		WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-		stations.forEach(graph::addVertex);
-		sections.forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance()));
+		lines.stream().flatMap(line -> line.getStations().stream())
+				.distinct().forEach(graph::addVertex);
+		lines.stream().flatMap(line -> line.getSections().stream())
+				.distinct().forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance()));
 
 		DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
 		GraphPath shortestPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
-
 		return PathResponse.of(shortestPath.getVertexList(), Double.valueOf(shortestPath.getWeight()).intValue());
 	}
 }
