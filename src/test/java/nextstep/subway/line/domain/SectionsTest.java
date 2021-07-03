@@ -51,4 +51,19 @@ public class SectionsTest {
         assertThat(stations).containsExactly(강남역, 교대역, 사당역);
     }
 
+    @DisplayName("역 삭제")
+    @Test
+    public void removeStationTest() {
+        //given
+        Station 교대역 = new Station("교대역");
+        이호선_최초구간.addStation(이호선, 강남역, 교대역, 5);
+
+        //when
+        이호선_최초구간.removeStation(이호선, 강남역);
+
+        //then
+        List<Station> stations = 이호선_최초구간.getStations();
+        assertThat(stations).containsExactly(교대역, 사당역);
+    }
+
 }

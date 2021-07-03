@@ -125,4 +125,47 @@ public class Sections {
     }
 
 
+    public void removeStation(Line line, Station station) {
+        CheckSectionSize();
+
+        Optional<Section> upLineStation = getUpLineStation(station);
+
+        Optional<Section> downLineStation = getDownLineStation(station);
+
+        removeStationInLine(line, upLineStation, downLineStation);
+    }
+
+    private Optional<Section> getUpLineStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+    }
+
+    private Optional<Section> getDownLineStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+    }
+
+    private void removeStationInLine(Line line, Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        addNewMiddleSection(line, upLineStation, downLineStation);
+
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
+    private void addNewMiddleSection(Line line, Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+    }
+
+    private void CheckSectionSize() {
+        if (sections.size() <= 1) {
+            throw new RuntimeException();
+        }
+    }
 }
