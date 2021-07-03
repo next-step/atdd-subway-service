@@ -1,4 +1,6 @@
-package nextstep.subway.station.dto;
+package nextstep.subway.favorite.dto;
+
+import nextstep.subway.station.dto.StationResponse;
 
 public class FavoriteResponse {
 
