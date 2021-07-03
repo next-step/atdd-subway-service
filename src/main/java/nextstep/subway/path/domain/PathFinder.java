@@ -4,40 +4,38 @@ import nextstep.subway.exception.Message;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.Set;
 
 public class PathFinder {
 
     private DijkstraShortestPath<Station, SectionEdge> algorithm;
-    private WeightedGraph<Station, SectionEdge> graph;
+    private ExtendedWeightedGraph<Station, SectionEdge> graph;
 
 
     public PathFinder(Lines lines) {
-        graph = new WeightedMultigraph<>(SectionEdge.class);
+        graph = new ExtendedWeightedGraph<>(SectionEdge.class);
         generateGraph(lines, graph);
         this.algorithm = new DijkstraShortestPath<>(graph);
     }
 
-    private void generateGraph(Lines lines, WeightedGraph<Station, SectionEdge> graph) {
+    private void generateGraph(Lines lines, ExtendedWeightedGraph<Station, SectionEdge> graph) {
         addVertex(lines, graph);
         addEdge(lines, graph);
     }
 
-    private void addEdge(Lines lines, WeightedGraph<Station, SectionEdge> graph) {
+    private void addEdge(Lines lines, ExtendedWeightedGraph<Station, SectionEdge> graph) {
         lines.getAllSections()
                 .forEach(section -> setEdgeWithWeight(section, graph));
     }
 
-    private void setEdgeWithWeight(Section section, WeightedGraph<Station, SectionEdge> graph) {
-        SectionEdge sectionEdge = graph.addEdge(section.getUpStation(), section.getDownStation());
+    private void setEdgeWithWeight(Section section, ExtendedWeightedGraph<Station, SectionEdge> graph) {
+        SectionEdge sectionEdge = graph.addEdgeWithExtraCharge(section);
         graph.setEdgeWeight(sectionEdge, section.getDistance().getDistanceValue());
     }
 
-    private void addVertex(Lines lines, WeightedGraph<Station, SectionEdge> graph) {
+    private void addVertex(Lines lines, ExtendedWeightedGraph<Station, SectionEdge> graph) {
         lines.getAllStations()
                 .forEach(graph::addVertex);
     }
