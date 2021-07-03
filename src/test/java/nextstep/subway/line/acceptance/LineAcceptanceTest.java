@@ -39,16 +39,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
     }
 
-    @DisplayName("수정한 서비스로 지하철 노선을 생성한다.")
-    @Test
-    void createLineNew() {
-        // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청_New(lineRequest1);
-
-        // then
-        지하철_노선_생성됨(response);
-    }
-
     @DisplayName("지하철 노선을 생성한다.")
     @Test
     void createLine() {
@@ -81,21 +71,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
-
-        // then
-        지하철_노선_목록_응답됨(response);
-        지하철_노선_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
-    }
-
-    @DisplayName("지하철 노선 목록을 조회한다.")
-    @Test
-    void getLinesNew() {
-        // given
-        ExtractableResponse<Response> createResponse1 = 지하철_노선_등록되어_있음(lineRequest1);
-        ExtractableResponse<Response> createResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
-
-        // when
-        ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청_new();
 
         // then
         지하철_노선_목록_응답됨(response);
@@ -156,24 +131,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
                         extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_생성_요청_New(LineRequest params) {
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/lines/new")
-                .then().log().all().
-                        extract();
-    }
-
     public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
         return 지하철_노선_목록_조회_요청("/lines");
     }
-
-    public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청_new() {
-        return 지하철_노선_목록_조회_요청("/lines/new");
-    }
-
 
     public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");

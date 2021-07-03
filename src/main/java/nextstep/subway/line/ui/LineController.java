@@ -26,20 +26,9 @@ public class LineController {
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
-    @PostMapping("/new")
-    public ResponseEntity createLineNew(@RequestBody LineRequest lineRequest) {
-        LineResponse line = lineService.saveLineNew(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
-    }
-
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
         return ResponseEntity.ok(lineService.findLines());
-    }
-
-    @GetMapping("/new")
-    public ResponseEntity<List<LineResponse>> findAllLinesNew() {
-        return ResponseEntity.ok(lineService.findLinesNew());
     }
 
     @GetMapping("/{id}")
@@ -65,21 +54,9 @@ public class LineController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/{lineId}/sections/new")
-    public ResponseEntity addLineStationNew(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
-        lineService.addLineStationNew(lineId, sectionRequest);
-        return ResponseEntity.ok().build();
-    }
-
     @DeleteMapping("/{lineId}/sections")
     public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{lineId}/sections/new")
-    public ResponseEntity removeLineStationNew(@PathVariable Long lineId, @RequestParam Long stationId) {
-        lineService.removeLineStationNew(lineId, stationId);
         return ResponseEntity.ok().build();
     }
 
