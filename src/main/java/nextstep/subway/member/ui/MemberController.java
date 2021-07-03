@@ -1,7 +1,7 @@
 package nextstep.subway.member.ui;
 
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
-import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.domain.IncompleteLoginMember;
 import nextstep.subway.member.application.MemberCommandService;
 import nextstep.subway.member.application.MemberQueryService;
 import nextstep.subway.member.dto.MemberRequest;
@@ -46,20 +46,20 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        MemberResponse member = memberQueryService.findMemberResponseById(loginMember.getId());
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal IncompleteLoginMember incompleteLoginMember) {
+        MemberResponse member = memberQueryService.findMemberResponseById(incompleteLoginMember.toCompleteLoginMember().getId());
         return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
-        memberCommandService.updateMember(loginMember.getId(), param);
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal IncompleteLoginMember incompleteLoginMember, @RequestBody MemberRequest param) {
+        memberCommandService.updateMember(incompleteLoginMember.toCompleteLoginMember().getId(), param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        memberCommandService.deleteMember(loginMember.getId());
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal IncompleteLoginMember incompleteLoginMember) {
+        memberCommandService.deleteMember(incompleteLoginMember.toCompleteLoginMember().getId());
         return ResponseEntity.noContent().build();
     }
 }
