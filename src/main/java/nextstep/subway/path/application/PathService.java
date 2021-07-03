@@ -3,19 +3,26 @@ package nextstep.subway.path.application;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
-import nextstep.subway.path.domain.FarePolicyService;
+import nextstep.subway.path.domain.Fare;
+import nextstep.subway.path.domain.FarePolicy;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.enums.AgeCategory;
+import nextstep.subway.path.domain.impl.FarePolicyByDistance;
+import nextstep.subway.path.domain.impl.FarePolicyByLine;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
+import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class PathService {
     private StationRepository stationRepository;
     private SectionRepository sectionRepository;
@@ -26,6 +33,28 @@ public class PathService {
     }
 
     public PathResponse findPath(LoginMember loginMember, long sourceId, long targetId) {
+        Path path = getPath(sourceId, targetId);
+
+        List<FarePolicy> farePolicies = new ArrayList<>();
+        farePolicies.add(new FarePolicyByLine(path.getTransferLines()));
+        farePolicies.add(new FarePolicyByDistance(path.getDistance()));
+
+        //farePolicies.add(new FarePolicyByAge(loginMember.getAge()));
+        farePolicies.add(AgeCategory.findCategory(loginMember.getAge()));
+
+        Fare fare = Fare.of(farePolicies);
+
+        List<StationResponse> stationResponses = path.getStations().stream().map(StationResponse::of).collect(Collectors.toList());
+        return PathResponse.of(stationResponses, path.getDistance(), fare.getFare());
+    }
+
+    public PathResponse findPath(long sourceId, long targetId) {
+        Path path = getPath(sourceId, targetId);
+        List<StationResponse> stationResponses = path.getStations().stream().map(StationResponse::of).collect(Collectors.toList());
+        return PathResponse.of(stationResponses, path.getDistance(), Fare.getBasicFare());
+    }
+
+    private Path getPath(long sourceId, long targetId) {
         Station sourceStation = stationRepository.findById(sourceId)
                 .orElseThrow(IllegalArgumentException::new);
         Station targetStation = stationRepository.findById(targetId)
@@ -35,12 +64,6 @@ public class PathService {
         List<Section> sections = sectionRepository.findAll();
 
         PathFinder pathFinder = PathFinder.of(stations, sections);
-        Path path = pathFinder.getShortestPath(sourceStation, targetStation);
-        //TODO
-        //노선별 추가 요금 정책
-        //연령별 할인 요금 정책
-        double fare = FarePolicyService.calculateFare(loginMember, sections, path);
-
-        return new PathResponse(path.getStations(), path.getDistance(), fare);
+        return pathFinder.getPath(sourceStation, targetStation);
     }
 }
