@@ -1,7 +1,7 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.auth.domain.User;
-import nextstep.subway.extracharge.AgeBasedDiscount;
+import nextstep.subway.fare.domain.AgeBasedDiscount;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.Path;

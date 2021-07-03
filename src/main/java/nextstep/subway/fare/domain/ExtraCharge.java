@@ -1,4 +1,4 @@
-package nextstep.subway.extracharge;
+package nextstep.subway.fare.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

@@ -1,7 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.exception.Message;
-import nextstep.subway.extracharge.DistanceBasedExtraCharge;
+import nextstep.subway.fare.domain.DistanceBasedExtraCharge;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
