@@ -1,4 +1,4 @@
-package nextstep.subway.path.utils;
+package nextstep.subway.fare.policy.path;
 
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PayZone;

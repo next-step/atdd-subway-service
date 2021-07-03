@@ -1,4 +1,4 @@
-package nextstep.subway.path.utils;
+package nextstep.subway.fare.utils;
 
 import static java.util.Comparator.*;
 

@@ -1,7 +1,7 @@
 package nextstep.subway.fare.domain;
 
 import nextstep.subway.path.domain.Path;
-import nextstep.subway.path.utils.FareCalculator;
+import nextstep.subway.fare.utils.FareCalculator;
 
 public class Fare {
 
