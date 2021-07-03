@@ -84,10 +84,7 @@ public class Sections {
     }
 
     private boolean checkHasNext(Optional<Section> nextLineStation) {
-        if (!nextLineStation.isPresent()) {
-            return false;
-        }
-        return true;
+        return nextLineStation.isPresent();
     }
 
     public void addStation(Line line, Station upStation, Station downStation, int distance) {
@@ -194,11 +191,8 @@ public class Sections {
 
     private void CheckSectionSize() {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new RuntimeException("삭제할 구간이 없습니다.");
         }
     }
 
-    public List<Section> values() {
-        return sections;
-    }
 }
