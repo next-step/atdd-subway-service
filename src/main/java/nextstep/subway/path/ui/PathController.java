@@ -4,6 +4,7 @@ import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,9 +17,13 @@ public class PathController {
         this.pathService = pathService;
     }
 
-    @GetMapping
+    @GetMapping(headers = {HttpHeaders.AUTHORIZATION})
     public ResponseEntity<PathResponse> findPath(@AuthenticationPrincipal LoginMember loginMember, @RequestParam long source, @RequestParam long target) {
         return ResponseEntity.ok(pathService.findPath(loginMember, source, target));
+    }
+    @GetMapping
+    public ResponseEntity<PathResponse> findPath(@RequestParam long source, @RequestParam long target) {
+        return ResponseEntity.ok(pathService.findPath(source, target));
     }
 
     @ExceptionHandler(RuntimeException.class)
