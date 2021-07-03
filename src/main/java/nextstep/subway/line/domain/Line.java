@@ -82,6 +82,14 @@ public class Line extends BaseEntity {
         return stations;
     }
 
+
+    public List<StationResponse> getStationResponses() {
+        return getStations().stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
+    }
+
+
     private Station findUpStation() {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
@@ -160,6 +168,5 @@ public class Line extends BaseEntity {
 
         sections.add(new Section(this, upStation, downStation, distance));
     }
-
 
 }
