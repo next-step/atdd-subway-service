@@ -26,19 +26,7 @@ public class PathService {
         this.lineRepository = lineRepository;
     }
 
-    public PathResponse findShortestPath(Long start, Long end) {
-        Map<Long, Station> stations = stationService.findStations(start, end);
-
-        Station startStation = stations.get(start);
-        Station endStation = stations.get(end);
-        Lines lines = new Lines(lineRepository.findAll());
-
-        PathFinder pathFinder = new PathFinder(lines);
-        Path shortestPath = pathFinder.getDijkstraShortestPath(startStation, endStation);
-
-        return PathResponse.of(shortestPath);
-    }
-
+    @Transactional(readOnly = true)
     public PathResponse findShortestPath(User user, Long start, Long end) {
         Map<Long, Station> stations = stationService.findStations(start, end);
 

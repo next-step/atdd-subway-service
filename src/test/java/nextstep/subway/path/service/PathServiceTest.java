@@ -1,5 +1,6 @@
 package nextstep.subway.path.service;
 
+import nextstep.subway.auth.domain.User;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -68,7 +69,7 @@ class PathServiceTest {
         Long 출발역_아이디 = 1L; //불광역
         Long 도착역_아이디 = 2L; //응암역
 
-        PathResponse response = pathService.findShortestPath(출발역_아이디, 도착역_아이디);
+        PathResponse response = pathService.findShortestPath(new User(), 출발역_아이디, 도착역_아이디);
 
         assertThat(response.getStations()).hasSize(3); //불광역 --> 연신내역 --> 응암역
         assertThat(response.getStations()).extracting("name")

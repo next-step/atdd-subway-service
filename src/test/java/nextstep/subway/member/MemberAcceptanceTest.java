@@ -35,9 +35,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_정보_조회됨(findResponse, EMAIL, ADULT_AGE);
 
         // when
-        ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, EMAIL, NEW_PASSWORD, NEW_AGE);
         // then
         회원_정보_수정됨(updateResponse);
+        ExtractableResponse<Response> 수정된_회원정보_응답 = 회원_정보_조회_요청(createResponse);
+        수정된_정보로_조회됨(수정된_회원정보_응답, NEW_AGE);
 
         // when
         ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
@@ -56,8 +58,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 조회_응답 = 내_정보_조회_요청(로그인_응답);
         조회_성공(조회_응답, EMAIL, ADULT_AGE);
 
-        ExtractableResponse<Response> 수정_응답 = 내_정보_수정_요청(로그인_응답, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        ExtractableResponse<Response> 수정_응답 = 내_정보_수정_요청(로그인_응답, EMAIL, NEW_PASSWORD, NEW_AGE);
         수정_성공(수정_응답);
+        ExtractableResponse<Response> 수정된_내_정보_응답 = 내_정보_조회_요청(로그인_응답);
+        수정된_정보로_조회됨(수정된_내_정보_응답, NEW_AGE);
 
         ExtractableResponse<Response> 삭제_응답 = 내_정보_삭제_요청(로그인_응답);
         삭제_성공(삭제_응답);
@@ -126,6 +130,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 수정된_정보로_조회됨(ExtractableResponse<Response> response, int newAge) {
+        assertThat(response.jsonPath().getInt("age")).isEqualTo(newAge);
     }
 
     public static ExtractableResponse<Response> 내_정보_조회_요청(TokenResponse tokenResponse) {

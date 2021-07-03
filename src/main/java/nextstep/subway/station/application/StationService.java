@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class StationService {
     private StationRepository stationRepository;
 
@@ -52,6 +53,7 @@ public class StationService {
                 .orElseThrow(() -> new CannotFindException(Message.ERROR_CANNOT_FIND_STATION));
     }
 
+    @Transactional(readOnly = true)
     public Map<Long, Station> findStations(Long... ids) {
         List<Station> stations = stationRepository.findAllById(Arrays.asList(ids));
         return stations.stream().collect(Collectors.toMap(Station::getId, station -> station));
