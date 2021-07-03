@@ -56,7 +56,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> createResponse = 즐겨찾기_추가_요청(사용자.getAccessToken(), new FavoriteRequest(강남역.getId(), 광교역.getId()));
-        FavoriteResponse 즐겨찾기 = createResponse.as(FavoriteResponse.class);
+        String url = createResponse.header("Location");
 
         // then
         즐겨찾기_추가됨(createResponse);
@@ -68,7 +68,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_목록_조회됨(findAllResponse);
 
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(즐겨찾기.getId(), 사용자.getAccessToken());
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(url, 사용자.getAccessToken());
 
         // then
         즐겨찾기_삭젝됨(response);
@@ -78,11 +78,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(Long id, String token) {
+    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String url, String token) {
         return RestAssured
                 .given().log().all()
                 .header(AUTHORIZATION, "Bearer " + token)
-                .when().delete("/favorites/{id}", id)
+                .when().delete(url)
                 .then().log().all().extract();
     }
 

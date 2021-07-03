@@ -50,4 +50,8 @@ public class Favorite extends BaseEntity {
     public void addMember(Member member) {
         this.member = member;
     }
+
+    public boolean hasSameMemberId(Long memberId) {
+        return this.member.getId().equals(memberId);
+    }
 }
