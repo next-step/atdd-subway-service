@@ -32,7 +32,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         final User user = new User(email, password, age);
 
         // when
-        final ExtractableResponse<Response> response = 회원_생성을_요청(user);
+        final ExtractableResponse<Response> response = 회원_생성을_요청(given(), user);
 
         // then
         회원_생성됨(response);
