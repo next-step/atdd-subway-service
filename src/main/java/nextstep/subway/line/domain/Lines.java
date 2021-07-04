@@ -27,7 +27,7 @@ public class Lines {
 	}
 
 	public Line getMostExpensiveExtraFeeLine() {
-		return lines.stream().sorted((line, lineOther) -> (lineOther.getFare().minus(line.getFare())).value()).findFirst().get();
+		return lines.stream().sorted((line, lineOther) -> (lineOther.getFare().value() - line.getFare().value())).findFirst().get();
 	}
 
 }

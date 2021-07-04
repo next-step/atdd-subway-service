@@ -10,10 +10,13 @@ import org.springframework.http.HttpStatus;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -23,6 +26,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	private LineAcceptanceTest lineAcceptanceTest = new LineAcceptanceTest();
 	private StationAcceptanceTest stationAcceptanceTest = new StationAcceptanceTest();
 	private LineSectionAcceptanceTest lineSectionAcceptanceTest = new LineSectionAcceptanceTest();
+	private MemberAcceptanceTest memberAcceptanceTest = new MemberAcceptanceTest();
+	private AuthAcceptanceTest authAcceptanceTest = new AuthAcceptanceTest();
+	private TokenResponse 토큰;
 	private LineResponse 신분당선;
 	private LineResponse 이호선;
 	private LineResponse 삼호선;
@@ -56,13 +62,35 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		lineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 남부터미널역, 양재역, 3);
 	}
 
-	@DisplayName("최단 경로 조회하기")
+	@DisplayName("최단 경로 조회하기 - 비로그인 상태")
 	@Test
 	void 최단_경로_조회하기() {
 		ExtractableResponse<Response> response = 최단_경로_조회_요청하기(강남역.getId(), 남부터미널역.getId());
-		assertThat(response.body().jsonPath().getDouble("distance")).isEqualTo(12);
+		assertThat(response.body().jsonPath().getInt("distance")).isEqualTo(12);
 		assertThat(response.body().jsonPath().getList("stations").size()).isEqualTo(3);
-		assertThat(response.body().jsonPath().getList("fee").size()).isEqualTo(1350);
+		assertThat(response.body().jsonPath().getInt("fare")).isEqualTo(2550);
+	}
+
+	@DisplayName("최단 경로 조회하기 - 어린이 로그인 상태")
+	@Test
+	void 최단_경로_조회하기_어린이_로그인() {
+		memberAcceptanceTest.회원_생성을_요청("taminging@kakao.com", "taminging", 10);
+		토큰 = authAcceptanceTest.로그인("taminging@kakao.com", "taminging").as(TokenResponse.class);
+		ExtractableResponse<Response> response = 로그인_후_최단_경로_조회_요청하기(강남역.getId(), 남부터미널역.getId(), 토큰.getAccessToken());
+		assertThat(response.body().jsonPath().getInt("distance")).isEqualTo(12);
+		assertThat(response.body().jsonPath().getList("stations").size()).isEqualTo(3);
+		assertThat(response.body().jsonPath().getInt("fare")).isEqualTo(1450);
+	}
+
+	@DisplayName("최단 경로 조회하기 - 청소년 로그인 상태")
+	@Test
+	void 최단_경로_조회하기_청소년_로그인() {
+		memberAcceptanceTest.회원_생성을_요청("taminging@kakao.com", "taminging", 15);
+		토큰 = authAcceptanceTest.로그인("taminging@kakao.com", "taminging").as(TokenResponse.class);
+		ExtractableResponse<Response> response = 로그인_후_최단_경로_조회_요청하기(강남역.getId(), 남부터미널역.getId(), 토큰.getAccessToken());
+		assertThat(response.body().jsonPath().getInt("distance")).isEqualTo(12);
+		assertThat(response.body().jsonPath().getList("stations").size()).isEqualTo(3);
+		assertThat(response.body().jsonPath().getInt("fare")).isEqualTo(2110);
 	}
 
 	@DisplayName("최단 경로 조회하기 - 출발역과 도착역이 같은 경우(에러 발생)")
@@ -94,6 +122,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 	private ExtractableResponse<Response> 최단_경로_조회_요청하기(Long source, Long target) {
 		return get("/paths?source=" + source + "&target=" + target);
+	}
+
+	private ExtractableResponse<Response> 로그인_후_최단_경로_조회_요청하기(Long source, Long target, String token) {
+		return get("/paths?source=" + source + "&target=" + target, token);
 	}
 
 	private void 최단_경로_조회하기_실패(ExtractableResponse<Response> response) {

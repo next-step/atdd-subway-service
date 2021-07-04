@@ -14,20 +14,20 @@ public class LineResponse {
 	private List<StationResponse> stations;
 	private LocalDateTime createdDate;
 	private LocalDateTime modifiedDate;
-	private int extraFee;
+	private int fare;
 
 	public LineResponse() {
 	}
 
 	public LineResponse(Long id, String name, String color, List<StationResponse> stations, LocalDateTime createdDate,
-		LocalDateTime modifiedDate, int extraFee) {
+		LocalDateTime modifiedDate, int fare) {
 		this.id = id;
 		this.name = name;
 		this.color = color;
 		this.stations = stations;
 		this.createdDate = createdDate;
 		this.modifiedDate = modifiedDate;
-		this.extraFee = extraFee;
+		this.fare = fare;
 	}
 
 	public static LineResponse of(Line line) {
@@ -63,7 +63,7 @@ public class LineResponse {
 		return modifiedDate;
 	}
 
-	public int getExtraFee() {
-		return extraFee;
+	public int getFare() {
+		return fare;
 	}
 }

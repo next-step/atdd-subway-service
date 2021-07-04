@@ -22,8 +22,10 @@ public class FareCalculator {
 
 	public static Fare getSubwayFare(GraphPath<Station, SectionEdge> path, int age) {
 		Distance distance = new Distance((int)path.getWeight());
-		Lines lines = new Lines(path.getEdgeList().stream().map(SectionEdge::getLine).distinct().collect(Collectors.toList()));
+		Lines lines = new Lines(
+			path.getEdgeList().stream().map(SectionEdge::getLine).distinct().collect(Collectors.toList()));
 		Fare lineFare = lines.getMostExpensiveExtraFeeLine().getFare();
 		return getSubwayFare(distance, lineFare, age);
 	}
+
 }
