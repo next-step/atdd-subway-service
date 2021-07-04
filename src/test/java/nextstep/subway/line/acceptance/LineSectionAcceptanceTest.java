@@ -43,6 +43,17 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
+    @DisplayName("지하철 노선을 관리한다")
+    @TestFactory
+    Stream<DynamicTest> manageLine() {
+        return Stream.of(
+                dynamicTest("지하철 노선에 역 등록 요청 및 성공 확인(신분당선, 강남역 - 양재역)", 지하철_노선에_지하철역_등록_요청_및_성공_확인(신분당선, 강남역, 양재역, 3)),
+                dynamicTest("지하철 노선과 이에 속한 정렬된 역 확인(강남역 - 양재역 - 광교역)", 지하철_노선_조회_요청_및_확인(신분당선, asList(강남역, 양재역, 광교역))),
+                dynamicTest("지하철_노선에_지하철역_제외_요청 및 성공 확인(신분당선, 양재역)", 지하철_노선에_지하철역_제외_요청_및_성공_확인(신분당선, 양재역)),
+                dynamicTest("지하철 노선과 이에 속한 정렬된 역 확인(강남역 - 양재역 - 광교역)", 지하철_노선_조회_요청_및_확인(신분당선, asList(강남역, 광교역)))
+        );
+    }
+
     @DisplayName("지하철 구간을 등록한다.")
     @TestFactory
     Stream<DynamicTest> addLineSection() {
