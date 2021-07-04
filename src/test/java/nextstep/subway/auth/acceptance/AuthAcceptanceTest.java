@@ -81,7 +81,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인_사용자_확인_토큰_불일치_실패(response);
     }
 
-    private ExtractableResponse<Response> 로그인_사용자_일치_확인_요청(TokenResponse tokenResponse) {
+    public static ExtractableResponse<Response> 로그인_사용자_일치_확인_요청(TokenResponse tokenResponse) {
         return RestAssured.given().log().all()
                             .auth().oauth2(tokenResponse.getAccessToken())
                             .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -90,7 +90,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                             .extract();
     }
 
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
@@ -104,29 +104,29 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    private void 로그인_성공(ExtractableResponse<Response> response) {
+    public static void 로그인_성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private void 로그인_사용자_일치_확인_성공(ExtractableResponse<Response> response, String email) {
+    public static void 로그인_사용자_일치_확인_성공(ExtractableResponse<Response> response, String email) {
         MemberResponse memberResponse = response.jsonPath().getObject(".", MemberResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(memberResponse.getEmail()).isEqualTo(email);
     }
 
-    private void 로그인_실패_유효_하지_않은_이메일(ExtractableResponse<Response> response) {
+    public static void 로그인_실패_유효_하지_않은_이메일(ExtractableResponse<Response> response) {
         ErrorResponse errorResponse = response.jsonPath().getObject(".", ErrorResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(errorResponse.getMessage()).contains(INVALID_EMAIL);
     }
 
-    private void 로그인_실패_유효_하지_않은_비밀번호(ExtractableResponse<Response> response) {
+    public static void 로그인_실패_유효_하지_않은_비밀번호(ExtractableResponse<Response> response) {
         ErrorResponse errorResponse = response.jsonPath().getObject(".", ErrorResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(errorResponse.getMessage()).contains(INVALID_PASSWORD);
     }
 
-    private void 로그인_사용자_확인_토큰_불일치_실패(ExtractableResponse<Response> response) {
+    public static void 로그인_사용자_확인_토큰_불일치_실패(ExtractableResponse<Response> response) {
         ErrorResponse errorResponse = response.jsonPath().getObject(".", ErrorResponse.class);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(errorResponse.getMessage()).contains(INVALID_TOKEN);
