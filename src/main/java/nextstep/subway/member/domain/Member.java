@@ -1,13 +1,22 @@
 package nextstep.subway.member.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.station.domain.Station;
+
 import org.apache.commons.lang3.StringUtils;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Member extends BaseEntity {

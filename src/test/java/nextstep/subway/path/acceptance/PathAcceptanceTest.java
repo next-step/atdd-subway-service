@@ -38,6 +38,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	@DisplayName("최단 경로 조회")
 	@Test
 	void 최단_경로_조회() {
+		//given
 		StationResponse 강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
 		StationResponse 양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
 		StationResponse 교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
@@ -49,21 +50,31 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 		LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
 
-
 		// when
-		ExtractableResponse<Response> response = RestAssured
-			.given().log().all()
-			.when().get("/paths?source={source}&target={target}", 교대역.getId(), 양재역.getId())
-			.then().log().all().extract();
+		ExtractableResponse<Response> response = 최단_경로_조회_요청(양재역, 교대역);
 
 		// then
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+		최단_경로_조회_응답됨(response);
+		최단_경로_조회_검증(response);
+	}
 
+	private void 최단_경로_조회_응답됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+	}
+
+	private void 최단_경로_조회_검증(ExtractableResponse<Response> response) {
 		List<StationResponse> stationResponses = response.jsonPath().getList("stations", StationResponse.class);
 		assertThat(stationResponses).extracting("name").containsExactly("교대역", "남부터미널역", "양재역");
 
 		int distance = response.jsonPath().getInt("distance");
 		assertThat(distance).isEqualTo(5);
+	}
+
+	private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse 양재역, StationResponse 교대역) {
+		return RestAssured
+			.given().log().all()
+			.when().get("/paths?source={source}&target={target}", 교대역.getId(), 양재역.getId())
+			.then().log().all().extract();
 	}
 
 }
