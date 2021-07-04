@@ -5,30 +5,36 @@ import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 
 public enum AdditionalFeeStrategy {
-    ABOVE_10KM_DISTANCE((additionalFee, distance) -> StandardFee.DEFAULT + additionalFee),
-    OVER_10KM_DISTANCE((additionalFee, distance) -> StandardFee.DEFAULT + calculateOver10KmFare(distance - 100) + additionalFee),
-    OVER_50KM_DISTANCE((additionalFee, distance) -> StandardFee.OVER_50KM + calculateOver50KmFare(distance - 500) + additionalFee);
+    ABOVE_10KM_DISTANCE(distance -> distance <= Distance.LIMIT_10KM, (additionalFee, distance) -> StandardFee.DEFAULT + additionalFee),
+    OVER_10KM_DISTANCE(distance -> distance <= Distance.LIMIT_50KM, (additionalFee, distance) -> StandardFee.DEFAULT + calculateOver10KmFare(distance) + additionalFee),
+    OVER_50KM_DISTANCE(distance -> distance > Distance.LIMIT_50KM, (additionalFee, distance) -> StandardFee.OVER_50KM + calculateOver50KmFare(distance) + additionalFee);
 
+    private static final int KM_1 = 10;
+    private static final int PER_5KM = 50;
+    private static final int PER_8KM = 80;
+    private static final int WON_100 = 100;
+
+    private final Predicate<Integer> distanceType;
     private final BiFunction<Integer, Integer, Integer> expression;
 
-    AdditionalFeeStrategy(BiFunction<Integer, Integer, Integer> expression) {
+    AdditionalFeeStrategy(Predicate<Integer> distanceType, BiFunction<Integer, Integer, Integer> expression) {
+        this.distanceType = distanceType;
         this.expression = expression;
     }
 
     public static int getFee(GraphPath<Station, SubwayWeightedEdge> shortestPath) {
         int distance = (int) shortestPath.getWeight();
         int additionalFee = getAdditionalCharge(shortestPath);
-        if (distance <= Distance.LIMIT_10KM) {
-            return ABOVE_10KM_DISTANCE.calculate(additionalFee, distance);
-        }
 
-        if (distance <= Distance.LIMIT_50KM) {
-            return OVER_10KM_DISTANCE.calculate(additionalFee, distance);
+        for (AdditionalFeeStrategy strategy : AdditionalFeeStrategy.values()) {
+            if (strategy.distanceType.test(distance)) {
+                return strategy.expression.apply(additionalFee, distance);
+            }
         }
-
-        return OVER_50KM_DISTANCE.calculate(additionalFee, distance);
+        throw new IllegalArgumentException();
     }
 
     private static int getAdditionalCharge(GraphPath<Station, SubwayWeightedEdge> shortestPath) {
@@ -40,15 +46,13 @@ public enum AdditionalFeeStrategy {
 
 
     private static int calculateOver10KmFare(int distance) {
-        return (int) ((Math.ceil((distance - 10) / 50) + 1) * 100);
-    }
-//    1250 + (25-10)/5*100 = 1550
-    private static int calculateOver50KmFare(int distance) {
-        return (int) ((Math.ceil((distance - 10) / 80) + 1) * 100);
+        distance = distance - Distance.LIMIT_10KM;
+        return (int) ((Math.ceil((distance - KM_1) / PER_5KM) + 1) * WON_100);
     }
 
-    private int calculate(int additionalFee, int distance) {
-        return expression.apply(additionalFee, distance);
+    private static int calculateOver50KmFare(int distance) {
+        distance = distance - Distance.LIMIT_50KM;
+        return (int) ((Math.ceil((distance - KM_1) / PER_8KM) + 1) * WON_100);
     }
 
     private static class StandardFee {

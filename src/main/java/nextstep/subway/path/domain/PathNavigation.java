@@ -52,7 +52,7 @@ public class PathNavigation {
 
     private Path getPathOf(List<Station> stations, int distance, int fee, int age) {
         Path path = Path.of(stations, distance, fee);
-        path.applyDiscountAgeStrategy(age);
+        path.applyDiscountAgeStrategy(age, fee);
         return path;
     }
 

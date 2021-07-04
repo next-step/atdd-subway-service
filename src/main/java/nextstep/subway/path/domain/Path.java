@@ -5,8 +5,6 @@ import nextstep.subway.station.domain.Station;
 import java.util.List;
 import java.util.Objects;
 
-import static nextstep.subway.path.domain.DiscountAgeStrategy.*;
-
 public class Path {
 
     private final List<Station> stations;
@@ -35,8 +33,8 @@ public class Path {
         return fee;
     }
 
-    public void applyDiscountAgeStrategy(int age) {
-        this.fee = getAgeType(age).calculate(fee);
+    public void applyDiscountAgeStrategy(int age, int fee) {
+        this.fee = DiscountAgeStrategy.getFee(age, fee);
     }
 
     @Override
