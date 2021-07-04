@@ -7,14 +7,12 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathRequest;
-import nextstep.subway.station.domain.Stations;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.function.Executable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.List;
@@ -87,7 +85,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return Stream.of(
                 dynamicTest("경로 조회에 실패한다. (출발지, 도착지 동일 / 출발역: 영등포구청역, 도착역: 영등포구청역)", 경로_조회_요청_및_실패_확인(영등포구청역, 신길역, asList(영등포구청역, 영등포시장역, 신길역), 20)),
                 dynamicTest("경로 조회에 실패한다. (존재 하지 않는 출발지 / 출발역: 대구역, 도착역: 양평역)", 경로_조회_요청_및_실패_확인(영등포구청역, 신길역, asList(당산역, 영등포구청역, 양평역), 20)),
-                dynamicTest("경로 조회에 실패한다. (존재 하지 않는 도착지 / 출발역: 양평역, 도착역: 대구역)", 경로_조회_요청_및_실패_확인(영등포역, 당산역, asList(영등포역, 신길역, 영등포시장역, 영등포구청역, 당산역), 30))
+                dynamicTest("경로 조회에 실패한다. (존재 하지 않는 도착지 / 출발역: 양평역, 도착역: 대구역)", 경로_조회_요청_및_실패_확인(영등포역, 당산역, asList(영등포역, 신길역, 영등포시장역, 영등포구청역, 당산역), 30)),
                 dynamicTest("경로 조회에 실패한다. (연결 되어 있지 않은 출발지, 도착지 / 출발역: 영등포구청역, 도착역: 모란역)", 경로_조회_요청_및_실패_확인(영등포역, 당산역, asList(영등포역, 신길역, 영등포시장역, 영등포구청역, 당산역), 30))
         );
     }
@@ -109,13 +107,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
             // then
             경로_조회_성공_확인(response);
-            경로상_경유_지하철역_확인(response.jsonPath().getList("stations",StationResponse.class), expectedStations);
+            경로상_경유_지하철역_확인(response.jsonPath().getList("stations", StationResponse.class), expectedStations);
             경로상_총_거리_확인(response.jsonPath().getInt("distance"), expectedDistance);
         };
     }
 
     private static ExtractableResponse<Response> 경로_조회_요청(StationResponse sourceStation, StationResponse targetStation) {
-        PathRequest pathRequest = new PathRequest(sourceStation.getId(), targetStation.getId());\
+        PathRequest pathRequest = new PathRequest(sourceStation.getId(), targetStation.getId());
 
         return RestAssured
                 .given().log().all()
@@ -127,11 +125,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 경로_조회_성공_확인(ExtractableResponse<Response> response) {
+    private static void 경로_조회_성공_확인(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(OK);
     }
 
-    private void 경로_조회_실패_확인(ExtractableResponse<Response> response) {
+    private static void 경로_조회_실패_확인(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(INTERNAL_SERVER_ERROR);
     }
 
