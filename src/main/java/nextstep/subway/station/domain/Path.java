@@ -1,8 +1,12 @@
 package nextstep.subway.station.domain;
 
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import org.jgrapht.GraphPath;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Path {
 
@@ -23,7 +27,19 @@ public class Path {
     }
 
     public int fare() {
-        // TODO : 라인 추가요금 합산, 거리비례요금 합산, 할인정책 적용
-        return BASIC_FARE;
+        // TODO : 거리비례요금 합산, 할인정책 적용
+        return BASIC_FARE + extraFare();
+    }
+
+    private int extraFare() {
+        List<Integer> extraFares = sections().stream()
+                                            .map(Section::getLine)
+                                            .map(Line::getExtraFare)
+                                            .collect(Collectors.toList());
+        return Collections.max(extraFares);
+    }
+
+    private List<Section> sections() {
+        return graphPath.getEdgeList();
     }
 }
