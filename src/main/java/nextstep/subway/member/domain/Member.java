@@ -11,6 +11,9 @@ import javax.persistence.Id;
 
 @Entity
 public class Member extends BaseEntity {
+
+    public static final String AUTH_CHECK_ERROR_MESSAGE = "아이디, 비밀번호 정보가 일치하지 않습니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -51,7 +54,7 @@ public class Member extends BaseEntity {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
+            throw new AuthorizationException(AUTH_CHECK_ERROR_MESSAGE);
         }
     }
 }
