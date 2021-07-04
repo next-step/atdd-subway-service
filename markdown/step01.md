@@ -137,7 +137,7 @@ feat (feature)
 - [x] 3.분석 및 설계
     - [x] 3-1.step01.md 초안 작성
     - [x] 3-2.ATDD 작성
-- [ ] 4.구현
+- [x] 4.구현
     - [x] 4-1.인수테스트 리팩터링
         - [x] 4-1-1.`LineAcceptanceTest`
         - [x] 4-1-2.`LineSectionAcceptanceTest`
@@ -149,7 +149,7 @@ feat (feature)
     - [x] 4-7.지하철 노선 삭제 
     - [x] 4-8.지하철 구간 등록 
     - [x] 4-9.지하철 구간 등록 실패
-    - [ ] 4-10.지하철 구간 삭제 
+    - [x] 4-10.지하철 구간 삭제 
 - [ ] 5.테스트
     - [ ] 5-1.Gradle build Success 확인
     - [ ] 5-2.checkstyle 문제없는지 확인 (Java Convention)

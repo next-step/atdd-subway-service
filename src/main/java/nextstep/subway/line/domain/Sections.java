@@ -15,6 +15,8 @@ import nextstep.subway.station.domain.Station;
 @Embeddable
 public class Sections {
 
+	private static final int MINIMUM_SIZE = 1;
+
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private List<Section> sections = new ArrayList<>();
 
@@ -88,7 +90,7 @@ public class Sections {
 	}
 
 	private void addSectionWhenSameWithUpStation(Section section) {
-		if (isDownStationExisted(section) && !isUpStationExisted(section)) {
+		if (isStationExisted(section.downStation()) && !isStationExisted(section.upStation())) {
 			sections.stream()
 				.filter(it -> it.downStation().isSameStation(section.downStation()))
 				.findFirst()
@@ -99,7 +101,7 @@ public class Sections {
 	}
 
 	private void addSectionWhenSameWithDownStation(Section section) {
-		if (!isDownStationExisted(section) && isUpStationExisted(section)) {
+		if (!isStationExisted(section.downStation()) && isStationExisted(section.upStation())) {
 			sections.stream()
 				.filter(it -> it.upStation().isSameStation(section.upStation()))
 				.findFirst()
@@ -108,26 +110,60 @@ public class Sections {
 		}
 	}
 
-	private boolean isDownStationExisted(Section section) {
-		return stations().stream().anyMatch(it -> it.isSameStation(section.downStation()));
+	private boolean isStationExisted(Station station) {
+		return stations().stream().anyMatch(station::isSameStation);
 	}
 
-	private boolean isUpStationExisted(Section section) {
-		return stations().stream().anyMatch(it -> it.isSameStation(section.upStation()));
+	private boolean isStationNotExisted(Station station) {
+		return stations().stream().noneMatch(it -> it.isSameStation(station));
 	}
 
 	private void validateMustHaveRelationWithExsitStation(Section section) {
-		List<Station> stations = stations();
-		if (!stations.isEmpty()
-			&& stations.stream().noneMatch(it -> it.isSameStation(section.upStation()))
-			&& stations.stream().noneMatch(it -> it.isSameStation(section.downStation()))) {
+		if (!stations().isEmpty()
+				&& isStationNotExisted(section.upStation())
+				&& isStationNotExisted(section.downStation())) {
 			throw new RuntimeException("등록할 수 없는 구간 입니다.");
 		}
 	}
 
 	private void validateIsNotDuplicated(Section section) {
-		if (isUpStationExisted(section) && isDownStationExisted(section)) {
+		if (isStationExisted(section.upStation()) && isStationExisted(section.downStation())) {
 			throw new RuntimeException("이미 등록된 구간 입니다.");
+		}
+	}
+
+	public void removeLineStation(Line line, Station station) {
+		validateMinimunLineStation();
+
+		Optional<Section> upLineStation = findSectionSameUpStation(station);
+		Optional<Section> downLineStation = findSectionSameDownStation(station);
+
+		if (upLineStation.isPresent() && downLineStation.isPresent()) {
+			sections.add(new Section(line, upLineStation, downLineStation));
+		}
+		removePreviousSections(upLineStation, downLineStation);
+	}
+
+	private void removePreviousSections(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+		upLineStation.ifPresent(it -> sections.remove(it));
+		downLineStation.ifPresent(it -> sections.remove(it));
+	}
+
+	private Optional<Section> findSectionSameDownStation(Station station) {
+		return sections.stream()
+			.filter(it -> it.downStation() == station)
+			.findFirst();
+	}
+
+	private Optional<Section> findSectionSameUpStation(Station station) {
+		return sections.stream()
+			.filter(it -> it.upStation() == station)
+			.findFirst();
+	}
+
+	private void validateMinimunLineStation() {
+		if (sections.size() <= MINIMUM_SIZE) {
+			throw new RuntimeException("최소 1개의 구간은 존재해야 합니다.");
 		}
 	}
 

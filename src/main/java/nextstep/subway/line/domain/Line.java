@@ -83,6 +83,10 @@ public class Line extends BaseEntity {
 		this.sections.addLineStation(section);
 	}
 
+	public void removeLineStation(Station station) {
+		this.sections.removeLineStation(this, station);
+	}
+
 	@Override
 	public boolean equals(Object object) {
 		if (this == object) {

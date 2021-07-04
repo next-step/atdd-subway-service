@@ -216,6 +216,25 @@ public class LineServiceMockTest {
 		구간_추가되지_않음(일호선_응답.getId(), 청량리역_서울역_구간_요청);
 	}
 
+	@Test
+	void 구간_삭제() {
+		// given
+		when(lineRepository.save(any())).thenReturn(일호선_구간_2개);
+		LineResponse 일호선_응답 = 노선_등록되어_있음(일호선_요청);
+		when(lineRepository.findById(일호선_응답.getId()))
+			.thenReturn(Optional.of(일호선_구간_2개))
+			.thenReturn(Optional.of(일호선));
+		when(stationService.findStationById(any()))
+			.thenReturn(서울역);
+
+		// when
+		lineService.removeLineStation(일호선_응답.getId(), 서울역.getId());
+
+		// then
+		LineResponse 조회_노선 = lineService.findLineResponseById(일호선_응답.getId());
+		삭제된_정보와_응답_정보가_같음(조회_노선);
+	}
+
 	private void 등록_요청_정보와_응답_정보가_같음(LineResponse 응답_정보) {
 		assertThat(응답_정보.getName()).isEqualTo(일호선_요청.getName());
 		assertThat(응답_정보.getColor()).isEqualTo(일호선_요청.getColor());
@@ -267,5 +286,11 @@ public class LineServiceMockTest {
 	private void 구간_추가되지_않음(Long 노선_아이디, SectionRequest 구간_요청) {
 		assertThatThrownBy(() -> lineService.addLineStation(노선_아이디, 구간_요청))
 			.isInstanceOf(RuntimeException.class);
+	}
+
+	private void 삭제된_정보와_응답_정보가_같음(LineResponse 조회_노선) {
+		assertThat(조회_노선.getName()).isEqualTo(일호선_요청.getName());
+		assertThat(조회_노선.getColor()).isEqualTo(일호선_요청.getColor());
+		assertThat(조회_노선.getStations()).containsSequence(Arrays.asList(종로3가역_응답, 신길역_응답));
 	}
 }

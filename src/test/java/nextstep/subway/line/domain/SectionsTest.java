@@ -149,4 +149,56 @@ public class SectionsTest {
 		// then
 		assertThatThrownBy(() -> 구간들.addLineStation(종로3가역_신길역)).isInstanceOf(RuntimeException.class);
 	}
+
+	@Test
+	void 구간_삭제_내부역() {
+		// given
+		Sections 구간들 = new Sections(종로3가역_서울역);
+		구간들.addLineStation(서울역_신길역);
+
+		// when
+		구간들.removeLineStation(일호선, 서울역);
+
+		// then
+		assertThat(구간들.stations()).containsSequence(Arrays.asList(종로3가역, 신길역));
+	}
+
+	@Test
+	void 구간_삭제_상행종점역() {
+		// given
+		Sections 구간들 = new Sections(종로3가역_서울역);
+		구간들.addLineStation(서울역_신길역);
+
+		// when
+		구간들.removeLineStation(일호선, 종로3가역);
+
+		// then
+		assertThat(구간들.stations()).containsSequence(Arrays.asList(서울역, 신길역));
+	}
+
+	@Test
+	void 구간_삭제_하행종점역() {
+		// given
+		Sections 구간들 = new Sections(종로3가역_서울역);
+		구간들.addLineStation(서울역_신길역);
+
+		// when
+		구간들.removeLineStation(일호선, 신길역);
+
+		// then
+		assertThat(구간들.stations()).containsSequence(Arrays.asList(종로3가역, 서울역));
+	}
+
+	@Test
+	void 구간_삭제_존재하지_않는_역_요청시_삭제된_구간없음() {
+		// given
+		Sections 구간들 = new Sections(종로3가역_서울역);
+		구간들.addLineStation(서울역_신길역);
+
+		// when
+		구간들.removeLineStation(일호선, 청량리역);
+
+		// then
+		assertThat(구간들.stations()).containsSequence(Arrays.asList(종로3가역, 서울역, 신길역));
+	}
 }

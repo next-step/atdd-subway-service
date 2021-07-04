@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
@@ -42,6 +43,17 @@ public class Section {
 		this.upStation = upStation;
 		this.downStation = downStation;
 		this.distance = new Distance(distance);
+	}
+
+	public Section(Line line, Optional<Section> upLineStation, Optional<Section> downLineStation) {
+		Station newUpStation = downLineStation.get().upStation();
+		Station newDownStation = upLineStation.get().downStation();
+		int newDistance = upLineStation.get().distance() + downLineStation.get().distance();
+
+		this.line = line;
+		this.upStation = newUpStation;
+		this.downStation = newDownStation;
+		this.distance = new Distance(newDistance);
 	}
 
 	public Long id() {
