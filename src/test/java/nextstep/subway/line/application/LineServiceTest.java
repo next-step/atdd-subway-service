@@ -74,6 +74,18 @@ public class LineServiceTest extends ServiceTest {
 		지하철_노선_목록_포함됨(노선_목록, Arrays.asList(일호선_응답, 오호선_응답));
 	}
 
+	@Test
+	void 노선_조회() {
+		// given
+		LineResponse 일호선_응답 = 노선_등록되어_있음(일호선_요청);
+
+		// when
+		LineResponse 조회_노선 = lineService.findLineResponseById(일호선_응답.getId());
+
+		// then
+		등록_요청_정보와_응답_정보가_같음(조회_노선);
+	}
+
 	private void 등록_요청_정보와_응답_정보가_같음(LineResponse 응답_정보) {
 		assertThat(응답_정보.getName()).isEqualTo(일호선_요청.getName());
 		assertThat(응답_정보.getColor()).isEqualTo(일호선_요청.getColor());

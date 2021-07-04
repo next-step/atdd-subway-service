@@ -5,6 +5,7 @@ import static org.mockito.BDDMockito.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -91,6 +92,21 @@ public class LineServiceMockTest {
 
 		// then
 		지하철_노선_목록_포함됨(노선_목록, Arrays.asList(일호선_응답, 오호선_응답));
+	}
+
+	@Test
+	void 노선_조회() {
+		// given
+		when(lineRepository.save(any())).thenReturn(일호선);
+		Long 일호선_아이디 = 1L;
+		when(lineRepository.findById(일호선_아이디)).thenReturn(Optional.of(일호선));
+		LineResponse 일호선_응답 = 노선_등록되어_있음(일호선_요청);
+
+		// when
+		LineResponse 조회_노선 = lineService.findLineResponseById(일호선_아이디);
+
+		// then
+		등록_요청_정보와_응답_정보가_같음(조회_노선);
 	}
 
 	private void 등록_요청_정보와_응답_정보가_같음(LineResponse 응답_정보) {
