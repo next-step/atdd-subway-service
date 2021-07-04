@@ -1,7 +1,10 @@
 package nextstep.subway.fare.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.util.Objects;
 
+@Embeddable
 public class Fare {
 
     public static final int BASE_FARE = 1250;
@@ -13,7 +16,11 @@ public class Fare {
     public static final double AGE_TEENAGER_DISCOUNT_RATE = 0.2;
     public static final double AGE_CHILD_DISCOUNT_RATE = 0.5;
 
+    @Column
     private int fare;
+
+    public Fare() {
+    }
 
     public Fare(int fare) {
         this.fare = fare;

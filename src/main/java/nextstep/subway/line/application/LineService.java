@@ -2,7 +2,7 @@ package nextstep.subway.line.application;
 
 import nextstep.subway.exception.CannotFindException;
 import nextstep.subway.exception.Message;
-import nextstep.subway.fare.domain.ExtraCharge;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -57,7 +57,7 @@ public class LineService {
         Line persistLine = lineRepository.findById(id)
                 .orElseThrow(() -> new CannotFindException(Message.ERROR_CANNOT_FIND_LINE));
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor(),
-                new ExtraCharge(lineUpdateRequest.getExtraCharge())));
+                new Fare(lineUpdateRequest.getExtraCharge())));
     }
 
     public void deleteLineById(Long id) {

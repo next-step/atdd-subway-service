@@ -14,6 +14,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
 
+import static nextstep.subway.TestFixture.명동역;
+import static nextstep.subway.TestFixture.회현역;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -28,7 +30,7 @@ public class SpringExtensionTest {
     @Test
     void findAllLines() {
         // given
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
+        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line("사호선", "파란색", 회현역, 명동역, 10, 400)));
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when
