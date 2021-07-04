@@ -12,7 +12,6 @@ import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.path.domain.Path;
-import nextstep.subway.fare.policy.customer.CustomerAgeDiscountFarePolicy;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -39,8 +38,9 @@ public class PathService {
         Station target = stationService.findStationById(targetId);
         Path path = pathFinder.findPath(source, target);
 
+        Fare totalFare = Fare.DEFAULT.apply(path.getPolicies());
+
         Member member = memberService.findMemberEntity(loginMember.getId());
-        CustomerAgeDiscountFarePolicy policy = CustomerType.getPolicy(member);
-        return PathResponse.of(path, policy.apply(Fare.of(path)));
+        return PathResponse.of(path, totalFare.apply(CustomerType.getPolicy(member)));
     }
 }

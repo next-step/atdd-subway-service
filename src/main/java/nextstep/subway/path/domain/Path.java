@@ -7,8 +7,8 @@ import java.util.List;
 
 import org.jgrapht.GraphPath;
 
+import nextstep.subway.fare.policy.FarePolicy;
 import nextstep.subway.fare.policy.path.PathAdditionType;
-import nextstep.subway.fare.policy.path.PathAdditionalPolicy;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
@@ -18,7 +18,7 @@ public class Path {
     private final List<Line> passingLines;
     private final double distance;
 
-    private final List<PathAdditionalPolicy> policies;
+    private final List<FarePolicy> policies;
 
     Path(GraphPath<Station, SectionEdge> graphPath) {
         this.stations = graphPath.getVertexList();
@@ -28,7 +28,10 @@ public class Path {
             .distinct()
             .collect(toList());
         this.distance = graphPath.getWeight();
-        this.policies = PathAdditionType.getAllPolicies();
+        this.policies = PathAdditionType.getAllPolicies()
+            .stream()
+            .map(policy -> policy.of(this))
+            .collect(toList());
     }
 
     public static Path of(GraphPath<Station, SectionEdge> value) {
@@ -47,7 +50,7 @@ public class Path {
         return distance;
     }
 
-    public List<PathAdditionalPolicy> getPolicies() {
-        return policies;
+    public List<FarePolicy> getPolicies() {
+        return unmodifiableList(policies);
     }
 }

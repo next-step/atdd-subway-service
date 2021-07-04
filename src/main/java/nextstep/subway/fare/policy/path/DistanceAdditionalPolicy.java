@@ -1,9 +1,9 @@
 package nextstep.subway.fare.policy.path;
 
-import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.fare.policy.FarePolicy;
 import nextstep.subway.path.domain.Path;
 
-public class DistanceAdditionalPolicy implements PathAdditionalPolicy {
+public class DistanceAdditionalPolicy extends PathAdditionalPolicy {
 
     private static final int DISTANCE_FARE = 100;
 
@@ -11,7 +11,8 @@ public class DistanceAdditionalPolicy implements PathAdditionalPolicy {
     }
 
     @Override
-    public Fare apply(Fare fare, Path path) {
-        return fare.add(PayZone.totalPoint(path.distance()) * DISTANCE_FARE);
+    public FarePolicy of(Object object) {
+        checkPathObject(object);
+        return fare -> fare.add(PayZone.totalPoint(((Path)object).distance()) * DISTANCE_FARE);
     }
 }

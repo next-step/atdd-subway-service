@@ -1,23 +1,16 @@
 package nextstep.subway.fare.domain;
 
-import nextstep.subway.path.domain.Path;
-import nextstep.subway.fare.utils.FareCalculator;
+import java.util.List;
+
+import nextstep.subway.fare.policy.FarePolicy;
 
 public class Fare {
 
-    private static final int BASIC_FARE = 1250;
+    public static final Fare DEFAULT = new Fare(1250);
 
     private final int value;
 
-    public static Fare of(Path path) {
-        return FareCalculator.calculate(path);
-    }
-
-    public Fare() {
-        this.value = BASIC_FARE;
-    }
-
-    private Fare(int value) {
+    public Fare(int value) {
         this.value = value;
     }
 
@@ -35,5 +28,19 @@ public class Fare {
 
     public int getValue() {
         return value;
+    }
+
+    public Fare apply(FarePolicy policy) {
+        return policy.calculate(this);
+    }
+
+    public Fare apply(List<FarePolicy> policies) {
+        Fare fare = this;
+
+        for (FarePolicy policy : policies) {
+            fare = fare.apply(policy);
+        }
+
+        return fare;
     }
 }
