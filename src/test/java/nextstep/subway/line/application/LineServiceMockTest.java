@@ -18,8 +18,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -34,25 +36,38 @@ public class LineServiceMockTest {
 	@InjectMocks
 	private LineService lineService;
 
+	private Station 청량리역;
 	private Station 종로3가역;
+	private Station 서울역;
 	private Station 신길역;
+	private StationResponse 청량리역_응답;
 	private StationResponse 종로3가역_응답;
+	private StationResponse 서울역_응답;
 	private StationResponse 신길역_응답;
 	private Line 일호선;
+	private Line 일호선_구간_2개;
 	private Line 오호선;
 	private LineRequest 일호선_요청;
 	private LineRequest 오호선_요청;
 
 	@BeforeEach
 	void 초기화() {
+		청량리역 = new Station("청량리역");
 		종로3가역 = new Station("종로3가역");
+		서울역 = new Station("서울역");
 		신길역 = new Station("신길역");
+		청량리역_응답 = StationResponse.of(청량리역);
 		종로3가역_응답 = StationResponse.of(종로3가역);
+		서울역_응답 = StationResponse.of(서울역);
 		신길역_응답 = StationResponse.of(신길역);
+
 		일호선 = new Line("1호선", "blue", 종로3가역, 신길역, 10);
 		오호선 = new Line("5호선", "purple", 종로3가역, 신길역, 10);
 		일호선_요청 = new LineRequest("1호선", "blue", 1L, 2L, 10);
 		오호선_요청 = new LineRequest("5호선", "purple", 종로3가역.getId(), 신길역.getId(), 10);
+
+		일호선_구간_2개 = new Line("1호선", "blue", 종로3가역, 신길역, 10);
+		일호선_구간_2개.addLineStation(new Section(일호선_구간_2개, 종로3가역, 서울역, 4));
 	}
 
 	@Test
@@ -144,6 +159,63 @@ public class LineServiceMockTest {
 		노선_삭제되었음(일호선_응답);
 	}
 
+	@Test
+	void 구간_추가() {
+		// given
+		when(lineRepository.save(any())).thenReturn(일호선);
+		when(stationService.findStationById(any()))
+			.thenReturn(종로3가역)
+			.thenReturn(서울역);
+		LineResponse 일호선_응답 = 노선_등록되어_있음(일호선_요청);
+		when(lineRepository.findById(일호선_응답.getId()))
+			.thenReturn(Optional.of(일호선))
+			.thenReturn(Optional.of(일호선_구간_2개));
+		SectionRequest 종로3가역_서울역_구간_요청 = new SectionRequest(종로3가역.getId(), 서울역.getId(), 4);
+
+		// when
+		lineService.addLineStation(일호선_응답.getId(), 종로3가역_서울역_구간_요청);
+
+		// then
+		LineResponse 조회_노선 = lineService.findLineResponseById(일호선_응답.getId());
+		추가_요청_정보와_응답_정보가_같음(조회_노선);
+	}
+
+	@Test
+	void 구간_추가_동일한_구간_추가한_경우_오류발생() {
+		// given
+		when(lineRepository.save(any())).thenReturn(일호선);
+		when(stationService.findStationById(any()))
+			.thenReturn(종로3가역)
+			.thenReturn(신길역);
+		LineResponse 일호선_응답 = 노선_등록되어_있음(일호선_요청);
+		when(lineRepository.findById(일호선_응답.getId()))
+			.thenReturn(Optional.of(일호선));
+		SectionRequest 종로3가역_신길역_구간_요청 = new SectionRequest(종로3가역.getId(), 신길역.getId(), 4);
+
+		// when
+
+		// then
+		구간_추가되지_않음(일호선_응답.getId(), 종로3가역_신길역_구간_요청);
+	}
+
+	@Test
+	void 구간_추가_연관된_역_없이_구간_추가한_경우_오류발생() {
+		// given
+		when(lineRepository.save(any())).thenReturn(일호선);
+		when(stationService.findStationById(any()))
+			.thenReturn(청량리역)
+			.thenReturn(서울역);
+		LineResponse 일호선_응답 = 노선_등록되어_있음(일호선_요청);
+		when(lineRepository.findById(일호선_응답.getId()))
+			.thenReturn(Optional.of(일호선));
+		SectionRequest 청량리역_서울역_구간_요청 = new SectionRequest(청량리역.getId(), 서울역.getId(), 4);
+
+		// when
+
+		// then
+		구간_추가되지_않음(일호선_응답.getId(), 청량리역_서울역_구간_요청);
+	}
+
 	private void 등록_요청_정보와_응답_정보가_같음(LineResponse 응답_정보) {
 		assertThat(응답_정보.getName()).isEqualTo(일호선_요청.getName());
 		assertThat(응답_정보.getColor()).isEqualTo(일호선_요청.getColor());
@@ -184,5 +256,16 @@ public class LineServiceMockTest {
 
 	private void 노선_삭제되었음(LineResponse 응답_정보) {
 		assertThatThrownBy(() -> lineService.findLineResponseById(응답_정보.getId())).isInstanceOf(RuntimeException.class);
+	}
+
+	private void 추가_요청_정보와_응답_정보가_같음(LineResponse 조회_노선) {
+		assertThat(조회_노선.getName()).isEqualTo(일호선_요청.getName());
+		assertThat(조회_노선.getColor()).isEqualTo(일호선_요청.getColor());
+		assertThat(조회_노선.getStations()).containsSequence(Arrays.asList(종로3가역_응답, 서울역_응답, 신길역_응답));
+	}
+
+	private void 구간_추가되지_않음(Long 노선_아이디, SectionRequest 구간_요청) {
+		assertThatThrownBy(() -> lineService.addLineStation(노선_아이디, 구간_요청))
+			.isInstanceOf(RuntimeException.class);
 	}
 }

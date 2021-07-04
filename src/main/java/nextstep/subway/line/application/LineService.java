@@ -1,7 +1,5 @@
 package nextstep.subway.line.application;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,41 +58,7 @@ public class LineService {
 		Line line = findLineById(lineId);
 		Station upStation = stationService.findStationById(request.getUpStationId());
 		Station downStation = stationService.findStationById(request.getDownStationId());
-		List<Station> stations = getStations(line);
-		boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-		boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
-
-		if (isUpStationExisted && isDownStationExisted) {
-			throw new RuntimeException("이미 등록된 구간 입니다.");
-		}
-
-		if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation)
-			&& stations.stream().noneMatch(it -> it == downStation)) {
-			throw new RuntimeException("등록할 수 없는 구간 입니다.");
-		}
-
-		if (stations.isEmpty()) {
-			line.sections().add(new Section(line, upStation, downStation, request.getDistance()));
-			return;
-		}
-
-		if (isUpStationExisted) {
-			line.sections().stream()
-				.filter(it -> it.upStation() == upStation)
-				.findFirst()
-				.ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
-
-			line.sections().add(new Section(line, upStation, downStation, request.getDistance()));
-		} else if (isDownStationExisted) {
-			line.sections().stream()
-				.filter(it -> it.downStation() == downStation)
-				.findFirst()
-				.ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
-
-			line.sections().add(new Section(line, upStation, downStation, request.getDistance()));
-		} else {
-			throw new RuntimeException();
-		}
+		line.addLineStation(new Section(line, upStation, downStation, request.getDistance()));
 	}
 
 	public void removeLineStation(Long lineId, Long stationId) {
@@ -120,45 +84,5 @@ public class LineService {
 
 		upLineStation.ifPresent(it -> line.sections().remove(it));
 		downLineStation.ifPresent(it -> line.sections().remove(it));
-	}
-
-	public List<Station> getStations(Line line) {
-		if (line.sections().isEmpty()) {
-			return Arrays.asList();
-		}
-
-		List<Station> stations = new ArrayList<>();
-		Station downStation = findUpStation(line);
-		stations.add(downStation);
-
-		while (downStation != null) {
-			Station finalDownStation = downStation;
-			Optional<Section> nextLineStation = line.sections().stream()
-				.filter(it -> it.upStation() == finalDownStation)
-				.findFirst();
-			if (!nextLineStation.isPresent()) {
-				break;
-			}
-			downStation = nextLineStation.get().downStation();
-			stations.add(downStation);
-		}
-
-		return stations;
-	}
-
-	private Station findUpStation(Line line) {
-		Station downStation = line.sections().get(0).upStation();
-		while (downStation != null) {
-			Station finalUpStation = downStation;
-			Optional<Section> nextLineStation = line.sections().stream()
-				.filter(it -> it.downStation() == finalUpStation)
-				.findFirst();
-			if (!nextLineStation.isPresent()) {
-				break;
-			}
-			downStation = nextLineStation.get().upStation();
-		}
-
-		return downStation;
 	}
 }

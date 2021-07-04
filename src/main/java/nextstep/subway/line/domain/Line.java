@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,8 +28,8 @@ public class Line extends BaseEntity {
 	private String name;
 	private String color;
 
-	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-	private List<Section> sections = new ArrayList<>();
+	@Embedded
+	private Sections sections;
 
 	public Line() {
 	}
@@ -36,12 +37,13 @@ public class Line extends BaseEntity {
 	public Line(String name, String color) {
 		this.name = name;
 		this.color = color;
+		this.sections = new Sections();
 	}
 
 	public Line(String name, String color, Station upStation, Station downStation, int distance) {
 		this.name = name;
 		this.color = color;
-		sections.add(new Section(this, upStation, downStation, distance));
+		this.sections = new Sections(new Section(this, upStation, downStation, distance));
 	}
 
 	public static Line of(LineRequest request, Station upStation, Station downStation) {
@@ -70,47 +72,15 @@ public class Line extends BaseEntity {
 	}
 
 	public List<Section> sections() {
-		return sections;
+		return sections.value();
 	}
 
 	public List<Station> stations() {
-		if (sections.isEmpty()) {
-			return Arrays.asList();
-		}
-
-		List<Station> stations = new ArrayList<>();
-		Station downStation = findUpStation();
-		stations.add(downStation);
-
-		while (downStation != null) {
-			Station finalDownStation = downStation;
-			Optional<Section> nextLineStation = sections().stream()
-				.filter(it -> it.upStation() == finalDownStation)
-				.findFirst();
-			if (!nextLineStation.isPresent()) {
-				break;
-			}
-			downStation = nextLineStation.get().downStation();
-			stations.add(downStation);
-		}
-
-		return stations;
+		return this.sections.stations();
 	}
 
-	private Station findUpStation() {
-		Station downStation = sections.get(0).upStation();
-		while (downStation != null) {
-			Station finalUpStation = downStation;
-			Optional<Section> nextLineStation = sections.stream()
-				.filter(it -> it.downStation() == finalUpStation)
-				.findFirst();
-			if (!nextLineStation.isPresent()) {
-				break;
-			}
-			downStation = nextLineStation.get().upStation();
-		}
-
-		return downStation;
+	public void addLineStation(Section section) {
+		this.sections.addLineStation(section);
 	}
 
 	@Override
@@ -125,8 +95,7 @@ public class Line extends BaseEntity {
 		return Objects.equals(id, line.id)
 			&& Objects.equals(name, line.name)
 			&& Objects.equals(color, line.color)
-			&& sections.containsAll(line.sections)
-			&& line.sections.containsAll(sections);
+			&& sections.equals(line.sections);
 	}
 
 	@Override
