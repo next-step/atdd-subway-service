@@ -141,4 +141,17 @@ public class PathServiceTest {
         assertThat(pathResponse.getDistance()).isEqualTo(25);
     }
 
+    @Test
+    @DisplayName("지하철 요금 조회")
+    void 지하철_요금_조회() {
+        // when
+        // 신도림에서 홍대역까지의 경로를 구한다.
+        when(stationRepository.findById(1L)).thenReturn(Optional.ofNullable(신도림역));
+        when(stationRepository.findById(5L)).thenReturn(Optional.ofNullable(홍대역));
+
+        // then
+        // 거리가 응답됨 30km -> 1,650
+        PathResponse pathResponse = pathService.findOptimalPath(1L, 5L);
+        assertThat(pathResponse.getCharge()).isEqualTo(1650);
+    }
 }

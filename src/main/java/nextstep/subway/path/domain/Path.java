@@ -1,8 +1,8 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.common.Excetion.NotConnectStationException;
-import nextstep.subway.line.collection.Distance;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.policy.ChargePolicy;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -15,14 +15,16 @@ import java.util.Map;
 public class Path {
     private static List<Station> stations;
     private static int distance;
+    private static int charge;
     private static WeightedMultigraph<Station, DefaultWeightedEdge> optimalPath;
 
     private Path() {
     }
 
-    public Path(List<Station> stations, int distance) {
+    private Path(List<Station> stations, int distance, int charge) {
         this.stations = stations;
         this.distance = distance;
+        this.charge = charge;
     }
 
     public static Path findOptimalPath(Station sourceStation, Station targetStation, List<Section> sections) {
@@ -40,10 +42,16 @@ public class Path {
     private static Path getStationPath(Station sourceStation, Station targetStation) {
         try {
             GraphPath path = new DijkstraShortestPath(optimalPath).getPath(sourceStation, targetStation);
-            return new Path(path.getVertexList(), (int) Math.round(path.getWeight()));
+            return new Path(path.getVertexList(), (int) Math.round(path.getWeight()), getChargeCalculate((int) Math.round(path.getWeight())));
         } catch (NullPointerException e) {
             throw new NotConnectStationException();
         }
+    }
+
+    private static int getChargeCalculate(int distance) {
+        ChargePolicy chargePolicy = ChargePolicy.getDistancePolicy(distance);
+        return chargePolicy.getCharge() +
+                (int) ((Math.ceil((distance - chargePolicy.getMinDistance() - 1 ) / chargePolicy.getAddChargeDistance()) + 1) * chargePolicy.getAddCharge());
     }
 
     private static void setEdgeWeight(Section section) {
@@ -62,5 +70,9 @@ public class Path {
 
     public int getDistance() {
         return this.distance;
+    }
+
+    public int getCharge() {
+        return charge;
     }
 }

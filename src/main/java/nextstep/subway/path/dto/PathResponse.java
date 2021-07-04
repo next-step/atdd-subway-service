@@ -24,7 +24,7 @@ public class PathResponse {
         List<StationResponse> stationsResponses = path.getStations().stream()
                 .map(station -> StationResponse.of(station))
                 .collect(Collectors.toList());
-        return new PathResponse(1650, path.getDistance(), stationsResponses);
+        return new PathResponse(path.getCharge(), path.getDistance(), stationsResponses);
     }
 
     public List<StationResponse> getStations() {
