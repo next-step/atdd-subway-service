@@ -447,9 +447,11 @@ Date: Sun, 27 Dec 2020 04:32:26 GMT
         * when: 아이디: mwkwon@test.com, 비밀번호: 4321로 로그인 요청
         * then: 로그인 실패함.
     * [ ] Scenario: 유효하지 않은 토큰
-        * given: 임의의 인증 토큰 생성
-        * when: 내정보를 조회함.
-        * then: 내정조 조회가 유효하지 않은 토큰로 조회 실패
+        * given: 아이디: mwkwon@test.com, 비밀번호: 1234로 로그인되어 있음
+        * when: accessToken 값을 null 값으로 내정보를 조회함
+        * then: 유효하지 않은 토큰으로 조회 실패
+        * when: accessToken 값을 수정하고 내정보를 조회함
+        * then: 유효하지 않은 토큰으로 조회 실패
 
 ### 기능 구현 목록
 * [ ] 토큰 발급 기능 인수 테스트 작성
