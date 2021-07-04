@@ -8,6 +8,7 @@ import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import nextstep.subway.utils.AcceptanceDataGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,9 +34,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
         // when: 아이디: email@email.com, 비밀번호: password, 나이: 20 회원이 생성되어 있음
-        createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        createResponse = AcceptanceDataGenerator.회원_생성을_요청(EMAIL, PASSWORD, AGE);
         // and: 아이디: email@email.com, 비밀번호: password로 로그인 되어 있음
-        로그인_정보 = 로그인_요청(EMAIL, PASSWORD);
+        로그인_정보 = AcceptanceDataGenerator.로그인_요청(EMAIL, PASSWORD);
     }
 
     @DisplayName("회원 정보를 관리한다.")
@@ -81,18 +82,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 나의_정보_삭제 = 나의_정보_삭제(새로운_인증_토큰);
         // then: 나의 정보가 정상 삭제된다
         회원_삭제됨(나의_정보_삭제);
-    }
-
-    public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
-        MemberRequest memberRequest = new MemberRequest(email, password, age);
-
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().post("/members")
-                .then().log().all()
-                .extract();
     }
 
     public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
@@ -145,18 +134,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    private TokenResponse 로그인_요청(String email, String password) {
-        TokenRequest tokenRequest = new TokenRequest(email, password);
-        return RestAssured
-                .given().log().all()
-                .body(tokenRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/login/token")
-                .then().log().all()
-                .extract().as(TokenResponse.class);
     }
 
     private ExtractableResponse<Response> 나의_정보_수정(TokenResponse 로그인_정보, String newEmail, String newPassword, int newAge) {
