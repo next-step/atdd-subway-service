@@ -57,25 +57,26 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인이_실패됨(response);
     }
 
-    @DisplayName("Bearer Auth 유효하지 않은 토큰")
+    @DisplayName("유효하지 않은 토큰으로 내정보 조회 시도")
     @Test
-    void myInfoWithWrongBearerAuth() {
+    void 유효하지_않은_토큰으로_내정보_조회_시도() {
         //given
         final String email = "email@email.com";
         final String password = "password";
         final Integer age = 29;
 
         MemberAcceptanceTest.회원_생성되어_있음(email, password, age);
-        TokenResponse tokenResponse = 로그인을_요청(email, password).as(TokenResponse.class);
+        TokenResponse tokenResponse = 토큰_발행(email, password);
 
         // when
-        ExtractableResponse<Response> response = 유효하지_않은_토큰으로_요청(tokenResponse.getAccessToken() + "tearDrop!!");
+        String garbage = tokenResponse.getAccessToken() + "tearDrop!!";
+        ExtractableResponse<Response> response = 토큰으로_요청(garbage);
 
         // then
         로그인이_실패됨(response);
     }
 
-    private ExtractableResponse<Response> 로그인을_요청(String email, String password) {
+    private static ExtractableResponse<Response> 로그인을_요청(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
@@ -88,12 +89,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .then().log().all().extract();
     }
 
-    private ExtractableResponse<Response> 유효하지_않은_토큰으로_요청(String tearDrop) {
-        return RestAssured
-            .given().log().all()
-            .auth().oauth2(tearDrop)
-            .when().get("/members/me")
-            .then().log().all().extract();
+    private ExtractableResponse<Response> 토큰으로_요청(String accessToken) {
+        return MemberAcceptanceTest.내_정보_조회_요청(accessToken);
     }
 
     private void 로그인이_응답됨(ExtractableResponse<Response> response) {
@@ -102,5 +99,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     private void 로그인이_실패됨(ExtractableResponse<Response> response) {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    public static TokenResponse 토큰_발행(String email, String password) {
+        return 로그인을_요청(email, password).as(TokenResponse.class);
     }
 }
