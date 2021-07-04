@@ -85,7 +85,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void 경로_조회() {
         // when: 출발역 강남역 도착역 서초역의 경로를 조회한다(같은 라인)
-        ExtractableResponse<Response> 강남역_서초역_경로_조회 = 지하철_경로_조회(강남역, 서초역);
+        ExtractableResponse<Response> 강남역_서초역_경로_조회 = AcceptanceDataGenerator.지하철_경로_조회(강남역, 서초역);
         // then: 경로가 조회 된다.
         경로가_조회됨(강남역_서초역_경로_조회);
         // then: 경유 지하철역은 강남역, 교대역, 서초역이다.
@@ -94,7 +94,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         이동_거리_확인(강남역_서초역_경로_조회, 20);
 
         // when: 출발역 교대역 도착역 양재시민의숲역의 경로를 조회한다(1회 환승)
-        ExtractableResponse<Response> 교대역_양재시민의숲역_경로_조회 = 지하철_경로_조회(교대역, 양재시민의숲역);
+        ExtractableResponse<Response> 교대역_양재시민의숲역_경로_조회 = AcceptanceDataGenerator.지하철_경로_조회(교대역, 양재시민의숲역);
         // then: 경로가 조회 된다.
         경로가_조회됨(교대역_양재시민의숲역_경로_조회);
         // then: 경유 지하철역은 교대역, 남부터미널역, 양재역, 양재시민의숲역이다.
@@ -103,7 +103,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         이동_거리_확인(교대역_양재시민의숲역_경로_조회, 21);
 
         // when: 출발역 서초역 도착역 양재시민의숲역의 경로를 조회한다(2회 환승)
-        ExtractableResponse<Response> 서초역_양재시민의숲역_경로_조회 = 지하철_경로_조회(서초역, 양재시민의숲역);
+        ExtractableResponse<Response> 서초역_양재시민의숲역_경로_조회 = AcceptanceDataGenerator.지하철_경로_조회(서초역, 양재시민의숲역);
         // then: 경로가 조회 된다.
         경로가_조회됨(서초역_양재시민의숲역_경로_조회);
         // then: 경유 지하철역은 서초역, 교대역, 남부터미널역, 양재역, 양재시민의숲역이다.
@@ -122,34 +122,25 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // when: 출발역 교대역, 도착역 압구정역의 경로를 조회한다.
         StationResponse 압구정역 = new StationResponse(99L, "압구정역", LocalDateTime.now(), LocalDateTime.now());
-        ExtractableResponse<Response> 도착역_존재하지_않는_경우 = 지하철_경로_조회(교대역, 압구정역);
+        ExtractableResponse<Response> 도착역_존재하지_않는_경우 = AcceptanceDataGenerator.지하철_경로_조회(교대역, 압구정역);
         // then: 경로 조회가 실패한다.(존재하지 않은 출발역이나 도착역을 조회할 경우)
         경로_조회가_실패됨(도착역_존재하지_않는_경우);
 
         // when: 출발역 압구정역, 도착역 교대역의 경로를 조회한다.
-        ExtractableResponse<Response> 출발역_존재하지_않는_경우 = 지하철_경로_조회(압구정역, 교대역);
+        ExtractableResponse<Response> 출발역_존재하지_않는_경우 = AcceptanceDataGenerator.지하철_경로_조회(압구정역, 교대역);
         // then: 경로 조회가 실패한다.(존재하지 않은 출발역이나 도착역을 조회할 경우)
         경로_조회가_실패됨(출발역_존재하지_않는_경우);
 
         // when: 출발역 강남역 도착역 강남역의 경로를 조회한다
-        ExtractableResponse<Response> 출발역과_도착역이_같은_경우 = 지하철_경로_조회(강남역, 강남역);
+        ExtractableResponse<Response> 출발역과_도착역이_같은_경우 = AcceptanceDataGenerator.지하철_경로_조회(강남역, 강남역);
         // then: 경로 조회가 실패한다.(출발역과 도착역이 같은 경우)
         경로_조회가_실패됨(출발역과_도착역이_같은_경우);
 
 
         // when: 출발역 강남역, 도착역 과천역의 경로를 조회한다.
-        ExtractableResponse<Response> 출발역과_도착역이_연결_되어있지않은_경우 = 지하철_경로_조회(강남역, 과천역);
+        ExtractableResponse<Response> 출발역과_도착역이_연결_되어있지않은_경우 = AcceptanceDataGenerator.지하철_경로_조회(강남역, 과천역);
         // then: 경로 조회가 실패한다.(출발역과 도착역이 연결이 되어 있지 않은 경우)
         경로_조회가_실패됨(출발역과_도착역이_연결_되어있지않은_경우);
-    }
-
-    private ExtractableResponse<Response> 지하철_경로_조회(StationResponse source, StationResponse target) {
-        return RestAssured
-                .given().log().all()
-                .when()
-                .get("/paths?source={source}&target={target}", source.getId(), target.getId())
-                .then().log().all()
-                .extract();
     }
 
     private void 경로가_조회됨(ExtractableResponse<Response> response) {

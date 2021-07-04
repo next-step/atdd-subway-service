@@ -49,6 +49,15 @@ public class AcceptanceDataGenerator {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 지하철_경로_조회(StationResponse source, StationResponse target) {
+        return RestAssured
+                .given().log().all()
+                .when()
+                .get("/paths?source={source}&target={target}", source.getId(), target.getId())
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
