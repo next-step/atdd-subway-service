@@ -19,7 +19,7 @@ public class Member extends BaseEntity {
     private String password;
     private Integer age;
 
-    @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Favorite> favorites = new ArrayList<>();
 
     public Member() {
