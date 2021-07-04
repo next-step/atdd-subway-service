@@ -42,7 +42,7 @@
   - [x] ***도메인 추출*** removeLineStation 리팩토링
   
 ### 피드백 반영 필요 목록
-- [ ] 전체적인 시나리오 검증 테스트 구현
+- [x] 전체적인 시나리오 검증 테스트 구현
 - [x] getConnectedStationCount() 메소드의 반환 값을 int타입으로 대체 
 - [x] 읽기 전용 조회 서비스 로직에는 @Trasactional(readOnly = true) 옵션 적용
 - [x] Sections 내에 Optional과 isPresent()를 사용하는 부분을 ifPresent로 대체
