@@ -9,6 +9,14 @@ public class PathRequest {
         this.targetStationId = targetStationId;
     }
 
+    public Long getSourceStationId() {
+        return sourceStationId;
+    }
+
+    public Long getTargetStationId() {
+        return targetStationId;
+    }
+
     @Override
     public String toString() {
         return "PathRequest{" +

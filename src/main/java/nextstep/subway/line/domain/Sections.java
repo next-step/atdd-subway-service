@@ -25,6 +25,10 @@ public class Sections {
 
     }
 
+    public Sections(List<Section> sections) {
+        this.values = sections;
+    }
+
     public void add(Section section) {
         validateConnectableSection(section);
         addSectionByCase(section);
