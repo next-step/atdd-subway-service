@@ -13,6 +13,14 @@ public class PathResponse {
         this.distance = distance;
     }
 
+    public List<StationResponse> getStations() {
+        return stations;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
     public static PathResponse of(Path path) {
         return null;
     }

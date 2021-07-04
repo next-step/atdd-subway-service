@@ -213,4 +213,11 @@ public class Sections {
             values.remove(downSection);
         }
     }
+
+    @Override
+    public String toString() {
+        return "Sections{" +
+                "values=" + values +
+                '}';
+    }
 }
