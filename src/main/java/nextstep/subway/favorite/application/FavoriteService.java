@@ -1,5 +1,8 @@
 package nextstep.subway.favorite.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 import nextstep.subway.favorite.domain.Favorite;
@@ -31,5 +34,11 @@ public class FavoriteService {
 		Favorite favorite = favoriteRepository.save(favoriteRequest.toFavorite(member, source, target));
 
 		return FavoriteResponse.of(favorite);
+	}
+
+	public List<FavoriteResponse> findFavorites(Long memberId) {
+		List<Favorite> favorites = favoriteRepository.findByMemberId(memberId).orElseThrow(() -> new IllegalArgumentException("등록된 즐겨찾기가 없습니다."));
+
+		return favorites.stream().map(FavoriteResponse::of).collect(Collectors.toList());
 	}
 }
