@@ -68,16 +68,17 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then: 회원 정보가 정상 수정 된다
         회원_정보_수정됨(나의_정보_수정);
         // then: 새로운 인증 토큰이 발행된다.
-        인증_토큰_비교(나의_정보_수정, 로그인_정보);
+        TokenResponse 새로운_인증_토큰 = 나의_정보_수정.as(TokenResponse.class);
+        인증_토큰_비교(새로운_인증_토큰, 로그인_정보);
 
         // when: 로그인 정보로 나의 정보를 조회 한다
-        ExtractableResponse<Response> 나의_정보_조회 = 나의_정보_조회(로그인_정보);
+        ExtractableResponse<Response> 나의_정보_조회 = 나의_정보_조회(새로운_인증_토큰);
         // then: 나의 정보가 정상 조회 된다
         // then: 나의 정보는 아이디: newemail@email.com, 나이: 21이다
         회원_정보_조회됨(나의_정보_조회, NEW_EMAIL, NEW_AGE);
 
         // when: 로그인 정보를 이용하여 나의 정보를 삭제한다
-        ExtractableResponse<Response> 나의_정보_삭제 = 나의_정보_삭제(로그인_정보);
+        ExtractableResponse<Response> 나의_정보_삭제 = 나의_정보_삭제(새로운_인증_토큰);
         // then: 나의 정보가 정상 삭제된다
         회원_삭제됨(나의_정보_삭제);
     }
@@ -192,8 +193,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 인증_토큰_비교(ExtractableResponse<Response> 나의_정보_수정, TokenResponse 로그인_정보) {
-        TokenResponse tokenResponse = 나의_정보_수정.as(TokenResponse.class);
-        assertThat(로그인_정보.getAccessToken()).isNotEqualTo(tokenResponse.getAccessToken());
+    private void 인증_토큰_비교(TokenResponse 새로운_인증_토큰, TokenResponse 로그인_정보) {
+        assertThat(로그인_정보.getAccessToken()).isNotEqualTo(새로운_인증_토큰.getAccessToken());
     }
 }
