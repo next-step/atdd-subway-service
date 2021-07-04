@@ -119,7 +119,7 @@ class LineTest {
     }
 
     public List<StationResponse> getStationResponse(Line line) {
-        return line.getStations().stream()
+        return line.getSections().getStations().stream()
             .map(StationResponse::of)
             .collect(Collectors.toList());
     }
