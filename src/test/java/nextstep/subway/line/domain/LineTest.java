@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.exception.InvalidLineException;
 import nextstep.subway.station.domain.Station;
 
@@ -21,14 +22,14 @@ public class LineTest {
 	void setUp() {
 		성수역 = new Station(1L, "성수역");
 		뚝섬역 = new Station(2L, "뚝섬역");
-		이호선 = new Line (1L, "2호선", "초록색", 1000);
+		이호선 = new Line (1L, "2호선", "초록색", new Fare(1000));
 		이호선.addLineStation(new Section(이호선, 성수역, 뚝섬역, new Distance(10)));
 	}
 
 	@DisplayName("Line 요금 조회")
 	@Test
 	void getExtraFee() {
-		assertThat(이호선.getExtraFee()).isEqualTo(1000);
+		assertThat(이호선.getFare().value()).isEqualTo(1000);
 	}
 
 	@DisplayName("Line 지하철역 조회")
@@ -66,7 +67,7 @@ public class LineTest {
 	@DisplayName("Line 수정하기")
 	@Test
 	void update() {
-		이호선.update(new Line("1호선", "파랑색", 100));
+		이호선.update(new Line("1호선", "파랑색", new Fare(100)));
 		assertThat(이호선.getName()).isEqualTo("1호선");
 		assertThat(이호선.getColor()).isEqualTo("파랑색");
 	}
@@ -75,7 +76,7 @@ public class LineTest {
 	@Test
 	void createExceptionTest() {
 		assertThatThrownBy(
-			() -> { Line line = new Line("", "", 100); }
+			() -> { Line line = new Line("", "", new Fare(100)); }
 		).isInstanceOf(InvalidLineException.class);
 	}
 

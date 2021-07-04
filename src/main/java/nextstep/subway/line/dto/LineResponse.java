@@ -32,7 +32,7 @@ public class LineResponse {
 
 	public static LineResponse of(Line line) {
 		return new LineResponse(line.getId(), line.getName(), line.getColor(), StationResponse.of(line.getStations()),
-			line.getCreatedDate(), line.getModifiedDate(), line.getExtraFee());
+			line.getCreatedDate(), line.getModifiedDate(), line.getFare().value());
 	}
 
 	public static List<LineResponse> of(List<Line> lines) {

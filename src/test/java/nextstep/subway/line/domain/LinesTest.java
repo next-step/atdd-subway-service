@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.station.domain.Station;
 
 public class LinesTest {
@@ -42,9 +43,9 @@ public class LinesTest {
 		강남구청역 = new Station(4L, "강남구청역");
 		왕십리역 = new Station(5L, "왕십리역");
 
-		이호선 = new Line("이호선", "초록색", 100);
-		칠호선 = new Line("칠호선", "칠호선색", 200);
-		수인분당선 = new Line("수인분당선", "노랑색", 300);
+		이호선 = new Line("이호선", "초록색", new Fare(100));
+		칠호선 = new Line("칠호선", "칠호선색", new Fare(200));
+		수인분당선 = new Line("수인분당선", "노랑색", new Fare(300));
 
 		왕십리뚝섬구간 = new Section(이호선, 왕십리역, 뚝섬역, new Distance(4));
 		뚝섬성수구간 = new Section(이호선, 뚝섬역, 성수역, new Distance(2));

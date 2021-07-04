@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.Lists;
 
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -24,7 +25,7 @@ public class MockitoTest {
 		LineRepository lineRepository = mock(LineRepository.class);
 		StationService stationService = mock(StationService.class);
 
-		when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line("성수역", "초록색", 100)));
+		when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line("성수역", "초록색", new Fare(100))));
 		LineService lineService = new LineService(lineRepository, stationService);
 
 		// when

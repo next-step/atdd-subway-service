@@ -10,4 +10,7 @@ public class SectionEdge extends DefaultWeightedEdge {
 		this.section = section;
 	}
 
+	public Line getLine() {
+		return section.getLine();
+	}
 }

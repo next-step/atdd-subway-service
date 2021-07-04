@@ -11,33 +11,39 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.exception.InvalidLineException;
 import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Line extends BaseEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
 	@Column(unique = true)
 	private String name;
 	private String color;
-	private int extraFee;
+
+	@Embedded
+	private Fare fare;
+
 	@Embedded
 	private Sections sections = new Sections();
 
 	protected Line() {
 	}
 
-	public Line(String name, String color, int extraFee) {
+	public Line(String name, String color, Fare fare) {
 		validateLine(name, color);
 		this.name = name;
 		this.color = color;
-		this.extraFee = extraFee;
+		this.fare = fare;
 	}
 
-	public Line(Long id, String name, String color, int extraFee) {
-		this(name, color, extraFee);
+	public Line(Long id, String name, String color, Fare fare) {
+		this(name, color, fare);
 		this.id = id;
 	}
 
@@ -60,8 +66,8 @@ public class Line extends BaseEntity {
 		return color;
 	}
 
-	public int getExtraFee() {
-		return extraFee;
+	public Fare getFare() {
+		return fare;
 	}
 
 	public List<Station> getStations() {

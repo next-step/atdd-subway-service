@@ -1,33 +1,29 @@
 package nextstep.subway.utils;
 
+import java.util.stream.Collectors;
+
+import org.jgrapht.GraphPath;
+
+import nextstep.subway.fare.domain.AgeDiscountCalculator;
+import nextstep.subway.fare.domain.DistanceFareCalculator;
 import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Lines;
+import nextstep.subway.line.domain.SectionEdge;
+import nextstep.subway.station.domain.Station;
 
 public class FareCalculator {
 
-	private static final int DISTANCE_ONE_KM_FARE = 100;
+	public static Fare getSubwayFare(Distance distance, Fare lineFare, int age) {
+		Fare fare = DistanceFareCalculator.getInstance().calculate(distance);
+		fare = fare.plus(lineFare);
+		return AgeDiscountCalculator.getInstance().discount(fare, age);
+	}
 
-	public static Fare getSubwayFare(int distance, int extraLineFare, int age) {
-
-		int fare = 1250;
-		if (distance > 10 && distance <= 50) {
-			fare += (int)((Math.ceil((distance - 1) / 5) + 1) * DISTANCE_ONE_KM_FARE);
-		} else if (distance > 50) {
-			fare += (int)((Math.ceil((distance - 1) / 8) + 1) * DISTANCE_ONE_KM_FARE);
-		}
-
-		fare += extraLineFare;
-
-		if(age >= 6 && age < 13) {
-		    fare = fare - 350;
-		    fare = (int)(fare - Math.ceil(fare * 0.5));
-		}
-
-		if(age >= 13 && age < 19) {
-			fare = fare - 350;
-			fare = (int)(fare - Math.ceil(fare * 0.2));
-		}
-
-		return new Fare(fare);
-
+	public static Fare getSubwayFare(GraphPath<Station, SectionEdge> path, int age) {
+		Distance distance = new Distance((int)path.getWeight());
+		Lines lines = new Lines(path.getEdgeList().stream().map(SectionEdge::getLine).distinct().collect(Collectors.toList()));
+		Fare lineFare = lines.getMostExpensiveExtraFeeLine().getFare();
+		return getSubwayFare(distance, lineFare, age);
 	}
 }

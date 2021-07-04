@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.KShortestPaths;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import nextstep.subway.line.domain.Lines;

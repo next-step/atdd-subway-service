@@ -2,17 +2,21 @@ package nextstep.subway.path.application;
 
 import java.util.List;
 
+import org.jgrapht.GraphPath;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.line.domain.SectionEdge;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationGraph;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.excpetion.StationGraphException;
+import nextstep.subway.utils.FareCalculator;
 
 @Service
 @Transactional
@@ -31,7 +35,9 @@ public class PathService {
 		Station sourceStation = findStationById(source);
 		Station targetStation = findStationById(target);
 		StationGraph stationGraph = new StationGraph(new Lines(lines));
-		return PathResponse.of(stationGraph.getShortestPath(sourceStation, targetStation));
+		GraphPath<Station, SectionEdge> path = stationGraph.getShortestPath(sourceStation, targetStation);
+		Fare fare = FareCalculator.getSubwayFare(path, 10);//todo 나이필요
+		return PathResponse.of(stationGraph.getShortestPath(sourceStation, targetStation), fare);
 	}
 
 	public Station findStationById(Long id) {

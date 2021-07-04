@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
@@ -52,9 +53,9 @@ public class StationGraphTest {
 		강남구청역 = new Station(4L, "강남구청역");
 		왕십리역 = new Station(5L, "왕십리역");
 
-		이호선 = new Line("이호선", "초록색", 100);
-		칠호선 = new Line("칠호선", "칠호선색", 200);
-		수인분당선 = new Line("수인분당선", "노랑색", 300);
+		이호선 = new Line("이호선", "초록색", new Fare(100));
+		칠호선 = new Line("칠호선", "칠호선색", new Fare(200));
+		수인분당선 = new Line("수인분당선", "노랑색", new Fare(300));
 
 		왕십리뚝섬구간 = new Section(이호선, 왕십리역, 뚝섬역, new Distance(4));
 		뚝섬성수구간 = new Section(이호선, 뚝섬역, 성수역, new Distance(2));
@@ -104,7 +105,7 @@ public class StationGraphTest {
 	void getShortestDistanceNotConnected() {
 		Station 신도림역 = new Station("신도림역");
 		Station 서울역 = new Station("서울역");
-		Line 일호선 = new Line("일호선", "파랑색", 100);
+		Line 일호선 = new Line("일호선", "파랑색", new Fare(100));
 		Section 신도림서울역구간 = new Section(일호선, 신도림역, 서울역, new Distance(15));
 		일호선.addLineStation(신도림서울역구간);
 		역그래프 = new StationGraph(new Lines(Arrays.asList(일호선, 이호선, 칠호선, 수인분당선)));
