@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관련 기능")
-class LineAcceptanceTest extends AcceptanceTest {
+public class LineAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
     private StationResponse 광교역;
     private LineRequest lineRequest1;

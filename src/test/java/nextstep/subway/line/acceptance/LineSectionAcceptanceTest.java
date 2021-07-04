@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("지하철 구간 관련 기능")
+public
 class LineSectionAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private StationResponse 강남역;
@@ -121,7 +122,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
 
 
 
-    private Executable 지하철_노선에_지하철역_등록_요청_및_성공_확인(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+    public Executable 지하철_노선에_지하철역_등록_요청_및_성공_확인(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         return () -> {
             ExtractableResponse<Response> response =  지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
 
@@ -163,9 +164,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         };
     }
 
-    ///
-
-    private ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 
         return RestAssured
