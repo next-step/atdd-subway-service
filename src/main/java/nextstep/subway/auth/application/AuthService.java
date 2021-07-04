@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
+    public static final String INVALID_ACCESS_TOKEN_ERROR_MESSAGE = "유효하지 않은 인증 토큰 입니다. 다시 로그인 해주세요.";
     private MemberRepository memberRepository;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -31,7 +32,7 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            throw new AuthorizationException(INVALID_ACCESS_TOKEN_ERROR_MESSAGE);
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
