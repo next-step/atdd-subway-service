@@ -4,6 +4,7 @@ import nextstep.subway.common.Excetion.NotConnectStationException;
 import nextstep.subway.line.collection.Distance;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -13,13 +14,15 @@ import java.util.Map;
 
 public class Path {
     private static List<Station> stations;
+    private static int distance;
     private static WeightedMultigraph<Station, DefaultWeightedEdge> optimalPath;
 
     private Path() {
     }
 
-    public Path(List<Station> stations) {
+    public Path(List<Station> stations, int distance) {
         this.stations = stations;
+        this.distance = distance;
     }
 
     public static Path findOptimalPath(Station sourceStation, Station targetStation, List<Section> sections) {
@@ -31,12 +34,13 @@ public class Path {
             addVerTex(section);
             setEdgeWeight(section);
         });
-        return new Path(getStationList(sourceStation, targetStation));
+        return getStationPath(sourceStation, targetStation);
     }
 
-    private static List<Station> getStationList(Station sourceStation, Station targetStation) {
+    private static Path getStationPath(Station sourceStation, Station targetStation) {
         try {
-            return new DijkstraShortestPath(optimalPath).getPath(sourceStation, targetStation).getVertexList();
+            GraphPath path = new DijkstraShortestPath(optimalPath).getPath(sourceStation, targetStation);
+            return new Path(path.getVertexList(), (int) Math.round(path.getWeight()));
         } catch (NullPointerException e) {
             throw new NotConnectStationException();
         }
@@ -54,5 +58,9 @@ public class Path {
 
     public List<Station> getStations() {
         return this.stations;
+    }
+
+    public int getDistance() {
+        return this.distance;
     }
 }

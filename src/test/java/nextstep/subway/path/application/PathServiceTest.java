@@ -67,7 +67,7 @@ public class PathServiceTest {
                         new Section(영등포구청역, 홍대역, new Distance(10)),
                         new Section(합정역, 홍대역, new Distance(11)),
                         new Section(부산역, 까치산역, new Distance(11))
-        ));
+                ));
     }
 
     @Test
@@ -126,4 +126,19 @@ public class PathServiceTest {
         assertThatThrownBy(() -> pathService.findOptimalPath(1L, 6L))
                 .isInstanceOf(NotConnectStationException.class);
     }
+
+    @Test
+    @DisplayName("지하철 거리 조회")
+    void 지하철_거리_조회() {
+        // when
+        // 신도림에서 홍대역까지의 경로를 구한다.
+        when(stationRepository.findById(1L)).thenReturn(Optional.ofNullable(신도림역));
+        when(stationRepository.findById(5L)).thenReturn(Optional.ofNullable(홍대역));
+
+        // then
+        // 거리가 응답됨
+        PathResponse pathResponse = pathService.findOptimalPath(1L, 5L);
+        assertThat(pathResponse.getDistance()).isEqualTo(25);
+    }
+
 }
