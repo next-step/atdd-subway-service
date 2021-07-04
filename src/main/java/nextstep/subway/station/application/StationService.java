@@ -2,6 +2,7 @@ package nextstep.subway.station.application;
 
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
+import nextstep.subway.station.domain.Stations;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
@@ -27,10 +28,14 @@ public class StationService {
     }
 
     @Transactional(readOnly = true)
-    public List<StationResponse> findAllStations() {
-        List<Station> stations = stationRepository.findAll();
+    public Stations findStations() {
 
-        return stations.stream()
+        return new Stations(stationRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public List<StationResponse> findStationResponses() {
+        return findStations().get().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
