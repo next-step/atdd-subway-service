@@ -2,14 +2,11 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.domain.SectionEdge;
-import nextstep.subway.path.domain.SubwayGraph;
-import nextstep.subway.path.domain.SubwayPath;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.module.JgraphtModule;
+import nextstep.subway.path.module.PathModule;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +20,12 @@ public class PathService {
 
     private final LineService lineService;
     private final StationService stationService;
+    private final PathModule pathModule;
 
-    public PathService(LineService lineService, StationService stationService) {
+    public PathService(LineService lineService, StationService stationService, JgraphtModule jgraphtModule) {
         this.lineService = lineService;
         this.stationService = stationService;
+        this.pathModule = jgraphtModule;
     }
 
     public PathResponse findPath(Long sourceId, Long targetId) {
@@ -35,17 +34,7 @@ public class PathService {
         List<Line> lines = lineService.fineAllLines();
         Station sourceStation = stationService.findStationById(sourceId);
         Station targetStation = stationService.findStationById(targetId);
-        return findPathByDijkstraShortestPath(lines, sourceStation, targetStation);
-    }
-
-    private PathResponse findPathByDijkstraShortestPath(List<Line> lines, Station sourceStation, Station targetStation) {
-        SubwayGraph subwayGraph = new SubwayGraph(SectionEdge.class);
-        subwayGraph.addAllVertex(lines);
-        subwayGraph.addAllEdge(lines);
-
-        GraphPath<Station, SectionEdge> path = new DijkstraShortestPath(subwayGraph).getPath(sourceStation, targetStation);
-
-        return new PathResponse(new SubwayPath(path));
+        return pathModule.findPath(lines, sourceStation, targetStation);
     }
 
     private void validateFindStations(Long sourceId, Long targetId) {
