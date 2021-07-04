@@ -2,7 +2,7 @@ package nextstep.subway.station.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.PathFinder;
+import nextstep.subway.station.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.PathResponse;
