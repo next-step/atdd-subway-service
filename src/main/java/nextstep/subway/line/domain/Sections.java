@@ -57,7 +57,8 @@ public class Sections {
     }
 
     public void deleteStation(Station deletingStation) {
-        validateDeletableStation(deletingStation);
+        validateDeletableStation();
+        validateExistingStation(deletingStation);
         deleteStationByCase(deletingStation);
     }
 
@@ -165,18 +166,16 @@ public class Sections {
                 .findFirst();
     }
 
-    private void validateDeletableStation(Station removingStation) {
+    private void validateDeletableStation() {
         if (this.size() == 1) {
             throw new UndeletableStationInSectionException("노선의 구간이 하나일 때는 지울 수 없습니다.");
-        } else if (!isExistingStation(removingStation)) {
-            throw new UndeletableStationInSectionException("이 역이 노선에 존재 하지 않습니다.");
         }
     }
 
-    private boolean isExistingStation(Station removingStation) {
-        Stations stations = toStations();
-
-        return stations.contains(removingStation);
+    private void validateExistingStation(Station removingStation) {
+        if(!toStations().contains(removingStation)) {
+            throw new UndeletableStationInSectionException("이 역이 노선에 존재 하지 않습니다.");
+        }
     }
 
     private void deleteStationByCase(Station deletingStation) {
