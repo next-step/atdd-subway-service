@@ -10,10 +10,6 @@ import java.util.Objects;
 
 public class PathNavigation {
 
-//    public static final int BASIC_FEE = 1250;
-//    public static final int BASIC_FEE_OVER_50KM = 2050;
-//    public static final int LIMIT_10KM_DISTANCE = 100;
-//    public static final int LIMIT_50KM_DISTANCE = 500;
     private static final int ADULT_START_AGE = 20;
     private static final String ERROR_MESSAGE_EQUALS_STATIONS = "동일한 역을 입력하였습니다.";
     private static final String ERROR_MESSAGE_NOT_EXISTED_STATIONS = "존재하지 않은 출발역이나 도착역이 있습니다.";
