@@ -123,7 +123,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     }
 
-    private ExtractableResponse<Response> 지하철_경로_조회(StationResponse 강남역, StationResponse 삼성역) {
+    public static ExtractableResponse<Response> 지하철_경로_조회(StationResponse 강남역, StationResponse 삼성역) {
         return RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths/sourceId/{sourceId}/targetId/{targetId}", 강남역.getId(), 삼성역.getId())
