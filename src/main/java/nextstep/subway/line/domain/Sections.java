@@ -72,16 +72,16 @@ public class Sections {
     }
 
     private void validateConnectableSection(Section section) {
-        long result = getConnectedStationCount(section);
+        int result = getConnectedStationCount(section);
 
         validateExistingSection(result);
         validateUnConnectableSection(result);
     }
 
-    private long getConnectedStationCount(Section section) {
+    private int getConnectedStationCount(Section section) {
         Stations stations = toStations();
 
-        return stations.get().stream()
+        return (int) stations.get().stream()
                 .filter(section::isIncludeStation)
                 .count();
     }
