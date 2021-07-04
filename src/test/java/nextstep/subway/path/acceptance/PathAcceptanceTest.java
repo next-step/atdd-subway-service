@@ -110,6 +110,42 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @DisplayName("두 역의 최단 거리 경로를 조회")
+    @Test
+    void 거리_요금_포함된_지하철_경로_조회() {
+        // given
+        노선_등록_되어_있음();
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 교대역, 잠실역, 10);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 교대역, 삼성역, 50);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 잠실역, 삼성역, 10);
+
+
+        // when
+        // 출발역에서_도착역까지_최단_거리_경로_조회_요청
+        ExtractableResponse<Response> response = PathAcceptanceTest.지하철_경로_조회(강남역, 삼성역);
+
+        // than
+        // 최단_거리_경로_조회됨
+        PathResponse pathResponse = response.as(PathResponse.class);
+        지하철_경로_조회됨(pathResponse, Arrays.asList(강남역, 교대역, 잠실역, 삼성역));
+
+        // and
+        // 최단_거리_응답함
+        지하철_경로_거리_응답됨(pathResponse, 30);
+
+        // and
+        // 지하철_이용_요금도_함께_응답됨 30Km -> 1,250 + (100 * 4) = 1,650
+        지하철_요금_응답됨(pathResponse, 1650);
+    }
+
+    private void 지하철_요금_응답됨(PathResponse pathResponse, int charge) {
+        assertThat(pathResponse.getCharge()).isEqualTo(charge);
+    }
+
+    private void 지하철_경로_거리_응답됨(PathResponse pathResponse, int distance) {
+        assertThat(pathResponse.getDistance()).isEqualTo(distance);
+    }
+
     private void 지하철_경로_조회됨(PathResponse pathResponse, List<StationResponse> expectedStations) {
         List<Long> stationIds = pathResponse.getStations().stream()
                 .map(it -> it.getId())
