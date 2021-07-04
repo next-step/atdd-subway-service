@@ -28,6 +28,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "passowrd";
     private static TokenResponse tokenResponse;
 
+    private static final String EMAIL_MAX = "max@test.com";
+    private static TokenResponse tokenResponse_max;
+
     private StationResponse 강남역;
     private StationResponse 정자역;
     private StationResponse 양재역;
@@ -49,6 +52,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         회원_생성을_요청(EMAIL, PASSWORD, 20);
         tokenResponse = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
+
+        회원_생성을_요청(EMAIL_MAX, EMAIL_MAX, 25);
+        tokenResponse_max = 로그인_요청(EMAIL_MAX, EMAIL_MAX).as(TokenResponse.class);
     }
 
     @DisplayName("즐겨찾기 관리")
@@ -69,7 +75,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_조회됨(findAllResponse);
 
         // when
-        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제(createResponse);
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제(createResponse, tokenResponse_max);
+        // then
+        즐겨찾기_삭제되지_않음(deleteResponse);
+
+        // when
+        deleteResponse = 즐겨찾기_삭제(createResponse, tokenResponse);
         // then
         즐겨찾기_삭제됨(deleteResponse);
     }
@@ -103,7 +114,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_삭제(ExtractableResponse<Response> response) {
+    private ExtractableResponse<Response> 즐겨찾기_삭제(ExtractableResponse<Response> response, TokenResponse tokenResponse) {
         String uri = response.header("Location");
         return RestAssured
                 .given().log().all()
@@ -115,5 +126,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 즐겨찾기_삭제되지_않음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
