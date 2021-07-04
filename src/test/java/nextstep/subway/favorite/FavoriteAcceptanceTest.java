@@ -3,6 +3,7 @@ package nextstep.subway.favorite;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -68,8 +69,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		// then
 		즐겨찾기_목록_조회됨(findResponse);
 
-		/*즐겨찾기 삭제 요청();
-		즐겨찾기 삭제됨();*/
+		List<FavoriteResponse> favoriteResponses = findResponse.jsonPath().getList(".", FavoriteResponse.class);
+
+		// when
+		ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(tokenResponse.getAccessToken(), favoriteResponses.get(0).getId());
+		// then
+		즐겨찾기_삭제됨(deleteResponse);
 	}
 
 	private ExtractableResponse<Response> 즐겨찾기_생성을_요청(final String accessToken, final Long source, final Long target) {
@@ -97,5 +102,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 	private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
 		Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+	}
+
+	private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, Long id) {
+		return RestAssured
+			.given().log().all()
+			.auth().oauth2(accessToken)
+			.when().delete("/favorites/{id}", id)
+			.then().log().all().extract();
+	}
+
+	private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+		Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 	}
 }
