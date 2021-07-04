@@ -10,13 +10,13 @@ public enum CustomerType {
     TEENAGER(new TeenagerPolicy()),
     CHILD(new ChildPolicy());
 
-    CustomerPolicy policy;
+    CustomerAgeDiscountFarePolicy policy;
 
-    CustomerType(CustomerPolicy policy) {
+    CustomerType(CustomerAgeDiscountFarePolicy policy) {
         this.policy = policy;
     }
 
-    public static CustomerPolicy getPolicy(Member member) {
+    public static CustomerAgeDiscountFarePolicy getPolicy(Member member) {
         return Arrays.stream(values())
             .map(p -> p.policy)
             .filter(p -> p.isAvailable(member))

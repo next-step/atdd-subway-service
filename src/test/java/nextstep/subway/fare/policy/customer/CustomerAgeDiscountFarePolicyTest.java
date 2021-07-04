@@ -12,13 +12,13 @@ import nextstep.subway.member.MemberTest;
 
 @DisplayName("요금 정책 단위 테스트")
 @ExtendWith(MockitoExtension.class)
-class CustomerPolicyTest {
+class CustomerAgeDiscountFarePolicyTest {
     @Test
     @DisplayName("고객_할인적용_검증_테스트")
     void 고객_할인적용_검증_테스트() {
-        CustomerPolicy adultPolicy = CustomerType.getPolicy(MemberTest.일반_멤버);
-        CustomerPolicy teenagerPolicy = CustomerType.getPolicy(MemberTest.청소년_멤버);
-        CustomerPolicy childPolicy = CustomerType.getPolicy(MemberTest.어린이_멤버);
+        CustomerAgeDiscountFarePolicy adultPolicy = CustomerType.getPolicy(MemberTest.일반_멤버);
+        CustomerAgeDiscountFarePolicy teenagerPolicy = CustomerType.getPolicy(MemberTest.청소년_멤버);
+        CustomerAgeDiscountFarePolicy childPolicy = CustomerType.getPolicy(MemberTest.어린이_멤버);
 
         Fare fare = new Fare();
         assertThat(adultPolicy.apply(fare).getValue()).isEqualTo(1250);

@@ -3,7 +3,7 @@ package nextstep.subway.fare.policy.customer;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.member.domain.Member;
 
-public class TeenagerPolicy implements CustomerPolicy {
+public class TeenagerPolicy implements CustomerAgeDiscountFarePolicy {
 
     private static final int MINIMUM_AGE = 13;
     private static final int MAXIMUM_AGE = 20;

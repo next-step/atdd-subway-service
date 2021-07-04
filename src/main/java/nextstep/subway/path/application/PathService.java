@@ -12,7 +12,7 @@ import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.path.domain.Path;
-import nextstep.subway.fare.policy.customer.CustomerPolicy;
+import nextstep.subway.fare.policy.customer.CustomerAgeDiscountFarePolicy;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -40,7 +40,7 @@ public class PathService {
         Path path = pathFinder.findPath(source, target);
 
         Member member = memberService.findMemberEntity(loginMember.getId());
-        CustomerPolicy policy = CustomerType.getPolicy(member);
+        CustomerAgeDiscountFarePolicy policy = CustomerType.getPolicy(member);
         return PathResponse.of(path, policy.apply(Fare.of(path)));
     }
 }
