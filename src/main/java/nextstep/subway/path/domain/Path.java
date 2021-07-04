@@ -16,6 +16,7 @@ public class Path {
     private static List<Station> stations;
     private static int distance;
     private static int charge;
+    private static int maxSurCharge;
     private static WeightedMultigraph<Station, DefaultWeightedEdge> optimalPath;
 
     private Path() {
@@ -35,6 +36,7 @@ public class Path {
         sections.forEach(section -> {
             addVerTex(section);
             setEdgeWeight(section);
+            maxSurCharge = section.getMaxSurCharge(maxSurCharge);
         });
         return getStationPath(sourceStation, targetStation);
     }
@@ -68,6 +70,6 @@ public class Path {
     }
 
     public int getCharge() {
-        return charge;
+        return charge + maxSurCharge;
     }
 }

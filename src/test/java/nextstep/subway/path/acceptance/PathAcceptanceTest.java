@@ -136,7 +136,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // and
         // 지하철_이용_요금도_함께_응답됨 30Km -> 1,250 + (100 * 4) = 1,650
-        지하철_요금_응답됨(pathResponse, 1650);
+        지하철_요금_응답됨(pathResponse, 2650);
     }
 
     private void 지하철_요금_응답됨(PathResponse pathResponse, int charge) {
@@ -174,10 +174,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private void 노선_등록_되어_있음() {
-        LineRequest lineRequest = new LineRequest("이호선", "bg-red-600", 강남역.getId(), 교대역.getId(), 10);
+        LineRequest lineRequest = new LineRequest("이호선", "bg-red-600", 강남역.getId(), 교대역.getId(), 10, 900);
         이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
 
-        lineRequest = new LineRequest("오호선", "bg-red-600", 신림역.getId(), 화곡역.getId(), 10);
+        lineRequest = new LineRequest("오호선", "bg-red-600", 신림역.getId(), 화곡역.getId(), 10, 1000);
         LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 }

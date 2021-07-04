@@ -125,4 +125,8 @@ public class Section {
     public Map<Section, Integer> ofSectionMap() {
         return distance.ofSectionMap(this);
     }
+
+    public int getMaxSurCharge(int maxSurCharge) {
+        return line.getMaxSurCharge(maxSurCharge);
+    }
 }
