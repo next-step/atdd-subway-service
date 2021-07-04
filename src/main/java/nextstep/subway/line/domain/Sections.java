@@ -64,7 +64,7 @@ public class Sections {
     public Distance sumDistances() {
         Distance result = new Distance(1);
 
-        for(Section value : values) {
+        for (Section value : values) {
             result = result.add(value.getDistance());
         }
 
@@ -118,16 +118,17 @@ public class Sections {
         return section.isSameStationWithDownStation(startStation)
                 || section.isSameStationWithUpStation(endStation);
     }
+
     private void connectSectionAtExistingSection(Section section) {
         Optional<Section> foundSection = values.stream()
                 .filter(value -> value.isSameStationWithUpStation(section.getUpStation())
                         || value.isSameStationWithDownStation(section.getDownStation()))
                 .findFirst();
-        if (foundSection.isPresent()) {
-            Section connectedSection = foundSection.get();
+
+        foundSection.ifPresent((connectedSection) -> {
             connectedSection.connectSectionBetween(section);
             values.add(section);
-        }
+        });
     }
 
     private Stations getUpStations(Station upStation) {
