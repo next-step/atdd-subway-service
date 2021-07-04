@@ -1,11 +1,18 @@
-# STEP1 - ATDD 기반 리팩토링
-## 요구사항
+# 인수테스트 기반 TDD 
+## STEP2 - 경로 조회 기능
+### 요구사항
+- [ ] 최단 경로 조회 인수 테스트 만들기
+- [ ] 최단 경로 조회 기능 구현하기
 
-## 요구사항
+### 기능 구현 목록
+- [ ] 작성 예정
+
+## STEP1 - ATDD 기반 리팩토링
+### 요구사항
 - [x] LineSectionAcceptanceTest 리팩터링
 - [x] LineService 리팩터링
 
-## 기능 구현 목록
+### 기능 구현 목록
 - [x] LineSectionAcceptanceTest 리팩터링
   - [x] TestFactory 사용
   
@@ -33,5 +40,11 @@
     - [x] Line 도메인 내에 update하는 메소드 구현 후 적용
   - [x] ***도메인 추출*** addLineStation 리팩토링
   - [x] ***도메인 추출*** removeLineStation 리팩토링
-    
   
+### 피드백 반영 필요 목록
+- [ ] 전체적인 시나리오 검증 테스트 구현
+- [ ] getConnectedStationCount() 메소드의 반환 값을 int타입으로 대체 
+- [ ] 읽기 전용 조회 서비스 로직에는 @Trasactional(readOnly = true) 옵션 적용
+- [ ] Sections 내에 Optional과 isPresent()를 사용하는 부분을 ifPresent로 대체
+- [ ] e.printStackTrace 대신 logback으로 처리
+- [ ] SectionsTest의 역 조회 검증 로직을 size() 뿐만 아니라 세부 요소까지 확인하도록 개선
