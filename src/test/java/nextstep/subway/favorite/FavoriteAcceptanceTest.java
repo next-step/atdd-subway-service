@@ -7,7 +7,6 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.favorite.dto.FavoriteResponses;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
@@ -18,6 +17,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -74,10 +75,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when: 즐겨찾기 목록 조회 요청
         ExtractableResponse<Response> 즐겨찾기_목록_조회 = 즐겨찾기_목록_조회(로그인_정보, source, target);
         // then: 즐겨찾기 목록 조회됨
-        FavoriteResponses 즐겨찾기_목록 = 즐겨찾기_목록_조회됨(즐겨찾기_목록_조회, source, target);
+        List<FavoriteResponse> 즐겨찾기_목록 = 즐겨찾기_목록_조회됨(즐겨찾기_목록_조회, source, target);
 
         // when: 즐겨찾기 삭제 요청
-        즐겨찾기_삭제_요청(로그인_정보, 즐겨찾기_목록.getFavoriteResponses().get(0).getId());
+        ExtractableResponse<Response> 즐겨찾기_삭제 = 즐겨찾기_삭제_요청(로그인_정보, 즐겨찾기_목록.get(0).getId());
+
+        // then: 즐겨 찾기 삭제됨
+        즐겨찾기_삭제됨(즐겨찾기_삭제);
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(TokenResponse 로그인_정보, StationResponse source, StationResponse target) {
@@ -117,12 +121,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    private FavoriteResponses 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, StationResponse source, StationResponse target) {
+    private List<FavoriteResponse> 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, StationResponse source, StationResponse target) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        FavoriteResponses favoriteResponses = response.as(FavoriteResponses.class);
-        FavoriteResponse favoriteResponse = favoriteResponses.getFavoriteResponses().get(0);
-        assertThat(favoriteResponse.getSource()).isEqualTo(source);
-        assertThat(favoriteResponse.getTarget()).isEqualTo(target);
+        List<FavoriteResponse> favoriteResponses = response.body().jsonPath().getList("$", FavoriteResponse.class);
+        FavoriteResponse favoriteResponse = favoriteResponses.get(0);
+        assertThat(favoriteResponse.getSource().getId()).isEqualTo(source.getId());
+        assertThat(favoriteResponse.getTarget().getId()).isEqualTo(target.getId());
         return favoriteResponses;
     }
 
