@@ -35,7 +35,6 @@ public class Distance {
 		return new Distance(this.distance - distance.distance);
 	}
 
-	//todo : 이상해
 	public int value() {
 		return this.distance;
 	}
