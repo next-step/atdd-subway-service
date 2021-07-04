@@ -453,10 +453,25 @@ Date: Sun, 27 Dec 2020 04:32:26 GMT
         * when: accessToken 값을 수정하고 내정보를 조회함
         * then: 유효하지 않은 토큰으로 조회 실패
 
+* Feature: 나의 정보를 관리한다.
+    * Backgroud
+        given: 아이디: email@email.com, 비밀번호: password, 나이: 20 회원이 생성되어 있음
+        and: 아이디: email@email.com, 비밀번호: password로 로그인 되어 있음
+    * [ ] Scenario: 나의 정보 관리
+        * when: 로그인 정보를 이용하여 아이디: newemail@email.com, 비밀번호: newpassword, 나이: 21로 회원 정보를 수정 요청
+        * then: 회원 정보가 정상 수정 된다
+        * when: 로그인 정보로 나의 정보를 조회 한다
+        * then: 나의 정보가 정상 조회 된다
+        * then: 나의 정보는 아이디: newemail@email.com, 비밀번호: newpassword, 나이: 21이다
+        * when: 로그인 정보를 이용하여 나의 정보를 삭제한다
+        * then: 나의 정보가 정상 삭제된다
+
 ### 기능 구현 목록
 * [x] 토큰 발급 기능 인수 테스트 작성
     * [x] 로그인 정상 인수 테스트 작성
     * [x] 로그인 실패 인수 테스트 작성
     * [x] 유효하지 않은 토큰 인수 테스트 작성
 * [ ] 내 정보 조회 기능 완성 하기
+    * [ ] 내 정보 관리 기능 인수 테스트 작성
+    * [ ] 작성한 인수 테스트 성공하도록 코드 수정
 * [ ] 즐겨 찾기 기능 완성 하기
