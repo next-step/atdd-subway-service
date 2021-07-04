@@ -117,11 +117,10 @@ public class LineServiceMockTest {
 	void 노선_수정() {
 		// given
 		when(lineRepository.save(any())).thenReturn(일호선);
-		Long 일호선_아이디 = null;
-		when(lineRepository.findById(일호선_아이디))
+		LineResponse 일호선_응답 = 노선_등록되어_있음(일호선_요청);
+		when(lineRepository.findById(일호선_응답.getId()))
 			.thenReturn(Optional.of(일호선))
 			.thenReturn(Optional.of(오호선));
-		LineResponse 일호선_응답 = 노선_등록되어_있음(일호선_요청);
 
 		// when
 		lineService.updateLine(일호선_응답.getId(), 오호선_요청);
@@ -129,6 +128,20 @@ public class LineServiceMockTest {
 		// then
 		LineResponse 조회_노선 = lineService.findLineResponseById(일호선_응답.getId());
 		수정_요청_정보와_응답_정보가_같음(조회_노선);
+	}
+
+	@Test
+	void 노선_삭제() {
+		// given
+		when(lineRepository.save(any())).thenReturn(일호선);
+		LineResponse 일호선_응답 = 노선_등록되어_있음(일호선_요청);
+		when(lineRepository.findById(일호선_응답.getId())).thenThrow(new RuntimeException("존재하지 않는 노선"));
+
+		// when
+		lineService.deleteLineById(일호선_응답.getId());
+
+		// then
+		노선_삭제되었음(일호선_응답);
 	}
 
 	private void 등록_요청_정보와_응답_정보가_같음(LineResponse 응답_정보) {
@@ -167,5 +180,9 @@ public class LineServiceMockTest {
 		assertThat(응답_정보.getName()).isEqualTo(오호선_요청.getName());
 		assertThat(응답_정보.getColor()).isEqualTo(오호선_요청.getColor());
 		assertThat(응답_정보.getStations()).containsSequence(Arrays.asList(종로3가역_응답, 신길역_응답));
+	}
+
+	private void 노선_삭제되었음(LineResponse 응답_정보) {
+		assertThatThrownBy(() -> lineService.findLineResponseById(응답_정보.getId())).isInstanceOf(RuntimeException.class);
 	}
 }
