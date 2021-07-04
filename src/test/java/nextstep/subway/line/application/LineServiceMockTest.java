@@ -36,14 +36,18 @@ public class LineServiceMockTest {
 	private Station 종로3가역;
 	private Station 신길역;
 	private Line 일호선;
+	private Line 오호선;
 	private LineRequest 일호선_요청;
+	private LineRequest 오호선_요청;
 
 	@BeforeEach
 	void 초기화() {
 		종로3가역 = new Station("종로3가역");
 		신길역 = new Station("신길역");
 		일호선 = new Line("1호선", "blue", 종로3가역, 신길역, 10);
+		오호선 = new Line("5호선", "purple", 종로3가역, 신길역, 10);
 		일호선_요청 = new LineRequest("1호선", "blue", 1L, 2L, 10);
+		오호선_요청 = new LineRequest("5호선", "purple", 종로3가역.getId(), 신길역.getId(), 10);
 	}
 
 	@Test
@@ -58,6 +62,37 @@ public class LineServiceMockTest {
 		등록_요청_정보와_응답_정보가_같음(등록_응답);
 	}
 
+	@Test
+	void 이미_등록된_노선_등록_요청하는_경우_등록되지_않음() {
+		// given
+		when(lineRepository.save(any()))
+			.thenReturn(일호선)
+			.thenReturn(new RuntimeException("이미 등록된 일호선"));
+		노선_등록되어_있음(일호선_요청);
+
+		// when
+
+		// then
+		등록되지_않음(일호선_요청);
+	}
+
+	@Test
+	void 노선_목록() {
+		// given
+		when(lineRepository.save(any()))
+			.thenReturn(일호선)
+			.thenReturn(오호선);
+		when(lineRepository.findAll()).thenReturn(Arrays.asList(일호선, 오호선));
+		LineResponse 일호선_응답 = 노선_등록되어_있음(일호선_요청);
+		LineResponse 오호선_응답 = 노선_등록되어_있음(오호선_요청);
+
+		// when
+		List<LineResponse> 노선_목록 = lineService.findLines();
+
+		// then
+		지하철_노선_목록_포함됨(노선_목록, Arrays.asList(일호선_응답, 오호선_응답));
+	}
+
 	private void 등록_요청_정보와_응답_정보가_같음(LineResponse 응답_정보) {
 		assertThat(응답_정보.getName()).isEqualTo(일호선_요청.getName());
 		assertThat(응답_정보.getColor()).isEqualTo(일호선_요청.getColor());
@@ -68,5 +103,25 @@ public class LineServiceMockTest {
 		return Arrays.stream(stations)
 			.map(StationResponse::of)
 			.collect(Collectors.toList());
+	}
+
+	private LineResponse 노선_등록되어_있음(LineRequest 요청) {
+		return lineService.saveLine(요청);
+	}
+
+	private void 등록되지_않음(LineRequest 일호선_요청) {
+		assertThatThrownBy(() -> lineService.saveLine(일호선_요청)).isInstanceOf(RuntimeException.class);
+	}
+
+	public static void 지하철_노선_목록_포함됨(List<LineResponse> 노선_목록, List<LineResponse> 비교할_노선_목록) {
+		List<Long> expectedLineIds = 노선_목록.stream()
+			.map(LineResponse::getId)
+			.collect(Collectors.toList());
+
+		List<Long> resultLineIds = 비교할_노선_목록.stream()
+			.map(LineResponse::getId)
+			.collect(Collectors.toList());
+
+		assertThat(resultLineIds).containsAll(expectedLineIds);
 	}
 }

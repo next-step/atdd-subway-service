@@ -14,6 +14,8 @@ import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Section {
+	private static final int DISTANCE_LESS_THAN_ZERO_NOT_ALLOWED = 0;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -32,14 +34,21 @@ public class Section {
 
 	private int distance;
 
-	public Section() {
+	protected Section() {
 	}
 
 	public Section(Line line, Station upStation, Station downStation, int distance) {
+		validateDistance(distance);
 		this.line = line;
 		this.upStation = upStation;
 		this.downStation = downStation;
 		this.distance = distance;
+	}
+
+	private void validateDistance(int distance) {
+		if (distance <= DISTANCE_LESS_THAN_ZERO_NOT_ALLOWED) {
+			throw new RuntimeException("구간의 간격은 0을 초과하는 거리여야 합니다.");
+		}
 	}
 
 	public Long id() {
