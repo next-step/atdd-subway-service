@@ -42,16 +42,11 @@ public class Path {
     private static Path getStationPath(Station sourceStation, Station targetStation) {
         try {
             GraphPath path = new DijkstraShortestPath(optimalPath).getPath(sourceStation, targetStation);
-            return new Path(path.getVertexList(), (int) Math.round(path.getWeight()), getChargeCalculate((int) Math.round(path.getWeight())));
+            int pathDistance = (int) Math.round(path.getWeight());
+            return new Path(path.getVertexList(), pathDistance, ChargePolicy.getDistancePolicy(pathDistance).chargeCalculate(pathDistance));
         } catch (NullPointerException e) {
             throw new NotConnectStationException();
         }
-    }
-
-    private static int getChargeCalculate(int distance) {
-        ChargePolicy chargePolicy = ChargePolicy.getDistancePolicy(distance);
-        return chargePolicy.getCharge() +
-                (int) ((Math.ceil((distance - chargePolicy.getMinDistance() - 1 ) / chargePolicy.getAddChargeDistance()) + 1) * chargePolicy.getAddCharge());
     }
 
     private static void setEdgeWeight(Section section) {
