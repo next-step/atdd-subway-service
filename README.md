@@ -460,6 +460,7 @@ Date: Sun, 27 Dec 2020 04:32:26 GMT
     * [ ] Scenario: 나의 정보 관리
         * when: 로그인 정보를 이용하여 아이디: newemail@email.com, 비밀번호: newpassword, 나이: 21로 회원 정보를 수정 요청
         * then: 회원 정보가 정상 수정 된다
+        * then: 새로운 인증 토큰이 발행 된다
         * when: 로그인 정보로 나의 정보를 조회 한다
         * then: 나의 정보가 정상 조회 된다
         * then: 나의 정보는 아이디: newemail@email.com, 비밀번호: newpassword, 나이: 21이다
