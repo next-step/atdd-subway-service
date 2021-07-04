@@ -101,20 +101,22 @@ class PathFinderTest {
     @Test
     void 노선의_추가요금을_반영() {
         //when
+        int 육호선_추가금액 = 육호선.getExtraCharge();
         Path shortestPath = pathFinder.getDijkstraShortestPath(연신내역, 응암역);
 
         //then
-        assertThat(shortestPath.getFare()).isEqualTo(BASE_FARE + 500);
+        assertThat(shortestPath.getFare()).isEqualTo(BASE_FARE + 육호선_추가금액);
     }
 
     @DisplayName("환승 시, 최대 추가요금 반영")
     @Test
     void 여러_노선_환승시_추가요금_최대값만_반영() {
         //when
+        int 사호선_추가금액 = 사호선.getExtraCharge();
         Path shortestPath = pathFinder.getDijkstraShortestPath(연신내역, 회현역);
 
         //then
-        assertThat(shortestPath.getFare()).isEqualTo(BASE_FARE + 1000);
+        assertThat(shortestPath.getFare()).isEqualTo(BASE_FARE + 사호선_추가금액);
         assertThat(shortestPath.getStations()).hasSize(3)
                 .containsExactly(연신내역, 응암역, 회현역);
     }

@@ -52,6 +52,10 @@ class PathAcceptanceTest extends AcceptanceTest {
     private List<String> 예상최단경로_지하철역_이름;
     private TokenResponse 사용자토큰;
 
+    private double 할인율_청소년 = AGE_TEENAGER_DISCOUNT_RATE;
+    private double 할인율_어린이 = AGE_CHILD_DISCOUNT_RATE;
+    private int 요금할인_공제액 = AGE_DISCOUNT_DEDUCTION_FARE;
+
     /*
            (*출발*)(삼호선)종로3가역
                             |
@@ -108,17 +112,14 @@ class PathAcceptanceTest extends AcceptanceTest {
     void 최단경로_조회() {
 
         int 예상최단거리 = 60;
-        int 예상요금 = BASE_FARE +
-                (60 - 50) / DISTANCE_SECOND_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE_UNIT +
-                (50 - 10) / DISTANCE_FIRST_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE_UNIT +
-                사호선.getExtraCharge();
+        int 요금 = 2550;
 
         ExtractableResponse<Response> 최단경로 = 최단_경로_조회_요청함(종로3가역, 충무로역);
 
         최단_경로_조회_성공함(최단경로);
         최단_경로_지하철_목록_반환됨(최단경로, 예상최단경로_지하철역_이름);
         최단_경로_거리_반환됨(최단경로, 예상최단거리);
-        최단_경로_요금_반환됨(최단경로, 예상요금);
+        최단_경로_요금_반환됨(최단경로, 요금);
 
         ExtractableResponse<Response> 출발도착_동일_최단경로 = 최단_경로_조회_요청함(종로3가역, 종로3가역);
         최단_경로_조회_실패함(출발도착_동일_최단경로);
@@ -136,14 +137,15 @@ class PathAcceptanceTest extends AcceptanceTest {
         회원_생성을_요청(TEENAGER_EMAIL, PASSWORD, TEENAGER_AGE);
         사용자토큰 = 로그인_요청(TEENAGER_EMAIL, PASSWORD).as(TokenResponse.class);
         int 예상최단거리 = 60;
-        int 예상요금 = (int) ((2150 + 사호선.getExtraCharge() - AGE_DISCOUNT_DEDUCTION_FARE) * (1 - AGE_TEENAGER_DISCOUNT_RATE));
+        int 요금 = 2550;
+        int 할인액 = (int) ((요금 - 요금할인_공제액) * 할인율_청소년);
 
         ExtractableResponse<Response> 최단경로 = 최단_경로_조회_요청함(사용자토큰, 종로3가역, 충무로역);
 
         최단_경로_조회_성공함(최단경로);
         최단_경로_지하철_목록_반환됨(최단경로, 예상최단경로_지하철역_이름);
         최단_경로_거리_반환됨(최단경로, 예상최단거리);
-        최단_경로_요금_반환됨(최단경로, 예상요금);
+        최단_경로_요금_반환됨(최단경로, 요금 - 요금할인_공제액 - 할인액);
     }
 
     @DisplayName("어린이 로그인 사용자 : 최단경로를 조회한다")
@@ -152,14 +154,15 @@ class PathAcceptanceTest extends AcceptanceTest {
         회원_생성을_요청(CHILD_EMAIL, PASSWORD, CHILD_AGE);
         사용자토큰 = 로그인_요청(CHILD_EMAIL, PASSWORD).as(TokenResponse.class);
         int 예상최단거리 = 60;
-        int 예상요금 = (int) ((2150 + 사호선.getExtraCharge() - AGE_DISCOUNT_DEDUCTION_FARE) * (1 - AGE_CHILD_DISCOUNT_RATE));
+        int 요금 = 2550;
+        int 할인액 = (int) ((요금 - 요금할인_공제액) * 할인율_어린이);
 
         ExtractableResponse<Response> 최단경로 = 최단_경로_조회_요청함(사용자토큰, 종로3가역, 충무로역);
 
         최단_경로_조회_성공함(최단경로);
         최단_경로_지하철_목록_반환됨(최단경로, 예상최단경로_지하철역_이름);
         최단_경로_거리_반환됨(최단경로, 예상최단거리);
-        최단_경로_요금_반환됨(최단경로, 예상요금);
+        최단_경로_요금_반환됨(최단경로, 요금 - 요금할인_공제액 - 할인액);
     }
 
     private ExtractableResponse<Response> 최단_경로_조회_요청함(StationResponse 출발역, StationResponse 도착역) {

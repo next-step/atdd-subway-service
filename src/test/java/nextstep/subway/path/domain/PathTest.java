@@ -25,7 +25,8 @@ public class PathTest {
     void 경로거리_1부터_10사이(int distance, boolean result) {
         //Given
         Path 경로 = new Path(stations, distance);
-        Fare 예상요금 = new Fare(BASE_FARE);
+        int 기본요금 = BASE_FARE;
+        Fare 예상요금 = new Fare(기본요금);
 
         //When
         Fare 실제요금 = new Fare(경로.getFare());
@@ -39,7 +40,10 @@ public class PathTest {
     void 경로거리_11부터_50사이() {
         //Given
         Path 경로 = new Path(stations, 15);
-        Fare 예상요금 = new Fare(BASE_FARE + 100);
+        int 기본요금 = BASE_FARE;
+        int 첫번째_구간_추가요금 = 100;
+
+        Fare 예상요금 = new Fare(기본요금 + 첫번째_구간_추가요금);
 
         //When
         Fare 실제요금 = new Fare(경로.getFare());
@@ -54,9 +58,11 @@ public class PathTest {
 
         //Given
         Path 경로 = new Path(stations, 58);
-        Fare 예상요금 = new Fare(BASE_FARE +
-                ((50 - 10) / DISTANCE_FIRST_INTERVAL_DIVIDER) * DISTANCE_EXTRA_CHARGE_UNIT +
-                ((58 - 50) / DISTANCE_SECOND_INTERVAL_DIVIDER) * DISTANCE_EXTRA_CHARGE_UNIT);
+        int 기본요금 = BASE_FARE;
+        int 첫번째_구간_추가요금 = 800;
+        int 두번째_구간_추가요금 = 100;
+
+        Fare 예상요금 = new Fare(기본요금 + 첫번째_구간_추가요금 + 두번째_구간_추가요금);
 
         //When
         Fare 실제요금 = new Fare(경로.getFare());
