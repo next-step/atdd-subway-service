@@ -105,4 +105,12 @@ public class Section {
     public List<Station> toList() {
         return Arrays.asList(upStation, downStation);
     }
+
+    public boolean equalsUpStation(final Station station) {
+        return this.upStation.equals(station);
+    }
+
+    public boolean equalsDownStation(final Station station) {
+        return this.downStation.equals(station);
+    }
 }

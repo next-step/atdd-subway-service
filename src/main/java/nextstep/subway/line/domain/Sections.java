@@ -56,12 +56,12 @@ public class Sections {
     }
 
     private void updateUpStationIfPresent(final Section section) {
-        findSection(it -> it.getUpStation() == section.getUpStation())
+        findSection(it -> it.equalsUpStation(section.getUpStation()))
             .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
     }
 
     private void updateDownStationIfPresent(final Section section) {
-        findSection(it -> it.getDownStation() == section.getDownStation())
+        findSection(it -> it.equalsDownStation(section.getDownStation()))
             .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
     }
 
@@ -122,7 +122,7 @@ public class Sections {
     }
 
     private Optional<Station> findNextStation(final Station upStation) {
-        final Optional<Section> maybeSection = findSection(it -> it.getUpStation() == upStation);
+        final Optional<Section> maybeSection = findSection(it -> it.equalsUpStation(upStation));
 
         return maybeSection.map(Section::getDownStation);
     }
@@ -130,8 +130,8 @@ public class Sections {
     public void remove(final Station station) {
         validateSectionsSize();
 
-        final Optional<Section> maybeUpSection = findSection(it -> it.getDownStation() == station);
-        final Optional<Section> maybeDownSection = findSection(it -> it.getUpStation() == station);
+        final Optional<Section> maybeUpSection = findSection(it -> it.equalsDownStation(station));
+        final Optional<Section> maybeDownSection = findSection(it -> it.equalsUpStation(station));
 
         if (maybeUpSection.isPresent() && maybeDownSection.isPresent()) {
             sections.add(Section.of(maybeUpSection.get(), maybeDownSection.get()));
