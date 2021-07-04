@@ -1,5 +1,7 @@
 package nextstep.subway.member.domain;
 
+import static nextstep.subway.auth.common.Constants.*;
+
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.common.BaseEntity;
 
@@ -52,7 +54,7 @@ public class Member extends BaseEntity {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
+            throw new AuthorizationException(INVALID_PASSWORD);
         }
     }
 }
