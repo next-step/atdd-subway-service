@@ -86,6 +86,19 @@ public class LineServiceTest extends ServiceTest {
 		등록_요청_정보와_응답_정보가_같음(조회_노선);
 	}
 
+	@Test
+	void 노선_수정() {
+		// given
+		LineResponse 일호선_응답 = 노선_등록되어_있음(일호선_요청);
+
+		// when
+		lineService.updateLine(일호선_응답.getId(), 오호선_요청);
+
+		// then
+		LineResponse 조회_노선 = lineService.findLineResponseById(일호선_응답.getId());
+		수정_요청_정보와_응답_정보가_같음(조회_노선);
+	}
+
 	private void 등록_요청_정보와_응답_정보가_같음(LineResponse 응답_정보) {
 		assertThat(응답_정보.getName()).isEqualTo(일호선_요청.getName());
 		assertThat(응답_정보.getColor()).isEqualTo(일호선_요청.getColor());
@@ -110,5 +123,11 @@ public class LineServiceTest extends ServiceTest {
 			.collect(Collectors.toList());
 
 		assertThat(resultLineIds).containsAll(expectedLineIds);
+	}
+
+	private void 수정_요청_정보와_응답_정보가_같음(LineResponse 응답_정보) {
+		assertThat(응답_정보.getName()).isEqualTo(오호선_요청.getName());
+		assertThat(응답_정보.getColor()).isEqualTo(오호선_요청.getColor());
+		assertThat(응답_정보.getStations()).containsSequence(Arrays.asList(종로3가역, 신길역));
 	}
 }

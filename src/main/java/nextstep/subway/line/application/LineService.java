@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +16,6 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 
 @Service
 @Transactional
@@ -50,8 +48,8 @@ public class LineService {
 	}
 
 	public void updateLine(Long id, LineRequest lineUpdateRequest) {
-		Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-		persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+		Line persistLine = findLineById(id);
+		persistLine.update(Line.of(lineUpdateRequest));
 	}
 
 	public void deleteLineById(Long id) {
@@ -71,7 +69,7 @@ public class LineService {
 		}
 
 		if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation)
-				&& stations.stream().noneMatch(it -> it == downStation)) {
+			&& stations.stream().noneMatch(it -> it == downStation)) {
 			throw new RuntimeException("등록할 수 없는 구간 입니다.");
 		}
 

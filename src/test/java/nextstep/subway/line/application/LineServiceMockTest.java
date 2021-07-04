@@ -36,6 +36,8 @@ public class LineServiceMockTest {
 
 	private Station 종로3가역;
 	private Station 신길역;
+	private StationResponse 종로3가역_응답;
+	private StationResponse 신길역_응답;
 	private Line 일호선;
 	private Line 오호선;
 	private LineRequest 일호선_요청;
@@ -45,6 +47,8 @@ public class LineServiceMockTest {
 	void 초기화() {
 		종로3가역 = new Station("종로3가역");
 		신길역 = new Station("신길역");
+		종로3가역_응답 = StationResponse.of(종로3가역);
+		신길역_응답 = StationResponse.of(신길역);
 		일호선 = new Line("1호선", "blue", 종로3가역, 신길역, 10);
 		오호선 = new Line("5호선", "purple", 종로3가역, 신길역, 10);
 		일호선_요청 = new LineRequest("1호선", "blue", 1L, 2L, 10);
@@ -109,6 +113,24 @@ public class LineServiceMockTest {
 		등록_요청_정보와_응답_정보가_같음(조회_노선);
 	}
 
+	@Test
+	void 노선_수정() {
+		// given
+		when(lineRepository.save(any())).thenReturn(일호선);
+		Long 일호선_아이디 = null;
+		when(lineRepository.findById(일호선_아이디))
+			.thenReturn(Optional.of(일호선))
+			.thenReturn(Optional.of(오호선));
+		LineResponse 일호선_응답 = 노선_등록되어_있음(일호선_요청);
+
+		// when
+		lineService.updateLine(일호선_응답.getId(), 오호선_요청);
+
+		// then
+		LineResponse 조회_노선 = lineService.findLineResponseById(일호선_응답.getId());
+		수정_요청_정보와_응답_정보가_같음(조회_노선);
+	}
+
 	private void 등록_요청_정보와_응답_정보가_같음(LineResponse 응답_정보) {
 		assertThat(응답_정보.getName()).isEqualTo(일호선_요청.getName());
 		assertThat(응답_정보.getColor()).isEqualTo(일호선_요청.getColor());
@@ -139,5 +161,11 @@ public class LineServiceMockTest {
 			.collect(Collectors.toList());
 
 		assertThat(resultLineIds).containsAll(expectedLineIds);
+	}
+
+	private void 수정_요청_정보와_응답_정보가_같음(LineResponse 응답_정보) {
+		assertThat(응답_정보.getName()).isEqualTo(오호선_요청.getName());
+		assertThat(응답_정보.getColor()).isEqualTo(오호선_요청.getColor());
+		assertThat(응답_정보.getStations()).containsSequence(Arrays.asList(종로3가역_응답, 신길역_응답));
 	}
 }

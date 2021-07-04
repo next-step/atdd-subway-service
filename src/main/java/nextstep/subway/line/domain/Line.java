@@ -48,6 +48,10 @@ public class Line extends BaseEntity {
 		return new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance());
 	}
 
+	public static Line of(LineRequest lineUpdateRequest) {
+		return new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
+	}
+
 	public void update(Line line) {
 		this.name = line.name();
 		this.color = line.color();

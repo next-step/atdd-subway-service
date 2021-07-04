@@ -30,6 +30,20 @@ public class LineTest {
 	}
 
 	@Test
+	void 노선요청을_노선엔티티로_변경_수정목적() {
+		// given
+		LineRequest 노선요청 = new LineRequest("1호선", "blue", null, null, 1);
+
+		// when
+		Line 노선엔티티 = Line.of(노선요청);
+
+		// then
+		Line 비교할_노선엔티티 = new Line("1호선", "blue", null, null, 1);
+		assertThat(노선엔티티.name()).isEqualTo(비교할_노선엔티티.name());
+		assertThat(노선엔티티.color()).isEqualTo(비교할_노선엔티티.color());
+	}
+
+	@Test
 	void 노선_내_역_목록_조회() {
 		// given
 		Station 종로3가역 = new Station("종로3가역");
