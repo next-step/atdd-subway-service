@@ -47,4 +47,4 @@
 - [x] 읽기 전용 조회 서비스 로직에는 @Trasactional(readOnly = true) 옵션 적용
 - [x] Sections 내에 Optional과 isPresent()를 사용하는 부분을 ifPresent로 대체
 - [ ] e.printStackTrace 대신 logback으로 처리
-- [ ] SectionsTest의 역 조회 검증 로직을 size() 뿐만 아니라 세부 요소까지 확인하도록 개선
+- [x] SectionsTest의 역 조회 검증 로직을 size() 뿐만 아니라 세부 요소까지 확인하도록 개선
