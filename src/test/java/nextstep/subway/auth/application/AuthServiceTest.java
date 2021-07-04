@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+@SuppressWarnings("java:S5786")
 @ExtendWith(MockitoExtension.class)
 public class AuthServiceTest {
     public static final String EMAIL = "email@email.com";
