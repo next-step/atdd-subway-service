@@ -1,12 +1,9 @@
 package nextstep.subway.favorite.domain;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-@Repository
-public class FavoriteRepository {
-    public List<Favorite> findByMemberId(Long id) {
-        return null;
-    }
+public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
+    List<Favorite> findByMemberId(Long id);
 }

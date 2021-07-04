@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +47,7 @@ class FavoriteServiceTest {
 
     @BeforeEach
     void setUp() {
+        LocalDateTime now = LocalDateTime.now();
         favoriteService = new FavoriteService(memberRepository, stationRepository, favoriteRepository);
         favoriteRequest = new FavoriteRequest(1L, 3L);
         member = Optional.of(new Member(1L, "mwkwon@test.com", "password", 37));
@@ -61,8 +63,11 @@ class FavoriteServiceTest {
         when(memberRepository.findById(member.get().getId())).thenReturn(member);
         when(stationRepository.findById(1L)).thenReturn(서초역);
         when(stationRepository.findById(3L)).thenReturn(역삼역);
+        Favorite favorite = new Favorite(member.get(), 서초역.get(), 역삼역.get());
+        when(favoriteRepository.save(favorite))
+                .thenReturn(new Favorite(1L, member.get(), 서초역.get(), 역삼역.get()));
         // when
-        FavoriteResponse favoriteResponse = favoriteService.saveFavorite(member.get().getId(), favoriteRequest);
+        FavoriteResponse favoriteResponse = favoriteService.saveFavorite(loginMember, favoriteRequest);
 
         // then
         assertThat(favoriteResponse.getId()).isNotNull();
