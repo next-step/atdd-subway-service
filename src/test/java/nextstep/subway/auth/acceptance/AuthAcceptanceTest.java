@@ -7,6 +7,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
@@ -58,6 +60,19 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+        //given
+        final String email = "email@email.com";
+        final String password = "password";
+        final Integer age = 29;
+
+        MemberAcceptanceTest.회원_생성되어_있음(email, password, age);
+        TokenResponse tokenResponse = 로그인을_요청(email, password).as(TokenResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = 유효하지_않은_토큰으로_요청(tokenResponse.getAccessToken() + "tearDrop!!");
+
+        // then
+        로그인이_실패됨(response);
     }
 
     private ExtractableResponse<Response> 로그인을_요청(String email, String password) {
@@ -70,6 +85,14 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .body(params)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when().post("/login/token")
+            .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> 유효하지_않은_토큰으로_요청(String tearDrop) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(tearDrop)
+            .when().get("/members/me")
             .then().log().all().extract();
     }
 
