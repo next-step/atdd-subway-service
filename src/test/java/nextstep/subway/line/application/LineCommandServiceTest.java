@@ -48,7 +48,7 @@ class LineCommandServiceTest {
     @BeforeEach
     void setUp() {
         lineCommandService = new LineCommandService(stationQueryService, lineQueryService, lineRepository);
-        lineRequest1 = new LineRequest("1호선", "blue", 1L, 2L, 10);
+        lineRequest1 = new LineRequest("1호선", "blue", 1L, 2L, 10, 900);
         용산역 = new Station("용산역");
         ReflectionTestUtils.setField(용산역, "id", 1L);
         남영역 = new Station("남영역");

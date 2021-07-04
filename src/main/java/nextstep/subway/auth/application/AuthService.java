@@ -1,6 +1,7 @@
 package nextstep.subway.auth.application;
 
 import nextstep.subway.auth.application.exception.AuthorizationException;
+import nextstep.subway.auth.domain.IncompleteLoginMember;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -13,8 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class AuthService {
-    public static final String FAILED_VALIDATION_TOKEN_EXCEPTION_MESSAGE = "토큰 검증에 실패하였습니다.";
-
     private final MemberQueryService memberQueryService;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -31,13 +30,13 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
+    public IncompleteLoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new AuthorizationException(FAILED_VALIDATION_TOKEN_EXCEPTION_MESSAGE);
+            return IncompleteLoginMember.ofNull();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberQueryService.findMemberByEmail(email);
-        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+        return new IncompleteLoginMember(new LoginMember(member.getId(), member.getEmail(), member.getAge()));
     }
 }

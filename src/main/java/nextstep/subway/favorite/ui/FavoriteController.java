@@ -1,7 +1,7 @@
 package nextstep.subway.favorite.ui;
 
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
-import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.domain.IncompleteLoginMember;
 import nextstep.subway.favorite.application.FavoriteCommandService;
 import nextstep.subway.favorite.application.FavoriteQueryService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -24,19 +24,19 @@ public class FavoriteController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest request) {
-        FavoriteResponse favorite = favoriteCommandService.createFavorite(loginMember, request);
+    public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal IncompleteLoginMember incompleteLoginMember, @RequestBody FavoriteRequest request) {
+        FavoriteResponse favorite = favoriteCommandService.createFavorite(incompleteLoginMember.toCompleteLoginMember(), request);
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
     }
 
     @GetMapping
-    public ResponseEntity<List<FavoriteResponse>> findFavorites(@AuthenticationPrincipal LoginMember loginMember) {
-        return ResponseEntity.ok(favoriteQueryService.findFavoriteResponsesByMemberId(loginMember));
+    public ResponseEntity<List<FavoriteResponse>> findFavorites(@AuthenticationPrincipal IncompleteLoginMember incompleteLoginMember) {
+        return ResponseEntity.ok(favoriteQueryService.findFavoriteResponsesByMemberId(incompleteLoginMember.toCompleteLoginMember()));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id){
-        favoriteCommandService.deleteByIdAndLoginMember(id, loginMember);
+    public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal IncompleteLoginMember incompleteLoginMember, @PathVariable Long id) {
+        favoriteCommandService.deleteByIdAndLoginMember(id, incompleteLoginMember.toCompleteLoginMember());
         return ResponseEntity.noContent().build();
     }
 }

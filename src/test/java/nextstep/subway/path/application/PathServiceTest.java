@@ -1,5 +1,7 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.IncompleteLoginMember;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineQueryService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathRequest;
@@ -35,6 +37,7 @@ class PathServiceTest {
     private Station 교대역;
     private Station 남부터미널역;
     private List<Line> lines;
+    private IncompleteLoginMember incompleteLoginMember;
 
     /**
      * 교대역      --- *2호선* ---   강남역
@@ -65,6 +68,8 @@ class PathServiceTest {
         삼호선.addSection(교대역, 남부터미널역, 3);
 
         lines = Lists.newArrayList(신분당선, 이호선, 삼호선);
+
+        incompleteLoginMember = new IncompleteLoginMember(new LoginMember(1L, "email@nexstep.com", 30));
     }
 
     @Test
@@ -76,7 +81,7 @@ class PathServiceTest {
         PathRequest pathRequest = new PathRequest(강남역.getId(), 남부터미널역.getId());
 
         //when
-        PathResponse actual = pathService.findPath(pathRequest);
+        PathResponse actual = pathService.findPath(incompleteLoginMember, pathRequest);
 
         //then
         assertThat(actual.getDistance()).isEqualTo(12);

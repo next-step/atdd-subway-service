@@ -7,10 +7,12 @@ import java.util.List;
 public class SubwayShortestPath {
     private final List<Station> stations;
     private final int distance;
+    private final int fare;
 
-    public SubwayShortestPath(List<Station> stations, int distance) {
+    public SubwayShortestPath(List<Station> stations, int distance, int fare) {
         this.stations = stations;
         this.distance = distance;
+        this.fare = fare;
     }
 
     public List<Station> getStations() {
@@ -19,5 +21,9 @@ public class SubwayShortestPath {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }
