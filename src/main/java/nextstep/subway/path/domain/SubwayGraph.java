@@ -1,8 +1,9 @@
-package nextstep.subway.component.domain;
+package nextstep.subway.path.domain;
 
 import nextstep.subway.exception.SubwayPatchException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.wrappers.Sections;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -25,7 +26,7 @@ public class SubwayGraph {
 
     public void addVertexesAndEdge(List<Line> lines) {
         for (Line line : lines) {
-            addVertexesAndEdge(line);
+            addVertexesAndEdge(line.getSections());
         }
     }
 
@@ -48,9 +49,9 @@ public class SubwayGraph {
         }
     }
 
-    private void addVertexesAndEdge(Line line) {
-        for (Section section : line.getSections().getSections()) {
-            SectionWeightedEdge sectionWeightedEdge = new SectionWeightedEdge(section, line.getId());
+    private void addVertexesAndEdge(Sections sections) {
+        for (Section section : sections.getSections()) {
+            SectionWeightedEdge sectionWeightedEdge = new SectionWeightedEdge(section, section.getLine().getId());
             graph.addVertex(section.getUpStation());
             graph.addVertex(section.getDownStation());
             graph.addEdge(section.getUpStation(), section.getDownStation(), sectionWeightedEdge);

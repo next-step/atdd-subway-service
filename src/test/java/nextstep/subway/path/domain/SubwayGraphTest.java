@@ -1,4 +1,4 @@
-package nextstep.subway.component.domain;
+package nextstep.subway.path.domain;
 
 import nextstep.subway.exception.SubwayPatchException;
 import nextstep.subway.line.domain.Line;

@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain.wrappers;
 
-import nextstep.subway.component.domain.SectionWeightedEdge;
 import nextstep.subway.exception.ValidSectionException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
@@ -10,7 +9,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {

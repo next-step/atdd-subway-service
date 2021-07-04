@@ -1,15 +1,14 @@
 package nextstep.subway.path.dto;
 
-import nextstep.subway.component.domain.SectionWeightedEdge;
-import nextstep.subway.component.domain.SubwayGraph;
-import nextstep.subway.component.domain.SubwayPath;
+import nextstep.subway.path.domain.SectionWeightedEdge;
+import nextstep.subway.path.domain.SubwayGraph;
+import nextstep.subway.path.domain.SubwayPath;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
