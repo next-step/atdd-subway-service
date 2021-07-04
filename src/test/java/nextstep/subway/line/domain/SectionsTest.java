@@ -32,7 +32,7 @@ class SectionsTest {
     private static Station 오목교역;
 
     private static Line 오호선;
-    private static Supplier<Section> 구간_영등포구청역_신길역 = () ->  new Section(1L, 오호선, 영등포구청역, 신길역, 기본_구간_거리_30);
+    private static Supplier<Section> 구간_영등포구청역_신길역 = () -> new Section(1L, 오호선, 영등포구청역, 신길역, 기본_구간_거리_30);
     private static Supplier<Section> 구간_영등포구청역_영등포시장역 = () -> new Section(2L, 오호선, 영등포구청역, 영등포시장역, 절반_구간_거리_15);
     private static Supplier<Section> 구간_양평역_신길역 = () -> new Section(3L, 오호선, 양평역, 신길역, 기본_구간_거리_30);
     private static Supplier<Section> 구간_오목교역_영등포구청역 = () -> new Section(4L, 오호선, 오목교역, 영등포구청역, 기본_구간_거리_30);
@@ -110,8 +110,7 @@ class SectionsTest {
     @Test
     void toStations_성공() {
         // given
-        Stations stations = new Stations();
-
+        Station[] expectedResult = {양평역, 영등포구청역, 영등포시장역, 신길역};
 
         // when
         sections.add(구간_영등포구청역_신길역.get());
@@ -120,6 +119,7 @@ class SectionsTest {
 
         // then
         assertThat(sections.size()).isEqualTo(3);
+        assertThat(sections.toStations().get()).containsExactly(expectedResult);
     }
 
     @MethodSource("methodSource_deleteStation_성공")
