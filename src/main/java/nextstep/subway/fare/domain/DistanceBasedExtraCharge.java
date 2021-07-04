@@ -1,5 +1,6 @@
 package nextstep.subway.fare.domain;
 
+import java.util.Arrays;
 import java.util.function.IntFunction;
 
 import static nextstep.subway.fare.domain.Fare.*;
@@ -25,13 +26,17 @@ public enum DistanceBasedExtraCharge {
     }
 
     public static int calculate(int distance) {
-        if (distance >= BASE.startingPoint && distance <= BASE.endingPoint) {
-            return BASE.calculator.apply(distance);
-        }
+        return findDistanceBasedExtraCharge(distance).calculator.apply(distance);
+    }
 
-        if (distance >= FIRST_INTERVAL.startingPoint && distance <= FIRST_INTERVAL.endingPoint) {
-            return FIRST_INTERVAL.calculator.apply(distance);
-        }
-        return SECOND_INTERVAL.calculator.apply(distance);
+    public static DistanceBasedExtraCharge findDistanceBasedExtraCharge(int distance) {
+        return Arrays.stream(values())
+                .filter(distanceBasedExtraCharge -> distanceBasedExtraCharge.isIncludedInRange(distance))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private boolean isIncludedInRange(int distance) {
+        return this.startingPoint <= distance && this.endingPoint >= distance;
     }
 }
