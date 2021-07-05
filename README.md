@@ -112,14 +112,14 @@ Connection: keep-alive
     - then: 경로 조회가 실패한다.(출발역과 도착역이 연결이 되어 있지 않은 경우)
 
 ### 기능 구현 목록
-- [ ] PathController 구현
-- [ ] PathService에 경로 조회 기능 구현
-  - [ ] SectionService에서 구간 전체 조회(mock)
-  - [ ] StationService에서 출발 역 조회(mock)
-  - [ ] StationService에서 도착 역 조회(mock)
-  - [ ] source, target 기준으로 경로 조회 기능(PathFinder)
-- [ ] PathFinder 구현
-  - [ ] 테스트 구현
+- [X] PathController 구현
+- [X] PathService에 경로 조회 기능 구현
+  - [X] SectionService에서 구간 전체 조회(mock)
+  - [x] StationService에서 출발 역 조회(mock)
+  - [x] StationService에서 도착 역 조회(mock)
+  - [x] source, target 기준으로 경로 조회 기능(PathFinder)
+- [x] PathFinder 구현
+  - [X] 테스트 구현
   
 
 ## STEP1 - ATDD 기반 리팩토링
