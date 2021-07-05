@@ -27,6 +27,14 @@ public class LineAcceptanceTest extends AcceptanceTest {
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
 
+    public static LineResponse 지하철_노선_등록_요청(LineRequest lineRequest) {
+        ExtractableResponse<Response> response = 지하철_노선_등록되어_있음(lineRequest);
+
+        지하철_노선_생성됨(response);
+
+        return response.as(LineResponse.class);
+    }
+
     @BeforeEach
     public void setUp() {
         super.setUp();
