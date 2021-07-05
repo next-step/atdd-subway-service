@@ -42,8 +42,22 @@ public class PathAcceptanceStep {
         assertThat(response.getDistance()).isNotZero();
     }
 
-    public static void 지하철_이용_요금도_함께_응답함(PathResponse response) {
-        assertThat(response.getFare()).isNotZero();
+    public static void 지하철_이용_요금도_함께_응답함(PathResponse response, int estimateFare, int age) {
+        int expected = discountFare(estimateFare, age);
+        assertThat(response.getFare()).isEqualTo(expected);
+    }
+
+    private static int discountFare(int fare, int age) {
+        if (age == 0 || age > 20) {
+            return fare;
+        }
+        if (age > 13) {
+            return (fare - 350) * 80 / 100;
+        }
+        if (age > 6) {
+            return (fare - 350) * 50 / 100;
+        }
+        return 0;
     }
 
 }

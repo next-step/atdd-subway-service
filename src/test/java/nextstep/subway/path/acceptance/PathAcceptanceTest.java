@@ -28,9 +28,9 @@ import static nextstep.subway.station.step.StationAcceptanceStep.지하철역_�
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    private TokenResponse tokenResponse;
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private static final int NONE = 0;
 
     private LineResponse 신분당선;
     private LineResponse 이호선;
@@ -120,9 +120,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         지하철_시작_종료지점이_경로에_포함됨(지하철_경로, 강남역, 양재역);
         총_거리도_함께_응답함(지하철_경로);
-        지하철_이용_요금도_함께_응답함(지하철_경로);
+        지하철_이용_요금도_함께_응답함(지하철_경로, 1250, NONE);
     }
 
+    /**
+     * Scenario: 지하철 경로를 조회
+     * When 어린이 회원 생성을 요청
+     * THEN 로그인 됨
+     * When 지하철 경로를 요청
+     * Then 지하철 경로 등록됨
+     * Then 최단 거리 경로를 응답
+     * And 총 거리도 함께 응답함
+     * And 지하철 이용 요금도 함께 응답함
+     * 최단거리 조회
+     * 강남 => 양재 : 10
+     * 10KM 이내 요금 1250에 어린이 요금적용
+     */
     @Test
     void findPathByChild() {
         회원_생성을_요청(EMAIL, PASSWORD, 8);
@@ -137,6 +150,36 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         지하철_시작_종료지점이_경로에_포함됨(지하철_경로, 강남역, 양재역);
         총_거리도_함께_응답함(지하철_경로);
-        지하철_이용_요금도_함께_응답함(지하철_경로);
+        지하철_이용_요금도_함께_응답함(지하철_경로, 1250, 8);
+    }
+
+    /**
+     * Scenario: 지하철 경로를 조회
+     * When 어린이 회원 생성을 요청
+     * THEN 로그인 됨
+     * When 지하철 경로를 요청
+     * Then 지하철 경로 등록됨
+     * Then 최단 거리 경로를 응답
+     * And 총 거리도 함께 응답함
+     * And 지하철 이용 요금도 함께 응답함
+     * 최단거리 조회
+     * 강남 => 양재 : 10
+     * 10KM 이내 요금 1250에 청소년 요금적용
+     */
+    @Test
+    void findPathByYouth() {
+        회원_생성을_요청(EMAIL, PASSWORD, 15);
+        ExtractableResponse<Response> 로그인_요청_응답 = 로그인_요청(EMAIL, PASSWORD);
+        TokenResponse tokenResponse = 로그인_토큰_정보(로그인_요청_응답);
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(tokenResponse, 강남역, 양재역);
+
+        // then
+        지하철_경로_응답됨(response);
+        PathResponse 지하철_경로 = 지하철_경로_추출(response);
+
+        지하철_시작_종료지점이_경로에_포함됨(지하철_경로, 강남역, 양재역);
+        총_거리도_함께_응답함(지하철_경로);
+        지하철_이용_요금도_함께_응답함(지하철_경로, 1250, 15);
     }
 }
