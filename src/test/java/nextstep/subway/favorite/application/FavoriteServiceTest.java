@@ -58,9 +58,9 @@ class FavoriteServiceTest {
 
     @Test
     void findAllTest() {
-        when(favoriteRepository.findByMemberId(1L)).thenReturn(Optional.of(Arrays.asList(
+        when(favoriteRepository.findByMemberId(1L)).thenReturn(Arrays.asList(
                 new Favorite(new Member("", "", 1), new Station("강남역"), new Station("서초역"))
-                , new Favorite(new Member("", "", 1), new Station("강남역"), new Station("광교역")))));
+                , new Favorite(new Member("", "", 1), new Station("강남역"), new Station("광교역"))));
 
         List<FavoriteResponse> favorites = favoriteService.findAll(1L);
         assertThat(favorites).hasSize(2);

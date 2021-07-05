@@ -12,7 +12,6 @@ import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,8 +39,7 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findAll(Long id) {
-        List<Favorite> favorites = favoriteRepository.findByMemberId(id)
-                .orElseThrow(() -> new IllegalArgumentException("즐겨찾기 목록이 없습니다."));
+        List<Favorite> favorites = favoriteRepository.findByMemberId(id);
         return getFavoriteResponses(favorites);
     }
 
