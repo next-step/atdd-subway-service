@@ -44,7 +44,7 @@ public class PathFinder {
     }
 
     private void setEdgeWeight(Section section) {
-        graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+        graph.addEdge(section.getUpStation(), section.getDownStation(), section);
     }
 
     public Path findPaths(Station source, Station target) {
