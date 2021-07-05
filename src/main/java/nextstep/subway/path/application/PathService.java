@@ -21,20 +21,16 @@ public class PathService {
         this.lineRepository = lineRepository;
     }
 
-    public PathResponse findShortestPath(final PathRequest pathRequest) {
+    public PathResponse findShortestPath(final LoginMember loginMember, final PathRequest pathRequest) {
         ShortestPathFinder pathFinder = ShortestPathFinder.getDefault(new Lines(lineRepository.findAll()));
-
-        return PathResponse.from(pathFinder.findShortestPath(findStation(pathRequest.getSource()), findStation(pathRequest.getTarget())));
+        if (loginMember.isLoginUser()) {
+            return PathResponse.of(loginMember.buildAgeDiscount(),
+                    pathFinder.findShortestPath(findStationById(pathRequest.getSource()), findStationById(pathRequest.getTarget())));
+        }
+        return PathResponse.from(pathFinder.findShortestPath(findStationById(pathRequest.getSource()), findStationById(pathRequest.getTarget())));
     }
 
-    public PathResponse findShortestPathForLoginMember(final LoginMember loginMember, final PathRequest pathRequest) {
-        ShortestPathFinder pathFinder = ShortestPathFinder.getDefault(new Lines(lineRepository.findAll()));
-        return PathResponse.of(loginMember.buildAgeDiscount(),
-                pathFinder.findShortestPath(findStation(pathRequest.getSource()), findStation(pathRequest.getTarget())));
-    }
-
-    private Station findStation(Long stationId) {
-        return stationRepository.findById(stationId)
-                .orElseThrow(StationNotExistException::new);
+    private Station findStationById(Long stationId) {
+        return stationRepository.findById(stationId).orElseThrow(StationNotExistException::new);
     }
 }

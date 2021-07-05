@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Path {
-    private static final int DEFAULT_FARE = 1250;
+    private static final int DEFAULT_FARE = 1_250;
 
     private List<Station> stations;
     private int distance;

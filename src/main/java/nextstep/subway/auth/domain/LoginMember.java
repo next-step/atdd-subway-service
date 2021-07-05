@@ -21,6 +21,10 @@ public class LoginMember {
         return AgeDiscount.from(age);
     }
 
+    public boolean isLoginUser() {
+        return this.id != null;
+    }
+
     public Long getId() {
         return id;
     }

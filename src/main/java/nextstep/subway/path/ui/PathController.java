@@ -5,7 +5,6 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -26,9 +25,6 @@ public class PathController {
     public ResponseEntity<PathResponse> findShortestPath(@AuthenticationPrincipal(required = false) LoginMember loginMember,
                                                          @RequestBody PathRequest pathRequest) {
 
-        if (StringUtils.isBlank(loginMember.getEmail())) {
-            return ResponseEntity.ok(pathService.findShortestPath(pathRequest));
-        }
-        return ResponseEntity.ok(pathService.findShortestPathForLoginMember(loginMember, pathRequest));
+        return ResponseEntity.ok(pathService.findShortestPath(loginMember, pathRequest));
     }
 }
