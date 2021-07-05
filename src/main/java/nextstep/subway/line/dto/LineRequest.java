@@ -8,7 +8,7 @@ public class LineRequest {
     private Long upStationId;
     private Long downStationId;
     private int distance;
-    private int AdditionalFare;
+    private int additionalFare;
 
     public LineRequest() {
     }
@@ -27,7 +27,7 @@ public class LineRequest {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
-        AdditionalFare = additionalFare;
+        this.additionalFare = additionalFare;
     }
 
     public String getName() {
