@@ -39,16 +39,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
+        String email = "member@member.com";
+        String password = "password";
+
         안산역 = 지하철역_등록되어_있음("안산역").as(StationResponse.class);
         서울역 = 지하철역_등록되어_있음("서울역").as(StationResponse.class);
         중앙역 = 지하철역_등록되어_있음("중앙역").as(StationResponse.class);
-
         사호선 = 지하철_노선_등록되어_있음(new LineRequest("사호선", "bg-blue-600", 안산역.getId(), 서울역.getId(), 100)).as(LineResponse.class);
-        String email = "member@member.com";
-        String password = "password";
         회원 = 회원_등록되어_있음(email, password, 20).header("Location").split("/")[2];
         토큰 = 로그인_되어_있음(new TokenRequest(email, password));
-
         지하철_노선에_지하철역_등록되어_있음(사호선, 서울역, 중앙역, 80);
     }
 
