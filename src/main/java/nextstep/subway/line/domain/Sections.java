@@ -8,12 +8,10 @@ import nextstep.subway.station.domain.Stations;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 
 @Embeddable
@@ -35,7 +33,7 @@ public class Sections {
     }
 
     public List<Section> get() {
-        return this.values;
+        return unmodifiableList(this.values);
     }
 
     public int size() {
