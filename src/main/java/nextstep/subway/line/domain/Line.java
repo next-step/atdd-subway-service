@@ -95,6 +95,10 @@ public class Line extends BaseEntity {
         return color;
     }
 
+    public AdditionalFare getAdditionalFare() {
+        return additionalFare;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
