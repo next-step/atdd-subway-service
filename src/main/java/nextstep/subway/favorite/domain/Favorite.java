@@ -10,14 +10,12 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.favorite.dto.FavoritesResponse;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(columnNames={"member","source","target"}))
 public class Favorite {
-
     public Favorite() {
     }
 

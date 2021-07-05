@@ -1,36 +1,39 @@
 package nextstep.subway.path.acceptance;
 
+import static nextstep.subway.auth.application.AuthServiceTest.*;
+import static nextstep.subway.member.MemberAcceptanceTest.BEARER;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.AcceptanceTest;
-import nextstep.subway.line.acceptance.LineAcceptanceTest;
-import nextstep.subway.line.dto.LineRequest;
-import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.path.dto.PathRequest;
-import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.StationAcceptanceTest;
-import nextstep.subway.station.dto.StationResponse;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
+import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.line.acceptance.LineAcceptanceTest;
+import nextstep.subway.line.dto.LineRequest;
+import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.member.dto.MemberRequest;
+import nextstep.subway.path.dto.PathRequest;
+import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.station.StationAcceptanceTest;
+import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
-    private LineResponse 이호선;
-    private LineResponse 삼호선;
-    private LineResponse 오호선;
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 정자역;
@@ -53,14 +56,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         천호역 = StationAcceptanceTest.지하철역_등록되어_있음("천호역").as(StationResponse.class);
         군자역 = StationAcceptanceTest.지하철역_등록되어_있음("군자역").as(StationResponse.class);
 
-        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10);
+        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 0);
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
-        lineRequest = new LineRequest("이호선", "bg-red-600", 강남역.getId(), 선릉역.getId(), 10);
-        이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
-        lineRequest = new LineRequest("삼호선", "bg-red-600", 양재역.getId(), 교대역.getId(), 10);
-        삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
-        lineRequest = new LineRequest("오호선", "bg-red-600", 천호역.getId(), 군자역.getId(), 10);
-        오호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
+        lineRequest = new LineRequest("이호선", "bg-red-600", 강남역.getId(), 선릉역.getId(), 10, 0);
+        LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
+        lineRequest = new LineRequest("삼호선", "bg-red-600", 양재역.getId(), 교대역.getId(), 10, 0);
+        LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
+        lineRequest = new LineRequest("오호선", "bg-red-600", 천호역.getId(), 군자역.getId(), 10, 0);
+        LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 광교역, 10);
         지하철_노선에_지하철역_등록_요청(신분당선, 광교역, 정자역, 10);
@@ -121,6 +124,53 @@ public class PathAcceptanceTest extends AcceptanceTest {
         역_생성_실패_체크(연결_되지_않은_구간_요청_응답);
     }
 
+    @DisplayName("로그인 후 할인 요금으로 측정 - 청소년")
+    @Test
+    void findPathWithTeenager() {
+        // given
+        회원_생성을_요청(16);
+        String 토큰 = 회원_로그인_요청();
+        // when
+        PathRequest 경로_조회_요청_내용 = 경로_조회_요청_내용(강남역, 양재역);
+        ExtractableResponse<Response> 지하철_경로_조회_요청_응답 = 지하철_경로_조회_요청_로그인_됨(토큰, 경로_조회_요청_내용);
+        // then
+        경로_조회_요금_확인(지하철_경로_조회_요청_응답, 720);
+    }
+
+    @DisplayName("로그인 후 할인 요금으로 측정 - 어린이")
+    @Test
+    void findPathWithKidsAndLineFare() {
+        // given
+        회원_생성을_요청(8);
+        String 토큰 = 회원_로그인_요청();
+        // when
+        PathRequest 경로_조회_요청_내용 = 경로_조회_요청_내용(강남역, 양재역);
+        ExtractableResponse<Response> 지하철_경로_조회_요청_응답 = 지하철_경로_조회_요청_로그인_됨(토큰, 경로_조회_요청_내용);
+        // then
+        경로_조회_요금_확인(지하철_경로_조회_요청_응답, 450);
+    }
+
+    @DisplayName("로그인 후 할인 요금으로 측정 - 어린이, 환승 구간 요금이 있는 경우")
+    @Test
+    void findPathWithKids() {
+        // given
+        StationResponse 복정역 = StationAcceptanceTest.지하철역_등록되어_있음("복정역").as(StationResponse.class);
+        LineRequest lineRequest = new LineRequest("분당선", "yellog", 선릉역.getId(), 복정역.getId(), 10, 900);
+        LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
+        회원_생성을_요청(8);
+        String 토큰 = 회원_로그인_요청();
+        // when
+        PathRequest 경로_조회_요청_내용 = 경로_조회_요청_내용(선릉역, 복정역);
+        ExtractableResponse<Response> 지하철_경로_조회_요청_응답 = 지하철_경로_조회_요청_로그인_됨(토큰, 경로_조회_요청_내용);
+        // then
+        경로_조회_요금_확인(지하철_경로_조회_요청_응답, 900);
+    }
+
+    private void 경로_조회_요금_확인(ExtractableResponse<Response> 경로_조회_요청_내용, int 요금) {
+        PathResponse response = 경로_조회_요청_내용.as(PathResponse.class);
+        assertThat(response.getFare()).isEqualTo(요금);
+    }
+
     private static Long 역_번호_추출(StationResponse 역) {
         return 역.getId();
     }
@@ -128,6 +178,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private static ExtractableResponse<Response> 지하철_경로_조회_요청(PathRequest params) {
         return RestAssured
                 .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().get("/paths")
+                .then().log().all()
+                .extract();
+    }
+
+    private static ExtractableResponse<Response> 지하철_경로_조회_요청_로그인_됨(String 토큰, PathRequest params) {
+        return RestAssured
+                .given().header("authorization", BEARER + 토큰).log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().get("/paths")
@@ -171,5 +231,30 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 역_생성_실패_체크(ExtractableResponse<Response> 없는역_조회_요청_응답) {
         assertThat(없는역_조회_요청_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private static ExtractableResponse<Response> 회원_생성을_요청(int age) {
+        MemberRequest memberRequest = new MemberRequest(EMAIL, PASSWORD, age);
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().post("/members")
+                .then().log().all()
+                .extract();
+    }
+
+    private static String 회원_로그인_요청() {
+        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
+
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(tokenRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .extract();
+        return response.as(TokenResponse.class).getAccessToken();
     }
 }

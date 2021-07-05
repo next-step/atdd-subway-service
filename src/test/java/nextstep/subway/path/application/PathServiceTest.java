@@ -1,10 +1,14 @@
 package nextstep.subway.path.application;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-import nextstep.subway.line.domain.LineRepository;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import nextstep.subway.error.CustomException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,15 +16,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import nextstep.subway.error.ErrorMessage;
+import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.Fare;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.StationRepository;
-import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.path.dto.PathRequest;
 
+
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
-    @Mock
     private PathService pathService;
 
     @Mock
@@ -42,11 +51,17 @@ class PathServiceTest {
     @Test
     void findPath() {
         //given
+        List<Line> lines = new ArrayList<>(Arrays.asList(new Line("2호선", "녹색", 강남역, 선릉역, new Distance(10), new Fare(0))));
+        pathService = new PathService(lineRepository, stationRepository);
+
         //when
-        when(pathService.findPath(any())).thenReturn(new PathResponse());
-        PathResponse response = pathService.findPath(new PathRequest(강남역.getId(), 선릉역.getId()));
+        doReturn(Optional.of(강남역)).when(stationRepository).findById(1L);
+        doReturn(Optional.of(선릉역)).when(stationRepository).findById(2L);
+        doReturn(lines).when(lineRepository).findAll();
+
+        PathResponse path = pathService.findPath(new LoginMember(), new PathRequest(1L, 2L));
         //then
-        assertThat(response).isNotNull();
+        assertThat(path).isNotNull();
     }
 
     @DisplayName("역이 없을 경우")
@@ -56,8 +71,8 @@ class PathServiceTest {
         //when
         pathService = new PathService(lineRepository, stationRepository);
         //then
-        assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> pathService.findPath(new PathRequest(9L, 10L))
-        ).withMessage(Sections.NOT_FOUND_SECTION);
+        assertThatExceptionOfType(CustomException.class)
+                .isThrownBy(() -> pathService.findPath(new LoginMember(), new PathRequest(9L, 10L))
+        ).withMessage(ErrorMessage.NOT_FOUND_STATION.toString());
     }
 }

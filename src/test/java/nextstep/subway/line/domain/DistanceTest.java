@@ -1,8 +1,9 @@
 package nextstep.subway.line.domain;
 
-import static nextstep.subway.line.domain.Distance.INVALID_DISTANCE;
 import static org.assertj.core.api.Assertions.*;
 
+import nextstep.subway.error.CustomException;
+import nextstep.subway.error.ErrorMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,7 +53,16 @@ class DistanceTest {
         //given
         //when
         //then
-        assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> new Distance(-10)).withMessage(INVALID_DISTANCE);
+        assertThatExceptionOfType(CustomException.class)
+                .isThrownBy(() -> new Distance(-10)).withMessage(ErrorMessage.INVALID_DISTANCE.toString());
+    }
+
+    @DisplayName("비교 로직")
+    @Test
+    void isOver() {
+        // given
+        // when
+        // then
+        assertThat(distance.isOver(4)).isTrue();
     }
 }

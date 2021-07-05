@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
+import nextstep.subway.path.domain.Fare;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,8 @@ class SectionTest {
                 , "빨간색"
                 , new Station("강남역")
                 , new Station("선릉역")
-                , new Distance(5));
+                , new Distance(5)
+                , new Fare(900));
 
         upStation = new Station("선릉역");
         downStation = new Station("한티역");

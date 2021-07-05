@@ -2,6 +2,7 @@ package nextstep.subway.handler;
 
 import nextstep.subway.auth.application.AuthorizationException;
 
+import nextstep.subway.error.CustomException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,6 +19,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NoResultException.class)
     public ResponseEntity noResultException() {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
+
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity customException() {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }

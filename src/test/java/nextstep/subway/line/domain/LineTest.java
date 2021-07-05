@@ -7,6 +7,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -21,7 +22,8 @@ class LineTest {
                 , "빨간색"
                 , new Station("강남역")
                 , new Station("선릉역")
-                , new Distance(5));
+                , new Distance(5)
+                , new Fare(900));
         //when
         List<StationResponse> stationResponse = line.stationResponses();
         //then
