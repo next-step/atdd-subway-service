@@ -31,13 +31,17 @@ public class FavoriteService {
 		Station source = stationService.findStationById(favoriteRequest.getSource());
 		Station target = stationService.findStationById(favoriteRequest.getTarget());
 
-		Favorite favorite = favoriteRepository.save(favoriteRequest.toFavorite(member, source, target));
+		Favorite favorite = favoriteRepository.save(new Favorite(member, source, target));
 
 		return FavoriteResponse.of(favorite);
 	}
 
 	public List<FavoriteResponse> findFavorites(Long memberId) {
-		List<Favorite> favorites = favoriteRepository.findByMemberId(memberId).orElseThrow(() -> new IllegalArgumentException("등록된 즐겨찾기가 없습니다."));
+		List<Favorite> favorites = favoriteRepository.findByMemberId(memberId);
+
+		if (favorites.isEmpty()) {
+			throw new IllegalArgumentException("등록된 즐겨찾기가 없습니다.");
+		}
 
 		return favorites.stream().map(FavoriteResponse::of).collect(Collectors.toList());
 	}
