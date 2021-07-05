@@ -7,8 +7,8 @@ public enum AgeDiscountPolicy {
     CHILD(6, 13, 0.2),
     YOUTH(13, 19, 0.5);
 
+    public static final int DISCOUNT_NONE = 0;
     private static final int DEDUCTION = 350;
-    private static final int DISCOUNT_NONE = 0;
 
     private int minAge;
     private int maxAge;
