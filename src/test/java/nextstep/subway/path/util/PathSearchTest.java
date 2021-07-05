@@ -2,6 +2,7 @@ package nextstep.subway.path.util;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.domain.PathDestination;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -40,7 +41,7 @@ class PathSearchTest {
     void findPath() {
         Lines lines = new Lines(Arrays.asList(line, line2, line3));
 
-        PathResponse paths = pathSearch.findPaths(lines, station1, station4);
+        PathResponse paths = pathSearch.findPaths(lines, new PathDestination(station1, station4));
 
         assertThat(paths.getStations()).containsExactly(
                 StationResponse.of(station1), StationResponse.of(station2),

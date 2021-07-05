@@ -2,6 +2,7 @@ package nextstep.subway.path.service;
 
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.domain.PathDestination;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.util.PathSearch;
 import nextstep.subway.station.application.StationService;
@@ -32,7 +33,8 @@ public class PathService {
         final Lines lines = new Lines(lineRepository.findAll());
         final Station sourceStation = stationService.findStation(source);
         final Station targetStation = stationService.findStation(target);
-        return pathSearch.findPaths(lines, sourceStation, targetStation);
+        final PathDestination pathDestination = new PathDestination(sourceStation, targetStation);
+        return pathSearch.findPaths(lines, pathDestination);
     }
 
     private void validateStations(Long source, Long target) {

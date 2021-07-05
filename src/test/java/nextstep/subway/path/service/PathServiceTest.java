@@ -2,6 +2,7 @@ package nextstep.subway.path.service;
 
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.domain.PathDestination;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.util.PathSearch;
 import nextstep.subway.station.application.StationService;
@@ -71,7 +72,7 @@ class PathServiceTest {
                 .thenReturn(Optional.of(station1));
         when(stationRepository.findById(anyLong()))
                 .thenReturn(Optional.of(station4));
-        when(pathSearch.findPaths(any(Lines.class), any(Station.class), any(Station.class)))
+        when(pathSearch.findPaths(any(Lines.class), any(PathDestination.class)))
                 .thenReturn(pathResponse);
 
         PathResponse paths = pathService.findPaths(source, target);
