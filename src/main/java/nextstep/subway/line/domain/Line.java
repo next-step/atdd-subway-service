@@ -9,6 +9,8 @@ import java.util.List;
 @Entity
 public class Line extends BaseEntity {
 
+    private static final int NONE_EXTRA_FARE = 0;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,12 +28,11 @@ public class Line extends BaseEntity {
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
+        this.extraFare = NONE_EXTRA_FARE;
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        this(name, color, NONE_EXTRA_FARE, upStation, downStation, distance);
     }
 
     public Line(String name, String color, Integer extraFare, Station upStation, Station downStation, int distance) {
