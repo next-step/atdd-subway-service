@@ -1,16 +1,26 @@
 package nextstep.subway.path;
 
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
-import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역을_등록;
+import java.util.HashMap;
+import java.util.Map;
+
+import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @DisplayName("지하철 경로 조회")
@@ -35,7 +45,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         이호선 = LineAcceptanceTest.지하철_노선_등록_요청(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10));
         삼호선 = LineAcceptanceTest.지하철_노선_등록_요청(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5));
 
-        지하철_노선에_지하철역을_등록(삼호선, 교대역, 남부터미널역, 3);
+        지하철역_노선에_지하철역_추가(삼호선, 교대역, 남부터미널역, 3);
     }
 
     @DisplayName("최단 경로를 조회한다.")
@@ -48,10 +58,35 @@ public class PathAcceptanceTest extends AcceptanceTest {
             - 출발역과 도착역이 연결이 되어 있지 않으면 실패한다
             - 존재하지 않은 출발역이나 도착역을 조회 할 경우 실패한다.
         */
+        //given
+        Map<String, Long> pathRequestMap = createPathRequestMap();
 
         //when
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(pathRequestMap);
 
-
-
+        //then
+        최단_경로_조회됨(response);
     }
+
+    private Map<String, Long> createPathRequestMap() {
+        Map<String, Long> pathRequestMap = new HashMap<>();
+        pathRequestMap.put("source",교대역.getId());
+        pathRequestMap.put("target",양재역.getId());
+        return pathRequestMap;
+    }
+
+    private static ExtractableResponse<Response> 최단_경로_조회_요청(Map<String, Long> pathRequest) {
+        return RestAssured
+                .given().log().all()
+                .queryParams(pathRequest)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths")
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 최단_경로_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
 }
