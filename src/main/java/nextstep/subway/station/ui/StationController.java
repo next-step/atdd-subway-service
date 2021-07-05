@@ -1,5 +1,7 @@
 package nextstep.subway.station.ui;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
@@ -38,8 +40,8 @@ public class StationController {
     }
 
     @GetMapping("/stations/paths")
-    public ResponseEntity findPaths(@RequestParam Long source, @RequestParam Long target) {
-        return ResponseEntity.ok(stationService.findPaths(source, target));
+    public ResponseEntity findPaths(@AuthenticationPrincipal LoginMember loginMember, @RequestParam Long source, @RequestParam Long target) {
+        return ResponseEntity.ok(stationService.findPaths(loginMember, source, target));
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

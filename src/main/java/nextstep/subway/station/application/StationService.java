@@ -1,5 +1,6 @@
 package nextstep.subway.station.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.station.domain.PathFinder;
@@ -36,7 +37,7 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    public PathResponse findPaths(Long sourceStationId, Long targetStationId) {
+    public PathResponse findPaths(LoginMember loginMember, Long sourceStationId, Long targetStationId) {
         Station sourceStation = getOne(sourceStationId);
         Station targetStation = getOne(targetStationId);
         List<Line> persistLines = lineRepository.findAll();
