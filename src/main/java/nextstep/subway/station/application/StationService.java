@@ -3,6 +3,7 @@ package nextstep.subway.station.application;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.station.domain.Path;
 import nextstep.subway.station.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -42,7 +43,8 @@ public class StationService {
         Station targetStation = getOne(targetStationId);
         List<Line> persistLines = lineRepository.findAll();
         PathFinder pathFinder = new PathFinder(persistLines);
-        return pathFinder.findPaths(sourceStation, targetStation);
+        Path path = pathFinder.findPaths(sourceStation, targetStation);
+        return PathResponse.of(path, loginMember);
     }
 
     public void deleteStationById(Long id) {

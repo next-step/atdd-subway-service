@@ -1,8 +1,10 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.station.domain.Path;
 import nextstep.subway.station.domain.PathFinder;
-import nextstep.subway.station.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,7 +49,8 @@ class PathFinderTest {
         
         // when
         PathFinder pathFinder = new PathFinder(lines);
-        PathResponse paths = pathFinder.findPaths(양재역, 정자역);
+        Path path = pathFinder.findPaths(양재역, 정자역);
+        PathResponse paths = PathResponse.of(path, new LoginMember());
 
 
         // then
@@ -76,7 +79,8 @@ class PathFinderTest {
 
         // when
         PathFinder pathFinder = new PathFinder(lines);
-        PathResponse paths = pathFinder.findPaths(청계산역, 교대역);
+        Path path = pathFinder.findPaths(청계산역, 교대역);
+        PathResponse paths = PathResponse.of(path, new LoginMember());
 
         // then
         assertThat(paths.getStations().size()).isEqualTo(4);
@@ -108,7 +112,8 @@ class PathFinderTest {
 
         // when
         PathFinder pathFinder = new PathFinder(lines);
-        PathResponse paths = pathFinder.findPaths(청계산역, 서초역);
+        Path path = pathFinder.findPaths(청계산역, 서초역);
+        PathResponse paths = PathResponse.of(path, new LoginMember());
 
         // then
         assertThat(paths.getStations().size()).isEqualTo(5);
