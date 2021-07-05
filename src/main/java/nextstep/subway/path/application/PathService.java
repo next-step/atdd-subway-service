@@ -44,31 +44,29 @@ public class PathService {
 
     @Transactional(readOnly = true)
     public PathResponse searchPath(final PathRequest request) {
-        Lines lines = findLines();
-
-        Path<Station> path = getPath(lines, request);
-        path.additionalChargesCalculate(new RatePolicyByDistance(path.getDistance()))
-            .additionalChargesCalculate(new RatePolicyByAddition(lines.getMostExpensiveCharge((path.getPaths()))));
+        Path<Station> path = getPath(request);
 
         return PathResponse.of(path);
     }
 
     @Transactional(readOnly = true)
     public PathResponse searchPath(final Long memberId, final PathRequest request) {
-        Lines lines = findLines();
+        Path<Station> path = getPath(request);
 
-        Path<Station> path = getPath(lines, request);
-        path.additionalChargesCalculate(new RatePolicyByDistance(path.getDistance()))
-            .additionalChargesCalculate(new RatePolicyByAddition(lines.getMostExpensiveCharge((path.getPaths()))))
-            .additionalChargesCalculate(new RatePolicyByAge(getMemberById(memberId).getAge()));
+        path.additionalChargesCalculate(new RatePolicyByAge(getMemberById(memberId).getAge()));
 
         return PathResponse.of(path);
     }
 
-    private Path<Station> getPath(final Lines lines, final PathRequest request) {
+    private Path<Station> getPath(final PathRequest request) {
+        Lines lines = findLines();
         Station source = getStationById(request.getSource());
         Station target = getStationById(request.getTarget());
 
-        return new PathFinder(lines).getPath(source, target);
+        Path<Station> path = new PathFinder(lines).getPath(source, target);
+        path.additionalChargesCalculate(new RatePolicyByDistance(path.getDistance()));
+        path.additionalChargesCalculate(new RatePolicyByAddition(lines.getMostExpensiveCharge((path.getPaths()))));
+
+        return path;
     }
 }
