@@ -56,22 +56,6 @@ Connection: keep-alive
 * 출발역과 도착역이 같은 경우
 * 출발역과 도착역이 연결이 되어 있지 않은 경우
 * 존재하지 않은 출발역이나 도착역을 조회할 경우
-
-        양평역 = 지하철역_등록되어_있음("양평역").as(StationResponse.class);
-        영등포구청역 = 지하철역_등록되어_있음("영등포구청역").as(StationResponse.class);
-        영등포시장역 = 지하철역_등록되어_있음("영등포시장역").as(StationResponse.class);
-        신길역 = 지하철역_등록되어_있음("신길역").as(StationResponse.class);
-        여의도역 = 지하철역_등록되어_있음("여의도역").as(StationResponse.class);
-        당산역 = 지하철역_등록되어_있음("당산역").as(StationResponse.class);
-        영등포역 = 지하철역_등록되어_있음("영등포역").as(StationResponse.class);
-
-        오호선 = 지하철_노선_등록되어_있음(new LineRequest("오호선", "bg-red-600", 양평역.getId(), 영등포구청역.getId(), 10)).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 영등포구청역.getId(), 당산역.getId(), 10)).as(LineResponse.class);
-        일호선 = 지하철_노선_등록되어_있음(new LineRequest("일호선", "bg-red-600", 신길역.getId(), 영등포역.getId(), 5)).as(LineResponse.class);
-
-        지하철_노선에_지하철역_등록_요청(오호선, 영등포구청역, 영등포시장역, 5);
-        지하철_노선에_지하철역_등록_요청(오호선, 영등포시장역, 신길역, 10);
-        지하철_노선에_지하철역_등록_요청(오호선, 신길역, 여의도역, 5);
   
 ### 인수 테스트 시나리오
 - Feature: 경로 조회 기능
