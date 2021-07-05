@@ -35,7 +35,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @DisplayName("PathService 테스트 구현")
-class PathServiceTest {
+public class PathServiceTest {
     @MockBean
     private PathService pathService;
 
