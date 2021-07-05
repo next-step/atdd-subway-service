@@ -16,10 +16,11 @@ public class PathResponse {
     public PathResponse() {
     }
 
-    public PathResponse(Path path) {
+    public PathResponse(Path path, int totalFare) {
         this.sectionEdges = path.getSectionEdges();
         this.stations = path.getStations();
         this.distance = path.getDistance();
+        this.fare = totalFare;
     }
 
     public PathResponse(List<StationResponse> stations, int distance) {
