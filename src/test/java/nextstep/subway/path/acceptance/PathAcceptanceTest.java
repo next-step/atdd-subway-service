@@ -3,23 +3,34 @@ package nextstep.subway.path.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.subway.auth.acceptance.step.AuthAcceptanceStep.로그인_요청;
+import static nextstep.subway.auth.acceptance.step.AuthAcceptanceStep.로그인_토큰_정보;
 import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_생성을_요청;
 import static nextstep.subway.path.acceptance.step.PathAcceptanceStep.지하철_경로_응답됨;
 import static nextstep.subway.path.acceptance.step.PathAcceptanceStep.지하철_경로_조회_요청;
+import static nextstep.subway.path.acceptance.step.PathAcceptanceStep.지하철_경로_추출;
 import static nextstep.subway.path.acceptance.step.PathAcceptanceStep.지하철_시작_종료지점이_경로에_포함됨;
+import static nextstep.subway.path.acceptance.step.PathAcceptanceStep.지하철_이용_요금도_함께_응답함;
+import static nextstep.subway.path.acceptance.step.PathAcceptanceStep.총_거리도_함께_응답함;
 import static nextstep.subway.station.step.StationAcceptanceStep.지하철역_등록되어_있음;
 
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private static final int NONE = 0;
 
     private LineResponse 신분당선;
     private LineResponse 이호선;
@@ -51,6 +62,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .upStationId(교대역.getId())
                 .downStationId(강남역.getId())
                 .distance(10)
+                .extraFare(0)
                 .build();
 
         final LineRequest 노선_등록_요청2 = LineRequest.builder()
@@ -59,6 +71,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .upStationId(교대역.getId())
                 .downStationId(양재역.getId())
                 .distance(5)
+                .extraFare(500)
                 .build();
 
         final LineRequest 노선_등록_요청3 = LineRequest.builder()
@@ -67,6 +80,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .upStationId(양재역.getId())
                 .downStationId(강남역.getId())
                 .distance(10)
+                .extraFare(900)
                 .build();
 
         이호선 = 지하철_노선_등록되어_있음(노선_등록_요청1).as(LineResponse.class);
@@ -80,10 +94,21 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * Scenario: 지하철 경로를 조회
      * When 지하철 경로를 요청
      * Then 지하철 경로 등록됨
+     * Then 최단 거리 경로를 응답
+     * And 총 거리도 함께 응답함
+     * And 지하철 이용 요금도 함께 응답함
      * <p>
-     * 강남-양재 : 10 거리
-     * 강남-교대역-남부터미널-양재역: 20 거리
+     * 교대역    --- *2호선* ---   강남역
+     * |                        |
+     * *3호선*                   *신분당선*
+     * |                        |
+     * 남부터미널역  --- *3호선* ---   양재
+     * <p>
+     * 최단거리 조회
+     * 강남 => 양재 : 10
+     * 강남 => 교대 => 남부터미널=> 양재 : 20
      */
+
     @Test
     void findPath() {
         // when
@@ -91,6 +116,70 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_경로_응답됨(response);
-        지하철_시작_종료지점이_경로에_포함됨(response, 강남역, 양재역);
+        PathResponse 지하철_경로 = 지하철_경로_추출(response);
+
+        지하철_시작_종료지점이_경로에_포함됨(지하철_경로, 강남역, 양재역);
+        총_거리도_함께_응답함(지하철_경로);
+        지하철_이용_요금도_함께_응답함(지하철_경로, 1250, NONE);
+    }
+
+    /**
+     * Scenario: 지하철 경로를 조회
+     * When 어린이 회원 생성을 요청
+     * THEN 로그인 됨
+     * When 지하철 경로를 요청
+     * Then 지하철 경로 등록됨
+     * Then 최단 거리 경로를 응답
+     * And 총 거리도 함께 응답함
+     * And 지하철 이용 요금도 함께 응답함
+     * 최단거리 조회
+     * 강남 => 양재 : 10
+     * 10KM 이내 요금 1250에 어린이 요금적용
+     */
+    @Test
+    void findPathByChild() {
+        회원_생성을_요청(EMAIL, PASSWORD, 8);
+        ExtractableResponse<Response> 로그인_요청_응답 = 로그인_요청(EMAIL, PASSWORD);
+        TokenResponse tokenResponse = 로그인_토큰_정보(로그인_요청_응답);
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(tokenResponse, 강남역, 양재역);
+
+        // then
+        지하철_경로_응답됨(response);
+        PathResponse 지하철_경로 = 지하철_경로_추출(response);
+
+        지하철_시작_종료지점이_경로에_포함됨(지하철_경로, 강남역, 양재역);
+        총_거리도_함께_응답함(지하철_경로);
+        지하철_이용_요금도_함께_응답함(지하철_경로, 1250, 8);
+    }
+
+    /**
+     * Scenario: 지하철 경로를 조회
+     * When 어린이 회원 생성을 요청
+     * THEN 로그인 됨
+     * When 지하철 경로를 요청
+     * Then 지하철 경로 등록됨
+     * Then 최단 거리 경로를 응답
+     * And 총 거리도 함께 응답함
+     * And 지하철 이용 요금도 함께 응답함
+     * 최단거리 조회
+     * 강남 => 양재 : 10
+     * 10KM 이내 요금 1250에 청소년 요금적용
+     */
+    @Test
+    void findPathByYouth() {
+        회원_생성을_요청(EMAIL, PASSWORD, 15);
+        ExtractableResponse<Response> 로그인_요청_응답 = 로그인_요청(EMAIL, PASSWORD);
+        TokenResponse tokenResponse = 로그인_토큰_정보(로그인_요청_응답);
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(tokenResponse, 강남역, 양재역);
+
+        // then
+        지하철_경로_응답됨(response);
+        PathResponse 지하철_경로 = 지하철_경로_추출(response);
+
+        지하철_시작_종료지점이_경로에_포함됨(지하철_경로, 강남역, 양재역);
+        총_거리도_함께_응답함(지하철_경로);
+        지하철_이용_요금도_함께_응답함(지하철_경로, 1250, 15);
     }
 }

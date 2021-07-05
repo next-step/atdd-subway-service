@@ -1,7 +1,9 @@
 package nextstep.subway.path.util;
 
+import nextstep.subway.auth.domain.EmptyMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.domain.PathDestination;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -23,10 +25,12 @@ class PathSearchTest {
     private Station station2 = new Station("교대역");
     private Station station3 = new Station("남부터미널역");
     private Station station4 = new Station("양재역");
+    private EmptyMember member;
 
     @BeforeEach
     void setUp() {
         pathSearch = new PathSearch();
+        member = new EmptyMember();
 
         line.addSection(station1, station2, 20);
 
@@ -40,7 +44,7 @@ class PathSearchTest {
     void findPath() {
         Lines lines = new Lines(Arrays.asList(line, line2, line3));
 
-        PathResponse paths = pathSearch.findPaths(lines, station1, station4);
+        PathResponse paths = pathSearch.findPaths(member, lines, new PathDestination(station1, station4));
 
         assertThat(paths.getStations()).containsExactly(
                 StationResponse.of(station1), StationResponse.of(station2),
