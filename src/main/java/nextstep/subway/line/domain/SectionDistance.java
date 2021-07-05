@@ -1,18 +1,14 @@
 package nextstep.subway.line.domain;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
 @Embeddable
-public class SectionDistance extends DefaultWeightedEdge {
+public class SectionDistance {
     private static final int SECTION_DISTANCE_MIN = 1;
 
     @Column
     private int distance;
-
-    @Transient
-    private Line line;
 
     protected SectionDistance() {
     }
@@ -28,7 +24,7 @@ public class SectionDistance extends DefaultWeightedEdge {
         distance -= newDistance;
     }
 
-    private static void verifyGreaterThanOrEqualToSectionDistanceMin(int distance) {
+    private void verifyGreaterThanOrEqualToSectionDistanceMin(int distance) {
         if (distance < SECTION_DISTANCE_MIN) {
             throw new IllegalArgumentException("구간 길이는 1 이상이어야 합니다.");
         }
@@ -44,24 +40,11 @@ public class SectionDistance extends DefaultWeightedEdge {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        SectionDistance distance1 = (SectionDistance) o;
-        return getDistance() == distance1.getDistance();
+        SectionDistance distance = (SectionDistance) o;
+        return getDistance() == distance.getDistance();
     }
 
-    public int getDistance() {
-        return distance;
-    }
-
-    public Line getLine() {
-        return line;
-    }
-
-    public void setLine(Line line) {
-        this.line = line;
-    }
-
-    @Override
-    protected double getWeight() {
+    private int getDistance() {
         return distance;
     }
 

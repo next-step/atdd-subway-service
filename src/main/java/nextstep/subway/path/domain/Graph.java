@@ -1,23 +1,22 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.SectionDistance;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Graph {
-    private WeightedMultigraph<Station, SectionDistance> graph;
+    private WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
     public Graph() {
-        graph = new WeightedMultigraph(SectionDistance.class);
+        graph = new WeightedMultigraph(DefaultWeightedEdge.class);
     }
 
     public void build(List<Line> lines) {
@@ -29,29 +28,21 @@ public class Graph {
 
     public Path findShortestPath(List<Line> lines, Station source, Station target) {
         build(lines);
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath<Station, SectionDistance> graphPath = dijkstraShortestPath.getPath(source, target);
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath(graph);
+        GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(source, target);
         verifyAvailable(graphPath);
 
         List<Station> stations = graphPath.getVertexList();
         ShortestDistance distance = new ShortestDistance((int) dijkstraShortestPath.getPathWeight(source, target));
-        List<SectionDistance> sectionDistances = getSectionDistances(stations);
-
-        return new Path(stations, distance, sectionDistances);
+        return new Path(stations, distance);
     }
 
-    private List<SectionDistance> getSectionDistances(List<Station> stations) {
-        List<SectionDistance> sectionDistances = new ArrayList<>();
+    private List<DefaultWeightedEdge> getEdges(List<Station> stations) {
+        List<DefaultWeightedEdge> edges = new ArrayList<>();
         for (int i = 1; i < stations.size(); i++) {
-            sectionDistances.add(graph.getEdge(stations.get(i-1), stations.get(i)));
+            edges.add(graph.getEdge(stations.get(i-1), stations.get(i)));
         }
-        return sectionDistances;
-    }
-
-    public List<Line> findLinesOf(Path path) {
-        return path.getSectionDistances().stream()
-                .map(SectionDistance::getLine)
-                .collect(Collectors.toList());
+        return edges;
     }
 
     public Set<Station> getVertexes() {
@@ -61,9 +52,9 @@ public class Graph {
     private void setEdgeWeights(Line line) {
         line.getSections()
                 .forEach(section -> {
-                    section.getDistance().setLine(line);
-                    graph.addEdge(section.getUpStation(), section.getDownStation(), section.getDistance());
-                    graph.setEdgeWeight(section.getDistance(), section.getWeight());
+                    DefaultWeightedEdge edge = new DefaultWeightedEdge();
+                    graph.addEdge(section.getUpStation(), section.getDownStation(), edge);
+                    graph.setEdgeWeight(edge, section.getWeight());
                 });
     }
 
@@ -72,13 +63,9 @@ public class Graph {
                 .forEach(station -> graph.addVertex(station));
     }
 
-    private void verifyAvailable(GraphPath<Station, SectionDistance> path) {
+    private void verifyAvailable(GraphPath<Station, DefaultWeightedEdge> path) {
         if (Objects.isNull(path)) {
             throw new IllegalArgumentException("경로가 존재하지 않습니다.");
         }
-    }
-
-    public WeightedMultigraph<Station, SectionDistance> getGraph() {
-        return graph;
     }
 }

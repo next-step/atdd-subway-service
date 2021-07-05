@@ -3,7 +3,9 @@ package nextstep.subway.path.domain;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.policy.fare.FarePolicies;
+import nextstep.subway.station.domain.Station;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,9 +22,9 @@ public class Fare {
         this.fare = fare;
     }
 
-    public void calculate(List<Line> lines, ShortestDistance distance, LoginMember loginMember, FarePolicies farePolicies) {
-        applyDistanceOverFarePolicy(distance, farePolicies);
-        applyLineOverFarePolicy(lines, farePolicies);
+    public void calculate(Path path, LoginMember loginMember, FarePolicies farePolicies) {
+        applyDistanceOverFarePolicy(path.getDistance(), farePolicies);
+        applyLineOverFarePolicy(path.getStations(), farePolicies);
         applyDiscountPolicy(loginMember, farePolicies);
     }
 
@@ -31,10 +33,27 @@ public class Fare {
                 .ifPresent(discountByAgeStrategy -> this.fare -= discountByAgeStrategy.discountBy(loginMember, this));
     }
 
-    private void applyLineOverFarePolicy(List<Line> lines, FarePolicies farePolicies) {
+    private void applyLineOverFarePolicy(List<Station> stations, FarePolicies farePolicies) {
+        List<Line> lines = new ArrayList<>();
+
+        for (int i = 1; i < stations.size(); i++) {
+            Station upStation = stations.get(i - 1);
+            Station downStation = stations.get(i);
+            addLine(lines, upStation, downStation);
+        }
+
         this.fare += farePolicies.getLineStrategy()
                 .orElseThrow(() -> new IllegalStateException("노선 추가운임 정책을 찾을 수 없습니다."))
                 .calculateOverFare(lines);
+    }
+
+    private void addLine(List<Line> lines, Station upStation, Station downStation) {
+        upStation.getDownSections()
+                .forEach(downSection -> downStation.getUpSections().stream()
+                        .filter(upSection -> upSection.equals(downSection))
+                        .findFirst()
+                        .ifPresent(findSection -> lines.add(findSection.getLine()))
+                );
     }
 
     private void applyDistanceOverFarePolicy(ShortestDistance distance, FarePolicies farePolicies) {

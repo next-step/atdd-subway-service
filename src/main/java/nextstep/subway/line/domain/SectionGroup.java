@@ -114,7 +114,7 @@ public class SectionGroup {
     private void createNewSection(Line line, Optional<Section> upSection, Optional<Section> downSection) {
         Station newUpStation = downSection.get().getUpStation();
         Station newDownStation = upSection.get().getDownStation();
-        int newDistance = upSection.get().getDistance().value() + downSection.get().getDistance().value();
+        int newDistance = upSection.get().getDistanceValue() + downSection.get().getDistanceValue();
         sections.add(new Section(line, newUpStation, newDownStation, newDistance));
     }
 

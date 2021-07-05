@@ -28,7 +28,7 @@ public class Favorite {
     protected Favorite() {
     }
 
-    public Favorite(Station source, Station target) {
+    private Favorite(Station source, Station target) {
         verifyAvailAble(source, target);
         this.source = source;
         this.target = target;
@@ -39,11 +39,6 @@ public class Favorite {
         verifyAvailAble(member);
         this.member = member;
         member.addFavorite(this);
-    }
-
-    public Favorite(Long id, Station source, Station target) {
-        this(source, target);
-        this.id = id;
     }
 
     public Favorite(Long id, Member member, Station source, Station target) {

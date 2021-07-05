@@ -1,6 +1,5 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.line.domain.SectionDistance;
 import nextstep.subway.station.domain.Station;
 
 import java.util.List;
@@ -8,12 +7,10 @@ import java.util.List;
 public class Path {
     private List<Station> stations;
     private ShortestDistance distance;
-    private List<SectionDistance> sectionDistances;
 
-    public Path(List<Station> stations, ShortestDistance distance, List<SectionDistance> sectionDistances) {
+    public Path(List<Station> stations, ShortestDistance distance) {
         this.stations = stations;
         this.distance = distance;
-        this.sectionDistances = sectionDistances;
     }
 
     public List<Station> getStations() {
@@ -24,7 +21,11 @@ public class Path {
         return distance;
     }
 
-    public List<SectionDistance> getSectionDistances() {
-        return sectionDistances;
+    public Path changeDistance(ShortestDistance distance) {
+        return new Path(stations, distance);
+    }
+
+    public Path changeStations(List stations) {
+        return new Path(stations, distance);
     }
 }

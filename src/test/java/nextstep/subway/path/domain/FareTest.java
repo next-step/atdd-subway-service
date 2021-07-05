@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.policy.fare.FarePolicies;
 import nextstep.subway.path.domain.policy.fare.discount.ChildDiscountByAgeStrategy;
 import nextstep.subway.path.domain.policy.fare.discount.TeenagerDiscountByAgeStrategy;
@@ -9,6 +10,7 @@ import nextstep.subway.path.domain.policy.fare.distance.GraterThan10KmNotMoreTha
 import nextstep.subway.path.domain.policy.fare.distance.GraterThan50KmOverFareByDistanceStrategy;
 import nextstep.subway.path.domain.policy.fare.distance.NotMoreThan10KmOverFareByDistanceStrategy;
 import nextstep.subway.path.domain.policy.fare.line.DefaultOverFareByLineStrategy;
+import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,21 +23,25 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FareTest {
-    private Line line;
-    private ShortestDistance distance;
     private LoginMember loginMember;
     private Fare fare;
     private FarePolicies farePolicies;
+    private Path path;
 
     @BeforeEach
     public void setUp() {
-        line = new Line(1L, "일호선", "남색", 0);
-        distance = new ShortestDistance(5);
+        Line line = new Line(1L, "일호선", "남색", 0);
+        ShortestDistance distance = new ShortestDistance(5);
         loginMember = new LoginMember(1L, "test@test.com", 21);
         fare = new Fare();
         farePolicies = new FarePolicies(new DefaultOverFareByLineStrategy(),
                 new NotMoreThan10KmOverFareByDistanceStrategy(),
                 null);
+        Station downStation = new Station(1L, "하행역");
+        Station upStation = new Station(2L, "상행역");
+        Section section = new Section(1L, upStation, downStation, 5);
+        line.addSection(section);
+        path = new Path(Arrays.asList(upStation, downStation), distance);
     }
 
     @DisplayName("요금 계산 - 10km 이하")
@@ -46,7 +52,7 @@ public class FareTest {
         ShortestDistance shortestDistance = new ShortestDistance(distance);
 
         //when
-        fare.calculate(Arrays.asList(line), shortestDistance, loginMember, farePolicies);
+        fare.calculate(path, loginMember, farePolicies);
 
         //then
         assertThat(fare).isEqualTo(new Fare());
@@ -58,10 +64,11 @@ public class FareTest {
     public void 추가운임10km초과50km이하_요금계산_확인(int distance, int expected) throws Exception {
         //given
         ShortestDistance shortestDistance = new ShortestDistance(distance);
+        Path path = this.path.changeDistance(shortestDistance);
         farePolicies.changeDistanceStrategy(new GraterThan10KmNotMoreThan50KmOverFareByDistanceStrategy());
 
         //when
-        fare.calculate(Arrays.asList(line), shortestDistance, loginMember, farePolicies);
+        fare.calculate(path, loginMember, farePolicies);
 
         //then
         assertThat(fare).isEqualTo(new Fare(expected));
@@ -73,10 +80,11 @@ public class FareTest {
     public void 추가운임150km초과_요금계산_확인(int distance, int expected) throws Exception {
         //given
         ShortestDistance shortestDistance = new ShortestDistance(distance);
+        Path path = this.path.changeDistance(shortestDistance);
         farePolicies.changeDistanceStrategy(new GraterThan50KmOverFareByDistanceStrategy());
 
         //when
-        fare.calculate(Arrays.asList(line), shortestDistance, loginMember, farePolicies);
+        fare.calculate(path, loginMember, farePolicies);
 
         //then
         assertThat(fare).isEqualTo(new Fare(expected));
@@ -87,9 +95,14 @@ public class FareTest {
     public void 노선추가운임_요금계산_확인() throws Exception {
         //given
         Line line = new Line(1L, "일호선", "남색", 500);
+        Station downStation = new Station(1L, "하행역");
+        Station upStation = new Station(2L, "상행역");
+        Section section = new Section(1L, upStation, downStation, 5);
+        line.addSection(section);
+        Path path = this.path.changeStations(Arrays.asList(upStation, downStation));
 
         //when
-        fare.calculate(Arrays.asList(line), distance, loginMember, farePolicies);
+        fare.calculate(path, loginMember, farePolicies);
 
         //then
         assertThat(fare).isEqualTo(new Fare(1_750));
@@ -104,7 +117,7 @@ public class FareTest {
         farePolicies.changeDiscountByAgeStrategy(new TeenagerDiscountByAgeStrategy());
 
         //when
-        fare.calculate(Arrays.asList(line), distance, loginMember, farePolicies);
+        fare.calculate(path, loginMember, farePolicies);
 
         //then
         assertThat(fare).isEqualTo(new Fare(720));
@@ -119,7 +132,7 @@ public class FareTest {
         farePolicies.changeDiscountByAgeStrategy(new ChildDiscountByAgeStrategy());
 
         //when
-        fare.calculate(Arrays.asList(line), distance, loginMember, farePolicies);
+        fare.calculate(path, loginMember, farePolicies);
 
         //then
         assertThat(fare).isEqualTo(new Fare(450));

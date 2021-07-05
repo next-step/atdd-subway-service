@@ -53,9 +53,9 @@ public class FavoriteTest {
     @Test
     public void 같은즐겨찾기_추가_확인() throws Exception {
         //given
-        Favorite favorite1 = new Favorite(1L, 방화역, 하남검단산역);
-        Favorite favorite2 = new Favorite(1L, 방화역, 하남검단산역);
-        Favorite favorite3 = new Favorite(2L, 방화역, 하남검단산역);
+        Favorite favorite1 = new Favorite(1L, 사용자, 방화역, 하남검단산역);
+        Favorite favorite2 = new Favorite(1L, 사용자, 방화역, 하남검단산역);
+        Favorite favorite3 = new Favorite(2L, 사용자, 방화역, 하남검단산역);
 
         //when
         사용자.addFavorite(favorite1);

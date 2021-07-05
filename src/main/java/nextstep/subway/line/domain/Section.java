@@ -44,8 +44,8 @@ public class Section {
 
     public Section(Station upStation, Station downStation, int distance) {
         verifyAvailableStations(upStation, downStation);
-        this.upStation = upStation;
-        this.downStation = downStation;
+        setUpStation(upStation);
+        setDownStation(downStation);
         this.distance = new SectionDistance(distance);
     }
 
@@ -85,6 +85,16 @@ public class Section {
         this.line = line;
     }
 
+    public void setUpStation(Station upStation) {
+        this.upStation = upStation;
+        upStation.setDownSection(this);
+    }
+
+    public void setDownStation(Station downStation) {
+        this.downStation = downStation;
+        downStation.addUpSection(this);
+    }
+
     /**
      * 기타 메소드
      */
@@ -108,5 +118,24 @@ public class Section {
         return distance;
     }
 
-    public double getWeight() { return distance.getWeight(); }
+    public int getDistanceValue() {
+        return distance.value();
+    }
+
+    public int getWeight() {
+        return distance.value();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Section section = (Section) o;
+        return Objects.equals(getId(), section.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
 }

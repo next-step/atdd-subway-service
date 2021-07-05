@@ -36,11 +36,9 @@ public class PathService {
 
         Graph graph = new Graph();
         Path path = graph.findShortestPath(lines, source, target);
-
-        List<Line> linesOfPath = graph.findLinesOf(path);
         FarePolicies farePolicies = farePoliciesService.findStrategies(loginMember, path.getDistance());
         Fare fare = new Fare();
-        fare.calculate(linesOfPath, path.getDistance(), loginMember, farePolicies);
+        fare.calculate(path, loginMember, farePolicies);
 
         return PathResponse.of(path, fare);
     }
