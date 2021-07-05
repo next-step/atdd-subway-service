@@ -38,6 +38,7 @@ public class FavoriteService {
         return FavoriteResponse.of(savedFavorite);
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> findAll(Long id) {
         List<Favorite> favorites = favoriteRepository.findByMemberId(id);
         return getFavoriteResponses(favorites);
