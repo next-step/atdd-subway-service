@@ -64,6 +64,12 @@ public class Sections {
         deleteStationByCase(deletingStation);
     }
 
+    public boolean isExistingStation(Station findingStation) {
+        return values.stream()
+                .filter(value -> value.isIncludeStation(findingStation))
+                .count() >= 1L;
+    }
+
     public Distance sumDistances() {
         Distance result = new Distance(1);
 

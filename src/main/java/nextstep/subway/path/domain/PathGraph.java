@@ -11,7 +11,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-import java.util.List;
+import java.util.Optional;
 
 import static java.lang.String.format;
 
@@ -44,18 +44,15 @@ public class PathGraph extends WeightedMultigraph<Station, DefaultWeightedEdge> 
     }
 
     public Path findShortestPath(Station source, Station target) {
-        GraphPath<Station, DefaultWeightedEdge> graphPath = shortestPath.getPath(source, target);
-        List<Station> stations;
-        int weight;
-        try {
-            stations = graphPath.getVertexList();
-            weight = (int) graphPath.getWeight();
-        } catch (NullPointerException e) {
-            throw new CannotReachableException(format("%s와(과) %s이(가) 이어져 있지 않습니다."
-                    , source.getName()
-                    , target.getName()));
-        }
+        Optional<GraphPath<Station, DefaultWeightedEdge>> graphPathOptional = Optional.ofNullable(shortestPath.getPath(source, target));
+        GraphPath<Station, DefaultWeightedEdge> graphPath = graphPathOptional
+                .orElseThrow(() -> new CannotReachableException(format("%s와(과) %s이(가) 이어져 있지 않습니다."
+                        , source.getName()
+                        , target.getName())));
 
-        return new Path(new Stations(stations), new Distance(weight));
+        Stations stations = new Stations(graphPath.getVertexList());
+        int weight = (int) graphPath.getWeight();
+
+        return new Path(stations, new Distance(weight));
     }
 }
