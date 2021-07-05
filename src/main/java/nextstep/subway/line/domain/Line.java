@@ -68,6 +68,6 @@ public class Line extends BaseEntity {
     }
 
     public boolean containsByStation(Station station) {
-        return getStations().contains(station);
+        return sections.containsByStation(station);
     }
 }
