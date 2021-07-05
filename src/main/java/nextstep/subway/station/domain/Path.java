@@ -27,8 +27,12 @@ public class Path {
     }
 
     public int fare() {
-        // TODO : 거리비례요금 합산, 할인정책 적용
-        return BASIC_FARE + extraFare();
+        return BASIC_FARE + extraFare() + DistanceBasedFarePolicy.overFare(distance());
+    }
+
+    public int fare(int age) {
+        int fare = fare();
+        return fare - AgeDiscountPolicy.discountFare(age, fare);
     }
 
     private int extraFare() {
