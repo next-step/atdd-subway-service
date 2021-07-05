@@ -1,10 +1,10 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.component.PathFinder;
-import nextstep.subway.component.domain.SectionWeightedEdge;
+import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.SectionWeightedEdge;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.component.domain.SubwayPath;
+import nextstep.subway.path.domain.SubwayPath;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;

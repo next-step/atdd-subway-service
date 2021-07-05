@@ -1,6 +1,5 @@
-package nextstep.subway.component;
+package nextstep.subway.path.domain;
 
-import nextstep.subway.component.domain.SubwayPath;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;

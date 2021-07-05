@@ -1,6 +1,7 @@
 package nextstep.subway.handler;
 
 
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.common.ErrorMessageResponse;
 import nextstep.subway.enums.ErrorCode;
 import nextstep.subway.exception.BadDistanceException;
@@ -88,5 +89,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorMessageResponse> handleSubwayPatchException(SubwayPatchException e) {
         logger.error("handleSubwayPatchException", e);
         return ErrorCode.INVALID_INPUT_VALUE.createResponseEntity();
+    }
+
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<ErrorMessageResponse> handleAuthorizationException(AuthorizationException e) {
+        logger.error("handleAuthorizationException", e);
+        return ErrorCode.UNAUTHORIZED_ERROR.createResponseEntity(e);
     }
 }

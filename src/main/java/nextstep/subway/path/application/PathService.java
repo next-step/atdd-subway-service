@@ -1,7 +1,7 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.component.PathFinder;
-import nextstep.subway.component.domain.SubwayPath;
+import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.SubwayPath;
 import nextstep.subway.exception.SubwayPatchException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -11,7 +11,6 @@ import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PathService {

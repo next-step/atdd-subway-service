@@ -10,7 +10,8 @@ public enum ErrorCode {
     INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "Invalid Input Value"),
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "Invalid Method"),
     HANDLE_ACCESS_DENIED(HttpStatus.FORBIDDEN, "Access is Denied"),
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "internal Server Error");
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "internal Server Error"),
+    UNAUTHORIZED_ERROR(HttpStatus.UNAUTHORIZED, "Unauthorized Error");
 
 
     private final HttpStatus httpStatus;
