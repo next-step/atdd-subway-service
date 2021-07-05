@@ -116,8 +116,8 @@ class PathAcceptanceTest extends AcceptanceTest {
         StationResponse 중간역 = 지하철역_등록되어_있음("중간역").as(StationResponse.class);
         StationResponse 끝역 = 지하철역_등록되어_있음("끝역").as(StationResponse.class);
         // and: 지하철 노선 등록되어 있음 (추가요금 있는 노선, 없는 노선)
-        LineResponse 추가요금_있는_노선 = 지하철_노선_등록되어_있음(new LineRequest("추가요금노선", "bg-black-600", 시작역.getId(), 중간역.getId(), 5, 1_000)).as(LineResponse.class);
-        LineResponse 추가요금_없는_노선 = 지하철_노선_등록되어_있음(new LineRequest("노선", "bg-white-600", 중간역.getId(), 끝역.getId(), 5)).as(LineResponse.class);
+        지하철_노선_등록되어_있음(new LineRequest("추가요금노선", "bg-black-600", 시작역.getId(), 중간역.getId(), 5, 1_000)).as(LineResponse.class);
+        지하철_노선_등록되어_있음(new LineRequest("노선", "bg-white-600", 중간역.getId(), 끝역.getId(), 5)).as(LineResponse.class);
 
         // when: 추가요금이 있는 노선과 없는 노선을 경유하는 경로 조회
         ExtractableResponse<Response> 조회된_최단_경로 = 최단_경로_조회_요청(시작역.getId(), 끝역.getId());
@@ -193,10 +193,12 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestPath_notConnectedSection() {
         // given
-        StationResponse 몽촌토성역 = 지하철역_등록되어_있음("몽촌토성역").as(StationResponse.class);
+        StationResponse 방이역 = 지하철역_등록되어_있음("방이역").as(StationResponse.class);
+        StationResponse 오금역 = 지하철역_등록되어_있음("오금역").as(StationResponse.class);
+        지하철_노선_등록되어_있음(new LineRequest("5호선", "bg-보라색-600", 방이역.getId(), 오금역.getId(), 10)).as(LineResponse.class);
 
         // when
-        ExtractableResponse<Response> 조회된_최단_경로 = 최단_경로_조회_요청(교대역.getId(), 몽촌토성역.getId());
+        ExtractableResponse<Response> 조회된_최단_경로 = 최단_경로_조회_요청(교대역.getId(), 방이역.getId());
 
         // then
         연결되지_않은_구간으로_최단_경로_조회_실패(조회된_최단_경로);
