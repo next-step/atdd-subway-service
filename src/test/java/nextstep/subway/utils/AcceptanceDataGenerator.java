@@ -39,6 +39,17 @@ public class AcceptanceDataGenerator {
                 .extract().as(LineResponse.class);
     }
 
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int extraFare) {
+        LineRequest params = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, extraFare);
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/lines")
+                .then().log().all()
+                .extract().as(LineResponse.class);
+    }
+
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
         return RestAssured

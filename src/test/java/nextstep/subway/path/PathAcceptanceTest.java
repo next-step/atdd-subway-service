@@ -78,7 +78,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         역삼역 = AcceptanceDataGenerator.지하철역_등록되어_있음("역삼역");
         양재시민의숲역 = AcceptanceDataGenerator.지하철역_등록되어_있음("양재시민의숲역");
 
-        신분당선 = AcceptanceDataGenerator.지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재시민의숲역, 27);
+        신분당선 = AcceptanceDataGenerator.지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재시민의숲역, 27, 900);
         AcceptanceDataGenerator.지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 15);
 
         삼호선 = AcceptanceDataGenerator.지하철_노선_등록되어_있음("삼호선", "bg-red-600", 고속버스터미널역, 양재역, 12);
