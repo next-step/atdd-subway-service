@@ -41,7 +41,6 @@ public class LineService {
         return of(lineRepository.findAll());
     }
 
-    @Transactional(readOnly = true)
     private Line findById(Long id) {
         return lineRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(format("id %d인 노선을 찾을 수 없습니다.", id)));
