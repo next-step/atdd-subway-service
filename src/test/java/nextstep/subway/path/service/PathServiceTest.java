@@ -1,5 +1,7 @@
 package nextstep.subway.path.service;
 
+import nextstep.subway.auth.domain.AuthMember;
+import nextstep.subway.auth.domain.EmptyMember;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.PathDestination;
@@ -44,6 +46,8 @@ class PathServiceTest {
 
     private PathService pathService;
 
+    private AuthMember authMember = new EmptyMember();
+
     @Mock
     private PathSearch pathSearch;
 
@@ -72,10 +76,10 @@ class PathServiceTest {
                 .thenReturn(Optional.of(station1));
         when(stationRepository.findById(anyLong()))
                 .thenReturn(Optional.of(station4));
-        when(pathSearch.findPaths(any(Lines.class), any(PathDestination.class)))
+        when(pathSearch.findPaths(any(), any(Lines.class), any(PathDestination.class)))
                 .thenReturn(pathResponse);
 
-        PathResponse paths = pathService.findPaths(source, target);
+        PathResponse paths = pathService.findPaths(authMember, source, target);
 
         assertThat(paths.getStations()).extracting("name")
                 .contains("강남역", "교대역", "남부터미널역", "양재역");
@@ -85,7 +89,7 @@ class PathServiceTest {
     @ParameterizedTest
     @CsvSource(value = {"1, 1", "2, 2", "3, 3"})
     void findPathWithDuplicateSourceAndTarget(Long source, Long target) {
-        assertThatThrownBy(() -> pathService.findPaths(source, target))
+        assertThatThrownBy(() -> pathService.findPaths(authMember, source, target))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -93,7 +97,7 @@ class PathServiceTest {
     @NullSource
     @ParameterizedTest
     void findPathWithNullStationId(Long stationId) {
-        assertThatThrownBy(() -> pathService.findPaths(stationId, stationId))
+        assertThatThrownBy(() -> pathService.findPaths(authMember, stationId, stationId))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

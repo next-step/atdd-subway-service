@@ -1,5 +1,7 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.auth.application.AuthService;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.service.PathService;
 import nextstep.subway.station.application.StationNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -20,6 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 class PathControllerTest {
+    private static final String VALID_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QHRlc3QuY2" +
+            "9tIiwiaWF0IjoxNjI0OTUwMzc1LCJleHAiOjE2MjQ5NTAzNzV9.tdP5i5LV8VrQkfADPBgGFCMLYc3MkqPXZm74zGa8wQ8";
     private static final Long NOT_EXIST_STATION_ID1 = -1L;
     private static final Long NOT_EXIST_STATION_ID2 = -2L;
 
@@ -28,6 +34,17 @@ class PathControllerTest {
 
     @MockBean
     private PathService pathService;
+
+    @MockBean
+    private AuthService authService;
+
+    private LoginMember loginMember = new LoginMember(1L, "test@test.com", 10);
+
+    @BeforeEach
+    void setUp() {
+        when(authService.findMemberByToken(eq(VALID_TOKEN)))
+                .thenReturn(loginMember);
+    }
 
     @Nested
     @DisplayName("Get /paths?source={source}&target={target}는")
@@ -43,7 +60,9 @@ class PathControllerTest {
             @Test
             void It_responds_ok() throws Exception {
                 mockMvc.perform(
+
                         get("/paths?source={source}&target={target}", givenSource, givenTarget)
+                                .header("Authorization", "Bearer " + VALID_TOKEN)
                 )
                         .andExpect(status().isOk());
             }
@@ -57,7 +76,7 @@ class PathControllerTest {
 
             @BeforeEach
             void setUp() {
-                when(pathService.findPaths(anyLong(), anyLong()))
+                when(pathService.findPaths(any(), anyLong(), anyLong()))
                         .thenThrow(StationNotFoundException.class);
             }
 
@@ -66,6 +85,7 @@ class PathControllerTest {
             void It_responds_not_found() throws Exception {
                 mockMvc.perform(
                         get("/paths?source={source}&target={target}", givenSource, givenTarget)
+                                .header("Authorization", "Bearer " + VALID_TOKEN)
                 )
                         .andExpect(status().isNotFound());
             }

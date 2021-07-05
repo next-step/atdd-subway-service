@@ -3,6 +3,7 @@ package nextstep.subway.path.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
@@ -11,8 +12,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.subway.auth.acceptance.step.AuthAcceptanceStep.로그인_요청;
+import static nextstep.subway.auth.acceptance.step.AuthAcceptanceStep.로그인_토큰_정보;
 import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.member.acceptance.step.MemberAcceptanceStep.회원_생성을_요청;
 import static nextstep.subway.path.acceptance.step.PathAcceptanceStep.지하철_경로_응답됨;
 import static nextstep.subway.path.acceptance.step.PathAcceptanceStep.지하철_경로_조회_요청;
 import static nextstep.subway.path.acceptance.step.PathAcceptanceStep.지하철_경로_추출;
@@ -24,6 +28,9 @@ import static nextstep.subway.station.step.StationAcceptanceStep.지하철역_�
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
+    public static final String EMAIL = "email@email.com";
+    public static final String PASSWORD = "password";
+    private TokenResponse tokenResponse;
 
     private LineResponse 신분당선;
     private LineResponse 이호선;
@@ -106,6 +113,23 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void findPath() {
         // when
         ExtractableResponse<Response> response = 지하철_경로_조회_요청(강남역, 양재역);
+
+        // then
+        지하철_경로_응답됨(response);
+        PathResponse 지하철_경로 = 지하철_경로_추출(response);
+
+        지하철_시작_종료지점이_경로에_포함됨(지하철_경로, 강남역, 양재역);
+        총_거리도_함께_응답함(지하철_경로);
+        지하철_이용_요금도_함께_응답함(지하철_경로);
+    }
+
+    @Test
+    void findPathByChild() {
+        회원_생성을_요청(EMAIL, PASSWORD, 8);
+        ExtractableResponse<Response> 로그인_요청_응답 = 로그인_요청(EMAIL, PASSWORD);
+        TokenResponse tokenResponse = 로그인_토큰_정보(로그인_요청_응답);
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(tokenResponse, 강남역, 양재역);
 
         // then
         지하철_경로_응답됨(response);

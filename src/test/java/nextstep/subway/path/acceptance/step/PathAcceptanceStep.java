@@ -3,6 +3,7 @@ package nextstep.subway.path.acceptance.step;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,14 @@ public class PathAcceptanceStep {
     public static ExtractableResponse<Response> 지하철_경로_조회_요청(StationResponse upStation, StationResponse downStation) {
         return RestAssured
                 .given().log().all()
+                .when().get("/paths/?source={source}&target={target}", upStation.getId(), downStation.getId())
+                .then().log().all().extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_경로_조회_요청(TokenResponse tokenResponse, StationResponse upStation, StationResponse downStation) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .when().get("/paths/?source={source}&target={target}", upStation.getId(), downStation.getId())
                 .then().log().all().extract();
     }

@@ -1,5 +1,6 @@
 package nextstep.subway.path.util;
 
+import nextstep.subway.auth.domain.AuthMember;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.PathDestination;
 import nextstep.subway.path.dto.PathResponse;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PathSearch {
 
-    public PathResponse findPaths(Lines lines, PathDestination pathDestination) {
+    public PathResponse findPaths(AuthMember loginMember, Lines lines, PathDestination pathDestination) {
         final GraphGenerator graphGenerator = new GraphGenerator(lines);
 
         final DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graphGenerator.getGraph());
