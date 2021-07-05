@@ -37,7 +37,8 @@ public class FavoriteService {
         Member member = findMember(loginMember);
         Station sourceStation = findStation(favoriteRequest.getSource());
         Station targetStation = findStation(favoriteRequest.getTarget());
-        Favorite saveFavorite = favoriteRepository.save(FavoriteRequest.toFavorite(member, sourceStation, targetStation));
+        Favorite favorite = Favorite.create(member.getId(), sourceStation, targetStation);
+        Favorite saveFavorite = favoriteRepository.save(favorite);
         return FavoriteResponse.of(saveFavorite);
     }
 

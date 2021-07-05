@@ -13,8 +13,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -22,6 +24,11 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.hamcrest.core.Is.isA;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.will;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @DisplayName("즐겨 찾기 관리 테스트")
@@ -63,9 +70,7 @@ class FavoriteServiceTest {
         when(memberRepository.findById(member.get().getId())).thenReturn(member);
         when(stationRepository.findById(1L)).thenReturn(서초역);
         when(stationRepository.findById(3L)).thenReturn(역삼역);
-        Favorite favorite = new Favorite(member.get(), 서초역.get(), 역삼역.get());
-        when(favoriteRepository.save(favorite))
-                .thenReturn(new Favorite(1L, member.get(), 서초역.get(), 역삼역.get()));
+        when(favoriteRepository.save(any(Favorite.class))).thenReturn(new Favorite(1L, member.get().getId(), 서초역.get(), 역삼역.get()));
         // when
         FavoriteResponse favoriteResponse = favoriteService.saveFavorite(loginMember, favoriteRequest);
 
@@ -79,7 +84,7 @@ class FavoriteServiceTest {
     @DisplayName("즐겨 찾기 조회 테스트")
     void findFavorites() {
         // given
-        List<Favorite> favorites = Arrays.asList(new Favorite(member.get(), 서초역.get(), 역삼역.get()));
+        List<Favorite> favorites = Arrays.asList(new Favorite(member.get().getId(), 서초역.get(), 역삼역.get()));
         when(favoriteRepository.findByMemberId(1L)).thenReturn(favorites);
 
         // when
