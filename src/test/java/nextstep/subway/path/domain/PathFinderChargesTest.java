@@ -8,10 +8,13 @@ import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
 import static nextstep.subway.utils.DomainInitUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("경로의 요금을 관리한다.")
+@DisplayName("경로의 요금정책들을 관리한다.")
 public class PathFinderChargesTest {
     private static Line line;
 
@@ -24,23 +27,85 @@ public class PathFinderChargesTest {
         a = createStation("a");    b = createStation("b");    c = createStation("c");
 
         line = appendSectionByLine("lowerCaseLine", 0,
-            createSection(a, b, 10),
-            createSection(b, c, 10)
+            createSection(a, b, 30),
+            createSection(b, c, 36)
         );
 
         pathFinder = initPathFinder(line);
     }
 
+    @ParameterizedTest
+    @DisplayName("[이동거리 50KM 이하 요금 정책]과 [추가요금]을 계산한다.")
+    @ValueSource(ints = {0, 100, 1000})
+    public void adult_50km_under(int addition) {
+        Path<Station> path = pathFinder.getPath(a, b);
+        path.additionalChargesCalculate(new RatePolicyByDistance(path.getDistance()))
+                .additionalChargesCalculate(new RatePolicyByAddition(addition))
+                .additionalChargesCalculate(new RatePolicyByAge(30));
+
+        assertThat(path.getDistance()).isEqualTo(30);
+        assertThat(path.getCharges()).isEqualTo(1650 + addition);
+    }
+
     @Test
-    @DisplayName("[거리별 요금 정책]과 [추가요금]과 [연령별 요금 할인]을 계산한다.")
-    public void step1() {
+    @DisplayName("[이동거리 50KM 이하 요금 정책]과 [추가요금]과 [청소년 요금 할인]을 계산한다.")
+    public void teenager_50km_under() {
+        Path<Station> path = pathFinder.getPath(a, b);
+        path.additionalChargesCalculate(new RatePolicyByDistance(path.getDistance()))
+                .additionalChargesCalculate(new RatePolicyByAddition(100))
+                .additionalChargesCalculate(new RatePolicyByAge(15));
+
+        assertThat(path.getDistance()).isEqualTo(30);
+        assertThat(path.getCharges()).isEqualTo(1120);
+    }
+
+    @Test
+    @DisplayName("[이동거리 50KM 이하 요금 정책]과 [추가요금]과 [어린이 요금 할인]을 계산한다.")
+    public void children_50km_under() {
+        Path<Station> path = pathFinder.getPath(a, b);
+        path.additionalChargesCalculate(new RatePolicyByDistance(path.getDistance()))
+                .additionalChargesCalculate(new RatePolicyByAddition(100))
+                .additionalChargesCalculate(new RatePolicyByAge(10));
+
+        assertThat(path.getDistance()).isEqualTo(30);
+        assertThat(path.getCharges()).isEqualTo(700);
+    }
+
+    @ParameterizedTest
+    @DisplayName("[이동거리 50KM 이상 요금 정책]과 [추가요금]을 계산한다.")
+    @ValueSource(ints = {0, 100, 1000})
+    public void adult_50km_over(int addition) {
         Path<Station> path = pathFinder.getPath(a, c);
         path.additionalChargesCalculate(new RatePolicyByDistance(path.getDistance()))
-            .additionalChargesCalculate(new RatePolicyByAddition(100))
-            .additionalChargesCalculate(new RatePolicyByAge(30));
+                .additionalChargesCalculate(new RatePolicyByAddition(addition))
+                .additionalChargesCalculate(new RatePolicyByAge(60));
 
-        assertThat(path.getDistance()).isEqualTo(20);
-        assertThat(path.getCharges()).isEqualTo(1550);
+        assertThat(path.getDistance()).isEqualTo(66);
+        assertThat(path.getCharges()).isEqualTo(2250 + addition);
+    }
+
+    @Test
+    @DisplayName("[이동거리 50KM 이상 요금 정책]과 [추가요금]과 [청소년 요금 할인]을 계산한다.")
+    public void teenager_50km_over() {
+        Path<Station> path = pathFinder.getPath(a, c);
+        path.additionalChargesCalculate(new RatePolicyByDistance(path.getDistance()))
+                .additionalChargesCalculate(new RatePolicyByAddition(100))
+                .additionalChargesCalculate(new RatePolicyByAge(15));
+
+        assertThat(path.getDistance()).isEqualTo(66);
+        assertThat(path.getCharges()).isEqualTo(1600);
+    }
+
+    @Test
+    @DisplayName("[이동거리 50KM 이상 요금 정책]과 [추가요금]과 [어린이 요금 할인]을 계산한다.")
+    public void children_50km_over() {
+        Path<Station> path = pathFinder.getPath(a, c);
+        path.additionalChargesCalculate(new RatePolicyByDistance(path.getDistance()))
+                .additionalChargesCalculate(new RatePolicyByAddition(100))
+                .additionalChargesCalculate(new RatePolicyByAge(10));
+
+        assertThat(path.getDistance()).isEqualTo(66);
+        assertThat(path.getCharges()).isEqualTo(1000);
     }
 
 }
