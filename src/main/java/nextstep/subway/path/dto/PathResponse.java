@@ -8,6 +8,10 @@ import java.util.stream.Collectors;
 
 public class PathResponse {
 
+    private List<StationResponse> stations;
+    private int distance;
+    private int subwayFare;
+
     public PathResponse() {
     }
 
@@ -15,9 +19,6 @@ public class PathResponse {
         this.stations = stations;
         this.distance = distance;
     }
-
-    private List<StationResponse> stations;
-    private int distance;
 
     public static PathResponse of(SubwayPath subwayPath) {
         List<StationResponse> stationResponses = subwayPath
@@ -34,5 +35,9 @@ public class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getSubwayFare() {
+        return subwayFare;
     }
 }

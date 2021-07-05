@@ -11,6 +11,7 @@ import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 public class AcceptanceDataGenerator {
@@ -49,9 +50,10 @@ public class AcceptanceDataGenerator {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_경로_조회(StationResponse source, StationResponse target) {
+    public static ExtractableResponse<Response> 지하철_경로_조회(StationResponse source, StationResponse target, TokenResponse tokenResponse) {
         return RestAssured
                 .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, String.format("Bearer %s", tokenResponse.getAccessToken()))
                 .when()
                 .get("/paths?source={source}&target={target}", source.getId(), target.getId())
                 .then().log().all()
