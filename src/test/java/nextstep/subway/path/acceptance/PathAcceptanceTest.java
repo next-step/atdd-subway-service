@@ -55,6 +55,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .upStationId(교대역.getId())
                 .downStationId(강남역.getId())
                 .distance(10)
+                .extraFare(0)
                 .build();
 
         final LineRequest 노선_등록_요청2 = LineRequest.builder()
@@ -63,6 +64,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .upStationId(교대역.getId())
                 .downStationId(양재역.getId())
                 .distance(5)
+                .extraFare(500)
                 .build();
 
         final LineRequest 노선_등록_요청3 = LineRequest.builder()
@@ -71,6 +73,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .upStationId(양재역.getId())
                 .downStationId(강남역.getId())
                 .distance(10)
+                .extraFare(900)
                 .build();
 
         이호선 = 지하철_노선_등록되어_있음(노선_등록_요청1).as(LineResponse.class);
