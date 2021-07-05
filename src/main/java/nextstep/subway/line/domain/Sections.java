@@ -130,7 +130,7 @@ public class Sections {
                         || value.isSameStationWithDownStation(section.getDownStation()))
                 .findFirst();
 
-        foundSection.ifPresent((connectedSection) -> {
+        foundSection.ifPresent(connectedSection -> {
             connectedSection.connectSectionBetween(section);
             values.add(section);
         });
