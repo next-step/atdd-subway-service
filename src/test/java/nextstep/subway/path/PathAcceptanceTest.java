@@ -34,11 +34,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 남부터미널역;
 
     /**
-     * 교대역    --- *2호선* ---   강남역
-     * |                        |
-     * *3호선*                   *신분당선*
-     * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
+     * 교대역    --- *2호선*(10) ---   강남역
+     * |                             |
+     * *3호선*(3)                   *신분당선*(10)
+     * |                             |
+     * 남부터미널역  --- *3호선*(2) ---   양재
+     *
+     * 방이역    --- *5호선*(10) ---   오금역
      */
     // Background
     @BeforeEach
@@ -66,14 +68,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // when: 최단 경로 조회 요청
         ExtractableResponse<Response> 조회된_최단_경로 = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
         // then: 최단 경로가 조회됨
-        최단_경로_조회됨(조회된_최단_경로, Arrays.asList(교대역, 남부터미널역, 양재역));
+        최단_경로_조회됨(조회된_최단_경로, Arrays.asList(교대역, 남부터미널역, 양재역), 5);
+        // and: 지하철 이용 요금도 함께 조회됨
+        지하철_이용_요금_함께_조회됨(조회된_최단_경로, 1_250);
 
         // when: 최단 경로를 가지는 신규 노선 구간 등록 되어있음
         지하철_노선_등록되어_있음(new LineRequest("최단경로노선", "bg-black-600", 교대역.getId(), 양재역.getId(), 2)).as(LineResponse.class);
         // and: 최단 경로 조회 요청
         ExtractableResponse<Response> 조회된_신규_최단_경로 = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
         // then: 최단 경로가 조회됨
-        최단_경로_조회됨(조회된_신규_최단_경로, Arrays.asList(교대역, 양재역));
+        최단_경로_조회됨(조회된_신규_최단_경로, Arrays.asList(교대역, 양재역), 2);
+        // and: 지하철 이용 요금도 함께 조회됨
+        지하철_이용_요금_함께_조회됨(조회된_신규_최단_경로, 1_250);
 
         // when: 새로운 노선 등록됨
         StationResponse 방이역 = 지하철역_등록되어_있음("방이역").as(StationResponse.class);
@@ -98,7 +104,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 조회된_최단_경로 = 최단_경로_조회_요청(교대역.getId(), 양재역.getId());
 
         // then
-        최단_경로_조회됨(조회된_최단_경로, Arrays.asList(교대역, 남부터미널역, 양재역));
+        최단_경로_조회됨(조회된_최단_경로, Arrays.asList(교대역, 남부터미널역, 양재역), 5);
+        지하철_이용_요금_함께_조회됨(조회된_최단_경로, 1_250);
     }
 
     @DisplayName("연결되어있지 않은 출발역과 도착역으로 최단 경로를 조회한다.")
@@ -135,9 +142,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
-    private void 최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectStations) {
-        List<StationResponse> actual = response.as(PathResponse.class).getStations();
-        List<Long> actualStationIds = actual.stream()
+    private void 최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectStations, int expectedDistance) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        List<Long> actualStationIds = pathResponse.getStations().stream()
                 .map(StationResponse::getId)
                 .collect(toList());
 
@@ -146,5 +153,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .collect(toList());
 
         assertThat(actualStationIds).containsExactlyElementsOf(expectedStationIds);
+        assertThat(pathResponse.getDistance()).isEqualTo(expectedDistance);
+    }
+
+    private void 지하철_이용_요금_함께_조회됨(ExtractableResponse<Response> response, int expectedTotalFare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getTotalFare()).isEqualTo(expectedTotalFare);
     }
 }
