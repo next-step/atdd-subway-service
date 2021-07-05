@@ -42,15 +42,15 @@ public class Section {
         return line;
     }
 
-    public Station getUpStation() {
+    public Station upStation() {
         return upStation;
     }
 
-    public Station getDownStation() {
+    public Station downStation() {
         return downStation;
     }
 
-    public int getDistance() {
+    public int distance() {
         return distance;
     }
 

@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -47,18 +48,22 @@ public class Line extends BaseEntity {
     }
 
     public Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
+        Station downStation = null;
+        if (!CollectionUtils.isEmpty(sections)) {
+            downStation = sections.get(0).upStation();
+        }
+
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = sections.stream()
-                    .filter(section -> section.getDownStation().equals(finalDownStation))
+                    .filter(section -> section.downStation().equals(finalDownStation))
                     .findFirst();
 
             if (!nextLineStation.isPresent()) {
                 break;
             }
 
-            downStation = nextLineStation.get().getUpStation();
+            downStation = nextLineStation.get().upStation();
         }
 
         return downStation;
@@ -76,14 +81,14 @@ public class Line extends BaseEntity {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = sections.stream()
-                    .filter(section -> section.getUpStation().equals(finalDownStation))
+                    .filter(section -> section.upStation().equals(finalDownStation))
                     .findFirst();
 
             if (!nextLineStation.isPresent()) {
                 break;
             }
 
-            downStation = nextLineStation.get().getDownStation();
+            downStation = nextLineStation.get().downStation();
             stations.add(downStation);
         }
 
@@ -105,9 +110,7 @@ public class Line extends BaseEntity {
 
         if (isUpStationExisted) {
             updateUpStation(upStation, downStation, distance);
-        }
-
-        if ((!isUpStationExisted) && isDownStationExisted) {
+        } else if (isDownStationExisted) {
             updateDownStation(upStation, downStation, distance);
         }
     }
@@ -127,7 +130,7 @@ public class Line extends BaseEntity {
 
     private void updateUpStation(Station upStation, Station downStation, int distance) {
         sections.stream()
-                .filter(section -> section.getUpStation().equals(upStation))
+                .filter(section -> section.upStation().equals(upStation))
                 .findFirst()
                 .ifPresent(section -> section.updateUpStation(downStation, distance));
 
@@ -136,7 +139,7 @@ public class Line extends BaseEntity {
 
     private void updateDownStation(Station upStation, Station downStation, int distance) {
         sections.stream()
-                .filter(section -> section.getDownStation().equals(downStation))
+                .filter(section -> section.downStation().equals(downStation))
                 .findFirst()
                 .ifPresent(section -> section.updateDownStation(upStation, distance));
 
@@ -147,16 +150,16 @@ public class Line extends BaseEntity {
         validateSectionLength();
 
         Optional<Section> upLineStation = sections.stream()
-                .filter(section -> section.getUpStation().equals(station))
+                .filter(section -> section.upStation().equals(station))
                 .findFirst();
         Optional<Section> downLineStation = sections.stream()
-                .filter(section -> section.getDownStation().equals(station))
+                .filter(section -> section.downStation().equals(station))
                 .findFirst();
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            Station newUpStation = downLineStation.get().upStation();
+            Station newDownStation = upLineStation.get().downStation();
+            int newDistance = upLineStation.get().distance() + downLineStation.get().distance();
             sections.add(new Section(this, newUpStation, newDownStation, newDistance));
         }
 
