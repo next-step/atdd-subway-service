@@ -22,6 +22,6 @@ public class PathResponse {
     }
 
     public static PathResponse of(Path path) {
-        return null;
+        return new PathResponse(StationResponse.of(path.getStations()), path.getDistance().getValue());
     }
 }

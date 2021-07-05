@@ -16,10 +16,16 @@ public class PathService {
     private StationService stationService;
     private PathFinder pathFinder;
 
+    public PathService(SectionService sectionService, StationService stationService, PathFinder pathFinder) {
+        this.sectionService = sectionService;
+        this.stationService = stationService;
+        this.pathFinder = pathFinder;
+    }
+
     public PathResponse findPaths(PathRequest request) {
         Sections sections = sectionService.findSections();
-        Station sourceStation = stationService.findById(request.getSourceStationId());
-        Station targetStation = stationService.findById(request.getTargetStationId());
+        Station sourceStation = stationService.findById(request.getSource());
+        Station targetStation = stationService.findById(request.getTarget());
         Path path = pathFinder.findShortestPath(sections, sourceStation, targetStation);
         return PathResponse.of(path);
     }
