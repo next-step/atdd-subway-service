@@ -27,7 +27,7 @@ public enum PayZone {
             .orElseThrow(() -> new PayZoneFaultException("어떤 페이존에도 포함되지 않습니다."));
     }
 
-    public static int totalPoint(double distance) {
+    public static int totalPointOf(double distance) {
         return Arrays.stream(values())
             .map(z -> z.zonePoint(distance))
             .reduce(Integer::sum)

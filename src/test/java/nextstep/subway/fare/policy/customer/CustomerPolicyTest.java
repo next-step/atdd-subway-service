@@ -1,5 +1,6 @@
 package nextstep.subway.fare.policy.customer;
 
+import static nextstep.subway.member.MemberTest.*;
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -9,17 +10,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.fare.policy.FarePolicy;
-import nextstep.subway.member.MemberTest;
 
 @DisplayName("요금 정책 단위 테스트")
 @ExtendWith(MockitoExtension.class)
-class CustomerAgeDiscountFarePolicyTest {
+class CustomerPolicyTest {
     @Test
     @DisplayName("고객_할인적용_검증_테스트")
     void 고객_할인적용_검증_테스트() {
-        FarePolicy adultPolicy = CustomerType.getPolicy(MemberTest.일반_멤버);
-        FarePolicy teenagerPolicy = CustomerType.getPolicy(MemberTest.청소년_멤버);
-        FarePolicy childPolicy = CustomerType.getPolicy(MemberTest.어린이_멤버);
+        FarePolicy adultPolicy = CustomerPolicyType.of(일반_멤버).getPolicy();
+        FarePolicy teenagerPolicy = CustomerPolicyType.of(청소년_멤버).getPolicy();
+        FarePolicy childPolicy = CustomerPolicyType.of(어린이_멤버).getPolicy();
 
         Fare fare = Fare.DEFAULT;
         assertThat(fare.apply(adultPolicy).getValue()).isEqualTo(1250);

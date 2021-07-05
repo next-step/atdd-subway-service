@@ -5,12 +5,13 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.fare.policy.customer.CustomerType;
+import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.fare.policy.FarePolicy;
+import nextstep.subway.fare.policy.customer.CustomerPolicyType;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -38,9 +39,16 @@ public class PathService {
         Station target = stationService.findStationById(targetId);
         Path path = pathFinder.findPath(source, target);
 
-        Fare totalFare = Fare.DEFAULT.apply(path.getPolicies());
+        Fare totalFare = applyFarePolicies(loginMember, path);
+        return PathResponse.of(path, totalFare);
+    }
 
+    private Fare applyFarePolicies(LoginMember loginMember, Path path) {
         Member member = memberService.findMemberEntity(loginMember.getId());
-        return PathResponse.of(path, totalFare.apply(CustomerType.getPolicy(member)));
+
+        List<FarePolicy> pathPolicies = path.getPolicies();
+        FarePolicy customerPolicy = CustomerPolicyType.of(member).getPolicy();
+
+        return Fare.DEFAULT.apply(pathPolicies).apply(customerPolicy);
     }
 }
