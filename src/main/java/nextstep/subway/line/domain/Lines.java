@@ -1,22 +1,19 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
-
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Lines {
-    private final List<Line> line;
+    private final List<Line> lines;
 
-    public Lines(final List<Line> line) {
-        this.line = line;
+    public Lines(final List<Line> lines) {
+        this.lines = lines;
     }
 
     public List<Station> getStationAll() {
-        List<Station> stations = line.stream()
+        List<Station> stations = lines.stream()
             .flatMap(it -> it.getSections().unSortedStations().stream())
             .distinct()
             .collect(Collectors.toList());
@@ -25,7 +22,7 @@ public class Lines {
     }
 
     public List<Section> getSectionsAll() {
-        List<Section> sections = line.stream()
+        List<Section> sections = lines.stream()
             .flatMap(it -> it.getSections().sortedSections().stream())
             .distinct()
             .collect(Collectors.toList());
@@ -33,8 +30,23 @@ public class Lines {
         return Collections.unmodifiableList(sections);
     }
 
+    public int getMostExpensiveCharge(List<Station> stations) {
+        Charges charges = stations.stream()
+                .flatMap(station -> findLineAllByStation(station).stream())
+                .map(Line::getCharges)
+                .sorted().findFirst().orElse(new Charges());
+
+        return charges.getCharges();
+    }
+
     public int size() {
-        return line.size();
+        return lines.size();
+    }
+
+    private List<Line> findLineAllByStation(Station station) {
+        return lines.stream()
+                .filter(line -> line.containsByStation(station))
+                .collect(Collectors.toList());
     }
 
 }

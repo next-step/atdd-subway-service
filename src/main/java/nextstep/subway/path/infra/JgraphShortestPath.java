@@ -22,8 +22,7 @@ public class JgraphShortestPath implements ShortestPath<Station> {
 
         validation(path);
 
-        //TODO
-        return new Path<Station>(path.getVertexList(), path.getWeight(), 0);
+        return new Path<Station>(path.getVertexList(), path.getWeight());
     }
 
     private DijkstraShortestPath initDijkstraShortestPath(final Lines lines) {

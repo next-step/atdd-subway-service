@@ -20,7 +20,7 @@ public class PathController {
 
     @GetMapping(headers = "authorization")
     public ResponseEntity<PathResponse> findLineById(@AuthenticationPrincipal LoginMember loginMember, PathRequest request) {
-        return ResponseEntity.ok(pathService.searchPath(request));
+        return ResponseEntity.ok(pathService.searchPath(loginMember.getId(), request));
     }
 
     @GetMapping

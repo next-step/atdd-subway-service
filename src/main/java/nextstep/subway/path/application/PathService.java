@@ -3,10 +3,16 @@ package nextstep.subway.path.application;
 import lombok.RequiredArgsConstructor;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.member.application.MemberNotFoundException;
+import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.infra.RatePolicyByAddition;
+import nextstep.subway.path.infra.RatePolicyByAge;
+import nextstep.subway.path.infra.RatePolicyByDistance;
 import nextstep.subway.station.application.StationNotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -17,13 +23,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class PathService {
-
     private final StationRepository stationRepository;
     private final LineRepository lineRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
     public Station getStationById(long id) {
         return stationRepository.findById(id).orElseThrow(() -> new StationNotFoundException(id));
+    }
+
+    @Transactional(readOnly = true)
+    public Member getMemberById(long id) {
+        return memberRepository.findById(id).orElseThrow(() -> new MemberNotFoundException(id));
     }
 
     @Transactional(readOnly = true)
@@ -33,19 +44,31 @@ public class PathService {
 
     @Transactional(readOnly = true)
     public PathResponse searchPath(final PathRequest request) {
-        Path<Station> path = getPath(request);
+        Lines lines = findLines();
 
-        return PathResponse.builder()
-                .stationList(path.getPaths())
-                .distance(path.getDistance())
-                .charges(path.getCharges())
-                .build();
+        Path<Station> path = getPath(lines, request);
+        path.additionalChargesCalculate(new RatePolicyByDistance(path.getDistance()))
+            .additionalChargesCalculate(new RatePolicyByAddition(lines.getMostExpensiveCharge((path.getPaths()))));
+
+        return PathResponse.of(path);
     }
 
-    private Path<Station> getPath(final PathRequest request) {
+    @Transactional(readOnly = true)
+    public PathResponse searchPath(final Long memberId, final PathRequest request) {
+        Lines lines = findLines();
+
+        Path<Station> path = getPath(lines, request);
+        path.additionalChargesCalculate(new RatePolicyByDistance(path.getDistance()))
+            .additionalChargesCalculate(new RatePolicyByAddition(lines.getMostExpensiveCharge((path.getPaths()))))
+            .additionalChargesCalculate(new RatePolicyByAge(getMemberById(memberId).getAge()));
+
+        return PathResponse.of(path);
+    }
+
+    private Path<Station> getPath(final Lines lines, final PathRequest request) {
         Station source = getStationById(request.getSource());
         Station target = getStationById(request.getTarget());
 
-        return new PathFinder(findLines()).getPath(source, target);
+        return new PathFinder(lines).getPath(source, target);
     }
 }

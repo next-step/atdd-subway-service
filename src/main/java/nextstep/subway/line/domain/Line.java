@@ -67,4 +67,7 @@ public class Line extends BaseEntity {
                 .collect(Collectors.toList());
     }
 
+    public boolean containsByStation(Station station) {
+        return getStations().contains(station);
+    }
 }
