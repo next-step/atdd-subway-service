@@ -30,21 +30,24 @@ public class FavoriteService {
     }
 
     public FavoriteResponse createFavorite(Long id, FavoriteRequest request) {
-        Member member = memberRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("유효하지 않은 회원입니다."));
-        Station source = stationRepository.findById(request.getSourceId()).orElseThrow(() -> new IllegalArgumentException("출발역이 존재하지 않습니다."));
-        Station target = stationRepository.findById(request.getTargetId()).orElseThrow(() -> new IllegalArgumentException("도착역이 존재하지 않습니다."));
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        Station source = findStationById(request.getSourceId());
+        Station target = findStationById(request.getTargetId());
 
         Favorite savedFavorite = favoriteRepository.save(new Favorite(member, source, target));
         return FavoriteResponse.of(savedFavorite);
     }
 
     public List<FavoriteResponse> findAll(Long id) {
-        List<Favorite> favorites = favoriteRepository.findByMemberId(id).orElseThrow(() -> new IllegalArgumentException("즐겨찾기 목록이 없습니다."));
+        List<Favorite> favorites = favoriteRepository.findByMemberId(id)
+                .orElseThrow(() -> new IllegalArgumentException("즐겨찾기 목록이 없습니다."));
         return getFavoriteResponses(favorites);
     }
 
     public void deleteFavorite(Long memberId, Long favoriteId) {
-        Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(() -> new EntityNotFoundException("즐겨찾기가 존재하지 않습니다."));
+        Favorite favorite = favoriteRepository.findById(favoriteId)
+                .orElseThrow(() -> new IllegalArgumentException("즐겨찾기가 존재하지 않습니다."));
         if (!favorite.hasSameMemberId(memberId)) {
             throw new AuthorizationException("유효하지 않은 사용자입니다.");
         }
@@ -55,5 +58,10 @@ public class FavoriteService {
         return favorites.stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    private Station findStationById(Long targetId) {
+        return stationRepository.findById(targetId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역 입니다."));
     }
 }
