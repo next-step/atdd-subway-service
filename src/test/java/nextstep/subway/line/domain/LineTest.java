@@ -23,13 +23,13 @@ class LineTest {
         광교 = new Station("광교");
         정자 = new Station("정자");
         미금 = new Station("미금");
-        신분당선 = new Line("신분당선", "abc", 강남, 광교, 10);
+        신분당선 = new Line("신분당선", "abc",0, 강남, 광교, 10);
         disatnce = 10;
     }
 
     @Test
     void updateLine() {
-        Line update = new Line("신분당선-임시", "aaa");
+        Line update = new Line("신분당선-임시", "aaa",0);
         신분당선.update(update);
 
         assertThat(신분당선.getName()).isEqualTo("신분당선-임시");

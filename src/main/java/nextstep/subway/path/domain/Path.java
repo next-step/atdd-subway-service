@@ -9,14 +9,16 @@ public class Path {
 
     private final List<Station> stations;
     private final int distance;
+    private int fee;
 
-    private Path(List<Station> stations, int distance) {
+    private Path(List<Station> stations, int distance, int fee) {
         this.stations = stations;
         this.distance = distance;
+        this.fee = fee;
     }
 
-    public static Path of(List<Station> stations, int distance) {
-        return new Path(stations, distance);
+    public static Path of(List<Station> stations, int distance, int fee) {
+        return new Path(stations, distance, fee);
     }
 
     public List<Station> stations() {
@@ -25,6 +27,14 @@ public class Path {
 
     public int distance() {
         return distance;
+    }
+
+    public int fee() {
+        return fee;
+    }
+
+    public void applyDiscountAgeStrategy(int age, int fee) {
+        this.fee = DiscountAgeStrategy.getFee(age, fee);
     }
 
     @Override
