@@ -4,8 +4,8 @@ import nextstep.subway.station.domain.Station;
 
 public class SectionBadRequestException extends RuntimeException {
 
-    public SectionBadRequestException(String message, Station upStation, Station downStation, int distance) {
-        super(String.format(message + " (상행id:%d, 하행id:%d, 거리:%d)", upStation.getId(), downStation.getId(), distance));
+    public SectionBadRequestException(String message, Long upStationId, Long downStationId, int distance) {
+        super(String.format(message + " (상행id:%d, 하행id:%d, 거리:%d)", upStationId, downStationId, distance));
     }
 
     public SectionBadRequestException(String message, int curDistance, int distance) {

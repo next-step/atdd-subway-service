@@ -1,20 +1,20 @@
 package nextstep.subway.line.domain;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import nextstep.subway.advice.exception.SectionBadRequestException;
+import nextstep.subway.station.domain.Station;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import nextstep.subway.advice.exception.SectionBadRequestException;
-import nextstep.subway.station.domain.Station;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Embeddable
 public class Sections {
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST,
-        CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
     public List<Section> getSections() {
@@ -25,7 +25,8 @@ public class Sections {
         sections.add(section);
     }
 
-    public void addSection(Section section, List<Station> stations) {
+    public void addSection(Section section) {
+        List<Station> stations = getStations();
         boolean isUpStationExisted = isStationExisted(stations, section.getUpStation());
         boolean isDownStationExisted = isStationExisted(stations, section.getDownStation());
 
@@ -44,8 +45,31 @@ public class Sections {
         removeStation(upLineStation, downLineStation, line);
     }
 
-    private void addSection(Section section, List<Station> stations, boolean isUpStationExisted,
-        boolean isDownStationExisted) {
+    public List<Station> getStations() {
+        if (this.getSections().isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Station> stations = new ArrayList<>();
+        Station downStation = getLastUpStation();
+        stations.add(downStation);
+
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = this.getSections().stream()
+                .filter(it -> it.getUpStation() == finalDownStation)
+                .findFirst();
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getDownStation();
+            stations.add(downStation);
+        }
+
+        return stations;
+    }
+
+    private void addSection(Section section, List<Station> stations, boolean isUpStationExisted, boolean isDownStationExisted) {
         if (stations.isEmpty()) {
             this.getSections().add(section);
             return;
@@ -56,13 +80,11 @@ public class Sections {
         } else if (isDownStationExisted) {
             addSectionIfDownStation(section);
         } else {
-            throw new SectionBadRequestException("잘못된 구간입니다.", section.getUpStation(),
-                section.getDownStation(), section.getDistance());
+            throw new SectionBadRequestException("잘못된 구간입니다.", section.getDownStationId(), section.getDownStationId(), section.getDistance());
         }
     }
 
-    private void removeStation(Optional<Section> upLineStation, Optional<Section> downLineStation,
-        Line line) {
+    private void removeStation(Optional<Section> upLineStation, Optional<Section> downLineStation, Line line) {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             connectRemovedSection(upLineStation, downLineStation, line);
         }
@@ -70,26 +92,21 @@ public class Sections {
         downLineStation.ifPresent(it -> this.getSections().remove(it));
     }
 
-    private void connectRemovedSection(Optional<Section> upLineStation,
-        Optional<Section> downLineStation, Line line) {
+    private void connectRemovedSection(Optional<Section> upLineStation, Optional<Section> downLineStation, Line line) {
         Station newUpStation = downLineStation.get().getUpStation();
         Station newDownStation = upLineStation.get().getDownStation();
         int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
         this.getSections().add(new Section(line, newUpStation, newDownStation, newDistance));
     }
 
-    private void validateSection(Section section, List<Station> stations,
-        boolean isUpStationExisted, boolean isDownStationExisted) {
+    private void validateSection(Section section, List<Station> stations, boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new SectionBadRequestException("이미 등록된 구간 입니다", section.getUpStation(),
-                section.getDownStation(), section.getDistance());
+            throw new SectionBadRequestException("이미 등록된 구간 입니다", section.getUpStationId(), section.getDownStationId(), section.getDistance());
         }
 
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation())
-            &&
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
             stations.stream().noneMatch(it -> it == section.getDownStation())) {
-            throw new SectionBadRequestException("등록할 수 없는 구간 입니다", section.getUpStation(),
-                section.getDownStation(), section.getDistance());
+            throw new SectionBadRequestException("등록할 수 없는 구간 입니다", section.getDownStationId(), section.getUpStationId(), section.getDistance());
         }
     }
 
@@ -123,43 +140,19 @@ public class Sections {
             .findFirst();
     }
 
-    public List<Station> getStations() {
-        if (sections.isEmpty()) {
-            return Arrays.asList();
-        }
-
-        List<Station> stations = new ArrayList<>();
-        Station downStation = getLastUpStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                .filter(it -> it.getUpStation() == finalDownStation)
-                .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
-
-        return stations;
-    }
-
     private Station getLastUpStation() {
-        Station edgeStation = sections.get(0).getUpStation();
-        while (edgeStation != null) {
-            Station finalDownStation = edgeStation;
-            Optional<Section> nextLineStation = sections.stream()
+        Station egdeStation = this.getSections().get(0).getUpStation();
+        while (egdeStation != null) {
+            Station finalDownStation = egdeStation;
+            Optional<Section> nextLineStation = this.getSections().stream()
                 .filter(it -> it.getDownStation() == finalDownStation)
                 .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
             }
-            edgeStation = nextLineStation.get().getUpStation();
+            egdeStation = nextLineStation.get().getUpStation();
         }
 
-        return edgeStation;
+        return egdeStation;
     }
 }
