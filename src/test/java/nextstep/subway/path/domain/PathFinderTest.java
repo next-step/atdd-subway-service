@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PathFinderTest {
 
@@ -21,12 +23,27 @@ public class PathFinderTest {
         Line sourceLine = new Line("2호선", "green", 강남역, 까치산역, 20);
         Line targetLine = new Line("5호선", "purple", 까치산역, 발산역, 10);
 
-        List<Station> stations = PathFinder.findShortest(강남역, 발산역, List.of(sourceLine, targetLine));
+        //when
+        PathFinder pathFinder = new PathFinder(강남역, 발산역);
+        List<Station> stations = pathFinder.findShortest(List.of(sourceLine, targetLine));
 
+        //then
         assertThat(stations).containsExactly(
                 강남역,
                 까치산역,
                 발산역
+        );
+    }
+
+    @DisplayName("최적 경로 검색 시 출발역과 도착역은 같을 수 없다.")
+    @Test
+    void validateEqualSourceAndTarget() {
+        //given
+        Station 강남역 = new Station("강남역");
+
+        //when
+        assertThrows(IllegalArgumentException.class,
+                () -> new PathFinder(강남역, 강남역)
         );
     }
 }
