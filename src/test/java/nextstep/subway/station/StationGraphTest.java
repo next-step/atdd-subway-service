@@ -81,7 +81,7 @@ public class StationGraphTest {
 	void getShortestDistance() {
 		StationPath path = 역그래프.getShortestPath(성수역, 강남구청역);
 		assertThat(path.getDistance()).isEqualTo(8);
-		assertThat(path.getVertexList()).containsAll(Arrays.asList(성수역, 건대입구역, 강남구청역));
+		assertThat(path.getStations()).containsAll(Arrays.asList(성수역, 건대입구역, 강남구청역));
 	}
 
 	@DisplayName("StationGraph 최단거리 구하기 - 출발역과 도착역이 같은 경우(에러 발생)")

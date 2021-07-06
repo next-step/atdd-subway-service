@@ -3,14 +3,13 @@ package nextstep.subway.station.domain;
 import java.util.List;
 
 import org.jgrapht.GraphPath;
-
-import nextstep.subway.line.domain.SectionEdge;
+import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class StationPath {
 
-	private GraphPath<Station, SectionEdge> stationPath;
+	private GraphPath<Station, DefaultWeightedEdge> stationPath;
 
-	public StationPath(GraphPath<Station, SectionEdge> stationPath) {
+	public StationPath(GraphPath<Station, DefaultWeightedEdge> stationPath) {
 		this.stationPath = stationPath;
 	}
 
@@ -18,11 +17,7 @@ public class StationPath {
 		return (int)stationPath.getWeight();
 	}
 
-	public List<SectionEdge> getEdgeList() {
-		return stationPath.getEdgeList();
-	}
-
-	public List<Station> getVertexList() {
+	public List<Station> getStations() {
 		return stationPath.getVertexList();
 	}
 }

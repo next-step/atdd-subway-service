@@ -31,6 +31,6 @@ public class PathResponse {
 	}
 
 	public static PathResponse of(StationPath path, Fare fare) {
-		return new PathResponse(StationResponse.of(path.getVertexList()), (int)path.getDistance(), fare.value());
+		return new PathResponse(StationResponse.of(path.getStations()), (int)path.getDistance(), fare.value());
 	}
 }

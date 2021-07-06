@@ -2,7 +2,6 @@ package nextstep.subway.path.application;
 
 import java.util.List;
 
-import org.jgrapht.GraphPath;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,7 +9,6 @@ import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
-import nextstep.subway.line.domain.SectionEdge;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationGraph;
@@ -37,7 +35,7 @@ public class PathService {
 		Station targetStation = findStationById(target);
 		StationGraph stationGraph = new StationGraph(new Lines(lines));
 		StationPath path = stationGraph.getShortestPath(sourceStation, targetStation);
-		Fare fare = FareCalculator.getSubwayFare(path);
+		Fare fare = FareCalculator.getSubwayFare(new Lines(lines), path);
 		return PathResponse.of(path, fare);
 	}
 
@@ -47,7 +45,7 @@ public class PathService {
 		Station targetStation = findStationById(target);
 		StationGraph stationGraph = new StationGraph(new Lines(lines));
 		StationPath path = stationGraph.getShortestPath(sourceStation, targetStation);
-		Fare fare = FareCalculator.getSubwayFare(path, age);
+		Fare fare = FareCalculator.getSubwayFare(new Lines(lines), path, age);
 		return PathResponse.of(path, fare);
 	}
 
