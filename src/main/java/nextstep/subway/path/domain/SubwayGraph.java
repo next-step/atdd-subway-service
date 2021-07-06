@@ -26,7 +26,7 @@ public class SubwayGraph {
 
     public void addVertexesAndEdge(List<Line> lines) {
         for (Line line : lines) {
-            addVertexesAndEdge(line.getSections());
+            addVertexesAndEdge(line.getSections(), line.getExtraFare());
         }
     }
 
@@ -49,9 +49,9 @@ public class SubwayGraph {
         }
     }
 
-    private void addVertexesAndEdge(Sections sections) {
+    private void addVertexesAndEdge(Sections sections, int extraFare) {
         for (Section section : sections.getSections()) {
-            SectionWeightedEdge sectionWeightedEdge = new SectionWeightedEdge(section, section.getLine().getId());
+            SectionWeightedEdge sectionWeightedEdge = new SectionWeightedEdge(section, section.getLine().getId(), extraFare);
             graph.addVertex(section.getUpStation());
             graph.addVertex(section.getDownStation());
             graph.addEdge(section.getUpStation(), section.getDownStation(), sectionWeightedEdge);

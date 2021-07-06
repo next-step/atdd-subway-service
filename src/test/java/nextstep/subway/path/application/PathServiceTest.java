@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.SectionWeightedEdge;
 import nextstep.subway.line.domain.Line;
@@ -44,8 +45,8 @@ class PathServiceTest {
         Long source = 광교역.getId();
         Long target = 교대역.getId();
 
-        Line 신분당선 = new Line(1L, "신분당선", 강남역, 광교역, 10);
-        Line 삼호선 = new Line(2L, "삼호선", 교대역, 강남역, 5);
+        Line 신분당선 = new Line(1L, "신분당선", 강남역, 광교역, 10, 900);
+        Line 삼호선 = new Line(2L, "삼호선", 교대역, 강남역, 5, 100);
         List<Line> lines = Arrays.asList(신분당선, 삼호선);
         // 전체 지하철 노선을 조회
         when(lineRepository.findAll()).thenReturn(lines);
@@ -59,14 +60,14 @@ class PathServiceTest {
 
         // 노선, source, target 기준으로 경로 조회
         List<SectionWeightedEdge> sectionWeightedEdges = Arrays.asList(
-                new SectionWeightedEdge(new Section(신분당선, 강남역, 광교역, 10), 신분당선.getId()),
-                new SectionWeightedEdge(new Section(삼호선, 교대역, 강남역, 5), 삼호선.getId())
+                new SectionWeightedEdge(new Section(신분당선, 강남역, 광교역, 10), 신분당선.getId(), 신분당선.getExtraFare()),
+                new SectionWeightedEdge(new Section(삼호선, 교대역, 강남역, 5), 삼호선.getId(), 삼호선.getExtraFare())
         );
         SubwayPath subwayPath = new SubwayPath(sectionWeightedEdges, Arrays.asList(강남역, 광교역, 교대역));
         when(pathFinder.shortestPath(lines, sourceStation.get(), targetStation.get())).thenReturn(subwayPath);
-
+        LoginMember loginMember = new LoginMember(1L, "mwkwon@test.com", 19);
         // when
-        PathResponse pathResponse = patchService.findPath(source, target);
+        PathResponse pathResponse = patchService.findPath(source, target, loginMember);
 
         // then
         assertThat(pathResponse).isNotNull();
@@ -74,5 +75,6 @@ class PathServiceTest {
         assertThat(pathResponse.getStations().size()).isEqualTo(3);
         List<Long> stationNames = pathResponse.getStations().stream().map(StationResponse::getId).collect(Collectors.toList());
         assertThat(stationNames).containsExactly(강남역.getId(), 광교역.getId(), 교대역.getId());
+        assertThat(pathResponse.getSubwayFare()).isEqualTo(2250);
     }
 }

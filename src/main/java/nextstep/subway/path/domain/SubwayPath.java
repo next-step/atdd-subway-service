@@ -31,4 +31,8 @@ public class SubwayPath {
                 .mapToInt(SectionWeightedEdge::sectionDistance)
                 .sum();
     }
+
+    public int calcMaxExtraFare() {
+        return sectionWeightedEdges.stream().mapToInt(SectionWeightedEdge::getExtraFare).max().orElse(0);
+    }
 }

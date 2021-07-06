@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.SubwayPath;
 import nextstep.subway.exception.SubwayPatchException;
@@ -27,7 +28,7 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findPath(Long source, Long target, LoginMember loginMember) {
         List<Line> lines = lineRepository.findAll();
         Station sourceStation = findStationById(source);
         Station targetStation = findStationById(target);
