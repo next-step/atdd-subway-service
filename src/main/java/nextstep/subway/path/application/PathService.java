@@ -53,7 +53,7 @@ public class PathService {
     public PathResponse searchPath(final Long memberId, final PathRequest request) {
         Path<Station> path = getPath(request);
 
-        path.additionalChargesCalculate(new RatePolicyByAge(getMemberById(memberId).getAge()));
+        path.additionalFeeCalculate(new RatePolicyByAge(getMemberById(memberId).getAge()));
 
         return PathResponse.of(path);
     }
@@ -64,8 +64,8 @@ public class PathService {
         Station target = getStationById(request.getTarget());
 
         Path<Station> path = new PathFinder(lines).getPath(source, target);
-        path.additionalChargesCalculate(new RatePolicyByDistance(path.getDistance()));
-        path.additionalChargesCalculate(new RatePolicyByAddition(lines.getMostExpensiveCharge((path.getPaths()))));
+        path.additionalFeeCalculate(new RatePolicyByDistance(path.getDistance()));
+        path.additionalFeeCalculate(new RatePolicyByAddition(lines.getMostExpensiveFee((path.getPaths()))));
 
         return path;
     }

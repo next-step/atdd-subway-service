@@ -30,13 +30,13 @@ public class Lines {
         return Collections.unmodifiableList(sections);
     }
 
-    public int getMostExpensiveCharge(List<Station> stations) {
-        Charges charges = stations.stream()
+    public int getMostExpensiveFee(List<Station> stations) {
+        Fee fee = stations.stream()
                 .flatMap(station -> findLineAllByStation(station).stream())
-                .map(Line::getCharges)
-                .sorted().findFirst().orElse(new Charges());
+                .map(Line::getFee)
+                .sorted().findFirst().orElse(new Fee());
 
-        return charges.getCharges();
+        return fee.getFee();
     }
 
     public int size() {

@@ -31,13 +31,13 @@ public class RatePolicyByDistance implements RatePolicy {
         BASIC(0, 11) {
             @Override
             public int calculate(final double distance) {
-                return DEFAULT_CHARGES;
+                return DEFAULT_FEE;
             }
         },
         MEDIUM_DISTANCE(11, 50) {
             @Override
             public int calculate(final double distance) {
-                return calculateByDistance(distance - 10, 5) - ADDITIONAL_CHARGES;
+                return calculateByDistance(distance - 10, 5) - ADDITIONAL_FEE;
             }
         },
         LONG_DISTANCE(50, 9999) {
@@ -50,8 +50,8 @@ public class RatePolicyByDistance implements RatePolicy {
         private final int start;
         private final int end;
 
-        private static final int DEFAULT_CHARGES = 1250;
-        private static final int ADDITIONAL_CHARGES = 100;
+        private static final int DEFAULT_FEE = 1250;
+        private static final int ADDITIONAL_FEE = 100;
 
         RuleByDistance(final int start, final int end) {
             this.start = start;
@@ -67,9 +67,9 @@ public class RatePolicyByDistance implements RatePolicy {
 
         private static int calculateByDistance(double distance, int km) {
             int addition = (km == 0) ? 0
-                    : (int) ((Math.ceil((distance) / km) + 1) * ADDITIONAL_CHARGES);
+                    : (int) ((Math.ceil((distance) / km) + 1) * ADDITIONAL_FEE);
 
-            return DEFAULT_CHARGES + addition;
+            return DEFAULT_FEE + addition;
         }
     }
 

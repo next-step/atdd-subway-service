@@ -19,7 +19,7 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
-    private Charges charges = new Charges();
+    private Fee fee = new Fee();
 
     @Embedded
     private Sections sections = new Sections();
@@ -46,8 +46,8 @@ public class Line extends BaseEntity {
         sections.add(section);
     }
 
-    public void setAdditionalCharge(final int charges) {
-        this.charges = new Charges(charges);
+    public void setFee(final int fee) {
+        this.fee = new Fee(fee);
     }
 
     public void update(final Line line) {

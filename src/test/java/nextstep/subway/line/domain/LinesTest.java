@@ -47,12 +47,12 @@ class LinesTest {
 
     @DisplayName("노선중에 가장 비싼 요금을 구한다.")
     @Test
-    public void getMostExpensiveChargeTest() {
+    public void getMostExpensiveFeeTest() {
         assertAll(
-            () -> assertThat(lines.getMostExpensiveCharge(Arrays.asList(X, A, x, a))).isEqualTo(1000),
-            () -> assertThat(lines.getMostExpensiveCharge(Arrays.asList(A, x, a))).isEqualTo(500),
-            () -> assertThat(lines.getMostExpensiveCharge(Arrays.asList(x, a))).isEqualTo(10),
-            () -> assertThat(lines.getMostExpensiveCharge(Arrays.asList(a))).isEqualTo(5)
+            () -> assertThat(lines.getMostExpensiveFee(Arrays.asList(X, A, x, a))).isEqualTo(1000),
+            () -> assertThat(lines.getMostExpensiveFee(Arrays.asList(A, x, a))).isEqualTo(500),
+            () -> assertThat(lines.getMostExpensiveFee(Arrays.asList(x, a))).isEqualTo(10),
+            () -> assertThat(lines.getMostExpensiveFee(Arrays.asList(a))).isEqualTo(5)
         );
     }
 

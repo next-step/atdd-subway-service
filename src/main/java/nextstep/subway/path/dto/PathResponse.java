@@ -13,20 +13,20 @@ import java.util.List;
 public class PathResponse {
     private List<Station> stationList;
     private double distance;
-    private int charges;
+    private int fee;
 
     public static PathResponse of(Path path) {
         return PathResponse.builder()
                 .stationList(path.getPaths())
                 .distance(path.getDistance())
-                .charges((int) path.getCharges())
+                .fee((int) path.getFee())
                 .build();
     }
 
     @Builder
-    private PathResponse(final List<Station> stationList, final double distance, final int charges) {
+    private PathResponse(final List<Station> stationList, final double distance, final int fee) {
         this.stationList = stationList;
         this.distance = distance;
-        this.charges = charges;
+        this.fee = fee;
     }
 }

@@ -30,9 +30,9 @@ public final class DomainInitUtils {
         return appendSectionByLine(lineName, 0, items);
     }
 
-    public static Line appendSectionByLine(final String lineName, final int charge, final Section ...items) {
+    public static Line appendSectionByLine(final String lineName, final int fee, final Section ...items) {
         Line line =  new Line(lineName, "");
-        line.setAdditionalCharge(charge);
+        line.setFee(fee);
 
         for(Section section : items) {
             line.addSection(section);
