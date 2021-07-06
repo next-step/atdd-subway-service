@@ -26,6 +26,11 @@ public enum AgeBasedDiscount {
         return findAgeDiscount(age).calculator.apply(totalFare);
     }
 
+    public static Fare newCalculate(int age, Fare totalFare) {
+        int finalFare = findAgeDiscount(age).calculator.apply(totalFare.getFare());
+        return new Fare(finalFare);
+    }
+
     public static AgeBasedDiscount findAgeDiscount(int age) {
         return Arrays.stream(values())
                 .filter(ageBasedDiscount -> ageBasedDiscount.isIncludedInRange(age))

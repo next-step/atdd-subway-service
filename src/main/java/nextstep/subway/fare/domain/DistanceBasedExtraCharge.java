@@ -29,6 +29,11 @@ public enum DistanceBasedExtraCharge {
         return findDistanceBasedExtraCharge(distance).calculator.apply(distance);
     }
 
+    public static Fare newCalculate(int distance) {
+        int result = findDistanceBasedExtraCharge(distance).calculator.apply(distance);
+        return new Fare(result);
+    }
+
     public static DistanceBasedExtraCharge findDistanceBasedExtraCharge(int distance) {
         return Arrays.stream(values())
                 .filter(distanceBasedExtraCharge -> distanceBasedExtraCharge.isIncludedInRange(distance))
