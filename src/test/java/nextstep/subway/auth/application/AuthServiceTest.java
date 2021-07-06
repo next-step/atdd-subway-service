@@ -1,11 +1,12 @@
 package nextstep.subway.auth.application;
 
-import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.domain.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -14,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -44,4 +46,24 @@ public class AuthServiceTest {
 
         assertThat(token.getAccessToken()).isNotBlank();
     }
+
+    @Test
+    @DisplayName("비밀번호가 다르면 로그인에 실패한다.")
+    void loginFailureTest() {
+        String wrongPassword = "123";
+		when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE)));
+
+        assertThatThrownBy(() -> authService.login(new TokenRequest(EMAIL, wrongPassword)))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+	@Test
+	@DisplayName("이메일이 다르면 로그인에 실패한다.")
+	void loginFailureTest2() {
+		String wrongEmail = "a@a.com";
+		when(memberRepository.findByEmail(anyString())).thenThrow(AuthorizationException.class);
+
+		assertThatThrownBy(() -> authService.login(new TokenRequest(wrongEmail, PASSWORD)))
+				.isInstanceOf(RuntimeException.class);
+	}
 }
