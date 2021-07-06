@@ -1,6 +1,7 @@
 package nextstep.subway.auth.infrastructure;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,7 +15,15 @@ public class AuthorizationExtractor {
     protected AuthorizationExtractor() {
     }
 
-    public static String extract(HttpServletRequest request) {
+    public static Optional<String> extract(HttpServletRequest request) {
+        return Collections.list(request.getHeaders(AUTHORIZATION))
+                .stream()
+                .filter(AuthorizationExtractor::isBearerTypePrefix)
+                .findFirst()
+                .map(value -> getToken(request, value));
+    }
+
+    public static String extract1(HttpServletRequest request) {
         return Collections.list(request.getHeaders(AUTHORIZATION))
                 .stream()
                 .filter(AuthorizationExtractor::isBearerTypePrefix)
