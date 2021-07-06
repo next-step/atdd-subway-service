@@ -15,6 +15,7 @@ import java.util.Optional;
 public class Sections {
 
     public static final int MINIMUM_REMOVAL_SIZE = 1;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
