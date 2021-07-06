@@ -28,7 +28,7 @@ class FareTest {
         //거리별 정책
         farePolicies.add(new FarePolicyByDistance(distance));
         //나이별 정책
-        farePolicies.add(new FarePolicyByAge(age));
+        farePolicies.add(FarePolicyByAge.findCategory(age));
 
         //when
         Fare fare = Fare.of(farePolicies);
