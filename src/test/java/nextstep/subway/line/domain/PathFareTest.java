@@ -100,4 +100,25 @@ class PathFareTest {
         assertThat(path.fare(children)).isEqualTo(730);
         assertThat(path.fare(youth)).isEqualTo(1300);
     }
+
+    @DisplayName("요금 계산 - 추가운임이 존재하는 노선")
+    @Test
+    void fare_lineHasExtraFare() {
+        // given
+        신분당선.add(정자역, 판교역, 7);
+        신분당선.add(판교역, 청계산역, 12);
+        신분당선.add(청계산역, 양재역, 15);
+
+        List<Line> lines = new ArrayList<>();
+        lines.add(신분당선);
+
+        // when
+        PathFinder pathFinder = new PathFinder(lines);
+        Path path = pathFinder.findPaths(정자역, 양재역);
+
+        // then
+        assertThat(path.fare(new LoginMember())).isEqualTo(2550);
+        assertThat(path.fare(children)).isEqualTo(790);
+        assertThat(path.fare(youth)).isEqualTo(1450);
+    }
 }
