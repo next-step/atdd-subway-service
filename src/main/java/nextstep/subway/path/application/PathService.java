@@ -22,8 +22,6 @@ import nextstep.subway.utils.FareCalculator;
 @Transactional
 public class PathService {
 
-	private static final int DEFAULT_AGE = 20;
-
 	private LineRepository lineRepository;
 	private StationRepository stationRepository;
 
@@ -38,7 +36,7 @@ public class PathService {
 		Station targetStation = findStationById(target);
 		StationGraph stationGraph = new StationGraph(new Lines(lines));
 		GraphPath<Station, SectionEdge> path = stationGraph.getShortestPath(sourceStation, targetStation);
-		Fare fare = FareCalculator.getSubwayFare(path, DEFAULT_AGE);
+		Fare fare = FareCalculator.getSubwayFare(path);
 		return PathResponse.of(stationGraph.getShortestPath(sourceStation, targetStation), fare);
 	}
 
