@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private static final String EMAIL = "limdingdong@test.com";
-    private static final String PASSWORD = "passowrd";
+    private static final String PASSWORD = "password";
     private static TokenResponse tokenResponse;
 
     private static final String EMAIL_MAX = "max@test.com";
@@ -129,6 +129,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 즐겨찾기_삭제되지_않음(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
     }
 }
