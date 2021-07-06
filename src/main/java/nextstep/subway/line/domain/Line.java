@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.List;
+import java.util.stream.Stream;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -64,5 +65,9 @@ public class Line extends BaseEntity {
 
     public List<Station> getSortedStations() {
         return sections.getStations();
+    }
+
+    public Stream<Section> getSections() {
+        return sections.getSections().stream();
     }
 }

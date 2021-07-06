@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import java.util.List;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -16,7 +17,13 @@ public class PathFinder {
     }
 
     public List<Station> findShortestPathStations(Station startStation, Station endStation) {
-        return this.dijkstraShortestPath.getPath(startStation, endStation).getVertexList();
+        GraphPath shortPath = this.dijkstraShortestPath.getPath(startStation, endStation);
+
+        if (shortPath == null) {
+            throw new RuntimeException("출발지와 목적지가 연결되어 있지 않습니다.");
+        }
+
+        return shortPath.getVertexList();
     }
 
     public int findShortestPathDistance(Station startStation, Station endStation) {
