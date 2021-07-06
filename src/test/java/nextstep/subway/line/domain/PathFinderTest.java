@@ -30,7 +30,7 @@ class PathFinderTest {
     private Station 남부터미널역 = new Station("남부터미널역");
     private Station 교대역 = new Station("교대역");
 
-    private Line LINE2 = new Line("2호선", "greeen");
+    private Line LINE2 = new Line("2호선", "green");
     private Station 서초역 = new Station("서초역");
     private Station 역삼역 = new Station("역삼역");
 
