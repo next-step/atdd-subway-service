@@ -5,9 +5,9 @@ import nextstep.subway.fare.domain.AgeBasedDiscount;
 import nextstep.subway.fare.domain.DistanceBasedExtraCharge;
 import nextstep.subway.fare.domain.Fare;
 
-import static nextstep.subway.fare.domain.Fare.BASE_FARE;
-
 public class FareCalculator {
+
+    public static final int BASE_FARE = 1250;
 
     private User user;
     private int distance;
@@ -21,8 +21,8 @@ public class FareCalculator {
 
     public Fare calculate() {
         Fare fareBeforeAgeDiscount = new Fare(BASE_FARE)
-                .plus(DistanceBasedExtraCharge.newCalculate(distance))
+                .plus(DistanceBasedExtraCharge.calculate(distance))
                 .plus(extraCharge);
-        return AgeBasedDiscount.newCalculate(user.getAge(), fareBeforeAgeDiscount);
+        return AgeBasedDiscount.calculate(user.getAge(), fareBeforeAgeDiscount);
     }
 }

@@ -13,7 +13,7 @@ public enum DistanceBasedExtraCharge {
             distance -> (distance - BASE.endingPoint) / DISTANCE_FIRST_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE_UNIT),
     SECOND_INTERVAL(51, Integer.MAX_VALUE,
             distance -> (distance - FIRST_INTERVAL.endingPoint) / DISTANCE_SECOND_INTERVAL_DIVIDER * DISTANCE_EXTRA_CHARGE_UNIT +
-                    calculate(FIRST_INTERVAL.endingPoint));
+                    calculate(FIRST_INTERVAL.endingPoint).getFare());
 
     private int startingPoint;
     private int endingPoint;
@@ -25,11 +25,7 @@ public enum DistanceBasedExtraCharge {
         this.calculator = calculator;
     }
 
-    public static int calculate(int distance) {
-        return findDistanceBasedExtraCharge(distance).calculator.apply(distance);
-    }
-
-    public static Fare newCalculate(int distance) {
+    public static Fare calculate(int distance) {
         int result = findDistanceBasedExtraCharge(distance).calculator.apply(distance);
         return new Fare(result);
     }

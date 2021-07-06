@@ -22,11 +22,7 @@ public enum AgeBasedDiscount {
         this.calculator = calculator;
     }
 
-    public static int calculate(int age, int totalFare) {
-        return findAgeDiscount(age).calculator.apply(totalFare);
-    }
-
-    public static Fare newCalculate(int age, Fare totalFare) {
+    public static Fare calculate(int age, Fare totalFare) {
         int finalFare = findAgeDiscount(age).calculator.apply(totalFare.getFare());
         return new Fare(finalFare);
     }

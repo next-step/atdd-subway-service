@@ -7,7 +7,6 @@ import java.util.Objects;
 @Embeddable
 public class Fare {
 
-    public static final int BASE_FARE = 1250;
     public static final int ZERO_EXTRA_CHARGE = 0;
     public static final int DISTANCE_EXTRA_CHARGE_UNIT = 100;
     public static final int DISTANCE_FIRST_INTERVAL_DIVIDER = 5;

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.TestFixture.TEENAGER_AGE;
 import static nextstep.subway.TestFixture.TEENAGER_EMAIL;
-import static nextstep.subway.fare.domain.Fare.BASE_FARE;
+import static nextstep.subway.fare.FareCalculator.BASE_FARE;
 import static nextstep.subway.fare.domain.Fare.DISTANCE_EXTRA_CHARGE_UNIT;
 import static org.assertj.core.api.Assertions.assertThat;
 
