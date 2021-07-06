@@ -34,6 +34,10 @@ public class Fare {
         return new Fare(fare + otherFare.fare);
     }
 
+    public Fare multiply(int count) {
+        return new Fare(fare * count);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -50,6 +54,5 @@ public class Fare {
     public int hashCode() {
         return Objects.hash(fare);
     }
-
 
 }
