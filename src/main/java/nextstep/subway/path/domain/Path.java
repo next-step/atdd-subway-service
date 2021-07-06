@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.common.Excetion.NotConnectStationException;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.policy.ChargePolicy;
 import nextstep.subway.station.domain.Station;
@@ -9,14 +10,15 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Path {
     private static List<Station> stations;
     private static int distance;
     private static int charge;
-    private static int maxSurCharge;
     private static WeightedMultigraph<Station, DefaultWeightedEdge> optimalPath;
 
     private Path() {
@@ -36,7 +38,6 @@ public class Path {
         sections.forEach(section -> {
             addVerTex(section);
             setEdgeWeight(section);
-            maxSurCharge = section.getMaxSurCharge(maxSurCharge);
         });
         return getStationPath(sourceStation, targetStation);
     }
@@ -70,6 +71,14 @@ public class Path {
     }
 
     public int getCharge() {
-        return charge + maxSurCharge;
+        return charge;
+    }
+
+    public void surCharge(List<Line> linesOfSection) {
+        List<Integer> surCharges = linesOfSection.stream()
+                .map(line -> line.getSurcharge())
+                .collect(Collectors.toList());
+        surCharges.sort(Comparator.reverseOrder());
+        charge += surCharges.get(0);
     }
 }
