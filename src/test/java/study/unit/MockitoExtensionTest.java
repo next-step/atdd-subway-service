@@ -26,14 +26,12 @@ public class MockitoExtensionTest {
     private LineRepository lineRepository;
     @Mock
     private StationService stationService;
-    @Mock
-    private SectionRepository sectionRepository;
 
     @Test
     void findAllLines() {
         // given
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
-        LineService lineService = new LineService(lineRepository, stationService, sectionRepository);
+        LineService lineService = new LineService(lineRepository, stationService);
 
         // when
         List<LineResponse> responses = lineService.findLines();
