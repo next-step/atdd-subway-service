@@ -46,10 +46,6 @@ public class Line extends BaseEntity {
         return true;
     }
 
-    public int getMaxSurCharge(int maxSurCharge) {
-        return surcharge > maxSurCharge ? surcharge : maxSurCharge;
-    }
-
     public boolean removeStation(Long stationId) {
         return this.sections.removeStation(stationId);
     }

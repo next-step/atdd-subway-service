@@ -126,7 +126,7 @@ public class Section {
         return distance.ofSectionMap(this);
     }
 
-    public int getMaxSurCharge(int maxSurCharge) {
-        return line.getMaxSurCharge(maxSurCharge);
+    public int getExpensiveSurcharge(Section b) {
+        return 0;
     }
 }

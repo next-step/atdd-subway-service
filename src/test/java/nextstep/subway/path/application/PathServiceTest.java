@@ -60,6 +60,10 @@ public class PathServiceTest {
         부산역 = new Station(6L, "부산역");
         까치산역 = new Station(7L, "까치산역");
 
+        // and
+        // 노선 등록되어 있음
+        이호선 = new Line("이호선", "GREEN", 신도림역, 문래역, 10, 500);
+
         when(sectionRepository.findAll()).thenReturn(
                 Arrays.asList(new Section(신도림역, 문래역, new Distance(10)),
                         new Section(문래역, 영등포구청역, new Distance(5)),
@@ -73,6 +77,10 @@ public class PathServiceTest {
     @Test
     @DisplayName("지하철 경로 조회")
     void 지하철_경로_조회() {
+        // gien
+        // 노선에 구간 등록되어 있음
+        노선_구간_등록_되어_있음();
+
         // when
         // 신도림에서 홍대역까지의 경로를 구한다.
         when(stationRepository.findById(1L)).thenReturn(Optional.ofNullable(신도림역));
@@ -112,10 +120,6 @@ public class PathServiceTest {
     @Test
     @DisplayName("연결되어 있지 않은 경로 예외 오류 발생")
     void exception_nonConnected_sourceId_and_targetId() {
-        // given
-        // 연결되어 있지 않은 역이 있음
-
-
         // when
         // 신도림에서 부산역까지의 경로를 구한다.
         when(stationRepository.findById(1L)).thenReturn(Optional.ofNullable(신도림역));
@@ -130,8 +134,12 @@ public class PathServiceTest {
     @Test
     @DisplayName("지하철 거리 조회")
     void 지하철_거리_조회() {
+        // given
+        // 지하철 구간 등록되어 있음
+        노선_구간_등록_되어_있음();
+
         // when
-        // 신도림에서 홍대역까지의 경로를 구한다.
+        // 최단 거리 조회함
         when(stationRepository.findById(1L)).thenReturn(Optional.ofNullable(신도림역));
         when(stationRepository.findById(5L)).thenReturn(Optional.ofNullable(홍대역));
 
@@ -144,14 +152,24 @@ public class PathServiceTest {
     @Test
     @DisplayName("지하철 요금 조회")
     void 지하철_요금_조회() {
+        // given
+        // 지하철 구간 등록되어 있음
+        노선_구간_등록_되어_있음();
+
         // when
         // 신도림에서 홍대역까지의 경로를 구한다.
         when(stationRepository.findById(1L)).thenReturn(Optional.ofNullable(신도림역));
         when(stationRepository.findById(5L)).thenReturn(Optional.ofNullable(홍대역));
 
         // then
-        // 거리가 응답됨 30km -> 1,650
+        // 거리가 응답됨 30km -> 1,550 + 500
         PathResponse pathResponse = pathService.findOptimalPath(1L, 5L);
-        assertThat(pathResponse.getCharge()).isEqualTo(1650);
+        assertThat(pathResponse.getCharge()).isEqualTo(2050);
+    }
+
+    private void 노선_구간_등록_되어_있음() {
+        when(sectionRepository.findByUpStationIdAndDownStationId(1L, 2L)).thenReturn(new Section(이호선, 신도림역, 문래역, new Distance(10)));
+        when(sectionRepository.findByUpStationIdAndDownStationId(2L, 3L)).thenReturn(new Section(이호선, 문래역, 영등포구청역, new Distance(10)));
+        when(sectionRepository.findByUpStationIdAndDownStationId(3L, 5L)).thenReturn(new Section(이호선, 영등포구청역, 홍대역, new Distance(10)));
     }
 }
