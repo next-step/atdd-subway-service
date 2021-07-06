@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -30,7 +31,8 @@ public class Section implements GraphEdgeWeight {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     protected Section() {
     }
@@ -39,12 +41,12 @@ public class Section implements GraphEdgeWeight {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = new Distance(distance);
     }
 
     public static Section createMergeSection(Line line, Section upLineSection, Section downLineSection) {
         return new Section(line, upLineSection.upStation, downLineSection.downStation,
-                upLineSection.distance + downLineSection.distance);
+                upLineSection.distance.calculatePlusDistance(downLineSection.distance));
     }
 
     public Long getId() {
@@ -64,19 +66,19 @@ public class Section implements GraphEdgeWeight {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.getDistance();
     }
 
     public void updateUpStationAndDistanceFromDownStation(Section section) {
         validateUpdateDistance(section);
         this.upStation = section.downStation;
-        this.distance -= section.distance;
+        this.distance.minusDistance(section.distance);
     }
 
     public void updateDownStationAndDistanceFromUpStation(Section section) {
         validateUpdateDistance(section);
         this.downStation = section.upStation;
-        this.distance -= section.distance;
+        this.distance.minusDistance(section.distance);
     }
 
     public boolean isMatchDownStation(Station station) {
@@ -100,7 +102,7 @@ public class Section implements GraphEdgeWeight {
     }
 
     private void validateUpdateDistance(Section section) {
-        if (this.distance <= section.distance) {
+        if (this.distance.isLessThanOrEqualTo(section.distance)) {
             throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
     }
@@ -117,6 +119,6 @@ public class Section implements GraphEdgeWeight {
 
     @Override
     public Double getWeight() {
-        return Double.valueOf(this.distance);
+        return this.distance.toWeight();
     }
 }
