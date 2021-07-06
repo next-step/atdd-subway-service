@@ -1,24 +1,33 @@
 package nextstep.subway.path.domain.impl;
 
-import nextstep.subway.path.domain.enums.AgeCategory;
 import nextstep.subway.path.domain.FarePolicy;
 
-/**
- * ### 로그인 사용자의 경우 연령별 요금 할인 적용
- * - 청소년: 운임에서 350원을 공제한 금액의 20%할인
- * - 청소년: 13세 이상 ~ 19세 미만
- * - 어린이: 운임에서 350원을 공제한 금액의 50%할인
- * - 어린이: 6세 이상 ~ 13세 미만
- */
-public class FarePolicyByAge implements FarePolicy {
-    private final int age;
+import java.util.Arrays;
+import java.util.function.DoubleFunction;
+import java.util.function.Predicate;
 
-    public FarePolicyByAge(int age) {
-        this.age = age;
+public enum FarePolicyByAge implements FarePolicy {
+    ADULT(age -> age >= 19, fare -> fare),
+    TEENAGER(age -> age >= 13 && age < 19, fare -> (fare - 350) * 0.8),
+    CHILDREN(age -> age >= 6 && age < 13, fare -> (fare - 350) * 0.5),
+    BABY(age -> age >= 0 && age < 6, age -> Double.valueOf(0));
+    private final Predicate<Integer> predicate;
+    private final DoubleFunction<Double> function;
+
+    FarePolicyByAge(Predicate<Integer> predicate, DoubleFunction<Double> function) {
+        this.predicate = predicate;
+        this.function = function;
+    }
+
+    public static FarePolicyByAge findCategory(int age) {
+        return Arrays.stream(values())
+                .filter(farePolicy -> farePolicy.predicate.test(age))
+                .findFirst()
+                .get();
     }
 
     @Override
     public double calculate(double fare) {
-        return AgeCategory.findCategory(age).calculate(fare);
+        return function.apply(fare);
     }
 }
