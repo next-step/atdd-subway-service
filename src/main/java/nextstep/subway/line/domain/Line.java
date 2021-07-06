@@ -86,6 +86,10 @@ public class Line extends BaseEntity {
 		this.sections.removeStation(this, station);
 	}
 
+	public int minusFare(Line otherLine) {
+		return this.fare.value() - otherLine.fare.value();
+	}
+
 	private void validateLine(String name, String color) {
 		if (name.isEmpty() || color.isEmpty()) {
 			throw new InvalidLineException("노선의 이름이나 색깔이 비워져있을 수 없습니다.");
