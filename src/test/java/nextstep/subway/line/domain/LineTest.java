@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.exception.NotValidateRemovalSectionsSizeException;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationsResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -52,7 +53,7 @@ class LineTest {
         Station 청량리역 = new Station(2L, "청량리역");
         첫번째_라인.addSection(new Section(첫번째_라인, 왕십리역, 청량리역, 15));
 
-        List<StationResponse> stationResponses = 첫번째_라인.extractStationToResponse();
+        List<StationResponse> stationResponses = 첫번째_라인.extractStationToResponse().getStations();
 
         assertThat(stationResponses).containsExactly(
                 StationResponse.of(강남역),

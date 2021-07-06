@@ -8,7 +8,7 @@ import nextstep.subway.line.dto.LinesResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.station.domain.StationsResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +31,7 @@ public class LineService {
 
         Line persistLine = lineRepository.save(request.toLine(upStation, downStation));
 
-        List<StationResponse> stations = persistLine.extractStationToResponse();
+        StationsResponse stations = persistLine.extractStationToResponse();
 
         return LineResponse.of(persistLine, stations);
     }
@@ -49,7 +49,7 @@ public class LineService {
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
 
-        List<StationResponse> stations = persistLine.extractStationToResponse();
+        StationsResponse stations = persistLine.extractStationToResponse();
 
         return LineResponse.of(persistLine, stations);
     }

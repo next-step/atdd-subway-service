@@ -5,6 +5,7 @@ import nextstep.subway.exception.DuplicateSectionException;
 import nextstep.subway.exception.NotMatchStationException;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationsResponse;
 import nextstep.subway.station.dto.StationResponse;
 
 import javax.persistence.*;
@@ -99,10 +100,8 @@ public class Line extends BaseEntity {
         sections.updateDownToUpStationWhenExist(request, upStation, downStation);
     }
 
-    public List<StationResponse> extractStationToResponse() {
-        return extractStations().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+    public StationsResponse extractStationToResponse() {
+        return StationsResponse.of(extractStations());
     }
 
     List<Station> extractStations() {
