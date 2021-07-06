@@ -2,15 +2,13 @@ package nextstep.subway.utils;
 
 import java.util.stream.Collectors;
 
-import org.jgrapht.GraphPath;
-
 import nextstep.subway.fare.domain.AgeDiscountCalculator;
 import nextstep.subway.fare.domain.DistanceFareCalculator;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.SectionEdge;
-import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationPath;
 
 public class FareCalculator {
 
@@ -22,16 +20,16 @@ public class FareCalculator {
 		return AgeDiscountCalculator.getInstance().discount(fare, age);
 	}
 
-	public static Fare getSubwayFare(GraphPath<Station, SectionEdge> path, int age) {
-		Distance distance = new Distance((int)path.getWeight());
+	public static Fare getSubwayFare(StationPath path, int age) {
+		Distance distance = new Distance((int)path.getDistance());
 		Lines lines = new Lines(
 			path.getEdgeList().stream().map(SectionEdge::getLine).distinct().collect(Collectors.toList()));
 		Fare lineFare = lines.getMaxLineFare();
 		return getSubwayFare(distance, lineFare, age);
 	}
 
-	public static Fare getSubwayFare(GraphPath<Station, SectionEdge> path) {
-		Distance distance = new Distance((int)path.getWeight());
+	public static Fare getSubwayFare(StationPath path) {
+		Distance distance = new Distance((int)path.getDistance());
 		Lines lines = new Lines(
 			path.getEdgeList().stream().map(SectionEdge::getLine).distinct().collect(Collectors.toList()));
 		Fare lineFare = lines.getMaxLineFare();

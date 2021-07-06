@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
 
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,9 +13,9 @@ import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.SectionEdge;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationGraph;
+import nextstep.subway.station.domain.StationPath;
 import nextstep.subway.station.excpetion.StationGraphException;
 
 public class StationGraphTest {
@@ -81,8 +79,8 @@ public class StationGraphTest {
 	@DisplayName("StationGraph 최단거리 구하기")
 	@Test
 	void getShortestDistance() {
-		GraphPath<Station, SectionEdge> path = 역그래프.getShortestPath(성수역, 강남구청역);
-		assertThat(path.getWeight()).isEqualTo(8);
+		StationPath path = 역그래프.getShortestPath(성수역, 강남구청역);
+		assertThat(path.getDistance()).isEqualTo(8);
 		assertThat(path.getVertexList()).containsAll(Arrays.asList(성수역, 건대입구역, 강남구청역));
 	}
 

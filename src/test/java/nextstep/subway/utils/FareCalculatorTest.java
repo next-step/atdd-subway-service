@@ -17,6 +17,7 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionEdge;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationGraph;
+import nextstep.subway.station.domain.StationPath;
 
 public class FareCalculatorTest {
 
@@ -136,7 +137,7 @@ public class FareCalculatorTest {
 	@DisplayName("그래프를 통한 요금 계산 테스트")
 	@Test
 	void 그래프를_통한_요금_계산_테스트() {
-		GraphPath<Station, SectionEdge> 경로 = 역그래프.getShortestPath(성수역, 강남구청역);
+		StationPath 경로 = 역그래프.getShortestPath(성수역, 강남구청역);
 		assertThat(FareCalculator.getSubwayFare(경로, 20).value()).isEqualTo(1450);
 	}
 }

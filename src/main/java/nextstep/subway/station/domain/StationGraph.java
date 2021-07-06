@@ -2,6 +2,7 @@ package nextstep.subway.station.domain;
 
 import java.util.List;
 
+import org.hibernate.graph.InvalidGraphException;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.KShortestPaths;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -22,11 +23,11 @@ public class StationGraph {
 		setEdges(lines.getSectionsByLine());
 	}
 
-	public GraphPath<Station, SectionEdge> getShortestPath(Station sourceStation, Station targetStation) {
+	public StationPath getShortestPath(Station sourceStation, Station targetStation) {
 		validateShortestPath(sourceStation, targetStation);
 		List<GraphPath<Station, SectionEdge>> paths = getPaths(sourceStation, targetStation);
 		validatePaths(paths);
-		return getMinPath(paths);
+		return new StationPath(getMinPath(paths));
 	}
 
 	private void validateShortestPath(Station sourceStation, Station targetStation) {
@@ -57,7 +58,7 @@ public class StationGraph {
 		return paths.stream()
 			.sorted((path, otherPath) -> (int)(path.getWeight() - otherPath.getWeight()))
 			.findFirst()
-			.get();
+			.orElseThrow(() -> new StationGraphException("경로들이 존재하지 않습니다."));
 	}
 
 	private List<GraphPath<Station, SectionEdge>> getPaths(Station sourceStation, Station targetStation) {

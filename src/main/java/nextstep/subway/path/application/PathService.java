@@ -14,6 +14,7 @@ import nextstep.subway.line.domain.SectionEdge;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationGraph;
+import nextstep.subway.station.domain.StationPath;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.excpetion.StationGraphException;
 import nextstep.subway.utils.FareCalculator;
@@ -35,9 +36,9 @@ public class PathService {
 		Station sourceStation = findStationById(source);
 		Station targetStation = findStationById(target);
 		StationGraph stationGraph = new StationGraph(new Lines(lines));
-		GraphPath<Station, SectionEdge> path = stationGraph.getShortestPath(sourceStation, targetStation);
+		StationPath path = stationGraph.getShortestPath(sourceStation, targetStation);
 		Fare fare = FareCalculator.getSubwayFare(path);
-		return PathResponse.of(stationGraph.getShortestPath(sourceStation, targetStation), fare);
+		return PathResponse.of(path, fare);
 	}
 
 	public PathResponse findShortestDistance(Long source, Long target, int age) {
@@ -45,9 +46,9 @@ public class PathService {
 		Station sourceStation = findStationById(source);
 		Station targetStation = findStationById(target);
 		StationGraph stationGraph = new StationGraph(new Lines(lines));
-		GraphPath<Station, SectionEdge> path = stationGraph.getShortestPath(sourceStation, targetStation);
+		StationPath path = stationGraph.getShortestPath(sourceStation, targetStation);
 		Fare fare = FareCalculator.getSubwayFare(path, age);
-		return PathResponse.of(stationGraph.getShortestPath(sourceStation, targetStation), fare);
+		return PathResponse.of(path, fare);
 	}
 
 	public Station findStationById(Long id) {
