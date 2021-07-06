@@ -32,10 +32,10 @@ public class DistanceTest {
 		int 새로운_구간_간격 = 5;
 
 		// when
-		int 계산된_구간_간격 = 구간_간격.minus(새로운_구간_간격);
+		Distance 계산된_구간_간격 = 구간_간격.minus(새로운_구간_간격);
 
 		// then
-		assertThat(계산된_구간_간격).isEqualTo(구간_간격.value() - 새로운_구간_간격);
+		assertThat(계산된_구간_간격.value()).isEqualTo(구간_간격.value() - 새로운_구간_간격);
 	}
 
 	@Test

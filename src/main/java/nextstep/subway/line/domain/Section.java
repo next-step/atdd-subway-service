@@ -79,7 +79,7 @@ public class Section {
 	public void updateUpStation(Station station, int newDistance) {
 		validateNotSameDownStation(station);
 		this.upStation = station;
-		this.distance = new Distance(distance.minus(newDistance));
+		this.distance = distance.minus(newDistance);
 	}
 
 	private void validateNotSameDownStation(Station station) {
@@ -91,7 +91,7 @@ public class Section {
 	public void updateDownStation(Station station, int newDistance) {
 		validateNotSameUpStation(station);
 		this.downStation = station;
-		this.distance = new Distance(distance.minus(newDistance));
+		this.distance = distance.minus(newDistance);
 	}
 
 	private void validateNotSameUpStation(Station station) {

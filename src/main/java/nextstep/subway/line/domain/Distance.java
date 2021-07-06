@@ -32,9 +32,9 @@ public class Distance {
 		}
 	}
 
-	public int minus(int distance) {
+	public Distance minus(int distance) {
 		validateUnderDistance(distance);
-		return this.distance - distance;
+		return new Distance(this.distance - distance);
 	}
 
 	private void validateUnderDistance(int distance) {

@@ -151,8 +151,8 @@ feat (feature)
     - [x] 4-9.지하철 구간 등록 실패
     - [x] 4-10.지하철 구간 삭제 
     - [ ] 4-11.리뷰어님 코멘트 반영
-        - [ ] 4-11-1.`Distance.minus()` : `Distance` 리턴
-        - [ ] 4-11-2.`Sections` : `==` ====> `equals()`
+        - [x] 4-11-1.`Distance.minus()` : `Distance` 리턴
+        - [x] 4-11-2.`Sections` : `==` ====> `equals()`
         - [ ] 4-11-3.`LineAcceptanceTest.java` : 특정 상황에 대한 인수테스트로 변경
         - [ ] 4-11-4.`LineSectionAcceptanceTest.java` : 특정 상황에 대한 인수테스트로 변경
 - [ ] 5.테스트
