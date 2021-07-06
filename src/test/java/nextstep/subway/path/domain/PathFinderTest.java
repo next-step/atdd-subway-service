@@ -1,18 +1,11 @@
-package nextstep.subway.path;
+package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Lines;
-import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.domain.Path;
-import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.utils.TestUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-
+import static nextstep.subway.utils.DomainInitUtils.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -134,31 +127,4 @@ public class PathFinderTest {
             () -> assertThatThrownBy(() -> pathFinder.getPath(X, Y)).isInstanceOf(IllegalArgumentException.class)
         );
     }
-
-    private PathFinder initPathFinder(Line ...line) {
-        Lines lines = new Lines(Arrays.asList(line));
-        return new PathFinder(lines);
-    }
-
-    private static Section createSection(final Station upStation, final Station downStation, final int distance) {
-        return Section.builder().id(TestUtils.getRandomId())
-                .upStation(upStation).downStation(downStation)
-                .distance(distance)
-                .build();
-    }
-
-    private static Station createStation(final String name) {
-        return new Station(TestUtils.getRandomId(), name);
-    }
-
-    private static Line appendSectionByLine(final String lineName, final Section ...items) {
-        Line line =  new Line(lineName, "");
-
-        for(Section section : items) {
-            line.addSection(section);
-        }
-
-        return line;
-    }
-
 }

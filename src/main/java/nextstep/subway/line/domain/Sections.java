@@ -180,6 +180,10 @@ public class Sections  {
         return new ArrayList<>(stationLink);
     }
 
+    protected boolean containsByStation(Station station) {
+        return sections.stream().anyMatch(section -> section.contains(station));
+    }
+
     private void addValidation(final Section newSection) {
         List<Station> stations = unSortedStations();
 

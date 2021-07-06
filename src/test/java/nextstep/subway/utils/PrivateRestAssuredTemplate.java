@@ -5,6 +5,8 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.springframework.http.MediaType;
 
+import java.util.Map;
+
 //TODO
 public final class PrivateRestAssuredTemplate {
     private final String token;
@@ -19,6 +21,17 @@ public final class PrivateRestAssuredTemplate {
         return RestAssured.given().log().all()
                 .auth().oauth2(token)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get(baseUrl)
+                .then().log().all()
+                .extract();
+    }
+
+    public <T> ExtractableResponse<Response> get(final Map<String, T> queryMap) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .queryParams(queryMap)
                 .when()
                 .get(baseUrl)
                 .then().log().all()
