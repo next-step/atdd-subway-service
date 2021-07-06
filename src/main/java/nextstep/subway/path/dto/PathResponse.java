@@ -18,7 +18,7 @@ public class PathResponse {
     public PathResponse(final Paths paths, final LoginMember loginMember) {
         this.distance = paths.getTotalDistance();
         this.stations = paths.getShortestStationRoutes();
-        this.fare = paths.calculateFare(loginMember);
+        this.fare = paths.calculateFare(loginMember).getResult();
     }
 
     public int getDistance() {

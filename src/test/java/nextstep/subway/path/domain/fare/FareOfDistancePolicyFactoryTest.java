@@ -8,13 +8,13 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class FareOfDistancePolicyTest {
+class FareOfDistancePolicyFactoryTest {
 
     @ParameterizedTest(name = "거리에 따른 요금 계산, distance={0}, expectedTotalFare={1}")
     @MethodSource
     void calculateTest(int distance, int expectedTotalFare) {
         // when
-        int totalFare = FareOfDistancePolicy.calculate(distance);
+        int totalFare = FareOfDistancePolicyFactory.calculate(distance);
 
         // then
         assertThat(totalFare).isEqualTo(expectedTotalFare);

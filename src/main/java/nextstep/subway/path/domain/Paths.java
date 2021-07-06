@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.CustomException;
+import nextstep.subway.path.domain.fare.AdditionalFareOfLinePolicy;
 import nextstep.subway.path.domain.fare.FareOfAgePolicy;
 import nextstep.subway.path.domain.fare.FareOfDistancePolicy;
 import nextstep.subway.station.domain.Station;
@@ -31,12 +32,11 @@ public class Paths {
         return new Paths(graphPath);
     }
 
-    public int calculateFare(final LoginMember loginMember) {
-        int totalFare = FareOfDistancePolicy.calculate(this.totalDistance) + this.maxAdditionalFare;
-        if (loginMember.isLogin()) {
-            return FareOfAgePolicy.discount(loginMember.getAge(), totalFare);
-        }
-        return totalFare;
+    public Fare calculateFare(final LoginMember loginMember) {
+        Fare fare = new Fare(this.totalDistance, loginMember.getAge(), this.maxAdditionalFare);
+        return fare.acceptPolicy(new FareOfDistancePolicy())
+                   .acceptPolicy(new AdditionalFareOfLinePolicy())
+                   .acceptPolicy(new FareOfAgePolicy());
     }
 
     public List<Station> getShortestStationRoutes() {
@@ -46,8 +46,6 @@ public class Paths {
     public int getTotalDistance() {
         return this.totalDistance;
     }
-
-    public int getMaxAdditionalFare() { return this.maxAdditionalFare; }
 
     private void checkNotConnectedBetweenStations(final GraphPath<Station, SectionEdge> graphPath) {
         if (Objects.isNull(graphPath)) {

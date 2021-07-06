@@ -1,6 +1,6 @@
 package nextstep.subway.path.domain.fare;
 
-public class BaseFareCalculator implements FareCalculator {
+public class BaseFareOfDistanceCalculator implements FareOfDistanceCalculator {
 
     private static final int BASE_FARE = 1250;
 

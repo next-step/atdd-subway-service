@@ -80,9 +80,9 @@ class PathTest {
 
         // then
         assertThat(paths.getTotalDistance()).isEqualTo(12);
-        assertThat(paths.calculateFare(new LoginMember())).isEqualTo(2350); // 1250 + 100 + 1000
-        assertThat(paths.calculateFare(new LoginMember(1l, "joojimin@naver.com", 14))).isEqualTo(1600); // ((1250+100+1000)-350) * (1 - 0.2)
-        assertThat(paths.calculateFare(new LoginMember(1l, "joojimin@naver.com", 7))).isEqualTo(1000); // ((1250+100+1000)-350) * (1 - 0.5)
+        assertThat(paths.calculateFare(new LoginMember(1l, "test@naver.com", 0)).getResult()).isEqualTo(2350); // 1250 + 100 + 1000
+        assertThat(paths.calculateFare(new LoginMember(1l, "joojimin@naver.com", 14)).getResult()).isEqualTo(1600); // ((1250+100+1000)-350) * (1 - 0.2)
+        assertThat(paths.calculateFare(new LoginMember(1l, "joojimin@naver.com", 7)).getResult()).isEqualTo(1000); // ((1250+100+1000)-350) * (1 - 0.5)
     }
 
     @DisplayName("지하철 노선의 추가 요금 계산 테스트")
@@ -93,7 +93,7 @@ class PathTest {
 
         // then
         assertThat(paths.getTotalDistance()).isEqualTo(3);
-        assertThat(paths.calculateFare(new LoginMember())).isEqualTo(1550); // 1250 + 300
+        assertThat(paths.calculateFare(new LoginMember(1l, "test@naver.com", 0)).getResult()).isEqualTo(1550); // 1250 + 300
     }
 
     @DisplayName("지하철 노선의 추가 요금 없는 기본 요금 계산 테스트")
@@ -104,7 +104,7 @@ class PathTest {
 
         // then
         assertThat(paths.getTotalDistance()).isEqualTo(10);
-        assertThat(paths.calculateFare(new LoginMember())).isEqualTo(1250); // 1250
+        assertThat(paths.calculateFare(new LoginMember(1l, "test@naver.com", 0)).getResult()).isEqualTo(1250); // 1250
     }
 
     @DisplayName("연결 되어있지 않은 두 역의 경로를 조회")

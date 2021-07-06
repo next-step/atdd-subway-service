@@ -81,7 +81,7 @@ class PathServiceTest {
         Mockito.when(lineRepository.findAll()).thenReturn(Arrays.asList(이호선, 삼호선, 신분당선));
 
         // when
-        PathResponse pathResponse = pathService.getPaths(new LoginMember(), 남부터미널역, 강남역);
+        PathResponse pathResponse = pathService.getPaths(new LoginMember(1l, "jimin@naver.com", 0), 남부터미널역, 강남역);
 
         // then
         assertAll(() -> {
@@ -99,7 +99,7 @@ class PathServiceTest {
     @Test
     void getSameSourceAndTargetTest() {
         // when
-        assertThatThrownBy(() -> pathService.getPaths(new LoginMember(), 남부터미널역, 남부터미널역))
+        assertThatThrownBy(() -> pathService.getPaths(new LoginMember(1l, "test@naver.com", 0), 남부터미널역, 남부터미널역))
             .isInstanceOf(CustomException.class)
             .hasMessageContaining(SAME_SOURCE_AND_TARGET_STATION.getMessage());
     }

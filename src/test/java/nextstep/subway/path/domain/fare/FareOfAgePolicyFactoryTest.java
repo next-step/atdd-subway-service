@@ -8,13 +8,13 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class FareOfAgePolicyTest {
+class FareOfAgePolicyFactoryTest {
 
     @ParameterizedTest(name = "나이에 따른 할인율 적용 테스트, age={0}, totalFare={1}, expectedFare={2}")
     @MethodSource
     void discountTest(final int age, final int totalFare, final int expectedFare) {
         // when
-        int actualFare = FareOfAgePolicy.discount(age, totalFare);
+        int actualFare = FareOfAgePolicyFactory.discount(age, totalFare);
 
         // then
         assertThat(actualFare).isEqualTo(expectedFare);

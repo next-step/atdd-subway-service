@@ -2,7 +2,7 @@ package nextstep.subway.path.domain.fare;
 
 import nextstep.subway.path.domain.common.FareCalculateUtils;
 
-public class FirstAdditionalFareCalculator implements FareCalculator {
+public class FirstAdditionalFareOfDistanceCalculator implements FareOfDistanceCalculator {
 
     private static final int MIN_DISTANCE = 10;
     private static final int MAX_DISTANCE = 50;

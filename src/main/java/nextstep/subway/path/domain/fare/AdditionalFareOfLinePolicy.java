@@ -2,10 +2,9 @@ package nextstep.subway.path.domain.fare;
 
 import nextstep.subway.path.domain.Fare;
 
-public class FareOfDistancePolicy implements FareCalculator {
-
+public class AdditionalFareOfLinePolicy implements FareCalculator {
     @Override
     public int calculate(Fare fare) {
-        return FareOfDistancePolicyFactory.calculate(fare.getDistance());
+        return fare.getResult() + fare.getMaxAdditionalFare();
     }
 }
