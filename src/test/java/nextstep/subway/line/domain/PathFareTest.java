@@ -33,6 +33,9 @@ class PathFareTest {
     private Line LINE4 = new Line("4호선", "blue");
     private Station 오이도역 = new Station("오이도역");
 
+    private LoginMember children = new LoginMember(1L, "child@test.com", 6);
+    private LoginMember youth = new LoginMember(2L, "youth@test.com", 13);
+
     @DisplayName("요금계산 - 기본 운임")
     @Test
     void fare_basic() {
@@ -48,6 +51,8 @@ class PathFareTest {
 
         // then
         assertThat(path.fare(new LoginMember())).isEqualTo(1250);
+        assertThat(path.fare(children)).isEqualTo(530);
+        assertThat(path.fare(youth)).isEqualTo(800);
     }
 
     @DisplayName("요금계산 - 거리비례 추가운임 구간 1")
@@ -68,6 +73,8 @@ class PathFareTest {
 
         // then
         assertThat(path.fare(new LoginMember())).isEqualTo(1750);
+        assertThat(path.fare(children)).isEqualTo(630);
+        assertThat(path.fare(youth)).isEqualTo(1050);
     }
 
     @DisplayName("요금계산 - 거리비례 추가운임 구간 2")
@@ -90,5 +97,7 @@ class PathFareTest {
 
         // then
         assertThat(path.fare(new LoginMember())).isEqualTo(2250);
+        assertThat(path.fare(children)).isEqualTo(730);
+        assertThat(path.fare(youth)).isEqualTo(1300);
     }
 }
