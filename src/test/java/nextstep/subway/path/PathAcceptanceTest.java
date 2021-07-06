@@ -137,7 +137,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private LineResponse 지하철_노선_등록되어_있음(String lineName, String lineColor, Long upStationId, Long downStationId, int distance) {
-        LineRequest lineRequest = new LineRequest(lineName, lineColor, upStationId, downStationId, distance);
+        LineRequest lineRequest = new LineRequest(lineName, lineColor, 0, upStationId, downStationId, distance);
         return LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 }
