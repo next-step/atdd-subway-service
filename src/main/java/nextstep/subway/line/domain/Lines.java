@@ -18,4 +18,11 @@ public class Lines implements PathGraphCreator {
         lines.forEach(line -> line.addPathInfoTo(pathGraph));
         return pathGraph;
     }
+
+    public int getFinalSurcharge() {
+        return lines.stream()
+                .mapToInt(Line::getSurcharge)
+                .max()
+                .orElse(0);
+    }
 }

@@ -28,6 +28,7 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    private int surcharge;
 
     @Embedded
     private Sections sections;
@@ -43,9 +44,21 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
+    public Line(String name, String color, int surcharge) {
+        this(name, color);
+        this.surcharge = surcharge;
+    }
+
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
+        this.sections = new Sections(Arrays.asList(new Section(this, upStation, downStation, distance)));
+        this.lineStations.add(new LineStation(this, upStation));
+        this.lineStations.add(new LineStation(this, downStation));
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int surcharge) {
+        this(name, color, surcharge);
         this.sections = new Sections(Arrays.asList(new Section(this, upStation, downStation, distance)));
         this.lineStations.add(new LineStation(this, upStation));
         this.lineStations.add(new LineStation(this, downStation));
@@ -82,5 +95,9 @@ public class Line extends BaseEntity {
 
     public void addPathInfoTo(PathGraph graph) {
         this.sections.addPathInfoTo(graph);
+    }
+
+    public int getSurcharge() {
+        return surcharge;
     }
 }
