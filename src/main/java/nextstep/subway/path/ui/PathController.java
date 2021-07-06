@@ -23,7 +23,7 @@ public class PathController {
     public ResponseEntity<PathResponse> findOptimalPath(@AuthenticationPrincipal LoginMember loginMember,
                                                         @PathVariable("sourceId") Long sourceId,
                                                         @PathVariable("targetId") Long targetId) {
-        return ResponseEntity.ok().body(pathService.findOptimalPath(sourceId, targetId));
+        return ResponseEntity.ok().body(pathService.findOptimalPath(loginMember, sourceId, targetId));
     }
 
 

@@ -125,8 +125,4 @@ public class Section {
     public Map<Section, Integer> ofSectionMap() {
         return distance.ofSectionMap(this);
     }
-
-    public int getExpensiveSurcharge(Section b) {
-        return 0;
-    }
 }

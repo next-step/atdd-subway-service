@@ -1,20 +1,20 @@
 package nextstep.subway.auth.domain;
 
+import nextstep.subway.common.Excetion.NotLoginException;
+
 public class LoginMember {
-    private Long id;
-    private String email;
-    private Integer age;
+    public static final int SUBWAY_CHARGE = 1250;
 
-    public LoginMember() {
-    }
-
-    public LoginMember(Long id, String email, Integer age) {
-        this.id = id;
-        this.email = email;
-        this.age = age;
-    }
+    public Long id;
+    public String email;
+    public Integer age;
+    public double discountAmount;
+    public int subwayCharge;
 
     public Long getId() {
+        if(id == null){
+            throw new NotLoginException();
+        }
         return id;
     }
 
@@ -24,5 +24,9 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
+    }
+
+    public int calculatorCharge(int charge) {
+        return (int) Math.ceil((subwayCharge + charge) * discountAmount);
     }
 }

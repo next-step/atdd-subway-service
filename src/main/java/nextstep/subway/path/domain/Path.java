@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.Excetion.NotConnectStationException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
@@ -74,11 +75,11 @@ public class Path {
         return charge;
     }
 
-    public void surCharge(List<Line> linesOfSection) {
+    public void surCharge(LoginMember loginMember, List<Line> linesOfSection) {
         List<Integer> surCharges = linesOfSection.stream()
                 .map(line -> line.getSurcharge())
                 .collect(Collectors.toList());
         surCharges.sort(Comparator.reverseOrder());
-        charge += surCharges.get(0);
+        charge = loginMember.calculatorCharge(charge += surCharges.get(0));
     }
 }

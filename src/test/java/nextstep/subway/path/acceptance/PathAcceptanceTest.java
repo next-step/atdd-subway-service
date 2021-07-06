@@ -8,6 +8,7 @@ import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -166,6 +167,72 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // and
         // 지하철_이용_요금도_함께_응답됨 30Km -> 1,250 + (100 * 5) = 1,750 + 5호선 1000원
         지하철_요금_응답됨(pathResponse, 2750);
+    }
+
+    @DisplayName("유아 로그인 두 역의 최단 거리 유아용 요금 조회")
+    @Test
+    void 지하철_경로_유아용_요금_조회() {
+        // given
+        노선_등록_되어_있음();
+        지하철_구간_등록_되어_있음();
+
+        // and
+        // 유아용 로그인 되어 있음
+        MemberAcceptanceTest.회원_생성을_요청("child@test.com", "1234", 7);
+        String token = MemberAcceptanceTest.토큰_발급을_요청("child@test.com", "1234").jsonPath().getString("accessToken");
+
+        // when
+        // 출발역에서_도착역까지_최단_거리_경로_조회_요청
+        ExtractableResponse<Response> response = PathAcceptanceTest.지하철_인증_경로_조회(token, 강남역, 화곡역);
+
+        // than
+        // 최단_거리_경로_조회됨
+        PathResponse pathResponse = response.as(PathResponse.class);
+
+        // and
+        // 지하철_이용_요금도_함께_응답됨 30Km -> (1,250 + (100 * 5) - 350 + 1000) * 0.5 = 1200
+        지하철_요금_응답됨(pathResponse, 1200);
+    }
+
+    @DisplayName("청소년 로그인 두 역의 최단 거리 청소년용 요금 조회")
+    @Test
+    void 지하철_경로_청소년_요금_조회() {
+        // given
+        노선_등록_되어_있음();
+        지하철_구간_등록_되어_있음();
+
+        // and
+        // 유아용 로그인 되어 있음
+        MemberAcceptanceTest.회원_생성을_요청("child@test.com", "1234", 15);
+        String token = MemberAcceptanceTest.토큰_발급을_요청("child@test.com", "1234").jsonPath().getString("accessToken");
+
+        // when
+        // 출발역에서_도착역까지_최단_거리_경로_조회_요청
+        ExtractableResponse<Response> response = PathAcceptanceTest.지하철_인증_경로_조회(token, 강남역, 화곡역);
+
+        // than
+        // 최단_거리_경로_조회됨
+        PathResponse pathResponse = response.as(PathResponse.class);
+
+        // and
+        // 지하철_이용_요금도_함께_응답됨 30Km -> (1,250 + (100 * 5) - 350 + 1000) * 0.8 = 1920
+        지하철_요금_응답됨(pathResponse, 1920);
+    }
+
+    private static ExtractableResponse<Response> 지하철_인증_경로_조회(String token, StationResponse 강남역, StationResponse 화곡역) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths/sourceId/{sourceId}/targetId/{targetId}", 강남역.getId(), 화곡역.getId())
+                .then().log().all()
+                .extract();
+    }
+
+    private void 지하철_구간_등록_되어_있음() {
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 교대역, 잠실역, 10);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 교대역, 삼성역, 50);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 잠실역, 삼성역, 10);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 삼성역, 신림역, 50);
     }
 
     private void 지하철_요금_응답됨(PathResponse pathResponse, int charge) {

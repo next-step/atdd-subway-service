@@ -1,10 +1,15 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.Policy.MemberPolicy;
+import nextstep.subway.auth.domain.BasicMember;
+import nextstep.subway.auth.domain.ChildMember;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.Excetion.NotConnectStationException;
 import nextstep.subway.line.collection.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -77,7 +82,7 @@ public class PathServiceTest {
     @Test
     @DisplayName("지하철 경로 조회")
     void 지하철_경로_조회() {
-        // gien
+        // given
         // 노선에 구간 등록되어 있음
         노선_구간_등록_되어_있음();
 
@@ -87,7 +92,7 @@ public class PathServiceTest {
         when(stationRepository.findById(5L)).thenReturn(Optional.ofNullable(홍대역));
 
         // then
-        PathResponse pathResponse = pathService.findOptimalPath(1L, 5L);
+        PathResponse pathResponse = pathService.findOptimalPath(new BasicMember(), 1L, 5L);
         List<StationResponse> stations = pathResponse.getStations();
         List<Station> expectedStations = Arrays.asList(
                 신도림역, 문래역, 영등포구청역, 홍대역
@@ -113,7 +118,7 @@ public class PathServiceTest {
 
         // then
         // 예외 발생
-        assertThatThrownBy(() -> pathService.findOptimalPath(1L, 1L))
+        assertThatThrownBy(() -> pathService.findOptimalPath(new BasicMember(),1L, 1L))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -127,7 +132,7 @@ public class PathServiceTest {
 
         // then
         // 예외 발생
-        assertThatThrownBy(() -> pathService.findOptimalPath(1L, 6L))
+        assertThatThrownBy(() -> pathService.findOptimalPath(new BasicMember(),1L, 6L))
                 .isInstanceOf(NotConnectStationException.class);
     }
 
@@ -145,7 +150,7 @@ public class PathServiceTest {
 
         // then
         // 거리가 응답됨
-        PathResponse pathResponse = pathService.findOptimalPath(1L, 5L);
+        PathResponse pathResponse = pathService.findOptimalPath(new BasicMember(),1L, 5L);
         assertThat(pathResponse.getDistance()).isEqualTo(25);
     }
 
@@ -163,8 +168,52 @@ public class PathServiceTest {
 
         // then
         // 거리가 응답됨 30km -> 1,550 + 500
-        PathResponse pathResponse = pathService.findOptimalPath(1L, 5L);
+        PathResponse pathResponse = pathService.findOptimalPath(new BasicMember(),1L, 5L);
         assertThat(pathResponse.getCharge()).isEqualTo(2050);
+    }
+
+    @Test
+    @DisplayName("유아용 지하철 요금 조회")
+    void 유아용_지하철_요금_조회() {
+        // given
+        // 지하철 구간 등록되어 있음
+        노선_구간_등록_되어_있음();
+
+        // and
+        // 유아 로그인 되어 있음
+        LoginMember loginMember = ChildMember.of(new Member(1L, "child@test.com", "1234", 7), MemberPolicy.CHILD_MEMBER);
+
+        // when
+        // 신도림에서 홍대역까지의 경로를 구한다.
+        when(stationRepository.findById(1L)).thenReturn(Optional.ofNullable(신도림역));
+        when(stationRepository.findById(5L)).thenReturn(Optional.ofNullable(홍대역));
+
+        // then
+        // 거리가 응답됨 30km -> (1,550 + 500 - 350) * 0.5 = 850
+        PathResponse pathResponse = pathService.findOptimalPath(loginMember,1L, 5L);
+        assertThat(pathResponse.getCharge()).isEqualTo(850);
+    }
+
+    @Test
+    @DisplayName("청소년 지하철 요금 조회")
+    void 청소년_지하철_요금_조회() {
+        // given
+        // 지하철 구간 등록되어 있음
+        노선_구간_등록_되어_있음();
+
+        // and
+        // 청소년 로그인 되어 있음
+        LoginMember loginMember = ChildMember.of(new Member(1L, "teenager@test.com", "1234", 15), MemberPolicy.TEENAGER_MEMBER);
+
+        // when
+        // 신도림에서 홍대역까지의 경로를 구한다.
+        when(stationRepository.findById(1L)).thenReturn(Optional.ofNullable(신도림역));
+        when(stationRepository.findById(5L)).thenReturn(Optional.ofNullable(홍대역));
+
+        // then
+        // 거리가 응답됨 30km -> (1,550 + 500 - 350) * 0.8 = 850
+        PathResponse pathResponse = pathService.findOptimalPath(loginMember,1L, 5L);
+        assertThat(pathResponse.getCharge()).isEqualTo(1360);
     }
 
     private void 노선_구간_등록_되어_있음() {

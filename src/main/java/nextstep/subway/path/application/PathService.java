@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.Excetion.StationNotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.SectionRepository;
@@ -22,11 +23,11 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findOptimalPath(Long sourceStationId, Long targetStationId) {
+    public PathResponse findOptimalPath(LoginMember loginMember, Long sourceStationId, Long targetStationId) {
         Station sourceStation = findStation(sourceStationId);
         Station targetStation = findStation(targetStationId);
         Path path = Path.findOptimalPath(sourceStation, targetStation, sectionRepository.findAll());
-        path.surCharge(getLinesOfSection(path.getStations()));
+        path.surCharge(loginMember, getLinesOfSection(path.getStations()));
         return PathResponse.of(path);
     }
 

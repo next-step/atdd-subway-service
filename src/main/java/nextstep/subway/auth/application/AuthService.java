@@ -44,11 +44,11 @@ public class AuthService {
     private LoginMember findMemberType(Member member) {
         MemberPolicy memberPolicy = MemberPolicy.getAgePolicy(member.getAge());
         if(memberPolicy.isChild()){
-            return new ChildMember();
+            return ChildMember.of(member, memberPolicy);
         }
         if(memberPolicy.isTeenager()){
-            return new TeenagerMember();
+            return ChildMember.of(member, memberPolicy);
         }
-        return new BasicMember();
+        return BasicMember.of(member, memberPolicy);
     }
 }
