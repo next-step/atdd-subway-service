@@ -15,11 +15,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PathFareTest {
 
     private Line 신분당선 = new Line("신분당선", "red", 900);
-    private Station 강남역 = new Station("강남역");
     private Station 양재역 = new Station("양재역");
     private Station 청계산역 = new Station("청계산역");
     private Station 판교역 = new Station("판교역");
     private Station 정자역 = new Station("정자역");
+
+    private Line 경강선 = new Line("신분당선", "red", 500);
+    private Station 이매역 = new Station("이매역");
+    private Station 광주역 = new Station("광주역");
 
     private Line LINE3 = new Line("3호선", "orange");
     private Station 남부터미널역 = new Station("남부터미널역");
@@ -27,7 +30,6 @@ class PathFareTest {
 
     private Line LINE2 = new Line("2호선", "green");
     private Station 서초역 = new Station("서초역");
-    private Station 역삼역 = new Station("역삼역");
     private Station 사당역 = new Station("사당역");
 
     private Line LINE4 = new Line("4호선", "blue");
@@ -120,5 +122,27 @@ class PathFareTest {
         assertThat(path.fare(new LoginMember())).isEqualTo(2550);
         assertThat(path.fare(children)).isEqualTo(790);
         assertThat(path.fare(youth)).isEqualTo(1450);
+    }
+
+    @DisplayName("요금 계산 - 추가운임이 존재하는 노선 여러 개를 경유하는 경우")
+    @Test
+    void fare_multiLineHasExtraFare() {
+        // given
+        신분당선.add(정자역, 판교역, 7);
+        경강선.add(판교역, 이매역, 5);
+        경강선.add(이매역, 광주역, 12);
+
+        List<Line> lines = new ArrayList<>();
+        lines.add(신분당선);
+        lines.add(경강선);
+
+        // when
+        PathFinder pathFinder = new PathFinder(lines);
+        Path path = pathFinder.findPaths(정자역, 광주역);
+
+        // then
+        assertThat(path.fare(new LoginMember())).isEqualTo(2350);
+        assertThat(path.fare(children)).isEqualTo(750);
+        assertThat(path.fare(youth)).isEqualTo(1350);
     }
 }
