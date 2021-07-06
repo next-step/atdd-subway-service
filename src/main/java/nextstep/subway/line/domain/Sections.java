@@ -8,12 +8,10 @@ import nextstep.subway.station.domain.Stations;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 
 @Embeddable
@@ -25,13 +23,17 @@ public class Sections {
 
     }
 
+    public Sections(List<Section> sections) {
+        this.values = sections;
+    }
+
     public void add(Section section) {
         validateConnectableSection(section);
         addSectionByCase(section);
     }
 
     public List<Section> get() {
-        return this.values;
+        return unmodifiableList(this.values);
     }
 
     public int size() {
@@ -57,14 +59,21 @@ public class Sections {
     }
 
     public void deleteStation(Station deletingStation) {
-        validateDeletableStation(deletingStation);
+        validateDeletableStation();
+        validateExistingStation(deletingStation);
         deleteStationByCase(deletingStation);
+    }
+
+    public boolean isExistingStation(Station findingStation) {
+        return values.stream()
+                .filter(value -> value.isIncludeStation(findingStation))
+                .count() >= 1L;
     }
 
     public Distance sumDistances() {
         Distance result = new Distance(1);
 
-        for(Section value : values) {
+        for (Section value : values) {
             result = result.add(value.getDistance());
         }
 
@@ -72,16 +81,16 @@ public class Sections {
     }
 
     private void validateConnectableSection(Section section) {
-        long result = getConnectedStationCount(section);
+        int result = getConnectedStationCount(section);
 
         validateExistingSection(result);
         validateUnConnectableSection(result);
     }
 
-    private long getConnectedStationCount(Section section) {
+    private int getConnectedStationCount(Section section) {
         Stations stations = toStations();
 
-        return stations.get().stream()
+        return (int) stations.get().stream()
                 .filter(section::isIncludeStation)
                 .count();
     }
@@ -118,16 +127,17 @@ public class Sections {
         return section.isSameStationWithDownStation(startStation)
                 || section.isSameStationWithUpStation(endStation);
     }
+
     private void connectSectionAtExistingSection(Section section) {
         Optional<Section> foundSection = values.stream()
                 .filter(value -> value.isSameStationWithUpStation(section.getUpStation())
                         || value.isSameStationWithDownStation(section.getDownStation()))
                 .findFirst();
-        if (foundSection.isPresent()) {
-            Section connectedSection = foundSection.get();
+
+        foundSection.ifPresent(connectedSection -> {
             connectedSection.connectSectionBetween(section);
             values.add(section);
-        }
+        });
     }
 
     private Stations getUpStations(Station upStation) {
@@ -164,18 +174,16 @@ public class Sections {
                 .findFirst();
     }
 
-    private void validateDeletableStation(Station removingStation) {
+    private void validateDeletableStation() {
         if (this.size() == 1) {
             throw new UndeletableStationInSectionException("노선의 구간이 하나일 때는 지울 수 없습니다.");
-        } else if (!isExistingStation(removingStation)) {
-            throw new UndeletableStationInSectionException("이 역이 노선에 존재 하지 않습니다.");
         }
     }
 
-    private boolean isExistingStation(Station removingStation) {
-        Stations stations = toStations();
-
-        return stations.contains(removingStation);
+    private void validateExistingStation(Station removingStation) {
+        if(!toStations().contains(removingStation)) {
+            throw new UndeletableStationInSectionException("이 역이 노선에 존재 하지 않습니다.");
+        }
     }
 
     private void deleteStationByCase(Station deletingStation) {
@@ -208,5 +216,12 @@ public class Sections {
             upSection.mergeSection(downSection);
             values.remove(downSection);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Sections{" +
+                "values=" + values +
+                '}';
     }
 }

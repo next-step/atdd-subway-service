@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("지하철 구간 관련 기능")
-class LineSectionAcceptanceTest extends AcceptanceTest {
+public class LineSectionAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private StationResponse 강남역;
     private StationResponse 양재역;
@@ -41,6 +41,17 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
 
         LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
+    }
+
+    @DisplayName("지하철 노선을 관리한다")
+    @TestFactory
+    Stream<DynamicTest> manageLine() {
+        return Stream.of(
+                dynamicTest("지하철 노선에 역 등록 요청 및 성공 확인(신분당선, 강남역 - 양재역)", 지하철_노선에_지하철역_등록_요청_및_성공_확인(신분당선, 강남역, 양재역, 3)),
+                dynamicTest("지하철 노선과 이에 속한 정렬된 역 확인(강남역 - 양재역 - 광교역)", 지하철_노선_조회_요청_및_확인(신분당선, asList(강남역, 양재역, 광교역))),
+                dynamicTest("지하철_노선에_지하철역_제외_요청 및 성공 확인(신분당선, 양재역)", 지하철_노선에_지하철역_제외_요청_및_성공_확인(신분당선, 양재역)),
+                dynamicTest("지하철 노선과 이에 속한 정렬된 역 확인(강남역 - 양재역 - 광교역)", 지하철_노선_조회_요청_및_확인(신분당선, asList(강남역, 광교역)))
+        );
     }
 
     @DisplayName("지하철 구간을 등록한다.")
@@ -110,7 +121,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
 
 
 
-    private Executable 지하철_노선에_지하철역_등록_요청_및_성공_확인(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+    public Executable 지하철_노선에_지하철역_등록_요청_및_성공_확인(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         return () -> {
             ExtractableResponse<Response> response =  지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
 
@@ -152,9 +163,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         };
     }
 
-    ///
-
-    private ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 
         return RestAssured

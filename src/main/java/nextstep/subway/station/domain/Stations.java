@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.Collections.unmodifiableList;
+
 public class Stations {
     List<Station> values = new ArrayList<>();
 
@@ -15,10 +17,6 @@ public class Stations {
         this.values = values;
     }
 
-    public void add(Station station) {
-        this.add(station);
-    }
-
     public void addAll(Stations stations) {
         this.values.addAll(stations.get());
     }
@@ -28,7 +26,7 @@ public class Stations {
     }
 
     public List<Station> get() {
-        return values;
+        return unmodifiableList(this.values);
     }
 
     public Station get(int index) {

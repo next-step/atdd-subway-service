@@ -4,6 +4,8 @@ import nextstep.subway.line.dto.LineExceptionResponse;
 import nextstep.subway.line.exception.BelowZeroDistanceException;
 import nextstep.subway.line.exception.UnaddableSectionException;
 import nextstep.subway.line.exception.UndeletableStationInSectionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +23,12 @@ import static org.springframework.http.HttpStatus.*;
 @RestControllerAdvice(basePackages = "nextstep.subway.line.ui")
 public class LineControllerAdvice {
 
+    private static final Logger log = LoggerFactory.getLogger(LineControllerAdvice.class);
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(BAD_REQUEST)
     public LineExceptionResponse dataIntegrityViolationException(HttpServletRequest request, DataIntegrityViolationException e) {
-        e.printStackTrace();
+        log.error(e.getMessage(), e);
 
         String exceptionMessage = e.getMessage();
         LineExceptionResponse response = null;
@@ -37,30 +41,30 @@ public class LineControllerAdvice {
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(NOT_FOUND)
     public void entityNotFoundException(EntityNotFoundException e) {
-        e.printStackTrace();
+        log.error(e.getMessage(), e);
     }
 
     @ExceptionHandler(UnaddableSectionException.class)
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     public void unaddableSectionException(UnaddableSectionException e) {
-        e.printStackTrace();
+        log.error(e.getMessage(), e);
     }
 
     @ExceptionHandler(UndeletableStationInSectionException.class)
     @ResponseStatus(INTERNAL_SERVER_ERROR)
     public void undeletableStationInSectionException(UndeletableStationInSectionException e) {
-        e.printStackTrace();
+        log.error(e.getMessage(), e);
     }
 
     @ExceptionHandler(BelowZeroDistanceException.class)
     @ResponseStatus(BAD_REQUEST)
     public void belowZeroDistanceException(BelowZeroDistanceException e) {
-        e.printStackTrace();
+        log.error(e.getMessage(), e);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<LineExceptionResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        e.printStackTrace();
+        log.error(e.getMessage(), e);
         String errorMessage = e.getBindingResult()
                 .getAllErrors()
                 .get(0)

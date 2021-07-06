@@ -36,6 +36,7 @@ public class LineService {
         return of(persistLine);
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         return of(lineRepository.findAll());
     }

@@ -2,9 +2,11 @@ package nextstep.subway.station.application;
 
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
+import nextstep.subway.station.domain.Stations;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -25,14 +27,20 @@ public class StationService {
         return StationResponse.of(persistStation);
     }
 
-    public List<StationResponse> findAllStations() {
-        List<Station> stations = stationRepository.findAll();
+    @Transactional(readOnly = true)
+    public Stations findStations() {
 
-        return stations.stream()
+        return new Stations(stationRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public List<StationResponse> findStationResponses() {
+        return findStations().get().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }
