@@ -29,11 +29,11 @@ public enum DistanceBasedFarePolicy {
     }
 
     private int calculateOverFare(int distance) {
-        distance = calculateDistancePerUnit(distance);
-        if (distance == DISTANCE_NONE) {
+        int distancePerUnit = calculateDistancePerUnit(distance);
+        if (distancePerUnit == DISTANCE_NONE) {
             return ZERO_FARE;
         }
-        return (int) (Math.ceil((distance - 1) / chargeUnit) + 1) * overFare;
+        return distancePerUnit / chargeUnit * overFare;
     }
 
     private int calculateDistancePerUnit(int distance) {
