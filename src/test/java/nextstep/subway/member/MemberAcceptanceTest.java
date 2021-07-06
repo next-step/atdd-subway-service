@@ -93,7 +93,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 				.extract();
 	}
 
-	private void 나의_정보_조회됨(ExtractableResponse<Response> response) {
+	public static void 나의_정보_조회됨(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 		assertThat(response.jsonPath().getString("email")).isEqualTo(EMAIL);
 	}

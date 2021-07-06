@@ -51,16 +51,31 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	@Test
 	void myInfoWithBearerAuth() {
 		String accessToken = 로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
-
+		ExtractableResponse<Response> response = MemberAcceptanceTest.나의_정보_요청(accessToken);
+		MemberAcceptanceTest.나의_정보_조회됨(response);
 	}
 
 	@DisplayName("Bearer Auth 로그인 실패")
 	@Test
 	void myInfoWithBadBearerAuth() {
+		String wrongPassword = "123";
+		ExtractableResponse<Response> response = 로그인_요청(EMAIL, wrongPassword);
+		로그인_실패(response);
+	}
+
+	private void 로그인_실패(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 
 	@DisplayName("Bearer Auth 유효하지 않은 토큰")
 	@Test
 	void myInfoWithWrongBearerAuth() {
+		String wrongAccessToken = "qwe";
+		ExtractableResponse<Response> response = MemberAcceptanceTest.나의_정보_요청(wrongAccessToken);
+		나의_정보_조회_안됨(response);
+	}
+
+	private void 나의_정보_조회_안됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	}
 }
