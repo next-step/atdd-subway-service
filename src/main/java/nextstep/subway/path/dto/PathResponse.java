@@ -21,10 +21,6 @@ public class PathResponse {
         this.fare = fare;
     }
 
-//    public static PathResponse of(Path path) {
-//        return new PathResponse(StationResponse.ofList(path.getStations()), path.getDistance(), path.getFare());
-//    }
-
     public static PathResponse of(Path path, Fare fare) {
         return new PathResponse(StationResponse.ofList(path.getStations()), path.getDistance(), fare.getFare());
     }

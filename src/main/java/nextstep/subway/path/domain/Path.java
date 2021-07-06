@@ -14,7 +14,6 @@ public class Path {
     private GraphPath<Station, SectionEdge> pathResult;
     private final List<Station> stations;
     private final int distance;
-//    private Fare fare;
 
     public Path(GraphPath<Station, SectionEdge> pathResult) {
         if (pathResult == null) {
@@ -40,9 +39,5 @@ public class Path {
     public int getDistance() {
         return this.distance;
     }
-
-//    public int getFare() {
-//        return fare.getFare();
-//    }
 
 }

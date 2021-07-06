@@ -19,15 +19,9 @@ public class PathController {
         this.pathService = pathService;
     }
 
-//    @GetMapping
-//    public ResponseEntity<PathResponse> findShortestPath(@AuthenticationPrincipal User loginMember, @ModelAttribute PathRequest pathRequest) {
-//        PathResponse pathResponse = pathService.findShortestPath(loginMember, pathRequest.getSource(), pathRequest.getTarget());
-//        return ResponseEntity.ok().body(pathResponse);
-//    }
-
     @GetMapping
     public ResponseEntity<PathResponse> findShortestPath(@AuthenticationPrincipal User loginMember, @ModelAttribute PathRequest pathRequest) {
-        PathResponse pathResponse = pathService.newFindShortestPath(loginMember, pathRequest.getSource(), pathRequest.getTarget());
+        PathResponse pathResponse = pathService.findShortestPath(loginMember, pathRequest.getSource(), pathRequest.getTarget());
         return ResponseEntity.ok().body(pathResponse);
     }
 }

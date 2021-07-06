@@ -13,9 +13,6 @@ public class FareCalculator {
     private int distance;
     private Fare extraCharge;
 
-    public FareCalculator() {
-    }
-
     public FareCalculator(User user, int distance, Fare extraCharge) {
         this.user = user;
         this.distance = distance;
