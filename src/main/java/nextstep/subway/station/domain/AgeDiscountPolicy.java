@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public enum AgeDiscountPolicy {
 
-    CHILD(6, 13, 0.2),
+    CHILD(6, 13, 0.8),
     YOUTH(13, 19, 0.5);
 
     public static final int DISCOUNT_NONE = 0;
