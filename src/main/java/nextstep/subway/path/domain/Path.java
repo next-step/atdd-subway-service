@@ -1,6 +1,8 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.impl.FarePolicyByDistance;
+import nextstep.subway.path.domain.impl.FarePolicyByLine;
 import nextstep.subway.station.domain.Station;
 
 import java.util.List;
@@ -30,5 +32,13 @@ public class Path {
 
     public double getDistance() {
         return distance;
+    }
+
+    public FarePolicy getFarePolicyByLine() {
+        return new FarePolicyByLine(transferLines);
+    }
+
+    public FarePolicy getFarePolicyByDistance() {
+        return new FarePolicyByDistance(distance);
     }
 }

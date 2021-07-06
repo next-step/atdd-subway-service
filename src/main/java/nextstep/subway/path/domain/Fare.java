@@ -10,6 +10,10 @@ public class Fare {
         this.fare = fare;
     }
 
+    public Fare() {
+        fare = BASIC_FARE;
+    }
+
     public static Fare of(List<FarePolicy> farePolicies) {
         double fare = BASIC_FARE;
 

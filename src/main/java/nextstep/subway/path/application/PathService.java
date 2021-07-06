@@ -36,20 +36,20 @@ public class PathService {
         Path path = getPath(sourceId, targetId);
 
         List<FarePolicy> farePolicies = new ArrayList<>();
-        farePolicies.add(new FarePolicyByLine(path.getTransferLines()));
-        farePolicies.add(new FarePolicyByDistance(path.getDistance()));
+        farePolicies.add(path.getFarePolicyByLine());
+        farePolicies.add(path.getFarePolicyByDistance());
         farePolicies.add(FarePolicyByAge.findCategory(loginMember.getAge()));
 
         Fare fare = Fare.of(farePolicies);
 
         List<StationResponse> stationResponses = path.getStations().stream().map(StationResponse::of).collect(Collectors.toList());
-        return PathResponse.of(stationResponses, path.getDistance(), fare.getFare());
+        return PathResponse.of(stationResponses, path, fare);
     }
 
     public PathResponse findPath(long sourceId, long targetId) {
         Path path = getPath(sourceId, targetId);
         List<StationResponse> stationResponses = path.getStations().stream().map(StationResponse::of).collect(Collectors.toList());
-        return PathResponse.of(stationResponses, path.getDistance(), Fare.getBasicFare());
+        return PathResponse.of(stationResponses, path, new Fare());
     }
 
     private Path getPath(long sourceId, long targetId) {
