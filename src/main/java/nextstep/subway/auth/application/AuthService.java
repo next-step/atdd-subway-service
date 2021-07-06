@@ -1,6 +1,10 @@
 package nextstep.subway.auth.application;
 
+import nextstep.subway.auth.Policy.MemberPolicy;
+import nextstep.subway.auth.domain.BasicMember;
+import nextstep.subway.auth.domain.ChildMember;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.domain.TeenagerMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
@@ -29,11 +33,22 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            return new BasicMember();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+        return findMemberType(member);
+    }
+
+    private LoginMember findMemberType(Member member) {
+        MemberPolicy memberPolicy = MemberPolicy.getAgePolicy(member.getAge());
+        if(memberPolicy.isChild()){
+            return new ChildMember();
+        }
+        if(memberPolicy.isTeenager()){
+            return new TeenagerMember();
+        }
+        return new BasicMember();
     }
 }
