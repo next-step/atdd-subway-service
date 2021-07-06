@@ -63,13 +63,28 @@ class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(lines);
     }
 
+//    @DisplayName("최단경로를 찾는다")
+//    @Test
+//    void 최단경로_조회_구버전_메소드() {
+//        Long 출발역_아이디 = 1L; //불광역
+//        Long 도착역_아이디 = 2L; //응암역
+//
+//        PathResponse response = pathService.findShortestPath(new User(), 출발역_아이디, 도착역_아이디);
+//
+//        assertThat(response.getStations()).hasSize(3); //불광역 --> 연신내역 --> 응암역
+//        assertThat(response.getStations()).extracting("name")
+//                .containsExactly("불광역", "연신내역", "응암역");
+//        assertThat(response.getDistance()).isEqualTo(10);
+//
+//    }
+
     @DisplayName("최단경로를 찾는다")
     @Test
-    void 최단경로_조회() {
+    void 최단경로_조회_리팩토링후_메소드() {
         Long 출발역_아이디 = 1L; //불광역
         Long 도착역_아이디 = 2L; //응암역
 
-        PathResponse response = pathService.findShortestPath(new User(), 출발역_아이디, 도착역_아이디);
+        PathResponse response = pathService.newFindShortestPath(new User(), 출발역_아이디, 도착역_아이디);
 
         assertThat(response.getStations()).hasSize(3); //불광역 --> 연신내역 --> 응암역
         assertThat(response.getStations()).extracting("name")

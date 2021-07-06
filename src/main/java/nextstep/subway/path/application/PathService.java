@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.auth.domain.User;
+import nextstep.subway.fare.FareCalculator;
 import nextstep.subway.fare.domain.AgeBasedDiscount;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
@@ -26,8 +27,23 @@ public class PathService {
         this.lineRepository = lineRepository;
     }
 
+//    @Transactional(readOnly = true)
+//    public PathResponse findShortestPath(User user, Long start, Long end) {
+//        Map<Long, Station> stations = stationService.findStations(start, end);
+//
+//        Station startStation = stations.get(start);
+//        Station endStation = stations.get(end);
+//        Lines lines = new Lines(lineRepository.findAll());
+//
+//        PathFinder pathFinder = new PathFinder(lines);
+//        Path shortestPath = pathFinder.getDijkstraShortestPath(startStation, endStation);
+//
+//        shortestPath.updateFare(AgeBasedDiscount.calculate(user.getAge(), shortestPath.getFare()));
+//        return PathResponse.of(shortestPath);
+//    }
+
     @Transactional(readOnly = true)
-    public PathResponse findShortestPath(User user, Long start, Long end) {
+    public PathResponse newFindShortestPath(User user, Long start, Long end) {
         Map<Long, Station> stations = stationService.findStations(start, end);
 
         Station startStation = stations.get(start);
@@ -36,8 +52,8 @@ public class PathService {
 
         PathFinder pathFinder = new PathFinder(lines);
         Path shortestPath = pathFinder.getDijkstraShortestPath(startStation, endStation);
+        FareCalculator fareCalculator = new FareCalculator(user, shortestPath.getDistance(), shortestPath.getMaxExtraCharge());
 
-        shortestPath.updateFare(AgeBasedDiscount.calculate(user.getAge(), shortestPath.getFare()));
-        return PathResponse.of(shortestPath);
+        return PathResponse.of(shortestPath, fareCalculator.calculate());
     }
 }

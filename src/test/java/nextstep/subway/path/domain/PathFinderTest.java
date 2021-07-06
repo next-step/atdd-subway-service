@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static nextstep.subway.TestFixture.*;
-import static nextstep.subway.fare.domain.Fare.BASE_FARE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
