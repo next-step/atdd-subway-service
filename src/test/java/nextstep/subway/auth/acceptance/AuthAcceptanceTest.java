@@ -37,7 +37,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 		assertThat(response.jsonPath().getString("accessToken")).isNotBlank();
 	}
 
-	private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+	public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
 		return RestAssured.given().log().all()
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(new TokenRequest(email, password))
@@ -50,6 +50,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	@DisplayName("Bearer Auth")
 	@Test
 	void myInfoWithBearerAuth() {
+		String accessToken = 로그인_요청(EMAIL, PASSWORD).jsonPath().getString("accessToken");
+
 	}
 
 	@DisplayName("Bearer Auth 로그인 실패")
