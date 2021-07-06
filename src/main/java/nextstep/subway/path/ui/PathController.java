@@ -25,13 +25,13 @@ public class PathController {
 	}
 
 	@GetMapping(headers = {HttpHeaders.AUTHORIZATION})
-	public ResponseEntity findShortestDistance(@AuthenticationPrincipal LoginMember loginMember, @RequestParam Long source, @RequestParam Long target) {
+	public ResponseEntity<PathResponse> findShortestDistance(@AuthenticationPrincipal LoginMember loginMember, @RequestParam Long source, @RequestParam Long target) {
 		PathResponse pathResponse = pathService.findShortestDistance(source, target, loginMember.getAge());
 		return ResponseEntity.ok(pathResponse);
 	}
 
 	@GetMapping
-	public ResponseEntity findShortestDistance(@RequestParam Long source, @RequestParam Long target) {
+	public ResponseEntity<PathResponse> findShortestDistance(@RequestParam Long source, @RequestParam Long target) {
 		PathResponse pathResponse = pathService.findShortestDistance(source, target);
 		return ResponseEntity.ok(pathResponse);
 	}
