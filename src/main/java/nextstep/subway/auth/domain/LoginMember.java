@@ -9,9 +9,6 @@ public class LoginMember {
     private String email;
     private Integer age;
 
-    public LoginMember() {
-    }
-
     public LoginMember(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
@@ -39,9 +36,5 @@ public class LoginMember {
             return false;
         }
         return true;
-    }
-
-    public boolean isNotLogin() {
-        return isLogin() == false;
     }
 }
