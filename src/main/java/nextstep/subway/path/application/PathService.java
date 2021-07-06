@@ -36,8 +36,8 @@ public class PathService {
         Path path = getPath(sourceId, targetId);
 
         List<FarePolicy> farePolicies = new ArrayList<>();
-        farePolicies.add(path.getFarePolicyByLine());
-        farePolicies.add(path.getFarePolicyByDistance());
+        farePolicies.add(new FarePolicyByLine(path.getTransferLines()));
+        farePolicies.add(new FarePolicyByDistance(path.getDistance()));
         farePolicies.add(FarePolicyByAge.findCategory(loginMember.getAge()));
 
         Fare fare = Fare.of(farePolicies);
