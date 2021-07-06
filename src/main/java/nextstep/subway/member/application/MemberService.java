@@ -23,16 +23,23 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = findById(id);
         return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = findById(id);
         member.update(param.toMember());
     }
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    private Member findById(Long id) {
+        if (id == null) {
+            throw new MemberNotFoundException("회원정보를 찾을 수 없습니다. 로그인 정보를 확인해 주세요.");
+        }
+        return memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
     }
 }
