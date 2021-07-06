@@ -2,13 +2,12 @@ package nextstep.subway.path.infra;
 
 import nextstep.subway.path.domain.RatePolicy;
 
+import java.util.Arrays;
+
 /**
  * @see <a href="http://www.seoulmetro.co.kr/kr/page.do?menuIdx=354">운임안내</a>
  */
 public class RatePolicyByDistance implements RatePolicy {
-    private static final int DEFAULT_CHARGES = 1250;
-    private static final int ADDITIONAL_CHARGES = 100;
-
     private final double distance;
 
     public RatePolicyByDistance(final double distance) {
@@ -25,19 +24,57 @@ public class RatePolicyByDistance implements RatePolicy {
     }
 
     private double calculate() {
-        if (distance <= 10) {
-            return DEFAULT_CHARGES;
-        }
-
-        if (distance < 50) {
-            return calculateByDistance(distance - 10, 5) - ADDITIONAL_CHARGES;
-        }
-
-        return calculateByDistance(distance, 8);
+        return RuleByDistance.valueOf(distance).calculate(distance);
     }
 
-    private int calculateByDistance(double distance, int km) {
-        return DEFAULT_CHARGES + (int) ((Math.ceil((distance - 1) / km) + 1) * ADDITIONAL_CHARGES);
+    private enum RuleByDistance implements CalculateAble {
+        BASIC(0, 11) {
+            @Override
+            public int calculate(final double distance) {
+                return DEFAULT_CHARGES;
+            }
+        },
+        MEDIUM_DISTANCE(11, 50) {
+            @Override
+            public int calculate(final double distance) {
+                return calculateByDistance(distance - 10, 5) - ADDITIONAL_CHARGES;
+            }
+        },
+        LONG_DISTANCE(50, 9999) {
+            @Override
+            public int calculate(final double distance) {
+                return calculateByDistance(distance, 8);
+            }
+        };
+
+        private final int start;
+        private final int end;
+
+        private static final int DEFAULT_CHARGES = 1250;
+        private static final int ADDITIONAL_CHARGES = 100;
+
+        RuleByDistance(final int start, final int end) {
+            this.start = start;
+            this.end = end;
+        }
+
+        private static RuleByDistance valueOf(double distance) {
+            return Arrays.stream(RuleByDistance.values())
+                    .filter(x -> x.start <= distance && x.end > distance)
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("지원하지 않는 거리입니다."));
+        }
+
+        private static int calculateByDistance(double distance, int km) {
+            int addition = (km == 0) ? 0
+                    : (int) ((Math.ceil((distance) / km) + 1) * ADDITIONAL_CHARGES);
+
+            return DEFAULT_CHARGES + addition;
+        }
+    }
+
+    private interface CalculateAble {
+        int calculate(double distance);
     }
 
 }
