@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -15,12 +16,16 @@ public class PathFinder {
     private final Station target;
 
     public PathFinder(Station source, Station target) {
-        if (source.equals(target)) {
-            throw new IllegalArgumentException("출발역과 도착역은 같을 수 없습니다.");
-        }
+        validateEquals(source, target);
 
         this.source = source;
         this.target = target;
+    }
+
+    private void validateEquals(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException("출발역과 도착역은 같을 수 없습니다.");
+        }
     }
 
     public List<Station> findShortest(List<Line> lines) {
@@ -28,7 +33,7 @@ public class PathFinder {
 
         addAllLineSectionsToGraph(lines, graph);
 
-        return createShortestPaths(source, target, graph);
+        return createShortestPaths(graph);
     }
 
     private void addAllLineSectionsToGraph(List<Line> lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
@@ -37,8 +42,14 @@ public class PathFinder {
                 .forEach(sections -> addSectionsToGraph(graph, sections));
     }
 
-    private List<Station> createShortestPaths(Station source, Station target, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        return new DijkstraShortestPath<>(graph).getPath(source, target).getVertexList();
+    private List<Station> createShortestPaths(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        GraphPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph).getPath(source, target);
+
+        if (path == null) {
+            throw new IllegalArgumentException("출발역과 도착역이 올바르지 않습니다.");
+        }
+
+        return path.getVertexList();
     }
 
     private void addSectionsToGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> sections) {
