@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.domain.wrapper.AdditionalFare;
 import nextstep.subway.line.domain.wrapper.Sections;
 import nextstep.subway.station.domain.Station;
 
@@ -32,6 +33,9 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = Sections.newInstance();
 
+    @Embedded
+    private AdditionalFare additionalFare = AdditionalFare.newInstance();
+
     protected Line() {
     }
 
@@ -44,6 +48,13 @@ public class Line extends BaseEntity {
         this.name = name;
         this.color = color;
         sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int additionalFare) {
+        this.name = name;
+        this.color = color;
+        sections.add(new Section(this, upStation, downStation, distance));
+        this.additionalFare = AdditionalFare.from(additionalFare);
     }
 
     public static Line newInstance() {
@@ -82,6 +93,10 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public AdditionalFare getAdditionalFare() {
+        return additionalFare;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package nextstep.subway.advice;
 
 import nextstep.subway.exception.SectionNotConnectedException;
-import nextstep.subway.exception.StationsNotExistException;
+import nextstep.subway.exception.StationNotExistException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -34,8 +34,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler(value = StationsNotExistException.class)
-    public ResponseEntity handleStationsNotExistException(StationsNotExistException e) {
+    @ExceptionHandler(value = StationNotExistException.class)
+    public ResponseEntity handleStationsNotExistException(StationNotExistException e) {
         LOG.error("GlobalExceptionHandler.handleStationsNotExistException : ", e);
         return ResponseEntity.notFound().build();
     }
