@@ -103,7 +103,7 @@ class PathServiceTest {
         when(stationService.findById(3L)).thenReturn(chongshin);
 
         // when
-        PathResponse shortestPath = pathService.findShortestPath1(1L, 3L, new LoginMember());
+        PathResponse shortestPath = pathService.findShortestPath(1L, 3L, new LoginMember());
 
         // then
         assertAll(
@@ -136,7 +136,7 @@ class PathServiceTest {
                     when(stationService.findById(3L)).thenReturn(goter);
 
                     // when
-                    PathResponse shortestPath = pathService.findShortestPath1(1L, 3L, new LoginMember());
+                    PathResponse shortestPath = pathService.findShortestPath(1L, 3L, new LoginMember());
 
                     assertThat(shortestPath.getTotalFare()).isEqualTo(2150);
                 }),
@@ -147,7 +147,7 @@ class PathServiceTest {
                     when(stationService.findById(3L)).thenReturn(naebang);
 
                     // when
-                    PathResponse shortestPath = pathService.findShortestPath1(1L, 3L, new LoginMember());
+                    PathResponse shortestPath = pathService.findShortestPath(1L, 3L, new LoginMember());
 
                     assertThat(shortestPath.getTotalFare()).isEqualTo(2350);
                 })
@@ -158,7 +158,7 @@ class PathServiceTest {
     @DisplayName("동일할 역을 출발열, 도착역으로 입력 시 오류")
     void same_station_error() {
         // when
-        assertThatThrownBy(() -> pathService.findShortestPath(1L, 1L))
+        assertThatThrownBy(() -> pathService.findShortestPath(1L, 1L, new LoginMember()))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("경로조회 출발역과 도착역이 같습니다.");
     }

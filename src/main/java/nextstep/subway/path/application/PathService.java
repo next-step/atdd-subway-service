@@ -5,11 +5,15 @@ import java.util.Arrays;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.path.domain.Fare;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathResponse;
 
 @Service
@@ -23,16 +27,28 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse findShortestPath(Long source, Long target) {
+    public PathResponse findShortestPath(Long source, Long target, LoginMember loginMember) {
         validateSameStations(source, target);
         Station sourceStation = stationService.findById(source);
         Station targetStation = stationService.findById(target);
-        PathFinder finder = PathFinder.of(new Lines(lineRepository.findByStationIdIn(Arrays.asList(source, target))));
-        if (finder.isConnectedPath(sourceStation, targetStation)) {
-            return PathResponse.of(finder.findPath(sourceStation, targetStation));
+        Lines lines = new Lines(lineRepository.findByStationIdIn(Arrays.asList(source, target)));
+        if (PathFinder.of(lines).isConnectedPath(sourceStation, targetStation)) {
+            return findPathInSomeLines(loginMember, sourceStation, targetStation, lines);
         }
-        return PathResponse.of(PathFinder.of(new Lines(lineRepository.findAll()))
-                .findPath(sourceStation, targetStation));
+        return findPathInAllLines(loginMember, sourceStation, targetStation);
+    }
+
+    private PathResponse findPathInSomeLines(LoginMember loginMember, Station sourceStation, Station targetStation, Lines lines) {
+        Path path = PathFinder.of(lines).findPath(sourceStation, targetStation);
+        return PathResponse.of(path,
+                Fare.totalFareOf(new Distance(path.getTotalDistance()), loginMember, lines.getFinalSurcharge(path)));
+    }
+
+    private PathResponse findPathInAllLines(LoginMember loginMember, Station sourceStation, Station targetStation) {
+        Lines lines = new Lines(lineRepository.findAll());
+        Path path = PathFinder.of(lines).findPath(sourceStation, targetStation);
+        return PathResponse.of(path,
+                Fare.totalFareOf(new Distance(path.getTotalDistance()), loginMember, lines.getFinalSurcharge(path)));
     }
 
     private void validateSameStations(Long source, Long target) {
