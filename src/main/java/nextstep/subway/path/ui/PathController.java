@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import nextstep.subway.fare.application.FareService;
 import nextstep.subway.line.exception.NotFoundException;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
@@ -17,21 +18,24 @@ import nextstep.subway.path.dto.PathResponse;
 public class PathController {
 
     private final PathService pathService;
+    private final FareService fareService;
 
-    public PathController(final PathService pathService) {
+    public PathController(final PathService pathService, final FareService fareService) {
         this.pathService = pathService;
+        this.fareService = fareService;
     }
 
     @GetMapping
     public ResponseEntity<PathResponse> getShortestPath(@RequestParam final long source,
         @RequestParam final long target) {
         final PathResponse pathResponse = pathService.findShortestPath(source, target);
+        final long fare = fareService.calculateFare(pathResponse.getStations(), pathResponse.getDistance());
 
-        return ResponseEntity.ok().body(pathResponse);
+        return ResponseEntity.ok().body(PathResponse.of(pathResponse, fare));
     }
 
     @ExceptionHandler({DataIntegrityViolationException.class, NotFoundException.class, IllegalArgumentException.class})
-    public ResponseEntity handleIllegalArgsException(final RuntimeException e) {
+    public ResponseEntity<Void> handleIllegalArgsException(final RuntimeException e) {
         return ResponseEntity.badRequest().build();
     }
 }

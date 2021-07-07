@@ -25,11 +25,11 @@ public class PathResponse {
     }
 
     public static PathResponse of(final Path path) {
-        return new PathResponse(path.toStationList(), path.getDistance());
+        return new PathResponse(path.getStations(), path.getDistance());
     }
 
-    public static PathResponse of(final Path path, final long fare) {
-        return new PathResponse(path.toStationList(), path.getDistance(), fare);
+    public static PathResponse of(final PathResponse pathResponse, final long fare) {
+        return new PathResponse(pathResponse.getStations(), pathResponse.getDistance(), fare);
     }
 
     public List<Station> getStations() {
