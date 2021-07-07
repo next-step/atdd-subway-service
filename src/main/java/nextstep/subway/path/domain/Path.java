@@ -6,6 +6,8 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
@@ -16,7 +18,22 @@ public class Path {
 	private final List<Line> lines;
 	private final Station source;
 	private final Station target;
+	private final int age;
 
+	public Path(List<Line> lines, Station source, Station target, int age) {
+		validateSourceIsEqualsToTarget(source, target);
+		validateDoesNotBelongToLines(lines, source, target);
+		addVertexes(lines);
+		addEdgeWeights(lines);
+
+		this.lines = lines;
+		this.source = source;
+		this.target = target;
+		this.age = age;
+
+		dijkstraShortestPath = new DijkstraShortestPath(graph);
+		validateConnectedSourceToTarget(source, target);
+	}
 
 	public Path(List<Line> lines, Station source, Station target) {
 		validateSourceIsEqualsToTarget(source, target);
@@ -27,6 +44,7 @@ public class Path {
 		this.lines = lines;
 		this.source = source;
 		this.target = target;
+		this.age = 0;
 
 		dijkstraShortestPath = new DijkstraShortestPath(graph);
 		validateConnectedSourceToTarget(source, target);
@@ -82,7 +100,8 @@ public class Path {
 		int distance = getShortestDistance();
 		DistanceFarePolicy distanceFarePolicy = new DistanceFarePolicy(distance);
 		LineFarePolicy lineFarePolicy = new LineFarePolicy(lines);
+		AgeFarePolicy ageFarePolicy = new AgeFarePolicy(distanceFarePolicy.fare() + lineFarePolicy.fare(), age);
 
-		return distanceFarePolicy.fare() + lineFarePolicy.fare();
+		return ageFarePolicy.fare();
 	}
 }

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.Path;
@@ -26,16 +27,17 @@ public class PathService {
 		this.stationService = stationService;
 	}
 
-	public PathResponse findShortestPath(Long source, Long target) {
+	public PathResponse findShortestPath(LoginMember loginMember, Long source, Long target) {
 		List<Line> lines = lineService.findAll();
 		Station sourceStation = stationService.findStationById(source);
 		Station targetStation = stationService.findStationById(target);
+		int age = loginMember.getAge();
 
-		return dijkstraShortestPath(lines, sourceStation, targetStation);
+		return dijkstraShortestPath(lines, sourceStation, targetStation, age);
 	}
 
-	private PathResponse dijkstraShortestPath(List<Line> lines, Station sourceStation, Station targetStation) {
-		Path path = new Path(lines, sourceStation, targetStation);
+	private PathResponse dijkstraShortestPath(List<Line> lines, Station sourceStation, Station targetStation, int age) {
+		Path path = new Path(lines, sourceStation, targetStation, age);
 
 		List<StationResponse> stationResponses = path.getShortestStations().stream()
 			.map(StationResponse::of)

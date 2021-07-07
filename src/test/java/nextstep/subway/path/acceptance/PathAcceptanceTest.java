@@ -11,10 +11,13 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -50,29 +53,34 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 		LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
 
+
+		MemberAcceptanceTest.회원_생성되어_있음("gt@gt.com", "gt", 29);
+		String accessToken = AuthAcceptanceTest.토큰_발행("gt@gt.com", "gt").getAccessToken();
+
 		// when
-		ExtractableResponse<Response> response = 최단_경로_조회_요청(양재역, 교대역);
+		ExtractableResponse<Response> response = 최단_경로_조회_요청(accessToken, 양재역, 교대역);
 
 		// then
 		최단_경로_조회_응답됨(response);
 		최단_경로_조회_검증_역목록(response);
-		최단_경로_조회_검증_거리(response);
-		최단_경로_조회_검증_요금(response);
+		거리_검증(response);
+		요금_검증(response);
 	}
 
 	private void 최단_경로_조회_응답됨(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 	}
 
-	private void 최단_경로_조회_검증_요금(ExtractableResponse<Response> response) {
+	private void 요금_검증(ExtractableResponse<Response> response) {
 		int fare = response.jsonPath().getInt("fare");
 
 		int 거리별_추가_요금 = 1_450;
 		int 노선별_추가_요금 = 900;
-		assertThat(fare).isEqualTo(거리별_추가_요금 + 노선별_추가_요금);
+		int 나이별_추가_요금 = 0;	// age: 29
+		assertThat(fare).isEqualTo(거리별_추가_요금 + 노선별_추가_요금 + 나이별_추가_요금);
 	}
 
-	private void 최단_경로_조회_검증_거리(ExtractableResponse<Response> response) {
+	private void 거리_검증(ExtractableResponse<Response> response) {
 		int distance = response.jsonPath().getInt("distance");
 		assertThat(distance).isEqualTo(20);
 	}
@@ -82,9 +90,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		assertThat(stationResponses).extracting("name").containsExactly("교대역", "강남역", "양재역");
 	}
 
-	private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse 양재역, StationResponse 교대역) {
+	private ExtractableResponse<Response> 최단_경로_조회_요청(String accessToken, StationResponse 양재역, StationResponse 교대역) {
 		return RestAssured
 			.given().log().all()
+			.auth().oauth2(accessToken)
 			.when().get("/paths?source={source}&target={target}", 교대역.getId(), 양재역.getId())
 			.then().log().all().extract();
 	}
