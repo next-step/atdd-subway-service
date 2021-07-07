@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import nextstep.subway.fare.domain.DiscountPolicy;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.domain.Sections;
@@ -18,12 +19,13 @@ public class FareService {
         this.sectionRepository = sectionRepository;
     }
 
-    public long calculateFare(final List<Station> stationList, final int distance) {
+    public long calculateFare(final List<Station> stationList, final int distance,
+        final DiscountPolicy discountPolicy) {
         final Sections sections = new Sections(sectionRepository.findAll());
         final Stations stations = new Stations(stationList);
         final int extraFare = sections.getMaxExtraFare(stations.toStationPairs());
         final Fare fare = new Fare(distance, extraFare);
 
-        return fare.calculate();
+        return discountPolicy.discount(fare.calculate());
     }
 }

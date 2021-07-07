@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.application.FareService;
+import nextstep.subway.fare.domain.DiscountPolicyFactory;
 import nextstep.subway.line.exception.NotFoundException;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
@@ -26,10 +29,12 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> getShortestPath(@RequestParam final long source,
+    public ResponseEntity<PathResponse> getShortestPath(@AuthenticationPrincipal final LoginMember loginMember,
+        @RequestParam final long source,
         @RequestParam final long target) {
         final PathResponse pathResponse = pathService.findShortestPath(source, target);
-        final long fare = fareService.calculateFare(pathResponse.getStations(), pathResponse.getDistance());
+        final long fare = fareService.calculateFare(pathResponse.getStations(), pathResponse.getDistance(),
+            DiscountPolicyFactory.getDiscountPolicy(loginMember));
 
         return ResponseEntity.ok().body(PathResponse.of(pathResponse, fare));
     }

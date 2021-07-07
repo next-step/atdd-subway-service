@@ -8,7 +8,7 @@ public class LoginMember {
     public LoginMember() {
     }
 
-    public LoginMember(Long id, String email, Integer age) {
+    public LoginMember(final Long id, final String email, final Integer age) {
         this.id = id;
         this.email = email;
         this.age = age;
@@ -24,5 +24,13 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
+    }
+
+    public boolean isTeenager() {
+        return age >= 13 && age < 19;
+    }
+
+    public boolean isChildren() {
+        return age >= 6 && age < 13;
     }
 }
