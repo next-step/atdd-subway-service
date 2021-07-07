@@ -28,7 +28,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         return AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class))
-                .map(token -> authService.findMemberByToken(token))
+                .map(authService::findMemberByToken)
                 .orElse(new LoginMember());
     }
 }

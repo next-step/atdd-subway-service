@@ -32,6 +32,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String NEW_PASSWORD = "newpassword";
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
+    public static final int ADULT_AGE = 25;
+    public static final int TEENAGER_AGE = 15;
+    public static final int CHILD_AGE = 10;
 
     @DisplayName("회원 정보를 관리한다.")
     @Test

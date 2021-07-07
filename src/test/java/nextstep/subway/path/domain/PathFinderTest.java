@@ -24,8 +24,9 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
 /**
- * PathFinder의 기능 테스트 코드 작성
+ * PathFinder 경로조회 기능 테스트
  */
+@DisplayName("PathFinder 경로조회 기능 테스트")
 class PathFinderTest {
 
     private Station gangnam;
@@ -115,6 +116,23 @@ class PathFinderTest {
                     assertAll(
                             () -> assertThat(Arrays.equals(pathStationNames.toArray(), targetStationNames.toArray())).isTrue(),
                             () -> assertThat(path.getTotalDistance()).isEqualTo(7)
+                    );
+                },
+                () -> {
+                    // when
+                    Path path = finder.findPath(gangnam, naebang);
+
+                    // then
+                    List<String> pathStationNames = path.getPathVertexes()
+                            .stream()
+                            .map(PathVertex::getName)
+                            .collect(Collectors.toList());
+                    List<String> targetStationNames = Stream.of(gangnam, gyodae, goter, naebang)
+                            .map(Station::getName)
+                            .collect(Collectors.toList());
+                    assertAll(
+                            () -> assertThat(Arrays.equals(pathStationNames.toArray(), targetStationNames.toArray())).isTrue(),
+                            () -> assertThat(path.getTotalDistance()).isEqualTo(8)
                     );
                 }
         );

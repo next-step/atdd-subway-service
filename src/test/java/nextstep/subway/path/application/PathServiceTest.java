@@ -2,6 +2,7 @@ package nextstep.subway.path.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,12 +13,15 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathResponse;
@@ -28,8 +32,9 @@ import nextstep.subway.path.dto.VertexResponse;
 import nextstep.subway.station.domain.StationRepository;
 
 /**
- * PathService 기능 테스트 코드 작성
+ * PathService 클래스 경로조회 테스트
  */
+@DisplayName("PathService 클래스 경로조회 테스트")
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
 
@@ -58,6 +63,7 @@ class PathServiceTest {
     private Station goter;
     private Station chongshin;
     private Station naebang;
+    private Station dongjac;
 
     @BeforeEach
     void setUp() {
@@ -70,6 +76,7 @@ class PathServiceTest {
         goter = new Station("고속터미널역");
         chongshin = new Station("총신대입구역");
         naebang = new Station("내방역");
+        dongjac = new Station("동작역");
 
         line2 = new Line("2호선", "green", gangnam, gyodae, 3);
         line2.addSection(new Section(line2, gyodae, seocho, 2));
@@ -77,9 +84,10 @@ class PathServiceTest {
         line2.addSection(new Section(line2, bangbae, sadang, 2));
         line2.addSection(new Section(line2, sadang, nakseongdae, 2));
 
-        line3 = new Line("3호선", "orange", gyodae, goter, 2);
-        line4 = new Line("4호선", "blue", sadang, chongshin, 3);
-        line7 = new Line("7호선", "dark_green", chongshin, naebang, 5);
+        line3 = new Line("3호선", "orange", gyodae, goter, 2, 900);
+        line4 = new Line("4호선", "blue", sadang, chongshin, 3, 800);
+        line4.addSection(new Section(line4, chongshin, dongjac, 3));
+        line7 = new Line("7호선", "dark_green", chongshin, naebang, 5, 1100);
         line7.addSection(new Section(line7, naebang, goter, 3));
     }
 
@@ -95,7 +103,7 @@ class PathServiceTest {
         when(stationService.findById(3L)).thenReturn(chongshin);
 
         // when
-        PathResponse shortestPath = pathService.findShortestPath(1L, 3L);
+        PathResponse shortestPath = pathService.findShortestPath1(1L, 3L, new LoginMember());
 
         // then
         assertAll(
@@ -113,6 +121,36 @@ class PathServiceTest {
                     int totalDistance = shortestPath.getDistance();
                     assertThat(totalDistance).isEqualTo(12);
                 }
+        );
+    }
+
+    @TestFactory
+    @DisplayName("실제로 사용한 노선의 가장 큰 요금을 조회")
+    List<DynamicTest> fine_use_line() {
+        List<Line> lines = Arrays.asList(line2, line3, line4, line7);
+        return Arrays.asList(
+                dynamicTest("가장 큰 요금1", () -> {
+                    // mocking
+                    when(lineRepository.findAll()).thenReturn(lines);
+                    when(stationService.findById(1L)).thenReturn(gangnam);
+                    when(stationService.findById(3L)).thenReturn(goter);
+
+                    // when
+                    PathResponse shortestPath = pathService.findShortestPath1(1L, 3L, new LoginMember());
+
+                    assertThat(shortestPath.getTotalFare()).isEqualTo(2150);
+                }),
+                dynamicTest("가장 큰 요금2", () -> {
+                    // mocking
+                    when(lineRepository.findAll()).thenReturn(lines);
+                    when(stationService.findById(1L)).thenReturn(gangnam);
+                    when(stationService.findById(3L)).thenReturn(naebang);
+
+                    // when
+                    PathResponse shortestPath = pathService.findShortestPath1(1L, 3L, new LoginMember());
+
+                    assertThat(shortestPath.getTotalFare()).isEqualTo(2350);
+                })
         );
     }
 

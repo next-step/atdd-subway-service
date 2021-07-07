@@ -4,13 +4,13 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Distance;
 
 public class Fare {
-	private static final int BASIC_DISCOUNT_FARE_FOR_NON_ADULT_USER = 350;
 	private static final int DEFAULT_FARE = 1250;
+	private static final int BASIC_DISCOUNT_FARE_FOR_NON_ADULT_USER = 350;
 	private static final int ADDITIONAL_FARE_PER_SECTION = 100;
 	private static final double CHILD_DISCOUNT_RATE = 0.5;
 	private static final double TEENAGER_DISCOUNT_RATE = 0.8;
-	private static final int MIDDLE_DISTANCE_FOR_EXTRA_FARE = 8;
-	private static final int LONG_DISTANCE_FOR_EXTRA_FARE = 5;
+	private static final int LONG_DISTANCE_FOR_EXTRA_FARE = 8;
+	private static final int MIDDLE_DISTANCE_FOR_EXTRA_FARE = 5;
 	private int fare;
 
 	private Fare(final int fare) {
@@ -29,14 +29,14 @@ public class Fare {
 
 	private static int calculateFareWithLongDistance(final Distance totalDistance) {
 		if (totalDistance.isLongDistance()) {
-			return totalDistance.getLongDistance() / MIDDLE_DISTANCE_FOR_EXTRA_FARE * ADDITIONAL_FARE_PER_SECTION;
+			return totalDistance.getLongDistance() / LONG_DISTANCE_FOR_EXTRA_FARE * ADDITIONAL_FARE_PER_SECTION;
 		}
 		return 0;
 	}
 
 	private static int calculateFareWithMiddleDistance(final Distance totalDistance) {
 		if (totalDistance.hasMiddleDistance()) {
-			return totalDistance.getMiddleDistance() / LONG_DISTANCE_FOR_EXTRA_FARE * ADDITIONAL_FARE_PER_SECTION;
+			return totalDistance.getMiddleDistance() / MIDDLE_DISTANCE_FOR_EXTRA_FARE * ADDITIONAL_FARE_PER_SECTION;
 		}
 		return 0;
 	}
