@@ -15,7 +15,7 @@ public class Path {
         return graphPath.getVertexList();
     }
 
-    public <T extends PathVertex> List<T> getPathVertexes(Class<T> cls) {
+    public <T extends PathVertex> List<T> getPathVertexes(Class<T> objectType) {
         return graphPath.getVertexList();
     }
 

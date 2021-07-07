@@ -16,7 +16,7 @@ public class Lines implements PathGraphCreator {
 
     public int getFinalSurcharge(Path path) {
         List<Station> pathStations = path.getPathVertexes(Station.class);
-        return lines.stream().filter(line -> line.inUsedBy(pathStations))
+        return lines.stream().filter(line -> line.isUsedBy(pathStations))
                 .mapToInt(Line::getSurcharge)
                 .max()
                 .orElse(0);

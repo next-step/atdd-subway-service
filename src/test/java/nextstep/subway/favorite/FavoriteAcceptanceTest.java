@@ -66,7 +66,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     /**
      * Scenario: 즐겨찾기를 관리
-     *
+     * <p>
      * When 즐겨찾기 생성을 요청
      * Then 즐겨찾기 생성됨
      * When 동일한 즐겨찾기 생성을 요청

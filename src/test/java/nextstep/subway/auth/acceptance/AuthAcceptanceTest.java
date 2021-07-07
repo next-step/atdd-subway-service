@@ -33,7 +33,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     /**
      * Feature: 로그인 기능
-     *
+     * <p>
      * Scenario: 로그인을 시도한다.
      * Given 회원 등록되어 있음
      * When 로그인 요청
@@ -54,7 +54,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     /**
      * Feature: 로그인 실패
-     *
+     * <p>
      * Scenario: 잘못된 정보로 로그인 시도시 실패한다.
      * Given 회원 등록되어 있음
      * When 잘못된 비밀번호로 로그인 요청
@@ -78,7 +78,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     /**
      * Feature: 유효하지 않은 토큰
-     *
+     * <p>
      * Scenario: 유효하지 않은 토큰으로 사용자 정보 조회시 실패한다.
      * Given 회원 등록되어 있음
      * And 로그인 되어 있음

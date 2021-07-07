@@ -142,7 +142,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
     private void 기존_구간의_거리를_넘는_구간_등록_요청_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-   }
+    }
 
     private ExtractableResponse<Response> 기존_구간의_거리를_넘는_구간_등록_요청1(Long lineId, SectionRequest sectionRequest) {
         return 지하철_구간_등록_요청(lineId, sectionRequest);

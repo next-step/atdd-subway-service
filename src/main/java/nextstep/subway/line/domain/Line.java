@@ -20,6 +20,7 @@ import nextstep.subway.station.dto.StationResponse;
 @Entity
 public class Line extends BaseEntity {
     private static final int USED_LINE_MINIMUM_STATION_COUNT = 2;
+    public static final int DEFAULT_SURCHARGE = 0;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,6 +45,7 @@ public class Line extends BaseEntity {
 
     public Line(String name, String color, int surcharge) {
         this(name, color);
+        validateSurcharge(surcharge);
         this.surcharge = surcharge;
     }
 
@@ -53,10 +55,12 @@ public class Line extends BaseEntity {
         this.sections = new Sections(Arrays.asList(new Section(this, upStation, downStation, distance)));
         this.lineStations = new LineStations(Arrays.asList(new LineStation(this, upStation)));
         this.lineStations.add(new LineStation(this, downStation));
+        this.surcharge = DEFAULT_SURCHARGE;
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance, int surcharge) {
         this(name, color, upStation, downStation, distance);
+        validateSurcharge(surcharge);
         this.surcharge = surcharge;
     }
 
@@ -96,7 +100,7 @@ public class Line extends BaseEntity {
         this.sections.addPathInfoTo(graph);
     }
 
-    public boolean inUsedBy(List<Station> stations) {
+    public boolean isUsedBy(List<Station> stations) {
         List<Station> targetStations = this.sections.getStations();
         targetStations.retainAll(stations);
         return targetStations.size() >= USED_LINE_MINIMUM_STATION_COUNT;
@@ -104,5 +108,11 @@ public class Line extends BaseEntity {
 
     public int getSurcharge() {
         return surcharge;
+    }
+
+    private void validateSurcharge(int surcharge) {
+        if (surcharge < DEFAULT_SURCHARGE) {
+            throw new IllegalArgumentException("추가요금으로 음수를 입력할 수 없습니다.");
+        }
     }
 }
