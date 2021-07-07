@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.PathFinder;
@@ -28,11 +29,11 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPath(PathRequest pathRequest) {
+    public PathResponse findPath(LoginMember loginMember, PathRequest pathRequest) {
         ShortestPath shortestPath = findShortestPath(pathRequest);
         return PathResponse.of(shortestPath.toStationResponse(),
             shortestPath.getDistance(),
-            shortestPath.calculateFareWithPolicy());
+            shortestPath.calculateFareWithPolicy(loginMember.getAge()));
     }
 
     private ShortestPath findShortestPath(PathRequest pathRequest) {
