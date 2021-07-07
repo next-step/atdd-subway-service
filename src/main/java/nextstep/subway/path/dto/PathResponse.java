@@ -12,4 +12,15 @@ public class PathResponse {
         this.stations = stations;
         this.distance = distance;
     }
+
+    public PathResponse() {
+    }
+
+    public List<Station> getStations() {
+        return stations;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
 }
