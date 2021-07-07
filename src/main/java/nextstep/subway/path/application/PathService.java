@@ -42,8 +42,9 @@ public class PathService {
 			.collect(Collectors.toList());
 
 		int shortestDistance = path.getShortestDistance();
+		int fare = path.calcFare();
 
-		return PathResponse.of(stationResponses, shortestDistance, 5_000);
+		return PathResponse.of(stationResponses, shortestDistance, fare);
 	}
 
 

@@ -73,4 +73,10 @@ public class Path {
 	public int getShortestDistance() {
 		return (int) dijkstraShortestPath.getPath(source, target).getWeight();
 	}
+
+	public int calcFare() {
+		int distance = getShortestDistance();
+		DistanceFarePolicy distanceFarePolicy = new DistanceFarePolicy(distance);
+		return distanceFarePolicy.fare();
+	}
 }
