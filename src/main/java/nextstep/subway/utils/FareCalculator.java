@@ -9,8 +9,6 @@ import nextstep.subway.station.domain.StationPath;
 
 public class FareCalculator {
 
-	private static final int DEFAULT_AGE = 20;
-
 	public static Fare getSubwayFare(Distance distance, Fare lineFare, int age) {
 		Fare fare = DistanceFareCalculator.getInstance().calculate(distance);
 		fare = fare.plus(lineFare);
@@ -23,9 +21,4 @@ public class FareCalculator {
 		return getSubwayFare(distance, lineFare, age);
 	}
 
-	public static Fare getSubwayFare(Lines lines, StationPath path) {
-		Distance distance = new Distance(path.getDistance());
-		Fare lineFare = lines.getMaxLineFare();
-		return getSubwayFare(distance, lineFare, DEFAULT_AGE);
-	}
 }

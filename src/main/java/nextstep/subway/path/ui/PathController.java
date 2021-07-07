@@ -24,15 +24,9 @@ public class PathController {
 		this.pathService = pathService;
 	}
 
-	@GetMapping(headers = {HttpHeaders.AUTHORIZATION})
+	@GetMapping
 	public ResponseEntity<PathResponse> findShortestDistance(@AuthenticationPrincipal LoginMember loginMember, @RequestParam Long source, @RequestParam Long target) {
 		PathResponse pathResponse = pathService.findShortestDistance(source, target, loginMember.getAge());
-		return ResponseEntity.ok(pathResponse);
-	}
-
-	@GetMapping
-	public ResponseEntity<PathResponse> findShortestDistance(@RequestParam Long source, @RequestParam Long target) {
-		PathResponse pathResponse = pathService.findShortestDistance(source, target);
 		return ResponseEntity.ok(pathResponse);
 	}
 

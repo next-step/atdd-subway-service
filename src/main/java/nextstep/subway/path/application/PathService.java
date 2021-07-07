@@ -29,16 +29,6 @@ public class PathService {
 		this.stationRepository = stationRepository;
 	}
 
-	public PathResponse findShortestDistance(Long source, Long target) {
-		List<Line> lines = lineRepository.findAll();
-		Station sourceStation = findStationById(source);
-		Station targetStation = findStationById(target);
-		StationGraph stationGraph = new StationGraph(new Lines(lines));
-		StationPath path = stationGraph.getShortestPath(sourceStation, targetStation);
-		Fare fare = FareCalculator.getSubwayFare(new Lines(lines), path);
-		return PathResponse.of(path, fare);
-	}
-
 	public PathResponse findShortestDistance(Long source, Long target, int age) {
 		List<Line> lines = lineRepository.findAll();
 		Station sourceStation = findStationById(source);
