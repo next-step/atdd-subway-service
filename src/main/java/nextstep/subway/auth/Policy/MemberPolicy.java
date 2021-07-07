@@ -21,17 +21,21 @@ public enum MemberPolicy {
 
     public static MemberPolicy getAgePolicy(int age) {
         return Arrays.stream(MemberPolicy.values())
-                .filter(memberPolicy -> memberPolicy.minAge <= age && age < memberPolicy.maxAge)
+                .filter(memberPolicy -> memberPolicy.isMatchingAge(age))
                 .findFirst()
                 .orElse(BASIC_MEMBER);
     }
 
+    public boolean isMatchingAge(int age) {
+        return minAge < age && age <= maxAge;
+    }
+
     public boolean isChild() {
-        return this.equals(TEENAGER_MEMBER) ? true : false;
+        return this == TEENAGER_MEMBER;
     }
 
     public boolean isTeenager() {
-        return this.equals(CHILD_MEMBER) ? true : false;
+        return this == CHILD_MEMBER;
     }
 
     public int getMemberCharge(int subwayCharge) {
