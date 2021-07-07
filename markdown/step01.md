@@ -155,13 +155,13 @@ feat (feature)
         - [x] 4-11-2.`Sections` : `==` ====> `equals()`
         - [x] 4-11-3.`LineAcceptanceTest.java` : 특정 상황에 대한 인수테스트로 변경
         - [x] 4-11-4.`LineSectionAcceptanceTest.java` : 특정 상황에 대한 인수테스트로 변경
-- [ ] 5.테스트
-    - [ ] 5-1.Gradle build Success 확인
-    - [ ] 5-2.checkstyle 문제없는지 확인 (Java Convention)
-    - [ ] 5-3.요구사항 조건들 충족했는지 확인
-        - [ ] 5-3-1.핵심 단위 로직 테스트
-    - [ ] 5-4.인수 테스트 확인
-    - [ ] 5-5.UI 테스트 확인
+- [x] 5.테스트
+    - [x] 5-1.Gradle build Success 확인
+    - [x] 5-2.checkstyle 문제없는지 확인 (Java Convention)
+    - [x] 5-3.요구사항 조건들 충족했는지 확인
+        - [x] 5-3-1.핵심 단위 로직 테스트
+    - [x] 5-4.인수 테스트 확인
+    - [x] 5-5.UI 테스트 확인
 - [ ] 6.인수인계
     - [ ] 6-1.소감 및 피드백 정리
         - [ ] 6-1-1.느낀점 & 배운점 작성

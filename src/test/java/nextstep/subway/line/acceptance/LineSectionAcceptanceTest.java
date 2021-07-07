@@ -111,6 +111,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 		// Then: 신분당선에 강남역 제외하지 못한다.
 		지하철_노선에_지하철역_제외_실패됨(제외_응답);
 	}
+
 	public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation,
 			StationResponse downStation, int distance) {
 		SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
