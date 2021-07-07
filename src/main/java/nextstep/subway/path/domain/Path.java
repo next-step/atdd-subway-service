@@ -76,10 +76,10 @@ public class Path {
     }
 
     public void surCharge(LoginMember loginMember, List<Line> linesOfSection) {
-        List<Integer> surCharges = linesOfSection.stream()
-                .map(line -> line.getSurcharge())
-                .collect(Collectors.toList());
-        surCharges.sort(Comparator.reverseOrder());
-        charge = loginMember.calculatorCharge(charge += surCharges.get(0));
+        int surCharges = linesOfSection.stream()
+                .mapToInt(line -> line.getSurcharge())
+                .max()
+                .orElse(0);
+        charge = loginMember.calculatorCharge(charge += surCharges);
     }
 }
