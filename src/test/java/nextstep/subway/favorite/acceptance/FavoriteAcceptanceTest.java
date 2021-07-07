@@ -65,29 +65,52 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> createdResponse2 = 즐겨찾기_생성_요청(accessToken, 판교역.getId(), 광교역.getId());
-
         // then
         즐겨찾기_생성됨(createdResponse2);
 
         // when
         ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(accessToken);
-
         // then
         즐겨찾기_목록_조회됨(findResponse);
         즐겨찾기_목록에_포함됨(findResponse,  Arrays.asList(createdResponse, createdResponse2));
 
         // when
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, createdResponse);
-
         // then
         즐겨찾기_삭제됨(deleteResponse);
 
         // when
         ExtractableResponse<Response> findResponseAfterDelete = 즐겨찾기_목록_조회_요청(accessToken);
-
         // then
         즐겨찾기_목록_조회됨(findResponseAfterDelete);
         즐겨찾기_목록에_포함됨(findResponseAfterDelete,  Arrays.asList(createdResponse2));
+    }
+
+    @DisplayName("다른 회원의 즐겨찾기는 삭제할수 없다")
+    @Test
+    void deleteNotMineFavorite() {
+        // given
+        String 다른_회원_이메일 = "test@gmail.com";
+        String 다른_회원_비밀번호 = "1234";
+        Integer 다른_회원_나이 = 31;
+        회원_등록되어_있음(다른_회원_이메일, 다른_회원_비밀번호, 다른_회원_나이);
+
+        // when
+        ExtractableResponse<Response> createdResponse = 즐겨찾기_생성_요청(accessToken, 강남역.getId(), 판교역.getId());
+        // then
+        즐겨찾기_생성됨(createdResponse);
+
+        // when
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(accessToken);
+        // then
+        즐겨찾기_목록_조회됨(findResponse);
+        즐겨찾기_목록에_포함됨(findResponse,  Arrays.asList(createdResponse));
+
+        // when
+        accessToken = 로그인_되어_있음(다른_회원_이메일, 다른_회원_비밀번호);
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, createdResponse);
+        // then
+        즐겨찾기_삭제_실패함(deleteResponse);
     }
 
     private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
@@ -146,5 +169,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
         assertThat(HttpStatus.NO_CONTENT.value()).isEqualTo(response.statusCode());
+    }
+
+    private void 즐겨찾기_삭제_실패함(ExtractableResponse<Response> response) {
+        assertThat(HttpStatus.INTERNAL_SERVER_ERROR.value()).isEqualTo(response.statusCode());
     }
 }
