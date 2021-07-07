@@ -33,7 +33,7 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new BasicMember();
+            return new BasicMember(MemberPolicy.BASIC_MEMBER);
         }
 
         String email = jwtTokenProvider.getPayload(credentials);

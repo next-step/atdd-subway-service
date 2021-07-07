@@ -16,6 +16,6 @@ public class ChildMember extends LoginMember {
     }
 
     public static ChildMember of(Member member, MemberPolicy memberPolicy) {
-        return new ChildMember(member.getId(), member.getEmail(), member.getAge(), memberPolicy.getMemberCharge(SUBWAY_CHARGE), memberPolicy.getDiscountRate());
+        return new ChildMember(member.getId(), member.getEmail(), member.getAge(), memberPolicy.getMemberCharge(), memberPolicy.getDiscountRate());
     }
 }

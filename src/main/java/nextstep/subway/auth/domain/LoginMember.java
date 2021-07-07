@@ -3,8 +3,6 @@ package nextstep.subway.auth.domain;
 import nextstep.subway.common.Excetion.NotLoginException;
 
 public class LoginMember {
-    public static final int SUBWAY_CHARGE = 1250;
-
     public Long id;
     public String email;
     public Integer age;
@@ -12,7 +10,7 @@ public class LoginMember {
     public int subwayCharge;
 
     public Long getId() {
-        if(id == null){
+        if(id == null || id < 1L){
             throw new NotLoginException();
         }
         return id;

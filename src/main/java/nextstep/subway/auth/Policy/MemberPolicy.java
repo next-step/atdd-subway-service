@@ -3,19 +3,19 @@ package nextstep.subway.auth.Policy;
 import java.util.Arrays;
 
 public enum MemberPolicy {
-    TEENAGER_MEMBER(13, 19, 350, 0.8),
-    CHILD_MEMBER(6, 13, 350, 0.5),
-    BASIC_MEMBER(0, 0, 0, 1);
+    TEENAGER_MEMBER(13, 19, 900, 0.8),
+    CHILD_MEMBER(6, 13, 900, 0.5),
+    BASIC_MEMBER(0, 0, 1250, 1);
 
     private int minAge;
     private int maxAge;
-    private int deductibleAmount;
+    private int subwayAmount;
     private double discountRate;
 
-    MemberPolicy(int minAge, int maxAge, int deductibleAmount, double discountRate) {
+    MemberPolicy(int minAge, int maxAge, int subwayAmount, double discountRate) {
         this.minAge = minAge;
         this.maxAge = maxAge;
-        this.deductibleAmount = deductibleAmount;
+        this.subwayAmount = subwayAmount;
         this.discountRate = discountRate;
     }
 
@@ -38,8 +38,8 @@ public enum MemberPolicy {
         return this == CHILD_MEMBER;
     }
 
-    public int getMemberCharge(int subwayCharge) {
-        return subwayCharge - this.deductibleAmount;
+    public int getMemberCharge() {
+        return this.subwayAmount;
     }
 
     public double getDiscountRate() {

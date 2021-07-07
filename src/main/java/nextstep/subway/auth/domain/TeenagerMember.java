@@ -16,6 +16,6 @@ public class TeenagerMember extends LoginMember {
     }
 
     public static TeenagerMember of(Member member, MemberPolicy memberPolicy) {
-        return new TeenagerMember(member.getId(), member.getEmail(), member.getAge(), memberPolicy.getMemberCharge(SUBWAY_CHARGE), memberPolicy.getDiscountRate());
+        return new TeenagerMember(member.getId(), member.getEmail(), member.getAge(), memberPolicy.getMemberCharge(), memberPolicy.getDiscountRate());
     }
 }
