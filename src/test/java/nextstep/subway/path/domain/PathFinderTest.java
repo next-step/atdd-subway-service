@@ -62,7 +62,7 @@ public class PathFinderTest {
         // then
         assertThat(shortestPath.getDistance()).isEqualTo(12);
         assertThat(shortestPath.getStations()).containsExactlyElementsOf(Arrays.asList(강남역, 양재역, 남부터미널역));
-        assertThat(shortestPath.calculateFareWithPolicy()).isEqualTo(1350);
+        assertThat(shortestPath.calculateFareWithPolicy(31)).isEqualTo(1350);
     }
 
     @DisplayName("출발역과 도착역이 같은 경우")

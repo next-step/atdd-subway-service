@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -76,7 +77,8 @@ public class PathServiceTest {
         when(stationService.findById(sourceId)).thenReturn(강남역);
         when(stationService.findById(targetId)).thenReturn(남부터미널역);
 
-        PathResponse pathResponse = pathService.findPath(new PathRequest(sourceId, targetId));
+        LoginMember loginMember = new LoginMember(1L, "ehdgml3206@gmail.com", 31);
+        PathResponse pathResponse = pathService.findPath(loginMember, new PathRequest(sourceId, targetId));
 
         // then
         assertAll(
