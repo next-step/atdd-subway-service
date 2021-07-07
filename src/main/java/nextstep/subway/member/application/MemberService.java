@@ -33,7 +33,8 @@ public class MemberService {
     }
 
     public void deleteMember(Long id) {
-        memberRepository.deleteById(id);
+        Member member = findById(id);
+        memberRepository.delete(member);
     }
 
     private Member findById(Long id) {
