@@ -1,9 +1,8 @@
 package nextstep.subway.path.domain.policy.fare.distance;
 
 import nextstep.subway.path.domain.ShortestDistance;
-import org.springframework.stereotype.Component;
 
-public class GraterThan50KmOverFareByDistanceStrategy implements OverFareByDistanceStrategy {
+class GraterThan50KmOverFareByDistanceStrategy implements OverFareByDistanceStrategy {
     public static final int PER_KM = 8;
     public static final int OVER_FARE_PER_KM = 100;
     public static final int MIN_DISTANCE = 51;

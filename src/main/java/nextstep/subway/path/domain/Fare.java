@@ -2,7 +2,9 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.domain.policy.fare.FarePolicies;
+import nextstep.subway.path.domain.policy.fare.discount.DiscountByAgeStrategyFacade;
+import nextstep.subway.path.domain.policy.fare.distance.OverFareByDistanceStrategyFacade;
+import nextstep.subway.path.domain.policy.fare.line.OverFareByLineStrategyFacade;
 import nextstep.subway.station.domain.Station;
 
 import java.util.ArrayList;
@@ -22,18 +24,24 @@ public class Fare {
         this.fare = fare;
     }
 
-    public void calculate(Path path, LoginMember loginMember, FarePolicies farePolicies) {
-        applyDistanceOverFarePolicy(path.getDistance(), farePolicies);
-        applyLineOverFarePolicy(path.getStations(), farePolicies);
-        applyDiscountPolicy(loginMember, farePolicies);
+    public void calculate(Path path, LoginMember loginMember) {
+        applyDistanceOverFarePolicy(path.getDistance());
+        applyLineOverFarePolicy(path.getStations());
+        applyDiscountPolicy(loginMember);
     }
 
-    private void applyDiscountPolicy(LoginMember loginMember, FarePolicies farePolicies) {
-        farePolicies.getDiscountByAgeStrategy()
-                .ifPresent(discountByAgeStrategy -> this.fare -= discountByAgeStrategy.discountBy(loginMember, this));
+    private void applyDiscountPolicy(LoginMember loginMember) {
+        DiscountByAgeStrategyFacade facade = new DiscountByAgeStrategyFacade();
+        this.fare -= facade.discountBy(loginMember, this);
     }
 
-    private void applyLineOverFarePolicy(List<Station> stations, FarePolicies farePolicies) {
+    private void applyLineOverFarePolicy(List<Station> stations) {
+        List<Line> lines = findLines(stations);
+        OverFareByLineStrategyFacade facade = new OverFareByLineStrategyFacade();
+        this.fare += facade.calculateOverFare(lines);
+    }
+
+    private List<Line> findLines(List<Station> stations) {
         List<Line> lines = new ArrayList<>();
 
         for (int i = 1; i < stations.size(); i++) {
@@ -41,10 +49,7 @@ public class Fare {
             Station downStation = stations.get(i);
             addLine(lines, upStation, downStation);
         }
-
-        this.fare += farePolicies.getLineStrategy()
-                .orElseThrow(() -> new IllegalStateException("노선 추가운임 정책을 찾을 수 없습니다."))
-                .calculateOverFare(lines);
+        return lines;
     }
 
     private void addLine(List<Line> lines, Station upStation, Station downStation) {
@@ -56,10 +61,9 @@ public class Fare {
                 );
     }
 
-    private void applyDistanceOverFarePolicy(ShortestDistance distance, FarePolicies farePolicies) {
-        this.fare += farePolicies.getDistanceStrategy()
-                .orElseThrow(() -> new IllegalStateException("거리에 맞는 추가운임 정책을 찾을 수 없습니다."))
-                .calculateOverFare(distance);
+    private void applyDistanceOverFarePolicy(ShortestDistance distance) {
+        OverFareByDistanceStrategyFacade facade = new OverFareByDistanceStrategyFacade();
+        this.fare += facade.calculateOverFare(distance);
     }
 
     private void verifyAvailable(int fare) {

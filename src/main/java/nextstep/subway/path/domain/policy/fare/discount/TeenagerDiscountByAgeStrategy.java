@@ -5,7 +5,7 @@ import nextstep.subway.path.domain.Fare;
 
 import java.util.Objects;
 
-public class TeenagerDiscountByAgeStrategy implements DiscountByAgeStrategy {
+class TeenagerDiscountByAgeStrategy implements DiscountByAgeStrategy {
     public static final int MIN_AGE = 13;
     public static final int MAX_AGE = 18;
     public static final int FIXED_DISCOUNT = 350;
@@ -19,6 +19,9 @@ public class TeenagerDiscountByAgeStrategy implements DiscountByAgeStrategy {
 
     @Override
     public boolean isAvailable(LoginMember member) {
+        if (Objects.isNull(member.getId())) {
+            return false;
+        }
         return isTeenager(member);
     }
 

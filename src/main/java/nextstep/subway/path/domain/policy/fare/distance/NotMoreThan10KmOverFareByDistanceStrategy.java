@@ -2,7 +2,7 @@ package nextstep.subway.path.domain.policy.fare.distance;
 
 import nextstep.subway.path.domain.ShortestDistance;
 
-public class NotMoreThan10KmOverFareByDistanceStrategy implements OverFareByDistanceStrategy {
+class NotMoreThan10KmOverFareByDistanceStrategy implements OverFareByDistanceStrategy {
     public static final int MAX_DISTANCE = 10;
 
     @Override

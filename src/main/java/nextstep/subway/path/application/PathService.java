@@ -6,8 +6,6 @@ import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.domain.Graph;
 import nextstep.subway.path.domain.Path;
-import nextstep.subway.path.domain.policy.fare.FarePolicies;
-import nextstep.subway.path.domain.policy.fare.FarePoliciesService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -21,12 +19,10 @@ import java.util.List;
 public class PathService {
     private final StationRepository stationRepository;
     private final LineRepository lineRepository;
-    private final FarePoliciesService farePoliciesService;
 
-    public PathService(StationRepository stationRepository, LineRepository lineRepository, FarePoliciesService farePoliciesService) {
+    public PathService(StationRepository stationRepository, LineRepository lineRepository) {
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
-        this.farePoliciesService = farePoliciesService;
     }
 
     public PathResponse findShortestPath(LoginMember loginMember, Long sourceId, Long targetId) {
@@ -36,9 +32,8 @@ public class PathService {
 
         Graph graph = new Graph();
         Path path = graph.findShortestPath(lines, source, target);
-        FarePolicies farePolicies = farePoliciesService.findStrategies(loginMember, path.getDistance());
         Fare fare = new Fare();
-        fare.calculate(path, loginMember, farePolicies);
+        fare.calculate(path, loginMember);
 
         return PathResponse.of(path, fare);
     }

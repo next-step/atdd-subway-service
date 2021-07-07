@@ -3,13 +3,6 @@ package nextstep.subway.path.domain;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.domain.policy.fare.FarePolicies;
-import nextstep.subway.path.domain.policy.fare.discount.ChildDiscountByAgeStrategy;
-import nextstep.subway.path.domain.policy.fare.discount.TeenagerDiscountByAgeStrategy;
-import nextstep.subway.path.domain.policy.fare.distance.GraterThan10KmNotMoreThan50KmOverFareByDistanceStrategy;
-import nextstep.subway.path.domain.policy.fare.distance.GraterThan50KmOverFareByDistanceStrategy;
-import nextstep.subway.path.domain.policy.fare.distance.NotMoreThan10KmOverFareByDistanceStrategy;
-import nextstep.subway.path.domain.policy.fare.line.DefaultOverFareByLineStrategy;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +18,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class FareTest {
     private LoginMember loginMember;
     private Fare fare;
-    private FarePolicies farePolicies;
     private Path path;
 
     @BeforeEach
@@ -34,9 +26,6 @@ public class FareTest {
         ShortestDistance distance = new ShortestDistance(5);
         loginMember = new LoginMember(1L, "test@test.com", 21);
         fare = new Fare();
-        farePolicies = new FarePolicies(new DefaultOverFareByLineStrategy(),
-                new NotMoreThan10KmOverFareByDistanceStrategy(),
-                null);
         Station downStation = new Station(1L, "하행역");
         Station upStation = new Station(2L, "상행역");
         Section section = new Section(1L, upStation, downStation, 5);
@@ -52,7 +41,7 @@ public class FareTest {
         ShortestDistance shortestDistance = new ShortestDistance(distance);
 
         //when
-        fare.calculate(path, loginMember, farePolicies);
+        fare.calculate(path, loginMember);
 
         //then
         assertThat(fare).isEqualTo(new Fare());
@@ -65,10 +54,9 @@ public class FareTest {
         //given
         ShortestDistance shortestDistance = new ShortestDistance(distance);
         Path path = this.path.changeDistance(shortestDistance);
-        farePolicies.changeDistanceStrategy(new GraterThan10KmNotMoreThan50KmOverFareByDistanceStrategy());
 
         //when
-        fare.calculate(path, loginMember, farePolicies);
+        fare.calculate(path, loginMember);
 
         //then
         assertThat(fare).isEqualTo(new Fare(expected));
@@ -81,10 +69,9 @@ public class FareTest {
         //given
         ShortestDistance shortestDistance = new ShortestDistance(distance);
         Path path = this.path.changeDistance(shortestDistance);
-        farePolicies.changeDistanceStrategy(new GraterThan50KmOverFareByDistanceStrategy());
 
         //when
-        fare.calculate(path, loginMember, farePolicies);
+        fare.calculate(path, loginMember);
 
         //then
         assertThat(fare).isEqualTo(new Fare(expected));
@@ -102,7 +89,7 @@ public class FareTest {
         Path path = this.path.changeStations(Arrays.asList(upStation, downStation));
 
         //when
-        fare.calculate(path, loginMember, farePolicies);
+        fare.calculate(path, loginMember);
 
         //then
         assertThat(fare).isEqualTo(new Fare(1_750));
@@ -114,10 +101,9 @@ public class FareTest {
     public void 청소년할인_요금계산_확인(int age) throws Exception {
         //given
         LoginMember loginMember = new LoginMember(1L, "test@test.com", age);
-        farePolicies.changeDiscountByAgeStrategy(new TeenagerDiscountByAgeStrategy());
 
         //when
-        fare.calculate(path, loginMember, farePolicies);
+        fare.calculate(path, loginMember);
 
         //then
         assertThat(fare).isEqualTo(new Fare(720));
@@ -129,10 +115,9 @@ public class FareTest {
     public void 어린이할인_요금계산이확인(int age) throws Exception {
         //given
         LoginMember loginMember = new LoginMember(1L, "test@test.com", age);
-        farePolicies.changeDiscountByAgeStrategy(new ChildDiscountByAgeStrategy());
 
         //when
-        fare.calculate(path, loginMember, farePolicies);
+        fare.calculate(path, loginMember);
 
         //then
         assertThat(fare).isEqualTo(new Fare(450));

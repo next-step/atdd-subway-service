@@ -2,11 +2,11 @@ package nextstep.subway.path.domain.policy.fare.discount;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.domain.Fare;
-import org.springframework.stereotype.Component;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Objects;
 
-public class ChildDiscountByAgeStrategy implements DiscountByAgeStrategy {
+class ChildDiscountByAgeStrategy implements DiscountByAgeStrategy {
     public static final int MIN_AGE =6;
     public static final int MAX_AGE = 12;
     public static final int FIXED_DISCOUNT = 350;
@@ -20,6 +20,9 @@ public class ChildDiscountByAgeStrategy implements DiscountByAgeStrategy {
 
     @Override
     public boolean isAvailable(LoginMember member) {
+        if (Objects.isNull(member.getId())) {
+            return false;
+        }
         return isChild(member);
     }
 
