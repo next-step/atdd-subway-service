@@ -9,6 +9,7 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
 public class FavoriteService {
 
     private static final String NOT_EXISTS_FAVORITE = "존재하지 않는 즐겨찾기 입니다.";
+    private static final String NOT_FAVORITE_OWNER = "로그인 한 유저의 즐겨찾기만 삭제 가능합니다.";
 
     private final MemberService memberService;
     private final StationService stationService;
@@ -27,27 +29,32 @@ public class FavoriteService {
         this.favoriteRepository = favoriteRepository;
     }
 
-    public FavoriteResponse saveFavorite(FavoriteRequest favoriteRequest) {
-        Member member = memberService.selectMember(favoriteRequest.getMemberId());
+    @Transactional
+    public FavoriteResponse saveFavorite(Long memberId, FavoriteRequest favoriteRequest) {
+        Member member = memberService.selectMember(memberId);
         Station sourceStation = stationService.findStationById(favoriteRequest.getSource());
         Station targetStation = stationService.findStationById(favoriteRequest.getTarget());
-
-        Favorite favorite = new Favorite(member, sourceStation, targetStation);
-        member.addFavorite(favorite);
-        favoriteRepository.save(favorite);
-
-        return FavoriteResponse.of(favorite);
+        return FavoriteResponse.of(favoriteRepository.save(new Favorite(member, sourceStation, targetStation)));
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(Long memberId) {
         return FavoriteResponse.ofList(memberService.selectMember(memberId).favorites());
     }
 
-    public void deleteFavorite(Long favoriteId) {
+    @Transactional
+    public void deleteFavorite(Long memberId, Long favoriteId) {
+        Member loginMember = memberService.selectMember(memberId);
         Favorite favorite = favoriteRepository.findById(favoriteId)
                 .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_FAVORITE));
 
-        favorite.deleteFavorite();
+        validateFavoriteOwner(loginMember, favorite);
         favoriteRepository.delete(favorite);
+    }
+
+    private void validateFavoriteOwner(Member loginMember, Favorite favorite) {
+        if (!loginMember.equals(favorite.member())) {
+            throw new IllegalArgumentException(NOT_FAVORITE_OWNER);
+        }
     }
 }

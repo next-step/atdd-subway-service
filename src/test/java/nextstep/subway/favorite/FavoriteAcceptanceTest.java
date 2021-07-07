@@ -62,7 +62,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성_됨(createResponse);
 
         // when
-        ExtractableResponse<Response> listResponse = 즐겨찾기_목록_조회_요청(favoriteRequest, 토큰);
+        ExtractableResponse<Response> listResponse = 즐겨찾기_목록_조회_요청(토큰);
         // then
         즐겨찾기_목록_조회_됨(listResponse);
 
@@ -85,12 +85,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(FavoriteRequest favoriteRequest, String accessToken) {
+    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청( String accessToken) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .auth().oauth2(accessToken)
-                .body(favoriteRequest)
                 .when().get("/favorites")
                 .then().log().all()
                 .extract();

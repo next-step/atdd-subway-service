@@ -19,7 +19,7 @@ public class Member extends BaseEntity {
     private String password;
     private Integer age;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Favorite> favorities = new ArrayList<>();
 
     public Member() {
@@ -59,15 +59,7 @@ public class Member extends BaseEntity {
         }
     }
 
-    public void addFavorite(Favorite favorite) {
-        this.favorities.add(favorite);
-    }
-
     public List<Favorite> favorites() {
         return Collections.unmodifiableList(favorities);
-    }
-
-    public void deleteFavorite(Favorite deleteFavorite) {
-        this.favorities.remove(deleteFavorite);
     }
 }

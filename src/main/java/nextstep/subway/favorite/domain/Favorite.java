@@ -13,15 +13,15 @@ public class Favorite extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "source_station_id")
     private Station source;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_station_id")
     private Station target;
 
@@ -48,9 +48,5 @@ public class Favorite extends BaseEntity {
 
     public Station target() {
         return target;
-    }
-
-    public void deleteFavorite() {
-        member.deleteFavorite(this);
     }
 }
