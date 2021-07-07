@@ -4,8 +4,14 @@ import nextstep.subway.path.domain.Fare;
 
 public class FareOfAgePolicy implements FareCalculator {
 
+    private final int age;
+
+    public FareOfAgePolicy(final int age) {
+        this.age = age;
+    }
+
     @Override
     public int calculate(Fare fare) {
-        return FareOfAgePolicyFactory.discount(fare.getAge(), fare.getResult());
+        return FareOfAgePolicyFactory.discount(age, fare.getResult());
     }
 }

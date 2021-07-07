@@ -33,10 +33,9 @@ public class Paths {
     }
 
     public Fare calculateFare(final LoginMember loginMember) {
-        Fare fare = new Fare(this.totalDistance, loginMember.getAge(), this.maxAdditionalFare);
-        return fare.acceptPolicy(new FareOfDistancePolicy())
-                   .acceptPolicy(new AdditionalFareOfLinePolicy())
-                   .acceptPolicy(new FareOfAgePolicy());
+        return new Fare().acceptPolicy(new FareOfDistancePolicy(this.totalDistance))
+                       .acceptPolicy(new AdditionalFareOfLinePolicy(this.maxAdditionalFare))
+                       .acceptPolicy(new FareOfAgePolicy(loginMember.getAge()));
     }
 
     public List<Station> getShortestStationRoutes() {
