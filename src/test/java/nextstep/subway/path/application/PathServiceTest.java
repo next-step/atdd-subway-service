@@ -48,9 +48,9 @@ public class PathServiceTest {
         양재역 = new Station(3L, "양재역");
         남부터미널역 = new Station(4L, "남부터미널역");
 
-        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
+        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10, 900);
         이호선 = new Line("2호선", "bg-green-600", 교대역, 강남역, 10);
-        삼호선 = new Line("3호선", "bg-orange-600", 교대역, 양재역, 5);
+        삼호선 = new Line("3호선", "bg-orange-600", 교대역, 양재역, 5, 500);
 
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, 3));
 
@@ -84,7 +84,8 @@ public class PathServiceTest {
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(12),
                 () -> assertThat(pathResponse.getStations())
                         .extracting("name")
-                        .containsExactlyElementsOf(Arrays.asList(강남역.getName(), 양재역.getName(), 남부터미널역.getName()))
+                        .containsExactlyElementsOf(Arrays.asList(강남역.getName(), 양재역.getName(), 남부터미널역.getName())),
+                () -> assertThat(pathResponse.getFare()).isEqualTo(2250)
         );
     }
 }
