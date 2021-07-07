@@ -9,7 +9,14 @@ package nextstep.subway.path.domain;
 public class DistanceFarePolicy {
 	private static final int BASIC_FARE = 1_250;
 
+	private static final int FIRST_DISTANCE_STANDARD = 10;
+	private static final int FIRST_UNIT = 5;
+
+	private static final int SECOND_DISTANCE_STANDARD = 50;
+	private static final int SECOND_UNIT = 8;
+
 	private final int distance;
+
 
 	public DistanceFarePolicy(int distance) {
 		if (distance <= 0) {
@@ -19,19 +26,20 @@ public class DistanceFarePolicy {
 	}
 
 	public int fare() {
-		if (distance <= 10) {
+		if (distance <= FIRST_DISTANCE_STANDARD) {
 			return BASIC_FARE;
 		}
 
 		int fare = BASIC_FARE;
 
-		if (50 < distance) {
-			fare += calculateOverFare(distance - 50, 8);
+		if (SECOND_DISTANCE_STANDARD < distance) {
+			fare += calculateOverFare(distance - SECOND_DISTANCE_STANDARD, SECOND_UNIT);
 		}
 
-		if (10 < distance) {
-			int _distance = (distance - 10) >= 40 ? 40 : distance - 10;
-			fare += calculateOverFare(_distance, 5);
+		if (FIRST_DISTANCE_STANDARD < distance) {
+			int betweenFirstToSecond = (distance - FIRST_DISTANCE_STANDARD) >= SECOND_DISTANCE_STANDARD - FIRST_DISTANCE_STANDARD
+				? SECOND_DISTANCE_STANDARD - FIRST_DISTANCE_STANDARD : distance - FIRST_DISTANCE_STANDARD;
+			fare += calculateOverFare(betweenFirstToSecond, FIRST_UNIT);
 		}
 
 		return fare;
