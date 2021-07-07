@@ -9,7 +9,7 @@ import java.util.List;
 @Entity
 public class Line extends BaseEntity {
 
-    private static final int NONE_EXTRA_FARE = 0;
+    private static final int DEFAULT_EXTRA_FARE = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +17,7 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
-    private Integer extraFare;
+    private Integer extraFare = DEFAULT_EXTRA_FARE;
 
     @Embedded
     private Sections sections = new Sections();
@@ -26,7 +26,8 @@ public class Line extends BaseEntity {
     }
 
     public Line(String name, String color) {
-        this(name, color, NONE_EXTRA_FARE);
+        this.name = name;
+        this.color = color;
     }
 
     public Line(String name, String color, Integer extraFare) {
@@ -36,7 +37,9 @@ public class Line extends BaseEntity {
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this(name, color, NONE_EXTRA_FARE, upStation, downStation, distance);
+        this.name = name;
+        this.color = color;
+        sections.add(new Section(this, upStation, downStation, distance));
     }
 
     public Line(String name, String color, Integer extraFare, Station upStation, Station downStation, int distance) {
