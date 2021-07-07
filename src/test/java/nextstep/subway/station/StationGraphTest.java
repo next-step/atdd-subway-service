@@ -18,6 +18,7 @@ import nextstep.subway.station.domain.StationGraph;
 import nextstep.subway.station.domain.StationPath;
 import nextstep.subway.station.excpetion.StationGraphException;
 
+@DisplayName("역 그래프 테스트")
 public class StationGraphTest {
 
 	Station 성수역;

@@ -21,7 +21,7 @@ import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 
-@DisplayName("즐겨찾기 관련 기능")
+@DisplayName("즐겨찾기 인수 테스트")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 	private AuthAcceptanceTest authAcceptanceTest = new AuthAcceptanceTest();

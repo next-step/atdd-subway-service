@@ -13,6 +13,7 @@ import nextstep.subway.line.exception.InvalidSectionException;
 import nextstep.subway.line.exception.InvalidSectionsException;
 import nextstep.subway.station.domain.Station;
 
+@DisplayName("구간들 도메인 테스트")
 public class SectionsTest {
 
 	Station 성수역;

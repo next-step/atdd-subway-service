@@ -15,7 +15,7 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.member.domain.MemberRepository;
-
+@DisplayName("인증 인수 테스트")
 public class AuthAcceptanceTest extends AcceptanceTest {
 
 	MemberAcceptanceTest memberAcceptanceTest;

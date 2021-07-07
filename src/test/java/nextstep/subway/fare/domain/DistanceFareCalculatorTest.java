@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import nextstep.subway.line.domain.Distance;
 
+@DisplayName("거리 요금 계산 테스트")
 public class DistanceFareCalculatorTest {
 
 	@DisplayName("기본 요금 정책 테스트")

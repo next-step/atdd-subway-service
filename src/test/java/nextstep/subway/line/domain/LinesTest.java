@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.station.domain.Station;
 
+@DisplayName("노선들 도메인 테스트")
 public class LinesTest {
 
 	Station 성수역;

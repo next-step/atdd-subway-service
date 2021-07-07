@@ -17,6 +17,7 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationGraph;
 import nextstep.subway.station.domain.StationPath;
 
+@DisplayName("요금 계산기 테스트")
 public class FareCalculatorTest {
 
 	Station 성수역;

@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("나이 정책 할인 테스트")
 public class AgeDiscountCalculatorTest {
 
 	@DisplayName("어린이 정책 할인 테스트")

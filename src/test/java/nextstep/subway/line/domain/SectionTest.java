@@ -15,7 +15,7 @@ import nextstep.subway.line.exception.InvalidSectionException;
 import nextstep.subway.line.exception.InvalidSectionsException;
 import nextstep.subway.station.domain.Station;
 
-//todo : 성수뚝섬구간.isFirstSection() -> 근데 이건 Sections 에서 해야되는거 아니냐
+@DisplayName("구간 도메인 테스트")
 public class SectionTest {
 
 	Station 성수역;

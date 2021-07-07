@@ -12,6 +12,7 @@ import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.exception.InvalidLineException;
 import nextstep.subway.station.domain.Station;
 
+@DisplayName("노선 도메인 테스트")
 public class LineTest {
 
 	Station 성수역;
