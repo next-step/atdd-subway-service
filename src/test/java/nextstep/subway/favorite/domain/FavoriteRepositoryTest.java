@@ -2,6 +2,9 @@ package nextstep.subway.favorite.domain;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +28,7 @@ class FavoriteRepositoryTest {
     private final StationRepository stationRepository;
 
     private Member 사용자;
-    private Station 강남역, 양재역;
+    private Station 강남역, 양재역, 방배역, 사당역;
 
     @Autowired
     public FavoriteRepositoryTest(FavoriteRepository favoriteRepository,
@@ -40,6 +43,8 @@ class FavoriteRepositoryTest {
         사용자 = memberRepository.save(new Member(EMAIL, PASSWORD, AGE));
         강남역 = stationRepository.save(new Station("강남역"));
         양재역 = stationRepository.save(new Station("양재역"));
+        방배역 = stationRepository.save(new Station("방배역"));
+        사당역 = stationRepository.save(new Station("사당역"));
     }
 
     @Test
@@ -55,5 +60,21 @@ class FavoriteRepositoryTest {
         assertThat(favorite.getId()).isNotNull();
     }
 
+    @Test
+    @DisplayName("즐겨찾기 목록 조회")
+    void favorites() {
+        // given
+        Favorite favorite1 = new Favorite(사용자, 강남역, 양재역);
+        Favorite favorite2 = new Favorite(사용자, 방배역, 사당역);
+
+        favorite1 = favoriteRepository.save(favorite1);
+        favorite2 = favoriteRepository.save(favorite2);
+
+        // when
+        List<Favorite> favorites = favoriteRepository.findByMember(사용자);
+
+        // then
+        assertThat(favorites).containsAll(Arrays.asList(favorite1, favorite2));
+    }
 
 }

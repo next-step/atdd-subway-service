@@ -1,7 +1,11 @@
 package nextstep.subway.path.application;
 
+import static java.util.stream.Collectors.*;
+
+import java.util.List;
 import org.springframework.stereotype.Service;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -34,4 +38,9 @@ public class FavoriteService {
         return FavoriteResponse.of(favorite);
     }
 
+    public List<FavoriteResponse> findByLoginMember(LoginMember loginMember) {
+        Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
+        return favoriteRepository.findByMember(member).stream()
+                                 .map(FavoriteResponse::of).collect(toList());
+    }
 }
