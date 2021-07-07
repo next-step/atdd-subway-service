@@ -55,19 +55,28 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 		// then
 		최단_경로_조회_응답됨(response);
-		최단_경로_조회_검증(response);
+		최단_경로_조회_검증_역목록(response);
+		최단_경로_조회_검증_거리(response);
+		최단_경로_조회_검증_요금(response);
 	}
 
 	private void 최단_경로_조회_응답됨(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 	}
 
-	private void 최단_경로_조회_검증(ExtractableResponse<Response> response) {
-		List<StationResponse> stationResponses = response.jsonPath().getList("stations", StationResponse.class);
-		assertThat(stationResponses).extracting("name").containsExactly("교대역", "남부터미널역", "양재역");
+	private void 최단_경로_조회_검증_요금(ExtractableResponse<Response> response) {
+		int fare = response.jsonPath().getInt("fare");
+		assertThat(fare).isEqualTo(5_000);
+	}
 
+	private void 최단_경로_조회_검증_거리(ExtractableResponse<Response> response) {
 		int distance = response.jsonPath().getInt("distance");
 		assertThat(distance).isEqualTo(5);
+	}
+
+	private void 최단_경로_조회_검증_역목록(ExtractableResponse<Response> response) {
+		List<StationResponse> stationResponses = response.jsonPath().getList("stations", StationResponse.class);
+		assertThat(stationResponses).extracting("name").containsExactly("교대역", "남부터미널역", "양재역");
 	}
 
 	private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse 양재역, StationResponse 교대역) {

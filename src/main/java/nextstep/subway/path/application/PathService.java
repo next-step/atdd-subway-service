@@ -43,7 +43,7 @@ public class PathService {
 
 		int shortestDistance = path.getShortestDistance();
 
-		return PathResponse.of(stationResponses, shortestDistance);
+		return PathResponse.of(stationResponses, shortestDistance, 5_000);
 	}
 
 
