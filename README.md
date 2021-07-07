@@ -1,10 +1,48 @@
-# 인수테스트 기반 TDD 
+# 인수테스트 기반 TDD
+## STEP3 - 경로 조회 기능
+### 요구사항
+- [ ] 토큰 발급 기능 (로그인) 인수 테스트 만들기
+- [ ] 인증 - 내 정보 조회 기능 완성하기
+- [ ] 인증 - 즐겨 찾기 기능 완성하기
+
+#### 세부 요구 사항
+- [ ] 이메일과 패스워드를 이용하여 요청 시 access token을 응답하는 기능을 구현하기 
+- [ ] AuthAcceptanceTest을 만족하도록 구현하면 됨
+- [ ] AuthAcceptanceTest에서 제시하는 예외 케이스도 함께 고려하여 구현하기 
+- [ ] Bearer Auth 유효하지 않은 토큰 인수 테스트
+- [ ] 유효하지 않은 토큰으로 /members/me 요청을 보낼 경우에 대한 예외 처리
+
+### 요청 / 응답 포맷
+request
+```
+POST /login/token HTTP/1.1
+content-type: application/json; charset=UTF-8
+accept: application/json
+{
+    "password": "password",
+    "email": "email@email.com"
+}
+```
+
+response
+```
+POST /login/token HTTP/1.1
+content-type: application/json; charset=UTF-8
+accept: application/json
+{
+    "password": "password",
+    "email": "email@email.com"
+}
+```
+### 기능 구현 목록
+
+
 ## STEP2 - 경로 조회 기능
 ### 요구사항
 - [ ] 최단 경로 조회 인수 테스트 만들기
 - [ ] 최단 경로 조회 기능 구현하기
 
-#### 요청 / 응답 포맷
+### 요청 / 응답 포맷
 request
 ```http request
 HTTP/1.1 200 
@@ -104,7 +142,14 @@ Connection: keep-alive
   - [x] source, target 기준으로 경로 조회 기능(PathFinder)
 - [x] PathFinder 구현
   - [X] 테스트 구현
-  
+
+### 피드백 반영 필요 목록
+- [ ] 역 정보 주석 그리기
+- [ ] 경로 조회시 불 필요한 초기화 제거, TestInstance.Lifecycle.PER_CLASS 적용
+- [ ] PathController의 findPaths 반환 타입을 ResponseEntity로 변경
+- [ ] PathService의 역 조회 부분 한번에 초기화
+- [ ] PathGraph 내 코드 구조 개선
+
 
 ## STEP1 - ATDD 기반 리팩토링
 ### 요구사항
