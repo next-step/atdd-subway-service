@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.enums.SubwayFarePolicy;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.SubwayPath;
 import nextstep.subway.exception.SubwayPatchException;
@@ -33,7 +34,8 @@ public class PathService {
         Station sourceStation = findStationById(source);
         Station targetStation = findStationById(target);
         SubwayPath subwayPath = pathFinder.shortestPath(lines, sourceStation, targetStation);
-        return PathResponse.of(subwayPath);
+        SubwayFarePolicy farePolicy = SubwayFarePolicy.findFarePolicy(loginMember.getAge());
+        return PathResponse.of(subwayPath, farePolicy);
     }
 
     private Station findStationById(Long stationId) {
