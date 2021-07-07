@@ -57,12 +57,12 @@ public class PathFinderTest {
         PathFinder pathFinder = PathFinder.of(sections);
 
         // when
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = pathFinder.findShortestPath(강남역, 남부터미널역);
+        ShortestPath shortestPath = pathFinder.findShortestPath(강남역, 남부터미널역);
 
         // then
-        assertThat(shortestPath).isNotNull();
-        assertThat(shortestPath.getWeight()).isEqualTo(12);
-        assertThat(shortestPath.getVertexList()).containsExactlyElementsOf(Arrays.asList(강남역, 양재역, 남부터미널역));
+        assertThat(shortestPath.getDistance()).isEqualTo(12);
+        assertThat(shortestPath.getStations()).containsExactlyElementsOf(Arrays.asList(강남역, 양재역, 남부터미널역));
+        assertThat(shortestPath.calculateFareWithPolicy()).isEqualTo(1350);
     }
 
     @DisplayName("출발역과 도착역이 같은 경우")
