@@ -78,8 +78,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철역_최단_경로_응답됨(response, HttpStatus.OK);
-        지하철역_최단_경로_일치함(response.as(PathResponse.class), 8,
+        final PathResponse pathResponse = response.as(PathResponse.class);
+        지하철역_최단_경로_일치함(pathResponse, 8,
             Arrays.asList(교대역.toStation(), 남부터미널역.toStation(), 양재역.toStation()));
+        지하철_요금_응답됨(pathResponse);
 
     }
 
@@ -127,5 +129,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final List<Station> expectedStations) {
         assertThat(pathResponse.getDistance()).isEqualTo(expectedDistance);
         assertThat(pathResponse.getStations()).isEqualTo(expectedStations);
+    }
+
+    private void 지하철_요금_응답됨(final PathResponse pathResponse) {
+        assertThat(pathResponse.getFare()).isGreaterThan(0);
     }
 }

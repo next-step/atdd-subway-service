@@ -7,16 +7,29 @@ import nextstep.subway.station.domain.Station;
 
 public class PathResponse {
 
-    private final List<Station> stations;
-    private final int distance;
+    private List<Station> stations;
+    private int distance;
+    private long fare;
 
-    public PathResponse(List<Station> stations, int distance) {
+    public PathResponse() {
+    }
+
+    public PathResponse(final List<Station> stations, final int distance) {
         this.stations = stations;
         this.distance = distance;
     }
 
-    public static PathResponse of(Path path) {
-        return new PathResponse(path.getStations(), path.getDistance());
+    public PathResponse(final List<Station> stations, final int distance, final long fare) {
+        this(stations, distance);
+        this.fare = fare;
+    }
+
+    public static PathResponse of(final Path path) {
+        return new PathResponse(path.toStationList(), path.getDistance());
+    }
+
+    public static PathResponse of(final Path path, final long fare) {
+        return new PathResponse(path.toStationList(), path.getDistance(), fare);
     }
 
     public List<Station> getStations() {
@@ -25,5 +38,9 @@ public class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public long getFare() {
+        return fare;
     }
 }
