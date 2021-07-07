@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationPair;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class SectionsTest {
@@ -29,7 +30,7 @@ public class SectionsTest {
         sections.add(secondSection);
 
         // when
-        List<Station> actual = sections.stations();
+        final List<Station> actual = sections.stations();
 
         // then
         assertThat(actual).containsExactly(upStation, newStation, downStation);
@@ -96,5 +97,29 @@ public class SectionsTest {
 
         // then
         assertThat(sections.stations()).containsExactly(upStation, downStation);
+    }
+
+    @DisplayName("열차가 지나가는 노선들 중에 가장 높은 추가운임을 찾는 테스트")
+    @Test
+    void given_Stations_when_GetMaxExtraFare_then_ReturnExtraFare() {
+        // given
+        final Station station1 = new Station("1");
+        final Station station2 = new Station("2");
+        final Station station3 = new Station("3");
+        final Line line1 = new Line("1", "a", 100, station1, station2, 100);
+        final Line line2 = new Line("2", "b", 500, station2, station3, 500);
+        final Section firstSection = new Section(line1, station1, station2, 100);
+        final Section secondSection = new Section(line2, station2, station3, 10);
+        sections.add(firstSection);
+        sections.add(secondSection);
+        final StationPair stationPair = new StationPair(station1, station2);
+        final StationPair stationPair2 = new StationPair(station2, station3);
+        final List<StationPair> stationPairs = Arrays.asList(stationPair, stationPair2);
+
+        // when
+        final int maxExtraFare = sections.getMaxExtraFare(stationPairs);
+
+        // then
+        assertThat(maxExtraFare).isEqualTo(500);
     }
 }

@@ -113,4 +113,8 @@ public class Section {
     public boolean equalsDownStation(final Station station) {
         return this.downStation.equals(station);
     }
+
+    public int getExtraFare() {
+        return line.getExtraFare();
+    }
 }
