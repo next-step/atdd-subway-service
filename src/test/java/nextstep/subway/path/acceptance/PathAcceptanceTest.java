@@ -76,6 +76,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회_응답됨(response);
         최단_경로_순서_정렬됨(response, Arrays.asList(강남역, 양재역, 남부터미널역));
         최단_경로_거리_확인됨(response, 12L);
+        최단_경로_지하철_이용_요금_확인됨(response,  2250);
     }
 
     @DisplayName("출발역과 도착역이 같을 경우 응답에 실패한다.")
@@ -151,5 +152,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 최단_경로_조회_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    private void 최단_경로_지하철_이용_요금_확인됨(ExtractableResponse<Response> response, int expectFare) {
+        PathResponse path = response.as(PathResponse.class);
     }
 }
