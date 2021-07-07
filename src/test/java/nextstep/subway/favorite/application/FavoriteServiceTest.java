@@ -89,7 +89,7 @@ public class FavoriteServiceTest {
     void deleteFavorite() {
         // when
         when(favoriteRepository.findById(강남_양재_즐겨찾기.getId())).thenReturn(java.util.Optional.ofNullable(강남_양재_즐겨찾기));
-        favoriteService.deleteFavorite(강남_양재_즐겨찾기.getId());
+        favoriteService.deleteFavorite(로그인유저, 강남_양재_즐겨찾기.getId());
 
         // then
         List<FavoriteResponse> favoriteResponses = favoriteService.findFavorites(로그인유저);

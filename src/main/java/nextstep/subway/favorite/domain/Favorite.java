@@ -49,6 +49,10 @@ public class Favorite extends BaseEntity {
         return new Favorite(null, member, source, target);
     }
 
+    public boolean isOwner(Long memberId) {
+        return member.getId().equals(memberId);
+    }
+
     public Long getId() {
         return id;
     }
