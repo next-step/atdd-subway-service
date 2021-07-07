@@ -24,6 +24,9 @@ public class Line extends BaseEntity {
     @Embedded
     private LineSections sections = new LineSections();
 
+    @Embedded
+    private Fare fare = Fare.init();
+
     public Line() {
     }
 
@@ -71,5 +74,9 @@ public class Line extends BaseEntity {
 
     public List<Station> getStations() {
         return sections.toStations();
+    }
+
+    public Fare getFare() {
+        return this.fare;
     }
 }
