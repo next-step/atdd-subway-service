@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,8 +29,18 @@ public class FavoriteService {
 
 	public FavoriteResponse createFavorite(Long memberId, FavoriteRequest favoriteRequest) {
 		Member member = memberService.findMemberById(memberId);
-		Station source = stationService.findStationById(favoriteRequest.getSource());
-		Station target = stationService.findStationById(favoriteRequest.getTarget());
+		List<Station> stations = stationService.findByIds(Arrays.asList(favoriteRequest.getSource(), favoriteRequest.getTarget()));
+
+		Station source = stations.stream()
+			.filter(station -> station.getId() == favoriteRequest.getSource())
+			.findFirst()
+			.orElseThrow(() -> new IllegalArgumentException("시작역이 존재하지 않습니다."));
+
+		Station target = stations.stream()
+			.filter(station -> station.getId() == favoriteRequest.getTarget())
+			.findFirst()
+			.orElseThrow(() -> new IllegalArgumentException("종료역이 존재하지 않습니다."));
+
 
 		Favorite favorite = favoriteRepository.save(new Favorite(member, source, target));
 
