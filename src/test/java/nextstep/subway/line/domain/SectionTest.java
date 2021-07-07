@@ -36,7 +36,7 @@ public class SectionTest {
         Section newSection = new Section(이호선, 강남역, 서초역, 2);
 
         // when
-        section.updateStationBySection(newSection, true);
+        section.updateUpStationBySection(newSection);
 
         assertThat(section.getDistance()).isEqualTo(8);
         assertThat(section.getUpStation()).isSameAs(서초역);
@@ -50,7 +50,7 @@ public class SectionTest {
         Section newSection = new Section(이호선, 서초역, 교대역, 2);
 
         // when
-        section.updateStationBySection(newSection, false);
+        section.updateDownStationBySection(newSection);
 
         assertThat(section.getDistance()).isEqualTo(8);
         assertThat(section.getUpStation()).isSameAs(강남역);

@@ -14,7 +14,7 @@ import java.util.List;
 public class PathService {
 
     private final StationRepository stationRepository;
-    public final LineRepository lineRepository;
+    private final LineRepository lineRepository;
 
     public PathService(StationRepository stationRepository, LineRepository lineRepository) {
         this.stationRepository = stationRepository;
@@ -25,8 +25,8 @@ public class PathService {
         Station source = stationRepository.findById(sourceId).orElseThrow(() -> new IllegalArgumentException("출발역이 존재하지 않습니다."));
         Station target = stationRepository.findById(targetId).orElseThrow(() -> new IllegalArgumentException("도착역이 존재하지 않습니다."));
         PathFinder pathFinder = new PathFinder(lineRepository.findAll());
-        List<StationResponse> shortestPaths = pathFinder.findPaths(source, target);
-        int pathsDistance = (int) pathFinder.getPathsDistance(source, target);
-        return new PathResponse(shortestPaths, pathsDistance);
+        List<Station> shortestPaths = pathFinder.findPaths(source, target);
+        int pathsDistance = pathFinder.getPathsDistance(source, target);
+        return PathResponse.of(shortestPaths, pathsDistance);
     }
 }
