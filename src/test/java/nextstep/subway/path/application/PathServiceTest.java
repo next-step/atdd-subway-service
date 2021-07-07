@@ -18,14 +18,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
-@DisplayName("최단 경로 찾기 관련")
+@DisplayName("최단 경로 서비스 관련")
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
 
-    @Mock
-    private PathFinder pathFinder;
 
-    @InjectMocks
+    @Mock
     private PathService pathService;
 
     private Station 강남역;
@@ -52,7 +50,7 @@ class PathServiceTest {
     @Test
     void findBestPathFailBecauseOfNotExistStationTest() {
         //given
-        when(pathFinder.findShortestPath(강남역.getId(), 양재역.getId())).thenThrow(new IllegalArgumentException("등록되지 않은 역입니다."));
+        when(pathService.findShortestPath(강남역.getId(), 양재역.getId())).thenThrow(new IllegalArgumentException("등록되지 않은 역입니다."));
 
         //when && then
         assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 양재역.getId()))
@@ -64,7 +62,7 @@ class PathServiceTest {
     @Test
     void findBestPathFailBecauseOfDisconnectedStationTest() {
         //given
-        when(pathFinder.findShortestPath(강남역.getId(), 양재역.getId())).thenThrow(new IllegalArgumentException("연결된 경로가 없습니다."));
+        when(pathService.findShortestPath(강남역.getId(), 양재역.getId())).thenThrow(new IllegalArgumentException("연결된 경로가 없습니다."));
 
         //when && then
         assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 양재역.getId()))
@@ -77,7 +75,7 @@ class PathServiceTest {
     void findBestPathTest() {
         //given
         List<Station> stations = Arrays.asList(강남역, 양재역);
-        when(pathFinder.findShortestPath(강남역.getId(),양재역.getId())).thenReturn(new ShortestPath(stations,10));
+        when(pathService.findShortestPath(강남역.getId(),양재역.getId())).thenReturn(new PathResponse(stations,10));
 
         //when
         PathResponse result = pathService.findShortestPath(강남역.getId(), 양재역.getId());
