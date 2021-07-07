@@ -2,6 +2,7 @@ package nextstep.subway.station.domain;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.SectionEdge;
 import nextstep.subway.line.domain.Sections;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -44,7 +45,8 @@ public class PathFinder {
     }
 
     private void setEdgeWeight(Section section) {
-        graph.addEdge(section.getUpStation(), section.getDownStation(), section);
+        Line line = section.getLine();
+        graph.addEdge(section.getUpStation(), section.getDownStation(), new SectionEdge(section, line.getExtraFare()));
     }
 
     public SubwayMapPath findPaths(Station source, Station target) {

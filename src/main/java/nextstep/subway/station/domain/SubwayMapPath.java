@@ -1,8 +1,7 @@
 package nextstep.subway.station.domain;
 
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.SectionEdge;
 import org.jgrapht.GraphPath;
 
 import java.util.Collections;
@@ -45,13 +44,12 @@ public class SubwayMapPath {
 
     private int extraFare() {
         List<Integer> extraFares = sections().stream()
-                                            .map(Section::getLine)
-                                            .map(Line::getExtraFare)
+                                            .map(SectionEdge::getExtraFare)
                                             .collect(Collectors.toList());
         return Collections.max(extraFares);
     }
 
-    private List<Section> sections() {
+    private List<SectionEdge> sections() {
         return graphPath.getEdgeList();
     }
 }
