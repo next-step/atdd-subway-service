@@ -163,8 +163,8 @@ public class Sections {
 
     private Integer findExtraFare(final StationPair it) {
         return sections.stream()
-            .filter(section -> section.equalsUpStation(it.getUpStation()) &&
-                section.equalsDownStation(it.getDownStation()))
+            .filter(section -> section.contains(it.getUpStation()) &&
+                section.contains(it.getDownStation()))
             .map(Section::getExtraFare)
             .findFirst()
             .orElseThrow(IllegalArgumentException::new);
