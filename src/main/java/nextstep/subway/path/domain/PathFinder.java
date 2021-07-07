@@ -22,21 +22,24 @@ public class PathFinder {
     }
 
     public static PathFinder of(List<Section> sections) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, FareWeightedEdge> graph = new WeightedMultigraph(FareWeightedEdge.class);
 
         sections.forEach(section -> {
+            FareWeightedEdge fareWeightedEdge = new FareWeightedEdge(section.getLine().getFare());
             graph.addVertex(section.getUpStation());
             graph.addVertex(section.getDownStation());
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+            graph.addEdge(section.getUpStation(), section.getDownStation(), fareWeightedEdge);
+            graph.setEdgeWeight(fareWeightedEdge, section.getDistance());
         });
         return new PathFinder(new DijkstraShortestPath(graph));
     }
 
-    public GraphPath<Station, DefaultWeightedEdge> findShortestPath(Station source, Station target) {
+    public ShortestPath findShortestPath(Station source, Station target) {
         checkSameStation(source, target);
 
-        return Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
+        GraphPath<Station, FareWeightedEdge> graph = Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
             .orElseThrow(() -> new IllegalArgumentException(NOT_PATH_CONNECTED));
+        return ShortestPath.of(graph);
     }
 
     private void checkSameStation(Station source, Station target) {
