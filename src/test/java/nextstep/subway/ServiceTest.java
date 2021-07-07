@@ -9,7 +9,7 @@ import io.restassured.RestAssured;
 import nextstep.subway.utils.DatabaseCleanup;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class AcceptanceTest {
+public class ServiceTest {
 	@LocalServerPort
 	int port;
 
@@ -18,7 +18,10 @@ public class AcceptanceTest {
 
 	@BeforeEach
 	public void setUp() {
-		RestAssured.port = port;
+		if (RestAssured.port == RestAssured.UNDEFINED_PORT) {
+			RestAssured.port = port;
+			databaseCleanup.afterPropertiesSet();
+		}
 		databaseCleanup.execute();
 	}
 }
