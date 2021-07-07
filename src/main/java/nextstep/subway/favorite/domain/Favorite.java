@@ -15,6 +15,8 @@ import nextstep.subway.station.domain.Station;
 @Entity
 public class Favorite extends BaseEntity {
 
+    private static final String NOT_ALLOW_EQUALS_SOURCE_TARGET = "출발역과 도착역이 동일하여 등록할 수 없습니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,6 +34,7 @@ public class Favorite extends BaseEntity {
     private Station target;
 
     protected Favorite(Long id, Member member, Station source, Station target) {
+        validate(source, target);
         this.id = id;
         this.member = member;
         this.source = source;
@@ -47,6 +50,12 @@ public class Favorite extends BaseEntity {
 
     public static Favorite of(Member member, Station source, Station target) {
         return new Favorite(null, member, source, target);
+    }
+
+    private void validate(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException(NOT_ALLOW_EQUALS_SOURCE_TARGET);
+        }
     }
 
     public boolean isOwner(Long memberId) {
