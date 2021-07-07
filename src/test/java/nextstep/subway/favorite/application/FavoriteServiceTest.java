@@ -1,14 +1,12 @@
 package nextstep.subway.favorite.application;
 
-import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.favorite.domain.Favorite;
-import nextstep.subway.favorite.domain.FavoriteRepository;
-import nextstep.subway.favorite.dto.FavoriteRequest;
-import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.domain.MemberRepository;
-import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,12 +14,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.favorite.domain.FavoriteRepository;
+import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.domain.Member;
+import nextstep.subway.station.application.StationService;
+import nextstep.subway.station.domain.Station;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -31,10 +32,10 @@ public class FavoriteServiceTest {
     private FavoriteRepository favoriteRepository;
 
     @Mock
-    private StationRepository stationRepository;
+    private StationService stationService;
 
     @Mock
-    private MemberRepository memberRepository;
+    private MemberService memberService;
 
     private FavoriteService favoriteService;
 
@@ -52,16 +53,16 @@ public class FavoriteServiceTest {
         로그인유저 = new LoginMember(회원.getId(), 회원.getEmail(), 회원.getAge());
         강남_양재_즐겨찾기 = Favorite.of(1L, 회원, 강남역, 양재역);
 
-        favoriteService = new FavoriteService(favoriteRepository, memberRepository, stationRepository);
+        favoriteService = new FavoriteService(favoriteRepository, memberService, stationService);
     }
 
     @Test
     @DisplayName("즐겨찾기 생성")
     void createFavorite() {
         // when
-        when(memberRepository.findById(회원.getId())).thenReturn(java.util.Optional.of(회원));
-        when(stationRepository.findById(강남역.getId())).thenReturn(java.util.Optional.ofNullable(강남역));
-        when(stationRepository.findById(양재역.getId())).thenReturn(java.util.Optional.ofNullable(양재역));
+        when(memberService.findById(회원.getId())).thenReturn(회원);
+        when(stationService.findById(강남역.getId())).thenReturn(강남역);
+        when(stationService.findById(양재역.getId())).thenReturn(양재역);
         when(favoriteRepository.save(any())).thenReturn(강남_양재_즐겨찾기);
         FavoriteResponse favoriteResponse = favoriteService.createFavorite(로그인유저, new FavoriteRequest(강남역.getId(), 양재역.getId()));
 
