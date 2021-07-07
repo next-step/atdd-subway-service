@@ -23,7 +23,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     void beforeEach() {
         super.setUp();
-        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성을_요청(EMAIL, PASSWORD, ADULT_AGE);
     }
 
     @DisplayName("올바른 이메일과 비밀번호로 로그인한다")

@@ -12,11 +12,13 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 
 @Service
+@Transactional
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
@@ -35,7 +37,7 @@ public class FavoriteService {
         Station source = stations.get(request.getSource());
         Station target = stations.get(request.getTarget());
 
-        if(favoriteRepository.existsBySourceIdAndTargetId(source.getId(), target.getId())){
+        if (favoriteRepository.existsByMemberIdAndSourceIdAndTargetId(memberId, source.getId(), target.getId())) {
             throw new CannotAddException(Message.ERROR_FAVORITE_ALREADY_EXISTS);
         }
 
@@ -43,6 +45,7 @@ public class FavoriteService {
         return FavoriteResponse.of(favoriteRepository.save(favorite));
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(Long id) {
         return FavoriteResponse.ofList(favoriteRepository.findByMemberId(id));
     }

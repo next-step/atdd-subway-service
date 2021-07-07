@@ -2,6 +2,7 @@ package nextstep.subway.favorite.domain;
 
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.exception.Message;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -14,8 +15,8 @@ public class Favorite extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -30,12 +31,20 @@ public class Favorite extends BaseEntity {
     }
 
     public Favorite(Member member, Station source, Station target) {
+        validateStations(source, target);
         this.member = member;
         this.source = source;
         this.target = target;
     }
 
+    private void validateStations(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException(Message.ERROR_START_AND_END_STATIONS_ARE_SAME.showText());
+        }
+    }
+
     public Favorite(Long id, Member member, Station source, Station target) {
+        validateStations(source, target);
         this.member = member;
         this.source = source;
         this.target = target;

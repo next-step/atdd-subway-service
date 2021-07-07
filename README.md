@@ -13,6 +13,7 @@
 <br>
 
 # 지하철 노선도 미션
+
 [ATDD 강의](https://edu.nextstep.camp/c/R89PYi5H) 실습을 위한 지하철 노선도 애플리케이션
 
 <br>
@@ -20,25 +21,34 @@
 ## 🚀 Getting Started
 
 ### Install
+
 #### npm 설치
+
 ```
 cd frontend
 npm install
 ```
+
 > `frontend` 디렉토리에서 수행해야 합니다.
 
 ### Usage
+
 #### webpack server 구동
+
 ```
 npm run dev
 ```
+
 #### application 구동
+
 ```
 ./gradlew bootRun
 ```
+
 <br>
 
 ## ✏️ Code Review Process
+
 [텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
 
 <br>
@@ -53,9 +63,57 @@ npm run dev
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
 
-## 🚀 3단계 인증을 통한 기능 구현
+---
+
+## 🚀 4단계 요금 조회
+
+### 요구사항 정리
+
+* [x] 경로 조회 시 거리 기준 요금 정보 포함하기
+* [x] 노선별 추가 요금 정책 추가
+* [x] 연령별 할인 정책 추가
+
 ### 구현사항 정리
-* [ ] 토큰발급기능 인수테스트 작성
+
+* [X] 경로 조회 시 거리 기준 요금 정보 포함하기
+    * [X] 경로 인수테스트 추가
+        ```
+        ✅ Feature: 지하철 경로 검색
+            🔙 Background
+                Given 지하철역이 등록되어있음
+                And 지하철 노선이 등록되어있음
+                And 지하철 노선에 지하철역이 등록되어있음
+            1️⃣ Scenario : 두 역의 최단거리 경로를 조회
+                When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+                Then 최단거리 경로 응답
+                Then 총 거리도 함께 응답
+                Then ✨지하철 이용 요금도 함께 응답함✨
+        ```  
+    * [X] 거리별 요금정책을 담은 `enum` 설계 및 생성
+        - Functional Interface를 활용하여 요금 Calculator 생성
+        - 거리를 입력받으면 구간 결정은 내부적으로 하고, 그 구간에 따라 요금도 결정하도록!
+        - [링크](https://jojoldu.tistory.com/137?category=635881) 참고
+    * [X] `Path`/`PathResponse` 클래스에 `요금(fare)` 변수 추가 → `거리(distance)`에 따라 결정됨
+        - `PathTest` 업데이트
+* [X] 노선별 추가 요금 정책 추가
+    * [X] `Line` 클래스에  `추가요금(ExtraCharge)` 변수 추가
+    * [X] `PathFinder` 클래스에서 최단경로 구할 때,
+        * 거리에 따라 `요금`을 계산하고
+        * 환승구간에 따라 `추가요금` 반영
+            * 만약 여러 노선을 거친다면, 가장 큰 금액의 추가요금만을 더한다
+            * 이를 위해, `graph`에 `edge`를 추가할 때, `line`의 `추가요금`을 같이 넣어준다. 그리고 차후에 `Path`를 리턴하기 전에 해당 요금을 함께 리턴
+* [X] 연령별 할인 정책 추가(단, 로그인 사용자인 경우)
+    * [X] 연령별 요금정책을 담은 `enum` 설계 및 생성
+        - 거리별 요금정책과 마찬가지로 Functional Interface를 활용하여 요금 Caculator 생성
+        - 매개변수로 `LoginMember`를 받아서 유효한 값을 가진 경우에만 할인 적용됨
+
+---
+
+## 🚀 3단계 인증을 통한 기능 구현
+
+### 구현사항 정리
+
+* [X] 토큰발급기능 인수테스트 작성
     ```markdown
     ✅ Feature: 토큰 발급 기능
         🔙 Background
@@ -85,8 +143,11 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 * [X] 인증-즐겨찾기 기능 완성
 
 ---
+
 ## 🚀 2단계 경로 조회 기능
+
 ### 구현사항 정리
+
 * [X] 최단 경로 조회 인수 테스트 만들기
     ```markdown
     ✅ Feature: 최단 경로 조회 기능 
@@ -116,7 +177,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     * 미션 수행 순서
         * [x] 인수테스트 성공 시키기 : Mock 서버와 DTO를 정의하여 성공시키기
         * [x] 기능 구현
-            * `PathController`에서부터 `PathService`,`PathResponse` 도출 → `PathServiceTest` 작성   
+            * `PathController`에서부터 `PathService`,`PathResponse` 도출 → `PathServiceTest` 작성
             * `PathService`에서 시작하여 `PathFinder`, `Path`, `SectionEdge` 도출 → `PathFinderTest` 작성
         * [x] 예외상황 처리 구현
             * 출발역과 도착역이 동일한 경우
@@ -124,12 +185,13 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             * 출발역이나 도착역이 존재하지 않는 경우
 
 ## 🚀 1단계 인수 테스트 기반 리팩터링
+
 ### 구현사항 정리
 
 * [X] LineSectionAcceptanceTest 리팩터링
     * 목표 : 인수테스트 통합 → 시나리오, 흐름 위주의 테스트로 리팩토링
     * **As-is** LineSectionAcceptanceTest
-  
+
     ```markdown
     ✅ Feature: 지하철 구간 관련 기능 
         🔙 Background
@@ -161,8 +223,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             Then 지하철 구간 삭제 실패됨
     ```     
 
-  * **To-be** LineSectionAcceptanceTest
-  
+    * **To-be** LineSectionAcceptanceTest
+
   ```markdown
     ✅ Feature: 지하철 구간 관련 기능 
         🔙 Background
@@ -191,24 +253,24 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             When (노선에 구간이 하나뿐일 때) 지하철 구간 삭제 요청
             Then 지하철 구간 삭제 실패됨
   ```
-    
+
 * [X] LineService 리팩터링
     * [X] Domain으로 옮길 로직 찾기
         * `getStations()` → `Line`, `Section` `Sections`에 위임
             * 노선에 등록되어 있는 구간을 찾음(`Line`)
             * 상행 종점 찾음 (`Sections`)
-            * 상행 종점을 시작으로 해서, 현재 지하철역을 upStation으로 가지는 구간이 있다면(`Section`) 
-            해당 구간의 downStation을 List<Station>에 add(`Sections`) 
-            
+            * 상행 종점을 시작으로 해서, 현재 지하철역을 upStation으로 가지는 구간이 있다면(`Section`)
+              해당 구간의 downStation을 List<Station>에 add(`Sections`)
+
         * `addLineStation()` → `Line`, `Section`, `Sections`에 위임
             * 신규 구간의 `Station` 점검 (`Sections`)
-              * 양쪽 지하철역 모두 동일한 기존 구간이 있는지 등의 점검은 `Section`에서 담당  
+                * 양쪽 지하철역 모두 동일한 기존 구간이 있는지 등의 점검은 `Section`에서 담당
             * 점검 통과했을 경우 거리 고려하여 add (`Sections`)
-          
+
         * `removeLineStation` → `Line`, `Section`, `Sections`에 위임
             * 삭제 가능여부 점검 (`Sections`)
             * 삭제하려는 구간 탐색 (`Sections`)
             * 거리 계산하여 구간 제거한 신규 구간 추가 (`Section`, `Sections`)
-        
+
     * [X] Service 리팩토링 + Domain의 단위테스트 작성
     

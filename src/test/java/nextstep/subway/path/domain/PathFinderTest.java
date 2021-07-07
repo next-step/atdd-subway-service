@@ -20,28 +20,28 @@ class PathFinderTest {
 
     private PathFinder pathFinder;
 
-    private Line 육호선 = new Line("6호선", "갈색");
-    private Line 삼호선 = new Line("3호선", "주황색");
+    private Line 육호선 = new Line("6호선", "갈색", 연신내역, 응암역, 3, 500);
+    private Line 삼호선 = new Line("3호선", "주황색", 연신내역, 불광역, 1, 600);
+    private Line 사호선 = new Line("4호선", "파란색", 응암역, 회현역, 1, 1000);
 
     private List<Line> 모든노선 = new ArrayList<>();
 
     /*
-     *       연신내역ㅡ(5)ㅡ불광역
-     *          \         /
-     *           (5)    (100)
-     *             \    /
-     *              응암역
+     *       (3호선,6호선)연신내역ㅡ(1)ㅡ(3호선,6호선)불광역
+     *                 \               /
+     *                  (3)        (10)
+     *                    \        /
+     *                  (6호선)응암역ㅡ(1)ㅡ(4호선)회현역
      *
      * */
 
     @BeforeEach
     void setUp() {
-        삼호선.addSection(new Section(삼호선, 연신내역, 불광역, 5));
-        육호선.addSection(new Section(육호선, 연신내역, 응암역, 5));
-        육호선.addSection(new Section(육호선, 응암역, 불광역, 100));
+        육호선.addSection(new Section(육호선, 응암역, 불광역, 10));
 
         모든노선.add(삼호선);
         모든노선.add(육호선);
+        모든노선.add(사호선);
 
         pathFinder = new PathFinder(new Lines(모든노선));
     }
@@ -55,7 +55,7 @@ class PathFinderTest {
         //then
         assertThat(shortestPath.getStations()).hasSize(3)
                 .containsExactly(불광역, 연신내역, 응암역);
-        assertThat(shortestPath.getDistance()).isEqualTo(10);
+        assertThat(shortestPath.getDistance()).isEqualTo(4);
     }
 
     @DisplayName("출발역과 도착역이 동일한 경우 예외발생")
@@ -85,7 +85,7 @@ class PathFinderTest {
         //Given
         Station 강남역 = new Station("강남역");
         Station 광교역 = new Station("광교역");
-        Line 신분당선 = new Line("신분당선", "빨간색", 강남역, 광교역, 10);
+        Line 신분당선 = new Line("신분당선", "빨간색", 강남역, 광교역, 10, 300);
 
         모든노선.add(신분당선);
         PathFinder newPathFinder = new PathFinder(new Lines(모든노선));
