@@ -43,7 +43,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5, 0)).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
         로그인_토큰 = AuthAcceptanceTest.로그인_요청_성공(EMAIL, PASSWORD);

@@ -20,7 +20,7 @@ class SectionsTest {
     void setUp() {
         firstStation = new Station("1번역");
         secondStation = new Station("2번역");
-        line = new Line("1번노선", "색깔", firstStation, secondStation, 10);
+        line = new Line("1번노선", "색깔", firstStation, secondStation, 10, 0);
         thirdStation = new Station("3번역");
         forthStation = new Station("4번역");
     }
