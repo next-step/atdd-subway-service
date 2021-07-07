@@ -19,7 +19,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
@@ -58,10 +57,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        일호선 = 지하철_노선_등록되어_있음("일호선", "bg-blue-600", 신도림역, 서울역, 10);
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-green-600", 교대역, 강남역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-orange-600", 교대역, 양재역, 5);
+        일호선 = 지하철_노선_등록되어_있음("일호선", "bg-blue-600", 신도림역, 서울역, 10, 0);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 900);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-green-600", 교대역, 강남역, 10, 0);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-orange-600", 교대역, 양재역, 5, 500);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -112,11 +111,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회_실패됨(response);
     }
 
-    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
-        return 지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
-    }
-
     public static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse sourceStation, StationResponse targetStation) {
         PathRequest pathRequest = new PathRequest(sourceStation.getId(), targetStation.getId());
 
@@ -156,5 +150,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 최단_경로_지하철_이용_요금_확인됨(ExtractableResponse<Response> response, int expectFare) {
         PathResponse path = response.as(PathResponse.class);
+        assertThat(path.getFare()).isEqualTo(expectFare);
     }
 }
