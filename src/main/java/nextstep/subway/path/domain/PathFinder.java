@@ -20,7 +20,7 @@ public class PathFinder {
         GraphPath shortPath = this.dijkstraShortestPath.getPath(startStation, endStation);
 
         if (shortPath == null) {
-            throw new RuntimeException("출발지와 목적지가 연결되어 있지 않습니다.");
+            throw new IllegalArgumentException(startStation + "와 " + endStation + "가 연결되어 있지 않습니다.");
         }
 
         return shortPath.getVertexList();
