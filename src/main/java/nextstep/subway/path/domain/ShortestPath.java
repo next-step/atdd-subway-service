@@ -30,9 +30,10 @@ public class ShortestPath {
                 .max(Integer::compareTo).orElse(0);
     }
 
-    public int calculateFareWithPolicy() {
+    public int calculateFareWithPolicy(int age) {
         int overFare = fare + DistanceFarePolicy.calculate(distance);
-        return overFare;
+        AgeFarePolicy ageFarePolicy = AgeFarePolicy.find(age);
+        return ageFarePolicy.calculate(overFare);
     }
 
     public List<Station> getStations() {
