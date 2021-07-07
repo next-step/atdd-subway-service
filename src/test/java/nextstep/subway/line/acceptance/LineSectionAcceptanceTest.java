@@ -44,19 +44,19 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 	}
 
 	@Test
-	void 지하철_구간을_관리한다() {
-		// When: 신분당선에 간격이 3이고, 이미 등록된 강남역과 광교역을 등록한다.
-		ExtractableResponse<Response> 노선에_등록된_역들_등록_응답 = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 광교역, 3);
+	void 시나리오_지하철_구간을_등록한다() {
+		// When: 신분당선에 간격이 3이고, 강남역을 상행으로 한 양재역을 등록한다.
+		지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
 
-		// Then: 역 등록에 실패한다.
-		지하철_노선에_지하철역_등록_실패됨(노선에_등록된_역들_등록_응답);
+		// Then: 신분당선에 지하철역이 등록된다.
+		// And: 강남역, 양재역, 광교역 순으로 순서가 정렬되어 있다.
+		ExtractableResponse<Response> 신분당선 = LineAcceptanceTest.지하철_노선_조회_요청(this.신분당선);
+		지하철_노선에_지하철역_등록됨(신분당선);
+		지하철_노선에_지하철역_순서_정렬됨(신분당선, Arrays.asList(강남역, 양재역, 광교역));
+	}
 
-		// When: 신분당선에 간격이 3이고, 노선에 등록되지 않은 정자역과 양재역을 등록한다.
-		ExtractableResponse<Response> 노선에_등록되지_않은_역들_등록_응답 = 지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 양재역, 3);
-
-		// Then: 역 등록에 실패한다.
-		지하철_노선에_지하철역_등록_실패됨(노선에_등록되지_않은_역들_등록_응답);
-
+	@Test
+	void 시나리오_지하철_노선에_여러_개의_역을_순서_상관_없이_등록한다() {
 		// When: 신분당선에 간격이 2이고, 강남역을 상행으로 한 양재역을 등록한다.
 		// And: 신분당선에 간격이 5이고, 강남역을 하행으로 한 정자역을 등록한다.
 		지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
@@ -64,108 +64,55 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
 		// Then: 신분당선에 지하철역이 등록된다.
 		// And: 정자역, 강남역, 양재역, 광교역 순으로 순서가 정렬되어 있다.
-		ExtractableResponse<Response> 역_등록후_신분당선 = LineAcceptanceTest.지하철_노선_조회_요청(this.신분당선);
-		지하철_노선에_지하철역_등록됨(역_등록후_신분당선);
-		지하철_노선에_지하철역_순서_정렬됨(역_등록후_신분당선, Arrays.asList(정자역, 강남역, 양재역, 광교역));
-
-		// When: 신분당선에 양재역을 제외한다.
-		ExtractableResponse<Response> 양재역_제외_응답 = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
-
-		// Then: 신분당선에 양재역이 제외된다.
-		// And: 정자역, 강남역, 광교역 순으로 순서가 정렬되어 있다.
-		지하철_노선에_지하철역_제외됨(양재역_제외_응답);
-		ExtractableResponse<Response> 양재역_제외_후_신분당선 = LineAcceptanceTest.지하철_노선_조회_요청(this.신분당선);
-		지하철_노선에_지하철역_순서_정렬됨(양재역_제외_후_신분당선, Arrays.asList(정자역, 강남역, 광교역));
-
-		// When: 신분당선에 광교역을 제외한다.
-		ExtractableResponse<Response> 광교역_제외_응답 = 지하철_노선에_지하철역_제외_요청(신분당선, 광교역);
-
-		// Then: 신분당선에 광교역이 제외된다.
-		// And: 정자역, 강남역 순으로 순서가 정렬되어 있다.
-		지하철_노선에_지하철역_제외됨(광교역_제외_응답);
-		ExtractableResponse<Response> 광교역_제외_후_신분당선 = LineAcceptanceTest.지하철_노선_조회_요청(this.신분당선);
-		지하철_노선에_지하철역_순서_정렬됨(광교역_제외_후_신분당선, Arrays.asList(정자역, 강남역));
-
-		// When: 신분당선에 강남역을 제외한다.
-		ExtractableResponse<Response> 강남역_제외_응답 = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
-
-		// Then: 신분당선에 강남역 제외하지 못한다.
-		지하철_노선에_지하철역_제외_실패됨(강남역_제외_응답);
-	}
-
-	@DisplayName("지하철 구간을 등록한다.")
-	@Test
-	void addLineSection() {
-		// when
-		지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
-
-		// then
-		ExtractableResponse<Response> 신분당선 = LineAcceptanceTest.지하철_노선_조회_요청(this.신분당선);
-		지하철_노선에_지하철역_등록됨(신분당선);
-		지하철_노선에_지하철역_순서_정렬됨(신분당선, Arrays.asList(강남역, 양재역, 광교역));
-	}
-
-	@DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
-	@Test
-	void addLineSection2() {
-		// when
-		지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
-		지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 강남역, 5);
-
-		// then
 		ExtractableResponse<Response> 신분당선 = LineAcceptanceTest.지하철_노선_조회_요청(this.신분당선);
 		지하철_노선에_지하철역_등록됨(신분당선);
 		지하철_노선에_지하철역_순서_정렬됨(신분당선, Arrays.asList(정자역, 강남역, 양재역, 광교역));
 	}
 
-	@DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
 	@Test
-	void addLineSectionWithSameStation() {
-		// when
+	void 시나리오_지하철_노선에_이미_등록되어있는_역을_등록한다() {
+		// When: 신분당선에 간격이 3이고, 이미 등록된 강남역과 광교역을 등록한다.
 		ExtractableResponse<Response> 등록_응답 = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 광교역, 3);
 
-		// then
+		// Then: 역 등록에 실패한다.
 		지하철_노선에_지하철역_등록_실패됨(등록_응답);
 	}
 
-	@DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록한다.")
 	@Test
-	void addLineSectionWithNoStation() {
-		// when
+	void 시나리오_지하철_노선에_등록되지_않은_역을_기준으로_등록한다() {
+		// When: 신분당선에 간격이 3이고, 노선에 등록되지 않은 정자역과 양재역을 등록한다.
 		ExtractableResponse<Response> 등록_응답 = 지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 양재역, 3);
 
-		// then
+		// Then: 역 등록에 실패한다.
 		지하철_노선에_지하철역_등록_실패됨(등록_응답);
 	}
 
-	@DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
 	@Test
-	void removeLineSection1() {
-		// given
-		지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
-		지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 정자역, 2);
+	void 시나리오_지하철_노선에_등록된_지하철역을_제외한다() {
+		// Given: 신분당선에 정자역, 강남역, 양재역, 광교역 순으로 등록되어 있다.
+		지하철_노선에_지하철역_등록되어_있음(신분당선, 강남역, 양재역, 2);
+		지하철_노선에_지하철역_등록되어_있음(신분당선, 양재역, 정자역, 2);
 
-		// when
+		// When: 신분당선에 양재역을 제외한다.
 		ExtractableResponse<Response> 제외_응답 = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
 
-		// then
+		// Then: 신분당선에 양재역이 제외된다.
+		// And: 강남역, 정자역, 광교역 순으로 순서가 정렬되어 있다.
 		지하철_노선에_지하철역_제외됨(제외_응답);
 		ExtractableResponse<Response> 신분당선 = LineAcceptanceTest.지하철_노선_조회_요청(this.신분당선);
 		지하철_노선에_지하철역_순서_정렬됨(신분당선, Arrays.asList(강남역, 정자역, 광교역));
 	}
 
-	@DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
 	@Test
-	void removeLineSection2() {
-		// when
+	void 시나리오_지하철_노선에_등록된_지하철역이_두개일_때_한_역을_제외한다() {
+		// When: 신분당선에 강남역을 제외한다.
 		ExtractableResponse<Response> 제외_응답 = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
 
-		// then
+		// Then: 신분당선에 강남역 제외하지 못한다.
 		지하철_노선에_지하철역_제외_실패됨(제외_응답);
 	}
-
 	public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation,
-		StationResponse downStation, int distance) {
+			StationResponse downStation, int distance) {
 		SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 
 		return RestAssured
@@ -175,6 +122,11 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 			.when().post("/lines/{lineId}/sections", line.getId())
 			.then().log().all()
 			.extract();
+	}
+
+	public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록되어_있음(LineResponse line, StationResponse upStation,
+			StationResponse downStation, int distance) {
+		return 지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
 	}
 
 	public static void 지하철_노선에_지하철역_등록됨(ExtractableResponse<Response> response) {
