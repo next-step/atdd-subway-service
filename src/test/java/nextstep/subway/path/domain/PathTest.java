@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.CustomException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
@@ -14,7 +15,7 @@ import static nextstep.subway.exception.CustomExceptionMessage.NOT_CONNECTED_SOU
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class PathFinderTest {
+class PathTest {
 
     private Station 강남역;
     private Station 양재역;
@@ -26,6 +27,15 @@ class PathFinderTest {
 
     private List<Line> lines;
 
+    /**
+     * 교대역    --- *2호선*(10) --- 강남역
+     * |                        |
+     * *3호선*(3)                *신분당선*(10)
+     * |                        |
+     * 남부터미널역--- *3호선*(2) --- 양재
+     * 3호선 300원 추가요금
+     * 신분당선 1000원 추가요금
+     */
     @BeforeEach
     void setUp() {
         강남역 = new Station("강남역");
@@ -36,16 +46,14 @@ class PathFinderTest {
         독립역 = new Station("독립역");
         유령역 = new Station("나는 유령이다");
 
-        Line 이호선 = new Line("이호선" ,"RED");
-        Line 삼호선 = new Line("삼호선", "GREEN");
-        Line 신분당선 = new Line("신분당선", "BLUE");
-        Line 나홀로선 = new Line("나홀로선", "GRAY");
+        Line 이호선 = new Line.Builder("이호선").color("RED").additionalFare(0).upStation(교대역).downStation(강남역).distance(10).build();
 
-        이호선.addSection(교대역, 강남역, 10);
-        삼호선.addSection(남부터미널역, 양재역, 2);
+        Line 삼호선 = new Line.Builder("삼호선").color("GREEN").additionalFare(300).upStation(남부터미널역).downStation(양재역).distance(2).build();
         삼호선.addSection(교대역, 남부터미널역, 3);
-        신분당선.addSection(강남역, 양재역, 10);
-        나홀로선.addSection(혼자역, 독립역, 20);
+
+        Line 신분당선 = new Line.Builder("신분당선").color("BLUE").additionalFare(1000).upStation(강남역).downStation(양재역).distance(10).build();
+
+        Line 나홀로선 = new Line.Builder("나홀로선").color("GRAY").additionalFare(0).upStation(혼자역).downStation(독립역).distance(10).build();
 
         this.lines = Arrays.asList(이호선, 삼호선, 신분당선, 나홀로선);
     }
@@ -62,6 +70,41 @@ class PathFinderTest {
             .isNotEmpty()
             .containsExactly(남부터미널역, 양재역, 강남역);
         assertThat(paths.getTotalDistance()).isEqualTo(12);
+    }
+
+    @DisplayName("지하철 노선, 최단 경로를 찾아 요금 계산 테스트")
+    @Test
+    void calculateFareTest() {
+        // when
+        Paths paths = PathFinder.of(lines).getShortestPaths(남부터미널역, 강남역);
+
+        // then
+        assertThat(paths.getTotalDistance()).isEqualTo(12);
+        assertThat(paths.calculateFare(new LoginMember(1l, "test@naver.com", 0)).getResult()).isEqualTo(2350); // 1250 + 100 + 1000
+        assertThat(paths.calculateFare(new LoginMember(1l, "joojimin@naver.com", 14)).getResult()).isEqualTo(1600); // ((1250+100+1000)-350) * (1 - 0.2)
+        assertThat(paths.calculateFare(new LoginMember(1l, "joojimin@naver.com", 7)).getResult()).isEqualTo(1000); // ((1250+100+1000)-350) * (1 - 0.5)
+    }
+
+    @DisplayName("지하철 노선의 추가 요금 계산 테스트")
+    @Test
+    void calculateFareTestWithAdditionalFare() {
+        // when
+        Paths paths = PathFinder.of(lines).getShortestPaths(남부터미널역, 교대역);
+
+        // then
+        assertThat(paths.getTotalDistance()).isEqualTo(3);
+        assertThat(paths.calculateFare(new LoginMember(1l, "test@naver.com", 0)).getResult()).isEqualTo(1550); // 1250 + 300
+    }
+
+    @DisplayName("지하철 노선의 추가 요금 없는 기본 요금 계산 테스트")
+    @Test
+    void calculateFareTestWithoutAdditionalFare() {
+        // when
+        Paths paths = PathFinder.of(lines).getShortestPaths(교대역, 강남역);
+
+        // then
+        assertThat(paths.getTotalDistance()).isEqualTo(10);
+        assertThat(paths.calculateFare(new LoginMember(1l, "test@naver.com", 0)).getResult()).isEqualTo(1250); // 1250
     }
 
     @DisplayName("연결 되어있지 않은 두 역의 경로를 조회")

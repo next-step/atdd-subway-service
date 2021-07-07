@@ -13,6 +13,8 @@ import static nextstep.subway.exception.CustomExceptionMessage.NOT_FOUND_MEMBER;
 
 @Service
 public class AuthService {
+    private static final LoginMember DEFAULT_LOGIN_MEMBER = LoginMember.createDefaultLoginMember();
+
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -33,6 +35,17 @@ public class AuthService {
         if (jwtTokenProvider.invalidToken(credentials)) {
             throw new AuthorizationException();
         }
+        return createLoginMember(credentials);
+    }
+
+    public LoginMember findMemberIfExistToken(String credentials) {
+        if (jwtTokenProvider.invalidToken(credentials)) {
+            return DEFAULT_LOGIN_MEMBER;
+        }
+        return createLoginMember(credentials);
+    }
+
+    private LoginMember createLoginMember(final String credentials) {
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email)
                                         .orElseThrow(() -> new CustomException(NOT_FOUND_MEMBER));

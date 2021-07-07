@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.CustomException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -25,8 +26,9 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse getPaths(final long sourceStationId, final long targetStationId) {
-        return new PathResponse(getShortestPaths(sourceStationId, targetStationId));
+    public PathResponse getPaths(final LoginMember loginMember, final long sourceStationId, final long targetStationId) {
+        Paths paths = getShortestPaths(sourceStationId, targetStationId);
+        return new PathResponse(paths, loginMember);
     }
 
     private Paths getShortestPaths(final long sourceStationId, final long targetStationId) {

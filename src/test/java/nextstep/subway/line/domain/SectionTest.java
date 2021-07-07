@@ -22,7 +22,7 @@ class SectionTest {
 		강남역 = new Station("강남역");
 		역삼역 = new Station("역삼역");
 
-		강남_역삼_구간 = new Section(new Line("이호선", "RED"), 강남역, 역삼역, 10);
+		강남_역삼_구간 = new Section(new Line("이호선", "RED", 0), 강남역, 역삼역, 10);
 	}
 
 

@@ -59,10 +59,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         혼자역 = 지하철역_등록되어_있음("혼자역").as(StationResponse.class);
         유령역 = new StationResponse(9999l, "유령역", LocalDateTime.now(), LocalDateTime.now());
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
-        나홀로선 = 지하철_노선_등록되어_있음(new LineRequest("나홀로선", "bg-red-600", 독립역.getId(), 혼자역.getId(), 5)).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600",0, 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600",0, 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600",0, 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+        나홀로선 = 지하철_노선_등록되어_있음(new LineRequest("나홀로선", "bg-red-600",0, 독립역.getId(), 혼자역.getId(), 5)).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -76,6 +76,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         지하철_노선_최단_경로에_해당_역들이_포함되어있음(response, Arrays.asList(남부터미널역, 양재역, 강남역));
         지하철_노선_최단_경로의_거리를_확인한다(response, 12);
+        지하철_노선_최단_경로에_이용_요금을_확인한다(response, 1350);
     }
 
     @Test
@@ -143,5 +144,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathResponse pathResponse = response.as(PathResponse.class);
 
         assertThat(pathResponse.getDistance()).isEqualTo(distance);
+    }
+
+    public static void 지하철_노선_최단_경로에_이용_요금을_확인한다(ExtractableResponse<Response> response, int expectFare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(expectFare);
     }
 }

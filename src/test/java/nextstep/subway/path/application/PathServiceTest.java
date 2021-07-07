@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.CustomException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -63,13 +64,12 @@ class PathServiceTest {
         station_교대역 = new Station("교대역");
         station_남부터미널역 = new Station("남부터미널역");
 
-        이호선 = new Line("이호선", "RED");
-        이호선.addSection(station_교대역, station_강남역, 10);
-        삼호선 = new Line("삼호선", "GREEN");
-        삼호선.addSection(station_교대역, station_남부터미널역, 3);
+        이호선 = new Line.Builder("이호선").color("RED").additionalFare(0).upStation(station_교대역).downStation(station_강남역).distance(10).build();
+
+        삼호선 = new Line.Builder("삼호선").color("GREEN").additionalFare(0).upStation(station_교대역).downStation(station_남부터미널역).distance(3).build();
         삼호선.addSection(station_남부터미널역, station_양재역, 2);
-        신분당선 = new Line("신분당선", "BLUE");
-        신분당선.addSection(station_강남역, station_양재역, 10);
+
+        신분당선 = new Line.Builder("신분당선").color("BLUE").additionalFare(0).upStation(station_강남역).downStation(station_양재역).distance(10).build();
     }
 
     @DisplayName("출발 역과 도착 역 사이의 최단 거리 조회 테스트")
@@ -81,7 +81,7 @@ class PathServiceTest {
         Mockito.when(lineRepository.findAll()).thenReturn(Arrays.asList(이호선, 삼호선, 신분당선));
 
         // when
-        PathResponse pathResponse = pathService.getPaths(남부터미널역, 강남역);
+        PathResponse pathResponse = pathService.getPaths(new LoginMember(1l, "jimin@naver.com", 0), 남부터미널역, 강남역);
 
         // then
         assertAll(() -> {
@@ -99,7 +99,7 @@ class PathServiceTest {
     @Test
     void getSameSourceAndTargetTest() {
         // when
-        assertThatThrownBy(() -> pathService.getPaths(남부터미널역, 남부터미널역))
+        assertThatThrownBy(() -> pathService.getPaths(new LoginMember(1l, "test@naver.com", 0), 남부터미널역, 남부터미널역))
             .isInstanceOf(CustomException.class)
             .hasMessageContaining(SAME_SOURCE_AND_TARGET_STATION.getMessage());
     }

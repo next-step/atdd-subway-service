@@ -59,9 +59,12 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 *[x] LineService 리팩터링
 *[x] 최단 경로 조회 인수 테스트 만들기
 *[x] 최단 경로 조회 기능 구현하기
-*[ ] 토큰 발급 기능(로그인) 인수 테스트 만들기
-*[ ] 인증 - 내 정보 조회 기능 완성하기
-*[ ] 인증 - 즐겨찾기 기능 완성하기
+*[x] 토큰 발급 기능(로그인) 인수 테스트 만들기
+*[x] 인증 - 내 정보 조회 기능 완성하기
+*[x] 인증 - 즐겨찾기 기능 완성하기 
+*[ ] 경로 조회 시 거리 기준 요금 정보 포함하기 
+*[ ] 노선별 추가 요금 정책 추가
+*[ ] 연령별 할인 정책 추가
 
 
 ## 작업 목록
@@ -81,6 +84,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 * Given 지하철 노선과 지하철역이 등록되어있다.
 * When 지하철 노선의 최단 경로 조회를 요청한다.
 * Then 지하철 노선의 최단 경로가 조회된다.
+* And 총 거리도 함께 응답함
+* And 지하철 이용 요금도 함께 응답함
 
 #### Scenario: 출발역과 도착역이 같게 최단 경로를 조회한다.
 * Given 지하철 노선과 지하철역이 등록되어있다.
@@ -159,6 +164,10 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 3. 즐겨찾기 추가 기능
 4. 즐겨찾기 조회 기능
 5. 즐겨찾기 삭제 기능
+6. 조건부 토큰 검사 기능
+7. 거리에 따른 이용 요금 계산 기능
+8. 연령에 따른 이용 요금 할인 계산 기능
+9. 각 노선별 추가요금 적용 기능
 
 ## API 명세
 
@@ -184,7 +193,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
           "createdAt": "2020-05-10T23:54:12.007"
         }
       ],
-      "distance": 10
+      "distance": 10,
+      "fare": 1250
     }
     ```
     
