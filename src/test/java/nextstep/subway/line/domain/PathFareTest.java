@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.station.domain.Path;
+import nextstep.subway.station.domain.SubwayMapPath;
 import nextstep.subway.station.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
@@ -49,12 +49,12 @@ class PathFareTest {
 
         // when
         PathFinder pathFinder = new PathFinder(lines);
-        Path path = pathFinder.findPaths(남부터미널역, 교대역);
+        SubwayMapPath subwayMapPath = pathFinder.findPaths(남부터미널역, 교대역);
 
         // then
-        assertThat(path.fare(new LoginMember())).isEqualTo(1250);
-        assertThat(path.fare(children)).isEqualTo(530);
-        assertThat(path.fare(youth)).isEqualTo(800);
+        assertThat(subwayMapPath.fare(new LoginMember())).isEqualTo(1250);
+        assertThat(subwayMapPath.fare(children)).isEqualTo(530);
+        assertThat(subwayMapPath.fare(youth)).isEqualTo(800);
     }
 
     @DisplayName("요금계산 - 거리비례 추가운임 구간 1")
@@ -71,12 +71,12 @@ class PathFareTest {
 
         // when
         PathFinder pathFinder = new PathFinder(lines);
-        Path path = pathFinder.findPaths(남부터미널역, 사당역);
+        SubwayMapPath subwayMapPath = pathFinder.findPaths(남부터미널역, 사당역);
 
         // then
-        assertThat(path.fare(new LoginMember())).isEqualTo(1750);
-        assertThat(path.fare(children)).isEqualTo(630);
-        assertThat(path.fare(youth)).isEqualTo(1050);
+        assertThat(subwayMapPath.fare(new LoginMember())).isEqualTo(1750);
+        assertThat(subwayMapPath.fare(children)).isEqualTo(630);
+        assertThat(subwayMapPath.fare(youth)).isEqualTo(1050);
     }
 
     @DisplayName("요금계산 - 거리비례 추가운임 구간 2")
@@ -95,12 +95,12 @@ class PathFareTest {
 
         // when
         PathFinder pathFinder = new PathFinder(lines);
-        Path path = pathFinder.findPaths(남부터미널역, 오이도역);
+        SubwayMapPath subwayMapPath = pathFinder.findPaths(남부터미널역, 오이도역);
 
         // then
-        assertThat(path.fare(new LoginMember())).isEqualTo(2250);
-        assertThat(path.fare(children)).isEqualTo(730);
-        assertThat(path.fare(youth)).isEqualTo(1300);
+        assertThat(subwayMapPath.fare(new LoginMember())).isEqualTo(2250);
+        assertThat(subwayMapPath.fare(children)).isEqualTo(730);
+        assertThat(subwayMapPath.fare(youth)).isEqualTo(1300);
     }
 
     @DisplayName("요금 계산 - 추가운임이 존재하는 노선")
@@ -116,12 +116,12 @@ class PathFareTest {
 
         // when
         PathFinder pathFinder = new PathFinder(lines);
-        Path path = pathFinder.findPaths(정자역, 양재역);
+        SubwayMapPath subwayMapPath = pathFinder.findPaths(정자역, 양재역);
 
         // then
-        assertThat(path.fare(new LoginMember())).isEqualTo(2550);
-        assertThat(path.fare(children)).isEqualTo(790);
-        assertThat(path.fare(youth)).isEqualTo(1450);
+        assertThat(subwayMapPath.fare(new LoginMember())).isEqualTo(2550);
+        assertThat(subwayMapPath.fare(children)).isEqualTo(790);
+        assertThat(subwayMapPath.fare(youth)).isEqualTo(1450);
     }
 
     @DisplayName("요금 계산 - 추가운임이 존재하는 노선 여러 개를 경유하는 경우")
@@ -138,11 +138,11 @@ class PathFareTest {
 
         // when
         PathFinder pathFinder = new PathFinder(lines);
-        Path path = pathFinder.findPaths(정자역, 광주역);
+        SubwayMapPath subwayMapPath = pathFinder.findPaths(정자역, 광주역);
 
         // then
-        assertThat(path.fare(new LoginMember())).isEqualTo(2350);
-        assertThat(path.fare(children)).isEqualTo(750);
-        assertThat(path.fare(youth)).isEqualTo(1350);
+        assertThat(subwayMapPath.fare(new LoginMember())).isEqualTo(2350);
+        assertThat(subwayMapPath.fare(children)).isEqualTo(750);
+        assertThat(subwayMapPath.fare(youth)).isEqualTo(1350);
     }
 }

@@ -47,14 +47,14 @@ public class PathFinder {
         graph.addEdge(section.getUpStation(), section.getDownStation(), section);
     }
 
-    public Path findPaths(Station source, Station target) {
+    public SubwayMapPath findPaths(Station source, Station target) {
         validateFindable(source, target);
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         GraphPath path = dijkstraShortestPath.getPath(source, target);
         if (path == null) {
             throw new IllegalArgumentException("두 역이 서로 연결되어 있지 않습니다. 경로를 조회할 수 없습니다.");
         }
-        return new Path(path);
+        return new SubwayMapPath(path);
     }
 
     private void validateFindable(Station source, Station target) {

@@ -9,13 +9,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Path {
+public class SubwayMapPath {
 
     private static final int BASIC_FARE = 1_250;
 
     private GraphPath graphPath;
 
-    public Path(GraphPath graphPath) {
+    public SubwayMapPath(GraphPath graphPath) {
         this.graphPath = graphPath;
     }
 

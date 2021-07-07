@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.station.domain.Path;
+import nextstep.subway.station.domain.SubwayMapPath;
 import nextstep.subway.station.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.PathResponse;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
-class PathFinderTest {
+class SubwayMapPathFinderTest {
 
     private Line 신분당선 = new Line("신분당선", "red");
     private Station 강남역 = new Station("강남역");
@@ -49,8 +49,8 @@ class PathFinderTest {
         
         // when
         PathFinder pathFinder = new PathFinder(lines);
-        Path path = pathFinder.findPaths(양재역, 정자역);
-        PathResponse paths = PathResponse.of(path, new LoginMember());
+        SubwayMapPath subwayMapPath = pathFinder.findPaths(양재역, 정자역);
+        PathResponse paths = PathResponse.of(subwayMapPath, new LoginMember());
 
 
         // then
@@ -79,8 +79,8 @@ class PathFinderTest {
 
         // when
         PathFinder pathFinder = new PathFinder(lines);
-        Path path = pathFinder.findPaths(청계산역, 교대역);
-        PathResponse paths = PathResponse.of(path, new LoginMember());
+        SubwayMapPath subwayMapPath = pathFinder.findPaths(청계산역, 교대역);
+        PathResponse paths = PathResponse.of(subwayMapPath, new LoginMember());
 
         // then
         assertThat(paths.getStations().size()).isEqualTo(4);
@@ -112,8 +112,8 @@ class PathFinderTest {
 
         // when
         PathFinder pathFinder = new PathFinder(lines);
-        Path path = pathFinder.findPaths(청계산역, 서초역);
-        PathResponse paths = PathResponse.of(path, new LoginMember());
+        SubwayMapPath subwayMapPath = pathFinder.findPaths(청계산역, 서초역);
+        PathResponse paths = PathResponse.of(subwayMapPath, new LoginMember());
 
         // then
         assertThat(paths.getStations().size()).isEqualTo(5);
