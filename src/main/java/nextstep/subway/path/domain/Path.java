@@ -12,8 +12,11 @@ import nextstep.subway.station.domain.Station;
 public class Path {
 	private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 	private final DijkstraShortestPath dijkstraShortestPath;
+
+	private final List<Line> lines;
 	private final Station source;
 	private final Station target;
+
 
 	public Path(List<Line> lines, Station source, Station target) {
 		validateSourceIsEqualsToTarget(source, target);
@@ -21,6 +24,7 @@ public class Path {
 		addVertexes(lines);
 		addEdgeWeights(lines);
 
+		this.lines = lines;
 		this.source = source;
 		this.target = target;
 
@@ -77,6 +81,8 @@ public class Path {
 	public int calcFare() {
 		int distance = getShortestDistance();
 		DistanceFarePolicy distanceFarePolicy = new DistanceFarePolicy(distance);
-		return distanceFarePolicy.fare();
+		LineFarePolicy lineFarePolicy = new LineFarePolicy(lines);
+
+		return distanceFarePolicy.fare() + lineFarePolicy.fare();
 	}
 }

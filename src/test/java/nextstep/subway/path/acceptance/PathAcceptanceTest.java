@@ -44,9 +44,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		StationResponse 교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
 		StationResponse 남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-		LineResponse 신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
-		LineResponse 이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
-		LineResponse 삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+		LineResponse 신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600",500, 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
+		LineResponse 이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 900, 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
+		LineResponse 삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 100, 교대역.getId(), 양재역.getId(), 25)).as(LineResponse.class);
 
 		LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
 
@@ -66,17 +66,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 	private void 최단_경로_조회_검증_요금(ExtractableResponse<Response> response) {
 		int fare = response.jsonPath().getInt("fare");
-		assertThat(fare).isEqualTo(5_000);
+
+		int 거리별_추가_요금 = 1_450;
+		int 노선별_추가_요금 = 900;
+		assertThat(fare).isEqualTo(거리별_추가_요금 + 노선별_추가_요금);
 	}
 
 	private void 최단_경로_조회_검증_거리(ExtractableResponse<Response> response) {
 		int distance = response.jsonPath().getInt("distance");
-		assertThat(distance).isEqualTo(5);
+		assertThat(distance).isEqualTo(20);
 	}
 
 	private void 최단_경로_조회_검증_역목록(ExtractableResponse<Response> response) {
 		List<StationResponse> stationResponses = response.jsonPath().getList("stations", StationResponse.class);
-		assertThat(stationResponses).extracting("name").containsExactly("교대역", "남부터미널역", "양재역");
+		assertThat(stationResponses).extracting("name").containsExactly("교대역", "강남역", "양재역");
 	}
 
 	private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse 양재역, StationResponse 교대역) {
