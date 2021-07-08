@@ -1,5 +1,6 @@
 package nextstep.subway.path.dto;
 
+import nextstep.subway.enums.SubwayFarePolicy;
 import nextstep.subway.path.domain.SectionWeightedEdge;
 import nextstep.subway.path.domain.SubwayGraph;
 import nextstep.subway.path.domain.SubwayPath;
@@ -42,7 +43,7 @@ class PathResponseTest {
         List<SectionWeightedEdge> edges = new ArrayList<>(subwayGraph.getGraph().edgeSet());
         ArrayList<Station> stations = new ArrayList<>(subwayGraph.getGraph().vertexSet());
         SubwayPath subwayPath = new SubwayPath(edges, stations);
-        PathResponse pathResponse = PathResponse.of(subwayPath);
+        PathResponse pathResponse = PathResponse.of(subwayPath, SubwayFarePolicy.ADULT);
         StationResponse stationResponse_강남역 = new StationResponse(강남역.getId(), 강남역.getName(), null, null);
         StationResponse stationResponse_광교역 = new StationResponse(광교역.getId(), 광교역.getName(), null, null);
         StationResponse stationResponse_교대역 = new StationResponse(교대역.getId(), 교대역.getName(), null, null);

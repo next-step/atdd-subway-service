@@ -25,7 +25,7 @@ public class SectionWeightedEdgeTest {
 
     @Test
     void 구간_간선_객체_생성() {
-        SectionWeightedEdge sectionWeightedEdge = new SectionWeightedEdge(구간, 신분당선.getId());
+        SectionWeightedEdge sectionWeightedEdge = new SectionWeightedEdge(구간, 신분당선.getId(), 900);
         assertThat(sectionWeightedEdge.getSection().getUpStation()).isEqualTo(강남역);
         assertThat(sectionWeightedEdge.getSection().getDownStation()).isEqualTo(광교역);
         assertThat(sectionWeightedEdge.getLineId()).isEqualTo(신분당선.getId());

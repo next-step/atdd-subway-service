@@ -16,7 +16,7 @@ class LineRequestTest {
 
     @BeforeEach
     void setUp() {
-        request = new LineRequest("신분당선", "red", 1L, 2L, 10);;
+        request = new LineRequest("신분당선", "red", 1L, 2L, 10, 900);
     }
 
     @Test

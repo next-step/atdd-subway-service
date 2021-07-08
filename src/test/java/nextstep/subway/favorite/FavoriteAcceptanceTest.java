@@ -62,7 +62,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void 즐겨찾기_관리() {
         // given: 지하철 경로를 조회한다
-        ExtractableResponse<Response> 경로_조회_결과 = AcceptanceDataGenerator.지하철_경로_조회(서초역, 역삼역);
+        ExtractableResponse<Response> 경로_조회_결과 = AcceptanceDataGenerator.지하철_경로_조회(서초역, 역삼역, 로그인_정보);
         PathResponse pathResponse = 경로_조회_결과.as(PathResponse.class);
         StationResponse source = pathResponse.getStations().get(0);
         StationResponse target = pathResponse.getStations().get(pathResponse.getStations().size() - 1);
