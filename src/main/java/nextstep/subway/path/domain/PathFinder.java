@@ -3,7 +3,9 @@ package nextstep.subway.path.domain;
 import nextstep.subway.exception.NotValidatePathException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationsResponse;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -27,11 +29,18 @@ public class PathFinder {
         }
     }
 
-    public int calculateShortestDistance() {
+    public PathResponse findShortestPathToResponse() {
+        List<Station> shortestStations = findShortestPath();
+        int distance = calculateShortestDistance();
+
+        return new PathResponse(StationsResponse.of(shortestStations), distance);
+    }
+
+    private int calculateShortestDistance() {
         return (int) path.getWeight();
     }
 
-    public List<Station> findShortestPath() {
+    private List<Station> findShortestPath() {
         return path.getVertexList();
     }
 

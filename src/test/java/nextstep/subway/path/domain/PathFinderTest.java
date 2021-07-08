@@ -2,7 +2,10 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.exception.NotValidatePathException;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationsResponse;
+import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -25,13 +28,14 @@ public class PathFinderTest {
 
         //when
         PathFinder pathFinder = new PathFinder(강남역, 발산역, List.of(sourceLine, targetLine));
-        List<Station> stations = pathFinder.findShortestPath();
+        PathResponse response = pathFinder.findShortestPathToResponse();
 
         //then
-        assertThat(stations).containsExactly(
-                강남역,
-                까치산역,
-                발산역
+        StationsResponse stationsResponse = response.getStations();
+        assertThat(stationsResponse.getStations()).containsExactly(
+                StationResponse.of(강남역),
+                StationResponse.of(까치산역),
+                StationResponse.of(발산역)
         );
     }
 
@@ -47,10 +51,10 @@ public class PathFinderTest {
 
         //when
         PathFinder pathFinder = new PathFinder(강남역, 발산역, List.of(sourceLine, targetLine));
-        int distance = pathFinder.calculateShortestDistance();
+        PathResponse response = pathFinder.findShortestPathToResponse();
 
         //then
-        assertThat(distance).isEqualTo(30);
+        assertThat(response.getDistance()).isEqualTo(30);
     }
 
 
