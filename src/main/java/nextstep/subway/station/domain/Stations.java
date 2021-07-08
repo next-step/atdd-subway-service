@@ -3,6 +3,7 @@ package nextstep.subway.station.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.Collections.unmodifiableList;
 
@@ -10,11 +11,16 @@ public class Stations {
     List<Station> values = new ArrayList<>();
 
     public Stations() {
-
     }
 
     public Stations(List<Station> values) {
         this.values = values;
+    }
+
+    public Optional<Station> getById(Long id) {
+        return values.stream()
+                .filter(value -> value.getId().equals(id))
+                .findFirst();
     }
 
     public void addAll(Stations stations) {
