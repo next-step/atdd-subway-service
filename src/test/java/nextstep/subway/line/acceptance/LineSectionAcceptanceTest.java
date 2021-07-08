@@ -8,6 +8,7 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.StationAcceptanceTest;
+import nextstep.subway.station.domain.StationsResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -113,7 +114,21 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
 
-    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록되어_있음(
+            LineResponse line,
+            StationResponse upStation,
+            StationResponse downStation,
+            int distance
+    ) {
+        return 지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(
+            LineResponse line,
+            StationResponse upStation,
+            StationResponse downStation,
+            int distance
+    ) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 
         return RestAssured
@@ -134,8 +149,9 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
-        LineResponse line = response.as(LineResponse.class);
-        List<Long> stationIds = line.getStations().stream()
+        StationsResponse stations = response.as(LineResponse.class).getStations();
+
+        List<Long> stationIds = stations.getStations().stream()
                 .map(it -> it.getId())
                 .collect(Collectors.toList());
 

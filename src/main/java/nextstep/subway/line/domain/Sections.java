@@ -10,15 +10,21 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
 
     public static final int MINIMUM_REMOVAL_SIZE = 1;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
     public Sections() {
+    }
+
+    public Sections(List<Section> sections) {
+        this.sections = sections;
     }
 
     void removeByStation(Station station, Line line) {
@@ -94,6 +100,12 @@ public class Sections {
         if (sections.size() <= MINIMUM_REMOVAL_SIZE) {
             throw new NotValidateRemovalSectionsSizeException();
         }
+    }
+
+    public List<Line> extractLines() {
+        return sections.stream()
+                .map(Section::getLine)
+                .collect(Collectors.toList());
     }
 
     public List<Section> getSections() {

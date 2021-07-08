@@ -7,6 +7,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.LinesResponse;
+import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -118,6 +119,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_삭제됨(response);
     }
 
+    public static LineResponse 지하철_노선_등록되어_있음(
+            String name,
+            String color,
+            StationResponse upStation,
+            StationResponse downStation,
+            int distance
+    ) {
+        return 지하철_노선_생성_요청(new LineRequest(name, color, upStation.getId(), downStation.getId(), distance)).as(LineResponse.class);
+    }
+
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest params) {
         return 지하철_노선_생성_요청(params);
     }
@@ -128,8 +139,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(params)
                 .when().post("/lines")
-                .then().log().all().
-                        extract();
+                .then().log().all()
+                .extract();
     }
 
     public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
