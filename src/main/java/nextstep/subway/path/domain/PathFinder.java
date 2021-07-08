@@ -12,14 +12,12 @@ import java.util.List;
 
 public class PathFinder {
 
-    private final Station source;
-    private final Station target;
+    private final GraphPath<Station, DefaultWeightedEdge> path;
 
-    public PathFinder(Station source, Station target) {
+    public PathFinder(Station source, Station target, List<Line> lines) {
         validateEquals(source, target);
 
-        this.source = source;
-        this.target = target;
+        path = findShortest(source, target, lines);
     }
 
     private void validateEquals(Station source, Station target) {
@@ -28,12 +26,20 @@ public class PathFinder {
         }
     }
 
-    public List<Station> findShortest(List<Line> lines) {
+    public int calculateShortestDistance() {
+        return (int) path.getWeight();
+    }
+
+    public List<Station> findShortestPath() {
+        return path.getVertexList();
+    }
+
+    private GraphPath<Station, DefaultWeightedEdge> findShortest(Station source, Station target, List<Line> lines) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         addAllLineSectionsToGraph(lines, graph);
 
-        return createShortestPaths(graph);
+        return createShortestPaths(source, target, graph);
     }
 
     private void addAllLineSectionsToGraph(List<Line> lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
@@ -42,14 +48,18 @@ public class PathFinder {
                 .forEach(sections -> addSectionsToGraph(graph, sections));
     }
 
-    private List<Station> createShortestPaths(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private GraphPath<Station, DefaultWeightedEdge> createShortestPaths(
+            Station source,
+            Station target,
+            WeightedMultigraph<Station, DefaultWeightedEdge> graph
+    ) {
         GraphPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph).getPath(source, target);
 
         if (path == null) {
             throw new IllegalArgumentException("출발역과 도착역이 올바르지 않습니다.");
         }
 
-        return path.getVertexList();
+        return path;
     }
 
     private void addSectionsToGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> sections) {
