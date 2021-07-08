@@ -144,9 +144,9 @@ Connection: keep-alive
   - [X] 테스트 구현
 
 ### 피드백 반영 필요 목록
-- [] 역 정보 주석 그리기
+- [x] 역 정보 주석 그리기
 - [ ] 경로 조회시 불 필요한 초기화 제거, TestInstance.Lifecycle.PER_CLASS 적용
-- [ ] PathController의 findPaths 반환 타입을 ResponseEntity로 변경
+- [x] PathController의 findPaths 반환 타입을 ResponseEntity로 변경
 - [ ] PathService의 역 조회 부분 한번에 초기화
 - [x] PathGraph 내 코드 구조 개선
 - [ ] TestFixture  적용 고려
