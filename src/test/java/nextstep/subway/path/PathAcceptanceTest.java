@@ -67,6 +67,20 @@ class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_요청(오호선, 신길역, 여의도역, 10);
     }
 
+    /*
+    # 지하철 노선도 #
+
+                            (2호선)                          (1호선)
+     (5호선)  양평역 - 10 - 영등포구청역 - 5 - 영등포시장역 - 10 - 신길역 - 10 여의도 역  (5호선)
+                              ㅣ                               ㅣ
+                              10                               5
+                              ㅣ                               ㅣ
+                             당산역                           영등포역
+                             (2호선)                          (1호선)
+
+     */
+
+
     @DisplayName("지하철 경로를 조회한다.")
     @TestFactory
     Stream<DynamicTest> findPaths_성공() {
