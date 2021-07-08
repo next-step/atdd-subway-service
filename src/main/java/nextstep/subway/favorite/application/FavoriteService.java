@@ -1,4 +1,4 @@
-package nextstep.subway.path.application;
+package nextstep.subway.favorite.application;
 
 import static java.util.stream.Collectors.*;
 
@@ -46,7 +46,7 @@ public class FavoriteService {
         return favoriteRepository.findByMember(member).stream()
                                  .map(FavoriteResponse::of).collect(toList());
     }
-    
+
     @Transactional
     public void deleteFavorite(LoginMember loginMember, Long id) {
         Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);

@@ -16,7 +16,7 @@ import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.path.application.FavoriteService;
+import nextstep.subway.favorite.application.FavoriteService;
 
 @RestController
 @RequestMapping("/favorites")
