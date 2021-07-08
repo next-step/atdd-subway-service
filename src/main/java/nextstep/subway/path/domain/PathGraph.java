@@ -44,8 +44,7 @@ public class PathGraph extends WeightedMultigraph<Station, DefaultWeightedEdge> 
     }
 
     public Path findShortestPath(Station source, Station target) {
-        Optional<GraphPath<Station, DefaultWeightedEdge>> graphPathOptional = Optional.ofNullable(shortestPath.getPath(source, target));
-        GraphPath<Station, DefaultWeightedEdge> graphPath = graphPathOptional
+        GraphPath<Station, DefaultWeightedEdge> graphPath = Optional.ofNullable(shortestPath.getPath(source, target))
                 .orElseThrow(() -> new CannotReachableException(format("%s와(과) %s이(가) 이어져 있지 않습니다."
                         , source.getName()
                         , target.getName())));
