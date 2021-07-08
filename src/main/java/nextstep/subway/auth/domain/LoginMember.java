@@ -3,7 +3,7 @@ package nextstep.subway.auth.domain;
 import nextstep.subway.common.Excetion.NotLoginException;
 
 public class LoginMember {
-    public Long id;
+    protected Long id;
     public String email;
     public Integer age;
     public double discountAmount;
