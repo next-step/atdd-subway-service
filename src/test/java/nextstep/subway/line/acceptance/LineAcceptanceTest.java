@@ -7,6 +7,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.LinesResponse;
+import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -118,6 +119,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_삭제됨(response);
     }
 
+    public static LineResponse 지하철_노선_등록되어_있음(
+            String name,
+            String color,
+            StationResponse upStation,
+            StationResponse downStation,
+            int distance
+    ) {
+        return 지하철_노선_생성_요청(new LineRequest(name, color, upStation.getId(), downStation.getId(), distance)).as(LineResponse.class);
+    }
+
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest params) {
         return 지하철_노선_생성_요청(params);
     }
@@ -178,6 +189,25 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .when().delete(uri)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록되어_있음(
+            LineResponse line,
+            StationResponse upStation,
+            StationResponse downStation,
+            int distance
+    ) {
+        return 지하철_노선에_지하철역_등록_요청(line.getId(), new SectionRequest(upStation.getId(), downStation.getId(), distance));
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(long lineId, SectionRequest sectionRequest) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(sectionRequest)
+                .when().post("/lines/{lineId}/sections", lineId)
                 .then().log().all()
                 .extract();
     }
