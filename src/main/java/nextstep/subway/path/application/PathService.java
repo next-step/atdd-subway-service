@@ -29,9 +29,6 @@ public class PathService {
         List<Line> lineByUpStationOrDownStation = lineService.findLineByUpStationOrDownStation(source, target);
 
         PathFinder pathFinder = new PathFinder(source, target, lineByUpStationOrDownStation);
-        List<Station> shortestStations = pathFinder.findShortestPath();
-        int distance = pathFinder.calculateShortestDistance();
-
-        return new PathResponse(StationsResponse.of(shortestStations), distance);
+        return pathFinder.findShortestPathToResponse();
     }
 }
