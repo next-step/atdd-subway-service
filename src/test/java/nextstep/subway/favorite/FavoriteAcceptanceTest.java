@@ -18,13 +18,11 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("즐겨찾기 관련 기능")
@@ -60,6 +58,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         FavoriteRequest favoriteRequest = new FavoriteRequest(강남역.getId(), 삼성역.getId());
         // when
         ExtractableResponse<Response> response = 즐겨찾기_생성을_요청(favoriteRequest);
+        Long createdId = extractId(response);
         // then
         즐겨찾기_생성됨(response);
 
@@ -68,8 +67,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         즐겨찾기_목록_조회됨(response);
 
-        // When 즐겨찾기 삭제 요청
-        // Then 즐겨찾기 삭제됨
+        // when
+        response = 즐겨찾기_삭제_요청(createdId);
+        // then
+        즐겨찾기_삭제됨(response);
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(Long id) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(loginToken.getAccessToken())
+            .when().delete("/favorites/{id}", id)
+            .then().log().all()
+            .extract();
+    }
+
+    private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
@@ -100,4 +114,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    private Long extractId(ExtractableResponse<Response> response) {
+        String[] locations = response.header("Location").split("/");
+        return Long.parseLong(locations[locations.length - 1]);
+    }
 }

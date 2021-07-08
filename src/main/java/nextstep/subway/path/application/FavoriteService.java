@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.*;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
@@ -18,6 +19,7 @@ import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.exeption.NotFoundStationException;
 
 @Service
+@Transactional(readOnly = true)
 public class FavoriteService {
     private FavoriteRepository favoriteRepository;
     private MemberRepository memberRepository;
@@ -30,6 +32,7 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional
     public FavoriteResponse createFavorite(Long id, FavoriteRequest request) {
         Station source = stationRepository.findById(request.getSource()).orElseThrow(NotFoundStationException::new);
         Station target = stationRepository.findById(request.getTarget()).orElseThrow(NotFoundStationException::new);
@@ -42,5 +45,11 @@ public class FavoriteService {
         Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
         return favoriteRepository.findByMember(member).stream()
                                  .map(FavoriteResponse::of).collect(toList());
+    }
+    
+    @Transactional
+    public void deleteFavorite(LoginMember loginMember, Long id) {
+        Member member = memberRepository.findById(loginMember.getId()).orElseThrow(NotFoundMemberException::new);
+        favoriteRepository.deleteByIdAndMember(id, member);
     }
 }

@@ -29,6 +29,7 @@ class FavoriteRepositoryTest {
 
     private Member 사용자;
     private Station 강남역, 양재역, 방배역, 사당역;
+    private Favorite 즐겨찾기1, 즐겨찾기2;
 
     @Autowired
     public FavoriteRepositoryTest(FavoriteRepository favoriteRepository,
@@ -45,13 +46,16 @@ class FavoriteRepositoryTest {
         양재역 = stationRepository.save(new Station("양재역"));
         방배역 = stationRepository.save(new Station("방배역"));
         사당역 = stationRepository.save(new Station("사당역"));
+
+        즐겨찾기1 = favoriteRepository.save(new Favorite(사용자, 강남역, 양재역));
+        즐겨찾기2 = favoriteRepository.save(new Favorite(사용자, 방배역, 사당역));
     }
 
     @Test
     @DisplayName("즐겨찾기 추가")
     void createFavorite() {
         // given
-        Favorite favorite = new Favorite(사용자, 강남역, 양재역);
+        Favorite favorite = new Favorite(사용자, 방배역, 강남역);
 
         // when
         favorite = favoriteRepository.save(favorite);
@@ -63,18 +67,24 @@ class FavoriteRepositoryTest {
     @Test
     @DisplayName("즐겨찾기 목록 조회")
     void favorites() {
-        // given
-        Favorite favorite1 = new Favorite(사용자, 강남역, 양재역);
-        Favorite favorite2 = new Favorite(사용자, 방배역, 사당역);
-
-        favorite1 = favoriteRepository.save(favorite1);
-        favorite2 = favoriteRepository.save(favorite2);
-
         // when
         List<Favorite> favorites = favoriteRepository.findByMember(사용자);
 
         // then
-        assertThat(favorites).containsAll(Arrays.asList(favorite1, favorite2));
+        assertThat(favorites).containsAll(Arrays.asList(즐겨찾기1, 즐겨찾기2));
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 삭제")
+    void delete() {
+        // given
+        List<Favorite> favorites = favoriteRepository.findByMember(사용자);
+
+        // when
+        favoriteRepository.deleteByIdAndMember(즐겨찾기1.getId(), 사용자);
+
+        // then
+        assertThat(favorites).isNotIn(즐겨찾기1);
     }
 
 }
