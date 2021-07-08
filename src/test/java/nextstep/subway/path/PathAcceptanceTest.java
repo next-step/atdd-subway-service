@@ -58,24 +58,39 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestPath() {
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .param("sourceId", 남부터미널역.getId())
-                .param("targetId", 강남역.getId())
-                .when().get("/paths")
-                .then().log().all().extract();
+        ExtractableResponse<Response> response = 최단경로_조회_요청();
 
         // then
         PathResponse shortestPath = response.body().as(PathResponse.class);
+
+        최단경로_조회_성공(response);
+        최단경로에_포함됨(shortestPath, 남부터미널역, 교대역, 강남역);
+        최단경로_길이가_구해짐(shortestPath);
+    }
+
+    private void 최단경로_길이가_구해짐(PathResponse shortestPath) {
+        assertThat(shortestPath.getDistance()).isEqualTo(13);
+    }
+
+    private void 최단경로에_포함됨(PathResponse shortestPath, StationResponse...expectedStations) {
         StationsResponse stations = shortestPath.getStations();
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(stations.getStations()).containsExactly(
-                남부터미널역,
-                교대역,
-                강남역
+                expectedStations
         );
-        assertThat(shortestPath.getDistance()).isEqualTo(13);
+    }
+
+    private void 최단경로_조회_성공(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private ExtractableResponse<Response> 최단경로_조회_요청() {
+        return RestAssured
+                    .given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .param("sourceId", 남부터미널역.getId())
+                    .param("targetId", 강남역.getId())
+                    .when().get("/paths")
+                    .then().log().all().extract();
     }
 }
