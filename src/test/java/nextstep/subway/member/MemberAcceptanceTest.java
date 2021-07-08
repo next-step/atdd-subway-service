@@ -68,6 +68,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then
         내_정보_수정됨(response);
 
+        //given
+        response = AuthAcceptanceTest.로그인_요청(NEW_EMAIL, NEW_PASSWORD);
+        tokenResponse = response.jsonPath().getObject(".", TokenResponse.class);
+
         // when
         response = 내_정보_삭제_요청(tokenResponse);
         // then
