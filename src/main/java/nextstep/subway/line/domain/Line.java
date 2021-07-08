@@ -9,12 +9,15 @@ import java.util.List;
 @Entity
 public class Line extends BaseEntity {
 
+    private static final int DEFAULT_EXTRA_FARE = 0;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
     private String name;
     private String color;
+    private Integer extraFare = DEFAULT_EXTRA_FARE;
 
     @Embedded
     private Sections sections = new Sections();
@@ -27,9 +30,22 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
+    public Line(String name, String color, Integer extraFare) {
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
+    }
+
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
+        sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public Line(String name, String color, Integer extraFare, Station upStation, Station downStation, int distance) {
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
@@ -40,6 +56,7 @@ public class Line extends BaseEntity {
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+        this.extraFare = line.getExtraFare();
     }
 
     public void remove(Station station) {
@@ -66,4 +83,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
+    public Integer getExtraFare() {
+        return extraFare;
+    }
 }

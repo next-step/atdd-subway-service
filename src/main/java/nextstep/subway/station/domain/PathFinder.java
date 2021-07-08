@@ -1,7 +1,9 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.station.domain;
 
-import nextstep.subway.station.dto.PathResponse;
-import nextstep.subway.station.domain.Station;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.SectionEdge;
+import nextstep.subway.line.domain.Sections;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -43,17 +45,18 @@ public class PathFinder {
     }
 
     private void setEdgeWeight(Section section) {
-        graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+        Line line = section.getLine();
+        graph.addEdge(section.getUpStation(), section.getDownStation(), new SectionEdge(section, line.getExtraFare()));
     }
 
-    public PathResponse findPaths(Station source, Station target) {
+    public SubwayMapPath findPaths(Station source, Station target) {
         validateFindable(source, target);
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         GraphPath path = dijkstraShortestPath.getPath(source, target);
         if (path == null) {
             throw new IllegalArgumentException("두 역이 서로 연결되어 있지 않습니다. 경로를 조회할 수 없습니다.");
         }
-        return PathResponse.of(path);
+        return new SubwayMapPath(path);
     }
 
     private void validateFindable(Station source, Station target) {

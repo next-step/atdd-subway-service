@@ -9,6 +9,9 @@ public class FavoriteRequest {
         this.target = target;
     }
 
+    public FavoriteRequest() {
+    }
+
     public Long getSource() {
         return source;
     }

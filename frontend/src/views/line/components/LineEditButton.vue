@@ -18,6 +18,14 @@
           placeholder="노선 이름"
           outlined
         ></v-text-field>
+        <v-text-field
+            v-model="lineEditForm.extraFare"
+            :rules="rules.line.extraFare"
+            color="grey darken-1"
+            label="추가 운임"
+            placeholder="추가 운임"
+            outlined
+        ></v-text-field>
         <div>
           <v-text-field
             v-model="lineEditForm.color"

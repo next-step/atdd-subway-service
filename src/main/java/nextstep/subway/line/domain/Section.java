@@ -69,4 +69,5 @@ public class Section {
         this.downStation = station;
         this.distance -= newDistance;
     }
+
 }

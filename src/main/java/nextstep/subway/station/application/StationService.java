@@ -1,8 +1,10 @@
 package nextstep.subway.station.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.PathFinder;
+import nextstep.subway.station.domain.SubwayMapPath;
+import nextstep.subway.station.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.PathResponse;
@@ -36,12 +38,13 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    public PathResponse findPaths(Long sourceStationId, Long targetStationId) {
+    public PathResponse findPaths(LoginMember loginMember, Long sourceStationId, Long targetStationId) {
         Station sourceStation = getOne(sourceStationId);
         Station targetStation = getOne(targetStationId);
         List<Line> persistLines = lineRepository.findAll();
         PathFinder pathFinder = new PathFinder(persistLines);
-        return pathFinder.findPaths(sourceStation, targetStation);
+        SubwayMapPath subwayMapPath = pathFinder.findPaths(sourceStation, targetStation);
+        return PathResponse.of(subwayMapPath, loginMember);
     }
 
     public void deleteStationById(Long id) {

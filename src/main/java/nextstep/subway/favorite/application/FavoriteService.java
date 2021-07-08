@@ -5,6 +5,7 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.member.application.ForbiddenException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.application.StationService;
@@ -44,7 +45,7 @@ public class FavoriteService {
         Member member = memberRepository.getOne(loginMember.getId());
         Favorite favorite = favoriteRepository.getOne(id);
         if (!favorite.isOwner(member)) {
-            throw new IllegalArgumentException("즐겨찾기는 소유자의 경우에만 삭제가 가능합니다.");
+            throw new ForbiddenException("즐겨찾기는 소유자의 경우에만 삭제가 가능합니다.");
         }
         favoriteRepository.deleteById(id);
     }

@@ -1,7 +1,10 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.station.dto.PathResponse;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.station.domain.SubwayMapPath;
+import nextstep.subway.station.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +17,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
-class PathFinderTest {
+class SubwayMapPathFinderTest {
 
     private Line 신분당선 = new Line("신분당선", "red");
     private Station 강남역 = new Station("강남역");
@@ -27,7 +30,7 @@ class PathFinderTest {
     private Station 남부터미널역 = new Station("남부터미널역");
     private Station 교대역 = new Station("교대역");
 
-    private Line LINE2 = new Line("2호선", "greeen");
+    private Line LINE2 = new Line("2호선", "green");
     private Station 서초역 = new Station("서초역");
     private Station 역삼역 = new Station("역삼역");
 
@@ -46,7 +49,8 @@ class PathFinderTest {
         
         // when
         PathFinder pathFinder = new PathFinder(lines);
-        PathResponse paths = pathFinder.findPaths(양재역, 정자역);
+        SubwayMapPath subwayMapPath = pathFinder.findPaths(양재역, 정자역);
+        PathResponse paths = PathResponse.of(subwayMapPath, new LoginMember());
 
 
         // then
@@ -75,7 +79,8 @@ class PathFinderTest {
 
         // when
         PathFinder pathFinder = new PathFinder(lines);
-        PathResponse paths = pathFinder.findPaths(청계산역, 교대역);
+        SubwayMapPath subwayMapPath = pathFinder.findPaths(청계산역, 교대역);
+        PathResponse paths = PathResponse.of(subwayMapPath, new LoginMember());
 
         // then
         assertThat(paths.getStations().size()).isEqualTo(4);
@@ -107,7 +112,8 @@ class PathFinderTest {
 
         // when
         PathFinder pathFinder = new PathFinder(lines);
-        PathResponse paths = pathFinder.findPaths(청계산역, 서초역);
+        SubwayMapPath subwayMapPath = pathFinder.findPaths(청계산역, 서초역);
+        PathResponse paths = PathResponse.of(subwayMapPath, new LoginMember());
 
         // then
         assertThat(paths.getStations().size()).isEqualTo(5);

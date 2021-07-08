@@ -38,8 +38,4 @@ public class FavoriteController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity handleIllegalArgsException(IllegalArgumentException e) {
-        return ResponseEntity.badRequest().build();
-    }
 }
