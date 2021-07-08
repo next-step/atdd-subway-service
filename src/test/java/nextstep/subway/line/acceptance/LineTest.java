@@ -75,17 +75,6 @@ public class LineTest {
 		).isInstanceOf(RuntimeException.class);
 	}
 
-	@DisplayName("등록 불가능한 거리 등록")
-	@Test
-	void addNewSectionWithEnableDistance() {
-		Section newSection = new Section(신분당선, 강남역, 양재역, 10);
-
-		assertThatThrownBy(
-			() -> 신분당선.addNewSection(newSection)
-		).isInstanceOf(RuntimeException.class);
-	}
-
-	// TODO : 구간 삭제 테스트
 	@DisplayName("하행 종점 제거")
 	@Test
 	void removeSectionWithFinalDownStation() {
@@ -104,6 +93,16 @@ public class LineTest {
 				.stream()
 				.noneMatch(section -> section.getUpStation() == 광교역)
 		).isTrue();
+	}
+
+	@DisplayName("등록 불가능한 거리 등록")
+	@Test
+	void addNewSectionWithEnableDistance() {
+		Section newSection = new Section(신분당선, 강남역, 양재역, 10);
+
+		assertThatThrownBy(
+			() -> 신분당선.addNewSection(newSection)
+		).isInstanceOf(RuntimeException.class);
 	}
 
 	@DisplayName("상행 종점 제거")

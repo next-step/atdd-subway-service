@@ -8,6 +8,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import nextstep.subway.exception.DeleteSectionException;
+import nextstep.subway.exception.InvalidSectionException;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -41,13 +43,13 @@ public class Sections {
 
 	public void remove(Long stationId) {
 		if (this.sections.size() == 2) {
-			throw new RuntimeException("구간이 하나만 존재하므로 지울 수 없습니다.");
+			throw new DeleteSectionException("구간이 하나만 존재하므로 지울 수 없습니다.");
 		}
 
 		Section deleteSection = this.sections.stream()
 			.filter(section -> section.getDownStation().getId() == stationId)
 			.findFirst()
-			.orElseThrow(() -> new RuntimeException("존재하지 않는 구간은 지울 수 없습니다."));
+			.orElseThrow(() -> new DeleteSectionException("존재하지 않는 구간은 지울 수 없습니다."));
 
 		this.sections.stream()
 			.filter(section -> section.getUpStation() == deleteSection.getDownStation())
@@ -64,7 +66,7 @@ public class Sections {
 			.anyMatch(sec -> sec.getDownStation() == section.getDownStation());
 
 		if (isExistUpStation && isExistDownStation) {
-			throw new RuntimeException("상행역과 하행역이 이미 노선에 등록되어 있습니다.");
+			throw new InvalidSectionException("상행역과 하행역이 이미 노선에 등록되어 있습니다.");
 		}
 	}
 
@@ -82,7 +84,7 @@ public class Sections {
 			);
 
 		if (isNotExistUpStation && isNotExistDownStation) {
-			throw new RuntimeException("상행역과 하행역 둘다 포함되어있지 않습니다.");
+			throw new InvalidSectionException("상행역과 하행역 둘다 포함되어있지 않습니다.");
 		}
 	}
 
@@ -124,19 +126,6 @@ public class Sections {
 		sections.add(
 			new Section(newSection.getLine(), newSection.getDownStation(), oldSection.getDownStation(), distance));
 		sections.remove(oldSection);
-	}
-
-	public List<Station> getStations() {
-		List<Station> stations = new ArrayList<>();
-		Optional<Section> firstStation = findUpSection();
-
-		while (firstStation.isPresent()) {
-			Section section = firstStation.get();
-			stations.add(section.getDownStation());
-			firstStation = findDownSection(section.getDownStation());
-		}
-
-		return stations;
 	}
 
 	public List<Section> getSections() {

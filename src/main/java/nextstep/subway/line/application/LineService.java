@@ -1,12 +1,12 @@
 package nextstep.subway.line.application;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.exception.NotFoundLineException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
@@ -44,7 +44,7 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id).orElseThrow(() -> new NotFoundLineException("Line이 존재하지 않습니다."));
     }
 
 
@@ -55,7 +55,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = lineRepository.findById(id).orElseThrow(() -> new NotFoundLineException("Line이 존재하지 않습니다."));
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
@@ -64,7 +64,7 @@ public class LineService {
     }
 
     public LineResponse addLineStation(Long lineId, SectionRequest request) {
-        Line line = lineRepository.findById(lineId).orElseThrow(() -> new RuntimeException("Line이 존재하지 않습니다."));
+        Line line = lineRepository.findById(lineId).orElseThrow(() -> new NotFoundLineException("Line이 존재하지 않습니다."));
 
         Section newSection = toSection(line, request);
         line.addNewSection(newSection);
@@ -79,9 +79,8 @@ public class LineService {
         return new Section(line, upStation, downStation, sectionRequest.getDistance());
     }
 
-    // TODO : Sections 에 이관
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = lineRepository.findById(lineId).orElseThrow(RuntimeException::new);
+        Line line = lineRepository.findById(lineId).orElseThrow(() -> new NotFoundLineException("Line이 존재하지 않습니다."));
 
         line.removeSection(stationId);
     }
