@@ -193,25 +193,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록되어_있음(
-            LineResponse line,
-            StationResponse upStation,
-            StationResponse downStation,
-            int distance
-    ) {
-        return 지하철_노선에_지하철역_등록_요청(line.getId(), new SectionRequest(upStation.getId(), downStation.getId(), distance));
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(long lineId, SectionRequest sectionRequest) {
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(sectionRequest)
-                .when().post("/lines/{lineId}/sections", lineId)
-                .then().log().all()
-                .extract();
-    }
-
     public static void 지하철_노선_생성됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
