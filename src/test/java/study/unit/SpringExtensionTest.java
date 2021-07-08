@@ -2,6 +2,7 @@ package study.unit;
 
 import com.google.common.collect.Lists;
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.application.SectionService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.SectionRepository;
@@ -23,13 +24,13 @@ public class SpringExtensionTest {
     @MockBean
     private StationService stationService;
     @MockBean
-    private SectionRepository sectionRepository;
+    private SectionService sectionService;
 
     @Test
     void findAllLines() {
         // given
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
-        LineService lineService = new LineService(lineRepository, stationService, sectionRepository);
+        LineService lineService = new LineService(lineRepository, stationService, sectionService);
 
         // when
         LinesResponse responses = lineService.findLines();
