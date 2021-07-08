@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class JgraphTest {
     @Test
@@ -25,9 +26,16 @@ public class JgraphTest {
         graph.setEdgeWeight(graph.addEdge("v1", "v3"), 100);
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        List<String> shortestPath = dijkstraShortestPath.getPath(source, target).getVertexList();
 
-        assertThat(shortestPath.size()).isEqualTo(3);
+        GraphPath path = dijkstraShortestPath.getPath(source, target);
+
+        double weight = path.getWeight();
+        List<String> shortestPath = path.getVertexList();
+
+        assertAll(
+                () -> assertThat(shortestPath.size()).isEqualTo(3),
+                () -> assertThat(weight).isEqualTo(4.0)
+        );
     }
 
     @Test
