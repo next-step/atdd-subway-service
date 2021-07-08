@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.dto.LinesResponse;
 import nextstep.subway.station.application.StationService;
 import org.junit.jupiter.api.DisplayName;
@@ -21,12 +22,14 @@ public class SpringExtensionTest {
     private LineRepository lineRepository;
     @MockBean
     private StationService stationService;
+    @MockBean
+    private SectionRepository sectionRepository;
 
     @Test
     void findAllLines() {
         // given
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
-        LineService lineService = new LineService(lineRepository, stationService);
+        LineService lineService = new LineService(lineRepository, stationService, sectionRepository);
 
         // when
         LinesResponse responses = lineService.findLines();
