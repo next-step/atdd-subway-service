@@ -16,6 +16,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationPair;
 import nextstep.subway.station.domain.Stations;
 
 @Embeddable
@@ -151,5 +152,21 @@ public class Sections {
         return sections.stream()
             .filter(predicate)
             .findFirst();
+    }
+
+    public int getMaxExtraFare(final List<StationPair> stationPairs) {
+        return stationPairs.stream()
+            .mapToInt(this::findExtraFare)
+            .max()
+            .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private Integer findExtraFare(final StationPair it) {
+        return sections.stream()
+            .filter(section -> section.contains(it.getUpStation()) &&
+                section.contains(it.getDownStation()))
+            .map(Section::getExtraFare)
+            .findFirst()
+            .orElseThrow(IllegalArgumentException::new);
     }
 }

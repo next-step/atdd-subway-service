@@ -113,4 +113,12 @@ public class Section {
     public boolean equalsDownStation(final Station station) {
         return this.downStation.equals(station);
     }
+
+    public boolean contains(final Station station) {
+        return upStation.equals(station) || downStation.equals(station);
+    }
+
+    public int getExtraFare() {
+        return line.getExtraFare();
+    }
 }

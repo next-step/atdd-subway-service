@@ -58,9 +58,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         구로역 = 지하철역_등록되어_있음("구로역").as(StationResponse.class);
         판교역 = 지하철역_등록되어_있음("판교역").as(StationResponse.class);
 
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10))
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 100, 교대역.getId(), 강남역.getId(), 10))
             .as(LineResponse.class);
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10))
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 300, 강남역.getId(), 양재역.getId(), 10))
             .as(LineResponse.class);
         삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 양재역.getId(), 남부터미널역.getId(), 5))
             .as(LineResponse.class);
@@ -78,8 +78,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철역_최단_경로_응답됨(response, HttpStatus.OK);
-        지하철역_최단_경로_일치함(response.as(PathResponse.class), 8,
+        final PathResponse pathResponse = response.as(PathResponse.class);
+        지하철역_최단_경로_일치함(pathResponse, 8,
             Arrays.asList(교대역.toStation(), 남부터미널역.toStation(), 양재역.toStation()));
+        지하철_요금_응답됨(pathResponse);
 
     }
 
@@ -127,5 +129,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         final List<Station> expectedStations) {
         assertThat(pathResponse.getDistance()).isEqualTo(expectedDistance);
         assertThat(pathResponse.getStations()).isEqualTo(expectedStations);
+    }
+
+    private void 지하철_요금_응답됨(final PathResponse pathResponse) {
+        assertThat(pathResponse.getFare()).isGreaterThan(0);
     }
 }

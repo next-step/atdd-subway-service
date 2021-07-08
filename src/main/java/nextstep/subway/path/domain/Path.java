@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import java.util.Collections;
 import java.util.List;
 
 import nextstep.subway.station.domain.Station;
@@ -14,7 +15,7 @@ public class Path {
     }
 
     public List<Station> getStations() {
-        return stations;
+        return Collections.unmodifiableList(stations);
     }
 
     public int getDistance() {
