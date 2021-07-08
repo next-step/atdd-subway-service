@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.NotValidatePathException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
@@ -60,7 +61,7 @@ public class PathFinderTest {
         Station 강남역 = new Station("강남역");
 
         //when
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(NotValidatePathException.class,
                 () -> new PathFinder(강남역, 강남역, List.of())
         );
     }
@@ -77,7 +78,7 @@ public class PathFinderTest {
         Line targetLine = new Line("5호선", "purple", 김포공항역, 발산역, 10);
 
         //when
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(NotValidatePathException.class,
                 () -> new PathFinder(강남역, 발산역, List.of(sourceLine, targetLine))
         );
     }

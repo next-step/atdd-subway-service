@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.NotValidatePathException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -22,7 +23,7 @@ public class PathFinder {
 
     private void validateEquals(Station source, Station target) {
         if (source.equals(target)) {
-            throw new IllegalArgumentException("출발역과 도착역은 같을 수 없습니다.");
+            throw new NotValidatePathException();
         }
     }
 
@@ -56,7 +57,7 @@ public class PathFinder {
         GraphPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph).getPath(source, target);
 
         if (path == null) {
-            throw new IllegalArgumentException("출발역과 도착역이 올바르지 않습니다.");
+            throw new NotValidatePathException();
         }
 
         return path;
