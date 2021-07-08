@@ -39,7 +39,7 @@ public class StationService {
         return stationRepository.findById(id).orElseThrow(() -> new StationNotFoundException("존재하지 않는 역입니다."));
     }
 
-    public Station findById(Long id) {
+    public Station findStation(Long id) {
         return stationRepository.findById(id).orElseThrow(() -> new StationNotFoundException("존재하지 않는 역입니다."));
     }
 }

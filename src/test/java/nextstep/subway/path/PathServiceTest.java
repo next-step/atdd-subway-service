@@ -48,7 +48,7 @@ public class PathServiceTest {
     public void notFoundSourceTarget() throws Exception {
         // when then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> pathService.findPath(교대역.getId(), 잠실역.getId()))
+                .isThrownBy(() -> pathService.findPath(null, 교대역.getId(), 잠실역.getId()))
                 .withMessageMatching("존재하지 않은 출발역이나 도착역입니다.");
     }
 }
