@@ -84,4 +84,65 @@ public class LineTest {
 			() -> 신분당선.addNewSection(newSection)
 		).isInstanceOf(RuntimeException.class);
 	}
+
+	// TODO : 구간 삭제 테스트
+	@DisplayName("하행 종점 제거")
+	@Test
+	void removeSectionWithFinalDownStation() {
+		Section newSection = new Section(신분당선, 강남역, 양재역, 3);
+		신분당선.addNewSection(newSection);
+
+		신분당선.removeSection(광교역.getId());
+		assertThat(
+			신분당선.getSections()
+				.stream()
+				.noneMatch(section -> section.getDownStation() == 광교역)
+		).isTrue();
+
+		assertThat(
+			신분당선.getSections()
+				.stream()
+				.noneMatch(section -> section.getUpStation() == 광교역)
+		).isTrue();
+	}
+
+	@DisplayName("상행 종점 제거")
+	@Test
+	void removeSectionWithFirstUpStation() {
+		Section newSection = new Section(신분당선, 강남역, 양재역, 3);
+		신분당선.addNewSection(newSection);
+
+		신분당선.removeSection(강남역.getId());
+		assertThat(
+			신분당선.getSections()
+				.stream()
+				.noneMatch(section -> section.getDownStation() == 강남역)
+		).isTrue();
+
+		assertThat(
+			신분당선.getSections()
+				.stream()
+				.noneMatch(section -> section.getUpStation() == 강남역)
+		).isTrue();
+	}
+
+	@DisplayName("중간역 제거")
+	@Test
+	void removeSectionWithMiddleStation() {
+		Section newSection = new Section(신분당선, 강남역, 양재역, 3);
+		신분당선.addNewSection(newSection);
+
+		신분당선.removeSection(양재역.getId());
+		assertThat(
+			신분당선.getSections()
+				.stream()
+				.noneMatch(section -> section.getDownStation() == 양재역)
+		).isTrue();
+
+		assertThat(
+			신분당선.getSections()
+				.stream()
+				.noneMatch(section -> section.getUpStation() == 양재역)
+		).isTrue();
+	}
 }
