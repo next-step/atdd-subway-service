@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.station.domain.Station;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class SubwayPath {
@@ -32,7 +33,10 @@ public class SubwayPath {
                 .sum();
     }
 
-    public int calcMaxExtraFare() {
-        return sectionWeightedEdges.stream().mapToInt(SectionWeightedEdge::getExtraFare).max().orElse(0);
+    public Fare calcMaxExtraFare() {
+        return sectionWeightedEdges.stream()
+                .map(SectionWeightedEdge::getFare)
+                .sorted(Comparator.reverseOrder())
+                .findFirst().orElse(new Fare());
     }
 }

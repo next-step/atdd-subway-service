@@ -7,12 +7,12 @@ public class SectionWeightedEdge extends DefaultWeightedEdge {
 
     private final Section section;
     private final Long lineId;
-    private final int extraFare;
+    private final Fare fare;
 
-    public SectionWeightedEdge(Section section, Long lineId, int extraFare) {
+    public SectionWeightedEdge(Section section, Long lineId, int fare) {
         this.section = section;
         this.lineId = lineId;
-        this.extraFare = extraFare;
+        this.fare = new Fare(fare);
     }
 
     public Long getLineId() {
@@ -27,7 +27,7 @@ public class SectionWeightedEdge extends DefaultWeightedEdge {
         return section.getDistance().distance();
     }
 
-    public int getExtraFare() {
-        return extraFare;
+    public Fare getFare() {
+        return fare;
     }
 }

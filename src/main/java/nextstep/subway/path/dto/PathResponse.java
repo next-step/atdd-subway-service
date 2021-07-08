@@ -1,6 +1,7 @@
 package nextstep.subway.path.dto;
 
 import nextstep.subway.enums.SubwayFarePolicy;
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.domain.SubwayPath;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -29,8 +30,8 @@ public class PathResponse {
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
         int totalDistance = subwayPath.calcTotalDistance();
-        int maxExtraFare = subwayPath.calcMaxExtraFare();
-        int subwayFare = farePolicy.calcSubwayFare(totalDistance, maxExtraFare);
+        Fare fare = subwayPath.calcMaxExtraFare();
+        int subwayFare = fare.calcSubwayFare(totalDistance, farePolicy);
         return new PathResponse(stationResponses, totalDistance, subwayFare);
     }
 

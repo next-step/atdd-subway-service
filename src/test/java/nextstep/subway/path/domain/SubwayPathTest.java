@@ -55,6 +55,6 @@ class SubwayPathTest {
         List<SectionWeightedEdge> edges = new ArrayList<>(subwayGraph.getGraph().edgeSet());
         ArrayList<Station> stations = new ArrayList<>(subwayGraph.getGraph().vertexSet());
         SubwayPath subwayPath = new SubwayPath(edges, stations);
-        assertThat(subwayPath.calcMaxExtraFare()).isEqualTo(900);
+        assertThat(subwayPath.calcMaxExtraFare()).isEqualTo(new Fare(900));
     }
 }
