@@ -35,8 +35,12 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
-        List<Line> persistLines = lineRepository.findAll();
+        List<Line> persistLines = findAllLine();
         return LineResponse.listOf(persistLines);
+    }
+
+    public List<Line> findAllLine() {
+        return lineRepository.findAll();
     }
 
     public Line findLineById(Long id) {

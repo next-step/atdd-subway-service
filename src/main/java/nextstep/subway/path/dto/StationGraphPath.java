@@ -1,42 +1,23 @@
-package nextstep.subway.path.application;
+package nextstep.subway.path.dto;
 
-import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.path.dto.StationGraphPath;
-import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
-public class PathService {
-    private StationService stationService;
-    private LineService lineService;
+public class StationGraphPath {
+    GraphPath<Station, DefaultWeightedEdge> stationGraphPath;
 
-    public PathService(StationService stationService, LineService lineService) {
-        this.stationService = stationService;
-        this.lineService = lineService;
+    private StationGraphPath(GraphPath<Station, DefaultWeightedEdge> stationGraphPath) {
+        this.stationGraphPath = stationGraphPath;
     }
-    public PathResponse findShortestPath(Long source, Long target) {
-        checkSameStation(source, target);
 
-        Station sourceStation = stationService.findStationById(source);
-        Station targetStation = stationService.findStationById(target);
-        List<Line> lines = lineService.findAllLine();
-        GraphPath<Station, DefaultWeightedEdge> stationPath = generateShortestPath(sourceStation, targetStation, lines);
-        StationGraphPath stationGraphPath = new StationGraphPath(sourceStation, targetStation, lines);
-
-
-        return new PathResponse(stationPath.getVertexList(), (int) stationPath.getWeight());
+    public StationGraphPath(Station source, Station target, List<Line> lines) {
+        this.stationGraphPath = generateShortestPath(source, target, lines);
     }
 
     public GraphPath<Station, DefaultWeightedEdge> generateShortestPath(Station source, Station target, List<Line> lines) {
@@ -56,13 +37,7 @@ public class PathService {
                             graph.addVertex(section.getDownStation());
                             graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
                         }
-        );
-    }
-
-    private void checkSameStation(Long source, Long target) {
-        if (source.equals(target)) {
-            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
-        }
+                );
     }
 
     private void checkExistPath(GraphPath<Station, DefaultWeightedEdge> stationPath) {
@@ -71,4 +46,11 @@ public class PathService {
         }
     }
 
+    public List<Station> getPathStations() {
+        return stationGraphPath.getVertexList();
+    }
+
+    public int getDistance() {
+        return (int) stationGraphPath.getWeight();
+    }
 }
