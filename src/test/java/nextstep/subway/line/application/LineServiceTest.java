@@ -52,7 +52,7 @@ public class LineServiceTest {
         when(stationService.findStationById(1L)).thenReturn(강남역);
         when(stationService.findStationById(3L)).thenReturn(양재역);
 
-        신분당선 = new Line("2호선", "BLUE", 강남역, 판교역, 10);
+        신분당선 = new Line("2호선", "BLUE", 강남역, 판교역, 10, 100);
         when(lineRepository.findById(anyLong())).thenReturn(Optional.of(신분당선));
     }
 

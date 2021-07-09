@@ -1,25 +1,34 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.Excetion.NotConnectStationException;
-import nextstep.subway.line.collection.Distance;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.policy.ChargePolicy;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Path {
     private static List<Station> stations;
+    private static int distance;
+    private static int charge;
     private static WeightedMultigraph<Station, DefaultWeightedEdge> optimalPath;
 
     private Path() {
     }
 
-    public Path(List<Station> stations) {
+    private Path(List<Station> stations, int distance, int charge) {
         this.stations = stations;
+        this.distance = distance;
+        this.charge = charge;
     }
 
     public static Path findOptimalPath(Station sourceStation, Station targetStation, List<Section> sections) {
@@ -31,12 +40,14 @@ public class Path {
             addVerTex(section);
             setEdgeWeight(section);
         });
-        return new Path(getStationList(sourceStation, targetStation));
+        return getStationPath(sourceStation, targetStation);
     }
 
-    private static List<Station> getStationList(Station sourceStation, Station targetStation) {
+    private static Path getStationPath(Station sourceStation, Station targetStation) {
         try {
-            return new DijkstraShortestPath(optimalPath).getPath(sourceStation, targetStation).getVertexList();
+            GraphPath path = new DijkstraShortestPath(optimalPath).getPath(sourceStation, targetStation);
+            int pathDistance = (int) Math.round(path.getWeight());
+            return new Path(path.getVertexList(), pathDistance, ChargePolicy.getDistancePolicy(pathDistance).chargeCalculate(pathDistance));
         } catch (NullPointerException e) {
             throw new NotConnectStationException();
         }
@@ -54,5 +65,21 @@ public class Path {
 
     public List<Station> getStations() {
         return this.stations;
+    }
+
+    public int getDistance() {
+        return this.distance;
+    }
+
+    public int getCharge() {
+        return charge;
+    }
+
+    public void surCharge(LoginMember loginMember, List<Line> linesOfSection) {
+        int surCharges = linesOfSection.stream()
+                .mapToInt(line -> line.getSurcharge())
+                .max()
+                .orElse(0);
+        charge = loginMember.calculatorCharge(charge += surCharges);
     }
 }

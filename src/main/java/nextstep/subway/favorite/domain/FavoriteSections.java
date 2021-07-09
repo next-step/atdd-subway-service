@@ -32,6 +32,6 @@ public class FavoriteSections {
     }
 
     public void remove(FavoriteSection favoriteSection) {
-        System.out.println(favoriteSections.remove(favoriteSection));
+        favoriteSections.remove(favoriteSection);
     }
 }

@@ -57,8 +57,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         선릉역 = 지하철역_생성_요청("선릉역");
         영등포역 = 지하철역_생성_요청("영등포역");
 
-        일호선 = LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("1호선", "green", 1L, 3L, 10)).as(LineResponse.class);
-        LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("2호선", "purple", 5L, 6L, 10));
+        일호선 = LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("1호선", "green", 1L, 3L, 10, 900)).as(LineResponse.class);
+        LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("2호선", "purple", 5L, 6L, 10, 900));
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 잠실역, 교대역, 10);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(일호선, 교대역, 삼성역, 10);

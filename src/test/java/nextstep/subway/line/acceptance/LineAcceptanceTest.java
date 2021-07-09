@@ -35,8 +35,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
+        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10, 900);
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15, 900);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -115,6 +115,23 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_삭제됨(response);
+    }
+
+    @DisplayName("추가요금 지하철 노선을 추가한다.")
+    @Test
+    void surcharge_addLine() {
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+
+        // then
+        지하철_노선_생성됨(response);
+
+        // and
+        지하철_추가_요금_등록됨(response);
+    }
+
+    private void 지하철_추가_요금_등록됨(ExtractableResponse<Response> response) {
+        assertThat(response.as(LineResponse.class).getSurcharge()).isEqualTo(900);
     }
 
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest params) {
