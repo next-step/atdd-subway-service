@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 
 import nextstep.subway.auth.domain.AuthMember;
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
 
 import javax.persistence.Embeddable;
 
@@ -31,7 +32,7 @@ public class Fee {
         return surchargePolicy.calculate(this, distance);
     }
 
-    public Fee calculateAgeFee(AuthMember loginMember) {
+    public Fee calculateAgeFee(@AuthenticationPrincipal AuthMember loginMember) {
         AgeDiscountPolicy discountPolicy = AgeDiscountPolicy.of(loginMember.getAge());
         return discountPolicy.calculate(this);
     }

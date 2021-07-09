@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.auth.domain.AuthMember;
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
@@ -25,7 +26,7 @@ public class PathService {
         this.lineRepository = lineRepository;
     }
 
-    public PathResponse findPath(AuthMember loginMember, Long sourceId, Long targetId) {
+    public PathResponse findPath(@AuthenticationPrincipal AuthMember loginMember, Long sourceId, Long targetId) {
         Lines lines = Lines.of(lineRepository.findAll());
         Sections sections = lines.findSections();
         PathFinder pathFinder = new JgraphtFinder(sections);
