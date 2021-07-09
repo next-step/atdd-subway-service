@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.common.dto.ErrorResponse;
 import nextstep.subway.station.exeption.NotFoundStationException;
 
@@ -21,5 +22,10 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(NotFoundStationException.class)
 	public ResponseEntity<ErrorResponse> handleNotFoundStationException(NotFoundStationException e) {
 		return ResponseEntity.badRequest().body(ErrorResponse.of(BAD_REQUEST.value(), NotFoundStationException.MESSAGE));
+	}
+
+	@ExceptionHandler(AuthorizationException.class)
+	public ResponseEntity<ErrorResponse> handleAuthorizationException(AuthorizationException e) {
+		return ResponseEntity.badRequest().body(ErrorResponse.of(BAD_REQUEST.value(),  e.getMessage()));
 	}
 }
