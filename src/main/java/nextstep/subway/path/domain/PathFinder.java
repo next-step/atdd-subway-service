@@ -1,6 +1,5 @@
 package nextstep.subway.path.domain;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -16,7 +15,7 @@ public class PathFinder {
 
 	public PathFinder(List<Line> lines) {
 		WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-		
+
 		for (Line line : lines) {
 			for (Station station : line.getStations()) {
 				graph.addVertex(station.getName());
@@ -24,6 +23,7 @@ public class PathFinder {
 
 			for (Section section : line.getSection()) {
 				graph.setEdgeWeight(graph.addEdge(section.getUpStation().getName(), section.getDownStation().getName()), section.getDistance());
+				//graph.setEdgeWeight(graph.addEdge(section.getDownStation().getName(), section.getUpStation().getName()), section.getDistance());
 			}
 		}
 
