@@ -27,8 +27,8 @@ public class Distance {
         return distance;
     }
 
-    public int calculatePlusDistance(Distance distance) {
-        return this.distance + distance.distance;
+    public int addOtherDistance(int distance) {
+        return this.distance + distance;
     }
 
     public void minusDistance(Distance distance) {
