@@ -1,5 +1,6 @@
 package nextstep.subway.path.dto;
 
+import nextstep.subway.exception.NoPathException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -42,7 +43,7 @@ public class StationGraphPath {
 
     private void checkExistPath(GraphPath<Station, DefaultWeightedEdge> stationPath) {
         if (stationPath == null) {
-            throw new IllegalArgumentException("연결된 경로가 없습니다.");
+            throw new NoPathException("연결된 경로가 없습니다.");
         }
     }
 

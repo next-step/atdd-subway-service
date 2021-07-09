@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.exception.NoPathException;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,11 +36,11 @@ class PathServiceAcceptanceTest {
     @DisplayName("출발역과 도착역이 같으면 실패한다.")
     @Test
     void findBestPathFailBecauseOfSameSourceAndTargetTest() {
-        when(pathService.findShortestPath(강남역.getId(), 강남역.getId())).thenThrow(new IllegalArgumentException("출발역과 도착역이 같습니다."));
+        when(pathService.findShortestPath(강남역.getId(), 강남역.getId())).thenThrow(new NoPathException("출발역과 도착역이 같습니다."));
 
         //when && then
         assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 강남역.getId()))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NoPathException.class)
                 .hasMessageContaining("출발역과 도착역이 같습니다.");
     }
 
@@ -59,11 +60,11 @@ class PathServiceAcceptanceTest {
     @Test
     void findBestPathFailBecauseOfDisconnectedStationTest() {
         //given
-        when(pathService.findShortestPath(강남역.getId(), 양재역.getId())).thenThrow(new IllegalArgumentException("연결된 경로가 없습니다."));
+        when(pathService.findShortestPath(강남역.getId(), 양재역.getId())).thenThrow(new NoPathException("연결된 경로가 없습니다."));
 
         //when && then
         assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 양재역.getId()))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NoPathException.class)
                 .hasMessageContaining("연결된 경로가 없습니다.");
     }
 

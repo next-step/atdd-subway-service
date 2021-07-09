@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.exception.NoPathException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -75,7 +76,7 @@ public class PathServiceTest {
 
         //when && then
         assertThatThrownBy(() -> pathService.generateShortestPath(강남역, 종로역, Arrays.asList(신분당선,삼호선,이호선,일호선)))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NoPathException.class)
                 .hasMessageContaining("연결된 경로가 없습니다.");
     }
 

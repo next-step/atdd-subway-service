@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.exception.NoPathException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -61,13 +62,13 @@ public class PathService {
 
     private void checkSameStation(Long source, Long target) {
         if (source.equals(target)) {
-            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
+            throw new NoPathException("출발역과 도착역이 같습니다.");
         }
     }
 
     private void checkExistPath(GraphPath<Station, DefaultWeightedEdge> stationPath) {
         if (stationPath == null) {
-            throw new IllegalArgumentException("연결된 경로가 없습니다.");
+            throw new NoPathException("연결된 경로가 없습니다.");
         }
     }
 
