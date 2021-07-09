@@ -46,8 +46,4 @@ public class StationService {
     public Station findByName(String name) {
     	return stationRepository.findByName(name).orElseThrow(RuntimeException::new);
 	}
-
-	public List<Station> findByNamesIn(List<String> names) {
-		return stationRepository.findByNameIn(names).orElseThrow(RuntimeException::new);
-	}
 }
