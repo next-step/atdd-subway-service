@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,7 +14,7 @@ import nextstep.subway.line.domain.Distance;
  * Fare 클래스 요금조회 테스트
  */
 @DisplayName("Fare 클래스 요금조회 테스트")
-class FareTest {
+class FareCalculatorTest {
 
     private LoginMember baby;
     private LoginMember child;
@@ -34,10 +34,10 @@ class FareTest {
     @DisplayName("아기 요금계산")
     void babyFare_check(int distance, int surcharge) {
         // when
-        Fare fare = Fare.totalFareOf(new Distance(distance), baby, surcharge);
+        FareCalculator fareCalculator = FareCalculator.of(new Distance(distance), surcharge, baby);
 
         // then
-        assertThat(fare.getTotalFare()).isZero();
+        assertThat(fareCalculator.getFare()).isZero();
     }
 
     @ParameterizedTest
@@ -45,10 +45,10 @@ class FareTest {
     @DisplayName("어린이 요금계산")
     void childFare_check(int distance, int surcharge, int resultFare) {
         // when
-        Fare fare = Fare.totalFareOf(new Distance(distance), child, surcharge);
+        FareCalculator fareCalculator = FareCalculator.of(new Distance(distance), surcharge, child);
 
         // then
-        assertThat(fare.getTotalFare()).isEqualTo(resultFare);
+        assertThat(fareCalculator.getFare()).isEqualTo(resultFare);
     }
 
     @ParameterizedTest
@@ -56,10 +56,10 @@ class FareTest {
     @DisplayName("청소년 요금계산")
     void teenagerFare_check(int distance, int surcharge, int resultFare) {
         // when
-        Fare fare = Fare.totalFareOf(new Distance(distance), teenager, surcharge);
+        FareCalculator fareCalculator = FareCalculator.of(new Distance(distance), surcharge, teenager);
 
         // then
-        assertThat(fare.getTotalFare()).isEqualTo(resultFare);
+        assertThat(fareCalculator.getFare()).isEqualTo(resultFare);
     }
 
     @ParameterizedTest
@@ -67,9 +67,9 @@ class FareTest {
     @DisplayName("성인 또는 비로그인 사용자 요금계산")
     void adultFare_check(int distance, int surcharge, int resultFare) {
         // when
-        Fare fare = Fare.totalFareOf(new Distance(distance), adult, surcharge);
+        FareCalculator fareCalculator = FareCalculator.of(new Distance(distance), surcharge, adult);
 
         // then
-        assertThat(fare.getTotalFare()).isEqualTo(resultFare);
+        assertThat(fareCalculator.getFare()).isEqualTo(resultFare);
     }
 }

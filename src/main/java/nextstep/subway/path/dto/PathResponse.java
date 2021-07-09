@@ -3,8 +3,8 @@ package nextstep.subway.path.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.util.FareCalculator;
 
 public class PathResponse {
 
@@ -34,12 +34,12 @@ public class PathResponse {
         return new PathResponse(vertexResponses, path.getTotalDistance());
     }
 
-    public static PathResponse of(Path path, Fare fare) {
+    public static PathResponse of(Path path, FareCalculator fareCalculator) {
         List<VertexResponse> vertexResponses = path.getPathVertexes()
                 .stream()
                 .map(VertexResponse::of)
                 .collect(Collectors.toList());
-        return new PathResponse(vertexResponses, path.getTotalDistance(), fare.getTotalFare());
+        return new PathResponse(vertexResponses, path.getTotalDistance(), fareCalculator.getFare());
     }
 
     public List<VertexResponse> getStations() {
