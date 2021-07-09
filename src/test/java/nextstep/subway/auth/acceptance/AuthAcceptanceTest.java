@@ -71,19 +71,29 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private void 로그인_성공됨(ExtractableResponse<Response> response) {
+    private static void 로그인_성공됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private void 회원_인증_실패됨(ExtractableResponse<Response> response) {
+    private static void 회원_인증_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    private void 토큰이_포함됨(TokenResponse token) {
+    private static void 토큰이_포함됨(TokenResponse token) {
         assertThat(token.getAccessToken()).isNotBlank();
     }
 
-    private ExtractableResponse<Response> 회원_로그인을_요청(TokenRequest request) {
+    public static String 회원_로그인_됨(TokenRequest request) {
+        ExtractableResponse<Response> response = 회원_로그인을_요청(request);
+        로그인_성공됨(response);
+
+        TokenResponse token = response.body().as(TokenResponse.class);
+        토큰이_포함됨(token);
+
+        return token.getAccessToken();
+    }
+
+    private static ExtractableResponse<Response> 회원_로그인을_요청(TokenRequest request) {
         return RestAssured
                 .given().log().all()
                 .body(request)
