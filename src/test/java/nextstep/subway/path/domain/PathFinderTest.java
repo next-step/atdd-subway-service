@@ -29,6 +29,30 @@ public class PathFinderTest {
 		this.lines = Arrays.asList(line2, line3, lineNewBunDang);
 	}
 
+	@DisplayName("출발역과 도착역이 연결되어 있지 않을 경우 오류")
+	@Test
+	void findShortestPathWhenFromStartStationDestinationStationCanNotBeReached() {
+		// given
+		Station startStation = new Station("남부터미널역");
+		Station destinationStation = new Station("신촌역");
+		PathFinder pathFinder = new PathFinder(lines);
+
+		// when, then
+		assertThatThrownBy(() -> pathFinder.findPath(startStation, destinationStation)).isInstanceOf(RuntimeException.class);
+	}
+
+	@DisplayName("출발역과 도착역이 같은 경우 오류")
+	@Test
+	void findShortestPathWhenStartAndDestinationAreSame() {
+		// given
+		Station startStation = new Station("남부터미널역");
+		Station destinationStation = new Station("남부터미널역");
+		PathFinder pathFinder = new PathFinder(lines);
+
+		// when, then
+		assertThatThrownBy(() -> pathFinder.findPath(startStation, destinationStation)).isInstanceOf(RuntimeException.class);
+	}
+
 	@DisplayName("최단거리와 역방향 조회 시나리오")
 	@Test
 	void findReverseShortestPath() {

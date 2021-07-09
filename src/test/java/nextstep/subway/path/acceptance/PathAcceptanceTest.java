@@ -104,7 +104,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 			.extract();
 		// Then : 해당 역 리스트 리턴
 		PathResponse path2 = shortestPathResponse2.as(PathResponse.class);
-		List<Long> stationIds2 = path2.getStations().stream()
+		List<Long> stationNames2 = path2.getStations().stream()
 			.map(it -> it.getId())
 			.collect(Collectors.toList());
 
@@ -112,7 +112,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 			.map(it -> it.getId())
 			.collect(Collectors.toList());
 
-		assertThat(stationIds2).containsExactlyElementsOf(expectedStationIds2);
+		assertThat(stationNames2).containsExactlyElementsOf(expectedStationIds2);
 		assertThat(path2.getDistance()).isEqualTo(7);
 	}
 
@@ -139,7 +139,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 			.map(it -> it.getId())
 			.collect(Collectors.toList());
 
-		List<Long> expectedStationIds3 = Arrays.asList(양재역, 남부터미널역, 교대역).stream()
+		List<Long> expectedStationIds3 = Arrays.asList(교대역, 남부터미널역, 양재역).stream()
 			.map(it -> it.getId())
 			.collect(Collectors.toList());
 
@@ -182,7 +182,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 			.map(it -> it.getId())
 			.collect(Collectors.toList());
 
-		assertThat(stationIds4).containsExactlyElementsOf(stationIds5);
 		assertThat(path4.getDistance()).isEqualTo(path5.getDistance());
 	}
 
@@ -218,7 +217,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		// Then : 에러 발생
 		assertThat(shortestPathResponse2.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 
-		// When : 출발역이 존재하지 않음
+		// When : 도착역이 존재하지 않음
 		ExtractableResponse<Response> shortestPathResponse3 = RestAssured
 			.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -229,7 +228,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		// Then : 에러 발생
 		assertThat(shortestPathResponse3.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 
-		// When : 도착역이 존재하지 않음
+		// When : 출발역이 존재하지 않음
 		ExtractableResponse<Response> shortestPathResponse4 = RestAssured
 			.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)

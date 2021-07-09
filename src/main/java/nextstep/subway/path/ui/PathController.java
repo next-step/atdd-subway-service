@@ -1,6 +1,8 @@
 package nextstep.subway.path.ui;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,5 +25,10 @@ public class PathController {
 		PathResponse pathResponse = pathService.findPath(sourceId, targetId);
 
 		return ResponseEntity.ok().body(pathResponse);
+	}
+
+	@ExceptionHandler(RuntimeException.class)
+	public ResponseEntity handleRuntimeException(RuntimeException runtimeException) {
+		return ResponseEntity.badRequest().build();
 	}
 }

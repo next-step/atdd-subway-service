@@ -29,9 +29,11 @@ public class PathServiceTest {
 	@Test
 	void findPathBetweenTwoStationTest() {
 		// given
-		when(lineRepository.findAll()).thenReturn(getLines());
-		when(stationService.findStationById(1L)).thenReturn(new Station(1L, "신촌역"));
-		when(stationService.findStationById(2L)).thenReturn(new Station(2L, "홍대입구역"));
+		when(lineRepository.findAll()).thenReturn(getLineThatHasTwoStations());
+		when(stationService.findStationById(1L)).thenReturn(new Station("신촌역"));
+		when(stationService.findStationById(2L)).thenReturn(new Station("홍대입구역"));
+		when(stationService.findByName("신촌역")).thenReturn(new Station("신촌역"));
+		when(stationService.findByName("홍대입구역")).thenReturn(new Station("홍대입구역"));
 
 		PathService pathService = new PathService(lineRepository, stationService);
 
@@ -48,9 +50,9 @@ public class PathServiceTest {
 		assertThat(pathResponse.getDistance()).isEqualTo(7);
 	}
 
-	private List<Line> getLines() {
-		Station station1 = new Station(1L, "신촌역");
-		Station station2 = new Station(2L, "홍대입구역");
+	private List<Line> getLineThatHasTwoStations() {
+		Station station1 = new Station("신촌역");
+		Station station2 = new Station("홍대입구역");
 		Line line = new Line("2호선", "green", station1, station2, 7);
 
 		return Arrays.asList(line);
