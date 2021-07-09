@@ -16,7 +16,7 @@ public class ShortestDistance {
         }
     }
 
-    public int getDistance() {
+    public int value() {
         return distance;
     }
 
@@ -25,11 +25,19 @@ public class ShortestDistance {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ShortestDistance that = (ShortestDistance) o;
-        return getDistance() == that.getDistance();
+        return value() == that.value();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getDistance());
+        return Objects.hash(value());
+    }
+
+    public boolean isNotMoreThan(int distance) {
+        return this.distance <= distance;
+    }
+
+    public boolean isGraterThan(int distance) {
+        return this.distance > distance;
     }
 }

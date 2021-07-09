@@ -44,7 +44,7 @@ public class SectionDistanceTest {
         distance.updateDistance(3);
 
         //then
-        assertThat(distance.getDistance()).isEqualTo(7);
+        assertThat(distance.value()).isEqualTo(7);
     }
 
     @DisplayName("거리 변경 예외 - 역과 역 사이의 거리보다 넓은 거리 변경")

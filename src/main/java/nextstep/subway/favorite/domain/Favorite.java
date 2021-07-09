@@ -28,10 +28,15 @@ public class Favorite {
     protected Favorite() {
     }
 
-    public Favorite(Member member, Station source, Station target) {
-        verifyAvailAble(member, source, target);
+    private Favorite(Station source, Station target) {
+        verifyAvailAble(source, target);
         this.source = source;
         this.target = target;
+    }
+
+    public Favorite(Member member, Station source, Station target) {
+        this(source, target);
+        verifyAvailAble(member);
         this.member = member;
         member.addFavorite(this);
     }
@@ -41,9 +46,15 @@ public class Favorite {
         this.id = id;
     }
 
-    private void verifyAvailAble(Member member, Station source, Station target) {
-        if (Objects.isNull(member) || Objects.isNull(source) || Objects.isNull(target)) {
-            throw new IllegalArgumentException("즐겨찾기 생성에 필요한 정보가 부족합니다.");
+    private void verifyAvailAble(Station source, Station target) {
+        if (Objects.isNull(source) || Objects.isNull(target)) {
+            throw new IllegalArgumentException("즐겨찾기 생성에 필요한 역 정보가 부족합니다.");
+        }
+    }
+
+    private void verifyAvailAble(Member member) {
+        if (Objects.isNull(member)) {
+            throw new IllegalArgumentException("즐겨찾기 생성에 필요한 사용자 정보가 부족합니다.");
         }
     }
 

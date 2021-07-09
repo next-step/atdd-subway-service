@@ -1,5 +1,6 @@
 package nextstep.subway.member.ui;
 
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Objects;
 
 @RestController
 public class MemberController {
@@ -45,6 +47,7 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        verifyAvailable(loginMember);
         MemberResponse member = memberService.findMember(loginMember.getId());
         return ResponseEntity.ok().body(member);
     }
@@ -52,13 +55,21 @@ public class MemberController {
     @PutMapping("/members/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
                                                              @RequestBody MemberRequest param) {
+        verifyAvailable(loginMember);
         memberService.updateMember(loginMember.getId(), param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
+        verifyAvailable(loginMember);
         memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
+    }
+
+    private void verifyAvailable(LoginMember loginMember) {
+        if (Objects.isNull(loginMember.getId())) {
+            throw new AuthorizationException();
+        }
     }
 }

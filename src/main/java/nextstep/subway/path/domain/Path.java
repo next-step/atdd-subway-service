@@ -20,4 +20,12 @@ public class Path {
     public ShortestDistance getDistance() {
         return distance;
     }
+
+    public Path changeDistance(ShortestDistance distance) {
+        return new Path(stations, distance);
+    }
+
+    public Path changeStations(List stations) {
+        return new Path(stations, distance);
+    }
 }
