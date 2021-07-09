@@ -20,21 +20,10 @@ public class PathFinder {
 		this.graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
 		for (Line line : lines) {
-			addStations(graph, line);
-			setLengthBetweenTwoStation(graph, line);
+			line.setStationsGraph(graph);
 		}
 
 		this.dijkstraShortestPath = new DijkstraShortestPath(graph);
-	}
-
-	private void setLengthBetweenTwoStation(WeightedMultigraph<String, DefaultWeightedEdge> graph, Line line) {
-		line.setLengthBetweenTwoStation(graph);
-	}
-
-	private void addStations(WeightedMultigraph<String, DefaultWeightedEdge> graph, Line line) {
-		for (Station station : line.getStations()) {
-			graph.addVertex(station.getName());
-		}
 	}
 
 	public List<String> findPath(Station startStation, Station destinationStation) {

@@ -69,4 +69,15 @@ public class Line extends BaseEntity {
 	public void setLengthBetweenTwoStation(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
 		sections.setLengthBetweenTwoStation(graph);
 	}
+
+	public void setStations(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
+		for (Station station : getStations()) {
+			graph.addVertex(station.getName());
+		}
+	}
+
+	public void setStationsGraph(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
+		setStations(graph);
+		setLengthBetweenTwoStation(graph);
+	}
 }
