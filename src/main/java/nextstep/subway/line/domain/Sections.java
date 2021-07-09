@@ -178,4 +178,8 @@ public class Sections {
 			throw new RuntimeException();
 		}
 	}
+
+	public List<Section> getSections() {
+		return sections;
+	}
 }

@@ -1,8 +1,5 @@
 package nextstep.subway.path.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,8 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 
 @RestController
 @RequestMapping("/path")
