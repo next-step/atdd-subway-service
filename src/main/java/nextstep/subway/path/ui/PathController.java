@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -16,13 +17,15 @@ import nextstep.subway.station.dto.StationResponse;
 @RestController
 @RequestMapping("/path")
 public class PathController {
+	private PathService pathService;
+
+	public PathController(PathService pathservice) {
+		this.pathService = pathservice;
+	}
+
 	@GetMapping
 	public ResponseEntity findPath(@RequestParam("source") Long sourceId, @RequestParam("target") Long targetId) {
-		List<StationResponse> stationResponses = new ArrayList<>();
-		stationResponses.add(StationResponse.of(new Station("남부터미널역")));
-		stationResponses.add(StationResponse.of(new Station("교대역")));
-		stationResponses.add(StationResponse.of(new Station("강남역")));
-		PathResponse pathResponse = new PathResponse(stationResponses, 7);
+		PathResponse pathResponse = pathService.findPath(sourceId, targetId);
 
 		return ResponseEntity.ok().body(pathResponse);
 	}
