@@ -54,15 +54,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		LineSectionTestMethod.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
 	}
 
-	@DisplayName("최단 경로 조회 시나리오")
+	@DisplayName("미환승역에서 환승역으로 최단거리 시나리오")
 	@Test
-	void findShortestPathScenario() {
+	void findShortestPathFromNotTransferToTransferScenario() {
 		// Backgroud
 		// Given : 지하철역 등록되어 있음
 		// And : 지하철 노선 등록되어 있음
 		// And : 지하철 노선에 지하철역 등록되어 있음
 
-		// Scenario : 다양한 지하철 최단 경로 조회
+		// Scenario : 미환승역에서 환승역으로 최단거리 조회
 		// When : 미환승역에서 환승역으로 최단거리 조회
 		ExtractableResponse<Response> shortestPathResponse1 = RestAssured
 			.given().log().all()
@@ -73,17 +73,27 @@ public class PathAcceptanceTest extends AcceptanceTest {
 			.extract();
 		// Then : 해당 역 리스트 리턴
 		PathResponse path1 = shortestPathResponse1.as(PathResponse.class);
-		List<Long> stationIds = path1.getStations().stream()
-			.map(it -> it.getId())
+		List<String> stationNames = path1.getStations().stream()
+			.map(it -> it.getName())
 			.collect(Collectors.toList());
 
-		List<Long> expectedStationIds = Arrays.asList(남부터미널역, 교대역, 강남역).stream()
-			.map(it -> it.getId())
+		List<String> expectedStationNames = Arrays.asList(남부터미널역, 교대역, 강남역).stream()
+			.map(it -> it.getName())
 			.collect(Collectors.toList());
 
-		assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+		assertThat(stationNames).containsExactlyElementsOf(expectedStationNames);
 		assertThat(path1.getDistance()).isEqualTo(7);
+	}
 
+	@DisplayName("환승역에서 미환승역으로 최단거리 시나리오")
+	@Test
+	void findShortestPathFromTransferToNotTransferScenario() {
+		// Backgroud
+		// Given : 지하철역 등록되어 있음
+		// And : 지하철 노선 등록되어 있음
+		// And : 지하철 노선에 지하철역 등록되어 있음
+
+		// Scenario : 환승역에서 미환승역으로 최단거리조회
 		// When : 환승역에서 미환승역으로 최단거리 조회
 		ExtractableResponse<Response> shortestPathResponse2 = RestAssured
 			.given().log().all()
@@ -103,8 +113,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
 			.collect(Collectors.toList());
 
 		assertThat(stationIds2).containsExactlyElementsOf(expectedStationIds2);
-		assertThat(path1.getDistance()).isEqualTo(7);
+		assertThat(path2.getDistance()).isEqualTo(7);
+	}
 
+	@DisplayName("환승역에서 환승역으로 최단거리 시나리오")
+	@Test
+	void findShortestPathFromTransferToTransferScenario() {
+		// Backgroud
+		// Given : 지하철역 등록되어 있음
+		// And : 지하철 노선 등록되어 있음
+		// And : 지하철 노선에 지하철역 등록되어 있음
+
+		// Scenario : 환승역에서 환승역으로 최단거리 조회
 		// When : 환승역에서 환승역으로 최단거리 조회
 		ExtractableResponse<Response> shortestPathResponse3 = RestAssured
 			.given().log().all()
@@ -124,8 +144,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
 			.collect(Collectors.toList());
 
 		assertThat(stationIds3).containsExactlyElementsOf(expectedStationIds3);
-		assertThat(path1.getDistance()).isEqualTo(5);
+		assertThat(path3.getDistance()).isEqualTo(5);
+	}
 
+	@DisplayName("최단거리와 역방향 조회 시나리오")
+	@Test
+	void findReverseShortestPathScenario() {
+		// Backgroud
+		// Given : 지하철역 등록되어 있음
+		// And : 지하철 노선 등록되어 있음
+		// And : 지하철 노선에 지하철역 등록되어 있음
+
+		// Scenario : 최단거리의 역방향의 최단거리 조회
 		// When : 최단거리의 역방향의 최단거리 조회
 		ExtractableResponse<Response> shortestPathResponse4 = RestAssured
 			.given().log().all()
