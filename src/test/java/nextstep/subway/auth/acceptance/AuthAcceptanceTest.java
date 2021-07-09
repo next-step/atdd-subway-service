@@ -13,26 +13,27 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_정보를_토큰으로_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
+
+    private TokenRequest 로그인_유저;
 
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        회원_생성을_요청("sgkim94@github.com", "123456", 28);
+        로그인_유저 = new TokenRequest("sgkim94@github.com", "123456");
+        회원_생성을_요청(로그인_유저, 28);
     }
 
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
-        //given
-        TokenRequest request = new TokenRequest("sgkim94@github.com", "123456");
-
         // when
-        ExtractableResponse<Response> response = 회원_로그인을_요청(request);
+        ExtractableResponse<Response> response = 회원_로그인을_요청(로그인_유저);
 
         // then
         TokenResponse token = response.body().as(TokenResponse.class);
@@ -44,25 +45,37 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
-        TokenRequest request = new TokenRequest("sgkim94@github.com", "234567");
-
         // when
-        ExtractableResponse<Response> response = 회원_로그인을_요청(request);
+        ExtractableResponse<Response> response = 잘못된_회원_인증_요청("sgkim94@github.com", "234567");
 
         // then
-        회원_로그인_인증_실패됨(response);
+        회원_인증_실패됨(response);
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+        //given
+        String wrongToken = "Bearer sadfjowejfoawjefoqwo";
+
+        // when
+        ExtractableResponse<Response> response = 회원_정보를_토큰으로_조회_요청(wrongToken);
+
+        // then
+        회원_인증_실패됨(response);
     }
+
+    private ExtractableResponse<Response> 잘못된_회원_인증_요청(String email, String wrongPassword) {
+        TokenRequest request = new TokenRequest(email, wrongPassword);
+        return 회원_로그인을_요청(request);
+    }
+
 
     private void 로그인_성공됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private void 회원_로그인_인증_실패됨(ExtractableResponse<Response> response) {
+    private void 회원_인증_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
