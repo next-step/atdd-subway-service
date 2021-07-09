@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -28,7 +29,8 @@ public class LineService {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
-        return LineResponse.of(persistLine, StationResponse.listOf(persistLine.getStations()));
+
+        return LineResponse.of(persistLine, getStationResponses(persistLine));
     }
 
     @Transactional(readOnly = true)
@@ -41,12 +43,10 @@ public class LineService {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-
     @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        List<StationResponse> stations = persistLine.getStationResponses();
-        return LineResponse.of(persistLine, stations);
+        return LineResponse.of(persistLine, getStationResponses(persistLine));
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
@@ -69,6 +69,12 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.removeStation(station);
+    }
+
+    private List<StationResponse> getStationResponses(Line line) {
+        return line.getStations().stream()
+                .map(station -> StationResponse.of(station))
+                .collect(Collectors.toList());
     }
 
 }
