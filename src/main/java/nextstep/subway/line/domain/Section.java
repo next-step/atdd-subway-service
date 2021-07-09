@@ -4,6 +4,9 @@ import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
+
 @Entity
 public class Section {
     @Id
@@ -69,4 +72,8 @@ public class Section {
         this.downStation = station;
         this.distance -= newDistance;
     }
+
+	public void setLengthBetweenTwoStation(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
+		graph.setEdgeWeight(graph.addEdge(upStation.getName(), downStation.getName()), distance);
+	}
 }

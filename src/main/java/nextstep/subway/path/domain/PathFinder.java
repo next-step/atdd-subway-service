@@ -17,7 +17,7 @@ public class PathFinder {
 	private WeightedMultigraph<String, DefaultWeightedEdge> graph;
 
 	public PathFinder(List<Line> lines) {
-		graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+		this.graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
 		for (Line line : lines) {
 			addStations(graph, line);
@@ -28,9 +28,7 @@ public class PathFinder {
 	}
 
 	private void setLengthBetweenTwoStation(WeightedMultigraph<String, DefaultWeightedEdge> graph, Line line) {
-		for (Section section : line.getSection()) {
-			graph.setEdgeWeight(graph.addEdge(section.getUpStation().getName(), section.getDownStation().getName()), section.getDistance());
-		}
+		line.setLengthBetweenTwoStation(graph);
 	}
 
 	private void addStations(WeightedMultigraph<String, DefaultWeightedEdge> graph, Line line) {

@@ -9,6 +9,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
+
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -179,7 +182,9 @@ public class Sections {
 		}
 	}
 
-	public List<Section> getSections() {
-		return sections;
+	public void setLengthBetweenTwoStation(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
+		for (Section section : sections) {
+			section.setLengthBetweenTwoStation(graph);
+		}
 	}
 }
