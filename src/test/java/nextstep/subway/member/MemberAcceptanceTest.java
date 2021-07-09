@@ -59,7 +59,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_생성됨(createResponse);
 
         //when
-        String accessToken = 회원_로그인_됨(new TokenRequest(EMAIL, PASSWORD));
+        String accessToken = 회원_로그인_됨(EMAIL, PASSWORD);
 
         // when
         ExtractableResponse<Response> findResponse = 나의_정보_조회_요청(accessToken);
@@ -168,7 +168,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private static String makeAccessToken(String token) {
+    public static String makeAccessToken(String token) {
         return BEARER_TYPE + " " + token;
     }
 
