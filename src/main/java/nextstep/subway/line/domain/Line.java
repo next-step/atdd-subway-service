@@ -11,31 +11,39 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.exception.InvalidLineException;
 import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Line extends BaseEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
 	@Column(unique = true)
 	private String name;
 	private String color;
+
+	@Embedded
+	private Fare fare;
+
 	@Embedded
 	private Sections sections = new Sections();
 
 	protected Line() {
 	}
 
-	public Line(String name, String color) {
+	public Line(String name, String color, Fare fare) {
 		validateLine(name, color);
 		this.name = name;
 		this.color = color;
+		this.fare = fare;
 	}
 
-	public Line(Long id, String name, String color) {
-		this(name, color);
+	public Line(Long id, String name, String color, Fare fare) {
+		this(name, color, fare);
 		this.id = id;
 	}
 
@@ -58,6 +66,10 @@ public class Line extends BaseEntity {
 		return color;
 	}
 
+	public Fare getFare() {
+		return fare;
+	}
+
 	public List<Station> getStations() {
 		return this.sections.getStations();
 	}
@@ -74,8 +86,12 @@ public class Line extends BaseEntity {
 		this.sections.removeStation(this, station);
 	}
 
+	public int minusFare(Line otherLine) {
+		return this.fare.value() - otherLine.fare.value();
+	}
+
 	private void validateLine(String name, String color) {
-		if(name.isEmpty() || color.isEmpty()) {
+		if (name.isEmpty() || color.isEmpty()) {
 			throw new InvalidLineException("노선의 이름이나 색깔이 비워져있을 수 없습니다.");
 		}
 	}

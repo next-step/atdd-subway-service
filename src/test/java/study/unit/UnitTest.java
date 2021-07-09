@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
@@ -19,9 +20,9 @@ public class UnitTest {
 
 		Station upStation = new Station("강남역");
 		Station downStation = new Station("광교역");
-		Line line = new Line("신분당선", "RED");
+		Line line = new Line("신분당선", "RED", new Fare(100));
 		line.addLineStation(new Section(line, upStation, downStation, new Distance(10)));
-		Line newLine = new Line(newName, "GREEN");
+		Line newLine = new Line(newName, "GREEN", new Fare(200));
 
 		// when
 		line.update(newLine);

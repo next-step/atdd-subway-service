@@ -8,6 +8,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.excpetion.StationGraphException;
 
@@ -21,11 +22,11 @@ public class StationGraph {
 		setEdges(lines.getSectionsByLine());
 	}
 
-	public GraphPath<Station, DefaultWeightedEdge> getShortestPath(Station sourceStation, Station targetStation) {
+	public StationPath getShortestPath(Station sourceStation, Station targetStation) {
 		validateShortestPath(sourceStation, targetStation);
 		List<GraphPath<Station, DefaultWeightedEdge>> paths = getPaths(sourceStation, targetStation);
 		validatePaths(paths);
-		return getMinPath(paths);
+		return new StationPath(getMinPath(paths));
 	}
 
 	private void validateShortestPath(Station sourceStation, Station targetStation) {
@@ -53,7 +54,10 @@ public class StationGraph {
 	}
 
 	private GraphPath<Station, DefaultWeightedEdge> getMinPath(List<GraphPath<Station, DefaultWeightedEdge>> paths) {
-		return paths.stream().sorted((path, otherPath) -> (int)(path.getWeight() - otherPath.getWeight())).findFirst().get();
+		return paths.stream()
+			.sorted((path, otherPath) -> (int)(path.getWeight() - otherPath.getWeight()))
+			.findFirst()
+			.orElseThrow(() -> new StationGraphException("경로들이 존재하지 않습니다."));
 	}
 
 	private List<GraphPath<Station, DefaultWeightedEdge>> getPaths(Station sourceStation, Station targetStation) {
@@ -69,9 +73,10 @@ public class StationGraph {
 
 	private void setEdges(List<Sections> sectionsByLine) {
 		for (Sections sections : sectionsByLine) {
-			sections.forEach(section -> stationGraph.setEdgeWeight(
-				stationGraph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance().value()));
+			sections.forEach(section -> stationGraph.setEdgeWeight(stationGraph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance().value()));
 		}
 	}
+
+
 
 }

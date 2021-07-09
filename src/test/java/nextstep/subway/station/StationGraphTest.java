@@ -4,20 +4,21 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
 
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationGraph;
+import nextstep.subway.station.domain.StationPath;
 import nextstep.subway.station.excpetion.StationGraphException;
 
+@DisplayName("역 그래프 테스트")
 public class StationGraphTest {
 
 	Station 성수역;
@@ -51,9 +52,9 @@ public class StationGraphTest {
 		강남구청역 = new Station(4L, "강남구청역");
 		왕십리역 = new Station(5L, "왕십리역");
 
-		이호선 = new Line("이호선", "초록색");
-		칠호선 = new Line("칠호선", "칠호선색");
-		수인분당선 = new Line("수인분당선", "노랑색");
+		이호선 = new Line("이호선", "초록색", new Fare(100));
+		칠호선 = new Line("칠호선", "칠호선색", new Fare(200));
+		수인분당선 = new Line("수인분당선", "노랑색", new Fare(300));
 
 		왕십리뚝섬구간 = new Section(이호선, 왕십리역, 뚝섬역, new Distance(4));
 		뚝섬성수구간 = new Section(이호선, 뚝섬역, 성수역, new Distance(2));
@@ -79,9 +80,9 @@ public class StationGraphTest {
 	@DisplayName("StationGraph 최단거리 구하기")
 	@Test
 	void getShortestDistance() {
-		GraphPath<Station, DefaultWeightedEdge> path = 역그래프.getShortestPath(성수역, 강남구청역);
-		assertThat(path.getWeight()).isEqualTo(8);
-		assertThat(path.getVertexList()).containsAll(Arrays.asList(성수역, 건대입구역, 강남구청역));
+		StationPath path = 역그래프.getShortestPath(성수역, 강남구청역);
+		assertThat(path.getDistance()).isEqualTo(8);
+		assertThat(path.getStations()).containsAll(Arrays.asList(성수역, 건대입구역, 강남구청역));
 	}
 
 	@DisplayName("StationGraph 최단거리 구하기 - 출발역과 도착역이 같은 경우(에러 발생)")
@@ -103,7 +104,7 @@ public class StationGraphTest {
 	void getShortestDistanceNotConnected() {
 		Station 신도림역 = new Station("신도림역");
 		Station 서울역 = new Station("서울역");
-		Line 일호선 = new Line("일호선", "파랑색");
+		Line 일호선 = new Line("일호선", "파랑색", new Fare(100));
 		Section 신도림서울역구간 = new Section(일호선, 신도림역, 서울역, new Distance(15));
 		일호선.addLineStation(신도림서울역구간);
 		역그래프 = new StationGraph(new Lines(Arrays.asList(일호선, 이호선, 칠호선, 수인분당선)));

@@ -8,10 +8,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.exception.InvalidSectionException;
 import nextstep.subway.line.exception.InvalidSectionsException;
 import nextstep.subway.station.domain.Station;
 
+@DisplayName("구간들 도메인 테스트")
 public class SectionsTest {
 
 	Station 성수역;
@@ -25,7 +27,7 @@ public class SectionsTest {
 		성수역 = new Station(1L, "성수역");
 		뚝섬역 = new Station(2L, "뚝섬역");
 		건대입구역 = new Station(3L, "건대입구역");
-		이호선 = new Line("이호선", "초록색");
+		이호선 = new Line("이호선", "초록색", new Fare(100));
 		성수뚝섬구간 = new Section(이호선, 성수역, 뚝섬역, new Distance(10));
 	}
 

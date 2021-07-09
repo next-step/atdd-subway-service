@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -17,7 +18,7 @@ import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
-
+@DisplayName("인증 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 public class AuthServiceTest {
 	public static final String EMAIL = "email@email.com";
@@ -37,6 +38,7 @@ public class AuthServiceTest {
 	}
 
 	@Test
+	@DisplayName("인증 로그인 테스트")
 	void login() {
 		when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE)));
 		when(jwtTokenProvider.createToken(anyString())).thenReturn("TOKEN");

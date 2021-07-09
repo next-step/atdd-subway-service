@@ -9,12 +9,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.exception.InvalidDistanceException;
 import nextstep.subway.line.exception.InvalidSectionException;
 import nextstep.subway.line.exception.InvalidSectionsException;
 import nextstep.subway.station.domain.Station;
 
-//todo : 성수뚝섬구간.isFirstSection() -> 근데 이건 Sections 에서 해야되는거 아니냐
+@DisplayName("구간 도메인 테스트")
 public class SectionTest {
 
 	Station 성수역;
@@ -26,7 +27,7 @@ public class SectionTest {
 	void setUp() {
 		성수역 = new Station(1L, "성수역");
 		뚝섬역 = new Station(2L, "뚝섬역");
-		이호선 = new Line(1L, "2호선", "초록색");
+		이호선 = new Line(1L, "2호선", "초록색", new Fare(100));
 		성수뚝섬구간 = new Section(이호선, 성수역, 뚝섬역, new Distance(10));
 	}
 

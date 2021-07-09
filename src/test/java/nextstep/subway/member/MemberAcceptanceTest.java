@@ -15,6 +15,7 @@ import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 
+@DisplayName("멤버 인수 테스트")
 public class MemberAcceptanceTest extends AcceptanceTest {
 	public static final String EMAIL = "email@email.com";
 	public static final String PASSWORD = "password";

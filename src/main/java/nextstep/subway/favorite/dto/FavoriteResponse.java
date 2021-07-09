@@ -12,6 +12,10 @@ public class FavoriteResponse {
 	private StationResponse source;
 	private StationResponse target;
 
+	protected FavoriteResponse() {
+
+	}
+
 	public FavoriteResponse(Long id, StationResponse source, StationResponse target) {
 		this.id = id;
 		this.source = source;
