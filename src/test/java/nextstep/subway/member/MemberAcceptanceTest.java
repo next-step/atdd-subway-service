@@ -75,7 +75,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> deleteResponse = 나의_정보_삭제_요청(accessToken);
         // then
         회원_삭제됨(deleteResponse);
-
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(TokenRequest request, Integer age) {
