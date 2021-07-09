@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -16,11 +17,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
 
+    @Override
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+
+        회원_생성을_요청("sgkim94@github.com", "123456", 28);
+    }
+
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
         //given
-        회원_생성을_요청("sgkim94@github.com", "123456", 28);
         TokenRequest request = new TokenRequest("sgkim94@github.com", "123456");
 
         // when
@@ -36,14 +44,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
-        회원_생성을_요청("sgkim94@github.com", "123456", 28);
         TokenRequest request = new TokenRequest("sgkim94@github.com", "234567");
 
         // when
         ExtractableResponse<Response> response = 회원_로그인을_요청(request);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        회원_로그인_인증_실패됨(response);
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
@@ -53,6 +60,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     private void 로그인_성공됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private void 회원_로그인_인증_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private void 토큰이_포함됨(TokenResponse token) {
