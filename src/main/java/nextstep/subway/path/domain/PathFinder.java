@@ -8,7 +8,6 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
 @Component
