@@ -8,7 +8,6 @@ import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -55,15 +54,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         // then
         회원_로그인_됨(loginResponse);
         assertThat(jwtTokenProvider.validateToken(accessToken)).isTrue();
-
-        // when
-        ExtractableResponse<Response> myInfoResponse = 나의_정보_조회(accessToken);
-        MemberResponse memberResponse = myInfoResponse.as(MemberResponse.class);
-
-        // then
-        나의_정보_조회됨(myInfoResponse);
-        assertThat(memberResponse.getEmail()).isEqualTo(EMAIL);
-        assertThat(memberResponse.getAge()).isEqualTo(AGE);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
@@ -130,6 +120,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .get("/members/me")
                 .then().log().all()
@@ -168,7 +159,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 나의_정보_조회_실패됨(ExtractableResponse<Response> myInfoResponse) {
-        assertThat(HttpStatus.UNAUTHORIZED.value()).isEqualTo(myInfoResponse.statusCode());
+        assertThat(HttpStatus.INTERNAL_SERVER_ERROR.value()).isEqualTo(myInfoResponse.statusCode());
     }
 
     public static void 나의_정보_수정됨(ExtractableResponse<Response> myInfoUpdateResponse) {
