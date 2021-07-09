@@ -63,5 +63,5 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     * LineService의 비즈니스 로직을 도메인으로 이동 [O]
     * Domain의 단위 테스트를 작성 [O]
 ## Step2
-* 최단 경로 조회 인수 테스트 작성    
+* 최단 경로 조회 인수 테스트 작성 
 * 최단 경로 조회 기능 구현   
