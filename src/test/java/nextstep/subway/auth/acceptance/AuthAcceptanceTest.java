@@ -1,6 +1,6 @@
 package nextstep.subway.auth.acceptance;
 
-import static nextstep.subway.auth.common.Constants.*;
+import static nextstep.subway.common.constants.AuthConstants.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.HashMap;
