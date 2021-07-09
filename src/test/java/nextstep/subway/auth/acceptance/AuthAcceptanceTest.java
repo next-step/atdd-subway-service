@@ -12,8 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
-import static nextstep.subway.member.MemberAcceptanceTest.회원_정보를_토큰으로_조회_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
@@ -25,7 +24,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        로그인_유저 = new TokenRequest("sgkim94@github.com", "123456");
+        로그인_유저 = new TokenRequest(EMAIL, PASSWORD);
         회원_생성을_요청(로그인_유저, 28);
     }
 
@@ -46,7 +45,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBadBearerAuth() {
         // when
-        ExtractableResponse<Response> response = 잘못된_회원_인증_요청("sgkim94@github.com", "234567");
+        ExtractableResponse<Response> response = 잘못된_회원_인증_요청(EMAIL, "234567");
 
         // then
         회원_인증_실패됨(response);
@@ -83,8 +82,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(token.getAccessToken()).isNotBlank();
     }
 
-    public static String 회원_로그인_됨(TokenRequest request) {
-        ExtractableResponse<Response> response = 회원_로그인을_요청(request);
+    public static String 회원_로그인_됨(String email, String password) {
+        ExtractableResponse<Response> response = 회원_로그인을_요청(new TokenRequest(email, password));
         로그인_성공됨(response);
 
         TokenResponse token = response.body().as(TokenResponse.class);
