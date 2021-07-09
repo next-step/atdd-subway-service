@@ -11,6 +11,8 @@ import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 
+import nextstep.subway.common.domain.UserFarePolicy;
+
 /**
  * LoginMember 클래스 기능 검증
  */
@@ -39,35 +41,35 @@ class LoginMemberTest {
 
     @TestFactory
     @DisplayName("로그인 사용자 연령 확인")
-    List<DynamicTest> name() {
+    List<DynamicTest> check_userAge() {
         return Arrays.asList(
                 dynamicTest("영유아 확인", () -> {
                     // when
                     LoginMember loginMember = new LoginMember(1L, "g@gmail.com", 5);
 
                     // then
-                    assertThat(loginMember.isBaby()).isTrue();
+                    assertThat(UserFarePolicy.isBaby(loginMember.getAge())).isTrue();
                 }),
                 dynamicTest("어린이 확인", () -> {
                     // when
                     LoginMember loginMember = new LoginMember(1L, "g@gmail.com", 12);
 
                     // then
-                    assertThat(loginMember.isChild()).isTrue();
+                    assertThat(UserFarePolicy.isChild(loginMember.getAge())).isTrue();
                 }),
                 dynamicTest("청소년 확인", () -> {
                     // when
                     LoginMember loginMember = new LoginMember(1L, "g@gmail.com", 18);
 
                     // then
-                    assertThat(loginMember.isTeenager()).isTrue();
+                    assertThat(UserFarePolicy.isTeenager(loginMember.getAge())).isTrue();
                 }),
                 dynamicTest("성인 확인", () -> {
                     // when
                     LoginMember loginMember = new LoginMember(1L, "g@gmail.com", 19);
 
                     // then
-                    assertThat(loginMember.isAdult()).isTrue();
+                    assertThat(UserFarePolicy.isAdult(loginMember.getAge())).isTrue();
                 })
         );
     }

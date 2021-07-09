@@ -46,7 +46,7 @@ public class Section implements GraphEdgeWeight {
 
     public static Section createMergeSection(Line line, Section upLineSection, Section downLineSection) {
         return new Section(line, upLineSection.upStation, downLineSection.downStation,
-                upLineSection.distance.calculatePlusDistance(downLineSection.distance));
+                upLineSection.distance.addOtherDistance(downLineSection.distance.getDistance()));
     }
 
     public Long getId() {

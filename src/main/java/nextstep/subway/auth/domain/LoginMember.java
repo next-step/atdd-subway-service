@@ -2,10 +2,10 @@ package nextstep.subway.auth.domain;
 
 import java.util.Objects;
 
-public class LoginMember {
-    private static final int ADULT_BASELINE_AGE = 19;
-    private static final int TEENAGER_BASELINE_AGE = 13;
-    private static final int CHILD_BASELINE_AGE = 6;
+import nextstep.subway.common.domain.UserFarePolicy;
+import nextstep.subway.path.domain.DiscountInfo;
+
+public class LoginMember implements DiscountInfo {
     private Long id;
     private String email;
     private Integer age;
@@ -35,19 +35,19 @@ public class LoginMember {
         return !Objects.isNull(this.id) && this.id > 0;
     }
 
-    public boolean isBaby() {
-        return this.age < CHILD_BASELINE_AGE;
+    @Override
+    public Double getDiscountRate() {
+        if (isLoginUser()) {
+            return UserFarePolicy.findDiscountRate(this.age);
+        }
+        return 1.0;
     }
 
-    public boolean isChild() {
-        return this.age < TEENAGER_BASELINE_AGE && this.age >= CHILD_BASELINE_AGE;
-    }
-
-    public boolean isTeenager() {
-        return this.age < ADULT_BASELINE_AGE && this.age >= TEENAGER_BASELINE_AGE;
-    }
-
-    public boolean isAdult() {
-        return this.age >= ADULT_BASELINE_AGE;
+    @Override
+    public int getDiscountFare() {
+        if (isLoginUser()) {
+            return UserFarePolicy.findDiscountFare(this.age);
+        }
+        return 0;
     }
 }
