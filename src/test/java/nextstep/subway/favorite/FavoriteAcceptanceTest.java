@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -51,8 +52,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청();
 		즐겨찾기_생성됨(createResponse);
 
-		//ExtractableResponse<Response> getResponse = 즐겨찾기_목록_조회_요청();
-		//즐겨찾기_목록_조회됨(getResponse);
+		ExtractableResponse<Response> getResponse = 즐겨찾기_목록_조회_요청();
+		즐겨찾기_목록_조회됨(getResponse);
 
 		//ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(1L);
 		//즐겨찾기_삭제됨(deleteResponse);
@@ -74,6 +75,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 	private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> getResponse) {
 		assertThat(getResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+		assertThat(getResponse.jsonPath().getList(".")).hasSize(1);
 	}
 
 	private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청() {
