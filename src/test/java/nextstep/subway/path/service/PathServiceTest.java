@@ -81,8 +81,8 @@ class PathServiceTest {
     void findPath_성공(Station source, Station target, List<StationResponse> expectedStationResponse, int expectedDistance) {
         // given
         when(sectionService.findSections()).thenReturn(전체_구간);
-        when(stationService.findById(source.getId())).thenReturn(source);
-        when(stationService.findById(target.getId())).thenReturn(target);
+        when(stationService.findAllById(asList(source.getId(), target.getId())))
+                .thenReturn(new Stations(asList(source, target)));
 
         PathService pathService = new PathService(sectionService, stationService, pathFinder);
         PathRequest pathRequest = new PathRequest(source.getId(), target.getId());
@@ -108,8 +108,9 @@ class PathServiceTest {
     void findPath_예외(Station source, Station target, Class<? extends RuntimeException> expectedException) {
         // given
         when(sectionService.findSections()).thenReturn(전체_구간);
-        when(stationService.findById(source.getId())).thenReturn(source);
-        when(stationService.findById(target.getId())).thenReturn(target);
+        when(stationService.findAllById(asList(source.getId(), target.getId())))
+                .thenReturn(new Stations(asList(source, target)));
+
         PathService pathService = new PathService(sectionService, stationService, pathFinder);
         PathRequest pathRequest = new PathRequest(source.getId(), target.getId());
 
