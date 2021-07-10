@@ -7,13 +7,17 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.AuthToken;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.http.MediaType;
 
 import java.util.stream.Stream;
 
-import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.domain.MemberTestSnippet.권한_없이_회원_정보_요청_및_실패_확인;
+import static nextstep.subway.member.domain.MemberTestSnippet.회원_생성_요청_및_성공_확인;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
