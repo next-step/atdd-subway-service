@@ -6,12 +6,16 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
 public class Path {
 	private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 	private final DijkstraShortestPath dijkstraShortestPath;
+
+	private final List<Line> lines;
 	private final Station source;
 	private final Station target;
 
@@ -21,6 +25,7 @@ public class Path {
 		addVertexes(lines);
 		addEdgeWeights(lines);
 
+		this.lines = lines;
 		this.source = source;
 		this.target = target;
 
@@ -72,5 +77,15 @@ public class Path {
 
 	public int getShortestDistance() {
 		return (int) dijkstraShortestPath.getPath(source, target).getWeight();
+	}
+
+	public int calcFare(Integer age) {
+		int distance = getShortestDistance();
+
+		if (age != null) {
+			return AgeFarePolicy.fare(DistanceFarePolicy.fare(distance), age) + LineFarePolicy.fare(lines);
+		}
+
+		return DistanceFarePolicy.fare(distance) + LineFarePolicy.fare(lines);
 	}
 }

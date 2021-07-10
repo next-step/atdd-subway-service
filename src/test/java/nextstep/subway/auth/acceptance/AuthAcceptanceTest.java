@@ -73,7 +73,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 토큰으로_요청(garbage);
 
         // then
-        로그인이_실패됨(response);
+        MemberAcceptanceTest.회원_정보_조회_실패됨(response);
     }
 
     private static ExtractableResponse<Response> 로그인을_요청(String email, String password) {
