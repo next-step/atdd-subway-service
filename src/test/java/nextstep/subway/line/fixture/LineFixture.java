@@ -3,7 +3,7 @@ package nextstep.subway.line.fixture;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 
-import static nextstep.subway.station.fixture.StationFixture.*;
+import static nextstep.subway.station.domain.StationFixture.*;
 
 public class LineFixture {
     public static Line 오호선 = new Line(1L, "오호선", "bg-red-600", 양평역, 영등포구청역, new Distance(10));

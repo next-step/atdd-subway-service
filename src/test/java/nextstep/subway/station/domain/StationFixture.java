@@ -1,4 +1,4 @@
-package nextstep.subway.station.fixture;
+package nextstep.subway.station.domain;
 
 import nextstep.subway.station.domain.Station;
 

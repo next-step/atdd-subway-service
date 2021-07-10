@@ -5,7 +5,7 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 
 import static java.util.Arrays.asList;
-import static nextstep.subway.station.fixture.StationFixture.*;
+import static nextstep.subway.station.domain.StationFixture.*;
 import static nextstep.subway.line.fixture.LineFixture.*;
 
 public class SectionFixture {

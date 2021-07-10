@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static nextstep.subway.line.fixture.SectionFixture.*;
-import static nextstep.subway.station.fixture.StationFixture.*;
+import static nextstep.subway.station.domain.StationFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
