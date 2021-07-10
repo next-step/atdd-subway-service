@@ -37,6 +37,7 @@ public class LineService {
 		return LineResponse.of(persistLine);
     }
 
+	@Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         return getLineResponses(lineRepository.findAll());
     }
@@ -51,6 +52,7 @@ public class LineService {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
+	@Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         return LineResponse.of(findLineById(id));
     }

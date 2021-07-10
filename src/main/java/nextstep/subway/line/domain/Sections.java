@@ -9,6 +9,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
+
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -74,20 +77,17 @@ public class Sections {
 		}
 
 		List<Station> stations = getStations();
-		boolean isUpStationExisted = isStationExisted(section.getUpStation(), stations);
-		boolean isDownStationExisted = isStationExisted(section.getDownStation(), stations);
-
-		validateTwoStationsAlreadyExists(isUpStationExisted, isDownStationExisted);
+		validateTwoStationsAlreadyExists(stations, section);
 		validateConnectedStationToOldLineExists(section, stations);
 
-		if (isUpStationExisted) {
+		if (isStationExisted(section.getUpStation(), stations)) {
 			modifyCommonUpStationSection(section);
 			sections.add(section);
 
 			return;
 		}
 
-		if (isDownStationExisted) {
+		if (isStationExisted(section.getDownStation(), stations)) {
 			modifyCommonDownStationSection(section);
 			sections.add(section);
 
@@ -112,19 +112,30 @@ public class Sections {
 	}
 
 	private void validateConnectedStationToOldLineExists(Section section, List<Station> stations) {
-		if (!stations.isEmpty() && isMatchExisted(section.getUpStation(), stations) && isMatchExisted(section.getDownStation(), stations)) {
+		if (isConnectedStaionToOldLineExisted(section, stations)) {
 			throw new RuntimeException("등록할 수 없는 구간 입니다.");
 		}
+	}
+
+	private boolean isConnectedStaionToOldLineExisted(Section section, List<Station> stations) {
+		return !stations.isEmpty() && isMatchExisted(section.getUpStation(), stations) && isMatchExisted(section.getDownStation(), stations);
 	}
 
 	private boolean isMatchExisted(Station station, List<Station> stations) {
 		return stations.stream().noneMatch(it -> it.equals(station));
 	}
 
-	private void validateTwoStationsAlreadyExists(boolean isUpStationExisted, boolean isDownStationExisted) {
-		if (isUpStationExisted && isDownStationExisted) {
+	private void validateTwoStationsAlreadyExists(List<Station> stations, Section section) {
+		if(isTwoStationAlreadyExisted(stations, section)){
 			throw new RuntimeException("이미 등록된 구간 입니다.");
 		}
+	}
+
+	private boolean isTwoStationAlreadyExisted(List<Station> stations, Section section) {
+		return stations.stream()
+			.filter(station -> station.equals(section.getUpStation()) || station.equals(section.getDownStation()))
+			.distinct()
+			.count() == 2;
 	}
 
 	public void removeLineStation(Line line, Station station) {
@@ -168,6 +179,12 @@ public class Sections {
 	private void validateStationRemovableInSections() {
 		if (sections.size() <= MINIMUM_SECTION_SIZE) {
 			throw new RuntimeException();
+		}
+	}
+
+	public void setLengthBetweenTwoStation(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
+		for (Section section : sections) {
+			section.setLengthBetweenTwoStation(graph);
 		}
 	}
 }

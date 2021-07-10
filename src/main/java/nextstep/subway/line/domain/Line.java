@@ -9,6 +9,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
+
 @Entity
 public class Line extends BaseEntity {
     @Id
@@ -61,5 +64,20 @@ public class Line extends BaseEntity {
 
 	public void removeLineStation(Station station) {
     	sections.removeLineStation(this, station);
+	}
+
+	public void setLengthBetweenTwoStation(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
+		sections.setLengthBetweenTwoStation(graph);
+	}
+
+	public void setStations(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
+		for (Station station : getStations()) {
+			graph.addVertex(station.getName());
+		}
+	}
+
+	public void setStationsGraph(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
+		setStations(graph);
+		setLengthBetweenTwoStation(graph);
 	}
 }

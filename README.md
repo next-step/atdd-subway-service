@@ -55,9 +55,15 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ***
 
-## 기능 요구 사항
+# 기능 요구 사항
+## Step1
 * LineSectionAcceptanceTest 리팩터링
     * 시나리오, 흐름을 검증하는 테스트로 리팩터링 [O]
 * LineService 리팩터링
     * LineService의 비즈니스 로직을 도메인으로 이동 [O]
     * Domain의 단위 테스트를 작성 [O]
+## Step2
+* 최단 경로 조회 인수 테스트 작성 [O]
+* 최단 경로 조회 기능 구현
+    * outside-in : service test mokito 이용하여 구현 [O]
+    * inside-out : 외부 라이브러리 이용하여 domain 구현 [O]
