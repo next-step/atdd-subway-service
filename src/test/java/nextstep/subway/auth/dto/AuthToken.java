@@ -1,21 +1,21 @@
 package nextstep.subway.auth.dto;
 
 public class AuthToken {
-    private String token;
+    private String accessToken;
 
     public AuthToken() {
 
     }
 
-    public AuthToken(String token) {
-        this.token = token;
+    public AuthToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
-    public String getToken() {
-        return token;
+    public String getAccessToken() {
+        return accessToken;
     }
 }

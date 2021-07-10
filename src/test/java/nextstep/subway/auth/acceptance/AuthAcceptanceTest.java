@@ -20,7 +20,8 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
-class AuthAcceptanceTest extends AcceptanceTest {
+@TestInstance(PER_CLASS)
+public class AuthAcceptanceTest extends AcceptanceTest {
 
     public static final String email = "jordy-torvalds@jordy-torvalds.o-r.kr";
     public static final String correctPassword = "jordy";
@@ -32,9 +33,6 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("권한을 관리 한다")
     @TestFactory
     Stream<DynamicTest> manageAuth() {
-        final String email = "jordy-torvalds@jordy-torvalds.o-r.kr";
-        final String correctPassword ="jordy";
-
         return Stream.of(
                 dynamicTest("회원 생성 요청 및 성공 확인", 회원_생성_요청_및_성공_확인(email, correctPassword, 29)),
                 dynamicTest("유효하지 않은 아이디와 비밀번호로 로그인 요청 및 실패 확인", 로그인_요청_및_실패_확인(email, wrongPassword)),
