@@ -11,6 +11,7 @@ public class PathResponse {
     @JsonIgnoreProperties(value = "modifiedDate")
     private List<StationResponse> stations;
     private int distance;
+    private long fare;
 
     public PathResponse() {
     }
@@ -20,11 +21,17 @@ public class PathResponse {
         this.distance = distance;
     }
 
-    public static PathResponse of(List<Station> stations, int distance) {
+    public PathResponse(List<StationResponse> stations, int distance, long fare) {
+        this.stations = stations;
+        this.distance = distance;
+        this.fare = fare;
+    }
+
+    public static PathResponse of(List<Station> stations, int distance, long fare) {
         List<StationResponse> stationResponse = stations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
-        return new PathResponse(stationResponse, distance);
+        return new PathResponse(stationResponse, distance, fare);
     }
 
     public List<StationResponse> getStations() {
@@ -33,5 +40,9 @@ public class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public long getFare() {
+        return fare;
     }
 }
