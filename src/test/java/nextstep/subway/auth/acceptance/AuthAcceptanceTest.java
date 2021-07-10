@@ -27,20 +27,20 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 @TestInstance(PER_CLASS)
 public class AuthAcceptanceTest extends AcceptanceTest {
 
-    public static final String email = "jordy-torvalds@jordy-torvalds.o-r.kr";
-    public static final String correctPassword = "jordy";
-    public static final String wrongPassword = "jordy*";
-    public static final int age = 29;
+    private static final String EMAIL = "jordy-torvalds@jordy-torvalds.o-r.kr";
+    private static final String CORRECT_PASSWORD = "jordy";
+    private static final String WRONG_PASSWORD = "jordy*";
+    private static final int AGE = 29;
 
-    static final AuthToken illegalAccessToken = new AuthToken("illegal.illegal.illegal");
+    private static final AuthToken illegalAccessToken = new AuthToken("illegal.illegal.illegal");
 
     @DisplayName("권한을 관리 한다")
     @TestFactory
     Stream<DynamicTest> manageAuth() {
         return Stream.of(
-                dynamicTest("회원 생성 요청 및 성공 확인", 회원_생성_요청_및_성공_확인(email, correctPassword, 29)),
-                dynamicTest("유효하지 않은 아이디와 비밀번호로 로그인 요청 및 실패 확인", 로그인_요청_및_실패_확인(email, wrongPassword)),
-                dynamicTest("로그인 요청 및 성공 확인", 로그인_요청_및_성공_확인(email, correctPassword)),
+                dynamicTest("회원 생성 요청 및 성공 확인", 회원_생성_요청_및_성공_확인(EMAIL, CORRECT_PASSWORD, 29)),
+                dynamicTest("유효하지 않은 아이디와 비밀번호로 로그인 요청 및 실패 확인", 로그인_요청_및_실패_확인(EMAIL, WRONG_PASSWORD)),
+                dynamicTest("로그인 요청 및 성공 확인", 로그인_요청_및_성공_확인(EMAIL, CORRECT_PASSWORD)),
                 dynamicTest("로그인 성공 후 잘못된 토큰으로 요청시 실패 확인", 권한_없이_회원_정보_요청_및_실패_확인(illegalAccessToken))
         );
     }
