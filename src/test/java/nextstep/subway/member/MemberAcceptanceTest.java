@@ -4,6 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -48,7 +50,75 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+		// Scenario : 나의 정보 관리 시나리오
+		// Given : 회원 등록되어 있음
+		ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+		// And : token 정보 가지고 있음
+		TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
+		ExtractableResponse<Response> tokenResponseCandidate1 = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(tokenRequest)
+			.when().post("/login/token")
+			.then().log().all()
+			.extract();
+		TokenResponse tokenResponse = tokenResponseCandidate1.as(TokenResponse.class);
+		String token = tokenResponse.getAccessToken();
+		// When : 나의 정보 조회 요청
+		ExtractableResponse<Response> MyInfoResponse1 = RestAssured
+			.given().log().all()
+			.auth().oauth2(token)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.when().get("/members/me")
+			.then().log().all()
+			.extract();
+		// Then : 나의 정보 조회
+		assertThat(MyInfoResponse1.statusCode()).isEqualTo(HttpStatus.OK.value());
+		// Given : token 정보 가지고 있음
+		token = tokenResponse.getAccessToken();
+		// When : 나의 정보 업데이트 요청
+		ExtractableResponse<Response> MyInfoResponse2 = RestAssured
+			.given().log().all()
+			.auth().oauth2(token)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE))
+			.when().put("/members/me")
+			.then().log().all()
+			.extract();
+		// Then : 업데이트 된 정보 조회
+		TokenRequest tokenRequest2 = new TokenRequest(NEW_EMAIL, NEW_PASSWORD);
+		ExtractableResponse<Response> tokenResponseCandidate2 = RestAssured
+			.given().log().all()
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(tokenRequest2)
+			.when().post("/login/token")
+			.then().log().all()
+			.extract();
+		TokenResponse tokenResponse2 = tokenResponseCandidate2.as(TokenResponse.class);
+		String newToken = tokenResponse2.getAccessToken();
 
+		assertThat(MyInfoResponse2.statusCode()).isEqualTo(HttpStatus.OK.value());
+		ExtractableResponse<Response> MyInfoResponse3 = RestAssured
+			.given().log().all()
+			.auth().oauth2(newToken)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.when().get("/members/me")
+			.then().log().all()
+			.extract();
+		assertThat(MyInfoResponse3.statusCode()).isEqualTo(HttpStatus.OK.value());
+		// Given : token 존재함
+		newToken = tokenResponse2.getAccessToken();
+		// When : 나의 정보 삭제 요청
+		ExtractableResponse<Response> MyInfoResponse4 = RestAssured
+			.given().log().all()
+			.auth().oauth2(newToken)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE))
+			.when().delete("/members/me")
+			.then().log().all()
+			.extract();
+		// Then : 나의 정보 삭제 확인
+		assertThat(MyInfoResponse4.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
