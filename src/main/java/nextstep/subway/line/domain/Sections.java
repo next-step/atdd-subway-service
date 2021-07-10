@@ -195,4 +195,8 @@ public class Sections {
         }
     }
 
+    public List<Section> values() {
+        return sections;
+    }
+
 }

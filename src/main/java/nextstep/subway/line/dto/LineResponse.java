@@ -33,7 +33,7 @@ public class LineResponse {
 
     public static List<LineResponse> listOf(List<Line> lines) {
         return lines.stream()
-                .map(line -> of(line, line.getStationResponses()))
+                .map(line -> of(line, getStationResponses(line)))
                 .collect(Collectors.toList());
     }
 
@@ -59,5 +59,11 @@ public class LineResponse {
 
     public LocalDateTime getModifiedDate() {
         return modifiedDate;
+    }
+
+    private static List<StationResponse> getStationResponses(Line line) {
+        return line.getStations().stream()
+                .map(station -> StationResponse.of(station))
+                .collect(Collectors.toList());
     }
 }

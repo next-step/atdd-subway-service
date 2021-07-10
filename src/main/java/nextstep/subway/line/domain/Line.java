@@ -59,12 +59,6 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
 
-    public List<StationResponse> getStationResponses() {
-        return getStations().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-    }
-
     public void addStation(Station upStation, Station downStation, int distance) {
         sections.addStation(this, upStation, downStation, distance);
     }

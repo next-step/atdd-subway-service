@@ -23,11 +23,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 구간 관련 기능")
 public class LineSectionAcceptanceTest extends AcceptanceTest {
-    private LineResponse 신분당선;
-    private StationResponse 강남역;
-    private StationResponse 양재역;
-    private StationResponse 정자역;
-    private StationResponse 광교역;
+    private static LineResponse 신분당선;
+    private static StationResponse 강남역;
+    private static StationResponse 양재역;
+    private static StationResponse 정자역;
+    private static StationResponse 광교역;
 
     @BeforeEach
     public void setUp() {
@@ -60,7 +60,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_등록된_지하철역_목록을_확인(신분당선, 강남역, 광교역);
     }
 
-    private void 지하철_노선에_지하철역을_등록(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+    public static void 지하철_노선에_지하철역을_등록(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         //fail_case
         노선에_등록되지_않은_역_등록_실패();
 
@@ -121,7 +121,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
     @Test
-    void 이미_등록된_역_등록_실패() {
+    static void 이미_등록된_역_등록_실패() {
         // when
         ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 광교역, 3);
 
@@ -131,7 +131,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록한다.")
     @Test
-    void 노선에_등록되지_않은_역_등록_실패() {
+    static void 노선에_등록되지_않은_역_등록_실패() {
         // when
         ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 양재역, 3);
 
@@ -212,5 +212,12 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    public static void 지하철역_노선에_지하철역_추가(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+        //when
+        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
+        //then
+        지하철_노선에_지하철역_등록됨(response);
     }
 }
