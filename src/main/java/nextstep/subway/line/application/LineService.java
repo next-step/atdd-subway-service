@@ -1,9 +1,11 @@
 package nextstep.subway.line.application;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.List;
-import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -17,10 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class LineService {
 
-    private LineRepository lineRepository;
-    private StationService stationService;
+    private final LineRepository lineRepository;
+    private final StationService stationService;
 
-    public LineService(LineRepository lineRepository, StationService stationService) {
+    public LineService(final LineRepository lineRepository, final StationService stationService) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
     }
@@ -39,7 +41,7 @@ public class LineService {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
             .map(line -> LineResponse.of(line, getStationResponse(line)))
-            .collect(Collectors.toList());
+            .collect(toList());
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
@@ -77,8 +79,13 @@ public class LineService {
     }
 
     public List<StationResponse> getStationResponse(Line line) {
-        return line.getSections().getStations().stream()
+        return line.getSortedStations().stream()
             .map(StationResponse::of)
-            .collect(Collectors.toList());
+            .collect(toList());
+    }
+
+    public List<Section> findAllSection() {
+        return lineRepository.findAll().stream().flatMap((line) -> line.getSections())
+            .collect(toList());
     }
 }
