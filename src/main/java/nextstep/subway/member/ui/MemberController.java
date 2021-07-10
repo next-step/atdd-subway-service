@@ -6,6 +6,8 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+
+import org.springframework.boot.autoconfigure.AutoConfigurationPackage;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +34,7 @@ public class MemberController {
     }
 
     @PutMapping("/members/{id}")
-    public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
+	public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
         memberService.updateMember(id, param);
         return ResponseEntity.ok().build();
     }
@@ -44,7 +46,7 @@ public class MemberController {
     }
 
     @GetMapping("/members/me")
-    public ResponseEntity<MemberResponse> findMemberOfMine(LoginMember loginMember) {
+    public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         MemberResponse member = memberService.findMember(loginMember.getId());
         return ResponseEntity.ok().body(member);
     }
