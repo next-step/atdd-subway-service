@@ -12,29 +12,53 @@
 - [ ] Bearer Auth 유효하지 않은 토큰 인수 테스트
 - [ ] 유효하지 않은 토큰으로 /members/me 요청을 보낼 경우에 대한 예외 처리
 
-### 요청 / 응답 포맷
-request
-```
-POST /login/token HTTP/1.1
-content-type: application/json; charset=UTF-8
-accept: application/json
-{
-    "password": "password",
-    "email": "email@email.com"
-}
-```
+### 인수 테스트 시나리오
+- [ ] Feature: 로그인 기능
+  - [ ] Scenario: 로그인을 시도한다.
+    - Given 회원 등록되어 있음
+    - [ ] When 유효하지 않은 아이디와 비밀번호로 로그인 요청
+    - Then 유효하지 않은 요청 예외 발생
+    - [ ] When 로그인 요청
+    - Then 로그인 됨
+    - Then accessToken이 반환됨
+    - [ ] When 전달받은 accessToken이 아닌 다른 토큰으로 요청
+    - Then 유효하지 않은 토큰 예외 발생
+      
+- [ ] Feature: 즐겨찾기를 관리한다.
+  - [ ] Background
+    - Given 지하철역 등록되어 있음
+    - And 지하철 노선 등록되어 있음
+    - And 지하철 노선에 지하철역 등록되어 있음
+    - And 회원 등록되어 있음
+    - And 로그인 되어있음
+  - [ ] Scenario: 즐겨찾기를 관리
+    - When 즐겨찾기 생성을 요청
+    - Then 즐겨찾기 생성됨
+    - When 즐겨찾기 목록 조회 요청
+    - Then 즐겨찾기 목록 조회됨
+    - When 즐겨찾기 삭제 요청
+    - Then 즐겨찾기 삭제됨
 
-response
-```
-POST /login/token HTTP/1.1
-content-type: application/json; charset=UTF-8
-accept: application/json
-{
-    "password": "password",
-    "email": "email@email.com"
-}
-```
 ### 기능 구현 목록
+- [ ] 로그인과 토큰 검증
+  - [ ] 토큰 발급 인수테스트 구현
+  - [ ] 유효 하지 않은 토큰으로 요청 인수테스트 구현
+  
+- [ ] 즐겨찾기 기능 구현
+  - [ ] 인수테스트 구현
+    - [ ] 즐겨찾기 생성 테스트 구현
+    - [ ] 즐겨찾기 조회 구현
+    - [ ] 즐겨찾기 삭제 구현
+    
+  - [ ] 기능 구현
+    - [ ] 즐겨찾기 생성 테스트 구현
+    - [ ] 즐겨찾기 조회 구현
+    - [ ] 즐겨찾기 삭제 구현   
+
+  - [ ] 리팩토링
+    - [ ] 즐겨찾기 생성 테스트 구현
+    - [ ] 즐겨찾기 조회 구현
+    - [ ] 즐겨찾기 삭제 구현
 
 
 ## STEP2 - 경로 조회 기능
