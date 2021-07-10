@@ -149,7 +149,7 @@ Connection: keep-alive
 - [x] PathController의 findPaths 반환 타입을 ResponseEntity로 변경
 - [x] PathService의 역 조회 부분 한번에 초기화
 - [x] PathGraph 내 코드 구조 개선
-- [ ] TestFixture  적용 고려
+- [x] PathServiceTest, PathFinderTest에 TestFixture 적용
 
 
 ## STEP1 - ATDD 기반 리팩토링
