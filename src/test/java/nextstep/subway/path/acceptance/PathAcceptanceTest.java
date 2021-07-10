@@ -4,8 +4,10 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,9 +16,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -32,6 +37,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 역삼역;
     private StationResponse 남부터미널역;
     private StationResponse 공덕역;
+    private TokenResponse 토큰;
 
     /**
      * 교대역    --- *2호선* ---   강남역   -- 역삼역
@@ -51,12 +57,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         공덕역 = 지하철역_등록되어_있음("공덕역").as(StationResponse.class);
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-orange-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 500)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 10, 900)).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-orange-600", 교대역.getId(), 양재역.getId(), 5, 200)).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
         지하철_노선에_지하철역_등록되어_있음(이호선, 강남역, 역삼역, 3);
+
+        회원_생성을_요청(EMAIL, PASSWORD, 20);
+        토큰 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
     }
 
     @Test
@@ -69,6 +78,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_조회됨(response);
         assertThat(response.jsonPath().getObject(".", PathResponse.class).getStations()).hasSize(4);
         assertThat(response.jsonPath().getObject(".", PathResponse.class).getDistance()).isEqualTo(15);
+        assertThat(response.jsonPath().getObject(".", PathResponse.class).getFare()).isEqualTo(2550);
     }
 
     @Test
@@ -112,6 +122,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> 최단경로_조회_요청(Long sourceId, Long targetId) {
         return RestAssured
                 .given().log().all()
+                .header(AUTHORIZATION, "Bearer " + 토큰.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths?source={source}&target={target}", sourceId, targetId)
