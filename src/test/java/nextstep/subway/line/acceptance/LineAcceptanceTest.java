@@ -37,8 +37,22 @@ public class LineAcceptanceTest extends AcceptanceTest {
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
+        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10, 900);
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15, 1000);
+    }
+
+    @Test
+    @DisplayName("정상적이지 않은 추가요금 입력 시 에러가 발생한다.")
+    void minus_surcharge_exception() {
+        // given
+        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10, -1);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest);
+
+        // then
+        지하철_노선_생성_실패됨(response);
+        오류메시지_확인됨(response, "추가요금으로 음수를 입력할 수 없습니다.");
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -224,5 +238,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 오류메시지_확인됨(ExtractableResponse<Response> response, String errorMessage) {
+        assertThat(response.jsonPath().getObject("errorMessage", String.class)).isEqualTo(errorMessage);
     }
 }

@@ -32,4 +32,8 @@ public class LineStation extends BaseEntity {
         this.line = line;
         this.station = station;
     }
+
+    public boolean isSameLineAndStation(LineStation lineStation) {
+        return this.line.equals(lineStation.line) && this.station.equals(lineStation.station);
+    }
 }

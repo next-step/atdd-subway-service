@@ -1,6 +1,11 @@
 package nextstep.subway.auth.domain;
 
-public class LoginMember {
+import java.util.Objects;
+
+import nextstep.subway.common.domain.UserFarePolicy;
+import nextstep.subway.path.domain.DiscountInfo;
+
+public class LoginMember implements DiscountInfo {
     private Long id;
     private String email;
     private Integer age;
@@ -24,5 +29,25 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
+    }
+
+    public boolean isLoginUser() {
+        return !Objects.isNull(this.id) && this.id > 0;
+    }
+
+    @Override
+    public Double getDiscountRate() {
+        if (isLoginUser()) {
+            return UserFarePolicy.findDiscountRate(this.age);
+        }
+        return 1.0;
+    }
+
+    @Override
+    public int getDiscountFare() {
+        if (isLoginUser()) {
+            return UserFarePolicy.findDiscountFare(this.age);
+        }
+        return 0;
     }
 }

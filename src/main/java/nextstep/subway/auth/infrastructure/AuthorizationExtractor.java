@@ -1,10 +1,9 @@
 package nextstep.subway.auth.infrastructure;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
-
-import nextstep.subway.auth.application.AuthorizationException;
 
 public class AuthorizationExtractor {
     public static final String AUTHORIZATION = "Authorization";
@@ -14,13 +13,12 @@ public class AuthorizationExtractor {
     protected AuthorizationExtractor() {
     }
 
-    public static String extract(HttpServletRequest request) {
+    public static Optional<String> extract(HttpServletRequest request) {
         return Collections.list(request.getHeaders(AUTHORIZATION))
                 .stream()
                 .filter(AuthorizationExtractor::isBearerTypePrefix)
                 .findFirst()
-                .map(value -> getToken(request, value))
-                .orElseThrow(() -> new AuthorizationException("유효한 토큰이 아닙니다."));
+                .map(value -> getToken(request, value));
     }
 
     private static String getToken(HttpServletRequest request, String value) {

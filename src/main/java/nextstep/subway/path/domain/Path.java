@@ -15,6 +15,10 @@ public class Path {
         return graphPath.getVertexList();
     }
 
+    public <T extends PathVertex> List<T> getPathVertexes(Class<T> objectType) {
+        return graphPath.getVertexList();
+    }
+
     public int getTotalDistance() {
         return (int) graphPath.getWeight();
     }
