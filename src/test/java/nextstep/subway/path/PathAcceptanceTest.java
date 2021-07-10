@@ -8,10 +8,7 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.http.MediaType;
 
@@ -30,11 +27,13 @@ import static org.springframework.http.HttpStatus.OK;
 
 
 @DisplayName("지하철 경로 조회")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 오호선;
     private LineResponse 이호선;
     private LineResponse 일호선;
     private LineResponse 신분당선;
+
     private StationResponse 양평역;
     private StationResponse 영등포구청역;
     private StationResponse 영등포시장역;
@@ -46,7 +45,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 야탑역;
     private StationResponse 모란역;
 
-    @BeforeEach
+    @BeforeAll
     public void setUp() {
         super.setUp();
 
