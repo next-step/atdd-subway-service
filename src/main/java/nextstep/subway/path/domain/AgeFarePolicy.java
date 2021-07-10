@@ -17,15 +17,7 @@ public class AgeFarePolicy {
 	private static final double TEENAGER_DISCOUNT_FARE = 350;
 	private static final double TEENAGER_DISCOUNT_PERCENT = 0.2;
 
-	private final int fare;
-	private final int age;
-
-	public AgeFarePolicy(int fare, int age) {
-		this.fare = fare;
-		this.age = age;
-	}
-
-	public int fare() {
+	public static int fare(final Integer fare, final Integer age) {
 		if (TEENAGER_START <= age && age < TEENAGER_END) {
 			return (int)((fare - CHILDREN_DISCOUNT_FARE) * (1 - TEENAGER_DISCOUNT_PERCENT));
 		}

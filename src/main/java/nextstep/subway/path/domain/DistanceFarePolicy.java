@@ -15,17 +15,11 @@ public class DistanceFarePolicy {
 	private static final int SECOND_DISTANCE_STANDARD = 50;
 	private static final int SECOND_UNIT = 8;
 
-	private final int distance;
-
-
-	public DistanceFarePolicy(int distance) {
+	public static int fare(Integer distance) {
 		if (distance <= 0) {
 			throw new IllegalArgumentException("거리가 불명확하여 요금 측정이 불가합니다.");
 		}
-		this.distance = distance;
-	}
 
-	public int fare() {
 		if (distance <= FIRST_DISTANCE_STANDARD) {
 			return BASIC_FARE;
 		}
@@ -45,7 +39,7 @@ public class DistanceFarePolicy {
 		return fare;
 	}
 
-	private int calculateOverFare(int distance, int km) {
+	private static int calculateOverFare(int distance, int km) {
 		return (int)((Math.ceil((distance - 1) / km) + 1) * 100);
 	}
 }

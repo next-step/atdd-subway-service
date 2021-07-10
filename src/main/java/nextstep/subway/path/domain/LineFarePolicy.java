@@ -13,14 +13,7 @@ import nextstep.subway.line.domain.Line;
  * 	- ex) 0원, 500원, 900원의 추가 요금이 있는 노선들을 경유하여 8km 이용 시 1,250원 -> 2,150원
  */
 public class LineFarePolicy {
-
-	private final List<Line> lines;
-
-	public LineFarePolicy(List<Line> lines) {
-		this.lines = lines;
-	}
-
-	public int fare() {
+	public static int fare(List<Line> lines) {
 		return lines.stream()
 			.map(Line::getExtraFare)
 			.max((x, y) -> Integer.compare(x, y))

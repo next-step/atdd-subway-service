@@ -6,9 +6,11 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.jsonwebtoken.lang.Objects;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.AgeFarePolicy;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -31,23 +33,31 @@ public class PathService {
 		List<Line> lines = lineService.findAll();
 		Station sourceStation = stationService.findStationById(source);
 		Station targetStation = stationService.findStationById(target);
-		int age = loginMember.getAge();
 
-		return dijkstraShortestPath(lines, sourceStation, targetStation, age);
+
+		return dijkstraShortestPath(lines, sourceStation, targetStation, loginMember.getAge());
 	}
 
-	private PathResponse dijkstraShortestPath(List<Line> lines, Station sourceStation, Station targetStation, int age) {
-		Path path = new Path(lines, sourceStation, targetStation, age);
+	private PathResponse applyAgeFarePolicy(LoginMember loginMember, PathResponse pathResponse) {
+		return PathResponse.of(pathResponse.getStations(),
+			pathResponse.getDistance(),
+			AgeFarePolicy.fare(pathResponse.getFare(), loginMember.getAge()))
+			;
+	}
 
-		List<StationResponse> stationResponses = path.getShortestStations().stream()
+	private PathResponse dijkstraShortestPath(List<Line> lines, Station sourceStation, Station targetStation, Integer age) {
+		Path path = new Path(lines, sourceStation, targetStation);
+
+		List<StationResponse> stationResponses = path.getShortestStations()
+			.stream()
 			.map(StationResponse::of)
-			.collect(Collectors.toList());
+			.collect(Collectors.toList())
+			;
 
 		int shortestDistance = path.getShortestDistance();
-		int fare = path.calcFare();
+		int fare = path.calcFare(age);
 
 		return PathResponse.of(stationResponses, shortestDistance, fare);
 	}
-
 
 }

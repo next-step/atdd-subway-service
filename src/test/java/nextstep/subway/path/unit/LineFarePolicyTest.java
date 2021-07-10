@@ -23,9 +23,9 @@ public class LineFarePolicyTest {
 			new Line("name2", "color2", extraFare2, null, null, 1),
 			new Line("name3", "color3", extraFare3, null, null, 1)
 		);
-		LineFarePolicy lineFarePolicy = new LineFarePolicy(lines);
+
 		int max = Math.max(Math.max(extraFare1, extraFare2), extraFare3);
 
-		assertThat(lineFarePolicy.fare()).isEqualTo(max);
+		assertThat(LineFarePolicy.fare(lines)).isEqualTo(max);
 	}
 }

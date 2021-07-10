@@ -11,11 +11,10 @@ import nextstep.subway.path.domain.AgeFarePolicy;
 public class AgeFarePolicyTest {
 
 	@DisplayName("나이별 요금 정책 검증")
-	@CsvSource({"1250,13,720", "1250,6,450"})
+	@CsvSource({"1250,13,720", "1250,6,450", "1250,29,1250"})
 	@ParameterizedTest
 	void fare(int adultFare, int age, int resultFare) {
-		AgeFarePolicy ageFarePolicy = new AgeFarePolicy(adultFare, age);
 
-		assertThat(ageFarePolicy.fare()).isEqualTo(resultFare);
+		assertThat(AgeFarePolicy.fare(adultFare, age)).isEqualTo(resultFare);
 	}
 }

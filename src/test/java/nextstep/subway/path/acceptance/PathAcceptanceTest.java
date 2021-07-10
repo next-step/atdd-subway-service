@@ -38,9 +38,36 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	 * |                        |
 	 * 남부터미널역  --- *3호선* ---   양재
 	 */
-	@DisplayName("최단 경로 조회")
+	@DisplayName("최단 경로 조회 > 로그인 사용자")
 	@Test
-	void 최단_경로_조회() {
+	void 최단_경로_조회_로그인() {
+		MemberAcceptanceTest.회원_생성되어_있음("gt@gt.com", "gt", 13);
+		String accessToken = AuthAcceptanceTest.토큰_발행("gt@gt.com", "gt").getAccessToken();
+
+		ExtractableResponse<Response> response = 최단_경로_조회(accessToken);
+
+		int 거리별_추가_요금 = 1_450;
+		int 노선별_추가_요금 = 900;
+		int 나이에_따른_요금 = (int)((거리별_추가_요금 - 350) * 0.8);	//age:13
+
+		요금_검증(response, 나이에_따른_요금 + 노선별_추가_요금);
+	}
+
+	@DisplayName("최단 경로 조회 > 비로그인 사용자")
+	@Test
+	void 최단_경로_조회_비로그인() {
+		String accessToken = "no!";
+
+		ExtractableResponse<Response> response = 최단_경로_조회(accessToken);
+
+		int 거리별_추가_요금 = 1_450;
+		int 노선별_추가_요금 = 900;
+		int 나이에_따른_요금 = 거리별_추가_요금;
+
+		요금_검증(response, 나이에_따른_요금 + 노선별_추가_요금);
+	}
+
+	private ExtractableResponse<Response> 최단_경로_조회(final String accessToken) {
 		//given
 		StationResponse 강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
 		StationResponse 양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
@@ -53,10 +80,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 		LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
 
-
-		MemberAcceptanceTest.회원_생성되어_있음("gt@gt.com", "gt", 29);
-		String accessToken = AuthAcceptanceTest.토큰_발행("gt@gt.com", "gt").getAccessToken();
-
 		// when
 		ExtractableResponse<Response> response = 최단_경로_조회_요청(accessToken, 양재역, 교대역);
 
@@ -64,20 +87,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		최단_경로_조회_응답됨(response);
 		최단_경로_조회_검증_역목록(response);
 		거리_검증(response);
-		요금_검증(response);
+
+		return response;
 	}
 
 	private void 최단_경로_조회_응답됨(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 	}
 
-	private void 요금_검증(ExtractableResponse<Response> response) {
+	private void 요금_검증(ExtractableResponse<Response> response, int 총_요금) {
 		int fare = response.jsonPath().getInt("fare");
-
-		int 거리별_추가_요금 = 1_450;
-		int 노선별_추가_요금 = 900;
-		int 나이별_추가_요금 = 0;	// age: 29
-		assertThat(fare).isEqualTo(거리별_추가_요금 + 노선별_추가_요금 + 나이별_추가_요금);
+		assertThat(fare).isEqualTo(총_요금);
 	}
 
 	private void 거리_검증(ExtractableResponse<Response> response) {

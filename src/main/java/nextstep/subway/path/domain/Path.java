@@ -18,22 +18,6 @@ public class Path {
 	private final List<Line> lines;
 	private final Station source;
 	private final Station target;
-	private final int age;
-
-	public Path(List<Line> lines, Station source, Station target, int age) {
-		validateSourceIsEqualsToTarget(source, target);
-		validateDoesNotBelongToLines(lines, source, target);
-		addVertexes(lines);
-		addEdgeWeights(lines);
-
-		this.lines = lines;
-		this.source = source;
-		this.target = target;
-		this.age = age;
-
-		dijkstraShortestPath = new DijkstraShortestPath(graph);
-		validateConnectedSourceToTarget(source, target);
-	}
 
 	public Path(List<Line> lines, Station source, Station target) {
 		validateSourceIsEqualsToTarget(source, target);
@@ -44,7 +28,6 @@ public class Path {
 		this.lines = lines;
 		this.source = source;
 		this.target = target;
-		this.age = 0;
 
 		dijkstraShortestPath = new DijkstraShortestPath(graph);
 		validateConnectedSourceToTarget(source, target);
@@ -96,12 +79,13 @@ public class Path {
 		return (int) dijkstraShortestPath.getPath(source, target).getWeight();
 	}
 
-	public int calcFare() {
+	public int calcFare(Integer age) {
 		int distance = getShortestDistance();
-		DistanceFarePolicy distanceFarePolicy = new DistanceFarePolicy(distance);
-		LineFarePolicy lineFarePolicy = new LineFarePolicy(lines);
-		AgeFarePolicy ageFarePolicy = new AgeFarePolicy(distanceFarePolicy.fare() + lineFarePolicy.fare(), age);
 
-		return ageFarePolicy.fare();
+		if (age != null) {
+			return AgeFarePolicy.fare(DistanceFarePolicy.fare(distance), age) + LineFarePolicy.fare(lines);
+		}
+
+		return DistanceFarePolicy.fare(distance) + LineFarePolicy.fare(lines);
 	}
 }
