@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class FavoriteResponses {
-
-    List<FavoriteResponse> favorites;
+    private List<FavoriteResponse> favorites;
 
     public FavoriteResponses() {
     }
