@@ -31,11 +31,7 @@ public class FavoriteService {
 		member.addFavorite(new Favorite(stationService.findStationById(favoriteRequest.getSourceId()), stationService.findStationById(favoriteRequest.getTargetId())));
 		Member saveMember = memberRepository.save(member);
 
-		return FavoriteResponse.of(getLatestFavorite(saveMember));
-	}
-
-	private Favorite getLatestFavorite(Member saveMember) {
-		return saveMember.getFavorites().stream().max((x1, x2) -> (int) (x1.getId() - x2.getId())).orElseThrow(RuntimeException::new);
+		return FavoriteResponse.of(saveMember.getLatestFavorite());
 	}
 
 	@Transactional(readOnly = true)
@@ -46,15 +42,20 @@ public class FavoriteService {
 	}
 
 	private List<FavoriteResponse> getFavoriteResponses(Member member) {
-		if(member.getFavorites().size() <= ZERO) {
-			throw new NoSuchElementException();
-		}
+		validateFavoriteEmpty(member);
 
 		List<FavoriteResponse> favoriteResponses = new ArrayList<>();
 		for (Favorite favorite : member.getFavorites()) {
 			favoriteResponses.add(FavoriteResponse.of(favorite));
 		}
+
 		return favoriteResponses;
+	}
+
+	private void validateFavoriteEmpty(Member member) {
+		if(member.isFavoriteEmpty()) {
+			throw new NoSuchElementException();
+		}
 	}
 
 	public void delete(Long memberId, Long favoriteId) {

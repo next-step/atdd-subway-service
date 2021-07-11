@@ -6,10 +6,12 @@ import java.util.List;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.favorite.domain.Favorites;
 
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,11 +23,15 @@ public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String email;
+
     private String password;
+
     private Integer age;
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Favorite> favorites = new ArrayList<>();
+
+	@Embedded
+	private Favorites favorites = new Favorites();
 
     public Member() {
     }
@@ -53,7 +59,7 @@ public class Member extends BaseEntity {
     }
 
     public List<Favorite> getFavorites() {
-    	return favorites;
+    	return favorites.getList();
 	}
 
     public void update(Member member) {
@@ -69,20 +75,19 @@ public class Member extends BaseEntity {
     }
 
     public void addFavorite(Favorite favorite) {
-    	favorites.add(favorite);
+		favorites.addFavorite(favorite);
     	favorite.toMember(this);
 	}
 
 	public void deleteFavorite(Long favoriteId) {
-		Favorite favorite = getMatchFavorite(favoriteId);
-		favorites.remove(favorite);
-		favorite.toMember(null);
+    	favorites.deleteFavorite(favoriteId);
 	}
 
-	private Favorite getMatchFavorite(Long favoriteId) {
-		return favorites.stream()
-			.filter(f -> f.equalsById(favoriteId))
-			.findFirst()
-			.orElseThrow(RuntimeException::new);
+	public Favorite getLatestFavorite() {
+    	return favorites.getLatestFavorite();
+	}
+
+	public boolean isFavoriteEmpty() {
+		return favorites.isEmpty();
 	}
 }
