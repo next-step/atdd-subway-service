@@ -5,12 +5,17 @@ import java.util.List;
 import java.util.Objects;
 
 import static java.lang.String.format;
+import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 
 public class Stations {
     List<Station> values = new ArrayList<>();
 
     public Stations() {
+    }
+
+    public Stations(Station...stations) {
+        this.values = asList(stations);
     }
 
     public Stations(List<Station> values) {

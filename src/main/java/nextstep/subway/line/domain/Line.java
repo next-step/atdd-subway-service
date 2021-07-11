@@ -79,4 +79,23 @@ public class Line extends BaseEntity {
     public Stations getStations() {
         return sections.toStations();
     }
+
+    public boolean containsStationsExactly(Stations stations) {
+        boolean result = true;
+
+        for(Station station : stations.get()){
+            result = (result && sections.toStations().contains(station)) ;
+        }
+
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Line{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                '}';
+    }
 }

@@ -40,6 +40,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     private Station 양평역;
     private Station 영등포구청역;
     private Station 영등포시장역;
+    private Station 모란역;
+    private Station 야탑역;
     private AuthToken authToken = new AuthToken();
 
     private IdTransferObject ido = new IdTransferObject();
@@ -51,10 +53,15 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         양평역 = 지하철역_생성_요청("양평역").as(Station.class);
         영등포구청역 = 지하철역_생성_요청("영등포구청역").as(Station.class);
         영등포시장역 = 지하철역_생성_요청("영등포시장역").as(Station.class);
-        LineResponse lineResponse
+        모란역 = 지하철역_생성_요청("모란역").as(Station.class);
+        야탑역 = 지하철역_생성_요청("야탑역").as(Station.class);
+        LineResponse line5Response
                 = 지하철_노선_생성_요청(new LineRequest("5호선", "보라색", 양평역.getId(), 영등포구청역.getId(), 10))
                 .as(LineResponse.class);
-        지하철_노선에_지하철역_등록_요청(lineResponse, of(영등포구청역), of(영등포시장역), 30);
+        LineResponse lineNewBundangResponse
+                = 지하철_노선_생성_요청(new LineRequest("신분당선", "노란색", 모란역.getId(), 야탑역.getId(), 10))
+                .as(LineResponse.class);
+        지하철_노선에_지하철역_등록_요청(line5Response, of(영등포구청역), of(영등포시장역), 30);
 
         회원_생성을_요청(email1, password1, age1);
         회원_생성을_요청(email2, password2, age2);
@@ -66,6 +73,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         return Stream.of(
                 dynamicTest("로그인_요청_및_성공_확인", 로그인_요청_및_성공_확인(email1, password1, authToken)),
                 dynamicTest("즐겨찾기_생성_및_성공_확인(양평역 - 영등포구청역)", 즐겨찾기_생성_및_성공_확인(authToken, 양평역, 영등포구청역, ido)),
+                dynamicTest("유효하지_않은_즐겨찾기_생성_및_실패_확인(양평역 - 야탑역)", 유효하지_않은_즐겨찾기_생성_및_실패_확인(authToken, 양평역, 야탑역, ido)),
                 dynamicTest("즐겨찾기_조회_및_성공_확인(양평역 - 영등포구청역)", 즐겨찾기_조회_및_성공_확인(authToken, 양평역, 영등포구청역)),
                 dynamicTest("즐겨찾기_삭제_및_성공_확인(양평역 - 영등포구청역)", 즐겨찾기_삭제_및_성공_확인(authToken, ido)),
                 dynamicTest("즐겨찾기_생성_및_성공_확인(양평역 - 영등포구청역)", 즐겨찾기_생성_및_성공_확인(authToken, 영등포구청역, 영등포시장역, ido)),

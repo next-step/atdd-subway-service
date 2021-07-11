@@ -6,6 +6,10 @@ import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.application.StationService;
@@ -32,6 +36,9 @@ class FavoriteServiceTest {
     private FavoriteService favoriteService;
 
     @Autowired
+    private LineRepository lineRepository;
+
+    @Autowired
     private StationRepository stationRepository;
 
     @Autowired
@@ -40,8 +47,10 @@ class FavoriteServiceTest {
     @Autowired
     private FavoriteRepository favoriteRepository;
 
+
+
     private Station 양평역 = new Station("양평역");
-    private Station 영등포역 = new Station("영등포역");
+    private Station 영등포구청역 = new Station("영등포구청역");
     private Member 회원_죠르디 = new Member("jordy-torvalds@jordy.com", "jordy", 29);
     private LoginMember 로그인_죠르디 = new LoginMember(1L, "jordy-torvalds@jordy.com", 29);
 
@@ -50,14 +59,16 @@ class FavoriteServiceTest {
     @BeforeEach
     void setUp() {
         stationRepository.save(양평역);
-        stationRepository.save(영등포역);
+        stationRepository.save(영등포구청역);
+        lineRepository.save(new Line("오호선", "보라색", 양평역, 영등포구청역, new Distance(5)));
         memberRepository.save(회원_죠르디);
 
         로그인_죠르디 = new LoginMember(회원_죠르디.getId(), 회원_죠르디.getEmail(), 회원_죠르디.getAge());
 
         // given
-        favoriteService = new FavoriteService(new StationService(stationRepository), favoriteRepository);
-        FavoriteRequest favoriteRequest = new FavoriteRequest(양평역.getId(), 영등포역.getId());
+        LineService lineService = new LineService(lineRepository, new StationService(stationRepository));
+        favoriteService = new FavoriteService(new StationService(stationRepository), lineService, favoriteRepository);
+        FavoriteRequest favoriteRequest = new FavoriteRequest(양평역.getId(), 영등포구청역.getId());
 
         insertResponse = favoriteService.insertFavorite(로그인_죠르디, favoriteRequest);
     }
@@ -68,7 +79,7 @@ class FavoriteServiceTest {
         // then
         assertAll(
                 () -> assertThat(insertResponse.getSource().getId()).isEqualTo(양평역.getId()),
-                () -> assertThat(insertResponse.getTarget().getId()).isEqualTo(영등포역.getId())
+                () -> assertThat(insertResponse.getTarget().getId()).isEqualTo(영등포구청역.getId())
         );
     }
 
@@ -83,8 +94,8 @@ class FavoriteServiceTest {
             assertAll(
                     () -> assertThat(favoriteResponse.getSource().getId()).isEqualTo(양평역.getId()),
                     () -> assertThat(favoriteResponse.getSource().getName()).isEqualTo(양평역.getName()),
-                    () -> assertThat(favoriteResponse.getTarget().getId()).isEqualTo(영등포역.getId()),
-                    () -> assertThat(favoriteResponse.getTarget().getName()).isEqualTo(영등포역.getName())
+                    () -> assertThat(favoriteResponse.getTarget().getId()).isEqualTo(영등포구청역.getId()),
+                    () -> assertThat(favoriteResponse.getTarget().getName()).isEqualTo(영등포구청역.getName())
             );
         });
     }

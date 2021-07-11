@@ -1,9 +1,6 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.*;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -36,8 +33,13 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public List<LineResponse> findLines() {
+    public List<LineResponse> findAllLineResponses() {
         return of(lineRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public Lines findAllLines() {
+        return new Lines(lineRepository.findAll());
     }
 
     private Line findById(Long id) {
