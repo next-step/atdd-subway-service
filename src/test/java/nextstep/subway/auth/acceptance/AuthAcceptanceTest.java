@@ -66,20 +66,37 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(UNAUTHORIZED.value());
     }
 
-    public static Executable 로그인_요청_및_실패_확인(String email, String password) {
+    public static void 로그인_토큰_추출(ExtractableResponse<Response> response, AuthToken authToken) {
+        authToken.changeToken(response.as(AuthToken.class).getAccessToken());
+    }
+
+    public static Executable 로그인_요청_및_성공_확인(String email, String password, AuthToken authToken) {
         return () -> {
+            // when
             ExtractableResponse<Response> loginResponse = 로그인_요청(email, password);
 
-            //then
+            // then
+            로그인_성공_확인(loginResponse);
+            로그인_토큰_추출(loginResponse, authToken);
+        };
+    }
+
+    public static Executable 로그인_요청_및_실패_확인(String email, String password) {
+        return () -> {
+            // when
+            ExtractableResponse<Response> loginResponse = 로그인_요청(email, password);
+
+            // then
             로그인_실패_확인(loginResponse);
         };
     }
 
     public static Executable 로그인_요청_및_성공_확인(String email, String password) {
         return () -> {
+            // when
             ExtractableResponse<Response> loginResponse = 로그인_요청(email, password);
 
-            //then
+            // then
             로그인_성공_확인(loginResponse);
         };
     }

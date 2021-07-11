@@ -11,11 +11,18 @@ public class AuthToken {
         this.accessToken = accessToken;
     }
 
-    public void setAccessToken(String accessToken) {
+    public void changeToken(String accessToken) {
         this.accessToken = accessToken;
     }
 
     public String getAccessToken() {
         return accessToken;
+    }
+
+    @Override
+    public String toString() {
+        return "AuthToken{" +
+                "accessToken='" + accessToken + '\'' +
+                '}';
     }
 }

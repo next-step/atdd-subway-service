@@ -9,6 +9,10 @@ public class FavoriteResponse {
     private StationResponse source;
     private StationResponse target;
 
+    protected FavoriteResponse() {
+
+    }
+
     public FavoriteResponse(Long id, StationResponse source, StationResponse target) {
         this.id = id;
         this.source = source;
@@ -19,6 +23,10 @@ public class FavoriteResponse {
         return new FavoriteResponse(favorite.getId(),
                 StationResponse.of(favorite.getSource()),
                 StationResponse.of(favorite.getTarget()));
+    }
+
+    public void changeId(Long id) {
+        this.id = id;
     }
 
     public Long getId() {
