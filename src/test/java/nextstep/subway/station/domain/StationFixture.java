@@ -1,7 +1,5 @@
 package nextstep.subway.station.domain;
 
-import nextstep.subway.station.domain.Station;
-
 public class StationFixture {
     public static Station 대구역 = new Station(0L, "대구역");
     public static Station 양평역 = new Station(1L, "양평역");
