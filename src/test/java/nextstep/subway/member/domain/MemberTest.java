@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import static nextstep.subway.member.domain.MemberTestSnippet.*;
 
 @DisplayName("회원 관리 유닛  테스트")
-public class MemberTest extends AcceptanceTest {
+class MemberTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final String NEW_EMAIL = "newemail@email.com";

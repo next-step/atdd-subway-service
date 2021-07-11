@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
-import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
-import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.line.domain.LineSectorTestSnippet.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.line.domain.LineTestSnippet.지하철_노선_등록되어_있음;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
@@ -76,9 +76,7 @@ class PathAcceptanceTest extends AcceptanceTest {
                               ㅣ                               ㅣ
                              당산역                           영등포역
                              (2호선)                          (1호선)
-
      */
-
 
     @DisplayName("지하철 경로를 조회한다.")
     @TestFactory

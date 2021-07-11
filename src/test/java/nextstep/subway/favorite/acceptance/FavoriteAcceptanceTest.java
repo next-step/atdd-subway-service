@@ -19,7 +19,7 @@ import static nextstep.subway.station.StationAcceptanceTest.지하철역_생성_
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("즐겨찾기 관련 기능")
-public class FavoriteAcceptanceTest extends AcceptanceTest {
+class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private String email = "jordy-torvalds@jordy.com";
     private String password = "jordy";
@@ -27,7 +27,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private Station 양평역;
     private Station 영등포역;
-    private LoginMember 로그인_죠르디 = new LoginMember(1L, "jordy-torvalds@jordy.com", 29);
     private AuthToken authToken = new AuthToken();
 
     private IdTransferObject ido = new IdTransferObject();
