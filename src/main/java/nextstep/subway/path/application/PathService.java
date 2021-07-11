@@ -52,9 +52,8 @@ public class PathService {
         List<Station> shortestPathStations = shortestPath.shortestPathByDijkstra(lineList, sourceStation, targetStation);
 
         List<StationResponse>  shortestPathStationsResponse = new ArrayList<>();
-        for(Station station : shortestPathStations) {
-            shortestPathStationsResponse.add(StationResponse.of(station));
-        }
+        shortestPathStations.stream()
+                .map(station -> shortestPathStationsResponse.add(StationResponse.of(station)));
 
         return PathsResponse.of(shortestPathStationsResponse);
     }

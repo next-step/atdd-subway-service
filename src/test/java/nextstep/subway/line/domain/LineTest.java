@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class LineTest {
 
     @Test
-    void addLineStation_라인에_지하철역_추가_역사이에성공케이스() {
+    void addLineStation_라인에_지하철역_추가_역사이에성공케이스_상행역기준() {
         //given
         Station 강남역 = new Station("강남역");
         Station 역삼역 = new Station("역삼역");
@@ -17,7 +17,22 @@ class LineTest {
         Line secondLine = new Line("2호선", "green", 강남역, 잠실역, 10);
 
         //when
-        secondLine.addStation(강남역, 역삼역, 5);
+        secondLine.addStation(강남역, 역삼역, 7);
+
+        //then
+        assertThat(secondLine.getStations()).containsExactly(강남역, 역삼역, 잠실역);
+    }
+
+    @Test
+    void addLineStation_라인에_지하철역_추가_역사이에성공케이스_하행역기준() {
+        //given
+        Station 강남역 = new Station("강남역");
+        Station 역삼역 = new Station("역삼역");
+        Station 잠실역 = new Station("잠실역");
+        Line secondLine = new Line("2호선", "green", 강남역, 잠실역, 10);
+
+        //when
+        secondLine.addStation(역삼역, 잠실역, 3);
 
         //then
         assertThat(secondLine.getStations()).containsExactly(강남역, 역삼역, 잠실역);
@@ -29,10 +44,10 @@ class LineTest {
         Station 강남역 = new Station("강남역");
         Station 역삼역 = new Station("역삼역");
         Station 잠실역 = new Station("잠실역");
-         Line secondLine = new Line("2호선", "green", 역삼역, 잠실역, 5);
+         Line secondLine = new Line("2호선", "green", 역삼역, 잠실역, 3);
 
         //when
-        secondLine.addStation(강남역, 역삼역, 5);
+        secondLine.addStation(강남역, 역삼역, 7);
 
         //then
          assertThat(secondLine.getStations()).containsExactly(강남역, 역삼역, 잠실역);
