@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.FindPathValidator;
@@ -14,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -37,10 +40,10 @@ public class PathFinderTest {
 	void findPathTest() {
 		when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
 		when(stationService.findById(any())).thenReturn(new Station());
-		when(shortestPathFinder.findPath(any(), any(), any())).thenReturn(new PathResponse(Lists.newArrayList(new StationResponse()), 5));
+		when(shortestPathFinder.findPath(any(), any(), any())).thenReturn(new PathResponse(Lists.newArrayList(new StationResponse()), 5, BigDecimal.ZERO));
 
 		PathFinder pathFinder = new PathFinder(lineRepository, stationService, findPathValidator, shortestPathFinder);
-		PathResponse response = pathFinder.findPath(1L, 2L);
+		PathResponse response = pathFinder.findPath(1L, 2L, new LoginMember());
 		assertThat(response.getStations()).hasSize(1);
 	}
 
@@ -50,7 +53,7 @@ public class PathFinderTest {
 		when(stationService.findById(any())).thenThrow(RuntimeException.class);
 
 		PathFinder pathFinder = new PathFinder(lineRepository, stationService, findPathValidator, shortestPathFinder);
-		assertThatThrownBy(() -> pathFinder.findPath(1L, 3L))
+		assertThatThrownBy(() -> pathFinder.findPath(1L, 3L, new LoginMember()))
 				.isInstanceOf(RuntimeException.class);
 	}
 }
