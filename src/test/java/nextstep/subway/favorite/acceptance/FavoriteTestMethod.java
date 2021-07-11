@@ -6,7 +6,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.favorite.dto.FavoriteRequest;
-import nextstep.subway.station.dto.StationResponse;
 
 public class FavoriteTestMethod {
 	public static ExtractableResponse<Response> deleteFavorite(String token, Long id) {
