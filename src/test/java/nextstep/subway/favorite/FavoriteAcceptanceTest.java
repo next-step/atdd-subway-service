@@ -7,7 +7,6 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.favorite.dto.FavoriteResponses;
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +27,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
+
+    public static final String FAVORITES_BASE_URL = "/favorites";
+    public static final String ANOTHER_EMAIL = "another@github.com";
 
     private String token;
     private StationResponse 강남역;
@@ -89,9 +91,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteFavoriteWithWrongMember() {
         //given
-        String anotherMemberEmail = "another@github.com";
-        회원_생성을_요청(anotherMemberEmail, PASSWORD, 28);
-        String anotherToken = 회원_로그인_됨(anotherMemberEmail, PASSWORD);
+        회원_생성을_요청(ANOTHER_EMAIL, PASSWORD, 28);
+        String anotherToken = 회원_로그인_됨(ANOTHER_EMAIL, PASSWORD);
         ExtractableResponse<Response> createFavoriteResponse = 즐겨찾기_생성되어_있음(강남역, 광교역);
 
         // when
@@ -107,7 +108,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .body(new FavoriteRequest(source.getId(), target.getId()))
                 .header(HttpHeaders.AUTHORIZATION, makeAccessToken(token))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/favorites")
+                .when().post(FAVORITES_BASE_URL)
                 .then().log().all().extract();
     }
 
@@ -115,7 +116,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         return RestAssured
                     .given().log().all()
                     .header(HttpHeaders.AUTHORIZATION, makeAccessToken(token))
-                    .when().get("/favorites")
+                    .when().get(FAVORITES_BASE_URL)
                     .then().log().all().extract();
     }
 
