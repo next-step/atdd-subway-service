@@ -79,7 +79,7 @@ public class LineTest {
     @Test
     public void addStationByUpStation() {
         //when
-        신분당선.addStation(강남역, 양재역, 100);
+        신분당선.addStation(강남역, 양재역, 2);
 
         //then
         List<Station> stations = 신분당선.stations();

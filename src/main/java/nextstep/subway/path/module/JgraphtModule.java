@@ -2,6 +2,7 @@ package nextstep.subway.path.module;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.SectionEdge;
+import nextstep.subway.path.domain.SubwayCharge;
 import nextstep.subway.path.domain.SubwayGraph;
 import nextstep.subway.path.domain.SubwayPath;
 import nextstep.subway.path.dto.PathResponse;
@@ -26,8 +27,10 @@ public class JgraphtModule implements PathModule {
         GraphPath<Station, SectionEdge> path = new DijkstraShortestPath(subwayGraph).getPath(sourceStation, targetStation);
         validateConnect(path);
         SubwayPath subwayPath = new SubwayPath(path.getVertexList(), path.getEdgeList());
+        int distance = subwayPath.distance();
+        SubwayCharge subwayCharge = new SubwayCharge(distance, subwayPath.extraCharge());
 
-        return new PathResponse(StationResponse.ofList(subwayPath.stations()), subwayPath.distance());
+        return new PathResponse(StationResponse.ofList(subwayPath.stations()), distance, subwayCharge.charge());
     }
 
     private void validateConnect(GraphPath<Station, SectionEdge> path) {

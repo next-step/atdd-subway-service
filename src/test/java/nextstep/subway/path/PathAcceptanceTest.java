@@ -37,6 +37,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 광교역;
     private StationResponse 안산역;
     private StationResponse 의정부역;
+    private StationResponse 오이도역;
 
     @BeforeEach
     public void setUp() {
@@ -49,24 +50,56 @@ public class PathAcceptanceTest extends AcceptanceTest {
         광교역 = 지하철역_등록되어_있음("광교역").as(StationResponse.class);
         안산역 = 지하철역_등록되어_있음("안산역").as(StationResponse.class);
         의정부역 = 지하철역_등록되어_있음("의정부역").as(StationResponse.class);
+        오이도역 = 지하철역_등록되어_있음("오이도역").as(StationResponse.class);
 
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 30)).as(LineResponse.class);
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-800", 강남역.getId(), 광교역.getId(), 50)).as(LineResponse.class);
-        사호선 = 지하철_노선_등록되어_있음(new LineRequest("사호선", "bg-blue-600", 안산역.getId(), 의정부역.getId(), 100)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 1)).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 1)).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-800", 강남역.getId(), 광교역.getId(), 10, 900)).as(LineResponse.class);
+        사호선 = 지하철_노선_등록되어_있음(new LineRequest("사호선", "bg-blue-600", 의정부역.getId(), 안산역.getId(), 50)).as(LineResponse.class);
 
-        지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 15);
-        지하철_노선에_지하철역_등록되어_있음(신분당선, 강남역, 양재역, 10);
+        지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 2);
+        지하철_노선에_지하철역_등록되어_있음(신분당선, 강남역, 양재역, 1);
+        지하철_노선에_지하철역_등록되어_있음(사호선, 안산역, 오이도역, 10);
     }
 
-    @DisplayName("두 역의 최단 거리 경로 조회")
+    @DisplayName("두 역의 최단 거리 경로, 요금 조회 - 추가 금액 없는 노선 이용")
     @Test
-    void findPath() {
+    void findPathNoExtraCharge() {
         //when
         ExtractableResponse<Response> response = 지하철_노선_경로_조회_요청(교대역.getId(), 양재역.getId());
 
         //then
-        지하철_노선_경로_응답됨(response, Arrays.asList(교대역, 강남역, 양재역));
+        지하철_노선_경로_조회됨(response, Arrays.asList(교대역, 양재역), 1250);
+    }
+
+    @DisplayName("두 역의 최단 거리 경로, 요금 조회 - 추가 금액 있는 노선 이용")
+    @Test
+    void findPathAddExtraCharge() {
+        //when
+        ExtractableResponse<Response> response = 지하철_노선_경로_조회_요청(강남역.getId(), 광교역.getId());
+
+        //then
+        지하철_노선_경로_조회됨(response, Arrays.asList(강남역, 양재역, 광교역), 2150);
+    }
+
+    @DisplayName("두 역의 최단 거리 경로, 요금 조회 - 10KM ~ 50KM 구간의 경로")
+    @Test
+    void findPathAddMoreTenDistanceCharge() {
+        //when
+        ExtractableResponse<Response> response = 지하철_노선_경로_조회_요청(안산역.getId(), 의정부역.getId());
+
+        //then
+        지하철_노선_경로_조회됨(response, Arrays.asList(안산역, 의정부역), 2050);
+    }
+
+    @DisplayName("두 역의 최단 거리 경로, 요금 조회 - 50KM 초과 구간의 경로")
+    @Test
+    void findPathAddMoreFiftyDistanceCharge() {
+        //when
+        ExtractableResponse<Response> response = 지하철_노선_경로_조회_요청(오이도역.getId(), 의정부역.getId());
+
+        //then
+        지하철_노선_경로_조회됨(response, Arrays.asList(오이도역, 안산역, 의정부역), 2250);
     }
 
     @DisplayName("두 역의 최단 거리 경로 조회 실패 - 같은 역을 조회 할 경우")
@@ -118,6 +151,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    private void 지하철_노선_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> stationResponses, int expectedCharge) {
+        지하철_노선_경로_응답됨(response, stationResponses);
+        지하철_노선_금액_응답됨(response, expectedCharge);
+    }
+
     public static void 지하철_노선_경로_응답됨(ExtractableResponse<Response> response, List<StationResponse> stationResponses) {
 
         List<Long> stations = response.as(PathResponse.class).getStations().stream()
@@ -129,6 +167,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .collect(Collectors.toList());
 
         assertThat(stations).containsExactlyElementsOf(responseStations);
+    }
+
+    private void 지하철_노선_금액_응답됨(ExtractableResponse<Response> response, int expectedCharge) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getCharge()).isEqualTo(expectedCharge);
     }
 
     private static void 지하철_노선_경로_조회_실패됨(ExtractableResponse<Response> response) {

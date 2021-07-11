@@ -51,8 +51,8 @@ public class Line extends BaseEntity {
     }
 
     public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
+        this.name = line.name();
+        this.color = line.color();
     }
 
     public Station findUpStation() {
@@ -181,15 +181,15 @@ public class Line extends BaseEntity {
         }
     }
 
-    public Long getId() {
+    public Long id() {
         return id;
     }
 
-    public String getName() {
+    public String name() {
         return name;
     }
 
-    public String getColor() {
+    public String color() {
         return color;
     }
 
