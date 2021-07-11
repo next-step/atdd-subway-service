@@ -3,13 +3,19 @@ package nextstep.subway.line.domain;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import nextstep.subway.common.exception.SectionsRemovalInValidSizeException;
+import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
+import nextstep.subway.station.dto.StationResponse;
 
 class LineTest {
 
@@ -31,8 +37,25 @@ class LineTest {
 		사당역 = new Station("사당역");
 
 		line.addStation(사당역, 잠실역, 2);
-		line.addStation(서울대입구역, 사당역, 2);
-		line.addStation(낙성대역, 서울대입구역, 2);
+		line.addStation(낙성대역, 사당역, 2);
+		line.addStation(서울대입구역, 낙성대역, 2);
+	}
+
+	@DisplayName("lineResponse로 변환된다.")
+	@Test
+	void lineResponse_변환() {
+		LineResponse lineResponse = line.convertLineResponse();
+		assertThat(lineResponse.getName()).isEqualTo("2호선");
+		assertThat(lineResponse.getColor()).isEqualTo("green");
+		List<Object> list = lineResponse.getStations().stream()
+			.map((Function<StationResponse, Object>)StationResponse::getName).collect(Collectors.toList());
+		assertThat(list).containsExactly(
+			신도림역.getName(),
+			서울대입구역.getName(),
+			낙성대역.getName(),
+			사당역.getName(),
+			잠실역.getName()
+		);
 	}
 
 	@DisplayName("라인에 포함되어 있는 station들을 가져온다.")

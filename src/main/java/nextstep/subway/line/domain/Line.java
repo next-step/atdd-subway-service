@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 
@@ -118,5 +119,9 @@ public class Line extends BaseEntity {
 
             this.getSections().add(new Section(this, upStation, downStation, distance));
         }
+    }
+
+    public LineResponse convertLineResponse() {
+        return LineResponse.of(this, this.getStations().convert());
     }
 }

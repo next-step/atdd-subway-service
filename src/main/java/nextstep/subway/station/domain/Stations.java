@@ -2,9 +2,11 @@ package nextstep.subway.station.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import nextstep.subway.common.exception.NonMatchStationException;
 import nextstep.subway.common.exception.SectionsDuplicateException;
+import nextstep.subway.station.dto.StationResponse;
 
 public class Stations {
 
@@ -21,6 +23,7 @@ public class Stations {
     public List<Station> getStations() {
         return stations;
     }
+
     public boolean isEmpty() {
         return stations.isEmpty();
     }
@@ -37,6 +40,12 @@ public class Stations {
 
     public boolean isMatchStation(Station station) {
         return stations.stream().anyMatch(it -> it == station);
+    }
+
+    public List<StationResponse> convert() {
+        return stations.stream()
+            .map(it -> StationResponse.of(it))
+            .collect(Collectors.toList());
     }
 
     private boolean duplicateStation(Station upStation, Station downStation) {
