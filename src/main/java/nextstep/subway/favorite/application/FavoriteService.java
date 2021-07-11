@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.google.common.primitives.Longs.asList;
@@ -37,17 +36,17 @@ public class FavoriteService {
         Station target = stations.getById(favoriteRequest.getTarget());
         return FavoriteResponse.of(favoriteRepository.save(new Favorite(loginMember.getId(), source, target)));
     }
-    
+
     @Transactional(readOnly = true)
-    public List<FavoriteResponse> findFavorite(Long id) {
-        List<Favorite> favorites= favoriteRepository.findByMemberId(id);
+    public List<FavoriteResponse> findFavorite(LoginMember loginMember) {
+        List<Favorite> favorites= favoriteRepository.findByMemberId(loginMember.getId());
 
         return favorites.stream()
                 .map((favorite -> FavoriteResponse.of(favorite)))
                 .collect(Collectors.toList());
     }
 
-    public void deleteFavorite(Long id) {
+    public void deleteById(LoginMember loginMember, Long id) {
         Favorite foundFavorite= favoriteRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(format("id가 %d인 즐겨찾기를 찾을 수가 없습니다.", id)));
         favoriteRepository.delete(foundFavorite);

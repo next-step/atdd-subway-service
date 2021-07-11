@@ -40,7 +40,7 @@ class FavoriteServiceTest {
     private Station 양평역 = new Station("양평역");
     private Station 영등포역 = new Station("영등포역");
     private Member 회원_죠르디 = new Member("jordy-torvalds@jordy.com", "jordy", 29);
-    private LoginMember loginMemberJordy = new LoginMember(1L, "jordy-torvalds@jordy.com", 29);
+    private LoginMember 로그인_죠르디 = new LoginMember(1L, "jordy-torvalds@jordy.com", 29);
 
     private FavoriteResponse insertResponse;
 
@@ -50,11 +50,13 @@ class FavoriteServiceTest {
         stationRepository.save(영등포역);
         memberRepository.save(회원_죠르디);
 
+        로그인_죠르디 = new LoginMember(회원_죠르디.getId(), 회원_죠르디.getEmail(), 회원_죠르디.getAge());
+
         // given
         favoriteService = new FavoriteService(new StationService(stationRepository), favoriteRepository);
         FavoriteRequest favoriteRequest = new FavoriteRequest(양평역.getId(), 영등포역.getId());
 
-        insertResponse = favoriteService.insertFavorite(loginMemberJordy, favoriteRequest);
+        insertResponse = favoriteService.insertFavorite(로그인_죠르디, favoriteRequest);
     }
 
     @Test
@@ -71,7 +73,7 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기 조회 및 검증")
     void findFavorite() {
         // when
-        List<FavoriteResponse> favoriteResponses = favoriteService.findFavorite(회원_죠르디.getId());
+        List<FavoriteResponse> favoriteResponses = favoriteService.findFavorite(로그인_죠르디);
 
         // then
         favoriteResponses.forEach(favoriteResponse -> {
@@ -88,6 +90,6 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기 삭제 및 검증")
     void deleteFavorite() {
         // when, then
-        assertDoesNotThrow(() -> favoriteService.deleteFavorite(insertResponse.getId()));
+        assertDoesNotThrow(() -> favoriteService.deleteById(로그인_죠르디, insertResponse.getId()));
     }
 }
