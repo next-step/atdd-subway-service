@@ -92,6 +92,30 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    @DisplayName("즐겨찾기를 삭제 시 회원이 일치하지 않는 경우 실패한다.")
+    @Test
+    void deleteFavoriteWithWrongMember() {
+        //given
+        String anotherMemberEmail = "another@github.com";
+        회원_생성을_요청(anotherMemberEmail, PASSWORD, 28);
+        String anotherToken = 회원_로그인_됨(anotherMemberEmail, PASSWORD);
+
+        ExtractableResponse<Response> createFavoriteResponse = 즐겨찾기_생성되어_있음(강남역, 광교역);
+
+        // when
+        String uri = createFavoriteResponse.header("Location");
+
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, makeAccessToken(anotherToken))
+                .when().delete(uri)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
 
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(StationResponse source, StationResponse target) {
         return RestAssured

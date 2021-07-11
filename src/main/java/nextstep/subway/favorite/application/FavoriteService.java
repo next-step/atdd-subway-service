@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -14,6 +15,7 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FavoriteService {
@@ -44,6 +46,20 @@ public class FavoriteService {
         List<Favorite> favorites = favoriteRepository.findAllByMember(member);
 
         return FavoriteResponses.of(favorites);
+    }
 
+    public void delete(LoginMember loginMember, long id) {
+        Member member = memberService.findByIdOrThrow(loginMember.getId());
+        Favorite favorite = findByIdOrThrow(id);
+
+        if (!favorite.getMember().equals(member)) {
+            throw new AuthorizationException();
+        }
+
+        favoriteRepository.deleteById(id);
+    }
+
+    public Favorite findByIdOrThrow(long id) {
+        return favoriteRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 }
