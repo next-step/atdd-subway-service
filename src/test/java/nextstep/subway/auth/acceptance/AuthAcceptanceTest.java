@@ -27,14 +27,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 		// Given : 회원 등록되어 있음
 		ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
 		// When : 로그인 요청
-		TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-		ExtractableResponse<Response> tokenResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(tokenRequest)
-			.when().post("/login/token")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> tokenResponse = AuthTestMethod.login(EMAIL, PASSWORD);
 		// Then : 로그인 됨
 		assertThat(tokenResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
@@ -45,38 +38,17 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 		// Scenario : 로그인 실패 시나리오
 		// Given : 회원 등록되어있지 않음
 		// When : 로그인 요청
-		TokenRequest tokenRequest1 = new TokenRequest(EMAIL, PASSWORD);
-		ExtractableResponse<Response> tokenResponse1 = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(tokenRequest1)
-			.when().post("/login/token")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> tokenResponse1 = AuthTestMethod.login(EMAIL, PASSWORD);
 		// Then : 로그인 실패
 		assertThat(tokenResponse1.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 		// Given : 회원가입
 		ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
 		// When : 로그인 요청(ID 틀림)
-		TokenRequest tokenRequest2 = new TokenRequest("abc@email.com", PASSWORD);
-		ExtractableResponse<Response> tokenResponse2 = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(tokenRequest2)
-			.when().post("/login/token")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> tokenResponse2 = AuthTestMethod.login("abc@email.com", PASSWORD);
 		// Then : 로그인 실패
 		assertThat(tokenResponse2.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 		// When : 회원 가입 후 로그인 요청(비밀번호 틀림)
-		TokenRequest tokenRequest3 = new TokenRequest(EMAIL, "12345");
-		ExtractableResponse<Response> tokenResponse3 = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(tokenRequest3)
-			.when().post("/login/token")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> tokenResponse3 = AuthTestMethod.login(EMAIL, "12345");
 		// Then : 로그인 실패
 		assertThat(tokenResponse3.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
@@ -88,28 +60,15 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 		// Given : 회원등록 됨
 		ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
 		// When : 로그인 요청
-		TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-		ExtractableResponse<Response> response = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(tokenRequest)
-			.when().post("/login/token")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> response = AuthTestMethod.login(EMAIL, PASSWORD);
 		// Then : 로그인 됨
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 		// Given : 토큰 수령
 		TokenResponse tokenResponse = response.as(TokenResponse.class);
 		String token = tokenResponse.getAccessToken();
-		String worngToken = "abc";
+		String wrongToken = "abc";
 		// When : 유효하지 않은 토큰으로 /members/me 요청
-		ExtractableResponse<Response> errorResponse = RestAssured
-			.given().log().all()
-			.auth().oauth2(worngToken)
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.when().get("/members/me")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> errorResponse = AuthTestMethod.requestWithToken(wrongToken);
 		// Then : 에러 발생
 		assertThat(errorResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
