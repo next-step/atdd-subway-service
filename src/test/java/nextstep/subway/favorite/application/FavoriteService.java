@@ -35,8 +35,8 @@ public class FavoriteService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<FavoriteResponse> findFavorites(long id) {
-		Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+	public List<FavoriteResponse> find(Long memberId) {
+		Member member = memberRepository.findById(memberId).orElseThrow(RuntimeException::new);
 
 		return getFavoriteResponses(member);
 	}
@@ -47,5 +47,11 @@ public class FavoriteService {
 			favoriteResponses.add(FavoriteResponse.of(favorite));
 		}
 		return favoriteResponses;
+	}
+
+	public void delete(Long memberId, Long favoriteId) {
+		Member member = memberRepository.findById(memberId).orElseThrow(RuntimeException::new);
+		member.deleteFavorite(favoriteId);
+		memberRepository.save(member);
 	}
 }

@@ -73,4 +73,16 @@ public class Member extends BaseEntity {
     	favorite.toMember(this);
 	}
 
+	public void deleteFavorite(Long favoriteId) {
+		Favorite favorite = getMatchFavorite(favoriteId);
+		favorites.remove(favorite);
+		favorite.toMember(null);
+	}
+
+	private Favorite getMatchFavorite(Long favoriteId) {
+		return favorites.stream()
+			.filter(f -> f.equalsById(favoriteId))
+			.findFirst()
+			.orElseThrow(RuntimeException::new);
+	}
 }

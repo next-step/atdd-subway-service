@@ -42,4 +42,12 @@ public class Favorite extends BaseEntity {
 	public void toMember(Member member) {
 		this.member = member;
 	}
+
+	public boolean equalsById (Long id) {
+		if (this.id.equals(id)) {
+			return true;
+		}
+
+		return false;
+	}
 }
