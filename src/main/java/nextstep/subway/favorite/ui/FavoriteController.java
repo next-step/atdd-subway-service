@@ -1,9 +1,11 @@
 package nextstep.subway.favorite.ui;
 
 import java.net.URI;
+import java.util.NoSuchElementException;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,6 +42,16 @@ public class FavoriteController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity deleteFavorite(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id) {
 		favoriteService.delete(loginMember.getId(), id);
+		return ResponseEntity.noContent().build();
+	}
+
+	@ExceptionHandler(RuntimeException.class)
+	public ResponseEntity handleRuntimeException(RuntimeException runtimeException) {
+		return ResponseEntity.badRequest().build();
+	}
+
+	@ExceptionHandler(NoSuchElementException.class)
+	public ResponseEntity handleRuntimeException(NoSuchElementException noSuchElementException) {
 		return ResponseEntity.noContent().build();
 	}
 }

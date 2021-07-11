@@ -2,6 +2,7 @@ package nextstep.subway.favorite.application;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import nextstep.subway.station.application.StationService;
 @Service
 @Transactional
 public class FavoriteService {
+	public static final int ZERO = 0;
 	private MemberRepository memberRepository;
 	private StationService stationService;
 
@@ -26,11 +28,14 @@ public class FavoriteService {
 
 	public FavoriteResponse save(Long memberId, FavoriteRequest favoriteRequest) {
 		Member member = memberRepository.findById(memberId).orElseThrow(RuntimeException::new);
-		Favorite favorite = new Favorite(stationService.findStationById(favoriteRequest.getSourceId()), stationService.findStationById(favoriteRequest.getTargetId()));
-		member.addFavorite(favorite);
-		memberRepository.save(member);
+		member.addFavorite(new Favorite(stationService.findStationById(favoriteRequest.getSourceId()), stationService.findStationById(favoriteRequest.getTargetId())));
+		Member saveMember = memberRepository.save(member);
 
-		return FavoriteResponse.of(favorite);
+		return FavoriteResponse.of(getLatestFavorite(saveMember));
+	}
+
+	private Favorite getLatestFavorite(Member saveMember) {
+		return saveMember.getFavorites().stream().max((x1, x2) -> (int) (x1.getId() - x2.getId())).orElseThrow(RuntimeException::new);
 	}
 
 	@Transactional(readOnly = true)
@@ -41,6 +46,10 @@ public class FavoriteService {
 	}
 
 	private List<FavoriteResponse> getFavoriteResponses(Member member) {
+		if(member.getFavorites().size() <= ZERO) {
+			throw new NoSuchElementException();
+		}
+
 		List<FavoriteResponse> favoriteResponses = new ArrayList<>();
 		for (Favorite favorite : member.getFavorites()) {
 			favoriteResponses.add(FavoriteResponse.of(favorite));

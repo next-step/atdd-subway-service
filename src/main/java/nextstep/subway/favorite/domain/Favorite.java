@@ -16,11 +16,21 @@ public class Favorite extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
+	@ManyToOne
+	@JoinColumn(name = "source_station_id")
 	private Station source;
+
+	@ManyToOne
+	@JoinColumn(name = "target_station_id")
 	private Station target;
+
 	@ManyToOne
 	@JoinColumn(name = "member_id")
 	private Member member;
+
+	public Favorite() {
+	}
 
 	public Favorite(Station source, Station target) {
 		this.source = source;
