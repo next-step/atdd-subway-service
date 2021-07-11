@@ -19,18 +19,14 @@ public class JgraphtModule implements PathModule {
 
     private static final String NOT_CONNECTED_STATIONS_ERROR = "두 역이 연결되어 있지 않습니다.";
 
-    public PathResponse findPath(List<Line> lines, Station sourceStation, Station targetStation) {
+    public SubwayPath findPath(List<Line> lines, Station sourceStation, Station targetStation) {
         SubwayGraph subwayGraph = new SubwayGraph(SectionEdge.class);
         subwayGraph.addAllVertex(lines);
         subwayGraph.addAllEdge(lines);
 
         GraphPath<Station, SectionEdge> path = new DijkstraShortestPath(subwayGraph).getPath(sourceStation, targetStation);
         validateConnect(path);
-        SubwayPath subwayPath = new SubwayPath(path.getVertexList(), path.getEdgeList());
-        int distance = subwayPath.distance();
-        SubwayCharge subwayCharge = new SubwayCharge(distance, subwayPath.extraCharge());
-
-        return new PathResponse(StationResponse.ofList(subwayPath.stations()), distance, subwayCharge.charge());
+        return new SubwayPath(path.getVertexList(), path.getEdgeList());
     }
 
     private void validateConnect(GraphPath<Station, SectionEdge> path) {

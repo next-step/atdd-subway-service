@@ -6,8 +6,8 @@ public class SubwayCharge {
 
     private final int charge;
 
-    public SubwayCharge(int distance, int extraCharge) {
-        this(calculateSubwayCharge(distance, extraCharge));
+    public SubwayCharge(SubwayPath subwayPath, Integer age) {
+        this(calculateSubwayCharge(subwayPath, age));
     }
 
     public SubwayCharge(int charge) {
@@ -15,12 +15,13 @@ public class SubwayCharge {
         this.charge = charge;
     }
 
-    private static int calculateSubwayCharge(int distance, int extraCharge) {
-        int charge = SUBWAY_DEFAULT_CHARGE + extraCharge;
+    private static int calculateSubwayCharge(SubwayPath subwayPath, Integer age) {
+        int distance = subwayPath.distance();
+        int charge = SUBWAY_DEFAULT_CHARGE + subwayPath.extraCharge();
 
         SubwayDistanceChargePolicy subwayDistanceChargePolicy = SubwayDistanceChargePolicy.subwayChargePolicy(distance);
         charge += subwayDistanceChargePolicy.calculateDistanceExtraCharge(distance);
-
+        charge = chargeDisCount(charge, age);
         return charge;
     }
 
@@ -28,6 +29,11 @@ public class SubwayCharge {
         if (subwayCharge < 0) {
             throw new IllegalArgumentException(SUBWAY_CHARGE_ERROR);
         }
+    }
+
+    private static int chargeDisCount(int charge, Integer age) {
+        AgeDiscountPolicy ageDiscountPolicy = AgeDiscountPolicy.ageDiscountPolicy(age);
+        return ageDiscountPolicy.calculateAgeDiscountCharge(charge);
     }
 
     public int charge() {
