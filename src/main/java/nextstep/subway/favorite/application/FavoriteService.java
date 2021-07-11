@@ -17,7 +17,6 @@ import nextstep.subway.station.application.StationService;
 @Service
 @Transactional
 public class FavoriteService {
-	public static final int ZERO = 0;
 	private MemberRepository memberRepository;
 	private StationService stationService;
 
