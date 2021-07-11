@@ -2,10 +2,12 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
@@ -16,8 +18,8 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Sections sections = new Sections();
 
     public Line() {
     }
@@ -50,7 +52,71 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
+    public Sections getSections() {
         return sections;
+    }
+
+    public Station findUpStation() {
+        Station downStation = this.getSections().findFirstUpStation();
+        while (downStation != null) {
+            Optional<Section> nextLineStation = this.getSections().findSectionByDownStation(downStation);
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getUpStation();
+        }
+
+        return downStation;
+    }
+
+    public Stations getStations() {
+        if (this.getSections().isEmpty()) {
+            return new Stations();
+        }
+
+        List<Station> stations = new ArrayList<>();
+        Station downStation = findUpStation();
+        stations.add(downStation);
+
+        while (downStation != null) {
+            Station finalDownStation = downStation;
+            Optional<Section> nextLineStation = this.getSections().findSectionByUpStation(finalDownStation);
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getDownStation();
+            stations.add(downStation);
+        }
+
+        return new Stations(stations);
+    }
+
+    public void removeStation(Station station) {
+        this.getSections().validateRemoveSize();
+        this.getSections().removeSectionByStation(station, this);
+    }
+
+    public void addStation(Station upStation, Station downStation, int distance) {
+        Stations stations = getStations();
+        stations.checkStation(upStation, downStation);
+
+        if (stations.isEmpty()) {
+            this.getSections().add(new Section(this, upStation, downStation, distance));
+            return;
+        }
+
+        if (stations.isMatchStation(upStation)) {
+            this.getSections().findSectionByUpStation(upStation)
+                .ifPresent(it -> it.updateUpStation(downStation, distance));
+
+            this.getSections().add(new Section(this, upStation, downStation, distance));
+        }
+
+        if (stations.isMatchStation(downStation)) {
+            this.getSections().findSectionByDownStation(downStation)
+                .ifPresent(it -> it.updateDownStation(upStation, distance));
+
+            this.getSections().add(new Section(this, upStation, downStation, distance));
+        }
     }
 }
