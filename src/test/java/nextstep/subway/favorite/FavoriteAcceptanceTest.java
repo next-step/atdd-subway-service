@@ -60,16 +60,37 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         //given
         StationResponse 왕십리역 = 지하철역_등록되어_있음("왕십리역").as(StationResponse.class);
         StationResponse 건대역 = 지하철역_등록되어_있음("건대역").as(StationResponse.class);
-        ExtractableResponse<Response> 첫번쨰_즐겨찾기 = 즐겨찾기_생성되어_있음(new FavoriteRequest(강남역.getId(), 광교역.getId()));
-        ExtractableResponse<Response> 두번째_즐겨찾기 = 즐겨찾기_생성되어_있음(new FavoriteRequest(왕십리역.getId(), 건대역.getId()));
+        ExtractableResponse<Response> firstCreateFavoriteResponse = 즐겨찾기_생성되어_있음(new FavoriteRequest(강남역.getId(), 광교역.getId()));
+        ExtractableResponse<Response> secondCreateFavoriteResponse = 즐겨찾기_생성되어_있음(new FavoriteRequest(왕십리역.getId(), 건대역.getId()));
 
         // when
         ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청();
 
         // then
         즐겨찾기_조회됨(response);
-        즐겨찾기_목록_포함됨(response, Arrays.asList(첫번쨰_즐겨찾기, 두번째_즐겨찾기));
+        즐겨찾기_목록_포함됨(response, Arrays.asList(firstCreateFavoriteResponse, secondCreateFavoriteResponse));
     }
+
+    @DisplayName("즐겨찾기를 삭제한다.")
+    @Test
+    void deleteFavorite() {
+        //given
+        ExtractableResponse<Response> createFavoriteResponse = 즐겨찾기_생성되어_있음(new FavoriteRequest(강남역.getId(), 광교역.getId()));
+
+        // when
+        String uri = createFavoriteResponse.header("Location");
+
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, makeAccessToken(token))
+                .when().delete(uri)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
 
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(FavoriteRequest request) {
         return RestAssured
