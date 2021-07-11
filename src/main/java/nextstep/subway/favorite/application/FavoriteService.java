@@ -1,7 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.auth.exception.ApprovedException;
+import nextstep.subway.auth.exception.UnapprovedException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -13,7 +13,6 @@ import nextstep.subway.station.domain.Stations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,7 +52,7 @@ public class FavoriteService {
                 .orElseThrow(() -> new FavoriteNotFoundException(id));
 
         if(!foundFavorite.hasPermission(loginMember.getId())) {
-            throw new ApprovedException(format("id가 %d인 사용자는 id가 %d인 즐겨찾기에 권한이 없습니다.", loginMember.getId(), id));
+            throw new UnapprovedException(format("id가 %d인 사용자는 id가 %d인 즐겨찾기에 권한이 없습니다.", loginMember.getId(), id));
         }
 
         favoriteRepository.delete(foundFavorite);

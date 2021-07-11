@@ -1,7 +1,7 @@
 package nextstep.subway.favorite.service;
 
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.auth.exception.ApprovedException;
+import nextstep.subway.auth.exception.UnapprovedException;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -103,7 +103,7 @@ class FavoriteServiceTest {
         LoginMember 로그인_실패_죠르디 = new LoginMember((long) MAX_VALUE, "jordy-torvalds@jordy.com", 30);
 
         // when, then
-        assertThatExceptionOfType(ApprovedException.class)
+        assertThatExceptionOfType(UnapprovedException.class)
                 .isThrownBy(() -> favoriteService.deleteById(로그인_실패_죠르디, insertResponse.getId()));
     }
 }
