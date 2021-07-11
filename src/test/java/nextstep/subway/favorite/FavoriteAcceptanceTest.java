@@ -7,6 +7,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.favorite.dto.FavoriteResponses;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,7 +49,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void createFavorite() {
         //when
-        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(new FavoriteRequest(강남역.getId(), 광교역.getId()));
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(강남역, 광교역);
 
         // then
         즐겨찾기_생성됨(response);
@@ -60,8 +61,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         //given
         StationResponse 왕십리역 = 지하철역_등록되어_있음("왕십리역").as(StationResponse.class);
         StationResponse 건대역 = 지하철역_등록되어_있음("건대역").as(StationResponse.class);
-        ExtractableResponse<Response> firstCreateFavoriteResponse = 즐겨찾기_생성되어_있음(new FavoriteRequest(강남역.getId(), 광교역.getId()));
-        ExtractableResponse<Response> secondCreateFavoriteResponse = 즐겨찾기_생성되어_있음(new FavoriteRequest(왕십리역.getId(), 건대역.getId()));
+        ExtractableResponse<Response> firstCreateFavoriteResponse = 즐겨찾기_생성되어_있음(강남역, 광교역);
+        ExtractableResponse<Response> secondCreateFavoriteResponse = 즐겨찾기_생성되어_있음(왕십리역, 건대역);
 
         // when
         ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청();
@@ -75,7 +76,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteFavorite() {
         //given
-        ExtractableResponse<Response> createFavoriteResponse = 즐겨찾기_생성되어_있음(new FavoriteRequest(강남역.getId(), 광교역.getId()));
+        ExtractableResponse<Response> createFavoriteResponse = 즐겨찾기_생성되어_있음(강남역, 광교역);
 
         // when
         String uri = createFavoriteResponse.header("Location");
@@ -92,10 +93,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private ExtractableResponse<Response> 즐겨찾기_생성_요청(FavoriteRequest request) {
+    private ExtractableResponse<Response> 즐겨찾기_생성_요청(StationResponse source, StationResponse target) {
         return RestAssured
                 .given().log().all()
-                .body(request)
+                .body(new FavoriteRequest(source.getId(), target.getId()))
                 .header(HttpHeaders.AUTHORIZATION, makeAccessToken(token))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/favorites")
@@ -118,8 +119,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_생성되어_있음(FavoriteRequest request) {
-        return  즐겨찾기_생성_요청(request);
+    private ExtractableResponse<Response> 즐겨찾기_생성되어_있음(StationResponse source, StationResponse target) {
+        return  즐겨찾기_생성_요청(source, target);
     }
 
     public static void 즐겨찾기_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
