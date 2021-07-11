@@ -9,11 +9,11 @@ import java.util.List;
 public class PathsResponse {
     List<StationResponse> stationList;
 
-    public PathsResponse() {
+    private PathsResponse() {
 
     }
 
-    public PathsResponse(List<StationResponse> stations) {
+    private PathsResponse(List<StationResponse> stations) {
         stationList = stations;
     }
 
