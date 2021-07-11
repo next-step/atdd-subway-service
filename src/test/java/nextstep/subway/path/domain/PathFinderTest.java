@@ -2,13 +2,19 @@ package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
+import java.util.stream.Stream;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.utils.PathTestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 class PathFinderTest extends PathTestUtils {
 
@@ -26,8 +32,14 @@ class PathFinderTest extends PathTestUtils {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        List<Station> stations = stationRepository.findAll();
-        List<Section> sections = sectionRepository.findAll();
+        List<Station> stations = Arrays.asList(교대역, 남부터미널역, 강남역, 양재역);
+        List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선);
+        List<Section> sections = new ArrayList<>();
+
+        lines.stream()
+            .map(Line::getSections)
+            .forEachOrdered(sectionList -> sections.addAll(sectionList));
+
         pathFinder = new PathFinder(stations, sections);
     }
 
