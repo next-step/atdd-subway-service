@@ -1,6 +1,6 @@
 package nextstep.subway.path.service;
 
-import nextstep.subway.line.service.SectionService;
+import nextstep.subway.line.application.SectionService;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;

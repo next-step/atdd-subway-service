@@ -1,7 +1,7 @@
 package nextstep.subway.path.service;
 
 import nextstep.subway.line.domain.Sections;
-import nextstep.subway.line.service.SectionService;
+import nextstep.subway.line.application.SectionService;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.Path;
 import nextstep.subway.path.dto.PathRequest;
@@ -10,8 +10,6 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
