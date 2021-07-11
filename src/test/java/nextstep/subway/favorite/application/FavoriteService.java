@@ -17,12 +17,10 @@ import nextstep.subway.station.application.StationService;
 @Service
 @Transactional
 public class FavoriteService {
-	private FavoriteRepository favoriteRepository;
 	private MemberRepository memberRepository;
 	private StationService stationService;
 
-	public FavoriteService(FavoriteRepository favoriteRepository, MemberRepository memberRepository, StationService stationService) {
-		this.favoriteRepository = favoriteRepository;
+	public FavoriteService(MemberRepository memberRepository, StationService stationService) {
 		this.memberRepository = memberRepository;
 		this.stationService = stationService;
 	}

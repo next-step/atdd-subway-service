@@ -24,10 +24,12 @@ public class FavoriteServiceTest {
 		FavoriteRepository favoriteRepository = mock(FavoriteRepository.class);
 		MemberRepository memberRepository = mock(MemberRepository.class);
 		StationService stationService = mock(StationService.class);
-		when(favoriteRepository.save(any())).thenReturn(new Favorite(new Station("신촌역"), new Station("홍대입구역")));
+		//when(favoriteRepository.save(any())).thenReturn(new Favorite(new Station("신촌역"), new Station("홍대입구역")));
+		when(memberRepository.findById(1L)).thenReturn(Optional.of(new Member("email@email.com", "password", 30)));
+		when(memberRepository.save(any())).thenReturn(new Member());
 		when(stationService.findStationById(1L)).thenReturn(new Station("신촌역"));
 		when(stationService.findStationById(2L)).thenReturn(new Station("홍대입구역"));
-		FavoriteService favoriteService = new FavoriteService(favoriteRepository, memberRepository, stationService);
+		FavoriteService favoriteService = new FavoriteService(memberRepository, stationService);
 		// when
 		FavoriteResponse favoriteResponse = favoriteService.save(1L, new FavoriteRequest(1L, 2L));
 		// then
@@ -38,13 +40,12 @@ public class FavoriteServiceTest {
 	@Test
 	void findFavoriteTest() {
 		// given
-		FavoriteRepository favoriteRepository = mock(FavoriteRepository.class);
 		MemberRepository memberRepository = mock(MemberRepository.class);
 		StationService stationService = mock(StationService.class);
 		Member member = new Member("email@email.com", "password", 30);
 		member.addFavorite(new Favorite(new Station("신촌역"), new Station("홍대입구역")));
 		when(memberRepository.findById(any())).thenReturn(Optional.of(member));
-		FavoriteService favoriteService = new FavoriteService(favoriteRepository, memberRepository, stationService);
+		FavoriteService favoriteService = new FavoriteService(memberRepository, stationService);
 		// when
 		List<FavoriteResponse> favoriteResponses = favoriteService.findFavorites(1L);
 		// then
