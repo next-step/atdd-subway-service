@@ -68,6 +68,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     * outside-in : service test mokito 이용하여 구현 [O]
     * inside-out : 외부 라이브러리 이용하여 domain 구현 [O]
 ## Step3
-* 토큰 발급 기능 (로그인) 인수 테스트 만들기
-* 인증 - 내 정보 조회 기능 완성하기
-* 인증 - 즐겨 찾기 기능 완성하기    
+* 토큰 발급 기능 (로그인) 인수 테스트 만들기 [O]
+* 인증 - 내 정보 조회 기능 완성하기 [O]
+* 인증 - 즐겨 찾기 기능 완성하기 [O]
