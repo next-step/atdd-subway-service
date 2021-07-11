@@ -21,24 +21,22 @@ public class FavoriteService {
 	private MemberRepository memberRepository;
 	private StationService stationService;
 
-	public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService) {
-		this.favoriteRepository = favoriteRepository;
-		this.stationService = stationService;
-	}
-
 	public FavoriteService(FavoriteRepository favoriteRepository, MemberRepository memberRepository, StationService stationService) {
 		this.favoriteRepository = favoriteRepository;
 		this.memberRepository = memberRepository;
 		this.stationService = stationService;
 	}
 
-	@Transactional(readOnly = true)
-	public FavoriteResponse save(FavoriteRequest favoriteRequest) {
-		Favorite favorite = favoriteRepository.save(new Favorite(stationService.findStationById(favoriteRequest.getSourceId()), stationService.findStationById(favoriteRequest.getTargetId())));
+	public FavoriteResponse save(Long memberId, FavoriteRequest favoriteRequest) {
+		Member member = memberRepository.findById(memberId).orElseThrow(RuntimeException::new);
+		Favorite favorite = new Favorite(stationService.findStationById(favoriteRequest.getSourceId()), stationService.findStationById(favoriteRequest.getTargetId()));
+		member.addFavorite(favorite);
+		memberRepository.save(member);
 
 		return FavoriteResponse.of(favorite);
 	}
 
+	@Transactional(readOnly = true)
 	public List<FavoriteResponse> findFavorites(long id) {
 		Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
 
