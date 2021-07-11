@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -20,12 +21,22 @@ public class Favorite extends BaseEntity {
     @JoinColumn(name = "target_station_id")
     private Station targetStation;
 
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     public Favorite() {
     }
 
-    public Favorite(Station sourceStation, Station targetStation) {
+    public Favorite(Station sourceStation, Station targetStation, Member member) {
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
+        this.member = member;
+    }
+
+    public Favorite(Long id, Station sourceStation, Station targetStation, Member member) {
+        this(sourceStation, targetStation, member);
+        this.id = id;
     }
 
     public Long getId() {
@@ -38,5 +49,9 @@ public class Favorite extends BaseEntity {
 
     public Station getTargetStation() {
         return targetStation;
+    }
+
+    public Member getMember() {
+        return member;
     }
 }
