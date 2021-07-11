@@ -10,6 +10,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthTestMethod;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -44,49 +45,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		int AGE = 20;
 		ExtractableResponse<Response> createResponse = MemberTestMethod.회원_생성을_요청(EMAIL, PASSWORD, AGE);
 		// And : 로그인 되어 있음
-		TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-		ExtractableResponse<Response> tokenResponseCandidate1 = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(tokenRequest)
-			.when().post("/login/token")
-			.then().log().all()
-			.extract();
-		TokenResponse tokenResponse = tokenResponseCandidate1.as(TokenResponse.class);
-		String token = tokenResponse.getAccessToken();
+		String token = AuthTestMethod.getToken(AuthTestMethod.login(EMAIL, PASSWORD));
 		// Scenario : 즐겨찾기 관리
 		// When : 즐겨찾기 생성 요청
-		FavoriteRequest favoriteRequest = new FavoriteRequest(강남역.getId(), 양재역.getId());
-		ExtractableResponse<Response> favoriteResponse1 = RestAssured
-			.given().log().all()
-			.auth().oauth2(token)
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(favoriteRequest)
-			.when().post("/favorites")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> favoriteResponse1 = FavoriteTestMethod.createFavorite(token, 강남역.getId(), 양재역.getId());
 		// Then : 즐겨찾기 생성됨
 		assertThat(favoriteResponse1.statusCode()).isEqualTo(HttpStatus.CREATED.value());
 		// When : 즐겨찾기 목록 조회 요청
-		ExtractableResponse<Response> favoriteResponse2 = RestAssured
-			.given().log().all()
-			.auth().oauth2(token)
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.when().get("/favorites")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> favoriteResponse2 = FavoriteTestMethod.findFavorite(token);
 		// Then : 즐겨찾기 목록 조회됨
 		assertThat(favoriteResponse2.statusCode()).isEqualTo(HttpStatus.OK.value());
 		// When : 즐겨찾기 삭제 요청
 		List<FavoriteResponse> favoriteResponses = favoriteResponse2.jsonPath().getList(".", FavoriteResponse.class);
-
-		ExtractableResponse<Response> favoriteResponse3 = RestAssured
-			.given().log().all()
-			.auth().oauth2(token)
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.when().delete("/favorites/" + favoriteResponses.get(0).getId())
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> favoriteResponse3 = FavoriteTestMethod.deleteFavorite(token, favoriteResponses.get(0).getId());
 		// then : 즐겨찾기 삭제됨
 		assertThat(favoriteResponse3.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 	}
@@ -101,48 +72,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		String PASSWORD = "password";
 		int AGE = 20;
 		ExtractableResponse<Response> createResponse = MemberTestMethod.회원_생성을_요청(EMAIL, PASSWORD, AGE);
-		TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
-		ExtractableResponse<Response> tokenResponseCandidate1 = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(tokenRequest)
-			.when().post("/login/token")
-			.then().log().all()
-			.extract();
-		TokenResponse tokenResponse = tokenResponseCandidate1.as(TokenResponse.class);
-		String token = tokenResponse.getAccessToken();
+		String token = AuthTestMethod.getToken(AuthTestMethod.login(EMAIL, PASSWORD));
 		// Scenario 즐겨찾기 관리 에러
 		// When : 즐겨찾기 생성 요청
-		FavoriteRequest favoriteRequest1 = new FavoriteRequest(1L, 2L);
-		ExtractableResponse<Response> favoriteResponse1 = RestAssured
-			.given().log().all()
-			.auth().oauth2(token)
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(favoriteRequest1)
-			.when().post("/favorites")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> favoriteResponse1 = FavoriteTestMethod.createFavorite(token, 1L, 2L);
 		// Then : 즐겨찾기 생성 실패
 		assertThat(favoriteResponse1.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 		// When : 즐겨찾기 목록 조회 요청
-		ExtractableResponse<Response> favoriteResponse4 = RestAssured
-			.given().log().all()
-			.auth().oauth2(token)
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.when().get("/favorites")
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> favoriteResponse2 = FavoriteTestMethod.findFavorite(token);
 		// Then : 즐겨찾기 목록 조회 실패
-		assertThat(favoriteResponse4.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+		assertThat(favoriteResponse2.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
 		// When : 즐겨찾기 삭제 요청
-		ExtractableResponse<Response> favoriteResponse5 = RestAssured
-			.given().log().all()
-			.auth().oauth2(token)
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.when().delete("/favorites/" + 1)
-			.then().log().all()
-			.extract();
+		ExtractableResponse<Response> favoriteResponse3 = FavoriteTestMethod.deleteFavorite(token, 1L);
 		// Then : 즐겨찾기 삭제 실패
-		assertThat(favoriteResponse5.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+		assertThat(favoriteResponse3.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 }
