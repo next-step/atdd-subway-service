@@ -17,6 +17,7 @@ import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineTestMethod;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberTestMethod;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -41,7 +42,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		String EMAIL = "email@email.com";
 		String PASSWORD = "password";
 		int AGE = 20;
-		ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+		ExtractableResponse<Response> createResponse = MemberTestMethod.회원_생성을_요청(EMAIL, PASSWORD, AGE);
 		// And : 로그인 되어 있음
 		TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
 		ExtractableResponse<Response> tokenResponseCandidate1 = RestAssured
@@ -99,7 +100,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		String EMAIL = "email@email.com";
 		String PASSWORD = "password";
 		int AGE = 20;
-		ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+		ExtractableResponse<Response> createResponse = MemberTestMethod.회원_생성을_요청(EMAIL, PASSWORD, AGE);
 		TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
 		ExtractableResponse<Response> tokenResponseCandidate1 = RestAssured
 			.given().log().all()

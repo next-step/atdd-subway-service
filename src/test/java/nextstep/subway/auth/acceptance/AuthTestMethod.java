@@ -6,8 +6,15 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 
 public class AuthTestMethod {
+	public static String getToken(ExtractableResponse<Response> response) {
+		TokenResponse tokenResponse = response.as(TokenResponse.class);
+
+		return tokenResponse.getAccessToken();
+	}
+
 	public static ExtractableResponse<Response> login(String EMAIL, String PASSWORD) {
 		TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
 

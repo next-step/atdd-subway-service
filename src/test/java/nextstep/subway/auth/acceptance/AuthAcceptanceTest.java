@@ -9,6 +9,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.MemberTestMethod;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithBearerAuth() {
 		// Scenario : 로그인을 시도 시나리오
 		// Given : 회원 등록되어 있음
-		ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+		ExtractableResponse<Response> createResponse = MemberTestMethod.회원_생성을_요청(EMAIL, PASSWORD, AGE);
 		// When : 로그인 요청
 		ExtractableResponse<Response> tokenResponse = AuthTestMethod.login(EMAIL, PASSWORD);
 		// Then : 로그인 됨
@@ -42,7 +43,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 		// Then : 로그인 실패
 		assertThat(tokenResponse1.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 		// Given : 회원가입
-		ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+		ExtractableResponse<Response> createResponse = MemberTestMethod.회원_생성을_요청(EMAIL, PASSWORD, AGE);
 		// When : 로그인 요청(ID 틀림)
 		ExtractableResponse<Response> tokenResponse2 = AuthTestMethod.login("abc@email.com", PASSWORD);
 		// Then : 로그인 실패
@@ -58,7 +59,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithWrongBearerAuth() {
 		// Scenario : 유효하지 않은 토큰으로 /members/me 요청할 경우 에러 시나리오
 		// Given : 회원등록 됨
-		ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+		ExtractableResponse<Response> createResponse = MemberTestMethod.회원_생성을_요청(EMAIL, PASSWORD, AGE);
 		// When : 로그인 요청
 		ExtractableResponse<Response> response = AuthTestMethod.login(EMAIL, PASSWORD);
 		// Then : 로그인 됨
