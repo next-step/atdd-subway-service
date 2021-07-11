@@ -79,17 +79,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createFavoriteResponse = 즐겨찾기_생성되어_있음(강남역, 광교역);
 
         // when
-        String uri = createFavoriteResponse.header("Location");
-
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, makeAccessToken(token))
-                .when().delete(uri)
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(createFavoriteResponse, token);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        즐겨찾기_삭제됨(response);
     }
 
     @DisplayName("즐겨찾기를 삭제 시 회원이 일치하지 않는 경우 실패한다.")
@@ -99,23 +92,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         String anotherMemberEmail = "another@github.com";
         회원_생성을_요청(anotherMemberEmail, PASSWORD, 28);
         String anotherToken = 회원_로그인_됨(anotherMemberEmail, PASSWORD);
-
         ExtractableResponse<Response> createFavoriteResponse = 즐겨찾기_생성되어_있음(강남역, 광교역);
 
         // when
-        String uri = createFavoriteResponse.header("Location");
-
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, makeAccessToken(anotherToken))
-                .when().delete(uri)
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(createFavoriteResponse, anotherToken);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        즐겨찾기_삭제_인증_실패(response);
     }
-
 
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(StationResponse source, StationResponse target) {
         return RestAssured
@@ -135,12 +119,31 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                     .then().log().all().extract();
     }
 
+    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(ExtractableResponse<Response> createFavoriteResponse, String token) {
+        String uri = createFavoriteResponse.header("Location");
+
+        return RestAssured
+                .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, makeAccessToken(token))
+                .when().delete(uri)
+                .then().log().all()
+                .extract();
+    }
+
     private void 즐겨찾기_조회됨(ExtractableResponse<Response> response) {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 즐겨찾기_삭제_인증_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성되어_있음(StationResponse source, StationResponse target) {
