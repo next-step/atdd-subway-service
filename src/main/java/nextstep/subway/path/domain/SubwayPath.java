@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.ExtraCharge;
 import nextstep.subway.station.domain.Station;
 
 import java.util.Collections;
