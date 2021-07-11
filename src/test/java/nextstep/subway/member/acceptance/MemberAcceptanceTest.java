@@ -7,8 +7,8 @@ import nextstep.subway.auth.dto.AuthToken;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
+;
+import static nextstep.subway.auth.domain.AuthTestSnippet.로그인_요청;
 import static nextstep.subway.member.domain.MemberTestSnippet.*;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 

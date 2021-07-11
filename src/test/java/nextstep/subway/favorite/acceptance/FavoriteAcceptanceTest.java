@@ -3,17 +3,18 @@ package nextstep.subway.favorite.acceptance;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.AuthToken;
-import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.utils.IdTransferObject;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
 
 import java.util.stream.Stream;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청_및_성공_확인;
+import static nextstep.subway.auth.domain.AuthTestSnippet.로그인_요청_및_성공_확인;
 import static nextstep.subway.favorite.domain.FavoriteTestSnippet.*;
-import static nextstep.subway.member.domain.MemberTestSnippet.*;
+import static nextstep.subway.member.domain.MemberTestSnippet.회원_생성을_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_생성_요청;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
