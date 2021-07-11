@@ -28,18 +28,26 @@ public class Line extends BaseEntity {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
 
+    private int extraCharge;
+
     public Line() {
     }
 
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
+        this.extraCharge = 0;
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
+        this(name, color, upStation, downStation, distance, 0);
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int extraCharge) {
         this.name = name;
         this.color = color;
         sections.add(new Section(this, upStation, downStation, distance));
+        this.extraCharge = extraCharge;
     }
 
     public void update(Line line) {
@@ -187,5 +195,9 @@ public class Line extends BaseEntity {
 
     public List<Section> sections() {
         return sections;
+    }
+
+    public int extraCharge() {
+        return extraCharge;
     }
 }
