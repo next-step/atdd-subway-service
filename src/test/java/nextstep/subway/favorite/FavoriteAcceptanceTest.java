@@ -67,6 +67,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, makeAccessToken(token))
                 .when().get("/favorites")
                 .then().log().all().extract();
 
