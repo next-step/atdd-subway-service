@@ -18,15 +18,13 @@ import java.util.List;
 @Service
 @Transactional
 public class PathService {
-    private static final String STATIONS_NULL_NOT_ALLOWED = "역을 입력해야합니다.";
-    private static final String STATIONS_DUPLICATED = "동일역을 검색할 수 없습니다";
     private final LineRepository lineRepository;
 
     public PathService(LineRepository lineRepository) {
         this.lineRepository = lineRepository;
     }
 
-    public PathResponse findPath(@AuthenticationPrincipal AuthMember loginMember, Long sourceId, Long targetId) {
+    public PathResponse findPath(AuthMember loginMember, Long sourceId, Long targetId) {
         Lines lines = Lines.of(lineRepository.findAll());
         Sections sections = lines.findSections();
         PathFinder pathFinder = new JgraphtFinder(sections);

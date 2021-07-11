@@ -34,7 +34,7 @@ public class Lines {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않은 출발역이나 도착역입니다."));
     }
 
-    public Fee calculatedFee(@AuthenticationPrincipal AuthMember loginMember, Distance distance) {
+    public Fee calculatedFee(AuthMember loginMember, Distance distance) {
         Fee maxFee = findMaxFee();
         Fee fee = maxFee.calculateBasicFee(distance);
         if (loginMember.getId() == null) {

@@ -32,7 +32,7 @@ public class Fee {
         return surchargePolicy.calculate(this, distance);
     }
 
-    public Fee calculateAgeFee(@AuthenticationPrincipal AuthMember loginMember) {
+    public Fee calculateAgeFee(AuthMember loginMember) {
         AgeDiscountPolicy discountPolicy = AgeDiscountPolicy.of(loginMember.getAge());
         return discountPolicy.calculate(this);
     }
