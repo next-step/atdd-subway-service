@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -37,6 +38,12 @@ public class Favorite extends BaseEntity {
     public Favorite(Long id, Station sourceStation, Station targetStation, Member member) {
         this(sourceStation, targetStation, member);
         this.id = id;
+    }
+
+    public void validateMember(Member loginMember) {
+        if (!member.equals(loginMember)) {
+            throw new AuthorizationException();
+        }
     }
 
     public Long getId() {
