@@ -90,14 +90,14 @@ class FavoriteServiceTest {
     }
 
     @Test
-    @DisplayName("즐겨찾기 삭제 및 검증")
+    @DisplayName("즐겨찾기 삭제 성공 및 성공 검증")
     void deleteFavorite_성공() {
         // when, then
         assertDoesNotThrow(() -> favoriteService.deleteById(로그인_죠르디, insertResponse.getId()));
     }
 
     @Test
-    @DisplayName("즐겨찾기 삭제 및 검증")
+    @DisplayName("즐겨찾기 삭제 실패 및 실패 검증")
     void deleteFavorite_실패() {
         // given
         LoginMember 로그인_실패_죠르디 = new LoginMember((long) MAX_VALUE, "jordy-torvalds@jordy.com", 30);

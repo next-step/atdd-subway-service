@@ -7,15 +7,14 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.line.exception.LineNotFoundException;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
-import static java.lang.String.format;
 import static nextstep.subway.line.dto.LineResponse.of;
 
 @Service
@@ -43,7 +42,7 @@ public class LineService {
 
     private Line findById(Long id) {
         return lineRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(format("id %d인 노선을 찾을 수 없습니다.", id)));
+                .orElseThrow(() -> new LineNotFoundException(id));
     }
 
 

@@ -6,6 +6,7 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.favorite.exception.FavoriteNotFoundException;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
@@ -49,7 +50,7 @@ public class FavoriteService {
 
     public void deleteById(LoginMember loginMember, Long id) {
         Favorite foundFavorite = favoriteRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(format("id가 %d인 즐겨찾기를 찾을 수가 없습니다.", id)));
+                .orElseThrow(() -> new FavoriteNotFoundException(id));
 
         if(!foundFavorite.hasPermission(loginMember.getId())) {
             throw new ApprovedException(format("id가 %d인 사용자는 id가 %d인 즐겨찾기에 권한이 없습니다.", loginMember.getId(), id));

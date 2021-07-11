@@ -5,6 +5,7 @@ import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.domain.Stations;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.station.exception.StationNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,7 +48,7 @@ public class StationService {
 
     public Station findById(Long id) {
         return stationRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(format("id가 %d인 역을 찾을 수가 없습니다.", id)));
+                .orElseThrow(() -> new StationNotFoundException(id));
     }
     public Stations findAllById(List<Long> ids) {
         return new Stations(stationRepository.findAllById(ids));
