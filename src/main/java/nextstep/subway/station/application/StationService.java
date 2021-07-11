@@ -46,7 +46,10 @@ public class StationService {
     }
 
     public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(format("id가 %d인 역을 찾을 수가 없습니다.", id)));
+        return stationRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(format("id가 %d인 역을 찾을 수가 없습니다.", id)));
+    }
+    public Stations findAllById(List<Long> ids) {
+        return new Stations(stationRepository.findAllById(ids));
     }
 }

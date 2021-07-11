@@ -1,4 +1,4 @@
-package nextstep.subway.line.service;
+package nextstep.subway.line.application;
 
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.domain.Sections;

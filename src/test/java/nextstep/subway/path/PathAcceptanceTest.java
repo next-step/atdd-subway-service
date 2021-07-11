@@ -8,10 +8,7 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.http.MediaType;
 
@@ -20,8 +17,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
-import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
-import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.line.domain.LineSectorTestSnippet.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.line.domain.LineTestSnippet.지하철_노선_등록되어_있음;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
@@ -30,11 +27,13 @@ import static org.springframework.http.HttpStatus.OK;
 
 
 @DisplayName("지하철 경로 조회")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class PathAcceptanceTest extends AcceptanceTest {
     private LineResponse 오호선;
     private LineResponse 이호선;
     private LineResponse 일호선;
     private LineResponse 신분당선;
+
     private StationResponse 양평역;
     private StationResponse 영등포구청역;
     private StationResponse 영등포시장역;
@@ -46,7 +45,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 야탑역;
     private StationResponse 모란역;
 
-    @BeforeEach
+    @BeforeAll
     public void setUp() {
         super.setUp();
 
@@ -66,6 +65,18 @@ class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_요청(오호선, 영등포시장역, 신길역, 10);
         지하철_노선에_지하철역_등록_요청(오호선, 신길역, 여의도역, 10);
     }
+
+    /*
+    # 지하철 노선도 #
+
+                            (2호선)                          (1호선)
+     (5호선)  양평역 - 10 - 영등포구청역 - 5 - 영등포시장역 - 10 - 신길역 - 10 여의도 역  (5호선)
+                              ㅣ                               ㅣ
+                              10                               5
+                              ㅣ                               ㅣ
+                             당산역                           영등포역
+                             (2호선)                          (1호선)
+     */
 
     @DisplayName("지하철 경로를 조회한다.")
     @TestFactory

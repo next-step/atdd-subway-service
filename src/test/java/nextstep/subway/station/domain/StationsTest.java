@@ -1,6 +1,7 @@
 package nextstep.subway.station.domain;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -14,6 +15,7 @@ class StationsTest {
     private static Station 신길역 = new Station(4L, "신길역");
     private static Station 오목교역 = new Station(5L, "오목교역");
 
+    @Test
     void add_성공() {
         // given
         int expectedResult = 3;

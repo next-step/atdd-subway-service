@@ -16,17 +16,23 @@ public class AuthorizationExtractor {
         Enumeration<String> headers = request.getHeaders(AUTHORIZATION);
         while (headers.hasMoreElements()) {
             String value = headers.nextElement();
-            if ((value.toLowerCase().startsWith(BEARER_TYPE.toLowerCase()))) {
-                String authHeaderValue = value.substring(BEARER_TYPE.length()).trim();
-                request.setAttribute(ACCESS_TOKEN_TYPE, value.substring(0, BEARER_TYPE.length()).trim());
-                int commaIndex = authHeaderValue.indexOf(',');
-                if (commaIndex > 0) {
-                    authHeaderValue = authHeaderValue.substring(0, commaIndex);
-                }
-                return authHeaderValue;
+            if (isBearerType(value)) {
+                request.setAttribute(ACCESS_TOKEN_TYPE, BEARER_TYPE);
+                return extractAuthHeader(value);
             }
         }
 
         return null;
+    }
+
+    private static String extractAuthHeader(String value) {
+        String authHeaderValue = value.substring(BEARER_TYPE.length()).trim();
+        return (authHeaderValue.contains(","))
+                ? authHeaderValue.split(",")[0]
+                : authHeaderValue;
+    }
+
+    private static boolean isBearerType(String value) {
+        return value.toLowerCase().startsWith(BEARER_TYPE.toLowerCase());
     }
 }

@@ -20,6 +20,10 @@ public class MemberResponse {
         return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
     }
 
+    public Member toMember() {
+        return new Member(id, email, "", age);
+    }
+
     public Long getId() {
         return id;
     }

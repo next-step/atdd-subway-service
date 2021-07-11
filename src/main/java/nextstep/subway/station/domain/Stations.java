@@ -4,17 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static java.lang.String.format;
 import static java.util.Collections.unmodifiableList;
 
 public class Stations {
     List<Station> values = new ArrayList<>();
 
     public Stations() {
-
     }
 
     public Stations(List<Station> values) {
         this.values = values;
+    }
+
+    public Station getById(Long id) {
+        return values.stream()
+                .filter(value -> value.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(format("id가 %d인 역을 찾을 수 없습니다.", id)));
     }
 
     public void addAll(Stations stations) {
