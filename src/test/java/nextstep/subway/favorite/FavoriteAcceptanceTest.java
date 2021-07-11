@@ -64,18 +64,34 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 두번째_즐겨찾기 = 즐겨찾기_생성되어_있음(new FavoriteRequest(왕십리역.getId(), 건대역.getId()));
 
         // when
-        // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, makeAccessToken(token))
-                .when().get("/favorites")
-                .then().log().all().extract();
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청();
 
         // then
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        즐겨찾기_조회됨(response);
         즐겨찾기_목록_포함됨(response, Arrays.asList(첫번쨰_즐겨찾기, 두번째_즐겨찾기));
     }
 
+    private ExtractableResponse<Response> 즐겨찾기_생성_요청(FavoriteRequest request) {
+        return RestAssured
+                .given().log().all()
+                .body(request)
+                .header(HttpHeaders.AUTHORIZATION, makeAccessToken(token))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/favorites")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청() {
+        return RestAssured
+                    .given().log().all()
+                    .header(HttpHeaders.AUTHORIZATION, makeAccessToken(token))
+                    .when().get("/favorites")
+                    .then().log().all().extract();
+    }
+
+    private void 즐겨찾기_조회됨(ExtractableResponse<Response> response) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
 
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -83,16 +99,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 즐겨찾기_생성되어_있음(FavoriteRequest request) {
         return  즐겨찾기_생성_요청(request);
-    }
-
-    private ExtractableResponse<Response> 즐겨찾기_생성_요청(FavoriteRequest request) {
-        return RestAssured
-                    .given().log().all()
-                    .body(request)
-                    .header(HttpHeaders.AUTHORIZATION, makeAccessToken(token))
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when().post("/favorites")
-                    .then().log().all().extract();
     }
 
     public static void 즐겨찾기_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
