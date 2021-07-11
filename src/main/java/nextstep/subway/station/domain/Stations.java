@@ -1,10 +1,11 @@
 package nextstep.subway.station.domain;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
+import static java.lang.String.format;
 import static java.util.Collections.unmodifiableList;
 
 public class Stations {
@@ -17,10 +18,11 @@ public class Stations {
         this.values = values;
     }
 
-    public Optional<Station> getById(Long id) {
+    public Station getById(Long id) {
         return values.stream()
                 .filter(value -> value.getId().equals(id))
-                .findFirst();
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(format("id가 %d인 역을 찾을 수 없습니다.", id)));
     }
 
     public void addAll(Stations stations) {
