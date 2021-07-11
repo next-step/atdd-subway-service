@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class Favorites {
-    private List<Favorite> values = new ArrayList<Favorite>();
+    private List<Favorite> values = new ArrayList<>();
 
     public Favorites(List<Favorite> values) {
         this.values = values;

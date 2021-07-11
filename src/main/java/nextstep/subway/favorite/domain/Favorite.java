@@ -38,6 +38,10 @@ public class Favorite extends BaseEntity {
         this.target = target;
     }
 
+    public boolean hasPermission(Long memberId) {
+        return this.memberId == memberId;
+    }
+
     public Long getId() {
         return id;
     }

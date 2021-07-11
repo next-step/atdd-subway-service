@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.service;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.exception.ApprovedException;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -18,7 +19,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.List;
 
+import static java.lang.Integer.MAX_VALUE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -61,7 +64,7 @@ class FavoriteServiceTest {
 
     @Test
     @DisplayName("즐겨찾기 생성 및 검증")
-    void createFavorite() {
+    void createFavorite_성공() {
         // then
         assertAll(
                 () -> assertThat(insertResponse.getSource().getId()).isEqualTo(양평역.getId()),
@@ -71,7 +74,7 @@ class FavoriteServiceTest {
 
     @Test
     @DisplayName("즐겨찾기 조회 및 검증")
-    void findFavorite() {
+    void findFavorite_성공() {
         // when
         List<FavoriteResponse> favoriteResponses = favoriteService.findFavorite(로그인_죠르디);
 
@@ -88,8 +91,19 @@ class FavoriteServiceTest {
 
     @Test
     @DisplayName("즐겨찾기 삭제 및 검증")
-    void deleteFavorite() {
+    void deleteFavorite_성공() {
         // when, then
         assertDoesNotThrow(() -> favoriteService.deleteById(로그인_죠르디, insertResponse.getId()));
+    }
+
+    @Test
+    @DisplayName("즐겨찾기 삭제 및 검증")
+    void deleteFavorite_실패() {
+        // given
+        LoginMember 로그인_실패_죠르디 = new LoginMember((long) MAX_VALUE, "jordy-torvalds@jordy.com", 30);
+
+        // when, then
+        assertThatExceptionOfType(ApprovedException.class)
+                .isThrownBy(() -> favoriteService.deleteById(로그인_실패_죠르디, insertResponse.getId()));
     }
 }
