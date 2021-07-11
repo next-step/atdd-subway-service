@@ -38,7 +38,7 @@ class MemberAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
         // then
-        회원_정보_수정됨(updateResponse);
+        회원_정보_수정됨(updateResponse, createResponse, NEW_EMAIL, NEW_AGE);
 
         // when
         ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
@@ -71,7 +71,9 @@ class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> updateResponse = 토큰으로_회원_정보_수정_요청(token, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
 
         // then
-        회원_정보_수정됨(updateResponse);
+        회원_정보_수정됨(updateResponse, createResponse, NEW_EMAIL, NEW_AGE);
+        ExtractableResponse<Response> reLoginResponse = 로그인_요청(NEW_EMAIL, NEW_PASSWORD);
+        token = reLoginResponse.as(AuthToken.class);
 
         // when
         ExtractableResponse<Response> deleteResponse = 토큰으로_회원_삭제_요청(token);

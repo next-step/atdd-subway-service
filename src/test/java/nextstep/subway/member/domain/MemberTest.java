@@ -3,11 +3,14 @@ package nextstep.subway.member.domain;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.member.domain.MemberTestSnippet.*;
+import static nextstep.subway.member.domain.MemberTestSnippet.회원_정보_조회_요청;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("회원 관리 유닛  테스트")
 class MemberTest extends AcceptanceTest {
@@ -44,7 +47,7 @@ class MemberTest extends AcceptanceTest {
         ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
 
         // then
-        회원_정보_수정됨(updateResponse);
+        회원_정보_수정됨(updateResponse, createResponse, NEW_EMAIL, NEW_AGE);
     }
 
     @Test

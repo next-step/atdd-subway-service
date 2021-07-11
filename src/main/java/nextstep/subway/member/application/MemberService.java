@@ -7,6 +7,7 @@ import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 public class MemberService {
     private MemberRepository memberRepository;
@@ -29,6 +30,7 @@ public class MemberService {
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         member.update(param.toMember());
+
     }
 
     public void deleteMember(Long id) {

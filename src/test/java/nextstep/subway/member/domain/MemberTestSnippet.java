@@ -102,8 +102,13 @@ public class MemberTestSnippet {
         assertThat(memberResponse.getAge()).isEqualTo(age);
     }
 
-    public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(OK.value());
+    public static void 회원_정보_수정됨(ExtractableResponse<Response> updateResponse, ExtractableResponse<Response> createResponse, String newEmail, int newAge) {
+        assertThat(updateResponse.statusCode()).isEqualTo(OK.value());
+        ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(createResponse);
+        MemberResponse memberResponse = findResponse.as(MemberResponse.class);
+
+        assertThat(memberResponse.getEmail()).isEqualTo(newEmail);
+        assertThat(memberResponse.getAge()).isEqualTo(newAge);
     }
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
