@@ -1,6 +1,5 @@
 package nextstep.subway.station.domain;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
