@@ -7,7 +7,7 @@ import nextstep.subway.station.dto.StationResponse;
 import java.util.List;
 
 public class PathsResponse {
-    List<StationResponse> stationList;
+    private List<StationResponse> stationList;
 
     private PathsResponse() {
 
