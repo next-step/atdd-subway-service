@@ -19,13 +19,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.will;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 
@@ -91,7 +89,7 @@ class FavoriteServiceTest {
     @Test
     void createTest() {
         //given
-        FavoriteRequest favoriteRequest = new FavoriteRequest(targetStation.getId(), sourceStation.getId());
+        FavoriteRequest favoriteRequest = new FavoriteRequest(sourceStation.getId(), targetStation.getId());
         doReturn(sourceStation).when(stationService).findStationById(favoriteRequest.getSource());
         doReturn(targetStation).when(stationService).findStationById(favoriteRequest.getTarget());
         doReturn(사용자).when(memberService).findMemberById(loginMember.getId());
