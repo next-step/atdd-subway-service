@@ -114,4 +114,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    public static void 회원_등록되어_있음(String email, String password, Integer age) {
+        ExtractableResponse<Response> response = 회원_생성을_요청(email, password, age);
+        정상_등록(response);
+    }
 }
