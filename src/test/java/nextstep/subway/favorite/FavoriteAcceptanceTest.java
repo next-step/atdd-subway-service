@@ -17,6 +17,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
+import java.util.List;
+
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어_있음;
 import static nextstep.subway.auth.application.AuthServiceTest.*;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_등록되어_있음;
@@ -69,15 +71,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> savedResponse = 즐겨찾기_생성_요청(사용자토큰,favoriteRequest);
 
         //then
-        즐겨찾기_정상_등록(savedResponse);
+        FavoriteResponse saved = 즐겨찾기_정상_등록(savedResponse);
 
         //when
-        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(사용자토큰);
-        즐겨찾기_조회됨(response);
+        ExtractableResponse<Response> searchedResponse = 즐겨찾기_목록_조회_요청(사용자토큰);
+
+        //then
+        즐겨찾기_조회됨(searchedResponse, saved);
+
+
+
     }
 
-    private void 즐겨찾기_조회됨(ExtractableResponse<Response> response) {
+    private void 즐겨찾기_조회됨(ExtractableResponse<Response> response, FavoriteResponse saved) {
         정상_처리(response);
+        List<FavoriteResponse> searched = response.jsonPath().getList(".", FavoriteResponse.class);
+        assertThat(searched).contains(saved);
     }
 
     private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String 사용자토큰) {
@@ -90,11 +99,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 즐겨찾기_정상_등록(ExtractableResponse<Response> response) {
+    private FavoriteResponse 즐겨찾기_정상_등록(ExtractableResponse<Response> response) {
         정상_등록(response);
         FavoriteResponse favoriteResponse = response.as(FavoriteResponse.class);
         assertThat(favoriteResponse.getTarget()).isEqualTo(favoriteRequest.getTarget());
         assertThat(favoriteResponse.getSource()).isEqualTo(favoriteRequest.getSource());
+        return favoriteResponse;
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(String 사용자토큰, FavoriteRequest favoriteRequest) {

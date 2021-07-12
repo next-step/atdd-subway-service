@@ -20,6 +20,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -104,5 +107,22 @@ class FavoriteServiceTest {
         assertThat(favoriteResponse.getTarget()).isEqualTo(favoriteRequest.getTarget());
         assertThat(favoriteResponse.getMemberId()).isEqualTo(loginMember.getId());
     }
+
+    @DisplayName("즐겨찾기 목록을 조회할 수 있다")
+    @Test
+    void listTest() {
+        //given
+        given(favoriteRepository.findAll()).willReturn(Arrays.asList(favorite));
+
+        //when
+        List<FavoriteResponse> responseList = favoriteService.list();
+
+        //then
+        assertThat(responseList.size()).isGreaterThan(0);
+        assertThat(responseList.get(0).getSource()).isEqualTo(sourceStation.getId());
+    }
+
+
+
 
 }

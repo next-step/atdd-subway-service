@@ -12,6 +12,8 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class FavoriteService {
     private StationService stationService;
@@ -43,4 +45,7 @@ public class FavoriteService {
     }
 
 
+    public List<FavoriteResponse> list() {
+        return FavoriteResponse.ofList(favoriteRepository.findAll());
+    }
 }

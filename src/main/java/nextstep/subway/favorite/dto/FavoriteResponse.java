@@ -2,6 +2,10 @@ package nextstep.subway.favorite.dto;
 
 import nextstep.subway.favorite.domain.Favorite;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 public class FavoriteResponse {
     private Long id;
     private Long memberId;
@@ -22,6 +26,12 @@ public class FavoriteResponse {
         return new FavoriteResponse(favorite.getId(), favorite.getMemberId(),favorite.getSourceStationId(), favorite.gettargetStationId());
     }
 
+    public static List<FavoriteResponse> ofList(List<Favorite> favorites) {
+        return favorites.stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
+    }
+
     public Long getId() {
         return id;
     }
@@ -36,5 +46,18 @@ public class FavoriteResponse {
 
     public Long getTarget() {
         return target;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FavoriteResponse that = (FavoriteResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(memberId, that.memberId) && Objects.equals(source, that.source) && Objects.equals(target, that.target);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, memberId, source, target);
     }
 }
