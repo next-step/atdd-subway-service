@@ -17,10 +17,13 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.common.dto.ErrorResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.exception.DuplicatePathException;
 import nextstep.subway.path.exception.NotConnectedPathException;
@@ -31,15 +34,23 @@ import nextstep.subway.station.exeption.NotFoundStationException;
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
 
+    public static final String EMAIL = "email@email.com";
+    public static final String PASSWORD = "password";
+    public static final int AGE = 10;
+
     private LineResponse 신분당선, 이호선, 삼호선, 분당선;
     private StationResponse 강남역, 양재역, 교대역, 남부터미널역, 선릉역, 수원역;
+    private TokenResponse token;
 
     /**               (10)
      *  교대역    --- *2호선* ---   강남역
      *  |                        |
-     *  *3호선* (3)               *신분당선* (10)
-     *  |               (2)      |
+     *  *3호선* (7)               *신분당선* (10)
+     *  |               (6)      |
      *  남부터미널역  -- *3호선* -- 양재
+     *
+     *                (100)
+     *  수원역    --- *분당선* --- 선릉역
      */
     @BeforeEach
     public void setUp() {
@@ -56,12 +67,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
             .as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 10))
             .as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-orange-600", 교대역.getId(), 양재역.getId(), 5))
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-orange-600", 교대역.getId(), 양재역.getId(), 13))
             .as(LineResponse.class);
         분당선 = 지하철_노선_등록되어_있음(new LineRequest("분당선", "bg-yellow-600", 선릉역.getId(), 수원역.getId(), 100))
             .as(LineResponse.class);
 
-        지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+        지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 7);
+
+        MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        token = AuthAcceptanceTest.로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
     }
 
     @Test
@@ -71,7 +85,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_경로_조회_요청(강남역, 남부터미널역);
         // then
         지하철_경로_응답됨(response);
-        지하철역_목록_경로_포함됨(response, Arrays.asList(강남역.getId(), 양재역.getId(), 남부터미널역.getId()), 12);
+        지하철역_목록_경로_포함됨(response, Arrays.asList(강남역.getId(), 양재역.getId(), 남부터미널역.getId()), 16);
+        지하철_이용_요금_응답(response, 1350);
+
+        // when
+        response = 지하철_어린이_사용자_경로_조회_요청(강남역, 남부터미널역);
+        // then
+        지하철_이용_요금_응답(response, 500);
 
         // when
         response = 지하철_경로_조회_요청(강남역, 강남역);
@@ -90,10 +110,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철역_목록_경로_조회_등록_되지_않은_경로로_인한_실패(response);
 
     }
-
     private ExtractableResponse<Response> 지하철_경로_조회_요청(StationResponse source, StationResponse target) {
         return RestAssured
             .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .queryParam("source", source.getId())
+            .queryParam("target", target.getId())
+            .when().get("/paths")
+            .then().log().all()
+            .extract();
+    }
+    private ExtractableResponse<Response> 지하철_어린이_사용자_경로_조회_요청(StationResponse source, StationResponse target) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(token.getAccessToken())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .queryParam("source", source.getId())
             .queryParam("target", target.getId())
@@ -112,6 +142,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertThat(ids).containsAll(stationIds);
         assertThat(min).isEqualTo(pathResponse.getDistance());
+    }
+
+    public void 지하철_이용_요금_응답(ExtractableResponse<Response> response, long fare) {
+        PathResponse pathResponse = response.jsonPath().getObject(".", PathResponse.class);
+        assertThat(fare).isEqualTo(pathResponse.getFare());
     }
 
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest params) {
