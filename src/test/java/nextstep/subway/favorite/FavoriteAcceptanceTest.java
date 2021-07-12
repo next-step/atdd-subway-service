@@ -15,6 +15,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.List;
@@ -69,6 +70,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         //when
         ExtractableResponse<Response> savedResponse = 즐겨찾기_생성_요청(사용자토큰,favoriteRequest);
+        String uri = savedResponse.header("Location");
 
         //then
         FavoriteResponse saved = 즐겨찾기_정상_등록(savedResponse);
@@ -79,7 +81,26 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         //then
         즐겨찾기_조회됨(searchedResponse, saved);
 
+        //when
+        ExtractableResponse<Response> deletedResponse = 즐겨찾기_삭제_요청(사용자토큰, uri);
 
+        //then
+        즐겨찾기_삭제됨(deletedResponse);
+
+
+    }
+
+    private void 즐겨찾기_삭제됨(ExtractableResponse<Response> deletedResponse) {
+        assertThat(deletedResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String 사용자토큰, String uri) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(사용자토큰)
+                .when().delete(uri)
+                .then().log().all()
+                .extract();
 
     }
 
