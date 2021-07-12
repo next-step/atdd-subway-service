@@ -31,7 +31,7 @@ public class PathService {
 		Station destinationStation = stationService.findStationById(targetId);
 		PathFinder pathFinder = new PathFinder(lines);
 
-		return new PathResponse(getStations(pathFinder.findPath(startStation, destinationStation)), pathFinder.findPathLength(startStation, destinationStation));
+		return new PathResponse(getStations(pathFinder.findPath(startStation, destinationStation)), pathFinder.findPathLength(startStation, destinationStation), pathFinder.getFare(startStation, destinationStation));
 	}
 
 	private List<Station> getStations(List<String> shortestPath) {

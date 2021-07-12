@@ -12,6 +12,11 @@ import nextstep.subway.station.domain.Station;
 
 @Component
 public class PathFinder {
+	private static final int BASE_FARE = 1250;
+	private static final int FIRTST_ADDITIONAL_FARE_APPLY_LENGTH = 5;
+	private static final int FIRST_ADDITIONAL_FARE = 100;
+	private static final int BASE_LENGTH = 10;
+
 	private DijkstraShortestPath dijkstraShortestPath;
 	private WeightedMultigraph<String, DefaultWeightedEdge> graph;
 
@@ -46,5 +51,16 @@ public class PathFinder {
 
 	public int findPathLength(Station startStation, Station destinationStation) {
 		return (int) dijkstraShortestPath.getPathWeight(startStation.getName(), destinationStation.getName());
+	}
+
+	public int getFare(Station startStation, Station destinationStation) {
+		if (findPathLength(startStation, destinationStation) <= 10) {
+			return BASE_FARE;
+		}
+		return BASE_FARE + calculateOverFare(findPathLength(startStation, destinationStation) - BASE_LENGTH);
+	}
+
+	private int calculateOverFare(int distance) {
+		return (int) ((Math.ceil((distance - 1) / FIRTST_ADDITIONAL_FARE_APPLY_LENGTH) + 1) * FIRST_ADDITIONAL_FARE);
 	}
 }
