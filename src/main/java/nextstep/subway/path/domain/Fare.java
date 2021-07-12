@@ -25,6 +25,10 @@ public class Fare {
         return (source.fare < target.fare) ? -1 : ((source == target) ? 0 : 1);
     }
 
+    public long getValue() {
+        return fare;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
