@@ -19,11 +19,15 @@ public enum AgePolicy {
         this.rate = rate;
     }
 
-    public AgePolicy valueOf(int age) {
+    public static AgePolicy valueOf(int age) {
         return Arrays.stream(AgePolicy.values())
-            .filter(agePolicy -> agePolicy.min <= age && age < agePolicy.max)
+            .filter(agePolicy -> agePolicy.isApply(age))
             .findFirst()
             .orElse(NONE);
+    }
+
+    private boolean isApply(int age) {
+        return min <= age && age < max;
     }
 
     public Fare discount(Fare fare) {
