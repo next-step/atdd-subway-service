@@ -40,9 +40,9 @@ public class PathTest {
         선릉역 = new Station("선릉역");
         수원역 = new Station("수원역");
 
-        분당선 = new Line("신분당선", "bg-yellow-600", 선릉역, 수원역, 60);
+        분당선 = new Line("분당선", "bg-yellow-600", 선릉역, 수원역, 60);
         신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = new Line("삼호선", "bg-green-600", 교대역, 강남역, 10);
+        이호선 = new Line("이호선", "bg-green-600", 500L, 교대역, 강남역, 10);
         삼호선 = new Line("삼호선", "bg-orange-600", 교대역, 양재역, 13);
         삼호선.addStation(교대역, 남부터미널역, 7);
 
@@ -104,5 +104,14 @@ public class PathTest {
         fare = path.findPathFare(수원역, 선릉역);
         // then
         assertThat(new Fare(2150)).isEqualTo(fare);
+    }
+    
+    @Test
+    @DisplayName("추가 요금 조회")
+    void findPathFareWithSurcharge() {
+        // when
+        Fare fare = path.findPathFare(강남역, 교대역);
+        // then
+        assertThat(new Fare(1750)).isEqualTo(fare);
     }
 }

@@ -23,18 +23,18 @@ public enum FareSection {
         return maxDistance;
     }
 
-    public long calculateFare(int distance) {
+    private long calculate(int distance) {
         if (distance > ZERO_DISTANCE) {
             int calculateDistance = Math.min(distance, maxDistance);
             return calculateDistance / unitDistance * unitFare;
         }
         return ZERO_FARE;
     }
-    public static Fare calculateBasicFare(int distance) {
+    public static Fare calculateFare(int distance) {
         long calculateFare = BASIC_FARE;
 
         for (FareSection section : FareSection.values()) {
-            calculateFare += section.calculateFare(distance);
+            calculateFare += section.calculate(distance);
             distance -= section.maxDistance();
         }
         return new Fare(calculateFare);

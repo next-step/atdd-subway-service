@@ -10,10 +10,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import nextstep.subway.common.BaseEntity;
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Line extends BaseEntity {
+
+    public static final long NO_SURCHARGE = 0L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,6 +27,9 @@ public class Line extends BaseEntity {
 
     @Embedded
     private Sections sections = new Sections();
+
+    @Embedded
+    private Fare surcharge  = new Fare(NO_SURCHARGE);
 
     public Line() {
     }
@@ -36,6 +42,13 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
+        sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public Line(String name, String color, long surcharge, Station upStation, Station downStation, int distance) {
+        this.name = name;
+        this.color = color;
+        this.surcharge = new Fare(surcharge);
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
@@ -56,6 +69,10 @@ public class Line extends BaseEntity {
         return color;
     }
 
+    public Fare getSurcharge() {
+        return surcharge;
+    }
+
     public List<Station> getStations() {
         return sections.getStations();
     }
@@ -68,7 +85,7 @@ public class Line extends BaseEntity {
         sections.addStation(this, upStation, downStation, distance);
     }
 
-    public List<Section> getSections() {
-        return sections.getSections();
+    public Sections getSections() {
+        return sections;
     }
 }
