@@ -75,4 +75,9 @@ public class Path {
         Fare surcharge = lines.stream().map(Line::getSurcharge).max(Fare::compare).orElse(new Fare());
         return basicFare.add(surcharge);
     }
+
+    public Fare findPathFare(Station start, Station end, AgePolicy policy) {
+        Fare fare = findPathFare(start, end);
+        return policy.discount(fare);
+    }
 }

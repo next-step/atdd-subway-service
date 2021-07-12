@@ -114,4 +114,18 @@ public class PathTest {
         // then
         assertThat(new Fare(1750)).isEqualTo(fare);
     }
+
+    @Test
+    @DisplayName("연령별 요금 할인 조회")
+    void findPathFareWithMember() {
+        // when
+        Fare fare = path.findPathFare(수원역, 선릉역, AgePolicy.NONE);
+        Fare childFare = path.findPathFare(수원역, 선릉역, AgePolicy.CHILD);
+        Fare teenagerFare = path.findPathFare(수원역, 선릉역, AgePolicy.TEENAGER);
+
+        // then
+        assertThat(new Fare(2150)).isEqualTo(fare);
+        assertThat(new Fare(900)).isEqualTo(childFare);
+        assertThat(new Fare(1440)).isEqualTo(teenagerFare);
+    }
 }
