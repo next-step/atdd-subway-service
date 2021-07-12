@@ -52,6 +52,56 @@ public class PathServiceTest {
 	}
 
 	@Test
+	void calculateFareBetweenTwoStationTestOn170Kilometer() {
+		// given
+		when(lineRepository.findAll()).thenReturn(getLineThatHasTwoStations(170));
+		when(stationService.findStationById(1L)).thenReturn(new Station("신촌역"));
+		when(stationService.findStationById(2L)).thenReturn(new Station("홍대입구역"));
+		when(stationService.findByName("신촌역")).thenReturn(new Station("신촌역"));
+		when(stationService.findByName("홍대입구역")).thenReturn(new Station("홍대입구역"));
+
+		PathService pathService = new PathService(lineRepository, stationService);
+
+		// when
+		PathResponse pathResponse = pathService.findPath(1L, 2L);
+		List<String> stationIds = pathResponse.getStations().stream()
+			.map(it -> it.getName())
+			.collect(Collectors.toList());
+
+		// then
+		List<String> expectedStationIds = Arrays.asList("신촌역", "홍대입구역");
+
+		assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+		assertThat(pathResponse.getDistance()).isEqualTo(170);
+		assertThat(pathResponse.getFare()).isEqualTo(3550);
+	}
+
+	@Test
+	void calculateFareBetweenTwoStationTestOn57Kilometer() {
+		// given
+		when(lineRepository.findAll()).thenReturn(getLineThatHasTwoStations(57));
+		when(stationService.findStationById(1L)).thenReturn(new Station("신촌역"));
+		when(stationService.findStationById(2L)).thenReturn(new Station("홍대입구역"));
+		when(stationService.findByName("신촌역")).thenReturn(new Station("신촌역"));
+		when(stationService.findByName("홍대입구역")).thenReturn(new Station("홍대입구역"));
+
+		PathService pathService = new PathService(lineRepository, stationService);
+
+		// when
+		PathResponse pathResponse = pathService.findPath(1L, 2L);
+		List<String> stationIds = pathResponse.getStations().stream()
+			.map(it -> it.getName())
+			.collect(Collectors.toList());
+
+		// then
+		List<String> expectedStationIds = Arrays.asList("신촌역", "홍대입구역");
+
+		assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+		assertThat(pathResponse.getDistance()).isEqualTo(57);
+		assertThat(pathResponse.getFare()).isEqualTo(2150);
+	}
+
+	@Test
 	void calculateFareBetweenTwoStationTestOn39Kilometer() {
 		// given
 		when(lineRepository.findAll()).thenReturn(getLineThatHasTwoStations(39));

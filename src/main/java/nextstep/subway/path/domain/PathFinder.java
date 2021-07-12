@@ -13,9 +13,10 @@ import nextstep.subway.station.domain.Station;
 @Component
 public class PathFinder {
 	private static final int BASE_FARE = 1250;
-	private static final int FIRTST_ADDITIONAL_FARE_APPLY_LENGTH = 5;
-	private static final int FIRST_ADDITIONAL_FARE = 100;
+	private static final int FIRTST_STANDARD_ADDITIONAL_FARE_LENGTH = 5;
+	private static final int ADDITIONAL_FARE = 100;
 	private static final int BASE_LENGTH = 10;
+	public static final int SECOND_STANDARD_ADDITIONAL_FARE_LENGTH = 8;
 
 	private DijkstraShortestPath dijkstraShortestPath;
 	private WeightedMultigraph<String, DefaultWeightedEdge> graph;
@@ -54,13 +55,18 @@ public class PathFinder {
 	}
 
 	public int getFare(Station startStation, Station destinationStation) {
-		if (findPathLength(startStation, destinationStation) <= 10) {
-			return BASE_FARE;
+		if (findPathLength(startStation, destinationStation) > 50) {
+			return BASE_FARE + calculateOverFare(40, FIRTST_STANDARD_ADDITIONAL_FARE_LENGTH) + calculateOverFare(findPathLength(startStation, destinationStation) - 50, SECOND_STANDARD_ADDITIONAL_FARE_LENGTH);
 		}
-		return BASE_FARE + calculateOverFare(findPathLength(startStation, destinationStation) - BASE_LENGTH);
+
+		if (findPathLength(startStation, destinationStation) > 10) {
+			return BASE_FARE + calculateOverFare(findPathLength(startStation, destinationStation) - BASE_LENGTH, FIRTST_STANDARD_ADDITIONAL_FARE_LENGTH);
+		}
+
+		return BASE_FARE;
 	}
 
-	private int calculateOverFare(int distance) {
-		return (int) ((Math.ceil((distance - 1) / FIRTST_ADDITIONAL_FARE_APPLY_LENGTH) + 1) * FIRST_ADDITIONAL_FARE);
+	private int calculateOverFare(int distance, int standardLength) {
+		return (int) ((Math.ceil((distance - 1) / standardLength) + 1) * ADDITIONAL_FARE);
 	}
 }
