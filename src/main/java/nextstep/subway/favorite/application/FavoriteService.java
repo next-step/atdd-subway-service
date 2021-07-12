@@ -15,6 +15,8 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 public class FavoriteService {
@@ -30,10 +32,10 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavorites(Long id) {
-        Member member = memberService.getMember(id);
-        List<Favorite> favorites = member.getFavorites();
+        List<Favorite> favorites = favoriteRepository.findAllByMemberId(id);
 
-        return favorites.stream()
+        return favorites
+                .stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
     }
@@ -44,14 +46,19 @@ public class FavoriteService {
         Station sourceStation = stationService.findById(request.getSourceStationId());
         Station targetStation = stationService.findById(request.getTargetStationId());
         Favorite favorite = new Favorite(member, sourceStation, targetStation);
-        member.addFavorite(favorite);
-        return FavoriteResponse.of(favorite);
+
+        return FavoriteResponse.of(favoriteRepository.save(favorite));
     }
 
     @Transactional
     public void deleteFavorite(LoginMember loginMember, Long id) {
-        Member member = memberService.getMember(loginMember.getId());
-        member.removeFavorite(getFavorite(id));
+        Favorite favorite = getFavorite(id);
+
+        if (!favorite.isOwner(loginMember.getId())) {
+            new FavoriteBadRequestException("삭제할 권한이 없습니다.", loginMember.getId());
+        }
+
+        favoriteRepository.delete(favorite);
     }
 
     private Favorite getFavorite(Long id) {
