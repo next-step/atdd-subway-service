@@ -1,22 +1,37 @@
 package nextstep.subway.member.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.favorite.domain.Favorites;
+
 import org.apache.commons.lang3.StringUtils;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String email;
+
     private String password;
+
     private Integer age;
+
+	@Embedded
+	private Favorites favorites = new Favorites();
 
     public Member() {
     }
@@ -43,6 +58,10 @@ public class Member extends BaseEntity {
         return age;
     }
 
+    public List<Favorite> getFavorites() {
+    	return favorites.getList();
+	}
+
     public void update(Member member) {
         this.email = member.email;
         this.password = member.password;
@@ -54,4 +73,21 @@ public class Member extends BaseEntity {
             throw new AuthorizationException();
         }
     }
+
+    public void addFavorite(Favorite favorite) {
+		favorites.addFavorite(favorite);
+    	favorite.toMember(this);
+	}
+
+	public void deleteFavorite(Long favoriteId) {
+    	favorites.deleteFavorite(favoriteId);
+	}
+
+	public Favorite getLatestFavorite() {
+    	return favorites.getLatestFavorite();
+	}
+
+	public boolean isFavoriteEmpty() {
+		return favorites.isEmpty();
+	}
 }

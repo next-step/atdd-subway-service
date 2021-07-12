@@ -1,0 +1,83 @@
+package nextstep.subway.favorite.acceptance;
+
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.List;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthTestMethod;
+import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.line.acceptance.LineTestMethod;
+import nextstep.subway.line.dto.LineRequest;
+import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberTestMethod;
+import nextstep.subway.station.StationAcceptanceTest;
+import nextstep.subway.station.dto.StationResponse;
+
+@DisplayName("즐겨찾기 관련 기능")
+public class FavoriteAcceptanceTest extends AcceptanceTest {
+	@DisplayName("즐겨찾기 관리 시나리오")
+	@Test
+	void manageFavorite() {
+		// Background
+		// Given : 지하철역 등록되어 있음
+		StationResponse 강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
+		StationResponse 양재역 =  StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
+		// And : 지하철 노선에 지하철역 등록되어 있음
+		LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10);
+		LineResponse 신분당선 = LineTestMethod.지하철_노선_등록되어_있음(lineRequest1).as(LineResponse.class);
+		// And : 회원 등록되어 있음
+		String EMAIL = "email@email.com";
+		String PASSWORD = "password";
+		int AGE = 20;
+		ExtractableResponse<Response> createResponse = MemberTestMethod.회원_생성을_요청(EMAIL, PASSWORD, AGE);
+		// And : 로그인 되어 있음
+		String token = AuthTestMethod.getToken(AuthTestMethod.login(EMAIL, PASSWORD));
+		// Scenario : 즐겨찾기 관리
+		// When : 즐겨찾기 생성 요청
+		ExtractableResponse<Response> favoriteResponse1 = FavoriteTestMethod.createFavorite(token, 강남역.getId(), 양재역.getId());
+		// Then : 즐겨찾기 생성됨
+		assertThat(favoriteResponse1.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+		// When : 즐겨찾기 목록 조회 요청
+		ExtractableResponse<Response> favoriteResponse2 = FavoriteTestMethod.findFavorite(token);
+		// Then : 즐겨찾기 목록 조회됨
+		assertThat(favoriteResponse2.statusCode()).isEqualTo(HttpStatus.OK.value());
+		// When : 즐겨찾기 삭제 요청
+		List<FavoriteResponse> favoriteResponses = favoriteResponse2.jsonPath().getList(".", FavoriteResponse.class);
+		ExtractableResponse<Response> favoriteResponse3 = FavoriteTestMethod.deleteFavorite(token, favoriteResponses.get(0).getId());
+		// then : 즐겨찾기 삭제됨
+		assertThat(favoriteResponse3.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+	}
+
+	@DisplayName("즐겨찾기 관리 에러 시나리오")
+	@Test
+	void manageFavoriteError() {
+		// Background
+		// Given : 지하철역 / 노선 등록 되어 있지 않음
+		// Given : 회원 가입 / 로그인 되어 있음
+		String EMAIL = "email@email.com";
+		String PASSWORD = "password";
+		int AGE = 20;
+		ExtractableResponse<Response> createResponse = MemberTestMethod.회원_생성을_요청(EMAIL, PASSWORD, AGE);
+		String token = AuthTestMethod.getToken(AuthTestMethod.login(EMAIL, PASSWORD));
+		// Scenario 즐겨찾기 관리 에러
+		// When : 즐겨찾기 생성 요청
+		ExtractableResponse<Response> favoriteResponse1 = FavoriteTestMethod.createFavorite(token, 1L, 2L);
+		// Then : 즐겨찾기 생성 실패
+		assertThat(favoriteResponse1.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+		// When : 즐겨찾기 목록 조회 요청
+		ExtractableResponse<Response> favoriteResponse2 = FavoriteTestMethod.findFavorite(token);
+		// Then : 즐겨찾기 목록 조회 실패
+		assertThat(favoriteResponse2.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+		// When : 즐겨찾기 삭제 요청
+		ExtractableResponse<Response> favoriteResponse3 = FavoriteTestMethod.deleteFavorite(token, 1L);
+		// Then : 즐겨찾기 삭제 실패
+		assertThat(favoriteResponse3.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+	}
+}
