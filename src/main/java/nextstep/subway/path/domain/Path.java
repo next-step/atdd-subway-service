@@ -53,4 +53,9 @@ public class Path {
             throw new NotFoundStationException();
         }
     }
+
+    public Fare findPathFare(Station start, Station end) {
+        int distance = findShortestDistance(start, end);
+        return FareSection.calculateBasicFare(distance);
+    }
 }

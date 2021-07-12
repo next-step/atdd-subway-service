@@ -24,11 +24,11 @@ public class PathTest {
     /**               (10)
      *  교대역    --- *2호선* ---   강남역
      *  |                        |
-     *  *3호선* (3)               *신분당선* (10)
-     *  |               (2)      |
+     *  *3호선* (7)               *신분당선* (10)
+     *  |               (6)      |
      *  남부터미널역  -- *3호선* -- 양재
      *
-     *                (50)
+     *                (60)
      *  수원역    --- *분당선* --- 선릉역
      */
     @BeforeEach
@@ -40,11 +40,11 @@ public class PathTest {
         선릉역 = new Station("선릉역");
         수원역 = new Station("수원역");
 
-        분당선 = new Line("신분당선", "bg-yellow-600", 선릉역, 수원역, 50);
+        분당선 = new Line("신분당선", "bg-yellow-600", 선릉역, 수원역, 60);
         신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
         이호선 = new Line("삼호선", "bg-green-600", 교대역, 강남역, 10);
-        삼호선 = new Line("삼호선", "bg-orange-600", 교대역, 양재역, 5);
-        삼호선.addStation(교대역, 남부터미널역, 3);
+        삼호선 = new Line("삼호선", "bg-orange-600", 교대역, 양재역, 13);
+        삼호선.addStation(교대역, 남부터미널역, 7);
 
         path = new Path(Arrays.asList(분당선, 신분당선, 이호선, 삼호선));
     }
@@ -57,7 +57,7 @@ public class PathTest {
         List<Station> stations = path.findShortestPath(강남역, 남부터미널역);
 
         // then
-        assertThat(minDistance).isEqualTo(12);
+        assertThat(minDistance).isEqualTo(16);
         assertThat(stations).containsExactly(강남역, 양재역, 남부터미널역);
     }
 
@@ -85,5 +85,24 @@ public class PathTest {
         // when, then
         assertThatThrownBy(() -> path.findShortestPath(강남역, 잠실역)).isInstanceOf(NotFoundStationException.class);
         assertThatThrownBy(() -> path.findShortestPath(잠실역, 수원역)).isInstanceOf(NotFoundStationException.class);
+    }
+
+    @Test
+    @DisplayName("거리별 요금 조회")
+    void findPathFare() {
+        // when
+        Fare fare = path.findPathFare(교대역, 남부터미널역);
+        // then
+        assertThat(new Fare(1250)).isEqualTo(fare);
+
+        // when
+        fare = path.findPathFare(강남역, 남부터미널역);
+        // then
+        assertThat(new Fare(1350)).isEqualTo(fare);
+
+        // when
+        fare = path.findPathFare(수원역, 선릉역);
+        // then
+        assertThat(new Fare(2150)).isEqualTo(fare);
     }
 }
