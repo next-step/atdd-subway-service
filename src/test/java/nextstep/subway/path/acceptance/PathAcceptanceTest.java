@@ -1,11 +1,5 @@
 package nextstep.subway.path.acceptance;
 
-import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
-import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
-import static nextstep.subway.utils.LineSectionRestAssuredUtils.지하철_노선에_지하철역_등록_요청;
-import static nextstep.subway.utils.LineSectionRestAssuredUtils.지하철_노선에_지하철역_등록됨;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -16,6 +10,12 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
+import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+import static nextstep.subway.utils.LineSectionRestAssuredUtils.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.utils.LineSectionRestAssuredUtils.지하철_노선에_지하철역_등록됨;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @DisplayName("지하철 경로 조회")
@@ -67,9 +67,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 경로_조회_요청(StationResponse source, StationResponse target) {
         return RestAssured.given().log().all()
-                .when()
-                .get("/paths?source={sourceId}&target={targetId}", source.getId(), target.getId())
-                .then().log().all()
-                .extract();
+            .when()
+            .get("/paths?source={sourceId}&target={targetId}", source.getId(), target.getId())
+            .then().log().all()
+            .extract();
     }
 }

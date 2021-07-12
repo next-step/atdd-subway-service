@@ -67,7 +67,11 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
 
-    public Stream<Section> getSections() {
+    public List<Section> getSections() {
+        return sections.getSections();
+    }
+
+    public Stream<Section> getSectionsStream() {
         return sections.getSections().stream();
     }
 }
