@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.FindPathValidator;
@@ -25,11 +26,14 @@ public class PathFinder {
 		this.shortestPathFinder = shortestPathFinder;
 	}
 
-	public PathResponse findPath(Long sourceStationId, Long targetStationId) {
+	public PathResponse findPath(Long sourceStationId, Long targetStationId, LoginMember loginMember) {
 		Station sourceStation = stationService.findById(sourceStationId);
 		Station targetStation = stationService.findById(targetStationId);
 		List<Line> lines = lineRepository.findAll();
 		findPathValidator.validate(sourceStationId, targetStationId);
-		return shortestPathFinder.findPath(lines, sourceStation, targetStation);
+
+		PathResponse path = shortestPathFinder.findPath(lines, sourceStation, targetStation);
+		path.applyDisAccount(loginMember);
+		return path;
 	}
 }
