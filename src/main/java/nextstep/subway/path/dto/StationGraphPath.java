@@ -2,6 +2,7 @@ package nextstep.subway.path.dto;
 
 import nextstep.subway.exception.NoPathException;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -17,22 +18,21 @@ public class StationGraphPath {
         this.stationGraphPath = stationGraphPath;
     }
 
-    public StationGraphPath(Station source, Station target, List<Line> lines) {
-        this.stationGraphPath = generateShortestPath(source, target, lines);
+    public StationGraphPath(Station source, Station target, List<Section> allSectionList) {
+        this.stationGraphPath = generateShortestPath(source, target, allSectionList);
     }
 
-    public GraphPath<Station, DefaultWeightedEdge> generateShortestPath(Station source, Station target, List<Line> lines) {
+    public GraphPath<Station, DefaultWeightedEdge> generateShortestPath(Station source, Station target, List<Section> allSectionList) {
         WeightedMultigraph graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        setUpGraphByLines(graph, lines);
+        setUpGraphByLines(graph, allSectionList);
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, DefaultWeightedEdge> stationPath = dijkstraShortestPath.getPath(source, target);
         checkExistPath(stationPath);
         return stationPath;
     }
 
-    private void setUpGraphByLines(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Line> lines) {
-        lines.stream().flatMap(line -> line.getSections().values().stream())
-                .forEach(
+    private void setUpGraphByLines(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> allSectionList) {
+        allSectionList.forEach(
                         section -> {
                             graph.addVertex(section.getUpStation());
                             graph.addVertex(section.getDownStation());
