@@ -46,10 +46,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         인증_실패(response);
     }
 
-    private void 인증_실패(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
@@ -60,12 +56,23 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         인증_실패(response);
     }
 
+    public static String 로그인_되어_있음(TokenRequest request) {
+        ExtractableResponse<Response> response = 로그인_요청(request);
+        정상_처리(response);
+        TokenResponse tokenResponse = response.as(TokenResponse.class);
+        return tokenResponse.getAccessToken();
+    }
+
+    private void 인증_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     private void 정상_토큰_발급(ExtractableResponse<Response> response) {
         TokenResponse tokenResponse = response.as(TokenResponse.class);
         assertThat(tokenResponse.getAccessToken()).isNotNull();
     }
 
-    private ExtractableResponse<Response> 로그인_요청(TokenRequest request) {
+    private static ExtractableResponse<Response> 로그인_요청(TokenRequest request) {
 
         return RestAssured.given().log().all()
                 .body(request)
