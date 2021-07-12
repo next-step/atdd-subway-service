@@ -25,6 +25,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	private LineResponse 신분당선;
 	private LineResponse 이호선;
 	private LineResponse 삼호선;
+	private LineResponse 일호선;
+	private StationResponse 주안역;
+	private StationResponse 부천역;
 	private StationResponse 강남역;
 	private StationResponse 양재역;
 	private StationResponse 교대역;
@@ -45,7 +48,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
 		교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
 		남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+		주안역 = StationAcceptanceTest.지하철역_등록되어_있음("주안역").as(StationResponse.class);
+		부천역 = StationAcceptanceTest.지하철역_등록되어_있음("부천역").as(StationResponse.class);
 
+		일호선 = 지하철_노선_등록되어_있음("일호선", "bg-blue-600", 주안역, 부천역, 5);
 		신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
 		이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
 		삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
@@ -63,8 +69,58 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		최단_경로를_반환한다(response);
 	}
 
+	@DisplayName("출발역과 도착역이 같은 경우, 조회에 실패한다.")
+	@Test
+	void 최단_경로_조회_실패_출발_도착_같은_경우() {
+		// when
+		ExtractableResponse<Response> response = 최단_경로를_조회한다(강남역.getId(), 강남역.getId());
+
+		// then
+		최단_경로를_조회_실패(response);
+	}
+
+	@DisplayName("출발역과 도착역이 연결되어 있지 않는 경우, 조회에 실패한다.")
+	@Test
+	void 최단_경로_조회_실패_출발_도착이_연결되어_있지_않은_경우() {
+		// when
+		ExtractableResponse<Response> response = 최단_경로를_조회한다(주안역.getId(), 강남역.getId());
+
+		// then
+		최단_경로를_조회_실패(response);
+	}
+
+	@DisplayName("출발역이 존재하지 않는 경우, 조회에 실패한다.")
+	@Test
+	void 최단_경로_조회_실패_출발이_존재하지_않는_경우() {
+		// given
+		StationResponse 송내역 = StationAcceptanceTest.지하철역_등록되어_있음("송내역").as(StationResponse.class);
+
+		// when
+		ExtractableResponse<Response> response = 최단_경로를_조회한다(송내역.getId(), 강남역.getId());
+
+		// then
+		최단_경로를_조회_실패(response);
+	}
+
+	@DisplayName("도착역이 존재하지 않는 경우, 조회에 실패한다.")
+	@Test
+	void 최단_경로_조회_실패_도착이_존재하지_않는_경우() {
+		// given
+		StationResponse 송내역 = StationAcceptanceTest.지하철역_등록되어_있음("송내역").as(StationResponse.class);
+
+		// when
+		ExtractableResponse<Response> response = 최단_경로를_조회한다(강남역.getId(), 송내역.getId());
+
+		// then
+		최단_경로를_조회_실패(response);
+	}
+
 	private void 최단_경로를_반환한다(ExtractableResponse<Response> response) {
 		Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+	}
+
+	private void 최단_경로를_조회_실패(ExtractableResponse<Response> response) {
+		Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
 	}
 
 	private ExtractableResponse<Response> 최단_경로를_조회한다(long source, long target) {
