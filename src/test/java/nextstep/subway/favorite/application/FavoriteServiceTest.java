@@ -2,6 +2,7 @@ package nextstep.subway.favorite.application;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.AlreadyExistFavoritException;
+import nextstep.subway.exception.NoFavoriteException;
 import nextstep.subway.exception.NoStationException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -22,10 +23,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
@@ -120,6 +123,30 @@ class FavoriteServiceTest {
         //then
         assertThat(responseList.size()).isGreaterThan(0);
         assertThat(responseList.get(0).getSource()).isEqualTo(sourceStation.getId());
+    }
+
+
+    @DisplayName("존재하지 않는 즐겨찾기는 삭제할 수 없다")
+    @Test
+    void deleteFavoriteFailBecauseOfNoExistTest() {
+        //given
+        given(favoriteRepository.findById(any())).willReturn(Optional.empty());
+
+        //when && then
+        assertThatThrownBy(() -> favoriteService.deleteFavorite(favorite.getId()))
+                .isInstanceOf(NoFavoriteException.class)
+                .hasMessageContaining("등록되지 않은 즐겨찾기 입니다.");
+    }
+
+    @DisplayName("즐겨찾기를 삭제할 수 있다")
+    @Test
+    void deleteFavoriteTest() {
+        //given
+        given(favoriteRepository.findById(any())).willReturn(Optional.ofNullable(favorite));
+
+
+        //when && then
+        favoriteService.deleteFavorite(favorite.getId());
     }
 
 
