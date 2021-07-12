@@ -24,10 +24,6 @@ public class Stations {
         return stations;
     }
 
-    public boolean isEmpty() {
-        return stations.isEmpty();
-    }
-
     public void checkStation(Station upStation, Station downStation) {
         if(duplicateStation(upStation, downStation)) {
             throw new SectionsDuplicateException();
@@ -39,12 +35,13 @@ public class Stations {
     }
 
     public boolean isMatchStation(Station station) {
-        return stations.stream().anyMatch(it -> it == station);
+        return stations.stream()
+            .anyMatch(it -> it == station);
     }
 
     public List<StationResponse> convert() {
         return stations.stream()
-            .map(it -> StationResponse.of(it))
+            .map(StationResponse::of)
             .collect(Collectors.toList());
     }
 
@@ -57,6 +54,7 @@ public class Stations {
     }
 
     private boolean nonMatchStation(Station station) {
-        return stations.stream().noneMatch(it -> it == station);
+        return stations.stream()
+            .noneMatch(it -> it == station);
     }
 }

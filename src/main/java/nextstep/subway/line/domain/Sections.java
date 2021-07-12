@@ -1,8 +1,9 @@
 package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -10,6 +11,7 @@ import javax.persistence.OneToMany;
 
 import nextstep.subway.common.exception.SectionsRemovalInValidSizeException;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @Embeddable
 public class Sections {
@@ -43,21 +45,23 @@ public class Sections {
         return this.sections.get(0).getUpStation();
     }
 
-    public Optional<Section> findSectionByDownStation(Station station) {
+    public Section findSectionByDownStation(Station station) {
         return sections.stream()
-            .filter(it -> it.getDownStation() == station)
-            .findFirst();
+            .filter(it -> it.getDownStation().equals(station))
+            .findFirst()
+            .orElse(null);
     }
 
-    public Optional<Section> findSectionByUpStation(Station station) {
+    public Section findSectionByUpStation(Station station) {
         return sections.stream()
-            .filter(it -> it.getUpStation() == station)
-            .findFirst();
+            .filter(it -> it.getUpStation().equals(station))
+            .findFirst()
+            .orElse(null);
     }
 
     public void removeSectionByStation(Station station, Line line) {
-        Section upLineStation = findSectionByUpStation(station).orElse(null);
-        Section downLineStation = findSectionByDownStation(station).orElse(null);
+        Section upLineStation = findSectionByUpStation(station);
+        Section downLineStation = findSectionByDownStation(station);
 
         if (upLineStation != null && downLineStation != null) {
             Station newUpStation = downLineStation.getUpStation();

@@ -59,19 +59,18 @@ public class Line extends BaseEntity {
 
     public Station findUpStation() {
         Station downStation = this.getSections().findFirstUpStation();
-        while (downStation != null) {
-            Optional<Section> nextLineStation = this.getSections().findSectionByDownStation(downStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
+        Section section = getSections().findSectionByDownStation(downStation);
+
+        while(section != null) {
+            downStation = section.getUpStation();
+            section = this.getSections().findSectionByDownStation(downStation);
         }
 
         return downStation;
     }
 
     public Stations getStations() {
-        if (this.getSections().isEmpty()) {
+        if (getSections().isEmpty()) {
             return new Stations();
         }
 
@@ -79,14 +78,12 @@ public class Line extends BaseEntity {
         Station downStation = findUpStation();
         stations.add(downStation);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.getSections().findSectionByUpStation(finalDownStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        Section section = getSections().findSectionByUpStation(downStation);
+
+        while (section != null) {
+            stations.add(section.getDownStation());
+            downStation = section.getDownStation();
+            section = getSections().findSectionByUpStation(downStation);
         }
 
         return new Stations(stations);
@@ -101,24 +98,17 @@ public class Line extends BaseEntity {
         Stations stations = getStations();
         stations.checkStation(upStation, downStation);
 
-        if (stations.isEmpty()) {
-            this.getSections().add(new Section(this, upStation, downStation, distance));
-            return;
+        Section sectionByUpStation = getSections().findSectionByUpStation(upStation);
+        if (sectionByUpStation != null) {
+            sectionByUpStation.updateUpStation(downStation, distance);
         }
 
-        if (stations.isMatchStation(upStation)) {
-            this.getSections().findSectionByUpStation(upStation)
-                .ifPresent(it -> it.updateUpStation(downStation, distance));
-
-            this.getSections().add(new Section(this, upStation, downStation, distance));
+        Section sectionByDownStation = getSections().findSectionByDownStation(downStation);
+        if (sectionByDownStation != null) {
+            sectionByDownStation.updateDownStation(upStation, distance);
         }
 
-        if (stations.isMatchStation(downStation)) {
-            this.getSections().findSectionByDownStation(downStation)
-                .ifPresent(it -> it.updateDownStation(upStation, distance));
-
-            this.getSections().add(new Section(this, upStation, downStation, distance));
-        }
+        this.getSections().add(new Section(this, upStation, downStation, distance));
     }
 
     public LineResponse convertLineResponse() {

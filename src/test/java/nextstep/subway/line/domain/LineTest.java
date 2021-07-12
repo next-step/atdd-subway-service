@@ -49,7 +49,7 @@ class LineTest {
 		assertThat(lineResponse.getColor()).isEqualTo("green");
 		List<Object> list = lineResponse.getStations().stream()
 			.map((Function<StationResponse, Object>)StationResponse::getName).collect(Collectors.toList());
-		assertThat(list).containsExactly(
+		assertThat(list).contains(
 			신도림역.getName(),
 			서울대입구역.getName(),
 			낙성대역.getName(),
@@ -67,6 +67,7 @@ class LineTest {
 		assertThat(stations.isMatchStation(서울대입구역)).isTrue();
 		assertThat(stations.isMatchStation(낙성대역)).isTrue();
 		assertThat(stations.isMatchStation(사당역)).isTrue();
+		assertThat(stations.getStations().size()).isEqualTo(5);
 	}
 
 	@DisplayName("라인의 상행선 종점을 찾는다.")
