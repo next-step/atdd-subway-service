@@ -66,7 +66,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_조회_성공(response);
         최단경로에_포함됨(shortestPath, 남부터미널역, 교대역, 강남역);
         최단경로_길이가_구해짐(shortestPath);
-        assertThat(shortestPath.getSurcharge()).isEqualTo(2250);
+        운임이_계산됨(shortestPath, 2250);
+    }
+
+    private void 운임이_계산됨(PathResponse shortestPath, int expectedFare) {
+        assertThat(shortestPath.getFare()).isEqualTo(expectedFare);
     }
 
     private ExtractableResponse<Response> 최단경로_조회_요청() {
