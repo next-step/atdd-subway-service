@@ -1,22 +1,25 @@
 package nextstep.subway.path.domain;
 
+import static nextstep.subway.common.constants.FareConstants.*;
+
 import java.util.Objects;
 
 import javax.persistence.Embeddable;
 
+import nextstep.subway.path.exception.MinFareException;
+
 @Embeddable
 public class Fare {
-
-    public static final int MIN = 0;
 
     private long fare;
 
     public Fare() {
+        fare = MIN_FARE;
     }
 
     public Fare(long fare) {
-        if (fare < MIN) {
-            throw new RuntimeException();
+        if (fare < MIN_FARE) {
+            throw new MinFareException(MIN_FARE);
         }
         this.fare = fare;
     }

@@ -16,8 +16,6 @@ import nextstep.subway.station.domain.Station;
 @Entity
 public class Line extends BaseEntity {
 
-    public static final long NO_SURCHARGE = 0L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,7 +27,7 @@ public class Line extends BaseEntity {
     private Sections sections = new Sections();
 
     @Embedded
-    private Fare surcharge  = new Fare(NO_SURCHARGE);
+    private Fare surcharge  = new Fare();
 
     public Line() {
     }
