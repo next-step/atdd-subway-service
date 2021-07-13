@@ -23,7 +23,9 @@ public class FavoriteServiceTest {
 		MemberRepository memberRepository = mock(MemberRepository.class);
 		StationService stationService = mock(StationService.class);
 		when(memberRepository.findById(1L)).thenReturn(Optional.of(new Member("email@email.com", "password", 30)));
-		when(memberRepository.save(any())).thenReturn(new Member());
+		Member member = new Member();
+		member.addFavorite(new Favorite(new Station("신촌역"), new Station("홍대입구역")));
+		when(memberRepository.save(any())).thenReturn(member);
 		when(stationService.findStationById(1L)).thenReturn(new Station("신촌역"));
 		when(stationService.findStationById(2L)).thenReturn(new Station("홍대입구역"));
 		FavoriteService favoriteService = new FavoriteService(memberRepository, stationService);
