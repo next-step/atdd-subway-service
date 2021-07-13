@@ -1,11 +1,14 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
@@ -16,8 +19,8 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Sections sections = new Sections();
 
     public Line() {
     }
@@ -50,7 +53,65 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
+    public Sections getSections() {
         return sections;
+    }
+
+    public Station findUpStation() {
+        Station downStation = this.getSections().findFirstUpStation();
+        Section section = getSections().findSectionByDownStation(downStation);
+
+        while(section != null) {
+            downStation = section.getUpStation();
+            section = this.getSections().findSectionByDownStation(downStation);
+        }
+
+        return downStation;
+    }
+
+    public Stations getStations() {
+        if (getSections().isEmpty()) {
+            return new Stations();
+        }
+
+        List<Station> stations = new ArrayList<>();
+        Station downStation = findUpStation();
+        stations.add(downStation);
+
+        Section section = getSections().findSectionByUpStation(downStation);
+
+        while (section != null) {
+            stations.add(section.getDownStation());
+            downStation = section.getDownStation();
+            section = getSections().findSectionByUpStation(downStation);
+        }
+
+        return new Stations(stations);
+    }
+
+    public void removeStation(Station station) {
+        this.getSections().validateRemoveSize();
+        this.getSections().removeSectionByStation(station, this);
+    }
+
+    public void addStation(Station upStation, Station downStation, int distance) {
+        Stations stations = getStations();
+        stations.checkStation(upStation, downStation);
+
+        Section sectionByUpStation = getSections().findSectionByUpStation(upStation);
+        if (sectionByUpStation != null) {
+            sectionByUpStation.updateUpStation(downStation, distance);
+        }
+
+        Section sectionByDownStation = getSections().findSectionByDownStation(downStation);
+        if (sectionByDownStation != null) {
+            sectionByDownStation.updateDownStation(upStation, distance);
+        }
+
+        this.getSections().add(new Section(this, upStation, downStation, distance));
+    }
+
+    public LineResponse convertLineResponse() {
+        return LineResponse.of(this, this.getStations().convert());
     }
 }
