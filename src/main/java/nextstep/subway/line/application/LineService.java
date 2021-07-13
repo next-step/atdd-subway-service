@@ -3,6 +3,8 @@ package nextstep.subway.line.application;
 import nextstep.subway.common.exception.NoDataException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -19,10 +21,12 @@ import java.util.stream.Collectors;
 @Transactional
 public class LineService {
     private LineRepository lineRepository;
+    private SectionRepository sectionRepository;
     private StationService stationService;
 
-    public LineService(LineRepository lineRepository, StationService stationService) {
+    public LineService(LineRepository lineRepository, SectionRepository sectionRepository, StationService stationService) {
         this.lineRepository = lineRepository;
+        this.sectionRepository = sectionRepository;
         this.stationService = stationService;
     }
 
@@ -68,5 +72,10 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.removeStation(station);
+    }
+
+    public List<Line> fineLinesByStations(Station upStation, Station downStation) {
+        List<Section> sections = sectionRepository.findByUpStationOrDownStation(upStation, downStation);
+        return sections.stream().map(Section::getLine).distinct().collect(Collectors.toList());
     }
 }

@@ -56,30 +56,34 @@ class PathFinderTest {
 	@DisplayName("최단 경로를 반환한다")
 	@Test
 	void 최단_경로를_반환한다() {
-
+		List<Station> pathResponse = pathFinder.findShortestPath();
+		assertThat(pathResponse).contains(양재역, 남부터미널역);
 	}
 
 	@DisplayName("최단 거리를 반환한다")
 	@Test
 	void 최단_거리를_반환한다() {
+		int distance = pathFinder.shortestPathDistance();
 
+		assertThat(distance).isEqualTo(12);
 	}
 
 	@DisplayName("출,도착지가 동일한 경우, 에러가 발생한다.")
 	@Test
 	void 출_도착지_같은_경우_에러() {
-
+		assertThrows(SameStationException.class, () -> new PathFinder(강남역, 강남역, lines));
 	}
 
 	@DisplayName("출발지와 도착지가 연결되지 않는 경우 에러가 발생한다.")
 	@Test
 	void 출_도착지가_연결되지_않는_경우_에러() {
-
+		assertThrows(InvalidPathException.class, () -> new PathFinder(주안역, 강남역, lines).findShortestPathPathResponse());
 	}
 
 	@DisplayName("출발지와 도착지가 연결되지 않는 경우 에러가 발생한다.")
 	@Test
 	void 출_도착지가_존재하지_않는_경우_에러() {
-
+		Station 부평역 = new Station("부평역");
+		assertThrows(IllegalArgumentException.class, () -> new PathFinder(부평역, 강남역, lines));
 	}
 }

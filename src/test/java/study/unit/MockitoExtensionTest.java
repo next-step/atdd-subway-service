@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.StationRepository;
@@ -23,6 +24,10 @@ import static org.mockito.Mockito.when;
 public class MockitoExtensionTest {
     @Mock
     private LineRepository lineRepository;
+
+    @Mock
+    private SectionRepository sectionRepository;
+
     @Mock
     private StationService stationService;
 
@@ -30,7 +35,7 @@ public class MockitoExtensionTest {
     void findAllLines() {
         // given
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
-        LineService lineService = new LineService(lineRepository, stationService);
+        LineService lineService = new LineService(lineRepository, sectionRepository, stationService);
 
         // when
         List<LineResponse> responses = lineService.findLines();
