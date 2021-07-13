@@ -2,6 +2,7 @@ package nextstep.subway.line.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -26,8 +27,8 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+        Station upStation = stationService.findStationById(request.getUpStationId());
+        Station downStation = stationService.findStationById(request.getDownStationId());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
 
         return LineResponse.of(persistLine, getStationResponses(persistLine));
@@ -44,7 +45,9 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository
+                .findById(id)
+                .orElseThrow(RuntimeException::new);
     }
 
     @Transactional(readOnly = true)
@@ -54,7 +57,9 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = lineRepository
+                .findById(id)
+                .orElseThrow(RuntimeException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
@@ -81,4 +86,10 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    public List<Section> findAllLineSectionList() {
+        List<Line> lines = findAllLine();
+        return lines.stream()
+                .flatMap(line -> line.getSections().values().stream())
+                .collect(Collectors.toList());
+    }
 }

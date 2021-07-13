@@ -25,9 +25,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LineSectionAcceptanceTest extends AcceptanceTest {
     private static LineResponse 신분당선;
     private static StationResponse 강남역;
+    private static StationResponse 광교역;
     private static StationResponse 양재역;
     private static StationResponse 정자역;
-    private static StationResponse 광교역;
 
     @BeforeEach
     public void setUp() {

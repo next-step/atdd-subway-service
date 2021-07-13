@@ -2,6 +2,7 @@ package nextstep.subway.path.dto;
 
 import nextstep.subway.exception.NoPathException;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -44,7 +47,11 @@ class StationGraphPathTest {
     @Test
     void createStationGrapthPathTest() {
         //when
-        StationGraphPath stationPath = new StationGraphPath(강남역, 남부터미널역, Arrays.asList(이호선,삼호선,신분당선));
+        List<Line> lines = Arrays.asList(이호선,삼호선,신분당선);
+        List<Section> allSectionList =  lines.stream()
+                .flatMap(line -> line.getSections().values().stream())
+                .collect(Collectors.toList());
+        StationGraphPath stationPath = new StationGraphPath(강남역, 남부터미널역, allSectionList);
 
         //then
         assertThat(stationPath).isNotNull();
@@ -55,7 +62,11 @@ class StationGraphPathTest {
     @Test
     void generateShortestPathTest() {
         //when
-        StationGraphPath stationPath = new StationGraphPath(강남역, 남부터미널역, Arrays.asList(이호선,삼호선,신분당선));
+        List<Line> lines = Arrays.asList(이호선,삼호선,신분당선);
+        List<Section> allSectionList =  lines.stream()
+                .flatMap(line -> line.getSections().values().stream())
+                .collect(Collectors.toList());
+        StationGraphPath stationPath = new StationGraphPath(강남역, 남부터미널역, allSectionList);
 
         //then
         assertThat(stationPath.getPathStations()).containsExactly(강남역,교대역,남부터미널역);
@@ -68,14 +79,22 @@ class StationGraphPathTest {
     void generateShortestPathWhenSameDistanceTest() {
 
         //when
-        StationGraphPath stationPath = new StationGraphPath(강남역, 남부터미널역, Arrays.asList(이호선,삼호선,신분당선));
+        List<Line> lines = Arrays.asList(이호선,삼호선,신분당선);
+        List<Section> allSectionList =  lines.stream()
+                .flatMap(line -> line.getSections().values().stream())
+                .collect(Collectors.toList());
+        StationGraphPath stationPath = new StationGraphPath(강남역, 남부터미널역, allSectionList);
 
         //then
         assertThat(stationPath.getPathStations()).containsExactly(강남역,교대역,남부터미널역);
         assertThat(stationPath.getDistance()).isEqualTo(20);
 
         //when
-        StationGraphPath stationPathDifferentway = new StationGraphPath(강남역, 남부터미널역, Arrays.asList(신분당선,삼호선,이호선));
+        List<Line> linesDiff = Arrays.asList(신분당선,삼호선,이호선);
+        List<Section> allSectionListDiff =  linesDiff.stream()
+                .flatMap(line -> line.getSections().values().stream())
+                .collect(Collectors.toList());
+        StationGraphPath stationPathDifferentway = new StationGraphPath(강남역, 남부터미널역, allSectionListDiff);
 
         //then
         assertThat(stationPathDifferentway.getPathStations()).containsExactly(강남역,양재역,남부터미널역);
@@ -92,7 +111,11 @@ class StationGraphPathTest {
         Line 일호선 = new Line("일호선", "blue", 종로역, 동묘역, 1);
 
         //when && then
-        assertThatThrownBy(() -> new StationGraphPath(강남역, 종로역, Arrays.asList(신분당선,삼호선,이호선,일호선)))
+        List<Line> lines = Arrays.asList(신분당선,삼호선,이호선,일호선);
+        List<Section> allSectionList =  lines.stream()
+                .flatMap(line -> line.getSections().values().stream())
+                .collect(Collectors.toList());
+        assertThatThrownBy(() -> new StationGraphPath(강남역, 종로역, allSectionList))
                 .isInstanceOf(NoPathException.class)
                 .hasMessageContaining("연결된 경로가 없습니다.");
     }
