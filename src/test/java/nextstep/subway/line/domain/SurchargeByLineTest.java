@@ -14,13 +14,13 @@ class SurchargeByLineTest {
     @Test
     void surchargePriceTest() {
         //when
-        BigDecimal 신분당선_추가요금 = SurchargeByLine.price("신분당선");
+        BigDecimal 신분당선_추가요금 = SurchargeByLine.charge("신분당선");
 
         //then
         assertThat(신분당선_추가요금).isEqualTo(BigDecimal.valueOf(1000));
 
         //when
-        BigDecimal 일반노선_추가요금 = SurchargeByLine.price("이호선");
+        BigDecimal 일반노선_추가요금 = SurchargeByLine.charge("이호선");
 
         //then
         assertThat(일반노선_추가요금).isEqualTo(SurchargeByLine.NORMAL.getSurcharge());

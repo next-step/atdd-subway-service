@@ -20,19 +20,19 @@ class DiscountByAgeTest {
         BigDecimal discountedFare = BigDecimal.ZERO;
 
         //when
-        BigDecimal kid = DiscountByAge.discountedFare(chargedFare, 0);
+        BigDecimal kid = DiscountByAge.discount(chargedFare, 0);
 
         //then
         assertThat(kid).isEqualTo(discountedFare);
 
         //when
-        kid = DiscountByAge.discountedFare(chargedFare, 6);
+        kid = DiscountByAge.discount(chargedFare, 6);
 
         //then
         assertThat(kid).isEqualTo(discountedFare);
 
         //when
-        kid = DiscountByAge.discountedFare(chargedFare, 7);
+        kid = DiscountByAge.discount(chargedFare, 7);
 
         //then
         assertThat(kid).isNotEqualTo(discountedFare);
@@ -46,19 +46,19 @@ class DiscountByAgeTest {
         BigDecimal discountedFare = BigDecimal.valueOf(450);
 
         //when
-        BigDecimal child = DiscountByAge.discountedFare(chargedFare, 7);
+        BigDecimal child = DiscountByAge.discount(chargedFare, 7);
 
         //then
         assertThat(child).isEqualTo(discountedFare);
 
         //when
-        child = DiscountByAge.discountedFare(chargedFare, 13);
+        child = DiscountByAge.discount(chargedFare, 13);
 
         //then
         assertThat(child).isEqualTo(discountedFare);
 
         //when
-        child = DiscountByAge.discountedFare(chargedFare, 14);
+        child = DiscountByAge.discount(chargedFare, 14);
 
         //then
         assertThat(child).isNotEqualTo(discountedFare);
@@ -72,19 +72,19 @@ class DiscountByAgeTest {
         BigDecimal discountedFare = BigDecimal.valueOf(720);
 
         //when
-        BigDecimal child = DiscountByAge.discountedFare(chargedFare, 14);
+        BigDecimal child = DiscountByAge.discount(chargedFare, 14);
 
         //then
         assertThat(child).isEqualTo(discountedFare);
 
         //when
-        child = DiscountByAge.discountedFare(chargedFare, 18);
+        child = DiscountByAge.discount(chargedFare, 18);
 
         //then
         assertThat(child).isEqualTo(discountedFare);
 
         //when
-        child = DiscountByAge.discountedFare(chargedFare, 19);
+        child = DiscountByAge.discount(chargedFare, 19);
 
         //then
         assertThat(child).isNotEqualTo(discountedFare);
@@ -98,19 +98,19 @@ class DiscountByAgeTest {
         BigDecimal discountedFare = BigDecimal.valueOf(1250);
 
         //when
-        BigDecimal child = DiscountByAge.discountedFare(chargedFare, 19);
+        BigDecimal child = DiscountByAge.discount(chargedFare, 19);
 
         //then
         assertThat(child).isEqualTo(discountedFare);
 
         //when
-        child = DiscountByAge.discountedFare(chargedFare, 65);
+        child = DiscountByAge.discount(chargedFare, 65);
 
         //then
         assertThat(child).isEqualTo(discountedFare);
 
         //when
-        child = DiscountByAge.discountedFare(chargedFare, 66);
+        child = DiscountByAge.discount(chargedFare, 66);
 
         //then
         assertThat(child).isNotEqualTo(discountedFare);
@@ -124,7 +124,7 @@ class DiscountByAgeTest {
         BigDecimal discountedFare = BigDecimal.valueOf(1250);
 
         //when
-        BigDecimal child = DiscountByAge.discountedFare(chargedFare, null);
+        BigDecimal child = DiscountByAge.discount(chargedFare, null);
 
         //then
         assertThat(child).isEqualTo(discountedFare);
@@ -138,7 +138,7 @@ class DiscountByAgeTest {
         BigDecimal discountedFare = BigDecimal.valueOf(0);
 
         //when
-        BigDecimal child = DiscountByAge.discountedFare(chargedFare, 66);
+        BigDecimal child = DiscountByAge.discount(chargedFare, 66);
 
         //then
         assertThat(child).isEqualTo(discountedFare);

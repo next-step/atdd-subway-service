@@ -26,7 +26,7 @@ public enum SurchargeByLine {
         return surcharge;
     }
 
-    public static BigDecimal price(String lineName) {
+    public static BigDecimal charge(String lineName) {
         return Arrays.stream(SurchargeByLine.values())
                 .filter(surchargeByLine -> surchargeByLine.name.equals(lineName))
                 .findFirst()

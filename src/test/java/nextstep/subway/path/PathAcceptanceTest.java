@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.common.domain.SubwayFare;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -81,10 +82,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회됨(response);
         요금_조회됨(response);
 
+
+
     }
 
     private void 요금_조회됨(ExtractableResponse<Response> response) {
         PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getPaymentFare()).isEqualTo(SubwayFare.BASIC_FARE);
 
     }
 

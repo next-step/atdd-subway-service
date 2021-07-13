@@ -38,7 +38,7 @@ public enum DiscountByAge {
         return payoutRate;
     }
 
-    public static BigDecimal discountedFare(BigDecimal chargedFare, Integer userAge) {
+    public static BigDecimal discount(BigDecimal chargedFare, Integer userAge) {
         if (userAge == null) {
             return chargedFare;
         }
