@@ -38,4 +38,18 @@ public class MockitoExtensionTest {
         // then
         assertThat(responses).hasSize(1);
     }
+
+    @Test
+    void findAllLines2() {
+        // given
+        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line("2호선","green")));
+        LineService lineService = new LineService(lineRepository, stationService);
+
+        // when
+        List<LineResponse> responses = lineService.findLines();
+
+        // then
+        assertThat(responses).hasSize(1);
+        assertThat(responses.get(0).getName()).isEqualTo("2호선");
+    }
 }

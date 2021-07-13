@@ -36,7 +36,6 @@ public class LineSectionRequestTest {
                 .extract();
     }
 
-
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
         return RestAssured
                 .given().log().all()
