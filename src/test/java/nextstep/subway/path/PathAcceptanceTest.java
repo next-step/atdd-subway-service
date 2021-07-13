@@ -76,11 +76,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
         Map<String, Long> pathRequestMap = createPathRequestMap(교대역.getId(), 양재역.getId());
 
         //when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(pathRequestMap);
+        ExtractableResponse<Response> chargedByDistanceResponse = 최단_경로_조회_요청(pathRequestMap);
 
         //then
-        최단_경로_조회됨(response);
-        요금_조회됨(response);
+        최단_경로_조회됨(chargedByDistanceResponse);
+        요금_조회됨(chargedByDistanceResponse);
+
+        //when
+        ExtractableResponse<Response> chargedByLineresponse = 최단_경로_조회_요청(pathRequestMap);
+
+        //then
+        최단_경로_조회됨(chargedByLineresponse);
+        요금_조회됨(chargedByLineresponse);
 
 
 
