@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathResponse;
@@ -42,7 +43,7 @@ public class PathServiceTest {
 		PathService pathService = new PathService(lineRepository, stationService);
 
 		// when
-		PathResponse pathResponse = pathService.findPath(2L, 4L);
+		PathResponse pathResponse = pathService.findPath(new LoginMember(1L, "email@email.com", 25), 2L, 4L);
 		List<String> stationNames = pathResponse.getStations().stream()
 			.map(it -> it.getName())
 			.collect(Collectors.toList());
@@ -67,7 +68,7 @@ public class PathServiceTest {
 		PathService pathService = new PathService(lineRepository, stationService);
 
 		// when
-		PathResponse pathResponse = pathService.findPath(1L, 2L);
+		PathResponse pathResponse = pathService.findPath(new LoginMember(1L, "email@email.com", 25),1L, 2L);
 		List<String> stationIds = pathResponse.getStations().stream()
 			.map(it -> it.getName())
 			.collect(Collectors.toList());
@@ -92,7 +93,7 @@ public class PathServiceTest {
 		PathService pathService = new PathService(lineRepository, stationService);
 
 		// when
-		PathResponse pathResponse = pathService.findPath(1L, 2L);
+		PathResponse pathResponse = pathService.findPath(new LoginMember(1L, "email@email.com", 25),1L, 2L);
 		List<String> stationIds = pathResponse.getStations().stream()
 			.map(it -> it.getName())
 			.collect(Collectors.toList());
@@ -117,7 +118,7 @@ public class PathServiceTest {
 		PathService pathService = new PathService(lineRepository, stationService);
 
 		// when
-		PathResponse pathResponse = pathService.findPath(1L, 2L);
+		PathResponse pathResponse = pathService.findPath(new LoginMember(1L, "email@email.com", 25),1L, 2L);
 		List<String> stationIds = pathResponse.getStations().stream()
 			.map(it -> it.getName())
 			.collect(Collectors.toList());
@@ -142,7 +143,7 @@ public class PathServiceTest {
 		PathService pathService = new PathService(lineRepository, stationService);
 
 		// when
-		PathResponse pathResponse = pathService.findPath(1L, 2L);
+		PathResponse pathResponse = pathService.findPath(new LoginMember(1L, "email@email.com", 25),1L, 2L);
 		List<String> stationIds = pathResponse.getStations().stream()
 			.map(it -> it.getName())
 			.collect(Collectors.toList());
@@ -167,7 +168,7 @@ public class PathServiceTest {
 		PathService pathService = new PathService(lineRepository, stationService);
 
 		// when
-		PathResponse pathResponse = pathService.findPath(1L, 2L);
+		PathResponse pathResponse = pathService.findPath(new LoginMember(1L, "email@email.com", 25),1L, 2L);
 		List<String> stationIds = pathResponse.getStations().stream()
 			.map(it -> it.getName())
 			.collect(Collectors.toList());
@@ -192,7 +193,7 @@ public class PathServiceTest {
 		PathService pathService = new PathService(lineRepository, stationService);
 
 		// when
-		PathResponse pathResponse = pathService.findPath(1L, 2L);
+		PathResponse pathResponse = pathService.findPath(new LoginMember(1L, "email@email.com", 25), 1L, 2L);
 		List<String> stationIds = pathResponse.getStations().stream()
 			.map(it -> it.getName())
 			.collect(Collectors.toList());

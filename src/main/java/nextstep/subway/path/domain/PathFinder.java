@@ -7,25 +7,28 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
 @Component
 public class PathFinder {
 	private static final int BASE_FARE = 1250;
-	private static final int FIRTST_STANDARD_ADDITIONAL_FARE_LENGTH = 5;
+	private static final int FIRST_STANDARD_ADDITIONAL_FARE_LENGTH = 5;
 	private static final int ADDITIONAL_FARE = 100;
 	private static final int BASE_LENGTH = 10;
 	private static final int SECOND_STANDARD_ADDITIONAL_FARE_LENGTH = 8;
 
 	private DijkstraShortestPath dijkstraShortestPath;
 	private WeightedMultigraph<String, AdditionalFareEdge> graph;
+	private LoginMember loginMember;
 
-	public PathFinder(List<Line> lines) {
+	public PathFinder(List<Line> lines, LoginMember loginMember) {
+		this.loginMember = loginMember;
 		this.graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
 		for (Line line : lines) {
-		 	line.setStationsGraph(graph);
+			line.setStationsGraph(graph);
 		}
 
 		this.dijkstraShortestPath = new DijkstraShortestPath(graph);
@@ -55,12 +58,31 @@ public class PathFinder {
 	}
 
 	public int getFare(Station startStation, Station destinationStation) {
+		int fareOnLength = getFareOnLength(startStation, destinationStation);
+
+		if (loginMember.isChild()) {
+			return (int) (fareOnLength - ((fareOnLength - 350) * 0.5));
+		}
+
+		if (loginMember.isAdolescent()) {
+			return (int) (fareOnLength - ((fareOnLength - 350) * 0.2));
+		}
+
+		if (loginMember.isAdult()) {
+			return fareOnLength;
+		}
+
+		return 0;
+	}
+
+	private int getFareOnLength(Station startStation, Station destinationStation) {
 		if (findPathLength(startStation, destinationStation) > 50) {
-			return BASE_FARE + calculateOverFare(40, FIRTST_STANDARD_ADDITIONAL_FARE_LENGTH) + calculateOverFare(findPathLength(startStation, destinationStation) - 50, SECOND_STANDARD_ADDITIONAL_FARE_LENGTH) + getAdditionalFare(startStation, destinationStation);
+			return BASE_FARE + calculateOverFare(40, FIRST_STANDARD_ADDITIONAL_FARE_LENGTH) + calculateOverFare(findPathLength(startStation, destinationStation) - 50, SECOND_STANDARD_ADDITIONAL_FARE_LENGTH) + getAdditionalFare(startStation, destinationStation);
 		}
 
 		if (findPathLength(startStation, destinationStation) > 10) {
-			return BASE_FARE + calculateOverFare(findPathLength(startStation, destinationStation) - BASE_LENGTH, FIRTST_STANDARD_ADDITIONAL_FARE_LENGTH) + getAdditionalFare(startStation, destinationStation);
+			return BASE_FARE + calculateOverFare(findPathLength(startStation, destinationStation) - BASE_LENGTH,
+				FIRST_STANDARD_ADDITIONAL_FARE_LENGTH) + getAdditionalFare(startStation, destinationStation);
 		}
 
 		return BASE_FARE + getAdditionalFare(startStation, destinationStation);

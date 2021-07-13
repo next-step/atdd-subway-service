@@ -25,4 +25,28 @@ public class LoginMember {
     public Integer getAge() {
         return age;
     }
+
+	public boolean isChild() {
+    	if (age >= 6 && age < 13) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean isAdolescent() {
+		if (age >= 13 && age < 19) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean isAdult() {
+		if (age >= 19) {
+			return true;
+		}
+
+		return false;
+	}
 }

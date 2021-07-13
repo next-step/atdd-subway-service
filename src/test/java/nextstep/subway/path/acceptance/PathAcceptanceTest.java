@@ -52,6 +52,48 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		LineSectionTestMethod.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 6);
 	}
 
+	@DisplayName("미환승역에서 환승역으로 최단거리 시나리오(로그인)")
+	@Test
+	void findShortestPathFromNotTransferToTransferWithLogInScenario() {
+		// Backgroud
+		// Given : 지하철역 등록되어 있음
+		// And : 지하철 노선 등록되어 있음
+		// And : 지하철 노선에 지하철역 등록되어 있음
+
+		// Scenario : 미환승역에서 환승역으로 최단거리 조회
+		// When : 미환승역에서 환승역으로 최단거리 조회
+		ExtractableResponse<Response> shortestPathResponse1 = findPath(남부터미널역.getId(), 강남역.getId());
+		// Then : 해당 역 리스트 리턴
+		PathResponse path1 = shortestPathResponse1.as(PathResponse.class);
+		List<Long> stationIds1 = getIds(path1.getStations());
+		List<Long> expectedStationIds = getIds(Arrays.asList(남부터미널역, 교대역, 강남역));
+
+		assertThat(stationIds1).containsExactlyElementsOf(expectedStationIds);
+		assertThat(path1.getDistance()).isEqualTo(14);
+		assertThat(path1.getFare()).isEqualTo(1350);
+	}
+
+	@DisplayName("미환승역에서 환승역으로 최단거리 시나리오(로그인 하지 않은 상태)")
+	@Test
+	void findShortestPathFromNotTransferToTransferWithNoLogInScenario() {
+		// Backgroud
+		// Given : 지하철역 등록되어 있음
+		// And : 지하철 노선 등록되어 있음
+		// And : 지하철 노선에 지하철역 등록되어 있음
+
+		// Scenario : 미환승역에서 환승역으로 최단거리 조회
+		// When : 미환승역에서 환승역으로 최단거리 조회
+		ExtractableResponse<Response> shortestPathResponse1 = findPath(남부터미널역.getId(), 강남역.getId());
+		// Then : 해당 역 리스트 리턴
+		PathResponse path1 = shortestPathResponse1.as(PathResponse.class);
+		List<Long> stationIds1 = getIds(path1.getStations());
+		List<Long> expectedStationIds = getIds(Arrays.asList(남부터미널역, 교대역, 강남역));
+
+		assertThat(stationIds1).containsExactlyElementsOf(expectedStationIds);
+		assertThat(path1.getDistance()).isEqualTo(14);
+		assertThat(path1.getFare()).isEqualTo(1350);
+	}
+
 	@DisplayName("미환승역에서 환승역으로 최단거리 시나리오")
 	@Test
 	void findShortestPathFromNotTransferToTransferScenario() {
