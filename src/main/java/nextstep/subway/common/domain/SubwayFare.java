@@ -1,8 +1,6 @@
 package nextstep.subway.common.domain;
 
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.domain.DiscountByAge;
-import nextstep.subway.path.domain.SurchargeByDistance;
 import nextstep.subway.path.dto.StationGraphPath;
 import nextstep.subway.station.domain.Station;
 

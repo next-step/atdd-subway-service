@@ -1,8 +1,8 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.common.domain.SurchargeByLine;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.SurchargeByLine;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;

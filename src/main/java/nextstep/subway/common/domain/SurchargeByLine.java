@@ -1,4 +1,4 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.common.domain;
 
 import java.math.BigDecimal;
 import java.util.Arrays;

@@ -1,7 +1,6 @@
 package nextstep.subway.path.dto;
 
 import nextstep.subway.exception.NoPathException;
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
