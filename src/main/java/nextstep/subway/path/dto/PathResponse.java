@@ -7,6 +7,10 @@ public class PathResponse {
 	private StationsResponse stationsResponse;
 	private int distance;
 
+	public static PathResponse of(StationsResponse stationsResponse, int distance) {
+		return new PathResponse(stationsResponse, distance);
+	}
+
 	public PathResponse() {
 
 	}
@@ -15,6 +19,7 @@ public class PathResponse {
 		this.stationsResponse = stationsResponse;
 		this.distance = distance;
 	}
+
 
 	public StationsResponse getStationsResponse() {
 		return stationsResponse;
