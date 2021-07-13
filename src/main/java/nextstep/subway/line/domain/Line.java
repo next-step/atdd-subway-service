@@ -161,6 +161,7 @@ public class Line extends BaseEntity {
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+        this.surcharge = line.getSurcharge();
     }
 
     public Long getId() {
