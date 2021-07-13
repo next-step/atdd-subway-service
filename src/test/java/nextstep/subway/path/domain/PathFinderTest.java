@@ -141,4 +141,20 @@ public class PathFinderTest {
         assertThat(response.getFare()).isEqualTo(1550);
     }
 
+    @DisplayName("노선들 중 가장 큰 추가운임을 가져온다.")
+    @Test
+    void maxSurcharge_test() {
+        //given
+        Station 강남역 = new Station("강남역");
+        Station 까치산역 = new Station("까치산역");
+        Station 발산역 = new Station("발산역");
+
+        Line sourceLine = new Line("2호선", "green", 강남역, 까치산역, 10, 800);
+        Line targetLine = new Line("5호선", "purple", 까치산역, 발산역, 12, 1200);
+
+        //when
+        PathFinder pathFinder = new PathFinder(강남역, 발산역, List.of(sourceLine, targetLine));
+
+        assertThat(pathFinder.getFare()).isEqualTo(2450);
+    }
 }
