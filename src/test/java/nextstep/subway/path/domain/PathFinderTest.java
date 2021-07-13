@@ -31,14 +31,32 @@ public class PathFinderTest {
 
 	@DisplayName("노선 추가 요금 계산")
 	@Test
-	void calculateLineAdditionalFareTest() {
+	void calculateLineAdditionalFareWithNoTransfer() {
+		// given
+		Station startStation = new Station("양재역");
+		Station destinationStation = new Station("교대역");
+		PathFinder pathFinder = new PathFinder(lines);
+
+		// when
+		int fare = pathFinder.getFare(startStation, destinationStation);
+
+		// then
+		assertThat(fare).isEqualTo(1950);
+	}
+
+	@DisplayName("노선 추가 요금 계산")
+	@Test
+	void calculateLineAdditionalFareWithTransferTest() {
 		// given
 		Station startStation = new Station("남부터미널역");
 		Station destinationStation = new Station("강남역");
 		PathFinder pathFinder = new PathFinder(lines);
 
-		// when, then
-		assertThat(pathFinder.getFare(startStation, destinationStation)).isEqualTo(2250);
+		// when
+		int fare = pathFinder.getFare(startStation, destinationStation);
+
+		// then
+		assertThat(fare).isEqualTo(2250);
 	}
 
 	@DisplayName("두 역만 사이 요금 계산(거리 170km)")
