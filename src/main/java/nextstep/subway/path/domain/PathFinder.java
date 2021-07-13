@@ -16,16 +16,17 @@ import java.util.List;
 public class PathFinder {
 
     private final GraphPath<Station, DefaultWeightedEdge> path;
-    private final int surcharge;
+    private final int fare;
 
     public PathFinder(Station source, Station target, List<Line> lines) {
         validateEquals(source, target);
 
-        surcharge = lines.stream()
+        int surcharge = lines.stream()
                 .map(Line::getSurcharge)
                 .max(Integer::compare)
-                .orElse(1250);
+                .orElse(0);
 
+        fare = 1250 + surcharge;
         path = findShortest(source, target, lines);
     }
 
@@ -40,18 +41,18 @@ public class PathFinder {
         int distance = calculateShortestDistance();
 
         if (distance <= 10) {
-            return new PathResponse(StationsResponse.of(shortestStations), distance, 1250);
+            return new PathResponse(StationsResponse.of(shortestStations), distance, fare);
         }
 
         if (distance < 50) {
-            return new PathResponse(StationsResponse.of(shortestStations), distance, 1250 + calculateOverFare(5, distance));
+            return new PathResponse(StationsResponse.of(shortestStations), distance, fare + calculateOverFare(5, distance - 10));
         }
 
-        return new PathResponse(StationsResponse.of(shortestStations), distance, 1250 + calculateOverFare(8, distance));
+        return new PathResponse(StationsResponse.of(shortestStations), distance, fare + calculateOverFare(8, distance - 10));
     }
 
     private int calculateOverFare(int overDistance, int distance) {
-        return (int) ((Math.ceil((distance - 1) / 5) + 1) * overDistance);
+        return (int) ((Math.ceil((distance - 1) / overDistance) + 1) * 100);
     }
 
     private int calculateShortestDistance() {

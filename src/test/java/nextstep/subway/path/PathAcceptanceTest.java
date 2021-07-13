@@ -66,7 +66,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_조회_성공(response);
         최단경로에_포함됨(shortestPath, 남부터미널역, 교대역, 강남역);
         최단경로_길이가_구해짐(shortestPath);
-        // 1250(기본운임) + 1200(2호선) + 0(3호선)
         assertThat(shortestPath.getSurcharge()).isEqualTo(2250);
     }
 
