@@ -39,9 +39,6 @@ class FavoriteServiceTest {
     private StationService stationService;
 
     @Mock
-    private MemberService memberService;
-
-    @Mock
     private FavoriteRepository favoriteRepository;
 
     @InjectMocks
@@ -82,7 +79,6 @@ class FavoriteServiceTest {
         FavoriteRequest favoriteRequest = new FavoriteRequest(targetStation.getId(), sourceStation.getId());
         doReturn(sourceStation).when(stationService).findStationById(favoriteRequest.getSource());
         doReturn(targetStation).when(stationService).findStationById(favoriteRequest.getTarget());
-        doReturn(사용자).when(memberService).findMemberById(loginMember.getId());
         given(favoriteRepository.existsByMemberIdAndSourceStationAndTargetStation(사용자.getId(), sourceStation, targetStation)).willReturn(true);
 
         //when && then
@@ -98,7 +94,6 @@ class FavoriteServiceTest {
         FavoriteRequest favoriteRequest = new FavoriteRequest(sourceStation.getId(), targetStation.getId());
         doReturn(sourceStation).when(stationService).findStationById(favoriteRequest.getSource());
         doReturn(targetStation).when(stationService).findStationById(favoriteRequest.getTarget());
-        doReturn(사용자).when(memberService).findMemberById(loginMember.getId());
         given(favoriteRepository.existsByMemberIdAndSourceStationAndTargetStation(사용자.getId(), sourceStation, targetStation)).willReturn(false);
         given(favoriteRepository.save(any())).willReturn(favorite);
 

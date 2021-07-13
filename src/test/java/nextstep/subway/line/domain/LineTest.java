@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -12,6 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class LineTest {
     private Station 강남역;
     private Station 사당역;
+    private Station 판교역;
     private Line 이호선;
 
     @BeforeEach
@@ -19,6 +21,7 @@ public class LineTest {
         강남역 = new Station("강남역");
         사당역 = new Station("사당역");
         이호선 = new Line("2호선","green", 강남역, 사당역, 10);
+        판교역 = new Station("판교역");
     }
 
 
@@ -115,6 +118,19 @@ public class LineTest {
 
         //then
         assertThat(이호선.getStations()).containsExactly(강남역, 교대역);
+    }
+
+    @DisplayName("노선에 추가 요금을 지정하여 생성할 수 있다")
+    @Test
+    void createWithSurchargeTest() {
+        //given
+        BigDecimal surcharge = BigDecimal.valueOf(900);
+
+        //when
+        Line 신분당선 = new Line("신분당선", "pink", 강남역, 판교역, 10, surcharge);
+
+        //then
+        assertThat(신분당선.getSurcharge()).isEqualTo(surcharge);
     }
 
 

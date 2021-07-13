@@ -1,12 +1,12 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.dto.Surcharge;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 public class Line extends BaseEntity {
@@ -16,9 +16,10 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
-
     @Embedded
     private Sections sections = new Sections();
+    @Embedded
+    private Surcharge surcharge;
 
     public Line() {
     }
@@ -34,9 +35,20 @@ public class Line extends BaseEntity {
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
+    public Line(String name, String color, Station upStation, Station downStation, int distance, BigDecimal surcharge) {
+        this.name = name;
+        this.color = color;
+        sections.add(new Section(this, upStation, downStation, distance));
+        this.surcharge = new Surcharge(surcharge);
+    }
+
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+    }
+
+    public void updateSurcharge(BigDecimal surcharge) {
+        this.surcharge = new Surcharge(surcharge);
     }
 
     public Long getId() {
@@ -57,6 +69,10 @@ public class Line extends BaseEntity {
 
     public List<Station> getStations() {
         return sections.getStations();
+    }
+
+    public BigDecimal getSurcharge() {
+        return surcharge.value();
     }
 
     public void addStation(Station upStation, Station downStation, int distance) {
