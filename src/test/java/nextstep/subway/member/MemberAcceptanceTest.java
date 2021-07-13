@@ -17,8 +17,8 @@ import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
+    public static final String EMAIL = "wjdals300@email.com";
+    public static final String PASSWORD = "1234";
     public static final String NEW_EMAIL = "newemail@email.com";
     public static final String NEW_PASSWORD = "newpassword";
     public static final int AGE = 20;

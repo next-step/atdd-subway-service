@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -107,11 +108,8 @@ public class JgraphtFinderTest {
     }
 
     private Sections findSectionsInLines(List<Line> lines) {
-        Sections sections = Sections.of();
-        lines.stream()
-                .flatMap(line -> line.getSections().stream())
-                .forEach(sections::add);
-
-        return sections;
+        return lines.stream()
+                .flatMap(Line::getSectionsStream)
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Sections::new));
     }
 }

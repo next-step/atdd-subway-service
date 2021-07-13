@@ -5,6 +5,7 @@ import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Entity
 public class Line extends BaseEntity {
@@ -18,18 +19,29 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections;
 
+    @Embedded
+    private Fee fee;
+
     protected Line() {
     }
 
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
+        this.sections = Sections.of();
     }
-
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
         this.sections = Sections.of(this, upStation, downStation, distance);
+        this.fee = Fee.ofWithOverFare(0);
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int overFare) {
+        this.name = name;
+        this.color = color;
+        this.sections = Sections.of(this, upStation, downStation, distance);
+        this.fee = Fee.ofWithOverFare(overFare);
     }
 
     public void addLineStation(Station upStation, Station downStation, int distance) {
@@ -49,8 +61,8 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
 
-    public List<Section> getSections() {
-        return sections.getSections();
+    public Stream<Section> getSectionsStream() {
+        return sections.getSections().stream();
     }
 
     public Long getId() {
@@ -63,5 +75,9 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public Fee getFee() {
+        return fee;
     }
 }
