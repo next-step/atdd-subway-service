@@ -12,7 +12,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import java.util.List;
 
 public class StationGraphPath {
-    GraphPath<Station, DefaultWeightedEdge> stationGraphPath;
+    private GraphPath<Station, DefaultWeightedEdge> stationGraphPath;
 
     private StationGraphPath(GraphPath<Station, DefaultWeightedEdge> stationGraphPath) {
         this.stationGraphPath = stationGraphPath;

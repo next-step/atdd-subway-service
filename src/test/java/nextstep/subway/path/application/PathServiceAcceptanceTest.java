@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.NoPathException;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -26,20 +27,22 @@ class PathServiceAcceptanceTest {
 
     private Station 강남역;
     private Station 양재역;
+    private LoginMember loginMember;
 
     @BeforeEach
     public void setUp() {
         강남역 = new Station(1L,"강남역");
         양재역 = new Station(2L,"양재역");
+        loginMember = new LoginMember(1L, "user@email.com",30);
     }
 
     @DisplayName("출발역과 도착역이 같으면 실패한다.")
     @Test
     void findBestPathFailBecauseOfSameSourceAndTargetTest() {
-        when(pathService.findShortestPath(강남역.getId(), 강남역.getId())).thenThrow(new NoPathException("출발역과 도착역이 같습니다."));
+        when(pathService.findShortestPath(loginMember, 강남역.getId(), 강남역.getId())).thenThrow(new NoPathException("출발역과 도착역이 같습니다."));
 
         //when && then
-        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 강남역.getId()))
+        assertThatThrownBy(() -> pathService.findShortestPath(loginMember, 강남역.getId(), 강남역.getId()))
                 .isInstanceOf(NoPathException.class)
                 .hasMessageContaining("출발역과 도착역이 같습니다.");
     }
@@ -48,10 +51,10 @@ class PathServiceAcceptanceTest {
     @Test
     void findBestPathFailBecauseOfNotExistStationTest() {
         //given
-        when(pathService.findShortestPath(강남역.getId(), 양재역.getId())).thenThrow(new IllegalArgumentException("등록되지 않은 역입니다."));
+        when(pathService.findShortestPath(loginMember, 강남역.getId(), 양재역.getId())).thenThrow(new IllegalArgumentException("등록되지 않은 역입니다."));
 
         //when && then
-        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 양재역.getId()))
+        assertThatThrownBy(() -> pathService.findShortestPath(loginMember, 강남역.getId(), 양재역.getId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("등록되지 않은 역입니다.");
     }
@@ -60,10 +63,10 @@ class PathServiceAcceptanceTest {
     @Test
     void findBestPathFailBecauseOfDisconnectedStationTest() {
         //given
-        when(pathService.findShortestPath(강남역.getId(), 양재역.getId())).thenThrow(new NoPathException("연결된 경로가 없습니다."));
+        when(pathService.findShortestPath(loginMember, 강남역.getId(), 양재역.getId())).thenThrow(new NoPathException("연결된 경로가 없습니다."));
 
         //when && then
-        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 양재역.getId()))
+        assertThatThrownBy(() -> pathService.findShortestPath(loginMember, 강남역.getId(), 양재역.getId()))
                 .isInstanceOf(NoPathException.class)
                 .hasMessageContaining("연결된 경로가 없습니다.");
     }
@@ -73,10 +76,10 @@ class PathServiceAcceptanceTest {
     void findBestPathTest() {
         //given
         List<Station> stations = Arrays.asList(강남역, 양재역);
-        when(pathService.findShortestPath(강남역.getId(),양재역.getId())).thenReturn(new PathResponse(stations,10));
+        when(pathService.findShortestPath(loginMember, 강남역.getId(),양재역.getId())).thenReturn(new PathResponse(stations,10));
 
         //when
-        PathResponse result = pathService.findShortestPath(강남역.getId(), 양재역.getId());
+        PathResponse result = pathService.findShortestPath(loginMember, 강남역.getId(), 양재역.getId());
 
         //then
         assertThat(result.getStations()).containsExactly(강남역,양재역);

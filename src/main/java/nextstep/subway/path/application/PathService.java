@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.domain.SubwayFare;
 import nextstep.subway.exception.NoPathException;
 import nextstep.subway.line.application.LineService;
@@ -15,7 +16,6 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -27,16 +27,16 @@ public class PathService {
         this.stationService = stationService;
         this.lineService = lineService;
     }
-    public PathResponse findShortestPath(Long source, Long target) {
+    public PathResponse findShortestPath(LoginMember loginMember, Long source, Long target) {
         checkSameStation(source, target);
 
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
         List<Section> allSectionList = lineService.findAllLineSectionList();
         StationGraphPath stationGraphPath = new StationGraphPath(sourceStation, targetStation, allSectionList);
-        SubwayFare chargedFare = SubwayFare.chargeByDistance(stationGraphPath.getDistance());
+        SubwayFare subwayFare = SubwayFare.calculateSubwayFare(allSectionList, stationGraphPath, loginMember.getAge());
 
-        return new PathResponse(stationGraphPath.getPathStations(), stationGraphPath.getDistance(), chargedFare.charged());
+        return new PathResponse(stationGraphPath.getPathStations(), stationGraphPath.getDistance(), subwayFare.charged());
     }
 
     public GraphPath<Station, DefaultWeightedEdge> generateShortestPath(Station source, Station target, List<Line> lines) {

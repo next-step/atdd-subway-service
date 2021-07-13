@@ -35,4 +35,5 @@ class SubwayFareTest {
         //then
         assertThat(charedFare).isEqualTo(BigDecimal.valueOf(1000));
     }
+
 }
