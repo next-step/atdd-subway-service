@@ -5,7 +5,7 @@ import nextstep.subway.station.domain.StationsResponse;
 public class PathResponse {
     private StationsResponse stations;
     private int distance;
-    private int surcharge;
+    private int fare;
 
     public PathResponse() {
     }
@@ -15,10 +15,10 @@ public class PathResponse {
         this.distance = distance;
     }
 
-    public PathResponse(StationsResponse stations, int distance, int surcharge) {
+    public PathResponse(StationsResponse stations, int distance, int fare) {
         this.stations = stations;
         this.distance = distance;
-        this.surcharge = surcharge;
+        this.fare = fare;
     }
 
     public StationsResponse getStations() {
@@ -29,7 +29,7 @@ public class PathResponse {
         return distance;
     }
 
-    public int getSurcharge() {
-        return surcharge;
+    public int getFare() {
+        return fare;
     }
 }
