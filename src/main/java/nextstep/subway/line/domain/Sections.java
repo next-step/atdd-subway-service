@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import nextstep.subway.path.domain.AdditionalFareEdge;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -182,9 +183,15 @@ public class Sections {
 		}
 	}
 
-	public void setLengthBetweenTwoStation(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
+	// public void setLengthBetweenTwoStation(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
+	// 	for (Section section : sections) {
+	// 		section.setLengthBetweenTwoStation(graph);
+	// 	}
+	// }
+
+	public void setLengthBetweenTwoStation(WeightedMultigraph<String, AdditionalFareEdge> graph, int additionalFare) {
 		for (Section section : sections) {
-			section.setLengthBetweenTwoStation(graph);
+			section.setLengthBetweenTwoStation(graph, additionalFare);
 		}
 	}
 }

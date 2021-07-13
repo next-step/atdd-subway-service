@@ -27,6 +27,35 @@ public class PathServiceTest {
 	private StationService stationService;
 
 	@Test
+	void calculateLineAdditionalFareTest() {
+		// given
+		when(lineRepository.findAll()).thenReturn(getLines());
+		when(stationService.findStationById(1L)).thenReturn(new Station("교대역"));
+		when(stationService.findStationById(2L)).thenReturn(new Station("남부터미널역"));
+		when(stationService.findStationById(3L)).thenReturn(new Station("양재역"));
+		when(stationService.findStationById(4L)).thenReturn(new Station("강남역"));
+		when(stationService.findByName("교대역")).thenReturn(new Station("교대역"));
+		when(stationService.findByName("남부터미널역")).thenReturn(new Station("남부터미널역"));
+		when(stationService.findByName("양재역")).thenReturn(new Station("양재역"));
+		when(stationService.findByName("강남역")).thenReturn(new Station("강남역"));
+
+		PathService pathService = new PathService(lineRepository, stationService);
+
+		// when
+		PathResponse pathResponse = pathService.findPath(2L, 4L);
+		List<String> stationNames = pathResponse.getStations().stream()
+			.map(it -> it.getName())
+			.collect(Collectors.toList());
+
+		// then
+		List<String> expectedStationNames = Arrays.asList("남부터미널역", "교대역", "강남역");
+
+		assertThat(stationNames).containsExactlyElementsOf(expectedStationNames);
+		assertThat(pathResponse.getDistance()).isEqualTo(8);
+		assertThat(pathResponse.getFare()).isEqualTo(2250);
+	}
+
+	@Test
 	void calculateFareBetweenTwoStationTest() {
 		// given
 		when(lineRepository.findAll()).thenReturn(getLineThatHasTwoStations(10));
@@ -129,7 +158,7 @@ public class PathServiceTest {
 	@Test
 	void calculateFareBetweenTwoStationTestOn15Kilometer() {
 		// given
-		when(lineRepository.findAll()).thenReturn(getLineThatHasTwoStations(10));
+		when(lineRepository.findAll()).thenReturn(getLineThatHasTwoStations(15));
 		when(stationService.findStationById(1L)).thenReturn(new Station("신촌역"));
 		when(stationService.findStationById(2L)).thenReturn(new Station("홍대입구역"));
 		when(stationService.findByName("신촌역")).thenReturn(new Station("신촌역"));
@@ -147,8 +176,8 @@ public class PathServiceTest {
 		List<String> expectedStationIds = Arrays.asList("신촌역", "홍대입구역");
 
 		assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
-		assertThat(pathResponse.getDistance()).isEqualTo(10);
-		assertThat(pathResponse.getFare()).isEqualTo(1250);
+		assertThat(pathResponse.getDistance()).isEqualTo(15);
+		assertThat(pathResponse.getFare()).isEqualTo(1350);
 	}
 
 	@Test
@@ -175,6 +204,20 @@ public class PathServiceTest {
 		assertThat(pathResponse.getDistance()).isEqualTo(7);
 	}
 
+	private List<Line> getLines() {
+		Station station1 = new Station("교대역");
+		Station station2 = new Station("양재역");
+		Station station3 = new Station("강남역");
+		Station station4 = new Station("남부터미널역");
+		Line line3 = new Line("3호선", "orange", 700);
+		line3.addLineStation(station1, station4, 3);
+		line3.addLineStation(station4, station2, 2);
+		Line lineBundang = new Line("신분당선", "pink", station2, station3, 10);
+		Line line2 = new Line("2호선", "green", station1, station3, 5, 1000);
+
+		return Arrays.asList(line2, line3, lineBundang);
+	}
+
 	private List<Line> getLineThatHasTwoStations(int distance) {
 		Station station1 = new Station("신촌역");
 		Station station2 = new Station("홍대입구역");
@@ -182,6 +225,7 @@ public class PathServiceTest {
 
 		return Arrays.asList(line);
 	}
+
 	private List<Line> getLineThatHasTwoStations() {
 		Station station1 = new Station("신촌역");
 		Station station2 = new Station("홍대입구역");

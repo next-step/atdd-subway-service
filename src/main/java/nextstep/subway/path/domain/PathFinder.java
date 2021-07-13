@@ -16,16 +16,16 @@ public class PathFinder {
 	private static final int FIRTST_STANDARD_ADDITIONAL_FARE_LENGTH = 5;
 	private static final int ADDITIONAL_FARE = 100;
 	private static final int BASE_LENGTH = 10;
-	public static final int SECOND_STANDARD_ADDITIONAL_FARE_LENGTH = 8;
+	private static final int SECOND_STANDARD_ADDITIONAL_FARE_LENGTH = 8;
 
 	private DijkstraShortestPath dijkstraShortestPath;
-	private WeightedMultigraph<String, DefaultWeightedEdge> graph;
+	private WeightedMultigraph<String, AdditionalFareEdge> graph;
 
 	public PathFinder(List<Line> lines) {
 		this.graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
 		for (Line line : lines) {
-			line.setStationsGraph(graph);
+		 	line.setStationsGraph(graph);
 		}
 
 		this.dijkstraShortestPath = new DijkstraShortestPath(graph);
@@ -56,17 +56,24 @@ public class PathFinder {
 
 	public int getFare(Station startStation, Station destinationStation) {
 		if (findPathLength(startStation, destinationStation) > 50) {
-			return BASE_FARE + calculateOverFare(40, FIRTST_STANDARD_ADDITIONAL_FARE_LENGTH) + calculateOverFare(findPathLength(startStation, destinationStation) - 50, SECOND_STANDARD_ADDITIONAL_FARE_LENGTH);
+			return BASE_FARE + calculateOverFare(40, FIRTST_STANDARD_ADDITIONAL_FARE_LENGTH) + calculateOverFare(findPathLength(startStation, destinationStation) - 50, SECOND_STANDARD_ADDITIONAL_FARE_LENGTH) + getAdditionalFare(startStation, destinationStation);
 		}
 
 		if (findPathLength(startStation, destinationStation) > 10) {
-			return BASE_FARE + calculateOverFare(findPathLength(startStation, destinationStation) - BASE_LENGTH, FIRTST_STANDARD_ADDITIONAL_FARE_LENGTH);
+			return BASE_FARE + calculateOverFare(findPathLength(startStation, destinationStation) - BASE_LENGTH, FIRTST_STANDARD_ADDITIONAL_FARE_LENGTH) + getAdditionalFare(startStation, destinationStation);
 		}
 
-		return BASE_FARE;
+		return BASE_FARE + getAdditionalFare(startStation, destinationStation);
 	}
 
 	private int calculateOverFare(int distance, int standardLength) {
 		return (int) ((Math.ceil((distance - 1) / standardLength) + 1) * ADDITIONAL_FARE);
+	}
+
+	private int getAdditionalFare(Station startStation, Station destinationStation) {
+		return dijkstraShortestPath.getPath(startStation.getName(), destinationStation.getName()).getEdgeList().stream()
+			.mapToInt(x -> ((AdditionalFareEdge)x).getAdditionalFare())
+			.max()
+			.orElse(0);
 	}
 }

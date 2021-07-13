@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.path.domain.AdditionalFareEdge;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -73,7 +74,13 @@ public class Section {
         this.distance -= newDistance;
     }
 
-	public void setLengthBetweenTwoStation(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
-		graph.setEdgeWeight(graph.addEdge(upStation.getName(), downStation.getName()), distance);
+	// public void setLengthBetweenTwoStation(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
+	// 	graph.setEdgeWeight(graph.addEdge(upStation.getName(), downStation.getName()), distance);
+	// }
+
+	public void setLengthBetweenTwoStation(WeightedMultigraph<String, AdditionalFareEdge> graph, int additionalFare) {
+    	AdditionalFareEdge additionalFareEdge = new AdditionalFareEdge(additionalFare);
+		graph.addEdge(upStation.getName(), downStation.getName(), additionalFareEdge);
+		graph.setEdgeWeight(additionalFareEdge, distance);
 	}
 }
