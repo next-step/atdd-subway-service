@@ -3,7 +3,7 @@ package nextstep.subway.line.domain;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
-public enum LineSurcharge {
+public enum SurchargeByLine {
     SINBUNDANG("신분당선",BigDecimal.valueOf(1000)),
     YONGIND_EVERLINE("용인경전철",BigDecimal.valueOf(200)),
     UIJEONGBU("의정부경전철",BigDecimal.valueOf(300)),
@@ -13,7 +13,7 @@ public enum LineSurcharge {
     private String name;
     private BigDecimal surcharge;
 
-    LineSurcharge(String name, BigDecimal surcharge) {
+    SurchargeByLine(String name, BigDecimal surcharge) {
         this.name = name;
         this.surcharge = surcharge;
     }
@@ -27,10 +27,10 @@ public enum LineSurcharge {
     }
 
     public static BigDecimal price(String lineName) {
-        return Arrays.stream(LineSurcharge.values())
-                .filter(lineSurcharge -> lineSurcharge.name.equals(lineName))
+        return Arrays.stream(SurchargeByLine.values())
+                .filter(surchargeByLine -> surchargeByLine.name.equals(lineName))
                 .findFirst()
-                .map(lineSurcharge -> lineSurcharge.surcharge)
+                .map(surchargeByLine -> surchargeByLine.surcharge)
                 .orElse(NORMAL.surcharge);
     }
 

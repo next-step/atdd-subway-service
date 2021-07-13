@@ -7,7 +7,9 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,9 +18,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import sun.security.x509.OtherName;
 
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.*;
@@ -63,6 +68,27 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회됨(response);
     }
 
+    @DisplayName("두 역의 최단 거리 경로와 요금을 조회")
+    @Test
+    void findBestPathWithFareTest() {
+        //given
+        Map<String, Long> pathRequestMap = createPathRequestMap(교대역.getId(), 양재역.getId());
+
+        //when
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(pathRequestMap);
+
+        //then
+        최단_경로_조회됨(response);
+        요금_조회됨(response);
+
+    }
+
+    private void 요금_조회됨(ExtractableResponse<Response> response) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+
+    }
+
+
     private Map<String, Long> createPathRequestMap(Long sourceId, Long targetId) {
         Map<String, Long> pathRequestMap = new HashMap<>();
         pathRequestMap.put("source", sourceId);
@@ -82,6 +108,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     public static void 최단_경로_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getDistance()).isEqualTo(5);
     }
 
 
