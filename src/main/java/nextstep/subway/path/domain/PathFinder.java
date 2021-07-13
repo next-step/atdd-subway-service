@@ -15,6 +15,10 @@ import java.util.List;
 
 public class PathFinder {
 
+    public static final int FIRST_BOUNDARY_DISTANCE = 10;
+    public static final int SECOND_BOUNDARY_DISTANCE = 50;
+    public static final int FIRST_ADDED_DISTANCE = 5;
+    public static final int SECOND_ADDED_DISTANCE = 8;
     private final GraphPath<Station, DefaultWeightedEdge> path;
     private final int fare;
 
@@ -40,19 +44,19 @@ public class PathFinder {
         List<Station> shortestStations = findShortestPath();
         int distance = calculateShortestDistance();
 
-        if (distance <= 10) {
+        if (distance <= FIRST_BOUNDARY_DISTANCE) {
             return new PathResponse(StationsResponse.of(shortestStations), distance, fare);
         }
 
-        if (distance < 50) {
-            return new PathResponse(StationsResponse.of(shortestStations), distance, fare + calculateOverFare(5, distance - 10));
+        if (distance < SECOND_BOUNDARY_DISTANCE) {
+            return new PathResponse(StationsResponse.of(shortestStations), distance, fare + calculateOverFare(distance, FIRST_ADDED_DISTANCE));
         }
 
-        return new PathResponse(StationsResponse.of(shortestStations), distance, fare + calculateOverFare(8, distance - 10));
+        return new PathResponse(StationsResponse.of(shortestStations), distance, fare + calculateOverFare(distance, SECOND_ADDED_DISTANCE));
     }
 
-    private int calculateOverFare(int overDistance, int distance) {
-        return (int) ((Math.ceil((distance - 1) / overDistance) + 1) * 100);
+    private int calculateOverFare(int distance, int overDistance) {
+        return (int) ((Math.ceil(((distance - 10) - 1) / overDistance) + 1) * 100);
     }
 
     private int calculateShortestDistance() {

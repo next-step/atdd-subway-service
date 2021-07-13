@@ -104,4 +104,41 @@ public class PathFinderTest {
                 () -> new PathFinder(강남역, 김포공항역, List.of(sourceLine, targetLine))
         );
     }
+
+    @DisplayName("최적 경로에 대한 운임비용을 계산한다.")
+    @Test
+    void calculateFare_test() {
+        //given
+        Station 강남역 = new Station("강남역");
+        Station 까치산역 = new Station("까치산역");
+        Station 발산역 = new Station("발산역");
+
+        Line sourceLine = new Line("2호선", "green", 강남역, 까치산역, 10, 800);
+        Line targetLine = new Line("5호선", "purple", 까치산역, 발산역, 12, 900);
+
+        //when
+        PathFinder pathFinder = new PathFinder(강남역, 발산역, List.of(sourceLine, targetLine));
+        PathResponse response = pathFinder.findShortestPathToResponse();
+
+        assertThat(response.getFare()).isEqualTo(2450);
+    }
+
+    @DisplayName("추가 운임이 없는 노선에 대한 최적 경로에 대한 운임비용을 계산한다.")
+    @Test
+    void calculateFareWithNotSurcharge_test() {
+        //given
+        Station 강남역 = new Station("강남역");
+        Station 까치산역 = new Station("까치산역");
+        Station 발산역 = new Station("발산역");
+
+        Line sourceLine = new Line("2호선", "green", 강남역, 까치산역, 10);
+        Line targetLine = new Line("5호선", "purple", 까치산역, 발산역, 12);
+
+        //when
+        PathFinder pathFinder = new PathFinder(강남역, 발산역, List.of(sourceLine, targetLine));
+        PathResponse response = pathFinder.findShortestPathToResponse();
+
+        assertThat(response.getFare()).isEqualTo(1550);
+    }
+
 }
