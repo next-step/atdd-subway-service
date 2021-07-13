@@ -1,5 +1,6 @@
 package nextstep.subway.member.application;
 
+import nextstep.subway.exception.NoMemberException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
@@ -11,30 +12,30 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
     private MemberRepository memberRepository;
 
+
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
+    @Transactional
     public MemberResponse createMember(MemberRequest request) {
         Member member = memberRepository.save(request.toMember());
         return MemberResponse.of(member);
     }
 
+    @Transactional(readOnly = true)
     public MemberResponse findMember(Long id) {
-        Member member = findMemberById(id);
+        Member member = memberRepository
+                .findById(id)
+                .orElseThrow(() -> new NoMemberException("등록되지 않은 사용자입니다."));
         return MemberResponse.of(member);
     }
 
-    public Member findMemberById(Long id) {
-        return memberRepository
-                .findById(id)
-                .orElseThrow(RuntimeException::new);
-    }
-
+    @Transactional
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository
                 .findById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new NoMemberException("등록되지 않은 사용자입니다."));
         member.update(param.toMember());
     }
 

@@ -7,8 +7,6 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.member.application.MemberService;
-import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -19,12 +17,10 @@ import java.util.List;
 @Service
 public class FavoriteService {
     private StationService stationService;
-    private MemberService memberService;
     private FavoriteRepository favoriteRepository;
 
-    public FavoriteService(StationService stationService, MemberService memberService, FavoriteRepository favoriteRepository) {
+    public FavoriteService(StationService stationService, FavoriteRepository favoriteRepository) {
         this.stationService = stationService;
-        this.memberService = memberService;
         this.favoriteRepository = favoriteRepository;
     }
 
@@ -32,10 +28,9 @@ public class FavoriteService {
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
         Station sourceStation = stationService.findStationById(favoriteRequest.getSource());
         Station targetStation = stationService.findStationById(favoriteRequest.getTarget());
-        Member member = memberService.findMemberById(loginMember.getId());
-        Favorite favorite = new Favorite(member.getId(), sourceStation, targetStation);
+        Favorite favorite = new Favorite(loginMember.getId(), sourceStation, targetStation);
 
-        alreadyExistCheck(member.getId(), sourceStation, targetStation);
+        alreadyExistCheck(loginMember.getId(), sourceStation, targetStation);
 
         return FavoriteResponse.of(favoriteRepository.save(favorite));
     }
