@@ -6,7 +6,9 @@ import java.util.Arrays;
 public enum LineSurcharge {
     SINBUNDANG("신분당선",BigDecimal.valueOf(1000)),
     YONGIND_EVERLINE("용인경전철",BigDecimal.valueOf(200)),
-    UIJEONGBU("의정부경전철",BigDecimal.valueOf(300));
+    UIJEONGBU("의정부경전철",BigDecimal.valueOf(300)),
+    NORMAL("일반",BigDecimal.ZERO);
+
 
     private String name;
     private BigDecimal surcharge;
@@ -29,7 +31,7 @@ public enum LineSurcharge {
                 .filter(lineSurcharge -> lineSurcharge.name.equals(lineName))
                 .findFirst()
                 .map(lineSurcharge -> lineSurcharge.surcharge)
-                .orElse(BigDecimal.ZERO);
+                .orElse(NORMAL.surcharge);
     }
 
 }

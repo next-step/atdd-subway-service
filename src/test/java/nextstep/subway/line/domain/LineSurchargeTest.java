@@ -24,7 +24,7 @@ class LineSurchargeTest {
         BigDecimal 일반노선_추가요금 = LineSurcharge.price("이호선");
 
         //then
-        assertThat(일반노선_추가요금).isEqualTo(BigDecimal.ZERO);
+        assertThat(일반노선_추가요금).isEqualTo(LineSurcharge.NORMAL.getSurcharge());
     }
 
 }
