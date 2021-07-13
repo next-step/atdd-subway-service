@@ -33,14 +33,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private String 사용자토큰;
     private FavoriteRequest favoriteRequest;
 
-//    Background
-//    Given 지하철역 등록되어 있음
-//    And 지하철 노선 등록되어 있음
-//    And 지하철 노선에 지하철역 등록되어 있음
-//    And 회원 등록되어 있음
-//    And 로그인 되어있음
-
-
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -56,14 +48,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
 
-//    Scenario: 즐겨찾기를 관리
-//    When 즐겨찾기 생성을 요청
-//    Then 즐겨찾기 생성됨
-//    When 즐겨찾기 목록 조회 요청
-//    Then 즐겨찾기 목록 조회됨
-//    When 즐겨찾기 삭제 요청
-//    Then 즐겨찾기 삭제됨
-
     @DisplayName("즐겨찾기를 관리한다")
     @Test
     void manageFavoriteTest() {
@@ -76,6 +60,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         FavoriteResponse saved = 즐겨찾기_정상_등록(savedResponse);
 
         //when
+        ExtractableResponse<Response> alreadySavedResponse = 즐겨찾기_생성_요청(사용자토큰,favoriteRequest);
+
+        //then
+        이미_등록되어_실패(alreadySavedResponse);
+
+        //when
         ExtractableResponse<Response> searchedResponse = 즐겨찾기_목록_조회_요청(사용자토큰);
 
         //then
@@ -86,8 +76,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         //then
         즐겨찾기_삭제됨(deletedResponse);
+        ExtractableResponse<Response> searchedResponseAfterDelete = 즐겨찾기_목록_조회_요청(사용자토큰);
+        삭제_확인(searchedResponseAfterDelete, saved);
+    }
 
+    private void 이미_등록되어_실패(ExtractableResponse<Response> alreadySavedResponse) {
+        assertThat(alreadySavedResponse.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
 
+    private void 삭제_확인(ExtractableResponse<Response> deleted, FavoriteResponse saved) {
+        List<FavoriteResponse> searched = deleted.jsonPath().getList(".", FavoriteResponse.class);
+        assertThat(searched).doesNotContain(saved);
     }
 
     private void 즐겨찾기_삭제됨(ExtractableResponse<Response> deletedResponse) {

@@ -33,9 +33,9 @@ public class FavoriteService {
         Station sourceStation = stationService.findStationById(favoriteRequest.getSource());
         Station targetStation = stationService.findStationById(favoriteRequest.getTarget());
         Member member = memberService.findMemberById(loginMember.getId());
-        Favorite favorite = new Favorite(member, sourceStation, targetStation);
+        Favorite favorite = new Favorite(member.getId(), sourceStation, targetStation);
 
-        alreadyExistCheck(member, sourceStation, targetStation);
+        alreadyExistCheck(member.getId(), sourceStation, targetStation);
 
         return FavoriteResponse.of(favoriteRepository.save(favorite));
     }
@@ -46,12 +46,14 @@ public class FavoriteService {
     }
 
     public void deleteFavorite(Long id) {
-        Favorite favorite = favoriteRepository.findById(id).orElseThrow( () -> new NoFavoriteException("등록되지 않은 즐겨찾기 입니다."));
+        favoriteRepository
+                .findById(id)
+                .orElseThrow(() -> new NoFavoriteException("등록되지 않은 즐겨찾기 입니다."));
         favoriteRepository.deleteById(id);
     }
 
-    private void alreadyExistCheck(Member member, Station sourceStation, Station targetStation) {
-        if (favoriteRepository.existsByMemberAndSourceStationAndTargetStation(member, sourceStation, targetStation)) {
+    private void alreadyExistCheck(Long memberId, Station sourceStation, Station targetStation) {
+        if (favoriteRepository.existsByMemberIdAndSourceStationAndTargetStation(memberId, sourceStation, targetStation)) {
             throw new AlreadyExistFavoritException("이미 등록된 즐겨찾기 입니다.");
         }
     }

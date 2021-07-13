@@ -59,7 +59,7 @@ class FavoriteServiceTest {
         targetStation = new Station(2L, "광교역");
         사용자 = new Member(1L, "test@email.com", "password", 30);
         loginMember = new LoginMember(사용자.getId(), 사용자.getEmail(), 사용자.getAge());
-        favorite = new Favorite(사용자, sourceStation, targetStation);
+        favorite = new Favorite(사용자.getId(), sourceStation, targetStation);
     }
 
     @DisplayName("존재하지 않는 역이면 실패한다")
@@ -83,7 +83,7 @@ class FavoriteServiceTest {
         doReturn(sourceStation).when(stationService).findStationById(favoriteRequest.getSource());
         doReturn(targetStation).when(stationService).findStationById(favoriteRequest.getTarget());
         doReturn(사용자).when(memberService).findMemberById(loginMember.getId());
-        given(favoriteRepository.existsByMemberAndSourceStationAndTargetStation(사용자, sourceStation, targetStation)).willReturn(true);
+        given(favoriteRepository.existsByMemberIdAndSourceStationAndTargetStation(사용자.getId(), sourceStation, targetStation)).willReturn(true);
 
         //when && then
         assertThatThrownBy(() -> favoriteService.createFavorite(loginMember, favoriteRequest))
@@ -99,7 +99,7 @@ class FavoriteServiceTest {
         doReturn(sourceStation).when(stationService).findStationById(favoriteRequest.getSource());
         doReturn(targetStation).when(stationService).findStationById(favoriteRequest.getTarget());
         doReturn(사용자).when(memberService).findMemberById(loginMember.getId());
-        given(favoriteRepository.existsByMemberAndSourceStationAndTargetStation(사용자, sourceStation, targetStation)).willReturn(false);
+        given(favoriteRepository.existsByMemberIdAndSourceStationAndTargetStation(사용자.getId(), sourceStation, targetStation)).willReturn(false);
         given(favoriteRepository.save(any())).willReturn(favorite);
 
         //when
