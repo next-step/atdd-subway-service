@@ -36,9 +36,7 @@ public class PathService {
         int distance = pathFinder.findShortestPathDistance(startStation, endStation);
 
         long fare = getFare(pathStations, distance);
-        if (loginMember.getAge() != null) {
-            fare = discountFareByAge(loginMember.getAge(), fare);
-        }
+        fare = discountFareByAge(loginMember.getAge(), fare);
 
         return getPathResponse(pathStations, distance, fare);
     }
