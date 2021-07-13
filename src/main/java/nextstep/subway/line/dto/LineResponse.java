@@ -12,23 +12,25 @@ public class LineResponse {
     private String name;
     private String color;
     private StationsResponse stations;
+    private int surcharge;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
     public LineResponse() {
     }
 
-    public LineResponse(Long id, String name, String color, StationsResponse stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public LineResponse(Long id, String name, String color, StationsResponse stations, LocalDateTime createdDate, LocalDateTime modifiedDate, int surcharge) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.stations = stations;
+        this.surcharge = surcharge;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
     }
 
     public static LineResponse of(Line line, StationsResponse stations) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate(), line.getSurcharge());
     }
 
     public Long getId() {
@@ -53,5 +55,9 @@ public class LineResponse {
 
     public LocalDateTime getModifiedDate() {
         return modifiedDate;
+    }
+
+    public int getSurcharge() {
+        return surcharge;
     }
 }
