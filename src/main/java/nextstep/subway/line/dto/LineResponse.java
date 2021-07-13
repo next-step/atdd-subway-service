@@ -27,7 +27,7 @@ public class LineResponse {
     }
 
     public static LineResponse of(Line line, List<StationResponse> stations) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
+        return new LineResponse(line.id(), line.name(), line.color(), stations, line.getCreatedDate(), line.getModifiedDate());
     }
 
     public Long getId() {
