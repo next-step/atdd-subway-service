@@ -11,7 +11,6 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
-@Component
 public class PathFinder {
 	private static final int BASE_FARE = 1250;
 	private static final int FIRST_STANDARD_ADDITIONAL_FARE_LENGTH = 5;

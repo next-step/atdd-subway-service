@@ -8,9 +8,14 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import nextstep.subway.auth.acceptance.AuthTestMethod;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.member.MemberTestMethod;
 import nextstep.subway.station.domain.Station;
 
 public class PathFinderTest {
