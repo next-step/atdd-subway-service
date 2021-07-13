@@ -48,8 +48,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 0);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 900);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 1200);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10, 800);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 12, 900);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -67,7 +67,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로에_포함됨(shortestPath, 남부터미널역, 교대역, 강남역);
         최단경로_길이가_구해짐(shortestPath);
         // 1250(기본운임) + 1200(2호선) + 0(3호선)
-        assertThat(shortestPath.getSurcharge()).isEqualTo(2450);
+        assertThat(shortestPath.getSurcharge()).isEqualTo(2250);
     }
 
     private ExtractableResponse<Response> 최단경로_조회_요청() {
