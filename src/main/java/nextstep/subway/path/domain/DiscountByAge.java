@@ -34,8 +34,8 @@ public enum DiscountByAge {
         return excludedPrice;
     }
 
-    public float getPayoutRate() {
-        return payoutRate;
+    public BigDecimal getPayoutRate() {
+        return BigDecimal.valueOf(payoutRate);
     }
 
     public static BigDecimal discount(BigDecimal chargedFare, Integer userAge) {
@@ -49,8 +49,8 @@ public enum DiscountByAge {
                 .orElse(chargedFare);
     }
 
-    private static BigDecimal caculateDiscountedFare(BigDecimal chargedPrice, BigDecimal excludedPrice, float payoutRate) {
-        return chargedPrice.subtract(excludedPrice).multiply(BigDecimal.valueOf(payoutRate)).setScale(0,BigDecimal.ROUND_HALF_UP);
+    private static BigDecimal caculateDiscountedFare(BigDecimal chargedPrice, BigDecimal excludedPrice, BigDecimal payoutRate) {
+        return chargedPrice.subtract(excludedPrice).multiply(payoutRate).setScale(0,BigDecimal.ROUND_HALF_UP);
     }
 
 

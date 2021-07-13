@@ -10,6 +10,7 @@ import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.domain.SurchargeByLine;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.domain.DiscountByAge;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -23,6 +24,7 @@ import org.springframework.http.MediaType;
 
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -85,11 +87,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void findBestPathWithFareTest() {
         //given
         Map<String, Long> pathRequestMap = createPathRequestMap(교대역.getId(), 남부터미널역.getId());
-
-
         //when
         ExtractableResponse<Response> 기본요금_노선요청_맵 = 최단_경로_조회_요청(일반사용자토큰, pathRequestMap);
-
         //then
         최단_경로_조회됨(기본요금_노선요청_맵, 5);
         요금_조회됨(기본요금_노선요청_맵, SubwayFare.BASIC_FARE);
@@ -98,33 +97,34 @@ public class PathAcceptanceTest extends AcceptanceTest {
         Map<String, Long> 노선_할증_노선요청_맵 = createPathRequestMap(강남역.getId(), 양재역.getId());
         //when
         ExtractableResponse<Response> chargedByLineresponse = 최단_경로_조회_요청(일반사용자토큰, 노선_할증_노선요청_맵);
-
         //then
         최단_경로_조회됨(chargedByLineresponse, 10);
-        요금_조회됨(chargedByLineresponse, SubwayFare.BASIC_FARE.add(SurchargeByLine.SINBUNDANG.surcharge()));
+        요금_조회됨(chargedByLineresponse, SubwayFare.BASIC_FARE.add(SurchargeByLine.SINBUNDANG.amount()));
 
         //given
         Map<String, Long> 노선_거리_할증_노선요청_맵 = createPathRequestMap(교대역.getId(), 양재역.getId());
         //when
         ExtractableResponse<Response> chargedByLineAndDistanceResponse = 최단_경로_조회_요청(일반사용자토큰, 노선_거리_할증_노선요청_맵);
-
         //then
         최단_경로_조회됨(chargedByLineAndDistanceResponse, 20);
-        요금_조회됨(chargedByLineAndDistanceResponse, SubwayFare.BASIC_FARE.add(SurchargeByLine.SINBUNDANG.surcharge()).add(BigDecimal.valueOf(200)));
+        요금_조회됨(chargedByLineAndDistanceResponse, SubwayFare.BASIC_FARE.add(SurchargeByLine.SINBUNDANG.amount()).add(BigDecimal.valueOf(200)));
 
         //given
         회원_등록되어_있음("child@email.com", "password", 10);
         TokenRequest request = new TokenRequest("child@email.com", "password");
         String 어린이_토큰 = 로그인_되어_있음(request);
-
         Map<String, Long> 노선_거리_할증_어린이할인_노선요청_맵 = createPathRequestMap(교대역.getId(), 양재역.getId());
-
         //when
-        ExtractableResponse<Response> chargedByLineAndDistanceDiscountByAgeResponse = 최단_경로_조회_요청(일반사용자토큰, 노선_거리_할증_어린이할인_노선요청_맵);
-
+        ExtractableResponse<Response> chargedByLineAndDistanceDiscountByAgeResponse = 최단_경로_조회_요청(어린이_토큰, 노선_거리_할증_어린이할인_노선요청_맵);
         //then
         최단_경로_조회됨(chargedByLineAndDistanceDiscountByAgeResponse, 20);
-        요금_조회됨(chargedByLineAndDistanceDiscountByAgeResponse, SubwayFare.BASIC_FARE.add(SurchargeByLine.SINBUNDANG.surcharge()));
+        BigDecimal expectFare = (SubwayFare.BASIC_FARE  //기본요금
+                .add(SurchargeByLine.SINBUNDANG.amount())    //노선추가금
+                .add(BigDecimal.valueOf(200))   //거리추가금
+                .subtract(DiscountByAge.CHILD.getExcludedPrice()))  //연령 할인금액
+                .multiply(DiscountByAge.CHILD.getPayoutRate()) //연령 할인율
+                .setScale(0, RoundingMode.HALF_UP); //소수점 반올림
+        요금_조회됨(chargedByLineAndDistanceDiscountByAgeResponse, expectFare);
 
 
 

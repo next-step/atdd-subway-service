@@ -23,7 +23,7 @@ class SurchargeByLineTest {
         BigDecimal 일반노선_추가요금 = SurchargeByLine.charge("이호선");
 
         //then
-        assertThat(일반노선_추가요금).isEqualTo(SurchargeByLine.NORMAL.surcharge());
+        assertThat(일반노선_추가요금).isEqualTo(SurchargeByLine.NORMAL.amount());
     }
 
 }

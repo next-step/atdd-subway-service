@@ -22,7 +22,7 @@ public enum SurchargeByLine {
         return name;
     }
 
-    public BigDecimal surcharge() {
+    public BigDecimal amount() {
         return surcharge;
     }
 
