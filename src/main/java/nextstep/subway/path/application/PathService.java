@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.line.application.LineService;
@@ -11,6 +12,7 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 
+import static nextstep.subway.fare.FareAgeRule.discountFareByAge;
 import static nextstep.subway.fare.FareDistanceRule.findFareByDistance;
 
 @Service
@@ -24,7 +26,7 @@ public class PathService {
         this.lineService = lineService;
     }
 
-    public PathResponse findDijkstraPath(Long source, Long target) {
+    public PathResponse findDijkstraPath(LoginMember loginMember, Long source, Long target) {
         Station startStation = stationService.findById(source);
         Station endStation = stationService.findById(target);
 
@@ -32,7 +34,11 @@ public class PathService {
 
         List<Station> pathStations = pathFinder.findShortestPathStations(startStation, endStation);
         int distance = pathFinder.findShortestPathDistance(startStation, endStation);
+
         long fare = getFare(pathStations, distance);
+        if (loginMember.getAge() != null) {
+            fare = discountFareByAge(loginMember.getAge(), fare);
+        }
 
         return getPathResponse(pathStations, distance, fare);
     }
@@ -46,7 +52,7 @@ public class PathService {
             Section section = lineService.findSectionByStation(upStation, downStation);
 
             long lineFare = section.getLine().getFare();
-            lineMaxFare = lineFare > lineMaxFare ? lineFare : lineMaxFare;
+            lineMaxFare = Math.max(lineFare, lineMaxFare);
         }
 
         return lineMaxFare + findFareByDistance(distance);
