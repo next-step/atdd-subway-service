@@ -11,6 +11,8 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 
+import static nextstep.subway.fare.FareDistanceRule.findFareByDistance;
+
 @Service
 public class PathService {
 
@@ -30,16 +32,32 @@ public class PathService {
 
         List<Station> pathStations = pathFinder.findShortestPathStations(startStation, endStation);
         int distance = pathFinder.findShortestPathDistance(startStation, endStation);
+        long fare = getFare(pathStations, distance);
 
-        return getPathResponse(pathStations, distance);
+        return getPathResponse(pathStations, distance, fare);
     }
 
-    private PathResponse getPathResponse(List<Station> stations, int distance) {
+    private long getFare(List<Station> pathStations, int distance) {
+        long lineMaxFare = 0;
+
+        for (int i = 1; i< pathStations.size(); i++) {
+            Station upStation = pathStations.get(i-1);
+            Station downStation = pathStations.get(i);
+            Section section = lineService.findSectionByStation(upStation, downStation);
+
+            long lineFare = section.getLine().getFare();
+            lineMaxFare = lineFare > lineMaxFare ? lineFare : lineMaxFare;
+        }
+
+        return lineMaxFare + findFareByDistance(distance);
+    }
+
+    private PathResponse getPathResponse(List<Station> stations, int distance, long fare) {
         List<StationResponse> stationResponses = stations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
 
-        return new PathResponse(stationResponses, distance);
+        return new PathResponse(stationResponses, distance, fare);
     }
 
     private PathFinder getPathFinder() {

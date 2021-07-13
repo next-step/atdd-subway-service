@@ -6,6 +6,7 @@ import java.util.List;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -21,10 +22,12 @@ public class LineService {
 
     private final LineRepository lineRepository;
     private final StationService stationService;
+    private final SectionRepository sectionRepository;
 
-    public LineService(final LineRepository lineRepository, final StationService stationService) {
+    public LineService(final LineRepository lineRepository, final StationService stationService, final SectionRepository sectionRepository) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
+        this.sectionRepository = sectionRepository;
     }
 
     public LineResponse saveLine(LineRequest request) {
@@ -87,5 +90,9 @@ public class LineService {
     public List<Section> findAllSection() {
         return lineRepository.findAll().stream().flatMap((line) -> line.getSections())
             .collect(toList());
+    }
+
+    public Section findSectionByStation(Station upStation, Station downStation) {
+        return sectionRepository.findByUpStationAndDownStation(upStation,downStation);
     }
 }
