@@ -28,35 +28,10 @@ public class PathFinder {
         path = findShortest(source, target, lines);
     }
 
-    private Integer maxSurcharge(List<Line> lines) {
-        return lines.stream()
-                .map(Line::getSurcharge)
-                .max(Integer::compare)
-                .orElse(MINIMUM_FARE);
-    }
-
     private void validateEquals(Station source, Station target) {
         if (source.equals(target)) {
             throw new NotValidatePathException();
         }
-    }
-
-    public PathResponse findShortestPathToResponse(int age) {
-        List<Station> shortestStations = findShortestPath();
-
-        int distance = calculateShortestDistance();
-
-        int calculateFare = fare.calculateFare(age, distance);
-
-        return new PathResponse(StationsResponse.of(shortestStations), distance, calculateFare);
-    }
-
-    private int calculateShortestDistance() {
-        return (int) path.getWeight();
-    }
-
-    private List<Station> findShortestPath() {
-        return path.getVertexList();
     }
 
     private GraphPath<Station, DefaultWeightedEdge> findShortest(Station source, Station target, List<Line> lines) {
@@ -85,6 +60,31 @@ public class PathFinder {
         }
 
         return path;
+    }
+
+    private Integer maxSurcharge(List<Line> lines) {
+        return lines.stream()
+                .map(Line::getSurcharge)
+                .max(Integer::compare)
+                .orElse(MINIMUM_FARE);
+    }
+
+    public PathResponse findShortestPathToResponse(int age) {
+        List<Station> shortestStations = findShortestPath();
+
+        int distance = calculateShortestDistance();
+
+        int calculateFare = fare.calculateFare(age, distance);
+
+        return new PathResponse(StationsResponse.of(shortestStations), distance, calculateFare);
+    }
+
+    private List<Station> findShortestPath() {
+        return path.getVertexList();
+    }
+
+    private int calculateShortestDistance() {
+        return (int) path.getWeight();
     }
 
     private void addSectionsToGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> sections) {

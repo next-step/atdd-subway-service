@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import static nextstep.subway.path.domain.Fare.OVER_FEE;
 
 public enum DistancePolicy {
+
     MINIMUM_BOUNDARY_DISTANCE(10),
     MAXIMUM_BOUNDARY_DISTANCE(50),
     ADDED_DISTANCE_UNDER_MAXIMUM_BOUNDARY(5),

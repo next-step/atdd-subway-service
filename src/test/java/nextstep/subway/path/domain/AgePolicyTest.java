@@ -29,5 +29,4 @@ class AgePolicyTest {
         //then
         assertThat(isTeenager).isEqualTo(expected);
     }
-
 }
