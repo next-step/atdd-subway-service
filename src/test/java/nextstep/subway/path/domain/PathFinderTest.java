@@ -9,6 +9,8 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.util.List;
 
@@ -136,7 +138,7 @@ public class PathFinderTest {
         //when
         PathFinder pathFinder = new PathFinder(강남역, 발산역, List.of(sourceLine, targetLine));
 
-        assertThat(pathFinder.getFare()).isEqualTo(2450);
+        assertThat(pathFinder.getFare()).isEqualTo(new Fare(2450));
     }
 
     @DisplayName("로그인한 사용자의 age가 15세인 경우 20 할인된 금액으로 계산된다.")
@@ -151,5 +153,14 @@ public class PathFinderTest {
         PathResponse response = pathFinder.findShortestPathToResponse(15);
 
         assertThat(response.getFare()).isEqualTo(2200);
+    }
+
+    @DisplayName("추가로 계산되어야하는 거리의 요금을 구한다.")
+    @ParameterizedTest
+    @CsvSource({"40, 600", "20, 200"})
+    void calculateOverDistance_test(int pathDistance, int expectedOverFare) {
+        int overDistance = DistancePolicy.ADDED_DISTANCE_UNDER_MAXIMUM_BOUNDARY.calculateOverFare(pathDistance);
+
+        assertThat(overDistance).isEqualTo(expectedOverFare);
     }
 }
