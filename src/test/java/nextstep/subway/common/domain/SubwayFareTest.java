@@ -1,11 +1,14 @@
 package nextstep.subway.common.domain;
 
+import nextstep.subway.exception.IllegalFareException;
+import nextstep.subway.exception.NoFavoriteException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SubwayFareTest {
@@ -34,6 +37,18 @@ class SubwayFareTest {
 
         //then
         assertThat(charedFare).isEqualTo(BigDecimal.valueOf(1000));
+    }
+
+
+    @DisplayName("지하철 요금은 음 수일 순 없다")
+    @Test
+    void subwaychargedFareCreateFailBecauseOfMinusTest() {
+
+        //when && then
+        assertThatThrownBy(() -> new SubwayFare(BigDecimal.valueOf(-1)))
+                .isInstanceOf(IllegalFareException.class)
+                .hasMessageContaining("지하철 요금은 마이너스가 될 수 없습니다.");
+
     }
 
 }

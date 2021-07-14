@@ -99,7 +99,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> chargedByLineresponse = 최단_경로_조회_요청(일반사용자토큰, 노선_할증_노선요청_맵);
         //then
         최단_경로_조회됨(chargedByLineresponse, 10);
-        요금_조회됨(chargedByLineresponse, SubwayFare.BASIC_FARE.add(SurchargeByLine.SINBUNDANG.amount()));
+        요금_조회됨(chargedByLineresponse, SubwayFare.BASIC_FARE.add(SurchargeByLine.SINBUNDANG.charge()));
 
         //given
         Map<String, Long> 노선_거리_할증_노선요청_맵 = createPathRequestMap(교대역.getId(), 양재역.getId());
@@ -107,7 +107,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> chargedByLineAndDistanceResponse = 최단_경로_조회_요청(일반사용자토큰, 노선_거리_할증_노선요청_맵);
         //then
         최단_경로_조회됨(chargedByLineAndDistanceResponse, 20);
-        요금_조회됨(chargedByLineAndDistanceResponse, SubwayFare.BASIC_FARE.add(SurchargeByLine.SINBUNDANG.amount()).add(BigDecimal.valueOf(200)));
+        요금_조회됨(chargedByLineAndDistanceResponse, SubwayFare.BASIC_FARE.add(SurchargeByLine.SINBUNDANG.charge()).add(BigDecimal.valueOf(200)));
 
         //given
         회원_등록되어_있음("child@email.com", "password", 10);
@@ -119,7 +119,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //then
         최단_경로_조회됨(chargedByLineAndDistanceDiscountByAgeResponse, 20);
         BigDecimal expectFare = (SubwayFare.BASIC_FARE  //기본요금
-                .add(SurchargeByLine.SINBUNDANG.amount())    //노선추가금
+                .add(SurchargeByLine.SINBUNDANG.charge())    //노선추가금
                 .add(BigDecimal.valueOf(200))   //거리추가금
                 .subtract(DiscountByAge.CHILD.getExcludedPrice()))  //연령 할인금액
                 .multiply(DiscountByAge.CHILD.getPayoutRate()) //연령 할인율

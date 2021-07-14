@@ -22,16 +22,12 @@ public enum SurchargeByLine {
         return name;
     }
 
-    public BigDecimal amount() {
+    public BigDecimal charge() {
         return surcharge;
     }
 
-    public static BigDecimal charge(String lineName) {
-        return Arrays.stream(SurchargeByLine.values())
-                .filter(surchargeByLine -> surchargeByLine.name.equals(lineName))
-                .findFirst()
-                .map(surchargeByLine -> surchargeByLine.surcharge)
-                .orElse(NORMAL.surcharge);
-    }
+
+
+
 
 }

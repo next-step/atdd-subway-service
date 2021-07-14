@@ -1,14 +1,18 @@
 package nextstep.subway.common.domain;
 
+import nextstep.subway.exception.IllegalFareException;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.StationGraphPath;
 import nextstep.subway.station.domain.Station;
 
+import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-public class SubwayFare implements FareCaculator{
+@Embeddable
+public class SubwayFare{
+    private static final BigDecimal MINIMUM = BigDecimal.ZERO;
     public static final BigDecimal BASIC_FARE = BigDecimal.valueOf(1250);
     private BigDecimal subwayFare = BASIC_FARE;
 
@@ -16,13 +20,25 @@ public class SubwayFare implements FareCaculator{
     }
 
     public SubwayFare(BigDecimal subwayFare) {
+        validateCheck(subwayFare);
         this.subwayFare = subwayFare.setScale(0, RoundingMode.HALF_UP);
+    }
+
+    public SubwayFare(int subwayFare) {
+        validateCheck(BigDecimal.valueOf(subwayFare));
+        this.subwayFare = BigDecimal.valueOf(subwayFare);
+    }
+
+    private void validateCheck(BigDecimal subwayFare) {
+        if (subwayFare.compareTo(MINIMUM) < 0) {
+            throw new IllegalFareException("지하철 요금은 마이너스가 될 수 없습니다.");
+        }
     }
 
 
     public SubwayFare calculate(List<Section> allSectionList, StationGraphPath stationGraphPath, Integer age) {
         calculateLineSurcharge(allSectionList, stationGraphPath.getPathStations());
-        subwayFare = SurchargeByDistance.charge(subwayFare, stationGraphPath.getDistance());
+//        subwayFare = SurchargeByDistance.charge(subwayFare, stationGraphPath.getDistance());
         subwayFare = DiscountByAge.discount(subwayFare, age);
 
         return new SubwayFare(subwayFare);
@@ -41,5 +57,9 @@ public class SubwayFare implements FareCaculator{
 
     public BigDecimal charged() {
         return subwayFare;
+    }
+
+    public SubwayFare plus(BigDecimal addedFare) {
+       return new SubwayFare(this.subwayFare.add(addedFare));
     }
 }

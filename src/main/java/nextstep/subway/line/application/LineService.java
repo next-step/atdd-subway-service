@@ -1,5 +1,8 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.common.domain.ByLineCalculator;
+import nextstep.subway.common.domain.FareCaculator;
+import nextstep.subway.common.domain.SubwayFare;
 import nextstep.subway.common.domain.SurchargeByLine;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -27,10 +30,13 @@ public class LineService {
         this.stationService = stationService;
     }
 
+
     public LineResponse saveLine(LineRequest request) {
+        FareCaculator byLineCalculator = new ByLineCalculator();
+        SubwayFare surcharge = byLineCalculator.calculate(new SubwayFare(0), request.getName());
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance(), SurchargeByLine.charge(request.getName())));
+        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance(), surcharge));
 
         return LineResponse.of(persistLine, getStationResponses(persistLine));
     }
