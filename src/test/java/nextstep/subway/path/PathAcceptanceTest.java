@@ -11,11 +11,15 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.회원_로그인_됨;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
 
+    private String token;
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
@@ -41,6 +46,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
+
+        회원_생성을_요청(EMAIL, PASSWORD, 28);
+        token = 회원_로그인_됨(EMAIL, PASSWORD);
 
         강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
         양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
@@ -77,6 +85,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, makeAccessToken(token))
                 .param("sourceId", 남부터미널역.getId())
                 .param("targetId", 강남역.getId())
                 .when().get("/paths")
