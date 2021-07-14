@@ -19,17 +19,12 @@ import nextstep.subway.station.dto.StationsResponse;
 
 public class PathFinder {
 
-	private Station source;
-	private Station target;
-	WeightedMultigraph<Station, DefaultWeightedEdge> graph;
-	GraphPath path;
+	private GraphPath path;
 
 	public PathFinder(Station source, Station target, List<Line> lines) {
 		validate(source, target);
-		this.source = source;
-		this.target = target;
-		this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-		this.path = getDijkstraShortestPath(lines);
+		WeightedMultigraph<Object, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+		this.path = getDijkstraShortestPath(graph, lines, source, target);
 	}
 
 	public List<Station> findShortestPath() {
@@ -48,15 +43,15 @@ public class PathFinder {
 		return (int) path.getWeight();
 	}
 
-	private void setGraphByLine(List<Line> lines) {
+	private void setGraphByLine(WeightedMultigraph<Object, DefaultWeightedEdge> graph, List<Line> lines) {
 		lines.stream()
 			.map(Line::getSections)
 			.map(Sections::getSections)
 			.flatMap(Collection::stream)
-			.forEach(section -> setEdgeAndVertex(section));
+			.forEach(section -> setEdgeAndVertex(graph, section));
 	}
 
-	private void setEdgeAndVertex(Section section) {
+	private void setEdgeAndVertex(WeightedMultigraph<Object, DefaultWeightedEdge> graph, Section section) {
 		Station upStation = section.getUpStation();
 		Station downStation = section.getDownStation();
 		graph.addVertex(upStation);
@@ -70,8 +65,11 @@ public class PathFinder {
 		}
 	}
 
-	private GraphPath getDijkstraShortestPath(List<Line> lines) {
-		setGraphByLine(lines);
+	private GraphPath getDijkstraShortestPath(WeightedMultigraph<Object, DefaultWeightedEdge> graph,
+		List<Line> lines,
+		Station source,
+		Station target) {
+		setGraphByLine(graph, lines);
 		DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 		return dijkstraShortestPath.getPath(source, target);
 	}

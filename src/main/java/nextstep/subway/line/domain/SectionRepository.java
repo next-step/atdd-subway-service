@@ -8,5 +8,5 @@ import nextstep.subway.station.domain.Station;
 
 public interface SectionRepository extends JpaRepository<Section, Long> {
 
-	List<Section> findByUpStationOrDownStation(Station upStation, Station downStation);
+	List<Section> findByUpStationOrDownStation(Station Station, Station station);
 }
