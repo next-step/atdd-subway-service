@@ -152,7 +152,7 @@ public class PathFinderTest {
         PathFinder pathFinder = new PathFinder(강남역, 발산역, List.of(sourceLine, targetLine));
         PathResponse response = pathFinder.findShortestPathToResponse(15);
 
-        assertThat(response.getFare()).isEqualTo(2200);
+        assertThat(response.getFare()).isEqualTo(2260);
     }
 
     @DisplayName("추가로 계산되어야하는 거리의 요금을 구한다.")
