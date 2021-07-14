@@ -28,11 +28,11 @@ public class Fare {
     }
 
     private int discountFareByAge(int age) {
-        if (AgeGroup.isTeenager(age)) {
+        if (AgePolicy.isTeenager(age)) {
             return (TEENAGER_DISCOUNT_PERCENT * fare) / PERCENTILE;
         }
 
-        if (AgeGroup.isChild(age)) {
+        if (AgePolicy.isChild(age)) {
             return (CHILD_DISCOUNT_PERCENT * fare) / PERCENTILE;
         }
 
