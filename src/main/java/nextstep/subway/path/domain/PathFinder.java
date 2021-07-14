@@ -22,6 +22,14 @@ public class PathFinder {
     public static final int OVER_FEE = 100;
     public static final int DEFAULT_FARE = 1250;
     public static final int MINIMUM_FARE = 0;
+    public static final int MINIMUM_TEEAGER_AGE = 13;
+    public static final int MAXIMUM_TEENAGER_AGE = 19;
+    public static final int MINIMUM_CHILD_AGE = 6;
+    public static final int MAXIMUM_CHILD_AGE = 13;
+    public static final int ZERO_DISCOUNT = 0;
+    public static final int TEENAGER_DISCOUNT_PERCENT = 20;
+    public static final int CHILD_DISCOUNT_PERCENT = 50;
+    public static final int PERCENTILE = 100;
 
     private final GraphPath<Station, DefaultWeightedEdge> path;
     private final int fare;
@@ -59,15 +67,15 @@ public class PathFinder {
     }
 
     private int discountFareByAge(int age, int fare) {
-        if (age >= 13 && age < 19) {
-            return (20 * fare) / 100;
+        if (age >= MINIMUM_TEEAGER_AGE && age < MAXIMUM_TEENAGER_AGE) {
+            return (TEENAGER_DISCOUNT_PERCENT * fare) / PERCENTILE;
         }
 
-        if (age >= 6 && age < 13) {
-            return (50 * fare) / 100;
+        if (age >= MINIMUM_CHILD_AGE && age < MAXIMUM_CHILD_AGE) {
+            return (CHILD_DISCOUNT_PERCENT * fare) / PERCENTILE;
         }
 
-        return 0;
+        return ZERO_DISCOUNT;
     }
 
     private int calculateFare(int distance) {
