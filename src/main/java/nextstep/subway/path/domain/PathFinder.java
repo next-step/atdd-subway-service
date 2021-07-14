@@ -13,13 +13,18 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
 
+import static nextstep.subway.path.domain.Fare.DEFAULT_FARE;
+import static nextstep.subway.path.domain.Fare.MINIMUM_FARE;
+
 public class PathFinder {
 
     private final GraphPath<Station, DefaultWeightedEdge> path;
+    private final Fare fare;
 
     public PathFinder(Station source, Station target, List<Line> lines) {
         validateEquals(source, target);
 
+        fare = new Fare(DEFAULT_FARE + maxSurcharge(lines));
         path = findShortest(source, target, lines);
     }
 
@@ -27,21 +32,6 @@ public class PathFinder {
         if (source.equals(target)) {
             throw new NotValidatePathException();
         }
-    }
-
-    public PathResponse findShortestPathToResponse() {
-        List<Station> shortestStations = findShortestPath();
-        int distance = calculateShortestDistance();
-
-        return new PathResponse(StationsResponse.of(shortestStations), distance);
-    }
-
-    private int calculateShortestDistance() {
-        return (int) path.getWeight();
-    }
-
-    private List<Station> findShortestPath() {
-        return path.getVertexList();
     }
 
     private GraphPath<Station, DefaultWeightedEdge> findShortest(Station source, Station target, List<Line> lines) {
@@ -72,6 +62,31 @@ public class PathFinder {
         return path;
     }
 
+    private Integer maxSurcharge(List<Line> lines) {
+        return lines.stream()
+                .map(Line::getSurcharge)
+                .max(Integer::compare)
+                .orElse(MINIMUM_FARE);
+    }
+
+    public PathResponse findShortestPathToResponse(int age) {
+        List<Station> shortestStations = findShortestPath();
+
+        int distance = calculateShortestDistance();
+
+        int calculateFare = fare.calculateFare(age, distance);
+
+        return new PathResponse(StationsResponse.of(shortestStations), distance, calculateFare);
+    }
+
+    private List<Station> findShortestPath() {
+        return path.getVertexList();
+    }
+
+    private int calculateShortestDistance() {
+        return (int) path.getWeight();
+    }
+
     private void addSectionsToGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Section> sections) {
         for (Section section : sections) {
             addSectionToGraph(graph, section);
@@ -85,5 +100,9 @@ public class PathFinder {
         graph.addVertex(upStation);
         graph.addVertex(downStation);
         graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance());
+    }
+
+    public Fare getFare() {
+        return fare;
     }
 }
