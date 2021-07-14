@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static nextstep.subway.common.domain.SubwayFare.BASIC_FARE;
+
 @Service
 public class PathService {
     private StationService stationService;
@@ -34,7 +36,8 @@ public class PathService {
         Station targetStation = stationService.findStationById(target);
         List<Section> allSectionList = lineService.findAllLineSectionList();
         StationGraphPath stationGraphPath = new StationGraphPath(sourceStation, targetStation, allSectionList);
-        SubwayFare subwayFare = SubwayFare.calculateSubwayFare(allSectionList, stationGraphPath, loginMember.getAge());
+        SubwayFare subwayFare = new SubwayFare(BASIC_FARE);
+        subwayFare.calculate(allSectionList, stationGraphPath, loginMember.getAge());
 
         return new PathResponse(stationGraphPath.getPathStations(), stationGraphPath.getDistance(), subwayFare.charged());
     }

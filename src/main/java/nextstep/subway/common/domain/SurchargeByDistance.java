@@ -24,7 +24,6 @@ public enum SurchargeByDistance {
 
     public static BigDecimal charge(BigDecimal chargedFare, int distance) {
         return chargedFare.add(surchargedFare(distance));
-
     }
 
     private static BigDecimal surchargedFare(int distance) {
