@@ -1,5 +1,7 @@
 package nextstep.subway.auth.domain;
 
+import nextstep.subway.path.domain.AGE;
+
 public class LoginMember {
     private Long id;
     private String email;
@@ -27,26 +29,14 @@ public class LoginMember {
     }
 
 	public boolean isChild() {
-    	if (age >= 6 && age < 13) {
-			return true;
-		}
-
-		return false;
+    	return AGE.CHILD.isInRange(age);
 	}
 
 	public boolean isAdolescent() {
-		if (age >= 13 && age < 19) {
-			return true;
-		}
-
-		return false;
+    	return AGE.ADOLESCENT.isInRange(age);
 	}
 
 	public boolean isAdult() {
-		if (age >= 19) {
-			return true;
-		}
-
-		return false;
+		return AGE.ADULT.isInRange(age);
 	}
 }
