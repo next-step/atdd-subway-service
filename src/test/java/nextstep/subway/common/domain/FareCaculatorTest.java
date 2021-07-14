@@ -15,17 +15,17 @@ class FareCaculatorTest {
 
         //given && when
         FareCaculator byLineCalculator = new ByLineCalculator();
-        SubwayFare surcharge = byLineCalculator.calculate(new SubwayFare(0), "신분당선");
+        BigDecimal surcharge = byLineCalculator.calculate(BigDecimal.ZERO, "신분당선");
 
         //then
-        assertThat(surcharge.charged()).isEqualTo(SurchargeByLine.SINBUNDANG.charge());
+        assertThat(surcharge).isEqualTo(SurchargeByLine.SINBUNDANG.charge());
 
 
         //given && when
-        surcharge = byLineCalculator.calculate(new SubwayFare(0), "이호선");
+        surcharge = byLineCalculator.calculate(BigDecimal.ZERO, "이호선");
 
         //then
-        assertThat(surcharge.charged()).isEqualTo(SurchargeByLine.NORMAL.charge());
+        assertThat(surcharge).isEqualTo(SurchargeByLine.NORMAL.charge());
     }
 
     @DisplayName("거리에에 따라 추가요금이 다르다")
@@ -33,25 +33,25 @@ class FareCaculatorTest {
     void byDistanceCalculatorTest() {
 
         //given && when
-        SubwayFare chargedFare = new SubwayFare(0);
+        BigDecimal chargedFare = BigDecimal.ZERO;
         FareCaculator byDistanceCalculator = new ByDistanceCalculator();
-        SubwayFare surcharge = byDistanceCalculator.calculate(chargedFare, 10);
+        BigDecimal surcharge = byDistanceCalculator.calculate(chargedFare, 10);
 
         //then
-        assertThat(surcharge.charged()).isEqualTo(BigDecimal.ZERO);
+        assertThat(surcharge).isEqualTo(BigDecimal.ZERO);
 
 
         //given && when
         surcharge = byDistanceCalculator.calculate(chargedFare, 15);
 
         //then
-        assertThat(surcharge.charged()).isEqualTo(BigDecimal.valueOf(100));
+        assertThat(surcharge).isEqualTo(BigDecimal.valueOf(100));
 
         //given && when
         surcharge = byDistanceCalculator.calculate(chargedFare, 51);
 
         //then
-        assertThat(surcharge.charged()).isEqualTo(BigDecimal.valueOf(900));
+        assertThat(surcharge).isEqualTo(BigDecimal.valueOf(900));
     }
 
     @DisplayName("나이에에 따라 요금이 할인된다")
@@ -65,49 +65,49 @@ class FareCaculatorTest {
         BigDecimal 청소년요금 = BigDecimal.valueOf(720);
         BigDecimal 일반요금 = BigDecimal.valueOf(1250);
         BigDecimal 노인요금 = BigDecimal.ZERO;
-        SubwayFare chargedFare = new SubwayFare(SubwayFare.BASIC_FARE);
+        BigDecimal chargedFare =SubwayFare.BASIC_FARE;
         FareCaculator byAgeCalculator = new ByAgeCalculator();
-        SubwayFare surcharge = byAgeCalculator.calculate(chargedFare, 6);
+        BigDecimal surcharge = byAgeCalculator.calculate(chargedFare, 6);
 
         //then
-        assertThat(surcharge.charged()).isEqualTo(유아요금);
+        assertThat(surcharge).isEqualTo(유아요금);
 
 
         //given && when
         surcharge = byAgeCalculator.calculate(chargedFare, 7);
 
         //then
-        assertThat(surcharge.charged()).isNotEqualTo(유아요금);
-        assertThat(surcharge.charged()).isEqualTo(어린이요금);
+        assertThat(surcharge).isNotEqualTo(유아요금);
+        assertThat(surcharge).isEqualTo(어린이요금);
 
         //given && when
         surcharge = byAgeCalculator.calculate(chargedFare, 14);
 
         //then
-        assertThat(surcharge.charged()).isNotEqualTo(어린이요금);
-        assertThat(surcharge.charged()).isEqualTo(청소년요금);
+        assertThat(surcharge).isNotEqualTo(어린이요금);
+        assertThat(surcharge).isEqualTo(청소년요금);
 
         //given && when
         surcharge = byAgeCalculator.calculate(chargedFare, 19);
 
         //then
-        assertThat(surcharge.charged()).isNotEqualTo(청소년요금);
-        assertThat(surcharge.charged()).isEqualTo(일반요금);
+        assertThat(surcharge).isNotEqualTo(청소년요금);
+        assertThat(surcharge).isEqualTo(일반요금);
 
 
         //given && when
         surcharge = byAgeCalculator.calculate(chargedFare, 65);
 
         //then
-        assertThat(surcharge.charged()).isNotEqualTo(노인요금);
-        assertThat(surcharge.charged()).isEqualTo(일반요금);
+        assertThat(surcharge).isNotEqualTo(노인요금);
+        assertThat(surcharge).isEqualTo(일반요금);
 
         //given && when
         surcharge = byAgeCalculator.calculate(chargedFare, 66);
 
         //then
-        assertThat(surcharge.charged()).isNotEqualTo(일반요금);
-        assertThat(surcharge.charged()).isEqualTo(노인요금);
+        assertThat(surcharge).isNotEqualTo(일반요금);
+        assertThat(surcharge).isEqualTo(노인요금);
     }
 
 

@@ -42,13 +42,6 @@ public class Line extends BaseEntity {
         this.surcharge = new SubwayFare(surcharge);
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance, SubwayFare surcharge) {
-        this.name = name;
-        this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
-        this.surcharge = surcharge;
-    }
-
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();

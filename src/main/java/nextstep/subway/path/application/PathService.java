@@ -31,7 +31,6 @@ public class PathService {
     }
     public PathResponse findShortestPath(LoginMember loginMember, Long source, Long target) {
         checkSameStation(source, target);
-
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
         List<Section> allSectionList = lineService.findAllLineSectionList();

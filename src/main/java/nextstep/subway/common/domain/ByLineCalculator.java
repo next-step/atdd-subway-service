@@ -5,16 +5,16 @@ import java.util.Arrays;
 
 import static nextstep.subway.common.domain.SurchargeByLine.NORMAL;
 
-public class ByLineCalculator implements FareCaculator<SubwayFare, String> {
+public class ByLineCalculator implements FareCaculator<BigDecimal, String> {
 
     @Override
-    public SubwayFare calculate(SubwayFare subwayFare, String linName) {
+    public BigDecimal calculate(BigDecimal subwayFare, String linName) {
         BigDecimal surcharge = Arrays.stream(SurchargeByLine.values())
                 .filter(surchargeByLine -> surchargeByLine.getName().equals(linName))
                 .findFirst()
                 .map(surchargeByLine -> surchargeByLine.charge())
                 .orElse(NORMAL.charge());
 
-        return new SubwayFare(surcharge);
+        return surcharge;
     }
 }

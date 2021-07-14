@@ -2,16 +2,13 @@ package nextstep.subway.common.domain;
 
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Arrays;
 
-import static nextstep.subway.common.domain.SurchargeByDistance.*;
-
-public class ByAgeCalculator implements FareCaculator<SubwayFare, Integer> {
+public class ByAgeCalculator implements FareCaculator<BigDecimal, Integer> {
 
     @Override
-    public SubwayFare calculate(SubwayFare subwayFare, Integer age) {
-        return new SubwayFare(discount(subwayFare.charged(), age));
+    public BigDecimal calculate(BigDecimal subwayFare, Integer age) {
+        return discount(subwayFare, age);
     }
 
     public static BigDecimal discount(BigDecimal chargedFare, Integer userAge) {

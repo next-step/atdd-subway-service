@@ -6,11 +6,11 @@ import java.math.RoundingMode;
 
 import static nextstep.subway.common.domain.SurchargeByDistance.*;
 
-public class ByDistanceCalculator implements FareCaculator<SubwayFare, Integer> {
+public class ByDistanceCalculator implements FareCaculator<BigDecimal, Integer> {
 
     @Override
-    public SubwayFare calculate(SubwayFare subwayFare, Integer distance) {
-        return subwayFare.plus(surchargedFare(distance));
+    public BigDecimal calculate(BigDecimal subwayFare, Integer distance) {
+        return subwayFare.add(surchargedFare(distance));
     }
 
 
