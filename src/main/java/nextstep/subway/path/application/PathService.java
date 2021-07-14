@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.AgePolicy;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -26,7 +27,7 @@ public class PathService {
         this.lineRepository = lineRepository;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findPath(Long source, Long target, AgePolicy agePolicy) {
         Station start = stationRepository.findById(source).orElseThrow(NotFoundStationException::new);
         Station end = stationRepository.findById(target).orElseThrow(NotFoundStationException::new);
         List<Line> lines = lineRepository.findAll();
@@ -34,7 +35,7 @@ public class PathService {
 
         List<StationResponse> stations = path.findShortestPath(start, end).stream().map(StationResponse::of).collect(toList());
         int minDistance = path.findShortestDistance(start, end);
-
-        return PathResponse.of(stations, minDistance);
+        long fare = path.findPathFare(start, end, agePolicy).getValue();
+        return PathResponse.of(stations, minDistance, fare);
     }
 }

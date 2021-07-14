@@ -19,7 +19,6 @@ import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.exeption.NotFoundStationException;
 
 @Service
-@Transactional(readOnly = true)
 public class FavoriteService {
     private FavoriteRepository favoriteRepository;
     private MemberRepository memberRepository;

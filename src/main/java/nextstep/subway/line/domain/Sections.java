@@ -12,8 +12,10 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
 import nextstep.subway.line.exeption.CanNotDeleteStateException;
+import nextstep.subway.line.exeption.NotFoundSectionException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.exeption.CanNotAddStationException;
+import nextstep.subway.station.exeption.DuplicateStationException;
 import nextstep.subway.station.exeption.RegisteredStationException;
 
 @Embeddable
@@ -117,7 +119,16 @@ public class Sections {
         return section;
     }
 
-    public List<Section> getSections() {
+    public List<Section> findAll() {
         return new ArrayList<>(this.sections);
+    }
+
+    public Section findByStation(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new DuplicateStationException();
+        }
+        return sections.stream().filter(s -> (s.containStation(source) && s.containStation(target)))
+                                .findFirst()
+                                .orElseThrow(NotFoundSectionException::new);
     }
 }

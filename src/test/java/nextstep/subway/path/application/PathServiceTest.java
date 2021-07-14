@@ -16,6 +16,7 @@ import com.google.common.collect.Lists;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.AgePolicy;
 import nextstep.subway.path.exception.DuplicatePathException;
 import nextstep.subway.path.exception.NotConnectedPathException;
 import nextstep.subway.station.domain.Station;
@@ -56,7 +57,7 @@ class PathServiceTest {
         PathService pathService = new PathService(stationRepository, lineRepository);
 
         // then
-        assertThat(pathService.findPath(1L, 2L).getDistance()).isEqualTo(10);
+        assertThat(pathService.findPath(1L, 2L, AgePolicy.NONE).getDistance()).isEqualTo(10);
     }
 
     @Test
@@ -70,7 +71,7 @@ class PathServiceTest {
         PathService pathService = new PathService(stationRepository, lineRepository);
 
         // then
-        assertThatThrownBy(() -> pathService.findPath(1L, 1L)).isInstanceOf(DuplicatePathException.class);
+        assertThatThrownBy(() -> pathService.findPath(1L, 1L, AgePolicy.NONE)).isInstanceOf(DuplicatePathException.class);
     }
 
     @Test
@@ -85,8 +86,8 @@ class PathServiceTest {
         PathService pathService = new PathService(stationRepository, lineRepository);
 
         // then
-        assertThatThrownBy(() -> pathService.findPath(1L, 3L)).isInstanceOf(NotConnectedPathException.class);
-        assertThatThrownBy(() -> pathService.findPath(3L, 1L)).isInstanceOf(NotConnectedPathException.class);
+        assertThatThrownBy(() -> pathService.findPath(1L, 3L, AgePolicy.NONE)).isInstanceOf(NotConnectedPathException.class);
+        assertThatThrownBy(() -> pathService.findPath(3L, 1L, AgePolicy.NONE)).isInstanceOf(NotConnectedPathException.class);
     }
 
     @Test
@@ -101,7 +102,7 @@ class PathServiceTest {
         PathService pathService = new PathService(stationRepository, lineRepository);
 
         // then
-        assertThatThrownBy(() -> pathService.findPath(1L, 5L)).isInstanceOf(NotFoundStationException.class);
-        assertThatThrownBy(() -> pathService.findPath(5L, 1L)).isInstanceOf(NotFoundStationException.class);
+        assertThatThrownBy(() -> pathService.findPath(1L, 5L, AgePolicy.NONE)).isInstanceOf(NotFoundStationException.class);
+        assertThatThrownBy(() -> pathService.findPath(5L, 1L, AgePolicy.NONE)).isInstanceOf(NotFoundStationException.class);
     }
 }

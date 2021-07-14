@@ -1,6 +1,6 @@
 package nextstep.subway.member.domain;
 
-import static nextstep.subway.auth.common.Constants.*;
+import static nextstep.subway.common.constants.AuthConstants.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
