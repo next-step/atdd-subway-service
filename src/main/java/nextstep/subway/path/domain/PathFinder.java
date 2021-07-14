@@ -46,12 +46,28 @@ public class PathFinder {
         }
     }
 
-    public PathResponse findShortestPathToResponse() {
+    public PathResponse findShortestPathToResponse(int age) {
         List<Station> shortestStations = findShortestPath();
 
         int distance = calculateShortestDistance();
 
-        return new PathResponse(StationsResponse.of(shortestStations), distance, calculateFare(distance));
+        int fare = calculateFare(distance);
+
+        int discount = discountFareByAge(age, fare);
+
+        return new PathResponse(StationsResponse.of(shortestStations), distance, fare - discount);
+    }
+
+    private int discountFareByAge(int age, int fare) {
+        if (age >= 13 && age < 19) {
+            return (20 * fare) / 100;
+        }
+
+        if (age >= 6 && age < 13) {
+            return (50 * fare) / 100;
+        }
+
+        return 0;
     }
 
     private int calculateFare(int distance) {

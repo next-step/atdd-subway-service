@@ -28,6 +28,6 @@ public class PathService {
         List<Line> lineByUpStationOrDownStation = lineService.findLineByUpStationOrDownStation(source, target);
 
         PathFinder pathFinder = new PathFinder(source, target, lineByUpStationOrDownStation);
-        return pathFinder.findShortestPathToResponse();
+        return pathFinder.findShortestPathToResponse(45);
     }
 }
