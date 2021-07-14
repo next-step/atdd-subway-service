@@ -1,6 +1,6 @@
 package nextstep.subway.path.domain;
 
-public enum AgeGroup {
+public enum AgePolicy {
 
     MINIMUM_TEENAGER_AGE(13),
     MAXIMUM_TEENAGER_AGE(19),
@@ -9,7 +9,7 @@ public enum AgeGroup {
 
     private final int age;
 
-    AgeGroup(int age) {
+    AgePolicy(int age) {
         this.age = age;
     }
 
