@@ -31,9 +31,10 @@ public class FavoriteController {
 	}
 
 	@PostMapping
-	public ResponseEntity<FavoriteResponse> createStation(@RequestBody FavoriteRequest favoriteRequest) {
-		FavoriteResponse favorite = favoriteService.saveFavorite(favoriteRequest);
-		return ResponseEntity.created(URI.create("/stations/" + favorite.getId())).body(favorite);
+	public ResponseEntity<FavoriteResponse> createStation(@AuthenticationPrincipal LoginMember loginMember,
+		@RequestBody FavoriteRequest favoriteRequest) {
+		FavoriteResponse favorite = favoriteService.saveFavorite(loginMember, favoriteRequest);
+		return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).body(favorite);
 	}
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
