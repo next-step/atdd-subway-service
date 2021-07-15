@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 public class AuthServiceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
-    public static final int AGE = 10;
+    public static final int AGE = 30;
 
     private AuthService authService;
 

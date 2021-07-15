@@ -1,5 +1,7 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.common.domain.SubwayFare;
 import nextstep.subway.exception.NoPathException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
@@ -16,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static nextstep.subway.common.domain.SubwayFare.BASIC_FARE;
+
 @Service
 public class PathService {
     private StationService stationService;
@@ -25,16 +29,16 @@ public class PathService {
         this.stationService = stationService;
         this.lineService = lineService;
     }
-    public PathResponse findShortestPath(Long source, Long target) {
+    public PathResponse findShortestPath(LoginMember loginMember, Long source, Long target) {
         checkSameStation(source, target);
-
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
         List<Section> allSectionList = lineService.findAllLineSectionList();
         StationGraphPath stationGraphPath = new StationGraphPath(sourceStation, targetStation, allSectionList);
+        SubwayFare subwayFare = new SubwayFare(BASIC_FARE);
+        subwayFare.calculate(allSectionList, stationGraphPath, loginMember.getAge());
 
-
-        return new PathResponse(stationGraphPath.getPathStations(), stationGraphPath.getDistance());
+        return new PathResponse(stationGraphPath.getPathStations(), stationGraphPath.getDistance(), subwayFare.charged());
     }
 
     public GraphPath<Station, DefaultWeightedEdge> generateShortestPath(Station source, Station target, List<Line> lines) {

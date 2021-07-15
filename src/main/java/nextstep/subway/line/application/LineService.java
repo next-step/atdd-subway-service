@@ -1,5 +1,9 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.common.domain.ByLineCalculator;
+import nextstep.subway.common.domain.FareCaculator;
+import nextstep.subway.common.domain.SubwayFare;
+import nextstep.subway.common.domain.SurchargeByLine;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -12,6 +16,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,12 +31,24 @@ public class LineService {
         this.stationService = stationService;
     }
 
+
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        Line persistLine = lineRepository.save(
+                new Line(request.getName()
+                        , request.getColor()
+                        , upStation
+                        , downStation
+                        , request.getDistance()
+                        , calculateByLine(request.getName())));
 
         return LineResponse.of(persistLine, getStationResponses(persistLine));
+    }
+
+    private BigDecimal calculateByLine(String name) {
+        FareCaculator lineCalculator = new ByLineCalculator();
+        return lineCalculator.calculate(SubwayFare.ZERO, name);
     }
 
     @Transactional(readOnly = true)
