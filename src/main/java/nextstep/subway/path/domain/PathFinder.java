@@ -27,20 +27,19 @@ public class PathFinder {
 		this.path = getDijkstraShortestPath(graph, lines, source, target);
 	}
 
-	public List<Station> findShortestPath() {
-		if (path == null) {
-			throw new InvalidPathException();
+	private void validate(Station source, Station target) {
+		if(source.equals(target)) {
+			throw new SameStationException();
 		}
-		return path.getVertexList();
 	}
 
-	public PathResponse findShortestPathPathResponse() {
-		List<Station> stations = findShortestPath();
-		return PathResponse.of(StationsResponse.of(stations), shortestPathDistance());
-	}
-
-	public int shortestPathDistance() {
-		return (int) path.getWeight();
+	private GraphPath getDijkstraShortestPath(WeightedMultigraph<Object, DefaultWeightedEdge> graph,
+		List<Line> lines,
+		Station source,
+		Station target) {
+		setGraphByLine(graph, lines);
+		DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+		return dijkstraShortestPath.getPath(source, target);
 	}
 
 	private void setGraphByLine(WeightedMultigraph<Object, DefaultWeightedEdge> graph, List<Line> lines) {
@@ -59,18 +58,19 @@ public class PathFinder {
 		graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance());
 	}
 
-	private void validate(Station source, Station target) {
-		if(source.equals(target)) {
-			throw new SameStationException();
-		}
+	public PathResponse findShortestPathPathResponse() {
+		List<Station> stations = findShortestPath();
+		return PathResponse.of(StationsResponse.of(stations), shortestPathDistance());
 	}
 
-	private GraphPath getDijkstraShortestPath(WeightedMultigraph<Object, DefaultWeightedEdge> graph,
-		List<Line> lines,
-		Station source,
-		Station target) {
-		setGraphByLine(graph, lines);
-		DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-		return dijkstraShortestPath.getPath(source, target);
+	public List<Station> findShortestPath() {
+		if (path == null) {
+			throw new InvalidPathException();
+		}
+		return path.getVertexList();
+	}
+
+	public int shortestPathDistance() {
+		return (int) path.getWeight();
 	}
 }

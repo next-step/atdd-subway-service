@@ -75,6 +75,7 @@ public class LineService {
         line.removeStation(station);
     }
 
+    @Transactional(readOnly = true)
     public List<Line> fineLinesByStations(Station upStation, Station downStation) {
         List<Section> sectionsByUpStation = sectionRepository.findByUpStationOrDownStation(upStation, upStation);
         List<Section> sectionsByDownStation = sectionRepository.findByUpStationOrDownStation(downStation, downStation);
