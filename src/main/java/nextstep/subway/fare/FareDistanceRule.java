@@ -8,19 +8,21 @@ import java.util.stream.Collectors;
 
 
 public enum FareDistanceRule {
-    추가운임_50km_초과(8, 100, 50),
-    추가운임_10km_초과_50km_이내(5, 100, 10);
+    OVER_50km(8, 100, 50, Integer.MAX_VALUE),
+    OVER_10km_INNER_50km(5, 100, 10, 50);
 
     private static final long DEFAULT_FARE = 1250;
 
     private final int fareDistance;
     private final long surcharge;
     private final int minDistance;
+    private final int maxDistance;
 
-    FareDistanceRule(int fareDistance, long surcharge, int minDistance) {
+    FareDistanceRule(int fareDistance, long surcharge, int minDistance, int maxDistance) {
         this.fareDistance = fareDistance;
         this.surcharge = surcharge;
         this.minDistance = minDistance;
+        this.maxDistance = maxDistance;
     }
 
     public int getFareDistance() {
@@ -33,6 +35,10 @@ public enum FareDistanceRule {
 
     public int getMinDistance() {
         return minDistance;
+    }
+
+    public int getMaxDistance() {
+        return this.maxDistance;
     }
 
     public static long findFareByDistance(int distance) {
@@ -53,7 +59,7 @@ public enum FareDistanceRule {
     }
 
     private static boolean isRuleDistance(int distance, FareDistanceRule rule) {
-        return distance > rule.getMinDistance();
+        return rule.getMaxDistance() >= distance && distance > rule.getMinDistance();
     }
 
     private static long findSurcharge(FareDistanceRule fareDistanceRule, int distance) {

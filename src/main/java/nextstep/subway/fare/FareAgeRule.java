@@ -2,11 +2,12 @@ package nextstep.subway.fare;
 
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public enum FareAgeRule {
-    청소년(13, 19, 0.8),
-    어린이(6, 13, 0.5);
+    TEENAGER(13, 19, 0.8),
+    CHILD(6, 13, 0.5);
 
     private static final long AGE_DISCOUNT_FARE = 350;
 
@@ -24,19 +25,23 @@ public enum FareAgeRule {
         return discountRate;
     }
 
-    public static long discountFareByAge(Integer age, long fare) {
+    public static Optional<FareAgeRule> fareByAge(Integer age) {
         return Arrays.stream(FareAgeRule.values())
-                .filter(validateAge(age))
-                .findFirst()
-                .map(fareAgeRule -> fareAgeRule.discount(fare))
-                .orElse(fare);
+                .filter(matchAge(age))
+                .findFirst();
+    }
+
+    private static Predicate<FareAgeRule> matchAge(Integer age) {
+        return fareAgeRule -> age != null && fareAgeRule.minAge <= age && fareAgeRule.maxAge > age;
+    }
+
+    public static long fareByDiscount(Optional<FareAgeRule> fareAgeRule, long fare) {
+        return fareAgeRule
+            .map(fareAgeRule2 -> fareAgeRule2.discount(fare))
+            .orElse(fare);
     }
 
     private long discount(long fare) {
         return (long) ((fare - AGE_DISCOUNT_FARE) * getDiscountRate());
-    }
-
-    private static Predicate<FareAgeRule> validateAge(Integer age) {
-        return fareAgeRule -> age != null && fareAgeRule.minAge <= age && fareAgeRule.maxAge > age;
     }
 }
