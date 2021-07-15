@@ -1,5 +1,7 @@
 package nextstep.subway.member;
 
+import static nextstep.subway.auth.acceptance.AuthTestMethod.*;
+import static nextstep.subway.member.MemberTestMethod.*;
 import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -23,48 +25,48 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMember() {
         // when
-        ExtractableResponse<Response> createResponse = MemberTestMethod.회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
         // then
-		MemberTestMethod.회원_생성됨(createResponse);
+		회원_생성됨(createResponse);
 
         // when
-        ExtractableResponse<Response> findResponse = MemberTestMethod.회원_정보_조회_요청(createResponse);
+        ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(createResponse);
         // then
-		MemberTestMethod.회원_정보_조회됨(findResponse, EMAIL, AGE);
+		회원_정보_조회됨(findResponse, EMAIL, AGE);
 
         // when
-        ExtractableResponse<Response> updateResponse = MemberTestMethod.회원_정보_수정_요청(createResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
         // then
-		MemberTestMethod.회원_정보_수정됨(updateResponse);
+		회원_정보_수정됨(updateResponse);
 
         // when
-        ExtractableResponse<Response> deleteResponse = MemberTestMethod.회원_삭제_요청(createResponse);
+        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
         // then
-		MemberTestMethod.회원_삭제됨(deleteResponse);
+		회원_삭제됨(deleteResponse);
     }
 
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
 		// Scenario : 나의 정보 관리 시나리오
-		// Given : 회원 등록되어 있음
-		ExtractableResponse<Response> createResponse = MemberTestMethod.회원_생성을_요청(EMAIL, PASSWORD, AGE);
-		// And : token 정보 가지고 있음
-		String token = AuthTestMethod.getToken(AuthTestMethod.login(EMAIL, PASSWORD));
-		// When : 나의 정보 조회 요청
-		ExtractableResponse<Response> MyInfoResponse1 = MemberTestMethod.findMyInformation(token);
-		// Then : 나의 정보 조회
+		// Given
+		ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+		// And
+		String token = getToken(login(EMAIL, PASSWORD));
+		// When
+		ExtractableResponse<Response> MyInfoResponse1 = findMyInformation(token);
+		// Then
 		assertThat(MyInfoResponse1.statusCode()).isEqualTo(HttpStatus.OK.value());
-		// When : 나의 정보 업데이트 요청
-		ExtractableResponse<Response> MyInfoResponse2 = MemberTestMethod.updateMyInformation(token, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
-		// Then : 업데이트 된 정보 조회
-		String newToken = AuthTestMethod.getToken(AuthTestMethod.login(NEW_EMAIL, NEW_PASSWORD));
+		// When
+		ExtractableResponse<Response> MyInfoResponse2 = updateMyInformation(token, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+		// Then
+		String newToken = getToken(login(NEW_EMAIL, NEW_PASSWORD));
 		assertThat(MyInfoResponse2.statusCode()).isEqualTo(HttpStatus.OK.value());
-		ExtractableResponse<Response> MyInfoResponse3 = MemberTestMethod.findMyInformation(newToken);
+		ExtractableResponse<Response> MyInfoResponse3 = findMyInformation(newToken);
 		assertThat(MyInfoResponse3.statusCode()).isEqualTo(HttpStatus.OK.value());
-		// When : 나의 정보 삭제 요청
-		ExtractableResponse<Response> MyInfoResponse4 = MemberTestMethod.deleteMyInformation(newToken);
-		// Then : 나의 정보 삭제 확인
+		// When
+		ExtractableResponse<Response> MyInfoResponse4 = deleteMyInformation(newToken);
+		// Then
 		assertThat(MyInfoResponse4.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }

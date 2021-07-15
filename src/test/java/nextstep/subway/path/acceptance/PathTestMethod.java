@@ -11,6 +11,17 @@ import io.restassured.response.Response;
 import nextstep.subway.station.dto.StationResponse;
 
 public class PathTestMethod {
+	public static ExtractableResponse<Response> findPath(Long startStationId, Long destinationStationId, String token) {
+		return RestAssured
+			.given().log().all()
+			.auth().oauth2(token)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when().get("/path?source=" + startStationId + "&target=" + destinationStationId)
+			.then().log().all()
+			.extract();
+	}
+
 	public static ExtractableResponse<Response> findPath(Long startStationId, Long destinationStationId) {
 		return RestAssured
 			.given().log().all()
