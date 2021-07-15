@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.favorite.dto.FavoriteResponses;
 
 @RestController
 @RequestMapping("/favorites")
@@ -34,8 +37,8 @@ public class FavoriteController {
 	}
 
 	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<FavoriteResponse>> showStations() {
-		return ResponseEntity.ok().body(favoriteService.findAllFavorites());
+	public ResponseEntity<FavoriteResponses> showStations(@AuthenticationPrincipal LoginMember loginMember) {
+		return ResponseEntity.ok().body(favoriteService.findAllFavorites(loginMember));
 	}
 
 	@DeleteMapping("/{id}")
