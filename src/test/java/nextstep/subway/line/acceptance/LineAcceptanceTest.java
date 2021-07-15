@@ -125,6 +125,10 @@ public class LineAcceptanceTest extends AcceptanceTest {
         return 지하철_노선_생성_요청(new LineRequest(name, color, upStation.getId(), downStation.getId(), distance));
     }
 
+    public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, long fare) {
+        return 지하철_노선_생성_요청(new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, fare));
+    }
+
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
         return RestAssured
             .given().log().all()

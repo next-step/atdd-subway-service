@@ -25,12 +25,14 @@ public class SpringExtensionTest {
     private LineRepository lineRepository;
     @MockBean
     private StationService stationService;
+    @MockBean
+    private SectionRepository sectionRepository;
 
     @Test
     void findAllLines() {
         // given
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
-        LineService lineService = new LineService(lineRepository, stationService);
+        LineService lineService = new LineService(lineRepository, stationService, sectionRepository);
 
         // when
         List<LineResponse> responses = lineService.findLines();

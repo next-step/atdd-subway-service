@@ -2,7 +2,9 @@ package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
@@ -12,21 +14,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 class PathFinderTest extends PathTestUtils {
 
     private PathFinder pathFinder;
 
     /**
-     * (10)
+     * (1)
      * 교대역    --- *2호선* ---       강남역
      * |                                |
-     * *3호선*(3)                    *신분당선*(10)
+     * *3호선*(3)                    *신분당선*(2)
      * |                               |
-     * 남부터미널역  --- *3호선*(2) ---   양재
+     * 남부터미널역  --- *3호선*(2) ---   양재역
      */
 
     @BeforeEach
@@ -35,9 +33,9 @@ class PathFinderTest extends PathTestUtils {
         List<Station> stations = Arrays.asList(교대역, 남부터미널역, 강남역, 양재역);
         List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선);
         List<Section> sections = new ArrayList<>();
-
         lines.stream()
-            .map(Line::getSections)
+            .map(Line::getSectionList)
+            .map(Sections::getSections)
             .forEachOrdered(sectionList -> sections.addAll(sectionList));
 
         pathFinder = new PathFinder(stations, sections);
@@ -56,6 +54,6 @@ class PathFinderTest extends PathTestUtils {
 
         // then
         assertThat(stations.size()).isEqualTo(3);
-        assertThat(distance).isEqualTo(5);
+        assertThat(distance).isEqualTo(4);
     }
 }

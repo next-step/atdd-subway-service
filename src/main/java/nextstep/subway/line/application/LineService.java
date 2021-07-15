@@ -6,6 +6,7 @@ import java.util.List;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -20,19 +21,19 @@ public class LineService {
 
     private final LineRepository lineRepository;
     private final StationService stationService;
+    private final SectionRepository sectionRepository;
 
-    public LineService(final LineRepository lineRepository, final StationService stationService) {
+    public LineService(final LineRepository lineRepository, final StationService stationService, final SectionRepository sectionRepository) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
+        this.sectionRepository = sectionRepository;
     }
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(
-            new Line(request.getName(), request.getColor(), upStation, downStation,
-                request.getDistance()));
+        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance(), request.getFare()));
         List<StationResponse> stations = getStationResponse(persistLine);
         return LineResponse.of(persistLine, stations);
     }
@@ -89,5 +90,9 @@ public class LineService {
 
     public List<Section> findAllSection() {
         return lineRepository.findAll().stream().flatMap((line) -> line.getSectionsStream()).collect(toList());
+    }
+
+    public Section findSectionByStation(Station upStation, Station downStation) {
+        return sectionRepository.findByUpStationAndDownStation(upStation,downStation);
     }
 }

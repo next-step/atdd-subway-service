@@ -1,5 +1,7 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
+import java.util.Arrays;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.SectionRepository;
@@ -14,11 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -46,12 +45,12 @@ class PathServiceTest extends PathTestUtils {
 
 
     /**
-     * (10)
+     * (1)
      * 교대역    --- *2호선* ---       강남역
      * |                                |
-     * *3호선*(3)                    *신분당선*(10)
+     * *3호선*(3)                    *신분당선*(2)
      * |                               |
-     * 남부터미널역  --- *3호선*(2) ---   양재
+     * 남부터미널역  --- *3호선*(2) ---   양재역
      */
 
     @BeforeEach
@@ -72,12 +71,15 @@ class PathServiceTest extends PathTestUtils {
         given(stationService.findById(도착점.getId())).willReturn(stationRepository.findById(도착점.getId()).get());
         given(stationService.findAll()).willReturn(stationRepository.findAll());
         given(lineService.findAllSection()).willReturn(sectionRepository.findAll());
+        given(lineService.findSectionByStation(교대역, 강남역)).willReturn(sectionRepository.findByUpStationAndDownStation(교대역, 강남역));
+        given(lineService.findSectionByStation(강남역, 양재역)).willReturn(sectionRepository.findByUpStationAndDownStation(강남역, 양재역));
 
         // when
-        PathResponse response = pathService.findDijkstraPath(시작점.getId(), 도착점.getId());
+        PathResponse response = pathService.findDijkstraPath(new LoginMember(), 시작점.getId(), 도착점.getId());
 
         // then
         assertThat(response.getStations().size()).isEqualTo(3);
-        assertThat(response.getDistance()).isEqualTo(5);
+        assertThat(response.getDistance()).isEqualTo(4);
+        assertThat(response.getFare()).isEqualTo(2250);
     }
 }
