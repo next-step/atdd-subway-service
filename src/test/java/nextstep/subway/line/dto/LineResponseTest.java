@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static nextstep.subway.fare.domain.FaresByDistance.BASIC_FARE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -33,8 +34,8 @@ class LineResponseTest {
         신길역 = new Station(4L, "신길역");
         오목교역 = new Station(5L, "오목교역");
 
-        오호선 = new Line(1L, "5호선", "보라색", 영등포구청역, 신길역, 기본_구간_거리_30);
-        육호선 = new Line(2L, "6호선", "노란색", 신길역, 오목교역, 기본_구간_거리_30);
+        오호선 = new Line(1L, "5호선", "보라색", 영등포구청역, 신길역, 기본_구간_거리_30, BASIC_FARE);
+        육호선 = new Line(2L, "6호선", "노란색", 신길역, 오목교역, 기본_구간_거리_30, BASIC_FARE);
     }
 
     @Test

@@ -1,5 +1,6 @@
 package nextstep.subway.line.dto;
 
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
@@ -20,8 +21,11 @@ public class LineRequest {
     @Min(value = 1, message = "하행 역의 아이디는 0이하 일 수 없습니다.")
     private Long downStationId;
     @NotNull
-    @Min(value = 1, message = "노선에 속한 구간의 거리는 0이하 일 수 없습니다.")
+    @Min(value = 1, message = "노선에 속한 구간의 거리는 0 이하 일 수 없습니다.")
     private int distance;
+    @NotNull
+    @Min(value = 0, message = "노선의 요금은 0 미만 일 수 없습니다.")
+    private int fare ;
 
     public LineRequest() {
     }
@@ -32,6 +36,16 @@ public class LineRequest {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.fare = 0;
+    }
+
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, int fare) {
+        this.name = name;
+        this.color = color;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
+        this.distance = distance;
+        this.fare = fare;
     }
 
     public String getName() {
@@ -55,6 +69,6 @@ public class LineRequest {
     }
 
     public Line toLine(Station upStation, Station downStation) {
-        return new Line(name, color, upStation, downStation, new Distance(distance));
+        return new Line(name, color, upStation, downStation, new Distance(distance), new Fare(fare));
     }
 }

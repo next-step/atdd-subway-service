@@ -18,10 +18,13 @@ import static java.lang.String.format;
 public class PathGraph extends WeightedMultigraph<Station, DefaultWeightedEdge> {
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath;
 
+    private final Sections usedSections;
+
     public PathGraph(Sections sections) {
         super(DefaultWeightedEdge.class);
 
         validateConstructor(sections);
+        this.usedSections = sections;
         this.shortestPath = setUpGraph(sections);
     }
 
@@ -51,6 +54,8 @@ public class PathGraph extends WeightedMultigraph<Station, DefaultWeightedEdge> 
 
         Stations stations = new Stations(graphPath.getVertexList());
         int weight = (int) graphPath.getWeight();
+        // 패스 요금 계산
+
 
         return new Path(stations, new Distance(weight));
     }

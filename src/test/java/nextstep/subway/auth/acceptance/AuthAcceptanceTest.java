@@ -36,6 +36,4 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 dynamicTest("로그인 성공 후 잘못된 토큰으로 요청시 실패 확인", 권한_없이_회원_정보_요청_및_실패_확인(illegalAccessToken))
         );
     }
-
-
 }
