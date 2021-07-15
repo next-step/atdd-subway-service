@@ -26,7 +26,7 @@ class FareDistanceRuleTest {
 
     @DisplayName("요금을 계산한다 : 50km 초과")
     @ParameterizedTest
-    @CsvSource(value = {"51:2150", "58:2150", "59:2250"}, delimiter = ':')
+    @CsvSource(value = {"51:2150", "55:2150", "59:2250"}, delimiter = ':')
     void calculator_50km(int distance, int fare) {
         assertThat(findFareByDistance(distance)).isEqualTo(fare);
     }
