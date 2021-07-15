@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,6 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.favorite.dto.FavoriteResponses;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
@@ -42,12 +42,14 @@ public class FavoriteService {
 		return FavoriteResponse.of(favorite);
 	}
 
-	public FavoriteResponses findAllFavorites(LoginMember loginMember) {
+	public List<FavoriteResponse> findAllFavorites(LoginMember loginMember) {
 		Member member= memberRepository.findById(loginMember.getId())
 			.orElseThrow(()-> new AuthorizationException("멤버를 찾을 수 없습니다."));
 		List<Favorite> favorites = favoriteRepository.findAllByMember(member);
 
-		return FavoriteResponses.of(favorites);
+		return favorites.stream()
+			.map(FavoriteResponse::of)
+			.collect(Collectors.toList());
 	}
 
 	public void deleteFavoriteById(Long id) {
