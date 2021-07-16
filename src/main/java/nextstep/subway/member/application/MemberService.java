@@ -24,8 +24,7 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public MemberResponse findMember(Long id) {
-        Member member = findMemberById(id);
-        return MemberResponse.of(member);
+        return MemberResponse.of(findMemberById(id));
     }
 
     public void updateMember(Long id, MemberRequest param) {

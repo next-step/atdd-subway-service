@@ -11,6 +11,7 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
@@ -27,6 +28,7 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse findPaths(PathRequest request, Age age) {
         Sections sections = sectionService.findSections();
         Stations stations = stationService.findAllById(asList(request.getSource(), request.getTarget()));

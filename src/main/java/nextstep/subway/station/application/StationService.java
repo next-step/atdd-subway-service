@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
+@Transactional
 @Service
 public class StationService {
     private StationRepository stationRepository;
@@ -30,7 +31,6 @@ public class StationService {
 
     @Transactional(readOnly = true)
     public Stations findStations() {
-
         return new Stations(stationRepository.findAll());
     }
 
@@ -41,15 +41,17 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public Station findById(Long id) {
         return stationRepository.findById(id)
                 .orElseThrow(() -> new StationNotFoundException(id));
     }
+    
+    @Transactional(readOnly = true)
     public Stations findAllById(List<Long> ids) {
         return new Stations(stationRepository.findAllById(ids));
     }

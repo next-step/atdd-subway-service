@@ -23,7 +23,9 @@ import static com.google.common.primitives.Longs.asList;
 import static java.lang.String.format;
 import static nextstep.subway.favorite.domain.Favorite.validFavorite;
 
+
 @Service
+@Transactional
 public class FavoriteService {
 
     private final StationService stationService;
@@ -74,3 +76,4 @@ public class FavoriteService {
         }
     }
 }
+
