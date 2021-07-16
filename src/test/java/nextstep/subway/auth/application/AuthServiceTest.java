@@ -1,5 +1,6 @@
 package nextstep.subway.auth.application;
 
+import nextstep.subway.member.domain.Age;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.auth.dto.TokenRequest;
@@ -22,7 +23,10 @@ import static org.mockito.Mockito.when;
 public class AuthServiceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
-    public static final int AGE = 10;
+    public static final Age AGE = new Age(10);
+    public static final String SECOND_EMAIL = "email2@email.com";
+    public static final String SECOND_PASSWORD = "password";
+    public static final Age SECOND_AGE = new Age(14);
 
     private AuthService authService;
 

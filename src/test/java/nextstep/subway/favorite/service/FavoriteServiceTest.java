@@ -10,6 +10,7 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.member.domain.Age;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.application.StationService;
@@ -52,7 +53,7 @@ class FavoriteServiceTest {
 
     private Station 양평역 = new Station("양평역");
     private Station 영등포구청역 = new Station("영등포구청역");
-    private Member 회원_죠르디 = new Member("jordy-torvalds@jordy.com", "jordy", 29);
+    private Member 회원_죠르디 = new Member("jordy-torvalds@jordy.com", "jordy", new Age(29));
     private LoginMember 로그인_죠르디 = new LoginMember(1L, "jordy-torvalds@jordy.com", 29);
 
     private FavoriteResponse insertResponse;

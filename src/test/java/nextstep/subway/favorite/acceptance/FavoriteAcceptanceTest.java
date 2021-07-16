@@ -1,14 +1,11 @@
 package nextstep.subway.favorite.acceptance;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.AuthToken;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.domain.Age;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import nextstep.subway.utils.IdTransferObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,11 +28,11 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private String email1 = "jordy-torvalds@jordy.com";
     private String password1 = "jordy";
-    private int age1 = 29;
+    private Age age1 = new Age(29);
 
     private String email2 = "scappy@scappy.com";
     private String password2 = "scappy";
-    private int age2 = 29;
+    private Age age2 = new Age(29);
 
     private Station 양평역;
     private Station 영등포구청역;

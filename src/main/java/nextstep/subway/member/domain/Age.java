@@ -2,10 +2,19 @@ package nextstep.subway.member.domain;
 
 import nextstep.subway.fare.exception.BelowZeroIntegerException;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.util.Objects;
 
+@Embeddable
 public class Age {
+
+    @Column(name = "age")
     private int value;
+
+    protected Age() {
+
+    }
 
     public Age(int value) {
         validateConstructor(value);
@@ -19,7 +28,7 @@ public class Age {
     }
 
     public boolean isBetween(Age more, Age less) {
-        if(more.value <= this.value && this.value < less.value) {
+        if (more.value <= this.value && this.value < less.value) {
             return true;
         }
 

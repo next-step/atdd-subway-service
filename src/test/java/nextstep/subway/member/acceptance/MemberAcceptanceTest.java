@@ -4,6 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.AuthToken;
+import nextstep.subway.member.domain.Age;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -19,8 +20,8 @@ class MemberAcceptanceTest extends AcceptanceTest {
     public static final String PASSWORD = "password";
     public static final String NEW_EMAIL = "newemail@email.com";
     public static final String NEW_PASSWORD = "newpassword";
-    public static final int AGE = 20;
-    public static final int NEW_AGE = 21;
+    public static final Age AGE = new Age(20);
+    public static final Age NEW_AGE = new Age(21);
 
     @DisplayName("회원 정보를 id로 관리한다.")
     @Test
