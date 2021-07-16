@@ -28,11 +28,7 @@ public class Age {
     }
 
     public boolean isBetween(Age more, Age less) {
-        if (more.value <= this.value && this.value < less.value) {
-            return true;
-        }
-
-        return false;
+        return (more.value <= this.value && this.value < less.value);
     }
 
     public int getValue() {
