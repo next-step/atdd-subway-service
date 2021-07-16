@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.exception.NoDataException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
@@ -23,7 +24,7 @@ public class PathService {
 		this.lineService = lineService;
 	}
 
-	public PathResponse findPath(Long source, Long target) {
+	public PathResponse findPath(Long source, Long target, LoginMember loginMember) {
 		Station sourceStation = stationRepository.findById(source)
 			.orElseThrow(NoDataException::new);
 		Station targetStation = stationRepository.findById(target)

@@ -28,6 +28,10 @@ public class AuthService {
     }
 
     public LoginMember findMemberByToken(String credentials) {
+        if (credentials == null) {
+            throw new AuthorizationException("로그인 후 이용해주세요.");
+        }
+
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException("token이 유효하지 않습니다.");
         }
