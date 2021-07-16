@@ -111,6 +111,7 @@ public class FavoriteTestSnippet {
     private static void 즐겨찾기_삭제_실패_확인(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(UNAUTHORIZED.value());
     }
+
     public static Executable 즐겨찾기_삭제_및_성공_확인(AuthToken authToken, IdTransferObject ido) {
         return () -> {
             // when

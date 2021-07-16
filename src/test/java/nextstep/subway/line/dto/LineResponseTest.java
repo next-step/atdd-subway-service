@@ -59,7 +59,7 @@ class LineResponseTest {
         List<LineResponse> lineResponses = LineResponse.of(lines);
 
         // then
-        for(int i = 0; i < lines.size(); i++) {
+        for (int i = 0; i < lines.size(); i++) {
             int finalI = i;
             assertAll(
                     () -> assertThat(lineResponses.get(finalI).getId()).isEqualTo(lines.get(finalI).getId()),

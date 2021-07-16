@@ -50,7 +50,6 @@ class FavoriteServiceTest {
     private FavoriteRepository favoriteRepository;
 
 
-
     private Station 양평역 = new Station("양평역");
     private Station 영등포구청역 = new Station("영등포구청역");
     private Member 회원_죠르디 = new Member("jordy-torvalds@jordy.com", "jordy", new Age(29));
@@ -114,9 +113,9 @@ class FavoriteServiceTest {
     void deleteFavorite_실패() {
         // given
         LoginMember 로그인_실패_죠르디 = new LoginMember((long) MAX_VALUE, "jordy-torvalds@jordy.com", 30);
-
+        Long 삭제_대상_즐겨찾기_id = insertResponse.getId();
         // when, then
         assertThatExceptionOfType(UnapprovedException.class)
-                .isThrownBy(() -> favoriteService.deleteById(로그인_실패_죠르디, insertResponse.getId()));
+                .isThrownBy(() -> favoriteService.deleteById(로그인_실패_죠르디, 삭제_대상_즐겨찾기_id));
     }
 }

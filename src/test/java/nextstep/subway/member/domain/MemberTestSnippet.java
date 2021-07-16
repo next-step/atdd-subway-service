@@ -11,7 +11,6 @@ import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.*;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 public class MemberTestSnippet {
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Age age) {

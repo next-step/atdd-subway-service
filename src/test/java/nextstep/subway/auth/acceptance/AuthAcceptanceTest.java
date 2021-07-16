@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 @TestInstance(PER_CLASS)
-public class AuthAcceptanceTest extends AcceptanceTest {
+class AuthAcceptanceTest extends AcceptanceTest {
 
     public static final String EMAIL = "jordy-torvalds@jordy-torvalds.o-r.kr";
     public static final String CORRECT_PASSWORD = "jordy";

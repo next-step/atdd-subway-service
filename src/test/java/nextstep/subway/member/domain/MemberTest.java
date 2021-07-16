@@ -8,8 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.member.domain.MemberTestSnippet.*;
-import static nextstep.subway.member.domain.MemberTestSnippet.회원_정보_조회_요청;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("회원 관리 유닛  테스트")
 class MemberTest extends AcceptanceTest {

@@ -5,8 +5,8 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 
 import static java.util.Arrays.asList;
-import static nextstep.subway.station.fixture.StationFixture.*;
 import static nextstep.subway.line.fixture.LineFixture.*;
+import static nextstep.subway.station.fixture.StationFixture.*;
 
 public class SectionFixture {
     public static Section 구간_양평역_영등포구청역 = new Section(1L, 오호선, 양평역, 영등포구청역, new Distance(10));

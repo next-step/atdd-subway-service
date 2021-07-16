@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.fare.domain.FaresByDistance.BASIC_FARE;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Line 도메인 테스트")
 class LineTest {
@@ -23,8 +22,8 @@ class LineTest {
         final String CHANGED_NAME = "죠르디선";
         final String CHANGED_COLOR = "초록색";
 
-       // when
-        오호선.update(CHANGED_NAME, CHANGED_COLOR);;
+        // when
+        오호선.update(CHANGED_NAME, CHANGED_COLOR);
 
         // then
         assertThat(오호선.getName()).isEqualTo(CHANGED_NAME);
