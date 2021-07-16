@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.exception.UnmergeableSectionException;
 import nextstep.subway.station.domain.Station;
 
@@ -71,6 +72,10 @@ public class Section {
 
         this.downStation = downSection.getDownStation();
         this.distance = this.distance.add(downSection.distance);
+    }
+
+    public Fare getLineFare() {
+        return this.line.getFare();
     }
 
     public void updateUpStation(Station station, Distance newDistance) {

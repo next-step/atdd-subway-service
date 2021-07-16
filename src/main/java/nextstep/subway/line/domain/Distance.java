@@ -61,6 +61,13 @@ public class Distance {
         return Objects.hash(value);
     }
 
+    @Override
+    public String toString() {
+        return "Distance{" +
+                "value=" + value +
+                '}';
+    }
+
     private void validateConstructorArgument(int value) {
         if (value <= 0) {
             throw new BelowZeroDistanceException("거리는 0이하가 될 수 없습니다.");

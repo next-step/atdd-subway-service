@@ -68,6 +68,10 @@ public class LineRequest {
         return distance;
     }
 
+    public int getFare() {
+        return fare;
+    }
+
     public Line toLine(Station upStation, Station downStation) {
         return new Line(name, color, upStation, downStation, new Distance(distance), new Fare(fare));
     }

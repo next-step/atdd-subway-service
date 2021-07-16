@@ -88,6 +88,10 @@ public class Line extends BaseEntity {
         return sections.toStations();
     }
 
+    public Fare getFare() {
+        return fare;
+    }
+
     public boolean containsStationsExactly(Stations stations) {
         boolean result = true;
 
