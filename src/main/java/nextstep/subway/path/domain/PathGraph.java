@@ -55,7 +55,7 @@ public class PathGraph extends WeightedMultigraph<Station, DefaultWeightedEdge> 
     }
 
     private Fare calculateAdditionalFare(Stations stations) {
-        return  stations.get().stream()
+        return stations.get().stream()
                 .map(usedSections::findMaxFareByStation)
                 .max(Fare::compareTo)
                 .orElseThrow(() -> new CannotCalculateAdditionalFareException(stations));

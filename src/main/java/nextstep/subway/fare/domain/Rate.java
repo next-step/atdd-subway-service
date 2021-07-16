@@ -20,7 +20,7 @@ public class Rate {
     }
 
     private void validateContructor(BigDecimal value) {
-        if(value.compareTo(ZERO) < 0) {
+        if (value.compareTo(ZERO) < 0) {
             throw new IllegalArgumentException("비율은 0보다 작을 수 없습니다.");
         }
     }

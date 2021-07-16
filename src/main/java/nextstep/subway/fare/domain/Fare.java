@@ -19,7 +19,7 @@ public class Fare {
     @Column(name = "fare")
     private BigDecimal value = new BigDecimal(0);
 
-    protected Fare(){
+    protected Fare() {
     }
 
     public Fare(int value) {
@@ -52,6 +52,7 @@ public class Fare {
     public int compareTo(Fare target) {
         return this.value.compareTo(target.value);
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

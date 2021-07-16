@@ -4,7 +4,6 @@ import nextstep.subway.line.exception.BelowZeroDistanceException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-
 import java.util.Objects;
 
 import static java.lang.String.format;
@@ -81,8 +80,8 @@ public class Distance {
     }
 
     private void validateMinusArgument(Distance distance) {
-        if(this.value - distance.value <= 0) {
-            throw new BelowZeroDistanceException(format("거리는 0보다 커야 하므로, %s 보다 더 큰 %s를 뺄 수 없습니다.",value, distance.value));
+        if (this.value - distance.value <= 0) {
+            throw new BelowZeroDistanceException(format("거리는 0보다 커야 하므로, %s 보다 더 큰 %s를 뺄 수 없습니다.", value, distance.value));
         }
     }
 }

@@ -25,7 +25,7 @@ public class LineRequest {
     private int distance;
     @NotNull
     @Min(value = 0, message = "노선의 요금은 0 미만 일 수 없습니다.")
-    private int fare ;
+    private int fare;
 
     public LineRequest() {
     }

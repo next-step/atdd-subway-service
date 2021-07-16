@@ -4,11 +4,12 @@ import nextstep.subway.auth.exception.UnapprovedException;
 import nextstep.subway.favorite.ui.FavoriteController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static java.lang.String.format;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @RestControllerAdvice(basePackageClasses = FavoriteController.class)

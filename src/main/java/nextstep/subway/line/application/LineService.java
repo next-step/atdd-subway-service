@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static nextstep.subway.fare.domain.FaresByDistance.BASIC_FARE;
 import static nextstep.subway.line.dto.LineResponse.of;
 
 @Service

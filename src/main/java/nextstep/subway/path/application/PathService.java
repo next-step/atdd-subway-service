@@ -1,7 +1,7 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.application.SectionService;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.member.domain.Age;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.Path;
@@ -13,7 +13,6 @@ import nextstep.subway.station.domain.Stations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static java.lang.String.format;
 import static java.util.Arrays.asList;
 
 @Service

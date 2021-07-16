@@ -14,7 +14,7 @@ public class Stations {
     public Stations() {
     }
 
-    public Stations(Station...stations) {
+    public Stations(Station... stations) {
         this.values = asList(stations);
     }
 

@@ -15,6 +15,10 @@ public class PathResponse {
         this.fare = fare;
     }
 
+    public static PathResponse of(Path path) {
+        return new PathResponse(StationResponse.of(path.getStations()), path.getDistance().getValue(), path.getFare().getValue());
+    }
+
     public List<StationResponse> getStations() {
         return stations;
     }
@@ -25,9 +29,5 @@ public class PathResponse {
 
     public int getFare() {
         return fare;
-    }
-
-    public static PathResponse of(Path path) {
-        return new PathResponse(StationResponse.of(path.getStations()), path.getDistance().getValue(), path.getFare().getValue());
     }
 }

@@ -15,7 +15,7 @@ public class Line extends BaseEntity {
     private Long id;
     @Column(unique = true)
     private String name;
-    
+
     private String color;
 
     @Embedded
@@ -95,8 +95,8 @@ public class Line extends BaseEntity {
     public boolean containsStationsExactly(Stations stations) {
         boolean result = true;
 
-        for(Station station : stations.get()){
-            result = (result && sections.toStations().contains(station)) ;
+        for (Station station : stations.get()) {
+            result = (result && sections.toStations().contains(station));
         }
 
         return result;

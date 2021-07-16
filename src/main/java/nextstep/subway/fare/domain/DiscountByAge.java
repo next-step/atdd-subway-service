@@ -23,6 +23,7 @@ public enum DiscountByAge {
         this.lessAge = lessAge;
         this.discountRate = discountRate;
     }
+
     public static Fare calculate(Fare base, Age age) {
         Rate discountRate = findRate(age);
 

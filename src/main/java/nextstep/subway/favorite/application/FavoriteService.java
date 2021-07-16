@@ -9,7 +9,6 @@ import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.favorite.exception.FavoriteNotFoundException;
 import nextstep.subway.favorite.exception.SameSourceTargetStationException;
 import nextstep.subway.line.application.LineService;
-import nextstep.subway.line.domain.Lines;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
@@ -63,7 +62,7 @@ public class FavoriteService {
         Favorite foundFavorite = favoriteRepository.findById(id)
                 .orElseThrow(() -> new FavoriteNotFoundException(id));
 
-        if(!foundFavorite.hasPermission(loginMember.getId())) {
+        if (!foundFavorite.hasPermission(loginMember.getId())) {
             throw new UnapprovedException(format("id가 %d인 사용자는 id가 %d인 즐겨찾기에 권한이 없습니다.", loginMember.getId(), id));
         }
 
@@ -71,7 +70,7 @@ public class FavoriteService {
     }
 
     private void validateSameSourceTarget(Station source, Station target) {
-        if(source.equals(target)) {
+        if (source.equals(target)) {
             throw new SameSourceTargetStationException(source, target);
         }
     }
