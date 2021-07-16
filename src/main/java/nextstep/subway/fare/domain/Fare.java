@@ -14,6 +14,7 @@ import static java.math.BigDecimal.valueOf;
 @Embeddable
 public class Fare {
     public static final String NAME = "요금";
+    public static final Fare DEFAULT_FARE = new Fare(1250);
 
     @Column(name = "fare")
     private BigDecimal value = new BigDecimal(0);
@@ -48,6 +49,9 @@ public class Fare {
         return value.intValueExact();
     }
 
+    public int compareTo(Fare target) {
+        return this.value.compareTo(target.value);
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -84,9 +88,5 @@ public class Fare {
         if (value < 0) {
             throw new BelowZeroIntegerException(NAME);
         }
-    }
-
-    public int get() {
-        return value.intValueExact();
     }
 }

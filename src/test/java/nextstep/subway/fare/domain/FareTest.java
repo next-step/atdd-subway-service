@@ -40,7 +40,7 @@ class FareTest {
         Fare expectedResult = new Fare(expectedResultValue);
 
         // when, then
-        assertThat(leftFare.add(rightFare).get()).isEqualTo(expectedResult.get());
+        assertThat(leftFare.add(rightFare).getValue()).isEqualTo(expectedResult.getValue());
     }
 
     @CsvSource(value = {"100:50", "100:30", "100:80", "100:100"}, delimiterString = ":")
@@ -75,6 +75,6 @@ class FareTest {
         Fare expectedResult = new Fare(expectedResultValue);
 
         // when, then
-        assertThat(fare.multiply(rate).get()).isEqualTo(expectedResult.get());
+        assertThat(fare.multiply(rate).getValue()).isEqualTo(expectedResult.getValue());
     }
 }

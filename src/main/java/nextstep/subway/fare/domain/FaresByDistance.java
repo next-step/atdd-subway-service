@@ -23,10 +23,10 @@ public enum FaresByDistance {
         this.distanceStandard = distanceStandard;
     }
 
-    public static Fare calculate(Distance distance) {
+    public static Fare calculate(Fare base, Distance distance) {
         int additionalFareDistance = distance.getDividedValue(findDistanceStandard(distance));
 
-        return BASIC_FARE.add(ADDITIONAL_FARE_UNIT.multiply(new Rate(additionalFareDistance)));
+        return base.add(ADDITIONAL_FARE_UNIT.multiply(new Rate(additionalFareDistance)));
     }
 
     private static Integer findDistanceStandard(Distance distance) {
