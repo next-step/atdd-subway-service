@@ -50,7 +50,7 @@ public class StationService {
         return stationRepository.findById(id)
                 .orElseThrow(() -> new StationNotFoundException(id));
     }
-    
+
     @Transactional(readOnly = true)
     public Stations findAllById(List<Long> ids) {
         return new Stations(stationRepository.findAllById(ids));
