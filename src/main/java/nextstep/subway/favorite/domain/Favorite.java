@@ -48,7 +48,7 @@ public class Favorite extends BaseEntity {
     }
 
     public boolean hasPermission(Long memberId) {
-        return this.memberId == memberId;
+        return this.memberId.equals(memberId);
     }
 
     public Long getId() {
