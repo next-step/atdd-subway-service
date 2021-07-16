@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.member.domain.Age;
 import nextstep.subway.path.dto.Path;
 import nextstep.subway.path.exception.CannotReachableException;
 import nextstep.subway.path.exception.IllegalFindingPathException;
@@ -15,7 +16,7 @@ import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static nextstep.subway.line.fixture.SectionFixture.*;
-import static nextstep.subway.station.domain.StationFixture.*;
+import static nextstep.subway.station.fixture.StationFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -26,8 +27,8 @@ class PathFinderTest {
 
     @MethodSource("methodSource_findShortestPath_성공")
     @ParameterizedTest
-    void findShortestPath_성공(Station sourceStation, Station targetStation, Stations stations, Distance distance) {
-        Path path = pathFinder.findShortestPath(전체_구간, sourceStation, targetStation);
+    void findShortestPath_성공(Station sourceStation, Station targetStation, Age age, Stations stations, Distance distance) {
+        Path path = pathFinder.findShortestPath(전체_구간, age, sourceStation, targetStation);
 
         assertThat(path.getStations()).isEqualTo(stations);
         assertThat(path.getDistance()).isEqualTo(distance);
@@ -35,9 +36,9 @@ class PathFinderTest {
 
     static Stream<Arguments> methodSource_findShortestPath_성공() {
         return Stream.of(
-                Arguments.of(영등포구청역, 신길역, new Stations(asList(영등포구청역, 영등포시장역, 신길역)), new Distance(15)),
-                Arguments.of(당산역, 양평역, new Stations(asList(당산역, 영등포구청역, 양평역)), new Distance(20)),
-                Arguments.of(영등포역, 당산역, new Stations(asList(영등포역, 신길역, 영등포시장역, 영등포구청역, 당산역)), new Distance(30))
+                Arguments.of(영등포구청역, 신길역, new Age(20), new Stations(asList(영등포구청역, 영등포시장역, 신길역)), new Distance(15)),
+                Arguments.of(당산역, 양평역, new Age(6), new Stations(asList(당산역, 영등포구청역, 양평역)), new Distance(20)),
+                Arguments.of(영등포역, 당산역, new Age(13), new Stations(asList(영등포역, 신길역, 영등포시장역, 영등포구청역, 당산역)), new Distance(30))
         );
     }
 
@@ -46,7 +47,7 @@ class PathFinderTest {
     @ParameterizedTest
     void findShortestPath_예외(Station source, Station target, Class<? extends RuntimeException> expectedException) {
         assertThatExceptionOfType(expectedException)
-                .isThrownBy(() -> pathFinder.findShortestPath(전체_구간, source, target));
+                .isThrownBy(() -> pathFinder.findShortestPath(전체_구간, new Age(20), source, target));
     }
 
     static Stream<Arguments> methodSource_findShortestPath_예외() {

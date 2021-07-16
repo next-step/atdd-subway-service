@@ -65,4 +65,11 @@ public class Stations {
     public int hashCode() {
         return Objects.hash(values);
     }
+
+    @Override
+    public String toString() {
+        return "Stations{" +
+                "values=" + values +
+                '}';
+    }
 }
