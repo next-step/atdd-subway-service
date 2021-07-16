@@ -5,7 +5,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.AuthToken;
-import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathRequest;
@@ -189,6 +188,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     private static void 경로상_총_거리_확인(int actualResult, int expectedResult) {
         assertThat(actualResult).isEqualTo(expectedResult);
     }
+
     private static void 경로상_총_요금_확인(int actualResult, int expectedResult) {
         assertThat(actualResult).isEqualTo(expectedResult);
     }

@@ -24,8 +24,8 @@ import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static nextstep.subway.line.fixture.SectionFixture.전체_구간;
-import static nextstep.subway.station.fixture.StationFixture.*;
 import static nextstep.subway.station.dto.StationResponse.of;
+import static nextstep.subway.station.fixture.StationFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.when;
