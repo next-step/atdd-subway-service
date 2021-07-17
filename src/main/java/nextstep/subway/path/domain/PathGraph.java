@@ -1,13 +1,8 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.fare.domain.DiscountByAge;
-import nextstep.subway.fare.domain.Fare;
-import nextstep.subway.fare.domain.FaresByDistance;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Sections;
-import nextstep.subway.member.domain.Age;
 import nextstep.subway.path.dto.Path;
-import nextstep.subway.path.exception.CannotCalculateAdditionalFareException;
 import nextstep.subway.path.exception.CannotReachableException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
@@ -18,20 +13,16 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.Optional;
 
-import static nextstep.subway.fare.domain.Fare.DEFAULT_FARE;
-
 public class PathGraph extends WeightedMultigraph<Station, DefaultWeightedEdge> {
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath;
 
     private final Sections usedSections;
-    private final Age age;
 
-    public PathGraph(Sections sections, Age age) {
+    public PathGraph(Sections sections) {
         super(DefaultWeightedEdge.class);
 
         validateConstructor(sections);
         this.usedSections = sections;
-        this.age = age;
         this.shortestPath = setUpGraph(sections);
     }
 
@@ -42,23 +33,7 @@ public class PathGraph extends WeightedMultigraph<Station, DefaultWeightedEdge> 
         Stations stations = new Stations(graphPath.getVertexList());
         Distance distance = new Distance((int) graphPath.getWeight());
 
-        Fare fare = calculateFare(stations, distance);
-
-        return new Path(stations, distance, fare);
-    }
-
-    private Fare calculateFare(Stations stations, Distance distance) {
-        Fare baseFare = DEFAULT_FARE.add(calculateAdditionalFare(stations));
-        baseFare = FaresByDistance.calculate(baseFare, distance);
-        baseFare = DiscountByAge.calculate(baseFare, age);
-        return baseFare;
-    }
-
-    private Fare calculateAdditionalFare(Stations stations) {
-        return stations.get().stream()
-                .map(usedSections::findMaxFareByStation)
-                .max(Fare::compareTo)
-                .orElseThrow(() -> new CannotCalculateAdditionalFareException(stations));
+        return new Path(stations, distance);
     }
 
     private void validateConstructor(Sections sections) {
