@@ -10,6 +10,10 @@ import static nextstep.subway.fare.domain.Fare.DEFAULT_FARE;
 
 public class FareCalculator {
 
+    private FareCalculator() {
+        
+    }
+
     public static Fare calculate(Sections sections, Age age, Stations stations, Distance distance) {
         Fare baseFare = DEFAULT_FARE.add(calculateAdditionalFare(sections, stations));
         baseFare = FaresByDistance.calculate(baseFare, distance);
