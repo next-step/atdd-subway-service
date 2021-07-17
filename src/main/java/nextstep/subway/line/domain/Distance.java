@@ -4,7 +4,6 @@ import nextstep.subway.line.exception.BelowZeroDistanceException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-
 import java.util.Objects;
 
 import static java.lang.String.format;
@@ -32,12 +31,20 @@ public class Distance {
         return new Distance(value - distance.value);
     }
 
+    public int getDividedValue(int dividingValue) {
+        return value / dividingValue;
+    }
+
     public int getValue() {
         return value;
     }
 
     public boolean isLessThan(Distance distance) {
         return this.value <= distance.value;
+    }
+
+    public boolean isMoreThan(Distance excessDistance) {
+        return excessDistance.value <= this.value;
     }
 
     @Override
@@ -53,6 +60,13 @@ public class Distance {
         return Objects.hash(value);
     }
 
+    @Override
+    public String toString() {
+        return "Distance{" +
+                "value=" + value +
+                '}';
+    }
+
     private void validateConstructorArgument(int value) {
         if (value <= 0) {
             throw new BelowZeroDistanceException("거리는 0이하가 될 수 없습니다.");
@@ -66,8 +80,8 @@ public class Distance {
     }
 
     private void validateMinusArgument(Distance distance) {
-        if(this.value - distance.value <= 0) {
-            throw new BelowZeroDistanceException(format("거리는 0보다 커야 하므로, %s 보다 더 큰 %s를 뺄 수 없습니다.",value, distance.value));
+        if (this.value - distance.value <= 0) {
+            throw new BelowZeroDistanceException(format("거리는 0보다 커야 하므로, %s 보다 더 큰 %s를 뺄 수 없습니다.", value, distance.value));
         }
     }
 }

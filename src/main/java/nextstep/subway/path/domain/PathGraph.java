@@ -13,8 +13,6 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.Optional;
 
-import static java.lang.String.format;
-
 public class PathGraph extends WeightedMultigraph<Station, DefaultWeightedEdge> {
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath;
 
@@ -23,6 +21,16 @@ public class PathGraph extends WeightedMultigraph<Station, DefaultWeightedEdge> 
 
         validateConstructor(sections);
         this.shortestPath = setUpGraph(sections);
+    }
+
+    public Path findShortestPath(Station source, Station target) {
+        GraphPath<Station, DefaultWeightedEdge> graphPath = Optional.ofNullable(shortestPath.getPath(source, target))
+                .orElseThrow(() -> new CannotReachableException(source.getName(), target.getName()));
+
+        Stations stations = new Stations(graphPath.getVertexList());
+        Distance distance = new Distance((int) graphPath.getWeight());
+
+        return new Path(stations, distance);
     }
 
     private void validateConstructor(Sections sections) {
@@ -41,17 +49,5 @@ public class PathGraph extends WeightedMultigraph<Station, DefaultWeightedEdge> 
                 });
 
         return new DijkstraShortestPath<>(this);
-    }
-
-    public Path findShortestPath(Station source, Station target) {
-        GraphPath<Station, DefaultWeightedEdge> graphPath = Optional.ofNullable(shortestPath.getPath(source, target))
-                .orElseThrow(() -> new CannotReachableException(format("%s와(과) %s이(가) 이어져 있지 않습니다."
-                        , source.getName()
-                        , target.getName())));
-
-        Stations stations = new Stations(graphPath.getVertexList());
-        int weight = (int) graphPath.getWeight();
-
-        return new Path(stations, new Distance(weight));
     }
 }

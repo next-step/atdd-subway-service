@@ -18,8 +18,8 @@ public class PathFinder {
     public Path findShortestPath(Sections sections, Station sourceStation, Station targetStation) {
         validateSameSourceTarget(sourceStation, targetStation);
         validateNonExistentSourceTarget(sections, sourceStation, targetStation);
-        PathGraph pathGraph = createPathGraph(sections);
 
+        PathGraph pathGraph = createPathGraph(sections);
         return pathGraph.findShortestPath(sourceStation, targetStation);
     }
 

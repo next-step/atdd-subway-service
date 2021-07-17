@@ -5,15 +5,14 @@ import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.domain.Stations;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.station.exception.StationNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.lang.String.format;
-
+@Transactional
 @Service
 public class StationService {
     private StationRepository stationRepository;
@@ -29,7 +28,6 @@ public class StationService {
 
     @Transactional(readOnly = true)
     public Stations findStations() {
-
         return new Stations(stationRepository.findAll());
     }
 
@@ -40,15 +38,17 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
     public void deleteStationById(Long id) {
         stationRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public Station findById(Long id) {
         return stationRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(format("id가 %d인 역을 찾을 수가 없습니다.", id)));
+                .orElseThrow(() -> new StationNotFoundException(id));
     }
+
+    @Transactional(readOnly = true)
     public Stations findAllById(List<Long> ids) {
         return new Stations(stationRepository.findAllById(ids));
     }

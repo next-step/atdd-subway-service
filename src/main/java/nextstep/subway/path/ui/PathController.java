@@ -1,8 +1,10 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.path.service.PathService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +20,8 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findPaths(PathRequest request) {
-        return ResponseEntity.ok(pathService.findPaths(request));
+    public ResponseEntity<PathResponse> findPathsBasedAge(@AuthenticationPrincipal LoginMember loginMember, PathRequest request) {
+        PathResponse path = pathService.findPaths(request, loginMember.getAge());
+        return ResponseEntity.ok(path);
     }
 }

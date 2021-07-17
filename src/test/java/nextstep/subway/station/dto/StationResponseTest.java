@@ -48,7 +48,7 @@ class StationResponseTest {
         Stations stations = new Stations(asList(양평역, 영등포구청역, 영등포시장역));
         List<StationResponse> stationResponses = of(stations);
 
-        for(int i = 0; i < stationResponses.size(); i++) {
+        for (int i = 0; i < stationResponses.size(); i++) {
             int finalI = i;
             assertAll(
                     () -> assertThat(stationResponses.get(finalI).getId()).isEqualTo(stations.get(finalI).getId()),

@@ -1,21 +1,17 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.*;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.line.exception.LineNotFoundException;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
-import static java.lang.String.format;
 import static nextstep.subway.line.dto.LineResponse.of;
 
 @Service
@@ -32,18 +28,23 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, new Distance(request.getDistance())));
+        Line persistLine = lineRepository.save(request.toLine(upStation, downStation));
         return of(persistLine);
     }
 
     @Transactional(readOnly = true)
-    public List<LineResponse> findLines() {
+    public List<LineResponse> findAllLineResponses() {
         return of(lineRepository.findAll());
+    }
+
+    @Transactional(readOnly = true)
+    public Lines findAllLines() {
+        return new Lines(lineRepository.findAll());
     }
 
     private Line findById(Long id) {
         return lineRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(format("id %d인 노선을 찾을 수 없습니다.", id)));
+                .orElseThrow(() -> new LineNotFoundException(id));
     }
 
 

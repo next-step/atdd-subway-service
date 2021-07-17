@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.exception.UnaddableSectionException;
 import nextstep.subway.line.exception.UndeletableStationInSectionException;
 import nextstep.subway.station.domain.Station;
@@ -8,7 +9,10 @@ import nextstep.subway.station.domain.Stations;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
@@ -78,6 +82,14 @@ public class Sections {
         }
 
         return result.minus(new Distance(1));
+    }
+
+    public Fare findMaxFareByStation(Station station) {
+        return values.stream()
+                .filter(section -> section.isIncludeStation(station))
+                .map(Section::getLineFare)
+                .max(Fare::compareTo)
+                .orElseThrow(() -> new IllegalStateException("구간 1급 컬렉션의 상태가 유효하지 않아 최대 노선 요금 조회간 예외가 발생했습니다."));
     }
 
     private void validateConnectableSection(Section section) {
@@ -181,7 +193,7 @@ public class Sections {
     }
 
     private void validateExistingStation(Station removingStation) {
-        if(!toStations().contains(removingStation)) {
+        if (!toStations().contains(removingStation)) {
             throw new UndeletableStationInSectionException("이 역이 노선에 존재 하지 않습니다.");
         }
     }

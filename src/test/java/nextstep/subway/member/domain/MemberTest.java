@@ -15,8 +15,8 @@ class MemberTest extends AcceptanceTest {
     public static final String PASSWORD = "password";
     public static final String NEW_EMAIL = "newemail@email.com";
     public static final String NEW_PASSWORD = "newpassword";
-    public static final int AGE = 20;
-    public static final int NEW_AGE = 21;
+    public static final Age AGE = new Age(20);
+    public static final Age NEW_AGE = new Age(21);
 
     public ExtractableResponse<Response> createResponse;
 
@@ -44,7 +44,7 @@ class MemberTest extends AcceptanceTest {
         ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
 
         // then
-        회원_정보_수정됨(updateResponse);
+        회원_정보_수정됨(updateResponse, createResponse, NEW_EMAIL, NEW_AGE);
     }
 
     @Test

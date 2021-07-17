@@ -16,6 +16,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
+import static nextstep.subway.fare.domain.Fare.DEFAULT_FARE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -48,7 +49,7 @@ class SectionsTest {
         신길역 = new Station(4L, "신길역");
         오목교역 = new Station(5L, "오목교역");
 
-        오호선 = new Line(1L, "5호선", "보라색", 영등포구청역, 신길역, 기본_구간_거리_30);
+        오호선 = new Line(1L, "5호선", "보라색", 영등포구청역, 신길역, 기본_구간_거리_30, DEFAULT_FARE);
         sections = new Sections();
     }
 

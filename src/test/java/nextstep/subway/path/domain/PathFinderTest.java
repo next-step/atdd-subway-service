@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.member.domain.Age;
 import nextstep.subway.path.dto.Path;
 import nextstep.subway.path.exception.CannotReachableException;
 import nextstep.subway.path.exception.IllegalFindingPathException;
@@ -14,8 +15,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
-import static nextstep.subway.line.fixture.SectionFixture.*;
-import static nextstep.subway.station.domain.StationFixture.*;
+import static nextstep.subway.line.fixture.SectionFixture.전체_구간;
+import static nextstep.subway.station.fixture.StationFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 

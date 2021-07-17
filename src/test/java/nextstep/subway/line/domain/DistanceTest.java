@@ -2,7 +2,6 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.line.exception.BelowZeroDistanceException;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -61,4 +60,15 @@ class DistanceTest {
         assertThatExceptionOfType(BelowZeroDistanceException.class)
                 .isThrownBy(() -> distance1.minus(distance2));
     }
+
+    @CsvSource(value = {"8:200000000:0", "11:5:2", "16:8:2", "18:8:2"}, delimiterString = ":")
+    @ParameterizedTest
+    void getDividedValue_성공(int value1, int value2, int expectedValue) {
+        // given
+        Distance distance1 = new Distance(value1);
+
+        assertThat(distance1.getDividedValue(value2)).isEqualTo(expectedValue);
+    }
+
+
 }

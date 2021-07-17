@@ -11,10 +11,9 @@ import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.*;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 public class MemberTestSnippet {
-    public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Age age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return RestAssured
@@ -47,7 +46,7 @@ public class MemberTestSnippet {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Age age) {
         String uri = response.header("Location");
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
@@ -60,7 +59,7 @@ public class MemberTestSnippet {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 토큰으로_회원_정보_수정_요청(AuthToken token, String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 토큰으로_회원_정보_수정_요청(AuthToken token, String email, String password, Age age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return RestAssured
@@ -95,15 +94,20 @@ public class MemberTestSnippet {
         assertThat(response.statusCode()).isEqualTo(CREATED.value());
     }
 
-    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
+    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, Age age) {
         MemberResponse memberResponse = response.as(MemberResponse.class);
         assertThat(memberResponse.getId()).isNotNull();
         assertThat(memberResponse.getEmail()).isEqualTo(email);
         assertThat(memberResponse.getAge()).isEqualTo(age);
     }
 
-    public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(OK.value());
+    public static void 회원_정보_수정됨(ExtractableResponse<Response> updateResponse, ExtractableResponse<Response> createResponse, String newEmail, Age newAge) {
+        assertThat(updateResponse.statusCode()).isEqualTo(OK.value());
+        ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(createResponse);
+        MemberResponse memberResponse = findResponse.as(MemberResponse.class);
+
+        assertThat(memberResponse.getEmail()).isEqualTo(newEmail);
+        assertThat(memberResponse.getAge()).isEqualTo(newAge);
     }
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
@@ -114,7 +118,7 @@ public class MemberTestSnippet {
         assertThat(response.statusCode()).isEqualTo(UNAUTHORIZED.value());
     }
 
-    public static Executable 회원_생성_요청_및_성공_확인(String email, String correctPassword, int age) {
+    public static Executable 회원_생성_요청_및_성공_확인(String email, String correctPassword, Age age) {
         return () -> {
             ExtractableResponse<Response> response = 회원_생성을_요청(email, correctPassword, age);
 

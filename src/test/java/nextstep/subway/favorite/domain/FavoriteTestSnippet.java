@@ -8,7 +8,6 @@ import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.utils.IdTransferObject;
-import org.codehaus.groovy.transform.SourceURIASTTransformation;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.http.MediaType;
 
@@ -32,9 +31,12 @@ public class FavoriteTestSnippet {
     }
 
     public static void 즐겨찾기_생성_성공_확인(ExtractableResponse<Response> response) {
-        FavoriteResponse favoriteResponse = response.as(FavoriteResponse.class);
-
         assertThat(response.statusCode()).isEqualTo(CREATED.value());
+    }
+
+
+    public static void 즐겨찾기_생성_실패_확인(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(INTERNAL_SERVER_ERROR.value());
     }
 
     private static void 즐겨찾기_생성된_ID_할당(ExtractableResponse<Response> createFavoriteResponse, IdTransferObject ido) {
@@ -72,6 +74,16 @@ public class FavoriteTestSnippet {
         };
     }
 
+    public static Executable 유효하지_않은_즐겨찾기_생성_및_실패_확인(AuthToken token, Station source, Station target, IdTransferObject ido) {
+        return () -> {
+            // when
+            ExtractableResponse<Response> createFavoriteResponse = 즐겨찾기_생성(token, source, target);
+
+            // then
+            즐겨찾기_생성_실패_확인(createFavoriteResponse);
+        };
+    }
+
     public static Executable 즐겨찾기_조회_및_성공_확인(AuthToken token, Station source, Station target) {
         return () -> {
             // when
@@ -96,13 +108,29 @@ public class FavoriteTestSnippet {
         assertThat(response.statusCode()).isEqualTo(NO_CONTENT.value());
     }
 
+    private static void 즐겨찾기_삭제_실패_확인(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(UNAUTHORIZED.value());
+    }
+
     public static Executable 즐겨찾기_삭제_및_성공_확인(AuthToken authToken, IdTransferObject ido) {
+        return () -> {
+            // when
+            ExtractableResponse<Response> deleteFavoriteResponse = 즐겨찾기_삭제(authToken, ido.getId());
+
+            // then
+            즐겨찾기_삭제_성공_확인(deleteFavoriteResponse);
+        };
+    }
+
+    public static Executable 타_회원_즐겨찾기_삭제_및_실패_확인(AuthToken authToken, IdTransferObject ido) {
         return () -> {
             // when
             ExtractableResponse<Response> createFavoriteResponse = 즐겨찾기_삭제(authToken, ido.getId());
 
             // then
-            즐겨찾기_삭제_성공_확인(createFavoriteResponse);
+            즐겨찾기_삭제_실패_확인(createFavoriteResponse);
         };
     }
+
+
 }

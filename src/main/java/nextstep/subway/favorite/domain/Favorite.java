@@ -1,7 +1,10 @@
 package nextstep.subway.favorite.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.domain.Lines;
+import nextstep.subway.line.exception.LinesHasNotStationException;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 import javax.persistence.*;
 
@@ -38,8 +41,14 @@ public class Favorite extends BaseEntity {
         this.target = target;
     }
 
+    public static void validFavorite(Lines lines, Station source, Station target) {
+        if (!lines.containsStationsExactly(new Stations(source, target))) {
+            throw new LinesHasNotStationException(source, target, lines);
+        }
+    }
+
     public boolean hasPermission(Long memberId) {
-        return this.memberId == memberId;
+        return this.memberId.equals(memberId);
     }
 
     public Long getId() {

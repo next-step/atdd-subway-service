@@ -1,7 +1,8 @@
-package nextstep.subway.path.service;
+package nextstep.subway.path.application;
 
-import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.application.SectionService;
+import nextstep.subway.line.domain.Sections;
+import nextstep.subway.member.domain.Age;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.Path;
 import nextstep.subway.path.dto.PathRequest;
@@ -10,8 +11,8 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import static java.lang.String.format;
 import static java.util.Arrays.asList;
 
 @Service
@@ -26,7 +27,8 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findPaths(PathRequest request) {
+    @Transactional(readOnly = true)
+    public PathResponse findPaths(PathRequest request, Age age) {
         Sections sections = sectionService.findSections();
         Stations stations = stationService.findAllById(asList(request.getSource(), request.getTarget()));
 
@@ -34,6 +36,7 @@ public class PathService {
         Station target = stations.getById(request.getTarget());
 
         Path path = pathFinder.findShortestPath(sections, source, target);
+        path.applyFare(sections, age);
         return PathResponse.of(path);
     }
 }
