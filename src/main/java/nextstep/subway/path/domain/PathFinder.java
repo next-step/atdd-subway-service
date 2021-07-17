@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.fare.domain.FareCalculator;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.member.domain.Age;
 import nextstep.subway.path.dto.Path;
@@ -16,17 +17,16 @@ import static java.lang.String.format;
 @Component
 public class PathFinder {
 
-    public Path findShortestPath(Sections sections, Age age, Station sourceStation, Station targetStation) {
+    public Path findShortestPath(Sections sections, Station sourceStation, Station targetStation) {
         validateSameSourceTarget(sourceStation, targetStation);
         validateNonExistentSourceTarget(sections, sourceStation, targetStation);
 
-        PathGraph pathGraph = createPathGraph(sections, age);
-
+        PathGraph pathGraph = createPathGraph(sections);
         return pathGraph.findShortestPath(sourceStation, targetStation);
     }
 
-    private PathGraph createPathGraph(Sections sections, Age age) {
-        return new PathGraph(sections, age);
+    private PathGraph createPathGraph(Sections sections) {
+        return new PathGraph(sections);
     }
 
     private void validateSameSourceTarget(Station source, Station target) {

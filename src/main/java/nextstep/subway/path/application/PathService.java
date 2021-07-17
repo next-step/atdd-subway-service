@@ -35,8 +35,8 @@ public class PathService {
         Station source = stations.getById(request.getSource());
         Station target = stations.getById(request.getTarget());
 
-        Path path = pathFinder.findShortestPath(sections, age, source, target);
-
+        Path path = pathFinder.findShortestPath(sections, source, target);
+        path.applyFare(sections, age);
         return PathResponse.of(path);
     }
 }
