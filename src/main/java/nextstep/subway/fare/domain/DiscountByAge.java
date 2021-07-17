@@ -28,8 +28,7 @@ public enum DiscountByAge {
         Rate discountRate = findRate(age);
 
         return base.subtract(DEDUCTION)
-                .multiply(discountRate)
-                .add(DEDUCTION);
+                .multiply(discountRate);
     }
 
     private static Rate findRate(Age age) {

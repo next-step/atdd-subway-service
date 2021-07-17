@@ -13,11 +13,14 @@ class FaresByDistanceTest {
     @CsvSource(delimiterString = ":",
             value = {
                     "10:1250",
-                    "11:1450",
-                    "32:1850",
-                    "50:2250",
-                    "51:1850",
-                    "56:1950"
+                    "14:1250",
+                    "15:1350",
+                    "49:1950",
+                    "50:2050",
+                    "57:2050",
+                    "58:2150",
+                    "59:2150",
+                    "66:2250"
             })
     @ParameterizedTest
     void calculate_성공(int distanceValue, int expectedFareValue) {
