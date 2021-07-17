@@ -82,9 +82,9 @@ class PathServiceTest {
 
     static Stream<Arguments> methodSource_findPath_성공() {
         return Stream.of(
-                Arguments.of(영등포구청역, 신길역, new Age(20), of(new Stations(asList(영등포구청역, 영등포시장역, 신길역))), 15, 2050),
-                Arguments.of(당산역, 양평역, new Age(6), of(new Stations(asList(당산역, 영등포구청역, 양평역))), 20, 1250),
-                Arguments.of(영등포역, 당산역, new Age(13), of(new Stations(asList(영등포역, 신길역, 영등포시장역, 영등포구청역, 당산역))), 30, 1950)
+                Arguments.of(영등포구청역, 신길역, new Age(20), of(new Stations(asList(영등포구청역, 영등포시장역, 신길역))), 15, 1500),
+                Arguments.of(당산역, 양평역, new Age(6), of(new Stations(asList(당산역, 영등포구청역, 양평역))), 20, 800),
+                Arguments.of(영등포역, 당산역, new Age(13), of(new Stations(asList(영등포역, 신길역, 영등포시장역, 영등포구청역, 당산역))), 30, 1440)
         );
     }
 

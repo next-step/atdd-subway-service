@@ -16,13 +16,10 @@ import java.util.Optional;
 public class PathGraph extends WeightedMultigraph<Station, DefaultWeightedEdge> {
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath;
 
-    private final Sections usedSections;
-
     public PathGraph(Sections sections) {
         super(DefaultWeightedEdge.class);
 
         validateConstructor(sections);
-        this.usedSections = sections;
         this.shortestPath = setUpGraph(sections);
     }
 

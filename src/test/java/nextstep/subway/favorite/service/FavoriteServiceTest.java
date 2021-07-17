@@ -25,7 +25,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import java.util.List;
 
 import static java.lang.Integer.MAX_VALUE;
-import static nextstep.subway.fare.domain.FaresByDistance.BASIC_FARE;
+import static nextstep.subway.fare.domain.Fare.DEFAULT_FARE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -61,7 +61,7 @@ class FavoriteServiceTest {
     void setUp() {
         stationRepository.save(양평역);
         stationRepository.save(영등포구청역);
-        lineRepository.save(new Line("오호선", "보라색", 양평역, 영등포구청역, new Distance(5), BASIC_FARE));
+        lineRepository.save(new Line("오호선", "보라색", 양평역, 영등포구청역, new Distance(5), DEFAULT_FARE));
         memberRepository.save(회원_죠르디);
 
         로그인_죠르디 = new LoginMember(회원_죠르디.getId(), 회원_죠르디.getEmail(), 회원_죠르디.getAge());
