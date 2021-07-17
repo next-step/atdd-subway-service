@@ -31,14 +31,14 @@ class FarePolicyTest {
 	@Test
 	void 성인_추가요금_없는_노선_이동_거리_10키로_이내() {
 		FarePolicy farePolicy = new FarePolicy(5, 30, Arrays.asList(신분당선));
-		assertThat(farePolicy.getFare()).isEqualTo(FarePolicy.BASE_FARE);
+		assertThat(farePolicy.getFare()).isEqualTo(1250);
 	}
 
 	@DisplayName("성인이 추가요금이 없는 노선의 이동 거리가 10km초과 50km 이내인 경우, 5km마다 100원 추가 요금이 붙는다")
 	@Test
 	void 성인_추가요금_없는_노선_이동_거리_10키로_초과_50키로_이내() {
 		FarePolicy farePolicy = new FarePolicy(12, 30, Arrays.asList(신분당선));
-		int expectFare = FarePolicy.BASE_FARE + 100;
+		int expectFare = 1250 + 100;
 		assertThat(farePolicy.getFare()).isEqualTo(expectFare);
 	}
 
@@ -46,7 +46,7 @@ class FarePolicyTest {
 	@Test
 	void 성인_추가요금_없는_노선_이동_거리_50키로_초과() {
 		FarePolicy farePolicy = new FarePolicy(66, 30, Arrays.asList(신분당선));
-		int expectFare = FarePolicy.BASE_FARE + 700;
+		int expectFare = 1250 + 700;
 		assertThat(farePolicy.getFare()).isEqualTo(expectFare);
 	}
 
@@ -56,7 +56,7 @@ class FarePolicyTest {
 		int additionalFare = 300;
 		신분당선 = new Line("신분당선", "red lighten-1", 강남역, 양재역, 10, additionalFare);
 		FarePolicy farePolicy = new FarePolicy(5, 30, Arrays.asList(신분당선));
-		int expectFare = FarePolicy.BASE_FARE + additionalFare;
+		int expectFare = 1250 + additionalFare;
 		assertThat(farePolicy.getFare()).isEqualTo(expectFare);
 	}
 
@@ -67,7 +67,7 @@ class FarePolicyTest {
 		Line 이호선 = new Line("이호선", "red lighten-1", 강남역, 잠실역, 10, 500);
 
 		FarePolicy farePolicy = new FarePolicy(5, 30, Arrays.asList(신분당선, 이호선));
-		int expectFare = FarePolicy.BASE_FARE + 500;
+		int expectFare = 1250 + 500;
 		assertThat(farePolicy.getFare()).isEqualTo(expectFare);
 	}
 
@@ -75,7 +75,7 @@ class FarePolicyTest {
 	@Test
 	void 어린이_이용시() {
 		FarePolicy farePolicy = new FarePolicy(5, 7, Arrays.asList(신분당선));
-		int expectFare = (int)((FarePolicy.BASE_FARE - 350) * 0.5);
+		int expectFare = (int)((1250 - 350) * 0.5);
 		assertThat(farePolicy.getFare()).isEqualTo(expectFare);
 	}
 
@@ -83,7 +83,7 @@ class FarePolicyTest {
 	@Test
 	void 청소년_이용시() {
 		FarePolicy farePolicy = new FarePolicy(5, 15, Arrays.asList(신분당선));
-		int expectFare = (int)((FarePolicy.BASE_FARE - 350) * 0.2);
+		int expectFare = (int)((1250 - 350) * 0.2);
 		assertThat(farePolicy.getFare()).isEqualTo(expectFare);
 	}
 
@@ -91,7 +91,7 @@ class FarePolicyTest {
 	@Test
 	void 성인_이용시() {
 		FarePolicy farePolicy = new FarePolicy(5, 21, Arrays.asList(신분당선));
-		int expectFare = FarePolicy.BASE_FARE;
+		int expectFare = 1250;
 		assertThat(farePolicy.getFare()).isEqualTo(expectFare);
 	}
 }

@@ -1,5 +1,8 @@
 package nextstep.subway.path.domain;
 
+import static nextstep.subway.path.domain.AgePolicy.*;
+import static nextstep.subway.path.domain.DistancePolicy.*;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -7,9 +10,6 @@ import nextstep.subway.line.domain.Line;
 
 public class FarePolicy {
 
-	public static final int BASE_FARE = 1250;
-	private final int BASE_LENGTH = 10;
-	private final int ADDITIONAL_FARE = 100;
 	private final int DEDUCTIBLE_AMOUNT = 350;
 
 	private int fare;
@@ -24,38 +24,10 @@ public class FarePolicy {
 
 	private int fareCalculate(int distance, int age, List<Line> lines) {
 		int distanceFare = getFareByDistance(distance);
-		double discountRate = getDiscountRate(age);
+		double discountRate = getAgePolicyByAge(age).getDiscountRate();
 		int additionalFare = getAdditionalFare(lines);
 
 		return fareCalculate(distanceFare, discountRate, additionalFare);
-	}
-
-	private int getFareByDistance(int distance) {
-		if(Distance.FIRST_TARGET.isInRange(distance)) {
-			return BASE_FARE;
-		}
-
-		if(Distance.SECOND_TARGET.isInRange(distance)) {
-			return BASE_FARE + calculateOverFare(distance - BASE_LENGTH, 5);
-		}
-
-		return BASE_FARE + calculateOverFare(distance - BASE_LENGTH, 8);
-	}
-
-	private int calculateOverFare(int distance, int term) {
-		return (int) ((Math.ceil((distance - 1) / term) + 1) * ADDITIONAL_FARE);
-	}
-
-	private double getDiscountRate(int age) {
-		if(Age.CHILD.isInRange(age)) {
-			return Age.CHILD.getDiscountRate();
-		}
-
-		if(Age.ADOLESCENT.isInRange(age)) {
-			return Age.ADOLESCENT.getDiscountRate();
-		}
-
-		return Age.ADULT.getDiscountRate();
 	}
 
 	private int getAdditionalFare(List<Line> lines) {
@@ -74,6 +46,6 @@ public class FarePolicy {
 	}
 
 	private boolean isDiscount(double discountRate) {
-		return discountRate != Age.ADULT.getDiscountRate();
+		return discountRate != AgePolicy.ADULT.getDiscountRate();
 	}
 }
