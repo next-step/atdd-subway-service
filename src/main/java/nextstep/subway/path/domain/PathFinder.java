@@ -1,8 +1,6 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.fare.domain.FareCalculator;
 import nextstep.subway.line.domain.Sections;
-import nextstep.subway.member.domain.Age;
 import nextstep.subway.path.dto.Path;
 import nextstep.subway.path.exception.IllegalFindingPathException;
 import nextstep.subway.station.domain.Station;
