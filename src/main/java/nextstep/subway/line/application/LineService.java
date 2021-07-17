@@ -1,7 +1,9 @@
 package nextstep.subway.line.application;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 
@@ -87,5 +90,28 @@ public class LineService {
             .map(Section::getLine)
             .distinct()
             .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<Line> fineLinesBySection(Station upStation, Station downStation) {
+        List<Section> sections = new ArrayList<>();
+        sections.addAll(sectionRepository.findByUpStationAndDownStation(upStation, downStation));
+        sections.addAll(sectionRepository.findByUpStationAndDownStation(downStation, upStation));
+
+        return sections.stream()
+            .map(Section::getLine)
+            .distinct()
+            .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<Line> getLinesFromPath(PathFinder pathFinder) {
+        Set<Line> result = new HashSet<>();
+        List<Station> stations = pathFinder.findShortestPath();
+        for(int i = 0; i< stations.size() - 1; i++) {
+            result.addAll(fineLinesBySection(stations.get(i), stations.get(i+1)));
+        }
+
+        return new ArrayList<>(result);
     }
 }

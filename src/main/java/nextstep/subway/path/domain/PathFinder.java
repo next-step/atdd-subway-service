@@ -13,9 +13,7 @@ import nextstep.subway.common.exception.SameStationException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationsResponse;
 
 public class PathFinder {
 
@@ -56,11 +54,6 @@ public class PathFinder {
 		graph.addVertex(upStation);
 		graph.addVertex(downStation);
 		graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance());
-	}
-
-	public PathResponse findShortestPathPathResponse() {
-		List<Station> stations = findShortestPath();
-		return PathResponse.of(StationsResponse.of(stations), shortestPathDistance());
 	}
 
 	public List<Station> findShortestPath() {

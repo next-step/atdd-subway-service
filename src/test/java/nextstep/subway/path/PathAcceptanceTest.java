@@ -1,12 +1,15 @@
 package nextstep.subway.path;
 
+import static nextstep.subway.auth.infrastructure.AuthorizationExtractor.*;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.*;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.*;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -14,8 +17,11 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -32,6 +38,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	private StationResponse 양재역;
 	private StationResponse 교대역;
 	private StationResponse 남부터미널역;
+	private String token;
 
 	/**
 	 * 교대역    --- *2호선* ---   강남역
@@ -57,6 +64,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
 
 		지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+
+		회원_생성을_요청(EMAIL, PASSWORD, AGE);
+		TokenResponse response = 로그인_요청(new TokenRequest(EMAIL, PASSWORD)).as(TokenResponse.class);
+		token = response.getAccessToken();
 	}
 
 	@DisplayName("최단 경로를 조회한다.")
@@ -67,6 +78,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 		// then
 		최단_경로를_반환한다(response);
+		최단_거리를_반환한다(response);
+		지하철_이용_요금을_반환한다(response);
 	}
 
 	@DisplayName("출발역과 도착역이 같은 경우, 조회에 실패한다.")
@@ -117,6 +130,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 	private void 최단_경로를_반환한다(ExtractableResponse<Response> response) {
 		Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+		PathResponse res = response.as(PathResponse.class);
+		Assertions.assertThat(res.getStationsResponse()).isNotNull();
+	}
+
+	private void 최단_거리를_반환한다(ExtractableResponse<Response> response) {
+		Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+		PathResponse res = response.as(PathResponse.class);
+		Assertions.assertThat(res.getDistance()).isNotNull();
+	}
+
+	private void 지하철_이용_요금을_반환한다(ExtractableResponse<Response> response) {
+		Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+		PathResponse res = response.as(PathResponse.class);
+		Assertions.assertThat(res.getFare()).isNotNull();
 	}
 
 	private void 최단_경로를_조회_실패(ExtractableResponse<Response> response) {
@@ -127,6 +154,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		return RestAssured
 			.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.header(HttpHeaders.AUTHORIZATION, makeAccessToken(token))
 			.param("source", source)
 			.param("target", target)
 			.when().get("/paths")
@@ -148,5 +176,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		StationResponse downStation,
 		int distance) {
 		지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
+	}
+
+	private static String makeAccessToken(String token) {
+		return BEARER_TYPE + " " + token;
 	}
 }

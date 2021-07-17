@@ -57,7 +57,7 @@ class PathFinderTest {
 	@Test
 	void 최단_경로를_반환한다() {
 		List<Station> pathResponse = pathFinder.findShortestPath();
-		assertThat(pathResponse).contains(양재역, 남부터미널역);
+		assertThat(pathResponse).contains(강남역, 양재역, 남부터미널역);
 	}
 
 	@DisplayName("최단 거리를 반환한다")
@@ -77,7 +77,7 @@ class PathFinderTest {
 	@DisplayName("출발지와 도착지가 연결되지 않는 경우 에러가 발생한다.")
 	@Test
 	void 출_도착지가_연결되지_않는_경우_에러() {
-		assertThrows(InvalidPathException.class, () -> new PathFinder(주안역, 강남역, lines).findShortestPathPathResponse());
+		assertThrows(InvalidPathException.class, () -> new PathFinder(주안역, 강남역, lines).findShortestPath());
 	}
 
 	@DisplayName("출발지와 도착지가 연결되지 않는 경우 에러가 발생한다.")
