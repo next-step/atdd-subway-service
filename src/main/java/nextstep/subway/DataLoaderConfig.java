@@ -12,7 +12,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import static nextstep.subway.fare.domain.Fare.DEFAULT_FARE;
+import static nextstep.subway.fare.domain.FaresByDistance.BASIC_FARE;
 
 @Component
 @Profile("!test")
@@ -31,9 +31,9 @@ public class DataLoaderConfig implements CommandLineRunner {
         Station 교대역 = new Station("교대역");
         Station 양재역 = new Station("양재역");
 
-        Line 신분당선 = new Line("신분당선", "red lighten-1", 강남역, 양재역, new Distance(10), DEFAULT_FARE);
-        Line 이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, new Distance(10), DEFAULT_FARE);
-        Line 삼호선 = new Line("3호선", "orange darken-1", 교대역, 양재역, new Distance(10), DEFAULT_FARE);
+        Line 신분당선 = new Line("신분당선", "red lighten-1", 강남역, 양재역, new Distance(10), BASIC_FARE);
+        Line 이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, new Distance(10), BASIC_FARE);
+        Line 삼호선 = new Line("3호선", "orange darken-1", 교대역, 양재역, new Distance(10), BASIC_FARE);
 
         lineRepository.saveAll(Lists.newArrayList(신분당선, 이호선, 삼호선));
 

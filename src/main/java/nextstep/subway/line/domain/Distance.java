@@ -43,8 +43,8 @@ public class Distance {
         return this.value <= distance.value;
     }
 
-    public boolean isMoreThan(Distance excessDistance) {
-        return excessDistance.value <= this.value;
+    public boolean isMoreBelowThan(Distance excessDistance, Distance belowDistance) {
+        return excessDistance.value <= this.value && this.value <= belowDistance.value;
     }
 
     @Override

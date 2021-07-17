@@ -3,51 +3,36 @@ package nextstep.subway.fare.domain;
 import nextstep.subway.line.domain.Distance;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 import static java.lang.Integer.MAX_VALUE;
 
 public enum FaresByDistance {
+    BASIC(new Distance(1), new Distance(10), MAX_VALUE),
+    SHORT(new Distance(11), new Distance(50), 5),
+    LONG(new Distance(51), new Distance(MAX_VALUE), 8);
 
-    LONG(new Distance(51), 8, (Distance distance) -> distance.minus(new Distance(50))),
-    SHORT(new Distance(11), 5, (Distance distance) -> {
-        if(distance.isLessThan(new Distance(50))) {
-            return distance.minus(new Distance(10));
-        }
-        return new Distance(40);
-    });
-
+    public static final Fare BASIC_FARE = new Fare(1250);
     public static final Fare ADDITIONAL_FARE_UNIT = new Fare(100);
+    private Distance moreDistance;
+    private Distance belowDistance;
+    private int distanceStandard;
 
-    private final Distance moreDistance;
-    private final int dividingValue;
-    private final UnaryOperator<Distance> applyingStandard;
-
-    FaresByDistance(Distance moreDistance, int dividingValue, UnaryOperator<Distance> applyingDistanceFunction) {
+    FaresByDistance(Distance moreDistance, Distance belowDistance, int distanceStandard) {
         this.moreDistance = moreDistance;
-        this.applyingStandard = applyingDistanceFunction;
-        this.dividingValue = dividingValue;
+        this.belowDistance = belowDistance;
+        this.distanceStandard = distanceStandard;
     }
 
     public static Fare calculate(Fare base, Distance distance) {
+        int additionalFareDistance = distance.getDividedValue(findDistanceStandard(distance));
 
-        List<FaresByDistance> faresByDistances = findFaresByDistance(distance);
-
-        for(FaresByDistance faresByDistance : faresByDistances) {
-            Distance dividedDistance = faresByDistance.applyingStandard.apply(distance);
-            int additionalFareDistance = dividedDistance.getDividedValue(faresByDistance.dividingValue);
-
-            base = base.add(ADDITIONAL_FARE_UNIT.multiply(new Rate(additionalFareDistance)));
-        }
-
-        return base;
+        return base.add(ADDITIONAL_FARE_UNIT.multiply(new Rate(additionalFareDistance)));
     }
 
-    private static List<FaresByDistance> findFaresByDistance(Distance distance) {
+    private static Integer findDistanceStandard(Distance distance) {
         return Arrays.stream(values())
-                .filter(value -> distance.isMoreThan(value.moreDistance))
-                .collect(Collectors.toList());
+                .filter(value -> distance.isMoreBelowThan(value.moreDistance, value.belowDistance))
+                .map(value -> value.distanceStandard)
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("유효한 처리가 아닙니다." + distance));
     }
 }

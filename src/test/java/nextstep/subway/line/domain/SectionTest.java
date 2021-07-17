@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.subway.fare.domain.Fare.DEFAULT_FARE;
+import static nextstep.subway.fare.domain.FaresByDistance.BASIC_FARE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -35,7 +35,7 @@ class SectionTest {
         신길역 = new Station(4L, "신길역");
         오목교역 = new Station(5L, "오목교역");
 
-        오호선 = new Line(1L, "5호선", "보라색", 영등포구청역, 신길역, 기본_구간_거리_30, DEFAULT_FARE);
+        오호선 = new Line(1L, "5호선", "보라색", 영등포구청역, 신길역, 기본_구간_거리_30, BASIC_FARE);
 
         구간_영등포구청역_신길역 = new Section(1L, 오호선, 영등포구청역, 신길역, 기본_구간_거리_30);
         구간_영등포구청역_영등포시장역 = new Section(2L, 오호선, 영등포구청역, 영등포시장역, 절반_구간_거리_15);
