@@ -87,7 +87,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청(createResponse);
 
         // then
-        지하철_노선_응답됨(response, createResponse);
+        지하철_노선_응답됨(response);
     }
 
     @DisplayName("지하철 노선을 수정한다.")
@@ -181,7 +181,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 지하철_노선_생성됨(ExtractableResponse response) {
+    public static void 지하철_노선_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
     }
@@ -194,7 +194,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 지하철_노선_응답됨(ExtractableResponse<Response> response, ExtractableResponse<Response> createdResponse) {
+    public static void 지하철_노선_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(LineResponse.class)).isNotNull();
     }

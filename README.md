@@ -14,8 +14,8 @@
 
 # 요구 사항
 
-- [ ] 인수 테스트 통합
-  - [ ] LineSectionAcceptanceTest 리팩터링
+- [X] 인수 테스트 통합
+  - [X] LineSectionAcceptanceTest 리팩터링
 - [ ] 인수 테스트 기반 리팩터링
   - [ ] LineService 리팩터링
 
