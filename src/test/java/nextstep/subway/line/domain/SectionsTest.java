@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -51,5 +52,19 @@ class SectionsTest {
 
         // then
         assertThat(station).isEqualTo(사당역);
+    }
+
+    @Test
+    @DisplayName("지하철역 목록을 반환한다.")
+    void getStations() {
+        // given
+        sections.add(new Section(이호선, 강남역, 역삼역, 10));
+        sections.add(new Section(이호선, 사당역, 강남역, 6));
+
+        // when
+        List<Station> stations = sections.getStations();
+
+        // then
+        assertThat(stations).containsExactly(사당역, 강남역, 역삼역);
     }
 }
