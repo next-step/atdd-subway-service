@@ -14,6 +14,9 @@ import java.util.Optional;
 @Embeddable
 public class Sections {
 
+    private static final int HAS_ONE_SECTION = 1;
+    private static final int FIRST_SECTION = 0;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
@@ -25,7 +28,7 @@ public class Sections {
     }
 
     Station getUpStation() {
-        Station downStation = sections.get(0).getUpStation();
+        Station downStation = sections.get(FIRST_SECTION).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = findNextStationBackward(finalDownStation);
@@ -91,7 +94,7 @@ public class Sections {
     }
 
     void removeLineStation(Station station) {
-        if (sections.size() <= 1) {
+        if (sections.size() <= HAS_ONE_SECTION) {
             throw new SectionRemoveFailedException("구간을 제거할 수 없습니다.");
         }
 
@@ -102,7 +105,7 @@ public class Sections {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
             Distance newDistance = upLineStation.get().getDistance().getMergedDistance(downLineStation.get().getDistance());
-            sections.add(new Section(sections.get(0).getLine(), newUpStation, newDownStation, newDistance));
+            sections.add(new Section(sections.get(FIRST_SECTION).getLine(), newUpStation, newDownStation, newDistance));
         }
 
         upLineStation.ifPresent(it -> sections.remove(it));
