@@ -28,9 +28,7 @@ public class Sections {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
+            Optional<Section> nextLineStation = findNextStationBackward(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -46,59 +44,50 @@ public class Sections {
 
         List<Station> stations = new ArrayList<>();
         Station downStation = getUpStation();
-        stations.add(downStation);
 
         while (downStation != null) {
+            stations.add(downStation);
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
+            Optional<Section> nextLineStation = findNextStationForward(finalDownStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
             downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
         }
-
         return stations;
     }
 
     void addLineStation(Line line, Station upStation, Station downStation, Distance distance) {
-        List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+        validateAdd(upStation, downStation);
 
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new SectionAddFailedException("이미 등록된 구간 입니다.");
-        }
-
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation)) {
-            throw new SectionAddFailedException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (stations.isEmpty()) {
+        if (getStations().isEmpty()) {
             sections.add(new Section(line, upStation, downStation, distance));
             return;
         }
-
-        if (isUpStationExisted) {
-            sections.stream()
-                    .filter(it -> it.getUpStation() == upStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, distance));
-
+        if (isStationExisted(upStation)) {
+            findNextStationForward(upStation).ifPresent(it -> it.updateUpStation(downStation, distance));
             sections.add(new Section(line, upStation, downStation, distance));
-        } else if (isDownStationExisted) {
-            sections.stream()
-                    .filter(it -> it.getDownStation() == downStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, distance));
-
-            sections.add(new Section(line, upStation, downStation, distance));
-        } else {
-            throw new SectionAddFailedException();
+            return;
         }
+        if (isStationExisted(downStation)) {
+            findNextStationBackward(downStation).ifPresent(it -> it.updateDownStation(upStation, distance));
+            sections.add(new Section(line, upStation, downStation, distance));
+            return;
+        }
+        throw new SectionAddFailedException();
+    }
+
+    private void validateAdd(Station upStation, Station downStation) {
+        if (isStationExisted(upStation) && isStationExisted(downStation)) {
+            throw new SectionAddFailedException("이미 등록된 구간 입니다.");
+        }
+        if (!sections.isEmpty() && !isStationExisted(upStation) && !isStationExisted(downStation)) {
+            throw new SectionAddFailedException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private boolean isStationExisted(Station upStation) {
+        return getStations().stream().anyMatch(it -> it == upStation);
     }
 
     void removeLineStation(Station station) {
@@ -106,12 +95,8 @@ public class Sections {
             throw new SectionRemoveFailedException("구간을 제거할 수 없습니다.");
         }
 
-        Optional<Section> upLineStation = sections.stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = sections.stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
+        Optional<Section> upLineStation = findNextStationForward(station);
+        Optional<Section> downLineStation = findNextStationBackward(station);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
@@ -122,6 +107,18 @@ public class Sections {
 
         upLineStation.ifPresent(it -> sections.remove(it));
         downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
+    private Optional<Section> findNextStationForward(Station finalDownStation) {
+        return sections.stream()
+                .filter(it -> it.getUpStation() == finalDownStation)
+                .findFirst();
+    }
+
+    private Optional<Section> findNextStationBackward(Station downStation) {
+        return sections.stream()
+                .filter(it -> it.getDownStation() == downStation)
+                .findFirst();
     }
 
     @Override
