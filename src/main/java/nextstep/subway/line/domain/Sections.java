@@ -21,7 +21,8 @@ public class Sections {
         this.sections = sections;
     }
 
-    public void add(Section section) {
+    void add(Section section) {
+        sections.add(section);
     }
 
     // TODO: 리팩터링 이후 삭제
