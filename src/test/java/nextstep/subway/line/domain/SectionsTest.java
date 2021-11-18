@@ -35,8 +35,8 @@ class SectionsTest {
     @DisplayName("상행 종점역을 반환한다.")
     void getUpStation() {
         // given
-        sections.addLineStation(이호선, 강남역, 역삼역, 10);
-        sections.addLineStation(이호선, 사당역, 강남역, 15);
+        sections.addLineStation(이호선, 강남역, 역삼역, new Distance(10));
+        sections.addLineStation(이호선, 사당역, 강남역, new Distance(15));
 
         // when
         Station station = sections.getUpStation();
@@ -49,8 +49,8 @@ class SectionsTest {
     @DisplayName("지하철역 목록을 반환한다.")
     void getStations() {
         // given
-        sections.addLineStation(이호선, 강남역, 역삼역, 10);
-        sections.addLineStation(이호선, 사당역, 강남역, 15);
+        sections.addLineStation(이호선, 강남역, 역삼역, new Distance(10));
+        sections.addLineStation(이호선, 사당역, 강남역, new Distance(15));
 
         // when
         List<Station> stations = sections.getStations();
@@ -63,15 +63,15 @@ class SectionsTest {
     @DisplayName("지하철 노선에 구간을 추가한다.")
     void addLineStation() {
         // given
-        sections.addLineStation(이호선, 강남역, 역삼역, 10);
+        sections.addLineStation(이호선, 강남역, 역삼역, new Distance(10));
 
         // when
-        sections.addLineStation(이호선, 사당역, 강남역, 15);
+        sections.addLineStation(이호선, 사당역, 강남역, new Distance(15));
 
         // then
         assertThat(sections).isEqualTo(new Sections(Arrays.asList(
-                new Section(이호선, 강남역, 역삼역, 10),
-                new Section(이호선, 사당역, 강남역, 15)
+                new Section(이호선, 강남역, 역삼역, new Distance(10)),
+                new Section(이호선, 사당역, 강남역, new Distance(15))
         )));
     }
 
@@ -79,11 +79,11 @@ class SectionsTest {
     @DisplayName("존재하는 역으로 지하철 노선에 구간을 추가하면 예외가 발생한다.")
     void addLineStationThrowException1() {
         // given
-        sections.addLineStation(이호선, 강남역, 역삼역, 10);
+        sections.addLineStation(이호선, 강남역, 역삼역, new Distance(10));
 
         // when & then
         assertThatExceptionOfType(SectionAddFailedException.class)
-                .isThrownBy(() -> sections.addLineStation(이호선, 강남역, 역삼역, 15))
+                .isThrownBy(() -> sections.addLineStation(이호선, 강남역, 역삼역, new Distance(15)))
                 .withMessageMatching("이미 등록된 구간 입니다.");
     }
 
@@ -91,11 +91,11 @@ class SectionsTest {
     @DisplayName("존재하지 않는 역으로 지하철 노선에 구간을 추가하면 예외가 발생한다.")
     void addLineStationThrowException2() {
         // given
-        sections.addLineStation(이호선, 강남역, 역삼역, 10);
+        sections.addLineStation(이호선, 강남역, 역삼역, new Distance(10));
 
         // when & then
         assertThatExceptionOfType(SectionAddFailedException.class)
-                .isThrownBy(() -> sections.addLineStation(이호선, 사당역, 방배역, 15))
+                .isThrownBy(() -> sections.addLineStation(이호선, 사당역, 방배역, new Distance(15)))
                 .withMessageMatching("등록할 수 없는 구간 입니다.");
     }
 
@@ -103,15 +103,15 @@ class SectionsTest {
     @DisplayName("지하철 노선에서 구간을 제거한다.")
     void removeLineStation() {
         // given
-        sections.addLineStation(이호선, 강남역, 역삼역, 10);
-        sections.addLineStation(이호선, 사당역, 강남역, 15);
+        sections.addLineStation(이호선, 강남역, 역삼역, new Distance(10));
+        sections.addLineStation(이호선, 사당역, 강남역, new Distance(15));
 
         // when
         sections.removeLineStation(강남역);
 
         // then
         assertThat(sections).isEqualTo(new Sections(Collections.singletonList(
-                new Section(이호선, 사당역, 역삼역, 25)
+                new Section(이호선, 사당역, 역삼역, new Distance(25))
         )));
     }
 
@@ -119,7 +119,7 @@ class SectionsTest {
     @DisplayName("구간이 1개만 존재할 때 지하철 노선에서 구간을 제거하면 예외가 발생한다..")
     void removeLineStationThrowException() {
         // given
-        sections.addLineStation(이호선, 강남역, 역삼역, 10);
+        sections.addLineStation(이호선, 강남역, 역삼역, new Distance(10));
 
         // when & then
         assertThatExceptionOfType(SectionRemoveFailedException.class)

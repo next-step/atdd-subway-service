@@ -1,6 +1,7 @@
 package nextstep.subway.line.application;
 
 import nextstep.subway.global.EntityNotFoundException;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
@@ -31,7 +32,7 @@ public class LineService {
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
         Line persistLine = lineRepository.save(
-                new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+                new Line(request.getName(), request.getColor(), upStation, downStation, new Distance(request.getDistance())));
         List<StationResponse> stations = persistLine.getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
@@ -66,7 +67,7 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        line.addLineStation(upStation, downStation, request.getDistance());
+        line.addLineStation(upStation, downStation, new Distance(request.getDistance()));
     }
 
     public void removeLineStation(Long lineId, Long stationId) {

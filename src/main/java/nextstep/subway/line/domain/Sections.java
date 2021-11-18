@@ -63,7 +63,7 @@ public class Sections {
         return stations;
     }
 
-    void addLineStation(Line line, Station upStation, Station downStation, int distance) {
+    void addLineStation(Line line, Station upStation, Station downStation, Distance distance) {
         List<Station> stations = getStations();
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
@@ -116,7 +116,7 @@ public class Sections {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            Distance newDistance = upLineStation.get().getDistance().getMergedDistance(downLineStation.get().getDistance());
             sections.add(new Section(sections.get(0).getLine(), newUpStation, newDownStation, newDistance));
         }
 
