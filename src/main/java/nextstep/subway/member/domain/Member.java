@@ -1,7 +1,7 @@
 package nextstep.subway.member.domain;
 
-import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.global.BaseEntity;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Entity;
