@@ -69,12 +69,12 @@ public class Sections {
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new SectionAddFailedException("이미 등록된 구간 입니다.");
         }
 
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
                 stations.stream().noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new SectionAddFailedException("등록할 수 없는 구간 입니다.");
         }
 
         if (stations.isEmpty()) {
@@ -97,13 +97,13 @@ public class Sections {
 
             sections.add(new Section(line, upStation, downStation, distance));
         } else {
-            throw new RuntimeException();
+            throw new SectionAddFailedException();
         }
     }
 
     void removeLineStation(Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new SectionRemoveFailedException("구간을 제거할 수 없습니다.");
         }
 
         Optional<Section> upLineStation = sections.stream()

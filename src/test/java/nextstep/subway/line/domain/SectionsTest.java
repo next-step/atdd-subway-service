@@ -82,7 +82,7 @@ class SectionsTest {
         sections.addLineStation(이호선, 강남역, 역삼역, 10);
 
         // when & then
-        assertThatExceptionOfType(RuntimeException.class)
+        assertThatExceptionOfType(SectionAddFailedException.class)
                 .isThrownBy(() -> sections.addLineStation(이호선, 강남역, 역삼역, 15))
                 .withMessageMatching("이미 등록된 구간 입니다.");
     }
@@ -94,7 +94,7 @@ class SectionsTest {
         sections.addLineStation(이호선, 강남역, 역삼역, 10);
 
         // when & then
-        assertThatExceptionOfType(RuntimeException.class)
+        assertThatExceptionOfType(SectionAddFailedException.class)
                 .isThrownBy(() -> sections.addLineStation(이호선, 사당역, 방배역, 15))
                 .withMessageMatching("등록할 수 없는 구간 입니다.");
     }
@@ -122,7 +122,8 @@ class SectionsTest {
         sections.addLineStation(이호선, 강남역, 역삼역, 10);
 
         // when & then
-        assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> sections.removeLineStation(강남역));
+        assertThatExceptionOfType(SectionRemoveFailedException.class)
+                .isThrownBy(() -> sections.removeLineStation(강남역))
+                .withMessageMatching("구간을 제거할 수 없습니다.");
     }
 }
