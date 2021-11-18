@@ -30,23 +30,11 @@ class SectionsTest {
     }
 
     @Test
-    @DisplayName("지하철 구간을 추가한다.")
-    void add() {
-        // when
-        sections.add(new Section(이호선, 강남역, 역삼역, 10));
-
-        // then
-        assertThat(sections).isEqualTo(new Sections(Collections.singletonList(
-                new Section(이호선, 강남역, 역삼역, 10)
-        )));
-    }
-
-    @Test
     @DisplayName("상행 종점역을 반환한다.")
     void getUpStation() {
         // given
-        sections.add(new Section(이호선, 강남역, 역삼역, 10));
-        sections.add(new Section(이호선, 사당역, 강남역, 6));
+        sections.addLineStation(이호선, 강남역, 역삼역, 10);
+        sections.addLineStation(이호선, 사당역, 강남역, 15);
 
         // when
         Station station = sections.getUpStation();
@@ -59,8 +47,8 @@ class SectionsTest {
     @DisplayName("지하철역 목록을 반환한다.")
     void getStations() {
         // given
-        sections.add(new Section(이호선, 강남역, 역삼역, 10));
-        sections.add(new Section(이호선, 사당역, 강남역, 15));
+        sections.addLineStation(이호선, 강남역, 역삼역, 10);
+        sections.addLineStation(이호선, 사당역, 강남역, 15);
 
         // when
         List<Station> stations = sections.getStations();
@@ -73,10 +61,10 @@ class SectionsTest {
     @DisplayName("지하철 노선에 구간을 추가한다.")
     void addLineStation() {
         // given
-        sections.add(new Section(이호선, 강남역, 역삼역, 10));
+        sections.addLineStation(이호선, 강남역, 역삼역, 10);
 
         // when
-        sections.addLineStation(사당역, 강남역, 15);
+        sections.addLineStation(이호선, 사당역, 강남역, 15);
 
         // then
         assertThat(sections).isEqualTo(new Sections(Arrays.asList(
@@ -89,8 +77,8 @@ class SectionsTest {
     @DisplayName("지하철 노선에서 구간을 제거한다.")
     void removeLineStation() {
         // given
-        sections.add(new Section(이호선, 강남역, 역삼역, 10));
-        sections.add(new Section(이호선, 사당역, 강남역, 15));
+        sections.addLineStation(이호선, 강남역, 역삼역, 10);
+        sections.addLineStation(이호선, 사당역, 강남역, 15);
 
         // when
         sections.removeLineStation(강남역);

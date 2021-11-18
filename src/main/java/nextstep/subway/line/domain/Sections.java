@@ -24,15 +24,6 @@ public class Sections {
         this.sections = sections;
     }
 
-    // TODO: 리팩터링 이후 삭제
-    public List<Section> getSections() {
-        return sections;
-    }
-
-    void add(Section section) {
-        sections.add(section);
-    }
-
     Station getUpStation() {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
@@ -72,7 +63,7 @@ public class Sections {
         return stations;
     }
 
-    void addLineStation(Station upStation, Station downStation, int distance) {
+    void addLineStation(Line line, Station upStation, Station downStation, int distance) {
         List<Station> stations = getStations();
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
@@ -86,8 +77,6 @@ public class Sections {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
 
-        Line line = sections.get(0).getLine();
-
         if (stations.isEmpty()) {
             sections.add(new Section(line, upStation, downStation, distance));
             return;
@@ -99,7 +88,7 @@ public class Sections {
                     .findFirst()
                     .ifPresent(it -> it.updateUpStation(downStation, distance));
 
-            line.getSections().add(new Section(line, upStation, downStation, distance));
+            sections.add(new Section(line, upStation, downStation, distance));
         } else if (isDownStationExisted) {
             sections.stream()
                     .filter(it -> it.getDownStation() == downStation)
@@ -112,7 +101,7 @@ public class Sections {
         }
     }
 
-    public void removeLineStation(Station station) {
+    void removeLineStation(Station station) {
         if (sections.size() <= 1) {
             throw new RuntimeException();
         }
