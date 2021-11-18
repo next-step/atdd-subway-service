@@ -72,6 +72,46 @@ public class Sections {
         return stations;
     }
 
+    void addLineStation(Station upStation, Station downStation, int distance) {
+        List<Station> stations = getStations();
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
+                stations.stream().noneMatch(it -> it == downStation)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
+        Line line = sections.get(0).getLine();
+
+        if (stations.isEmpty()) {
+            sections.add(new Section(line, upStation, downStation, distance));
+            return;
+        }
+
+        if (isUpStationExisted) {
+            sections.stream()
+                    .filter(it -> it.getUpStation() == upStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(downStation, distance));
+
+            line.getSections().add(new Section(line, upStation, downStation, distance));
+        } else if (isDownStationExisted) {
+            sections.stream()
+                    .filter(it -> it.getDownStation() == downStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(upStation, distance));
+
+            sections.add(new Section(line, upStation, downStation, distance));
+        } else {
+            throw new RuntimeException();
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

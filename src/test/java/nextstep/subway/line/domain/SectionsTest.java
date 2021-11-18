@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -59,12 +60,28 @@ class SectionsTest {
     void getStations() {
         // given
         sections.add(new Section(이호선, 강남역, 역삼역, 10));
-        sections.add(new Section(이호선, 사당역, 강남역, 6));
+        sections.add(new Section(이호선, 사당역, 강남역, 15));
 
         // when
         List<Station> stations = sections.getStations();
 
         // then
         assertThat(stations).containsExactly(사당역, 강남역, 역삼역);
+    }
+
+    @Test
+    @DisplayName("지하철 노선에 구간을 추가한다.")
+    void addLineStation() {
+        // given
+        sections.add(new Section(이호선, 강남역, 역삼역, 10));
+
+        // when
+        sections.addLineStation(사당역, 강남역, 15);
+
+        // then
+        assertThat(sections).isEqualTo(new Sections(Arrays.asList(
+                new Section(이호선, 강남역, 역삼역, 10),
+                new Section(이호선, 사당역, 강남역, 15)
+        )));
     }
 }
