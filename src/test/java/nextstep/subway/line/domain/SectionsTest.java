@@ -84,4 +84,20 @@ class SectionsTest {
                 new Section(이호선, 사당역, 강남역, 15)
         )));
     }
+
+    @Test
+    @DisplayName("지하철 노선에서 구간을 제거한다.")
+    void removeLineStation() {
+        // given
+        sections.add(new Section(이호선, 강남역, 역삼역, 10));
+        sections.add(new Section(이호선, 사당역, 강남역, 15));
+
+        // when
+        sections.removeLineStation(강남역);
+
+        // then
+        assertThat(sections).isEqualTo(new Sections(Collections.singletonList(
+                new Section(이호선, 사당역, 역삼역, 25)
+        )));
+    }
 }
