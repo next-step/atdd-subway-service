@@ -14,21 +14,22 @@ class SectionsTest {
 
     private Station 강남역;
     private Station 역삼역;
+    private Station 사당역;
     private Line 이호선;
+    private Sections sections;
 
     @BeforeEach
     void setUp() {
         강남역 = new Station("강남역");
         역삼역 = new Station("역삼역");
+        사당역 = new Station("사당역");
         이호선 = new Line("2호선", "green");
+        sections = new Sections();
     }
 
     @Test
     @DisplayName("지하철 구간을 추가한다.")
     void add() {
-        // given
-        Sections sections = new Sections();
-
         // when
         sections.add(new Section(이호선, 강남역, 역삼역, 10));
 
@@ -36,5 +37,19 @@ class SectionsTest {
         assertThat(sections).isEqualTo(new Sections(Collections.singletonList(
                 new Section(이호선, 강남역, 역삼역, 10)
         )));
+    }
+
+    @Test
+    @DisplayName("상행 종점역을 반환한다.")
+    void getUpStation() {
+        // given
+        sections.add(new Section(이호선, 강남역, 역삼역, 10));
+        sections.add(new Section(이호선, 사당역, 강남역, 6));
+
+        // when
+        Station station = sections.getUpStation();
+
+        // then
+        assertThat(station).isEqualTo(사당역);
     }
 }
