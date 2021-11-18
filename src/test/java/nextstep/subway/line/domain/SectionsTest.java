@@ -17,6 +17,7 @@ class SectionsTest {
     private Station 강남역;
     private Station 역삼역;
     private Station 사당역;
+    private Station 방배역;
     private Line 이호선;
     private Sections sections;
 
@@ -25,6 +26,7 @@ class SectionsTest {
         강남역 = new Station("강남역");
         역삼역 = new Station("역삼역");
         사당역 = new Station("사당역");
+        방배역 = new Station("방배역");
         이호선 = new Line("2호선", "green");
         sections = new Sections();
     }
@@ -74,6 +76,30 @@ class SectionsTest {
     }
 
     @Test
+    @DisplayName("존재하는 역으로 지하철 노선에 구간을 추가하면 예외가 발생한다.")
+    void addLineStationThrowException1() {
+        // given
+        sections.addLineStation(이호선, 강남역, 역삼역, 10);
+
+        // when & then
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> sections.addLineStation(이호선, 강남역, 역삼역, 15))
+                .withMessageMatching("이미 등록된 구간 입니다.");
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 역으로 지하철 노선에 구간을 추가하면 예외가 발생한다.")
+    void addLineStationThrowException2() {
+        // given
+        sections.addLineStation(이호선, 강남역, 역삼역, 10);
+
+        // when & then
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> sections.addLineStation(이호선, 사당역, 방배역, 15))
+                .withMessageMatching("등록할 수 없는 구간 입니다.");
+    }
+
+    @Test
     @DisplayName("지하철 노선에서 구간을 제거한다.")
     void removeLineStation() {
         // given
@@ -87,5 +113,16 @@ class SectionsTest {
         assertThat(sections).isEqualTo(new Sections(Collections.singletonList(
                 new Section(이호선, 사당역, 역삼역, 25)
         )));
+    }
+
+    @Test
+    @DisplayName("구간이 1개만 존재할 때 지하철 노선에서 구간을 제거하면 예외가 발생한다..")
+    void removeLineStationThrowException() {
+        // given
+        sections.addLineStation(이호선, 강남역, 역삼역, 10);
+
+        // when & then
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> sections.removeLineStation(강남역));
     }
 }
