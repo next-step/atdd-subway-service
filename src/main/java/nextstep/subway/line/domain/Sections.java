@@ -14,7 +14,7 @@ import java.util.Optional;
 @Embeddable
 public class Sections {
 
-    private static final int HAS_ONE_SECTION = 1;
+    private static final int CANNOT_REMOVE_COUNT = 1;
     private static final int FIRST_SECTION = 0;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
@@ -60,7 +60,7 @@ public class Sections {
         return stations;
     }
 
-    void addLineStation(Line line, Station upStation, Station downStation, Distance distance) {
+    void addSection(Line line, Station upStation, Station downStation, Distance distance) {
         validateAdd(upStation, downStation);
 
         if (getStations().isEmpty()) {
@@ -93,8 +93,8 @@ public class Sections {
         return getStations().stream().anyMatch(it -> it == upStation);
     }
 
-    void removeLineStation(Station station) {
-        if (sections.size() <= HAS_ONE_SECTION) {
+    void remove(Station station) {
+        if (sections.size() <= CANNOT_REMOVE_COUNT) {
             throw new SectionRemoveFailedException("구간을 제거할 수 없습니다.");
         }
 
