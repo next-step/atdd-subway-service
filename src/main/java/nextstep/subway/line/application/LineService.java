@@ -1,6 +1,6 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.global.EntityNotFoundException;
+import nextstep.subway.global.FindFailedException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
@@ -41,7 +41,7 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Line.class));
+        return lineRepository.findById(id).orElseThrow(() -> new FindFailedException(Line.class));
     }
 
     public LineResponse findLineResponseById(Long id) {

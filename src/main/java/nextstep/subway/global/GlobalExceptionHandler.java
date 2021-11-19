@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
         response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }
 
-    @ExceptionHandler(EntityNotFoundException.class)
+    @ExceptionHandler(FindFailedException.class)
     public void handleEntityNotFoundException(HttpServletResponse response) throws IOException {
         response.sendError(HttpServletResponse.SC_NOT_FOUND);
     }

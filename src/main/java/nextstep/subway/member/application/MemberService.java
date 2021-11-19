@@ -1,6 +1,6 @@
 package nextstep.subway.member.application;
 
-import nextstep.subway.global.EntityNotFoundException;
+import nextstep.subway.global.FindFailedException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
@@ -31,7 +31,7 @@ public class MemberService {
     }
 
     private Member findMemberById(Long id) {
-        return memberRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Member.class));
+        return memberRepository.findById(id).orElseThrow(() -> new FindFailedException(Member.class));
     }
 
     public void deleteMember(Long id) {
