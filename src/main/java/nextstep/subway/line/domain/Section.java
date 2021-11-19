@@ -13,6 +13,9 @@ import java.util.Objects;
 
 @Entity
 public class Section {
+
+    public static final Section EMPTY = new Section();
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -62,13 +65,17 @@ public class Section {
     }
 
     public void updateUpStation(Station station, Distance newDistance) {
-        this.distance = this.distance.getSplitDistance(newDistance);
+        this.distance = this.distance.getRemainedDistance(newDistance);
         this.upStation = station;
     }
 
     public void updateDownStation(Station station, Distance newDistance) {
-        this.distance = this.distance.getSplitDistance(newDistance);
+        this.distance = this.distance.getRemainedDistance(newDistance);
         this.downStation = station;
+    }
+
+    public boolean isExists() {
+        return !Objects.equals(this, Section.EMPTY);
     }
 
     @Override

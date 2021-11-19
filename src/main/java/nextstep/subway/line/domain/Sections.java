@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Embeddable
 public class Sections {
@@ -28,14 +27,12 @@ public class Sections {
     }
 
     Station getUpStation() {
-        Station downStation = sections.get(FIRST_SECTION).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = findNextStationBackward(finalDownStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
+        Section section = sections.get(FIRST_SECTION);
+        Station downStation = section.getUpStation();
+
+        while (section.isExists()) {
+            downStation = section.getUpStation();
+            section = findNextStationBackward(downStation);
         }
         return downStation;
     }
@@ -46,16 +43,16 @@ public class Sections {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = getUpStation();
+        Station upStation = getUpStation();
+        stations.add(upStation);
 
-        while (downStation != null) {
+        Section section = findNextStationForward(upStation);
+        Station downStation;
+
+        while (section.isExists()) {
+            downStation = section.getDownStation();
             stations.add(downStation);
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = findNextStationForward(finalDownStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
+            section = findNextStationForward(downStation);
         }
         return stations;
     }
@@ -68,16 +65,30 @@ public class Sections {
             return;
         }
         if (isStationExisted(upStation)) {
-            findNextStationForward(upStation).ifPresent(it -> it.updateUpStation(downStation, distance));
-            sections.add(new Section(line, upStation, downStation, distance));
+            Section sectionUpStationMatched = findNextStationForward(upStation);
+            addSectionsWhenUpStationMatched(line, upStation, downStation, distance, sectionUpStationMatched);
             return;
         }
         if (isStationExisted(downStation)) {
-            findNextStationBackward(downStation).ifPresent(it -> it.updateDownStation(upStation, distance));
-            sections.add(new Section(line, upStation, downStation, distance));
+            Section sectionDownStationMatched = findNextStationBackward(downStation);
+            addSectionsWhenDownStationMatched(line, upStation, downStation, distance, sectionDownStationMatched);
             return;
         }
         throw new SectionAddFailedException();
+    }
+
+    private void addSectionsWhenUpStationMatched(Line line, Station upStation, Station downStation, Distance distance, Section section) {
+        if (section.isExists()) {
+            section.updateUpStation(downStation, distance);
+        }
+        sections.add(new Section(line, upStation, downStation, distance));
+    }
+
+    private void addSectionsWhenDownStationMatched(Line line, Station upStation, Station downStation, Distance distance, Section section) {
+        if (section.isExists()) {
+            section.updateDownStation(upStation, distance);
+        }
+        sections.add(new Section(line, upStation, downStation, distance));
     }
 
     private void validateAdd(Station upStation, Station downStation) {
@@ -98,30 +109,36 @@ public class Sections {
             throw new SectionRemoveFailedException("구간을 제거할 수 없습니다.");
         }
 
-        Optional<Section> upLineStation = findNextStationForward(station);
-        Optional<Section> downLineStation = findNextStationBackward(station);
+        Section upStation = findNextStationForward(station);
+        Section downStation = findNextStationBackward(station);
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            Distance newDistance = upLineStation.get().getDistance().getMergedDistance(downLineStation.get().getDistance());
+        if (upStation.isExists() && downStation.isExists()) {
+            Station newUpStation = downStation.getUpStation();
+            Station newDownStation = upStation.getDownStation();
+            Distance newDistance = upStation.getDistance().getAddedDistance(downStation.getDistance());
             sections.add(new Section(sections.get(FIRST_SECTION).getLine(), newUpStation, newDownStation, newDistance));
         }
 
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
+        if (upStation.isExists()) {
+            sections.remove(upStation);
+        }
+        if (downStation.isExists()) {
+            sections.remove(downStation);
+        }
     }
 
-    private Optional<Section> findNextStationForward(Station finalDownStation) {
+    private Section findNextStationBackward(Station station) {
         return sections.stream()
-                .filter(it -> it.getUpStation() == finalDownStation)
-                .findFirst();
+                .filter(it -> it.getDownStation() == station)
+                .findFirst()
+                .orElse(Section.EMPTY);
     }
 
-    private Optional<Section> findNextStationBackward(Station downStation) {
+    private Section findNextStationForward(Station station) {
         return sections.stream()
-                .filter(it -> it.getDownStation() == downStation)
-                .findFirst();
+                .filter(it -> it.getUpStation() == station)
+                .findFirst()
+                .orElse(Section.EMPTY);
     }
 
     @Override
