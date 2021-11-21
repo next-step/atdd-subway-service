@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
+import nextstep.subway.common.domain.Name;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,7 +17,9 @@ class SectionsTest {
     @BeforeEach
     void setUp() {
         강남_광교_구간 = Section.of(
-            new Station("강남"), new Station("광교"), Distance.from(Integer.MAX_VALUE));
+            Station.from(Name.from("강남")),
+            Station.from(Name.from("광교")),
+            Distance.from(Integer.MAX_VALUE));
     }
 
     @Test
@@ -27,7 +30,7 @@ class SectionsTest {
     }
 
     @Test
-    @DisplayName("구간이 null인 상태로 객체화하면 IllegalArgumentException")
+    @DisplayName("구간이 null인 상태로 객체화")
     void instance_nullSection_thrownIllegalArgumentException() {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> Sections.from(null))

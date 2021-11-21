@@ -49,16 +49,16 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Long getId() {
+    public Long id() {
         return id;
     }
 
-    public String getName() {
-        return name.toString();
+    public Name name() {
+        return name;
     }
 
-    public String getColor() {
-        return color.toString();
+    public Color color() {
+        return color;
     }
 
     public List<Section> getSections() {

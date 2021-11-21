@@ -26,7 +26,7 @@ class DistanceTest {
     void instance_negativeValue_thrownIllegalArgumentException() {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> Distance.from(Integer.MIN_VALUE))
-            .withMessageEndingWith("must be greater than zero");
+            .withMessageEndingWith("distance value must be positive");
     }
 
     @Test
@@ -59,7 +59,7 @@ class DistanceTest {
 
     @ParameterizedTest(name = "[{index}] 10인 거리에서 {0}인 거리를 뺄 수 없다.")
     @ValueSource(ints = {10, Integer.MAX_VALUE})
-    @DisplayName("같거나 더 큰수로 빼면 IllegalArgumentException")
+    @DisplayName("같거나 더 큰수로 뺀다.")
     void subtract_equalOrGreaterThan_thrownIllegalArgumentException(Integer distance) {
         // given
         Distance tenDistance = Distance.from(10);
@@ -70,12 +70,12 @@ class DistanceTest {
         // then
         assertThatIllegalArgumentException()
             .isThrownBy(subtractCall)
-            .withMessageEndingWith("must be greater than zero");
+            .withMessageEndingWith("distance value must be positive");
     }
 
     @ParameterizedTest(name = "[{index}] 10인 거리가 {0} 보다 이상이라는 사실은 {1}")
     @CsvSource({"9,false", "10,true", "11,true"})
-    @DisplayName("값 이상 여부 판단")
+    @DisplayName("값 이하 또는 동일 여부 판단")
     void lessThanOrEqual(Integer distance, boolean expected) {
         // given
         Distance tenDistance = Distance.from(10);

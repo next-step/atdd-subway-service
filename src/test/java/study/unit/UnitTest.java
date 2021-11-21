@@ -13,7 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("단위 테스트")
-public class UnitTest {
+class UnitTest {
 
     @Test
     void update() {
@@ -21,8 +21,8 @@ public class UnitTest {
         Name newName = Name.from("구분당선");
         Color newColor = Color.from("GREEN");
 
-        Station upStation = new Station("강남역");
-        Station downStation = new Station("광교역");
+        Station upStation = Station.from(Name.from("강남역"));
+        Station downStation = Station.from(Name.from("광교역"));
         Line line = Line.of(Name.from("신분당선"), Color.from("RED"),
             Sections.from(Section.of(upStation, downStation, Distance.from(10))));
 
@@ -30,7 +30,7 @@ public class UnitTest {
         line.update(newName, newColor);
 
         // then
-        assertThat(line.getName())
+        assertThat(line.name())
             .isEqualTo(newName);
     }
 }

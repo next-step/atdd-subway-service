@@ -49,14 +49,14 @@ class LineTest {
 
         //then
         assertAll(
-            () -> assertThat(line.getName()).isEqualTo(updatedName),
-            () -> assertThat(line.getColor()).isEqualTo(updatedColor)
+            () -> assertThat(line.name()).isEqualTo(updatedName),
+            () -> assertThat(line.color()).isEqualTo(updatedColor)
         );
     }
 
     @ParameterizedTest(name = "[{index}] {argumentsWithNames} 값 으로 수정할 수 없다.")
     @MethodSource
-    @DisplayName("'null' 인 이름과 색상을 수정하면 IllegalArgumentException")
+    @DisplayName("'null' 인 이름과 색상을 수정한다.")
     void update_nullArgument_thrownIllegalArgumentException(Name name, Color color) {
         //given
         Line line = Line.of(Name.from("name"), Color.from("color"), mock(Sections.class));

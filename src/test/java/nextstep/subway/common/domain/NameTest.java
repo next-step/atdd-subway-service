@@ -1,4 +1,4 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.common.domain;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
@@ -8,23 +8,24 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-@DisplayName("색상")
-class ColorTest {
+@DisplayName("이름")
+class NameTest {
 
-    @ParameterizedTest(name = "[{index}] {argumentsWithNames} 으로 객체화 가능")
+    @ParameterizedTest(name = "[{index}] {argumentsWithNames} 으로 객체화")
     @DisplayName("객체화")
-    @ValueSource(strings = {"red", "blue", "green"})
-    void instance(String value) {
+    @ValueSource(strings = {"name", "이름"})
+    void instance(String name) {
         assertThatNoException()
-            .isThrownBy(() -> Color.from(value));
+            .isThrownBy(() -> Name.from(name));
     }
 
-    @ParameterizedTest(name = "[{index}] {argumentsWithNames} 으로 객체화 불가능")
-    @DisplayName("값이 비어있는 상태로 객체화")
     @NullAndEmptySource
+    @DisplayName("비어있는 값으로 객체화")
+    @ParameterizedTest(name = "[{index}] {argumentsWithNames} 으로 객체화 불가능")
     void instance_emptyValue_thrownIllegalArgumentException(String value) {
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> Color.from(value))
-            .withMessage("color value must not be empty");
+            .isThrownBy(() -> Name.from(value))
+            .withMessage("name value must not be empty");
     }
+
 }
