@@ -1,0 +1,49 @@
+package nextstep.subway.line.domain;
+
+import io.jsonwebtoken.lang.Assert;
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+@Embeddable
+public class Color {
+
+    @Column(name = "color")
+    private String value;
+
+    protected Color() {
+    }
+
+    private Color(String value) {
+        Assert.hasText(value, "color value must not be empty");
+        this.value = value;
+    }
+
+    public static Color from(String value) {
+        return new Color(value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Color color = (Color) o;
+        return Objects.equals(value, color.value);
+    }
+
+    @Override
+    public String toString() {
+        return "Color{" +
+            "value='" + value + '\'' +
+            '}';
+    }
+}

@@ -1,6 +1,8 @@
 package nextstep.subway.line.dto;
 
 import javax.validation.constraints.NotBlank;
+import nextstep.subway.common.domain.Name;
+import nextstep.subway.line.domain.Color;
 
 public class LineUpdateRequest {
 
@@ -24,6 +26,14 @@ public class LineUpdateRequest {
 
     public String getColor() {
         return color;
+    }
+
+    public Name name() {
+        return Name.from(name);
+    }
+
+    public Color color() {
+        return Color.from(color);
     }
 
 }

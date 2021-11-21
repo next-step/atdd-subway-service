@@ -177,7 +177,6 @@ class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_못찾음(response);
     }
 
-
     @DisplayName("지하철 노선을 제거한다.")
     @Test
     void deleteLine() {
@@ -191,7 +190,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_삭제됨(response);
     }
 
-    @DisplayName("지하철 노선을 제거한다.")
+    @DisplayName("존재하지 않는 지하철 노선을 제거한다.")
     @Test
     void deleteLine_notExistsLine_400() {
         // when

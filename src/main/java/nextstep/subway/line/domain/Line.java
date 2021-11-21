@@ -1,41 +1,52 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.BaseEntity;
-import nextstep.subway.station.domain.Station;
-
-import javax.persistence.*;
-import java.util.ArrayList;
+import io.jsonwebtoken.lang.Assert;
 import java.util.List;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import nextstep.subway.BaseEntity;
+import nextstep.subway.common.domain.Name;
 
 @Entity
 public class Line extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
-    private String name;
-    private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Name name;
 
-    public Line() {
+    @Embedded
+    private Color color;
+
+    @Embedded
+    private Sections sections;
+
+    protected Line() {
     }
 
-    public Line(String name, String color) {
+    public Line(Name name, Color color, Sections sections) {
+        Assert.notNull(name, "name must not be null");
+        Assert.notNull(color, "color must not be null");
+        Assert.notNull(sections, "sections must not be null");
         this.name = name;
         this.color = color;
+        this.sections = sections;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public static Line of(Name name, Color color, Sections sections) {
+        return new Line(name, color, sections);
+    }
+
+    public void update(Name name, Color color) {
+        Assert.notNull(name, "updated name must not be null");
+        Assert.notNull(name, "updated color must not be null");
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
-    }
-
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
     }
 
     public Long getId() {
@@ -43,14 +54,14 @@ public class Line extends BaseEntity {
     }
 
     public String getName() {
-        return name;
+        return name.toString();
     }
 
     public String getColor() {
-        return color;
+        return color.toString();
     }
 
     public List<Section> getSections() {
-        return sections;
+        return sections.getList();
     }
 }

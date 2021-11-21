@@ -3,6 +3,8 @@ package nextstep.subway.line.dto;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import nextstep.subway.common.domain.Name;
+import nextstep.subway.line.domain.Color;
 
 public class LineCreateRequest {
 
@@ -35,5 +37,13 @@ public class LineCreateRequest {
 
     public SectionRequest getSection() {
         return section;
+    }
+
+    public Name name() {
+        return Name.from(name);
+    }
+
+    public Color color() {
+        return Color.from(color);
     }
 }
