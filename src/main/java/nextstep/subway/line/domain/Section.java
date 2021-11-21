@@ -34,7 +34,7 @@ public class Section {
 
     private Distance distance;
 
-    public Section() {
+    protected Section() {
     }
 
     public Section(Line line, Station upStation, Station downStation, Distance distance) {
