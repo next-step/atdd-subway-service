@@ -1,5 +1,6 @@
 package nextstep.subway.line.acceptance;
 
+import static nextstep.subway.AcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
@@ -8,17 +9,16 @@ import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.dto.StationResponse;
 import nextstep.subway.utils.StreamUtils;
 
-public class LineSectionAcceptanceMethods extends AcceptanceTest {
+public class LineSectionAcceptanceMethods {
     private static final String LINE_URL_PATH = "/lines";
     private static final String SECTION_URL_PATH = "/sections";
     private static final String WITH_STATION_ID_QUERY_PARAM = "?stationId=";
-    protected static final String SLASH_SIGN = "/";
+    private static final String SLASH_SIGN = "/";
 
     public LineSectionAcceptanceMethods() {}
 

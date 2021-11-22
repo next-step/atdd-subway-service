@@ -26,6 +26,7 @@ public class AcceptanceTest {
 
     public static ExtractableResponse<Response> get(String path) {
         return RestAssured.given().log().all()
+                          .accept(MediaType.APPLICATION_JSON_VALUE)
                           .when()
                           .get(path)
                           .then().log().all()
@@ -44,8 +45,8 @@ public class AcceptanceTest {
 
     public static <T> ExtractableResponse<Response> put(String path, T requestBody) {
         return RestAssured.given().log().all()
-                          .body(requestBody)
                           .contentType(MediaType.APPLICATION_JSON_VALUE)
+                          .body(requestBody)
                           .when()
                           .put(path)
                           .then().log().all()

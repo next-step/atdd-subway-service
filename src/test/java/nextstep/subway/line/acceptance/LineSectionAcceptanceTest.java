@@ -1,5 +1,6 @@
 package nextstep.subway.line.acceptance;
 
+import static nextstep.subway.line.acceptance.LineAcceptanceMethods.*;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceMethods.*;
 
 import java.util.Arrays;
@@ -39,8 +40,8 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         정자역 = StationAcceptanceTest.지하철역_등록되어_있음("정자역").as(StationResponse.class);
         광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
-        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), DISTANCE_10);
-        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
+        LineRequest lineRequest = LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), DISTANCE_10);
+        신분당선 = 지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
     @DisplayName("지하철 구간을 등록한다.")
@@ -54,7 +55,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_요청(신분당선_Id, 강남_양재_구간_Request);
 
         // then
-        ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(신분당선_Id);
         지하철_노선에_지하철역_등록됨(response);
         지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 양재역, 광교역));
     }
@@ -72,7 +73,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_요청(신분당선_Id, 정자_강남_구간_Request);
 
         // then
-        ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(신분당선_Id);
         지하철_노선에_지하철역_등록됨(response);
         지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(정자역, 강남역, 양재역, 광교역));
     }
@@ -121,7 +122,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선에_지하철역_제외됨(removeResponse);
-        ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(신분당선_Id);
         지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 정자역, 광교역));
     }
 

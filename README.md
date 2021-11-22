@@ -60,7 +60,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ### 1. AcceptanceTest 리팩터링
 - [X] RestAssured 중복코드를 AcceptanceTest 로 이동
 - [X] LineSectionAcceptanceTest 인수 테스트 코드와 인수 테스트에 사용되는 메소드를 분리(클래스 분리)
-- [ ] LineAcceptanceTest 인수 테스트 코드와 인수 테스트에 사용되는 메소드를 분리(클래스 분리)
+- [X] LineAcceptanceTest 인수 테스트 코드와 인수 테스트에 사용되는 메소드를 분리(클래스 분리)
 - [ ] MemberAcceptanceTest 인수 테스트 코드와 인수 테스트에 사용되는 메소드를 분리(클래스 분리)
 - [ ] StationAcceptanceTest 인수 테스트 코드와 인수 테스트에 사용되는 메소드를 분리(클래스 분리)
 
