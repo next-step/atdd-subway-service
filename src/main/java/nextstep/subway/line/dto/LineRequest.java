@@ -44,6 +44,6 @@ public class LineRequest {
     }
 
     public Line toLine() {
-        return new Line(name, color);
+        return Line.of(name, color);
     }
 }
