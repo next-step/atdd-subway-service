@@ -52,3 +52,17 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+---
+
+# 1단계 : 인수 테스트 기반 리팩터링
+
+### 1. LineSectionAcceptanceTest 리팩터링
+- [ ] RestAssured 중복코드를 AcceptanceTest 로 이동
+- [ ] 인수 테스트 코드와 인수 테스트에 사용되는 메소드를 분리(클래스 분리)
+
+### 2. LineService 리팩터링
+- [ ] LineService 의 비즈니스 로직을 도메인으로 옮기기
+- [ ] Domain 의 단위 테스트를 작성하기
+- [ ] 기존 로직을 지우지 말고 새로운 로직을 만들어 수행
+- [ ] 정상 동작 확인 후 기존 로직 제거
