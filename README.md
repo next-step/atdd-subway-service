@@ -57,9 +57,12 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 # 1단계 : 인수 테스트 기반 리팩터링
 
-### 1. LineSectionAcceptanceTest 리팩터링
-- [ ] RestAssured 중복코드를 AcceptanceTest 로 이동
-- [ ] 인수 테스트 코드와 인수 테스트에 사용되는 메소드를 분리(클래스 분리)
+### 1. AcceptanceTest 리팩터링
+- [X] RestAssured 중복코드를 AcceptanceTest 로 이동
+- [X] LineSectionAcceptanceTest 인수 테스트 코드와 인수 테스트에 사용되는 메소드를 분리(클래스 분리)
+- [ ] LineAcceptanceTest 인수 테스트 코드와 인수 테스트에 사용되는 메소드를 분리(클래스 분리)
+- [ ] MemberAcceptanceTest 인수 테스트 코드와 인수 테스트에 사용되는 메소드를 분리(클래스 분리)
+- [ ] StationAcceptanceTest 인수 테스트 코드와 인수 테스트에 사용되는 메소드를 분리(클래스 분리)
 
 ### 2. LineService 리팩터링
 - [ ] LineService 의 비즈니스 로직을 도메인으로 옮기기
