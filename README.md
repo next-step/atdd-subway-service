@@ -62,7 +62,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [X] LineSectionAcceptanceTest 인수 테스트 코드와 인수 테스트에 사용되는 메소드를 분리(클래스 분리)
 - [X] LineAcceptanceTest 인수 테스트 코드와 인수 테스트에 사용되는 메소드를 분리(클래스 분리)
 - [X] MemberAcceptanceTest 인수 테스트 코드와 인수 테스트에 사용되는 메소드를 분리(클래스 분리)
-- [ ] StationAcceptanceTest 인수 테스트 코드와 인수 테스트에 사용되는 메소드를 분리(클래스 분리)
+- [X] StationAcceptanceTest 인수 테스트 코드와 인수 테스트에 사용되는 메소드를 분리(클래스 분리)
 
 ### 2. LineService 리팩터링
 - [ ] LineService 의 비즈니스 로직을 도메인으로 옮기기
