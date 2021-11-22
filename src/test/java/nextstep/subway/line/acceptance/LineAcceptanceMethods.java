@@ -45,12 +45,12 @@ public class LineAcceptanceMethods {
 
     public static ExtractableResponse<Response> 지하철_노선_수정_요청(ExtractableResponse<Response> response,
                                                                   LineRequest lineRequest) {
-        String uri = response.header("Location");
+        String uri = response.header(LOCATION_HEADER_NAME);
         return put(uri, lineRequest);
     }
 
     public static ExtractableResponse<Response> 지하철_노선_제거_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
+        String uri = response.header(LOCATION_HEADER_NAME);
         return delete(uri);
     }
 
