@@ -20,7 +20,7 @@ public class LineSectionAcceptanceMethods {
     private static final String WITH_STATION_ID_QUERY_PARAM = "?stationId=";
     private static final String SLASH_SIGN = "/";
 
-    public LineSectionAcceptanceMethods() {}
+    private LineSectionAcceptanceMethods() {}
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(Long lineId, SectionRequest sectionRequest) {
         return post(LINE_URL_PATH + SLASH_SIGN + lineId + SECTION_URL_PATH, sectionRequest);

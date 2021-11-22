@@ -4,7 +4,6 @@ import static nextstep.subway.AcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,7 +20,7 @@ public class LineAcceptanceMethods {
     private static final String LINE_URL_PATH = "/lines";
     private static final String SLASH_SIGN = "/";
 
-    public LineAcceptanceMethods() {}
+    private LineAcceptanceMethods() {}
 
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest lineRequest) {
         return post(LINE_URL_PATH, lineRequest);
