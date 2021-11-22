@@ -1,11 +1,17 @@
 package nextstep.subway.line.domain;
 
+import java.util.Objects;
+
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 
 @Entity
 public class Section {
+    private static final String CREATION_FAIL_ERROR_MESSAGE = "Section 생성에 필요한 필수 정보를 확인해주세요. upStation=%s, downStation=%s, distance=%s";
+    private static final String SAME_UP_AND_DOWN_STATION_ERROR_MESSAGE = "상행역과 하행역은 같을 수 없습니다. upStation=%s, downStation=%s";
+    private static final String TOO_LONG_DISTANCE_THAN_SECTION_ERROR_MESSAGE = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,11 +33,36 @@ public class Section {
 
     public Section() {}
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    private Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = Distance.from(distance);
+        this.distance = distance;
+    }
+
+    public static Section of(Line line, Station upStation, Station downStation, Distance distance) {
+        validateCreateSection(upStation, downStation, distance);
+        return new Section(line, upStation, downStation, distance);
+    }
+
+    public void updateUpStation(Station station, Distance newDistance) {
+        if (this.distance.isLessThanOrEqualTo(newDistance)) {
+            throw new RuntimeException(TOO_LONG_DISTANCE_THAN_SECTION_ERROR_MESSAGE);
+        }
+        this.upStation = station;
+        this.distance = this.distance.minus(newDistance);
+    }
+
+    public void updateDownStation(Station station, Distance newDistance) {
+        if (this.distance.isLessThanOrEqualTo(newDistance)) {
+            throw new RuntimeException(TOO_LONG_DISTANCE_THAN_SECTION_ERROR_MESSAGE);
+        }
+        this.downStation = station;
+        this.distance = this.distance.minus(newDistance);
+    }
+
+    public boolean isSameDistance(Distance distance) {
+        return this.distance.equals(distance);
     }
 
     public Long getId() {
@@ -54,19 +85,21 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance.isLessThanOrEqualTo(Distance.from(newDistance))) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance = this.distance.minus(Distance.from(newDistance));
+    private static void validateCreateSection(Station upStation, Station downStation, Distance distance) {
+        validateHasRequired(upStation, downStation, distance);
+        validateSameUpAndSownStation(upStation, downStation);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance.isLessThanOrEqualTo(Distance.from(newDistance))) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    private static void validateHasRequired(Station upStation, Station downStation, Distance distance) {
+        if (Objects.isNull(upStation) || Objects.isNull(downStation) || Objects.isNull(distance)) {
+            throw new IllegalArgumentException(String.format(CREATION_FAIL_ERROR_MESSAGE, upStation, downStation,
+                                                             distance));
         }
-        this.downStation = station;
-        this.distance = this.distance.minus(Distance.from(newDistance));
+    }
+
+    private static void validateSameUpAndSownStation(Station upStation, Station downStation) {
+        if (upStation.equals(downStation)) {
+            throw new IllegalArgumentException(String.format(SAME_UP_AND_DOWN_STATION_ERROR_MESSAGE, upStation.getId(), downStation.getId()));
+        }
     }
 }

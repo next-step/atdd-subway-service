@@ -84,7 +84,7 @@ public class LineService {
         }
 
         if (stations.isEmpty()) {
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+            line.getSections().add(Section.of(line, upStation, downStation, Distance.from(request.getDistance())));
             return;
         }
 
@@ -92,16 +92,16 @@ public class LineService {
             line.getSections().stream()
                     .filter(it -> it.getUpStation() == upStation)
                     .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
+                    .ifPresent(it -> it.updateUpStation(downStation, Distance.from(request.getDistance())));
 
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+            line.getSections().add(Section.of(line, upStation, downStation, Distance.from(request.getDistance())));
         } else if (isDownStationExisted) {
             line.getSections().stream()
                     .filter(it -> it.getDownStation() == downStation)
                     .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
+                    .ifPresent(it -> it.updateDownStation(upStation, Distance.from(request.getDistance())));
 
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+            line.getSections().add(Section.of(line, upStation, downStation, Distance.from(request.getDistance())));
         } else {
             throw new RuntimeException();
         }
@@ -128,7 +128,7 @@ public class LineService {
                                                 .getDistance()
                                                 .plus(downLineStation.get()
                                                                      .getDistance());
-            line.getSections().add(new Section(line, newUpStation, newDownStation, newDistance.getDistance()));
+            line.getSections().add(Section.of(line, newUpStation, newDownStation, newDistance));
         }
 
         upLineStation.ifPresent(it -> line.getSections().remove(it));

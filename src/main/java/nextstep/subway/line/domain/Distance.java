@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import java.util.Objects;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -50,5 +52,20 @@ public class Distance {
         if (distance < MIN_DISTANCE) {
             throw new IllegalArgumentException(String.format(DISTANCE_IS_LESS_THAN_MIN_DISTANCE_ERROR_MESSAGE, distance));
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Distance distance1 = (Distance)o;
+        return distance == distance1.distance;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(distance);
     }
 }
