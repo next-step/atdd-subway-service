@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -123,8 +124,11 @@ public class LineService {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            line.getSections().add(new Section(line, newUpStation, newDownStation, newDistance));
+            Distance newDistance = upLineStation.get()
+                                                .getDistance()
+                                                .plus(downLineStation.get()
+                                                                     .getDistance());
+            line.getSections().add(new Section(line, newUpStation, newDownStation, newDistance.getDistance()));
         }
 
         upLineStation.ifPresent(it -> line.getSections().remove(it));
