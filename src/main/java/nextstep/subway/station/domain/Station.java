@@ -24,7 +24,7 @@ public class Station extends BaseEntity {
     }
 
     private Station(Name name) {
-        Assert.notNull(name, "'name' must not be null");
+        Assert.notNull(name, "이름이 null 일 수 없습니다.");
         this.name = name;
     }
 
@@ -56,5 +56,13 @@ public class Station extends BaseEntity {
         Station station = (Station) o;
         return Objects.equals(id, station.id) &&
             Objects.equals(name, station.name);
+    }
+
+    @Override
+    public String toString() {
+        return "Station{" +
+            "id=" + id +
+            ", name=" + name +
+            '}';
     }
 }

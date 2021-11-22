@@ -25,6 +25,6 @@ class ColorTest {
     void instance_emptyValue_thrownIllegalArgumentException(String value) {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> Color.from(value))
-            .withMessage("color value must not be empty");
+            .withMessage("색상이 공백일 수 없습니다.");
     }
 }

@@ -15,7 +15,7 @@ public class Color {
     }
 
     private Color(String value) {
-        Assert.hasText(value, "color value must not be empty");
+        Assert.hasText(value, "색상이 공백일 수 없습니다.");
         this.value = value;
     }
 

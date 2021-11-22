@@ -15,7 +15,7 @@ public class Name {
     }
 
     private Name(String value) {
-        Assert.hasText(value, "name value must not be empty");
+        Assert.hasText(value, "이름이 공백일 수 없습니다.");
         this.value = value;
     }
 

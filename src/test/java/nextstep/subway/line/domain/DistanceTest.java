@@ -26,7 +26,7 @@ class DistanceTest {
     void instance_negativeValue_thrownIllegalArgumentException() {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> Distance.from(Integer.MIN_VALUE))
-            .withMessageEndingWith("distance value must be positive");
+            .withMessage("거리는 반드시 양수이어야 합니다.");
     }
 
     @Test
@@ -70,7 +70,7 @@ class DistanceTest {
         // then
         assertThatIllegalArgumentException()
             .isThrownBy(subtractCall)
-            .withMessageEndingWith("distance value must be positive");
+            .withMessageEndingWith("거리는 반드시 양수이어야 합니다.");
     }
 
     @ParameterizedTest(name = "[{index}] 10인 거리가 {0} 보다 이상이라는 사실은 {1}")

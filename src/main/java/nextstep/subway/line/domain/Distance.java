@@ -16,7 +16,7 @@ public class Distance {
     }
 
     private Distance(int value) {
-        Assert.isTrue(positive(value), "distance value must be positive");
+        Assert.isTrue(positive(value), "거리는 반드시 양수이어야 합니다.");
         this.value = value;
     }
 

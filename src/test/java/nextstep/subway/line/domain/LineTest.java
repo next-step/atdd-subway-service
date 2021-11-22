@@ -28,12 +28,12 @@ class LineTest {
 
     @ParameterizedTest(name = "[{index}] {argumentsWithNames} 값 으로 객체화 할 수 없다.")
     @MethodSource
-    @DisplayName("'null' 인자가 존재한 상태로 객체화한다.")
+    @DisplayName("'null' 인자가 존재한 상태로 객체화")
     void instance_emptyArgument_thrownIllegalArgumentException(
         Name name, Color color, Sections sections) {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> Line.of(name, color, sections))
-            .withMessageContaining("must not be null");
+            .withMessageContaining(" null 일 수 없습니다.");
     }
 
     @Test
@@ -56,7 +56,7 @@ class LineTest {
 
     @ParameterizedTest(name = "[{index}] {argumentsWithNames} 값 으로 수정할 수 없다.")
     @MethodSource
-    @DisplayName("'null' 인 이름과 색상을 수정한다.")
+    @DisplayName("'null' 인 이름과 색상을 수정")
     void update_nullArgument_thrownIllegalArgumentException(Name name, Color color) {
         //given
         Line line = Line.of(Name.from("name"), Color.from("color"), mock(Sections.class));
@@ -67,7 +67,7 @@ class LineTest {
         //then
         assertThatIllegalArgumentException()
             .isThrownBy(updateCall)
-            .withMessageEndingWith("must not be null");
+            .withMessageEndingWith("null 일 수 없습니다.");
     }
 
     private static Stream<Arguments> instance_emptyArgument_thrownIllegalArgumentException() {

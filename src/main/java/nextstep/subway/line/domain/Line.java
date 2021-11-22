@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.common.domain.Name;
+import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Line extends BaseEntity {
@@ -30,9 +31,9 @@ public class Line extends BaseEntity {
     }
 
     public Line(Name name, Color color, Sections sections) {
-        Assert.notNull(name, "name must not be null");
-        Assert.notNull(color, "color must not be null");
-        Assert.notNull(sections, "sections must not be null");
+        Assert.notNull(name, "이름이 null 일 수 없습니다.");
+        Assert.notNull(color, "색상이 null 일 수 없습니다.");
+        Assert.notNull(sections, "구간들이 null 일 수 없습니다.");
         this.name = name;
         this.color = color;
         this.sections = sections;
@@ -43,8 +44,8 @@ public class Line extends BaseEntity {
     }
 
     public void update(Name name, Color color) {
-        Assert.notNull(name, "updated name must not be null");
-        Assert.notNull(name, "updated color must not be null");
+        Assert.notNull(name, "수정하는 이름이 null 일 수 없습니다.");
+        Assert.notNull(color, "수정하는 색상이 null 일 수 없습니다.");
         this.name = name;
         this.color = color;
     }
@@ -63,5 +64,13 @@ public class Line extends BaseEntity {
 
     public List<Section> getSections() {
         return sections.getList();
+    }
+
+    public List<Station> stations() {
+        return sections.stations();
+    }
+
+    public void addSection(Section section) {
+        sections.add(section);
     }
 }
