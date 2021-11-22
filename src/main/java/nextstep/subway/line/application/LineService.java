@@ -1,8 +1,9 @@
 package nextstep.subway.line.application;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
+import nextstep.subway.common.domain.Name;
+import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
@@ -31,23 +32,25 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineCreateRequest request) {
-        return LineResponse.of(savedLine(request));
+        validateDuplicateName(request.name());
+        return LineResponse.from(savedLine(request));
     }
 
     @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         return lineRepository.findAll()
             .stream()
-            .map(LineResponse::of)
+            .map(LineResponse::from)
             .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
-        return LineResponse.of(line(id));
+        return LineResponse.from(line(id));
     }
 
     public void updateLine(Long id, LineUpdateRequest request) {
+        validateDuplicateName(request.name());
         line(id).update(request.name(), request.color());
     }
 
@@ -60,30 +63,7 @@ public class LineService {
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = line(lineId);
-        Station station = stationService.findStationById(stationId);
-        if (line.getSections().size() <= 1) {
-            throw new RuntimeException();
-        }
-
-        Optional<Section> upLineStation = line.getSections().stream()
-            .filter(it -> it.upStation() == station)
-            .findFirst();
-        Optional<Section> downLineStation = line.getSections().stream()
-            .filter(it -> it.downStation() == station)
-            .findFirst();
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().upStation();
-            Station newDownStation = upLineStation.get().downStation();
-            Distance newDistance =
-                upLineStation.get().distance().sum(downLineStation.get().distance());
-            line.getSections()
-                .add(new Section(line, newUpStation, newDownStation, newDistance));
-        }
-
-        upLineStation.ifPresent(it -> line.getSections().remove(it));
-        downLineStation.ifPresent(it -> line.getSections().remove(it));
+        line(lineId).removeStation(station(stationId));
     }
 
     private Line savedLine(LineCreateRequest request) {
@@ -110,5 +90,11 @@ public class LineService {
     private Line line(Long id) {
         return lineRepository.findById(id)
             .orElseThrow(() -> new NotFoundException(String.format("line(%d) is not exist", id)));
+    }
+
+    private void validateDuplicateName(Name name) {
+        if (lineRepository.existsByName(name)) {
+            throw new DuplicateDataException(String.format("이름(%s)은 이미 존재합니다.", name));
+        }
     }
 }

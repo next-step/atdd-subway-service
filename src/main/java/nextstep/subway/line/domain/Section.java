@@ -35,10 +35,10 @@ public class Section {
 
     private Distance distance;
 
-    public Section() {
+    protected Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, Distance distance) {
+    private Section(Line line, Station upStation, Station downStation, Distance distance) {
         validate(upStation, downStation, distance);
         this.line = line;
         this.upStation = upStation;
@@ -50,19 +50,19 @@ public class Section {
         return new Section(null, upStation, downStation, distance);
     }
 
-    public Long id() {
+    Long id() {
         return id;
     }
 
-    public Station upStation() {
+    Station upStation() {
         return upStation;
     }
 
-    public Station downStation() {
+    Station downStation() {
         return downStation;
     }
 
-    public Distance distance() {
+    Distance distance() {
         return distance;
     }
 
@@ -72,8 +72,30 @@ public class Section {
         minusDistance(section.distance);
     }
 
-    public List<Station> stations() {
+    List<Station> stations() {
         return Arrays.asList(upStation, downStation);
+    }
+
+    Section merge(Section section) {
+        validateMerge(section);
+        if (downStation.equals(section.upStation)) {
+            return new Section(line, upStation, section.downStation,
+                distance.sum(section.distance));
+        }
+        return new Section(line, section.upStation, downStation, distance.sum(section.distance));
+    }
+
+    private void validateMerge(Section section) {
+        Assert.notNull(section, "합쳐지는 구간이 null 일 수 없습니다.");
+        if (doesNotHaveSameStation(section)) {
+            throw new InvalidDataException(String.format(
+                "합쳐지는 구간들은(%s, %s) 하나의 겹치는 역이 존재해야 합니다.",
+                this, section));
+        }
+    }
+
+    private boolean doesNotHaveSameStation(Section section) {
+        return !downStation.equals(section.upStation) && !upStation.equals(section.downStation);
     }
 
     private void validateRemoval(Section section) {

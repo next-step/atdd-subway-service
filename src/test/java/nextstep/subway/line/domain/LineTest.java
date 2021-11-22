@@ -84,6 +84,4 @@ class LineTest {
             Arguments.of(Name.from("name"), null)
         );
     }
-
-
 }

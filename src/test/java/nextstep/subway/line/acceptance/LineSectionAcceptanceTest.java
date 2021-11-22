@@ -116,6 +116,20 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
             );
         }
 
+        @Test
+        @DisplayName("지하철 노선에 존재하지 않는 역을 삭제한다.")
+        void removeLineSection_notExistStationInLine() {
+            // given
+            StationResponse 반포역 = 지하철역_등록되어_있음("반포").as(StationResponse.class);
+
+            // when
+            ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(
+                신분당선.getId(), 반포역.getId());
+
+            // then
+            지하철_노선에_지하철역_제외됨(removeResponse);
+        }
+
         @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
         @Test
         void removeLineSection_lastSection_400() {
@@ -151,20 +165,6 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
 
             // then
             지하철_역_못찾음(response);
-        }
-
-        @Test
-        @DisplayName("지하철 노선에 존재하지 않는 역을 삭제한다.")
-        void removeLineSection_notExistStationInLine_404() {
-            // given
-            StationResponse 반포역 = 지하철역_등록되어_있음("반포").as(StationResponse.class);
-
-            // when
-            ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(
-                신분당선.getId(), 반포역.getId());
-
-            // then
-            지하철_역_못찾음(removeResponse);
         }
     }
 }

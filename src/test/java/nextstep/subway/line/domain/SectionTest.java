@@ -118,6 +118,67 @@ class SectionTest {
             .withMessageStartingWith("역과 역 사이의 거리");
     }
 
+    @ParameterizedTest(name = "[{index}] 강남,광교 구간에 {0} 구간을 합치면 {1}")
+    @MethodSource
+    @DisplayName("구간 병합")
+    void merge(Section target, Section expected) {
+        Section section = Section.of(
+            station("강남"), station("광교"), Distance.from(5));
+
+        //when
+        Section mergedSection = section.merge(target);
+
+        //then
+        assertThat(mergedSection)
+            .isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("null 구간을 병합")
+    void merge_nullSection_thrownIllegalArgumentException() {
+        //given
+        Section section = Section.of(
+            station("강남"), station("광교"), Distance.from(5));
+
+        //when
+        ThrowingCallable mergeCall = () -> section.merge(null);
+
+        //then
+        assertThatIllegalArgumentException()
+            .isThrownBy(mergeCall)
+            .withMessageContaining("합쳐지는 구간이 null 일 수 없습니다.");
+    }
+
+    @ParameterizedTest(name = "[{index}] 강남,광교 구간에 {0} 구간을 연결할 수 없다.")
+    @MethodSource("sameOrNotExistStation")
+    @DisplayName("모든 역이 같거나 다른 구간을 연결")
+    void merge_sameOrNotExistStation_thrownInvalidDataException(Section mergedSection) {
+        // given
+        Section section = Section.of(
+            station("강남"), station("광교"), Distance.from(5));
+
+        // when
+        ThrowingCallable mergeCall = () -> section.merge(mergedSection);
+
+        // then
+        assertThatExceptionOfType(InvalidDataException.class)
+            .isThrownBy(mergeCall)
+            .withMessageContaining("하나의 겹치는 역이 존재해야 합니다.");
+    }
+
+    private static Stream<Arguments> merge() {
+        return Stream.of(
+            Arguments.of(
+                Section.of(station("양재"), station("강남"), Distance.from(5)),
+                Section.of(station("양재"), station("광교"), Distance.from(10))
+            ),
+            Arguments.of(
+                Section.of(station("광교"), station("정자"), Distance.from(5)),
+                Section.of(station("강남"), station("정자"), Distance.from(10))
+            )
+        );
+    }
+
     private static Stream<Arguments> remove() {
         return Stream.of(
             Arguments.of(

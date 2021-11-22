@@ -25,7 +25,7 @@ class NameTest {
     void instance_emptyValue_thrownIllegalArgumentException(String value) {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> Name.from(value))
-            .withMessage("name value must not be empty");
+            .withMessage("이름이 공백일 수 없습니다.");
     }
 
 }

@@ -9,13 +9,16 @@ import java.util.List;
 import java.util.stream.Stream;
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.common.exception.DuplicateDataException;
+import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -30,7 +33,7 @@ class SectionsTest {
         양재_광교_구간 = Section.of(
             station("양재"),
             station("광교"),
-            Distance.from(Integer.MAX_VALUE));
+            Distance.from(20));
     }
 
     @Test
@@ -73,7 +76,7 @@ class SectionsTest {
         sections.add(section);
 
         // then
-        Assertions.assertThat(sections.stations())
+        assertThat(sections.stations())
             .hasSize(3)
             .doesNotHaveDuplicates()
             .containsExactly(expectedStations);
@@ -112,6 +115,59 @@ class SectionsTest {
         assertThatExceptionOfType(NotFoundException.class)
             .isThrownBy(addCall)
             .withMessageEndingWith("등록할 수 없는 구간 입니다.");
+    }
+
+    @Nested
+    @DisplayName("역 삭제")
+    @TestInstance(Lifecycle.PER_CLASS)
+    class StationRemovalTest {
+
+        private Sections 강남_양재_광교_구간들;
+
+        @BeforeEach
+        void setUp() {
+            강남_양재_광교_구간들 = Sections.from(양재_광교_구간);
+            강남_양재_광교_구간들.add(Section.of(station("강남"), station("양재"), Distance.from(10)));
+        }
+
+        @ParameterizedTest(name = "[{index}] 강남 양재 광교 구간에서 {0} 역을 제거하면 {1} 역들")
+        @MethodSource
+        @DisplayName("역 삭제")
+        void removeStation(Station station, Station... expectedStations) {
+            // when
+            강남_양재_광교_구간들.removeStation(station);
+
+            // then
+            assertThat(강남_양재_광교_구간들.stations())
+                .hasSize(2)
+                .doesNotHaveDuplicates()
+                .containsExactly(expectedStations);
+        }
+
+        @Test
+        @DisplayName("한 구간만 남아있는 경우 역 삭제하면 InvalidDataException")
+        void removeStation_remainedLastSection_thrownInvalidDataException() {
+            //given
+            강남_양재_광교_구간들.removeStation(station("강남"));
+
+            //when
+            ThrowingCallable removeStationCall =
+                () -> 강남_양재_광교_구간들.removeStation(station("양재"));
+
+            //then
+            assertThatExceptionOfType(InvalidDataException.class)
+                .isThrownBy(removeStationCall)
+                .withMessageEndingWith("구간은 반드시 한 개 이상 존재해야 합니다.");
+        }
+
+
+        private Stream<Arguments> removeStation() {
+            return Stream.of(
+                Arguments.of(station("강남"), new Station[]{station("양재"), station("광교")}),
+                Arguments.of(station("양재"), new Station[]{station("강남"), station("광교")}),
+                Arguments.of(station("광교"), new Station[]{station("강남"), station("양재")})
+            );
+        }
     }
 
     private static Stream<Arguments> addSection() {

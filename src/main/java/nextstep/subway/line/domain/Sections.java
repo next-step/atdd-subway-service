@@ -18,6 +18,8 @@ import nextstep.subway.station.domain.Station;
 @Embeddable
 public class Sections {
 
+    private static final int MINIMUM_SECTION_SIZE = 1;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE},
         orphanRemoval = true)
     private List<Section> list = new ArrayList<>();
@@ -40,8 +42,44 @@ public class Sections {
         return new Sections(section);
     }
 
-    public List<Station> stations() {
+    List<Station> stations() {
         return upToDownSortedStations();
+    }
+
+    void add(Section section) {
+        validateAddition(section);
+        removeOverlappingSection(section);
+        list.add(section);
+        deleteSectionCaches();
+    }
+
+    void removeStation(Station station) {
+        if (isNotExist(station)) {
+            return;
+        }
+        validateSize();
+        remove(station);
+        deleteSectionCaches();
+    }
+
+    private void remove(Station station) {
+        Optional<Section> sectionByUpStation = findByUpStation(station);
+        Optional<Section> sectionByDownStation = findByDownStation(station);
+        if (sectionByUpStation.isPresent() && sectionByDownStation.isPresent()) {
+            list.add(sectionByUpStation.get().merge(sectionByDownStation.get()));
+        }
+        sectionByUpStation.ifPresent(section -> list.remove(section));
+        sectionByDownStation.ifPresent(section -> list.remove(section));
+    }
+
+    private void validateSize() {
+        if (hasMinimumSize()) {
+            throw new InvalidDataException("구간은 반드시 한 개 이상 존재해야 합니다.");
+        }
+    }
+
+    private boolean hasMinimumSize() {
+        return list.size() == MINIMUM_SECTION_SIZE;
     }
 
     private List<Station> upToDownSortedStations() {
@@ -66,17 +104,6 @@ public class Sections {
 
     private boolean doesNotHavePreviousSection(Section section) {
         return !findByDownStation(section.upStation()).isPresent();
-    }
-
-    public List<Section> getList() {
-        return list;
-    }
-
-    void add(Section section) {
-        validateAddition(section);
-        removeOverlappingSection(section);
-        list.add(section);
-        deleteSectionCaches();
     }
 
     private void removeOverlappingSection(Section section) {
@@ -123,6 +150,10 @@ public class Sections {
 
     private boolean isExist(Station station) {
         return isExistByUpStation(station) || isExistByDownStation(station);
+    }
+
+    private boolean isNotExist(Station station) {
+        return !isExist(station);
     }
 
     private Map<Station, Section> upStationToSection() {
