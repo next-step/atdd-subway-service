@@ -53,11 +53,13 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("노선이 존재하지 않습니다."));
     }
 
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findOneLineWithSectionsById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = findOneLineWithSectionsById(id)
+                .orElseThrow(() -> new RuntimeException("노선이 존재하지 않습니다."));
         List<StationResponse> stations = getStations(persistLine).stream()
                 .map(it -> StationResponse.of(it))
                 .collect(Collectors.toList());
@@ -65,7 +67,8 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = lineRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("노선이 존재하지 않습니다."));
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
