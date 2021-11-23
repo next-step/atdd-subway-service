@@ -71,4 +71,9 @@ public class Line extends BaseEntity {
     public List<Section> getSections() {
         return sections.getSections();
     }
+
+    public void addSection(Section section) {
+        sections.add(section);
+    }
+
 }

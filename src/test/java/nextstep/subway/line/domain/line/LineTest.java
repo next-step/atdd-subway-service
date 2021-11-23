@@ -15,13 +15,13 @@ public class LineTest {
         Station 강남역 = new Station("강남역");
         Station 광교역 = new Station("광교역");
 
-        Line line = new Line("신분당선", "red", 강남역, 광교역, 10);
+        Line actual = new Line("신분당선", "red", 강남역, 광교역, 10);
 
         assertAll(
-                () -> assertThat(line.getName()).isEqualTo("신분당선"),
-                () -> assertThat(line.getColor()).isEqualTo("red"),
-                () -> assertThat(line.getSections().get(0).getUpStation()).isEqualTo(강남역),
-                () -> assertThat(line.getSections().get(0).getDownStation()).isEqualTo(광교역)
+                () -> assertThat(actual.getName()).isEqualTo("신분당선"),
+                () -> assertThat(actual.getColor()).isEqualTo("red"),
+                () -> assertThat(actual.getSections().get(0).getUpStation()).isEqualTo(강남역),
+                () -> assertThat(actual.getSections().get(0).getDownStation()).isEqualTo(광교역)
         );
     }
 

@@ -2,6 +2,7 @@ package nextstep.subway.line.application;
 
 import nextstep.subway.line.domain.line.Line;
 import nextstep.subway.line.domain.line.LineRepository;
+import nextstep.subway.line.domain.section.Distance;
 import nextstep.subway.line.domain.section.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -55,7 +56,6 @@ public class LineService {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findOneLineWithSectionsById(id).orElseThrow(RuntimeException::new);
         List<StationResponse> stations = getStations(persistLine).stream()
@@ -99,14 +99,14 @@ public class LineService {
             line.getSections().stream()
                     .filter(it -> it.getUpStation() == upStation)
                     .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
+                    .ifPresent(it -> it.updateUpStation(downStation, new Distance(request.getDistance())));
 
             line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
         } else if (isDownStationExisted) {
             line.getSections().stream()
                     .filter(it -> it.getDownStation() == downStation)
                     .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
+                    .ifPresent(it -> it.updateDownStation(upStation, new Distance(request.getDistance())));
 
             line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
         } else {

@@ -24,4 +24,12 @@ public class CustomExceptionHandler {
                 .body(e.getMessage());
     }
 
+    @ExceptionHandler(SectionException.class)
+    public ResponseEntity sectionException(SectionException e) {
+        e.printStackTrace();
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(e.getMessage());
+    }
+
 }
