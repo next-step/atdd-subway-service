@@ -10,7 +10,6 @@ import javax.persistence.*;
 import java.util.List;
 
 import static nextstep.subway.utils.ValidationUtils.isEmpty;
-import static nextstep.subway.utils.ValidationUtils.isNull;
 
 @Entity
 public class Line extends BaseEntity {
@@ -39,7 +38,7 @@ public class Line extends BaseEntity {
         validation(name, color);
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        sections.addLineStation(new Section(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {
@@ -73,7 +72,7 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(Section section) {
-        sections.add(section);
+        sections.addLineStation(section);
     }
 
 }

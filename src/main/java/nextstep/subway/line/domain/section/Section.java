@@ -53,8 +53,8 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
-        return distance.getDistance();
+    public Distance getDistance() {
+        return distance;
     }
 
     public void updateUpStation(Station station, Distance newDistance) {
@@ -67,7 +67,4 @@ public class Section {
         this.distance.minus(newDistance);
     }
 
-    public boolean isSame(Section section) {
-        return upStation.equals(section.getUpStation()) && downStation.equals(section.getDownStation());
-    }
 }
