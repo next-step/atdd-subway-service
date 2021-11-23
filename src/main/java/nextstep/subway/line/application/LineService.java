@@ -53,12 +53,12 @@ public class LineService {
 
     public Line findLineById(Long id) {
         return lineRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("노선이 존재하지 않습니다."));
+                .orElseThrow(() -> new LineException("노선이 존재하지 않습니다."));
     }
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findOneLineWithSectionsById(id)
-                .orElseThrow(() -> new RuntimeException("노선이 존재하지 않습니다."));
+                .orElseThrow(() -> new LineException("노선이 존재하지 않습니다."));
         List<StationResponse> stations = persistLine.getStations().stream()
                 .map(it -> StationResponse.of(it))
                 .collect(Collectors.toList());
@@ -67,7 +67,7 @@ public class LineService {
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("노선이 존재하지 않습니다."));
+                .orElseThrow(() -> new LineException("노선이 존재하지 않습니다."));
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
@@ -105,6 +105,12 @@ public class LineService {
 
         upLineStation.ifPresent(it -> line.getSections().remove(it));
         downLineStation.ifPresent(it -> line.getSections().remove(it));
+    }
+
+    public void removeNewLineStation(Long lineId, Long stationId) {
+        Line line = findOneLine(lineId).orElseThrow(() -> new LineException("노선이 존재하지 않습니다."));
+        Station station = stationService.findStationById(stationId);
+        line.removeSection(station);
     }
 
     private List<Line> findAllLine() {
