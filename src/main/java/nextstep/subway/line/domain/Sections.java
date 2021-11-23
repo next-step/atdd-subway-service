@@ -81,6 +81,16 @@ public class Sections {
         throw new SectionAddFailedException();
     }
 
+    void remove(Station station) {
+        validateCanRemove();
+        Section upStation = findNextStationForward(station);
+        Section downStation = findNextStationBackward(station);
+
+        addJoinedSection(upStation, downStation);
+        removeSectionByStation(upStation);
+        removeSectionByStation(downStation);
+    }
+
     private void addSectionsWhenUpStationMatched(Line line, Station upStation, Station downStation, Distance distance, Section section) {
         if (section.isExists()) {
             section.updateUpStation(downStation, distance);
@@ -108,26 +118,9 @@ public class Sections {
         return getStations().stream().anyMatch(it -> it == upStation);
     }
 
-    void remove(Station station) {
+    private void validateCanRemove() {
         if (sections.size() <= CANNOT_REMOVE_COUNT) {
             throw new SectionRemoveFailedException("구간을 제거할 수 없습니다.");
-        }
-
-        Section upStation = findNextStationForward(station);
-        Section downStation = findNextStationBackward(station);
-
-        if (upStation.isExists() && downStation.isExists()) {
-            Station newUpStation = downStation.getUpStation();
-            Station newDownStation = upStation.getDownStation();
-            Distance newDistance = upStation.getDistance().getAddedDistance(downStation.getDistance());
-            sections.add(new Section(sections.get(FIRST_SECTION).getLine(), newUpStation, newDownStation, newDistance));
-        }
-
-        if (upStation.isExists()) {
-            sections.remove(upStation);
-        }
-        if (downStation.isExists()) {
-            sections.remove(downStation);
         }
     }
 
@@ -143,6 +136,21 @@ public class Sections {
                 .filter(it -> it.getUpStation() == station)
                 .findFirst()
                 .orElse(Section.EMPTY);
+    }
+
+    private void addJoinedSection(Section upStation, Section downStation) {
+        if (upStation.isExists() && downStation.isExists()) {
+            Station newUpStation = downStation.getUpStation();
+            Station newDownStation = upStation.getDownStation();
+            Distance newDistance = upStation.getDistance().getAddedDistance(downStation.getDistance());
+            sections.add(new Section(sections.get(FIRST_SECTION).getLine(), newUpStation, newDownStation, newDistance));
+        }
+    }
+
+    private void removeSectionByStation(Section upStation) {
+        if (upStation.isExists()) {
+            sections.remove(upStation);
+        }
     }
 
     @Override
