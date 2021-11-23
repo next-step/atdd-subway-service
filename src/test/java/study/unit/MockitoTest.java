@@ -17,14 +17,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @DisplayName("단위 테스트 - mockito를 활용한 가짜 협력 객체 사용")
-public class MockitoTest {
+class MockitoTest {
     @Test
     void findAllLines() {
         // given
         LineRepository lineRepository = mock(LineRepository.class);
         StationService stationService = mock(StationService.class);
 
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
+        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(Line.createEmpty()));
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when

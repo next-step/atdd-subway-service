@@ -15,10 +15,14 @@ public class Station extends BaseEntity {
     @Embedded
     private StationName name;
 
-    public Station() {}
+    protected Station() {}
+
+    private Station(Long id) {
+        this.id = id;
+    }
 
     private Station(String name) {
-        this.name = StationName.from(name);;
+        this.name = StationName.from(name);
     }
 
     private Station(Long id, String name) {
@@ -28,6 +32,10 @@ public class Station extends BaseEntity {
 
     public static Station from(String name) {
         return new Station(name);
+    }
+
+    public static Station from(Long stationId) {
+        return new Station(stationId);
     }
 
     public static Station of(Long id, String name) {

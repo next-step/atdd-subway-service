@@ -31,8 +31,13 @@ public class Section {
     @Embedded
     private Distance distance;
 
-    public Section() {}
+    protected Section() {}
 
+    private Section(Station upStation, Station downStation, Distance distance) {
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
+    }
     private Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
@@ -43,6 +48,11 @@ public class Section {
     public static Section of(Line line, Station upStation, Station downStation, Distance distance) {
         validateCreateSection(upStation, downStation, distance);
         return new Section(line, upStation, downStation, distance);
+    }
+
+    public static Section of(Station upStation, Station downStation, Distance distance) {
+        validateCreateSection(upStation, downStation, distance);
+        return new Section(upStation, downStation, distance);
     }
 
     public void updateUpStation(Station station, Distance newDistance) {
@@ -63,6 +73,14 @@ public class Section {
 
     public boolean isSameDistance(Distance distance) {
         return this.distance.equals(distance);
+    }
+
+    public boolean isSameUpStation(Station station) {
+        return this.upStation.equals(station);
+    }
+
+    public boolean isSameDownStation(Station station) {
+        return this.downStation.equals(station);
     }
 
     public Long getId() {
