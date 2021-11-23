@@ -38,8 +38,37 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         정자역 = StationAcceptanceTest.지하철역_등록되어_있음("정자역").as(StationResponse.class);
         광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
-        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 100);
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
+    }
+
+    @DisplayName("지하철 구간이 관리된다.")
+    @Test
+    void acceptanceManageSection() {
+        // when
+        ExtractableResponse<Response> registingResponse_강남_정자 = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 정자역, 60);
+        // then
+        지하철_노선에_지하철역_등록됨(registingResponse_강남_정자);
+
+        // when
+        ExtractableResponse<Response> registingResponse_양재_정자 = 지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 정자역, 20);
+        // then
+        지하철_노선에_지하철역_등록됨(registingResponse_양재_정자);
+
+        // when
+        ExtractableResponse<Response> searchingResponseAfterAddSection = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+        // then
+        지하철_노선에_지하철역_조회됨(searchingResponseAfterAddSection, Arrays.asList(강남역, 양재역, 정자역, 광교역));
+
+        // when
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+        // then
+        지하철_노선에_지하철역_제외됨(removeResponse);
+
+        // when
+        ExtractableResponse<Response> searchingResponseAfterDeleteSection = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+        // then
+        지하철_노선에_지하철역_조회됨(searchingResponseAfterDeleteSection, Arrays.asList(강남역, 정자역, 광교역));
     }
 
     @DisplayName("지하철 구간을 등록한다.")
@@ -50,8 +79,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
         // then
         ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-        지하철_노선에_지하철역_등록됨(response);
-        지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 양재역, 광교역));
+        지하철_노선에_지하철역_조회됨(response, Arrays.asList(강남역, 양재역, 광교역));
     }
 
     @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
@@ -63,8 +91,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
         // then
         ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-        지하철_노선에_지하철역_등록됨(response);
-        지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(정자역, 강남역, 양재역, 광교역));
+        지하철_노선에_지하철역_조회됨(response, Arrays.asList(정자역, 강남역, 양재역, 광교역));
     }
 
     @DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
@@ -100,7 +127,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         // then
         지하철_노선에_지하철역_제외됨(removeResponse);
         ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-        지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 정자역, 광교역));
+        지하철_노선에_지하철역_조회됨(response, Arrays.asList(강남역, 정자역, 광교역));
     }
 
     @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
@@ -126,8 +153,15 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선에_지하철역_등록됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    public static void 지하철_노선에_지하철역_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        지하철_노선에_지하철역_순서_정렬됨(response, expectedStations);
+    }
+
 
     public static void 지하철_노선에_지하철역_등록_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -155,7 +189,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
