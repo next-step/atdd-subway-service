@@ -20,23 +20,12 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class LineService {
-    private LineRepository lineRepository;
-    private StationService stationService;
+    private final LineRepository lineRepository;
+    private final StationService stationService;
 
     public LineService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
-    }
-
-    public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
-        List<StationResponse> stations = persistLine.getStations()
-                .stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
-        return LineResponse.of(persistLine, stations);
     }
 
     public List<LineResponse> findLines() {
@@ -51,11 +40,6 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id)
-                .orElseThrow(() -> new LineException("노선이 존재하지 않습니다."));
-    }
-
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findOneLineWithSectionsById(id)
                 .orElseThrow(() -> new LineException("노선이 존재하지 않습니다."));
@@ -65,9 +49,21 @@ public class LineService {
         return LineResponse.of(persistLine, stations);
     }
 
+    public LineResponse saveLine(LineRequest request) {
+        Station upStation = stationService.findById(request.getUpStationId());
+        Station downStation = stationService.findById(request.getDownStationId());
+        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        List<StationResponse> stations = persistLine.getStations()
+                .stream()
+                .map(it -> StationResponse.of(it))
+                .collect(Collectors.toList());
+        return LineResponse.of(persistLine, stations);
+    }
+
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id)
                 .orElseThrow(() -> new LineException("노선이 존재하지 않습니다."));
+
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
@@ -90,10 +86,6 @@ public class LineService {
 
     private List<Line> findAllLine() {
         return lineRepository.findAll();
-    }
-
-    private Optional<Line> findOneLine(Long id) {
-        return lineRepository.findById(id);
     }
 
     private Optional<Line> findOneLineWithSectionsById(Long id) {
