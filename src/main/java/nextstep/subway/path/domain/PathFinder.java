@@ -14,6 +14,7 @@ import java.util.Objects;
 public class PathFinder {
 
     public static final String SAME_STATION_ERROR = "출발역과 도착역은 달라야 합니다.";
+    public static final String NOT_CONTAINED_STATION_ERROR = "노선에 연결된 지하철역이어야 합니다.";
     private static final int SHORTEST_PATH_INDEX = 0;
 
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
@@ -27,9 +28,7 @@ public class PathFinder {
     }
 
     public Path getShortestPath(Station sourceStation, Station targetStation) {
-        if (Objects.equals(sourceStation, targetStation)) {
-            throw new PathFindFailedException(SAME_STATION_ERROR);
-        }
+        validateStations(sourceStation, targetStation);
 
         GraphPath<Station, DefaultWeightedEdge> shortestPath = getShortestPathFromPaths(sourceStation, targetStation);
         return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight());
@@ -55,5 +54,14 @@ public class PathFinder {
 
     private GraphPath<Station, DefaultWeightedEdge> getShortestPathFromPaths(Station sourceStation, Station targetStation) {
         return paths.getPaths(sourceStation, targetStation).get(SHORTEST_PATH_INDEX);
+    }
+
+    private void validateStations(Station sourceStation, Station targetStation) {
+        if (Objects.equals(sourceStation, targetStation)) {
+            throw new PathFindFailedException(SAME_STATION_ERROR);
+        }
+        if (!graph.containsVertex(sourceStation) || !graph.containsVertex(targetStation)) {
+            throw new PathFindFailedException(NOT_CONTAINED_STATION_ERROR);
+        }
     }
 }

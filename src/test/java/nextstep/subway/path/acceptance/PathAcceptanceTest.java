@@ -74,7 +74,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("연결되어 있지 않은 역으로 최단 경로를 조회한다.")
-    void getPathWithSeparatedStation() {
+    void getPathWithNotContainedStation() {
         // when
         ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역, 부산역);
 

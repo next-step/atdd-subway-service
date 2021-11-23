@@ -61,4 +61,16 @@ public class PathFinderTest {
                 .isThrownBy(() -> pathFinder.getShortestPath(강남역, 강남역))
                 .withMessageMatching(PathFinder.SAME_STATION_ERROR);
     }
+
+    @Test
+    @DisplayName("연결되어 있지 않은 역으로 최단 경로를 조회하면 예외를 발생한다.")
+    void getShortestPathThrowException2() {
+        // given
+        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
+
+        // when & then
+        assertThatExceptionOfType(PathFindFailedException.class)
+                .isThrownBy(() -> pathFinder.getShortestPath(강남역, 부산역))
+                .withMessageMatching(PathFinder.NOT_CONTAINED_STATION_ERROR);
+    }
 }
