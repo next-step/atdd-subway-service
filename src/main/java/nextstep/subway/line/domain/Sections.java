@@ -1,6 +1,8 @@
 package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +16,7 @@ import nextstep.subway.utils.StreamUtils;
 @Embeddable
 public class Sections {
     private static final String NOT_EXIST_FIRST_SECTION = "첫 번째 구간이 존재하지 않습니다.";
-    private static final String CAN_NOT_DELETE_STATION_WHEN_ONLY_ONE_SECTIONS_MESSAGE = "노선의 구간이 1개인 경우 지하철 역을 삭제 할 수 없습니다.";
+    private static final int START_INDEX = 0;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -37,17 +39,24 @@ public class Sections {
         sections.add(section);
     }
 
-    public void remove(Section section) {
-        validateHasOnlyOneSection();
-        this.sections.remove(section);
-    }
+    public void removeStation(Station station) {
+        Optional<Section> upLineSection = findByUpStation(station);
+        Optional<Section> downLineSection = findByDownStation(station);
 
-    public boolean isEmpty() {
-        return sections.isEmpty();
+        if (upLineSection.isPresent() && downLineSection.isPresent()) {
+            addMiddleSection(upLineSection.get(), downLineSection.get());
+        }
+
+        upLineSection.ifPresent(it -> sections.remove(it));
+        downLineSection.ifPresent(it -> sections.remove(it));
     }
 
     public int size() {
         return sections.size();
+    }
+
+    public boolean hasStation(Station station) {
+        return findAllStations().contains(station);
     }
 
     public Optional<Section> findByUpStation(Station station) {
@@ -64,6 +73,30 @@ public class Sections {
                           .orElseThrow(() -> new IllegalStateException(NOT_EXIST_FIRST_SECTION));
     }
 
+    public List<Station> getStations() {
+        if (sections.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return getSortedStations();
+    }
+
+    private void addMiddleSection(Section upLineSection, Section downLineSection) {
+        Station newUpStation = downLineSection.getUpStation();
+        Station newDownStation = upLineSection.getDownStation();
+        Distance newDistance = Distance.merge(upLineSection.getDistance(), downLineSection.getDistance());
+
+        sections.add(Section.of(downLineSection.getLine(), newUpStation, newDownStation, newDistance));
+    }
+
+    private List<Station> findAllStations() {
+        return StreamUtils.flatMapToList(sections, Section::getStations, Collection::stream);
+    }
+
+    private Optional<Section> findSectionByUpStation(Station station) {
+        return StreamUtils.filterAndFindFirst(sections, section -> section.isSameUpStation(station));
+    }
+
     private List<Station> findUpStations() {
         return StreamUtils.mapToList(sections, Section::getUpStation);
     }
@@ -72,9 +105,16 @@ public class Sections {
         return StreamUtils.mapToList(sections, Section::getDownStation);
     }
 
-    private void validateHasOnlyOneSection() {
-        if (sections.size() <= 1) {
-            throw new IllegalArgumentException(CAN_NOT_DELETE_STATION_WHEN_ONLY_ONE_SECTIONS_MESSAGE);
+    private List<Station> getSortedStations() {
+        List<Station> stations = new ArrayList<>();
+        stations.add(findFirstSection().getUpStation());
+
+        for (int i = START_INDEX; i < sections.size(); i++) {
+            Optional<Section> sectionByUpStation = findSectionByUpStation(stations.get(i));
+            sectionByUpStation.map(Section::getDownStation)
+                              .ifPresent(stations::add);
         }
+
+        return stations;
     }
 }

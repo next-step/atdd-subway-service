@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class StreamUtils {
 
@@ -21,5 +22,15 @@ public class StreamUtils {
         return collections.stream()
                           .filter(predicate)
                           .findFirst();
+    }
+
+    public static <T, R> List<R> flatMapToList(Collection<T> collections,
+                                               Function<T, Collection<R>> mapFunction,
+                                               Function<Collection<R>, Stream<R>> flatMapFunction) {
+        return collections.stream()
+                          .map(mapFunction)
+                          .flatMap(flatMapFunction)
+                          .distinct()
+                          .collect(Collectors.toList());
     }
 }

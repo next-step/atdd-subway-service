@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import nextstep.subway.station.domain.Station;
@@ -81,6 +83,10 @@ public class Section {
 
     public boolean isSameDownStation(Station station) {
         return this.downStation.equals(station);
+    }
+
+    public List<Station> getStations() {
+        return Arrays.asList(upStation, downStation);
     }
 
     public Long getId() {

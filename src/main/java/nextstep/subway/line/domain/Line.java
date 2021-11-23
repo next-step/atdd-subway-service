@@ -4,13 +4,13 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
+    private static final String CAN_NOT_DELETE_STATION_WHEN_ONLY_ONE_SECTIONS_MESSAGE = "노선의 구간이 1개인 경우, 지하철 역을 삭제 할 수 없습니다.";
+    private static final String CAN_NOT_DELETE_WHEN_NO_EXIST_STATION = "노선에 존재하지 않는 역입니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,7 +23,7 @@ public class Line extends BaseEntity {
     private LineColor color;
 
     @Embedded
-    private Sections sections = Sections.createEmpty();
+    private final Sections sections = Sections.createEmpty();
 
     protected Line() {}
 
@@ -85,44 +85,14 @@ public class Line extends BaseEntity {
     }
 
     public void removeStation(Station station) {
-        // 중간역일 때 처리
-        Optional<Section> upLineStation = sections.findByUpStation(station);
-        Optional<Section> downLineStation = sections.findByDownStation(station);
+        validateHasOnlyOneSectionWhenDeleteStation();
+        validateNotIncludeStation(station);
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            Distance newDistance = upLineStation.get()
-                                                .getDistance()
-                                                .plus(downLineStation.get()
-                                                                     .getDistance());
-            sections.add(Section.of(this, newUpStation, newDownStation, newDistance));
-        }
-
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
+        sections.removeStation(station);
     }
 
     public List<Station> getStations() {
-        if (sections.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.findByUpStation(finalDownStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
-
-        return stations;
+        return sections.getStations();
     }
 
     public void update(Line line) {
@@ -142,16 +112,15 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    private Station findUpStation() {
-        Station downStation = sections.findFirstSection().getUpStation();
-        while (downStation != null) {
-            Optional<Section> nextLineStation = sections.findByDownStation(downStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
+    private void validateHasOnlyOneSectionWhenDeleteStation() {
+        if (sections.size() == 1) {
+            throw new IllegalArgumentException(CAN_NOT_DELETE_STATION_WHEN_ONLY_ONE_SECTIONS_MESSAGE);
         }
+    }
 
-        return downStation;
+    private void validateNotIncludeStation(Station station) {
+        if (!sections.hasStation(station)) {
+            throw new IllegalArgumentException(CAN_NOT_DELETE_WHEN_NO_EXIST_STATION);
+        }
     }
 }
