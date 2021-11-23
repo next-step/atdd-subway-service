@@ -30,6 +30,7 @@ public class LineService {
 
     public List<LineResponse> findLines() {
         List<Line> persistLines = findAllLine();
+
         return persistLines.stream()
                 .map(line -> {
                     List<StationResponse> stations = line.getStations().stream()
@@ -43,6 +44,7 @@ public class LineService {
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findOneLineWithSectionsById(id)
                 .orElseThrow(() -> new LineException("노선이 존재하지 않습니다."));
+
         List<StationResponse> stations = persistLine.getStations().stream()
                 .map(it -> StationResponse.of(it))
                 .collect(Collectors.toList());
@@ -52,7 +54,9 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
+
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+
         List<StationResponse> stations = persistLine.getStations()
                 .stream()
                 .map(it -> StationResponse.of(it))
@@ -75,13 +79,15 @@ public class LineService {
         Line line = findOneLineWithSectionsById(lineId).orElseThrow(() -> new LineException("노선이 존재하지 않습니다."));
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
+
         line.addSection(new Section(line, upStation, downStation, request.getDistance()));
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findOneLineWithSectionsById(lineId).orElseThrow(() -> new LineException("노선이 존재하지 않습니다."));
-        Station station = stationService.findStationById(stationId);
-        line.removeSection(station);
+        Station removeStation = stationService.findStationById(stationId);
+
+        line.removeSection(removeStation);
     }
 
     private List<Line> findAllLine() {
