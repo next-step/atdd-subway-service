@@ -1,8 +1,8 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.line.Line;
+import nextstep.subway.line.domain.line.LineRepository;
+import nextstep.subway.line.domain.section.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -40,7 +40,7 @@ public class LineService {
     }
 
     public List<LineResponse> findLines() {
-        List<Line> persistLines = lineRepository.findAll();
+        List<Line> persistLines = findAllLine();
         return persistLines.stream()
                 .map(line -> {
                     List<StationResponse> stations = getStations(line).stream()
@@ -57,7 +57,7 @@ public class LineService {
 
 
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
+        Line persistLine = findOneLineWithSectionsById(id).orElseThrow(RuntimeException::new);
         List<StationResponse> stations = getStations(persistLine).stream()
                 .map(it -> StationResponse.of(it))
                 .collect(Collectors.toList());
@@ -179,4 +179,17 @@ public class LineService {
 
         return downStation;
     }
+
+    private List<Line> findAllLine() {
+        return lineRepository.findAll();
+    }
+
+    private Optional<Line> findOneLine(Long id) {
+        return lineRepository.findById(id);
+    }
+
+    private Optional<Line> findOneLineWithSectionsById(Long id) {
+        return lineRepository.findLineWithSectionsById(id);
+    }
+
 }
