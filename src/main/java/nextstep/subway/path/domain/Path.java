@@ -16,6 +16,14 @@ public class Path {
         this.distance = distance;
     }
 
+    public List<Station> getStations() {
+        return stations;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

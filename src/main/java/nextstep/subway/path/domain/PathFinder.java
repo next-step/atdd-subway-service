@@ -29,7 +29,6 @@ public class PathFinder {
 
     public Path getShortestPath(Station sourceStation, Station targetStation) {
         validateStations(sourceStation, targetStation);
-
         GraphPath<Station, DefaultWeightedEdge> shortestPath = getShortestPathFromPaths(sourceStation, targetStation);
         return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight());
     }
