@@ -21,6 +21,10 @@ public class Distance {
         this.distance = distance;
     }
 
+    public static int concat(Distance a, Distance b) {
+        return a.getDistance() + b.getDistance();
+    }
+
     public void validation(int distance) {
         if (isNull(distance) || distance == DISTANCE_ZERO) {
             throw new SectionException("구간의 길이가 없습니다.");

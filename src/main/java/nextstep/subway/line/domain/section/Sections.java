@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain.section;
 
-import nextstep.subway.exception.SectionException;
 import nextstep.subway.exception.SectionServerException;
+import nextstep.subway.line.domain.line.Line;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -17,7 +17,7 @@ public class Sections {
     private final List<Section> sections = new ArrayList<>();
 
     public void addLineStation(Section section) {
-        validation(section);
+        addValidation(section);
 
         sections.stream()
                 .filter(it -> it.getUpStation() == section.getUpStation())
@@ -32,7 +32,7 @@ public class Sections {
         sections.add(section);
     }
 
-    private void validation(Section section) {
+    private void addValidation(Section section) {
         validateDuplicateSection(section);
         validateNoneMatchSection(section);
     }
@@ -61,7 +61,6 @@ public class Sections {
         if (sections.isEmpty()) {
             return Arrays.asList();
         }
-
         Set<Station> result = new LinkedHashSet<>();
 
         Optional<Section> first = sections.stream()
@@ -89,4 +88,59 @@ public class Sections {
     public List<Section> getSections() {
         return sections;
     }
+
+    public void removeLineStation(Line line, Station station) {
+        removeValidation(station);
+
+        Optional<Section> downLineStation = removeUpStation(station);
+        Optional<Section> upLineStation = removeDownStation(station);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            line.getSections().add(newSection(line, upLineStation, downLineStation));
+        }
+    }
+
+    private void removeValidation(Station station) {
+        validateMinSize();
+        validateNoneMatchStation(station);
+    }
+
+    private void validateMinSize() {
+        if (sections.size() <= 1) {
+            throw new SectionServerException("마지막 노선은 삭제 할 수 없습니다.");
+        }
+    }
+
+    private void validateNoneMatchStation(Station station) {
+        boolean isNoneMatch = getStations().stream().noneMatch(it -> it == station);
+        if (isNoneMatch) {
+            throw new SectionServerException("삭제 대상 역이 없습니다.");
+        }
+    }
+
+    private Optional<Section> removeUpStation(Station station) {
+        Optional<Section> downLineStation = sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        downLineStation.ifPresent(it -> sections.remove(it));
+        return downLineStation;
+    }
+
+    private Optional<Section> removeDownStation(Station station) {
+        Optional<Section> upLineStation = sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+
+        upLineStation.ifPresent(it -> sections.remove(it));
+        return upLineStation;
+    }
+
+    private Section newSection(Line line, Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        Station newUpStation = downLineStation.get().getUpStation();
+        Station newDownStation = upLineStation.get().getDownStation();
+        int newDistance = Distance.concat(upLineStation.get().getDistance(), downLineStation.get().getDistance());
+        return new Section(line, newUpStation, newDownStation, newDistance);
+    }
+
 }
