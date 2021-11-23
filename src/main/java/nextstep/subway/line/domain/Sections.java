@@ -26,6 +26,10 @@ public class Sections {
         this.sections = sections;
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
     Station getUpStation() {
         Section section = sections.get(FIRST_SECTION);
         Station downStation = section.getUpStation();

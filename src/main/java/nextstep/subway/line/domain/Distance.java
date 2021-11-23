@@ -1,11 +1,13 @@
 package nextstep.subway.line.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
 @Embeddable
 public class Distance {
-    
+
+    @Column
     private int distance;
 
     protected Distance() {
@@ -13,6 +15,10 @@ public class Distance {
 
     public Distance(int distance) {
         this.distance = distance;
+    }
+
+    public int getDistance() {
+        return distance;
     }
 
     public Distance getAddedDistance(Distance mergingDistance) {

@@ -76,7 +76,7 @@ class SectionsTest {
     }
 
     @Test
-    @DisplayName("존재하는 역으로 지하철 노선에 구간을 추가하면 예외가 발생한다.")
+    @DisplayName("존재하는 역으로 지하철 노선에 구간을 추가하면 예외를 발생한다.")
     void addSectionThrowException1() {
         // given
         sections.addSection(이호선, 강남역, 역삼역, new Distance(10));
@@ -88,7 +88,7 @@ class SectionsTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 역으로 지하철 노선에 구간을 추가하면 예외가 발생한다.")
+    @DisplayName("존재하지 않는 역으로 지하철 노선에 구간을 추가하면 예외를 발생한다.")
     void addSectionThrowException2() {
         // given
         sections.addSection(이호선, 강남역, 역삼역, new Distance(10));
@@ -116,7 +116,7 @@ class SectionsTest {
     }
 
     @Test
-    @DisplayName("구간이 1개만 존재할 때 지하철 노선에서 구간을 제거하면 예외가 발생한다..")
+    @DisplayName("구간이 1개만 존재할 때 지하철 노선에서 구간을 제거하면 예외를 발생한다.")
     void removeThrowException() {
         // given
         sections.addSection(이호선, 강남역, 역삼역, new Distance(10));

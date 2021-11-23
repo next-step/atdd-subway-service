@@ -35,7 +35,7 @@ class DistanceTest {
     }
 
     @Test
-    @DisplayName("기존 거리보드 먼 거리로 구간을 분리하면 예외가 발생한다.")
+    @DisplayName("기존 거리보다 먼 거리로 구간을 분리하면 예외를 발생한다.")
     void getSplitDistanceThrowException() {
         // given
         Distance distance = new Distance(10);
