@@ -1,9 +1,11 @@
 package nextstep.subway.line.domain.line;
 
+import nextstep.subway.exception.LineException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class LineTest {
@@ -22,4 +24,16 @@ public class LineTest {
                 () -> assertThat(line.getSections().get(0).getDownStation()).isEqualTo(광교역)
         );
     }
+
+    @Test
+    public void 노선_생성_오류() {
+        Station 강남역 = new Station("강남역");
+        Station 광교역 = new Station("광교역");
+
+        assertThatThrownBy(() -> {
+            new Line("", "red", 강남역, 광교역, 10);
+        }).isInstanceOf(LineException.class);
+    }
+
+
 }
