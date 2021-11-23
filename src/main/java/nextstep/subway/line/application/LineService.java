@@ -1,5 +1,7 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.exception.LineException;
+import nextstep.subway.exception.SectionException;
 import nextstep.subway.line.domain.line.Line;
 import nextstep.subway.line.domain.line.LineRepository;
 import nextstep.subway.line.domain.section.Distance;
@@ -77,7 +79,7 @@ public class LineService {
     }
 
     public void addNewLineStation(Long lineId, SectionRequest request) {
-        Line line = findLineById(lineId);
+        Line line = findOneLineWithSectionsById(lineId).orElseThrow(() -> new LineException("노선이 존재하지 않습니다."));
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
         line.addSection(new Section(line, upStation, downStation, request.getDistance()));

@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain.section;
 
 import nextstep.subway.exception.SectionException;
+import nextstep.subway.exception.SectionServerException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -42,7 +43,7 @@ public class Sections {
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
 
         if (!stations.isEmpty() && isUpStationExisted && isDownStationExisted) {
-            throw new SectionException("이미 등록된 구간 입니다.");
+            throw new SectionServerException("이미 등록된 구간 입니다.");
         }
     }
 
@@ -52,7 +53,7 @@ public class Sections {
         boolean isMatchDownStation = stations.stream().noneMatch(it -> it == section.getDownStation());
 
         if (!stations.isEmpty() && isMatchUpStation && isMatchDownStation) {
-            throw new SectionException("연결되는 구간이 없습니다.");
+            throw new SectionServerException("연결되는 구간이 없습니다.");
         }
     }
 

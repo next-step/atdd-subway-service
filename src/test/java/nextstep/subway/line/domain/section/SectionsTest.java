@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain.section;
 
 import nextstep.subway.exception.SectionException;
+import nextstep.subway.exception.SectionServerException;
 import nextstep.subway.line.domain.line.Line;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
@@ -14,13 +15,13 @@ public class SectionsTest {
     private Station 강남역 = new Station("강남역");
     private Station 광교역 = new Station("광교역");
     private Station 판교역 = new Station("판교역");
+    private Station 홍대역 = new Station("홍대역");
+    private Station 신촌역 = new Station("신촌역");
     private Line 신분당선_강남_광교 = new Line("신분당선", "red", 강남역, 광교역, 10);
 
     @Test
     public void 지하철_노선_등록() {
-        Station 강남역 = new Station("강남역");
-        Station 판교역 = new Station("판교역");
-        Section 신규노선 = new Section(신분당선_강남_광교, 강남역, 판교역, 10);
+        Section 신규노선 = new Section(신분당선_강남_광교, 강남역, 판교역, 9);
 
         신분당선_강남_광교.addSection(신규노선);
 
@@ -30,27 +31,21 @@ public class SectionsTest {
     @Test
     @DisplayName("요청된 구간은 이미 등록 되어있음.")
     public void 지하철_노선_등록_중복_오류() {
-        Station 강남역 = new Station("강남역");
-        Station 광교역 = new Station("광교역");
-
         Section actual = new Section(신분당선_강남_광교, 강남역, 광교역, 10);
 
         assertThatThrownBy(() -> {
             신분당선_강남_광교.addSection(actual);
-        }).isInstanceOf(SectionException.class);
+        }).isInstanceOf(SectionServerException.class);
     }
 
     @Test
     @DisplayName("연결 구간이 없어 오류 발생")
     public void 지하철_노선_등록_연결_오류() {
-        Station 홍대역 = new Station("홍대역");
-        Station 신촌역 = new Station("신촌역");
-
         Section actual = new Section(신분당선_강남_광교, 홍대역, 신촌역, 10);
 
         assertThatThrownBy(() -> {
             신분당선_강남_광교.addSection(actual);
-        }).isInstanceOf(SectionException.class);
+        }).isInstanceOf(SectionServerException.class);
     }
 
     @Test
