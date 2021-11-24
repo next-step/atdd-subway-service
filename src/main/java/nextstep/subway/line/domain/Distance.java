@@ -21,11 +21,11 @@ public class Distance {
         return distance;
     }
 
-    public Distance getAddedDistance(Distance mergingDistance) {
-        return new Distance(distance + mergingDistance.distance);
+    public Distance add(Distance distance) {
+        return new Distance(this.distance + distance.distance);
     }
 
-    public Distance getRemainedDistance(Distance newDistance) {
+    public Distance subtract(Distance newDistance) {
         if (this.distance <= newDistance.distance) {
             throw new DistanceSplitFaildException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요.");
         }

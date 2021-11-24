@@ -39,7 +39,7 @@ class SectionsTest {
         sections.addSection(이호선, 사당역, 강남역, new Distance(15));
 
         // when
-        Station station = sections.getUpStation();
+        Station station = sections.findUpStation();
 
         // then
         assertThat(station).isEqualTo(사당역);
@@ -53,7 +53,7 @@ class SectionsTest {
         sections.addSection(이호선, 사당역, 강남역, new Distance(15));
 
         // when
-        List<Station> stations = sections.getStations();
+        List<Station> stations = sections.findStations();
 
         // then
         assertThat(stations).containsExactly(사당역, 강남역, 역삼역);

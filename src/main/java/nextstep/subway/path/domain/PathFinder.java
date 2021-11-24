@@ -27,9 +27,9 @@ public class PathFinder {
         this.paths = new KShortestPaths<>(graph, 100);
     }
 
-    public Path getShortestPath(Station sourceStation, Station targetStation) {
+    public Path findShortestPath(Station sourceStation, Station targetStation) {
         validateStations(sourceStation, targetStation);
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = getShortestPathFromPaths(sourceStation, targetStation);
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = findShortestPathFromPaths(sourceStation, targetStation);
         return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight());
     }
 
@@ -46,12 +46,10 @@ public class PathFinder {
     }
 
     private void addEdge(Section section) {
-        graph.setEdgeWeight(
-                graph.addEdge(section.getUpStation(), section.getDownStation()),
-                section.getDistance().getDistance());
+        graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
     }
 
-    private GraphPath<Station, DefaultWeightedEdge> getShortestPathFromPaths(Station sourceStation, Station targetStation) {
+    private GraphPath<Station, DefaultWeightedEdge> findShortestPathFromPaths(Station sourceStation, Station targetStation) {
         return paths.getPaths(sourceStation, targetStation).get(SHORTEST_PATH_INDEX);
     }
 

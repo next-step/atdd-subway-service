@@ -23,7 +23,7 @@ public class PathService {
         PathFinder pathFinder = new PathFinder(lineService.findAllLines());
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
-        Path path = pathFinder.getShortestPath(sourceStation, targetStation);
+        Path path = pathFinder.findShortestPath(sourceStation, targetStation);
         return PathResponse.of(path);
     }
 }

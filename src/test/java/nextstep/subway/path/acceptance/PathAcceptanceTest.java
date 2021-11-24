@@ -54,7 +54,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("최단 경로를 조회한다.")
-    void getShortestPath() {
+    void findShortestPath() {
         // when
         ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역, 남부터미널역);
 
@@ -64,7 +64,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("동일한 역으로 최단 경로를 조회한다.")
-    void getShortestPathWithSameStation() {
+    void findShortestPathWithSameStation() {
         // when
         ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역, 강남역);
 
@@ -74,7 +74,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("연결되어 있지 않은 역으로 최단 경로를 조회한다.")
-    void getShortestPathWithNotContainedStation() {
+    void findShortestPathWithNotContainedStation() {
         // when
         ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역, 부산역);
 
@@ -84,7 +84,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("존재하지 않는 역으로 최단 경로를 조회한다.")
-    void getShortestPathWithNotExistsStation() {
+    void findShortestPathWithNotExistsStation() {
         // when
         ExtractableResponse<Response> response = 최단_경로_조회_요청(100L, 200L);
 

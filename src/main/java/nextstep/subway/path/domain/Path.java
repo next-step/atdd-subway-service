@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.station.domain.Station;
 
 import java.util.Collections;
@@ -9,11 +10,11 @@ import java.util.Objects;
 public class Path {
 
     private final List<Station> stations;
-    private final int distance;
+    private final Distance distance;
 
     public Path(List<Station> stations, int distance) {
         this.stations = Collections.unmodifiableList(stations);
-        this.distance = distance;
+        this.distance = new Distance(distance);
     }
 
     public List<Station> getStations() {
@@ -21,7 +22,7 @@ public class Path {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.getDistance();
     }
 
     @Override
@@ -29,7 +30,7 @@ public class Path {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Path path = (Path) o;
-        return distance == path.distance && Objects.equals(stations, path.stations);
+        return Objects.equals(stations, path.stations) && Objects.equals(distance, path.distance);
     }
 
     @Override

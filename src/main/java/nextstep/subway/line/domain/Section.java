@@ -44,6 +44,13 @@ public class Section {
         this.distance = distance;
     }
 
+    public Section(Section beforeSection, Section nextSection, Distance distance) {
+        this.line = nextSection.line;
+        this.upStation = nextSection.upStation;
+        this.downStation = beforeSection.downStation;
+        this.distance = distance;
+    }
+
     public Long getId() {
         return id;
     }
@@ -60,22 +67,26 @@ public class Section {
         return downStation;
     }
 
-    public Distance getDistance() {
-        return distance;
+    public int getDistance() {
+        return distance.getDistance();
     }
 
-    public void updateUpStation(Station station, Distance newDistance) {
-        this.distance = this.distance.getRemainedDistance(newDistance);
+    void updateUpStation(Station station, Distance newDistance) {
+        this.distance = this.distance.subtract(newDistance);
         this.upStation = station;
     }
 
-    public void updateDownStation(Station station, Distance newDistance) {
-        this.distance = this.distance.getRemainedDistance(newDistance);
+    void updateDownStation(Station station, Distance newDistance) {
+        this.distance = this.distance.subtract(newDistance);
         this.downStation = station;
     }
 
-    public boolean isExists() {
+    boolean isExists() {
         return !Objects.equals(this, Section.EMPTY);
+    }
+
+    Distance add(Section section) {
+        return distance.add(section.distance);
     }
 
     @Override

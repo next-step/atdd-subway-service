@@ -30,7 +30,7 @@ public class Sections {
         return sections;
     }
 
-    Station getUpStation() {
+    Station findUpStation() {
         Section section = sections.get(FIRST_SECTION);
         Station downStation = section.getUpStation();
 
@@ -41,13 +41,13 @@ public class Sections {
         return downStation;
     }
 
-    List<Station> getStations() {
+    List<Station> findStations() {
         if (sections.isEmpty()) {
             return Collections.emptyList();
         }
 
         List<Station> stations = new ArrayList<>();
-        Station upStation = getUpStation();
+        Station upStation = findUpStation();
         stations.add(upStation);
 
         Section section = findNextStationForward(upStation);
@@ -64,7 +64,7 @@ public class Sections {
     void addSection(Line line, Station upStation, Station downStation, Distance distance) {
         validateAdd(upStation, downStation);
 
-        if (getStations().isEmpty()) {
+        if (findStations().isEmpty()) {
             sections.add(new Section(line, upStation, downStation, distance));
             return;
         }
@@ -83,12 +83,12 @@ public class Sections {
 
     void remove(Station station) {
         validateCanRemove();
-        Section upStation = findNextStationForward(station);
-        Section downStation = findNextStationBackward(station);
+        Section beforeSection = findNextStationForward(station);
+        Section nextSection = findNextStationBackward(station);
 
-        addJoinedSection(upStation, downStation);
-        removeSectionByStation(upStation);
-        removeSectionByStation(downStation);
+        addJoinedSection(beforeSection, nextSection);
+        remove(beforeSection);
+        remove(nextSection);
     }
 
     private void addSectionsWhenUpStationMatched(Line line, Station upStation, Station downStation, Distance distance, Section section) {
@@ -115,7 +115,7 @@ public class Sections {
     }
 
     private boolean isStationExisted(Station upStation) {
-        return getStations().stream().anyMatch(it -> it == upStation);
+        return findStations().stream().anyMatch(it -> it == upStation);
     }
 
     private void validateCanRemove() {
@@ -138,18 +138,15 @@ public class Sections {
                 .orElse(Section.EMPTY);
     }
 
-    private void addJoinedSection(Section upStation, Section downStation) {
-        if (upStation.isExists() && downStation.isExists()) {
-            Station newUpStation = downStation.getUpStation();
-            Station newDownStation = upStation.getDownStation();
-            Distance newDistance = upStation.getDistance().getAddedDistance(downStation.getDistance());
-            sections.add(new Section(sections.get(FIRST_SECTION).getLine(), newUpStation, newDownStation, newDistance));
+    private void addJoinedSection(Section beforeSection, Section nextSection) {
+        if (beforeSection.isExists() && nextSection.isExists()) {
+            sections.add(new Section(beforeSection, nextSection, beforeSection.add(nextSection)));
         }
     }
 
-    private void removeSectionByStation(Section upStation) {
-        if (upStation.isExists()) {
-            sections.remove(upStation);
+    private void remove(Section section) {
+        if (section.isExists()) {
+            sections.remove(section);
         }
     }
 

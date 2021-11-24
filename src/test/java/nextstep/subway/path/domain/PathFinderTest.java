@@ -39,12 +39,12 @@ public class PathFinderTest {
 
     @Test
     @DisplayName("최단 경로를 조회한다.")
-    void getShortestPath() {
+    void findShortestPath() {
         // given
         PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
 
         // when
-        Path path = pathFinder.getShortestPath(강남역, 남부터미널역);
+        Path path = pathFinder.findShortestPath(강남역, 남부터미널역);
 
         // then
         assertThat(path).isEqualTo(new Path(Arrays.asList(강남역, 양재역, 남부터미널역), 12));
@@ -52,25 +52,25 @@ public class PathFinderTest {
 
     @Test
     @DisplayName("동일한 역으로 최단 경로를 조회하면 예외를 발생한다.")
-    void getShortestPathThrowException1() {
+    void findShortestPathThrowException1() {
         // given
         PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
 
         // when & then
         assertThatExceptionOfType(PathFindFailedException.class)
-                .isThrownBy(() -> pathFinder.getShortestPath(강남역, 강남역))
+                .isThrownBy(() -> pathFinder.findShortestPath(강남역, 강남역))
                 .withMessageMatching(PathFinder.SAME_STATION_ERROR);
     }
 
     @Test
     @DisplayName("연결되어 있지 않은 역으로 최단 경로를 조회하면 예외를 발생한다.")
-    void getShortestPathThrowException2() {
+    void findShortestPathThrowException2() {
         // given
         PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
 
         // when & then
         assertThatExceptionOfType(PathFindFailedException.class)
-                .isThrownBy(() -> pathFinder.getShortestPath(강남역, 부산역))
+                .isThrownBy(() -> pathFinder.findShortestPath(강남역, 부산역))
                 .withMessageMatching(PathFinder.NOT_CONTAINED_STATION_ERROR);
     }
 }

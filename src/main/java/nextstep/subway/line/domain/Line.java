@@ -60,7 +60,7 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getStations() {
-        return sections.getStations();
+        return sections.findStations();
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {
