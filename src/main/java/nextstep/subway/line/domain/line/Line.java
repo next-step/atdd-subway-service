@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain.line;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.exception.ErrorCode;
+import nextstep.subway.exception.error.ErrorCode;
 import nextstep.subway.exception.LineException;
 import nextstep.subway.line.domain.section.Section;
 import nextstep.subway.line.domain.section.Sections;

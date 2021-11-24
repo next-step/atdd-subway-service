@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain.section;
 
-import nextstep.subway.exception.ErrorCode;
+import nextstep.subway.exception.error.ErrorCode;
 import nextstep.subway.exception.SectionException;
 
 import javax.persistence.Embeddable;

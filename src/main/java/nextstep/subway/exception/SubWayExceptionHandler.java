@@ -1,11 +1,13 @@
 package nextstep.subway.exception;
 
+import nextstep.subway.exception.error.ErrorCode;
+import nextstep.subway.exception.error.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice("nextstep.subway")
-public class CustomExceptionHandler {
+public class SubWayExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
@@ -14,19 +16,11 @@ public class CustomExceptionHandler {
         return new ResponseEntity<>(response, ErrorCode.DEFAULT_ERROR.getHttpStatus());
     }
 
-    @ExceptionHandler(LineException.class)
-    public ResponseEntity<ErrorResponse> handleLineException(LineException e) {
+    @ExceptionHandler(SubwayException.class)
+    public ResponseEntity<ErrorResponse> handleSubwayException(SubwayException e) {
         e.printStackTrace();
         ErrorResponse response = ErrorResponse.build(e.getErrorCode(), e.getMessage());
         return new ResponseEntity<>(response, e.getErrorCode().getHttpStatus());
-    }
-
-    @ExceptionHandler(SectionException.class)
-    public ResponseEntity<ErrorResponse> sectionException(SectionException e) {
-        e.printStackTrace();
-        ErrorResponse response = ErrorResponse.build(e.getErrorCode(), e.getMessage());
-        return new ResponseEntity<>(response, e.getErrorCode().getHttpStatus());
-
     }
 
 }

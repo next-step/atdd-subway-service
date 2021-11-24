@@ -2,16 +2,16 @@ package nextstep.subway.exception;
 
 import nextstep.subway.exception.error.ErrorCode;
 
-public class SectionException extends SubwayException {
+public class SubwayException extends RuntimeException {
     private final ErrorCode errorCode;
 
-    public SectionException(ErrorCode errorCode) {
-        super(errorCode);
+    public SubwayException(ErrorCode errorCode) {
+        super(errorCode.getMessage());
         this.errorCode = errorCode;
     }
 
-    public SectionException(ErrorCode errorCode, String message) {
-        super(errorCode, message);
+    public SubwayException(ErrorCode errorCode, String message) {
+        super(message);
         this.errorCode = errorCode;
     }
 

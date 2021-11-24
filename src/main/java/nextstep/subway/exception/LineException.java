@@ -1,19 +1,17 @@
 package nextstep.subway.exception;
 
-public class LineException extends RuntimeException {
+import nextstep.subway.exception.error.ErrorCode;
+
+public class LineException extends SubwayException {
     private final ErrorCode errorCode;
 
     public LineException(ErrorCode errorCode) {
-        super(errorCode.getMessage());
+        super(errorCode);
         this.errorCode = errorCode;
     }
 
     public LineException(ErrorCode errorCode, String message) {
-        super(message);
+        super(errorCode, message);
         this.errorCode = errorCode;
-    }
-
-    public ErrorCode getErrorCode() {
-        return errorCode;
     }
 }

@@ -1,10 +1,9 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.exception.ErrorCode;
+import nextstep.subway.exception.error.ErrorCode;
 import nextstep.subway.exception.LineException;
 import nextstep.subway.line.domain.line.Line;
 import nextstep.subway.line.domain.line.LineRepository;
-import nextstep.subway.line.domain.section.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
