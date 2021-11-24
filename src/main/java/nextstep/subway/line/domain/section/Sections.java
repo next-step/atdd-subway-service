@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 @Embeddable
 public class Sections {
 
+    private static final int SECTION_MIN_SIZE = 1;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
 
@@ -106,7 +108,7 @@ public class Sections {
     }
 
     private void validateMinSize() {
-        if (sections.size() <= 1) {
+        if (sections.size() <= SECTION_MIN_SIZE) {
             throw new SectionServerException("마지막 노선은 삭제 할 수 없습니다.");
         }
     }
