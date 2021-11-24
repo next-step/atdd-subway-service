@@ -4,7 +4,6 @@ import io.jsonwebtoken.lang.Assert;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -46,7 +45,7 @@ public class Sections {
 
     void add(Section section) {
         validateAddition(section);
-        removeOverlappingSection(section);
+        cutOverlappingSection(section);
         list.add(section);
         deleteSectionCaches();
     }
@@ -67,13 +66,31 @@ public class Sections {
     }
 
     private void remove(Station station) {
-        Optional<Section> sectionByUpStation = findByUpStation(station);
-        Optional<Section> sectionByDownStation = findByDownStation(station);
-        if (sectionByUpStation.isPresent() && sectionByDownStation.isPresent()) {
-            list.add(sectionByUpStation.get().merge(sectionByDownStation.get()));
+        removeWhenExistsByUpStation(station);
+        removeWhenExistsByDownStation(station);
+        addMergedSectionWhenLocatedBetween(station);
+    }
+
+    private void addMergedSectionWhenLocatedBetween(Station station) {
+        if (isLocatedBetween(station)) {
+            list.add(findByUpStation(station).merge(findByDownStation(station)));
         }
-        sectionByUpStation.ifPresent(section -> list.remove(section));
-        sectionByDownStation.ifPresent(section -> list.remove(section));
+    }
+
+    private void removeWhenExistsByUpStation(Station station) {
+        if (isExistByUpStation(station)) {
+            list.remove(findByUpStation(station));
+        }
+    }
+
+    private void removeWhenExistsByDownStation(Station station) {
+        if (isExistByDownStation(station)) {
+            list.remove(findByDownStation(station));
+        }
+    }
+
+    private boolean isLocatedBetween(Station station) {
+        return isExistByUpStation(station) && isExistByDownStation(station);
     }
 
     private void validateSize() {
@@ -87,14 +104,12 @@ public class Sections {
     }
 
     private List<Station> upToDownSortedStations() {
-        Section firstSection = firstSection();
-        List<Station> stations = new ArrayList<>(firstSection.stations());
+        Section nextSection = firstSection();
+        List<Station> stations = new ArrayList<>(nextSection.stations());
 
-        Optional<Section> nextSectionOptional = findByUpStation(firstSection.downStation());
-        while (nextSectionOptional.isPresent()) {
-            Section nextSection = nextSectionOptional.get();
+        while (isExistByUpStation(nextSection.downStation())) {
+            nextSection = findByUpStation(nextSection.downStation());
             stations.add(nextSection.downStation());
-            nextSectionOptional = findByUpStation(nextSection.downStation());
         }
         return stations;
     }
@@ -107,17 +122,27 @@ public class Sections {
     }
 
     private boolean doesNotHavePreviousSection(Section section) {
-        return !findByDownStation(section.upStation()).isPresent();
+        return !isExistByDownStation(section.upStation());
     }
 
-    private void removeOverlappingSection(Section section) {
+    private void cutOverlappingSection(Section section) {
         if (isExist(section.upStation())) {
-            findByUpStation(section.upStation())
-                .ifPresent(upSection -> upSection.remove(section));
+            cutSectionWhenExistByUpStation(section);
             return;
         }
-        findByDownStation(section.downStation())
-            .ifPresent(downSection -> downSection.remove(section));
+        cutSectionWhenExistByDownStation(section);
+    }
+
+    private void cutSectionWhenExistByUpStation(Section section) {
+        if(isExistByUpStation(section.upStation())){
+            findByUpStation(section.upStation()).cut(section);
+        }
+    }
+
+    private void cutSectionWhenExistByDownStation(Section section) {
+        if(isExistByDownStation(section.downStation())){
+            findByDownStation(section.downStation()).cut(section);
+        }
     }
 
     private void validateAddition(Section section) {
@@ -140,16 +165,12 @@ public class Sections {
         return downStationToSection().containsKey(station);
     }
 
-    private Optional<Section> findByUpStation(Station station) {
-        return Optional.ofNullable(
-            upStationToSection().get(station)
-        );
+    private Section findByUpStation(Station station) {
+        return upStationToSection().get(station);
     }
 
-    private Optional<Section> findByDownStation(Station station) {
-        return Optional.ofNullable(
-            downStationToSection().get(station)
-        );
+    private Section findByDownStation(Station station) {
+        return downStationToSection().get(station);
     }
 
     private boolean isExist(Station station) {

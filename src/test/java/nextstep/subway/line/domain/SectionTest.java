@@ -57,12 +57,12 @@ class SectionTest {
     @ParameterizedTest(name = "[{index}] {0} 구간을 제거하면 {1}")
     @MethodSource
     @DisplayName("구간 제거")
-    void remove(Section removedSection, Section expected) {
+    void cut(Section removedSection, Section expected) {
         Section section = Section.of(
             station("강남"), station("광교"), Distance.from(5));
 
         //when
-        section.remove(removedSection);
+        section.cut(removedSection);
 
         //then
         assertThat(section)
@@ -71,50 +71,50 @@ class SectionTest {
 
     @Test
     @DisplayName("null 구간을 제거")
-    void remove_nullSection_thrownIllegalArgumentException() {
+    void cut_nullSection_thrownIllegalArgumentException() {
         //given
         Section section = Section.of(
             station("교대"), station("광교"), Distance.from(5));
 
         //when
-        ThrowingCallable removeCall = () -> section.remove(null);
+        ThrowingCallable cutCallable = () -> section.cut(null);
 
         //then
         assertThatIllegalArgumentException()
-            .isThrownBy(removeCall)
+            .isThrownBy(cutCallable)
             .withMessageContaining("지워지는 구간은 null 일 수 없습니다.");
     }
 
     @ParameterizedTest(name = "[{index}] 강남,광교 구간에서 {0} 구간을 제거할 수 없다")
     @MethodSource("sameOrNotExistStation")
     @DisplayName("모든 역이 같거나 다른 구간을 제거")
-    void remove_sameOrNotExistStation_thrownIllegalArgumentException(Section removedSection) {
+    void cut_sameOrNotExistStation_thrownIllegalArgumentException(Section removedSection) {
         Section section = Section.of(
             station("강남"), station("광교"), Distance.from(Integer.MAX_VALUE));
 
         //when
-        ThrowingCallable removeCall = () -> section.remove(removedSection);
+        ThrowingCallable cutCallable = () -> section.cut(removedSection);
 
         //then
         assertThatExceptionOfType(InvalidDataException.class)
-            .isThrownBy(removeCall)
+            .isThrownBy(cutCallable)
             .withMessageEndingWith("제거할 수 없습니다.");
     }
 
     @Test
     @DisplayName("제거되는 구간의 길이가 더 크거나 같은 상태로 제거하면 IllegalArgumentException")
-    void remove_greaterDistance_thrownIllegalArgumentException() {
+    void cut_greaterDistance_thrownIllegalArgumentException() {
         Section section = Section.of(
             station("교대"), station("광교"), Distance.from(Integer.MAX_VALUE));
 
         //when
-        ThrowingCallable removeCall = () -> section.remove(
+        ThrowingCallable cutCallable = () -> section.cut(
             Section.of(station("교대"), station("강남"), Distance.from(Integer.MAX_VALUE))
         );
 
         //then
         assertThatExceptionOfType(InvalidDataException.class)
-            .isThrownBy(removeCall)
+            .isThrownBy(cutCallable)
             .withMessageStartingWith("역과 역 사이의 거리");
     }
 
@@ -179,7 +179,7 @@ class SectionTest {
         );
     }
 
-    private static Stream<Arguments> remove() {
+    private static Stream<Arguments> cut() {
         return Stream.of(
             Arguments.of(
                 Section.of(station("강남"), station("양재"), Distance.from(3)),

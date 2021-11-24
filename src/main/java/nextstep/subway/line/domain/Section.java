@@ -70,9 +70,9 @@ public class Section {
         return distance;
     }
 
-    void remove(Section section) {
-        validateRemoval(section);
-        cutSection(section);
+    void cut(Section section) {
+        validateCut(section);
+        changeStation(section);
         minusDistance(section.distance);
     }
 
@@ -102,13 +102,13 @@ public class Section {
         return !downStation.equals(section.upStation) && !upStation.equals(section.downStation);
     }
 
-    private void validateRemoval(Section section) {
+    private void validateCut(Section section) {
         Assert.notNull(section, "지워지는 구간은 null 일 수 없습니다.");
-        validateRemovedSection(section);
+        validateChangeStation(section);
         validateSubtractDistance(section.distance);
     }
 
-    private void cutSection(Section section) {
+    private void changeStation(Section section) {
         if (this.upStation.equals(section.upStation)) {
             upStation = section.downStation;
             return;
@@ -116,7 +116,7 @@ public class Section {
         downStation = section.upStation;
     }
 
-    private void validateRemovedSection(Section section) {
+    private void validateChangeStation(Section section) {
         if (equalOrNotOverlapping(section)) {
             throw new InvalidDataException(
                 String.format("현재 구간(%s)에서 해당 구간(%s)을 제거할 수 없습니다.", this, section));
