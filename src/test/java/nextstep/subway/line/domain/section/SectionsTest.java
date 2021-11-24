@@ -55,12 +55,16 @@ public class SectionsTest {
     @DisplayName("[상행기준] 지하철 노선의 구간을 추가한다. ([기준]강남 -> 광교) => (강남 -> 판교 -> 광교)")
     public void 상행을_기준으로_신규_노선_추가() {
         신분당선_강남_광교.addSection(강남역, 판교역, 5);
+
+        assertThat(신분당선_강남_광교.getStations()).containsExactly(강남역, 판교역, 광교역);
     }
 
     @Test
     @DisplayName("[상행기준] 지하철 노선의 구간을 추가한다. ([기준]강남 -> 광교) => (판교 -> 강남 -> 광교)")
     public void 상행을_기준으로_신규_종점_노선_추가() {
         신분당선_강남_광교.addSection(판교역, 강남역, 55);
+
+        assertThat(신분당선_강남_광교.getStations()).containsExactly(판교역, 강남역, 광교역);
     }
 
     @Test
@@ -75,12 +79,16 @@ public class SectionsTest {
     @DisplayName("[하행기준] 지하철 노선의 구간을 추가한다. (강남 -> [기준]광교) => (강남 -> 판교 -> 광교)")
     public void 하행을_기준으로_신규_노선_추가() {
         신분당선_강남_광교.addSection(강남역, 판교역, 5);
+
+        assertThat(신분당선_강남_광교.getStations()).containsExactly(강남역, 판교역, 광교역);
     }
 
     @Test
     @DisplayName("[하행기준] 지하철 노선의 구간을 추가한다. (강남 -> [기준]광교) => (강남 -> 판교 -> 광교)")
     public void 하행을_기준으로_신규_종점_노선_추가() {
         신분당선_강남_광교.addSection(판교역, 광교역, 5);
+
+        assertThat(신분당선_강남_광교.getStations()).containsExactly(강남역, 판교역, 광교역);
     }
 
     @Test
