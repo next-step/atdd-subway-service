@@ -75,5 +75,5 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [X] Distance
     - [X] Section
     - [ ] Sections
-- [ ] 기존 로직을 지우지 말고 새로운 로직을 만들어 수행
-- [ ] 정상 동작 확인 후 기존 로직 제거
+- [X] 기존 로직을 지우지 말고 새로운 로직을 만들어 수행
+- [X] 정상 동작 확인 후 기존 로직 제거

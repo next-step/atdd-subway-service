@@ -85,6 +85,10 @@ public class Section {
         return this.downStation.equals(station);
     }
 
+    public boolean isGreaterThanOrEqualDistanceTo(Section section) {
+        return distance.isGreaterThanOrEqualTo(section.distance);
+    }
+
     public List<Station> getStations() {
         return Arrays.asList(upStation, downStation);
     }
