@@ -20,7 +20,7 @@ import static nextstep.subway.line.LineSteps.*;
 import static nextstep.subway.station.StationSteps.*;
 import static org.assertj.core.api.Assertions.*;
 
-@DisplayName("지하철 구간 관련 기능")
+@DisplayName("지하철 구간 관련 기능 인수 테스트")
 public class LineSectionAcceptanceTest extends AcceptanceTest {
 
     private LineResponse 신분당선;

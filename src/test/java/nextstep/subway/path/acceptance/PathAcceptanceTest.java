@@ -16,7 +16,7 @@ import static nextstep.subway.path.PathSteps.*;
 import static nextstep.subway.station.StationSteps.*;
 import static org.assertj.core.api.Assertions.*;
 
-@DisplayName("지하철 경로 조회")
+@DisplayName("지하철 경로 찾기 관련 기능 인수 테스트")
 public class PathAcceptanceTest extends AcceptanceTest {
     
     private LineResponse 신분당선;
