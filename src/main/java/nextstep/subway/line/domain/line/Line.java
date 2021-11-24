@@ -49,10 +49,10 @@ public class Line extends BaseEntity {
 
     private void validation(String name, String color) {
         if (isEmpty(name)) {
-            throw new LineException(ErrorCode.NOT_FOUND_ENTITY, "노선의 이름이 없습니다.");
+            throw new LineException(ErrorCode.BAD_ARGUMENT, "노선의 이름이 없습니다.");
         }
         if (isEmpty(color)) {
-            throw new LineException(ErrorCode.NOT_FOUND_ENTITY, "노선의 색상이 없습니다.");
+            throw new LineException(ErrorCode.BAD_ARGUMENT, "노선의 색상이 없습니다.");
         }
     }
 
