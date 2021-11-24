@@ -16,6 +16,9 @@ public class LineTest {
     private Station 양재역;
     private Station 광교역;
 
+    private Section 양재_광교_구간;
+    private Section 강남_양재_구간;
+
     private Line 신분당선;
 
     @BeforeEach
@@ -26,29 +29,26 @@ public class LineTest {
         양재역 = new Station("양재역");
 
         신분당선 = new Line("신분당선", "red lighten-1", 강남역, 광교역, 100);
+
+        양재_광교_구간 = new Section(신분당선, 양재역, 광교역, 60);
+        강남_양재_구간 = new Section(신분당선, 강남역, 양재역, 40);
     }
 
     @DisplayName("라인에 구간을 추가한다.")
     @Test
     void add_section() {
-        // given
-        Section newSection = new Section(신분당선, 강남역, 양재역, 40);
-
         // when
-        신분당선.addSection(newSection);
+        신분당선.addSection(강남_양재_구간);
 
         // then
-        Sections expectedSection = Sections.of(new Section(신분당선, 양재역, 광교역, 60),
-                                                new Section(신분당선, 강남역, 양재역, 40)
-                                            );
-        Assertions.assertThat(신분당선.getSections()).isEqualTo(expectedSection);
+        Assertions.assertThat(신분당선.getSections()).isEqualTo(Sections.of(양재_광교_구간, 강남_양재_구간));
     }
 
     @DisplayName("라인에있는 역들을 조회한다.")
     @Test
     void search_stations() {
         // given
-        신분당선.addSection(new Section(신분당선, 강남역, 양재역, 40));
+        신분당선.addSection(강남_양재_구간);
 
         // when
         List<Station> stations = 신분당선.findStations();
@@ -61,8 +61,7 @@ public class LineTest {
     @Test
     void delete_stationAtSection() {
         // given
-        Section newSection = new Section(신분당선, 강남역, 양재역, 40);
-        신분당선.addSection(newSection);
+        신분당선.addSection(강남_양재_구간);
 
         // when
         신분당선.deleteStation(양재역);

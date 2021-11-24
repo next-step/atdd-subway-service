@@ -42,7 +42,7 @@ public class SectionsTest {
     void add_section() {
         // given
         Sections sections = Sections.of(강남_광교_구간);
-        
+
         // when
         sections.add(강남_양재_구간);
 
@@ -54,8 +54,7 @@ public class SectionsTest {
     @Test
     void exception_addSection_allHasStation() {
         // given
-        Sections sections = Sections.of(강남_광교_구간);
-        sections.add(강남_양재_구간);
+        Sections sections = createSections_강남_양재_광교();
 
         // when
         // then
@@ -79,8 +78,7 @@ public class SectionsTest {
     @Test
     void delete_upTerminalStation() {
         // given
-        Sections sections = Sections.of(강남_광교_구간);
-        sections.add(강남_양재_구간);
+        Sections sections = createSections_강남_양재_광교();
 
         // when
         sections.deleteStation(강남역);
@@ -93,8 +91,7 @@ public class SectionsTest {
     @Test
     void delete_downTerminalStation() {
         // given
-        Sections sections = Sections.of(강남_광교_구간);
-        sections.add(강남_양재_구간);
+        Sections sections = createSections_강남_양재_광교();
 
         // when
         sections.deleteStation(광교역);
@@ -107,8 +104,7 @@ public class SectionsTest {
     @Test
     void delete_midTerminalStation() {
         // given
-        Sections sections = Sections.of(강남_광교_구간);
-        sections.add(강남_양재_구간);
+        Sections sections = createSections_강남_양재_광교();
 
         // when
         sections.deleteStation(양재역);
@@ -133,8 +129,7 @@ public class SectionsTest {
     @Test
     void search_stations() {
         // given
-        Sections sections = Sections.of(강남_광교_구간);
-        sections.add(강남_양재_구간);
+        Sections sections = createSections_강남_양재_광교();
 
         // when
         List<Station> findStations = sections.findStations();
@@ -143,4 +138,10 @@ public class SectionsTest {
         Assertions.assertThat(findStations).isEqualTo(List.of(강남역, 양재역, 광교역));
     }
 
+    private Sections createSections_강남_양재_광교() {
+        Sections sections = Sections.of(강남_광교_구간);
+        sections.add(강남_양재_구간);
+
+        return sections;
+    }
 }
