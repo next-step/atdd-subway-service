@@ -33,4 +33,9 @@ public class StreamUtils {
                           .distinct()
                           .collect(Collectors.toList());
     }
+
+    public static <T> boolean anyMatch(Collection<T> collections, Predicate<T> predicate) {
+        return collections.stream()
+                          .anyMatch(predicate);
+    }
 }

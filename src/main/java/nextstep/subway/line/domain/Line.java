@@ -9,8 +9,6 @@ import java.util.List;
 
 @Entity
 public class Line extends BaseEntity {
-    private static final String CAN_NOT_DELETE_STATION_WHEN_ONLY_ONE_SECTIONS_MESSAGE = "노선의 구간이 1개인 경우, 지하철 역을 삭제 할 수 없습니다.";
-    private static final String CAN_NOT_DELETE_WHEN_NO_EXIST_STATION = "노선에 존재하지 않는 역입니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,43 +49,10 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(Section section) {
-        List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it.equals(section.getUpStation()));
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it.equals(section.getDownStation()));
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it.equals(section.getUpStation())) &&
-            stations.stream().noneMatch(it -> it.equals(section.getDownStation()))) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (stations.isEmpty()) {
-            sections.add(section);
-            return;
-        }
-
-        if (isUpStationExisted) {
-            sections.findByUpStation(section.getUpStation())
-                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-
-            sections.add(section);
-        } else if (isDownStationExisted) {
-            sections.findByDownStation(section.getDownStation())
-                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
-
-            sections.add(section);
-        } else {
-            throw new RuntimeException();
-        }
+        sections.add(section);
     }
 
     public void removeStation(Station station) {
-        validateHasOnlyOneSectionWhenDeleteStation();
-        validateNotIncludeStation(station);
-
         sections.removeStation(station);
     }
 
@@ -110,17 +75,5 @@ public class Line extends BaseEntity {
 
     public LineColor getColor() {
         return color;
-    }
-
-    private void validateHasOnlyOneSectionWhenDeleteStation() {
-        if (sections.size() == 1) {
-            throw new IllegalArgumentException(CAN_NOT_DELETE_STATION_WHEN_ONLY_ONE_SECTIONS_MESSAGE);
-        }
-    }
-
-    private void validateNotIncludeStation(Station station) {
-        if (!sections.hasStation(station)) {
-            throw new IllegalArgumentException(CAN_NOT_DELETE_WHEN_NO_EXIST_STATION);
-        }
     }
 }
