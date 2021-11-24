@@ -41,10 +41,13 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
+        Line persistLine = new Line(request.getName(), request.getColor());
+
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
+        persistLine.addSection(new Section(persistLine, upStation, downStation, request.getDistance()));
 
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        lineRepository.save(persistLine);
 
         return LineResponse.of(persistLine);
     }
