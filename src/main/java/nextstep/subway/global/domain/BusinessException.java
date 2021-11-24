@@ -1,4 +1,4 @@
-package nextstep.subway.global;
+package nextstep.subway.global.domain;
 
 public class BusinessException extends RuntimeException {
 
