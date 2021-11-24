@@ -10,6 +10,8 @@ import javax.persistence.OneToMany;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.utils.ValidationUtils.isNull;
+
 @Embeddable
 public class Sections {
 
@@ -21,17 +23,24 @@ public class Sections {
     public void addLineStation(Section section) {
         addValidation(section);
 
-        sections.stream()
-                .filter(it -> it.getUpStation() == section.getUpStation())
-                .findFirst()
-                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+        ifEqualsUpStation(section);
+        ifEqualsDownStation(section);
 
+        sections.add(section);
+    }
+
+    private void ifEqualsDownStation(Section section) {
         sections.stream()
                 .filter(it -> it.getDownStation() == section.getDownStation())
                 .findFirst()
                 .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+    }
 
-        sections.add(section);
+    private void ifEqualsUpStation(Section section) {
+        sections.stream()
+                .filter(it -> it.getUpStation() == section.getUpStation())
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
     }
 
     private void addValidation(Section section) {
@@ -94,10 +103,10 @@ public class Sections {
     public void removeLineStation(Line line, Station station) {
         removeValidation(station);
 
-        Optional<Section> downLineStation = removeUpStation(station);
-        Optional<Section> upLineStation = removeDownStation(station);
+        Section downLineStation = removeUpStation(station).orElse(null);
+        Section upLineStation = removeDownStation(station).orElse(null);
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+        if (!isNull(upLineStation) && !isNull(downLineStation)) {
             line.getSections().add(newSection(line, upLineStation, downLineStation));
         }
     }
@@ -138,10 +147,10 @@ public class Sections {
         return upLineStation;
     }
 
-    private Section newSection(Line line, Optional<Section> upLineStation, Optional<Section> downLineStation) {
-        Station newUpStation = downLineStation.get().getUpStation();
-        Station newDownStation = upLineStation.get().getDownStation();
-        int newDistance = Distance.concat(upLineStation.get().getDistance(), downLineStation.get().getDistance());
+    private Section newSection(Line line, Section upLineStation, Section downLineStation) {
+        Station newUpStation = downLineStation.getUpStation();
+        Station newDownStation = upLineStation.getDownStation();
+        int newDistance = Distance.concat(upLineStation.getDistance(), downLineStation.getDistance());
         return new Section(line, newUpStation, newDownStation, newDistance);
     }
 
