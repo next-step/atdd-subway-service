@@ -1,6 +1,5 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.exception.LineException;
 import nextstep.subway.exception.LineNotFoundException;
 import nextstep.subway.line.domain.line.Line;
 import nextstep.subway.line.domain.line.LineRepository;
@@ -10,7 +9,6 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,22 +30,14 @@ public class LineService {
         List<Line> persistLines = findAllLine();
 
         return persistLines.stream()
-                .map(line -> {
-                    List<StationResponse> stations = line.getStations().stream()
-                            .map(it -> StationResponse.of(it))
-                            .collect(Collectors.toList());
-                    return LineResponse.of(line, stations);
-                })
+                .map(line -> LineResponse.of(line))
                 .collect(Collectors.toList());
     }
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findOneLine(id);
 
-        List<StationResponse> stations = persistLine.getStations().stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
-        return LineResponse.of(persistLine, stations);
+        return LineResponse.of(persistLine);
     }
 
     public LineResponse saveLine(LineRequest request) {
@@ -56,11 +46,7 @@ public class LineService {
 
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
 
-        List<StationResponse> stations = persistLine.getStations()
-                .stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
-        return LineResponse.of(persistLine, stations);
+        return LineResponse.of(persistLine);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
