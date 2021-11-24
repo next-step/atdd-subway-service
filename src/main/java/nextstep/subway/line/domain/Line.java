@@ -25,6 +25,10 @@ public class Line extends BaseEntity {
 
     protected Line() {}
 
+    private Line(Long id) {
+        this.id = id;
+    }
+
     private Line(String name, String color) {
         this.name = LineName.from(name);
         this.color = LineColor.from(color);
@@ -38,6 +42,10 @@ public class Line extends BaseEntity {
 
     public static Line createEmpty() {
         return new Line();
+    }
+
+    public static Line from(long id) {
+        return new Line(id);
     }
 
     public static Line of(String name, String color) {

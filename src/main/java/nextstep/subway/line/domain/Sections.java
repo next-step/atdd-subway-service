@@ -101,16 +101,32 @@ public class Sections {
         return getSortedStations();
     }
 
-    private void updateMiddleSection(Section section, Section middleSection) {
-        if (middleSection.isSameUpStation(section.getUpStation())) {
-            middleSection.updateUpStation(section.getDownStation(), section.getDistance());
-            return;
+    protected List<Station> getSortedStations() {
+        List<Station> stations = new ArrayList<>();
+        stations.add(findFirstSection().getUpStation());
+
+        for (int i = START_INDEX; i < sections.size(); i++) {
+            Optional<Section> sectionByUpStation = findSectionByUpStation(stations.get(i));
+            sectionByUpStation.map(Section::getDownStation)
+                              .ifPresent(stations::add);
         }
 
-        middleSection.updateDownStation(section.getUpStation(), section.getDistance());
+        return stations;
     }
 
-    private void removeEndStation(Station station) {
+    protected void removeMiddleStation(Station station) {
+        Optional<Section> upLineSection = findByUpStation(station);
+        Optional<Section> downLineSection = findByDownStation(station);
+
+        if (upLineSection.isPresent() && downLineSection.isPresent()) {
+            addMiddleSection(upLineSection.get(), downLineSection.get());
+        }
+
+        upLineSection.ifPresent(this::remove);
+        downLineSection.ifPresent(this::remove);
+    }
+
+    protected void removeEndStation(Station station) {
         validateNoExistStationWhenDeleteStation(station);
 
         if (isFirstEndStation(station)) {
@@ -121,16 +137,35 @@ public class Sections {
         remove(findLastSection());
     }
 
-    private void removeMiddleStation(Station station) {
-        Optional<Section> upLineSection = findByUpStation(station);
-        Optional<Section> downLineSection = findByDownStation(station);
+    protected Section findFirstSection() {
+        List<Station> downStations = findDownStations();
+        return StreamUtils.filterAndFindFirst(sections, section -> !downStations.contains(section.getUpStation()))
+                          .orElseThrow(() -> new IllegalStateException(NOT_EXIST_FIRST_SECTION));
+    }
 
-        if (upLineSection.isPresent() && downLineSection.isPresent()) {
-            addMiddleSection(upLineSection.get(), downLineSection.get());
+    protected Section findLastSection() {
+        List<Station> upStations = findUpStations();
+        return StreamUtils.filterAndFindFirst(sections, section -> !upStations.contains(section.getDownStation()))
+                          .orElseThrow(() -> new IllegalStateException(NOT_EXIST_LAST_SECTION));
+    }
+
+    protected Section findMiddleSection(Section section) {
+        return findSectionByUpStation(section.getUpStation())
+            .orElseGet(() -> findSectionByDownStation(section.getDownStation())
+                .orElseThrow(() -> new IllegalStateException(NOT_EXIST_SECTION_BY_STATION)));
+    }
+
+    public boolean contains(Station station) {
+        return findAllStations().contains(station);
+    }
+
+    private void updateMiddleSection(Section section, Section middleSection) {
+        if (middleSection.isSameUpStation(section.getUpStation())) {
+            middleSection.updateUpStation(section.getDownStation(), section.getDistance());
+            return;
         }
 
-        upLineSection.ifPresent(this::remove);
-        downLineSection.ifPresent(this::remove);
+        middleSection.updateDownStation(section.getUpStation(), section.getDistance());
     }
 
     private void addMiddleSection(Section upLineSection, Section downLineSection) {
@@ -177,43 +212,12 @@ public class Sections {
         return StreamUtils.filterAndFindFirst(sections, section -> section.isSameDownStation(station));
     }
 
-    private Section findFirstSection() {
-        List<Station> downStations = findDownStations();
-        return StreamUtils.filterAndFindFirst(sections, section -> !downStations.contains(section.getUpStation()))
-                          .orElseThrow(() -> new IllegalStateException(NOT_EXIST_FIRST_SECTION));
-    }
-
-    private Section findLastSection() {
-        List<Station> upStations = findUpStations();
-        return StreamUtils.filterAndFindFirst(sections, section -> !upStations.contains(section.getDownStation()))
-                          .orElseThrow(() -> new IllegalStateException(NOT_EXIST_LAST_SECTION));
-    }
-
     private List<Station> findUpStations() {
         return StreamUtils.mapToList(sections, Section::getUpStation);
     }
 
     private List<Station> findDownStations() {
         return StreamUtils.mapToList(sections, Section::getDownStation);
-    }
-
-    private Section findMiddleSection(Section section) {
-        return findSectionByUpStation(section.getUpStation())
-                .orElseGet(() -> findSectionByDownStation(section.getDownStation())
-                .orElseThrow(() -> new IllegalStateException(NOT_EXIST_SECTION_BY_STATION)));
-    }
-
-    private List<Station> getSortedStations() {
-        List<Station> stations = new ArrayList<>();
-        stations.add(findFirstSection().getUpStation());
-
-        for (int i = START_INDEX; i < sections.size(); i++) {
-            Optional<Section> sectionByUpStation = findSectionByUpStation(stations.get(i));
-            sectionByUpStation.map(Section::getDownStation)
-                              .ifPresent(stations::add);
-        }
-
-        return stations;
     }
 
     private boolean hasAnyRetainStation(List<Station> stations) {
