@@ -66,8 +66,8 @@ public class Sections {
     }
 
     private void remove(Station station) {
-        removeWhenExistsByUpStation(station);
-        removeWhenExistsByDownStation(station);
+        removeWhenExistByUpStation(station);
+        removeWhenExistByDownStation(station);
         addMergedSectionWhenLocatedBetween(station);
     }
 
@@ -77,13 +77,13 @@ public class Sections {
         }
     }
 
-    private void removeWhenExistsByUpStation(Station station) {
+    private void removeWhenExistByUpStation(Station station) {
         if (isExistByUpStation(station)) {
             list.remove(findByUpStation(station));
         }
     }
 
-    private void removeWhenExistsByDownStation(Station station) {
+    private void removeWhenExistByDownStation(Station station) {
         if (isExistByDownStation(station)) {
             list.remove(findByDownStation(station));
         }
@@ -148,7 +148,6 @@ public class Sections {
     private void validateAddition(Section section) {
         boolean isExistUpStation = isExist(section.upStation());
         boolean isExistDownStation = isExist(section.downStation());
-
         if (isExistUpStation && isExistDownStation) {
             throw new DuplicateDataException(String.format("%s은 이미 등록된 구간 입니다.", section));
         }

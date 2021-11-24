@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.line.domain.Color;
 
-public class LineCreateRequest {
+public final class LineCreateRequest {
 
     @NotBlank(message = "노선 이름은 비어있을 수 없습니다.")
     private String name;

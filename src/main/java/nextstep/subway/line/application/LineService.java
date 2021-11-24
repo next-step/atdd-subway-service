@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.NotFoundException;
-import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -45,24 +44,24 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public LineResponse findLineResponseById(Long id) {
+    public LineResponse findLineResponseById(long id) {
         return LineResponse.from(line(id));
     }
 
-    public void updateLine(Long id, LineUpdateRequest request) {
+    public void updateLine(long id, LineUpdateRequest request) {
         validateDuplicateName(request.name());
         line(id).update(request.name(), request.color());
     }
 
-    public void deleteLineById(Long id) {
+    public void deleteLineById(long id) {
         lineRepository.delete(line(id));
     }
 
-    public void addLineStation(Long lineId, SectionRequest request) {
+    public void addLineStation(long lineId, SectionRequest request) {
         line(lineId).addSection(section(request));
     }
 
-    public void removeLineStation(Long lineId, Long stationId) {
+    public void removeLineStation(long lineId, long stationId) {
         line(lineId).removeStation(station(stationId));
     }
 
@@ -79,15 +78,15 @@ public class LineService {
         return Section.of(
             station(request.getUpStationId()),
             station(request.getDownStationId()),
-            Distance.from(request.getDistance())
+            request.distance()
         );
     }
 
-    private Station station(Long stationId) {
+    private Station station(long stationId) {
         return stationService.findById(stationId);
     }
 
-    private Line line(Long id) {
+    private Line line(long id) {
         return lineRepository.findById(id)
             .orElseThrow(() ->
                 new NotFoundException(String.format("지하철 노선 id(%d) 존재하지 않습니다.", id)));

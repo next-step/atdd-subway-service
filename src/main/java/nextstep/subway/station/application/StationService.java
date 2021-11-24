@@ -32,11 +32,11 @@ public class StationService {
             .collect(Collectors.toList());
     }
 
-    public void deleteStationById(Long id) {
+    public void deleteStationById(long id) {
         stationRepository.delete(findById(id));
     }
 
-    public Station findById(Long id) {
+    public Station findById(long id) {
         return stationRepository.findById(id)
             .orElseThrow(() ->
                 new NotFoundException(String.format("지하철 역 id(%d) 존재하지 않습니다.", id)));

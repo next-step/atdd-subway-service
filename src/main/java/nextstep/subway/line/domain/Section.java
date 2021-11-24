@@ -90,14 +90,14 @@ public class Section {
 
     private void validateMerge(Section section) {
         Assert.notNull(section, "합쳐지는 구간이 null 일 수 없습니다.");
-        if (doesNotHaveSameStation(section)) {
+        if (doesNotHaveOverlappingStation(section)) {
             throw new InvalidDataException(String.format(
                 "합쳐지는 구간들은(%s, %s) 하나의 겹치는 역이 존재해야 합니다.",
                 this, section));
         }
     }
 
-    private boolean doesNotHaveSameStation(Section section) {
+    private boolean doesNotHaveOverlappingStation(Section section) {
         return !downStation.equals(section.upStation) && !upStation.equals(section.downStation);
     }
 
@@ -116,13 +116,13 @@ public class Section {
     }
 
     private void validateChangeStation(Section section) {
-        if (equalOrNotOverlapping(section)) {
+        if (equalOrDoesNotHaveOverlappingStation(section)) {
             throw new InvalidDataException(
                 String.format("현재 구간(%s)에서 해당 구간(%s)을 제거할 수 없습니다.", this, section));
         }
     }
 
-    private boolean equalOrNotOverlapping(Section section) {
+    private boolean equalOrDoesNotHaveOverlappingStation(Section section) {
         return this.upStation.equals(section.upStation) ==
             this.downStation.equals(section.downStation);
     }

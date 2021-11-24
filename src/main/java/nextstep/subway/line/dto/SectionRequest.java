@@ -4,7 +4,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import nextstep.subway.line.domain.Distance;
 
-public class SectionRequest {
+public final class SectionRequest {
 
     @NotNull(message = "상행선 id는 반드시 존재해야 합니다.")
     private Long upStationId;
