@@ -39,7 +39,7 @@ public class StationService {
     public Station findById(Long id) {
         return stationRepository.findById(id)
             .orElseThrow(() ->
-                new NotFoundException(String.format("station(%d) is not exist", id)));
+                new NotFoundException(String.format("지하철 역 id(%d) 존재하지 않습니다.", id)));
     }
 
     private Station savedStation(StationRequest stationRequest) {

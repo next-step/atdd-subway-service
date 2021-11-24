@@ -11,6 +11,7 @@ import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -36,6 +37,7 @@ class AuthServiceTest {
     }
 
     @Test
+    @DisplayName("회원 로그인")
     void login() {
         when(memberRepository.findByEmail(anyString()))
             .thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE)));

@@ -15,6 +15,7 @@ import nextstep.subway.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("회원 관련 기능")
 class MemberAcceptanceTest extends AcceptanceTest {
 
     public static final String EMAIL = "email@email.com";

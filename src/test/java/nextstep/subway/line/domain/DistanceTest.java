@@ -59,7 +59,7 @@ class DistanceTest {
 
     @ParameterizedTest(name = "[{index}] 10인 거리에서 {0}인 거리를 뺄 수 없다.")
     @ValueSource(ints = {10, Integer.MAX_VALUE})
-    @DisplayName("같거나 더 큰수로 뺀다.")
+    @DisplayName("같거나 더 큰수로 빼기")
     void subtract_equalOrGreaterThan_thrownIllegalArgumentException(Integer distance) {
         // given
         Distance tenDistance = Distance.from(10);

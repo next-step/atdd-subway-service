@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 class MockitoTest {
 
     @Test
+    @DisplayName("모든 노선 찾기")
     void findAllLines() {
         // given
         LineRepository lineRepository = mock(LineRepository.class);

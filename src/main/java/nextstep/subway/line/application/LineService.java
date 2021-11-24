@@ -89,7 +89,8 @@ public class LineService {
 
     private Line line(Long id) {
         return lineRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException(String.format("line(%d) is not exist", id)));
+            .orElseThrow(() ->
+                new NotFoundException(String.format("지하철 노선 id(%d) 존재하지 않습니다.", id)));
     }
 
     private void validateDuplicateName(Name name) {

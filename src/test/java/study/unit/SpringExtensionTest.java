@@ -31,6 +31,7 @@ class SpringExtensionTest {
     private StationService stationService;
 
     @Test
+    @DisplayName("모든 노선 찾기")
     void findAllLines() {
         // given
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(신분당선()));

@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 class UnitTest {
 
     @Test
+    @DisplayName("지하철 노선 수정")
     void update() {
         // given
         Name newName = Name.from("구분당선");

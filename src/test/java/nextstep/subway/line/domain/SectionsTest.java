@@ -144,7 +144,7 @@ class SectionsTest {
         }
 
         @Test
-        @DisplayName("한 구간만 남아있는 경우 역 삭제하면 InvalidDataException")
+        @DisplayName("한 구간만 남아있는 경우 역 삭제")
         void removeStation_remainedLastSection_thrownInvalidDataException() {
             //given
             강남_양재_광교_구간들.removeStation(station("강남"));
