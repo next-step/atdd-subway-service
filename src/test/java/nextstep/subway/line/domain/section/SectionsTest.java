@@ -1,7 +1,6 @@
 package nextstep.subway.line.domain.section;
 
 import nextstep.subway.exception.SectionException;
-import nextstep.subway.exception.SectionServerException;
 import nextstep.subway.line.domain.line.Line;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,7 +44,7 @@ public class SectionsTest {
 
         assertThatThrownBy(() -> {
             신분당선_강남_광교.addSection(actual);
-        }).isInstanceOf(SectionServerException.class);
+        }).isInstanceOf(SectionException.class);
     }
 
     @Test
@@ -55,7 +54,7 @@ public class SectionsTest {
 
         assertThatThrownBy(() -> {
             신분당선_강남_광교.addSection(actual);
-        }).isInstanceOf(SectionServerException.class);
+        }).isInstanceOf(SectionException.class);
     }
 
     @Test
@@ -139,7 +138,7 @@ public class SectionsTest {
     public void 지하철_없는_구간_삭제_오류발생() {
         assertThatThrownBy(() -> {
             신분당선_강남_판교_수지_광교.removeSection(홍대역);
-        }).isInstanceOf(SectionServerException.class);
+        }).isInstanceOf(SectionException.class);
     }
 
 }

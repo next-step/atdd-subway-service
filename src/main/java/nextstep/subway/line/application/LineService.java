@@ -1,6 +1,7 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.exception.LineNotFoundException;
+import nextstep.subway.exception.ErrorCode;
+import nextstep.subway.exception.LineException;
 import nextstep.subway.line.domain.line.Line;
 import nextstep.subway.line.domain.line.LineRepository;
 import nextstep.subway.line.domain.section.Section;
@@ -83,7 +84,7 @@ public class LineService {
 
     private Line findOneLine(Long id) {
         return lineRepository.findLineWithSectionsById(id)
-                .orElseThrow(() -> new LineNotFoundException("노선이 존재하지 않습니다."));
+                .orElseThrow(() -> new LineException(ErrorCode.NOT_FOUND_ENTITY, "노선이 존재하지 않습니다."));
     }
 
 }

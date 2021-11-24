@@ -1,11 +1,19 @@
 package nextstep.subway.exception;
 
 public class SectionException extends RuntimeException {
-    public SectionException() {
-        super();
+    private final ErrorCode errorCode;
+
+    public SectionException(ErrorCode errorCode) {
+        super(errorCode.getMessage());
+        this.errorCode = errorCode;
     }
 
-    public SectionException(String message) {
+    public SectionException(ErrorCode errorCode, String message) {
         super(message);
+        this.errorCode = errorCode;
+    }
+
+    public ErrorCode getErrorCode() {
+        return errorCode;
     }
 }

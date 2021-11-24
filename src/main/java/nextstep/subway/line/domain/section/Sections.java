@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain.section;
 
-import nextstep.subway.exception.SectionServerException;
+import nextstep.subway.exception.ErrorCode;
+import nextstep.subway.exception.SectionException;
 import nextstep.subway.line.domain.line.Line;
 import nextstep.subway.station.domain.Station;
 
@@ -54,7 +55,7 @@ public class Sections {
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
 
         if (!stations.isEmpty() && isUpStationExisted && isDownStationExisted) {
-            throw new SectionServerException("이미 등록된 구간 입니다.");
+            throw new SectionException(ErrorCode.ALREADY_EXIST_ENTITY, "이미 등록된 구간 입니다.");
         }
     }
 
@@ -64,7 +65,7 @@ public class Sections {
         boolean isMatchDownStation = stations.stream().noneMatch(it -> it == section.getDownStation());
 
         if (!stations.isEmpty() && isMatchUpStation && isMatchDownStation) {
-            throw new SectionServerException("연결되는 구간이 없습니다.");
+            throw new SectionException(ErrorCode.ALREADY_EXIST_ENTITY, "연결되는 구간이 없습니다.");
         }
     }
 
@@ -118,14 +119,14 @@ public class Sections {
 
     private void validateMinSize() {
         if (sections.size() <= SECTION_MIN_SIZE) {
-            throw new SectionServerException("마지막 노선은 삭제 할 수 없습니다.");
+            throw new SectionException(ErrorCode.ALREADY_EXIST_ENTITY, "마지막 노선은 삭제 할 수 없습니다.");
         }
     }
 
     private void validateNoneMatchStation(Station station) {
         boolean isNoneMatch = getStations().stream().noneMatch(it -> it == station);
         if (isNoneMatch) {
-            throw new SectionServerException("삭제 대상 역이 없습니다.");
+            throw new SectionException(ErrorCode.ALREADY_EXIST_ENTITY, "삭제 대상 역이 없습니다.");
         }
     }
 

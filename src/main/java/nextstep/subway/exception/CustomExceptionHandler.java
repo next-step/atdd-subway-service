@@ -20,7 +20,7 @@ public class CustomExceptionHandler {
     public ResponseEntity handleLineException(LineException e) {
         e.printStackTrace();
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(e.getErrorCode().getHttpStatus())
                 .body(e.getMessage());
     }
 
@@ -28,7 +28,7 @@ public class CustomExceptionHandler {
     public ResponseEntity sectionException(SectionException e) {
         e.printStackTrace();
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
+                .status(e.getErrorCode().getHttpStatus())
                 .body(e.getMessage());
     }
 

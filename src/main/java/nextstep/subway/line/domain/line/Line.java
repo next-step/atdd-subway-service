@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain.line;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.exception.ErrorCode;
 import nextstep.subway.exception.LineException;
 import nextstep.subway.line.domain.section.Section;
 import nextstep.subway.line.domain.section.Sections;
@@ -48,10 +49,10 @@ public class Line extends BaseEntity {
 
     private void validation(String name, String color) {
         if (isEmpty(name)) {
-            throw new LineException("노선의 이름이 없습니다.");
+            throw new LineException(ErrorCode.NOT_FOUND_ENTITY, "노선의 이름이 없습니다.");
         }
         if (isEmpty(color)) {
-            throw new LineException("노선의 색상이 없습니다.");
+            throw new LineException(ErrorCode.NOT_FOUND_ENTITY, "노선의 색상이 없습니다.");
         }
     }
 

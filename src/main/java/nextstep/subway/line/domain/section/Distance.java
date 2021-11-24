@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain.section;
 
+import nextstep.subway.exception.ErrorCode;
 import nextstep.subway.exception.SectionException;
 
 import javax.persistence.Embeddable;
@@ -22,23 +23,20 @@ public class Distance {
     }
 
     public static int concat(Distance a, Distance b) {
-        return a.getDistance() + b.getDistance();
+        return a.distance + b.distance;
     }
 
     public void validation(int distance) {
         if (isNull(distance) || distance == DISTANCE_ZERO) {
-            throw new SectionException("구간의 길이가 없습니다.");
+            throw new SectionException(ErrorCode.BAD_ARGUMENT, "구간의 길이가 없습니다.");
         }
     }
 
     public void minus(Distance distance) {
         if (this.distance <= distance.distance) {
-            throw new SectionException("구간의 길이가 잘못되었습니다.");
+            throw new SectionException(ErrorCode.BAD_ARGUMENT, "구간의 길이가 잘못되었습니다.");
         }
         this.distance = this.distance - distance.distance;
     }
 
-    public int getDistance() {
-        return distance;
-    }
 }
