@@ -20,7 +20,6 @@ public class Section {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @ManyToOne
     @JoinColumn(name = "up_station_id", nullable = false)
     private Station upStation;
