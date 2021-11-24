@@ -9,6 +9,7 @@ import static nextstep.subway.station.step.StationAcceptanceStep.지하철역_�
 import static nextstep.subway.station.step.StationAcceptanceStep.지하철역_생성_요청;
 import static nextstep.subway.station.step.StationAcceptanceStep.지하철역_생성됨;
 import static nextstep.subway.station.step.StationAcceptanceStep.지하철역_제거_요청;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -57,8 +58,10 @@ class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철역_목록_조회_요청();
 
         // then
-        지하철역_목록_응답됨(response);
-        지하철역_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
+        assertAll(
+            () -> 지하철역_목록_응답됨(response),
+            () -> 지하철역_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2))
+        );
     }
 
     @DisplayName("지하철역을 제거한다.")

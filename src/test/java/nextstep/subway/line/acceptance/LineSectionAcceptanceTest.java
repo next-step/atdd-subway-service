@@ -53,8 +53,10 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
 
         // then
-        지하철_노선에_지하철역_등록됨(response);
-        지하철_노선에_지하철역_순서_정렬됨(신분당선, Arrays.asList(강남역, 양재역, 광교역));
+        assertAll(
+            () -> 지하철_노선에_지하철역_등록됨(response),
+            () -> 지하철_노선에_지하철역_순서_정렬됨(신분당선, Arrays.asList(강남역, 양재역, 광교역))
+        );
     }
 
     @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")

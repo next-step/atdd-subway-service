@@ -15,6 +15,7 @@ import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_
 import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_응답됨;
 import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_제거_요청;
 import static nextstep.subway.station.step.StationAcceptanceStep.지하철역_등록되어_있음;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -103,8 +104,10 @@ class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
 
         // then
-        지하철_노선_목록_응답됨(response);
-        지하철_노선_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
+        assertAll(
+            () -> 지하철_노선_목록_응답됨(response),
+            () -> 지하철_노선_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2))
+        );
     }
 
     @DisplayName("지하철 노선을 조회한다.")
