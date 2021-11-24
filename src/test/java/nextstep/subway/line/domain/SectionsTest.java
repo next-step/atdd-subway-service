@@ -83,7 +83,7 @@ public class SectionsTest {
         sections.add(강남_양재_구간);
 
         // when
-        sections.deleteStation(null, 강남역);
+        sections.deleteStation(강남역);
         
         // then
         Assertions.assertThat(sections).isEqualTo(Sections.of(양재_광교_구간));
@@ -97,7 +97,7 @@ public class SectionsTest {
         sections.add(강남_양재_구간);
 
         // when
-        sections.deleteStation(null, 광교역);
+        sections.deleteStation(광교역);
         
         // then
         Assertions.assertThat(sections).isEqualTo(Sections.of(강남_양재_구간));
@@ -111,7 +111,7 @@ public class SectionsTest {
         sections.add(강남_양재_구간);
 
         // when
-        sections.deleteStation(null, 양재역);
+        sections.deleteStation(양재역);
         
         // then
         Assertions.assertThat(sections).isEqualTo(Sections.of(강남_광교_구간));
@@ -126,7 +126,7 @@ public class SectionsTest {
         // when
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
-                    .isThrownBy(() -> sections.deleteStation(null, 강남역));
+                    .isThrownBy(() -> sections.deleteStation(강남역));
     }
 
     @DisplayName("기등록된 구간의 역리스트를 조회한다.")

@@ -34,61 +34,94 @@ public class Sections {
     }
 
     public boolean add(Section section) {
+        Section newSection = new Section(section);
+
         if (this.sections.isEmpty()) {
-            return this.sections.add(new Section(section.getLine(), section.getUpStation(), section.getDownStation(), section.getDistance()));
-        }
-
-        boolean isUpStationExisted = this.hasStation(section.getUpStation());
-        boolean isDownStationExisted = this.hasStation(section.getDownStation());
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
-        }
-
-        if (!isUpStationExisted && !isDownStationExisted) {
-            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
-        }
-
-        Section newSection = new Section(section.getLine(), section.getUpStation(), section.getDownStation(), section.getDistance());
-
-        if (isUpStationExisted) {
-            this.findByUpStation(section.getUpStation())
-                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-
             return this.sections.add(newSection);
         }
 
-        this.findByDownStation(section.getDownStation())
-            .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+        validateAdd(section);
+
+        updateSectionForMatchStation(section);
 
         return this.sections.add(newSection);
     }
 
-    private boolean hasStation(Station station) {
-        return this.sections.stream()
-                            .anyMatch(section -> section.getUpStation().equals(station)
-                                                || section.getDownStation().equals(station));
+    private void updateSectionForMatchStation(Section section) {
+        updateSectionForUpStaionMatch(section);
+        updateSectionForDownStaionMatch(section);
     }
 
-    public void deleteStation(Line line, Station station) {
+    private void updateSectionForDownStaionMatch(Section section) {
+        this.findSectionByDownStation(section.getDownStation())
+            .ifPresent(findedSection -> findedSection.updateDownStation(section.getUpStation(), section.getDistance()));
+    }
+
+    private void updateSectionForUpStaionMatch(Section section) {
+        this.findSectionByUpStation(section.getUpStation())
+            .ifPresent(findedSection -> findedSection.updateUpStation(section.getDownStation(), section.getDistance()));
+    }
+
+    private void validateAdd(Section section) {
+        boolean isUpStationExisted = this.hasStation(section.getUpStation());
+        boolean isDownStationExisted = this.hasStation(section.getDownStation());
+
+        checkAllHasStation(isUpStationExisted, isDownStationExisted);
+        checkAllNotHasStation(isUpStationExisted, isDownStationExisted);
+    }
+
+    private void checkAllNotHasStation(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (!isUpStationExisted && !isDownStationExisted) {
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void checkAllHasStation(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    private boolean hasStation(Station station) {
+        return this.sections.stream()
+                            .anyMatch(section -> section.hasStation(station));
+    }
+
+    public void deleteStation(Station station) {
+        validateDelete();
+
+        adjustSection(station);
+    }
+
+    private void adjustSection(Station station) {
+        Optional<Section> upSection = this.findSectionByDownStation(station);
+        Optional<Section> downSection = this.findSectionByUpStation(station);
+
+        upSection.ifPresent(this.sections::remove);
+        downSection.ifPresent(this.sections::remove);
+
+        if (upSection.isPresent() && downSection.isPresent()) {
+            this.sections.add(mergeSection(upSection.get(), downSection.get()));
+        }
+    }
+
+    private Section mergeSection(Section upSection, Section downSection) {
+        Station newUpStation = upSection.getUpStation();
+        Station newDownStation = downSection.getDownStation();
+
+        int newDistance = upSection.getDistance() + downSection.getDistance();
+
+        return new Section(upSection.getLine(), newUpStation, newDownStation, newDistance);
+    }
+
+    private void validateDelete() {
+        checkSectionCount();
+    }
+
+    private void checkSectionCount() {
         if (this.sections.size() <= 1) {
             throw new IllegalArgumentException("등록된 구간이 1개 이하여서 역을 삭제할 수 없습니다.");
         }
-
-        Optional<Section> downSectionAtMatchingStation = this.findByUpStation(station);
-        Optional<Section> upSectionAtMatchingStation = this.findByDownStation(station);
-
-        if (downSectionAtMatchingStation.isPresent() && upSectionAtMatchingStation.isPresent()) {
-            Station newUpStation = upSectionAtMatchingStation.get().getUpStation();
-            Station newDownStation = downSectionAtMatchingStation.get().getDownStation();
-
-            int newDistance = downSectionAtMatchingStation.get().getDistance() + upSectionAtMatchingStation.get().getDistance();
-
-            this.sections.add(new Section(line, newUpStation, newDownStation, newDistance));
-        }
-
-        downSectionAtMatchingStation.ifPresent(this.sections::remove);
-        upSectionAtMatchingStation.ifPresent(this.sections::remove);
     }
 
     public List<Station> findStations() {
@@ -101,12 +134,12 @@ public class Sections {
         Station upStation = findUpTerminalStation();
         stations.add(upStation);
 
-        Optional<Section> matchingStation = this.findByUpStation(upStation);
+        Optional<Section> matchingStation = this.findSectionByUpStation(upStation);
         Station finalDownStation;
 
         while (matchingStation.isPresent()) {
             finalDownStation = matchingStation.get().getDownStation();
-            matchingStation = this.findByUpStation(finalDownStation);
+            matchingStation = this.findSectionByUpStation(finalDownStation);
             stations.add(finalDownStation);
         }
 
@@ -120,22 +153,22 @@ public class Sections {
 
         while (firstSection.isPresent()) {
             upStation = firstSection.get().getUpStation();
-            firstSection = this.findByDownStation(upStation);
+            firstSection = this.findSectionByDownStation(upStation);
         }
 
         return upStation;
     }
 
-    private Optional<Section> findByUpStation(Station station){
+    private Optional<Section> findSectionByUpStation(Station station){
         return this.sections.stream()
-                            .filter(it -> it.getUpStation().equals(station))
+                            .filter(findedSection -> findedSection.isEqualUpStation(station))
                             .findFirst();
     }
 
-    private Optional<Section> findByDownStation(Station station){
-        return  this.sections.stream()
-                                .filter(it -> it.getDownStation().equals(station))
-                                .findFirst();
+    private Optional<Section> findSectionByDownStation(Station station){
+        return this.sections.stream()
+                            .filter(findedSection -> findedSection.isEqualDownStation(station))
+                            .findFirst();
     }
 
     @Override
