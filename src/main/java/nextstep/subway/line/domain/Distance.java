@@ -11,7 +11,6 @@ public class Distance {
     @Column(name = "distance")
     private int value;
 
-
     protected Distance() {
     }
 
