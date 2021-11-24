@@ -66,8 +66,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ### 2. LineService 리팩터링
 - [X] LineService 의 비즈니스 로직을 도메인으로 옮기기
-- [ ] Domain 의 단위 테스트를 작성하기
-    - [ ] Line
+- [X] Domain 의 단위 테스트를 작성하기
+    - [X] Line
       - [X] LineName
       - [X] LineColor
     - [X] Station
