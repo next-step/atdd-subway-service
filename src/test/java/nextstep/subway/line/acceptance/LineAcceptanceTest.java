@@ -80,7 +80,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @ParameterizedTest(name = "[{index}] {argumentsWithNames} 값으로 지하철 노선을 생성할 수 없다.")
     @DisplayName("빈 값 존재하면 지하철 노선은 생성할 수 없다.")
     @CsvSource({",color,1,2,10", "name,,1,2,10",
-        "name,color,,2,10", "name,color,1,,10", "name,color,1,2,"})
+        "name,color,,2,10", "name,color,1,,10", "name,color,1,2,0"})
     void createLine_emptyParameter_400(String name, String color,
         Long upStationId, Long downStationId, Integer distance) {
         // when
@@ -193,7 +193,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 지하철 노선을 제거한다.")
     @Test
     void deleteLine_notExistsLine_400() {
-        // when
+        // given, when
         ExtractableResponse<Response> response = 지하철_노선_제거_요청(Long.MAX_VALUE);
 
         // then

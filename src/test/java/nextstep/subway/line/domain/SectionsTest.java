@@ -10,7 +10,6 @@ import java.util.stream.Stream;
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.InvalidDataException;
-import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
@@ -112,7 +111,7 @@ class SectionsTest {
         ThrowingCallable addCall = () -> sections.add(강남_정자_구간);
 
         //then
-        assertThatExceptionOfType(NotFoundException.class)
+        assertThatExceptionOfType(InvalidDataException.class)
             .isThrownBy(addCall)
             .withMessageEndingWith("등록할 수 없는 구간 입니다.");
     }

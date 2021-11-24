@@ -55,7 +55,7 @@ public class LineService {
     }
 
     public void deleteLineById(Long id) {
-        lineRepository.deleteById(id);
+        lineRepository.delete(line(id));
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
@@ -94,7 +94,7 @@ public class LineService {
 
     private void validateDuplicateName(Name name) {
         if (lineRepository.existsByName(name)) {
-            throw new DuplicateDataException(String.format("이름(%s)은 이미 존재합니다.", name));
+            throw new DuplicateDataException(String.format("지하철 노선 이름(%s)은 이미 존재합니다.", name));
         }
     }
 }

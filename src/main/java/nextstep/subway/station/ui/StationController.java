@@ -2,6 +2,7 @@ package nextstep.subway.station.ui;
 
 import java.net.URI;
 import java.util.List;
+import javax.validation.Valid;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
@@ -25,7 +26,7 @@ public class StationController {
 
     @PostMapping("/stations")
     public ResponseEntity<StationResponse> createStation(
-        @RequestBody StationRequest stationRequest) {
+        @Valid @RequestBody StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
     }

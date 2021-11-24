@@ -8,12 +8,15 @@ import nextstep.subway.station.dto.StationResponse;
 
 public class LineResponse {
 
-    private final Long id;
-    private final String name;
-    private final String color;
-    private final List<StationResponse> stations;
-    private final LocalDateTime createdDate;
-    private final LocalDateTime modifiedDate;
+    private Long id;
+    private String name;
+    private String color;
+    private List<StationResponse> stations;
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
+
+    private LineResponse() {
+    }
 
     private LineResponse(Long id, String name, String color, List<StationResponse> stations,
         LocalDateTime createdDate, LocalDateTime modifiedDate) {
@@ -61,7 +64,7 @@ public class LineResponse {
     private static List<StationResponse> stationResponses(Line line) {
         return line.stations()
             .stream()
-            .map(StationResponse::of)
+            .map(StationResponse::from)
             .collect(Collectors.toList());
     }
 }

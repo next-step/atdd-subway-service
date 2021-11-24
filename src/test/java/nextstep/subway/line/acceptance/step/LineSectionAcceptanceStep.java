@@ -41,7 +41,6 @@ public class LineSectionAcceptanceStep {
         LineResponse lineResponse = 지하철_노선_조회_요청(line)
             .as(LineResponse.class);
         assertThat(lineResponse.getStations())
-            .hasSize(3)
             .extracting(StationResponse::getId)
             .containsExactly(
                 expectedStations.stream()
@@ -53,8 +52,9 @@ public class LineSectionAcceptanceStep {
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(Long lineId,
         Long stationId) {
         return RestAssured.given().log().all()
+            .param("stationId", stationId)
             .when()
-            .delete("/lines/{lineId}/sections?stationId={stationId}", lineId, stationId)
+            .delete("/lines/{lineId}/sections", lineId)
             .then().log().all()
             .extract();
     }

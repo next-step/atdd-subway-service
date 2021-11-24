@@ -3,7 +3,6 @@ package nextstep.subway.line.domain;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,19 +20,20 @@ public class Section {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "line_id")
-    private Line line;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "up_station_id")
+    @ManyToOne
+    @JoinColumn(name = "up_station_id", nullable = false)
     private Station upStation;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "down_station_id")
+    @ManyToOne
+    @JoinColumn(name = "down_station_id", nullable = false)
     private Station downStation;
 
     private Distance distance;
+
+    @ManyToOne
+    @JoinColumn(name = "line_id")
+    private Line line;
 
     protected Section() {
     }
@@ -60,6 +60,10 @@ public class Section {
 
     Station downStation() {
         return downStation;
+    }
+
+    void changeLine(Line line) {
+        this.line = line;
     }
 
     Distance distance() {

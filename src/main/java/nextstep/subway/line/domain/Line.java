@@ -30,13 +30,14 @@ public class Line extends BaseEntity {
     protected Line() {
     }
 
-    public Line(Name name, Color color, Sections sections) {
+    private Line(Name name, Color color, Sections sections) {
         Assert.notNull(name, "이름이 null 일 수 없습니다.");
         Assert.notNull(color, "색상이 null 일 수 없습니다.");
         Assert.notNull(sections, "구간들이 null 일 수 없습니다.");
         this.name = name;
         this.color = color;
         this.sections = sections;
+        this.sections.setLine(this);
     }
 
     public static Line of(Name name, Color color, Sections sections) {
@@ -68,6 +69,7 @@ public class Line extends BaseEntity {
 
     public void addSection(Section section) {
         sections.add(section);
+        section.changeLine(this);
     }
 
     public void removeStation(Station station) {

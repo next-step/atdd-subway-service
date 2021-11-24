@@ -12,7 +12,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.InvalidDataException;
-import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -20,8 +19,7 @@ public class Sections {
 
     private static final int MINIMUM_SECTION_SIZE = 1;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-        orphanRemoval = true)
+    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Section> list = new ArrayList<>();
 
     @Transient
@@ -60,6 +58,12 @@ public class Sections {
         validateSize();
         remove(station);
         deleteSectionCaches();
+    }
+
+    void setLine(Line line) {
+        for (Section section : list) {
+            section.changeLine(line);
+        }
     }
 
     private void remove(Station station) {
@@ -124,7 +128,7 @@ public class Sections {
             throw new DuplicateDataException(String.format("%s은 이미 등록된 구간 입니다.", section));
         }
         if (!isExistUpStation && !isExistDownStation) {
-            throw new NotFoundException(String.format("%s은 등록할 수 없는 구간 입니다.", section));
+            throw new InvalidDataException(String.format("%s은 등록할 수 없는 구간 입니다.", section));
         }
     }
 

@@ -112,7 +112,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
             // then
             assertAll(
                 () -> 지하철_노선에_지하철역_제외됨(removeResponse),
-                () -> 지하철_노선에_지하철역_순서_정렬됨(신분당선, Arrays.asList(강남역, 정자역, 광교역))
+                () -> 지하철_노선에_지하철역_순서_정렬됨(신분당선, Arrays.asList(양재역, 정자역, 광교역))
             );
         }
 
@@ -139,7 +139,7 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
 
             // when
             ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(
-                신분당선.getId(), 강남역.getId());
+                신분당선.getId(), 양재역.getId());
 
             // then
             지하철_노선에_지하철역_제외_실패됨(removeResponse);
