@@ -31,7 +31,7 @@ public class LineService {
         List<Line> persistLines = findAllLine();
 
         return persistLines.stream()
-                .map(line -> LineResponse.of(line))
+                .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
