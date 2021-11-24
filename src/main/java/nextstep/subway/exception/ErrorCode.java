@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
-public enum ErrorCode {
+public enum ErrorCode implements ErrorCodeMapperType{
 
     DEFAULT_ERROR(INTERNAL_SERVER_ERROR, "internal_error"),
     BAD_ARGUMENT(BAD_REQUEST, "bad argument"),
@@ -13,24 +13,27 @@ public enum ErrorCode {
     ALREADY_EXIST_ENTITY(INTERNAL_SERVER_ERROR, "already exist entity");
 
     private final HttpStatus httpStatus;
-    private final int code;
+    private final int statusCode;
     private final String message;
 
     ErrorCode(HttpStatus httpStatus, String message) {
         this.httpStatus = httpStatus;
         this.message = message;
-        this.code = httpStatus.value();
+        this.statusCode = httpStatus.value();
     }
 
+    @Override
     public HttpStatus getHttpStatus() {
         return httpStatus;
     }
 
+    @Override
     public String getMessage() {
         return message;
     }
 
-    public int getCode() {
-        return code;
+    @Override
+    public int getStatusCode() {
+        return httpStatus.value();
     }
 }

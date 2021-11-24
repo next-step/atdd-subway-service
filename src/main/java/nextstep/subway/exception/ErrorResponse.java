@@ -15,8 +15,16 @@ public class ErrorResponse {
     public ErrorResponse() {
     }
 
-    public static ErrorResponse build() {
-        return new ErrorResponse();
+    public static ErrorResponse build(String message) {
+        return new ErrorResponse()
+                .httpStatus(ErrorCode.DEFAULT_ERROR.getHttpStatus())
+                .message(message);
+    }
+
+    public static ErrorResponse build(ErrorCode errorCode, String message) {
+        return new ErrorResponse()
+                .httpStatus(errorCode.getHttpStatus())
+                .message(message);
     }
 
     public ErrorResponse httpStatus(HttpStatus httpStatus) {

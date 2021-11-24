@@ -10,27 +10,21 @@ public class CustomExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
         e.printStackTrace();
-        ErrorResponse response = ErrorResponse.build()
-                .httpStatus(ErrorCode.DEFAULT_ERROR.getHttpStatus())
-                .message(e.getMessage());
+        ErrorResponse response = ErrorResponse.build(e.getMessage());
         return new ResponseEntity<>(response, ErrorCode.DEFAULT_ERROR.getHttpStatus());
     }
 
     @ExceptionHandler(LineException.class)
     public ResponseEntity<ErrorResponse> handleLineException(LineException e) {
         e.printStackTrace();
-        ErrorResponse response = ErrorResponse.build()
-                .httpStatus(e.getErrorCode().getHttpStatus())
-                .message(e.getMessage());
+        ErrorResponse response = ErrorResponse.build(e.getErrorCode(), e.getMessage());
         return new ResponseEntity<>(response, e.getErrorCode().getHttpStatus());
     }
 
     @ExceptionHandler(SectionException.class)
     public ResponseEntity<ErrorResponse> sectionException(SectionException e) {
         e.printStackTrace();
-        ErrorResponse response = ErrorResponse.build()
-                .httpStatus(e.getErrorCode().getHttpStatus())
-                .message(e.getMessage());
+        ErrorResponse response = ErrorResponse.build(e.getErrorCode(), e.getMessage());
         return new ResponseEntity<>(response, e.getErrorCode().getHttpStatus());
 
     }
