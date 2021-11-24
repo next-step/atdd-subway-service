@@ -24,88 +24,70 @@ public class SectionsTest {
 
     @BeforeEach
     void set_신분당선_강남_판교_수지_광교() {
-        신분당선_강남_판교_수지_광교.addSection(new Section(신분당선_강남_판교_수지_광교, 강남역, 판교역, 4));
-        신분당선_강남_판교_수지_광교.addSection(new Section(신분당선_강남_판교_수지_광교, 판교역, 수지역, 7));
+        신분당선_강남_판교_수지_광교.addSection(강남역, 판교역, 4);
+        신분당선_강남_판교_수지_광교.addSection(판교역, 수지역, 7);
     }
 
     @Test
     public void 지하철_노선_등록() {
-        Section 신규노선 = new Section(신분당선_강남_광교, 강남역, 판교역, 9);
+        신분당선_강남_광교.addSection(강남역, 판교역, 9);
 
-        신분당선_강남_광교.addSection(신규노선);
-
-        assertThat(신분당선_강남_광교.getSections()).contains(신규노선);
+        assertThat(신분당선_강남_광교.getStations()).containsExactly(강남역, 판교역, 광교역);
     }
 
     @Test
     @DisplayName("요청된 구간은 이미 등록 되어있음.")
     public void 지하철_노선_등록_중복_오류() {
-        Section actual = new Section(신분당선_강남_광교, 강남역, 광교역, 10);
-
         assertThatThrownBy(() -> {
-            신분당선_강남_광교.addSection(actual);
+            신분당선_강남_광교.addSection(강남역, 광교역, 10);
         }).isInstanceOf(SectionException.class);
     }
 
     @Test
     @DisplayName("연결 구간이 없어 오류 발생")
     public void 지하철_노선_등록_연결_오류() {
-        Section actual = new Section(신분당선_강남_광교, 홍대역, 신촌역, 10);
-
         assertThatThrownBy(() -> {
-            신분당선_강남_광교.addSection(actual);
+            신분당선_강남_광교.addSection(홍대역, 신촌역, 10);
         }).isInstanceOf(SectionException.class);
     }
 
     @Test
     @DisplayName("[상행기준] 지하철 노선의 구간을 추가한다. ([기준]강남 -> 광교) => (강남 -> 판교 -> 광교)")
     public void 상행을_기준으로_신규_노선_추가() {
-        Section actual = new Section(신분당선_강남_광교, 강남역, 판교역, 5);
-
-        신분당선_강남_광교.addSection(actual);
+        신분당선_강남_광교.addSection(강남역, 판교역, 5);
     }
 
     @Test
     @DisplayName("[상행기준] 지하철 노선의 구간을 추가한다. ([기준]강남 -> 광교) => (판교 -> 강남 -> 광교)")
     public void 상행을_기준으로_신규_종점_노선_추가() {
-        Section actual = new Section(신분당선_강남_광교, 판교역, 강남역, 55);
-
-        신분당선_강남_광교.addSection(actual);
+        신분당선_강남_광교.addSection(판교역, 강남역, 55);
     }
 
     @Test
     @DisplayName("[상행기준] 지하철 노선의 구간을 추가한다. ([기준]강남 -> 광교) => (강남 -> 판교 -> 광교)")
     public void 상행을_기준으로_신규_노선_추가_거리오류() {
-        Section actual = new Section(신분당선_강남_광교, 강남역, 판교역, 15);
-
         assertThatThrownBy(() -> {
-            신분당선_강남_광교.addSection(actual);
+            신분당선_강남_광교.addSection(강남역, 판교역, 15);
         }).isInstanceOf(SectionException.class);
     }
 
     @Test
     @DisplayName("[하행기준] 지하철 노선의 구간을 추가한다. (강남 -> [기준]광교) => (강남 -> 판교 -> 광교)")
     public void 하행을_기준으로_신규_노선_추가() {
-        Section actual = new Section(신분당선_강남_광교, 강남역, 판교역, 5);
-
-        신분당선_강남_광교.addSection(actual);
+        신분당선_강남_광교.addSection(강남역, 판교역, 5);
     }
 
     @Test
     @DisplayName("[하행기준] 지하철 노선의 구간을 추가한다. (강남 -> [기준]광교) => (강남 -> 판교 -> 광교)")
     public void 하행을_기준으로_신규_종점_노선_추가() {
-        Section actual = new Section(신분당선_강남_광교, 판교역, 광교역, 5);
-
-        신분당선_강남_광교.addSection(actual);
+        신분당선_강남_광교.addSection(판교역, 광교역, 5);
     }
 
     @Test
     @DisplayName("[하행기준] 지하철 노선의 구간을 추가한다. (강남 -> [기준]광교) => (강남 -> 판교 -> 광교)")
     public void 하행을_기준으로_신규_노선_추가_거리오류() {
-        Section actual = new Section(신분당선_강남_광교, 강남역, 판교역, 15);
-
         assertThatThrownBy(() -> {
-            신분당선_강남_광교.addSection(actual);
+            신분당선_강남_광교.addSection(강남역, 판교역, 15);
         }).isInstanceOf(SectionException.class);
     }
 
