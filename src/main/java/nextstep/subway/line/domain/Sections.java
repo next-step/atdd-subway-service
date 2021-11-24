@@ -109,7 +109,7 @@ public class Sections {
         Station newUpStation = upSection.getUpStation();
         Station newDownStation = downSection.getDownStation();
 
-        int newDistance = upSection.getDistance() + downSection.getDistance();
+        Distance newDistance = upSection.getDistance().plus(downSection.getDistance());
 
         return new Section(upSection.getLine(), newUpStation, newDownStation, newDistance);
     }

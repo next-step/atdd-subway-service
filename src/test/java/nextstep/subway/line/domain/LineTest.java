@@ -28,10 +28,10 @@ public class LineTest {
         광교역 = new Station("광교역");
         양재역 = new Station("양재역");
 
-        신분당선 = new Line("신분당선", "red lighten-1", 강남역, 광교역, 100);
+        신분당선 = new Line("신분당선", "red lighten-1", 강남역, 광교역, Distance.of(100));
 
-        양재_광교_구간 = new Section(신분당선, 양재역, 광교역, 60);
-        강남_양재_구간 = new Section(신분당선, 강남역, 양재역, 40);
+        양재_광교_구간 = new Section(신분당선, 양재역, 광교역, Distance.of(60));
+        강남_양재_구간 = new Section(신분당선, 강남역, 양재역, Distance.of(40));
     }
 
     @DisplayName("라인에 구간을 추가한다.")

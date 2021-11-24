@@ -20,7 +20,7 @@ public class SectionTest {
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");
         
-        강남_양재_구간 = new Section(null, 강남역, 양재역, 40);
+        강남_양재_구간 = new Section(null, 강남역, 양재역, Distance.of(40));
     }
 
     @DisplayName("구간에 특정역이 있는지 조회한다.")

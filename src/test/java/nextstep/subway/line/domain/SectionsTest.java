@@ -31,10 +31,10 @@ public class SectionsTest {
         역삼역 = new Station("역삼역");
         선릉역 = new Station("선릉역");
         
-        강남_광교_구간 = new Section(null, 강남역, 광교역, 100);
-        강남_양재_구간 = new Section(null, 강남역, 양재역, 40);
-        양재_광교_구간 = new Section(null, 양재역, 광교역, 60);
-        역삼_선릉_구간 = new Section(null, 역삼역, 선릉역, 30);
+        강남_광교_구간 = new Section(null, 강남역, 광교역, Distance.of(100));
+        강남_양재_구간 = new Section(null, 강남역, 양재역, Distance.of(40));
+        양재_광교_구간 = new Section(null, 양재역, 광교역, Distance.of(60));
+        역삼_선릉_구간 = new Section(null, 역삼역, 선릉역, Distance.of(30));
     }
 
     @DisplayName("구간을 추가한다.")
