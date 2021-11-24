@@ -1,6 +1,5 @@
 package nextstep.subway.exception;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -9,27 +8,31 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class CustomExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity handleException(Exception e) {
+    public ResponseEntity<ErrorResponse> handleException(Exception e) {
         e.printStackTrace();
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(e.getMessage());
+        ErrorResponse response = ErrorResponse.build()
+                .httpStatus(ErrorCode.DEFAULT_ERROR.getHttpStatus())
+                .message(e.getMessage());
+        return new ResponseEntity<>(response, ErrorCode.DEFAULT_ERROR.getHttpStatus());
     }
 
     @ExceptionHandler(LineException.class)
-    public ResponseEntity handleLineException(LineException e) {
+    public ResponseEntity<ErrorResponse> handleLineException(LineException e) {
         e.printStackTrace();
-        return ResponseEntity
-                .status(e.getErrorCode().getHttpStatus())
-                .body(e.getMessage());
+        ErrorResponse response = ErrorResponse.build()
+                .httpStatus(e.getErrorCode().getHttpStatus())
+                .message(e.getMessage());
+        return new ResponseEntity<>(response, e.getErrorCode().getHttpStatus());
     }
 
     @ExceptionHandler(SectionException.class)
-    public ResponseEntity sectionException(SectionException e) {
+    public ResponseEntity<ErrorResponse> sectionException(SectionException e) {
         e.printStackTrace();
-        return ResponseEntity
-                .status(e.getErrorCode().getHttpStatus())
-                .body(e.getMessage());
+        ErrorResponse response = ErrorResponse.build()
+                .httpStatus(e.getErrorCode().getHttpStatus())
+                .message(e.getMessage());
+        return new ResponseEntity<>(response, e.getErrorCode().getHttpStatus());
+
     }
 
 }
