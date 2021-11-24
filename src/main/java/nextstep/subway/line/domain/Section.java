@@ -59,7 +59,7 @@ public class Section {
 
     public void updateUpStation(Station station, Distance newDistance) {
         if (this.distance.isLessThanOrEqualTo(newDistance)) {
-            throw new RuntimeException(TOO_LONG_DISTANCE_THAN_SECTION_ERROR_MESSAGE);
+            throw new IllegalArgumentException(TOO_LONG_DISTANCE_THAN_SECTION_ERROR_MESSAGE);
         }
         this.upStation = station;
         this.distance = this.distance.minus(newDistance);
@@ -67,7 +67,7 @@ public class Section {
 
     public void updateDownStation(Station station, Distance newDistance) {
         if (this.distance.isLessThanOrEqualTo(newDistance)) {
-            throw new RuntimeException(TOO_LONG_DISTANCE_THAN_SECTION_ERROR_MESSAGE);
+            throw new IllegalArgumentException(TOO_LONG_DISTANCE_THAN_SECTION_ERROR_MESSAGE);
         }
         this.downStation = station;
         this.distance = this.distance.minus(newDistance);

@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.exception.DataNotExistException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -46,7 +47,7 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(NotExistLineException::new);
+        return lineRepository.findById(id).orElseThrow(DataNotExistException::new);
     }
 
     public LineResponse findLineResponseById(Long id) {
