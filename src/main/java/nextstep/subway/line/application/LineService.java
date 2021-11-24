@@ -1,6 +1,7 @@
 package nextstep.subway.line.application;
 
 import nextstep.subway.exception.LineException;
+import nextstep.subway.exception.LineNotFoundException;
 import nextstep.subway.line.domain.line.Line;
 import nextstep.subway.line.domain.line.LineRepository;
 import nextstep.subway.line.domain.section.Section;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,8 +42,7 @@ public class LineService {
     }
 
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findOneLineWithSectionsById(id)
-                .orElseThrow(() -> new LineException("노선이 존재하지 않습니다."));
+        Line persistLine = findOneLine(id);
 
         List<StationResponse> stations = persistLine.getStations().stream()
                 .map(it -> StationResponse.of(it))
@@ -65,8 +64,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id)
-                .orElseThrow(() -> new LineException("노선이 존재하지 않습니다."));
+        Line persistLine = findOneLine(id);
 
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
@@ -76,7 +74,7 @@ public class LineService {
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
-        Line line = findOneLineWithSectionsById(lineId).orElseThrow(() -> new LineException("노선이 존재하지 않습니다."));
+        Line line = findOneLine(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
 
@@ -84,7 +82,7 @@ public class LineService {
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = findOneLineWithSectionsById(lineId).orElseThrow(() -> new LineException("노선이 존재하지 않습니다."));
+        Line line = findOneLine(lineId);
         Station removeStation = stationService.findStationById(stationId);
 
         line.removeSection(removeStation);
@@ -94,8 +92,9 @@ public class LineService {
         return lineRepository.findAll();
     }
 
-    private Optional<Line> findOneLineWithSectionsById(Long id) {
-        return lineRepository.findLineWithSectionsById(id);
+    private Line findOneLine(Long id) {
+        return lineRepository.findLineWithSectionsById(id)
+                .orElseThrow(() -> new LineNotFoundException("노선이 존재하지 않습니다."));
     }
 
 }
