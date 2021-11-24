@@ -1,13 +1,17 @@
 package nextstep.subway.utils;
 
+import java.util.Objects;
+
 public class ValidationUtils {
 
+    private ValidationUtils() {}
+
     public static boolean isEmpty(String str) {
-        return isNull(str) || str.length() == 0;
+        return Objects.isNull(str) || str.isEmpty();
     }
 
     public static boolean isNull(Object obj) {
-        return obj == null;
+        return Objects.isNull(obj);
     }
 
 }
