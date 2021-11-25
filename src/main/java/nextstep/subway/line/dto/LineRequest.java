@@ -1,6 +1,6 @@
 package nextstep.subway.line.dto;
 
-import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.line.Line;
 
 public class LineRequest {
     private String name;
