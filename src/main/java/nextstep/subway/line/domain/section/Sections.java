@@ -11,8 +11,6 @@ import javax.persistence.OneToMany;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static nextstep.subway.utils.ValidationUtils.isNull;
-
 @Embeddable
 public class Sections {
 
@@ -24,20 +22,20 @@ public class Sections {
     public void addLineStation(Section section) {
         addValidation(section);
 
-        ifEqualsUpStation(section);
-        ifEqualsDownStation(section);
+        ifEqualsUpdateUpStation(section);
+        ifEqualsUpdateDownStation(section);
 
         sections.add(section);
     }
 
-    private void ifEqualsDownStation(Section section) {
+    private void ifEqualsUpdateDownStation(Section section) {
         sections.stream()
                 .filter(it -> it.getDownStation() == section.getDownStation())
                 .findFirst()
                 .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
     }
 
-    private void ifEqualsUpStation(Section section) {
+    private void ifEqualsUpdateUpStation(Section section) {
         sections.stream()
                 .filter(it -> it.getUpStation() == section.getUpStation())
                 .findFirst()
@@ -107,7 +105,7 @@ public class Sections {
         Section downLineStation = removeUpStation(station).orElse(null);
         Section upLineStation = removeDownStation(station).orElse(null);
 
-        if (!isNull(upLineStation) && !isNull(downLineStation)) {
+        if (!upLineStation.isDummy() && !downLineStation.isDummy()) {
             line.getSections().add(newSection(line, upLineStation, downLineStation));
         }
     }
