@@ -23,9 +23,9 @@ public final class Stations {
         return list.size() < target;
     }
 
-    public <R> List<R> mapToList(Function<Station, R> map) {
+    public <R> List<R> mapToList(Function<Station, R> mapper) {
         return list.stream()
-            .map(map)
+            .map(mapper)
             .collect(Collectors.toList());
     }
 

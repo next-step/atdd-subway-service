@@ -5,7 +5,6 @@ import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -19,7 +18,7 @@ public class PathController {
     }
 
     @GetMapping
-    public PathResponse getShortestPath(@RequestParam PathRequest request) {
+    public PathResponse getShortestPath(PathRequest request) {
         return pathService.findShortestPath(request);
     }
 }
