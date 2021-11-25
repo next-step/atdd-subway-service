@@ -16,6 +16,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 구간 관련 기능")
@@ -35,10 +36,10 @@ class LineSectionAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
-        정자역 = 지하철역_등록되어_있음("정자역").as(StationResponse.class);
-        광교역 = 지하철역_등록되어_있음("광교역").as(StationResponse.class);
+        강남역 = 지하철역_등록되어_있음(StationRequest.of("강남역")).as(StationResponse.class);
+        양재역 = 지하철역_등록되어_있음(StationRequest.of("양재역")).as(StationResponse.class);
+        정자역 = 지하철역_등록되어_있음(StationRequest.of("정자역")).as(StationResponse.class);
+        광교역 = 지하철역_등록되어_있음(StationRequest.of("광교역")).as(StationResponse.class);
 
         LineRequest lineRequest = LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), DISTANCE_10);
         신분당선 = 지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);

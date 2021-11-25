@@ -25,8 +25,7 @@ public class StationAcceptanceMethods {
         return post(STATION_URL_PATH, stationRequest);
     }
 
-    public static ExtractableResponse<Response> 지하철역_등록되어_있음(String name) {
-        StationRequest stationRequest = StationRequest.of(name);
+    public static ExtractableResponse<Response> 지하철역_등록되어_있음(StationRequest stationRequest) {
         return 지하철역_생성_요청(stationRequest);
     }
 

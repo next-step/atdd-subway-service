@@ -6,8 +6,6 @@ import static nextstep.subway.path.PathAcceptanceMethods.*;
 import static nextstep.subway.station.StationAcceptanceMethods.*;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,10 +14,10 @@ import org.junit.jupiter.api.Test;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 경로 조회")
@@ -27,6 +25,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     private static final int DISTANCE_10 = 10;
     private static final int DISTANCE_5 = 5;
     private static final int DISTANCE_3 = 3;
+    private static final int DISTANCE_0 = 0;
 
     private LineResponse 신분당선;
     private LineResponse 이호선;
@@ -47,10 +46,10 @@ class PathAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
-        교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
-        남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        강남역 = 지하철역_등록되어_있음(StationRequest.of("강남역")).as(StationResponse.class);
+        양재역 = 지하철역_등록되어_있음(StationRequest.of("양재역")).as(StationResponse.class);
+        교대역 = 지하철역_등록되어_있음(StationRequest.of("교대역")).as(StationResponse.class);
+        남부터미널역 = 지하철역_등록되어_있음(StationRequest.of("남부터미널역")).as(StationResponse.class);
 
         LineRequest 신분당선_Request = LineRequest.of("신분당선", "RED", 강남역.getId(), 양재역.getId(), DISTANCE_10);
         LineRequest 이호선_Request = LineRequest.of("이호선", "GREED", 교대역.getId(), 강남역.getId(), DISTANCE_10);
@@ -80,14 +79,14 @@ class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 교대역.getId());
 
         // then
-        지하철_최단경로_조회_실패(response);
+        지하철_최단경로_조회됨(response, Arrays.asList(교대역), DISTANCE_0);
     }
 
     @DisplayName("출발역이 노선상에 존재하지 않을때, 최단경로를 조회한다.")
     @Test
     void findShortPath4() {
         // given
-        StationResponse 서울역 = 지하철역_등록되어_있음("서울역").as(StationResponse.class);
+        StationResponse 서울역 = 지하철역_등록되어_있음(StationRequest.of("서울역")).as(StationResponse.class);
 
         // when
         ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(서울역.getId(), 교대역.getId());
@@ -100,7 +99,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortPath5() {
         // given
-        StationResponse 서울역 = 지하철역_등록되어_있음("서울역").as(StationResponse.class);
+        StationResponse 서울역 = 지하철역_등록되어_있음(StationRequest.of("서울역")).as(StationResponse.class);
 
         // when
         ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 서울역.getId());
