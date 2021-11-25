@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.line.domain.Distance;
@@ -25,13 +27,17 @@ public class PathAcceptanceMethods {
     }
 
     public static void 지하철_최단경로_조회됨(ExtractableResponse<Response> response,
-                                    List<StationResponse> expectedStations,
-                                    Distance distance) {
+                                          List<StationResponse> expectedStations,
+                                          int distance) {
         PathResponse pathResponse = response.as(PathResponse.class);
         List<Long> actualIds = StreamUtils.mapToList(pathResponse.getStations(), StationResponse::getId);
         List<Long> expectedIds = StreamUtils.mapToList(expectedStations, StationResponse::getId);
 
         assertThat(actualIds).containsExactlyElementsOf(expectedIds);
-        assertThat(Distance.from(pathResponse.getDistance())).isEqualTo(distance);
+        assertThat(pathResponse.getDistance()).isEqualTo(distance);
+    }
+
+    public static void 지하철_최단경로_조회_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }

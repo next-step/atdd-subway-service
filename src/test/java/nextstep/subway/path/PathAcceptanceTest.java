@@ -6,6 +6,7 @@ import static nextstep.subway.path.PathAcceptanceMethods.*;
 import static nextstep.subway.station.StationAcceptanceMethods.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +23,7 @@ import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 경로 조회")
-public class PathAcceptanceTest extends AcceptanceTest {
+class PathAcceptanceTest extends AcceptanceTest {
     private static final int DISTANCE_10 = 10;
     private static final int DISTANCE_5 = 5;
     private static final int DISTANCE_3 = 3;
@@ -69,6 +70,42 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 양재역.getId());
 
         // then
-        지하철_최단경로_조회됨(response, Arrays.asList(), Distance.from(1));
+        지하철_최단경로_조회됨(response, Collections.emptyList(), 0);
+    }
+
+    @DisplayName("출발역과 도착역이 같을 때, 최단경로를 조회한다.")
+    @Test
+    void findShortPath2() {
+        // when
+        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 교대역.getId());
+
+        // then
+        지하철_최단경로_조회_실패(response);
+    }
+
+    @DisplayName("출발역이 노선상에 존재하지 않을때, 최단경로를 조회한다.")
+    @Test
+    void findShortPath4() {
+        // given
+        StationResponse 서울역 = 지하철역_등록되어_있음("서울역").as(StationResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(서울역.getId(), 교대역.getId());
+
+        // then
+        지하철_최단경로_조회_실패(response);
+    }
+
+    @DisplayName("도착역이 노선상에 존재하지 않을때, 최단경로를 조회한다.")
+    @Test
+    void findShortPath5() {
+        // given
+        StationResponse 서울역 = 지하철역_등록되어_있음("서울역").as(StationResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 서울역.getId());
+
+        // then
+        지하철_최단경로_조회_실패(response);
     }
 }
