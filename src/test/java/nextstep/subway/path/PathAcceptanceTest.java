@@ -70,7 +70,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 양재역.getId());
 
         // then
-        지하철_최단경로_조회됨(response, Collections.emptyList(), 0);
+        지하철_최단경로_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), DISTANCE_3 + DISTANCE_5);
     }
 
     @DisplayName("출발역과 도착역이 같을 때, 최단경로를 조회한다.")

@@ -66,7 +66,7 @@ class DistanceTest {
         Distance resultDistance = distance15.minus(distance10);
 
         // then
-        assertThat(resultDistance.getDistance()).isEqualTo(5);
+        assertThat(resultDistance.getValue()).isEqualTo(5);
     }
 
     @DisplayName("두 Distance 의 거리를 더한다.")
@@ -80,6 +80,6 @@ class DistanceTest {
         Distance resultDistance = distance15.plus(distance10);
 
         // then
-        assertThat(resultDistance.getDistance()).isEqualTo(25);
+        assertThat(resultDistance.getValue()).isEqualTo(25);
     }
 }

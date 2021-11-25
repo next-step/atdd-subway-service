@@ -93,6 +93,10 @@ public class Sections {
         return StreamUtils.filterAndFindFirst(sections, section -> section.isSameDownStation(station));
     }
 
+    public List<Section> getValues() {
+        return Collections.unmodifiableList(sections);
+    }
+
     public List<Station> getStations() {
         if (sections.isEmpty()) {
             return Collections.emptyList();

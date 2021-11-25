@@ -90,7 +90,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [ ] 출발역과 도착역이 연결되어 있지 않은 경우
 
 ### 2. 최단 경로 조회 기능 구현하기
-- [ ] PathFinder 내부에서 jgrapht 라이브러리 사용
-- [ ] 출발역에서 도착역 까지의 최단 루트 구하기
-- [ ] 출발역에서 도착역 까지의 최단 거리 구하기
+- [X] PathFinder 내부에서 jgrapht 라이브러리 사용
+- [X] 출발역에서 도착역 까지의 최단 루트 구하기
+- [X] 출발역에서 도착역 까지의 최단 거리 구하기
 - [ ] 최단거리 Test 코드 작성

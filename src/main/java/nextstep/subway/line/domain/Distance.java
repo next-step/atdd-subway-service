@@ -29,11 +29,11 @@ public class Distance {
     }
 
     public boolean isGreaterThanOrEqualTo(Distance distance) {
-        return this.distance >= distance.getDistance();
+        return this.distance >= distance.getValue();
     }
 
     public boolean isLessThanOrEqualTo(Distance distance) {
-        return this.distance <= distance.getDistance();
+        return this.distance <= distance.getValue();
     }
 
     public Distance minus(Distance distance) {
@@ -44,7 +44,7 @@ public class Distance {
         return Distance.from(this.distance + distance.distance);
     }
 
-    public int getDistance() {
+    public int getValue() {
         return distance;
     }
 
