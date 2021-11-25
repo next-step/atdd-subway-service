@@ -134,13 +134,13 @@ public class Sections {
     }
 
     private void cutSectionWhenExistByUpStation(Section section) {
-        if(isExistByUpStation(section.upStation())){
+        if (isExistByUpStation(section.upStation())) {
             findByUpStation(section.upStation()).cut(section);
         }
     }
 
     private void cutSectionWhenExistByDownStation(Section section) {
-        if(isExistByDownStation(section.downStation())){
+        if (isExistByDownStation(section.downStation())) {
             findByDownStation(section.downStation()).cut(section);
         }
     }

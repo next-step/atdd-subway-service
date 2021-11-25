@@ -10,8 +10,10 @@ import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class StationService {
 
     private final StationRepository stationRepository;
@@ -25,6 +27,7 @@ public class StationService {
         return StationResponse.from(savedStation(request));
     }
 
+    @Transactional(readOnly = true)
     public List<StationResponse> findAllStations() {
         return stationRepository.findAll()
             .stream()
@@ -36,6 +39,7 @@ public class StationService {
         stationRepository.delete(findById(id));
     }
 
+    @Transactional(readOnly = true)
     public Station findById(long id) {
         return stationRepository.findById(id)
             .orElseThrow(() ->
