@@ -63,7 +63,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Station> stations() {
+    public List<Station> stationList() {
         return sections.stations();
     }
 
@@ -74,5 +74,9 @@ public class Line extends BaseEntity {
 
     public void removeStation(Station station) {
         sections.removeStation(station);
+    }
+
+    List<Section> sectionList() {
+        return sections.list();
     }
 }

@@ -53,20 +53,24 @@ public class Section {
         return id;
     }
 
-    Station upStation() {
-        return upStation;
-    }
-
-    Station downStation() {
-        return downStation;
-    }
-
     void changeLine(Line line) {
         this.line = line;
     }
 
-    Distance distance() {
+    public Station upStation() {
+        return upStation;
+    }
+
+    public Station downStation() {
+        return downStation;
+    }
+
+    public Distance distance() {
         return distance;
+    }
+
+    public int distanceValue() {
+        return distance.value();
     }
 
     void cut(Section section) {

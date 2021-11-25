@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import io.jsonwebtoken.lang.Assert;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -63,6 +64,10 @@ public class Sections {
         for (Section section : list) {
             section.changeLine(line);
         }
+    }
+
+    List<Section> list() {
+        return Collections.unmodifiableList(list);
     }
 
     private void remove(Station station) {
@@ -134,13 +139,13 @@ public class Sections {
     }
 
     private void cutSectionWhenExistByUpStation(Section section) {
-        if(isExistByUpStation(section.upStation())){
+        if (isExistByUpStation(section.upStation())) {
             findByUpStation(section.upStation()).cut(section);
         }
     }
 
     private void cutSectionWhenExistByDownStation(Section section) {
-        if(isExistByDownStation(section.downStation())){
+        if (isExistByDownStation(section.downStation())) {
             findByDownStation(section.downStation()).cut(section);
         }
     }

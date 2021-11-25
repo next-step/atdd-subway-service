@@ -62,7 +62,7 @@ public final class LineResponse {
     }
 
     private static List<StationResponse> stationResponses(Line line) {
-        return line.stations()
+        return line.stationList()
             .stream()
             .map(StationResponse::from)
             .collect(Collectors.toList());

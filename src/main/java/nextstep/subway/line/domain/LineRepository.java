@@ -7,4 +7,7 @@ public interface LineRepository extends JpaRepository<Line, Long> {
 
     boolean existsByName(Name name);
 
+    default Lines findAllLines() {
+        return Lines.from(findAll());
+    }
 }
