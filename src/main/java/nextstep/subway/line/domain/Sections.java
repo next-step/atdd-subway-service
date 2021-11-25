@@ -105,7 +105,7 @@ public class Sections {
         return getSortedStations();
     }
 
-    protected List<Station> getSortedStations() {
+     List<Station> getSortedStations() {
         List<Station> stations = new ArrayList<>();
         stations.add(findFirstSection().getUpStation());
 
@@ -118,7 +118,7 @@ public class Sections {
         return stations;
     }
 
-    protected void removeMiddleStation(Station station) {
+     void removeMiddleStation(Station station) {
         Optional<Section> upLineSection = findByUpStation(station);
         Optional<Section> downLineSection = findByDownStation(station);
 
@@ -130,7 +130,7 @@ public class Sections {
         downLineSection.ifPresent(this::remove);
     }
 
-    protected void removeEndStation(Station station) {
+     void removeEndStation(Station station) {
         validateNoExistStationWhenDeleteStation(station);
 
         if (isFirstEndStation(station)) {
@@ -141,19 +141,19 @@ public class Sections {
         remove(findLastSection());
     }
 
-    protected Section findFirstSection() {
+     Section findFirstSection() {
         List<Station> downStations = findDownStations();
         return StreamUtils.filterAndFindFirst(sections, section -> !downStations.contains(section.getUpStation()))
                           .orElseThrow(() -> new IllegalStateException(NOT_EXIST_FIRST_SECTION));
     }
 
-    protected Section findLastSection() {
+     Section findLastSection() {
         List<Station> upStations = findUpStations();
         return StreamUtils.filterAndFindFirst(sections, section -> !upStations.contains(section.getDownStation()))
                           .orElseThrow(() -> new IllegalStateException(NOT_EXIST_LAST_SECTION));
     }
 
-    protected Section findMiddleSection(Section section) {
+     Section findMiddleSection(Section section) {
         return findSectionByUpStation(section.getUpStation())
             .orElseGet(() -> findSectionByDownStation(section.getDownStation())
                 .orElseThrow(() -> new IllegalStateException(NOT_EXIST_SECTION_BY_STATION)));
