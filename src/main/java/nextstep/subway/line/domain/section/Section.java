@@ -39,6 +39,10 @@ public class Section {
         this.distance = new Distance(distance);
     }
 
+    public static Section ofDummy() {
+        return DUMMY_SECTION;
+    }
+
     public Long getId() {
         return id;
     }
@@ -55,16 +59,20 @@ public class Section {
         return downStation;
     }
 
-    public Distance getDistance() {
-        return distance;
+    public int getDistance() {
+        return distance.getDistance();
     }
 
-    public void updateUpStation(Station station, Distance newDistance) {
+    public int getIntegerDistance() {
+        return distance.getDistance();
+    }
+
+    public void updateUpStation(Station station, int newDistance) {
         this.upStation = station;
         this.distance.minus(newDistance);
     }
 
-    public void updateDownStation(Station station, Distance newDistance) {
+    public void updateDownStation(Station station, int newDistance) {
         this.downStation = station;
         this.distance.minus(newDistance);
     }

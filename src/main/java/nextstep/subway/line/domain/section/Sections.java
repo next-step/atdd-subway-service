@@ -102,8 +102,8 @@ public class Sections {
     public void removeLineStation(Line line, Station station) {
         removeValidation(station);
 
-        Section downLineStation = removeUpStation(station).orElse(null);
-        Section upLineStation = removeDownStation(station).orElse(null);
+        Section downLineStation = removeUpStation(station).orElse(Section.ofDummy());
+        Section upLineStation = removeDownStation(station).orElse(Section.ofDummy());
 
         if (!upLineStation.isDummy() && !downLineStation.isDummy()) {
             line.getSections().add(newSection(line, upLineStation, downLineStation));
