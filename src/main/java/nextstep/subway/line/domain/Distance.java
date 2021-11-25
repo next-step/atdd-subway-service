@@ -14,19 +14,19 @@ public class Distance {
         this.value = 0;
     }
 
-    private Distance(Integer value) {
+    private Distance(int value) {
         this.validateCreate(value);
 
         this.value = value;
     };
 
-    private void validateCreate(Integer value) {
+    private void validateCreate(int value) {
         if (value <= 0) {
             throw new IllegalArgumentException("구간의 거리는 0이상이어야 합니다.");
         }
     }
 
-    public static Distance of(Integer value) {
+    public static Distance of(int value) {
         return new Distance(value);
     }
 
