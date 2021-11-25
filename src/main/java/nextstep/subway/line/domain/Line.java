@@ -5,7 +5,9 @@ import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"name", "color"}))
 @Entity
 public class Line extends BaseEntity {
     @Id
@@ -63,5 +65,21 @@ public class Line extends BaseEntity {
 
     public void deleteStation(Station station) {
         this.sections.deleteStation(station);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Line)) {
+            return false;
+        }
+        Line line = (Line) o;
+        return Objects.equals(name, line.name) && Objects.equals(color, line.color);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, color);
     }
 }

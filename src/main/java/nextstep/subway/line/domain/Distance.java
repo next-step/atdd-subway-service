@@ -8,7 +8,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Distance {
     @Column(name = "distance")
-    private Integer value;
+    private int value;
 
     protected Distance() {
         this.value = 0;

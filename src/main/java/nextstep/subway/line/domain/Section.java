@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import javax.persistence.*;
 
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"line_id", "up_station_id", "down_station_id"}))
 @Entity
 public class Section {
     @Id
@@ -91,7 +92,7 @@ public class Section {
             return false;
         }
         Section section = (Section) o;
-        return Objects.equals(id, section.id) && Objects.equals(line, section.line) && Objects.equals(upStation, section.upStation) && Objects.equals(downStation, section.downStation) && Objects.equals(distance, section.distance);
+        return Objects.equals(line, section.line) && Objects.equals(upStation, section.upStation) && Objects.equals(downStation, section.downStation);
     }
 
     @Override
