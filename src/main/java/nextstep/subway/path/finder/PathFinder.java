@@ -45,11 +45,10 @@ public class PathFinder {
     }
 
     private static void alignEdgeWeight(List<Line> lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        List<Section> sections = StreamUtils.flatMapToList(StreamUtils.mapToList(lines, Line::getSections),
-                                                           Sections::getValues,
-                                                           Collection::stream);
+        List<Sections> sections = StreamUtils.mapToList(lines, Line::getSections);
+        List<Section> allSections = StreamUtils.flatMapToList(sections, Sections::getValues, Collection::stream);
 
-        for (Section section : sections) {
+        for (Section section : allSections) {
             graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
                                 section.getDistance().getValue());
         }

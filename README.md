@@ -93,4 +93,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [X] PathFinder 내부에서 jgrapht 라이브러리 사용
 - [X] 출발역에서 도착역 까지의 최단 루트 구하기
 - [X] 출발역에서 도착역 까지의 최단 거리 구하기
-- [ ] 최단거리 Test 코드 작성
+- [X] 최단거리 Test 코드 작성
