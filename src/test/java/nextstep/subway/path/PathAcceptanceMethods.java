@@ -1,0 +1,37 @@
+package nextstep.subway.path;
+
+import static nextstep.subway.AcceptanceTest.*;
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.List;
+
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import nextstep.subway.line.domain.Distance;
+import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.utils.StreamUtils;
+
+public class PathAcceptanceMethods {
+    private static final String PATH_URL_PATH = "/paths?";
+    private static final String REQUEST_PARAM_SOURCE = "source=";
+    private static final String REQUEST_PARAM_TARGET= "target=";
+    private static final String AMPERSAND_SIGN = "&";
+
+    private PathAcceptanceMethods() {}
+
+    public static ExtractableResponse<Response> 지하철_최단경로_조회_요청(Long sourceId, Long targetId) {
+        return get(PATH_URL_PATH + REQUEST_PARAM_SOURCE + sourceId + AMPERSAND_SIGN + REQUEST_PARAM_TARGET + targetId);
+    }
+
+    public static void 지하철_최단경로_조회됨(ExtractableResponse<Response> response,
+                                    List<StationResponse> expectedStations,
+                                    Distance distance) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        List<Long> actualIds = StreamUtils.mapToList(pathResponse.getStations(), StationResponse::getId);
+        List<Long> expectedIds = StreamUtils.mapToList(expectedStations, StationResponse::getId);
+
+        assertThat(actualIds).containsExactlyElementsOf(expectedIds);
+        assertThat(Distance.from(pathResponse.getDistance())).isEqualTo(distance);
+    }
+}
