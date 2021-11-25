@@ -4,33 +4,68 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
+
 import java.util.List;
 
 @Entity
 public class Line extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
-    private String name;
-    private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private LineName name;
 
-    public Line() {
+    @Embedded
+    private LineColor color;
+
+    @Embedded
+    private final Sections sections = Sections.createEmpty();
+
+    protected Line() {}
+
+    private Line(Long id) {
+        this.id = id;
     }
 
-    public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
+    private Line(String name, String color) {
+        this.name = LineName.from(name);
+        this.color = LineColor.from(color);
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+    private Line(String name, String color, Station upStation, Station downStation, int distance) {
+        this.name = LineName.from(name);
+        this.color = LineColor.from(color);
+        sections.add(Section.of(this, upStation, downStation, Distance.from(distance)));
+    }
+
+    public static Line createEmpty() {
+        return new Line();
+    }
+
+    public static Line from(long id) {
+        return new Line(id);
+    }
+
+    public static Line of(String name, String color) {
+        return new Line(name, color);
+    }
+
+    public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
+        return new Line(name, color, upStation, downStation, distance);
+    }
+
+    public void addSection(Section section) {
+        sections.add(section);
+    }
+
+    public void removeStation(Station station) {
+        sections.removeStation(station);
+    }
+
+    public List<Station> getStations() {
+        return sections.getStations();
     }
 
     public void update(Line line) {
@@ -42,15 +77,11 @@ public class Line extends BaseEntity {
         return id;
     }
 
-    public String getName() {
+    public LineName getName() {
         return name;
     }
 
-    public String getColor() {
+    public LineColor getColor() {
         return color;
-    }
-
-    public List<Section> getSections() {
-        return sections;
     }
 }

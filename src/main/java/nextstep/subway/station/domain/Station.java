@@ -7,24 +7,46 @@ import java.util.Objects;
 
 @Entity
 public class Station extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
-    private String name;
 
-    public Station() {
+    @Embedded
+    private StationName name;
+
+    protected Station() {}
+
+    private Station(Long id) {
+        this.id = id;
     }
 
-    public Station(String name) {
-        this.name = name;
+    private Station(String name) {
+        this.name = StationName.from(name);
+    }
+
+    private Station(Long id, String name) {
+        this.id = id;
+        this.name = StationName.from(name);
+    }
+
+    public static Station from(String name) {
+        return new Station(name);
+    }
+
+    public static Station from(Long stationId) {
+        return new Station(stationId);
+    }
+
+    public static Station of(Long id, String name) {
+        return new Station(id, name);
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
+    public StationName getName() {
         return name;
     }
 
