@@ -49,6 +49,4 @@ public class PathAcceptanceStep {
         assertThat(response.statusCode())
             .isEqualTo(HttpStatus.OK.value());
     }
-
-
 }

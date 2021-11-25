@@ -37,12 +37,6 @@ public final class LineResponse {
             line.getModifiedDate());
     }
 
-    public static List<LineResponse> listOf(List<Line> line) {
-        return line.stream()
-            .map(LineResponse::from)
-            .collect(Collectors.toList());
-    }
-
     public Long getId() {
         return id;
     }
@@ -68,7 +62,7 @@ public final class LineResponse {
     }
 
     private static List<StationResponse> stationResponses(Line line) {
-        return line.sortedStations()
+        return line.stationList()
             .stream()
             .map(StationResponse::from)
             .collect(Collectors.toList());
