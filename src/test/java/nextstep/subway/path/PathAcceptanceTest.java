@@ -2,6 +2,7 @@ package nextstep.subway.path;
 
 import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.line.acceptance.step.LineSectionAcceptanceStep.지하철_역_못찾음;
 import static nextstep.subway.path.step.PathAcceptanceStep.지하철_역_최단_경로_포함됨;
 import static nextstep.subway.path.step.PathAcceptanceStep.지하철_최단_경로_실패됨;
 import static nextstep.subway.path.step.PathAcceptanceStep.지하철_최단_경로_조회;
@@ -68,7 +69,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
             () -> 지하철_최단_경로_조회됨(response),
-            () -> 지하철_역_최단_경로_포함됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 8)
+            () -> 지하철_역_최단_경로_포함됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 5)
         );
     }
 
@@ -96,13 +97,13 @@ class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 시작역으로 조회")
-    void paths_notExistSourceStation_400() {
+    @DisplayName("존재하지 않는 출발역으로 조회")
+    void paths_notExistSourceStation_404() {
         // given, when
         ExtractableResponse<Response> response = 지하철_최단_경로_조회(Long.MAX_VALUE, 교대역.getId());
 
         // then
-        지하철_최단_경로_실패됨(response);
+        지하철_역_못찾음(response);
     }
 
     @ParameterizedTest(name = "[{index}] {argumentsWithNames} 값으로 경로를 조회할 수 없다.")

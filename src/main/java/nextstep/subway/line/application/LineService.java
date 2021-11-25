@@ -1,7 +1,6 @@
 package nextstep.subway.line.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.NotFoundException;
@@ -38,10 +37,8 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
-        return lineRepository.findAll()
-            .stream()
-            .map(LineResponse::from)
-            .collect(Collectors.toList());
+        return lineRepository.findAllLines()
+            .mapToList(LineResponse::from);
     }
 
     @Transactional(readOnly = true)

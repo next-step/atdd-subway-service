@@ -41,7 +41,7 @@ class LinesTest {
     void instance_nullList_thrownIllegalArgumentException() {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> Lines.from(null))
-            .withMessage("지하철 목록이 null 일 수 없습니다.");
+            .withMessage("지하철 노선 목록이 null 일 수 없습니다.");
     }
 
     @Test
@@ -58,6 +58,7 @@ class LinesTest {
     }
 
     @Test
+    @DisplayName("지하철 역 목록")
     void stationList() {
         // given
         Lines 신분당선만_있는_노선들 = Lines.from(Collections.singletonList(신분당선));
@@ -72,6 +73,7 @@ class LinesTest {
     }
 
     @Test
+    @DisplayName("구간 목록")
     void sectionList() {
         // given
         Lines 신분당선만_있는_노선들 = Lines.from(Collections.singletonList(신분당선));

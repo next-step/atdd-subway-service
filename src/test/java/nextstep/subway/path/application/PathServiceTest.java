@@ -20,6 +20,7 @@ import nextstep.subway.path.dto.PathStationResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,6 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.OngoingStubbing;
 
 @ExtendWith(MockitoExtension.class)
+@DisplayName("경로 서비스")
 class PathServiceTest {
 
     @Mock
@@ -51,10 +53,11 @@ class PathServiceTest {
     }
 
     @Test
+    @DisplayName("최단 경로 탐색")
     void findShortestPath() {
         // given
-        int sourceId = 1;
-        int targetId = 2;
+        long sourceId = 1;
+        long targetId = 2;
         검색된_노선들_제공(Collections.singletonList(신분당선));
         검색된_지하철_역_제공(sourceId, 강남역);
         검색된_지하철_역_제공(targetId, 양재역);
@@ -76,7 +79,7 @@ class PathServiceTest {
         );
     }
 
-    private OngoingStubbing<Station> 검색된_지하철_역_제공(int sourceId, Station 강남역) {
+    private OngoingStubbing<Station> 검색된_지하철_역_제공(long sourceId, Station 강남역) {
         return when(stationService.findById(sourceId))
             .thenReturn(강남역);
     }

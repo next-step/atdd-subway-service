@@ -26,7 +26,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-@DisplayName("경로 탐색기")
+@DisplayName("최단 경로 탐색기")
 class ShortestPathFinderTest {
 
     private Station 강남역;
@@ -38,13 +38,13 @@ class ShortestPathFinderTest {
     private Line 이호선;
     private Line 삼호선;
 
-    //    /**
-//     * 교대역    --- *2호선* ---      강남역
-//     * |                                |
-//     * *3호선*                      *신분당선*
-//     * |                                |
-//     * 남부터미널역  --- *3호선* ---   양재
-//     */
+    /**
+     * 교대역    --- *2호선* ---      강남역
+     * |                                |
+     * *3호선*                      *신분당선*
+     * |                                |
+     * 남부터미널역  --- *3호선* ---   양재
+     */
     @BeforeEach
     void setUp() {
         강남역 = 지하철_역("강남역");
@@ -70,14 +70,15 @@ class ShortestPathFinderTest {
     void instance_emptyList_thrownIllegalArgumentException() {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> ShortestPathFinder.from(Lines.from(Collections.emptyList())))
-            .withMessage("경로를 찾을 지하철 노선들이 비어있을 수 없습니다.");
+            .withMessage("최단 경로를 조회할 노선들이 비어있을 수 없습니다.");
     }
 
     @Test
     @DisplayName("최단 경로")
-    void shortestPath() {
+    void path() {
         // given
-        ShortestPathFinder finder = ShortestPathFinder.from(Lines.from(Arrays.asList(신분당선, 이호선, 삼호선)));
+        ShortestPathFinder finder = ShortestPathFinder
+            .from(Lines.from(Arrays.asList(신분당선, 이호선, 삼호선)));
 
         // when
         Path path = finder.path(교대역, 양재역);
@@ -90,10 +91,11 @@ class ShortestPathFinderTest {
     }
 
     @Test
-    @DisplayName("최단 경로")
-    void shortestPath_equalSourceTarget_thrownInvalidDataException() {
+    @DisplayName("출발역과 도착역이 같은 최단 경로 조회")
+    void path_equalSourceTarget_thrownInvalidDataException() {
         // given
-        ShortestPathFinder finder = ShortestPathFinder.from(Lines.from(Arrays.asList(신분당선, 이호선, 삼호선)));
+        ShortestPathFinder finder = ShortestPathFinder
+            .from(Lines.from(Arrays.asList(신분당선, 이호선, 삼호선)));
 
         // when
         ThrowingCallable shortestPathCallable = () -> finder.path(교대역, 교대역);
@@ -101,14 +103,15 @@ class ShortestPathFinderTest {
         // then
         assertThatExceptionOfType(InvalidDataException.class)
             .isThrownBy(shortestPathCallable)
-            .withMessageEndingWith("동일하게 경로를 조회할 수 없습니다.");
+            .withMessageStartingWith("출발역과 도착역을 동일");
     }
 
     @Test
     @DisplayName("존재하지 않는 역으로 최단 경로 조회")
-    void shortestPath_notExistStation_thrownInvalidDataException() {
+    void path_notExistStation_thrownInvalidDataException() {
         // given
-        ShortestPathFinder finder = ShortestPathFinder.from(Lines.from(Arrays.asList(신분당선, 이호선, 삼호선)));
+        ShortestPathFinder finder = ShortestPathFinder.from(
+            Lines.from(Arrays.asList(신분당선, 이호선, 삼호선)));
 
         // when
         ThrowingCallable shortestPathCallable = () -> finder.path(교대역, 지하철_역("반포역"));
@@ -116,14 +119,14 @@ class ShortestPathFinderTest {
         // then
         assertThatExceptionOfType(InvalidDataException.class)
             .isThrownBy(shortestPathCallable)
-            .withMessageEndingWith("경로상에 존재하지 않습니다.");
+            .withMessageEndingWith("경로를 조회할 수 없습니다.");
     }
 
     @Test
     @DisplayName("연결되지 않는 역으로 최단 경로 조회")
-    void shortestPath_notConnectedStation_thrownInvalidDataException() {
+    void path_notConnectedStation_thrownInvalidDataException() {
         // given
-        ShortestPathFinder finder = ShortestPathFinder.from(Lines.from(Arrays.asList(신분당선, 삼호선)));
+        ShortestPathFinder finder = ShortestPathFinder.from(Lines.from(Arrays.asList(이호선, 신분당선)));
 
         // when
         ThrowingCallable shortestPathCallable = () -> finder.path(남부터미널역, 강남역);
@@ -131,13 +134,13 @@ class ShortestPathFinderTest {
         // then
         assertThatExceptionOfType(InvalidDataException.class)
             .isThrownBy(shortestPathCallable)
-            .withMessageEndingWith("연결되어 있지 않습니다.");
+            .withMessageEndingWith("경로를 조회할 수 없습니다.");
     }
 
     @ParameterizedTest(name = "[{index}] {argumentsWithNames} 값으로 최단 경로를 조회할 수 없습니다.")
     @MethodSource
     @DisplayName("출발역 또는 도착역을 null로 최단 경로 조회")
-    void shortestPath_nullStation_thrownInvalidDataException(Station source, Station target) {
+    void path_nullStation_thrownInvalidDataException(Station source, Station target) {
         ShortestPathFinder finder = ShortestPathFinder.from(Lines.from(Arrays.asList(신분당선, 삼호선)));
 
         // when
@@ -146,10 +149,10 @@ class ShortestPathFinderTest {
         // then
         assertThatIllegalArgumentException()
             .isThrownBy(shortestPathCallable)
-            .withMessageEndingWith("최단 경로 조회할 역이 null일 수 없습니다.");
+            .withMessageEndingWith("null일 수 없습니다.");
     }
 
-    private static Stream<Arguments> shortestPath_nullStation_thrownInvalidDataException() {
+    private static Stream<Arguments> path_nullStation_thrownInvalidDataException() {
         return Stream.of(
             Arguments.of(지하철_역("강남역"), null),
             Arguments.of(null, 지하철_역("강남역"))
