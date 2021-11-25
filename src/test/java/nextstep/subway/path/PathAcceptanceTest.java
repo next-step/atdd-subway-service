@@ -64,7 +64,7 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("출발역에서 도착역까지 최단경로를 조회한다.")
     @Test
-    void findShortPath1() {
+    void findShortestPath1() {
         // when
         ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 양재역.getId());
 
@@ -74,7 +74,7 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("출발역과 도착역이 같을 때, 최단경로를 조회한다.")
     @Test
-    void findShortPath2() {
+    void findShortestPath2() {
         // when
         ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 교대역.getId());
 
@@ -84,7 +84,7 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("출발역이 노선상에 존재하지 않을때, 최단경로를 조회한다.")
     @Test
-    void findShortPath4() {
+    void findShortestPath3() {
         // given
         StationResponse 서울역 = 지하철역_등록되어_있음(StationRequest.of("서울역")).as(StationResponse.class);
 
@@ -97,9 +97,26 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("도착역이 노선상에 존재하지 않을때, 최단경로를 조회한다.")
     @Test
+    void findShortestPath4() {
+        // given
+        StationResponse 서울역 = 지하철역_등록되어_있음(StationRequest.of("서울역")).as(StationResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 서울역.getId());
+
+        // then
+        지하철_최단경로_조회_실패(response);
+    }
+
+    @DisplayName("출발역과 도착역이 서로 연결되어 있지 않을때, 최단경로를 조회한다.")
+    @Test
     void findShortPath5() {
         // given
         StationResponse 서울역 = 지하철역_등록되어_있음(StationRequest.of("서울역")).as(StationResponse.class);
+        StationResponse 시청역 = 지하철역_등록되어_있음(StationRequest.of("시청역")).as(StationResponse.class);
+
+        LineRequest 일호선_Request = LineRequest.of("일호선", "BLUE", 서울역.getId(), 시청역.getId(), DISTANCE_5);
+        LineResponse 일호선 = 지하철_노선_등록되어_있음(일호선_Request).as(LineResponse.class);
 
         // when
         ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 서울역.getId());
