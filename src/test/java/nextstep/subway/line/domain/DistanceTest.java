@@ -15,7 +15,7 @@ class DistanceTest {
         Distance distance = new Distance(10);
 
         // when
-        Distance mergedDistance = distance.getAddedDistance(new Distance(15));
+        Distance mergedDistance = distance.add(new Distance(15));
 
         // then
         assertThat(mergedDistance).isEqualTo(new Distance(25));
@@ -28,21 +28,21 @@ class DistanceTest {
         Distance distance = new Distance(10);
 
         // when
-        Distance splitDistance = distance.getRemainedDistance(new Distance(6));
+        Distance splitDistance = distance.subtract(new Distance(6));
 
         // then
         assertThat(splitDistance).isEqualTo(new Distance(4));
     }
 
     @Test
-    @DisplayName("기존 거리보드 먼 거리로 구간을 분리하면 예외가 발생한다.")
+    @DisplayName("기존 거리보다 먼 거리로 구간을 분리하면 예외를 발생한다.")
     void getSplitDistanceThrowException() {
         // given
         Distance distance = new Distance(10);
 
         // when & then
         assertThatExceptionOfType(DistanceSplitFaildException.class)
-                .isThrownBy(() -> distance.getRemainedDistance(new Distance(15)))
+                .isThrownBy(() -> distance.subtract(new Distance(15)))
                 .withMessageMatching("역과 역 사이의 거리보다 좁은 거리를 입력해주세요.");
     }
 }

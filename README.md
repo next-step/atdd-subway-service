@@ -18,6 +18,8 @@
   - [X] LineSectionAcceptanceTest 리팩터링
 - [X] 인수 테스트 기반 리팩터링
   - [X] LineService 리팩터링
+- [X] 최단 경로 조회 인수 테스트
+  - [X] 최단 경로 조회 기능 구현
 
 # 지하철 노선도 미션
 [ATDD 강의](https://edu.nextstep.camp/c/R89PYi5H) 실습을 위한 지하철 노선도 애플리케이션

@@ -26,7 +26,11 @@ public class Sections {
         this.sections = sections;
     }
 
-    Station getUpStation() {
+    public List<Section> getSections() {
+        return sections;
+    }
+
+    Station findUpStation() {
         Section section = sections.get(FIRST_SECTION);
         Station downStation = section.getUpStation();
 
@@ -37,13 +41,13 @@ public class Sections {
         return downStation;
     }
 
-    List<Station> getStations() {
+    List<Station> findStations() {
         if (sections.isEmpty()) {
             return Collections.emptyList();
         }
 
         List<Station> stations = new ArrayList<>();
-        Station upStation = getUpStation();
+        Station upStation = findUpStation();
         stations.add(upStation);
 
         Section section = findNextStationForward(upStation);
@@ -60,7 +64,7 @@ public class Sections {
     void addSection(Line line, Station upStation, Station downStation, Distance distance) {
         validateAdd(upStation, downStation);
 
-        if (getStations().isEmpty()) {
+        if (findStations().isEmpty()) {
             sections.add(new Section(line, upStation, downStation, distance));
             return;
         }
@@ -75,6 +79,16 @@ public class Sections {
             return;
         }
         throw new SectionAddFailedException();
+    }
+
+    void remove(Station station) {
+        validateCanRemove();
+        Section beforeSection = findNextStationForward(station);
+        Section nextSection = findNextStationBackward(station);
+
+        addJoinedSection(beforeSection, nextSection);
+        remove(beforeSection);
+        remove(nextSection);
     }
 
     private void addSectionsWhenUpStationMatched(Line line, Station upStation, Station downStation, Distance distance, Section section) {
@@ -101,29 +115,12 @@ public class Sections {
     }
 
     private boolean isStationExisted(Station upStation) {
-        return getStations().stream().anyMatch(it -> it == upStation);
+        return findStations().stream().anyMatch(it -> it == upStation);
     }
 
-    void remove(Station station) {
+    private void validateCanRemove() {
         if (sections.size() <= CANNOT_REMOVE_COUNT) {
             throw new SectionRemoveFailedException("구간을 제거할 수 없습니다.");
-        }
-
-        Section upStation = findNextStationForward(station);
-        Section downStation = findNextStationBackward(station);
-
-        if (upStation.isExists() && downStation.isExists()) {
-            Station newUpStation = downStation.getUpStation();
-            Station newDownStation = upStation.getDownStation();
-            Distance newDistance = upStation.getDistance().getAddedDistance(downStation.getDistance());
-            sections.add(new Section(sections.get(FIRST_SECTION).getLine(), newUpStation, newDownStation, newDistance));
-        }
-
-        if (upStation.isExists()) {
-            sections.remove(upStation);
-        }
-        if (downStation.isExists()) {
-            sections.remove(downStation);
         }
     }
 
@@ -139,6 +136,18 @@ public class Sections {
                 .filter(it -> it.getUpStation() == station)
                 .findFirst()
                 .orElse(Section.EMPTY);
+    }
+
+    private void addJoinedSection(Section beforeSection, Section nextSection) {
+        if (beforeSection.isExists() && nextSection.isExists()) {
+            sections.add(new Section(beforeSection, nextSection, beforeSection.add(nextSection)));
+        }
+    }
+
+    private void remove(Section section) {
+        if (section.isExists()) {
+            sections.remove(section);
+        }
     }
 
     @Override

@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import static nextstep.subway.station.StationSteps.*;
 import static org.assertj.core.api.Assertions.*;
 
-@DisplayName("지하철역 관련 기능")
+@DisplayName("지하철역 관련 기능 인수 테스트")
 public class StationAcceptanceTest extends AcceptanceTest {
 
     private static final String 강남역 = "강남역";

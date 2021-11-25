@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.global.BusinessException;
+import nextstep.subway.global.domain.BusinessException;
 
 public class DistanceSplitFaildException extends BusinessException {
 

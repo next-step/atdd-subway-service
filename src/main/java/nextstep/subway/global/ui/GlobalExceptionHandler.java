@@ -1,5 +1,8 @@
-package nextstep.subway.global;
+package nextstep.subway.global.ui;
 
+import nextstep.subway.global.domain.BusinessException;
+import nextstep.subway.global.domain.FindFailedException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -17,5 +20,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(FindFailedException.class)
     public void handleEntityNotFoundException(HttpServletResponse response) throws IOException {
         response.sendError(HttpServletResponse.SC_NOT_FOUND);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public void handleDataIntegrityViolationException(HttpServletResponse response) throws IOException {
+        response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }
 }

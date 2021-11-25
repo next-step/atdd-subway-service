@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.global.BaseEntity;
+import nextstep.subway.global.domain.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.Column;
@@ -55,8 +55,12 @@ public class Line extends BaseEntity {
         return color;
     }
 
+    public List<Section> getSections() {
+        return sections.getSections();
+    }
+
     public List<Station> getStations() {
-        return sections.getStations();
+        return sections.findStations();
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {

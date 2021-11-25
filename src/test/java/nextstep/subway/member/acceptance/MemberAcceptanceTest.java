@@ -1,4 +1,4 @@
-package nextstep.subway.member;
+package nextstep.subway.member.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import static nextstep.subway.member.MemberSteps.*;
 import static org.assertj.core.api.Assertions.*;
 
+@DisplayName("회원 관리 기능 인수 테스트")
 public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static final String EMAIL = "email@email.com";

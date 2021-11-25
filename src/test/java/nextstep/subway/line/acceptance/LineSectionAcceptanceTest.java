@@ -20,7 +20,7 @@ import static nextstep.subway.line.LineSteps.*;
 import static nextstep.subway.station.StationSteps.*;
 import static org.assertj.core.api.Assertions.*;
 
-@DisplayName("지하철 구간 관련 기능")
+@DisplayName("지하철 구간 관련 기능 인수 테스트")
 public class LineSectionAcceptanceTest extends AcceptanceTest {
 
     private LineResponse 신분당선;
@@ -42,9 +42,9 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         신분당선 = 지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
-    @DisplayName("지하철 구간을 등록하고 조회한다.")
+    @DisplayName("지하철 구간을 관리한다.")
     @Test
-    void processLineSection() {
+    void manageLineSection() {
         // when
         ExtractableResponse<Response> addResponse = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
 

@@ -1,6 +1,6 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.global.FindFailedException;
+import nextstep.subway.global.domain.FindFailedException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
@@ -38,6 +38,10 @@ public class LineService {
         return lineRepository.findAll().stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public List<Line> findAllLines() {
+        return lineRepository.findAll();
     }
 
     public Line findLineById(Long id) {
