@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -42,10 +43,6 @@ public class Sections {
     public static Sections from(Section section) {
         Assert.notNull(section, "초기 구간은 반드시 존재해야 합니다.");
         return new Sections(Collections.singletonList(section));
-    }
-
-    private static Sections from(List<Section> list) {
-        return new Sections(list);
     }
 
     public static Sections empty() {
@@ -88,7 +85,7 @@ public class Sections {
     public Sections merge(Sections sections) {
         ArrayList<Section> newList = new ArrayList<>(list);
         newList.addAll(sections.list);
-        return from(newList);
+        return new Sections(newList);
     }
 
     public List<Section> list() {
@@ -218,5 +215,29 @@ public class Sections {
     private void deleteSectionCaches() {
         downStationToSectionCache = null;
         upStationToSectionCache = null;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(list);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Sections sections = (Sections) o;
+        return Objects.equals(list, sections.list);
+    }
+
+    @Override
+    public String toString() {
+        return "Sections{" +
+            "list=" + list +
+            '}';
     }
 }

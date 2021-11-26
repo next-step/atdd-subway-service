@@ -4,10 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,7 @@ class LinesTest {
     }
 
     @Test
-    @DisplayName("목록이 null인 상태로 객체화")
+    @DisplayName("초기 목록은 필수")
     void instance_nullList_thrownIllegalArgumentException() {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> Lines.from(null))
@@ -59,31 +60,29 @@ class LinesTest {
 
     @Test
     @DisplayName("지하철 역 목록")
-    void stationList() {
+    void stations() {
         // given
         Lines 신분당선만_있는_노선들 = Lines.from(Collections.singletonList(신분당선));
 
         // when
-        List<Station> stationList = 신분당선만_있는_노선들.stations();
+        Stations stationList = 신분당선만_있는_노선들.stations();
 
         // then
         assertThat(stationList)
-            .hasSize(2)
-            .containsExactly(강남역, 양재역);
+            .isEqualTo(Stations.from(Arrays.asList(강남역, 양재역)));
     }
 
     @Test
     @DisplayName("구간 목록")
-    void sectionList() {
+    void sections() {
         // given
         Lines 신분당선만_있는_노선들 = Lines.from(Collections.singletonList(신분당선));
 
         // when
-        List<Section> sectionList = 신분당선만_있는_노선들.sections();
+        Sections sectionList = 신분당선만_있는_노선들.sections();
 
         // then
         assertThat(sectionList)
-            .hasSize(1)
-            .containsExactly(강남_양재_구간);
+            .isEqualTo(Sections.from(강남_양재_구간));
     }
 }
