@@ -14,7 +14,7 @@ import nextstep.subway.member.dto.MemberResponse;
 public class MemberAcceptanceMethods {
     public static final String LOCATION_HEADER_NAME = "Location";
     private static final String MEMBER_URL_PATH = "/members";
-    private static final String MEMBER_ME_URL_PATH = "/me?";
+    private static final String MEMBER_ME_URL_PATH = "/me";
 
     private MemberAcceptanceMethods() {}
 
@@ -41,9 +41,8 @@ public class MemberAcceptanceMethods {
         return delete(uri);
     }
 
-    public static ExtractableResponse<Response> 토큰으로_회원_정보_조회_요청(MemberRequest memberRequest,
-                                                                        TokenResponse tokenResponse) {
-        return getByAuth(MEMBER_URL_PATH + MEMBER_ME_URL_PATH + memberRequest.toRequestParams(), tokenResponse);
+    public static ExtractableResponse<Response> 토큰_로그인한_회원_정보_조회_요청(TokenResponse tokenResponse) {
+        return getByAuth(MEMBER_URL_PATH + MEMBER_ME_URL_PATH, tokenResponse);
     }
 
 
