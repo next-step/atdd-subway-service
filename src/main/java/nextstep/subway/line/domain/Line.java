@@ -80,11 +80,7 @@ public class Line extends BaseEntity {
         }
 
         if (isUpStationExisted) {
-            getSections().stream()
-                    .filter(it -> it.getUpStation() == upStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, distance));
-
+            sections.updateUpStation(upStation, downStation, distance);
             sections.add(new Section(this, upStation, downStation, distance));
         } else if (isDownStationExisted) {
             getSections().stream()

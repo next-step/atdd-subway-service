@@ -31,4 +31,17 @@ public class SectionsTest {
         // then
         assertThat(stations).containsExactly(교대역, 강남역, 역삼역, 삼성역, 잠실역);
     }
+
+    @Test
+    void updateUpStation_상행역을_업데이트한다() {
+        // given
+        Sections sections = new Sections();
+        sections.add(new Section(이호선, 강남역, 삼성역, 10));
+
+        // when
+        sections.updateUpStation(강남역, 역삼역, 3);
+
+        // then
+        assertThat(sections.getSections()).contains(new Section(이호선, 역삼역, 삼성역, 7));
+    }
 }

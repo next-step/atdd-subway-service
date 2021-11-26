@@ -56,4 +56,11 @@ public class Sections {
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
     }
+
+    public void updateUpStation(Station upStation, Station downStation, int distance) {
+        sections.stream()
+                .filter(it -> it.getUpStation() == upStation)
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(downStation, distance));
+    }
 }
