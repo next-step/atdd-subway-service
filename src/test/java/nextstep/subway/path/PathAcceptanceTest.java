@@ -79,11 +79,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName(
-            "지하철 노선에 등록된 역 기준으로 순방향 조회"
+            "지하철 노선에 등록된 역 기준으로 순방향 최단거리 검증"
                     + "(교대 --(10)> 강남 --(8)> 양재 --(5)> 남부터미널역)"
                     + "(교대 --(3)> 남부터미널역 <========= 가장 최단거리)"
     )
-    public void 지하철_노선에_등록_역_조회_요청() {
+    public void 지하철_노선에_등록_역_최단거리_검증() {
         ExtractableResponse<Response> response = 최단_거리_조회_요청(교대역, 남부터미널역);
 
         PathResponse actual = response.as(PathResponse.class);
@@ -94,11 +94,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName(
-            "지하철 노선에 등록된 역 기준으로 역방향 조회"
+            "지하철 노선에 등록된 역 기준으로 역방향 최단거리 검증"
                     + "(교대 <(10)-- 강남 <(8)-- 양재 <(5)-- 남부터미널역)"
                     + "(교대 <(3)-- 남부터미널역 <========= 가장 최단거리)"
     )
-    public void 지하철_노선에_등록_역_조회_요청_역방향() {
+    public void 지하철_노선에_등록_역_역방향_최단거리_검증() {
         ExtractableResponse<Response> response = 최단_거리_조회_요청(교대역, 남부터미널역);
 
         PathResponse actual = response.as(PathResponse.class);
