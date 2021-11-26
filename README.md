@@ -100,12 +100,12 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 # 3단계 : 인증을 통한 기능 구현
 
 ### 1. 토큰 발급 기능 (로그인) 인수 테스트 만들기
-- [ ] 토큰 발급(로그인)을 검증하는 AuthAcceptanceTest 인수 테스트 작성
-- [ ] 예외 케이스
-    - [ ] 등록되지 않은 회원정보로 토큰을 요청하는 경우
-    - [ ] 토큰 없이 요청을 보낸 경우
-    - [ ] 유효하지 않은 Bearer 토큰으로 요청을 보낸 경우
-- [ ] 이메일과 패스워드를 이용하여 요청 시 access token 을 응답하는 기능을 구현
+- [X] 토큰 발급(로그인)을 검증하는 AuthAcceptanceTest 인수 테스트 작성
+- [X] 예외 케이스
+    - [X] 등록되지 않은 회원정보로 토큰을 요청하는 경우
+    - [X] 토큰 없이 요청을 보낸 경우
+    - [X] 유효하지 않은 Bearer 토큰으로 요청을 보낸 경우
+- [X] 이메일과 패스워드를 이용하여 요청 시 access token 을 응답하는 기능을 구현
 
 ### 2. 인증 - 내 정보 조회 기능 완성하기
 - [ ] MemberAcceptanceTest 에 내 정보 조회/수정/사제 기능 인수 테스트 추가
