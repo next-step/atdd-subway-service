@@ -30,8 +30,8 @@ public final class StationResponse {
             station.getModifiedDate());
     }
 
-    public static List<StationResponse> listOf(List<Station> lines) {
-        return lines.stream()
+    public static List<StationResponse> listOf(List<Station> stations) {
+        return stations.stream()
             .map(StationResponse::from)
             .collect(Collectors.toList());
     }
