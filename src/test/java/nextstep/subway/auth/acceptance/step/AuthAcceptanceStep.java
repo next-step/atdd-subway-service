@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenRequest;
@@ -15,6 +16,7 @@ public class AuthAcceptanceStep {
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         return RestAssured.given().log().all()
             .body(new TokenRequest(email, password))
+            .contentType(ContentType.JSON)
             .when()
             .post("/login/token")
             .then().log().all()
