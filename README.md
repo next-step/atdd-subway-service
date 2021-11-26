@@ -115,7 +115,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ### 3. 인증 - 즐겨 찾기 기능 완성하기
 - [ ] 즐겨찾기 기능 구현
 - [ ] 인증을 포함하여 즐겨찾기 관련 인수 테스트 작성
-    - [ ] 즐겨찾기 생성
+    - [X] 즐겨찾기 생성
     - [ ] 즐겨찾기 목록 조회
     - [ ] 즐겨찾기 삭제
     - [ ] 예외 케이스

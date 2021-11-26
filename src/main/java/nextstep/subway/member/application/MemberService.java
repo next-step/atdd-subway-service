@@ -10,7 +10,7 @@ import nextstep.subway.member.dto.MemberResponse;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
@@ -24,6 +24,10 @@ public class MemberService {
     public MemberResponse findMember(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(DataNotExistException::new);
         return MemberResponse.of(member);
+    }
+
+    public Member findById(Long id) {
+        return memberRepository.findById(id).orElseThrow(DataNotExistException::new);
     }
 
     public void updateMember(Long id, MemberRequest param) {
