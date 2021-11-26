@@ -99,7 +99,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                     + "(교대 <(3)-- 남부터미널역 <========= 가장 최단거리)"
     )
     public void 지하철_노선에_등록_역_역방향_최단거리_검증() {
-        ExtractableResponse<Response> response = 최단_거리_조회_요청(교대역, 남부터미널역);
+        ExtractableResponse<Response> response = 최단_거리_조회_요청(남부터미널역, 교대역);
 
         PathResponse actual = response.as(PathResponse.class);
 
