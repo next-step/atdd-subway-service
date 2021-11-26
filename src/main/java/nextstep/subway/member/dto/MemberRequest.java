@@ -32,7 +32,7 @@ public class MemberRequest {
     }
 
     public Member toMember() {
-        return new Member(email, password, age);
+        return Member.of(email, password, age);
     }
 
     public String toRequestParams() {

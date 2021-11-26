@@ -1,5 +1,7 @@
 package nextstep.subway.favorite.domain;
 
+import java.util.Objects;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,20 +15,22 @@ import nextstep.subway.station.domain.Station;
 
 @Entity
 public class FavoritePath {
+    private static final String REQUIRED_VALUE_ERROR_MESSAGE = "출박역, 도착역, 회원 정보는 필수값 입니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "source_id")
+    @JoinColumn(name = "source_id", nullable = false)
     private Station source;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "target_id")
+    @JoinColumn(name = "target_id", nullable = false)
     private Station target;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     protected FavoritePath() {}
@@ -38,7 +42,14 @@ public class FavoritePath {
     }
 
     public static FavoritePath of(Station source, Station target, Member member) {
+        validateFavoritePath(source, target, member);
         return new FavoritePath(source, target, member);
+    }
+
+    private static void validateFavoritePath(Station source, Station target, Member member) {
+        if (Objects.isNull(source) || Objects.isNull(target) || Objects.isNull(member)) {
+            throw new IllegalArgumentException(REQUIRED_VALUE_ERROR_MESSAGE);
+        }
     }
 
     public Long getId() {

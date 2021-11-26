@@ -1,7 +1,6 @@
 package nextstep.subway.favorite.application;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -41,7 +40,6 @@ public class FavoritePathService {
         Member member = memberService.findById(loginMember.getId());
         Station source = stationService.findById(request.getSourceId());
         Station target = stationService.findById(request.getTargetId());
-
         validateCreateFavoritePath(source, target);
 
         FavoritePath favoritePath = favoritePathRepository.save(FavoritePath.of(source, target, member));
@@ -54,7 +52,7 @@ public class FavoritePathService {
     }
 
     public FavoritePathResponse findFavoritePathById(Long id) {
-        FavoritePath favoritePath = favoritePathRepository.findById(id).orElseThrow(DataNotExistException::new);;
+        FavoritePath favoritePath = favoritePathRepository.findById(id).orElseThrow(DataNotExistException::new);
         return FavoritePathResponse.from(favoritePath);
     }
 
