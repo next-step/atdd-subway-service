@@ -71,4 +71,24 @@ public class AcceptanceTest {
                           .then().log().all()
                           .extract();
     }
+
+    public static <T> ExtractableResponse<Response> putByAuth(String path, T requestBody, TokenResponse tokenResponse) {
+        return RestAssured.given().log().all()
+                          .auth().oauth2(tokenResponse.getAccessToken())
+                          .contentType(MediaType.APPLICATION_JSON_VALUE)
+                          .body(requestBody)
+                          .when()
+                          .put(path)
+                          .then().log().all()
+                          .extract();
+    }
+
+    public static ExtractableResponse<Response> deleteByAuth(String path, TokenResponse tokenResponse) {
+        return RestAssured.given().log().all()
+                          .auth().oauth2(tokenResponse.getAccessToken())
+                          .when()
+                          .delete(path)
+                          .then().log().all()
+                          .extract();
+    }
 }

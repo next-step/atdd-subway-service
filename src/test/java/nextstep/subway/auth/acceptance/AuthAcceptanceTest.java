@@ -59,7 +59,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithWrongBearerAuth(String wrongToken) {
         // when
         TokenResponse tokenResponse = new TokenResponse(wrongToken);
-        ExtractableResponse<Response> response = 토큰_로그인한_회원_정보_조회_요청(tokenResponse);
+        ExtractableResponse<Response> response = 로그인한_회원_정보_조회_요청(tokenResponse);
         // then
         토큰_인증_실패(response);
     }

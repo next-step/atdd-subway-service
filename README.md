@@ -108,9 +108,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [X] 이메일과 패스워드를 이용하여 요청 시 access token 을 응답하는 기능을 구현
 
 ### 2. 인증 - 내 정보 조회 기능 완성하기
-- [ ] MemberAcceptanceTest 에 내 정보 조회/수정/사제 기능 인수 테스트 추가
-- [ ] @AuthenticationPrincipal 활용하여 기능 구현
-- [ ] AuthenticationPrincipalArgumentResolver 활용하여 기능 구현
+- [X] MemberAcceptanceTest 에 내 정보 조회/수정/사제 기능 인수 테스트 추가
+- [X] @AuthenticationPrincipal 활용하여 기능 구현
+- [X] AuthenticationPrincipalArgumentResolver 활용하여 기능 구현
 
 ### 3. 인증 - 즐겨 찾기 기능 완성하기
 - [ ] 즐겨찾기 기능 구현

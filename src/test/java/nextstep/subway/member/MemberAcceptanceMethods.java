@@ -41,10 +41,18 @@ public class MemberAcceptanceMethods {
         return delete(uri);
     }
 
-    public static ExtractableResponse<Response> 토큰_로그인한_회원_정보_조회_요청(TokenResponse tokenResponse) {
+    public static ExtractableResponse<Response> 로그인한_회원_정보_조회_요청(TokenResponse tokenResponse) {
         return getByAuth(MEMBER_URL_PATH + MEMBER_ME_URL_PATH, tokenResponse);
     }
 
+    public static ExtractableResponse<Response> 로그인한_회원_정보_수정_요청(TokenResponse token,
+                                                                        MemberRequest memberUpdateRequest) {
+        return putByAuth(MEMBER_URL_PATH + MEMBER_ME_URL_PATH, memberUpdateRequest, token);
+    }
+
+    public static ExtractableResponse<Response> 로그인한_회원_정보_삭제_요청(TokenResponse token) {
+        return deleteByAuth(MEMBER_URL_PATH + MEMBER_ME_URL_PATH, token);
+    }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
