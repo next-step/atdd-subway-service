@@ -26,6 +26,10 @@ public class LineSectionAcceptanceMethods {
         return post(LINE_URL_PATH + SLASH_SIGN + lineId + SECTION_URL_PATH, sectionRequest);
     }
 
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록되어_있음(Long lineId, SectionRequest sectionRequest) {
+        return 지하철_노선에_지하철역_등록_요청(lineId, sectionRequest);
+    }
+
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(Long lindId, Long stationId) {
         return delete(LINE_URL_PATH + SLASH_SIGN + lindId + SECTION_URL_PATH + WITH_STATION_ID_QUERY_PARAM + stationId);
     }

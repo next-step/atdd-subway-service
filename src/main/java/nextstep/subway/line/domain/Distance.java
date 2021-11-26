@@ -8,7 +8,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Distance {
     private static final String DISTANCE_IS_LESS_THAN_MIN_DISTANCE_ERROR_MESSAGE = "거리의 길이는 1보다 길어야합니다. distance=%s";
-    private static final int MIN_DISTANCE = 1;
+    private static final int MIN = 1;
 
     @Column(name = "distance", nullable = false)
     private int distance;
@@ -29,11 +29,11 @@ public class Distance {
     }
 
     public boolean isGreaterThanOrEqualTo(Distance distance) {
-        return this.distance >= distance.getDistance();
+        return this.distance >= distance.getValue();
     }
 
     public boolean isLessThanOrEqualTo(Distance distance) {
-        return this.distance <= distance.getDistance();
+        return this.distance <= distance.getValue();
     }
 
     public Distance minus(Distance distance) {
@@ -44,12 +44,12 @@ public class Distance {
         return Distance.from(this.distance + distance.distance);
     }
 
-    public int getDistance() {
+    public int getValue() {
         return distance;
     }
 
     private static void validateDistance(int distance) {
-        if (distance < MIN_DISTANCE) {
+        if (distance < MIN) {
             throw new IllegalArgumentException(String.format(DISTANCE_IS_LESS_THAN_MIN_DISTANCE_ERROR_MESSAGE, distance));
         }
     }

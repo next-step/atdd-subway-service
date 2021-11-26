@@ -34,7 +34,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStationWithDuplicateName() {
         //given
-        지하철역_등록되어_있음(강남역);
+        지하철역_등록되어_있음(StationRequest.of(강남역));
 
         // when
         StationRequest stationRequest = StationRequest.of(강남역);
@@ -48,8 +48,8 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStations() {
         // given
-        ExtractableResponse<Response> createResponse1 = 지하철역_등록되어_있음(강남역);
-        ExtractableResponse<Response> createResponse2 = 지하철역_등록되어_있음(역삼역);
+        ExtractableResponse<Response> createResponse1 = 지하철역_등록되어_있음(StationRequest.of(강남역));
+        ExtractableResponse<Response> createResponse2 = 지하철역_등록되어_있음(StationRequest.of(역삼역));
 
         // when
         ExtractableResponse<Response> response = 지하철역_목록_조회_요청();
@@ -63,7 +63,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStation() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철역_등록되어_있음(강남역);
+        ExtractableResponse<Response> createResponse = 지하철역_등록되어_있음(StationRequest.of(강남역));
 
         // when
         ExtractableResponse<Response> response = 지하철역_제거_요청(createResponse);

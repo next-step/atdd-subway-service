@@ -36,9 +36,7 @@ public class Section {
     protected Section() {}
 
     private Section(Station upStation, Station downStation, Distance distance) {
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = distance;
+        this(null, upStation, downStation, distance);
     }
     private Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
