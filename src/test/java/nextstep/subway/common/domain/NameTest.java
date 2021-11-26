@@ -20,7 +20,7 @@ class NameTest {
     }
 
     @NullAndEmptySource
-    @DisplayName("비어있는 값으로 객체화")
+    @DisplayName("이름의 정보는 필수")
     @ParameterizedTest(name = "[{index}] {argumentsWithNames} 으로 객체화 불가능")
     void instance_emptyValue_thrownIllegalArgumentException(String value) {
         assertThatIllegalArgumentException()

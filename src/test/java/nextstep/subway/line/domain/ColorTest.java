@@ -20,7 +20,7 @@ class ColorTest {
     }
 
     @ParameterizedTest(name = "[{index}] {argumentsWithNames} 으로 객체화 불가능")
-    @DisplayName("값이 비어있는 상태로 객체화")
+    @DisplayName("색상의 값은 필수")
     @NullAndEmptySource
     void instance_emptyValue_thrownIllegalArgumentException(String value) {
         assertThatIllegalArgumentException()

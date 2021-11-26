@@ -43,7 +43,7 @@ class SectionsTest {
     }
 
     @Test
-    @DisplayName("구간이 null인 상태로 객체화")
+    @DisplayName("초기 구간은 반드시 필수")
     void instance_nullSection_thrownIllegalArgumentException() {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> Sections.from(null))

@@ -35,7 +35,7 @@ class SectionTest {
 
     @ParameterizedTest(name = "[{index}] {argumentsWithNames} 값 으로 객체화 할 수 없다.")
     @MethodSource
-    @DisplayName("'null' 인자가 존재한 상태로 객체화")
+    @DisplayName("상행역, 하행역, 사이의 거리는 반드시 필수")
     void instance_emptyArgument_thrownIllegalArgumentException(
         Station upStation, Station downStation, Distance distance) {
         assertThatIllegalArgumentException()
@@ -44,7 +44,7 @@ class SectionTest {
     }
 
     @Test
-    @DisplayName("같은 역으로 객체화")
+    @DisplayName("상행역과 하행역은 달라야 한다.")
     void instance_sameUpAndDownStation_thrownIllegalArgumentException() {
         assertThatIllegalArgumentException()
             .isThrownBy(() ->

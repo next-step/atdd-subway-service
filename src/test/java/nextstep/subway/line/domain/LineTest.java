@@ -28,7 +28,7 @@ class LineTest {
 
     @ParameterizedTest(name = "[{index}] {argumentsWithNames} 값 으로 객체화 할 수 없다.")
     @MethodSource
-    @DisplayName("'null' 인자가 존재한 상태로 객체화")
+    @DisplayName("이름, 색상, 구간들은 반드시 필수")
     void instance_emptyArgument_thrownIllegalArgumentException(
         Name name, Color color, Sections sections) {
         assertThatIllegalArgumentException()
