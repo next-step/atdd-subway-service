@@ -46,6 +46,10 @@ public class LineService {
         return StreamUtils.mapToList(persistLines, this::mapToLineResponses);
     }
 
+    public List<Line> findAll() {
+        return lineRepository.findAll();
+    }
+
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(DataNotExistException::new);
     }

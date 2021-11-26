@@ -17,14 +17,10 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoritePathRequest;
-import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -86,30 +82,46 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void createFavorite2() {
         // given
+        StationResponse 서울역 = 지하철역_등록되어_있음(StationRequest.of("서울역")).as(StationResponse.class);
+        FavoritePathRequest request = FavoritePathRequest.of(서울역.getId(), 양재역.getId());
 
         // when
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(token, request);
 
         // then
+        즐겨찾기_생성_실패(response);
     }
 
     @DisplayName("존재하지 않는 도착역으로 즐겨찾기를 생성한다.")
     @Test
     void createFavorite3() {
         // given
+        StationResponse 서울역 = 지하철역_등록되어_있음(StationRequest.of("서울역")).as(StationResponse.class);
 
         // when
+        FavoritePathRequest request = FavoritePathRequest.of(양재역.getId(), 서울역.getId());
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(token, request);
 
         // then
+        즐겨찾기_생성_실패(response);
     }
 
     @DisplayName("서로 연결되지 않은 출발역, 도착역으로 즐겨찾기를 생성한다.")
     @Test
     void createFavorite4() {
         // given
+        StationResponse 서울역 = 지하철역_등록되어_있음(StationRequest.of("서울역")).as(StationResponse.class);
+        StationResponse 시청역 = 지하철역_등록되어_있음(StationRequest.of("시청역")).as(StationResponse.class);
+
+        LineRequest 일호선_Request = LineRequest.of("일호선", "BLUE", 서울역.getId(), 시청역.getId(), DISTANCE_5);
+        지하철_노선_등록되어_있음(일호선_Request).as(LineResponse.class);
 
         // when
+        FavoritePathRequest request = FavoritePathRequest.of(교대역.getId(), 서울역.getId());
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(token, request);
 
         // then
+        즐겨찾기_생성_실패(response);
     }
 
     @DisplayName("즐겨찾기에 저장된 목록을 조회한다.")
