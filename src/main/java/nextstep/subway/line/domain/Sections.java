@@ -6,9 +6,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
@@ -25,42 +25,35 @@ public class Sections {
     }
 
     public List<Station> getStations() {
-        if (sections.isEmpty()) {
-            return Arrays.asList();
-        }
+        return getStations(new ArrayList());
+    }
 
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
+    public List<Station> getStations(List<Station> stations) {
+        Map<Station, Station> upToDowns = getUpToDownStation();
+        Station upStation = getUpStation();
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        while (upStation != null) {
+            stations.add(upStation);
+            upStation = upToDowns.get(upStation);
         }
 
         return stations;
     }
 
-    private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
+    private Map<Station, Station> getUpToDownStation() {
+        return sections.stream()
+                .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
+    }
 
-        return downStation;
+    private Station getUpStation() {
+        List<Station> downStations = sections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
+
+        return sections.stream()
+                .map(Section::getUpStation)
+                .filter(upStation -> !downStations.contains(upStation))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
     }
 }
