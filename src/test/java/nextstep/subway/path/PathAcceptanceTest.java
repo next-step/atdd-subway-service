@@ -89,11 +89,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathResponse actual = response.as(PathResponse.class);
 
         응답_OK(response);
-        assertAll(
-                () -> assertThat(actual.getStations()).extracting(Station::getName)
-                        .containsExactly(교대역.getName(), 남부터미널역.getName()),
-                () -> assertThat(actual.getDistance()).isEqualTo(3)
-        );
+        assertThat(actual.getDistance()).isEqualTo(3);
     }
 
     @Test
@@ -108,11 +104,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathResponse actual = response.as(PathResponse.class);
 
         응답_OK(response);
-        assertAll(
-                () -> assertThat(actual.getStations()).extracting(Station::getName)
-                        .containsExactly(교대역.getName(), 남부터미널역.getName()),
-                () -> assertThat(actual.getDistance()).isEqualTo(3)
-        );
+        assertThat(actual.getDistance()).isEqualTo(3);
     }
 
     private static ExtractableResponse<Response> 최단_거리_조회_요청(StationResponse 출발역, StationResponse 도착역) {
