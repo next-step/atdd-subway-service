@@ -64,7 +64,7 @@ class LinesTest {
         Lines 신분당선만_있는_노선들 = Lines.from(Collections.singletonList(신분당선));
 
         // when
-        List<Station> stationList = 신분당선만_있는_노선들.stationList();
+        List<Station> stationList = 신분당선만_있는_노선들.stations();
 
         // then
         assertThat(stationList)
@@ -79,7 +79,7 @@ class LinesTest {
         Lines 신분당선만_있는_노선들 = Lines.from(Collections.singletonList(신분당선));
 
         // when
-        List<Section> sectionList = 신분당선만_있는_노선들.sectionList();
+        List<Section> sectionList = 신분당선만_있는_노선들.sections();
 
         // then
         assertThat(sectionList)

@@ -11,6 +11,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.Optional;
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.common.exception.DuplicateDataException;
@@ -26,6 +27,7 @@ import nextstep.subway.line.dto.LineUpdateRequest;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -207,8 +209,10 @@ class LineServiceTest {
         assertAll(
             () -> assertThat(line.name()).isEqualTo(Name.from(expectedName)),
             () -> assertThat(line.color()).isEqualTo(Color.from(expectedColor)),
-            () -> assertThat(line.stationList())
-                .containsExactly(firstExpectedStation, secondExpectedStation)
+            () -> assertThat(line.sortedStations())
+                .isEqualTo(Stations.from(
+                    Arrays.asList(firstExpectedStation, secondExpectedStation)
+                ))
         );
     }
 

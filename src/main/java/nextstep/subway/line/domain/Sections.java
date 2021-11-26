@@ -13,9 +13,12 @@ import javax.persistence.Transient;
 import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @Embeddable
 public class Sections {
+
+    private static final Sections EMPTY = new Sections(Collections.emptyList());
 
     private static final int MINIMUM_SECTION_SIZE = 1;
 
@@ -31,16 +34,25 @@ public class Sections {
     protected Sections() {
     }
 
-    private Sections(Section section) {
-        Assert.notNull(section, "초기 구간은 반드시 존재해야 합니다.");
-        this.list.add(section);
+    private Sections(List<Section> list) {
+        Assert.notNull(list, "지하철 구간 목록은 반드시 존재해야 합니다.");
+        this.list.addAll(list);
     }
 
     public static Sections from(Section section) {
-        return new Sections(section);
+        Assert.notNull(section, "초기 구간은 반드시 존재해야 합니다.");
+        return new Sections(Collections.singletonList(section));
     }
 
-    List<Station> sortedStations() {
+    private static Sections from(List<Section> list) {
+        return new Sections(list);
+    }
+
+    public static Sections empty() {
+        return EMPTY;
+    }
+
+    Stations sortedStations() {
         Section nextSection = firstSection();
         List<Station> stations = new ArrayList<>(nextSection.stations());
 
@@ -48,7 +60,7 @@ public class Sections {
             nextSection = findByUpStation(nextSection.downStation());
             stations.add(nextSection.downStation());
         }
-        return stations;
+        return Stations.from(stations);
     }
 
     void add(Section section) {
@@ -73,7 +85,13 @@ public class Sections {
         }
     }
 
-    List<Section> list() {
+    public Sections merge(Sections sections) {
+        ArrayList<Section> newList = new ArrayList<>(list);
+        newList.addAll(sections.list);
+        return from(newList);
+    }
+
+    public List<Section> list() {
         return Collections.unmodifiableList(list);
     }
 

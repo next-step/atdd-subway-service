@@ -1,11 +1,11 @@
 package nextstep.subway.line.domain;
 
 import io.jsonwebtoken.lang.Assert;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 public final class Lines {
 
@@ -24,20 +24,24 @@ public final class Lines {
         return list.isEmpty();
     }
 
-    public List<Station> stationList() {
-        List<Station> sectionList = new ArrayList<>();
+    public Stations stations() {
+        Stations stations = Stations.empty();
         for (Line line : list) {
-            sectionList.addAll(line.stationList());
+            stations = stations.merge(line.sortedStations());
         }
-        return sectionList;
+        return stations;
     }
 
-    public List<Section> sectionList() {
-        List<Section> sectionList = new ArrayList<>();
+    public Sections sections() {
+        Sections sections = Sections.empty();
         for (Line line : list) {
-            sectionList.addAll(line.sectionList());
+            sections = sections.merge(line.sections());
         }
-        return sectionList;
+        return sections;
+    }
+
+    public List<Line> list() {
+        return Collections.unmodifiableList(list);
     }
 
     public <R> List<R> mapToList(Function<Line, R> mapper) {
