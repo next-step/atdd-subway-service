@@ -38,7 +38,7 @@ class PathTest {
 
     @ParameterizedTest(name = "[{index}] {argumentsWithNames} 값 으로 객체화 할 수 없다.")
     @MethodSource
-    @DisplayName("인자가 null인 상태로 객체화")
+    @DisplayName("지하철 역들과 거리는 필수")
     void instance_nullArgument_thrownIllegalArgumentException(
         Stations stations, Distance distance) {
         assertThatIllegalArgumentException()
@@ -47,7 +47,7 @@ class PathTest {
     }
 
     @Test
-    @DisplayName("2개 미만의 지하철 역들로 객체화")
+    @DisplayName("경로를 구하기 위한 2개 이상의 지하철 역은 필수")
     void instance_lessThanTwo_thrownIllegalArgumentException() {
         assertThatIllegalArgumentException()
             .isThrownBy(
