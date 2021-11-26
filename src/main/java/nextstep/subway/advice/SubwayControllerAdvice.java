@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class SubwayControllerAdvice {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<Exception> handleDataIntegrityViolationException(DataIntegrityViolationException exception) {
-        return ResponseEntity.badRequest().body(exception);
+    public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException exception) {
+        return ResponseEntity.badRequest().body(exception.getMessage());
     }
 }

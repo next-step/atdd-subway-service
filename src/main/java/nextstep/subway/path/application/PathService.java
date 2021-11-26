@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.finder.DijkstraShortestPathAlgorithm;
 import nextstep.subway.path.finder.PathFinder;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -27,7 +28,7 @@ public class PathService {
         List<Line> lines = lineRepository.findAll();
         Station sourceStation = stationService.findById(sourceId);
         Station targetStation = stationService.findById(targetId);
-        PathFinder pathFinder = PathFinder.from(lines);
+        PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(lines));
 
         return pathFinder.findShortestPath(sourceStation, targetStation);
     }

@@ -14,6 +14,7 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
+import nextstep.subway.path.finder.DijkstraShortestPathAlgorithm;
 import nextstep.subway.path.finder.PathFinder;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -62,7 +63,7 @@ public class FavoritePathService {
 
     private void validateCreateFavoritePath(Station source, Station target) {
         List<Line> lines = lineService.findAll();
-        PathFinder pathFinder = PathFinder.from(lines);
+        PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(lines));
         pathFinder.findShortestPath(source, target);
     }
 }
