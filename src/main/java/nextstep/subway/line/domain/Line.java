@@ -1,7 +1,6 @@
 package nextstep.subway.line.domain;
 
 import io.jsonwebtoken.lang.Assert;
-import java.util.List;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +9,7 @@ import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @Entity
 public class Line extends BaseEntity {
@@ -63,7 +63,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Station> sortedStations() {
+    public Stations sortedStations() {
         return sections.sortedStations();
     }
 
@@ -76,7 +76,7 @@ public class Line extends BaseEntity {
         sections.removeStation(station);
     }
 
-    List<Section> sectionList() {
-        return sections.list();
+    Sections sections() {
+        return sections;
     }
 }

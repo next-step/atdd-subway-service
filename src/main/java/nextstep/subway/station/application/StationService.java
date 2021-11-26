@@ -28,7 +28,7 @@ public class StationService {
 
     @Transactional(readOnly = true)
     public List<StationResponse> findAllStations() {
-        return StationResponse.listOf(stationRepository.findAll());
+        return StationResponse.listOf(stationRepository.findAllStations());
     }
 
     public void deleteStationById(long id) {

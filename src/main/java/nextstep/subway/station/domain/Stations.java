@@ -1,12 +1,16 @@
 package nextstep.subway.station.domain;
 
 import io.jsonwebtoken.lang.Assert;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public final class Stations {
+
+    private static final Stations EMPTY = new Stations(Collections.emptyList());
 
     private final List<Station> list;
 
@@ -19,8 +23,22 @@ public final class Stations {
         return new Stations(list);
     }
 
+    public static Stations empty() {
+        return EMPTY;
+    }
+
     public boolean sizeLessThan(int target) {
         return list.size() < target;
+    }
+
+    public List<Station> list() {
+        return Collections.unmodifiableList(list);
+    }
+
+    public Stations merge(Stations stations) {
+        ArrayList<Station> newList = new ArrayList<>(list);
+        newList.addAll(stations.list);
+        return from(newList);
     }
 
     public <R> List<R> mapToList(Function<Station, R> mapper) {
