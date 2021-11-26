@@ -1,8 +1,12 @@
 package nextstep.subway.favorite.ui;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,5 +32,21 @@ public class FavoritePathController {
                                                    @RequestBody FavoritePathRequest request) {
         FavoritePathResponse favoritePath = favoritePathService.createFavoritePath(loginMember, request);
         return ResponseEntity.created(URI.create("/favorites/" + favoritePath.getId())).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<FavoritePathResponse>> findFavoritePaths(@AuthenticationPrincipal LoginMember loginMember) {
+        return ResponseEntity.ok(favoritePathService.findFavoritePaths(loginMember));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<FavoritePathResponse> findFavoritePathById(@PathVariable Long id) {
+        return ResponseEntity.ok(favoritePathService.findFavoritePathById(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFavoritePath(@PathVariable Long id) {
+        favoritePathService.deleteFavoritePath(id);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -1,10 +1,12 @@
 package nextstep.subway.favorite.application;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.exception.DataNotExistException;
 import nextstep.subway.favorite.domain.FavoritePath;
 import nextstep.subway.favorite.domain.FavoritePathRepository;
 import nextstep.subway.favorite.dto.FavoritePathRequest;
@@ -16,6 +18,7 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.path.finder.PathFinder;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.utils.StreamUtils;
 
 @Service
 public class FavoritePathService {
@@ -43,6 +46,20 @@ public class FavoritePathService {
 
         FavoritePath favoritePath = favoritePathRepository.save(FavoritePath.of(source, target, member));
         return FavoritePathResponse.from(favoritePath);
+    }
+
+    public List<FavoritePathResponse> findFavoritePaths(LoginMember loginMember) {
+        List<FavoritePath> favoritePaths = favoritePathRepository.findAllByMemberId(loginMember.getId());
+        return StreamUtils.mapToList(favoritePaths, FavoritePathResponse::from);
+    }
+
+    public FavoritePathResponse findFavoritePathById(Long id) {
+        FavoritePath favoritePath = favoritePathRepository.findById(id).orElseThrow(DataNotExistException::new);;
+        return FavoritePathResponse.from(favoritePath);
+    }
+
+    public void deleteFavoritePath(Long id) {
+        favoritePathRepository.deleteById(id);
     }
 
     private void validateCreateFavoritePath(Station source, Station target) {

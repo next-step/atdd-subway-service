@@ -7,6 +7,9 @@ import static nextstep.subway.line.acceptance.LineSectionAcceptanceMethods.*;
 import static nextstep.subway.member.MemberAcceptanceMethods.*;
 import static nextstep.subway.station.StationAcceptanceMethods.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +20,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoritePathRequest;
+import nextstep.subway.favorite.dto.FavoritePathResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -128,29 +132,42 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void getFavorites() {
         // given
+        FavoritePathRequest 교대역_양재역_즐겨찾기_Request = FavoritePathRequest.of(교대역.getId(), 양재역.getId());
+        FavoritePathRequest 교대역_강남역_즐겨찾기_Request = FavoritePathRequest.of(교대역.getId(), 강남역.getId());
+        ExtractableResponse<Response> 교대역_양재역_즐겨찾기_Response = 즐겨찾기_등록됨(token, 교대역_양재역_즐겨찾기_Request);
+        ExtractableResponse<Response> 교대역_강남역_즐겨찾기_Response = 즐겨찾기_등록됨(token, 교대역_강남역_즐겨찾기_Request);
 
         // when
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(token);
 
         // then
+        FavoritePathResponse 교대역_양재역_즐겨찾기 = 즐겨찾기_조회_요청(교대역_양재역_즐겨찾기_Response, token).as(FavoritePathResponse.class);
+        FavoritePathResponse 교대역_강남역_즐겨찾기 = 즐겨찾기_조회_요청(교대역_강남역_즐겨찾기_Response, token).as(FavoritePathResponse.class);;
+        즐겨찾기_목록_포함됨(response, Arrays.asList(교대역_양재역_즐겨찾기, 교대역_강남역_즐겨찾기));
     }
 
     @DisplayName("즐겨찾기를 삭제한다.")
     @Test
     void deleteFavorite1() {
         // given
+        FavoritePathRequest 교대역_양재역_즐겨찾기_Request = FavoritePathRequest.of(교대역.getId(), 양재역.getId());
+        ExtractableResponse<Response> 교대역_양재역_즐겨찾기_Response = 즐겨찾기_등록됨(token, 교대역_양재역_즐겨찾기_Request);
+        FavoritePathResponse 교대역_양재역_즐겨찾기 = 즐겨찾기_조회_요청(교대역_양재역_즐겨찾기_Response, token).as(FavoritePathResponse.class);
 
         // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(교대역_양재역_즐겨찾기.getId(), token);
 
         // then
+        즐겨찾기_삭제됨(response);
     }
 
     @DisplayName("저장되지 않은 즐겨찾기를 삭제한다.")
     @Test
     void deleteFavorite2() {
-        // given
-
         // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(1L, token);
 
         // then
+        즐겨찾기_삭제_실패됨(response);
     }
 }
