@@ -13,20 +13,19 @@ import org.springframework.http.HttpStatus;
 
 public class AuthAcceptanceStep {
 
+    public static String 로그인_되어_있음(String email, String password) {
+        return 로그인_요청(email, password)
+            .as(TokenResponse.class)
+            .getAccessToken();
+    }
+
+
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         return RestAssured.given().log().all()
             .body(new TokenRequest(email, password))
             .contentType(ContentType.JSON)
             .when()
             .post("/login/token")
-            .then().log().all()
-            .extract();
-    }
-
-    public static ExtractableResponse<Response> 로그인_사용자_정보_요청(String accessToken) {
-        return RestAssured.given().log().all()
-            .auth().oauth2(accessToken)
-            .when().get("/members/me")
             .then().log().all()
             .extract();
     }
