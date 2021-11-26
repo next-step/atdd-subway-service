@@ -134,7 +134,7 @@ class SectionTest {
     }
 
     @Test
-    @DisplayName("null 구간을 병합")
+    @DisplayName("병합하려는 구간은 필수")
     void merge_nullSection_thrownIllegalArgumentException() {
         //given
         Section section = Section.of(
