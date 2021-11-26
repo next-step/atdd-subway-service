@@ -44,7 +44,7 @@ class SectionTest {
     }
 
     @Test
-    @DisplayName("상행역과 하행역은 달라야 한다.")
+    @DisplayName("상행역과 하행역은 달라야 함")
     void instance_sameUpAndDownStation_thrownIllegalArgumentException() {
         assertThatIllegalArgumentException()
             .isThrownBy(() ->
@@ -70,7 +70,7 @@ class SectionTest {
     }
 
     @Test
-    @DisplayName("null 구간을 제거")
+    @DisplayName("제거하려는 구간은 필수")
     void cut_nullSection_thrownIllegalArgumentException() {
         //given
         Section section = Section.of(
@@ -87,7 +87,7 @@ class SectionTest {
 
     @ParameterizedTest(name = "[{index}] 강남,광교 구간에서 {0} 구간을 제거할 수 없다")
     @MethodSource("sameOrNotExistStation")
-    @DisplayName("모든 역이 같거나 다른 구간을 제거")
+    @DisplayName("삭제하려는 구간의 상행역이나 하행역 중 한곳이 겹쳐야 함")
     void cut_sameOrNotExistStation_thrownIllegalArgumentException(Section removedSection) {
         Section section = Section.of(
             station("강남"), station("광교"), Distance.from(Integer.MAX_VALUE));
@@ -102,7 +102,7 @@ class SectionTest {
     }
 
     @Test
-    @DisplayName("제거되는 구간의 길이가 더 크거나 같은 상태로 제거하면 IllegalArgumentException")
+    @DisplayName("제거되는 구간의 길이가 작아야 함")
     void cut_greaterDistance_thrownIllegalArgumentException() {
         Section section = Section.of(
             station("교대"), station("광교"), Distance.from(Integer.MAX_VALUE));

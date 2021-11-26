@@ -1,7 +1,6 @@
 package nextstep.subway.station.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.NotFoundException;
@@ -29,10 +28,7 @@ public class StationService {
 
     @Transactional(readOnly = true)
     public List<StationResponse> findAllStations() {
-        return stationRepository.findAll()
-            .stream()
-            .map(StationResponse::from)
-            .collect(Collectors.toList());
+        return StationResponse.listOf(stationRepository.findAll());
     }
 
     public void deleteStationById(long id) {

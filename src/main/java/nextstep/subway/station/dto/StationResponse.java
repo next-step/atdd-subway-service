@@ -1,6 +1,8 @@
 package nextstep.subway.station.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.station.domain.Station;
 
 public final class StationResponse {
@@ -26,6 +28,12 @@ public final class StationResponse {
             station.name().toString(),
             station.getCreatedDate(),
             station.getModifiedDate());
+    }
+
+    public static List<StationResponse> listOf(List<Station> lines) {
+        return lines.stream()
+            .map(StationResponse::from)
+            .collect(Collectors.toList());
     }
 
     public Long getId() {

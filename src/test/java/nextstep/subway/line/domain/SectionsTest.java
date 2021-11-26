@@ -55,7 +55,7 @@ class SectionsTest {
     void stations() {
         // when
         List<Station> stations = Sections.from(양재_광교_구간)
-            .stations();
+            .sortedStations();
 
         // then
         assertThat(stations)
@@ -75,7 +75,7 @@ class SectionsTest {
         sections.add(section);
 
         // then
-        assertThat(sections.stations())
+        assertThat(sections.sortedStations())
             .hasSize(3)
             .doesNotHaveDuplicates()
             .containsExactly(expectedStations);
@@ -137,7 +137,7 @@ class SectionsTest {
             강남_양재_광교_구간들.removeStation(station);
 
             // then
-            assertThat(강남_양재_광교_구간들.stations())
+            assertThat(강남_양재_광교_구간들.sortedStations())
                 .hasSize(2)
                 .doesNotHaveDuplicates()
                 .containsExactly(expectedStations);

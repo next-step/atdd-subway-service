@@ -207,7 +207,7 @@ class LineServiceTest {
         assertAll(
             () -> assertThat(line.name()).isEqualTo(Name.from(expectedName)),
             () -> assertThat(line.color()).isEqualTo(Color.from(expectedColor)),
-            () -> assertThat(line.stations())
+            () -> assertThat(line.sortedStations())
                 .containsExactly(firstExpectedStation, secondExpectedStation)
         );
     }

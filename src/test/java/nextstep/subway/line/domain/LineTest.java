@@ -56,7 +56,7 @@ class LineTest {
 
     @ParameterizedTest(name = "[{index}] {argumentsWithNames} 값 으로 수정할 수 없다.")
     @MethodSource
-    @DisplayName("'null' 인 이름과 색상을 수정")
+    @DisplayName("수정하려는 이름과 색상은 필수")
     void update_nullArgument_thrownIllegalArgumentException(Name name, Color color) {
         //given
         Line line = Line.of(Name.from("name"), Color.from("color"), mock(Sections.class));

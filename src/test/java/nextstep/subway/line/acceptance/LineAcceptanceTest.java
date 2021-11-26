@@ -79,7 +79,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     }
 
     @ParameterizedTest(name = "[{index}] {argumentsWithNames} 값으로 지하철 노선을 생성할 수 없다.")
-    @DisplayName("빈 값 존재하면 지하철 노선은 생성할 수 없다.")
+    @DisplayName("이름, 색상, 상행역 id, 하행역 id, 거리는 지하철 노선 생성에 필수")
     @CsvSource({",color,1,2,10", "name,,1,2,10",
         "name,color,,2,10", "name,color,1,,10", "name,color,1,2,0"})
     void createLine_emptyParameter_400(String name, String color,
@@ -140,7 +140,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     }
 
     @ParameterizedTest(name = "[{index}] {argumentsWithNames} 값으로 노선을 수정할 수 없다.")
-    @DisplayName("이름 또는 색상을 빈값으로 지하철 노선을 수정한다.")
+    @DisplayName("수정하려는 이름 또는 색상은 필수다.")
     @CsvSource({",color", "name,"})
     void updateLine_emptyNameOrColor_400(String updatedName, String updatedColor) {
         // given
@@ -169,7 +169,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_수정_실패됨(response);
     }
 
-    @DisplayName("존재하지 않는 지하철 노선을 수정한다.")
+    @DisplayName("수정하려는 지하철 노선을 반드시 존재해야 한다.")
     @Test
     void updateLine_notExistsLine_404() {
         //when
@@ -193,7 +193,7 @@ class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_삭제됨(response);
     }
 
-    @DisplayName("존재하지 않는 지하철 노선을 제거한다.")
+    @DisplayName("제거하려는 지하철 노선은 반드시 존재해야 한다.")
     @Test
     void deleteLine_notExistsLine_400() {
         // given, when
