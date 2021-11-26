@@ -45,6 +45,10 @@ public class Distance {
         }
     }
 
+    public int value() {
+        return this.value;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this)

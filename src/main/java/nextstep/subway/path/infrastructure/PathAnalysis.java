@@ -1,5 +1,7 @@
 package nextstep.subway.path.infrastructure;
 
+import java.util.NoSuchElementException;
+
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -53,7 +55,11 @@ public class PathAnalysis {
     }
 
     public ShortestPathInfo findShortestPaths(Station source, Station target) {
-        GraphPath<Station, DefaultWeightedEdge> graphPath = this.shortestPath.getPath(source, target);
+        GraphPath<Station, DefaultWeightedEdge> graphPath  = this.shortestPath.getPath(source, target);
+
+        if (graphPath == null) {
+            throw new NoSuchElementException(String.format("%s->%s 에대한 경로가 조회되지 않습니다.", source.getName(), target.getName()));
+        }
 
         return ShortestPathInfo.of(graphPath.getVertexList(), Distance.of((int)graphPath.getWeight()));
     }

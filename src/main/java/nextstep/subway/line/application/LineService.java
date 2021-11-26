@@ -4,9 +4,11 @@ import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.path.infrastructure.PathAnalysis;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -32,6 +34,8 @@ public class LineService {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, Distance.of(request.getDistance())));
+
+        PathAnalysis.getInstance().addPath(new Section(null, upStation, downStation, Distance.of(request.getDistance())));
 
         return LineResponse.of(persistLine, getStationsBy(persistLine));
     }
@@ -73,6 +77,8 @@ public class LineService {
         Section section = generateSection(line, request);
 
         line.addSection(section);
+
+        PathAnalysis.getInstance().addPath(section);
     }
 
     private Section generateSection(Line line, SectionRequest request) {
@@ -89,4 +95,15 @@ public class LineService {
         Station station = stationService.findStationById(stationId);
 
         line.deleteStation(station);
-    }}
+    }
+
+    public Sections findAllSections() {
+        Sections sections = Sections.of();
+
+        for (Line line : lineRepository.findAll()) {
+            sections.add(line.getSections());
+        }
+
+        return sections;
+    }
+}

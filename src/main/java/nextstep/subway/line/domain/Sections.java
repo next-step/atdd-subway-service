@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -45,6 +46,12 @@ public class Sections {
         updateSectionForMatchStation(section);
 
         return this.sections.add(newSection);
+    }
+
+    public void add(Sections addingSections) {
+        for (Section section : addingSections.sections) {
+            this.sections.add(section);
+        }
     }
 
     private void updateSectionForMatchStation(Section section) {
@@ -144,6 +151,10 @@ public class Sections {
         }
 
         return stations;
+    }
+
+    public List<Section> getSections() {
+        return Collections.unmodifiableList(this.sections);
     }
 
     private Station findUpTerminalStation() {
