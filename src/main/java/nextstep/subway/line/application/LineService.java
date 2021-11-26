@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,13 +42,9 @@ public class LineService {
                                 .collect(Collectors.toList());
     }
 
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id)
-                                .orElseThrow(RuntimeException::new);
-    }
-
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
+        Line persistLine = lineRepository.findById(id)
+                                        .orElseThrow(() -> new NoSuchElementException("조회되는 라인이 없습니다."));
 
         return LineResponse.of(persistLine, getStationsBy(persistLine));
     }
@@ -60,7 +57,7 @@ public class LineService {
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id)
-                                            .orElseThrow(RuntimeException::new);
+                                           .orElseThrow(() -> new NoSuchElementException("조회되는 라인이 없습니다."));
 
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
@@ -70,7 +67,8 @@ public class LineService {
     }
 
     public void addLineStation(Long lineId, SectionRequest request) {
-        Line line = findLineById(lineId);
+        Line line = lineRepository.findById(lineId)
+                                    .orElseThrow(() -> new NoSuchElementException("조회되는 라인이 없습니다."));
 
         Section section = generateSection(line, request);
 
@@ -85,7 +83,9 @@ public class LineService {
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = findLineById(lineId);
+        Line line = lineRepository.findById(lineId)
+                                    .orElseThrow(() -> new NoSuchElementException("조회되는 라인이 없습니다."));
+
         Station station = stationService.findStationById(stationId);
 
         line.deleteStation(station);

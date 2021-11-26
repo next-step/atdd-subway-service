@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/lines")
@@ -38,7 +39,7 @@ public class LineController {
 
         try {
             lineResponse = lineService.findLineResponseById(id);
-        } catch (EmptyResultDataAccessException ex) {
+        } catch (NoSuchElementException ex) {
             return ResponseEntity.notFound().build();
         }
 
@@ -49,7 +50,7 @@ public class LineController {
     public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
         try {
             lineService.updateLine(id, lineUpdateRequest);
-        } catch (EmptyResultDataAccessException ex) {
+        } catch (NoSuchElementException ex) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.noContent().build();
@@ -70,7 +71,7 @@ public class LineController {
     public ResponseEntity<Void> addLineStation(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
         try {
             lineService.addLineStation(lineId, sectionRequest);
-        } catch (EmptyResultDataAccessException ex) {
+        } catch (NoSuchElementException ex) {
             return ResponseEntity.notFound().build();
         }
 
@@ -81,7 +82,7 @@ public class LineController {
     public ResponseEntity<Void> removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
         try {
             lineService.removeLineStation(lineId, stationId);
-        } catch (EmptyResultDataAccessException ex) {
+        } catch (NoSuchElementException ex) {
             return ResponseEntity.notFound().build();
         }
 
