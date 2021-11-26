@@ -18,7 +18,7 @@ class StationTest {
     }
 
     @Test
-    @DisplayName("이름이 비어있는 상태로 객체화")
+    @DisplayName("이름은 반드시 필수")
     void instance_nullName_thrownIllegalArgumentException() {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> Station.from(null))

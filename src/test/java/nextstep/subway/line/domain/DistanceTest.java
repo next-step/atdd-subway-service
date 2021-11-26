@@ -22,7 +22,7 @@ class DistanceTest {
     }
 
     @Test
-    @DisplayName("음수로 객체화")
+    @DisplayName("거리는 반드시 양수")
     void instance_negativeValue_thrownIllegalArgumentException() {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> Distance.from(Integer.MIN_VALUE))

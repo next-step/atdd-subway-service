@@ -40,8 +40,15 @@ public class Sections {
         return new Sections(section);
     }
 
-    List<Station> stations() {
-        return upToDownSortedStations();
+    List<Station> sortedStations() {
+        Section nextSection = firstSection();
+        List<Station> stations = new ArrayList<>(nextSection.stations());
+
+        while (isExistByUpStation(nextSection.downStation())) {
+            nextSection = findByUpStation(nextSection.downStation());
+            stations.add(nextSection.downStation());
+        }
+        return stations;
     }
 
     void add(Section section) {
@@ -106,17 +113,6 @@ public class Sections {
 
     private boolean hasMinimumSize() {
         return list.size() == MINIMUM_SECTION_SIZE;
-    }
-
-    private List<Station> upToDownSortedStations() {
-        Section nextSection = firstSection();
-        List<Station> stations = new ArrayList<>(nextSection.stations());
-
-        while (isExistByUpStation(nextSection.downStation())) {
-            nextSection = findByUpStation(nextSection.downStation());
-            stations.add(nextSection.downStation());
-        }
-        return stations;
     }
 
     private Section firstSection() {
