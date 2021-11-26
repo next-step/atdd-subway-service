@@ -113,7 +113,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [X] AuthenticationPrincipalArgumentResolver 활용하여 기능 구현
 
 ### 3. 인증 - 즐겨 찾기 기능 완성하기
-- [ ] 즐겨찾기 기능 구현
+- [X] 즐겨찾기 기능 구현
 - [ ] 인증을 포함하여 즐겨찾기 관련 인수 테스트 작성
     - [X] 즐겨찾기 생성
     - [ ] 즐겨찾기 목록 조회

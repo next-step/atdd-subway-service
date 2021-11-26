@@ -20,6 +20,10 @@ public class AuthAcceptanceMethods {
         return post(LOGIN_TOKEN_URL_PATH, tokenRequest);
     }
 
+    public static ExtractableResponse<Response> 회원_로그인_됨(TokenRequest tokenRequest) {
+        return post(LOGIN_TOKEN_URL_PATH, tokenRequest);
+    }
+
     public static void 회원_로그인_성공함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(TokenResponse.class).getAccessToken()).isNotBlank();
