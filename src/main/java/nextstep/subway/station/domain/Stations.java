@@ -36,7 +36,7 @@ public final class Stations {
     }
 
     public Stations merge(Stations stations) {
-        ArrayList<Station> newList = new ArrayList<>(list);
+        List<Station> newList = new ArrayList<>(list);
         newList.addAll(stations.list);
         return from(newList);
     }

@@ -37,7 +37,7 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
-        return LineResponse.listOf(lineRepository.findAllLines());
+        return LineResponse.listOf(findAll());
     }
 
     @Transactional(readOnly = true)

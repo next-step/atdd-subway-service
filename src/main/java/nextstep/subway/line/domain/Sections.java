@@ -83,7 +83,7 @@ public class Sections {
     }
 
     Sections merge(Sections sections) {
-        ArrayList<Section> newList = new ArrayList<>(list);
+        List<Section> newList = new ArrayList<>(list);
         newList.addAll(sections.list);
         return new Sections(newList);
     }

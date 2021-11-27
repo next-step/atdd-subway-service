@@ -41,7 +41,7 @@ public final class Path {
 
     @Override
     public int hashCode() {
-        return Objects.hash(stations, distance);
+        return Objects.hash(stations);
     }
 
     @Override
@@ -53,8 +53,7 @@ public final class Path {
             return false;
         }
         Path path = (Path) o;
-        return Objects.equals(stations, path.stations) && Objects
-            .equals(distance, path.distance);
+        return Objects.equals(stations, path.stations);
     }
 
     @Override

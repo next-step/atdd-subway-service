@@ -71,7 +71,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("동일한 시작역과 도착역으로 조회")
+    @DisplayName("출발역과 도착역은 달라야 함")
     void paths_sameSourceAndTargetStation_400() {
         // when
         ExtractableResponse<Response> response = 지하철_최단_경로_조회(교대역.getId(), 교대역.getId());
@@ -81,7 +81,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("연결되어 있지 않은 시작역과 도착역으로 조회")
+    @DisplayName("출발역과 도착역은 지하철 노선들에 존재해야 함")
     void paths_sourceAndTargetStationAreNotConnected_400() {
         // given
         StationResponse 반포역 = 지하철역_등록되어_있음("반포역").as(StationResponse.class);
@@ -94,7 +94,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 출발역으로 조회")
+    @DisplayName("출발역과 도착역은 반드시 존재해야 함")
     void paths_notExistSourceStation_404() {
         // given, when
         ExtractableResponse<Response> response = 지하철_최단_경로_조회(Long.MAX_VALUE, 교대역.getId());
@@ -104,7 +104,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @ParameterizedTest(name = "[{index}] {argumentsWithNames} 값으로 경로를 조회할 수 없다.")
-    @DisplayName("시작역 또는 도착역 파라미터를 null로 조회")
+    @DisplayName("출발역과 도착역의 id 값은 필수")
     @CsvSource({"1,", ",1"})
     void paths_nullSourceOrTargetId_400(Long sourceId, Long targetId) {
         // when

@@ -18,7 +18,7 @@ public final class PathStationResponse {
         this.createdDate = createdDate;
     }
 
-    public static PathStationResponse from(Station station) {
+    static PathStationResponse from(Station station) {
         return new PathStationResponse(station.id(),
             station.name().toString(),
             station.getCreatedDate());

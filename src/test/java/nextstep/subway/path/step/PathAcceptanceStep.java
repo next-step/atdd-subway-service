@@ -38,9 +38,15 @@ public class PathAcceptanceStep {
             () -> assertThat(path.getDistance()).isEqualTo(expectedDistance),
             () -> assertThat(path.getStations())
                 .doesNotHaveDuplicates()
-                .extracting(PathStationResponse::getId, PathStationResponse::getName)
+                .extracting(
+                    PathStationResponse::getId,
+                    PathStationResponse::getName,
+                    PathStationResponse::getCreatedDate)
                 .containsExactly(expectedStations.stream()
-                    .map(station -> Tuple.tuple(station.getId(), station.getName()))
+                    .map(station -> Tuple.tuple(
+                        station.getId(),
+                        station.getName(),
+                        station.getCreatedDate()))
                     .toArray(Tuple[]::new))
         );
     }

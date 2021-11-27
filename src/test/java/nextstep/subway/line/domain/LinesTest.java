@@ -50,10 +50,10 @@ class LinesTest {
         // given
         Lines emptyLines = Lines.from(Collections.emptyList());
 
-        //when
+        // when
         boolean isEmpty = emptyLines.isEmpty();
 
-        //then
+        // then
         assertThat(isEmpty).isTrue();
     }
 

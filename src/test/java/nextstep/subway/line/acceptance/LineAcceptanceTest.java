@@ -172,7 +172,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @DisplayName("수정하려는 지하철 노선을 반드시 존재해야 한다.")
     @Test
     void updateLine_notExistsLine_404() {
-        //when
+        // when
         ExtractableResponse<Response> response = 지하철_노선_수정_요청(Long.MAX_VALUE,
             new LineUpdateRequest("any", "any"));
 

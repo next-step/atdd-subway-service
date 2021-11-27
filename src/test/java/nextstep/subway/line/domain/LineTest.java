@@ -39,15 +39,15 @@ class LineTest {
     @Test
     @DisplayName("수정")
     void update() {
-        //given
+        // given
         Name updatedName = Name.from("updatedName");
         Color updatedColor = Color.from("updatedColor");
         Line line = Line.of(Name.from("name"), Color.from("color"), mock(Sections.class));
 
-        //when
+        // when
         line.update(updatedName, updatedColor);
 
-        //then
+        // then
         assertAll(
             () -> assertThat(line.name()).isEqualTo(updatedName),
             () -> assertThat(line.color()).isEqualTo(updatedColor)
@@ -58,13 +58,13 @@ class LineTest {
     @MethodSource
     @DisplayName("수정하려는 이름과 색상은 필수")
     void update_nullArgument_thrownIllegalArgumentException(Name name, Color color) {
-        //given
+        // given
         Line line = Line.of(Name.from("name"), Color.from("color"), mock(Sections.class));
 
-        //when
+        // when
         ThrowingCallable updateCall = () -> line.update(name, color);
 
-        //then
+        // then
         assertThatIllegalArgumentException()
             .isThrownBy(updateCall)
             .withMessageEndingWith("null 일 수 없습니다.");
