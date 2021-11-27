@@ -57,7 +57,7 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
 
-    public void addLineSection(Station upStation, Station downStation, int distance) {
+    public void addLineStation(Station upStation, Station downStation, int distance) {
         sections.checkUpdatable(upStation, downStation);
         sections.updateStation(upStation, downStation, distance);
         sections.add(new Section(this, upStation, downStation, distance));
