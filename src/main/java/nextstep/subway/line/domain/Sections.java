@@ -75,4 +75,13 @@ public class Sections {
         return getStations().stream()
                 .anyMatch(it -> it == station);
     }
+
+    public void updateStation(Station upStation, Station downStation, int distance) {
+        if (hasStation(upStation)) {
+            updateUpStation(upStation, downStation, distance);
+        }
+        if (hasStation(downStation)) {
+            updateDownStation(upStation, downStation, distance);
+        }
+    }
 }

@@ -69,24 +69,16 @@ public class Line extends BaseEntity {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
 
+        if (!isUpStationExisted && !isDownStationExisted) {
+            throw new RuntimeException();
+        }
+
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
                 stations.stream().noneMatch(it -> it == downStation)) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
 
-        if (stations.isEmpty()) {
-            sections.add(new Section(this, upStation, downStation, distance));
-            return;
-        }
-
-        if (isUpStationExisted) {
-            sections.updateUpStation(upStation, downStation, distance);
-            sections.add(new Section(this, upStation, downStation, distance));
-        } else if (isDownStationExisted) {
-            sections.updateDownStation(upStation, downStation, distance);
-            sections.add(new Section(this, upStation, downStation, distance));
-        } else {
-            throw new RuntimeException();
-        }
+        sections.updateStation(upStation, downStation, distance);
+        sections.add(new Section(this, upStation, downStation, distance));
     }
 }
