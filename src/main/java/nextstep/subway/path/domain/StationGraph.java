@@ -13,21 +13,23 @@ public class StationGraph extends WeightedMultigraph<Station, SectionEdge> {
     }
 
     public void addAllVertex(List<Section> sections) {
-        getStations(sections).forEach(it -> this.addVertex(it));
+        getStations(sections).forEach(this::addVertex);
     }
 
     public void addAllEdgeAndEdgeWeight(List<Section> sections) {
-        sections.forEach(it ->
-                addEdgeAndEdgeWeight(SectionEdge.of(it.getUpStation(), it.getDownStation(), it.getIntegerDistance())));
+        sections.stream()
+                .map(SectionEdge::of)
+                .forEach(this::addEdgeAndEdgeWeight);
     }
 
     public void addEdgeAndEdgeWeight(SectionEdge sectionEdge) {
-        this.setEdgeWeight(this.addEdge(sectionEdge.getSource(), sectionEdge.getTarget()), sectionEdge.getWeight());
+        addEdge(sectionEdge.getSource(), sectionEdge.getTarget(), sectionEdge);
+        setEdgeWeight(sectionEdge, sectionEdge.getWeight());
     }
 
     public List<Station> getStations(List<Section> sections) {
         if (sections.isEmpty()) {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
         Set<Station> result = new LinkedHashSet<>();
         sections.forEach(f -> {

@@ -4,6 +4,7 @@ import nextstep.subway.exception.SectionException;
 import nextstep.subway.exception.error.ErrorCode;
 import nextstep.subway.line.domain.section.Section;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.util.ArrayList;
@@ -19,27 +20,24 @@ public class PathFinder {
     public PathFinder(List<Section> sections) {
         this.sections = sections;
         this.stationGraph = new StationGraph();
+        stationGraph.addAllVertex(sections);
+        stationGraph.addAllEdgeAndEdgeWeight(sections);
+
         this.dijkstraShortestPath = new DijkstraShortestPath<>(stationGraph);
     }
 
     public List<Station> getDijkstraShortestPath(Station source, Station target) {
         validateLineStation(source, target);
-        stationGraph.addAllVertex(sections);
-        stationGraph.addAllEdgeAndEdgeWeight(sections);
 
         return getDijkstraStations(source, target);
     }
 
     public int getSumLineStationsDistance(Station source, Station target) {
-        List<Station> dijkstra = getDijkstraShortestPath(source, target);
+        GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(source, target);
 
-        return sections
+        return (int) path.getEdgeList()
                 .stream()
-                .filter(it ->
-                        (dijkstra.contains(it.getUpStation()) && dijkstra.containsAll(Arrays.asList(it.getUpStation(), it.getDownStation())))
-                )
-                .distinct()
-                .mapToInt(Section::getIntegerDistance)
+                .mapToDouble(SectionEdge::getWeight)
                 .sum();
     }
 
@@ -60,16 +58,8 @@ public class PathFinder {
     }
 
     private List<Station> getDijkstraStations(Station source, Station target) {
-        List<Station> result = new ArrayList<>();
-        dijkstraShortestPath.getPath(source, target)
-                .getVertexList()
-                .forEach(f ->
-                        result.addAll(stationGraph.getStations(sections)
-                                .stream()
-                                .filter(it -> f.equals(it))
-                                .collect(Collectors.toList()))
-                );
-        return result;
+        GraphPath<Station, SectionEdge> path = dijkstraShortestPath.getPath(source, target);
+        return path.getVertexList();
     }
 
 }

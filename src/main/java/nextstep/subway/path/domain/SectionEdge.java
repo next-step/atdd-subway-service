@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.section.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
@@ -17,8 +18,8 @@ public class SectionEdge extends DefaultWeightedEdge {
         this.weight = weight;
     }
 
-    public static SectionEdge of(Station source, Station target, double weight) {
-        return new SectionEdge(source, target, weight);
+    public static SectionEdge of(Section section) {
+        return new SectionEdge(section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 
     @Override
