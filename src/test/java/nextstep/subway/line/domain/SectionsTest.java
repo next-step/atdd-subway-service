@@ -140,6 +140,18 @@ public class SectionsTest {
         assertThat(upStation.get()).isEqualTo(new Section(이호선, 강남역, 삼성역, 10));
     }
 
+    @Test
+    void remove_구간을_제거한다() {
+        // given
+        Sections sections = getSections();
+
+        // when
+        sections.remove(new Section(이호선, 강남역, 삼성역, 10));
+
+        // then
+        assertThat(sections.getSections()).isEmpty();
+    }
+
     private Sections getSections() {
         Sections sections = new Sections();
         sections.add(new Section(이호선, 강남역, 삼성역, 10));

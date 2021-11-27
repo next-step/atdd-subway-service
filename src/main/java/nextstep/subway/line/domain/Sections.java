@@ -110,4 +110,8 @@ public class Sections {
                 .filter(it -> it.getDownStation() == station)
                 .findFirst();
     }
+
+    public void remove(Section section) {
+        sections.remove(section);
+    }
 }

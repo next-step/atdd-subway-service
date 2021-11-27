@@ -75,8 +75,7 @@ public class Line extends BaseEntity {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             sections.add(Section.merge(this, upLineStation.get(), downLineStation.get()));
         }
-
-        upLineStation.ifPresent(it -> this.getSections().remove(it));
-        downLineStation.ifPresent(it -> this.getSections().remove(it));
+        upLineStation.ifPresent(sections::remove);
+        downLineStation.ifPresent(sections::remove);
     }
 }
