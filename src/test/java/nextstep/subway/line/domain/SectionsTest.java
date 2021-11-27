@@ -164,6 +164,16 @@ public class SectionsTest {
         assertThat(isRemovable).isFalse();
     }
 
+    @Test
+    void checkRemovable_삭제_불가능하면_에러를_발생한다() {
+        // given
+        Sections sections = getSections();
+
+        // when
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> sections.checkRemovable());
+    }
+
     private Sections getSections() {
         Sections sections = new Sections();
         sections.add(new Section(이호선, 강남역, 삼성역, 10));

@@ -65,10 +65,7 @@ public class Line extends BaseEntity {
     }
 
     public void removeLineStation(Station station) {
-        if (!sections.isRemovable()) {
-            throw new RuntimeException();
-        }
-
+        sections.checkRemovable();
         Optional<Section> upLineStation = sections.findUpSection(station);
         Optional<Section> downLineStation = sections.findDownSection(station);
 

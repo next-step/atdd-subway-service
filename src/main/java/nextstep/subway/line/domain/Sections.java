@@ -120,4 +120,10 @@ public class Sections {
     public boolean isRemovable() {
         return sections.size() > MIN_REMOVABLE_SIZE;
     }
+
+    public void checkRemovable() {
+        if (!isRemovable()) {
+            throw new RuntimeException();
+        }
+    }
 }
