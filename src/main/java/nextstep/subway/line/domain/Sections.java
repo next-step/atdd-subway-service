@@ -45,7 +45,7 @@ public class Sections {
         return new Sections(Collections.singletonList(section));
     }
 
-    public static Sections empty() {
+    static Sections empty() {
         return EMPTY;
     }
 
@@ -82,7 +82,7 @@ public class Sections {
         }
     }
 
-    public Sections merge(Sections sections) {
+    Sections merge(Sections sections) {
         ArrayList<Section> newList = new ArrayList<>(list);
         newList.addAll(sections.list);
         return new Sections(newList);

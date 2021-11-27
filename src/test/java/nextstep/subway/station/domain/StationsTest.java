@@ -24,7 +24,7 @@ class StationsTest {
     }
 
     @Test
-    @DisplayName("목록이 null인 상태로 객체화")
+    @DisplayName("초기 구간은 반드시 필수")
     void instance_nullList_thrownIllegalArgumentException() {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> Stations.from(null))
