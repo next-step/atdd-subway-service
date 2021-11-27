@@ -58,11 +58,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 강남역, 역삼역, 10);
     }
 
-    @AfterEach
-    public void tearDown() {
-        PathAnalysis.getInstance().clear();
-    }
-    
     @DisplayName("지하철 최단 경로가 조회된다.")
     @Test
     void acceptance_search_shortestPath() {

@@ -15,61 +15,33 @@ import nextstep.subway.path.dto.ShortestPathInfo;
 import nextstep.subway.station.domain.Station;
 
 public class PathAnalysis {
-    private static PathAnalysis pathAnalysis;
-
     private WeightedMultigraph<PathAnalysisKey, DefaultWeightedEdge> graph;
     private DijkstraShortestPath<PathAnalysisKey, DefaultWeightedEdge> shortestPath ;
 
-    private PathAnalysis() {
-    }
-
-    public static PathAnalysis getInstance() {
-        if (pathAnalysis == null) {
-            pathAnalysis = new PathAnalysis();
-
-            return pathAnalysis;
-        }
-
-        return pathAnalysis;
-    }
-    
-    public void initialze(Sections sections) {
+    private PathAnalysis(Sections sections) {
+        vaildateInitialize(sections);
         this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        this.shortestPath = new DijkstraShortestPath<>(this.graph);
-
+        
         for (Section section : sections.getSections()) {
-            addPath(section);
-        }
-    }
+            this.graph.addVertex(PathAnalysisKey.of(section.getUpStation()));
+            this.graph.addVertex(PathAnalysisKey.of(section.getDownStation()));
 
-    public void clear() {
-        this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+            DefaultWeightedEdge newEdge = this.graph.addEdge(PathAnalysisKey.of(section.getDownStation()), PathAnalysisKey.of(section.getUpStation()));
+            int distance = section.getDistance().value();
+            this.graph.setEdgeWeight(newEdge, distance);
+        }
+
         this.shortestPath = new DijkstraShortestPath<>(this.graph);
     }
 
-    public void addPath(Section section) {
-        this.graph.addVertex(PathAnalysisKey.of(section.getUpStation()));
-        this.graph.addVertex(PathAnalysisKey.of(section.getDownStation()));
-
-        DefaultWeightedEdge newEdge = this.graph.addEdge(PathAnalysisKey.of(section.getDownStation()), PathAnalysisKey.of(section.getUpStation()));
-        int distance = section.getDistance().value();
-        this.graph.setEdgeWeight(newEdge, distance);
+    public static PathAnalysis of(Sections sections) {
+        return new PathAnalysis(sections);
     }
 
-    public void addAllPath(Sections sections) {
-        for (Section section : sections.getSections()) {
-            this.addPath(section);
+    private void vaildateInitialize(Sections sections) {
+        if (sections.isEmpty()) {
+            throw new IllegalArgumentException("경로를 분석할 구간이 없습니다.");
         }
-    }
-
-    public void removeAllPath(Sections sections) {
-        for (Section section : sections.getSections()) {
-            removeSection(section);
-        }
-    }
-
-    private void removeSection(Section section) {
-        this.graph.removeEdge(PathAnalysisKey.of(section.getDownStation()), PathAnalysisKey.of(section.getUpStation()));
     }
 
     public ShortestPathInfo findShortestPaths(Station source, Station target) {

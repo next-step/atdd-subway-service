@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
@@ -30,6 +31,9 @@ import nextstep.subway.station.domain.Station;
 public class PathServiceTest {
     @Mock
     private StationService stationService;
+
+    @Mock
+    private LineService lineService;
 
     @InjectMocks
     private PathService pathService;
@@ -65,11 +69,12 @@ public class PathServiceTest {
     void search_shortestPath() {
         // given
         Sections sections = Sections.of(강남_양재_구간, 교대_강남_구간, 교대_양재_구간);
-        PathAnalysis.getInstance().initialze(sections);
 
         when(stationService.findById(1L)).thenReturn(양재역);
         when(stationService.findById(2L)).thenReturn(교대역);
         when(stationService.findAllById(anyList())).thenReturn(List.of(양재역, 강남역, 교대역));
+        when(lineService.findAllSections()).thenReturn(sections);
+        
         // when
         PathResponse asdf =  pathService.searchShortestPath(1L, 2L);
 
@@ -87,7 +92,6 @@ public class PathServiceTest {
     void exception_sameSourceAndTarget() {
         // given
         Sections sections = Sections.of(교대_강남_구간, 강남_양재_구간);
-        PathAnalysis.getInstance().initialze(sections);
 
         // when
         // then
@@ -100,10 +104,10 @@ public class PathServiceTest {
     void exception_notConnectSourceAndTarget() {
         // given
         Sections sections = Sections.of(교대_강남_구간, 강남_양재_구간, 역삼_선릉_구간);
-        PathAnalysis.getInstance().initialze(sections);
 
         when(stationService.findById(1L)).thenReturn(강남역);
         when(stationService.findById(2L)).thenReturn(선릉역);
+        when(lineService.findAllSections()).thenReturn(sections);
 
         // when
         // then
@@ -116,7 +120,6 @@ public class PathServiceTest {
     void exception_notExistSourceOrTarget() {
         // given
         Sections sections = Sections.of(교대_강남_구간, 강남_양재_구간);
-        PathAnalysis.getInstance().initialze(sections);
 
         when(stationService.findById(1L)).thenReturn(강남역);
         when(stationService.findById(3L)).thenThrow(NoSuchElementException.class);
@@ -133,11 +136,10 @@ public class PathServiceTest {
     void exception_notExistSourceOrTargetInSections() {
         // given
         Sections sections = Sections.of(교대_강남_구간, 강남_양재_구간);
-        PathAnalysis.getInstance().initialze(sections);
 
         when(stationService.findById(1L)).thenReturn(강남역);
         when(stationService.findById(2L)).thenReturn(역삼역);
-
+        when(lineService.findAllSections()).thenReturn(sections);
 
         // when
         // then

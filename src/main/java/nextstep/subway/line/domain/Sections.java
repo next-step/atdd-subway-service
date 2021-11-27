@@ -54,6 +54,10 @@ public class Sections {
         }
     }
 
+    public boolean isEmpty()  {
+        return this.sections.isEmpty();
+    }
+
     private void updateSectionForMatchStation(Section section) {
         updateSectionForUpStaionMatch(section);
         updateSectionForDownStaionMatch(section);

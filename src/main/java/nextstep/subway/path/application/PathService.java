@@ -27,19 +27,15 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    @PostConstruct
-    public void init() {
-        Sections sections = lineService.findAllSections();
-        PathAnalysis.getInstance().initialze(sections);
-    }
-    
     public PathResponse searchShortestPath(Long sourceStationId, Long targetStationId) {
         vaildateShortestPath(sourceStationId, targetStationId);
 
         Station source = stationService.findById(sourceStationId);
         Station target = stationService.findById(targetStationId);
 
-        ShortestPathInfo shortestPathInfo = PathAnalysis.getInstance().findShortestPaths(source, target);
+        PathAnalysis pathAnalysis = PathAnalysis.of(lineService.findAllSections());
+
+        ShortestPathInfo shortestPathInfo = pathAnalysis.findShortestPaths(source, target);
         
         return createPathResponse(shortestPathInfo);
     }

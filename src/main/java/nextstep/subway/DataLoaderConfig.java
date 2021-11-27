@@ -45,6 +45,5 @@ public class DataLoaderConfig implements CommandLineRunner {
                                         new Section(이호선, 교대역, 강남역, Distance.of(10)),
                                         new Section(삼호선, 교대역, 양재역, Distance.of(10))
                                         );
-        PathAnalysis.getInstance().initialze(sections);
     }
 }
