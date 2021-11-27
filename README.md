@@ -58,3 +58,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 * LineService의 비즈니스 로직을 도메인으로 옮기기
 * 한번에 많은 부분을 고치려 하지 말고 나눠서 부분부분 리팩터링하기
 * 전체 기능은 인수 테스트로 보호한 뒤 세부 기능을 TDD로 리팩터링하기
+
+## 2단계 - 경로 조회 기능
+### 요구사항
+* 최단 경로 조회 인수 테스트 만들기
+* 최단 경로 조회 기능 구현하기
