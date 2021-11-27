@@ -1,7 +1,7 @@
 package nextstep.subway.path.application;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.dto.PathAnalysisKey;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathStationDto;
 import nextstep.subway.path.dto.ShortestPathInfo;
@@ -40,7 +41,7 @@ public class PathService {
 
         ShortestPathInfo shortestPathInfo = PathAnalysis.getInstance().findShortestPaths(source, target);
         
-        return createpathResponse(shortestPathInfo);
+        return createPathResponse(shortestPathInfo);
     }
 
     private void vaildateShortestPath(Long sourceStationId, Long targetStationId) {
@@ -49,14 +50,25 @@ public class PathService {
         }
     }
 
-    private PathResponse createpathResponse(ShortestPathInfo shortestPathInfo) {
-        List<PathStationDto> pathStationDtos = new ArrayList<>();
+    private PathResponse createPathResponse(ShortestPathInfo shortestPathInfo) {
+        List<Long> stationIds = convertPathAnalysisKeyToStationKey(shortestPathInfo);
 
-        for (Station shortestPath : shortestPathInfo.getStations()) {
-            PathStationDto pathStationDto = PathStationDto.of(shortestPath);
-            pathStationDtos.add(pathStationDto);
-        }
-        
+        List<Station> stations = stationService.findAllById(stationIds);
+
+        List<PathStationDto> pathStationDtos = convertPathAnaylysisKeyToPathStaionDto(stations);
+
         return new PathResponse(pathStationDtos, shortestPathInfo.getDistance().value());
+    }
+
+    private List<PathStationDto> convertPathAnaylysisKeyToPathStaionDto(List<Station> stations) {
+        return stations.stream()
+                        .map(PathStationDto::of)
+                        .collect(Collectors.toList());
+    }
+
+    private List<Long> convertPathAnalysisKeyToStationKey(ShortestPathInfo shortestPathInfo) {
+        return shortestPathInfo.getPathAnalysisKeys().stream()
+                                .map(PathAnalysisKey::getStationId)
+                                .collect(Collectors.toList());
     }
 }

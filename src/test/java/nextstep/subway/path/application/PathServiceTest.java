@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -68,7 +69,7 @@ public class PathServiceTest {
 
         when(stationService.findById(1L)).thenReturn(양재역);
         when(stationService.findById(2L)).thenReturn(교대역);
-
+        when(stationService.findAllById(anyList())).thenReturn(List.of(양재역, 강남역, 교대역));
         // when
         PathResponse asdf =  pathService.searchShortestPath(1L, 2L);
 

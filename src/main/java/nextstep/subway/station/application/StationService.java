@@ -44,4 +44,8 @@ public class StationService {
         return stationRepository.findById(id)
                                 .orElseThrow(() -> new NoSuchElementException("조회되는 역이 없습니다."));
     }
+
+    public List<Station> findAllById(List<Long> id) {
+        return stationRepository.findAllById(id);
+    }
 }

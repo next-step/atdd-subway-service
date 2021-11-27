@@ -35,7 +35,7 @@ public class LineService {
         Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, Distance.of(request.getDistance())));
 
-        PathAnalysis.getInstance().addPath(new Section(null, upStation, downStation, Distance.of(request.getDistance())));
+        PathAnalysis.getInstance().addPath(new Section(persistLine, upStation, downStation, Distance.of(request.getDistance())));
 
         return LineResponse.of(persistLine, getStationsBy(persistLine));
     }
@@ -94,7 +94,11 @@ public class LineService {
 
         Station station = stationService.findStationById(stationId);
 
+        PathAnalysis.getInstance().removeAllPath(line.getSections());
+
         line.deleteStation(station);
+
+        PathAnalysis.getInstance().addAllPath(line.getSections());
     }
 
     public Sections findAllSections() {
