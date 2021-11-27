@@ -69,9 +69,7 @@ public class Line extends BaseEntity {
             throw new RuntimeException();
         }
 
-        Optional<Section> upLineStation = this.getSections().stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
+        Optional<Section> upLineStation = sections.findUpSection(station);
         Optional<Section> downLineStation = this.getSections().stream()
                 .filter(it -> it.getDownStation() == station)
                 .findFirst();

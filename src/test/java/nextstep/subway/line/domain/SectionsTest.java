@@ -4,6 +4,7 @@ import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -111,6 +112,19 @@ public class SectionsTest {
         // when
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> sections.checkUpdatable(교대역, 잠실역));
+    }
+
+    @Test
+    void findUpSection_상행구간을_찾는다() {
+        // given
+        Sections sections = getSections();
+
+        // when
+        Optional<Section> upStation = sections.findUpSection(강남역);
+
+        // then
+        assertThat(upStation.isPresent()).isTrue();
+        assertThat(upStation.get()).isEqualTo(new Section(이호선, 강남역, 삼성역, 10));
     }
 
     private Sections getSections() {
