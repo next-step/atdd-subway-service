@@ -35,6 +35,13 @@ public class Section {
         this.distance = distance;
     }
 
+    public static Section merge(Line line, Section upSection, Section downSection) {
+        Station newUpStation = downSection.getUpStation();
+        Station newDownStation = upSection.getDownStation();
+        int newDistance = upSection.getDistance() + downSection.getDistance();
+        return new Section(line, newUpStation, newDownStation, newDistance);
+    }
+
     public Long getId() {
         return id;
     }
@@ -82,5 +89,16 @@ public class Section {
     @Override
     public int hashCode() {
         return Objects.hash(id, line, upStation, downStation, distance);
+    }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "id=" + id +
+                ", line=" + line +
+                ", upStation=" + upStation +
+                ", downStation=" + downStation +
+                ", distance=" + distance +
+                '}';
     }
 }

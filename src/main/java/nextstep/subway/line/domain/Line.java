@@ -73,10 +73,7 @@ public class Line extends BaseEntity {
         Optional<Section> downLineStation = sections.findDownSection(station);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            this.getSections().add(new Section(this, newUpStation, newDownStation, newDistance));
+            sections.add(Section.merge(this, upLineStation.get(), downLineStation.get()));
         }
 
         upLineStation.ifPresent(it -> this.getSections().remove(it));
