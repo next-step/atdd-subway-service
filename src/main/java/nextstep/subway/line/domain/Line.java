@@ -65,7 +65,7 @@ public class Line extends BaseEntity {
     }
 
     public void removeLineStation(Station station) {
-        if (this.getSections().size() <= 1) {
+        if (!sections.isRemovable()) {
             throw new RuntimeException();
         }
 

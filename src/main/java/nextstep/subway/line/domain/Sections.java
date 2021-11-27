@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 @Embeddable
 public class Sections {
 
+    private static final int MIN_REMOVABLE_SIZE = 1;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
@@ -113,5 +115,9 @@ public class Sections {
 
     public void remove(Section section) {
         sections.remove(section);
+    }
+
+    public boolean isRemovable() {
+        return sections.size() > MIN_REMOVABLE_SIZE;
     }
 }

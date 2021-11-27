@@ -152,6 +152,18 @@ public class SectionsTest {
         assertThat(sections.getSections()).isEmpty();
     }
 
+    @Test
+    void isRemovable_삭제_가능여부를_체크한다() {
+        // given
+        Sections sections = getSections();
+
+        // when
+        boolean isRemovable = sections.isRemovable();
+
+        // then
+        assertThat(isRemovable).isFalse();
+    }
+
     private Sections getSections() {
         Sections sections = new Sections();
         sections.add(new Section(이호선, 강남역, 삼성역, 10));
