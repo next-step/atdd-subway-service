@@ -5,6 +5,7 @@ import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
@@ -61,5 +62,28 @@ public class Line extends BaseEntity {
         sections.checkUpdatable(upStation, downStation);
         sections.updateStation(upStation, downStation, distance);
         sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public void removeLineStation(Station station) {
+        if (this.getSections().size() <= 1) {
+            throw new RuntimeException();
+        }
+
+        Optional<Section> upLineStation = this.getSections().stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+        Optional<Section> downLineStation = this.getSections().stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            this.getSections().add(new Section(this, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> this.getSections().remove(it));
+        downLineStation.ifPresent(it -> this.getSections().remove(it));
     }
 }
