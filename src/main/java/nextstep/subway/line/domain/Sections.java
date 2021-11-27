@@ -70,4 +70,9 @@ public class Sections {
                 .findFirst()
                 .ifPresent(it -> it.updateDownStation(upStation, distance));
     }
+
+    public boolean hasStation(Station station) {
+        return getStations().stream()
+                .anyMatch(it -> it == station);
+    }
 }
