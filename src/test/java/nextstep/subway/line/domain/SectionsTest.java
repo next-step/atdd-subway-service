@@ -44,4 +44,17 @@ public class SectionsTest {
         // then
         assertThat(sections.getSections()).contains(new Section(이호선, 역삼역, 삼성역, 7));
     }
+
+    @Test
+    void updateDownStation_하행역을_업데이트한다() {
+        // given
+        Sections sections = new Sections();
+        sections.add(new Section(이호선, 강남역, 삼성역, 10));
+
+        // when
+        sections.updateDownStation(역삼역, 삼성역, 3);
+
+        // then
+        assertThat(sections.getSections()).contains(new Section(이호선, 강남역, 역삼역, 7));
+    }
 }

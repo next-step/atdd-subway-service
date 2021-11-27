@@ -83,11 +83,7 @@ public class Line extends BaseEntity {
             sections.updateUpStation(upStation, downStation, distance);
             sections.add(new Section(this, upStation, downStation, distance));
         } else if (isDownStationExisted) {
-            getSections().stream()
-                    .filter(it -> it.getDownStation() == downStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, distance));
-
+            sections.updateDownStation(upStation, downStation, distance);
             sections.add(new Section(this, upStation, downStation, distance));
         } else {
             throw new RuntimeException();
