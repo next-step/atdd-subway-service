@@ -40,7 +40,7 @@ class SectionTest {
         Station upStation, Station downStation, Distance distance) {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> Section.of(upStation, downStation, distance))
-            .withMessageEndingWith(" 값은 null 일 수 없습니다.");
+            .withMessageEndingWith(" 값은 필수입니다.");
     }
 
     @Test
@@ -82,7 +82,7 @@ class SectionTest {
         // then
         assertThatIllegalArgumentException()
             .isThrownBy(cutCallable)
-            .withMessageContaining("지워지는 구간은 null 일 수 없습니다.");
+            .withMessageContaining("지우려는 구간은 필수입니다.");
     }
 
     @ParameterizedTest(name = "[{index}] 강남,광교 구간에서 {0} 구간을 제거할 수 없다")
@@ -146,7 +146,7 @@ class SectionTest {
         // then
         assertThatIllegalArgumentException()
             .isThrownBy(mergeCall)
-            .withMessageContaining("합쳐지는 구간이 null 일 수 없습니다.");
+            .withMessageContaining("합쳐지는 구간은 필수입니다.");
     }
 
     @ParameterizedTest(name = "[{index}] 강남,광교 구간에 {0} 구간을 연결할 수 없다.")

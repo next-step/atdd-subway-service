@@ -31,9 +31,9 @@ public class Line extends BaseEntity {
     }
 
     private Line(Name name, Color color, Sections sections) {
-        Assert.notNull(name, "이름이 null 일 수 없습니다.");
-        Assert.notNull(color, "색상이 null 일 수 없습니다.");
-        Assert.notNull(sections, "구간들이 null 일 수 없습니다.");
+        Assert.notNull(name, "이름은 필수입니다.");
+        Assert.notNull(color, "색상은 필수입니다.");
+        Assert.notNull(sections, "구간들은 필수입니다.");
         this.name = name;
         this.color = color;
         this.sections = sections;
@@ -45,8 +45,8 @@ public class Line extends BaseEntity {
     }
 
     public void update(Name name, Color color) {
-        Assert.notNull(name, "수정하는 이름이 null 일 수 없습니다.");
-        Assert.notNull(color, "수정하는 색상이 null 일 수 없습니다.");
+        Assert.notNull(name, "수정하려는 이름은 필수입니다.");
+        Assert.notNull(color, "수정하려는 색상은 필수입니다.");
         this.name = name;
         this.color = color;
     }

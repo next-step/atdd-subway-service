@@ -13,8 +13,8 @@ public final class Path {
     private final Distance distance;
 
     private Path(Stations stations, Distance distance) {
-        Assert.notNull(stations, "지하철 역 경로가 null 일 수 없습니다.");
-        Assert.notNull(distance, "거리가 null 일 수 없습니다.");
+        Assert.notNull(stations, "지하철 역 경로는 필수입니다.");
+        Assert.notNull(distance, "거리는 필수입니다.");
         validateSize(stations);
         this.stations = stations;
         this.distance = distance;

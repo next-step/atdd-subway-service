@@ -43,7 +43,7 @@ class PathTest {
         Stations stations, Distance distance) {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> Path.of(stations, distance))
-            .withMessageEndingWith("null 일 수 없습니다.");
+            .withMessageEndingWith("필수입니다.");
     }
 
     @Test

@@ -33,7 +33,7 @@ class LineTest {
         Name name, Color color, Sections sections) {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> Line.of(name, color, sections))
-            .withMessageContaining(" null 일 수 없습니다.");
+            .withMessageContaining("필수입니다.");
     }
 
     @Test
@@ -67,7 +67,7 @@ class LineTest {
         // then
         assertThatIllegalArgumentException()
             .isThrownBy(updateCall)
-            .withMessageEndingWith("null 일 수 없습니다.");
+            .withMessageEndingWith("필수입니다.");
     }
 
     private static Stream<Arguments> instance_emptyArgument_thrownIllegalArgumentException() {

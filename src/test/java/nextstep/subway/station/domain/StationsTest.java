@@ -28,7 +28,7 @@ class StationsTest {
     void instance_nullList_thrownIllegalArgumentException() {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> Stations.from(null))
-            .withMessage("지하철 역 목록이 null 일 수 없습니다.");
+            .withMessage("지하철 역 목록은 필수입니다.");
     }
 
     @ParameterizedTest(name = "[{index}] {0} 은 강남역만 존재하는 지하철 역들의 크기보다 작은 것이 {1}")

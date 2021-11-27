@@ -13,7 +13,7 @@ public final class Lines {
     private final List<Line> list;
 
     private Lines(List<Line> list) {
-        Assert.notNull(list, "지하철 노선 목록이 null 일 수 없습니다.");
+        Assert.notNull(list, "지하철 노선 목록은 필수입니다.");
         this.list = list;
     }
 

@@ -41,7 +41,7 @@ class LinesTest {
     void instance_nullList_thrownIllegalArgumentException() {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> Lines.from(null))
-            .withMessage("지하철 노선 목록이 null 일 수 없습니다.");
+            .withMessage("지하철 노선 목록은 필수입니다.");
     }
 
     @Test

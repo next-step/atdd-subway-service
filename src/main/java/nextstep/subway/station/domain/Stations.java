@@ -15,7 +15,7 @@ public final class Stations {
     private final List<Station> list;
 
     private Stations(List<Station> list) {
-        Assert.notNull(list, "지하철 역 목록이 null 일 수 없습니다.");
+        Assert.notNull(list, "지하철 역 목록은 필수입니다.");
         this.list = list;
     }
 
