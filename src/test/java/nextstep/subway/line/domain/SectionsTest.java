@@ -36,8 +36,7 @@ public class SectionsTest {
     @Test
     void updateUpStation_상행역을_업데이트한다() {
         // given
-        Sections sections = new Sections();
-        sections.add(new Section(이호선, 강남역, 삼성역, 10));
+        Sections sections = getSections();
 
         // when
         sections.updateUpStation(강남역, 역삼역, 3);
@@ -49,8 +48,7 @@ public class SectionsTest {
     @Test
     void updateDownStation_하행역을_업데이트한다() {
         // given
-        Sections sections = new Sections();
-        sections.add(new Section(이호선, 강남역, 삼성역, 10));
+        Sections sections = getSections();
 
         // when
         sections.updateDownStation(역삼역, 삼성역, 3);
@@ -62,8 +60,7 @@ public class SectionsTest {
     @Test
     void hasStation_역이_있는지_학인한다() {
         // given
-        Sections sections = new Sections();
-        sections.add(new Section(이호선, 강남역, 삼성역, 10));
+        Sections sections = getSections();
 
         // when
         boolean hasStation = sections.hasStation(강남역);
@@ -75,8 +72,7 @@ public class SectionsTest {
     @Test
     void updateStation_상행역을_업데이트한다() {
         // given
-        Sections sections = new Sections();
-        sections.add(new Section(이호선, 강남역, 삼성역, 10));
+        Sections sections = getSections();
 
         // when
         sections.updateStation(역삼역, 삼성역, 3);
@@ -88,8 +84,7 @@ public class SectionsTest {
     @Test
     void updateStation_하행역을_업데이트한다() {
         // given
-        Sections sections = new Sections();
-        sections.add(new Section(이호선, 강남역, 삼성역, 10));
+        Sections sections = getSections();
 
         // when
         sections.updateStation(강남역, 역삼역, 3);
@@ -101,8 +96,7 @@ public class SectionsTest {
     @Test
     void checkUpdatable_이미_등록된_구간인_경우_에러를_발생한다() {
         // given
-        Sections sections = new Sections();
-        sections.add(new Section(이호선, 강남역, 삼성역, 10));
+        Sections sections = getSections();
 
         // when
         assertThatExceptionOfType(RuntimeException.class)
@@ -112,11 +106,16 @@ public class SectionsTest {
     @Test
     void checkUpdatable_등록할_수_없는_구간인_경우_에러를_발생한다() {
         // given
-        Sections sections = new Sections();
-        sections.add(new Section(이호선, 강남역, 삼성역, 10));
+        Sections sections = getSections();
 
         // when
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> sections.checkUpdatable(교대역, 잠실역));
+    }
+
+    private Sections getSections() {
+        Sections sections = new Sections();
+        sections.add(new Section(이호선, 강남역, 삼성역, 10));
+        return sections;
     }
 }
