@@ -1,11 +1,15 @@
 package nextstep.subway.station.dto;
 
+import javax.validation.constraints.NotBlank;
+import nextstep.subway.common.domain.Name;
 import nextstep.subway.station.domain.Station;
 
-public class StationRequest {
+public final class StationRequest {
+
+    @NotBlank(message = "역 이름은 비어있을 수 없습니다.")
     private String name;
 
-    public StationRequest() {
+    private StationRequest() {
     }
 
     public StationRequest(String name) {
@@ -17,6 +21,10 @@ public class StationRequest {
     }
 
     public Station toStation() {
-        return new Station(name);
+        return Station.from(Name.from(name));
+    }
+
+    public Name name() {
+        return Name.from(name);
     }
 }

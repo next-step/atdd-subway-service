@@ -1,62 +1,93 @@
 package nextstep.subway.line.acceptance;
 
-import io.restassured.RestAssured;
+import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_등록되어_있음;
+import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_목록_응답됨;
+import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_목록_조회_요청;
+import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_목록_포함됨;
+import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_못찾음;
+import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_삭제됨;
+import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_생성_실패됨;
+import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_생성_요청;
+import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_생성됨;
+import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_수정_실패됨;
+import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_수정_요청;
+import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_수정됨;
+import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_응답됨;
+import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_제거_요청;
+import static nextstep.subway.station.step.StationAcceptanceStep.지하철역_등록되어_있음;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Arrays;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.line.dto.LineRequest;
+import nextstep.subway.line.acceptance.step.LineAcceptanceStep;
+import nextstep.subway.line.dto.LineCreateRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.station.StationAcceptanceTest;
+import nextstep.subway.line.dto.LineUpdateRequest;
+import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 @DisplayName("지하철 노선 관련 기능")
-public class LineAcceptanceTest extends AcceptanceTest {
+class LineAcceptanceTest extends AcceptanceTest {
+
     private StationResponse 강남역;
     private StationResponse 광교역;
-    private LineRequest lineRequest1;
-    private LineRequest lineRequest2;
+    private LineCreateRequest 신분당선_생성_파라미터;
+    private LineCreateRequest 구신분당선_생성_파라미터;
 
     @BeforeEach
     public void setUp() {
-        super.setUp();
+        강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
+        광교역 = 지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
-        // given
-        강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
-
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
+        신분당선_생성_파라미터 = new LineCreateRequest("신분당선", "bg-red-600",
+            new SectionRequest(강남역.getId(), 광교역.getId(), 10));
+        구신분당선_생성_파라미터 = new LineCreateRequest("구신분당선", "bg-red-600",
+            new SectionRequest(강남역.getId(), 광교역.getId(), 15));
     }
 
     @DisplayName("지하철 노선을 생성한다.")
     @Test
     void createLine() {
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(신분당선_생성_파라미터);
 
         // then
-        지하철_노선_생성됨(response);
+        지하철_노선_생성됨(response,
+            신분당선_생성_파라미터.getName(),
+            신분당선_생성_파라미터.getColor(),
+            Arrays.asList(강남역, 광교역));
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
     @Test
-    void createLineWithDuplicateName() {
+    void createLine_duplicateName_400() {
         // given
-        지하철_노선_등록되어_있음(lineRequest1);
+        지하철_노선_등록되어_있음(신분당선_생성_파라미터);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(신분당선_생성_파라미터);
+
+        // then
+        지하철_노선_생성_실패됨(response);
+    }
+
+    @ParameterizedTest(name = "[{index}] {argumentsWithNames} 값으로 지하철 노선을 생성할 수 없다.")
+    @DisplayName("이름, 색상, 상행역 id, 하행역 id, 거리는 지하철 노선 생성에 필수")
+    @CsvSource({",color,1,2,10", "name,,1,2,10",
+        "name,color,,2,10", "name,color,1,,10", "name,color,1,2,0"})
+    void createLine_emptyParameter_400(String name, String color,
+        Long upStationId, Long downStationId, Integer distance) {
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(
+            new LineCreateRequest(name, color,
+                new SectionRequest(upStationId, downStationId, distance)));
 
         // then
         지하철_노선_생성_실패됨(response);
@@ -66,25 +97,27 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLines() {
         // given
-        ExtractableResponse<Response> createResponse1 = 지하철_노선_등록되어_있음(lineRequest1);
-        ExtractableResponse<Response> createResponse2 = 지하철_노선_등록되어_있음(lineRequest2);
+        LineResponse createResponse1 = 지하철_노선_등록되어_있음(신분당선_생성_파라미터);
+        LineResponse createResponse2 = 지하철_노선_등록되어_있음(구신분당선_생성_파라미터);
 
         // when
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청();
 
         // then
-        지하철_노선_목록_응답됨(response);
-        지하철_노선_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2));
+        assertAll(
+            () -> 지하철_노선_목록_응답됨(response),
+            () -> 지하철_노선_목록_포함됨(response, Arrays.asList(createResponse1, createResponse2))
+        );
     }
 
     @DisplayName("지하철 노선을 조회한다.")
     @Test
     void getLine() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_등록되어_있음(lineRequest1);
+        LineResponse createResponse = 지하철_노선_등록되어_있음(신분당선_생성_파라미터);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청(createResponse);
+        ExtractableResponse<Response> response = LineAcceptanceStep.지하철_노선_조회_요청(createResponse);
 
         // then
         지하철_노선_응답됨(response, createResponse);
@@ -94,128 +127,79 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLine() {
         // given
-        String name = "신분당선";
-        ExtractableResponse<Response> createResponse = 지하철_노선_등록되어_있음(lineRequest1);
+        String updatedName = "구신분당선";
+        String updatedColor = "bg-red-600";
+        LineResponse createdResponse = 지하철_노선_등록되어_있음(신분당선_생성_파라미터);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_수정_요청(createResponse, lineRequest2);
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(createdResponse.getId(),
+            new LineUpdateRequest(updatedName, updatedColor));
 
         // then
-        지하철_노선_수정됨(response);
+        지하철_노선_수정됨(response, createdResponse, updatedName, updatedColor);
+    }
+
+    @ParameterizedTest(name = "[{index}] {argumentsWithNames} 값으로 노선을 수정할 수 없다.")
+    @DisplayName("수정하려는 이름 또는 색상은 필수다.")
+    @CsvSource({",color", "name,"})
+    void updateLine_emptyNameOrColor_400(String updatedName, String updatedColor) {
+        // given
+        LineResponse createdLine = 지하철_노선_등록되어_있음(신분당선_생성_파라미터);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(
+            createdLine.getId(), new LineUpdateRequest(updatedName, updatedColor));
+
+        // then
+        지하철_노선_수정_실패됨(response);
+    }
+
+    @Test
+    @DisplayName("기존에 존재하는 노선 이름으로 변경할 수 없다.")
+    void updateLine_duplicationName_400() {
+        // given
+        지하철_노선_등록되어_있음(신분당선_생성_파라미터);
+        LineResponse createdLine = 지하철_노선_등록되어_있음(구신분당선_생성_파라미터);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(
+            createdLine.getId(), new LineUpdateRequest(신분당선_생성_파라미터.getName(), "any"));
+
+        // then
+        지하철_노선_수정_실패됨(response);
+    }
+
+    @DisplayName("수정하려는 지하철 노선을 반드시 존재해야 한다.")
+    @Test
+    void updateLine_notExistsLine_404() {
+        //when
+        ExtractableResponse<Response> response = 지하철_노선_수정_요청(Long.MAX_VALUE,
+            new LineUpdateRequest("any", "any"));
+
+        // then
+        지하철_노선_못찾음(response);
     }
 
     @DisplayName("지하철 노선을 제거한다.")
     @Test
     void deleteLine() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철_노선_등록되어_있음(lineRequest1);
+        LineResponse createLine = 지하철_노선_등록되어_있음(신분당선_생성_파라미터);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_제거_요청(createResponse);
+        ExtractableResponse<Response> response = 지하철_노선_제거_요청(createLine.getId());
 
         // then
         지하철_노선_삭제됨(response);
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest params) {
-        return 지하철_노선_생성_요청(params);
-    }
+    @DisplayName("제거하려는 지하철 노선은 반드시 존재해야 한다.")
+    @Test
+    void deleteLine_notExistsLine_400() {
+        // given, when
+        ExtractableResponse<Response> response = 지하철_노선_제거_요청(Long.MAX_VALUE);
 
-    public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/lines")
-                .then().log().all().
-                        extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
-        return 지하철_노선_목록_조회_요청("/lines");
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
-
-        return 지하철_노선_목록_조회_요청(uri);
-    }
-
-    private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(String uri) {
-        return RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(uri)
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_조회_요청(LineResponse response) {
-        return RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}", response.getId())
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_수정_요청(ExtractableResponse<Response> response, LineRequest params) {
-        String uri = response.header("Location");
-
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().put(uri)
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_제거_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
-
-        return RestAssured
-                .given().log().all()
-                .when().delete(uri)
-                .then().log().all()
-                .extract();
-    }
-
-    public static void 지하철_노선_생성됨(ExtractableResponse response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
-    }
-
-    public static void 지하철_노선_생성_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    public static void 지하철_노선_목록_응답됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 지하철_노선_응답됨(ExtractableResponse<Response> response, ExtractableResponse<Response> createdResponse) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.as(LineResponse.class)).isNotNull();
-    }
-
-    public static void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
-        List<Long> expectedLineIds = createdResponses.stream()
-                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-                .collect(Collectors.toList());
-
-        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
-                .map(LineResponse::getId)
-                .collect(Collectors.toList());
-
-        assertThat(resultLineIds).containsAll(expectedLineIds);
-    }
-
-    public static void 지하철_노선_수정됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 지하철_노선_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        // then
+        지하철_노선_못찾음(response);
     }
 }

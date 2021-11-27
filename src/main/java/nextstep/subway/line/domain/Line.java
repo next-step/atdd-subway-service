@@ -1,56 +1,78 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.BaseEntity;
-import nextstep.subway.station.domain.Station;
-
-import javax.persistence.*;
-import java.util.ArrayList;
+import io.jsonwebtoken.lang.Assert;
 import java.util.List;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import nextstep.subway.BaseEntity;
+import nextstep.subway.common.domain.Name;
+import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Line extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
-    private String name;
-    private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Name name;
 
-    public Line() {
+    @Embedded
+    private Color color;
+
+    @Embedded
+    private Sections sections;
+
+    protected Line() {
     }
 
-    public Line(String name, String color) {
+    private Line(Name name, Color color, Sections sections) {
+        Assert.notNull(name, "이름이 null 일 수 없습니다.");
+        Assert.notNull(color, "색상이 null 일 수 없습니다.");
+        Assert.notNull(sections, "구간들이 null 일 수 없습니다.");
+        this.name = name;
+        this.color = color;
+        this.sections = sections;
+        this.sections.setLine(this);
+    }
+
+    public static Line of(Name name, Color color, Sections sections) {
+        return new Line(name, color, sections);
+    }
+
+    public void update(Name name, Color color) {
+        Assert.notNull(name, "수정하는 이름이 null 일 수 없습니다.");
+        Assert.notNull(color, "수정하는 색상이 null 일 수 없습니다.");
         this.name = name;
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
-    }
-
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
-    }
-
-    public Long getId() {
+    public Long id() {
         return id;
     }
 
-    public String getName() {
+    public Name name() {
         return name;
     }
 
-    public String getColor() {
+    public Color color() {
         return color;
     }
 
-    public List<Section> getSections() {
-        return sections;
+    public List<Station> sortedStations() {
+        return sections.sortedStations();
+    }
+
+    public void addSection(Section section) {
+        sections.add(section);
+        section.changeLine(this);
+    }
+
+    public void removeStation(Station station) {
+        sections.removeStation(station);
     }
 }
