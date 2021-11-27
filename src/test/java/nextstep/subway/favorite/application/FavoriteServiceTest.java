@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.only;
@@ -15,12 +14,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
-import nextstep.subway.member.domain.Member;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -48,13 +47,13 @@ class FavoriteServiceTest {
     @InjectMocks
     private FavoriteService service;
 
-    private Member 사용자;
+    private LoginMember 로그인_사용자;
     private Station 강남역;
     private Station 광교역;
 
     @BeforeEach
     void setUp() {
-        사용자 = new Member("email", "password", 1);
+        로그인_사용자 = new LoginMember(1L, "email@email.com", 1);
         강남역 = Station.from(Name.from("강남역"));
         광교역 = Station.from(Name.from("광교역"));
     }
@@ -65,14 +64,13 @@ class FavoriteServiceTest {
         // given
         검색된_지하철_역_제공(1L, 강남역);
         검색된_지하철_역_제공(2L, 광교역);
-        최단_경로_존재(강남역, 광교역);
         저장된_즐겨찾기_반환(강남역, 광교역);
 
         // when
-        service.saveFavorite(사용자, new FavoriteRequest(1L, 2L));
+        service.saveFavorite(로그인_사용자, new FavoriteRequest(1L, 2L));
 
         // then
-        즐겨찾기_저장_요청됨(사용자, 강남역, 광교역);
+        즐겨찾기_저장_요청됨(로그인_사용자, 강남역, 광교역);
     }
 
     @Test
@@ -85,23 +83,7 @@ class FavoriteServiceTest {
 
         // when
         ThrowingCallable saveFavoriteCallable =
-            () -> service.saveFavorite(사용자, new FavoriteRequest(1L, 2L));
-
-        // then
-        즐겨찾기_저장_실패(saveFavoriteCallable);
-    }
-
-    @Test
-    @DisplayName("저장")
-    void findAll_notFoundPath_thrownInvalidDataException() {
-        // given
-        검색된_지하철_역_제공(1L, 강남역);
-        검색된_지하철_역_제공(2L, 광교역);
-        경로가_존재하지_않음(강남역, 광교역);
-
-        // when
-        ThrowingCallable saveFavoriteCallable =
-            () -> service.saveFavorite(사용자, new FavoriteRequest(1L, 2L));
+            () -> service.saveFavorite(로그인_사용자, new FavoriteRequest(1L, 2L));
 
         // then
         즐겨찾기_저장_실패(saveFavoriteCallable);
@@ -115,7 +97,7 @@ class FavoriteServiceTest {
         검색된_즐겨찾기_제공(mockFavorite);
 
         // when
-        service.deleteFavorite(사용자, Long.MAX_VALUE);
+        service.deleteFavorite(Long.MAX_VALUE, 로그인_사용자);
 
         // then
         즐겨찾기_삭제_요청됨(mockFavorite);
@@ -139,35 +121,34 @@ class FavoriteServiceTest {
             .thenThrow(new InvalidDataException("경로를 조회할 수 없습니다."));
     }
 
-    private void 최단_경로_존재(Station source, Station target) {
-        doNothing()
-            .when(pathService.shortestPath(eq(source), eq(target)));
-    }
-
     private void 검색된_지하철_역_제공(Long id, Station station) {
         when(stationService.findById(id))
             .thenReturn(station);
     }
 
     private void 저장된_즐겨찾기_반환(Station source, Station target) {
+        Favorite favorite = mock(Favorite.class);
+        when(favorite.id()).thenReturn(1L);
+        when(favorite.source()).thenReturn(source);
+        when(favorite.target()).thenReturn(target);
         when(repository.save(any(Favorite.class)))
-            .thenReturn(Favorite.from(source, target));
+            .thenReturn(favorite);
     }
 
-    private void 즐겨찾기_저장_요청됨(Member member, Station expectedSource, Station expectedTarget) {
+    private void 즐겨찾기_저장_요청됨(LoginMember member, Station expectedSource, Station expectedTarget) {
         ArgumentCaptor<Favorite> favoriteArgumentCaptor = ArgumentCaptor.forClass(Favorite.class);
         verify(repository, only()).save(favoriteArgumentCaptor.capture());
         Favorite favorite = favoriteArgumentCaptor.getValue();
 
         assertAll(
-            () -> assertThat(favorite.member()).isEqualTo(member),
+            () -> assertThat(favorite.memberId()).isEqualTo(member.getId()),
             () -> assertThat(favorite.source()).isEqualTo(expectedSource),
             () -> assertThat(favorite.target()).isEqualTo(expectedTarget)
         );
     }
 
     private void 검색된_즐겨찾기_제공(Favorite favorite) {
-        when(repository.findByIdAndMember(anyLong(), 사용자))
+        when(repository.findByIdAndMemberId(anyLong(), eq(로그인_사용자.getId())))
             .thenReturn(Optional.of(favorite));
     }
 

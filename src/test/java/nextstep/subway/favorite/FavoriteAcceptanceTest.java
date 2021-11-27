@@ -31,7 +31,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     void setUp() {
         강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        광교역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
+        광교역 = 지하철역_등록되어_있음("광교역").as(StationResponse.class);
         지하철_노선_등록되어_있음(new LineCreateRequest("신분당선", "bg-red-600",
             new SectionRequest(강남역.getId(), 광교역.getId(), 10)));
 

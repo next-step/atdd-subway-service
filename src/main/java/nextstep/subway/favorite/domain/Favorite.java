@@ -43,7 +43,7 @@ public class Favorite {
         return new Favorite(source, target, memberId);
     }
 
-    public long id() {
+    public Long id() {
         return id;
     }
 
