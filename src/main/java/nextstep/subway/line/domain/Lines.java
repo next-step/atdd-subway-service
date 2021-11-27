@@ -25,7 +25,7 @@ public final class Lines {
         return list.isEmpty();
     }
 
-    public List<Station> stationCollection() {
+    public List<Station> stationList() {
         Stations stations = Stations.empty();
         for (Line line : list) {
             stations = stations.merge(line.sortedStations());
