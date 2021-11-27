@@ -89,7 +89,7 @@ class LineServiceTest {
     }
 
     @Test
-    @DisplayName("찾으련느 노선은 존재해야 함")
+    @DisplayName("찾으려는 노선은 존재해야 함")
     void findLineResponseById_notExits_thrownNotFoundException() {
         // given
         지하철_노선이_존재하지_않음();
