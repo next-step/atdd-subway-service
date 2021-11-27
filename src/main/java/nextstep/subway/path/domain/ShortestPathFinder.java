@@ -51,10 +51,10 @@ public final class ShortestPathFinder {
     private Graph<Station, DefaultEdge> stationGraph(Lines lines) {
         WeightedGraph<Station, DefaultEdge> graph =
             new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        for (Station station : lines.stations().list()) {
+        for (Station station : lines.stationList()) {
             graph.addVertex(station);
         }
-        for (Section section : lines.sections().list()) {
+        for (Section section : lines.sectionList()) {
             graph.setEdgeWeight(
                 graph.addEdge(section.upStation(), section.downStation()), section.distanceValue()
             );

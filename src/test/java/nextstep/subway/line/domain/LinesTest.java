@@ -4,11 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.Stations;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -60,29 +59,32 @@ class LinesTest {
 
     @Test
     @DisplayName("지하철 역 목록")
-    void stations() {
+    void stationList() {
         // given
         Lines 신분당선만_있는_노선들 = Lines.from(Collections.singletonList(신분당선));
 
         // when
-        Stations stationList = 신분당선만_있는_노선들.stations();
+        List<Station> stationList = 신분당선만_있는_노선들.stationList();
 
         // then
         assertThat(stationList)
-            .isEqualTo(Stations.from(Arrays.asList(강남역, 양재역)));
+            .hasSize(2)
+            .doesNotHaveDuplicates()
+            .containsExactly(강남역, 양재역);
     }
 
     @Test
     @DisplayName("구간 목록")
-    void sections() {
+    void sectionList() {
         // given
         Lines 신분당선만_있는_노선들 = Lines.from(Collections.singletonList(신분당선));
 
         // when
-        Sections sectionList = 신분당선만_있는_노선들.sections();
+        List<Section> sectionList = 신분당선만_있는_노선들.sectionList();
 
         // then
         assertThat(sectionList)
-            .isEqualTo(Sections.from(강남_양재_구간));
+            .hasSize(1)
+            .containsExactly(강남_양재_구간);
     }
 }

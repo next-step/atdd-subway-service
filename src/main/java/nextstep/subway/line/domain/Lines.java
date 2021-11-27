@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 
 public final class Lines {
@@ -24,20 +25,20 @@ public final class Lines {
         return list.isEmpty();
     }
 
-    public Stations stations() {
+    public List<Station> stationCollection() {
         Stations stations = Stations.empty();
         for (Line line : list) {
             stations = stations.merge(line.sortedStations());
         }
-        return stations;
+        return stations.list();
     }
 
-    public Sections sections() {
+    public List<Section> sectionList() {
         Sections sections = Sections.empty();
         for (Line line : list) {
             sections = sections.merge(line.sections());
         }
-        return sections;
+        return sections.list();
     }
 
     public List<Line> list() {
