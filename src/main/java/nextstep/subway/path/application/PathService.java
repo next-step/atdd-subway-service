@@ -35,10 +35,10 @@ public class PathService {
     }
 
     private PathFinder getPathFinder() {
-        List<Section> findAll = sectionRepository.findAll();
-        if (findAll.size() == 0) {
+        List<Section> sections = sectionRepository.findAll();
+        if (sections.size() == 0) {
             throw new SectionException(ErrorCode.NOT_FOUND_ENTITY, "전 노선에 구간이 존재하지 않습니다.");
         }
-        return new PathFinder(findAll);
+        return new PathFinder(sections);
     }
 }
