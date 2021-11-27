@@ -127,6 +127,19 @@ public class SectionsTest {
         assertThat(upStation.get()).isEqualTo(new Section(이호선, 강남역, 삼성역, 10));
     }
 
+    @Test
+    void findDownSection_하행구간을_찾는다() {
+        // given
+        Sections sections = getSections();
+
+        // when
+        Optional<Section> upStation = sections.findDownSection(삼성역);
+
+        // then
+        assertThat(upStation.isPresent()).isTrue();
+        assertThat(upStation.get()).isEqualTo(new Section(이호선, 강남역, 삼성역, 10));
+    }
+
     private Sections getSections() {
         Sections sections = new Sections();
         sections.add(new Section(이호선, 강남역, 삼성역, 10));

@@ -104,4 +104,10 @@ public class Sections {
                 .filter(it -> it.getUpStation() == station)
                 .findFirst();
     }
+
+    public Optional<Section> findDownSection(Station station) {
+        return sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+    }
 }

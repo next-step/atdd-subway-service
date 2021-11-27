@@ -70,9 +70,7 @@ public class Line extends BaseEntity {
         }
 
         Optional<Section> upLineStation = sections.findUpSection(station);
-        Optional<Section> downLineStation = this.getSections().stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
+        Optional<Section> downLineStation = sections.findDownSection(station);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
