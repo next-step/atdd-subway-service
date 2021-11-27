@@ -4,10 +4,7 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
@@ -61,23 +58,7 @@ public class Line extends BaseEntity {
     }
 
     public void addLineSection(Station upStation, Station downStation, int distance) {
-        List<Station> stations = getStations();
-        boolean isUpStationExisted = sections.hasStation(upStation);
-        boolean isDownStationExisted = sections.hasStation(downStation);
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (!isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException();
-        }
-
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-
+        sections.checkUpdatable(upStation, downStation);
         sections.updateStation(upStation, downStation, distance);
         sections.add(new Section(this, upStation, downStation, distance));
     }

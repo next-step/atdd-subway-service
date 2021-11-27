@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class SectionsTest {
 
@@ -95,5 +96,27 @@ public class SectionsTest {
 
         // then
         assertThat(sections.getSections()).contains(new Section(이호선, 역삼역, 삼성역, 7));
+    }
+
+    @Test
+    void checkUpdatable_이미_등록된_구간인_경우_에러를_발생한다() {
+        // given
+        Sections sections = new Sections();
+        sections.add(new Section(이호선, 강남역, 삼성역, 10));
+
+        // when
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> sections.checkUpdatable(강남역, 삼성역));
+    }
+
+    @Test
+    void checkUpdatable_등록할_수_없는_구간인_경우_에러를_발생한다() {
+        // given
+        Sections sections = new Sections();
+        sections.add(new Section(이호선, 강남역, 삼성역, 10));
+
+        // when
+        assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(() -> sections.checkUpdatable(교대역, 잠실역));
     }
 }

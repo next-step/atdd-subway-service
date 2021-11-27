@@ -84,4 +84,17 @@ public class Sections {
             updateDownStation(upStation, downStation, distance);
         }
     }
+
+    public void checkUpdatable(Station upStation, Station downStation) {
+        boolean isUpStationExisted = hasStation(upStation);
+        boolean isDownStationExisted = hasStation(downStation);
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!isUpStationExisted && !isDownStationExisted) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
 }
