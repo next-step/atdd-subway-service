@@ -32,7 +32,7 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new AuthorizationException(String.format("유효하지 않은 토큰(%s)입니다.", credentials));
+            return LoginMember.guest();
         }
 
         Email email = Email.from(jwtTokenProvider.getPayload(credentials));

@@ -30,7 +30,6 @@ public class FavoriteService {
         this.pathService = pathService;
     }
 
-
     public FavoriteResponse saveFavorite(LoginMember member, FavoriteRequest request) {
         Station source = station(request.getSource());
         Station target = station(request.getTarget());
