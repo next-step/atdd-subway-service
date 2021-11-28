@@ -100,7 +100,9 @@ class MemberAcceptanceTest extends AcceptanceTest {
         회원_정보_수정됨(수정_Response);
 
         // when
-        ExtractableResponse<Response> 삭제_Response = 로그인한_회원_정보_삭제_요청(token);
+        TokenRequest updateTokenRequest = TokenRequest.of(NEW_EMAIL, NEW_PASSWORD);
+        TokenResponse updateToken = 회원_로그인_요청(updateTokenRequest).as(TokenResponse.class);
+        ExtractableResponse<Response> 삭제_Response = 로그인한_회원_정보_삭제_요청(updateToken);
 
         // then
         회원_삭제됨(삭제_Response);
