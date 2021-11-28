@@ -14,7 +14,7 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class PathService {
     private final LineRepository lineRepository;
     private final StationService stationService;
