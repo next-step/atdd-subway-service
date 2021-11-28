@@ -23,6 +23,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
 
+
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
