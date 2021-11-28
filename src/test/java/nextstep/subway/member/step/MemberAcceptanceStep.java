@@ -7,13 +7,16 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.AcceptanceTest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-public class MemberAcceptanceStep extends AcceptanceTest {
+public final class MemberAcceptanceStep {
+
+    private MemberAcceptanceStep() {
+        throw new AssertionError();
+    }
 
     public static void 회원_등록_되어_있음(
         String email, String password, Integer age) {
