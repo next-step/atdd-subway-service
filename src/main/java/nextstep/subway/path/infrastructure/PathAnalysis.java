@@ -45,7 +45,15 @@ public class PathAnalysis {
     }
 
     public ShortestPathInfo findShortestPaths(Station source, Station target) {
-        GraphPath<PathAnalysisKey, DefaultWeightedEdge> graphPath  = this.shortestPath.getPath(PathAnalysisKey.of(source), PathAnalysisKey.of(target));
+        GraphPath<PathAnalysisKey, DefaultWeightedEdge> graphPath = null;
+
+        try {
+            graphPath = this.shortestPath.getPath(PathAnalysisKey.of(source), PathAnalysisKey.of(target));
+        } catch (IllegalArgumentException ex) {
+            throw new NoSuchElementException("등록된 경로들 중에 찾을 역이 없습니다.");
+        }
+
+         
 
         if (graphPath == null) {
             throw new NoSuchElementException(String.format("%s->%s 에대한 경로가 조회되지 않습니다.", source.getName(), target.getName()));
