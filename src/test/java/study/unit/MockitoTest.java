@@ -12,6 +12,7 @@ import nextstep.subway.line.domain.Color;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.dto.LineResponse;
@@ -30,7 +31,7 @@ class MockitoTest {
         LineRepository lineRepository = mock(LineRepository.class);
         StationService stationService = mock(StationService.class);
 
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(신분당선()));
+        when(lineRepository.findAllLines()).thenReturn(Lines.from(Lists.newArrayList(신분당선())));
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when

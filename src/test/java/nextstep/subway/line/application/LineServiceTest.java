@@ -11,6 +11,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.Optional;
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.common.exception.DuplicateDataException;
@@ -26,6 +27,7 @@ import nextstep.subway.line.dto.LineUpdateRequest;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -72,7 +74,7 @@ class LineServiceTest {
     }
 
     @Test
-    @DisplayName("이미 존재하는 이름으로 저장 요청")
+    @DisplayName("존재하지 않는 이름으로 저장해야 함")
     void saveLine_alreadyExistsName_thrownDuplicateDataException() {
         // given
         String 신분당 = "신분당선";
@@ -87,7 +89,7 @@ class LineServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 아이디로 노선 찾기")
+    @DisplayName("찾으려는 노선은 존재해야 함")
     void findLineResponseById_notExits_thrownNotFoundException() {
         // given
         지하철_노선이_존재하지_않음();
@@ -121,7 +123,7 @@ class LineServiceTest {
     }
 
     @Test
-    @DisplayName("중복되는 이름으로 노선을 수정")
+    @DisplayName("수정하려는 이름이 존재하지 않아야 함")
     void updateLine_duplicationName_thrownDataIntegrityViolationException() {
         // given
         String 신분당선 = "신분당선";
@@ -208,7 +210,9 @@ class LineServiceTest {
             () -> assertThat(line.name()).isEqualTo(Name.from(expectedName)),
             () -> assertThat(line.color()).isEqualTo(Color.from(expectedColor)),
             () -> assertThat(line.sortedStations())
-                .containsExactly(firstExpectedStation, secondExpectedStation)
+                .isEqualTo(Stations.from(
+                    Arrays.asList(firstExpectedStation, secondExpectedStation)
+                ))
         );
     }
 

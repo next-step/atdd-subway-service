@@ -40,7 +40,7 @@ class SectionTest {
         Station upStation, Station downStation, Distance distance) {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> Section.of(upStation, downStation, distance))
-            .withMessageEndingWith(" 값은 null 일 수 없습니다.");
+            .withMessageEndingWith(" 값은 필수입니다.");
     }
 
     @Test
@@ -61,10 +61,10 @@ class SectionTest {
         Section section = Section.of(
             station("강남"), station("광교"), Distance.from(5));
 
-        //when
+        // when
         section.cut(removedSection);
 
-        //then
+        // then
         assertThat(section)
             .isEqualTo(expected);
     }
@@ -72,17 +72,17 @@ class SectionTest {
     @Test
     @DisplayName("제거하려는 구간은 필수")
     void cut_nullSection_thrownIllegalArgumentException() {
-        //given
+        // given
         Section section = Section.of(
             station("교대"), station("광교"), Distance.from(5));
 
-        //when
+        // when
         ThrowingCallable cutCallable = () -> section.cut(null);
 
-        //then
+        // then
         assertThatIllegalArgumentException()
             .isThrownBy(cutCallable)
-            .withMessageContaining("지워지는 구간은 null 일 수 없습니다.");
+            .withMessageContaining("지우려는 구간은 필수입니다.");
     }
 
     @ParameterizedTest(name = "[{index}] 강남,광교 구간에서 {0} 구간을 제거할 수 없다")
@@ -92,10 +92,10 @@ class SectionTest {
         Section section = Section.of(
             station("강남"), station("광교"), Distance.from(Integer.MAX_VALUE));
 
-        //when
+        // when
         ThrowingCallable cutCallable = () -> section.cut(removedSection);
 
-        //then
+        // then
         assertThatExceptionOfType(InvalidDataException.class)
             .isThrownBy(cutCallable)
             .withMessageEndingWith("제거할 수 없습니다.");
@@ -107,12 +107,12 @@ class SectionTest {
         Section section = Section.of(
             station("교대"), station("광교"), Distance.from(Integer.MAX_VALUE));
 
-        //when
+        // when
         ThrowingCallable cutCallable = () -> section.cut(
             Section.of(station("교대"), station("강남"), Distance.from(Integer.MAX_VALUE))
         );
 
-        //then
+        // then
         assertThatExceptionOfType(InvalidDataException.class)
             .isThrownBy(cutCallable)
             .withMessageStartingWith("역과 역 사이의 거리");
@@ -125,10 +125,10 @@ class SectionTest {
         Section section = Section.of(
             station("강남"), station("광교"), Distance.from(5));
 
-        //when
+        // when
         Section mergedSection = section.merge(target);
 
-        //then
+        // then
         assertThat(mergedSection)
             .isEqualTo(expected);
     }
@@ -136,17 +136,17 @@ class SectionTest {
     @Test
     @DisplayName("병합하려는 구간은 필수")
     void merge_nullSection_thrownIllegalArgumentException() {
-        //given
+        // given
         Section section = Section.of(
             station("강남"), station("광교"), Distance.from(5));
 
-        //when
+        // when
         ThrowingCallable mergeCall = () -> section.merge(null);
 
-        //then
+        // then
         assertThatIllegalArgumentException()
             .isThrownBy(mergeCall)
-            .withMessageContaining("합쳐지는 구간이 null 일 수 없습니다.");
+            .withMessageContaining("합쳐지는 구간은 필수입니다.");
     }
 
     @ParameterizedTest(name = "[{index}] 강남,광교 구간에 {0} 구간을 연결할 수 없다.")

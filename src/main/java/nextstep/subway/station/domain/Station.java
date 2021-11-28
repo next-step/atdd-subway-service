@@ -24,7 +24,7 @@ public class Station extends BaseEntity {
     }
 
     private Station(Name name) {
-        Assert.notNull(name, "이름이 null 일 수 없습니다.");
+        Assert.notNull(name, "이름은 필수입니다.");
         this.name = name;
     }
 

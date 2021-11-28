@@ -37,42 +37,42 @@ class StationServiceTest {
     @Test
     @DisplayName("저장")
     void saveStation() {
-        //given
+        // given
         Name 강남 = Name.from("강남");
         지하철_역_이름이_중복되지_않음(강남);
         저장된_지하철_역_반환(Station.from(강남));
 
-        //when
+        // when
         service.saveStation(new StationRequest(강남.toString()));
 
-        //then
+        // then
         지하철_역_저장_요청됨(강남);
     }
 
     @Test
     @DisplayName("이미 존재하는 이름으로 저장")
     void saveStation_alreadyExistsName_thrownDataIntegrityViolationException() {
-        //given
+        // given
         String 강남 = "강남";
         지하철_역_이름이_이미_존재(강남);
 
-        //when
+        // when
         ThrowingCallable saveCall = () -> service.saveStation((new StationRequest(강남)));
 
-        //then
+        // then
         중복_예외_발생(saveCall);
     }
 
     @Test
     @DisplayName("존재하지 않는 아이디로 역을 찾기")
     void findById() {
-        //given
+        // given
         지하철_역_존재하지_않음();
 
-        //when
+        // when
         ThrowingCallable findByIdCallable = () -> service.findById(Long.MAX_VALUE);
 
-        //then
+        // then
         찾을_수_없는_예외_발생(findByIdCallable);
     }
 

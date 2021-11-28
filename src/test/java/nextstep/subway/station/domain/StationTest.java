@@ -22,6 +22,6 @@ class StationTest {
     void instance_nullName_thrownIllegalArgumentException() {
         assertThatIllegalArgumentException()
             .isThrownBy(() -> Station.from(null))
-            .withMessageEndingWith("이름이 null 일 수 없습니다.");
+            .withMessageEndingWith("이름은 필수입니다.");
     }
 }

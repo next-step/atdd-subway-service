@@ -53,20 +53,24 @@ public class Section {
         return id;
     }
 
-    Station upStation() {
-        return upStation;
-    }
-
-    Station downStation() {
-        return downStation;
-    }
-
     void changeLine(Line line) {
         this.line = line;
     }
 
-    Distance distance() {
+    public Station upStation() {
+        return upStation;
+    }
+
+    public Station downStation() {
+        return downStation;
+    }
+
+    public Distance distance() {
         return distance;
+    }
+
+    public int distanceValue() {
+        return distance.value();
     }
 
     void cut(Section section) {
@@ -89,7 +93,7 @@ public class Section {
     }
 
     private void validateMerge(Section section) {
-        Assert.notNull(section, "합쳐지는 구간이 null 일 수 없습니다.");
+        Assert.notNull(section, "합쳐지는 구간은 필수입니다.");
         if (doesNotHaveOverlappingStation(section)) {
             throw new InvalidDataException(String.format(
                 "합쳐지는 구간들은(%s, %s) 하나의 겹치는 역이 존재해야 합니다.",
@@ -102,7 +106,7 @@ public class Section {
     }
 
     private void validateCut(Section section) {
-        Assert.notNull(section, "지워지는 구간은 null 일 수 없습니다.");
+        Assert.notNull(section, "지우려는 구간은 필수입니다.");
         validateChangeStation(section);
         validateSubtractDistance(section.distance);
     }
@@ -139,9 +143,9 @@ public class Section {
     }
 
     private void validate(Station upStation, Station downStation, Distance distance) {
-        Assert.notNull(upStation, "'upStation' 값은 null 일 수 없습니다.");
-        Assert.notNull(downStation, "'downStation' 값은 null 일 수 없습니다.");
-        Assert.notNull(distance, "'distance' 값은 null 일 수 없습니다.");
+        Assert.notNull(upStation, "'upStation' 값은 필수입니다.");
+        Assert.notNull(downStation, "'downStation' 값은 필수입니다.");
+        Assert.notNull(distance, "'distance' 값은 필수입니다.");
         Assert.isTrue(!upStation.equals(downStation),
             String.format("상행역(%s)과 하행역은(%s) 같을 수 없습니다.",
                 upStation, downStation));

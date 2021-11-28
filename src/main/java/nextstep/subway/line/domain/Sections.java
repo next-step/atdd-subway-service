@@ -2,8 +2,10 @@ package nextstep.subway.line.domain;
 
 import io.jsonwebtoken.lang.Assert;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -12,9 +14,12 @@ import javax.persistence.Transient;
 import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @Embeddable
 public class Sections {
+
+    private static final Sections EMPTY = new Sections(Collections.emptyList());
 
     private static final int MINIMUM_SECTION_SIZE = 1;
 
@@ -30,16 +35,21 @@ public class Sections {
     protected Sections() {
     }
 
-    private Sections(Section section) {
-        Assert.notNull(section, "초기 구간은 반드시 존재해야 합니다.");
-        this.list.add(section);
+    private Sections(List<Section> list) {
+        Assert.notNull(list, "지하철 구간 목록은 반드시 존재해야 합니다.");
+        this.list.addAll(list);
     }
 
     public static Sections from(Section section) {
-        return new Sections(section);
+        Assert.notNull(section, "초기 구간은 반드시 존재해야 합니다.");
+        return new Sections(Collections.singletonList(section));
     }
 
-    List<Station> sortedStations() {
+    static Sections empty() {
+        return EMPTY;
+    }
+
+    Stations sortedStations() {
         Section nextSection = firstSection();
         List<Station> stations = new ArrayList<>(nextSection.stations());
 
@@ -47,7 +57,7 @@ public class Sections {
             nextSection = findByUpStation(nextSection.downStation());
             stations.add(nextSection.downStation());
         }
-        return stations;
+        return Stations.from(stations);
     }
 
     void add(Section section) {
@@ -70,6 +80,16 @@ public class Sections {
         for (Section section : list) {
             section.changeLine(line);
         }
+    }
+
+    Sections merge(Sections sections) {
+        List<Section> newList = new ArrayList<>(list);
+        newList.addAll(sections.list);
+        return new Sections(newList);
+    }
+
+    public List<Section> list() {
+        return Collections.unmodifiableList(list);
     }
 
     private void remove(Station station) {
@@ -195,5 +215,29 @@ public class Sections {
     private void deleteSectionCaches() {
         downStationToSectionCache = null;
         upStationToSectionCache = null;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(list);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Sections sections = (Sections) o;
+        return Objects.equals(list, sections.list);
+    }
+
+    @Override
+    public String toString() {
+        return "Sections{" +
+            "list=" + list +
+            '}';
     }
 }

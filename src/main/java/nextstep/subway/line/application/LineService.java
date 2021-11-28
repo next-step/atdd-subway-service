@@ -6,6 +6,7 @@ import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.dto.LineCreateRequest;
@@ -36,7 +37,7 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
-        return LineResponse.listOf(lineRepository.findAll());
+        return LineResponse.listOf(findAll());
     }
 
     @Transactional(readOnly = true)
@@ -59,6 +60,11 @@ public class LineService {
 
     public void removeLineStation(long lineId, long stationId) {
         line(lineId).removeStation(station(stationId));
+    }
+
+    @Transactional(readOnly = true)
+    public Lines findAll() {
+        return lineRepository.findAllLines();
     }
 
     private Line savedLine(LineCreateRequest request) {

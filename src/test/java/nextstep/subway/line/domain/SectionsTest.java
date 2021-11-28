@@ -5,12 +5,13 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.stream.Stream;
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -54,14 +55,12 @@ class SectionsTest {
     @DisplayName("순서대로 정렬된 역들")
     void stations() {
         // when
-        List<Station> stations = Sections.from(양재_광교_구간)
+        Stations stations = Sections.from(양재_광교_구간)
             .sortedStations();
 
         // then
         assertThat(stations)
-            .hasSize(2)
-            .doesNotHaveDuplicates()
-            .containsExactly(station("양재"), station("광교"));
+            .isEqualTo(Stations.from(Arrays.asList(station("양재"), station("광교"))));
     }
 
     @ParameterizedTest(name = "[{index}] 양재 광교 구간에 {0} 구간을 추가하면 {1} 역들")
@@ -76,9 +75,7 @@ class SectionsTest {
 
         // then
         assertThat(sections.sortedStations())
-            .hasSize(3)
-            .doesNotHaveDuplicates()
-            .containsExactly(expectedStations);
+            .isEqualTo(Stations.from(Arrays.asList(expectedStations)));
     }
 
     @Test
@@ -138,9 +135,7 @@ class SectionsTest {
 
             // then
             assertThat(강남_양재_광교_구간들.sortedStations())
-                .hasSize(2)
-                .doesNotHaveDuplicates()
-                .containsExactly(expectedStations);
+                .isEqualTo(Stations.from(Arrays.asList(expectedStations)));
         }
 
         @Test
