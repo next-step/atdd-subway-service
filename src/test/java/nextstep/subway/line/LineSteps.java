@@ -5,7 +5,8 @@ import io.restassured.response.Response;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
-import nextstep.subway.utils.RestAssuredTestUtils;
+
+import static nextstep.subway.AcceptanceTest.*;
 
 public class LineSteps {
 
@@ -18,7 +19,7 @@ public class LineSteps {
     }
 
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest lineRequest) {
-        return RestAssuredTestUtils.post("/lines", lineRequest);
+        return post("/lines", lineRequest);
     }
 
     public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
@@ -31,21 +32,21 @@ public class LineSteps {
     }
 
     public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(String uri) {
-        return RestAssuredTestUtils.get(uri);
+        return get(uri);
     }
 
     public static ExtractableResponse<Response> 지하철_노선_조회_요청(LineResponse response) {
-        return RestAssuredTestUtils.get("/lines/{lineId}", response.getId());
+        return get("/lines/{lineId}", response.getId());
     }
 
     public static ExtractableResponse<Response> 지하철_노선_수정_요청(ExtractableResponse<Response> response, LineRequest params) {
         String uri = response.header("Location");
-        return RestAssuredTestUtils.put(uri, params);
+        return put(uri, params);
     }
 
     public static ExtractableResponse<Response> 지하철_노선_제거_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
-        return RestAssuredTestUtils.delete(uri);
+        return delete(uri);
     }
 
 }
