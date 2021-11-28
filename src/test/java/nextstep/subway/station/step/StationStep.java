@@ -12,5 +12,4 @@ public final class StationStep {
     public static Station station(String name) {
         return Station.from(Name.from(name));
     }
-
 }
