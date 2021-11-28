@@ -66,7 +66,8 @@ class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
             () -> 지하철_최단_경로_조회됨(response),
-            () -> 지하철_역_최단_경로_포함됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 5)
+            () -> 지하철_역_최단_경로_포함됨(response, Arrays.asList(교대역, 남부터미널역, 양재역),
+                5, 1250)
         );
     }
 

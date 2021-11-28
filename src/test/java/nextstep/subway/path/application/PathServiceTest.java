@@ -47,8 +47,8 @@ class PathServiceTest {
         검색된_지하철_역_제공(targetId, station("양재역"));
 
         // when
-        PathResponse pathResponse = pathService
-            .findShortestPath(new PathRequest(sourceId, targetId));
+        PathResponse pathResponse = pathService.findShortestPath(
+            new PathRequest(sourceId, targetId));
 
         // then
         최단_경로_검색됨(pathResponse);
@@ -61,6 +61,7 @@ class PathServiceTest {
     private void 최단_경로_검색됨(PathResponse pathResponse) {
         assertAll(
             () -> assertThat(pathResponse.getDistance()).isEqualTo(10),
+            () -> assertThat(pathResponse.getFare()).isEqualTo(1250),
             () -> assertThat(pathResponse.getStations())
                 .extracting(PathStationResponse::getName)
                 .containsExactly("강남역", "양재역")

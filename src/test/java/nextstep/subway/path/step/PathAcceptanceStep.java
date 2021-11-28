@@ -36,10 +36,11 @@ public final class PathAcceptanceStep {
     }
 
     public static void 지하철_역_최단_경로_포함됨(ExtractableResponse<Response> response,
-        List<StationResponse> expectedStations, int expectedDistance) {
+        List<StationResponse> expectedStations, int expectedDistance, int expectedFare) {
         PathResponse path = response.as(PathResponse.class);
         assertAll(
             () -> assertThat(path.getDistance()).isEqualTo(expectedDistance),
+            () -> assertThat(path.getFare()).isEqualTo(expectedFare),
             () -> assertThat(path.getStations())
                 .doesNotHaveDuplicates()
                 .extracting(

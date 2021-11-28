@@ -7,13 +7,15 @@ public final class PathResponse {
 
     private List<PathStationResponse> stations;
     private int distance;
+    private int fare;
 
     private PathResponse() {
     }
 
-    private PathResponse(List<PathStationResponse> stations, int distance) {
+    private PathResponse(List<PathStationResponse> stations, int distance, int fare) {
         this.stations = stations;
         this.distance = distance;
+        this.fare = fare;
     }
 
     public static PathResponse from(Path path) {
@@ -21,7 +23,9 @@ public final class PathResponse {
             path.stations()
                 .mapToList(PathStationResponse::from),
             path.distance()
-                .value());
+                .value(),
+            1250
+        );
     }
 
     public List<PathStationResponse> getStations() {
@@ -30,5 +34,9 @@ public final class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }
