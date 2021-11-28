@@ -8,6 +8,8 @@ import javax.persistence.*;
 @Entity
 public class Section {
 
+    private static final Section DUMMY_SECTION = new Section();
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,7 +29,7 @@ public class Section {
     @Embedded
     private Distance distance;
 
-    public Section() {
+    protected Section() {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
@@ -35,6 +37,10 @@ public class Section {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = new Distance(distance);
+    }
+
+    public static Section ofDummy() {
+        return DUMMY_SECTION;
     }
 
     public Long getId() {
@@ -53,18 +59,26 @@ public class Section {
         return downStation;
     }
 
-    public Distance getDistance() {
-        return distance;
+    public int getDistance() {
+        return distance.getDistance();
     }
 
-    public void updateUpStation(Station station, Distance newDistance) {
+    public int getIntegerDistance() {
+        return distance.getDistance();
+    }
+
+    public void updateUpStation(Station station, int newDistance) {
         this.upStation = station;
         this.distance.minus(newDistance);
     }
 
-    public void updateDownStation(Station station, Distance newDistance) {
+    public void updateDownStation(Station station, int newDistance) {
         this.downStation = station;
         this.distance.minus(newDistance);
+    }
+
+    public boolean isDummy() {
+        return this == DUMMY_SECTION;
     }
 
 }

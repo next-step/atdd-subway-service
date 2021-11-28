@@ -52,3 +52,16 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+
+## 미션
+### 1단계 - 인수 테스트 기반 리팩터링
+- [x] LineSectionAcceptanceTest 리팩터링
+- [x] LineService 리팩터링
+
+### 2단계 - 경로 조회 기능
+- [x] 최단 경로 조회 인수 테스트 만들기
+- [x] 최단 경로 조회 기능 구현하기
+- [x] 출발역과 도착역이 같을 경우 예외처리
+- [x] 출발역과 도착역이 연결이 되어 있지 않은 경우 예외처리
+- [x] 존재하지 않은 출발역이나 도착역을 조회 할 경우 예외처리

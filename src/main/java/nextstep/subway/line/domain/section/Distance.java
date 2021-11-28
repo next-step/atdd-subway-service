@@ -22,8 +22,8 @@ public class Distance {
         this.distance = distance;
     }
 
-    public static int concat(Distance a, Distance b) {
-        return a.distance + b.distance;
+    public static int concat(int a, int b) {
+        return a + b;
     }
 
     public void validation(int distance) {
@@ -32,11 +32,15 @@ public class Distance {
         }
     }
 
-    public void minus(Distance distance) {
-        if (this.distance <= distance.distance) {
+    public void minus(int distance) {
+        if (this.distance <= distance) {
             throw new SectionException(ErrorCode.BAD_ARGUMENT, "구간의 길이가 잘못되었습니다.");
         }
-        this.distance = this.distance - distance.distance;
+        this.distance = this.distance - distance;
+    }
+
+    public int getDistance() {
+        return distance;
     }
 
 }
