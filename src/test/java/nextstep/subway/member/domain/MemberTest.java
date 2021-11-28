@@ -18,7 +18,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class MemberTest {
 
-
     @Test
     @DisplayName("객체화")
     void instance() {

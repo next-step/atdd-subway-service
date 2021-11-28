@@ -58,6 +58,7 @@ public class Member extends BaseEntity {
     }
 
     public void update(Member member) {
+        Assert.notNull(member, "수정할 회원 정보는 필수입니다.");
         this.email = member.email;
         this.password = member.password;
         this.age = member.age;

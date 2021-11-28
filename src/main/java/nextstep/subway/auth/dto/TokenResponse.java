@@ -1,6 +1,6 @@
 package nextstep.subway.auth.dto;
 
-public class TokenResponse {
+public final class TokenResponse {
 
     private String accessToken;
 

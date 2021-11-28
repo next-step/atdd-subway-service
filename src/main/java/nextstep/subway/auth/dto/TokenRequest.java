@@ -12,7 +12,7 @@ public class TokenRequest {
     @NotBlank(message = "패스워드는 필수입니다.")
     private String password;
 
-    public TokenRequest() {
+    private TokenRequest() {
     }
 
     public TokenRequest(String email, String password) {
