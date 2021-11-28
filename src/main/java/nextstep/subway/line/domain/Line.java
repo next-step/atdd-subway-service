@@ -1,12 +1,15 @@
 package nextstep.subway.line.domain;
 
 import io.jsonwebtoken.lang.Assert;
+import javax.persistence.AttributeOverride;
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
+import nextstep.subway.common.domain.Fare;
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
@@ -28,24 +31,25 @@ public class Line extends BaseEntity {
     private Sections sections;
 
     @Embedded
-    private Surcharge surcharge;
+    @AttributeOverride(name = "value", column = @Column(name = "extraFare"))
+    private Fare extraFare;
 
     protected Line() {
     }
 
-    private Line(Name name, Color color, Sections sections, Surcharge surcharge) {
+    private Line(Name name, Color color, Sections sections, Fare extraFare) {
         setName(name);
         setColor(color);
         setSections(sections);
-        setSurcharge(surcharge);
+        setExtraFare(extraFare);
     }
 
     public static Line of(Name name, Color color, Sections sections) {
-        return new Line(name, color, sections, Surcharge.zero());
+        return new Line(name, color, sections, Fare.zero());
     }
 
-    public static Line of(Name name, Color color, Sections sections, Surcharge surcharge) {
-        return new Line(name, color, sections, surcharge);
+    public static Line of(Name name, Color color, Sections sections, Fare extraFare) {
+        return new Line(name, color, sections, extraFare);
     }
 
     public void update(Name name, Color color) {
@@ -100,11 +104,11 @@ public class Line extends BaseEntity {
         this.sections.setLine(this);
     }
 
-    private void setSurcharge(Surcharge surcharge) {
-        if (surcharge == null) {
-            this.surcharge = Surcharge.zero();
+    private void setExtraFare(Fare extraFare) {
+        if (extraFare == null) {
+            this.extraFare = Fare.zero();
             return;
         }
-        this.surcharge = surcharge;
+        this.extraFare = extraFare;
     }
 }
