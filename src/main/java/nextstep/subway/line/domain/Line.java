@@ -27,21 +27,25 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections;
 
+    @Embedded
+    private Surcharge surcharge;
+
     protected Line() {
     }
 
-    private Line(Name name, Color color, Sections sections) {
-        Assert.notNull(name, "이름은 필수입니다.");
-        Assert.notNull(color, "색상은 필수입니다.");
-        Assert.notNull(sections, "구간들은 필수입니다.");
-        this.name = name;
-        this.color = color;
-        this.sections = sections;
-        this.sections.setLine(this);
+    private Line(Name name, Color color, Sections sections, Surcharge surcharge) {
+        setName(name);
+        setColor(color);
+        setSections(sections);
+        setSurcharge(surcharge);
     }
 
     public static Line of(Name name, Color color, Sections sections) {
-        return new Line(name, color, sections);
+        return new Line(name, color, sections, Surcharge.zero());
+    }
+
+    public static Line of(Name name, Color color, Sections sections, Surcharge surcharge) {
+        return new Line(name, color, sections, surcharge);
     }
 
     public void update(Name name, Color color) {
@@ -78,5 +82,29 @@ public class Line extends BaseEntity {
 
     Sections sections() {
         return sections;
+    }
+
+    private void setName(Name name) {
+        Assert.notNull(name, "이름은 필수입니다.");
+        this.name = name;
+    }
+
+    private void setColor(Color color) {
+        Assert.notNull(color, "색상은 필수입니다.");
+        this.color = color;
+    }
+
+    private void setSections(Sections sections) {
+        Assert.notNull(sections, "구간들은 필수입니다.");
+        this.sections = sections;
+        this.sections.setLine(this);
+    }
+
+    private void setSurcharge(Surcharge surcharge) {
+        if (surcharge == null) {
+            this.surcharge = Surcharge.zero();
+            return;
+        }
+        this.surcharge = surcharge;
     }
 }
