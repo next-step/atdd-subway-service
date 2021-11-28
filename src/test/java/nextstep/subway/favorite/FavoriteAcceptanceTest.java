@@ -105,7 +105,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("지하철 노선 즐겨찾기 추가 (교대 -> 강남 -> 양재 -> 남부터미널역)")
+    @DisplayName("지하철 노선 즐겨찾기 삭제 (교대 -> 강남 -> 양재 -> 남부터미널역)")
     public void 즐겨찾기_삭제_강남_남부터미널() {
         FavoriteResponse 강남_양재 = 즐겨찾기_추가(인증_토큰, FavoriteRequest.of(강남역.getId(), 양재역.getId())).as(FavoriteResponse.class);
         FavoriteResponse 교대_남부터미널 = 즐겨찾기_추가(인증_토큰, FavoriteRequest.of(교대역.getId(), 남부터미널역.getId())).as(FavoriteResponse.class);
