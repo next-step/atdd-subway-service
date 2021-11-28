@@ -129,6 +129,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ### 1. 경로 조회 시 거리 기준 요금 정보 포함하기
 - [ ] 경로 조회 인수 테스트 수정
     - [ ] 경로 조회 시, 지하철 이용 요금 정보도 함께 응답
+    - [X] 거리에 따른 요금 계산 로직 구현
 
 ### 2. 노선별 추가 요금 정책 추가
 - [ ] Line 에 fare(추가 운임료) 필드 추가
