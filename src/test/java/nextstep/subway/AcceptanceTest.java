@@ -34,6 +34,15 @@ public class AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> getWithAuth(String uri, String accessToken, Object... params) {
+        return given()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(uri, params)
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> post(String uri, Object body, Object... params) {
         return given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -52,8 +61,26 @@ public class AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> putWithAuth(String uri, Object body, String accessToken, Object... params) {
+        return given()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().put(uri, params)
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> delete(String uri, Object... params) {
         return given()
+                .when().delete(uri, params)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> deleteWithAuth(String uri, String accessToken, Object... params) {
+        return given()
+                .auth().oauth2(accessToken)
                 .when().delete(uri, params)
                 .then().log().all()
                 .extract();
