@@ -1,13 +1,20 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.BaseEntity;
-import nextstep.subway.station.domain.Station;
-
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import nextstep.subway.BaseEntity;
+import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Line extends BaseEntity {
@@ -93,5 +100,43 @@ public class Line extends BaseEntity {
             downStation = nextLineStation.get().getUpStation();
         }
         return downStation;
+    }
+
+    public void addSection(Section section) {
+        List<Station> stations = getStations();
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
+            stations.stream().noneMatch(it -> it == section.getDownStation())) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
+        if (stations.isEmpty()) {
+            sections.add(section);
+            return;
+        }
+
+        if (isUpStationExisted) {
+            sections.stream()
+                .filter(it -> it.getUpStation() == section.getUpStation())
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+
+            sections.add(section);
+        } else if (isDownStationExisted) {
+            sections.stream()
+                .filter(it -> it.getDownStation() == section.getDownStation())
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+
+            sections.add(section);
+        } else {
+            throw new RuntimeException();
+        }
     }
 }

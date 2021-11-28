@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
@@ -13,25 +14,25 @@ import nextstep.subway.station.domain.Station;
 class LineTest {
 
     private Station 잠실역;
-    private Station 삼성역;
     private Station 선릉역;
     private Station 교대역;
-    private Station 강남역;
+    private Station 당산역;
+    private Station 시청역;
     private Line line;
 
     @BeforeEach
     void setUp() {
         잠실역 = new Station("잠실역");
-        삼성역 = new Station("삼성역");
         선릉역 = new Station("선릉역");
         교대역 = new Station("교대역");
-        강남역 = new Station("강남역");
+        당산역 = new Station("당산역");
+        시청역 = new Station("시청역");
 
         line = new Line();
-        line.getSections().add(new Section(line, 선릉역, 교대역, 5));
-        line.getSections().add(new Section(line, 교대역, 강남역, 5));
-        line.getSections().add(new Section(line, 잠실역, 삼성역, 5));
-        line.getSections().add(new Section(line, 삼성역, 선릉역, 5));
+        line.getSections().add(new Section(line, 교대역, 당산역, 100));
+        line.getSections().add(new Section(line, 잠실역, 선릉역, 10));
+        line.getSections().add(new Section(line, 당산역, 시청역, 30));
+        line.getSections().add(new Section(line, 선릉역, 교대역, 10));
     }
 
     @DisplayName("지하철 노선 역 목록을 가져온다.")
@@ -41,7 +42,7 @@ class LineTest {
         List<Station> stations = line.getStations();
 
         // then
-        assertThat(stations).containsExactly(잠실역, 삼성역, 선릉역, 교대역, 강남역);
+        assertThat(stations).containsExactly(잠실역, 선릉역, 교대역, 당산역, 시청역);
     }
 
     @DisplayName("지하철 노선에 구간이 존재하지 않을경우 빈 역 목록을 가져온다.")
@@ -55,5 +56,40 @@ class LineTest {
 
         // then
         assertThat(stations).isEmpty();
+    }
+
+    @DisplayName("지하철 구간을 등록한다.")
+    @Test
+    void addSection() {
+        // given
+        Station 동대문역사문화공원 = new Station("동대문역사문화공원");
+        Station 종합운동장 = new Station("종합운동장");
+        Station 삼성역 = new Station("삼성역");
+        Station 사당역 = new Station("사당역");
+
+        // when
+        line.addSection(new Section(line, 동대문역사문화공원, 잠실역, 10));
+        line.addSection(new Section(line, 잠실역, 종합운동장, 2));
+        line.addSection(new Section(line, 종합운동장, 삼성역, 3));
+        line.addSection(new Section(line, 교대역, 사당역, 5));
+
+        // then
+        assertThat(line.getStations()).containsExactly(
+            동대문역사문화공원, 잠실역, 종합운동장, 삼성역, 선릉역, 교대역, 사당역, 당산역, 시청역);
+    }
+
+    @DisplayName("이미 등록된 구간은 등록할 수 없다.")
+    @Test
+    void existSection() {
+        assertThrows(RuntimeException.class, () ->
+            line.addSection(new Section(line, 교대역, 선릉역, 5)));
+    }
+
+    @DisplayName("기존 구간이 존재할 때 상행역 하행역 모두 기존 구간에 존재하지 않으면 등록할 수 없다.")
+    @Test
+    void notExistUpStationAndDownStation() {
+        assertThrows(RuntimeException.class, () ->
+            line.addSection(
+                new Section(line, new Station("합정역"), new Station("신촌역"), 5)));
     }
 }
