@@ -12,7 +12,6 @@ import java.util.List;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.station.dto.StationResponse;
-import org.assertj.core.api.ObjectAssert;
 import org.springframework.http.HttpStatus;
 
 public final class FavoriteAcceptanceStep {
@@ -57,11 +56,11 @@ public final class FavoriteAcceptanceStep {
         );
     }
 
-    public static ObjectAssert<FavoriteResponse> 즐겨찾기_목록_포함됨(ExtractableResponse<Response> response,
+    public static void 즐겨찾기_목록_포함됨(ExtractableResponse<Response> response,
         StationResponse expectedSource, StationResponse expectedTarget) {
         List<FavoriteResponse> favorites = response.as(new TypeRef<List<FavoriteResponse>>() {
         });
-        return assertThat(favorites)
+        assertThat(favorites)
             .singleElement()
             .satisfies(favorite ->
                 assertAll(

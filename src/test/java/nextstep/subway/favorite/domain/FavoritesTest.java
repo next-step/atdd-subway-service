@@ -21,7 +21,6 @@ class FavoritesTest {
             );
     }
 
-
     @Test
     @DisplayName("초기 목록은 필수")
     void instance_nullList_thrownIllegalArgumentException() {

@@ -67,7 +67,7 @@ public final class Stations {
     @Override
     public String toString() {
         return "Stations{" +
-            "list=" + stations +
+            "stations=" + stations +
             '}';
     }
 }
