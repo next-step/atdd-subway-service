@@ -18,7 +18,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class AuthServiceTest {
+class AuthServiceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final int AGE = 10;
@@ -37,10 +37,10 @@ public class AuthServiceTest {
 
     @Test
     void login() {
-        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE)));
+        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(Member.of(EMAIL, PASSWORD, AGE)));
         when(jwtTokenProvider.createToken(anyString())).thenReturn("TOKEN");
 
-        TokenResponse token = authService.login(new TokenRequest(EMAIL, PASSWORD));
+        TokenResponse token = authService.login(TokenRequest.of(EMAIL, PASSWORD));
 
         assertThat(token.getAccessToken()).isNotBlank();
     }

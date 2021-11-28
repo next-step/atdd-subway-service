@@ -1,5 +1,6 @@
 package nextstep.subway.member;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceMethods.*;
 import static nextstep.subway.member.MemberAcceptanceMethods.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -8,9 +9,11 @@ import org.junit.jupiter.api.Test;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 
-public class MemberAcceptanceTest extends AcceptanceTest {
+class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
     public static final String NEW_EMAIL = "newemail@email.com";
@@ -71,5 +74,37 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         회원_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("나(로그인한 회원)의 정보를 관리한다.")
+    @Test
+    void manageMyInfo() {
+        // given
+        MemberRequest memberRequest = MemberRequest.of(EMAIL, PASSWORD, AGE);
+        회원_등록되어_있음(memberRequest);
+
+        TokenRequest tokenRequest = TokenRequest.of(EMAIL, PASSWORD);
+        TokenResponse token = 회원_로그인_요청(tokenRequest).as(TokenResponse.class);
+
+        // when
+        ExtractableResponse<Response> 조회_Response = 로그인한_회원_정보_조회_요청(token);
+
+        // then
+        회원_정보_조회됨(조회_Response, EMAIL, AGE);
+
+        // when
+        MemberRequest memberUpdateRequest = MemberRequest.of(NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        ExtractableResponse<Response> 수정_Response = 로그인한_회원_정보_수정_요청(token, memberUpdateRequest);
+
+        // then
+        회원_정보_수정됨(수정_Response);
+
+        // when
+        TokenRequest updateTokenRequest = TokenRequest.of(NEW_EMAIL, NEW_PASSWORD);
+        TokenResponse updateToken = 회원_로그인_요청(updateTokenRequest).as(TokenResponse.class);
+        ExtractableResponse<Response> 삭제_Response = 로그인한_회원_정보_삭제_요청(updateToken);
+
+        // then
+        회원_삭제됨(삭제_Response);
     }
 }

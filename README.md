@@ -94,3 +94,30 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [X] 출발역에서 도착역 까지의 최단 루트 구하기
 - [X] 출발역에서 도착역 까지의 최단 거리 구하기
 - [X] 최단거리 Test 코드 작성
+
+---
+
+# 3단계 : 인증을 통한 기능 구현
+
+### 1. 토큰 발급 기능 (로그인) 인수 테스트 만들기
+- [X] 토큰 발급(로그인)을 검증하는 AuthAcceptanceTest 인수 테스트 작성
+- [X] 예외 케이스
+    - [X] 등록되지 않은 회원정보로 토큰을 요청하는 경우
+    - [X] 토큰 없이 요청을 보낸 경우
+    - [X] 유효하지 않은 Bearer 토큰으로 요청을 보낸 경우
+- [X] 이메일과 패스워드를 이용하여 요청 시 access token 을 응답하는 기능을 구현
+
+### 2. 인증 - 내 정보 조회 기능 완성하기
+- [X] MemberAcceptanceTest 에 내 정보 조회/수정/사제 기능 인수 테스트 추가
+- [X] @AuthenticationPrincipal 활용하여 기능 구현
+- [X] AuthenticationPrincipalArgumentResolver 활용하여 기능 구현
+
+### 3. 인증 - 즐겨 찾기 기능 완성하기
+- [X] 즐겨찾기 기능 구현
+- [X] 인증을 포함하여 즐겨찾기 관련 인수 테스트 작성
+    - [X] 즐겨찾기 생성
+    - [X] 즐겨찾기 목록 조회
+    - [X] 즐겨찾기 삭제
+    - [X] 예외 케이스
+        - [X] 최단경로를 찾을 수 없는 출발역/도착역인 경우 등록 실패
+        - [X] 저장되지 않은 즐겨찾기를 삭제하는 경우 삭제 실패

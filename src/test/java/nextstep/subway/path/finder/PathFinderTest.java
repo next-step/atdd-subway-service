@@ -50,7 +50,7 @@ class PathFinderTest {
     @Test
     void findShortestPath1() {
         // when
-        PathFinder pathFinder = PathFinder.from(Collections.emptyList());
+        PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(Collections.emptyList()));
 
         // then
         assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(양재역, 강남역));
@@ -60,7 +60,7 @@ class PathFinderTest {
     @Test
     void findShortestPath2() {
         // given
-        PathFinder pathFinder = PathFinder.from(Arrays.asList(신분당선, 이호선, 삼호선));
+        PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(Arrays.asList(신분당선, 이호선, 삼호선)));
 
         // when
         PathResponse shortestPath = pathFinder.findShortestPath(교대역, 양재역);
@@ -77,7 +77,7 @@ class PathFinderTest {
     @Test
     void findShortestPath3() {
         // given
-        PathFinder pathFinder = PathFinder.from(Arrays.asList(신분당선, 이호선, 삼호선));
+        PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(Arrays.asList(신분당선, 이호선, 삼호선)));
 
         // when
         PathResponse shortestPath = pathFinder.findShortestPath(교대역, 교대역);
@@ -94,7 +94,7 @@ class PathFinderTest {
     void findShortestPath4() {
         // given
         Station 서울역 = Station.of(5L, "서울역");
-        PathFinder pathFinder = PathFinder.from(Arrays.asList(신분당선, 이호선, 삼호선));
+        PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(Arrays.asList(신분당선, 이호선, 삼호선)));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(서울역, 강남역));
@@ -105,7 +105,7 @@ class PathFinderTest {
     void findShortestPath5() {
         // given
         Station 서울역 = Station.of(5L, "서울역");
-        PathFinder pathFinder = PathFinder.from(Arrays.asList(신분당선, 이호선, 삼호선));
+        PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(Arrays.asList(신분당선, 이호선, 삼호선)));
 
         // when & then
         assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(양재역, 서울역));
@@ -119,7 +119,7 @@ class PathFinderTest {
         Station 시청역 = Station.of(6L, "시청역");
         Line 일호선 = Line.of("일호선", "BLUE", 서울역, 시청역, DISTANCE_5);
 
-        PathFinder pathFinder = PathFinder.from(Arrays.asList(신분당선, 일호선, 이호선, 삼호선));
+        PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(Arrays.asList(신분당선, 일호선, 이호선, 삼호선)));
 
         // when & then
         assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> pathFinder.findShortestPath(강남역, 서울역));
