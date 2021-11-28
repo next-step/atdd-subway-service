@@ -1,12 +1,12 @@
 package nextstep.subway.line.domain;
 
+import static nextstep.subway.station.step.StationStep.station;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import java.util.stream.Stream;
-import nextstep.subway.common.domain.Name;
 import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.station.domain.Station;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -205,9 +205,5 @@ class SectionTest {
             Arguments.of(station("강남"), null, Distance.from(10)),
             Arguments.of(station("강남"), station("광교"), null)
         );
-    }
-
-    private static Station station(String name) {
-        return Station.from(Name.from(name));
     }
 }

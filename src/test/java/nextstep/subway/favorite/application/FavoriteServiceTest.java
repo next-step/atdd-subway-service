@@ -53,7 +53,7 @@ class FavoriteServiceTest {
 
     @BeforeEach
     void setUp() {
-        로그인_사용자 = new LoginMember(1L, "email@email.com", 1);
+        로그인_사용자 = LoginMember.of(1L, "email@email.com", 1);
         강남역 = Station.from(Name.from("강남역"));
         광교역 = Station.from(Name.from("광교역"));
     }

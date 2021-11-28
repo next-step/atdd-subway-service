@@ -1,8 +1,8 @@
 package nextstep.subway.path;
 
-import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_등록되어_있음;
-import static nextstep.subway.line.acceptance.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_등록되어_있음;
-import static nextstep.subway.line.acceptance.step.LineSectionAcceptanceStep.지하철_역_못찾음;
+import static nextstep.subway.line.step.LineAcceptanceStep.지하철_노선_등록되어_있음;
+import static nextstep.subway.line.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.line.step.LineSectionAcceptanceStep.지하철_역_못찾음;
 import static nextstep.subway.path.step.PathAcceptanceStep.지하철_역_최단_경로_포함됨;
 import static nextstep.subway.path.step.PathAcceptanceStep.지하철_최단_경로_실패됨;
 import static nextstep.subway.path.step.PathAcceptanceStep.지하철_최단_경로_조회;

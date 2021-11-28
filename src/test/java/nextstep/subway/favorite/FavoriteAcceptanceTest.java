@@ -7,7 +7,7 @@ import static nextstep.subway.favorite.step.FavoriteAcceptanceStep.즐겨찾기_
 import static nextstep.subway.favorite.step.FavoriteAcceptanceStep.즐겨찾기_삭제됨;
 import static nextstep.subway.favorite.step.FavoriteAcceptanceStep.즐겨찾기_생성됨;
 import static nextstep.subway.favorite.step.FavoriteAcceptanceStep.즐겨찾기_생성을_요청;
-import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_등록되어_있음;
+import static nextstep.subway.line.step.LineAcceptanceStep.지하철_노선_등록되어_있음;
 import static nextstep.subway.member.step.MemberAcceptanceStep.회원_등록_되어_있음;
 import static nextstep.subway.station.step.StationAcceptanceStep.지하철역_등록되어_있음;
 

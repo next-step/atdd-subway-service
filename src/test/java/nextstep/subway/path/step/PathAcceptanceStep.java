@@ -14,7 +14,11 @@ import org.assertj.core.groups.Tuple;
 import org.springframework.http.HttpStatus;
 
 
-public class PathAcceptanceStep {
+public final class PathAcceptanceStep {
+
+    private PathAcceptanceStep() {
+        throw new AssertionError();
+    }
 
     public static ExtractableResponse<Response> 지하철_최단_경로_조회(Long sourceId, Long targetId) {
         return RestAssured.given().log().all()

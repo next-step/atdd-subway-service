@@ -15,7 +15,11 @@ import nextstep.subway.station.dto.StationResponse;
 import org.assertj.core.api.ObjectAssert;
 import org.springframework.http.HttpStatus;
 
-public class FavoriteAcceptanceStep {
+public final class FavoriteAcceptanceStep {
+
+    private FavoriteAcceptanceStep() {
+        throw new AssertionError();
+    }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(
         String accessToken, Long sourceId, Long targetId) {

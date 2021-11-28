@@ -1,10 +1,10 @@
 package nextstep.subway.favorite.domain;
 
+import static nextstep.subway.station.step.StationStep.station;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import java.util.stream.Stream;
-import nextstep.subway.common.domain.Name;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,9 +44,5 @@ class FavoriteTest {
             Arguments.of(station("강남역"), null),
             Arguments.of(null, station("광교역"))
         );
-    }
-
-    private static Station station(String name) {
-        return Station.from(Name.from(name));
     }
 }

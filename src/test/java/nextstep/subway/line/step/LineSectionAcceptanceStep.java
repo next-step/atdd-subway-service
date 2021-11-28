@@ -1,6 +1,6 @@
-package nextstep.subway.line.acceptance.step;
+package nextstep.subway.line.step;
 
-import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_조회_요청;
+import static nextstep.subway.line.step.LineAcceptanceStep.지하철_노선_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -13,7 +13,11 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-public class LineSectionAcceptanceStep {
+public final class LineSectionAcceptanceStep {
+
+    private LineSectionAcceptanceStep() {
+        throw new AssertionError();
+    }
 
     public static void 지하철_노선에_지하철역_등록되어_있음(LineResponse line,
         StationResponse upStation, StationResponse downStation, int distance) {
