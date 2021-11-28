@@ -28,13 +28,15 @@ public class PathAcceptanceMethods {
 
     public static void 지하철_최단경로_조회됨(ExtractableResponse<Response> response,
                                           List<StationResponse> expectedStations,
-                                          int distance) {
+                                          int expectedDistance,
+                                          int expectedFare) {
         PathResponse pathResponse = response.as(PathResponse.class);
         List<Long> actualIds = StreamUtils.mapToList(pathResponse.getStations(), StationResponse::getId);
         List<Long> expectedIds = StreamUtils.mapToList(expectedStations, StationResponse::getId);
 
         assertThat(actualIds).containsExactlyElementsOf(expectedIds);
-        assertThat(pathResponse.getDistance()).isEqualTo(distance);
+        assertThat(pathResponse.getDistance()).isEqualTo(expectedDistance);
+        assertThat(pathResponse.getFare()).isEqualTo(expectedFare);
     }
 
     public static void 지하철_최단경로_조회_실패(ExtractableResponse<Response> response) {

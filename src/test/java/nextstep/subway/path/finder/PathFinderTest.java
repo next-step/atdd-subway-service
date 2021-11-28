@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.dto.ShortestPath;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import nextstep.subway.utils.StreamUtils;
@@ -63,7 +62,7 @@ class PathFinderTest {
         PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(Arrays.asList(신분당선, 이호선, 삼호선)));
 
         // when
-        PathResponse shortestPath = pathFinder.findShortestPath(교대역, 양재역);
+        ShortestPath shortestPath = pathFinder.findShortestPath(교대역, 양재역);
 
         // then
         List<Long> expectedIds = StreamUtils.mapToList(Arrays.asList(교대역, 남부터미널역, 양재역), Station::getId);
@@ -80,7 +79,7 @@ class PathFinderTest {
         PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(Arrays.asList(신분당선, 이호선, 삼호선)));
 
         // when
-        PathResponse shortestPath = pathFinder.findShortestPath(교대역, 교대역);
+        ShortestPath shortestPath = pathFinder.findShortestPath(교대역, 교대역);
 
         // then
         List<Long> actualIds = StreamUtils.mapToList(shortestPath.getStations(), StationResponse::getId);

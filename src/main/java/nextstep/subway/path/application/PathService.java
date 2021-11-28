@@ -5,9 +5,11 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.fare.calculator.FareCalculator;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.dto.ShortestPath;
 import nextstep.subway.path.finder.DijkstraShortestPathAlgorithm;
 import nextstep.subway.path.finder.PathFinder;
 import nextstep.subway.station.application.StationService;
@@ -30,6 +32,13 @@ public class PathService {
         Station targetStation = stationService.findById(targetId);
         PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(lines));
 
-        return pathFinder.findShortestPath(sourceStation, targetStation);
+        return createPathResponse(sourceStation, targetStation, pathFinder);
+    }
+
+    private PathResponse createPathResponse(Station sourceStation, Station targetStation, PathFinder pathFinder) {
+        ShortestPath path = pathFinder.findShortestPath(sourceStation, targetStation);
+        int fare = FareCalculator.calculate(path.getDistance());
+
+        return PathResponse.of(path.getStations(), path.getDistance(), fare);
     }
 }

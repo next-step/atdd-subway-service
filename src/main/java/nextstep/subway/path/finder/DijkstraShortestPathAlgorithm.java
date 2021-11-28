@@ -11,7 +11,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
-import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.dto.ShortestPath;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import nextstep.subway.utils.StreamUtils;
@@ -55,10 +55,10 @@ public class DijkstraShortestPathAlgorithm implements ShortestPathAlgorithm {
     }
 
     @Override
-    public PathResponse findShortestPath(Station sourceStation, Station targetStation) {
+    public ShortestPath findShortestPath(Station sourceStation, Station targetStation) {
         GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(sourceStation, targetStation);
         List<StationResponse> stations = StreamUtils.mapToList(path.getVertexList(), StationResponse::of);
 
-        return PathResponse.of(stations, (int) path.getWeight());
+        return ShortestPath.of(stations, (int) path.getWeight());
     }
 }

@@ -13,13 +13,13 @@ class FareCalculatorTest {
 
     @DisplayName("0 ~ 10km 이하 거리구간의 기준 요금 조회를 한다.")
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 5, 9, 10})
-    void calculate1(int distance) {
+    @CsvSource(value = {"0,0", "1,1250", "5,1250", "9,1250", "10,1250"})
+    void calculate1(int distance, int fare) {
         // when
         int actualFare = FareCalculator.calculate(distance);
 
         // then
-        assertThat(actualFare).isEqualTo(FareType.BASIC.getFare());
+        assertThat(actualFare).isEqualTo(fare);
     }
 
     @DisplayName("10km 초과 ~ 50km 이하 거리구간의 기준 요금 조회를 한다.")

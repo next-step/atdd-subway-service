@@ -1,11 +1,13 @@
 package nextstep.subway.path;
 
+import static nextstep.subway.fare.domain.FareType.*;
 import static nextstep.subway.line.acceptance.LineAcceptanceMethods.*;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceMethods.*;
 import static nextstep.subway.path.PathAcceptanceMethods.*;
 import static nextstep.subway.station.StationAcceptanceMethods.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -69,7 +71,10 @@ class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 양재역.getId());
 
         // then
-        지하철_최단경로_조회됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), DISTANCE_3 + DISTANCE_5);
+        지하철_최단경로_조회됨(response,
+                           Arrays.asList(교대역, 남부터미널역, 양재역),
+                           DISTANCE_3 + DISTANCE_5,
+                           BASIC.getFare());
     }
 
     @DisplayName("출발역과 도착역이 같을 때, 최단경로를 조회한다.")
@@ -79,7 +84,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 교대역.getId());
 
         // then
-        지하철_최단경로_조회됨(response, Arrays.asList(교대역), DISTANCE_0);
+        지하철_최단경로_조회됨(response, Collections.singletonList(교대역), DISTANCE_0, 0);
     }
 
     @DisplayName("출발역이 노선상에 존재하지 않을때, 최단경로를 조회한다.")
