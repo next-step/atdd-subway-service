@@ -80,16 +80,39 @@ class LineTest {
 
     @DisplayName("이미 등록된 구간은 등록할 수 없다.")
     @Test
-    void existSection() {
+    void addExistSection() {
         assertThrows(RuntimeException.class, () ->
             line.addSection(new Section(line, 교대역, 선릉역, 5)));
     }
 
     @DisplayName("기존 구간이 존재할 때 상행역 하행역 모두 기존 구간에 존재하지 않으면 등록할 수 없다.")
     @Test
-    void notExistUpStationAndDownStation() {
+    void addNotExistUpStationAndDownStation() {
         assertThrows(RuntimeException.class, () ->
             line.addSection(
                 new Section(line, new Station("합정역"), new Station("신촌역"), 5)));
+    }
+
+    @DisplayName("지하철 구간을 삭제한다.")
+    @Test
+    void removeSection() {
+        // when
+        line.removeLineStation(잠실역);
+        line.removeLineStation(교대역);
+        line.removeLineStation(시청역);
+
+        // then
+        assertThat(line.getStations()).containsExactly(선릉역, 당산역);
+    }
+
+    @DisplayName("존재하지 않는 구간은 삭제할 수 없다.")
+    @Test
+    void removeNotExistSection() {
+        // given
+        Line line = new Line();
+
+        // when & then
+        assertThrows(RuntimeException.class, () ->
+            line.removeLineStation(new Station("신촌역")));
     }
 }
