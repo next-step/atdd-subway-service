@@ -8,6 +8,10 @@ import static nextstep.subway.AcceptanceTest.*;
 
 public class MemberSteps {
 
+    public static void 회원_등록되어_있음(String email, String password, Integer age) {
+        회원_생성을_요청(email, password, age);
+    }
+
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
         return post("/members", memberRequest);
