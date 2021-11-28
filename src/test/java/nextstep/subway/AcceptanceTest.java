@@ -52,6 +52,16 @@ public class AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> postWithAuth(String uri, Object body, String accessToken, Object... params) {
+        return given()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .when().post(uri, params)
+                .then().log().all()
+                .extract();
+    }
+
     public static ExtractableResponse<Response> put(String uri, Object body, Object... params) {
         return given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
