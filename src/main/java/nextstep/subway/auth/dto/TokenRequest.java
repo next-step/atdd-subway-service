@@ -7,6 +7,7 @@ import nextstep.subway.member.domain.Password;
 public class TokenRequest {
 
     @NotBlank(message = "이메일은 필수입니다.")
+    @javax.validation.constraints.Email(message = "이메일 형식이어야 합니다.")
     private String email;
 
     @NotBlank(message = "패스워드는 필수입니다.")

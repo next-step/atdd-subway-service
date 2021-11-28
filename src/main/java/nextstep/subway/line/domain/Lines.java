@@ -10,24 +10,24 @@ import nextstep.subway.station.domain.Stations;
 
 public final class Lines {
 
-    private final List<Line> list;
+    private final List<Line> lines;
 
-    private Lines(List<Line> list) {
-        Assert.notNull(list, "지하철 노선 목록은 필수입니다.");
-        this.list = list;
+    private Lines(List<Line> lines) {
+        Assert.notNull(lines, "지하철 노선 목록은 필수입니다.");
+        this.lines = lines;
     }
 
-    public static Lines from(List<Line> list) {
-        return new Lines(list);
+    public static Lines from(List<Line> lines) {
+        return new Lines(lines);
     }
 
     public boolean isEmpty() {
-        return list.isEmpty();
+        return lines.isEmpty();
     }
 
     public List<Station> stationList() {
         Stations stations = Stations.empty();
-        for (Line line : list) {
+        for (Line line : lines) {
             stations = stations.merge(line.sortedStations());
         }
         return stations.list();
@@ -35,18 +35,18 @@ public final class Lines {
 
     public List<Section> sectionList() {
         Sections sections = Sections.empty();
-        for (Line line : list) {
+        for (Line line : lines) {
             sections = sections.merge(line.sections());
         }
         return sections.list();
     }
 
     public List<Line> list() {
-        return Collections.unmodifiableList(list);
+        return Collections.unmodifiableList(lines);
     }
 
     public <R> List<R> mapToList(Function<Line, R> mapper) {
-        return list.stream()
+        return lines.stream()
             .map(mapper)
             .collect(Collectors.toList());
     }

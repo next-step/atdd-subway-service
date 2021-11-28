@@ -7,19 +7,19 @@ import java.util.stream.Collectors;
 
 public final class Favorites {
 
-    private final List<Favorite> list;
+    private final List<Favorite> favorites;
 
-    private Favorites(List<Favorite> list) {
-        Assert.notNull(list, "즐겨찾기 목록은 필수입니다.");
-        this.list = list;
+    private Favorites(List<Favorite> favorites) {
+        Assert.notNull(favorites, "즐겨찾기 목록은 필수입니다.");
+        this.favorites = favorites;
     }
 
-    public static Favorites from(List<Favorite> list) {
-        return new Favorites(list);
+    public static Favorites from(List<Favorite> favorites) {
+        return new Favorites(favorites);
     }
 
     public <R> List<R> mapToList(Function<Favorite, R> mapper) {
-        return list.stream()
+        return favorites.stream()
             .map(mapper)
             .collect(Collectors.toList());
     }
