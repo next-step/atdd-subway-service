@@ -5,8 +5,11 @@ import com.google.common.collect.Lists;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
+import nextstep.subway.path.infrastructure.PathAnalysis;
 import nextstep.subway.station.domain.Station;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -37,5 +40,10 @@ public class DataLoaderConfig implements CommandLineRunner {
         lineRepository.saveAll(Lists.newArrayList(신분당선, 이호선, 삼호선));
 
         memberRepository.save(new Member("probitanima11@gmail.com", "11", 10));
+       
+        Sections sections = Sections.of(new Section(신분당선, 강남역, 양재역, Distance.of(10)),
+                                        new Section(이호선, 교대역, 강남역, Distance.of(10)),
+                                        new Section(삼호선, 교대역, 양재역, Distance.of(10))
+                                        );
     }
 }

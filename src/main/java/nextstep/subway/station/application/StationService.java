@@ -5,9 +5,9 @@ import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,10 +36,16 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+        return stationRepository.findById(id)
+                                .orElseThrow(() -> new NoSuchElementException("조회되는 역이 없습니다."));
     }
 
     public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+        return stationRepository.findById(id)
+                                .orElseThrow(() -> new NoSuchElementException("조회되는 역이 없습니다."));
+    }
+
+    public List<Station> findAllById(List<Long> id) {
+        return stationRepository.findAllById(id);
     }
 }
