@@ -3,6 +3,7 @@ package nextstep.subway.favorite.application;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.DataNotExistException;
@@ -17,6 +18,7 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.utils.StreamUtils;
 
 @Service
+@Transactional(readOnly = true)
 public class FavoritePathService {
     private final FavoritePathRepository favoritePathRepository;
     private final MemberService memberService;
@@ -30,6 +32,7 @@ public class FavoritePathService {
         this.pathService = pathService;
     }
 
+    @Transactional
     public FavoritePathResponse createFavoritePath(LoginMember loginMember, FavoritePathRequest request) {
         Member member = memberService.findById(loginMember.getId());
         Station source = Station.from(request.getSourceId());
@@ -51,6 +54,7 @@ public class FavoritePathService {
                                      .orElseThrow(DataNotExistException::new);
     }
 
+    @Transactional
     public void deleteFavoritePath(Long id) {
         favoritePathRepository.deleteById(id);
     }
