@@ -22,7 +22,7 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(DataNotExistException::new);
+        Member member = findById(id);
         return MemberResponse.of(member);
     }
 
@@ -31,7 +31,7 @@ public class MemberService {
     }
 
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(DataNotExistException::new);
+        Member member = findById(id);
         member.update(param.toMember());
     }
 

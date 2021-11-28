@@ -28,10 +28,10 @@ public class FavoritePathController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createFavoritePath(@AuthenticationPrincipal LoginMember loginMember,
+    public ResponseEntity<FavoritePathResponse> createFavoritePath(@AuthenticationPrincipal LoginMember loginMember,
                                                    @RequestBody FavoritePathRequest request) {
         FavoritePathResponse favoritePath = favoritePathService.createFavoritePath(loginMember, request);
-        return ResponseEntity.created(URI.create("/favorites/" + favoritePath.getId())).build();
+        return ResponseEntity.created(URI.create("/favorites/" + favoritePath.getId())).body(favoritePath);
     }
 
     @GetMapping

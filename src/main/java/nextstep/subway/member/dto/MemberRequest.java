@@ -34,8 +34,4 @@ public class MemberRequest {
     public Member toMember() {
         return Member.of(email, password, age);
     }
-
-    public String toRequestParams() {
-        return "email=" + email + "&password=" + password + "&age=" + age;
-    }
 }

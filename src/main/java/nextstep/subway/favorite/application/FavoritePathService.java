@@ -10,37 +10,30 @@ import nextstep.subway.favorite.domain.FavoritePath;
 import nextstep.subway.favorite.domain.FavoritePathRepository;
 import nextstep.subway.favorite.dto.FavoritePathRequest;
 import nextstep.subway.favorite.dto.FavoritePathResponse;
-import nextstep.subway.line.application.LineService;
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.path.finder.DijkstraShortestPathAlgorithm;
-import nextstep.subway.path.finder.PathFinder;
-import nextstep.subway.station.application.StationService;
+import nextstep.subway.path.application.PathService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.utils.StreamUtils;
 
 @Service
 public class FavoritePathService {
     private final FavoritePathRepository favoritePathRepository;
-    private final LineService lineService;
-    private final StationService stationService;
     private final MemberService memberService;
+    private final PathService pathService;
 
     public FavoritePathService(FavoritePathRepository favoritePathRepository,
-                               LineService lineService,
-                               StationService stationService,
-                               MemberService memberService) {
+                               MemberService memberService,
+                               PathService pathService) {
         this.favoritePathRepository = favoritePathRepository;
-        this.lineService = lineService;
-        this.stationService = stationService;
         this.memberService = memberService;
+        this.pathService = pathService;
     }
 
     public FavoritePathResponse createFavoritePath(LoginMember loginMember, FavoritePathRequest request) {
         Member member = memberService.findById(loginMember.getId());
-        Station source = stationService.findById(request.getSourceId());
-        Station target = stationService.findById(request.getTargetId());
+        Station source = Station.from(request.getSourceId());
+        Station target = Station.from(request.getTargetId());
         validateCreateFavoritePath(source, target);
 
         FavoritePath favoritePath = favoritePathRepository.save(FavoritePath.of(source, target, member));
@@ -53,8 +46,9 @@ public class FavoritePathService {
     }
 
     public FavoritePathResponse findFavoritePathById(Long id) {
-        FavoritePath favoritePath = favoritePathRepository.findById(id).orElseThrow(DataNotExistException::new);
-        return FavoritePathResponse.from(favoritePath);
+        return favoritePathRepository.findById(id)
+                                     .map(FavoritePathResponse::from)
+                                     .orElseThrow(DataNotExistException::new);
     }
 
     public void deleteFavoritePath(Long id) {
@@ -62,8 +56,6 @@ public class FavoritePathService {
     }
 
     private void validateCreateFavoritePath(Station source, Station target) {
-        List<Line> lines = lineService.findAll();
-        PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(lines));
-        pathFinder.findShortestPath(source, target);
+        pathService.findShortestPath(source.getId(), target.getId());
     }
 }
