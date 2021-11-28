@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +50,12 @@ public class PathService {
     private PathResponse createPathResponse(ShortestPathInfo shortestPathInfo) {
         List<Long> stationIds = convertPathAnalysisKeyToStationKey(shortestPathInfo);
 
-        List<Station> stations = stationService.findAllById(stationIds);
+        List<Station> stations = new ArrayList<>();
+        
+        for (Long stationId : stationIds) {
+            stations.add(stationService.findById(stationId));
+        }
+        
 
         List<PathStationDto> pathStationDtos = convertPathAnaylysisKeyToPathStaionDto(stations);
 

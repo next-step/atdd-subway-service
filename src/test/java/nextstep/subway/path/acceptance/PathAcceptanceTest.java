@@ -33,6 +33,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
     private StationResponse 역삼역;
     private StationResponse 교대역;
+    private StationResponse 우성역;
 
     private LineResponse 신분당선;
     private LineResponse 이호선;
@@ -47,22 +48,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
         역삼역 = StationAcceptanceTest.지하철역_등록되어_있음("역삼역").as(StationResponse.class);
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
 
-        LineRequest 신분당선_노선등록 = new LineRequest("신분당선", "bg-blue-600", 강남역.getId(), 양재역.getId(), 3);
-        LineRequest 이호선_노선등록 = new LineRequest("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 1);
-        LineRequest 삼호선_노선등록 = new LineRequest("삼호선", "bg-orange-600", 교대역.getId(), 양재역.getId(), 5);
+        LineRequest 신분당선_노선등록 = new LineRequest("신분당선", "bg-blue-600", 강남역.getId(), 양재역.getId(), 30);
+        LineRequest 이호선_노선등록 = new LineRequest("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 10);
+        LineRequest 삼호선_노선등록 = new LineRequest("삼호선", "bg-orange-600", 교대역.getId(), 양재역.getId(), 50);
 
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(신분당선_노선등록).as(LineResponse.class);
         이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(이호선_노선등록).as(LineResponse.class);
         삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(삼호선_노선등록).as(LineResponse.class);
 
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 강남역, 역삼역, 10);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(이호선, 강남역, 역삼역, 100);
     }
 
     @DisplayName("지하철 최단 경로가 조회된다.")
     @Test
     void acceptance_search_shortestPath() {
         // when
-        ExtractableResponse<Response> response = 출발역_도착역_검색(양재역, 교대역);
+        ExtractableResponse<Response> response = 출발역_도착역_검색(교대역, 양재역);
 
         // then
         최단거리_조회됨(response);
@@ -72,28 +73,66 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void acceptance_search_shortestPathAfterDeleteSection() {
         // when
-        ExtractableResponse<Response> response = 출발역_도착역_검색(양재역, 교대역);
+        ExtractableResponse<Response> response = 출발역_도착역_검색(교대역, 양재역);
 
         // then
         최단거리_조회됨(response);
 
         // when
         LineSectionAcceptanceTest.지하철_노선에_지하철역_제외_요청(이호선, 강남역);
-        ExtractableResponse<Response> responseAfterDeleteSection = 출발역_도착역_검색(양재역, 교대역);
+        ExtractableResponse<Response> responseAfterDeleteSection = 출발역_도착역_검색(교대역, 양재역);
 
         // then
-        기등록구간변경후_최단거리_조회됨(responseAfterDeleteSection);
+        기등록구간삭제후_최단거리_조회됨(responseAfterDeleteSection);
     }
 
-    private void 기등록구간변경후_최단거리_조회됨(ExtractableResponse<Response> response) {
+    @DisplayName("기등록된 구간에 신규 구간이 추가된 후 최단 경로가 조회된다.")
+    @Test
+    void acceptance_search_shortestPathAfterAddSection() {
+        // when
+        ExtractableResponse<Response> response = 출발역_도착역_검색(교대역, 양재역);
+        // then
+        최단거리_조회됨(response);
+
+        // when
+        우성역 = StationAcceptanceTest.지하철역_등록되어_있음("우성역").as(StationResponse.class);
+        LineRequest 구호선_노선등록 = new LineRequest("구호선", "bg-black-600", 우성역.getId(), 교대역.getId(), 20);
+        // then
+        LineResponse 구호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(구호선_노선등록).as(LineResponse.class);
+
+        // when
+        ExtractableResponse<Response> addSectionResponse = LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(신분당선, 우성역, 양재역, 15);
+        // then
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록됨(addSectionResponse);
+
+        // when
+        ExtractableResponse<Response> responseAfterDeleteSection = 출발역_도착역_검색(교대역, 양재역);
+        // then
+        신규구간추가후_최단거리_조회됨(responseAfterDeleteSection);
+    }
+
+    private void 신규구간추가후_최단거리_조회됨(ExtractableResponse<Response> response) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        PathStationDto 양재역_pathStaion = new PathStationDto(양재역.getId(), 양재역.getName(), 양재역.getCreatedDate());
+        PathStationDto 우성역_pathStaion = new PathStationDto(우성역.getId(), 우성역.getName(), 우성역.getCreatedDate());
+        PathStationDto 교대역_pathStaion = new PathStationDto(교대역.getId(), 교대역.getName(), 교대역.getCreatedDate());
+
+        assertAll(
+            () -> Assertions.assertThat(response.as(PathResponse.class).getStations()).isEqualTo(List.of(교대역_pathStaion, 우성역_pathStaion, 양재역_pathStaion)),
+            () ->  Assertions.assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(35)
+        );
+    }
+
+    private void 기등록구간삭제후_최단거리_조회됨(ExtractableResponse<Response> response) {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         PathStationDto 양재역_pathStaion = new PathStationDto(양재역.getId(), 양재역.getName(), 양재역.getCreatedDate());
         PathStationDto 교대역_pathStaion = new PathStationDto(교대역.getId(), 교대역.getName(), 교대역.getCreatedDate());
 
         assertAll(
-            () -> Assertions.assertThat(response.as(PathResponse.class).getStations()).isEqualTo(List.of(양재역_pathStaion, 교대역_pathStaion)),
-            () ->  Assertions.assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(5)
+            () -> Assertions.assertThat(response.as(PathResponse.class).getStations()).isEqualTo(List.of(교대역_pathStaion, 양재역_pathStaion)),
+            () ->  Assertions.assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(50)
         );
     }
 
@@ -105,8 +144,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         PathStationDto 교대역_pathStaion = new PathStationDto(교대역.getId(), 교대역.getName(), 교대역.getCreatedDate());
 
         assertAll(
-            () -> Assertions.assertThat(response.as(PathResponse.class).getStations()).isEqualTo(List.of(양재역_pathStaion, 강남역_pathStaion, 교대역_pathStaion)),
-            () ->  Assertions.assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(4)
+            () -> Assertions.assertThat(response.as(PathResponse.class).getStations()).isEqualTo(List.of(교대역_pathStaion, 강남역_pathStaion, 양재역_pathStaion)),
+            () ->  Assertions.assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(40)
         );
     }
 
