@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
@@ -32,5 +32,9 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public Member findOneMember(Long id) {
+        return memberRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 }
