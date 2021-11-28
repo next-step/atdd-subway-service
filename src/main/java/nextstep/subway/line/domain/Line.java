@@ -4,8 +4,8 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
@@ -16,8 +16,8 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Sections sections = new Sections();
 
     public Line() {
     }
@@ -51,6 +51,28 @@ public class Line extends BaseEntity {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return sections.getSections();
+    }
+
+    public List<Station> getStations() {
+        return sections.getStations();
+    }
+
+    public void addLineStation(Station upStation, Station downStation, int distance) {
+        sections.checkUpdatable(upStation, downStation);
+        sections.updateStation(upStation, downStation, distance);
+        sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public void removeLineStation(Station station) {
+        sections.checkRemovable();
+        Optional<Section> upLineStation = sections.findUpSection(station);
+        Optional<Section> downLineStation = sections.findDownSection(station);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            sections.add(Section.merge(this, upLineStation.get(), downLineStation.get()));
+        }
+        upLineStation.ifPresent(sections::remove);
+        downLineStation.ifPresent(sections::remove);
     }
 }
