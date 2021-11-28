@@ -71,34 +71,12 @@ public class PathServiceTest {
     void search_shortestPath() {
         // given
         강남양재구간_교대강남구간_교대양재구간이등록됨();
-        
+
         // when
         PathResponse pathResponse = 최단경로를_조회한다(교대역, 양재역);
 
         // then
         최단경로가_조회됨(pathResponse);
-    }
-
-    private PathResponse 최단경로를_조회한다(Station source, Station target ) {
-        return pathService.searchShortestPath(source.getId(), target.getId());
-    }
-
-    private void 강남양재구간_교대강남구간_교대양재구간이등록됨() {
-        Sections sections = Sections.of(강남_양재_구간, 교대_강남_구간, 교대_양재_구간);
-
-        when(stationService.findById(교대역.getId())).thenReturn(교대역);
-        when(stationService.findById(강남역.getId())).thenReturn(강남역);
-        when(stationService.findById(양재역.getId())).thenReturn(양재역);
-        when(lineService.findAllSections()).thenReturn(sections);
-    }
-
-    private void 최단경로가_조회됨(PathResponse pathResponse) throws MultipleFailuresError {
-        assertAll(
-            () -> Assertions.assertThat(pathResponse.getStations()).isEqualTo(List.of(PathStationDto.of(교대역),
-                                                                                PathStationDto.of(강남역),
-                                                                                PathStationDto.of(양재역))),
-            () -> Assertions.assertThat(pathResponse.getDistance()).isEqualTo(4)
-        );
     }
 
     @DisplayName("최단 경로를 조회시 출발역과 도착역이 같은 경우 예외가 발생된다.")
@@ -124,14 +102,6 @@ public class PathServiceTest {
         최단경로를_조회할수없을경우_에러가발생됨(강남역, 선릉역);
     }
 
-    private void 교대강남구간_강남양재구간_역삼선릉구간_등록됨() {
-        Sections sections = Sections.of(교대_강남_구간, 강남_양재_구간, 역삼_선릉_구간);
-        
-        when(stationService.findById(강남역.getId())).thenReturn(강남역);
-        when(stationService.findById(선릉역.getId())).thenReturn(선릉역);
-        when(lineService.findAllSections()).thenReturn(sections);
-    }
-
     @DisplayName("최단 경로를 조회시 출발역이나 도착역이 등록되지 않은 경우 예외가 발생한다..")
     @Test
     void exception_notExistSourceOrTarget() {
@@ -151,6 +121,36 @@ public class PathServiceTest {
         // when
         // then
         최단경로를_조회할수없을경우_에러가발생됨(강남역, 역삼역);
+    }
+
+    private PathResponse 최단경로를_조회한다(Station source, Station target ) {
+        return pathService.searchShortestPath(source.getId(), target.getId());
+    }
+
+    private void 강남양재구간_교대강남구간_교대양재구간이등록됨() {
+        Sections sections = Sections.of(강남_양재_구간, 교대_강남_구간, 교대_양재_구간);
+
+        when(stationService.findById(교대역.getId())).thenReturn(교대역);
+        when(stationService.findById(강남역.getId())).thenReturn(강남역);
+        when(stationService.findById(양재역.getId())).thenReturn(양재역);
+        when(lineService.findAllSections()).thenReturn(sections);
+    }
+
+    private void 최단경로가_조회됨(PathResponse pathResponse) throws MultipleFailuresError {
+        assertAll(
+            () -> Assertions.assertThat(pathResponse.getStations()).isEqualTo(List.of(PathStationDto.of(교대역),
+                                                                                PathStationDto.of(강남역),
+                                                                                PathStationDto.of(양재역))),
+            () -> Assertions.assertThat(pathResponse.getDistance()).isEqualTo(4)
+        );
+    }
+
+    private void 교대강남구간_강남양재구간_역삼선릉구간_등록됨() {
+        Sections sections = Sections.of(교대_강남_구간, 강남_양재_구간, 역삼_선릉_구간);
+
+        when(stationService.findById(강남역.getId())).thenReturn(강남역);
+        when(stationService.findById(선릉역.getId())).thenReturn(선릉역);
+        when(lineService.findAllSections()).thenReturn(sections);
     }
 
     private void 교대강남구간_강남양재구간_등록됨() {
