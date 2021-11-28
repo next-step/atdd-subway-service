@@ -24,7 +24,7 @@ public class Sections {
     private static final int MINIMUM_SECTION_SIZE = 1;
 
     @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Section> list = new ArrayList<>();
+    private List<Section> sections = new ArrayList<>();
 
     @Transient
     private Map<Station, Section> upStationToSectionCache;
@@ -35,9 +35,9 @@ public class Sections {
     protected Sections() {
     }
 
-    private Sections(List<Section> list) {
-        Assert.notNull(list, "지하철 구간 목록은 반드시 존재해야 합니다.");
-        this.list.addAll(list);
+    private Sections(List<Section> sections) {
+        Assert.notNull(sections, "지하철 구간 목록은 반드시 존재해야 합니다.");
+        this.sections.addAll(sections);
     }
 
     public static Sections from(Section section) {
@@ -63,7 +63,7 @@ public class Sections {
     void add(Section section) {
         validateAddition(section);
         cutOverlappingSection(section);
-        list.add(section);
+        sections.add(section);
         deleteSectionCaches();
     }
 
@@ -77,19 +77,19 @@ public class Sections {
     }
 
     void setLine(Line line) {
-        for (Section section : list) {
+        for (Section section : sections) {
             section.changeLine(line);
         }
     }
 
     Sections merge(Sections sections) {
-        List<Section> newList = new ArrayList<>(list);
-        newList.addAll(sections.list);
+        List<Section> newList = new ArrayList<>(this.sections);
+        newList.addAll(sections.sections);
         return new Sections(newList);
     }
 
     public List<Section> list() {
-        return Collections.unmodifiableList(list);
+        return Collections.unmodifiableList(sections);
     }
 
     private void remove(Station station) {
@@ -100,19 +100,19 @@ public class Sections {
 
     private void addMergedSectionWhenLocatedBetween(Station station) {
         if (isLocatedBetween(station)) {
-            list.add(findByUpStation(station).merge(findByDownStation(station)));
+            sections.add(findByUpStation(station).merge(findByDownStation(station)));
         }
     }
 
     private void removeWhenExistByUpStation(Station station) {
         if (isExistByUpStation(station)) {
-            list.remove(findByUpStation(station));
+            sections.remove(findByUpStation(station));
         }
     }
 
     private void removeWhenExistByDownStation(Station station) {
         if (isExistByDownStation(station)) {
-            list.remove(findByDownStation(station));
+            sections.remove(findByDownStation(station));
         }
     }
 
@@ -127,11 +127,11 @@ public class Sections {
     }
 
     private boolean hasMinimumSize() {
-        return list.size() == MINIMUM_SECTION_SIZE;
+        return sections.size() == MINIMUM_SECTION_SIZE;
     }
 
     private Section firstSection() {
-        return list.stream()
+        return sections.stream()
             .filter(this::doesNotHavePreviousSection)
             .findFirst()
             .orElseThrow(() -> new InvalidDataException("첫 구간이 존재하지 않습니다."));
@@ -198,7 +198,7 @@ public class Sections {
 
     private Map<Station, Section> upStationToSection() {
         if (upStationToSectionCache == null) {
-            upStationToSectionCache = list.stream()
+            upStationToSectionCache = sections.stream()
                 .collect(Collectors.toMap(Section::upStation, section -> section));
         }
         return upStationToSectionCache;
@@ -206,7 +206,7 @@ public class Sections {
 
     private Map<Station, Section> downStationToSection() {
         if (downStationToSectionCache == null) {
-            downStationToSectionCache = list.stream()
+            downStationToSectionCache = sections.stream()
                 .collect(Collectors.toMap(Section::downStation, section -> section));
         }
         return downStationToSectionCache;
@@ -219,7 +219,7 @@ public class Sections {
 
     @Override
     public int hashCode() {
-        return Objects.hash(list);
+        return Objects.hash(sections);
     }
 
     @Override
@@ -231,13 +231,13 @@ public class Sections {
             return false;
         }
         Sections sections = (Sections) o;
-        return Objects.equals(list, sections.list);
+        return Objects.equals(this.sections, sections.sections);
     }
 
     @Override
     public String toString() {
         return "Sections{" +
-            "list=" + list +
+            "sections=" + sections +
             '}';
     }
 }
