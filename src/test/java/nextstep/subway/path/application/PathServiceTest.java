@@ -137,10 +137,6 @@ public class PathServiceTest {
     void exception_notExistSourceOrTarget() {
         교대강남구간_강남양재구간_등록됨();
 
-        when(stationService.findById(강남역.getId())).thenReturn(강남역);
-        when(stationService.findById(선릉역.getId())).thenThrow(NoSuchElementException.class);
-
-
         // when
         // then
         최단경로를_조회할수없을경우_에러가발생됨(강남역, 선릉역);
@@ -162,6 +158,8 @@ public class PathServiceTest {
 
         when(stationService.findById(강남역.getId())).thenReturn(강남역);
         when(stationService.findById(역삼역.getId())).thenReturn(역삼역);
+        when(stationService.findById(선릉역.getId())).thenThrow(NoSuchElementException.class);
+
         when(lineService.findAllSections()).thenReturn(sections);
     }
 
