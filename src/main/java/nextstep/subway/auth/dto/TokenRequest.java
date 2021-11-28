@@ -1,6 +1,8 @@
 package nextstep.subway.auth.dto;
 
 import javax.validation.constraints.NotBlank;
+import nextstep.subway.common.domain.Email;
+import nextstep.subway.member.domain.Password;
 
 public class TokenRequest {
 
@@ -24,5 +26,13 @@ public class TokenRequest {
 
     public String getPassword() {
         return password;
+    }
+
+    public Email email() {
+        return Email.from(email);
+    }
+
+    public Password password() {
+        return Password.from(password);
     }
 }

@@ -23,6 +23,10 @@ public class Password {
         return new Password(value);
     }
 
+    public boolean notEquals(Password password) {
+        return !this.equals(password);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(value);

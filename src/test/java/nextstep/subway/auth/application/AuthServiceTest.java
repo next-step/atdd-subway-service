@@ -1,6 +1,7 @@
 package nextstep.subway.auth.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -8,8 +9,11 @@ import java.util.Optional;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.common.domain.Age;
+import nextstep.subway.common.domain.Email;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
+import nextstep.subway.member.domain.Password;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,9 +24,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final int AGE = 10;
+    public static final Email EMAIL = Email.from("email@email.com");
+    public static final Password PASSWORD = Password.from("password");
+    public static final Age AGE = Age.from(10);
 
     private AuthService authService;
 
@@ -39,11 +43,12 @@ class AuthServiceTest {
     @Test
     @DisplayName("회원 로그인")
     void login() {
-        when(memberRepository.findByEmail(anyString()))
-            .thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE)));
+        when(memberRepository.findByEmail(any(Email.class)))
+            .thenReturn(Optional.of(Member.of(EMAIL, PASSWORD, AGE)));
         when(jwtTokenProvider.createToken(anyString())).thenReturn("TOKEN");
 
-        TokenResponse token = authService.login(new TokenRequest(EMAIL, PASSWORD));
+        TokenResponse token = authService.login(
+            new TokenRequest(EMAIL.toString(), PASSWORD.toString()));
 
         assertThat(token.getAccessToken()).isNotBlank();
     }

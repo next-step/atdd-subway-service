@@ -40,7 +40,7 @@ public class FavoriteService {
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(LoginMember member) {
-        return FavoriteResponse.listOf(favoriteRepository.findAllByMemberId(member.getId()));
+        return FavoriteResponse.listOf(favoriteRepository.findAllByMemberId(member.id()));
     }
 
     public void deleteFavorite(long id, LoginMember member) {
@@ -48,13 +48,13 @@ public class FavoriteService {
     }
 
     private Favorite favorite(long id, LoginMember member) {
-        return favoriteRepository.findByIdAndMemberId(id, member.getId())
+        return favoriteRepository.findByIdAndMemberId(id, member.id())
             .orElseThrow(() -> new NotFoundException(
                 String.format("사용자(%s)가 저장한 즐겨찾기 id(%d)가 존재하지 않습니다.", member, id)));
     }
 
     private Favorite savedFavorite(LoginMember member, Station source, Station target) {
-        return favoriteRepository.save(Favorite.from(source, target, member.getId()));
+        return favoriteRepository.save(Favorite.from(source, target, member.id()));
     }
 
     private void validatePath(Station source, Station target) {

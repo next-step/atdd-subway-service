@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.station.dto.StationResponse;
 
-public class FavoriteResponse {
+public final class FavoriteResponse {
 
     private long id;
     private StationResponse source;

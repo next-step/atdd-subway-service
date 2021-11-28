@@ -1,29 +1,36 @@
 package nextstep.subway.auth.domain;
 
-public class LoginMember {
+import io.jsonwebtoken.lang.Assert;
+import nextstep.subway.common.domain.Age;
+import nextstep.subway.common.domain.Email;
 
-    private Long id;
-    private String email;
-    private Integer age;
+public final class LoginMember {
 
-    public LoginMember() {
-    }
+    private final Long id;
+    private final Email email;
+    private final Age age;
 
-    public LoginMember(Long id, String email, Integer age) {
+    private LoginMember(long id, Email email, Age age) {
+        Assert.notNull(email, "이메일은 필수입니다.");
+        Assert.notNull(age, "나이는 필수입니다.");
         this.id = id;
         this.email = email;
         this.age = age;
     }
 
-    public Long getId() {
+    public static LoginMember of(long id, Email email, Age age) {
+        return new LoginMember(id, email, age);
+    }
+
+    public long id() {
         return id;
     }
 
-    public String getEmail() {
+    public Email email() {
         return email;
     }
 
-    public Integer getAge() {
+    public Age age() {
         return age;
     }
 }

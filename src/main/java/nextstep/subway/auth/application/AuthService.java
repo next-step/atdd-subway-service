@@ -4,6 +4,7 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.common.domain.Email;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -20,12 +21,12 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        Member member = memberRepository.findByEmail(request.getEmail())
+        Member member = memberRepository.findByEmail(request.email())
             .orElseThrow(() -> new AuthorizationException(
-                String.format("%s 대한 정보가 존재하지 않습니다.", request.getEmail())));
-        member.checkPassword(request.getPassword());
+                String.format("%s 대한 정보가 존재하지 않습니다.", request.email())));
+        member.checkPassword(request.password());
 
-        String token = jwtTokenProvider.createToken(request.getEmail());
+        String token = jwtTokenProvider.createToken(request.email().toString());
         return new TokenResponse(token);
     }
 
@@ -34,10 +35,10 @@ public class AuthService {
             throw new AuthorizationException(String.format("유효하지 않은 토큰(%s)입니다.", credentials));
         }
 
-        String email = jwtTokenProvider.getPayload(credentials);
+        Email email = Email.from(jwtTokenProvider.getPayload(credentials));
         Member member = memberRepository.findByEmail(email)
-            .orElseThrow(() ->
-                new AuthorizationException(String.format("이메일(%s)이 존재하지 않습니다.", email)));
-        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+            .orElseThrow(
+                () -> new AuthorizationException(String.format("이메일(%s)이 존재하지 않습니다.", email)));
+        return LoginMember.of(member.id(), member.email(), member.age());
     }
 }

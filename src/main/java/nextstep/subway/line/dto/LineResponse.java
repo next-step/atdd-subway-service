@@ -32,7 +32,7 @@ public final class LineResponse {
         return new LineResponse(line.id(),
             line.name().toString(),
             line.color().toString(),
-            stationResponses(line),
+            StationResponse.listOf(line.sortedStations()),
             line.getCreatedDate(),
             line.getModifiedDate());
     }
@@ -63,10 +63,5 @@ public final class LineResponse {
 
     public LocalDateTime getModifiedDate() {
         return modifiedDate;
-    }
-
-    private static List<StationResponse> stationResponses(Line line) {
-        return line.sortedStations()
-            .mapToList(StationResponse::from);
     }
 }

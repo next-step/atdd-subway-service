@@ -20,8 +20,11 @@ public class Age {
     }
 
     public static Age from(int value) {
-
         return new Age(value);
+    }
+
+    public int value() {
+        return value;
     }
 
     private boolean positive(int value) {
