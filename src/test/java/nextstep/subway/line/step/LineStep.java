@@ -1,11 +1,11 @@
 package nextstep.subway.line.step;
 
+import nextstep.subway.common.domain.Fare;
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.line.domain.Color;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
-import nextstep.subway.line.domain.Surcharge;
 
 public final class LineStep {
 
@@ -17,7 +17,10 @@ public final class LineStep {
         return Line.of(Name.from(name), Color.from(color), Sections.from(section));
     }
 
-    public static Line line(String name, String color, Section section, int surcharge) {
-        return Line.of(Name.from(name), Color.from(color), Sections.from(section), Surcharge.from(surcharge));
+    public static Line line(String name, String color, Section section, int extraFare) {
+        return Line.of(Name.from(name),
+            Color.from(color),
+            Sections.from(section),
+            Fare.from(extraFare));
     }
 }
