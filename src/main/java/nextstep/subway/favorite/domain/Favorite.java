@@ -67,5 +67,4 @@ public class Favorite {
                 String.format("출발역(%s)과 도착역(%s)은 달라야 합니다.", source, target));
         }
     }
-
 }

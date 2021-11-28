@@ -40,7 +40,7 @@ public class FavoriteService {
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(LoginMember member) {
-        return FavoriteResponse.listOf(favoriteRepository.findAllByMemberId(member.id()));
+        return FavoriteResponse.listOf(favoriteRepository.findAllFavorites(member.id()));
     }
 
     public void deleteFavorite(long id, LoginMember member) {
