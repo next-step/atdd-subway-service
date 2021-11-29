@@ -84,3 +84,51 @@ Connection: keep-alive
 }
 ```
 </details>
+
+## 3단계 - 인증을 통한 기능 구현
+### 요구사항
+- [ ] 토큰 발급기능(로그인) 인수 테스트 만들기
+- [ ] 인증기능 만들기
+  - [ ] 내 정보 조회기능 완성하기
+  - [ ] 즐겨 찾기 기능 완성하기
+
+### 기능 구현리스트
+- [ ] 로그인은 이메일과 패스워드로 인증된다.
+- [ ] 유저정보조회는 이메일 나이가 조회된다.
+- [ ] 로그인이 성공시 JWT이 발급된다.
+- [ ] 변조된 JWT로 API요청시 예외가 발생된다.
+- [ ] 경로 검색에대한 즐겨찾기가 추가된다.
+- [ ] 경로 검색에대한 즐겨찾기가 조회된다.
+- [ ] 경로 검색에대한 즐겨찾기가 삭제된다.
+
+### 인증 기능관련 전문 내용
+#### 로그인
+
+<details><summary>Request</summary>
+
+```
+POST /login/token HTTP/1.1
+content-type: application/json; charset=UTF-8
+accept: application/json
+{
+    "password": "password",
+    "email": "email@email.com"
+}
+```
+</details>
+
+<details><summary>Response</summary>
+
+```
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sun, 27 Dec 2020 04:32:26 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+    "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY"
+}
+```
+</details>
