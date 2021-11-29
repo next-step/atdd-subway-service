@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.exception.StationNotConnectedException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -137,5 +138,12 @@ public class Sections {
                 .flatMap(Collection::stream)
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    public void checkConnected(Station source, Station target) {
+        List<Station> stations = getAllStations();
+        if (!stations.contains(source) || !stations.contains(target)) {
+            throw new StationNotConnectedException();
+        }
     }
 }

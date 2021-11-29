@@ -26,6 +26,8 @@ public class PathService {
         Station sourceStation = stationService.findById(source);
         Station targetStation = stationService.findById(target);
         Sections sections = lineService.getSections();
+
+        sections.checkConnected(sourceStation, targetStation);
         return PathResponse.of(pathFinder.findShortestPath(sections, sourceStation, targetStation));
     }
 
