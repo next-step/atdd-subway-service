@@ -11,9 +11,7 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.station.StationAcceptanceTest;
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -34,47 +32,27 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private static final String PASSWORD = "ungseok";
     private static final int AGE = 10;
 
-    private LineResponse 신분당선;
-    private LineResponse 이호선;
-    private LineResponse 삼호선;
-    private StationResponse 강남역;
-    private StationResponse 양재역;
-    private StationResponse 교대역;
-    private StationResponse 남부터미널역;
-    private TokenResponse 인증_토큰;
+    @Test
+    @DisplayName("지하철 노선 즐겨찾기 관리 (교대 -> 강남 -> 양재 -> 남부터미널역)")
+    public void 즐겨찾기_관리() {
+        // given
+        StationResponse 강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
+        StationResponse 양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
+        StationResponse 교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
+        StationResponse 남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-    /**
-     * 교대역    --- *2호선* ---   강남역
-     * |                        |
-     * *3호선*                   *신분당선*
-     * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
-     */
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-
-        강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
-        교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
-        남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
-
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10))
+        LineResponse 이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10))
                 .as(LineResponse.class);
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 8))
+        LineResponse 신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 8))
                 .as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 양재역.getId(), 남부터미널역.getId(), 5))
+        LineResponse 삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 양재역.getId(), 남부터미널역.getId(), 5))
                 .as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
 
         MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        인증_토큰 = 토큰_발급_요청(TokenRequest.of(EMAIL, PASSWORD)).as(TokenResponse.class);
-    }
+        TokenResponse 인증_토큰 = 토큰_발급_요청(TokenRequest.of(EMAIL, PASSWORD)).as(TokenResponse.class);
 
-    @Test
-    @DisplayName("지하철 노선 즐겨찾기 관리 (교대 -> 강남 -> 양재 -> 남부터미널역)")
-    public void 즐겨찾기_관리() {
         // when
         ExtractableResponse<Response> 강남_양재_응답 = 즐겨찾기_추가(인증_토큰, FavoriteRequest.of(강남역.getId(), 양재역.getId()));
         ExtractableResponse<Response> 교대_남부터미널역_응답 = 즐겨찾기_추가(인증_토큰, FavoriteRequest.of(교대역.getId(), 남부터미널역.getId()));
@@ -85,9 +63,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> 즐겨찾기_목록_응답 = 즐겨찾기_목록_조회_요청(인증_토큰);
+        List<Long> longs = Arrays.asList(강남역.getId(), 양재역.getId(), 교대역.getId(), 남부터미널역.getId());
 
         // then
-        즐겨찾기_목록_조회됨(즐겨찾기_목록_응답);
+        즐겨찾기_목록_조회됨(즐겨찾기_목록_응답, longs);
 
         // when
         ExtractableResponse<Response> 삭제_응답 = 즐겨찾기_삭제(인증_토큰, 강남_양재_응답.as(FavoriteResponse.class).getId());
@@ -99,20 +78,71 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("지하철 노선 즐겨찾기 추가 (교대 -> 강남 -> 양재 -> 남부터미널역)")
     public void 즐겨찾기_생성_강남_남부터미널() {
+        // given
+        StationResponse 강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
+        StationResponse 양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
+        StationResponse 교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
+        StationResponse 남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+
+        LineResponse 이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10))
+                .as(LineResponse.class);
+        LineResponse 신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 8))
+                .as(LineResponse.class);
+        LineResponse 삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 양재역.getId(), 남부터미널역.getId(), 5))
+                .as(LineResponse.class);
+
+        지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+
+        MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        TokenResponse 인증_토큰 = 토큰_발급_요청(TokenRequest.of(EMAIL, PASSWORD)).as(TokenResponse.class);
+
+        // when
         ExtractableResponse<Response> actual = 즐겨찾기_추가(인증_토큰, FavoriteRequest.of(강남역.getId(), 양재역.getId()));
 
+        // then
         즐겨찾기_추가됨(actual, 강남역, 양재역);
     }
 
     @Test
     @DisplayName("지하철 노선 즐겨찾기 삭제 (교대 -> 강남 -> 양재 -> 남부터미널역)")
     public void 즐겨찾기_삭제_강남_남부터미널() {
+        // given
+        StationResponse 강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
+        StationResponse 양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
+        StationResponse 교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
+        StationResponse 남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+
+        LineResponse 이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10))
+                .as(LineResponse.class);
+        LineResponse 신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 8))
+                .as(LineResponse.class);
+        LineResponse 삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 양재역.getId(), 남부터미널역.getId(), 5))
+                .as(LineResponse.class);
+
+        지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+
+        MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        TokenResponse 인증_토큰 = 토큰_발급_요청(TokenRequest.of(EMAIL, PASSWORD)).as(TokenResponse.class);
         FavoriteResponse 강남_양재 = 즐겨찾기_추가(인증_토큰, FavoriteRequest.of(강남역.getId(), 양재역.getId())).as(FavoriteResponse.class);
         FavoriteResponse 교대_남부터미널 = 즐겨찾기_추가(인증_토큰, FavoriteRequest.of(교대역.getId(), 남부터미널역.getId())).as(FavoriteResponse.class);
 
+        // when
         ExtractableResponse<Response> actual = 즐겨찾기_삭제(인증_토큰, 강남_양재.getId());
 
+        // then
         즐겨찾기_삭제됨(actual);
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_추가(TokenResponse token, FavoriteRequest request) {
+        return postAuth("/favorites", token, request);
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제(TokenResponse token, Long id) {
+        return deleteAuth("/favorites/{id}", token, id);
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(TokenResponse token) {
+        return getAuth("/favorites", token);
     }
 
     private void 즐겨찾기_추가됨(ExtractableResponse<Response> actual, StationResponse source, StationResponse target) {
@@ -129,7 +159,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         응답_NO_CONTENT(actual);
     }
 
-    private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> actual) {
+    private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> actual, List<Long> expected) {
         응답_OK(actual);
 
         List<Long> stations = new ArrayList<>();
@@ -140,19 +170,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                     stations.add(it.getTarget().getId());
                 });
 
-        assertThat(stations).containsAll(Arrays.asList(강남역.getId(), 양재역.getId(), 교대역.getId(), 남부터미널역.getId()));
-    }
-
-    public static ExtractableResponse<Response> 즐겨찾기_추가(TokenResponse token, FavoriteRequest request) {
-        return postAuth("/favorites", token, request);
-    }
-
-    public static ExtractableResponse<Response> 즐겨찾기_삭제(TokenResponse token, Long id) {
-        return deleteAuth("/favorites/{id}", token, id);
-    }
-
-    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(TokenResponse token) {
-        return getAuth("/favorites", token);
+        assertThat(stations).containsAll(expected);
     }
 
 }
