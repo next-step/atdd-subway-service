@@ -5,6 +5,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.dto.PathResult;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -12,10 +13,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -49,7 +49,7 @@ class PathServiceTest {
         given(stationService.findById(source)).willReturn(교대역);
         given(stationService.findById(target)).willReturn(양재역);
         given(lineService.getSections()).willReturn(구간);
-        given(pathFinder.findShortestPath(구간, 교대역, 양재역)).willReturn(new PathResponse(Arrays.asList(교대역, 선릉역, 양재역), 20));
+        given(pathFinder.findShortestPath(구간, 교대역, 양재역)).willReturn(new PathResult(Arrays.asList(교대역, 선릉역, 양재역), 20));
 
         PathResponse response = pathService.findShortestPath(source, target);
 
