@@ -57,8 +57,6 @@ public class DijkstraShortestPathAlgorithm implements ShortestPathAlgorithm {
     @Override
     public ShortestPath findShortestPath(Station sourceStation, Station targetStation) {
         GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(sourceStation, targetStation);
-        List<StationResponse> stations = StreamUtils.mapToList(path.getVertexList(), StationResponse::of);
-
-        return ShortestPath.of(stations, (int) path.getWeight());
+        return ShortestPath.of(path.getVertexList(), (int) path.getWeight());
     }
 }

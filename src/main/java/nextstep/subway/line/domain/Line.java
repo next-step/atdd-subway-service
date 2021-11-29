@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.utils.StreamUtils;
 
 import javax.persistence.*;
 
@@ -65,6 +66,12 @@ public class Line extends BaseEntity {
 
     public void removeStation(Station station) {
         sections.removeStation(station);
+    }
+
+    public boolean hasFareSection(Sections fareSections) {
+        return StreamUtils.anyMatch(fareSections.getValues(),
+                                    fareSection -> StreamUtils.anyMatch(getSections().getValues(),
+                                                                        section -> section.isSameUpAndDownStations(fareSection)));
     }
 
     public Sections getSections() {

@@ -40,6 +40,15 @@ public class Sections {
         return new Sections(sections);
     }
 
+    public static Sections createBy(List<Station> stations) {
+        List<Section> fareSections = new ArrayList<>();
+        for (int i = START_INDEX; i < stations.size() - 1; i++) {
+            fareSections.add(Section.of(stations.get(i), stations.get(i + 1)));
+        }
+
+        return Sections.from(fareSections);
+    }
+
     public void add(Section section) {
         validateAddableStations(this, section);
 

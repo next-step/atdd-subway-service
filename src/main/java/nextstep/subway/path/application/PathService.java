@@ -14,6 +14,8 @@ import nextstep.subway.path.finder.DijkstraShortestPathAlgorithm;
 import nextstep.subway.path.finder.PathFinder;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.utils.StreamUtils;
 
 @Service
 @Transactional
@@ -30,15 +32,19 @@ public class PathService {
         List<Line> lines = lineRepository.findAll();
         Station sourceStation = stationService.findById(sourceId);
         Station targetStation = stationService.findById(targetId);
-        PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(lines));
 
-        return createPathResponse(sourceStation, targetStation, pathFinder);
+        PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(lines));
+        ShortestPath path = pathFinder.findShortestPath(sourceStation, targetStation);
+
+        return createPathResponse(lines, path);
     }
 
-    private PathResponse createPathResponse(Station sourceStation, Station targetStation, PathFinder pathFinder) {
-        ShortestPath path = pathFinder.findShortestPath(sourceStation, targetStation);
-        int fare = FareCalculator.calculate(path.getDistance());
+    private PathResponse createPathResponse(List<Line> lines, ShortestPath path) {
+        int pathFare = FareCalculator.calculatePathFare(path.getDistance());
+        int lineFare = FareCalculator.calculateLineFare(lines, path);
 
-        return PathResponse.of(path.getStations(), path.getDistance(), fare);
+        return PathResponse.of(StreamUtils.mapToList(path.getStations(), StationResponse::of),
+                                                     path.getDistance(),
+                                                     pathFare + lineFare);
     }
 }

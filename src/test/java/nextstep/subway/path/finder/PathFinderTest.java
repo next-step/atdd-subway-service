@@ -69,7 +69,7 @@ class PathFinderTest {
 
         // then
         List<Long> expectedIds = StreamUtils.mapToList(Arrays.asList(교대역, 남부터미널역, 양재역), Station::getId);
-        List<Long> actualIds = StreamUtils.mapToList(shortestPath.getStations(), StationResponse::getId);
+        List<Long> actualIds = StreamUtils.mapToList(shortestPath.getStations(), Station::getId);
 
         assertThat(actualIds).containsExactlyElementsOf(expectedIds);
         assertThat(shortestPath.getDistance()).isEqualTo(DISTANCE_3 + DISTANCE_5);
@@ -85,7 +85,7 @@ class PathFinderTest {
         ShortestPath shortestPath = pathFinder.findShortestPath(교대역, 교대역);
 
         // then
-        List<Long> actualIds = StreamUtils.mapToList(shortestPath.getStations(), StationResponse::getId);
+        List<Long> actualIds = StreamUtils.mapToList(shortestPath.getStations(), Station::getId);
 
         assertThat(actualIds).containsExactly(교대역.getId());
         assertThat(shortestPath.getDistance()).isEqualTo(DISTANCE_0);

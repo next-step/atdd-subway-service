@@ -3,7 +3,13 @@ package nextstep.subway.fare.calculator;
 import static nextstep.subway.fare.domain.FareType.*;
 import static nextstep.subway.fare.domain.FareType.BASIC;
 
+import java.util.List;
+
 import nextstep.subway.fare.domain.FareSectionType;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.dto.ShortestPath;
+import nextstep.subway.utils.StreamUtils;
 
 public class FareCalculator {
     private static final int DISTANCE_0 = 0;
@@ -11,7 +17,7 @@ public class FareCalculator {
 
     private FareCalculator() {}
 
-    public static int calculate(int distance) {
+    public static int calculatePathFare(int distance) {
         if (distance == DISTANCE_0) {
             return NO_FARE;
         }
@@ -35,5 +41,12 @@ public class FareCalculator {
         }
 
         return (int) (Math.ceil(overDistance / fareSectionType.getAdditionalDistanceUnit()) * ADDITIONAL.getFare());
+    }
+
+    public static int calculateLineFare(List<Line> lines, ShortestPath path) {
+        Sections fareSections = Sections.createBy(path.getStations());
+        List<Line> linesByPath = StreamUtils.filterToList(lines, line -> line.hasFareSection(fareSections));
+
+        return StreamUtils.mapToMaxInt(linesByPath, line -> line.getFare().getValue());
     }
 }
