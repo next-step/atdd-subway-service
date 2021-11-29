@@ -3,8 +3,6 @@ package nextstep.subway.line.domain;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,29 +31,6 @@ class LineTest {
         line.getSections().add(new Section(line, 잠실역, 선릉역, 10));
         line.getSections().add(new Section(line, 당산역, 시청역, 30));
         line.getSections().add(new Section(line, 선릉역, 교대역, 10));
-    }
-
-    @DisplayName("지하철 노선 역 목록을 가져온다.")
-    @Test
-    void getStations() {
-        // when
-        List<Station> stations = line.getStations();
-
-        // then
-        assertThat(stations).containsExactly(잠실역, 선릉역, 교대역, 당산역, 시청역);
-    }
-
-    @DisplayName("지하철 노선에 구간이 존재하지 않을경우 빈 역 목록을 가져온다.")
-    @Test
-    void getEmptyStations() {
-        // given
-        Line line = new Line();
-
-        // when
-        List<Station> stations = line.getStations();
-
-        // then
-        assertThat(stations).isEmpty();
     }
 
     @DisplayName("지하철 구간을 등록한다.")
