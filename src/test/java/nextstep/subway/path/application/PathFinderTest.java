@@ -3,7 +3,7 @@ package nextstep.subway.path.application;
 import nextstep.subway.path.dto.PathResult;
 import org.junit.jupiter.api.Test;
 
-import static nextstep.subway.path.PathFixture.*;
+import static nextstep.subway.path.fixture.PathFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
