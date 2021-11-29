@@ -32,7 +32,7 @@ public class FavoriteController {
     }
 
     @PostMapping
-    public ResponseEntity saveFavorites(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest favoriteRequest) {
+    public ResponseEntity<FavoriteResponse> saveFavorites(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest favoriteRequest) {
         FavoriteResponse favorite = favoriteService.saveFavorite(loginMember, favoriteRequest);
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).body(favorite);
     }
