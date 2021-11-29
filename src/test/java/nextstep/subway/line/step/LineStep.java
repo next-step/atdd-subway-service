@@ -8,10 +8,6 @@ import nextstep.subway.line.domain.Sections;
 
 public final class LineStep {
 
-    private LineStep() {
-        throw new AssertionError();
-    }
-
     public static Line line(String name, String color, Section section) {
         return Line.of(Name.from(name), Color.from(color), Sections.from(section));
     }

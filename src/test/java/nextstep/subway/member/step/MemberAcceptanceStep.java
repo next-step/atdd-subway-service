@@ -14,10 +14,6 @@ import org.springframework.http.MediaType;
 
 public final class MemberAcceptanceStep {
 
-    private MemberAcceptanceStep() {
-        throw new AssertionError();
-    }
-
     public static void 회원_등록_되어_있음(
         String email, String password, Integer age) {
         회원_생성을_요청(email, password, age);

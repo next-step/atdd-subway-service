@@ -5,10 +5,6 @@ import nextstep.subway.station.domain.Station;
 
 public final class StationStep {
 
-    private StationStep() {
-        throw new AssertionError();
-    }
-
     public static Station station(String name) {
         return Station.from(Name.from(name));
     }

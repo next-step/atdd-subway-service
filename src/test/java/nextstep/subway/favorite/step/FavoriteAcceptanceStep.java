@@ -16,10 +16,6 @@ import org.springframework.http.HttpStatus;
 
 public final class FavoriteAcceptanceStep {
 
-    private FavoriteAcceptanceStep() {
-        throw new AssertionError();
-    }
-
     public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(
         String accessToken, Long sourceId, Long targetId) {
         return RestAssured.given().log().all()
