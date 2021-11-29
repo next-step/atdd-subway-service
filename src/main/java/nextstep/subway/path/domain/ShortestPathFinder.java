@@ -33,6 +33,15 @@ public final class ShortestPathFinder {
         return Path.of(Stations.from(path.getVertexList()), Distance.from(path.getWeight()));
     }
 
+    public boolean isInvalidPath(Station source, Station target) {
+        try {
+            shortestPath.getPath(source, target);
+            return false;
+        } catch (IllegalArgumentException e) {
+            return true;
+        }
+    }
+
     private GraphPath<Station, SectionEdge> validPath(Station source, Station target) {
         try {
             return shortestPath.getPath(source, target);

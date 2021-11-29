@@ -57,13 +57,10 @@ public class FavoriteService {
     }
 
     private void validatePath(Station source, Station target) {
-        try {
-            pathService.shortestPath(source, target);
-        } catch (InvalidDataException e) {
+        if (pathService.isInvalidPath(source, target)) {
             throw new InvalidDataException(
-                String.format("출발역(%s)과 도착역(%s) 경로를 찾을 수 없어 즐겨찾기를 저장할 수 없습니다.",
-                    source, target),
-                e);
+                String.format("출발역(%s)과 도착역(%s) 경로가 유효하지 않아 즐겨찾기를 저장할 수 없습니다.",
+                    source, target));
         }
     }
 

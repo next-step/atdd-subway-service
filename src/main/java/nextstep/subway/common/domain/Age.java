@@ -8,7 +8,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Age {
 
-    @Column(name = "age")
+    @Column(name = "age", nullable = false)
     private int value;
     private AgeCategory category;
 

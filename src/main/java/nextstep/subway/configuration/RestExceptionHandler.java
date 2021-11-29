@@ -2,7 +2,7 @@ package nextstep.subway.configuration;
 
 import java.util.Map;
 import java.util.stream.Collectors;
-import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.common.exception.AuthorizationException;
 import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.common.exception.NotFoundException;

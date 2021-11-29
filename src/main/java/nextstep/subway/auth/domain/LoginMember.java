@@ -1,9 +1,9 @@
 package nextstep.subway.auth.domain;
 
 import io.jsonwebtoken.lang.Assert;
-import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.common.domain.Age;
 import nextstep.subway.common.domain.Email;
+import nextstep.subway.common.exception.AuthorizationException;
 
 public final class LoginMember {
 

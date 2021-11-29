@@ -6,9 +6,9 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import java.util.stream.Stream;
-import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.common.domain.Age;
 import nextstep.subway.common.domain.Email;
+import nextstep.subway.common.exception.AuthorizationException;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

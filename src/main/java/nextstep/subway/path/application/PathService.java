@@ -33,6 +33,11 @@ public class PathService {
             .path(source, target);
     }
 
+    public boolean isInvalidPath(Station source, Station target) {
+        return shortestPathFinder()
+            .isInvalidPath(source, target);
+    }
+
     private ShortestPathFinder shortestPathFinder() {
         return ShortestPathFinder.from(lineService.findAll());
     }
