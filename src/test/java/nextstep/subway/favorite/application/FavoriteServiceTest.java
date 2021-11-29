@@ -107,7 +107,7 @@ class FavoriteServiceTest {
             this::즐겨찾기_저장_요청되지_않음,
             () -> assertThatExceptionOfType(InvalidDataException.class)
                 .isThrownBy(saveFavoriteCallable)
-                .withMessageEndingWith("경로를 찾을 수 없어 즐겨찾기를 저장할 수 없습니다.")
+                .withMessageEndingWith("경로가 유효하지 않아 즐겨찾기를 저장할 수 없습니다.")
         );
     }
 
@@ -116,8 +116,8 @@ class FavoriteServiceTest {
     }
 
     private void 경로가_존재하지_않음(Station source, Station target) {
-        when(pathService.shortestPath(eq(source), eq(target)))
-            .thenThrow(new InvalidDataException("경로를 조회할 수 없습니다."));
+        when(pathService.isInvalidPath(eq(source), eq(target)))
+            .thenReturn(true);
     }
 
     private void 검색된_지하철_역_제공(Long id, Station station) {

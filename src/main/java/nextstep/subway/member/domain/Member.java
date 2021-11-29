@@ -8,9 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
-import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.common.domain.Age;
 import nextstep.subway.common.domain.Email;
+import nextstep.subway.common.exception.AuthorizationException;
 
 @Entity
 public class Member extends BaseEntity {
@@ -72,7 +72,7 @@ public class Member extends BaseEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, email, password, age);
+        return Objects.hash(email);
     }
 
     @Override
@@ -84,9 +84,7 @@ public class Member extends BaseEntity {
             return false;
         }
         Member member = (Member) o;
-        return Objects.equals(id, member.id) && Objects.equals(email, member.email)
-            && Objects.equals(password, member.password) && Objects
-            .equals(age, member.age);
+        return Objects.equals(email, member.email);
     }
 
     @Override
