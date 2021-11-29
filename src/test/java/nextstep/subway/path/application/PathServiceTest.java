@@ -32,7 +32,8 @@ class PathServiceTest {
     }
 
     @Test
-    void findShortestPath() {
+    void findShortestPath_최단_경로를_조회한다() {
+        // given
         Long source = 1L;
         Long target = 3L;
         given(stationService.findById(source)).willReturn(교대역);
@@ -40,8 +41,10 @@ class PathServiceTest {
         given(lineService.getSections()).willReturn(구간);
         given(pathFinder.findShortestPath(구간, 교대역, 양재역)).willReturn(new PathResult(Arrays.asList(교대역, 선릉역, 양재역), 20));
 
+        // when
         PathResponse response = pathService.findShortestPath(source, target);
 
+        // then
         assertAll(
                 () -> assertThat(response.getStations()).containsExactly(StationResponse.of(교대역), StationResponse.of(선릉역), StationResponse.of(양재역)),
                 () -> assertThat(response.getDistance()).isEqualTo(20)
