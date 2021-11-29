@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import io.jsonwebtoken.lang.Assert;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.domain.Fare;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Sections;
 
 public final class FarePolicy {
@@ -24,6 +25,11 @@ public final class FarePolicy {
     }
 
     public Fare fare() {
+        originFare();
         return DEFAULT_FARE;
+    }
+
+    private void originFare() {
+        Distance totalDistance = sections.totalDistance();
     }
 }

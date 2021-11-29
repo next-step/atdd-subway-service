@@ -96,6 +96,13 @@ public class Sections {
         return Collections.unmodifiableList(sections);
     }
 
+    public Distance totalDistance() {
+        return sections.stream()
+            .map(Section::distance)
+            .reduce(Distance::sum)
+            .orElse(Distance.from(0));
+    }
+
     private void remove(Station station) {
         removeWhenExistByUpStation(station);
         removeWhenExistByDownStation(station);
