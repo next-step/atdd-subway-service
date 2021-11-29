@@ -19,6 +19,13 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
+    protected Sections() {
+    }
+
+    public Sections(List<Section> sections) {
+        this.sections = sections;
+    }
+
     public void add(Section section) {
         sections.add(section);
     }
