@@ -45,6 +45,10 @@ public class Sections {
         return new Sections(Collections.singletonList(section));
     }
 
+    public static Sections from(List<Section> sections) {
+        return new Sections(sections);
+    }
+
     static Sections empty() {
         return EMPTY;
     }

@@ -33,6 +33,10 @@ public final class Lines {
         return stations.list();
     }
 
+    public Sections sections() {
+        return Sections.from(sectionList());
+    }
+
     public List<Section> sectionList() {
         Sections sections = Sections.empty();
         for (Line line : lines) {
