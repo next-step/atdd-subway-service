@@ -140,4 +140,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ### 3. 연령별 할인 정책 추가
 - [ ] 청소년: 운임에서 350원을 공제한 금액의 20%할인
 - [ ] 어린이: 운임에서 350원을 공제한 금액의 50%할인
-- [X] 비로그인 유저에 대해서는 경로조회 시 Exception 발생함
+- [X] 비로그인 유저는 경로조회 시, 연령별 요금 할인 미적용

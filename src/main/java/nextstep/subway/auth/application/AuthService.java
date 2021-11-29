@@ -1,5 +1,7 @@
 package nextstep.subway.auth.application;
 
+import java.util.Objects;
+
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -31,12 +33,16 @@ public class AuthService {
     }
 
     public LoginMember findMemberByToken(String credentials) {
+        if (Objects.isNull(credentials)) {
+            return LoginMember.createEmpty();
+        }
+
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new IllegalArgumentException(INVALID_TOKEN_ERROR_MESSAGE);
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email).orElseThrow(DataNotExistException::new);
-        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+        return LoginMember.of(member.getId(), member.getEmail(), member.getAge());
     }
 }

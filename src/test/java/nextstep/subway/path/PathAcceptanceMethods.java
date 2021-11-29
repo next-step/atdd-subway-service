@@ -23,8 +23,12 @@ public class PathAcceptanceMethods {
 
     private PathAcceptanceMethods() {}
 
-    public static ExtractableResponse<Response> 지하철_최단경로_조회_요청(Long sourceId, Long targetId, TokenResponse token) {
+    public static ExtractableResponse<Response> 회원_지하철_최단경로_조회_요청(Long sourceId, Long targetId, TokenResponse token) {
         return getByAuth(PATH_URL_PATH + REQUEST_PARAM_SOURCE + sourceId + AMPERSAND_SIGN + REQUEST_PARAM_TARGET + targetId, token);
+    }
+
+    public static ExtractableResponse<Response> 비회원_지하철_최단경로_조회_요청(Long sourceId, Long targetId) {
+        return get(PATH_URL_PATH + REQUEST_PARAM_SOURCE + sourceId + AMPERSAND_SIGN + REQUEST_PARAM_TARGET + targetId);
     }
 
     public static void 지하철_최단경로_조회됨(ExtractableResponse<Response> response,

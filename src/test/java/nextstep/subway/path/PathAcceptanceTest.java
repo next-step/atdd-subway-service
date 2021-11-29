@@ -16,7 +16,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import io.restassured.response.ExtractableResponse;
@@ -89,7 +88,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestPath1() {
         // when
-        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 양재역.getId(), token);
+        ExtractableResponse<Response> response = 회원_지하철_최단경로_조회_요청(교대역.getId(), 양재역.getId(), token);
 
         // then
         지하철_최단경로_조회됨(response,
@@ -102,7 +101,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestPath2() {
         // when
-        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 교대역.getId(), token);
+        ExtractableResponse<Response> response = 회원_지하철_최단경로_조회_요청(교대역.getId(), 교대역.getId(), token);
 
         // then
         지하철_최단경로_조회됨(response, Collections.singletonList(교대역), 0, 0);
@@ -115,7 +114,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         StationResponse 서울역 = 지하철역_등록되어_있음(StationRequest.of("서울역")).as(StationResponse.class);
 
         // when
-        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(서울역.getId(), 교대역.getId(), token);
+        ExtractableResponse<Response> response = 회원_지하철_최단경로_조회_요청(서울역.getId(), 교대역.getId(), token);
 
         // then
         지하철_최단경로_조회_실패(response);
@@ -128,7 +127,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         StationResponse 서울역 = 지하철역_등록되어_있음(StationRequest.of("서울역")).as(StationResponse.class);
 
         // when
-        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 서울역.getId(), token);
+        ExtractableResponse<Response> response = 회원_지하철_최단경로_조회_요청(교대역.getId(), 서울역.getId(), token);
 
         // then
         지하철_최단경로_조회_실패(response);
@@ -145,7 +144,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         LineResponse 일호선 = 지하철_노선_등록되어_있음(일호선_Request).as(LineResponse.class);
 
         // when
-        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 서울역.getId(), token);
+        ExtractableResponse<Response> response = 회원_지하철_최단경로_조회_요청(교대역.getId(), 서울역.getId(), token);
 
         // then
         지하철_최단경로_조회_실패(response);
@@ -165,7 +164,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록되어_있음(일호선.getId(), SectionRequest.of(시청역.getId(), 종각역.getId(), DISTANCE_5));
 
         // when
-        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(서울역.getId(), 종각역.getId(), token);
+        ExtractableResponse<Response> response = 회원_지하철_최단경로_조회_요청(서울역.getId(), 종각역.getId(), token);
 
         // then
         지하철_최단경로_조회됨(response,
@@ -184,7 +183,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         LineResponse 분당선 = 지하철_노선_등록되어_있음(분당선_Request).as(LineResponse.class);
 
         // when
-        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 모란역.getId(), token);
+        ExtractableResponse<Response> response = 회원_지하철_최단경로_조회_요청(교대역.getId(), 모란역.getId(), token);
 
         // then
         지하철_최단경로_조회됨(response,
@@ -194,16 +193,16 @@ class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @DisplayName("로그인을 하지 않은 상태에서 경로조회를 한다.")
-    @ParameterizedTest
-    @EmptySource
-    void findShortPath8(String token) {
-        // given
-        TokenResponse emptyToken = TokenResponse.from(token);
+    @Test
+    void findShortPath8() {
 
         // when
-        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 양재역.getId(), emptyToken);
+        ExtractableResponse<Response> response = 비회원_지하철_최단경로_조회_요청(교대역.getId(), 양재역.getId());
 
         // then
-        지하철_최단경로_조회_실패(response);
+        지하철_최단경로_조회됨(response,
+                     Arrays.asList(교대역, 남부터미널역, 양재역),
+                     DISTANCE_3 + DISTANCE_5,
+                     BASIC.getFare() + 삼호선.getFare());
     }
 }

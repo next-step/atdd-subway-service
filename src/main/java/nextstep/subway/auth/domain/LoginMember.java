@@ -1,5 +1,7 @@
 package nextstep.subway.auth.domain;
 
+import java.util.Objects;
+
 public class LoginMember {
     private Long id;
     private String email;
@@ -8,10 +10,22 @@ public class LoginMember {
     public LoginMember() {
     }
 
-    public LoginMember(Long id, String email, Integer age) {
+    private LoginMember(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
         this.age = age;
+    }
+
+    public static LoginMember of(Long id, String email, Integer age) {
+        return new LoginMember(id, email, age);
+    }
+
+    public static LoginMember createEmpty() {
+        return new LoginMember();
+    }
+
+    public boolean isLoginMember() {
+        return Objects.isNull(id);
     }
 
     public Long getId() {
