@@ -6,7 +6,7 @@ import nextstep.subway.station.domain.Station;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-public class DijkstraGraph {
+public class DijkstraGraph implements Graph {
 
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
@@ -14,7 +14,8 @@ public class DijkstraGraph {
         graph = new WeightedMultigraph(DefaultWeightedEdge.class);
     }
 
-    public DijkstraPath getPath(Sections sections) {
+    @Override
+    public Path getPath(Sections sections) {
         sections.getStations().forEach(graph::addVertex);
         sections.getSections().forEach(this::addEdgeWeight);
         return new DijkstraPath(graph);

@@ -9,7 +9,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
 
-public class DijkstraPath {
+public class DijkstraPath implements Path {
 
     private final DijkstraShortestPath dijkstra;
 
@@ -17,6 +17,7 @@ public class DijkstraPath {
         dijkstra = new DijkstraShortestPath(graph);
     }
 
+    @Override
     public PathResult find(Station source, Station target) {
         GraphPath path = dijkstra.getPath(source, target);
         List<Station> shortestPath = path.getVertexList();

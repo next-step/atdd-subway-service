@@ -6,9 +6,14 @@ import nextstep.subway.station.domain.Station;
 
 public class PathFinder {
 
+    private final Graph graph;
+
+    public PathFinder(Graph graph) {
+        this.graph = graph;
+    }
+
     public PathResult findShortestPath(Sections sections, Station source, Station target) {
-        DijkstraGraph dijkstraGraph = new DijkstraGraph();
-        DijkstraPath path = dijkstraGraph.getPath(sections);
+        Path path = graph.getPath(sections);
         return path.find(source, target);
     }
 }
