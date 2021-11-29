@@ -19,10 +19,6 @@ import org.springframework.http.MediaType;
 
 public final class LineAcceptanceStep {
 
-    private LineAcceptanceStep() {
-        throw new AssertionError();
-    }
-
     public static LineResponse 지하철_노선_등록되어_있음(LineCreateRequest params) {
         return 지하철_노선_생성_요청(params)
             .as(LineResponse.class);

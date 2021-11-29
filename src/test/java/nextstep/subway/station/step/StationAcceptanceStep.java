@@ -14,10 +14,6 @@ import org.springframework.http.MediaType;
 
 public final class StationAcceptanceStep {
 
-    private StationAcceptanceStep() {
-        throw new AssertionError();
-    }
-
     public static ExtractableResponse<Response> 지하철역_등록되어_있음(String name) {
         return 지하철역_생성_요청(name);
     }
