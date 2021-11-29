@@ -72,7 +72,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         changedAccessJwt = AuthAcceptanceTest.인증받은JWT에_해킹이시도됨(accessJwt);
         favoriteRequest = FavoriteRequest.of(교대역.getId(), 양재역.getId());
 
-        expectedfavoriteResponse = FavoriteResponse.of(1L, StationResponse.of(교대역) , StationResponse.of(양재역));
+        expectedfavoriteResponse = FavoriteResponse.of(1L, 교대역 , 양재역);
     }
 
     @DisplayName("즐겨찾기 관리")
@@ -93,9 +93,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_목록조회됨(searchedFavoriteResponse);
 
         // given
-        FavoriteResponse favoriteResponse = searchedFavoriteResponse.as(FavoriteResponse.class);
+        FavoriteResponse[] favoriteResponse = searchedFavoriteResponse.as(FavoriteResponse[].class);
         // when
-        ExtractableResponse<Response> deletedFavoriteResponse = 즐겨찾기_삭제_요청(accessJwt, favoriteResponse);
+        ExtractableResponse<Response> deletedFavoriteResponse = 즐겨찾기_삭제_요청(accessJwt, favoriteResponse[0]);
         // then
         즐겨찾기_삭제됨(deletedFavoriteResponse);
 
@@ -107,17 +107,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void 해킹된Jwt을통한_나의_즐겨찾기_기능검증(String changedAccessJwt) {
         // when
-        ExtractableResponse<Response> createdFavoriteResponse = 즐겨찾기_생성_요청(accessJwt, favoriteRequest);
+        ExtractableResponse<Response> createdFavoriteResponse = 즐겨찾기_생성_요청(changedAccessJwt, favoriteRequest);
         // then
         AuthAcceptanceTest.인증_못받음(createdFavoriteResponse);
 
         // when
-        ExtractableResponse<Response> searchedFavoriteResponse = 즐겨찾기_목록조회_요청(accessJwt);
+        ExtractableResponse<Response> searchedFavoriteResponse = 즐겨찾기_목록조회_요청(changedAccessJwt);
         // then
         AuthAcceptanceTest.인증_못받음(searchedFavoriteResponse);
 
         // when
-        ExtractableResponse<Response> deletedFavoriteResponse = 즐겨찾기_삭제_요청(accessJwt, expectedfavoriteResponse);
+        ExtractableResponse<Response> deletedFavoriteResponse = 즐겨찾기_삭제_요청(changedAccessJwt, expectedfavoriteResponse);
         // then
         AuthAcceptanceTest.인증_못받음(deletedFavoriteResponse);
     }
@@ -144,7 +144,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private void 즐겨찾기_목록조회됨(ExtractableResponse<Response> response) {
         assertAll(
             () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-            () -> Assertions.assertThat(response.as(FavoriteResponse.class)).isEqualTo(expectedfavoriteResponse)
+            () -> Assertions.assertThat(response.as(FavoriteResponse[].class)[0]).isEqualTo(expectedfavoriteResponse)
         );
     }
 
