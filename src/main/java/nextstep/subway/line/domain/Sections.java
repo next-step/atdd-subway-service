@@ -41,8 +41,7 @@ public class Sections {
     }
 
     private boolean isLastStation(Station downStation, Set<Station> upStations) {
-        return upStations.stream()
-            .noneMatch(station -> station.equals(downStation));
+        return !upStations.contains(downStation);
     }
 
     private Section extractSectionByContainsUpStation(Station downStation) {
