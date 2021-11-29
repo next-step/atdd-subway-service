@@ -14,8 +14,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_생성_요청;
 import static nextstep.subway.line.step.LineSectionStep.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.path.step.PathStep.최단_경로_조회_요청;
+import static nextstep.subway.path.step.PathStep.최단_경로_조회됨;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -58,18 +63,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     void shortestPath_최단_경로를_조회한다() {
-        ExtractableResponse<Response> response = RestAssured
-                                                    .given().log().all()
-                                                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                                    .param("source", 교대역.getId())
-                                                    .param("target", 양재역.getId())
-                                                    .when().get("/path")
-                                                    .then().log().all()
-                                                    .extract();
+        // when
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 양재역);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.as(PathResponse.class).getStations()).containsExactly(교대역, 선릉역, 양재역);
-        assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(8);
+        // then
+        최단_경로_조회됨(response, 8, Arrays.asList(교대역, 선릉역, 양재역));
     }
 
     private static LineResponse 지하철_노선_등록되어_있음(LineRequest params) {
