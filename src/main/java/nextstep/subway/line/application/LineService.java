@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -69,6 +71,9 @@ public class LineService {
     }
 
     public List<Section> getSections() {
-        return new ArrayList<>();
+        return lineRepository.findAll().stream()
+                .map(Line::getSections)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 }
