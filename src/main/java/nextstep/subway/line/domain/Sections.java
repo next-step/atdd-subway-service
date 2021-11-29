@@ -46,9 +46,13 @@ public class Sections {
             return;
         }
         validateAddSection(section);
-        if (!(addUpStationOfBetween(section) || addDownStationOfBetween(section))) {
+        if (!addStationOfBetween(section)) {
             sections.add(section);
         }
+    }
+
+    private boolean addStationOfBetween(Section section) {
+        return addUpStationOfBetween(section) || addDownStationOfBetween(section);
     }
 
     private boolean isLastStation(Station downStation, Set<Station> upStations) {
