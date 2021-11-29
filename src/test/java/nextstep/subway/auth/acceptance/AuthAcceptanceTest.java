@@ -1,7 +1,6 @@
 package nextstep.subway.auth.acceptance;
 
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
@@ -11,7 +10,6 @@ import nextstep.subway.member.dto.MemberResponse;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
@@ -62,13 +60,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         String accessJwt = JWT_받음(correctAccountResponse);
 
         // when
-        ExtractableResponse<Response> memberInfoResponse = 회원정보_조회_요청(accessJwt);
+        ExtractableResponse<Response> memberInfoResponse = MemberAcceptanceTest.나의_회원정보_조회_요청(accessJwt);
         // then
-        회원정보_조회됨(memberInfoResponse);
+        MemberAcceptanceTest.나의_회원정보_조회됨(memberInfoResponse, 정상생성된_테스트계정정보);
 
         // when
         String changedJwt = 인증받은JWT에_해킹이시도됨(accessJwt);
-        ExtractableResponse<Response> responseForhackingJwtRequest = 회원정보_조회_요청(changedJwt);
+        ExtractableResponse<Response> responseForhackingJwtRequest = MemberAcceptanceTest.나의_회원정보_조회_요청(changedJwt);
         // then
         인증_못받음(responseForhackingJwtRequest);
     }
@@ -82,9 +80,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         String accessJwt = JWT_받음(response);
 
         // when
-        ExtractableResponse<Response> memberInfoResponse = 회원정보_조회_요청(accessJwt);
+        ExtractableResponse<Response> memberInfoResponse = MemberAcceptanceTest.나의_회원정보_조회_요청(accessJwt);
         // then
-        회원정보_조회됨(memberInfoResponse);
+        MemberAcceptanceTest.나의_회원정보_조회됨(memberInfoResponse, 정상생성된_테스트계정정보);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
@@ -108,20 +106,20 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         // given
         String chagnedAccessJwt = JWT_변조됨(accessJwt);
         // when
-        ExtractableResponse<Response> memberInfoResponse = 회원정보_조회_요청(chagnedAccessJwt);
+        ExtractableResponse<Response> memberInfoResponse = MemberAcceptanceTest.나의_회원정보_조회_요청(chagnedAccessJwt);
         // then
         인증_못받음(memberInfoResponse);
     }
 
-    private void 인증_못받음(ExtractableResponse<Response> response) {
+    public static void 인증_못받음(ExtractableResponse<Response> response) {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    private String 인증받은JWT에_해킹이시도됨(String accessJwt) {
+    public static String 인증받은JWT에_해킹이시도됨(String accessJwt) {
         return JWT_변조됨(accessJwt);
     }
 
-    private String JWT_변조됨(String accessJwt) {
+    public static String JWT_변조됨(String accessJwt) {
         String changedBody = "{\"sub\": \"probitanima22@gmail.com\", \"iat\": 1638169161, \"exp\": 1638172761}";
         
         String header = accessJwt.split("\\.")[0];
@@ -131,7 +129,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         return String.join(".", List.of(header, changedPayload, signature));
     }
 
-    private ExtractableResponse<Response> JWT_요청(MemberRequest requestMember) {
+    public static ExtractableResponse<Response> JWT_요청(MemberRequest requestMember) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -141,7 +139,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private String JWT_받음(ExtractableResponse<Response> response) {
+    public String JWT_받음(ExtractableResponse<Response> response) {
         String accessJwt = response.as(TokenResponse.class).getAccessToken();
 
         assertAll(
@@ -153,20 +151,4 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         return accessJwt;
     }
 
-    private void 회원정보_조회됨(ExtractableResponse<Response> response) {
-        assertAll(
-            () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-            () -> Assertions.assertThat(response.as(MemberResponse.class)).isEqualTo(정상생성된_테스트계정정보)
-        );
-    }
-
-    private ExtractableResponse<Response> 회원정보_조회_요청(String jwt) {
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt)
-                .when().get("/members/me")
-                .then().log().all()
-                .extract();
-    }
 }
