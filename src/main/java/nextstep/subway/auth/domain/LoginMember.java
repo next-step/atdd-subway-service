@@ -37,6 +37,16 @@ public final class LoginMember {
         return id;
     }
 
+    public boolean isChild() {
+        validateGuest();
+        return age.isChild();
+    }
+
+    public boolean isYouth() {
+        validateGuest();
+        return age.isYouth();
+    }
+
     private boolean isGuest() {
         return this == GUEST_MEMBER;
     }

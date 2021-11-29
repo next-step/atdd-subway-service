@@ -37,7 +37,7 @@ class SectionsTest {
     @DisplayName("초기 구간은 반드시 필수")
     void instance_nullSection_thrownIllegalArgumentException() {
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> Sections.from(null))
+            .isThrownBy(() -> Sections.from((Section) null))
             .withMessage("초기 구간은 반드시 존재해야 합니다.");
     }
 
