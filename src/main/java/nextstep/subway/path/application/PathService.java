@@ -5,7 +5,9 @@ import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import org.springframework.stereotype.Service;
 
+@Service
 public class PathService {
 
     private final LineService lineService;
