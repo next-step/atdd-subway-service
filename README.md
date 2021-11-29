@@ -132,3 +132,107 @@ Connection: keep-alive
 }
 ```
 </details>
+
+#### 즐겨찾기 생성
+
+<details><summary>Request</summary>
+
+```
+POST /favorites HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY
+accept: */*
+content-type: application/json; charset=UTF-8
+content-length: 27
+host: localhost:50336
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/14.0.2)
+accept-encoding: gzip,deflate
+{
+    "source": "1",
+    "target": "3"
+}
+```
+</details>
+
+<details><summary>Response</summary>
+
+```
+HTTP/1.1 201 Created
+Keep-Alive: timeout=60
+Connection: keep-alive
+Content-Length: 0
+Date: Sun, 27 Dec 2020 04:32:26 GMT
+Location: /favorites/1
+```
+</details>
+
+#### 즐겨찾기 목록조회
+
+<details><summary>Request</summary>
+
+```
+GET /favorites HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY
+accept: application/json
+host: localhost:50336
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/14.0.2)
+accept-encoding: gzip,deflate
+```
+</details>
+
+<details><summary>Response</summary>
+
+```
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sun, 27 Dec 2020 04:32:26 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+[
+    {
+        "id": 1,
+        "source": {
+            "id": 1,
+            "name": "강남역",
+            "createdDate": "2020-12-27T13:32:26.364439",
+            "modifiedDate": "2020-12-27T13:32:26.364439"
+        },
+        "target": {
+            "id": 3,
+            "name": "정자역",
+            "createdDate": "2020-12-27T13:32:26.486256",
+            "modifiedDate": "2020-12-27T13:32:26.486256"
+        }
+    }
+]
+
+```
+</details>
+
+#### 즐겨찾기 삭제
+
+<details><summary>Request</summary>
+
+```
+DELETE /favorites/1 HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY
+accept: */*
+host: localhost:50336
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/14.0.2)
+accept-encoding: gzip,deflate
+```
+</details>
+
+<details><summary>Response</summary>
+
+```
+HTTP/1.1 204 No Content
+Keep-Alive: timeout=60
+Connection: keep-alive
+Date: Sun, 27 Dec 2020 04:32:26 GMT
+```
+</details>
