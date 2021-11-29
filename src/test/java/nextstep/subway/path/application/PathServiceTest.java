@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.exception.SameSourceAndTargetException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathResult;
@@ -12,6 +13,7 @@ import java.util.Arrays;
 
 import static nextstep.subway.path.PathFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -49,5 +51,11 @@ class PathServiceTest {
                 () -> assertThat(response.getStations()).containsExactly(StationResponse.of(교대역), StationResponse.of(선릉역), StationResponse.of(양재역)),
                 () -> assertThat(response.getDistance()).isEqualTo(20)
         );
+    }
+
+    @Test
+    void findShortestPath_출발역과_도착역이_같으면_에러를_발생한다() {
+        assertThatExceptionOfType(SameSourceAndTargetException.class)
+                .isThrownBy(() -> pathService.findShortestPath(1L, 1L));
     }
 }

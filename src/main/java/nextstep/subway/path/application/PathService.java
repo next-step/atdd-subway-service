@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.exception.SameSourceAndTargetException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathResponse;
@@ -21,9 +22,16 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(Long source, Long target) {
+        check(source, target);
         Station sourceStation = stationService.findById(source);
         Station targetStation = stationService.findById(target);
         Sections sections = lineService.getSections();
         return PathResponse.of(pathFinder.findShortestPath(sections, sourceStation, targetStation));
+    }
+
+    private void check(Long source, Long target) {
+        if (source == target) {
+            throw new SameSourceAndTargetException();
+        }
     }
 }
