@@ -22,7 +22,7 @@ class SectionTest {
     void setUp() {
         판교역 = Station.of(1L, "판교역");
         정자역 = Station.of(2L, "정자역");
-        신분당선 = Line.of("신분당선", "빨강");
+        신분당선 = Line.of("신분당선", "빨강", 1000);
         distance = Distance.from(DISTANCE);
     }
 

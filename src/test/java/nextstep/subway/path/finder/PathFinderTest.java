@@ -23,6 +23,9 @@ class PathFinderTest {
     private static final int DISTANCE_5 = 5;
     private static final int DISTANCE_3 = 3;
     private static final int DISTANCE_0 = 0;
+    private static final int FARE_1000 = 1000;
+    private static final int FARE_900 = 900;
+    private static final int FARE_800 = 800;
 
     private Station 강남역;
     private Station 양재역;
@@ -39,9 +42,9 @@ class PathFinderTest {
         교대역 = Station.of(3L, "교대역");
         남부터미널역 = Station.of(4L, "남부터미널역");
 
-        신분당선 = Line.of("신분당선", "RED", 강남역, 양재역, DISTANCE_10);
-        이호선 = Line.of("이호선", "GREED", 교대역, 강남역, DISTANCE_10);
-        삼호선 = Line.of("삼호선", "ORANGE", 남부터미널역, 양재역, DISTANCE_5);
+        신분당선 = Line.of("신분당선", "RED", FARE_1000, 강남역, 양재역, DISTANCE_10);
+        이호선 = Line.of("이호선", "GREED", FARE_900, 교대역, 강남역, DISTANCE_10);
+        삼호선 = Line.of("삼호선", "ORANGE", FARE_800, 남부터미널역, 양재역, DISTANCE_5);
         삼호선.addSection(Section.of(교대역, 남부터미널역, Distance.from(DISTANCE_3)));
     }
 
@@ -116,7 +119,7 @@ class PathFinderTest {
         // given
         Station 서울역 = Station.of(5L, "서울역");
         Station 시청역 = Station.of(6L, "시청역");
-        Line 일호선 = Line.of("일호선", "BLUE", 서울역, 시청역, DISTANCE_5);
+        Line 일호선 = Line.of("일호선", "BLUE", FARE_1000, 서울역, 시청역, DISTANCE_5);
 
         PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(Arrays.asList(신분당선, 일호선, 이호선, 삼호선)));
 

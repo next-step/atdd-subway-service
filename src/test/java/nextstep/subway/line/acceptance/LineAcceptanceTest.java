@@ -17,9 +17,11 @@ import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 노선 관련 기능")
-public class LineAcceptanceTest extends AcceptanceTest {
+class LineAcceptanceTest extends AcceptanceTest {
     private static final int DISTANCE_10 = 10;
     private static final int DISTANCE_15 = 15;
+    private static final int FARE_1000 = 1000;
+    private static final int FARE_900 = 900;
 
     private StationResponse 강남역;
     private StationResponse 광교역;
@@ -34,8 +36,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         강남역 = 지하철역_등록되어_있음(StationRequest.of("강남역")).as(StationResponse.class);
         광교역 = 지하철역_등록되어_있음(StationRequest.of("광교역")).as(StationResponse.class);
 
-        신분당선_Request = LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), DISTANCE_10);
-        구신분당선_Request = LineRequest.of("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), DISTANCE_15);
+        신분당선_Request = LineRequest.of("신분당선", "bg-red-600", FARE_1000, 강남역.getId(), 광교역.getId(), DISTANCE_10);
+        구신분당선_Request = LineRequest.of("구신분당선", "bg-red-600", FARE_900, 강남역.getId(), 광교역.getId(), DISTANCE_15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
