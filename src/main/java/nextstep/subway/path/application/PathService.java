@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.calculator.FareCalculator;
+import nextstep.subway.fare.domain.DiscountRateType;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathResponse;
@@ -37,15 +38,18 @@ public class PathService {
         PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(lines));
         ShortestPath path = pathFinder.findShortestPath(sourceStation, targetStation);
 
-        return createPathResponse(lines, path);
+        return createPathResponse(lines, path, loginMember);
     }
 
-    private PathResponse createPathResponse(List<Line> lines, ShortestPath path) {
-        int pathFare = FareCalculator.calculatePathFare(path.getDistance());
-        int lineFare = FareCalculator.calculateLineFare(lines, path);
+    private PathResponse createPathResponse(List<Line> lines, ShortestPath path, LoginMember member) {
+        int totalFare = FareCalculator.calculateTotalFare(lines, path, path.getDistance());
+
+        if (!member.isNoneLoginMember()) {
+            totalFare = DiscountRateType.discountBy(totalFare, member.getAge());
+        }
 
         return PathResponse.of(StreamUtils.mapToList(path.getStations(), StationResponse::of),
-                                                     path.getDistance(),
-                                                     pathFare + lineFare);
+                               path.getDistance(),
+                               totalFare);
     }
 }

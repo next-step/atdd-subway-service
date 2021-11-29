@@ -17,6 +17,10 @@ public class FareCalculator {
 
     private FareCalculator() {}
 
+    public static int calculateTotalFare(List<Line> lines, ShortestPath path, int distance) {
+        return calculatePathFare(distance) + calculateLineFare(lines, path);
+    }
+
     public static int calculatePathFare(int distance) {
         if (distance == DISTANCE_0) {
             return NO_FARE;
@@ -24,6 +28,13 @@ public class FareCalculator {
 
         FareSectionType fareSectionType = FareSectionType.findByDistance(distance);
         return calculateInitFare(fareSectionType) + calculateOverFare(distance, fareSectionType);
+    }
+
+    public static int calculateLineFare(List<Line> lines, ShortestPath path) {
+        Sections fareSections = Sections.createBy(path.getStations());
+        List<Line> linesByPath = StreamUtils.filterToList(lines, line -> line.hasFareSection(fareSections));
+
+        return StreamUtils.mapToMaxInt(linesByPath, line -> line.getFare().getValue());
     }
 
     private static int calculateInitFare(FareSectionType sectionType) {
@@ -41,12 +52,5 @@ public class FareCalculator {
         }
 
         return (int) (Math.ceil(overDistance / fareSectionType.getAdditionalDistanceUnit()) * ADDITIONAL.getFare());
-    }
-
-    public static int calculateLineFare(List<Line> lines, ShortestPath path) {
-        Sections fareSections = Sections.createBy(path.getStations());
-        List<Line> linesByPath = StreamUtils.filterToList(lines, line -> line.hasFareSection(fareSections));
-
-        return StreamUtils.mapToMaxInt(linesByPath, line -> line.getFare().getValue());
     }
 }

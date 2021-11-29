@@ -1,7 +1,6 @@
 package nextstep.subway.station.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -10,10 +9,11 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.utils.StreamUtils;
 
 @Service
 public class StationService {
-    private StationRepository stationRepository;
+    private final StationRepository stationRepository;
 
     public StationService(StationRepository stationRepository) {
         this.stationRepository = stationRepository;
@@ -27,9 +27,7 @@ public class StationService {
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
 
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+        return StreamUtils.mapToList(stations, StationResponse::of);
     }
 
     public void deleteStationById(Long id) {

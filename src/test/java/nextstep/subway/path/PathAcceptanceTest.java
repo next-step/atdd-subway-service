@@ -201,8 +201,31 @@ class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_최단경로_조회됨(response,
-                     Arrays.asList(교대역, 남부터미널역, 양재역),
-                     DISTANCE_3 + DISTANCE_5,
-                     BASIC.getFare() + 삼호선.getFare());
+                           Arrays.asList(교대역, 남부터미널역, 양재역),
+                           DISTANCE_3 + DISTANCE_5,
+                           BASIC.getFare() + 삼호선.getFare());
+    }
+
+    @DisplayName("경로조회 시, 나이에 따른 요금 할인을 받는다.")
+    @ParameterizedTest
+    @CsvSource(value = {"1,0", "5,0", "6,1050", "12,1050", "13,1680", "18,1680", "19,2450", "20,2450"})
+    void findShortPath9(int age, int expectedFare) {
+        // given
+        String newEmail = "test@test.com";
+        String newPassword = "testPassword";
+        회원_생성을_요청(MemberRequest.of(newEmail, newPassword, age));
+        StationResponse 모란역 = 지하철역_등록되어_있음(StationRequest.of("모란역")).as(StationResponse.class);
+        LineRequest 분당선_Request = LineRequest.of("분당선", "YELLOW", FARE_1000, 양재역.getId(), 모란역.getId(), DISTANCE_10);
+        LineResponse 분당선 = 지하철_노선_등록되어_있음(분당선_Request).as(LineResponse.class);
+
+        // when
+        TokenResponse tokenResponse = 회원_로그인_됨(TokenRequest.of(newEmail, newPassword)).as(TokenResponse.class);
+        ExtractableResponse<Response> response = 회원_지하철_최단경로_조회_요청(교대역.getId(), 모란역.getId(), tokenResponse);
+
+        // then
+        지하철_최단경로_조회됨(response,
+                           Arrays.asList(교대역, 남부터미널역, 양재역, 모란역),
+                           DISTANCE_3 + DISTANCE_5 + DISTANCE_10,
+                           expectedFare);
     }
 }

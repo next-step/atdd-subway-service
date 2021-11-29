@@ -24,7 +24,7 @@ public class LoginMember {
         return new LoginMember();
     }
 
-    public boolean isLoginMember() {
+    public boolean isNoneLoginMember() {
         return Objects.isNull(id);
     }
 
