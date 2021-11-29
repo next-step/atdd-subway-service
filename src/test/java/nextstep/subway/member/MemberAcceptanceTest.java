@@ -12,13 +12,12 @@ import nextstep.subway.member.dto.MemberResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-
-import com.google.common.net.HttpHeaders;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -170,7 +169,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private String JWT_받음(ExtractableResponse<Response> response) {
+    public static String JWT_받음(ExtractableResponse<Response> response) {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         return response.as(TokenResponse.class).getAccessToken();
