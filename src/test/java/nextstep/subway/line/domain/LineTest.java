@@ -33,41 +33,6 @@ class LineTest {
         line.getSections().add(new Section(line, 선릉역, 교대역, 10));
     }
 
-    @DisplayName("지하철 구간을 등록한다.")
-    @Test
-    void addSection() {
-        // given
-        Station 동대문역사문화공원 = new Station("동대문역사문화공원");
-        Station 종합운동장 = new Station("종합운동장");
-        Station 삼성역 = new Station("삼성역");
-        Station 사당역 = new Station("사당역");
-
-        // when
-        line.addLineStation(new Section(line, 동대문역사문화공원, 잠실역, 10));
-        line.addLineStation(new Section(line, 잠실역, 종합운동장, 2));
-        line.addLineStation(new Section(line, 종합운동장, 삼성역, 3));
-        line.addLineStation(new Section(line, 교대역, 사당역, 5));
-
-        // then
-        assertThat(line.getStations()).containsExactly(
-            동대문역사문화공원, 잠실역, 종합운동장, 삼성역, 선릉역, 교대역, 사당역, 당산역, 시청역);
-    }
-
-    @DisplayName("이미 등록된 구간은 등록할 수 없다.")
-    @Test
-    void addExistSection() {
-        assertThrows(RuntimeException.class, () ->
-            line.addLineStation(new Section(line, 교대역, 선릉역, 5)));
-    }
-
-    @DisplayName("기존 구간이 존재할 때 상행역 하행역 모두 기존 구간에 존재하지 않으면 등록할 수 없다.")
-    @Test
-    void addNotExistUpStationAndDownStation() {
-        assertThrows(RuntimeException.class, () ->
-            line.addLineStation(
-                new Section(line, new Station("합정역"), new Station("신촌역"), 5)));
-    }
-
     @DisplayName("지하철 구간을 삭제한다.")
     @Test
     void removeSection() {
