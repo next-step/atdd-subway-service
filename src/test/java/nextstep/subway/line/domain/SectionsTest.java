@@ -174,6 +174,18 @@ public class SectionsTest {
                 .isThrownBy(() -> sections.checkRemovable());
     }
 
+    @Test
+    void getAllStations_구간의_모든_역들을_조회한다() {
+        // given
+        Sections sections = getSections();
+
+        // when
+        List<Station> stations = sections.getAllStations();
+
+        // then
+        assertThat(stations).containsExactly(강남역, 삼성역);
+    }
+
     private Sections getSections() {
         Sections sections = new Sections();
         sections.add(new Section(이호선, 강남역, 삼성역, 10));

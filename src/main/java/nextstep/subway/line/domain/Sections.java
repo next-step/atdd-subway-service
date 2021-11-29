@@ -5,10 +5,7 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Embeddable
@@ -132,5 +129,13 @@ public class Sections {
         if (!isRemovable()) {
             throw new RuntimeException();
         }
+    }
+
+    public List<Station> getAllStations() {
+        return sections.stream()
+                .map(Section::getStations)
+                .flatMap(Collection::stream)
+                .distinct()
+                .collect(Collectors.toList());
     }
 }
