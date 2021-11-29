@@ -3,11 +3,10 @@ package nextstep.subway.fare.domain;
 import java.util.Arrays;
 import java.util.function.IntUnaryOperator;
 
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.utils.StreamUtils;
 
 public enum DiscountRateType {
-    TODDLER(0, 6, fare -> 0),
+    TODDLER(1, 6, fare -> 0),
     CHILD(6, 13, fare -> (int) ((fare - 350) * 0.5)),
     TEENAGER(13, 19, fare -> (int) ((fare - 350) * 0.8)),
     ADULT(19, Integer.MAX_VALUE, fare -> fare);
