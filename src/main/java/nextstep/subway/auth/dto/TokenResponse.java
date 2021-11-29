@@ -3,11 +3,14 @@ package nextstep.subway.auth.dto;
 public class TokenResponse {
     private String accessToken;
 
-    public TokenResponse() {
+    public TokenResponse() {}
+
+    private TokenResponse(String accessToken) {
+        this.accessToken = accessToken;
     }
 
-    public TokenResponse(String accessToken) {
-        this.accessToken = accessToken;
+    public static TokenResponse from(String accessToken) {
+        return new TokenResponse(accessToken);
     }
 
     public String getAccessToken() {

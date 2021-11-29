@@ -34,7 +34,7 @@ public class FavoritePathService {
         Member member = memberService.findById(loginMember.getId());
         Station source = Station.from(request.getSourceId());
         Station target = Station.from(request.getTargetId());
-        validateCreateFavoritePath(source, target);
+        validateCreateFavoritePath(loginMember, source, target);
 
         FavoritePath favoritePath = favoritePathRepository.save(FavoritePath.of(source, target, member));
         return FavoritePathResponse.from(favoritePath);
@@ -55,7 +55,7 @@ public class FavoritePathService {
         favoritePathRepository.deleteById(id);
     }
 
-    private void validateCreateFavoritePath(Station source, Station target) {
-        pathService.findShortestPath(source.getId(), target.getId());
+    private void validateCreateFavoritePath(LoginMember loginMember, Station source, Station target) {
+        pathService.findShortestPath(loginMember, source.getId(), target.getId());
     }
 }

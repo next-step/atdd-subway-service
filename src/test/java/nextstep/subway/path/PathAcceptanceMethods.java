@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
@@ -22,8 +23,8 @@ public class PathAcceptanceMethods {
 
     private PathAcceptanceMethods() {}
 
-    public static ExtractableResponse<Response> 지하철_최단경로_조회_요청(Long sourceId, Long targetId) {
-        return get(PATH_URL_PATH + REQUEST_PARAM_SOURCE + sourceId + AMPERSAND_SIGN + REQUEST_PARAM_TARGET + targetId);
+    public static ExtractableResponse<Response> 지하철_최단경로_조회_요청(Long sourceId, Long targetId, TokenResponse token) {
+        return getByAuth(PATH_URL_PATH + REQUEST_PARAM_SOURCE + sourceId + AMPERSAND_SIGN + REQUEST_PARAM_TARGET + targetId, token);
     }
 
     public static void 지하철_최단경로_조회됨(ExtractableResponse<Response> response,

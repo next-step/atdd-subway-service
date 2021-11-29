@@ -1,8 +1,10 @@
 package nextstep.subway.path;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceMethods.*;
 import static nextstep.subway.fare.domain.FareType.*;
 import static nextstep.subway.line.acceptance.LineAcceptanceMethods.*;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceMethods.*;
+import static nextstep.subway.member.MemberAcceptanceMethods.*;
 import static nextstep.subway.path.PathAcceptanceMethods.*;
 import static nextstep.subway.station.StationAcceptanceMethods.*;
 
@@ -14,15 +16,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.fare.calculator.FareCalculator;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -31,9 +37,14 @@ class PathAcceptanceTest extends AcceptanceTest {
     private static final int DISTANCE_10 = 10;
     private static final int DISTANCE_5 = 5;
     private static final int DISTANCE_3 = 3;
+
     private static final int FARE_1000 = 1000;
     private static final int FARE_900 = 900;
     private static final int FARE_800 = 800;
+
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private static final int AGE = 20;
 
     private LineResponse 신분당선;
     private LineResponse 이호선;
@@ -42,6 +53,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private TokenResponse token;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -68,13 +80,16 @@ class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음(삼호선_Request).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선.getId(), SectionRequest.of(교대역.getId(), 남부터미널역.getId(), DISTANCE_3));
+
+        회원_생성을_요청(MemberRequest.of(EMAIL, PASSWORD, AGE));
+        token = 회원_로그인_됨(TokenRequest.of(EMAIL, PASSWORD)).as(TokenResponse.class);
     }
 
     @DisplayName("출발역에서 도착역까지 최단경로를 조회한다.")
     @Test
     void findShortestPath1() {
         // when
-        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 양재역.getId());
+        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 양재역.getId(), token);
 
         // then
         지하철_최단경로_조회됨(response,
@@ -87,7 +102,7 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestPath2() {
         // when
-        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 교대역.getId());
+        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 교대역.getId(), token);
 
         // then
         지하철_최단경로_조회됨(response, Collections.singletonList(교대역), 0, 0);
@@ -100,7 +115,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         StationResponse 서울역 = 지하철역_등록되어_있음(StationRequest.of("서울역")).as(StationResponse.class);
 
         // when
-        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(서울역.getId(), 교대역.getId());
+        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(서울역.getId(), 교대역.getId(), token);
 
         // then
         지하철_최단경로_조회_실패(response);
@@ -113,7 +128,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         StationResponse 서울역 = 지하철역_등록되어_있음(StationRequest.of("서울역")).as(StationResponse.class);
 
         // when
-        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 서울역.getId());
+        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 서울역.getId(), token);
 
         // then
         지하철_최단경로_조회_실패(response);
@@ -130,7 +145,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         LineResponse 일호선 = 지하철_노선_등록되어_있음(일호선_Request).as(LineResponse.class);
 
         // when
-        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 서울역.getId());
+        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 서울역.getId(), token);
 
         // then
         지하철_최단경로_조회_실패(response);
@@ -150,7 +165,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록되어_있음(일호선.getId(), SectionRequest.of(시청역.getId(), 종각역.getId(), DISTANCE_5));
 
         // when
-        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(서울역.getId(), 종각역.getId());
+        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(서울역.getId(), 종각역.getId(), token);
 
         // then
         지하철_최단경로_조회됨(response,
@@ -169,12 +184,26 @@ class PathAcceptanceTest extends AcceptanceTest {
         LineResponse 분당선 = 지하철_노선_등록되어_있음(분당선_Request).as(LineResponse.class);
 
         // when
-        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 모란역.getId());
+        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 모란역.getId(), token);
 
         // then
         지하철_최단경로_조회됨(response,
                            Arrays.asList(교대역, 남부터미널역, 양재역, 모란역),
                            DISTANCE_3 + DISTANCE_5 + distance,
                            FareCalculator.calculatePathFare(DISTANCE_3 + DISTANCE_5 + distance) + fare);
+    }
+
+    @DisplayName("로그인을 하지 않은 상태에서 경로조회를 한다.")
+    @ParameterizedTest
+    @EmptySource
+    void findShortPath8(String token) {
+        // given
+        TokenResponse emptyToken = TokenResponse.from(token);
+
+        // when
+        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(교대역.getId(), 양재역.getId(), emptyToken);
+
+        // then
+        지하철_최단경로_조회_실패(response);
     }
 }

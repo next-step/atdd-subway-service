@@ -58,7 +58,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @ValueSource(strings = {"", "1", "a", "!", "가", "1a!가"})
     void myInfoWithWrongBearerAuth(String wrongToken) {
         // when
-        TokenResponse tokenResponse = new TokenResponse(wrongToken);
+        TokenResponse tokenResponse = TokenResponse.from(wrongToken);
         ExtractableResponse<Response> response = 로그인한_회원_정보_조회_요청(tokenResponse);
         // then
         토큰_인증_실패(response);

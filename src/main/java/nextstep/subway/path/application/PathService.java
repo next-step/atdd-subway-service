@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.calculator.FareCalculator;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -28,7 +29,7 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse findShortestPath(Long sourceId, Long targetId) {
+    public PathResponse findShortestPath(LoginMember loginMember, Long sourceId, Long targetId) {
         List<Line> lines = lineRepository.findAll();
         Station sourceStation = stationService.findById(sourceId);
         Station targetStation = stationService.findById(targetId);
