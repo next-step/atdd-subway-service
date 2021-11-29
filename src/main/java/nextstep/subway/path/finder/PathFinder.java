@@ -1,6 +1,6 @@
 package nextstep.subway.path.finder;
 
-import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.dto.ShortestPath;
 import nextstep.subway.station.domain.Station;
 
 public class PathFinder {
@@ -14,7 +14,7 @@ public class PathFinder {
         return new PathFinder(shortestPathAlgorithm);
     }
 
-    public PathResponse findShortestPath(Station sourceStation, Station targetStation) {
+    public ShortestPath findShortestPath(Station sourceStation, Station targetStation) {
         return shortestPathAlgorithm.findShortestPath(sourceStation, targetStation);
     }
 }

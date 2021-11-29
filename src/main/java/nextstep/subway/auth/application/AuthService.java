@@ -1,5 +1,7 @@
 package nextstep.subway.auth.application;
 
+import java.util.Objects;
+
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -14,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class AuthService {
+    private static final String INVALID_TOKEN_ERROR_MESSAGE = "유효한 Token 정보가 아닙니다.";
+
     private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -27,16 +31,20 @@ public class AuthService {
         member.checkPassword(request.getPassword());
 
         String token = jwtTokenProvider.createToken(request.getEmail());
-        return new TokenResponse(token);
+        return TokenResponse.from(token);
     }
 
     public LoginMember findMemberByToken(String credentials) {
+        if (Objects.isNull(credentials)) {
+            return LoginMember.createEmpty();
+        }
+
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            throw new IllegalArgumentException(INVALID_TOKEN_ERROR_MESSAGE);
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email).orElseThrow(DataNotExistException::new);
-        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+        return LoginMember.of(member.getId(), member.getEmail(), member.getAge());
     }
 }

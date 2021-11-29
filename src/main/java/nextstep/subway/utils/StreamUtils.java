@@ -1,10 +1,13 @@
 package nextstep.subway.utils;
 
+import static java.util.stream.Collectors.*;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,7 +18,19 @@ public class StreamUtils {
     public static <T, R> List<R> mapToList(Collection<T> collections, Function<T, R> mapFunction) {
         return collections.stream()
                           .map(mapFunction)
-                          .collect(Collectors.toList());
+                          .collect(toList());
+    }
+
+    public static <T> int mapToMaxInt(Collection<T> collections, ToIntFunction<T> mapFunction) {
+        return collections.stream()
+                          .mapToInt(mapFunction)
+                          .max().orElse(0);
+    }
+
+    public static <T> List<T> filterToList(Collection<T> collections, Predicate<T> predicate) {
+        return collections.stream()
+                          .filter(predicate)
+                          .collect(toList());
     }
 
     public static <T> Optional<T> filterAndFindFirst(Collection<T> collections, Predicate<T> predicate) {
@@ -31,7 +46,7 @@ public class StreamUtils {
                           .map(mapFunction)
                           .flatMap(flatMapFunction)
                           .distinct()
-                          .collect(Collectors.toList());
+                          .collect(toList());
     }
 
     public static <T> boolean anyMatch(Collection<T> collections, Predicate<T> predicate) {

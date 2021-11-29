@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class LineService {
     private final LineRepository lineRepository;
     private final StationService stationService;
@@ -29,12 +29,12 @@ public class LineService {
         this.stationService = stationService;
     }
 
-    @Transactional
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(Line.of(request.getName(),
                                                        request.getColor(),
+                                                       request.getFare(),
                                                        upStation,
                                                        downStation,
                                                        request.getDistance()));
@@ -45,6 +45,10 @@ public class LineService {
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return StreamUtils.mapToList(persistLines, this::mapToLineResponses);
+    }
+
+    public List<Line> findAll() {
+        return lineRepository.findAll();
     }
 
     public Line findLineById(Long id) {
@@ -58,18 +62,15 @@ public class LineService {
         return LineResponse.of(persistLine, stations);
     }
 
-    @Transactional
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
+    public void updateLine(Long id, LineRequest request) {
         Line persistLine = findLineById(id);
-        persistLine.update(Line.of(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        persistLine.update(Line.of(request.getName(), request.getColor(), request.getFare()));
     }
 
-    @Transactional
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
 
-    @Transactional
     public void addSection(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findById(request.getUpStationId());
@@ -78,7 +79,6 @@ public class LineService {
         line.addSection(Section.of(line, upStation, downStation, Distance.from(request.getDistance())));
     }
 
-    @Transactional
     public void removeSection(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findById(stationId);
