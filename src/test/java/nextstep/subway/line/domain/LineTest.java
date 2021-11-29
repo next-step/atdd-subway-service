@@ -68,10 +68,10 @@ class LineTest {
         Station 사당역 = new Station("사당역");
 
         // when
-        line.addSection(new Section(line, 동대문역사문화공원, 잠실역, 10));
-        line.addSection(new Section(line, 잠실역, 종합운동장, 2));
-        line.addSection(new Section(line, 종합운동장, 삼성역, 3));
-        line.addSection(new Section(line, 교대역, 사당역, 5));
+        line.addLineStation(new Section(line, 동대문역사문화공원, 잠실역, 10));
+        line.addLineStation(new Section(line, 잠실역, 종합운동장, 2));
+        line.addLineStation(new Section(line, 종합운동장, 삼성역, 3));
+        line.addLineStation(new Section(line, 교대역, 사당역, 5));
 
         // then
         assertThat(line.getStations()).containsExactly(
@@ -82,14 +82,14 @@ class LineTest {
     @Test
     void addExistSection() {
         assertThrows(RuntimeException.class, () ->
-            line.addSection(new Section(line, 교대역, 선릉역, 5)));
+            line.addLineStation(new Section(line, 교대역, 선릉역, 5)));
     }
 
     @DisplayName("기존 구간이 존재할 때 상행역 하행역 모두 기존 구간에 존재하지 않으면 등록할 수 없다.")
     @Test
     void addNotExistUpStationAndDownStation() {
         assertThrows(RuntimeException.class, () ->
-            line.addSection(
+            line.addLineStation(
                 new Section(line, new Station("합정역"), new Station("신촌역"), 5)));
     }
 
