@@ -4,6 +4,8 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.exception.MemberException;
+import nextstep.subway.exception.error.ErrorCode;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -29,7 +31,7 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new RuntimeException("유효하지 않은 토큰입니다.");
+            throw new MemberException(ErrorCode.BAD_ARGUMENT, "유효하지 않은 토큰입니다.");
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
