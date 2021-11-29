@@ -40,6 +40,17 @@ public class Sections {
         return stations;
     }
 
+    public void addSection(Section section) {
+        if (sections.isEmpty()) {
+            sections.add(section);
+            return;
+        }
+        validateAddSection(section);
+        if (!(addUpStationOfBetween(section) || addDownStationOfBetween(section))) {
+            sections.add(section);
+        }
+    }
+
     private boolean isLastStation(Station downStation, Set<Station> upStations) {
         return !upStations.contains(downStation);
     }
@@ -59,6 +70,12 @@ public class Sections {
             .orElseThrow(IllegalArgumentException::new);
     }
 
+    private Set<Station> extractAllStations() {
+        Set<Station> allStations = extractUpStations();
+        allStations.addAll(extractDownStations());
+        return allStations;
+    }
+
     private Set<Station> extractUpStations() {
         return sections.stream()
             .map(Section::getUpStation)
@@ -71,41 +88,45 @@ public class Sections {
             .collect(Collectors.toSet());
     }
 
-    public void addSection(Section section) {
-        List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
+    private boolean addUpStationOfBetween(Section section) {
+        Optional<Section> findSection = sections.stream()
+            .filter(it -> it.getUpStation() == section.getUpStation())
+            .findFirst();
+        if (!findSection.isPresent()) {
+            return false;
+        }
+        findSection.get().updateUpStation(section.getDownStation(), section.getDistance());
+        return sections.add(section);
+    }
 
-        if (isUpStationExisted && isDownStationExisted) {
+    private boolean addDownStationOfBetween(Section section) {
+        Optional<Section> findSection = sections.stream()
+            .filter(it -> it.getDownStation() == section.getDownStation())
+            .findFirst();
+        if (!findSection.isPresent()) {
+            return false;
+        }
+        findSection.get().updateDownStation(section.getUpStation(), section.getDistance());
+        return sections.add(section);
+    }
+
+    private void validateAddSection(Section section) {
+        Set<Station> allStations = extractAllStations();
+        validateDuplicate(section, allStations);
+        validateNonExist(section, allStations);
+    }
+
+    private void validateDuplicate(Section section, Set<Station> allStations) {
+        if (allStations.contains(section.getUpStation())
+            && allStations.contains(section.getDownStation())) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
+    }
 
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
-            stations.stream().noneMatch(it -> it == section.getDownStation())) {
+    private void validateNonExist(Section section, Set<Station> allStations) {
+        if (!allStations.contains(section.getUpStation())
+            && !allStations.contains(section.getDownStation())) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (stations.isEmpty()) {
-            sections.add(section);
-            return;
-        }
-
-        if (isUpStationExisted) {
-            sections.stream()
-                .filter(it -> it.getUpStation() == section.getUpStation())
-                .findFirst()
-                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-
-            sections.add(section);
-        } else if (isDownStationExisted) {
-            sections.stream()
-                .filter(it -> it.getDownStation() == section.getDownStation())
-                .findFirst()
-                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
-
-            sections.add(section);
-        } else {
-            throw new RuntimeException();
         }
     }
 
