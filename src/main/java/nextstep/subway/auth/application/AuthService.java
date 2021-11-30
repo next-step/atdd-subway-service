@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
 public class AuthService {
     private static final String INVALID_TOKEN_ERROR_MESSAGE = "유효한 Token 정보가 아닙니다.";
 
@@ -26,6 +25,7 @@ public class AuthService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @Transactional(readOnly = true)
     public TokenResponse login(TokenRequest request) {
         Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(AuthorizationException::new);
         member.checkPassword(request.getPassword());
@@ -34,6 +34,7 @@ public class AuthService {
         return TokenResponse.from(token);
     }
 
+    @Transactional(readOnly = true)
     public LoginMember findMemberByToken(String credentials) {
         if (Objects.isNull(credentials)) {
             return LoginMember.createEmpty();

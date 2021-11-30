@@ -12,7 +12,6 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.ShortestPath;
-import nextstep.subway.path.finder.DijkstraShortestPathAlgorithm;
 import nextstep.subway.path.finder.PathFinder;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -20,7 +19,6 @@ import nextstep.subway.station.dto.StationResponse;
 import nextstep.subway.utils.StreamUtils;
 
 @Service
-@Transactional
 public class PathService {
     private final LineRepository lineRepository;
     private final StationService stationService;
@@ -32,6 +30,7 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
+    @Transactional(readOnly = true)
     public PathResponse findShortestPath(LoginMember loginMember, Long sourceId, Long targetId) {
         List<Line> lines = lineRepository.findAll();
         Station sourceStation = stationService.findById(sourceId);

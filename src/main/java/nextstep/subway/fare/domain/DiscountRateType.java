@@ -12,6 +12,7 @@ public enum DiscountRateType {
     ADULT(19, Integer.MAX_VALUE, fare -> fare);
 
     private static final String INVALID_AGE_ERROR_MESSAGE = "나이 정보가 유효하지 않습니다.";
+
     private final int minAge;
     private final int maxAge;
     private final IntUnaryOperator discountCalculator;

@@ -13,7 +13,6 @@ import nextstep.subway.station.dto.StationResponse;
 import nextstep.subway.utils.StreamUtils;
 
 @Service
-@Transactional(readOnly = true)
 public class StationService {
     private final StationRepository stationRepository;
 
@@ -27,6 +26,7 @@ public class StationService {
         return StationResponse.of(persistStation);
     }
 
+    @Transactional(readOnly = true)
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
 
@@ -38,6 +38,7 @@ public class StationService {
         stationRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(DataNotExistException::new);
     }
