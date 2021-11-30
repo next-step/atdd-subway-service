@@ -47,10 +47,10 @@ npm run dev
 인수 테스트를 작성할 수 있음
 
 ### 구현할 기능 목록
-- [ ] LineService 에서 Domain 으로 옮길 로직
-  - [ ] 지하철 목록 가져오기
-  - [ ] 구간 등록
-  - [ ] 구간 삭제
+- [x] LineService 에서 Domain 으로 옮길 로직
+  - [x] 지하철 목록 가져오기
+  - [x] 구간 등록
+  - [x] 구간 삭제
 
 ## ✏️ Code Review Process
 [텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)

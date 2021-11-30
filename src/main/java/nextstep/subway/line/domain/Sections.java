@@ -51,6 +51,17 @@ public class Sections {
         }
     }
 
+    public void removeLineStation(Station station) {
+        validateRemoveSection(station);
+        Optional<Section> upLineStation = findSectionOfEqualUpStation(station);
+        Optional<Section> downLineStation = findSectionOfEqualDownStation(station);
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            addConnectSection(upLineStation.get(), downLineStation.get());
+        }
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
     private boolean addStationOfBetween(Section section) {
         return addUpStationOfBetween(section) || addDownStationOfBetween(section);
     }
@@ -93,9 +104,7 @@ public class Sections {
     }
 
     private boolean addUpStationOfBetween(Section section) {
-        Optional<Section> findSection = sections.stream()
-            .filter(it -> it.getUpStation() == section.getUpStation())
-            .findFirst();
+        Optional<Section> findSection = findSectionOfEqualUpStation(section.getUpStation());
         if (!findSection.isPresent()) {
             return false;
         }
@@ -104,9 +113,7 @@ public class Sections {
     }
 
     private boolean addDownStationOfBetween(Section section) {
-        Optional<Section> findSection = sections.stream()
-            .filter(it -> it.getDownStation() == section.getDownStation())
-            .findFirst();
+        Optional<Section> findSection = findSectionOfEqualDownStation(section.getDownStation());
         if (!findSection.isPresent()) {
             return false;
         }
@@ -134,26 +141,39 @@ public class Sections {
         }
     }
 
-    public void removeLineStation(Station station, Line line) {
+    private void validateRemoveSection(Station station) {
+        validateRemoveSectionSize();
+        validateExistStation(station);
+    }
+
+    private void validateRemoveSectionSize() {
         if (sections.size() <= 1) {
             throw new RuntimeException();
         }
+    }
 
-        Optional<Section> upLineStation = sections.stream()
+    private void validateExistStation(Station station) {
+        if (!extractAllStations().contains(station)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void addConnectSection(Section upLineStation, Section downLineStation) {
+        Station newUpStation = downLineStation.getUpStation();
+        Station newDownStation = upLineStation.getDownStation();
+        int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
+        sections.add(new Section(upLineStation.getLine(), newUpStation, newDownStation, newDistance));
+    }
+
+    private Optional<Section> findSectionOfEqualUpStation(Station station) {
+        return sections.stream()
             .filter(it -> it.getUpStation() == station)
             .findFirst();
-        Optional<Section> downLineStation = sections.stream()
+    }
+
+    private Optional<Section> findSectionOfEqualDownStation(Station station) {
+        return sections.stream()
             .filter(it -> it.getDownStation() == station)
             .findFirst();
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            sections.add(new Section(line, newUpStation, newDownStation, newDistance));
-        }
-
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
     }
 }

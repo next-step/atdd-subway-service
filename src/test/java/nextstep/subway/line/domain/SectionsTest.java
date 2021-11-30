@@ -92,4 +92,24 @@ class SectionsTest {
             sections.addSection(
                 new Section(line, new Station("합정역"), new Station("신촌역"), 5)));
     }
+
+    @DisplayName("지하철 구간을 삭제한다.")
+    @Test
+    void removeSection() {
+        // when
+        sections.removeLineStation(잠실역);
+        sections.removeLineStation(교대역);
+        sections.removeLineStation(시청역);
+
+        // then
+        assertThat(sections.getStations()).containsExactly(선릉역, 당산역);
+    }
+
+    @DisplayName("존재하지 않는 구간은 삭제할 수 없다.")
+    @Test
+    void removeNotExistSection() {
+        // when & then
+        assertThrows(IllegalArgumentException.class, () ->
+            sections.removeLineStation(new Station("신촌역")));
+    }
 }
