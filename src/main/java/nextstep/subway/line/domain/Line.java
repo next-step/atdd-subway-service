@@ -88,6 +88,10 @@ public class Line extends BaseEntity {
         return sections;
     }
 
+    Fare extraFare() {
+        return extraFare;
+    }
+
     private void setName(Name name) {
         Assert.notNull(name, "이름은 필수입니다.");
         this.name = name;

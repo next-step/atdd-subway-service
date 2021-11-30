@@ -39,4 +39,11 @@ public final class FareDiscountPolicy {
             fare.subtract(flatDiscountFare)
                 .multiply(percentDiscount));
     }
+
+    @Override
+    public String toString() {
+        return "FareDiscountPolicy{" +
+            "member=" + member +
+            '}';
+    }
 }

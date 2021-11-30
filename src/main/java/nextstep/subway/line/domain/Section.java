@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import nextstep.subway.common.domain.Fare;
 import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.station.domain.Station;
 import org.springframework.util.Assert;
@@ -90,6 +91,13 @@ public class Section {
                 distance.sum(section.distance));
         }
         return new Section(line, section.upStation, downStation, distance.sum(section.distance));
+    }
+
+    Fare extraFare() {
+        if (line == null) {
+            throw new InvalidDataException(String.format("구간(%s)의 추가 요금을 구할 수 없습니다.", this));
+        }
+        return line.extraFare();
     }
 
     private void validateMerge(Section section) {

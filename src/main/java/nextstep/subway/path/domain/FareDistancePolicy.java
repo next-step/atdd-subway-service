@@ -53,4 +53,11 @@ public final class FareDistancePolicy {
     private Fare farePerDistance(Distance distance, Distance step) {
         return FARE_ADDITION_STEP.multiply(distance.ceilDivide(step));
     }
+
+    @Override
+    public String toString() {
+        return "FareDistancePolicy{" +
+            "distance=" + distance +
+            '}';
+    }
 }
