@@ -35,6 +35,7 @@ public class Line extends BaseEntity {
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
+
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
@@ -65,8 +66,7 @@ public class Line extends BaseEntity {
         stations.add(downStation);
 
         while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.getSectionUpStationSame(finalDownStation);
+            Optional<Section> nextLineStation = sections.getSectionUpStationSame(downStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -90,9 +90,9 @@ public class Line extends BaseEntity {
     }
 
     private Station nextStation(Station station) {
-
-        Optional<Section> nextLineStation = sections.getSectionDownStationSame(station);
-        return nextLineStation.map(Section::getUpStation).orElse(null);
+        return sections.getSectionDownStationSame(station)
+                .map(Section::getUpStation)
+                .orElse(null);
     }
 
     public void addSection(Section section) {
@@ -105,13 +105,9 @@ public class Line extends BaseEntity {
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
-        }
-        if (!stations.isEmpty()
-                && !isUpStationExisted
-                && !isDownStationExisted) {
-            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
+        checkSectionExists(isUpStationExisted, isDownStationExisted);
+        if (!stations.isEmpty()){
+            checkStationAddable(isUpStationExisted, isDownStationExisted);
         }
         if (stations.isEmpty()) {
             getSections().add(new Section(this, upStation, downStation, distance));
@@ -122,6 +118,18 @@ public class Line extends BaseEntity {
         }
         if (isDownStationExisted) {
             addSectionDownStationExists(upStation, downStation, distance);
+        }
+    }
+
+    private void checkSectionExists(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    private void checkStationAddable(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if(!isUpStationExisted && !isDownStationExisted){
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
     }
 
@@ -138,21 +146,28 @@ public class Line extends BaseEntity {
 
     public void removeLineStation(Station station) {
 
-        if (getSections().size() <= 1) {
-            throw new IllegalArgumentException("제거 가능한 구간이 없습니다.");
-        }
-
+        checkSectionRemovable();
         Optional<Section> upLineStation = sections.getSectionUpStationSame(station);
         Optional<Section> downLineStation = sections.getSectionDownStationSame(station);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            getSections().add(new Section(this, newUpStation, newDownStation, newDistance));
+            addNewSection(upLineStation.get(), downLineStation.get());
         }
         upLineStation.ifPresent(it -> getSections().remove(it));
         downLineStation.ifPresent(it -> getSections().remove(it));
+    }
+
+    private void checkSectionRemovable() {
+        if (getSections().size() <= 1) {
+            throw new IllegalArgumentException("제거 가능한 구간이 없습니다.");
+        }
+    }
+
+    private void addNewSection(Section upLineStation, Section downLineStation) {
+        Station newUpStation = downLineStation.getUpStation();
+        Station newDownStation = upLineStation.getDownStation();
+        int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
+        getSections().add(new Section(this, newUpStation, newDownStation, newDistance));
     }
 
 }
