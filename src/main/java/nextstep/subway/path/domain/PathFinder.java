@@ -1,18 +1,31 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.SectionException;
 import nextstep.subway.exception.error.ErrorCode;
+import nextstep.subway.line.domain.section.Money;
 import nextstep.subway.line.domain.section.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PathFinder {
+    private static final BigDecimal BASE_PARE_MONEY = BigDecimal.valueOf(1250);
+    private static final int DISTANCE_FIFTY_OVER_PLUS_PARE = 100;
+    private static final int DISTANCE_FIFTY_OVER_DIVIDE = 8;
+
+    private static final int DISTANCE_BETWEEN_ELEVEN_AND_FIFTY_PLUS_PARE = 100;
+    private static final int DISTANCE_BETWEEN_ELEVEN_AND_FIFTY_DIVIDE = 5;
+
+    private static final int DISTANCE_FIFTY = 50;
+
+    private static final int NOT_OVER_DISTANCE = 11;
+
+
     private final DijkstraShortestPath dijkstraShortestPath;
     private final StationGraph stationGraph;
     private final List<Section> sections;
@@ -39,6 +52,10 @@ public class PathFinder {
                 .stream()
                 .mapToDouble(SectionEdge::getWeight)
                 .sum();
+    }
+
+    public GraphPath<Station, SectionEdge> getGraphPath(Station source, Station target) {
+        return dijkstraShortestPath.getPath(source, target);
     }
 
     private void validateLineStation(Station source, Station target) {
