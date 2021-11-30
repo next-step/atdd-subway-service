@@ -4,6 +4,9 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.토큰_발급됨;
+import static nextstep.subway.utils.Fixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -49,6 +54,46 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMyInfo() {
 
+        // when
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        // then
+        회원_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> createToken = AuthAcceptanceTest.토큰_발급_요청(TokenRequest.of(EMAIL, PASSWORD));
+        // then
+        토큰_발급됨(createToken);
+
+        TokenResponse accessToken = createToken.as(TokenResponse.class);
+
+        // when
+        ExtractableResponse<Response> findResponse = 토큰생성_상태_회원_정보_조회_요청(accessToken);
+        // then
+        회원_정보_조회됨(findResponse, EMAIL, AGE);
+
+        // when
+        ExtractableResponse<Response> updateResponse = 토큰생성_상태_회원_정보_수정_요청(accessToken,
+                MemberRequest.of(NEW_EMAIL, NEW_PASSWORD, NEW_AGE));
+        // then
+        회원_정보_수정됨(updateResponse);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 토큰생성_상태_회원_삭제_요청(accessToken);
+        // then
+        회원_삭제됨(deleteResponse);
+
+    }
+
+    public static ExtractableResponse<Response> 토큰생성_상태_회원_정보_조회_요청(TokenResponse token) {
+        return getAuth("/members/me", token);
+    }
+
+    public static ExtractableResponse<Response> 토큰생성_상태_회원_정보_수정_요청(TokenResponse token, MemberRequest request) {
+        return putAuth("/members/me", token, request);
+    }
+
+    public static ExtractableResponse<Response> 토큰생성_상태_회원_삭제_요청(TokenResponse token) {
+        return deleteAuth("/members/me", token);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -114,4 +159,5 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
 }
