@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import static nextstep.subway.exception.ExceptionMessage.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -130,14 +132,14 @@ public class Sections {
     private void validateDuplicate(Section section, Set<Station> allStations) {
         if (allStations.contains(section.getUpStation())
             && allStations.contains(section.getDownStation())) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException(ALREADY_ADD_SECTION.getMessage());
         }
     }
 
     private void validateNonExist(Section section, Set<Station> allStations) {
         if (!allStations.contains(section.getUpStation())
             && !allStations.contains(section.getDownStation())) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException(NOT_POSSIBLE_ADD_SECTION.getMessage());
         }
     }
 
@@ -148,7 +150,7 @@ public class Sections {
 
     private void validateRemoveSectionSize() {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new IllegalArgumentException();
         }
     }
 
