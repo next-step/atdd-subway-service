@@ -24,8 +24,8 @@ public class Sections {
     private List<Section> sections = new ArrayList<>();
 
     public void add(Line line, Station upStation, Station downStation, int distance) {
-        boolean isUpStationExisted = line.getStations().stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = line.getStations().stream().anyMatch(it -> it == downStation);
+        boolean isUpStationExisted = isExistStation(line, upStation);
+        boolean isDownStationExisted = isExistStation(line, downStation);
 
         if (isUpStationExisted && isDownStationExisted) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
@@ -58,6 +58,10 @@ public class Sections {
         } else {
             throw new RuntimeException();
         }
+    }
+
+    private boolean isExistStation(Line line, Station station) {
+        return line.getStations().stream().anyMatch(it -> it.equals(station));
     }
 
     public List<Station> getStations() {
@@ -104,16 +108,16 @@ public class Sections {
         return sections;
     }
 
-    public void remove(Line line, Station station) {
+    public void remove(Line line, Long stationId) {
         if (line.getSections().size() <= 1) {
             throw new RuntimeException();
         }
 
         Optional<Section> upLineStation = line.getSections().stream()
-                .filter(it -> it.getUpStation() == station)
+                .filter(it -> it.getUpStation().getId().equals(stationId))
                 .findFirst();
         Optional<Section> downLineStation = line.getSections().stream()
-                .filter(it -> it.getDownStation() == station)
+                .filter(it -> it.getDownStation().getId().equals(stationId))
                 .findFirst();
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
