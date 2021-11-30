@@ -14,6 +14,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String 틀린_이메일 = "wrong@email.com";
     private static final String 이메일 = "email@email.com";
     private static final String 비밀번호 = "password";
+    private static final String 틀린_토큰 = "wrong token";
     private static final int 나이 = 10;
 
     @BeforeEach
@@ -46,6 +47,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
-    }
+        // given
+        로그인_되어_있음(이메일, 비밀번호);
 
+        // when
+        ExtractableResponse<Response> response = 내_정보_조회_요청(틀린_토큰);
+
+        // then
+        로그인_실패됨(response);
+    }
 }
