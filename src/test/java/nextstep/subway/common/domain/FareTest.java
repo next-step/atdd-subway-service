@@ -24,5 +24,4 @@ class FareTest {
             .isThrownBy(() -> Fare.from(Integer.MIN_VALUE))
             .withMessage("요금은 반드시 0 또는 양수이어야 합니다.");
     }
-
 }

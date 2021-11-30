@@ -43,6 +43,10 @@ public class Distance {
         return value <= distance.value;
     }
 
+    public int ceilDivide(Distance distance) {
+        return (int) Math.ceil((double) value / distance.value);
+    }
+
     private boolean positive(int value) {
         return value > 0;
     }
