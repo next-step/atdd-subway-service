@@ -45,24 +45,24 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 구간 관련 기능")
     @Test
     void subwaySectionFeature() {
-        // when 지하철 구간 등록 요청
+        // when
         ExtractableResponse<Response> 지하철_구간_등록_응답 = 지하철_구간_등록_요청(신분당선, 강남역, 양재역, 3);
-        // then 지하철 구간 등록됨
+        // then
         지하철_구간_등록됨(지하철_구간_등록_응답);
 
-        // when 지하철 노선에 등록된 역 목록 조회 요청
+        // when
         ExtractableResponse<Response> 지하철_구간_등록_후_노선_조회 = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-        // then 등록한 지하철 구간이 반영된 역 목록이 조회됨
+        // then
         지하철_노선에_지하철역_순서_정렬됨(지하철_구간_등록_후_노선_조회, Arrays.asList(강남역, 양재역, 광교역));
 
-        // when 지하철 구간 삭제 요청
+        // when
         ExtractableResponse<Response> 지하철_구간_삭제_응답 = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
-        // then 지하철 구간 삭제됨
+        // then
         지하철_노선에_지하철역_제외됨(지하철_구간_삭제_응답);
 
-        // when 지하철 노선에 등록된 역 목록 조회 요청
+        // when
         ExtractableResponse<Response> 지하철_구간_삭제_후_노선_조회 = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-        // then 삭제한 지하철 구긴이 반영된 역 목록이 조회됨됨
+        // then
         지하철_노선에_지하철역_순서_정렬됨(지하철_구간_삭제_후_노선_조회, Arrays.asList(양재역, 광교역));
     }
 
