@@ -1,16 +1,13 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.SectionException;
 import nextstep.subway.exception.error.ErrorCode;
-import nextstep.subway.line.domain.section.Money;
 import nextstep.subway.line.domain.section.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.math.BigDecimal;
-import java.util.Comparator;
 import java.util.List;
 
 public class PathFinder {

@@ -1,6 +1,5 @@
 package nextstep.subway.path.dto;
 
-import nextstep.subway.line.domain.section.Money;
 import nextstep.subway.station.domain.Station;
 
 import java.math.BigDecimal;
@@ -15,13 +14,13 @@ public class PathResponse {
     public PathResponse() {
     }
 
-    public PathResponse(List<Station> stations, int distance, Money pareMoney) {
+    public PathResponse(List<Station> stations, int distance, BigDecimal pareMoney) {
         this.stations = stations;
         this.distance = distance;
-        this.pareMoney = pareMoney.getMoney();
+        this.pareMoney = pareMoney;
     }
 
-    public static PathResponse of(List<Station> stations, int distance, Money pareMoney) {
+    public static PathResponse of(List<Station> stations, int distance, BigDecimal pareMoney) {
         return new PathResponse(stations, distance, pareMoney);
     }
 

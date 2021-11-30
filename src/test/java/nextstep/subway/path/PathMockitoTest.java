@@ -2,7 +2,6 @@ package nextstep.subway.path;
 
 import com.google.common.collect.Lists;
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.line.domain.section.Money;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.ui.PathController;
@@ -11,6 +10,8 @@ import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.ResponseEntity;
+
+import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -36,7 +37,7 @@ public class PathMockitoTest {
 
         when(stationRepository.findAll()).thenReturn(Lists.newArrayList(선릉역, 역삼역, 강남역, 판교역, 수지역, 광교역));
         when(pathService.findPath(LoginMember.ofGuest(), 선릉역.getId(), 수지역.getId()))
-                .thenReturn(PathResponse.of(Lists.newArrayList(역삼역, 강남역, 판교역, 수지역), 21, Money.ofZero()));
+                .thenReturn(PathResponse.of(Lists.newArrayList(역삼역, 강남역, 판교역, 수지역), 21, BigDecimal.ZERO));
         PathController pathController = new PathController(pathService);
 
         // when

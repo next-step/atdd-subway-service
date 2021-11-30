@@ -3,7 +3,6 @@ package nextstep.subway.path.application;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.SectionException;
 import nextstep.subway.exception.error.ErrorCode;
-import nextstep.subway.line.domain.section.Money;
 import nextstep.subway.line.domain.section.Section;
 import nextstep.subway.line.domain.section.SectionRepository;
 import nextstep.subway.path.domain.PareCalculate;
@@ -14,6 +13,7 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -35,7 +35,7 @@ public class PathService {
 
         List<Station> dijkstraPath = pathFinder.getDijkstraShortestPath(source, target);
         int sumDistance = pathFinder.getSumLineStationsDistance(source, target);
-        Money pareMoney = PareCalculate.getPareMoney(loginMember, pathFinder.getGraphPath(source, target), sumDistance);
+        BigDecimal pareMoney = PareCalculate.getPareMoney(loginMember, pathFinder.getGraphPath(source, target), sumDistance);
 
         return PathResponse.of(dijkstraPath, sumDistance, pareMoney);
     }

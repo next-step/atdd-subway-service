@@ -21,6 +21,7 @@ public class LineRequest {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.pare = BigDecimal.ZERO;
     }
 
     public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, BigDecimal pare) {
@@ -53,6 +54,6 @@ public class LineRequest {
     }
 
     public Line toLine() {
-        return new Line(name, color);
+        return new Line(name, color, pare);
     }
 }

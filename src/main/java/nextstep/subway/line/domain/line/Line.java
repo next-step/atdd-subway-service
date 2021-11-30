@@ -3,7 +3,6 @@ package nextstep.subway.line.domain.line;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.exception.LineException;
 import nextstep.subway.exception.error.ErrorCode;
-import nextstep.subway.line.domain.section.Money;
 import nextstep.subway.line.domain.section.Section;
 import nextstep.subway.line.domain.section.Sections;
 import nextstep.subway.station.domain.Station;
@@ -26,8 +25,7 @@ public class Line extends BaseEntity {
 
     private String color;
 
-    @Embedded
-    private Money plusPare;
+    private BigDecimal plusPare;
 
     @Embedded
     private Sections sections = new Sections();
@@ -38,14 +36,20 @@ public class Line extends BaseEntity {
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
-        this.plusPare = Money.ofZero();
+        this.plusPare = BigDecimal.ZERO;
+    }
+
+    public Line(String name, String color, BigDecimal pare) {
+        this.name = name;
+        this.color = color;
+        this.plusPare = pare == null ? BigDecimal.ZERO : pare;
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         validation(name, color);
         this.name = name;
         this.color = color;
-        this.plusPare = Money.ofZero();
+        this.plusPare = BigDecimal.ZERO;
         sections.addLineStation(new Section(this, upStation, downStation, distance));
     }
 
@@ -53,7 +57,7 @@ public class Line extends BaseEntity {
         validation(name, color);
         this.name = name;
         this.color = color;
-        this.plusPare = Money.from(plusPare);
+        this.plusPare = plusPare;
         sections.addLineStation(new Section(this, upStation, downStation, distance));
     }
 
@@ -91,7 +95,7 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
 
-    public Money getPlusPare() {
+    public BigDecimal getPlusPare() {
         return plusPare;
     }
 
