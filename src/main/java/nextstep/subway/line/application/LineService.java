@@ -91,6 +91,13 @@ public class LineService {
 		sections.addSection(line, upStation, downStation, request.getDistance());
 	}
 
+	public void removeLineStation2(Long lineId, Long stationId) {
+		Line line = findLineById(lineId);
+		Station station = stationService.findStationById(stationId);
+		Sections sections = line.getSections();
+		sections.removeStation(line, station);
+	}
+
 	public void removeLineStation(Long lineId, Long stationId) {
 		Line line = findLineById(lineId);
 		Station station = stationService.findStationById(stationId);
