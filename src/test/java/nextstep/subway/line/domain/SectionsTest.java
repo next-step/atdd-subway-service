@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import static nextstep.subway.exception.ExceptionMessage.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -81,16 +82,36 @@ class SectionsTest {
     @DisplayName("이미 등록된 구간은 등록할 수 없다.")
     @Test
     void addExistSection() {
-        assertThrows(RuntimeException.class, () ->
-            sections.addSection(new Section(line, 교대역, 선릉역, 5)));
+        assertThatThrownBy(() -> sections.addSection(new Section(line, 교대역, 선릉역, 5)))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(ALREADY_ADD_SECTION.getMessage());
     }
 
     @DisplayName("기존 구간이 존재할 때 상행역 하행역 모두 기존 구간에 존재하지 않으면 등록할 수 없다.")
     @Test
     void addNotExistUpStationAndDownStation() {
-        assertThrows(RuntimeException.class, () ->
-            sections.addSection(
-                new Section(line, new Station("합정역"), new Station("신촌역"), 5)));
+        assertThatThrownBy(() -> sections.addSection(
+            new Section(line, new Station("합정역"), new Station("신촌역"), 5)))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(NOT_POSSIBLE_ADD_SECTION.getMessage());
+    }
+
+    @DisplayName("기존 구간 거리보다 크거나 같은 거리의 역은 등록할 수 없다.")
+    @Test
+    void addGreaterThanOrEqualDistanceStation() {
+        Station 삼성역 = new Station("삼성역");
+        assertThatThrownBy(() -> sections.addSection(
+            new Section(line, 잠실역, 삼성역, 10)))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(LESS_THAN_DISTANCE_BETWEEN_STATION.getMessage());
+
+        assertThatThrownBy(() -> sections.addSection(
+            new Section(line, 잠실역, 삼성역, 15)))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(LESS_THAN_DISTANCE_BETWEEN_STATION.getMessage());
+
+        assertDoesNotThrow(() -> sections.addSection(
+            new Section(line, 잠실역, 삼성역, 9)));
     }
 
     @DisplayName("지하철 구간을 삭제한다.")
@@ -105,11 +126,25 @@ class SectionsTest {
         assertThat(sections.getStations()).containsExactly(선릉역, 당산역);
     }
 
+    @DisplayName("지하철 구간이 한개인 경우 삭제할 수 없다.")
+    @Test
+    void removeLastSection() {
+        // given
+        Sections sections = new Sections();
+        sections.add(new Section(line, 교대역, 당산역, 100));
+
+        // when & then
+        assertThatThrownBy(() -> sections.removeSection(교대역))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(NOT_REMOVE_SECTION_MIN_SIZE.getMessage());
+    }
+
     @DisplayName("존재하지 않는 구간은 삭제할 수 없다.")
     @Test
     void removeNotExistSection() {
         // when & then
-        assertThrows(IllegalArgumentException.class, () ->
-            sections.removeSection(new Station("신촌역")));
+        assertThatThrownBy(() -> sections.removeSection(new Station("신촌역")))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(NON_EXIST_STATION_TO_SECTION.getMessage());
     }
 }
