@@ -31,7 +31,7 @@ public class Line extends BaseEntity {
     private Sections sections;
 
     @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "extraFare"))
+    @AttributeOverride(name = "value", column = @Column(name = "extra_fare", nullable = false))
     private Fare extraFare;
 
     protected Line() {

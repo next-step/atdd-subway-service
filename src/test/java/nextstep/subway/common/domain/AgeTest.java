@@ -27,7 +27,6 @@ class AgeTest {
             .withMessage("나이는 반드시 양수이어야 합니다.");
     }
 
-
     @ParameterizedTest(name = "[{index}] {0} 나이는 어린이라는 사실이 {1}")
     @DisplayName("어린이 판별")
     @CsvSource({"6,true", "12,true", "13,false"})

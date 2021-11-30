@@ -39,5 +39,4 @@ class PercentTest {
         // then
         assertThat(actual).isEqualTo(expected);
     }
-
 }

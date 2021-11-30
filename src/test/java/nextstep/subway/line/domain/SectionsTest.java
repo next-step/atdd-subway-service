@@ -117,10 +117,10 @@ class SectionsTest {
             anyLine(extraFare)
         )).sections();
 
-        //when
+        // when
         Fare maxExtraFare = sections.maxExtraFare();
 
-        //then
+        // then
         assertThat(maxExtraFare).isEqualTo(Fare.from(expected));
     }
 
@@ -130,10 +130,10 @@ class SectionsTest {
         // given
         Sections emptySections = Sections.from(Collections.emptyList());
 
-        //when
-        ThrowingCallable maxExtraFareCallable = () -> emptySections.maxExtraFare();
+        // when
+        ThrowingCallable maxExtraFareCallable = emptySections::maxExtraFare;
 
-        //then
+        // then
         assertThatExceptionOfType(InvalidDataException.class)
             .isThrownBy(maxExtraFareCallable)
             .withMessage("비어있는 구간들에서 추가 요금을 계산할 수 없습니다.");
@@ -216,6 +216,6 @@ class SectionsTest {
     }
 
     private Line anyLine(int extraFare) {
-        return line("any", "red", section("강남", "양재", 10), extraFare);
+        return line("any", "red", section("any1", "any2", 10), extraFare);
     }
 }

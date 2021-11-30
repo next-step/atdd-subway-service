@@ -15,7 +15,7 @@ public final class FareDiscountPolicy {
     private final LoginMember member;
 
     private FareDiscountPolicy(LoginMember member) {
-        Assert.notNull(member, "로그인 유저는 필수입니다.");
+        Assert.notNull(member, "로그인 사용자는 필수입니다.");
         this.member = member;
     }
 
@@ -31,7 +31,6 @@ public final class FareDiscountPolicy {
             return totalDiscountFare(fare, YOUTH_FLAT_DISCOUNT_FARE, YOUTH_PERCENT_DISCOUNT);
         }
         return Fare.zero();
-
     }
 
     private Fare totalDiscountFare(Fare fare, Fare flatDiscountFare, Percent percentDiscount) {

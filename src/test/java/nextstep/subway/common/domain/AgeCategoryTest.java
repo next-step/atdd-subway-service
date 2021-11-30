@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+@DisplayName("나이 분류")
 class AgeCategoryTest {
 
     @ParameterizedTest(name = "[{index}] {0} 나이는 {1}")
@@ -14,5 +15,4 @@ class AgeCategoryTest {
     void valueOf(int age, AgeCategory expected) {
         assertThat(AgeCategory.valueOf(age)).isEqualTo(expected);
     }
-
 }
