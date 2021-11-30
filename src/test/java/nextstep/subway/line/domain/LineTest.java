@@ -28,13 +28,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ActiveProfiles("test")
 public class LineTest {
-
-    @Autowired
-    LineRepository lines;
-
-    @Autowired
-    StationRepository stations;
-
     private final Station 강남역 = new Station("강남역");
     private final Station 광교역 = new Station("광교역");
     private final int 거리_5 = 5;
