@@ -1,6 +1,8 @@
 package nextstep.subway.path;
 
 import com.google.common.collect.Lists;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.line.domain.section.Money;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.ui.PathController;
@@ -33,12 +35,12 @@ public class PathMockitoTest {
         StationRepository stationRepository = mock(StationRepository.class);
 
         when(stationRepository.findAll()).thenReturn(Lists.newArrayList(선릉역, 역삼역, 강남역, 판교역, 수지역, 광교역));
-        when(pathService.findPath(선릉역.getId(), 수지역.getId()))
-                .thenReturn(PathResponse.of(Lists.newArrayList(역삼역, 강남역, 판교역, 수지역), 21));
+        when(pathService.findPath(LoginMember.ofGuest(), 선릉역.getId(), 수지역.getId()))
+                .thenReturn(PathResponse.of(Lists.newArrayList(역삼역, 강남역, 판교역, 수지역), 21, Money.ofZero()));
         PathController pathController = new PathController(pathService);
 
         // when
-        ResponseEntity<PathResponse> response = pathController.findPath(선릉역.getId(), 수지역.getId());
+        ResponseEntity<PathResponse> response = pathController.findPath(LoginMember.ofGuest(), 선릉역.getId(), 수지역.getId());
 
         // then
         assertThat(response.getBody().getDistance()).isEqualTo(21);

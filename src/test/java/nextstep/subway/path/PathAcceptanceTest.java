@@ -107,6 +107,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(actual.getDistance()).isEqualTo(3);
     }
 
+    @Test
+    @DisplayName(
+            "지하철 노선에 등록된 역 기준으로 순방향 최단거리 검증"
+                    + "(교대 --(10)> 강남 --(8)> 양재 --(5)> 남부터미널역)"
+                    + "(강남 --> 남부터미널역)"
+                    + "거리 : 13 / 예상 운임비용 : 1250 + 200"
+    )
+    public void 지하철_노선에_등록_역_최단거리_운임_검증() {
+        ExtractableResponse<Response> response = 최단_거리_조회_요청(강남역, 남부터미널역);
+
+        PathResponse actual = response.as(PathResponse.class);
+
+        응답_OK(response);
+        운임_비용_확인(actual);
+    }
+
+    private static void 운임_비용_확인(PathResponse actual) {
+        assertThat(actual.getPareMoney()).isEqualTo(1450);
+    }
+
     private static ExtractableResponse<Response> 최단_거리_조회_요청(StationResponse 출발역, StationResponse 도착역) {
         return RestAssured
                 .given().log().all()
