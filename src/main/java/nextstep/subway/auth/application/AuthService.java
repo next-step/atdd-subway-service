@@ -31,7 +31,7 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new MemberException(ErrorCode.BAD_ARGUMENT, "유효하지 않은 토큰입니다.");
+            return LoginMember.ofGuest();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
