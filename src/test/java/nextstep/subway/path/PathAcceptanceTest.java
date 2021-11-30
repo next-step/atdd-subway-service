@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.math.BigDecimal;
+
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -109,10 +111,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName(
-            "지하철 노선에 등록된 역 기준으로 순방향 최단거리 검증"
+            "최단 거리 운임 비용 검증"
                     + "(교대 --(10)> 강남 --(8)> 양재 --(5)> 남부터미널역)"
                     + "(강남 --> 남부터미널역)"
-                    + "거리 : 13 / 예상 운임비용 : 1250 + 200"
+                    + "거리 : 13 / 예상 운임비용 : 1250"
     )
     public void 지하철_노선에_등록_역_최단거리_운임_검증() {
         ExtractableResponse<Response> response = 최단_거리_조회_요청(강남역, 남부터미널역);
@@ -124,7 +126,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private static void 운임_비용_확인(PathResponse actual) {
-        assertThat(actual.getPareMoney()).isEqualTo(1450);
+        assertThat(actual.getPareMoney()).isEqualTo(BigDecimal.valueOf(1250));
     }
 
     private static ExtractableResponse<Response> 최단_거리_조회_요청(StationResponse 출발역, StationResponse 도착역) {

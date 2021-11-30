@@ -38,6 +38,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
+        this.plusPare = Money.ofZero();
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
