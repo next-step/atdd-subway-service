@@ -1,14 +1,12 @@
 package nextstep.subway.line.domain;
 
+import nextstep.exception.StationNotConnectedException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Embeddable
@@ -18,6 +16,13 @@ public class Sections {
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
+
+    protected Sections() {
+    }
+
+    public Sections(List<Section> sections) {
+        this.sections = sections;
+    }
 
     public void add(Section section) {
         sections.add(section);
@@ -124,6 +129,21 @@ public class Sections {
     public void checkRemovable() {
         if (!isRemovable()) {
             throw new RuntimeException();
+        }
+    }
+
+    public List<Station> getAllStations() {
+        return sections.stream()
+                .map(Section::getStations)
+                .flatMap(Collection::stream)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public void checkConnected(Station source, Station target) {
+        List<Station> stations = getAllStations();
+        if (!stations.contains(source) || !stations.contains(target)) {
+            throw new StationNotConnectedException();
         }
     }
 }

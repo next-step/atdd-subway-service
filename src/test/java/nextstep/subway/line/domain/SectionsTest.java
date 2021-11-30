@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.exception.StationNotConnectedException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.Test;
 
@@ -172,6 +173,28 @@ public class SectionsTest {
         // when
         assertThatExceptionOfType(RuntimeException.class)
                 .isThrownBy(() -> sections.checkRemovable());
+    }
+
+    @Test
+    void getAllStations_구간의_모든_역들을_조회한다() {
+        // given
+        Sections sections = getSections();
+
+        // when
+        List<Station> stations = sections.getAllStations();
+
+        // then
+        assertThat(stations).containsExactly(강남역, 삼성역);
+    }
+
+    @Test
+    void checkConnected_출발역과_도착역이_연결되지_않으면_에러를_발생한다() {
+        // given
+        Sections sections = getSections();
+
+        // when
+        assertThatExceptionOfType(StationNotConnectedException.class)
+                .isThrownBy(() -> sections.checkConnected(강남역, 교대역));
     }
 
     private Sections getSections() {
