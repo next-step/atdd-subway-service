@@ -17,7 +17,13 @@ import org.springframework.http.HttpStatus;
 public final class PathAcceptanceStep {
 
     public static ExtractableResponse<Response> 지하철_최단_경로_조회(Long sourceId, Long targetId) {
+        return 지하철_최단_경로_조회("", sourceId, targetId);
+    }
+
+    public static ExtractableResponse<Response> 지하철_최단_경로_조회(String accessToken, Long sourceId,
+        Long targetId) {
         return RestAssured.given().log().all()
+            .auth().oauth2(accessToken)
             .param("source", sourceId)
             .param("target", targetId)
             .when()

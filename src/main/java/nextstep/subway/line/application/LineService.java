@@ -68,12 +68,16 @@ public class LineService {
     }
 
     private Line savedLine(LineCreateRequest request) {
-        return lineRepository.save(
-            Line.of(request.name(),
-                request.color(),
-                Sections.from(section(request.getSection()))
-            )
-        );
+        return lineRepository.save(newLine(request));
+    }
+
+    private Line newLine(LineCreateRequest request) {
+        if (request.hasExtraFare()) {
+            return Line.of(request.name(), request.color(),
+                Sections.from(section(request.getSection())), request.extraFare());
+        }
+        return Line.of(
+            request.name(), request.color(), Sections.from(section(request.getSection())));
     }
 
     private Section section(SectionRequest request) {
