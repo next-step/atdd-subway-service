@@ -33,6 +33,10 @@ public class LineRequest {
         this.pare = pare;
     }
 
+    public static LineRequest of(String name, String color, Long upStationId, Long downStationId, int distance, BigDecimal pare) {
+        return new LineRequest(name, color, upStationId, downStationId, distance, pare);
+    }
+
     public String getName() {
         return name;
     }
@@ -51,6 +55,10 @@ public class LineRequest {
 
     public int getDistance() {
         return distance;
+    }
+
+    public BigDecimal getPare() {
+        return pare;
     }
 
     public Line toLine() {

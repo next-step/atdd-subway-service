@@ -26,24 +26,25 @@ public class PareCalculate {
         BigDecimal resultPareMoney = BigDecimal.valueOf(BASE_PARE_MONEY);
         resultPareMoney = resultPareMoney.add(getMaxPlusPare(path));
         resultPareMoney = resultPareMoney.add(getPareMoneyDistanceCalculate(distance));
-        return getPareMoneyMemberCalculate(loginMember, resultPareMoney).setScale(0, RoundingMode.HALF_EVEN);
+        resultPareMoney = getPareMoneyMemberCalculate(loginMember, resultPareMoney).setScale(0, RoundingMode.HALF_EVEN);
+        return resultPareMoney;
     }
 
     private static BigDecimal getPareMoneyMemberCalculate(LoginMember loginMember, BigDecimal resultPareMoney) {
         if (!loginMember.isGuest()) {
-            getMemberDiscount(loginMember, resultPareMoney);
+            resultPareMoney = getMemberDiscount(loginMember, resultPareMoney);
         }
         return resultPareMoney;
     }
 
     private static BigDecimal getMemberDiscount(LoginMember loginMember, BigDecimal resultPareMoney) {
         if (loginMember.isChild()) {
-            resultPareMoney.subtract(BigDecimal.valueOf(BASE_MEMBER_DISCOUNT));
-            resultPareMoney.multiply(BigDecimal.valueOf(CHILD_DISCOUNT));
+            resultPareMoney = resultPareMoney.subtract(BigDecimal.valueOf(BASE_MEMBER_DISCOUNT));
+            resultPareMoney = resultPareMoney.multiply(BigDecimal.valueOf(CHILD_DISCOUNT));
         }
         if (loginMember.isYouth()) {
-            resultPareMoney.subtract(BigDecimal.valueOf(BASE_MEMBER_DISCOUNT));
-            resultPareMoney.multiply(BigDecimal.valueOf(YOUTH_DISCOUNT));
+            resultPareMoney = resultPareMoney.subtract(BigDecimal.valueOf(BASE_MEMBER_DISCOUNT));
+            resultPareMoney = resultPareMoney.multiply(BigDecimal.valueOf(YOUTH_DISCOUNT));
         }
         return resultPareMoney;
     }
