@@ -23,8 +23,41 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
-    public void add(Section section) {
-        sections.add(section);
+    public void add(Line line, Station upStation, Station downStation, int distance) {
+        boolean isUpStationExisted = line.getStations().stream().anyMatch(it -> it == upStation);
+        boolean isDownStationExisted = line.getStations().stream().anyMatch(it -> it == downStation);
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!line.getStations().isEmpty() && line.getStations().stream().noneMatch(it -> it == upStation) &&
+                line.getStations().stream().noneMatch(it -> it == downStation)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
+        if (line.getStations().isEmpty()) {
+            line.getSections().add(new Section(line, upStation, downStation, distance));
+            return;
+        }
+
+        if (isUpStationExisted) {
+            line.getSections().stream()
+                    .filter(it -> it.getUpStation() == upStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(downStation, distance));
+
+            line.getSections().add(new Section(line, upStation, downStation, distance));
+        } else if (isDownStationExisted) {
+            line.getSections().stream()
+                    .filter(it -> it.getDownStation() == downStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(upStation, distance));
+
+            line.getSections().add(new Section(line, upStation, downStation, distance));
+        } else {
+            throw new RuntimeException();
+        }
     }
 
     public List<Station> getStations() {
