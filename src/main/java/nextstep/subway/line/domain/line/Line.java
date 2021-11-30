@@ -1,13 +1,15 @@
 package nextstep.subway.line.domain.line;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.exception.error.ErrorCode;
 import nextstep.subway.exception.LineException;
+import nextstep.subway.exception.error.ErrorCode;
+import nextstep.subway.line.domain.section.Money;
 import nextstep.subway.line.domain.section.Section;
 import nextstep.subway.line.domain.section.Sections;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.List;
 
 import static nextstep.subway.utils.ValidationUtils.isEmpty;
@@ -25,6 +27,9 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
+    private Money plusPare;
+
+    @Embedded
     private Sections sections = new Sections();
 
     public Line() {
@@ -39,6 +44,15 @@ public class Line extends BaseEntity {
         validation(name, color);
         this.name = name;
         this.color = color;
+        this.plusPare = Money.ofZero();
+        sections.addLineStation(new Section(this, upStation, downStation, distance));
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, BigDecimal plusPare) {
+        validation(name, color);
+        this.name = name;
+        this.color = color;
+        this.plusPare = Money.from(plusPare);
         sections.addLineStation(new Section(this, upStation, downStation, distance));
     }
 
@@ -74,6 +88,10 @@ public class Line extends BaseEntity {
 
     public List<Station> getStations() {
         return sections.getStations();
+    }
+
+    public Money getPlusPare() {
+        return plusPare;
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {

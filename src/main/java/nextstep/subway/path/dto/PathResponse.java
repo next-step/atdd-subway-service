@@ -1,26 +1,28 @@
 package nextstep.subway.path.dto;
 
+import nextstep.subway.line.domain.section.Money;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PathResponse {
 
     private List<Station> stations;
     private int distance;
+    private Money pareMoney;
 
     public PathResponse() {
     }
 
-    public PathResponse(List<Station> stations, int distance) {
+    public PathResponse(List<Station> stations, int distance, Money pareMoney) {
         this.stations = stations;
         this.distance = distance;
+        this.pareMoney = pareMoney;
     }
 
-    public static PathResponse of(List<Station> stations, int distance) {
-        return new PathResponse(stations, distance);
+    public static PathResponse of(List<Station> stations, int distance, Money pareMoney) {
+        return new PathResponse(stations, distance, pareMoney);
     }
 
     public List<Station> getStations() {
@@ -29,5 +31,9 @@ public class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public BigDecimal getPareMoney() {
+        return pareMoney.getMoney();
     }
 }
