@@ -4,10 +4,7 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Entity
 public class Line extends BaseEntity {
@@ -20,8 +17,8 @@ public class Line extends BaseEntity {
 
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private final List<Section> sections = new ArrayList<>();
+    @Embedded
+    private final Sections sections = new Sections();
 
     public Line() {
     }
@@ -35,6 +32,10 @@ public class Line extends BaseEntity {
         this.name = name;
         this.color = color;
         sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
+        return new Line(name, color, upStation, downStation, distance);
     }
 
     public void update(Line line) {
@@ -55,46 +56,10 @@ public class Line extends BaseEntity {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return sections.getList();
     }
 
     public List<Station> getStations() {
-        if (sections.isEmpty()) {
-            return Arrays.asList();
-        }
-
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
-
-        return stations;
-    }
-
-    private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
+        return sections.getStations();
     }
 }
