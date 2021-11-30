@@ -161,7 +161,7 @@ public class Section {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, upStation, downStation, distance);
+        return Objects.hash(upStation, downStation);
     }
 
     @Override
@@ -173,10 +173,8 @@ public class Section {
             return false;
         }
         Section section = (Section) o;
-        return Objects.equals(id, section.id) && Objects
-            .equals(upStation, section.upStation) && Objects
-            .equals(downStation, section.downStation) && Objects
-            .equals(distance, section.distance);
+        return Objects.equals(upStation, section.upStation) && Objects
+            .equals(downStation, section.downStation);
     }
 
     @Override

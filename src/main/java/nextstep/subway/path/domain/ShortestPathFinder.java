@@ -1,10 +1,13 @@
 package nextstep.subway.path.domain;
 
 import io.jsonwebtoken.lang.Assert;
+import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 import org.jgrapht.Graph;
@@ -30,7 +33,11 @@ public final class ShortestPathFinder {
     public Path path(Station source, Station target) {
         validateStations(source, target);
         GraphPath<Station, SectionEdge> path = validPath(source, target);
-        return Path.of(Stations.from(path.getVertexList()), Distance.from(path.getWeight()));
+        return Path.of(
+            Stations.from(path.getVertexList()),
+            Distance.from(path.getWeight()),
+            sections(path.getEdgeList())
+        );
     }
 
     public boolean isInvalidPath(Station source, Station target) {
@@ -40,6 +47,14 @@ public final class ShortestPathFinder {
         } catch (IllegalArgumentException e) {
             return true;
         }
+    }
+
+    private Sections sections(List<SectionEdge> edges) {
+        return Sections.from(
+            edges.stream()
+                .map(SectionEdge::section)
+                .collect(Collectors.toList())
+        );
     }
 
     private GraphPath<Station, SectionEdge> validPath(Station source, Station target) {

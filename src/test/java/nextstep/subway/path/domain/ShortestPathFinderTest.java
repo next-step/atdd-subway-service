@@ -15,6 +15,7 @@ import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
@@ -64,8 +65,16 @@ class ShortestPathFinderTest {
         // then
         assertThat(path)
             .isEqualTo(Path.of(
-                Stations.from(Arrays.asList(station("교대역"), station("남부터미널역"), station("양재역"))),
-                Distance.from(5)));
+                Stations.from(Arrays.asList(
+                    station("교대역"),
+                    station("남부터미널역"),
+                    station("양재역"))),
+                Distance.from(5),
+                Sections.from(Arrays.asList(
+                    section("교대역", "남부터미널역", 3),
+                    section("남부터미널역", "양재역", 2)))
+                )
+            );
     }
 
     @Test

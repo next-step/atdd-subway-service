@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.List;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
@@ -48,7 +49,7 @@ class PathServiceTest {
 
         // when
         PathResponse pathResponse = pathService.findShortestPath(
-            new PathRequest(sourceId, targetId));
+            LoginMember.guest(), new PathRequest(sourceId, targetId));
 
         // then
         최단_경로_검색됨(pathResponse);

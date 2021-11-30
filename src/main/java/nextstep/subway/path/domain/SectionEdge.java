@@ -4,7 +4,7 @@ import io.jsonwebtoken.lang.Assert;
 import nextstep.subway.line.domain.Section;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-public final class SectionEdge extends DefaultWeightedEdge {
+final class SectionEdge extends DefaultWeightedEdge {
 
     private final Section section;
 
@@ -13,8 +13,12 @@ public final class SectionEdge extends DefaultWeightedEdge {
         this.section = section;
     }
 
-    public static SectionEdge from(Section section) {
+    static SectionEdge from(Section section) {
         return new SectionEdge(section);
+    }
+
+    Section section() {
+        return section;
     }
 
     @Override
