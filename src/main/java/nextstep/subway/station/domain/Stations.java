@@ -12,15 +12,15 @@ public final class Stations {
 
     private static final Stations EMPTY = new Stations(Collections.emptyList());
 
-    private final List<Station> list;
+    private final List<Station> stations;
 
-    private Stations(List<Station> list) {
-        Assert.notNull(list, "지하철 역 목록은 필수입니다.");
-        this.list = list;
+    private Stations(List<Station> stations) {
+        Assert.notNull(stations, "지하철 역 목록은 필수입니다.");
+        this.stations = stations;
     }
 
-    public static Stations from(List<Station> list) {
-        return new Stations(list);
+    public static Stations from(List<Station> stations) {
+        return new Stations(stations);
     }
 
     public static Stations empty() {
@@ -28,28 +28,28 @@ public final class Stations {
     }
 
     public boolean sizeLessThan(int target) {
-        return list.size() < target;
+        return stations.size() < target;
     }
 
     public List<Station> list() {
-        return Collections.unmodifiableList(list);
+        return Collections.unmodifiableList(stations);
     }
 
     public Stations merge(Stations stations) {
-        List<Station> newList = new ArrayList<>(list);
-        newList.addAll(stations.list);
+        List<Station> newList = new ArrayList<>(this.stations);
+        newList.addAll(stations.stations);
         return from(newList);
     }
 
     public <R> List<R> mapToList(Function<Station, R> mapper) {
-        return list.stream()
+        return stations.stream()
             .map(mapper)
             .collect(Collectors.toList());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(list);
+        return Objects.hash(stations);
     }
 
     @Override
@@ -61,13 +61,13 @@ public final class Stations {
             return false;
         }
         Stations stations = (Stations) o;
-        return Objects.equals(list, stations.list);
+        return Objects.equals(this.stations, stations.stations);
     }
 
     @Override
     public String toString() {
         return "Stations{" +
-            "list=" + list +
+            "stations=" + stations +
             '}';
     }
 }

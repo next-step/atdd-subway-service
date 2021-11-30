@@ -1,13 +1,17 @@
 package nextstep.subway.member.dto;
 
+import nextstep.subway.common.domain.Age;
+import nextstep.subway.common.domain.Email;
 import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.domain.Password;
 
 public class MemberRequest {
+
     private String email;
     private String password;
     private Integer age;
 
-    public MemberRequest() {
+    private MemberRequest() {
     }
 
     public MemberRequest(String email, String password, Integer age) {
@@ -29,6 +33,6 @@ public class MemberRequest {
     }
 
     public Member toMember() {
-        return new Member(email, password, age);
+        return Member.of(Email.from(email), Password.from(password), Age.from(age));
     }
 }

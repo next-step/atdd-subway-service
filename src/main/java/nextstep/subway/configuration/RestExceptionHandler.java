@@ -2,9 +2,11 @@ package nextstep.subway.configuration;
 
 import java.util.Map;
 import java.util.stream.Collectors;
+import nextstep.subway.common.exception.AuthorizationException;
 import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.common.exception.NotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -22,6 +24,11 @@ public class RestExceptionHandler {
     @ExceptionHandler({DuplicateDataException.class, InvalidDataException.class})
     public ResponseEntity<String> handleDuplicateAndInvalidDataException(RuntimeException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<String> handleAuthorizationException(AuthorizationException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

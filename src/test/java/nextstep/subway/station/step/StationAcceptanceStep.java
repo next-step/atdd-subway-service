@@ -7,15 +7,12 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
-import nextstep.subway.AcceptanceTest;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.DisplayName;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-@DisplayName("지하철역 관련 기능")
-public class StationAcceptanceStep extends AcceptanceTest {
+public final class StationAcceptanceStep {
 
     public static ExtractableResponse<Response> 지하철역_등록되어_있음(String name) {
         return 지하철역_생성_요청(name);

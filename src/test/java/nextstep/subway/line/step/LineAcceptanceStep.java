@@ -1,4 +1,4 @@
-package nextstep.subway.line.acceptance.step;
+package nextstep.subway.line.step;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -17,7 +17,7 @@ import org.assertj.core.groups.Tuple;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-public class LineAcceptanceStep {
+public final class LineAcceptanceStep {
 
     public static LineResponse 지하철_노선_등록되어_있음(LineCreateRequest params) {
         return 지하철_노선_생성_요청(params)

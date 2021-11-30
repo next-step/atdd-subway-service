@@ -1,5 +1,8 @@
 package nextstep.subway.line.application;
 
+import static nextstep.subway.line.step.LineStep.line;
+import static nextstep.subway.line.step.SectionStep.section;
+import static nextstep.subway.station.step.StationStep.station;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -17,11 +20,8 @@ import nextstep.subway.common.domain.Name;
 import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.line.domain.Color;
-import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.dto.LineCreateRequest;
 import nextstep.subway.line.dto.LineUpdateRequest;
 import nextstep.subway.line.dto.SectionRequest;
@@ -57,8 +57,8 @@ class LineServiceTest {
         String 신분당 = "신분당선";
         String 빨강 = "red";
 
-        Station 강남역 = Station.from(Name.from("강남"));
-        Station 광교역 = Station.from(Name.from("광교"));
+        Station 강남역 = station("강남");
+        Station 광교역 = station("광교");
         검색된_지하철_역_제공(1L, 강남역);
         검색된_지하철_역_제공(2L, 광교역);
 
@@ -158,8 +158,8 @@ class LineServiceTest {
         // given
         Line mockLine = mock(Line.class);
         검색된_지하철_노선_제공(mockLine);
-        검색된_지하철_역_제공(1L, Station.from(Name.from("강남")));
-        검색된_지하철_역_제공(2L, Station.from(Name.from("양재")));
+        검색된_지하철_역_제공(1L, station("강남"));
+        검색된_지하철_역_제공(2L, station("양재"));
 
         // when
         service.addLineStation(
@@ -167,7 +167,7 @@ class LineServiceTest {
 
         // then
         verify(mockLine, only())
-            .addSection(sectionTenDistance("강남", "양재"));
+            .addSection(section("강남", "양재", 10));
     }
 
     @Test
@@ -247,16 +247,8 @@ class LineServiceTest {
     }
 
     private Line 신분당선() {
-        return Line.of(Name.from("name"), Color.from("color"),
-            Sections.from(sectionTenDistance("강남", "광교"))
-        );
-    }
-
-    private Section sectionTenDistance(String upStationName, String downStationName) {
-        return Section.of(
-            Station.from(Name.from(upStationName)),
-            Station.from(Name.from(downStationName)),
-            Distance.from(10)
+        return line("신분당선", "red",
+            section("강남", "광교", 10)
         );
     }
 }

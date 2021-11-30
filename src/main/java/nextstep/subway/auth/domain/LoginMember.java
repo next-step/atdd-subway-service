@@ -1,28 +1,58 @@
 package nextstep.subway.auth.domain;
 
-public class LoginMember {
-    private Long id;
-    private String email;
-    private Integer age;
+import io.jsonwebtoken.lang.Assert;
+import nextstep.subway.common.domain.Age;
+import nextstep.subway.common.domain.Email;
+import nextstep.subway.common.exception.AuthorizationException;
 
-    public LoginMember() {
+public final class LoginMember {
+
+    private static final LoginMember GUEST_MEMBER = new LoginMember();
+
+    private Long id;
+    private Email email;
+    private Age age;
+
+    private LoginMember() {
     }
 
-    public LoginMember(Long id, String email, Integer age) {
+    private LoginMember(long id, Email email, Age age) {
+        Assert.notNull(email, "이메일은 필수입니다.");
+        Assert.notNull(age, "나이는 필수입니다.");
         this.id = id;
         this.email = email;
         this.age = age;
     }
 
-    public Long getId() {
+    public static LoginMember of(long id, Email email, Age age) {
+        return new LoginMember(id, email, age);
+    }
+
+    public static LoginMember guest() {
+        return GUEST_MEMBER;
+    }
+
+    public long id() {
+        validateGuest();
         return id;
     }
 
-    public String getEmail() {
-        return email;
+    private boolean isGuest() {
+        return this == GUEST_MEMBER;
     }
 
-    public Integer getAge() {
-        return age;
+    private void validateGuest() {
+        if (isGuest()) {
+            throw new AuthorizationException("로그인이 필요합니다.");
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "LoginMember{" +
+            "id=" + id +
+            ", email=" + email +
+            ", age=" + age +
+            '}';
     }
 }

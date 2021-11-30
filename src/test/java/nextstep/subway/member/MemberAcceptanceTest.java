@@ -1,5 +1,11 @@
 package nextstep.subway.member;
 
+import static nextstep.subway.auth.acceptance.step.AuthAcceptanceStep.로그인_되어_있음;
+import static nextstep.subway.member.step.MemberAcceptanceStep.내_정보_삭제_요청;
+import static nextstep.subway.member.step.MemberAcceptanceStep.내_정보_수정_요청;
+import static nextstep.subway.member.step.MemberAcceptanceStep.내_정보_수정됨;
+import static nextstep.subway.member.step.MemberAcceptanceStep.내_정보_조회_요청;
+import static nextstep.subway.member.step.MemberAcceptanceStep.내_정보_조회됨;
 import static nextstep.subway.member.step.MemberAcceptanceStep.회원_삭제_요청;
 import static nextstep.subway.member.step.MemberAcceptanceStep.회원_삭제됨;
 import static nextstep.subway.member.step.MemberAcceptanceStep.회원_생성됨;
@@ -53,6 +59,24 @@ class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        회원_생성을_요청(EMAIL, PASSWORD, 20);
+        String 사용자 = 로그인_되어_있음(EMAIL, PASSWORD);
 
+        // when
+        ExtractableResponse<Response> findResponse = 내_정보_조회_요청(사용자);
+        // then
+        내_정보_조회됨(findResponse, EMAIL, AGE);
+
+        // when
+        ExtractableResponse<Response> updateResponse = 내_정보_수정_요청(사용자, NEW_EMAIL,
+            NEW_PASSWORD, NEW_AGE);
+        // then
+        String 변경된_사용자 = 로그인_되어_있음(NEW_EMAIL, NEW_PASSWORD);
+        내_정보_수정됨(updateResponse, 변경된_사용자, NEW_EMAIL, NEW_AGE);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(변경된_사용자);
+        // then
+        회원_삭제됨(deleteResponse);
     }
 }

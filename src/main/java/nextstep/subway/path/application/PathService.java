@@ -22,14 +22,20 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(PathRequest request) {
-        return PathResponse.from(shortestPath(request));
-    }
-
-    private Path shortestPath(PathRequest request) {
-        return shortestPathFinder().path(
+        return PathResponse.from(shortestPath(
             station(request.getSource()),
             station(request.getTarget())
-        );
+        ));
+    }
+
+    public Path shortestPath(Station source, Station target) {
+        return shortestPathFinder()
+            .path(source, target);
+    }
+
+    public boolean isInvalidPath(Station source, Station target) {
+        return shortestPathFinder()
+            .isInvalidPath(source, target);
     }
 
     private ShortestPathFinder shortestPathFinder() {

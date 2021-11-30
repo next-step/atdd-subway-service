@@ -2,7 +2,8 @@ package nextstep.subway.member.dto;
 
 import nextstep.subway.member.domain.Member;
 
-public class MemberResponse {
+public final class MemberResponse {
+
     private Long id;
     private String email;
     private Integer age;
@@ -17,7 +18,9 @@ public class MemberResponse {
     }
 
     public static MemberResponse of(Member member) {
-        return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
+        return new MemberResponse(member.id(),
+            member.email().toString(),
+            member.age().value());
     }
 
     public Long getId() {

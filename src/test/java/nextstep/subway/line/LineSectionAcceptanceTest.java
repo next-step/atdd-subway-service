@@ -1,14 +1,14 @@
-package nextstep.subway.line.acceptance;
+package nextstep.subway.line;
 
-import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_등록되어_있음;
-import static nextstep.subway.line.acceptance.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_등록_실패됨;
-import static nextstep.subway.line.acceptance.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_등록_요청;
-import static nextstep.subway.line.acceptance.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_등록됨;
-import static nextstep.subway.line.acceptance.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_순서_정렬됨;
-import static nextstep.subway.line.acceptance.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_제외_실패됨;
-import static nextstep.subway.line.acceptance.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_제외_요청;
-import static nextstep.subway.line.acceptance.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_제외됨;
-import static nextstep.subway.line.acceptance.step.LineSectionAcceptanceStep.지하철_역_못찾음;
+import static nextstep.subway.line.step.LineAcceptanceStep.지하철_노선_등록되어_있음;
+import static nextstep.subway.line.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_등록_실패됨;
+import static nextstep.subway.line.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.line.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_등록됨;
+import static nextstep.subway.line.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_순서_정렬됨;
+import static nextstep.subway.line.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_제외_실패됨;
+import static nextstep.subway.line.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_제외_요청;
+import static nextstep.subway.line.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_제외됨;
+import static nextstep.subway.line.step.LineSectionAcceptanceStep.지하철_역_못찾음;
 import static nextstep.subway.station.step.StationAcceptanceStep.지하철역_등록되어_있음;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
