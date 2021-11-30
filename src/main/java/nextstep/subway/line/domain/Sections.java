@@ -51,15 +51,15 @@ public class Sections {
         }
     }
 
-    public void removeLineStation(Station station) {
+    public void removeSection(Station station) {
         validateRemoveSection(station);
-        Optional<Section> upLineStation = findSectionOfEqualUpStation(station);
-        Optional<Section> downLineStation = findSectionOfEqualDownStation(station);
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            addConnectSection(upLineStation.get(), downLineStation.get());
+        Optional<Section> sectionOfUpStation = findSectionOfEqualUpStation(station);
+        Optional<Section> sectionOfDownStation = findSectionOfEqualDownStation(station);
+        if (sectionOfUpStation.isPresent() && sectionOfDownStation.isPresent()) {
+            addConnectSection(sectionOfUpStation.get(), sectionOfDownStation.get());
         }
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
+        sectionOfUpStation.ifPresent(it -> sections.remove(it));
+        sectionOfDownStation.ifPresent(it -> sections.remove(it));
     }
 
     private boolean addStationOfBetween(Section section) {
@@ -158,11 +158,11 @@ public class Sections {
         }
     }
 
-    private void addConnectSection(Section upLineStation, Section downLineStation) {
-        Station newUpStation = downLineStation.getUpStation();
-        Station newDownStation = upLineStation.getDownStation();
-        int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
-        sections.add(new Section(upLineStation.getLine(), newUpStation, newDownStation, newDistance));
+    private void addConnectSection(Section sectionOfUpStation, Section sectionOfDownStation) {
+        Station newUpStation = sectionOfDownStation.getUpStation();
+        Station newDownStation = sectionOfUpStation.getDownStation();
+        int newDistance = sectionOfUpStation.getDistance() + sectionOfDownStation.getDistance();
+        sections.add(new Section(sectionOfUpStation.getLine(), newUpStation, newDownStation, newDistance));
     }
 
     private Optional<Section> findSectionOfEqualUpStation(Station station) {

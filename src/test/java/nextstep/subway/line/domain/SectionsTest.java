@@ -97,9 +97,9 @@ class SectionsTest {
     @Test
     void removeSection() {
         // when
-        sections.removeLineStation(잠실역);
-        sections.removeLineStation(교대역);
-        sections.removeLineStation(시청역);
+        sections.removeSection(잠실역);
+        sections.removeSection(교대역);
+        sections.removeSection(시청역);
 
         // then
         assertThat(sections.getStations()).containsExactly(선릉역, 당산역);
@@ -110,6 +110,6 @@ class SectionsTest {
     void removeNotExistSection() {
         // when & then
         assertThrows(IllegalArgumentException.class, () ->
-            sections.removeLineStation(new Station("신촌역")));
+            sections.removeSection(new Station("신촌역")));
     }
 }
