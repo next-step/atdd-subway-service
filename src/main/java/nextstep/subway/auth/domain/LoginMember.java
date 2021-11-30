@@ -38,16 +38,20 @@ public final class LoginMember {
     }
 
     public boolean isChild() {
-        validateGuest();
+        if (isGuest()) {
+            return false;
+        }
         return age.isChild();
     }
 
     public boolean isYouth() {
-        validateGuest();
+        if (isGuest()) {
+            return false;
+        }
         return age.isYouth();
     }
 
-    private boolean isGuest() {
+    public boolean isGuest() {
         return this == GUEST_MEMBER;
     }
 
