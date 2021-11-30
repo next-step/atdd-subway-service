@@ -23,24 +23,24 @@ public class LineService {
         this.stationService = stationService;
     }
 
-    @Transactional
-    public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(Line.of(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
-        return LineResponse.of(persistLine);
+    private Line findLineById(Long id) {
+        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
     public List<LineResponse> findLines() {
         return LineResponse.ofList(lineRepository.findAll());
     }
 
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
     public LineResponse findLineResponseById(Long id) {
         return LineResponse.of(findLineById(id));
+    }
+
+    @Transactional
+    public LineResponse saveLine(LineRequest request) {
+        Station upStation = stationService.findById(request.getUpStationId());
+        Station downStation = stationService.findById(request.getDownStationId());
+        Line persistLine = lineRepository.save(Line.of(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        return LineResponse.of(persistLine);
     }
 
     @Transactional
@@ -67,4 +67,6 @@ public class LineService {
         Line line = findLineById(lineId);
         line.removeStation(stationId);
     }
+
+
 }

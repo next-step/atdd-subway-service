@@ -62,7 +62,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 --- 
 - [ ] LineSectionAcceptanceTest 리팩터링
-- [ ] LineService 리팩터링
+- [x] LineService 리팩터링
 
 ### 요구사항 설명
 

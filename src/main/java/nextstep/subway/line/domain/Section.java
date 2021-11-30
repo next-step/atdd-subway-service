@@ -4,6 +4,7 @@ import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 
+
 @Entity
 public class Section {
     @Id
@@ -24,7 +25,7 @@ public class Section {
 
     private int distance;
 
-    public Section() {
+    protected Section() {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
@@ -32,6 +33,31 @@ public class Section {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+
+    public void updateUpStation(Station station, int newDistance) {
+        if (this.distance <= newDistance) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.upStation = station;
+        this.distance -= newDistance;
+    }
+
+    public void updateDownStation(Station station, int newDistance) {
+        if (this.distance <= newDistance) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.downStation = station;
+        this.distance -= newDistance;
+    }
+
+    public boolean downStationEqualTo(Station station) {
+        return downStation.equals(station);
+    }
+
+    public boolean upStationEqualTo(Station station) {
+        return upStation.equals(station);
     }
 
     public Long getId() {
@@ -54,19 +80,4 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
-    }
 }
