@@ -7,28 +7,27 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.ShortestPath;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import nextstep.subway.utils.StreamUtils;
 
+@Component
 public class DijkstraShortestPathAlgorithm implements ShortestPathAlgorithm {
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
 
-    private DijkstraShortestPathAlgorithm(DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath) {
-        this.dijkstraShortestPath = dijkstraShortestPath;
-    }
-
-    public static DijkstraShortestPathAlgorithm from(List<Line> lines) {
+    @Override
+    public ShortestPath findShortestPath(List<Line> lines, Station sourceStation, Station targetStation) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = createWeightedMultiGraph(lines);
-        return new DijkstraShortestPathAlgorithm(new DijkstraShortestPath<>(graph));
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(sourceStation, targetStation);
+        return ShortestPath.of(path.getVertexList(), (int) path.getWeight());
     }
 
-    private static WeightedMultigraph<Station, DefaultWeightedEdge> createWeightedMultiGraph(List<Line> lines) {
+    private WeightedMultigraph<Station, DefaultWeightedEdge> createWeightedMultiGraph(List<Line> lines) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         addStationVertexes(lines, graph);
         alignEdgeWeight(lines, graph);
@@ -36,7 +35,7 @@ public class DijkstraShortestPathAlgorithm implements ShortestPathAlgorithm {
         return graph;
     }
 
-    private static void addStationVertexes(List<Line> lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private void addStationVertexes(List<Line> lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         List<Station> stations = StreamUtils.flatMapToList(lines, Line::getStations, Collection::stream);
 
         for (Station station : stations) {
@@ -44,7 +43,7 @@ public class DijkstraShortestPathAlgorithm implements ShortestPathAlgorithm {
         }
     }
 
-    private static void alignEdgeWeight(List<Line> lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private void alignEdgeWeight(List<Line> lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         List<Sections> sections = StreamUtils.mapToList(lines, Line::getSections);
         List<Section> allSections = StreamUtils.flatMapToList(sections, Sections::getValues, Collection::stream);
 
@@ -52,11 +51,5 @@ public class DijkstraShortestPathAlgorithm implements ShortestPathAlgorithm {
             graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
                                 section.getDistance().getValue());
         }
-    }
-
-    @Override
-    public ShortestPath findShortestPath(Station sourceStation, Station targetStation) {
-        GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(sourceStation, targetStation);
-        return ShortestPath.of(path.getVertexList(), (int) path.getWeight());
     }
 }

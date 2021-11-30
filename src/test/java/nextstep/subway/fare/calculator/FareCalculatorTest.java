@@ -3,6 +3,7 @@ package nextstep.subway.fare.calculator;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -86,9 +87,10 @@ class FareCalculatorTest {
         // given
         Station 모란역 = Station.of(5L, "모란역");
         Line 분당선 = Line.of("분당선", "YELLOW", lineFare, 양재역, 모란역, distance);
+        List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선, 분당선);
 
-        PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(Arrays.asList(신분당선, 이호선, 삼호선, 분당선)));
-        ShortestPath shortestPath = pathFinder.findShortestPath(교대역, 모란역);
+        PathFinder pathFinder = new PathFinder(new DijkstraShortestPathAlgorithm());
+        ShortestPath shortestPath = pathFinder.findShortestPath(lines, 교대역, 모란역);
 
         // when
         int fare = FareCalculator.calculateLineFare(Arrays.asList(신분당선, 이호선, 삼호선, 분당선), shortestPath);

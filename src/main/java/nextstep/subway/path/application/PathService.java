@@ -24,10 +24,12 @@ import nextstep.subway.utils.StreamUtils;
 public class PathService {
     private final LineRepository lineRepository;
     private final StationService stationService;
+    private final PathFinder pathFinder;
 
-    public PathService(LineRepository lineRepository, StationService stationService) {
+    public PathService(LineRepository lineRepository, StationService stationService, PathFinder pathFinder) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
+        this.pathFinder = pathFinder;
     }
 
     public PathResponse findShortestPath(LoginMember loginMember, Long sourceId, Long targetId) {
@@ -35,8 +37,7 @@ public class PathService {
         Station sourceStation = stationService.findById(sourceId);
         Station targetStation = stationService.findById(targetId);
 
-        PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(lines));
-        ShortestPath path = pathFinder.findShortestPath(sourceStation, targetStation);
+        ShortestPath path = pathFinder.findShortestPath(lines, sourceStation, targetStation);
 
         return createPathResponse(lines, path, loginMember);
     }

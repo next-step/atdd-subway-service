@@ -15,7 +15,6 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.ShortestPath;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import nextstep.subway.utils.StreamUtils;
 
 class PathFinderTest {
@@ -51,21 +50,25 @@ class PathFinderTest {
     @DisplayName("노선이 없으면 최단경로 조회 시, 예외가 발생한다.")
     @Test
     void findShortestPath1() {
+        // given
+        List<Line> lines = Collections.emptyList();
+
         // when
-        PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(Collections.emptyList()));
+        PathFinder pathFinder = new PathFinder(new DijkstraShortestPathAlgorithm());
 
         // then
-        assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(양재역, 강남역));
+        assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(lines, 양재역, 강남역));
     }
 
     @DisplayName("출발역에서 도착역까지 최단경로를 조회한다.")
     @Test
     void findShortestPath2() {
         // given
-        PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(Arrays.asList(신분당선, 이호선, 삼호선)));
+        List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선);
+        PathFinder pathFinder = new PathFinder(new DijkstraShortestPathAlgorithm());
 
         // when
-        ShortestPath shortestPath = pathFinder.findShortestPath(교대역, 양재역);
+        ShortestPath shortestPath = pathFinder.findShortestPath(lines, 교대역, 양재역);
 
         // then
         List<Long> expectedIds = StreamUtils.mapToList(Arrays.asList(교대역, 남부터미널역, 양재역), Station::getId);
@@ -79,10 +82,11 @@ class PathFinderTest {
     @Test
     void findShortestPath3() {
         // given
-        PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(Arrays.asList(신분당선, 이호선, 삼호선)));
+        List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선);
+        PathFinder pathFinder = new PathFinder(new DijkstraShortestPathAlgorithm());
 
         // when
-        ShortestPath shortestPath = pathFinder.findShortestPath(교대역, 교대역);
+        ShortestPath shortestPath = pathFinder.findShortestPath(lines, 교대역, 교대역);
 
         // then
         List<Long> actualIds = StreamUtils.mapToList(shortestPath.getStations(), Station::getId);
@@ -96,10 +100,11 @@ class PathFinderTest {
     void findShortestPath4() {
         // given
         Station 서울역 = Station.of(5L, "서울역");
-        PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(Arrays.asList(신분당선, 이호선, 삼호선)));
+        List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선);
+        PathFinder pathFinder = new PathFinder(new DijkstraShortestPathAlgorithm());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(서울역, 강남역));
+        assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(lines, 서울역, 강남역));
     }
 
     @DisplayName("도착역이 노선상에 존재하지 않을때 예외가 발생한다.")
@@ -107,10 +112,11 @@ class PathFinderTest {
     void findShortestPath5() {
         // given
         Station 서울역 = Station.of(5L, "서울역");
-        PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(Arrays.asList(신분당선, 이호선, 삼호선)));
+        List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선);
+        PathFinder pathFinder = new PathFinder(new DijkstraShortestPathAlgorithm());
 
         // when & then
-        assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(양재역, 서울역));
+        assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(lines, 양재역, 서울역));
     }
 
     @DisplayName("출발역과 도착역이 서로 연결되어 있지 않을때 예외가 발생한다.")
@@ -120,10 +126,11 @@ class PathFinderTest {
         Station 서울역 = Station.of(5L, "서울역");
         Station 시청역 = Station.of(6L, "시청역");
         Line 일호선 = Line.of("일호선", "BLUE", FARE_1000, 서울역, 시청역, DISTANCE_5);
+        List<Line> lines = Arrays.asList(신분당선, 일호선, 이호선, 삼호선);
 
-        PathFinder pathFinder = PathFinder.from(DijkstraShortestPathAlgorithm.from(Arrays.asList(신분당선, 일호선, 이호선, 삼호선)));
+        PathFinder pathFinder = new PathFinder(new DijkstraShortestPathAlgorithm());
 
         // when & then
-        assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> pathFinder.findShortestPath(강남역, 서울역));
+        assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> pathFinder.findShortestPath(lines, 강남역, 서울역));
     }
 }
