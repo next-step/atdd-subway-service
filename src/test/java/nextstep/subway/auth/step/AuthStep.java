@@ -31,4 +31,8 @@ public class AuthStep {
                 .then().log().all()
                 .extract();
     }
+
+    public static void 로그인_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 }
