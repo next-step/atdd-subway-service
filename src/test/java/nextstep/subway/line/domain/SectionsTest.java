@@ -2,9 +2,11 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,9 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * date : 2021-11-30
  * description :
  */
-@SpringBootTest
-@Transactional
-@ActiveProfiles("test")
+@DataJpaTest
 public class SectionsTest {
 
     @Autowired
@@ -38,6 +38,11 @@ public class SectionsTest {
 
     private final int 거리_5 = 5;
     private final int 거리_1 = 1;
+
+    @BeforeEach
+    void setUp() {
+        stations.saveAll(Arrays.asList(강남역, 광교역, 마포역));
+    }
 
     @Test
     @DisplayName("구간 추가 검증")
