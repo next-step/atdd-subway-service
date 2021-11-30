@@ -73,7 +73,7 @@ public class Sections {
     }
 
     public void remove(Line line, Long stationId) {
-        removeValidate();
+        removeValidate(stationId);
 
         Optional<Section> upLineSection = getSectionInUpStationByStationId(stationId);
         Optional<Section> downLineSection = getSectionInDownStationByStationId(stationId);
@@ -89,8 +89,12 @@ public class Sections {
         downLineSection.ifPresent(it -> sections.remove(it));
     }
 
-    private void removeValidate() {
+    private void removeValidate(Long stationId) {
         if (sections.size() <= MIN_SECTION_COUNT) {
+            throw new RuntimeException();
+        }
+
+        if (getStations().stream().noneMatch(station -> station.getId().equals(stationId))) {
             throw new RuntimeException();
         }
     }
