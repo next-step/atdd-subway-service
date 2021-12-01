@@ -21,4 +21,8 @@ public class Stations {
     public boolean isIncluded(Station station) {
         return stations.contains(station);
     }
+
+    public boolean isIn(Station station) {
+        return stations.contains(station);
+    }
 }
