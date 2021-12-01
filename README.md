@@ -56,7 +56,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ### [1단계] - 인수 테스트 기반 리팩터링
 
-- [ ] LineSectionAcceptanceTest 리팩터링
+- [X] LineSectionAcceptanceTest 리팩터링
     - [X] 인수 테스트 통합
         ```
             Feature: 지하철 구간 관련 기능
@@ -76,10 +76,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
             When 지하철 노선에 등록된 역 목록 조회 요청
             Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
         ```
-    - [ ] 인수 테스트 리펙터링
-
-- [ ] LineService 리팩터링
-    - [ ] 인수 테스트 기반 리팩터링
+    - [X] 인수 테스트 리펙터링
+- [X] LineService 리팩터링
+    - [X] 인수 테스트 기반 리팩터링
         - Domain으로 옮길 로직 찾기
         - Domain의 단위 테스트 작성하기
         - 로직 옮기기
