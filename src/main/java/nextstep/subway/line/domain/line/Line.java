@@ -34,30 +34,23 @@ public class Line extends BaseEntity {
     }
 
     public Line(String name, String color) {
+        validation(name, color);
         this.name = name;
         this.color = color;
-        this.plusPare = BigDecimal.ZERO;
     }
 
     public Line(String name, String color, BigDecimal pare) {
-        this.name = name;
-        this.color = color;
+        this(name, color);
         this.plusPare = pare == null ? BigDecimal.ZERO : pare;
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        validation(name, color);
-        this.name = name;
-        this.color = color;
-        this.plusPare = BigDecimal.ZERO;
+        this(name, color, BigDecimal.ZERO);
         sections.addLineStation(new Section(this, upStation, downStation, distance));
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance, BigDecimal plusPare) {
-        validation(name, color);
-        this.name = name;
-        this.color = color;
-        this.plusPare = plusPare;
+        this(name, color, plusPare);
         sections.addLineStation(new Section(this, upStation, downStation, distance));
     }
 
