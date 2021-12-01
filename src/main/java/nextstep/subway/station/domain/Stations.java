@@ -23,6 +23,20 @@ public class Stations {
 		return new Stations(new ArrayList<>());
 	}
 
+	public boolean anyMatch(Station station) {
+		return values.stream()
+			.anyMatch(value -> value == station);
+	}
+
+	public boolean noneMatch(Station station) {
+		return values.stream()
+			.noneMatch(value -> value == station);
+	}
+
+	public boolean isEmpty() {
+		return values.isEmpty();
+	}
+
 	public List<Station> getValues() {
 		return values;
 	}

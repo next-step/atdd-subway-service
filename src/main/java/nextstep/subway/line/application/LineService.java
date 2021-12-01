@@ -15,6 +15,7 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @Service
 @Transactional
@@ -64,16 +65,15 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        List<Station> stations = line.getStations().getValues();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+        Stations stations = line.getStations();
+        boolean isUpStationExisted = stations.anyMatch(upStation);
+        boolean isDownStationExisted = stations.anyMatch(downStation);
 
         if (isUpStationExisted && isDownStationExisted) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
 
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation)) {
+        if (!stations.isEmpty() && stations.noneMatch(upStation) && stations.noneMatch(downStation)) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
 
