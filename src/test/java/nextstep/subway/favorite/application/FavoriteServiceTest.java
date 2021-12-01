@@ -1,5 +1,7 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
@@ -12,6 +14,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -23,13 +26,15 @@ class FavoriteServiceTest {
 
     private StationService stationService;
     private MemberService memberService;
+    private FavoriteRepository favoriteRepository;
     private FavoriteService favoriteService;
 
     @BeforeEach
     void setUp() {
         stationService = mock(StationService.class);
         memberService = mock(MemberService.class);
-        favoriteService = new FavoriteService(stationService, memberService);
+        favoriteRepository = mock(FavoriteRepository.class);
+        favoriteService = new FavoriteService(stationService, memberService, favoriteRepository);
     }
 
     @ParameterizedTest
@@ -39,6 +44,7 @@ class FavoriteServiceTest {
         given(stationService.findById(출발역_아이디)).willReturn(강남역);
         given(stationService.findById(도착역_아이디)).willReturn(역삼역);
         given(memberService.findById(회원_아이디)).willReturn(회원);
+        given(favoriteRepository.save(any(Favorite.class))).willReturn(new Favorite(회원, 강남역, 역삼역));
 
         // when
         FavoriteResponse response = favoriteService.saveFavorite(회원_아이디, 출발역_아이디, 도착역_아이디);
