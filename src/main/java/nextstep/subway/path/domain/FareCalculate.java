@@ -19,15 +19,15 @@ public class FareCalculate {
     private static final int DISTANCE_FIFTY_OVER_DIVIDE = 8;
 
 
-    public static BigDecimal getPareMoney(LoginMember loginMember, GraphPath<Station, SectionEdge> path, int distance) {
+    public static BigDecimal getFareMoney(LoginMember loginMember, GraphPath<Station, SectionEdge> path, int distance) {
         BigDecimal resultFareMoney = BigDecimal.valueOf(BASE_FARE_MONEY);
-        resultFareMoney = resultFareMoney.add(getMaxPlusPare(path));
-        resultFareMoney = resultFareMoney.add(getPareMoneyDistanceCalculate(distance));
+        resultFareMoney = resultFareMoney.add(getMaxPlusFare(path));
+        resultFareMoney = resultFareMoney.add(getFareMoneyDistanceCalculate(distance));
         resultFareMoney = MemberShip.memberShipCalculate(loginMember, resultFareMoney).setScale(0, RoundingMode.HALF_EVEN);
         return resultFareMoney;
     }
 
-    private static BigDecimal getPareMoneyDistanceCalculate(int distance) {
+    private static BigDecimal getFareMoneyDistanceCalculate(int distance) {
         if (distance <= BASE_DISTANCE) {
             return BigDecimal.ZERO;
         }
@@ -42,7 +42,7 @@ public class FareCalculate {
         return (int) ((Math.ceil((distance - 1) / divide) + 1) * plusFare);
     }
 
-    private static BigDecimal getMaxPlusPare(GraphPath<Station, SectionEdge> path) {
+    private static BigDecimal getMaxPlusFare(GraphPath<Station, SectionEdge> path) {
         return path.getEdgeList()
                 .stream()
                 .map(it -> it.getLine().getPlusFare())

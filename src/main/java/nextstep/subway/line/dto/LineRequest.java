@@ -10,7 +10,7 @@ public class LineRequest {
     private Long upStationId;
     private Long downStationId;
     private int distance;
-    private BigDecimal pare;
+    private BigDecimal fare;
 
     public LineRequest() {
     }
@@ -21,20 +21,20 @@ public class LineRequest {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
-        this.pare = BigDecimal.ZERO;
+        this.fare = BigDecimal.ZERO;
     }
 
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, BigDecimal pare) {
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, BigDecimal fare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
-        this.pare = pare;
+        this.fare = fare;
     }
 
-    public static LineRequest of(String name, String color, Long upStationId, Long downStationId, int distance, BigDecimal pare) {
-        return new LineRequest(name, color, upStationId, downStationId, distance, pare);
+    public static LineRequest of(String name, String color, Long upStationId, Long downStationId, int distance, BigDecimal fare) {
+        return new LineRequest(name, color, upStationId, downStationId, distance, fare);
     }
 
     public String getName() {
@@ -57,11 +57,11 @@ public class LineRequest {
         return distance;
     }
 
-    public BigDecimal getPare() {
-        return pare;
+    public BigDecimal getFare() {
+        return fare;
     }
 
     public Line toLine() {
-        return new Line(name, color, pare);
+        return new Line(name, color, fare);
     }
 }

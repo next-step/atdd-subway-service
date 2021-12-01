@@ -20,8 +20,8 @@ public class PathResponse {
         this.fareMoney = fareMoney;
     }
 
-    public static PathResponse of(List<Station> stations, int distance, BigDecimal pareMoney) {
-        return new PathResponse(stations, distance, pareMoney);
+    public static PathResponse of(List<Station> stations, int distance, BigDecimal fareMoney) {
+        return new PathResponse(stations, distance, fareMoney);
     }
 
     public List<Station> getStations() {

@@ -35,9 +35,9 @@ public class PathService {
 
         List<Station> dijkstraPath = pathFinder.getDijkstraShortestPath(source, target);
         int sumDistance = pathFinder.getSumLineStationsDistance(source, target);
-        BigDecimal pareMoney = FareCalculate.getPareMoney(loginMember, pathFinder.getGraphPath(source, target), sumDistance);
+        BigDecimal fareMoney = FareCalculate.getFareMoney(loginMember, pathFinder.getGraphPath(source, target), sumDistance);
 
-        return PathResponse.of(dijkstraPath, sumDistance, pareMoney);
+        return PathResponse.of(dijkstraPath, sumDistance, fareMoney);
     }
 
     private PathFinder getPathFinder() {

@@ -11,18 +11,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class PathFinder {
-    private static final BigDecimal BASE_PARE_MONEY = BigDecimal.valueOf(1250);
-    private static final int DISTANCE_FIFTY_OVER_PLUS_PARE = 100;
-    private static final int DISTANCE_FIFTY_OVER_DIVIDE = 8;
-
-    private static final int DISTANCE_BETWEEN_ELEVEN_AND_FIFTY_PLUS_PARE = 100;
-    private static final int DISTANCE_BETWEEN_ELEVEN_AND_FIFTY_DIVIDE = 5;
-
-    private static final int DISTANCE_FIFTY = 50;
-
-    private static final int NOT_OVER_DISTANCE = 11;
-
-
     private final DijkstraShortestPath dijkstraShortestPath;
     private final StationGraph stationGraph;
     private final List<Section> sections;
