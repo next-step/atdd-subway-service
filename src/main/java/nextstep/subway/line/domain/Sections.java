@@ -29,20 +29,22 @@ public class Sections {
 			return Arrays.asList();
 		}
 
-		List<Station> stations = new ArrayList<>();
-		Station downStation = findUpStation();
-		stations.add(downStation);
+		Section nextSection = findFirstSection();
+		return traversalSections(nextSection);
+	}
 
-		while (downStation != null) {
-			Station finalDownStation = downStation;
-			Optional<Section> nextLineStation = sections.stream()
-				.filter(it -> it.isEqualToUpStation(finalDownStation))
-				.findFirst();
-			if (!nextLineStation.isPresent()) {
-				break;
-			}
-			downStation = nextLineStation.get().getDownStation();
+	private List<Station> traversalSections(Section startSection) {
+		List<Station> stations = new ArrayList<>();
+		stations.add(startSection.getUpStation());
+
+		Section nextSection = startSection;
+		while (nextSection != null) {
+			final Station downStation = nextSection.getDownStation();
 			stations.add(downStation);
+			Optional<Section> findNextSection = sections.stream()
+				.filter(it -> it.isEqualToUpStation(downStation))
+				.findFirst();
+			nextSection = findNextSection.orElse(null);
 		}
 
 		return stations;
@@ -52,25 +54,23 @@ public class Sections {
 		return sections.isEmpty();
 	}
 
-	private Station findUpStation() {
-		Station downStation = pickCandidateDownStation();
-		while (downStation != null) {
-			Station finalDownStation = downStation;
+	private Section findFirstSection() {
+		Section candiSection = pickCandidateDownStation();
+		Section lastSection = candiSection;
+		while (candiSection != null) {
+			lastSection = candiSection;
+			Station prevDownStation = lastSection.getUpStation();
 			Optional<Section> nextLineStation = sections.stream()
-				.filter(it -> it.isEqualToDownStation(finalDownStation))
+				.filter(it -> it.isEqualToDownStation(prevDownStation))
 				.findFirst();
-			if (!nextLineStation.isPresent()) {
-				break;
-			}
-			downStation = nextLineStation.get().getUpStation();
+			candiSection = nextLineStation.orElse(null);
 		}
 
-		return downStation;
+		return lastSection;
 	}
 
-	private Station pickCandidateDownStation() {
-		Section firstSection = sections.get(0);
-		return firstSection.getUpStation();
+	private Section pickCandidateDownStation() {
+		return sections.get(0);
 	}
 
 	public void add(Section section) {
