@@ -1,6 +1,6 @@
 package nextstep.subway.station.application;
 
-import nextstep.exception.StationNotFoundException;
+import nextstep.exception.BusinessException;
 import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class StationServiceTest {
         given(stationRepository.findById(1L)).willReturn(Optional.empty());
 
         // when
-        assertThatExceptionOfType(StationNotFoundException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> stationService.findById(1L));
     }
 }

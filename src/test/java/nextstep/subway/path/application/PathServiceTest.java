@@ -1,6 +1,6 @@
 package nextstep.subway.path.application;
 
-import nextstep.exception.SameSourceAndTargetException;
+import nextstep.exception.BusinessException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathResult;
@@ -55,7 +55,7 @@ class PathServiceTest {
 
     @Test
     void findShortestPath_출발역과_도착역이_같으면_에러를_발생한다() {
-        assertThatExceptionOfType(SameSourceAndTargetException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> pathService.findShortestPath(1L, 1L));
     }
 }

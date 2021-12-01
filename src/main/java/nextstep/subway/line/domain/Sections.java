@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
-import nextstep.exception.StationNotConnectedException;
+import nextstep.exception.BusinessException;
+import nextstep.exception.ErrorCode;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -143,7 +144,7 @@ public class Sections {
     public void checkConnected(Station source, Station target) {
         List<Station> stations = getAllStations();
         if (!stations.contains(source) || !stations.contains(target)) {
-            throw new StationNotConnectedException();
+            throw new BusinessException(ErrorCode.STATION_NOT_CONNECTED);
         }
     }
 }

@@ -1,12 +1,12 @@
 package nextstep.subway.station.application;
 
-import nextstep.exception.StationNotFoundException;
+import nextstep.exception.BusinessException;
+import nextstep.exception.ErrorCode;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,6 +41,6 @@ public class StationService {
     }
 
     public Station findById(Long id) {
-        return stationRepository.findById(id).orElseThrow(StationNotFoundException::new);
+        return stationRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorCode.STATION_NOT_FOUND));
     }
 }
