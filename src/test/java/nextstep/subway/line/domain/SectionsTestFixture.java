@@ -18,6 +18,8 @@ public class SectionsTestFixture {
     @Transient
     public static Station 교대역 = new Station("교대역");
     @Transient
+    public static Station 서초역 = new Station("서초역");
+    @Transient
     public static Section 강남역_역삼역_구간 = new Section(이호선, 강남역, 역삼역, 10);
     @Transient
     public static Section 역삼역_교대역_구간 = new Section(이호선, 역삼역, 교대역, 10);

@@ -56,6 +56,53 @@ public class Sections {
         return stations;
     }
 
+    public void addSection(Line line, Station upStation, Station downStation, int distance) {
+        if (sections.isEmpty()) {
+            sections.add(new Section(line, upStation, downStation, distance));
+            return;
+        }
+
+        List<Station> stations = getStations();
+        validateAbleToAdd(stations, upStation, downStation);
+
+        sections.stream()
+                .filter(section -> section.isEqualToUpStation(upStation) || section.isEqualToDownStation(downStation))
+                .findFirst()
+                .ifPresent(section -> updateSection(section, upStation, downStation, distance));
+
+        sections.add(new Section(line, upStation, downStation, distance));
+    }
+
+    private void updateSection(Section section, Station upStation, Station downStation, int distance) {
+        if (section.isEqualToUpStation(upStation)) {
+            section.updateUpStation(downStation, distance);
+            return;
+        }
+
+        if (section.isEqualToDownStation(downStation)) {
+            section.updateDownStation(upStation, distance);
+            return;
+        }
+
+        throw new RuntimeException();
+    }
+
+    private void validateAbleToAdd(List<Station> stations, Station upStation, Station downStation) {
+        boolean isUpStationExisted = stations.stream()
+                .anyMatch(station -> station.equals(upStation));
+        boolean isDownStationExisted = stations.stream()
+                .anyMatch(station -> station.equals(downStation));
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!isUpStationExisted
+                && !isDownStationExisted) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
     private Section findUpStation() {
         Section downSection = sections.get(0);
         assert (downSection != null);
