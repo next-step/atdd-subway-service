@@ -16,9 +16,9 @@ public class Favorite extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long source;
+    private Long sourceStationId;
 
-    private Long target;
+    private Long targetStationId;
 
     @ManyToOne
     private Member member;
@@ -27,20 +27,20 @@ public class Favorite extends BaseEntity {
         return id;
     }
 
-    public Long getSource() {
-        return source;
+    public Long getSourceStationId() {
+        return sourceStationId;
     }
 
-    public Long getTarget() {
-        return target;
+    public Long getTargetStationId() {
+        return targetStationId;
     }
 
     protected Favorite() {
     }
 
-    public Favorite(Long source, Long target) {
-        this.source = source;
-        this.target = target;
+    public Favorite(Long sourceStationId, Long targetStationId) {
+        this.sourceStationId = sourceStationId;
+        this.targetStationId = targetStationId;
     }
 
     public void changeMember(Member member) {
