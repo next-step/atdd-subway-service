@@ -11,8 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import static nextstep.subway.auth.step.AuthStep.로그인_되어_있음;
 import static nextstep.subway.auth.step.AuthStep.회원_등록되어_있음;
-import static nextstep.subway.favorite.step.FavoriteStep.즐겨찾기_생성_요청;
-import static nextstep.subway.favorite.step.FavoriteStep.즐겨찾기_생성됨;
+import static nextstep.subway.favorite.step.FavoriteStep.*;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 
 @DisplayName("즐겨찾기 관련 기능")
@@ -44,5 +43,17 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         즐겨찾기_생성됨(response);
+    }
+
+    @Test
+    void findFavorites_즐겨찾기_목록을_조회한다() {
+        // given
+        즐겨찾기_생성되어_있음(토큰, 강남역, 역삼역);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(토큰);
+
+        // then
+        즐겨찾기_목록_조회됨(response);
     }
 }
