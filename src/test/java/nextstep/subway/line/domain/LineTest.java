@@ -6,12 +6,11 @@ import static nextstep.subway.station.StationFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @DisplayName("지하철 노선")
 class LineTest {
@@ -66,9 +65,9 @@ class LineTest {
 		Line line = 신분당선_강남역_광교역();
 
 		// when
-		List<Station> stations = line.getStations();
+		Stations stations = line.getStations();
 
 		// then
-		assertThat(stations).isEqualTo(Arrays.asList(강남역(), 광교역()));
+		assertThat(stations).isEqualTo(Stations.of(Arrays.asList(강남역(), 광교역())));
 	}
 }

@@ -34,6 +34,7 @@ public class LineService {
         Section section = Section.of(upStation, downStation, request.getDistance());
         Line persistLine = lineRepository.save(Line.of(request.getName(), request.getColor(), section));
         List<StationResponse> stations = persistLine.getStations()
+                .getValues()
                 .stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
@@ -45,6 +46,7 @@ public class LineService {
         return persistLines.stream()
                 .map(line -> {
                     List<StationResponse> stations = line.getStations()
+                            .getValues()
                             .stream()
                             .map(StationResponse::of)
                             .collect(Collectors.toList());
@@ -60,6 +62,7 @@ public class LineService {
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         List<StationResponse> stations = persistLine.getStations()
+                .getValues()
                 .stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
@@ -79,7 +82,7 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        List<Station> stations = line.getStations();
+        List<Station> stations = line.getStations().getValues();
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 
