@@ -1,10 +1,10 @@
 package nextstep.subway.path.domain;
 
-import io.jsonwebtoken.lang.Assert;
 import java.util.Objects;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Stations;
+import org.springframework.util.Assert;
 
 public final class Path {
 

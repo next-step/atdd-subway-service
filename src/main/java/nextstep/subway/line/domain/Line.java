@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import io.jsonwebtoken.lang.Assert;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -13,6 +12,7 @@ import nextstep.subway.common.domain.Fare;
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
+import org.springframework.util.Assert;
 
 @Entity
 public class Line extends BaseEntity {

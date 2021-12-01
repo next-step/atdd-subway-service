@@ -1,6 +1,5 @@
 package nextstep.subway.path.domain;
 
-import io.jsonwebtoken.lang.Assert;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.common.exception.InvalidDataException;
@@ -16,6 +15,7 @@ import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.util.Assert;
 
 public final class ShortestPathFinder {
 

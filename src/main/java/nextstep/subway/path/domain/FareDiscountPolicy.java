@@ -1,9 +1,9 @@
 package nextstep.subway.path.domain;
 
-import io.jsonwebtoken.lang.Assert;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.domain.Fare;
 import nextstep.subway.common.domain.Percent;
+import org.springframework.util.Assert;
 
 public final class FareDiscountPolicy {
 

@@ -1,12 +1,12 @@
 package nextstep.subway.station.domain;
 
-import io.jsonwebtoken.lang.Assert;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import org.springframework.util.Assert;
 
 public final class Stations {
 

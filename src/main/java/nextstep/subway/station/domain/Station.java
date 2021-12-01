@@ -1,6 +1,5 @@
 package nextstep.subway.station.domain;
 
-import io.jsonwebtoken.lang.Assert;
 import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -9,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.common.domain.Name;
+import org.springframework.util.Assert;
 
 @Entity
 public class Station extends BaseEntity {

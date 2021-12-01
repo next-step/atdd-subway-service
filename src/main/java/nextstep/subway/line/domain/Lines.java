@@ -1,12 +1,12 @@
 package nextstep.subway.line.domain;
 
-import io.jsonwebtoken.lang.Assert;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
+import org.springframework.util.Assert;
 
 public final class Lines {
 

@@ -1,14 +1,14 @@
 package nextstep.subway.line.domain;
 
-import io.jsonwebtoken.lang.Assert;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import org.springframework.util.Assert;
 
 @Embeddable
 public class Color {
 
-    @Column(name = "color")
+    @Column(name = "color", nullable = false)
     private String value;
 
     protected Color() {

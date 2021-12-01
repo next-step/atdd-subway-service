@@ -1,8 +1,8 @@
 package nextstep.subway.path.domain;
 
-import io.jsonwebtoken.lang.Assert;
 import nextstep.subway.line.domain.Section;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import org.springframework.util.Assert;
 
 final class SectionEdge extends DefaultWeightedEdge {
 

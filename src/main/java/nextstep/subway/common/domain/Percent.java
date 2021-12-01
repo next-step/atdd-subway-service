@@ -1,8 +1,8 @@
 package nextstep.subway.common.domain;
 
-import io.jsonwebtoken.lang.Assert;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import org.springframework.util.Assert;
 
 public final class Percent {
 
