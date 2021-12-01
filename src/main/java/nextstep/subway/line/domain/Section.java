@@ -55,12 +55,34 @@ public class Section {
         return distance;
     }
 
+    public boolean isIncludeSection(Section addSection) {
+        return upStation.equals(addSection.upStation)
+                || downStation.equals(addSection.downStation);
+    }
+
+    public void updateStationByAddSection(Section addSection) {
+        if (this.distance <= addSection.distance) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+
+        if(downStation.equals(addSection.downStation)){
+            downStation = addSection.upStation;
+        }
+
+        if(upStation.equals(addSection.upStation)){
+            upStation = addSection.downStation;
+        }
+
+        this.distance -= addSection.distance;
+
+    }
+
     public void updateUpStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.upStation = station;
-        this.distance -= newDistance;
+
     }
 
     public void updateDownStation(Station station, int newDistance) {

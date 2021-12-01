@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -17,16 +18,47 @@ public class Sections {
     }
 
     public void add(Section section) {
+        if (!sections.isEmpty()) {
+            validateAddSections(section);
+            reArrangeAddSections(section);
+        }
         sections.add(section);
+    }
+
+    private void reArrangeAddSections(Section addSection) {
+        sections.stream()
+                .filter(section -> section.isIncludeSection(addSection))
+                .findFirst()
+                .ifPresent(section -> section.updateStationByAddSection(addSection));
+    }
+
+    private void validateAddSections(Section section) {
+        Stations stations = this.getStations();
+        boolean isUpStationExisted = stations.isIncluded(section.getUpStation());
+        boolean isDownStationExisted = stations.isIncluded(section.getDownStation());
+        alreadyAddSection(isUpStationExisted, isDownStationExisted);
+        notIncludeOneStation(isUpStationExisted, isDownStationExisted);
+    }
+
+    private void notIncludeOneStation(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (!isUpStationExisted && !isDownStationExisted) {
+            throw new RuntimeException("두 지하철역 중 하나는 등록 되어 있어야 합니다.");
+        }
+    }
+
+    private void alreadyAddSection(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
     }
 
     public List<Section> getSections() {
         return sections;
     }
 
-    public List<Station> getStations() {
+    public Stations getStations() {
         if (sections.isEmpty()) {
-            return Arrays.asList();
+            return new Stations();
         }
 
         List<Station> stations = new ArrayList<>();
@@ -45,7 +77,7 @@ public class Sections {
             stations.add(downStation);
         }
 
-        return stations;
+        return new Stations(stations);
     }
 
     private Station findUpStation() {
