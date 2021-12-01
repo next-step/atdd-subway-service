@@ -49,4 +49,17 @@ public class FavoriteStep {
     public static FavoriteResponse 즐겨찾기_생성되어_있음(TokenResponse token, StationResponse source, StationResponse target) {
         return 즐겨찾기_생성_요청(token, source, target).as(FavoriteResponse.class);
     }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse token, FavoriteResponse favorite) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token.getAccessToken())
+                .when().delete("/favorites/{favoriteId}", favorite.getId())
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
 }

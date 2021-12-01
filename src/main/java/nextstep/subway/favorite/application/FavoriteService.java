@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -41,5 +42,16 @@ public class FavoriteService {
         return favoriteRepository.findAllByMember(member).stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public void deleteFavorite(Long memberId, Long favoriteId) {
+        if (findFavoriteById(memberId, favoriteId).isPresent()) {
+            favoriteRepository.deleteById(favoriteId);
+        }
+    }
+
+    private Optional<Favorite> findFavoriteById(Long memberId, Long favoriteId) {
+        Member member = memberService.findById(memberId);
+        return favoriteRepository.findByIdAndMember(favoriteId, member);
     }
 }
