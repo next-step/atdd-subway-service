@@ -11,7 +11,6 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -214,7 +213,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private static void 운임_비용_확인(PathResponse actual, BigDecimal expected) {
-        assertThat(actual.getPareMoney()).isEqualTo(expected);
+        assertThat(actual.getFareMoney()).isEqualTo(expected);
     }
 
     private static ExtractableResponse<Response> 최단_거리_조회_요청(StationResponse 출발역, StationResponse 도착역) {

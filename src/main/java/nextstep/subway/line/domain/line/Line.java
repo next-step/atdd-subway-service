@@ -25,7 +25,7 @@ public class Line extends BaseEntity {
 
     private String color;
 
-    private BigDecimal plusPare;
+    private BigDecimal plusFare;
 
     @Embedded
     private Sections sections = new Sections();
@@ -39,9 +39,9 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Line(String name, String color, BigDecimal pare) {
+    public Line(String name, String color, BigDecimal fare) {
         this(name, color);
-        this.plusPare = pare == null ? BigDecimal.ZERO : pare;
+        this.plusFare = fare == null ? BigDecimal.ZERO : fare;
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
@@ -49,8 +49,8 @@ public class Line extends BaseEntity {
         sections.addLineStation(new Section(this, upStation, downStation, distance));
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance, BigDecimal plusPare) {
-        this(name, color, plusPare);
+    public Line(String name, String color, Station upStation, Station downStation, int distance, BigDecimal plusFare) {
+        this(name, color, plusFare);
         sections.addLineStation(new Section(this, upStation, downStation, distance));
     }
 
@@ -88,8 +88,8 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
 
-    public BigDecimal getPlusPare() {
-        return plusPare;
+    public BigDecimal getPlusFare() {
+        return plusFare;
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {

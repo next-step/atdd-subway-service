@@ -9,15 +9,15 @@ public class PathResponse {
 
     private List<Station> stations;
     private int distance;
-    private BigDecimal pareMoney;
+    private BigDecimal fareMoney;
 
     public PathResponse() {
     }
 
-    public PathResponse(List<Station> stations, int distance, BigDecimal pareMoney) {
+    public PathResponse(List<Station> stations, int distance, BigDecimal fareMoney) {
         this.stations = stations;
         this.distance = distance;
-        this.pareMoney = pareMoney;
+        this.fareMoney = fareMoney;
     }
 
     public static PathResponse of(List<Station> stations, int distance, BigDecimal pareMoney) {
@@ -32,7 +32,7 @@ public class PathResponse {
         return distance;
     }
 
-    public BigDecimal getPareMoney() {
-        return pareMoney;
+    public BigDecimal getFareMoney() {
+        return fareMoney;
     }
 }

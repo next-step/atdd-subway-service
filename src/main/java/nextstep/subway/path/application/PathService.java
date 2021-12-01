@@ -5,7 +5,7 @@ import nextstep.subway.exception.SectionException;
 import nextstep.subway.exception.error.ErrorCode;
 import nextstep.subway.line.domain.section.Section;
 import nextstep.subway.line.domain.section.SectionRepository;
-import nextstep.subway.path.domain.PareCalculate;
+import nextstep.subway.path.domain.FareCalculate;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -35,7 +35,7 @@ public class PathService {
 
         List<Station> dijkstraPath = pathFinder.getDijkstraShortestPath(source, target);
         int sumDistance = pathFinder.getSumLineStationsDistance(source, target);
-        BigDecimal pareMoney = PareCalculate.getPareMoney(loginMember, pathFinder.getGraphPath(source, target), sumDistance);
+        BigDecimal pareMoney = FareCalculate.getPareMoney(loginMember, pathFinder.getGraphPath(source, target), sumDistance);
 
         return PathResponse.of(dijkstraPath, sumDistance, pareMoney);
     }
