@@ -1,5 +1,9 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.AlreadyAddSectionException;
+import nextstep.subway.exception.NotFoundSectionException;
+import nextstep.subway.exception.NotIncludeStationException;
+import nextstep.subway.exception.NotRemovableSectionsSize;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 
@@ -45,13 +49,13 @@ public class Sections {
 
     private void notIncludeOneStation(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (!isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException("두 지하철역 중 하나는 등록 되어 있어야 합니다.");
+            throw new NotIncludeStationException();
         }
     }
 
     private void alreadyAddSection(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new AlreadyAddSectionException();
         }
     }
 
@@ -92,7 +96,7 @@ public class Sections {
         return sections.stream().filter(
                 section -> !downStations.isIn(section.getUpStation()))
                 .findFirst()
-                .orElseThrow(RuntimeException::new)
+                .orElseThrow(NotFoundSectionException::new)
                 .getUpStation();
     }
 
@@ -134,7 +138,7 @@ public class Sections {
 
     private void validateRemovableSize() {
         if (sections.size() < MIN_SECTIONS_SIZE) {
-            throw new RuntimeException("구간이 하나 이하인 노선은 제거할 수 없습니다.");
+            throw new NotRemovableSectionsSize();
         }
     }
 
