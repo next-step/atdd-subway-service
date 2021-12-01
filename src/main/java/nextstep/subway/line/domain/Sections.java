@@ -36,7 +36,7 @@ public class Sections {
 		while (downStation != null) {
 			Station finalDownStation = downStation;
 			Optional<Section> nextLineStation = sections.stream()
-				.filter(it -> it.getUpStation() == finalDownStation)
+				.filter(it -> it.isEqualToUpStation(finalDownStation))
 				.findFirst();
 			if (!nextLineStation.isPresent()) {
 				break;
@@ -57,7 +57,7 @@ public class Sections {
 		while (downStation != null) {
 			Station finalDownStation = downStation;
 			Optional<Section> nextLineStation = sections.stream()
-				.filter(it -> it.getDownStation() == finalDownStation)
+				.filter(it -> it.isEqualToDownStation(finalDownStation))
 				.findFirst();
 			if (!nextLineStation.isPresent()) {
 				break;
@@ -91,12 +91,12 @@ public class Sections {
 		validateAddableSection(stations, upStation, downStation);
 
 		sections.stream()
-			.filter(it -> it.getUpStation() == upStation)
+			.filter(it -> it.isEqualToUpStation(upStation))
 			.findFirst()
 			.ifPresent(it -> it.updateUpStation(downStation, distance));
 
 		sections.stream()
-			.filter(it -> it.getDownStation() == downStation)
+			.filter(it -> it.isEqualToDownStation(downStation))
 			.findFirst()
 			.ifPresent(it -> it.updateDownStation(upStation, distance));
 
@@ -105,9 +105,9 @@ public class Sections {
 
 	private void validateAddableSection(List<Station> stations, Station upStation, Station downStation) {
 		boolean isUpStationExisted = stations.stream()
-			.anyMatch(it -> it == upStation);
+			.anyMatch(it -> it.equals(upStation));
 		boolean isDownStationExisted = stations.stream()
-			.anyMatch(it -> it == downStation);
+			.anyMatch(it -> it.equals(downStation));
 
 		if (isUpStationExisted && isDownStationExisted) {
 			throw new RuntimeException("이미 등록된 구간 입니다.");
@@ -121,10 +121,10 @@ public class Sections {
 	public void removeStation(Line line, Station station) {
 		validateMinSectionSizeToRemove();
 		Optional<Section> upLineStation = sections.stream()
-			.filter(it -> it.getUpStation() == station)
+			.filter(it -> it.isEqualToUpStation(station))
 			.findFirst();
 		Optional<Section> downLineStation = sections.stream()
-			.filter(it -> it.getDownStation() == station)
+			.filter(it -> it.isEqualToDownStation(station))
 			.findFirst();
 
 		if (upLineStation.isPresent() && downLineStation.isPresent()) {
