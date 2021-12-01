@@ -1,6 +1,6 @@
 package nextstep.subway.favorite.domain;
 
-import nextstep.subway.global.domain.BaseEntity;
+import nextstep.subway.common.domain.BaseEntity;
 import nextstep.subway.member.domain.Member;
 
 import javax.persistence.Entity;

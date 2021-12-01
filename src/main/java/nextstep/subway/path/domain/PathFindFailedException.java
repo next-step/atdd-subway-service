@@ -1,6 +1,6 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.global.domain.BusinessException;
+import nextstep.subway.common.domain.BusinessException;
 
 public class PathFindFailedException extends BusinessException {
 

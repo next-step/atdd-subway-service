@@ -1,8 +1,8 @@
 package nextstep.subway.member.domain;
 
 import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.common.domain.BaseEntity;
 import nextstep.subway.favorite.domain.Favorite;
-import nextstep.subway.global.domain.BaseEntity;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.CascadeType;

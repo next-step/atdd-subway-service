@@ -1,6 +1,6 @@
 package nextstep.subway.station.domain;
 
-import nextstep.subway.global.domain.BaseEntity;
+import nextstep.subway.common.domain.BaseEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

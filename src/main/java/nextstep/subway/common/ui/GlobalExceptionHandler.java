@@ -1,7 +1,7 @@
-package nextstep.subway.global.ui;
+package nextstep.subway.common.ui;
 
-import nextstep.subway.global.domain.BusinessException;
-import nextstep.subway.global.domain.FindFailedException;
+import nextstep.subway.common.domain.BusinessException;
+import nextstep.subway.common.domain.FindFailedException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
