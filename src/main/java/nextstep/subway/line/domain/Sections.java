@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
+    private static final int MIN_SECTIONS_SIZE = 2;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections;
 
@@ -131,8 +133,8 @@ public class Sections {
     }
 
     private void validateRemovableSize() {
-        if (sections.size() <= 1) {
-            throw new RuntimeException("구간이 하나인 노선은 제거할 수 없습니다.");
+        if (sections.size() < MIN_SECTIONS_SIZE) {
+            throw new RuntimeException("구간이 하나 이하인 노선은 제거할 수 없습니다.");
         }
     }
 
