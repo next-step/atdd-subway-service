@@ -70,13 +70,13 @@ public class Sections {
         return addUpStationOfBetween(section) || addDownStationOfBetween(section);
     }
 
-    private boolean isLastStation(Station downStation, Set<Station> upStations) {
-        return !upStations.contains(downStation);
+    private boolean isLastStation(Station station, Set<Station> upStations) {
+        return !upStations.contains(station);
     }
 
-    private Section extractSectionByContainsUpStation(Station downStation) {
+    private Section extractSectionByContainsUpStation(Station station) {
         return sections.stream()
-            .filter(section -> section.getUpStation().equals(downStation))
+            .filter(section -> section.getUpStation().equals(station))
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException(NON_EXIST_STATION_TO_SECTION.getMessage()));
     }
