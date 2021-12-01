@@ -55,9 +55,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * |                        |
      * 남부터미널역  --- *3호선* ---   양재
      */
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
+    public void lineSetUp() {
         홍대역 = StationAcceptanceTest.지하철역_등록되어_있음("홍대역").as(StationResponse.class);
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
@@ -91,6 +89,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("지하철 노선에 미등록된 역 조회 (교대 -> 강남 -> 양재 -> 남부터미널역)")
     public void 지하철_노선에_미등록_역_조회_요청() {
+        lineSetUp();
+
         ExtractableResponse<Response> response = 최단_거리_조회_요청(강남역, 홍대역);
 
         응답_BAD_REQUEST(response);
@@ -100,6 +100,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("지하철 노선에 미등록된 역 조회 (교대 -> 강남 -> 양재 -> 남부터미널역)")
     public void 지하철_노선에_조회_요청_출발역_도착역_동일_오류() {
+        lineSetUp();
+
         ExtractableResponse<Response> response = 최단_거리_조회_요청(강남역, 강남역);
 
         응답_BAD_REQUEST(response);
@@ -112,6 +114,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
                     + "(교대 --(3)> 남부터미널역 <========= 가장 최단거리)"
     )
     public void 지하철_노선에_등록_역_최단거리_검증() {
+        lineSetUp();
+
         ExtractableResponse<Response> response = 최단_거리_조회_요청(교대역, 남부터미널역);
 
         PathResponse actual = response.as(PathResponse.class);
@@ -127,6 +131,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
                     + "(교대 <(3)-- 남부터미널역 <========= 가장 최단거리)"
     )
     public void 지하철_노선에_등록_역_역방향_최단거리_검증() {
+        lineSetUp();
+
         ExtractableResponse<Response> response = 최단_거리_조회_요청(남부터미널역, 교대역);
 
         PathResponse actual = response.as(PathResponse.class);
@@ -143,6 +149,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
                     + "거리 : 13 / 예상 운임비용 : 1350"
     )
     public void 최단거리_운임_검증() {
+        lineSetUp();
+
         ExtractableResponse<Response> response = 최단_거리_조회_요청(강남역, 남부터미널역);
 
         PathResponse actual = response.as(PathResponse.class);
@@ -162,6 +170,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
                     + "거리 : 62 / 예상 운임비용 : 1250 + 600(거리초과 8KM 당 100원 추가) + 700 (500(4호선 환승운임) < 700(수인분당선 환승운임))"
     )
     public void 최단거리_운임_노선_추가요금_검증() {
+        lineSetUp();
+
         ExtractableResponse<Response> response = 최단_거리_조회_요청(이수역, 선정릉역);
 
         PathResponse actual = response.as(PathResponse.class);
@@ -180,6 +190,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                     + "거리 : 62 / 예상 운임비용 : (2650 - 350) * 0.5 )"
     )
     public void 최단거리_운임_노선_추가요금_검증_어린이() {
+        lineSetUp();
         MemberAcceptanceTest.회원_생성을_요청("이메일", "비밀번호", 10);
         TokenResponse 인증_토큰 = 토큰_발급_요청(TokenRequest.of("이메일", "비밀번호")).as(TokenResponse.class);
 
@@ -201,6 +212,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                     + "거리 : 62 / 예상 운임비용 : (2650 - 350) * 0.5 )"
     )
     public void 최단거리_운임_노선_추가요금_검증_청소년() {
+        lineSetUp();
         MemberAcceptanceTest.회원_생성을_요청("이메일", "비밀번호", 18);
         TokenResponse 인증_토큰 = 토큰_발급_요청(TokenRequest.of("이메일", "비밀번호")).as(TokenResponse.class);
 
