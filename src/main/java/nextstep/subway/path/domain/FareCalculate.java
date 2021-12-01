@@ -11,9 +11,6 @@ public class FareCalculate {
 
     private static final int BASE_FARE_MONEY = 1250;
     private static final int BASE_DISTANCE = 10;
-    private static final int BASE_MEMBER_DISCOUNT = 350;
-    private static final double YOUTH_DISCOUNT = 0.8;
-    private static final double CHILD_DISCOUNT = 0.5;
     private static final int NOT_OVER_DISTANCE = 11;
     private static final int DISTANCE_FIFTY = 50;
     private static final int DISTANCE_BETWEEN_ELEVEN_AND_FIFTY_PLUS_FARE = 100;
