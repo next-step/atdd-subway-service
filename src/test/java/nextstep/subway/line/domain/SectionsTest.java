@@ -9,6 +9,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import nextstep.subway.station.domain.Station;
 
@@ -104,21 +106,22 @@ class SectionsTest {
     }
 
     @DisplayName("기존 구간 거리보다 크거나 같은 거리의 역은 등록할 수 없다.")
-    @Test
-    void addGreaterThanOrEqualDistanceStation() {
+    @ParameterizedTest
+    @ValueSource(ints = {10, 15})
+    void addGreaterThanOrEqualDistanceStation(int distance) {
         Station 삼성역 = new Station("삼성역");
-        assertThatThrownBy(() -> sections.addSection(
-            new Section(line, 잠실역, 삼성역, 10)))
+        Section section = new Section(line, 잠실역, 삼성역, distance);
+        assertThatThrownBy(() -> sections.addSection(section))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage(LESS_THAN_DISTANCE_BETWEEN_STATION.getMessage());
+    }
 
-        assertThatThrownBy(() -> sections.addSection(
-            new Section(line, 잠실역, 삼성역, 15)))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(LESS_THAN_DISTANCE_BETWEEN_STATION.getMessage());
-
-        assertDoesNotThrow(() -> sections.addSection(
-            new Section(line, 잠실역, 삼성역, 9)));
+    @DisplayName("기존 구간 거리보다 작은 거리의 역은 등록할 수 있다.")
+    @Test
+    void addLessThanDistanceStation() {
+        Station 삼성역 = new Station("삼성역");
+        Section section = new Section(line, 잠실역, 삼성역, 9);
+        assertDoesNotThrow(() -> sections.addSection(section));
     }
 
     @DisplayName("지하철 구간을 삭제한다.")
