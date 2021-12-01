@@ -97,10 +97,10 @@ class SectionsTest {
 
         Sections sections = Sections.from(양재_광교_구간());
 
-        //when
+        // when
         ThrowingCallable addCall = () -> sections.add(강남_정자_구간);
 
-        //then
+        // then
         assertThatExceptionOfType(InvalidDataException.class)
             .isThrownBy(addCall)
             .withMessageEndingWith("등록할 수 없는 구간 입니다.");
@@ -161,15 +161,15 @@ class SectionsTest {
         @Test
         @DisplayName("한 구간만 남아있는 경우 역 삭제")
         void removeStation_remainedLastSection_thrownInvalidDataException() {
-            //given
+            // given
             Sections 강남_양재_광교_구간들 = 강남_양재_광교_구간들();
             강남_양재_광교_구간들.removeStation(station("강남"));
 
-            //when
+            // when
             ThrowingCallable removeStationCall =
                 () -> 강남_양재_광교_구간들.removeStation(station("양재"));
 
-            //then
+            // then
             assertThatExceptionOfType(InvalidDataException.class)
                 .isThrownBy(removeStationCall)
                 .withMessageEndingWith("구간은 반드시 한 개 이상 존재해야 합니다.");

@@ -52,16 +52,16 @@ class FarePolicyTest {
     @DisplayName("게스트 사용자 거리별 요금 계산")
     @CsvSource({"10,1250", "11,1350", "20,1450", "50,2050", "58,2150", "66,2250"})
     void fare(int distance, int expectedFare) {
-        //given
+        // given
         FarePolicy policy = FarePolicy.of(
             FareDistancePolicy.from(Distance.from(distance)),
             FareDiscountPolicy.from(LoginMember.guest()),
             신분당선(0).sections());
 
-        //when
+        // when
         Fare fare = policy.fare();
 
-        //then
+        // then
         assertThat(fare).isEqualTo(Fare.from(expectedFare));
     }
 
@@ -69,16 +69,16 @@ class FarePolicyTest {
     @DisplayName("나이별 50km 거리의 요금 계산")
     @CsvSource({"6,850", "12,850", "13,1360", "19,2050"})
     void fare_perAge(int age, int expectedFare) {
-        //given
+        // given
         FarePolicy policy = FarePolicy.of(
             FareDistancePolicy.from(Distance.from(50)),
             FareDiscountPolicy.from(anyEmailMember(age)),
             신분당선(0).sections());
 
-        //when
+        // when
         Fare fare = policy.fare();
 
-        //then
+        // then
         assertThat(fare).isEqualTo(Fare.from(expectedFare));
     }
 
@@ -86,7 +86,7 @@ class FarePolicyTest {
     @DisplayName("게스트 사용자가 기본 추가 요금 500이 있는 상태로 추가 요금별 30km 거리 요금 계산")
     @CsvSource({"0,2150", "500,2150", "1000,2650"})
     void fare_perExtraPare(int extraFare, int expectedFare) {
-        //given
+        // given
         FarePolicy policy = FarePolicy.of(
             FareDistancePolicy.from(Distance.from(30)),
             FareDiscountPolicy.from(LoginMember.guest()),
@@ -97,10 +97,10 @@ class FarePolicyTest {
             )).sections()
         );
 
-        //when
+        // when
         Fare fare = policy.fare();
 
-        //then
+        // then
         assertThat(fare).isEqualTo(Fare.from(expectedFare));
     }
 

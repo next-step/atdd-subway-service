@@ -34,13 +34,13 @@ class FareDistancePolicyTest {
     @DisplayName("거리별 요금 계산")
     @CsvSource({"10,1250", "11,1350", "20,1450", "50,2050", "58,2150", "66,2250"})
     void fare(int distance, int expectedFare) {
-        //given
+        // given
         FareDistancePolicy policy = FareDistancePolicy.from(Distance.from(distance));
 
-        //when
+        // when
         Fare fare = policy.fare();
 
-        //then
+        // then
         assertThat(fare).isEqualTo(Fare.from(expectedFare));
     }
 }

@@ -25,15 +25,15 @@ public final class FareDiscountPolicy {
 
     Fare discountFare(Fare fare) {
         if (member.isChild()) {
-            return totalDiscountFare(fare, CHILD_FLAT_DISCOUNT_FARE, CHILD_PERCENT_DISCOUNT);
+            return calculatedDiscountFare(fare, CHILD_FLAT_DISCOUNT_FARE, CHILD_PERCENT_DISCOUNT);
         }
         if (member.isYouth()) {
-            return totalDiscountFare(fare, YOUTH_FLAT_DISCOUNT_FARE, YOUTH_PERCENT_DISCOUNT);
+            return calculatedDiscountFare(fare, YOUTH_FLAT_DISCOUNT_FARE, YOUTH_PERCENT_DISCOUNT);
         }
         return Fare.zero();
     }
 
-    private Fare totalDiscountFare(Fare fare, Fare flatDiscountFare, Percent percentDiscount) {
+    private Fare calculatedDiscountFare(Fare fare, Fare flatDiscountFare, Percent percentDiscount) {
         return flatDiscountFare.sum(
             fare.subtract(flatDiscountFare)
                 .multiply(percentDiscount));

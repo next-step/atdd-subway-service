@@ -32,7 +32,7 @@ class PercentTest {
     @ParameterizedTest(name = "[{index}] 1000 에 {0} 퍼센트를 적용하면 {1}")
     @CsvSource({"0,0", "30,300", "50,500", "70,700", "100, 1000"})
     @DisplayName("퍼센트 계산")
-    void apply(int percent, int expected) {
+    void percentageOf(int percent, int expected) {
         // when
         int actual = Percent.from(percent).percentageOf(1000);
 
