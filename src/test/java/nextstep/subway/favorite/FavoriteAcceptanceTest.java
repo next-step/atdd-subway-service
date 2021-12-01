@@ -33,9 +33,12 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     private static final int DISTANCE_10 = 10;
     private static final int DISTANCE_5 = 5;
     private static final int DISTANCE_3 = 3;
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final int AGE = 20;
+    private static final int FARE_1000 = 1000;
+    private static final int FARE_900 = 900;
+    private static final int FARE_800 = 800;
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private static final int AGE = 20;
 
     private StationResponse 강남역;
     private StationResponse 양재역;
@@ -55,9 +58,9 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         교대역 = 지하철역_등록되어_있음(StationRequest.of("교대역")).as(StationResponse.class);
         남부터미널역 = 지하철역_등록되어_있음(StationRequest.of("남부터미널역")).as(StationResponse.class);
 
-        LineRequest 신분당선_Request = LineRequest.of("신분당선", "RED", 강남역.getId(), 양재역.getId(), DISTANCE_10);
-        LineRequest 이호선_Request = LineRequest.of("이호선", "GREED", 교대역.getId(), 강남역.getId(), DISTANCE_10);
-        LineRequest 삼호선_Request = LineRequest.of("삼호선", "ORANGE", 남부터미널역.getId(), 양재역.getId(), DISTANCE_5);
+        LineRequest 신분당선_Request = LineRequest.of("신분당선", "RED", FARE_1000, 강남역.getId(), 양재역.getId(), DISTANCE_10);
+        LineRequest 이호선_Request = LineRequest.of("이호선", "GREED", FARE_900, 교대역.getId(), 강남역.getId(), DISTANCE_10);
+        LineRequest 삼호선_Request = LineRequest.of("삼호선", "ORANGE", FARE_800, 남부터미널역.getId(), 양재역.getId(), DISTANCE_5);
 
         신분당선 = 지하철_노선_등록되어_있음(신분당선_Request).as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(이호선_Request).as(LineResponse.class);
@@ -117,7 +120,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         StationResponse 서울역 = 지하철역_등록되어_있음(StationRequest.of("서울역")).as(StationResponse.class);
         StationResponse 시청역 = 지하철역_등록되어_있음(StationRequest.of("시청역")).as(StationResponse.class);
 
-        LineRequest 일호선_Request = LineRequest.of("일호선", "BLUE", 서울역.getId(), 시청역.getId(), DISTANCE_5);
+        LineRequest 일호선_Request = LineRequest.of("일호선", "BLUE", FARE_1000, 서울역.getId(), 시청역.getId(), DISTANCE_5);
         지하철_노선_등록되어_있음(일호선_Request).as(LineResponse.class);
 
         // when

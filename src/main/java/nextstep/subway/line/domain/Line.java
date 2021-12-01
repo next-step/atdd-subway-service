@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.utils.StreamUtils;
 
 import javax.persistence.*;
 
@@ -21,6 +22,9 @@ public class Line extends BaseEntity {
     private LineColor color;
 
     @Embedded
+    private Fare fare;
+
+    @Embedded
     private final Sections sections = Sections.createEmpty();
 
     protected Line() {}
@@ -29,13 +33,14 @@ public class Line extends BaseEntity {
         this.id = id;
     }
 
-    private Line(String name, String color) {
+    private Line(String name, String color, int fare) {
         this.name = LineName.from(name);
         this.color = LineColor.from(color);
+        this.fare = Fare.from(fare);
     }
 
-    private Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this(name, color);
+    private Line(String name, String color, int fare, Station upStation, Station downStation, int distance) {
+        this(name, color, fare);
         sections.add(Section.of(this, upStation, downStation, Distance.from(distance)));
     }
 
@@ -47,12 +52,12 @@ public class Line extends BaseEntity {
         return new Line(id);
     }
 
-    public static Line of(String name, String color) {
-        return new Line(name, color);
+    public static Line of(String name, String color, int fare) {
+        return new Line(name, color, fare);
     }
 
-    public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
-        return new Line(name, color, upStation, downStation, distance);
+    public static Line of(String name, String color, int fare, Station upStation, Station downStation, int distance) {
+        return new Line(name, color, fare, upStation, downStation, distance);
     }
 
     public void addSection(Section section) {
@@ -61,6 +66,12 @@ public class Line extends BaseEntity {
 
     public void removeStation(Station station) {
         sections.removeStation(station);
+    }
+
+    public boolean hasFareSection(Sections fareSections) {
+        return StreamUtils.anyMatch(fareSections.getValues(),
+                                    fareSection -> StreamUtils.anyMatch(getSections().getValues(),
+                                                                        section -> section.isSameUpAndDownStations(fareSection)));
     }
 
     public Sections getSections() {
@@ -74,6 +85,7 @@ public class Line extends BaseEntity {
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+        this.fare = line.fare;
     }
 
     public Long getId() {
@@ -86,5 +98,9 @@ public class Line extends BaseEntity {
 
     public LineColor getColor() {
         return color;
+    }
+
+    public Fare getFare() {
+        return fare;
     }
 }

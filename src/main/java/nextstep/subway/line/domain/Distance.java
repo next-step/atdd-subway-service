@@ -24,6 +24,10 @@ public class Distance {
         return new Distance(distance);
     }
 
+    public static Distance createEmpty() {
+        return new Distance();
+    }
+
     public static Distance merge(Distance upDistance, Distance downDistance) {
         return Distance.from(upDistance.distance + downDistance.distance);
     }

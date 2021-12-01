@@ -55,6 +55,10 @@ public class Section {
         return new Section(upStation, downStation, distance);
     }
 
+    public static Section of(Station upStation, Station downStation) {
+        return new Section(upStation, downStation, Distance.createEmpty());
+    }
+
     public void updateUpStation(Station station, Distance newDistance) {
         if (this.distance.isLessThanOrEqualTo(newDistance)) {
             throw new IllegalArgumentException(TOO_LONG_DISTANCE_THAN_SECTION_ERROR_MESSAGE);
@@ -73,6 +77,10 @@ public class Section {
 
     public boolean isSameDistance(Distance distance) {
         return this.distance.equals(distance);
+    }
+
+    public boolean isSameUpAndDownStations(Section section) {
+        return isSameUpStation(section.getUpStation()) && isSameDownStation(section.getDownStation());
     }
 
     public boolean isSameUpStation(Station station) {

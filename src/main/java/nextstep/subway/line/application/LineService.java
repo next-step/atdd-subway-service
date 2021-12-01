@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
 public class LineService {
     private final LineRepository lineRepository;
     private final StationService stationService;
@@ -35,6 +34,7 @@ public class LineService {
         Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(Line.of(request.getName(),
                                                        request.getColor(),
+                                                       request.getFare(),
                                                        upStation,
                                                        downStation,
                                                        request.getDistance()));
@@ -42,15 +42,18 @@ public class LineService {
         return LineResponse.of(persistLine, StreamUtils.mapToList(persistLine.getStations(), StationResponse::of));
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return StreamUtils.mapToList(persistLines, this::mapToLineResponses);
     }
 
+    @Transactional(readOnly = true)
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(DataNotExistException::new);
     }
 
+    @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         List<StationResponse> stations = StreamUtils.mapToList(persistLine.getStations(), StationResponse::of);
@@ -59,9 +62,9 @@ public class LineService {
     }
 
     @Transactional
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
+    public void updateLine(Long id, LineRequest request) {
         Line persistLine = findLineById(id);
-        persistLine.update(Line.of(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        persistLine.update(Line.of(request.getName(), request.getColor(), request.getFare()));
     }
 
     @Transactional
