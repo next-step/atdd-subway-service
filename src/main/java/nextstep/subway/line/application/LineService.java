@@ -1,5 +1,7 @@
 package nextstep.subway.line.application;
 
+import static nextstep.subway.exception.ExceptionMessage.*;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,7 +47,8 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        return lineRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_DATA.getMessage()));
     }
 
     @Transactional(readOnly = true)
@@ -57,7 +60,8 @@ public class LineService {
 
     @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        Line persistLine = lineRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_DATA.getMessage()));
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
