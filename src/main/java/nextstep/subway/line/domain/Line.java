@@ -79,6 +79,45 @@ public class Line extends BaseEntity {
         addInnerSection(stations, upStation, downStation, distance);
     }
 
+    public void removeStation(Station station) {
+        checkValidRemoveStation();
+
+        Optional<Section> upLineStation = this.getSections().stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+        Optional<Section> downLineStation = this.getSections().stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        changeRemoveSection(upLineStation, downLineStation);
+
+        upLineStation.ifPresent(it -> this.getSections().remove(it));
+        downLineStation.ifPresent(it -> this.getSections().remove(it));
+    }
+
+    private void changeRemoveSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        if (hasBothUpDownStation(upLineStation, downLineStation)) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            this.getSections().add(new Section(this, newUpStation, newDownStation, newDistance));
+        }
+    }
+
+    private boolean hasBothUpDownStation(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        return upLineStation.isPresent() && downLineStation.isPresent();
+    }
+
+    private void checkValidRemoveStation() {
+        if (hasLastOneSection()) {
+            throw new RuntimeException();
+        }
+    }
+
+    private boolean hasLastOneSection() {
+        return this.getSections().size() <= 1;
+    }
+
     private void addInnerSection(List<Station> stations, Station upStation, Station downStation, int distance) {
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
