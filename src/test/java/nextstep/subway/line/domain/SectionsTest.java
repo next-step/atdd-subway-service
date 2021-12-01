@@ -44,7 +44,7 @@ class SectionsTest {
         Sections sections = Sections.of(Arrays.asList(강남역_역삼역_구간, 역삼역_교대역_구간));
 
         // when
-        List<Station> stations = sections.getStations();
+        List<Station> stations = sections.getOrderedStations();
 
         // then
         지하철_노선에_지하철역_순서_정렬됨(stations, Arrays.asList(강남역, 역삼역, 교대역));
@@ -68,7 +68,7 @@ class SectionsTest {
                 sections.addSection(이호선, 강남역, 역삼역, 5);
 
                 // then
-                List<Station> stations = sections.getStations();
+                List<Station> stations = sections.getOrderedStations();
                 지하철_노선에_지하철역_순서_정렬됨(stations, Arrays.asList(강남역, 역삼역, 교대역));
             }
 
@@ -83,7 +83,7 @@ class SectionsTest {
                 sections.addSection(이호선, 강남역, 역삼역, 5);
 
                 // then
-                List<Station> stations = sections.getStations();
+                List<Station> stations = sections.getOrderedStations();
                 지하철_노선에_지하철역_순서_정렬됨(stations, Arrays.asList(강남역, 역삼역, 교대역));
             }
 
@@ -98,7 +98,7 @@ class SectionsTest {
                 sections.addSection(이호선, 역삼역, 교대역, 5);
 
                 // then
-                List<Station> stations = sections.getStations();
+                List<Station> stations = sections.getOrderedStations();
                 지하철_노선에_지하철역_순서_정렬됨(stations, Arrays.asList(강남역, 역삼역, 교대역));
             }
         }
@@ -190,7 +190,7 @@ class SectionsTest {
                 sections.removeStation(이호선, 강남역);
 
                 // then
-                List<Station> stations = sections.getStations();
+                List<Station> stations = sections.getOrderedStations();
                 지하철_노선에_지하철역_순서_정렬됨(stations, Arrays.asList(역삼역, 교대역));
             }
 
@@ -206,7 +206,7 @@ class SectionsTest {
                 sections.removeStation(이호선, 교대역);
 
                 // then
-                List<Station> stations = sections.getStations();
+                List<Station> stations = sections.getOrderedStations();
                 지하철_노선에_지하철역_순서_정렬됨(stations, Arrays.asList(강남역, 역삼역));
             }
 
@@ -222,7 +222,7 @@ class SectionsTest {
                 sections.removeStation(이호선, 역삼역);
 
                 // then
-                List<Station> stations = sections.getStations();
+                List<Station> stations = sections.getOrderedStations();
                 지하철_노선에_지하철역_순서_정렬됨(stations, Arrays.asList(강남역, 교대역));
             }
         }

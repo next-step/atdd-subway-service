@@ -31,7 +31,7 @@ public class Sections {
         return new Sections(sections);
     }
 
-    public List<Station> getStations() {
+    public List<Station> getOrderedStations() {
         if (sections.isEmpty()) {
             return Collections.emptyList();
         }
@@ -59,7 +59,7 @@ public class Sections {
             return;
         }
 
-        List<Station> stations = getStations();
+        List<Station> stations = getOrderedStations();
         validateAbleToAdd(stations, upStation, downStation);
 
         sections.stream()
