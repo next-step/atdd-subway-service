@@ -47,4 +47,14 @@ public class Favorite extends BaseEntity {
         member.getFavorites().add(this);
         this.member = member;
     }
+
+    public void validateOwner(Member member) {
+        if (!isOwner(member)) {
+            throw new NotOwnerException();
+        }
+    }
+
+    private boolean isOwner(Member loginMember) {
+        return member.equals(loginMember);
+    }
 }

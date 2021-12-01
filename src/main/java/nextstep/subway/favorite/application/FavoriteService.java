@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.common.domain.FindFailedException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -47,7 +48,10 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteFavorite(Long id) {
+    public void deleteFavorite(LoginMember loginMember, Long id) {
+        Favorite favorite = favoriteRepository.findById(id)
+                .orElseThrow(() -> new FindFailedException(Favorite.class));
+        favorite.validateOwner(findMemberById(loginMember.getId()));
         favoriteRepository.deleteById(id);
     }
 
