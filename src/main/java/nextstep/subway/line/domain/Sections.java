@@ -44,10 +44,7 @@ public class Sections {
             stations.add(downStation.getDownStation());
             Station nextUpStation = downStation.getDownStation();
 
-            downStation = sections.stream()
-                    .filter(section -> section.isEqualToUpStation(nextUpStation))
-                    .findFirst()
-                    .orElse(null);
+            downStation = findSectionByUpStation(nextUpStation).orElse(null);
         }
 
         return stations;
@@ -75,12 +72,8 @@ public class Sections {
             throw new RuntimeException();
         }
 
-        Optional<Section> upLineStation = sections.stream()
-                .filter(section -> section.isEqualToUpStation(targetStation))
-                .findFirst();
-        Optional<Section> downLineStation = sections.stream()
-                .filter(section -> section.isEqualToDownStation(targetStation))
-                .findFirst();
+        Optional<Section> upLineStation = findSectionByUpStation(targetStation);
+        Optional<Section> downLineStation = findSectionByDownStation(targetStation);
 
         if (!upLineStation.isPresent() && !downLineStation.isPresent()) {
             throw new RuntimeException("존재하지 않는 역 입니다.");
@@ -112,10 +105,8 @@ public class Sections {
     }
 
     private void validateAbleToAdd(List<Station> stations, Station upStation, Station downStation) {
-        boolean isUpStationExisted = stations.stream()
-                .anyMatch(station -> station.equals(upStation));
-        boolean isDownStationExisted = stations.stream()
-                .anyMatch(station -> station.equals(downStation));
+        boolean isUpStationExisted = stations.contains(upStation);
+        boolean isDownStationExisted = stations.contains(downStation);
 
         if (isUpStationExisted && isDownStationExisted) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
@@ -136,12 +127,21 @@ public class Sections {
             resultUpSection = downSection;
             Station nextDownStation = downSection.getUpStation();
 
-            downSection = sections.stream()
-                    .filter(section -> section.isEqualToDownStation(nextDownStation))
-                    .findFirst()
-                    .orElse(null);
+            downSection = findSectionByDownStation(nextDownStation).orElse(null);
         }
 
         return resultUpSection;
+    }
+
+    private Optional<Section> findSectionByUpStation(Station station) {
+        return sections.stream()
+                .filter(section -> section.isEqualToUpStation(station))
+                .findFirst();
+    }
+
+    private Optional<Section> findSectionByDownStation(Station station) {
+        return sections.stream()
+                .filter(section -> section.isEqualToDownStation(station))
+                .findFirst();
     }
 }
