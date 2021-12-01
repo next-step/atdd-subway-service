@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
+import nextstep.subway.common.SubwayUtil;
 import nextstep.subway.station.domain.Station;
 
 public class PathStationDto {
@@ -14,20 +15,15 @@ public class PathStationDto {
     public PathStationDto() {
     }
 
-    public PathStationDto(Long id, String name, LocalDateTime createdAt) {
+    public PathStationDto(Long id, String name, String createdAt) {
         this.id = id;
         this.name = name;
 
-        if (createdAt == null) {
-            this.createdAt = "";
-            return;
-        }
-
-        this.createdAt = createdAt.format(DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ss.SSS"));
+        this.createdAt = createdAt;
     }
 
     public static PathStationDto of(Station station) {
-        return new PathStationDto(station.getId(), station.getName(), station.getCreatedDate());
+        return new PathStationDto(station.getId(), station.getName(), SubwayUtil.convertLocalDateTime(station.getCreatedDate()));
     }
 
     public Long getId() {

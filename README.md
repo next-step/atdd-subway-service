@@ -84,3 +84,155 @@ Connection: keep-alive
 }
 ```
 </details>
+
+## 3단계 - 인증을 통한 기능 구현
+### 요구사항
+- [x] 토큰 발급기능(로그인) 인수 테스트 만들기
+- [x] 인증기능 만들기
+  - [x] 내 정보 조회기능 완성하기
+  - [x] 즐겨 찾기 기능 완성하기
+
+### 기능 구현리스트
+- [x] 로그인은 이메일과 패스워드로 인증된다.
+- [x] 유저정보조회는 이메일 나이가 조회된다.
+- [x] 로그인이 성공시 JWT이 발급된다.
+- [x] 변조된 JWT로 API요청시 인증 실패가된다.
+- [x] 경로 검색에대한 즐겨찾기가 추가된다.
+- [x] 경로 검색에대한 즐겨찾기가 조회된다.
+- [x] 경로 검색에대한 즐겨찾기가 삭제된다.
+
+### 인증 기능관련 전문 내용
+#### 로그인
+
+<details><summary>Request</summary>
+
+```
+POST /login/token HTTP/1.1
+content-type: application/json; charset=UTF-8
+accept: application/json
+{
+    "password": "password",
+    "email": "email@email.com"
+}
+```
+</details>
+
+<details><summary>Response</summary>
+
+```
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sun, 27 Dec 2020 04:32:26 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+    "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY"
+}
+```
+</details>
+
+#### 즐겨찾기 생성
+
+<details><summary>Request</summary>
+
+```
+POST /favorites HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY
+accept: */*
+content-type: application/json; charset=UTF-8
+content-length: 27
+host: localhost:50336
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/14.0.2)
+accept-encoding: gzip,deflate
+{
+    "source": "1",
+    "target": "3"
+}
+```
+</details>
+
+<details><summary>Response</summary>
+
+```
+HTTP/1.1 201 Created
+Keep-Alive: timeout=60
+Connection: keep-alive
+Content-Length: 0
+Date: Sun, 27 Dec 2020 04:32:26 GMT
+Location: /favorites/1
+```
+</details>
+
+#### 즐겨찾기 목록조회
+
+<details><summary>Request</summary>
+
+```
+GET /favorites HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY
+accept: application/json
+host: localhost:50336
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/14.0.2)
+accept-encoding: gzip,deflate
+```
+</details>
+
+<details><summary>Response</summary>
+
+```
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sun, 27 Dec 2020 04:32:26 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+[
+    {
+        "id": 1,
+        "source": {
+            "id": 1,
+            "name": "강남역",
+            "createdDate": "2020-12-27T13:32:26.364439",
+            "modifiedDate": "2020-12-27T13:32:26.364439"
+        },
+        "target": {
+            "id": 3,
+            "name": "정자역",
+            "createdDate": "2020-12-27T13:32:26.486256",
+            "modifiedDate": "2020-12-27T13:32:26.486256"
+        }
+    }
+]
+
+```
+</details>
+
+#### 즐겨찾기 삭제
+
+<details><summary>Request</summary>
+
+```
+DELETE /favorites/1 HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY
+accept: */*
+host: localhost:50336
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/14.0.2)
+accept-encoding: gzip,deflate
+```
+</details>
+
+<details><summary>Response</summary>
+
+```
+HTTP/1.1 204 No Content
+Keep-Alive: timeout=60
+Connection: keep-alive
+Date: Sun, 27 Dec 2020 04:32:26 GMT
+```
+</details>
