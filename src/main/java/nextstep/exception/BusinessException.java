@@ -12,4 +12,12 @@ public class BusinessException extends RuntimeException {
         super(code.getMessage());
         this.code = code;
     }
+
+    public ErrorCode getCode() {
+        return code;
+    }
+
+    public int getStatus() {
+        return code.getStatus().value();
+    }
 }
