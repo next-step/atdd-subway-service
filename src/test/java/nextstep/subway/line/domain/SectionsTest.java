@@ -171,6 +171,99 @@ class SectionsTest {
         }
     }
 
+    @DisplayName("구간 삭제 테스트")
+    @Nested
+    class 구간_삭제_테스트 {
+        @DisplayName("성공 테스트")
+        @Nested
+        class 성공_테스트 {
+
+            @DisplayName("상행 종점 제거")
+            @Test
+            void 상행_종점_제거() {
+                // given
+                Sections sections = new Sections();
+                sections.addSection(이호선, 강남역, 역삼역, 5);
+                sections.addSection(이호선, 역삼역, 교대역, 5);
+
+                // when
+                sections.removeStation(이호선, 강남역);
+
+                // then
+                List<Station> stations = sections.getStations();
+                지하철_노선에_지하철역_순서_정렬됨(stations, Arrays.asList(역삼역, 교대역));
+            }
+
+            @DisplayName("하행 종점 제거")
+            @Test
+            void 하행_종점_제거() {
+                // given
+                Sections sections = new Sections();
+                sections.addSection(이호선, 강남역, 역삼역, 5);
+                sections.addSection(이호선, 역삼역, 교대역, 5);
+
+                // when
+                sections.removeStation(이호선, 교대역);
+
+                // then
+                List<Station> stations = sections.getStations();
+                지하철_노선에_지하철역_순서_정렬됨(stations, Arrays.asList(강남역, 역삼역));
+            }
+
+            @DisplayName("중간역 제거")
+            @Test
+            void 중간역_제거() {
+                // given
+                Sections sections = new Sections();
+                sections.addSection(이호선, 강남역, 역삼역, 5);
+                sections.addSection(이호선, 역삼역, 교대역, 5);
+
+                // when
+                sections.removeStation(이호선, 역삼역);
+
+                // then
+                List<Station> stations = sections.getStations();
+                지하철_노선에_지하철역_순서_정렬됨(stations, Arrays.asList(강남역, 교대역));
+            }
+        }
+
+        @DisplayName("실패 테스트")
+        @Nested
+        class 실패_테스트 {
+
+            @DisplayName("노선에 존재하지 않는 역 제거")
+            @Test
+            void 노선에_존재하지_않는_역_제거() {
+                // given
+                Sections sections = new Sections();
+                sections.addSection(이호선, 강남역, 역삼역, 5);
+                sections.addSection(이호선, 역삼역, 교대역, 5);
+
+                // when
+                ThrowableAssert.ThrowingCallable throwingCallable = () -> sections.removeStation(이호선, 서초역);
+
+                // then
+                assertThatThrownBy(throwingCallable)
+                        .isInstanceOf(RuntimeException.class);
+            }
+
+            @DisplayName("노선의 마지막 구간을 제거 시도")
+            @Test
+            void 노선의_마지막_구간을_제거_시도() {
+                // given
+                Sections sections = new Sections();
+                sections.addSection(이호선, 강남역, 역삼역, 5);
+
+                // when
+                ThrowableAssert.ThrowingCallable throwingCallable = () -> sections.removeStation(이호선, 역삼역);
+
+                // then
+                assertThatThrownBy(throwingCallable)
+                        .isInstanceOf(RuntimeException.class);
+            }
+        }
+    }
+
     private static void 지하철_노선에_지하철역_순서_정렬됨(List<Station> stations, List<Station> expectedStations) {
         List<Long> stationIds = stations.stream()
                 .map(Station::getId)

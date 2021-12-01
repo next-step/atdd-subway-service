@@ -11,6 +11,7 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Embeddable
 public class Sections {
@@ -28,10 +29,6 @@ public class Sections {
 
     public static Sections of(List<Section> sections) {
         return new Sections(sections);
-    }
-
-    public List<Section> getSections() {
-        return sections;
     }
 
     public List<Station> getStations() {
@@ -71,6 +68,33 @@ public class Sections {
                 .ifPresent(section -> updateSection(section, upStation, downStation, distance));
 
         sections.add(new Section(line, upStation, downStation, distance));
+    }
+
+    public void removeStation(Line line, Station targetStation) {
+        if (sections.size() <= 1) {
+            throw new RuntimeException();
+        }
+
+        Optional<Section> upLineStation = sections.stream()
+                .filter(section -> section.isEqualToUpStation(targetStation))
+                .findFirst();
+        Optional<Section> downLineStation = sections.stream()
+                .filter(section -> section.isEqualToDownStation(targetStation))
+                .findFirst();
+
+        if (!upLineStation.isPresent() && !downLineStation.isPresent()) {
+            throw new RuntimeException("존재하지 않는 역 입니다.");
+        }
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(section -> sections.remove(section));
+        downLineStation.ifPresent(section -> sections.remove(section));
     }
 
     private void updateSection(Section section, Station upStation, Station downStation, int distance) {
