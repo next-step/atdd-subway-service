@@ -55,5 +55,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 
 ## step1 요구사항
-- [ ] LineSectionAcceptanceTest 리팩터링
+- [X] LineSectionAcceptanceTest 리팩터링
+  - [X] 구간 인수 테스트 통합
+  - [X] RestAssured http 메소 유틸로 추출
 - [ ] LineService 리팩터링 
