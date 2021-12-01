@@ -26,7 +26,7 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
-    public void add(Line line, Station upStation, Station downStation, int distance) {
+    public void add(Line line, Station upStation, Station downStation, Distance distance) {
         addValidate(upStation, downStation);
 
         if (getStations().isEmpty()) {
@@ -81,7 +81,7 @@ public class Sections {
         if (upLineSection.isPresent() && downLineSection.isPresent()) {
             Station newUpStation = downLineSection.get().getUpStation();
             Station newDownStation = upLineSection.get().getDownStation();
-            int newDistance = upLineSection.get().getDistance() + downLineSection.get().getDistance();
+            Distance newDistance = Distance.valueOf(DistanceType.PLUS, upLineSection.get().getDistance(), downLineSection.get().getDistance());
             sections.add(new Section(line, newUpStation, newDownStation, newDistance));
 
         }

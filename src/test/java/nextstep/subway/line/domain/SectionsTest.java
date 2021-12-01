@@ -7,9 +7,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 
@@ -51,7 +48,7 @@ public class SectionsTest {
         Line line = new Line("신분당선", "빨강", 강남역, 광교역, 거리_5);
 
         // when
-        line.addSection(강남역, 마포역, 1);
+        line.addSection(강남역, 마포역, Distance.of(1));
 
         assertThat(line.getSections()).hasSize(2);
         assertThat(line.getStations()).hasSize(3);
@@ -64,7 +61,7 @@ public class SectionsTest {
         // given
         stations.saveAll(Arrays.asList(강남역, 마포역, 광교역));
         Line line = lines.save(new Line("신분당선", "빨강", 강남역, 광교역, 거리_5));
-        line.addSection(마포역, 광교역, 거리_1);
+        line.addSection(마포역, 광교역, Distance.of(거리_1));
 
         // when
         line.removeStation(마포역.getId());

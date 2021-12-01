@@ -4,7 +4,7 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.List;
 
 @Entity
 public class Line extends BaseEntity {
@@ -31,7 +31,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        addSection(upStation, downStation, distance);
+        addSection(upStation, downStation, Distance.of(distance));
     }
 
     public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
@@ -63,7 +63,7 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
 
-    public void addSection(Station upStation, Station downStation, int distance) {
+    public void addSection(Station upStation, Station downStation, Distance distance) {
         sections.add(this, upStation, downStation, distance);
     }
 
