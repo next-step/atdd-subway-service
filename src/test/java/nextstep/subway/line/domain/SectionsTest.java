@@ -20,7 +20,7 @@ class SectionsTest {
     private Station 당산역;
     private Station 시청역;
     private final Sections sections = new Sections();
-    Line line = new Line();
+    private final Line line = new Line();
 
     @BeforeEach
     void setUp() {
@@ -82,7 +82,11 @@ class SectionsTest {
     @DisplayName("이미 등록된 구간은 등록할 수 없다.")
     @Test
     void addExistSection() {
-        assertThatThrownBy(() -> sections.addSection(new Section(line, 교대역, 선릉역, 5)))
+        // given
+        Section section = new Section(line, 교대역, 선릉역, 5);
+
+        // when & then
+        assertThatThrownBy(() -> sections.addSection(section))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage(ALREADY_ADD_SECTION.getMessage());
     }
@@ -90,8 +94,11 @@ class SectionsTest {
     @DisplayName("기존 구간이 존재할 때 상행역 하행역 모두 기존 구간에 존재하지 않으면 등록할 수 없다.")
     @Test
     void addNotExistUpStationAndDownStation() {
-        assertThatThrownBy(() -> sections.addSection(
-            new Section(line, new Station("합정역"), new Station("신촌역"), 5)))
+        // given
+        Section section = new Section(line, new Station("합정역"), new Station("신촌역"), 5);
+
+        // when & then
+        assertThatThrownBy(() -> sections.addSection(section))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage(NOT_POSSIBLE_ADD_SECTION.getMessage());
     }
@@ -142,8 +149,11 @@ class SectionsTest {
     @DisplayName("존재하지 않는 구간은 삭제할 수 없다.")
     @Test
     void removeNotExistSection() {
+        // given
+        Station 신촌역 = new Station("신촌역");
+
         // when & then
-        assertThatThrownBy(() -> sections.removeSection(new Station("신촌역")))
+        assertThatThrownBy(() -> sections.removeSection(신촌역))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage(NON_EXIST_STATION_TO_SECTION.getMessage());
     }
