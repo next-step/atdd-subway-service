@@ -110,6 +110,9 @@ public class Sections {
 	}
 
 	public List<Station> getStations() {
+		if (sections.isEmpty()) {
+			return new ArrayList<>();
+		}
 		List<Station> stations = new ArrayList<>();
 
 		Section section = findFirstSection();
