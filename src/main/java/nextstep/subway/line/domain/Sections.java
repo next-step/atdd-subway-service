@@ -2,7 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -42,42 +42,40 @@ public class Sections {
 		}
 
 		List<Station> stations = new ArrayList<>();
-		Station downStation = findUpStation();
-		stations.add(downStation);
-
-		while (downStation != null) {
-			Station finalDownStation = downStation;
-			Optional<Section> nextLineStation = values.stream()
-				.filter(it -> it.getUpStation().equals(finalDownStation))
-				.findFirst();
-			if (!nextLineStation.isPresent()) {
-				break;
-			}
-			downStation = nextLineStation.get().getDownStation();
-			stations.add(downStation);
-		}
+		Station upStation = findUpStation();
+		addStationsInOrder(stations, upStation);
 
 		return Stations.of(stations);
 	}
 
 	private Station findUpStation() {
-		Station downStation = getFirst().getUpStation();
-		while (downStation != null) {
-			Station finalDownStation = downStation;
-			Optional<Section> nextLineStation = values.stream()
-				.filter(it -> it.getDownStation().equals(finalDownStation))
-				.findFirst();
-			if (!nextLineStation.isPresent()) {
-				break;
-			}
-			downStation = nextLineStation.get().getUpStation();
-		}
+		List<Station> downStations = values.stream()
+			.map(Section::getDownStation)
+			.collect(Collectors.toList());
 
-		return downStation;
+		return values.stream()
+			.map(Section::getUpStation)
+			.filter(upStation -> !downStations.contains(upStation))
+			.findFirst()
+			.orElseThrow(IllegalStateException::new);
 	}
 
-	public Section getFirst() {
-		return values.get(0);
+	private void addStationsInOrder(List<Station> stations, Station upStation) {
+		while (upStation != null) {
+			stations.add(upStation);
+			Section section = findByUpStation(upStation);
+			if (section == null) {
+				break;
+			}
+			upStation = section.getDownStation();
+		}
+	}
+
+	private Section findByUpStation(Station upStation) {
+		return values.stream()
+			.filter((value) -> upStation.equals(value.getUpStation()))
+			.findFirst()
+			.orElse(null);
 	}
 
 	public int size() {
