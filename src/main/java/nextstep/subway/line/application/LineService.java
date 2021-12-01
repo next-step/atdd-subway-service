@@ -32,10 +32,11 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    public void addLineStation(Long lineId, SectionRequest request) {
-        Line line = lineRepository.findByIdElseThrow(lineId);
-        Section section = createSection(request, line);
-        line.addSection(section);
+    public LineResponse addLineStation(Long lineId, SectionRequest request) {
+        Line persistLine = lineRepository.findByIdElseThrow(lineId);
+        Section section = createSection(request, persistLine);
+        persistLine.addSection(section);
+        return LineResponse.of(persistLine);
     }
 
     private Section createSection(SectionRequest request, Line line) {
