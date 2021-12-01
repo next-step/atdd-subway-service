@@ -2,6 +2,8 @@ package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -63,23 +65,38 @@ public class Sections {
 	private void addStationsInOrder(List<Station> stations, Station upStation) {
 		while (upStation != null) {
 			stations.add(upStation);
-			Section section = findByUpStation(upStation);
-			if (section == null) {
+			Optional<Section> section = findByUpStation(upStation);
+			if (!section.isPresent()) {
 				break;
 			}
-			upStation = section.getDownStation();
+			upStation = section.get().getDownStation();
 		}
 	}
 
-	private Section findByUpStation(Station upStation) {
+	public Optional<Section> findByUpStation(Station upStation) {
+		return findOne((section) -> upStation.equals(section.getUpStation()));
+	}
+
+	public Optional<Section> findByDownStation(Station downStation) {
+		return findOne((section) -> downStation.equals(section.getDownStation()));
+	}
+
+	private Optional<Section> findOne(Predicate<Section> predicate) {
 		return values.stream()
-			.filter((value) -> upStation.equals(value.getUpStation()))
-			.findFirst()
-			.orElse(null);
+			.filter(predicate)
+			.findFirst();
 	}
 
 	public int size() {
 		return values.size();
+	}
+
+	public boolean contains(Section section) {
+		return values.contains(section);
+	}
+
+	public void remove(Section section) {
+		values.remove(section);
 	}
 
 	public List<Section> getValues() {

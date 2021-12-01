@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,6 +53,40 @@ class SectionsTest {
 			양재역(),
 			정자역(),
 			광교역()));
+	}
+
+	@DisplayName("상행역으로 구간을 찾을 수 있다.")
+	@Test
+	void findByUpStation() {
+		// given
+		Sections sections = Sections.of(Arrays.asList(
+			강남역_양재역_구간(),
+			양재역_정자역_구간(),
+			정자역_광교역_구간()));
+
+		// when
+		Optional<Section> section = sections.findByUpStation(강남역());
+
+		// then
+		assertThat(section.isPresent()).isTrue();
+		assertThat(section.get()).isEqualTo(강남역_양재역_구간());
+	}
+
+	@DisplayName("하행역으로 구간을 찾을 수 있다.")
+	@Test
+	void findByDownStation() {
+		// given
+		Sections sections = Sections.of(Arrays.asList(
+			강남역_양재역_구간(),
+			양재역_정자역_구간(),
+			정자역_광교역_구간()));
+
+		// when
+		Optional<Section> section = sections.findByDownStation(정자역());
+
+		// then
+		assertThat(section.isPresent()).isTrue();
+		assertThat(section.get()).isEqualTo(양재역_정자역_구간());
 	}
 
 }

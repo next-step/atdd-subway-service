@@ -34,6 +34,6 @@ class SectionTest {
 
 		// then
 		assertThat(section.getLine()).isEqualTo(line);
-		assertThat(line.getSections()).contains(section);
+		assertThat(line.getSections().contains(section)).isTrue();
 	}
 }

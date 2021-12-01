@@ -39,7 +39,7 @@ class LineTest {
 
 		// then
 		assertThat(section.getLine()).isEqualTo(line);
-		assertThat(line.getSections()).contains(section);
+		assertThat(line.getSections().contains(section)).isTrue();
 	}
 
 	@DisplayName("이름과 색을 업데이트 한다.")
