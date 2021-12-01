@@ -48,7 +48,7 @@ public class Sections {
             Station nextUpStation = downStation.getDownStation();
 
             downStation = sections.stream()
-                    .filter(section -> section.getUpStation().equals(nextUpStation))
+                    .filter(section -> section.isEqualToUpStation(nextUpStation))
                     .findFirst()
                     .orElse(null);
         }
@@ -66,7 +66,7 @@ public class Sections {
             Station nextDownStation = downSection.getUpStation();
 
             downSection = sections.stream()
-                    .filter(section -> section.getDownStation().equals(nextDownStation))
+                    .filter(section -> section.isEqualToDownStation(nextDownStation))
                     .findFirst()
                     .orElse(null);
         }
