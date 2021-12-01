@@ -69,4 +69,25 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         즐겨찾기_삭제됨(response);
     }
+
+    @Test
+    void 즐겨찾기를_관리한다() {
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(토큰, 강남역, 역삼역);
+
+        // then
+        즐겨찾기_생성됨(response);
+
+        // when
+        ExtractableResponse<Response> findAllResponse = 즐겨찾기_목록_조회_요청(토큰);
+
+        // then
+        즐겨찾기_목록_조회됨(findAllResponse);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(토큰, response.as(FavoriteResponse.class));
+
+        // then
+        즐겨찾기_삭제됨(deleteResponse);
+    }
 }
