@@ -96,6 +96,42 @@ public class Sections {
         return downStation;
     }
 
+    public void removeByStation(Station station) {
+        validateRemovableSize();
+        Optional<Section> upLineSection = findByUpStation(station);
+        Optional<Section> downLineSection = findByDownStation(station);
+        if (upLineSection.isPresent() && downLineSection.isPresent()) {
+            addNewSection(upLineSection.get(), downLineSection.get());
+        }
+        upLineSection.ifPresent(sections::remove);
+        downLineSection.ifPresent(sections::remove);
+    }
+
+    private void addNewSection(Section upLineSection, Section downLineSection) {
+        Station newUpStation = downLineSection.getUpStation();
+        Station newDownStation = upLineSection.getDownStation();
+        int newDistance = upLineSection.getDistance() + downLineSection.getDistance();
+        sections.add(new Section(upLineSection.getLine(), newUpStation, newDownStation, newDistance));
+    }
+
+    private Optional<Section> findByUpStation(Station station) {
+        return sections.stream()
+                .filter(section -> section.isEqualsUpStation(station))
+                .findFirst();
+    }
+
+    private Optional<Section> findByDownStation(Station station) {
+        return sections.stream()
+                .filter(section -> section.isEqualsDownStation(station))
+                .findFirst();
+    }
+
+    private void validateRemovableSize() {
+        if (sections.size() <= 1) {
+            throw new RuntimeException("구간이 하나인 노선은 제거할 수 없습니다.");
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

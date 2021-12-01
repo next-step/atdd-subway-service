@@ -45,4 +45,16 @@ public class LineTest {
 
         assertThat(LINE_2).isEqualTo(updatedLine);
     }
+
+    @DisplayName("노선에서 지하철 역 삭제")
+    @Test
+    void removeLineStationTest() {
+        LINE_2.addSection(new Section(LINE_2, 양재역, 역삼역, 10));
+        LINE_2.addSection(new Section(LINE_2, 역삼역, 사당역, 5));
+
+        LINE_2.remove(역삼역);
+
+        assertThat(LINE_2.getSections()).hasSize(1);
+        assertThat(LINE_2.getSections()).containsExactly(new Section(LINE_2, 양재역, 사당역, 15));
+    }
 }
