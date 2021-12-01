@@ -67,7 +67,17 @@ public class Sections {
     }
 
     private boolean addStationOfBetween(Section section) {
-        return addUpStationOfBetween(section) || addDownStationOfBetween(section);
+        Optional<Section> sectionOfEqualUpStation = findSectionOfEqualUpStation(section.getUpStation());
+        if (sectionOfEqualUpStation.isPresent()) {
+            addUpStationOfBetween(section, sectionOfEqualUpStation.get());
+            return true;
+        }
+        Optional<Section> sectionOfEqualDownStation = findSectionOfEqualDownStation(section.getDownStation());
+        if (sectionOfEqualDownStation.isPresent()) {
+            addDownStationOfBetween(section, sectionOfEqualDownStation.get());
+            return true;
+        }
+        return false;
     }
 
     private boolean isLastStation(Station station, Set<Station> upStations) {
@@ -107,22 +117,14 @@ public class Sections {
             .collect(Collectors.toSet());
     }
 
-    private boolean addUpStationOfBetween(Section section) {
-        Optional<Section> findSection = findSectionOfEqualUpStation(section.getUpStation());
-        if (!findSection.isPresent()) {
-            return false;
-        }
-        findSection.get().updateUpStation(section.getDownStation(), section.getDistance());
-        return sections.add(section);
+    private void addUpStationOfBetween(Section section, Section findSection) {
+        findSection.updateUpStation(section.getDownStation(), section.getDistance());
+        sections.add(section);
     }
 
-    private boolean addDownStationOfBetween(Section section) {
-        Optional<Section> findSection = findSectionOfEqualDownStation(section.getDownStation());
-        if (!findSection.isPresent()) {
-            return false;
-        }
-        findSection.get().updateDownStation(section.getUpStation(), section.getDistance());
-        return sections.add(section);
+    private void addDownStationOfBetween(Section section, Section findSection) {
+        findSection.updateDownStation(section.getUpStation(), section.getDistance());
+        sections.add(section);
     }
 
     private void validateAddSection(Section section) {
