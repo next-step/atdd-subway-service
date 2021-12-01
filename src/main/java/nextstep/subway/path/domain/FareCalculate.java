@@ -26,26 +26,7 @@ public class FareCalculate {
         BigDecimal resultFareMoney = BigDecimal.valueOf(BASE_FARE_MONEY);
         resultFareMoney = resultFareMoney.add(getMaxPlusPare(path));
         resultFareMoney = resultFareMoney.add(getPareMoneyDistanceCalculate(distance));
-        resultFareMoney = getPareMoneyMemberCalculate(loginMember, resultFareMoney).setScale(0, RoundingMode.HALF_EVEN);
-        return resultFareMoney;
-    }
-
-    private static BigDecimal getPareMoneyMemberCalculate(LoginMember loginMember, BigDecimal resultFareMoney) {
-        if (!loginMember.isGuest()) {
-            resultFareMoney = getMemberDiscount(loginMember, resultFareMoney);
-        }
-        return resultFareMoney;
-    }
-
-    private static BigDecimal getMemberDiscount(LoginMember loginMember, BigDecimal resultFareMoney) {
-        if (loginMember.isChild()) {
-            resultFareMoney = resultFareMoney.subtract(BigDecimal.valueOf(BASE_MEMBER_DISCOUNT));
-            resultFareMoney = resultFareMoney.multiply(BigDecimal.valueOf(CHILD_DISCOUNT));
-        }
-        if (loginMember.isYouth()) {
-            resultFareMoney = resultFareMoney.subtract(BigDecimal.valueOf(BASE_MEMBER_DISCOUNT));
-            resultFareMoney = resultFareMoney.multiply(BigDecimal.valueOf(YOUTH_DISCOUNT));
-        }
+        resultFareMoney = MemberShip.memberShipCalculate(loginMember, resultFareMoney).setScale(0, RoundingMode.HALF_EVEN);
         return resultFareMoney;
     }
 

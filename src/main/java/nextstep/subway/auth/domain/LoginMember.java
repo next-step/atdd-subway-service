@@ -42,11 +42,11 @@ public class LoginMember {
     }
 
     public boolean isChild() {
-        return age >= CHILD_AGE_MIN && age < CHILD_AGE_MAX;
+        return !this.isGuest() && age >= CHILD_AGE_MIN && age < CHILD_AGE_MAX;
     }
 
     public boolean isYouth() {
-        return age >= YOUTH_AGE_MIN && age < YOUTH_AGE_MAX;
+        return !this.isGuest() && age >= YOUTH_AGE_MIN && age < YOUTH_AGE_MAX;
     }
 
 }
