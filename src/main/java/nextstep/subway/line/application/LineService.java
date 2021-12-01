@@ -1,8 +1,10 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.common.exception.LineNotFoundException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -24,8 +26,9 @@ public class LineService {
         this.stationService = stationService;
     }
 
-    private Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+    private Line findLine(Long id) {
+        return lineRepository.findById(id)
+                .orElseThrow(LineNotFoundException::new);
     }
 
     public List<LineResponse> findLines() {
@@ -33,21 +36,21 @@ public class LineService {
     }
 
     public LineResponse findLineResponseById(Long id) {
-        return LineResponse.of(findLineById(id));
+        return LineResponse.of(findLine(id));
     }
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+        Station upStation = stationService.findStation(request.getUpStationId());
+        Station downStation = stationService.findStation(request.getDownStationId());
         Line persistLine = lineRepository.save(Line.of(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
         return LineResponse.of(persistLine);
     }
 
     @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = findLineById(id);
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        Line persistLine = findLine(id);
+        persistLine.update(Line.of(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     @Transactional
@@ -57,15 +60,20 @@ public class LineService {
 
     @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
-        Line line = findLineById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
-        line.addSection(upStation, downStation, Distance.of(request.getDistance()));
+        Line line = findLine(lineId);
+        Station upStation = stationService.findStation(request.getUpStationId());
+        Station downStation = stationService.findStation(request.getDownStationId());
+        Section section = createSection(line, upStation, downStation, Distance.of(request.getDistance()));
+        line.addSection(section);
     }
 
     @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = findLineById(lineId);
+        Line line = findLine(lineId);
         line.removeStation(stationId);
+    }
+
+    private Section createSection(Line line, Station upStation, Station downStation, Distance distance) {
+        return new Section(line, upStation, downStation, distance);
     }
 }

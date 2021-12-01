@@ -2,7 +2,6 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,19 +35,14 @@ public class SectionsTest {
     private final int 거리_5 = 5;
     private final int 거리_1 = 1;
 
-    @BeforeEach
-    void setUp() {
-        stations.saveAll(Arrays.asList(강남역, 광교역, 마포역));
-    }
-
     @Test
     @DisplayName("구간 추가 검증")
     public void addSection() {
         // given
-        Line line = new Line("신분당선", "빨강", 강남역, 광교역, 거리_5);
+        Line line = Line.of("신분당선", "빨강", 강남역, 광교역, 거리_5);
 
         // when
-        line.addSection(강남역, 마포역, Distance.of(1));
+        line.addSection(new Section(line, 강남역, 마포역, Distance.of(1)));
 
         assertThat(line.getSections()).hasSize(2);
         assertThat(line.getStations()).hasSize(3);
@@ -60,8 +54,8 @@ public class SectionsTest {
     public void removeStation() {
         // given
         stations.saveAll(Arrays.asList(강남역, 마포역, 광교역));
-        Line line = lines.save(new Line("신분당선", "빨강", 강남역, 광교역, 거리_5));
-        line.addSection(마포역, 광교역, Distance.of(거리_1));
+        Line line = lines.save(Line.of("신분당선", "빨강", 강남역, 광교역, 거리_5));
+        line.addSection(new Section(line, 마포역, 광교역, Distance.of(거리_1)));
 
         // when
         line.removeStation(마포역.getId());

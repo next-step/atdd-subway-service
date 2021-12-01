@@ -20,18 +20,22 @@ public class Line extends BaseEntity {
     @Embedded
     private final Sections sections = new Sections();
 
-    public Line() {
+    protected Line() {
     }
 
-    public Line(String name, String color) {
+    private Line(String name, String color) {
         this.name = name;
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    private Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        addSection(upStation, downStation, Distance.of(distance));
+        addSection(new Section(this, upStation, downStation, Distance.of(distance)));
+    }
+
+    public static Line of(String name, String color) {
+        return new Line(name, color);
     }
 
     public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
@@ -63,8 +67,8 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
 
-    public void addSection(Station upStation, Station downStation, Distance distance) {
-        sections.add(this, upStation, downStation, distance);
+    public void addSection(Section section) {
+        sections.add(section);
     }
 
     public void removeStation(Long stationId) {

@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
+import java.util.Objects;
 
 /**
  * packageName : nextstep.subway.line.domain
@@ -33,7 +34,6 @@ public class Distance {
         if (type.isMinus()) {
             return Distance.of(src.distance - target.distance);
         }
-
         return null;
     }
 
@@ -42,10 +42,25 @@ public class Distance {
     }
 
     private void validate(int distance) {
-        if (distance < MIN_DISTANCE) throw new IllegalArgumentException("거리는 1보다 작을 수 없습니다.");
+        if (distance < MIN_DISTANCE) {
+            throw new IllegalArgumentException("거리는 1보다 작을 수 없습니다.");
+        }
     }
 
     public boolean isLessThanOrEqualTo(Distance newDistance) {
         return distance <= newDistance.distance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Distance distance1 = (Distance) o;
+        return Objects.equals(distance, distance1.distance);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(distance);
     }
 }
