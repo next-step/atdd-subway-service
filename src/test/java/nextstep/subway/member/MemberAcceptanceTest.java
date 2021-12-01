@@ -58,8 +58,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         MemberRequest 테스트계정 = new MemberRequest("probitanima11@gmail.com", "11", 10);
         MemberRequest 암호오입력_테스트계정 = new MemberRequest("probitanima11@gmail.com", "22", 10);
         MemberRequest 회원정보수정된_테스트계정 = new MemberRequest("probitanima11@gmail.com", "11", 20);
-        MemberResponse 정상생성된_테스트계정정보 = new MemberResponse(1L, "probitanima11@gmail.com", 10);
-        MemberResponse 수정된_테스트계정정보 = new MemberResponse(1L, "probitanima11@gmail.com", 20);
+        MemberResponse 정상생성된_테스트계정정보 = new MemberResponse("probitanima11@gmail.com", 10);
+        MemberResponse 수정된_테스트계정정보 = new MemberResponse("probitanima11@gmail.com", 20);
 
         회원_생성을_요청(테스트계정.getEmail(), 테스트계정.getPassword(), 테스트계정.getAge());
 
@@ -72,13 +72,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> correctAccountResponse = AuthAcceptanceTest.JWT_요청(테스트계정);
         // then
         String accessJwt = JWT_받음(correctAccountResponse);
-
-        // given
-        String changedAccessJwt = AuthAcceptanceTest.인증받은JWT에_해킹이시도됨(accessJwt);
-
-        // when
-        // then
-        해킹된Jwt을통한_나의_회원정보_기능검증(회원정보수정된_테스트계정, changedAccessJwt);
 
         // when
         ExtractableResponse<Response> searchMemberInfoResponse = 나의_회원정보_조회_요청(accessJwt);
@@ -104,23 +97,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> searchMemberInfoResponseAfterDelete = 나의_회원정보_조회_요청(accessJwt);
         // then
         AuthAcceptanceTest.인증_못받음(searchMemberInfoResponseAfterDelete);
-    }
-
-    private void 해킹된Jwt을통한_나의_회원정보_기능검증(MemberRequest 회원정보수정된_테스트계정, String changedAccessJwt) {
-        // when
-        ExtractableResponse<Response> searchMemberInfoResponseForHackingJwt = 나의_회원정보_조회_요청(changedAccessJwt);
-        // then
-        AuthAcceptanceTest.인증_못받음(searchMemberInfoResponseForHackingJwt);
-
-        // when
-        ExtractableResponse<Response> modifyMemberInfoResponseeForHackingJwt = 나의_회원정보_수정_요청(changedAccessJwt, 회원정보수정된_테스트계정);
-        // then
-        AuthAcceptanceTest.인증_못받음(modifyMemberInfoResponseeForHackingJwt);
-
-        // when
-        ExtractableResponse<Response> deleteMemberInfoResponseForHackingJwt = 나의_회원정보_삭제_요청(changedAccessJwt);
-        // then
-        AuthAcceptanceTest.인증_못받음(deleteMemberInfoResponseForHackingJwt);
     }
 
     private void 나의_회원정보_삭제됨(ExtractableResponse<Response> response) {
@@ -165,7 +141,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static void 나의_회원정보_조회됨(ExtractableResponse<Response> response, MemberResponse compareMemberInfo) {
         assertAll(
             () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-            () -> Assertions.assertThat(response.as(MemberResponse.class)).isEqualTo(compareMemberInfo)
+            () -> Assertions.assertThat(response.as(MemberResponse.class).getEmail()).isEqualTo(compareMemberInfo.getEmail()),
+            () -> Assertions.assertThat(response.as(MemberResponse.class).getAge()).isEqualTo(compareMemberInfo.getAge())
         );
     }
 

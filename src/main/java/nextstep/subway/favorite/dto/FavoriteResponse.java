@@ -22,6 +22,7 @@ public class FavoriteResponse {
     public static FavoriteResponse of(Long id, StationResponse source, StationResponse target) {
         return new FavoriteResponse(id, source, target);
     }
+
     public static FavoriteResponse of(Favorite favorite) {
         return new FavoriteResponse(favorite.getId(), StationResponse.of(favorite.getSource()), StationResponse.of(favorite.getTarget()));
     }
@@ -53,5 +54,4 @@ public class FavoriteResponse {
     public int hashCode() {
         return Objects.hash(id, source, target);
     }
-
 }

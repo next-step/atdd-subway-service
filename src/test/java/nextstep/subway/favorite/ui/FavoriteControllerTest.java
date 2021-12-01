@@ -1,17 +1,4 @@
-package nextstep.subway.favorite;
-
-import nextstep.subway.AcceptanceTest;
-import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
-import nextstep.subway.favorite.dto.FavoriteRequest;
-import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.line.acceptance.LineAcceptanceTest;
-import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
-import nextstep.subway.line.dto.LineRequest;
-import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.member.MemberAcceptanceTest;
-import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.station.StationAcceptanceTest;
-import nextstep.subway.station.dto.StationResponse;
+package nextstep.subway.favorite.ui;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -26,14 +13,25 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.line.acceptance.LineAcceptanceTest;
+import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
+import nextstep.subway.line.dto.LineRequest;
+import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
+import nextstep.subway.member.dto.MemberRequest;
+import nextstep.subway.station.StationAcceptanceTest;
+import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("즐겨찾기 관련 기능")
-public class FavoriteAcceptanceTest extends AcceptanceTest {
+public class FavoriteControllerTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 강남역;
     private StationResponse 역삼역;
     private StationResponse 교대역;
-    private StationResponse 우성역;
 
     private LineResponse 신분당선;
     private LineResponse 이호선;
@@ -41,7 +39,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private MemberRequest 테스트계정;
     private String accessJwt;
-    private String changedAccessJwt;
     private FavoriteRequest favoriteRequest;
     private FavoriteResponse expectedfavoriteResponse;
 
@@ -69,19 +66,24 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> correctAccountResponse = AuthAcceptanceTest.JWT_요청(테스트계정);
         accessJwt = MemberAcceptanceTest.JWT_받음(correctAccountResponse);
 
-        changedAccessJwt = AuthAcceptanceTest.인증받은JWT에_해킹이시도됨(accessJwt);
         favoriteRequest = FavoriteRequest.of(교대역.getId(), 양재역.getId());
 
         expectedfavoriteResponse = FavoriteResponse.of(1L, 교대역 , 양재역);
     }
 
-    @DisplayName("즐겨찾기 관리")
+    @DisplayName("로그인된 계정에 즐겨찾기가 추가된다.")
     @Test
-    void TotalFavoriteAcceptance() {
+    void create_favoriteForLoginUser() {
         // when
-        // then
-        해킹된Jwt을통한_나의_즐겨찾기_기능검증(changedAccessJwt);
+        ExtractableResponse<Response> createdFavoriteResponse = 즐겨찾기_생성_요청(accessJwt, favoriteRequest);
 
+        // then
+        즐겨찾기_생성됨(createdFavoriteResponse);
+    }
+
+    @DisplayName("로그인된 계정에 즐겨찾기가 조회된다.")
+    @Test
+    void search_favoriteForLoginUser() {
         // when
         ExtractableResponse<Response> createdFavoriteResponse = 즐겨찾기_생성_요청(accessJwt, favoriteRequest);
         // then
@@ -89,49 +91,35 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> searchedFavoriteResponse = 즐겨찾기_목록조회_요청(accessJwt);
+
         // then
-        즐겨찾기_목록조회됨(searchedFavoriteResponse);
+        즐겨찾기_목록조회됨(searchedFavoriteResponse, expectedfavoriteResponse);
+    }
+
+    @DisplayName("로그인된 계정의 즐겨찾기가 삭제된다.")
+    @Test
+    void TotalFavoriteAcceptance() {
+        // when
+        ExtractableResponse<Response> createdFavoriteResponse = 즐겨찾기_생성_요청(accessJwt, favoriteRequest);
+        // then
+        즐겨찾기_생성됨(createdFavoriteResponse);
 
         // given
+        ExtractableResponse<Response> searchedFavoriteResponse = 즐겨찾기_목록조회_요청(accessJwt);
         FavoriteResponse[] favoriteResponse = searchedFavoriteResponse.as(FavoriteResponse[].class);
+
         // when
         ExtractableResponse<Response> deletedFavoriteResponse = 즐겨찾기_삭제_요청(accessJwt, favoriteResponse[0]);
+
         // then
         즐겨찾기_삭제됨(deletedFavoriteResponse);
-
-        // when
-        ExtractableResponse<Response> searchedFavoriteResponseAfterDelete = 즐겨찾기_목록조회_요청(accessJwt);
-        // then
-        삭제후_즐겨찾기_목록조회됨(searchedFavoriteResponseAfterDelete);
     }
 
-    private void 해킹된Jwt을통한_나의_즐겨찾기_기능검증(String changedAccessJwt) {
-        // when
-        ExtractableResponse<Response> createdFavoriteResponse = 즐겨찾기_생성_요청(changedAccessJwt, favoriteRequest);
-        // then
-        AuthAcceptanceTest.인증_못받음(createdFavoriteResponse);
-
-        // when
-        ExtractableResponse<Response> searchedFavoriteResponse = 즐겨찾기_목록조회_요청(changedAccessJwt);
-        // then
-        AuthAcceptanceTest.인증_못받음(searchedFavoriteResponse);
-
-        // when
-        ExtractableResponse<Response> deletedFavoriteResponse = 즐겨찾기_삭제_요청(changedAccessJwt, expectedfavoriteResponse);
-        // then
-        AuthAcceptanceTest.인증_못받음(deletedFavoriteResponse);
-    }
-
-    private void 삭제후_즐겨찾기_목록조회됨(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        Assertions.assertThat(response.as(FavoriteResponse[].class)).isEmpty();
-    }
-
-    private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
+    public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessJwt, FavoriteResponse favoriteResponse) {
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessJwt, FavoriteResponse favoriteResponse) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -141,14 +129,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 즐겨찾기_목록조회됨(ExtractableResponse<Response> response) {
+    public static void 즐겨찾기_목록조회됨(ExtractableResponse<Response> response, FavoriteResponse expectedfavoriteResponse) {
         assertAll(
             () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
             () -> Assertions.assertThat(response.as(FavoriteResponse[].class)[0]).isEqualTo(expectedfavoriteResponse)
         );
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_목록조회_요청(String accessJwt) {
+    public static ExtractableResponse<Response> 즐겨찾기_목록조회_요청(String accessJwt) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -158,14 +146,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
+    public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertAll(
             () -> Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
             () -> Assertions.assertThat(response.header("Location")).isEqualTo("/favorites/1")
         );
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessJwt, FavoriteRequest favoriteRequest) {
+    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessJwt, FavoriteRequest favoriteRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

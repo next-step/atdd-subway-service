@@ -18,6 +18,11 @@ public class MemberResponse {
         this.age = age;
     }
 
+    public MemberResponse(String email, Integer age) {
+        this.email = email;
+        this.age = age;
+    }
+
     public static MemberResponse of(Member member) {
         return new MemberResponse(member.getId(), member.getEmail(), member.getAge());
     }
