@@ -113,6 +113,35 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
 
+    @DisplayName("지하철 구간을 관리")
+    @Test
+    void 지하철_구간을_관리() {
+        // when
+        ExtractableResponse<Response> addResponse = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
+
+        // then
+        지하철_노선에_지하철역_등록됨(addResponse);
+
+        // when
+        ExtractableResponse<Response> selectResponse1 = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+
+        // then
+        지하철_노선_조회됨(selectResponse1);
+        지하철_노선에_지하철역_순서_정렬됨(selectResponse1, Arrays.asList(강남역, 양재역, 광교역));
+
+        // when
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+
+        // then
+        지하철_노선에_지하철역_제외됨(removeResponse);
+
+        // when
+        ExtractableResponse<Response> selectResponse2 = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+
+        // then
+        지하철_노선에_지하철역_순서_정렬됨(selectResponse2, Arrays.asList(강남역, 광교역));
+    }
+
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 
@@ -131,6 +160,10 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선에_지하철역_등록_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    public static void 지하철_노선_조회됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
