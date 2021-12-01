@@ -51,14 +51,14 @@ public final class LoginMember {
         return age.isYouth();
     }
 
-    public boolean isGuest() {
-        return this == GUEST_MEMBER;
-    }
-
     private void validateGuest() {
         if (isGuest()) {
             throw new AuthorizationException("로그인이 필요합니다.");
         }
+    }
+
+    private boolean isGuest() {
+        return this == GUEST_MEMBER;
     }
 
     @Override
