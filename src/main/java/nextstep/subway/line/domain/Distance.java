@@ -28,17 +28,6 @@ public class Distance {
         this.distance = distance;
     }
 
-    public static Distance valueOf(DistanceType type, Distance src, Distance target) {
-        if (type.isPlus()) {
-            return Distance.of(src.distance + target.distance);
-        }
-
-        if (type.isMinus()) {
-            return Distance.of(src.distance - target.distance);
-        }
-        return null;
-    }
-
     public static Distance of(int distance) {
         return new Distance(distance);
     }
@@ -51,6 +40,14 @@ public class Distance {
 
     public boolean isLessThanOrEqualTo(Distance newDistance) {
         return distance <= newDistance.distance;
+    }
+
+    public Distance plus(Distance newDistance) {
+        return Distance.of(distance + newDistance.distance);
+    }
+
+    public Distance minus(Distance newDistance) {
+        return Distance.of(distance - newDistance.distance);
     }
 
     @Override

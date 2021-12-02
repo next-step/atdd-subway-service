@@ -85,11 +85,12 @@ public class Sections {
         Optional<Section> downLineSection = getSectionInDownStation(stationId);
 
         if (upLineSection.isPresent() && downLineSection.isPresent()) {
-            Station newUpStation = downLineSection.get().getUpStation();
-            Station newDownStation = upLineSection.get().getDownStation();
-            Distance newDistance = Distance.valueOf(DistanceType.PLUS, upLineSection.get().getDistance(), downLineSection.get().getDistance());
-            sections.add(Section.of(line, newUpStation, newDownStation, newDistance));
+            Distance newDistance = upLineSection.get()
+                    .getDistance()
+                    .plus(downLineSection.get().getDistance());
 
+            Section newSection = Section.of(line, downLineSection.get().getUpStation(), upLineSection.get().getDownStation(), newDistance);
+            sections.add(newSection);
         }
         upLineSection.ifPresent(it -> sections.remove(it));
         downLineSection.ifPresent(it -> sections.remove(it));
@@ -132,8 +133,7 @@ public class Sections {
             return Collections.emptyList();
         }
 
-        List<Station> stations = addOrderedStations(new ArrayList<>(), firstStation());
-        return stations;
+        return addOrderedStations(new ArrayList<>(), firstStation());
     }
 
     private List<Station> addOrderedStations(List<Station> stations, Station station) {
@@ -161,11 +161,15 @@ public class Sections {
     }
 
     private List<Station> getDownStations() {
-        return sections.stream().map(Section::getDownStation).collect(Collectors.toList());
+        return sections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
     }
 
     private List<Station> getUpStations() {
-        return sections.stream().map(Section::getUpStation).collect(Collectors.toList());
+        return sections.stream()
+                .map(Section::getUpStation)
+                .collect(Collectors.toList());
     }
 
     private Station getNextStation(Station station) {

@@ -46,7 +46,7 @@ public class Section {
             throw new DistanceNotAllowException();
         }
         this.upStation = station;
-        this.distance = Distance.valueOf(DistanceType.MINUS, this.distance, newDistance);
+        this.distance = this.distance.minus(newDistance);
     }
 
     public void updateDownStation(Station station, Distance newDistance) {
@@ -54,7 +54,7 @@ public class Section {
             throw new DistanceNotAllowException();
         }
         this.downStation = station;
-        this.distance = Distance.valueOf(DistanceType.MINUS, this.distance, newDistance);
+        this.distance = this.distance.minus(newDistance);
     }
 
     public boolean downStationEqualTo(Station station) {

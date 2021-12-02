@@ -49,8 +49,11 @@ public class DistanceTest {
         Distance distance10 = Distance.of(10);
 
         //when
-        Distance plusResult = Distance.valueOf(DistanceType.PLUS, distance5, distance10);
-        Distance minusResult = Distance.valueOf(DistanceType.MINUS, distance10, distance5);
+//        Distance plusResult = Distance.valueOf(DistanceType.PLUS, distance5, distance10);
+//        Distance minusResult = Distance.valueOf(DistanceType.MINUS, distance10, distance5);
+
+        Distance plusResult = distance5.plus(distance10);
+        Distance minusResult = distance10.minus(distance5);
 
         //then
         assertThat(plusResult).isEqualTo(Distance.of(15));
