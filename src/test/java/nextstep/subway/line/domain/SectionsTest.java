@@ -242,4 +242,72 @@ class SectionsTest {
 				정자역())),
 			() -> assertThat(sections.getDistances()).isEqualTo(Arrays.asList(2, 8)));
 	}
+
+	@DisplayName("지하철 구간을 삭제한다. (세 역 중 첫번째 역이 제거될 경우)")
+	@Test
+	void removeByFirstStation() {
+		// given
+		Sections sections = Sections.of(Arrays.asList(
+				강남역_양재역_구간(),
+				양재역_정자역_구간()));
+
+		// when
+		sections.removeByStation(강남역());
+
+		// then
+		assertAll(
+			() -> assertThat(sections.getStations().getValues()).isEqualTo(Arrays.asList(
+				양재역(),
+				정자역())),
+			() -> assertThat(sections.getDistances()).isEqualTo(Collections.singletonList(8)));
+	}
+
+	@DisplayName("지하철 구간을 삭제한다. (세 역 중 두번째 역이 제거될 경우)")
+	@Test
+	void removeBySecondStation() {
+		// given
+		Sections sections = Sections.of(Arrays.asList(
+			강남역_양재역_구간(),
+			양재역_정자역_구간()));
+
+		// when
+		sections.removeByStation(양재역());
+
+		// then
+		assertAll(
+			() -> assertThat(sections.getStations().getValues()).isEqualTo(Arrays.asList(
+				강남역(),
+				정자역())),
+			() -> assertThat(sections.getDistances()).isEqualTo(Collections.singletonList(10)));
+	}
+
+	@DisplayName("지하철 구간을 삭제한다. (세 역 중 세번째 역이 제거될 경우)")
+	@Test
+	void removeByThirdStation() {
+		// given
+		Sections sections = Sections.of(Arrays.asList(
+			강남역_양재역_구간(),
+			양재역_정자역_구간()));
+
+		// when
+		sections.removeByStation(정자역());
+
+		// then
+		assertAll(
+			() -> assertThat(sections.getStations().getValues()).isEqualTo(Arrays.asList(
+				강남역(),
+				양재역())),
+			() -> assertThat(sections.getDistances()).isEqualTo(Collections.singletonList(2)));
+	}
+
+	@DisplayName("구간들에서 구간이 하나인 경우 마지막 구간은 제거할 수 없다.")
+	@Test
+	void removeStationFail() {
+		// given
+		Sections sections = Sections.of(Collections.singletonList(강남역_양재역_구간()));
+
+		// when & then
+		assertThatThrownBy(() -> sections.removeByStation(강남역()))
+			.isInstanceOf(RuntimeException.class);
+	}
 }
