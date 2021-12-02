@@ -2,7 +2,6 @@ package nextstep.subway.common.advice;
 
 import nextstep.subway.common.exception.ServiceException;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -12,17 +11,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * fileName : CommonAdvice
  * author : haedoang
  * date : 2021/12/01
- * description :
+ * description : 공통 예외 핸들러
  */
 @RestControllerAdvice
 public class CommonAdvice {
-
-    //            IllegalArgumentException.class,
-//            LineNotFoundException.class,
-//            MemberNotFoundException.class,
-//            StationNotFoundException.class,
-//            SectionNotCreateException.class,
-//            SectionNotDeleteException.class,
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> handleIllegalArgsException(Exception e) {

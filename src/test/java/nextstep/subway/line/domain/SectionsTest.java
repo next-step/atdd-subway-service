@@ -42,7 +42,7 @@ public class SectionsTest {
         Line line = Line.of("신분당선", "빨강", 강남역, 광교역, 거리_5);
 
         // when
-        line.addSection(new Section(line, 강남역, 마포역, Distance.of(1)));
+        line.addSection(Section.of(line, 강남역, 마포역, Distance.of(1)));
 
         assertThat(line.getSections()).hasSize(2);
         assertThat(line.getStations()).hasSize(3);
@@ -55,7 +55,7 @@ public class SectionsTest {
         // given
         stations.saveAll(Arrays.asList(강남역, 마포역, 광교역));
         Line line = lines.save(Line.of("신분당선", "빨강", 강남역, 광교역, 거리_5));
-        line.addSection(new Section(line, 마포역, 광교역, Distance.of(거리_1)));
+        line.addSection(Section.of(line, 마포역, 광교역, Distance.of(거리_1)));
 
         // when
         line.removeStation(마포역.getId());

@@ -88,7 +88,7 @@ public class Sections {
             Station newUpStation = downLineSection.get().getUpStation();
             Station newDownStation = upLineSection.get().getDownStation();
             Distance newDistance = Distance.valueOf(DistanceType.PLUS, upLineSection.get().getDistance(), downLineSection.get().getDistance());
-            sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+            sections.add(Section.of(line, newUpStation, newDownStation, newDistance));
 
         }
         upLineSection.ifPresent(it -> sections.remove(it));

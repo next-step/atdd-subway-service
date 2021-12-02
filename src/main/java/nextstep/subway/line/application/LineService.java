@@ -64,17 +64,12 @@ public class LineService {
         Line line = findLine(lineId);
         Station upStation = stationService.findStation(request.getUpStationId());
         Station downStation = stationService.findStation(request.getDownStationId());
-        Section section = createSection(line, upStation, downStation, Distance.of(request.getDistance()));
-        line.addSection(section);
+        line.addSection(request.toSection(line, upStation, downStation));
     }
 
     @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLine(lineId);
         line.removeStation(stationId);
-    }
-
-    private Section createSection(Line line, Station upStation, Station downStation, Distance distance) {
-        return new Section(line, upStation, downStation, distance);
     }
 }

@@ -30,11 +30,15 @@ public class Section {
     protected Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, Distance distance) {
+    private Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static Section of(Line line, Station upStation, Station downStation, Distance distance) {
+        return new Section(line, upStation, downStation, distance);
     }
 
     public void updateUpStation(Station station, Distance newDistance) {
