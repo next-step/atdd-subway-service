@@ -6,6 +6,8 @@ import javax.persistence.*;
 
 @Entity
 public class Section {
+    private static final String MUST_INPUT_SHORTER_DISTANCE_EXCEPTION_STATEMENT = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,6 +36,10 @@ public class Section {
         this.distance = distance;
     }
 
+    public static Section of(Line line, Station upStation, Station downStation, int distance) {
+        return new Section(line, upStation, downStation, distance);
+    }
+
     public Long getId() {
         return id;
     }
@@ -56,7 +62,7 @@ public class Section {
 
     public void updateUpStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new RuntimeException(MUST_INPUT_SHORTER_DISTANCE_EXCEPTION_STATEMENT);
         }
         this.upStation = station;
         this.distance -= newDistance;
@@ -64,7 +70,7 @@ public class Section {
 
     public void updateDownStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new RuntimeException(MUST_INPUT_SHORTER_DISTANCE_EXCEPTION_STATEMENT);
         }
         this.downStation = station;
         this.distance -= newDistance;
