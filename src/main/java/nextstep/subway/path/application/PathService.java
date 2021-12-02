@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class PathService {
 
+    private static final int DEFAULT_FARE = 1250;
+
     private final LineService lineService;
     private final StationService stationService;
     private final PathFinder pathFinder;
@@ -29,7 +31,7 @@ public class PathService {
         Sections sections = lineService.getSections();
 
         sections.checkConnected(sourceStation, targetStation);
-        return PathResponse.of(pathFinder.findShortestPath(sections, sourceStation, targetStation));
+        return PathResponse.of(pathFinder.findShortestPath(sections, sourceStation, targetStation), DEFAULT_FARE);
     }
 
     private void check(Long source, Long target) {

@@ -1,6 +1,5 @@
 package nextstep.subway.path.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -11,11 +10,8 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_생성_요청;
 import static nextstep.subway.line.step.LineSectionStep.지하철_노선에_지하철역_등록_요청;
@@ -68,6 +64,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단_경로_조회됨(response, 8, Arrays.asList(교대역, 선릉역, 양재역));
+        요금_조회됨(response, 1250);
+    }
+
+    private void 요금_조회됨(ExtractableResponse<Response> response, int fare) {
+        assertThat(response.as(PathResponse.class).getFare()).isEqualTo(fare);
     }
 
     private static LineResponse 지하철_노선_등록되어_있음(LineRequest params) {
