@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 import static nextstep.subway.line.acceptance.testfactory.LineAcceptanceTestFactory.*;
+import static nextstep.subway.station.testfactory.StationAcceptanceTestFactory.*;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
@@ -26,8 +27,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         // given
-        강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
+        강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
+        광교역 = 지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
