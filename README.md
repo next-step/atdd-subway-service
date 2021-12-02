@@ -17,6 +17,27 @@
 
 <br>
 
+### 미션 1 요구사항
+- [X] LineService 리팩터링
+  - [X] Domain으로 옮길 로직 찾기
+  - [X] save로직을 정적팩토리 메소드로 옮기고 리팩터링 
+  - [X] getStations을 Line으로 옮기고 리팩터링 
+  - [X] findUpStation을 Line으로 옮기고 리팩터링
+  - [X] removeLineStation의 내부 로직을 Line으로 옮기고 리팩터링
+  - [X] addLineStation 내부를 함수추출법 이용하여 리팩터링
+
+- [X] LineSectionAcceptanceTest 리팩터링
+  - [X] 생략가능한 클래스명 삭제(StationAcceptanceTest, LineAcceptanceTest)
+  - [X] `지하철역_등록`에서 `자하철_구간_등록`으로 변경
+  - [X] 시나리오 호름 테스트 작성(performScenario)
+
+- [X] Section, LineResponse, Line 클래스 정적팩토리 메서드 작성
+
+- [X] Line 클래스 테스트 케이스 작성
+- [X] Section 클래스 테스트 케이스 작성
+
+<br>
+
 ## 🚀 Getting Started
 
 ### Install
