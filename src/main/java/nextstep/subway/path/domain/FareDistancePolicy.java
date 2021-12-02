@@ -4,7 +4,7 @@ import nextstep.subway.common.domain.Fare;
 import nextstep.subway.line.domain.Distance;
 import org.springframework.util.Assert;
 
-public final class FareDistancePolicy {
+final class FareDistancePolicy {
 
     private static final Fare DEFAULT_FARE = Fare.from(1250);
     private static final Fare FARE_ADDITION_STEP = Fare.from(100);

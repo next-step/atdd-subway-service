@@ -1,6 +1,8 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.domain.Fare;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Sections;
 import org.springframework.util.Assert;
 
@@ -20,9 +22,12 @@ public final class FarePolicy {
         this.sections = sections;
     }
 
-    public static FarePolicy of(
-        FareDistancePolicy distancePolicy, FareDiscountPolicy discountPolicy, Sections sections) {
-        return new FarePolicy(distancePolicy, discountPolicy, sections);
+    public static FarePolicy of(Distance distance, LoginMember member, Sections sections) {
+        return new FarePolicy(
+            FareDistancePolicy.from(distance),
+            FareDiscountPolicy.from(member),
+            sections
+        );
     }
 
     public Fare fare() {

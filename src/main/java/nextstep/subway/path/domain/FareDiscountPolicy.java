@@ -5,7 +5,7 @@ import nextstep.subway.common.domain.Fare;
 import nextstep.subway.common.domain.Percent;
 import org.springframework.util.Assert;
 
-public final class FareDiscountPolicy {
+final class FareDiscountPolicy {
 
     private static final Fare CHILD_FLAT_DISCOUNT_FARE = Fare.from(350);
     private static final Percent CHILD_PERCENT_DISCOUNT = Percent.from(50);

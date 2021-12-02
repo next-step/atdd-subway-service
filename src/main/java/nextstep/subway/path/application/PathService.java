@@ -2,8 +2,6 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
-import nextstep.subway.path.domain.FareDiscountPolicy;
-import nextstep.subway.path.domain.FareDistancePolicy;
 import nextstep.subway.path.domain.FarePolicy;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.ShortestPathFinder;
@@ -44,10 +42,7 @@ public class PathService {
     }
 
     private FarePolicy farePolicy(LoginMember member, Path path) {
-        return FarePolicy.of(
-            FareDistancePolicy.from(path.distance()),
-            FareDiscountPolicy.from(member),
-            path.sections());
+        return FarePolicy.of(path.distance(), member, path.sections());
     }
 
     private ShortestPathFinder shortestPathFinder() {

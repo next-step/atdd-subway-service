@@ -33,7 +33,7 @@ public final class Lines {
         return stations.list();
     }
 
-    public Sections sections() {
+    Sections sections() {
         return Sections.from(sectionList());
     }
 
