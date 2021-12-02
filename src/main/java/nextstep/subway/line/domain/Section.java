@@ -1,8 +1,10 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.SectionDistanceOverException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Section {
@@ -10,15 +12,15 @@ public class Section {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "line_id")
     private Line line;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "up_station_id")
     private Station upStation;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
@@ -54,19 +56,50 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
+    public boolean isIncludeSection(Section addSection) {
+        return isEqualsUpStation(addSection.upStation)
+                || isEqualsDownStation(addSection.downStation);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    public void updateStationByAddSection(Section addSection) {
+        if (this.distance <= addSection.distance) {
+            throw new SectionDistanceOverException();
         }
-        this.downStation = station;
-        this.distance -= newDistance;
+
+        if(isEqualsDownStation(addSection.downStation)){
+            downStation = addSection.upStation;
+        }
+
+        if(isEqualsUpStation(addSection.upStation)){
+            upStation = addSection.downStation;
+        }
+
+        this.distance -= addSection.distance;
+
+    }
+
+    public boolean isEqualsUpStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean isEqualsDownStation(Station station) {
+        return downStation.equals(station);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Section)) return false;
+        Section section = (Section) o;
+        return distance == section.distance
+                && Objects.equals(id, section.id)
+                && Objects.equals(line, section.line)
+                && Objects.equals(upStation, section.upStation)
+                && Objects.equals(downStation, section.downStation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, line, upStation, downStation, distance);
     }
 }
