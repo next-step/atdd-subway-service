@@ -96,7 +96,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> searchMemberInfoResponseAfterDelete = 나의_회원정보_조회_요청(accessJwt);
         // then
-        AuthAcceptanceTest.인증_못받음(searchMemberInfoResponseAfterDelete);
+        나의_회원정보_삭제됨(searchMemberInfoResponseAfterDelete);
     }
 
     private void 나의_회원정보_삭제됨(ExtractableResponse<Response> response) {

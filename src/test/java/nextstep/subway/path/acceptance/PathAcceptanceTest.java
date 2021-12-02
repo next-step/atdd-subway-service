@@ -1,10 +1,13 @@
 package nextstep.subway.path.acceptance;
 
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
+import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathStationDto;
 import nextstep.subway.path.infrastructure.PathAnalysis;
@@ -111,6 +114,25 @@ public class PathAcceptanceTest extends AcceptanceTest {
         신규구간추가후_최단거리_조회됨(responseAfterDeleteSection);
     }
 
+    @DisplayName("어린이 나이로 로그인 후 지하철 최단 경로가 조회된다.")
+    @Test
+    void acceptance_search_shortestPath_afterLogin() {
+        // given
+        MemberRequest 테스트계정 = new MemberRequest("probitanima11@gmail.com", "11", 10);
+        MemberAcceptanceTest.회원_생성을_요청(테스트계정.getEmail(), 테스트계정.getPassword(), 테스트계정.getAge());
+
+        // when
+        ExtractableResponse<Response> correctAccountResponse = AuthAcceptanceTest.JWT_요청(테스트계정);
+        // then
+        String accessJwt = MemberAcceptanceTest.JWT_받음(correctAccountResponse);
+
+        // when
+        ExtractableResponse<Response> response = 로그인후_출발역_도착역_검색(교대역, 양재역, accessJwt);
+
+        // then
+        로그인후_최단거리_조회됨(response);
+    }
+
     private void 신규구간추가후_최단거리_조회됨(ExtractableResponse<Response> response) {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
@@ -120,7 +142,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertAll(
             () -> Assertions.assertThat(response.as(PathResponse.class).getStations()).isEqualTo(List.of(교대역_pathStaion, 우성역_pathStaion, 양재역_pathStaion)),
-            () ->  Assertions.assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(35)
+            () ->  Assertions.assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(35),
+            () ->  Assertions.assertThat(response.as(PathResponse.class).getFare()).isEqualTo(1750)
         );
     }
 
@@ -132,7 +155,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertAll(
             () -> Assertions.assertThat(response.as(PathResponse.class).getStations()).isEqualTo(List.of(교대역_pathStaion, 양재역_pathStaion)),
-            () ->  Assertions.assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(50)
+            () ->  Assertions.assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(50),
+            () ->  Assertions.assertThat(response.as(PathResponse.class).getFare()).isEqualTo(2050)
+        );
+    }
+
+    private void 로그인후_최단거리_조회됨(ExtractableResponse<Response> response) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        PathStationDto 양재역_pathStaion = new PathStationDto(양재역.getId(), 양재역.getName(), 양재역.getCreatedDate());
+        PathStationDto 강남역_pathStaion = new PathStationDto(강남역.getId(), 강남역.getName(), 강남역.getCreatedDate());
+        PathStationDto 교대역_pathStaion = new PathStationDto(교대역.getId(), 교대역.getName(), 교대역.getCreatedDate());
+
+        assertAll(
+            () -> Assertions.assertThat(response.as(PathResponse.class).getStations()).isEqualTo(List.of(교대역_pathStaion, 강남역_pathStaion, 양재역_pathStaion)),
+            () ->  Assertions.assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(40),
+            () ->  Assertions.assertThat(response.as(PathResponse.class).getFare()).isEqualTo(750)
         );
     }
 
@@ -145,12 +183,24 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertAll(
             () -> Assertions.assertThat(response.as(PathResponse.class).getStations()).isEqualTo(List.of(교대역_pathStaion, 강남역_pathStaion, 양재역_pathStaion)),
-            () ->  Assertions.assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(40)
+            () ->  Assertions.assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(40),
+            () ->  Assertions.assertThat(response.as(PathResponse.class).getFare()).isEqualTo(1850)
         );
     }
 
     private ExtractableResponse<Response> 출발역_도착역_검색(StationResponse sourceStation, StationResponse targetStation) {
         return RestAssured.given().log().all()
+                            
+                            .accept(MediaType.APPLICATION_JSON_VALUE)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .when().get("/paths?source={sourceStationId}&target={targetStationId}", sourceStation.getId(), targetStation.getId())
+                            .then().log().all()
+                            .extract();
+    }
+
+    private ExtractableResponse<Response> 로그인후_출발역_도착역_검색(StationResponse sourceStation, StationResponse targetStation, String accessToken) {
+        return RestAssured.given().log().all()
+                            .auth().oauth2(accessToken)
                             .accept(MediaType.APPLICATION_JSON_VALUE)
                             .contentType(MediaType.APPLICATION_JSON_VALUE)
                             .when().get("/paths?source={sourceStationId}&target={targetStationId}", sourceStation.getId(), targetStation.getId())
