@@ -29,13 +29,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
-
-        LoginMember loginMember = authService.findMemberByToken(credentials); 
-        
-        if (loginMember.getId() == null) {
-            throw new UnauthoriedRequestException("인증되지 않은 사용자로 요청되었습니다.");
-        }
-        
-        return loginMember;
+        return authService.findMemberByToken(credentials); 
     }
 }
