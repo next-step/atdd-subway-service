@@ -38,6 +38,20 @@ npm run dev
 ```
 <br>
 
+## 1단계 - 인수 테스트 기반 리팩터링
+### 요구사항
+- LineSectionAcceptanceTest 리팩터링
+- LineService 리팩터링
+- API 를 검증하기 보다는 시나리오, 흐름을 검증하는 테스트로 리팩터링 하기
+- 반드시 하나의 시나리오로 통합할 필요는 없음, 기능의 인수 조건을 설명할 때 하나 이상의 시나리오가 필요한 경우 여러개의 시나리오를 만들어
+인수 테스트를 작성할 수 있음
+
+### 구현할 기능 목록
+- [x] LineService 에서 Domain 으로 옮길 로직
+  - [x] 지하철 목록 가져오기
+  - [x] 구간 등록
+  - [x] 구간 삭제
+
 ## ✏️ Code Review Process
 [텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
 
