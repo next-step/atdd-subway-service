@@ -1,7 +1,6 @@
 package nextstep.subway.line.application;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -71,22 +70,6 @@ public class LineService {
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
-        if (line.getSections().size() <= 1) {
-            throw new RuntimeException();
-        }
-
-        Optional<Section> upLineStation = line.getSections().findByUpStation(station);
-        Optional<Section> downLineStation = line.getSections().findByDownStation(station);
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            Section section = Section.of(newUpStation, newDownStation, newDistance);
-            line.addSection(section);
-        }
-
-        upLineStation.ifPresent(it -> line.getSections().remove(it));
-        downLineStation.ifPresent(it -> line.getSections().remove(it));
+        line.removeSectionByStation(station);
     }
 }

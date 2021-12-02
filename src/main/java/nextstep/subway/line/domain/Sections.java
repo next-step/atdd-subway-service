@@ -157,6 +157,26 @@ public class Sections {
 		values.remove(section);
 	}
 
+	public void removeByStation(Station station) {
+		if (size() <= 1) {
+			throw new RuntimeException();
+		}
+
+		Optional<Section> upLineStation = findByUpStation(station);
+		Optional<Section> downLineStation = findByDownStation(station);
+
+		if (upLineStation.isPresent() && downLineStation.isPresent()) {
+			Station newUpStation = downLineStation.get().getUpStation();
+			Station newDownStation = upLineStation.get().getDownStation();
+			int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+			Section section = Section.of(newUpStation, newDownStation, newDistance);
+			add(section);
+		}
+
+		upLineStation.ifPresent(this::remove);
+		downLineStation.ifPresent(this::remove);
+	}
+
 	public List<Section> getValues() {
 		return values;
 	}
