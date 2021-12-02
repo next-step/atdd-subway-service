@@ -1,6 +1,6 @@
 package nextstep.subway.auth.domain;
 
-import nextstep.subway.auth.dto.AuthenticationType;
+import nextstep.subway.auth.enumerate.AuthenticationType;
 
 public class LoginMember {
     private Long id;
