@@ -1,5 +1,6 @@
 package nextstep.subway.path.dto;
 
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.Fare;
 import nextstep.subway.station.domain.Station;
 
@@ -11,10 +12,10 @@ public class PathResult {
     private final int distance;
     private final Fare fare;
 
-    public PathResult(List<Station> stations, int distance, Fare fare) {
+    public PathResult(List<Station> stations, double distance, Sections sections) {
         this.stations = stations;
-        this.distance = distance;
-        this.fare = fare;
+        this.distance = (int) distance;
+        this.fare = Fare.of(sections.getMaxLineFare());
     }
 
     public PathResult(List<Station> stations, int distance, int fare) {
