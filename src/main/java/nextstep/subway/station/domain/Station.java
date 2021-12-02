@@ -7,9 +7,11 @@ import java.util.Objects;
 
 @Entity
 public class Station extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String name;
 
@@ -30,11 +32,21 @@ public class Station extends BaseEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Station station = (Station) o;
-        return Objects.equals(id, station.id) &&
-                Objects.equals(name, station.name);
+
+        if (Objects.isNull(id)
+            && Objects.isNull(station.getId()
+        )) {
+            return Objects.equals(name, station.name);
+        }
+
+        return Objects.equals(id, station.id);
     }
 
     @Override

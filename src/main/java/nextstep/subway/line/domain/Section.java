@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 @Entity
 public class Section {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,22 +35,17 @@ public class Section {
         this.distance = distance;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Line getLine() {
-        return line;
-    }
-
+    @Deprecated
     public Station getUpStation() {
         return upStation;
     }
 
+    @Deprecated
     public Station getDownStation() {
         return downStation;
     }
 
+    @Deprecated
     public int getDistance() {
         return distance;
     }
@@ -68,5 +64,17 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public boolean equalUpStation(Station station) {
+        return this.upStation.equals(station);
+    }
+
+    public boolean equalDownStation(Station station) {
+        return this.downStation.equals(station);
+    }
+
+    public boolean equalDistance(int distance) {
+        return this.distance == distance;
     }
 }
