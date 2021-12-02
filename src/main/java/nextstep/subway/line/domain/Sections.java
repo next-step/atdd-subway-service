@@ -158,23 +158,35 @@ public class Sections {
 	}
 
 	public void removeByStation(Station station) {
-		if (size() <= 1) {
-			throw new RuntimeException();
+		throwOnLessThanTwoSections();
+		Optional<Section> frontSection = findByDownStation(station);
+		Optional<Section> backSection = findByUpStation(station);
+
+		if (frontSection.isPresent() && backSection.isPresent()) {
+			addMerged(frontSection.get(), backSection.get());
 		}
 
-		Optional<Section> upLineStation = findByUpStation(station);
-		Optional<Section> downLineStation = findByDownStation(station);
+		frontSection.ifPresent(this::remove);
+		backSection.ifPresent(this::remove);
+	}
 
-		if (upLineStation.isPresent() && downLineStation.isPresent()) {
-			Station newUpStation = downLineStation.get().getUpStation();
-			Station newDownStation = upLineStation.get().getDownStation();
-			int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-			Section section = Section.of(newUpStation, newDownStation, newDistance);
-			add(section);
+	private void throwOnLessThanTwoSections() {
+		if (values.size() < 2) {
+			throw new RuntimeException("구간이 2개 이상이어야 제거할 수 있습니다.");
 		}
+	}
 
-		upLineStation.ifPresent(this::remove);
-		downLineStation.ifPresent(this::remove);
+	private void addMerged(Section frontSection, Section backSection) {
+		Station newUpStation = frontSection.getUpStation();
+		Station newDownStation = backSection.getDownStation();
+		int newDistance = frontSection.getDistance() + backSection.getDistance();
+		Section section = Section.of(newUpStation, newDownStation, newDistance);
+		section.setLine(getLine());
+		values.add(section);
+	}
+
+	private Line getLine() {
+		return values.get(0).getLine();
 	}
 
 	public List<Section> getValues() {
