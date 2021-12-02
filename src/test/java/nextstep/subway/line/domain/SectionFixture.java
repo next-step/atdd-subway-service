@@ -18,4 +18,8 @@ public class SectionFixture {
 	public static Section 정자역_광교역_구간() {
 		return Section.of(4L, 정자역(), 광교역(), 10);
 	}
+
+	public static Section 강남역_정자역_구간() {
+		return Section.of(5L, 강남역(), 정자역(), 10);
+	}
 }

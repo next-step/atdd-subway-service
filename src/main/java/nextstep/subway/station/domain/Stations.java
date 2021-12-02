@@ -25,16 +25,24 @@ public class Stations {
 
 	public boolean anyMatch(Station station) {
 		return values.stream()
-			.anyMatch(value -> value == station);
+			.anyMatch(value -> value.equals(station));
 	}
 
 	public boolean noneMatch(Station station) {
 		return values.stream()
-			.noneMatch(value -> value == station);
+			.noneMatch(value -> value.equals(station));
 	}
 
 	public boolean isEmpty() {
 		return values.isEmpty();
+	}
+
+	public int size() {
+		return values.size();
+	}
+
+	public Station get(int index) {
+		return values.get(index);
 	}
 
 	public List<Station> getValues() {

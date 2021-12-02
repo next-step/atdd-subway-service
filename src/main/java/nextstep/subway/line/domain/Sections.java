@@ -1,7 +1,9 @@
 package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -62,7 +64,7 @@ public class Sections {
 	}
 
 	private Sections(List<Section> sections) {
-		this.values = sections;
+		this.values = new ArrayList<>(sections);
 	}
 
 	public static Sections of(List<Section> sections) {
@@ -71,6 +73,10 @@ public class Sections {
 		}
 
 		return new Sections(sections);
+	}
+
+	public static Sections empty() {
+		return new Sections(new ArrayList<>());
 	}
 
 	public Stations getStations() {
@@ -120,6 +126,33 @@ public class Sections {
 		return values.stream()
 			.filter(predicate)
 			.findFirst();
+	}
+
+	public List<Integer> getDistances() {
+		return getSections().stream()
+			.map(Section::getDistance)
+			.collect(Collectors.toList());
+	}
+
+	private List<Section> getSections() {
+		if (values.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		List<Section> sections = new ArrayList<>();
+		Map<Station, Section> sectionByUpStation = getSectionByUpStation();
+		Stations stations = getStations();
+		for (int i = 0; i < stations.size() - 1; i++) {
+			Station station = stations.get(i);
+			sections.add(sectionByUpStation.get(station));
+		}
+
+		return sections;
+	}
+
+	private Map<Station, Section> getSectionByUpStation() {
+		return values.stream()
+			.collect(Collectors.toMap(Section::getUpStation, (section) -> section));
 	}
 
 	public int size() {
