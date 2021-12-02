@@ -25,8 +25,15 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
+    // TODO : delete this
     public void addSection(Section section) {
         sections.add(section);
+        section.setLine(this);
+    }
+
+    // TODO : refactor this
+    public void toBeAddSection(Section section) {
+        sections.toBeAdd(section);
         section.setLine(this);
     }
 

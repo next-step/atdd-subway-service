@@ -18,8 +18,43 @@ public class Sections {
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private List<Section> values = new ArrayList<>();
 
+	// TODO : delete this
 	public void add(Section section) {
 		values.add(section);
+	}
+
+	// TODO : refactor this
+	public void toBeAdd(Section section) {
+		Stations stations = getStations();
+
+		Station upStation = section.getUpStation();
+		Station downStation = section.getDownStation();
+
+		boolean isUpStationExisted = stations.anyMatch(upStation);
+		boolean isDownStationExisted = stations.anyMatch(downStation);
+
+		if (isUpStationExisted && isDownStationExisted) {
+			throw new RuntimeException("이미 등록된 구간 입니다.");
+		}
+
+		if (!stations.isEmpty() && stations.noneMatch(upStation) && stations.noneMatch(downStation)) {
+			throw new RuntimeException("등록할 수 없는 구간 입니다.");
+		}
+
+		if (stations.isEmpty()) {
+			values.add(section);
+			return;
+		}
+
+		if (isUpStationExisted) {
+			findByUpStation(upStation).ifPresent(it -> it.updateUpStation(downStation, section.getDistance()));
+			values.add(section);
+		} else if (isDownStationExisted) {
+			findByDownStation(downStation).ifPresent(it -> it.updateDownStation(upStation, section.getDistance()));
+			values.add(section);
+		} else {
+			throw new RuntimeException();
+		}
 	}
 
 	protected Sections() {
