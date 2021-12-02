@@ -11,16 +11,16 @@ public class PathResult {
     private final int distance;
     private final Fare fare;
 
+    public PathResult(List<Station> stations, int distance, Fare fare) {
+        this.stations = stations;
+        this.distance = distance;
+        this.fare = fare;
+    }
+
     public PathResult(List<Station> stations, int distance, int fare) {
         this.stations = stations;
         this.distance = distance;
         this.fare = new Fare(fare);
-    }
-
-    public PathResult(List<Station> stations, int distance) {
-        this.stations = stations;
-        this.distance = distance;
-        this.fare = Fare.DEFAULT_FARE;
     }
 
     public List<Station> getStations() {
