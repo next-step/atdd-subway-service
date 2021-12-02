@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
-import nextstep.exception.SameSourceAndTargetException;
+import nextstep.exception.BusinessException;
+import nextstep.exception.ErrorCode;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathResponse;
@@ -33,7 +34,7 @@ public class PathService {
 
     private void check(Long source, Long target) {
         if (source == target) {
-            throw new SameSourceAndTargetException();
+            throw new BusinessException(ErrorCode.SAME_SOURCE_AND_TARGET);
         }
     }
 }

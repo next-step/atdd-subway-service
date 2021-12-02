@@ -9,6 +9,8 @@ public class ControllerExceptionAdvice {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity handleBusinessException(BusinessException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity
+                .status(e.getStatus())
+                .body(e.getMessage());
     }
 }

@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.exception.StationNotConnectedException;
+import nextstep.exception.BusinessException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.Test;
 
@@ -193,7 +193,7 @@ public class SectionsTest {
         Sections sections = getSections();
 
         // when
-        assertThatExceptionOfType(StationNotConnectedException.class)
+        assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> sections.checkConnected(강남역, 교대역));
     }
 
