@@ -16,7 +16,7 @@ public class LineNotFoundException extends ServiceException {
     public static final HttpStatus status = HttpStatus.BAD_REQUEST;
     public static final String message = "노선이 존재하지 않습니다.";
 
-    public LineNotFoundException(Long id) {
-        super(status, message.concat(" lineId : " + id));
+    public LineNotFoundException() {
+        super(status, message);
     }
 }

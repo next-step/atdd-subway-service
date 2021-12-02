@@ -16,7 +16,7 @@ public class MemberNotFoundException extends ServiceException {
     public static final HttpStatus status = HttpStatus.BAD_REQUEST;
     public static final String message = "회원이 존재하지 않습니다.";
 
-    public MemberNotFoundException(Long id) {
-        super(status, message.concat(" memberId : " + id));
+    public MemberNotFoundException() {
+        super(status, message);
     }
 }

@@ -32,7 +32,7 @@ public class StationService {
 
     public Station findStation(Long id) {
         return stationRepository.findById(id)
-                .orElseThrow(() -> new StationNotFoundException(id));
+                .orElseThrow(StationNotFoundException::new);
     }
 
     public List<StationResponse> findAllStations() {

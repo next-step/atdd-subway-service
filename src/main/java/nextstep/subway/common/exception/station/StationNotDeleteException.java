@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
  */
 public class StationNotDeleteException extends ServiceException {
     private static final long serialVersionUID = 1L;
+
     public static final HttpStatus status = HttpStatus.BAD_REQUEST;
     public static final String message = "역을 삭제할 수 없습니다.";
 

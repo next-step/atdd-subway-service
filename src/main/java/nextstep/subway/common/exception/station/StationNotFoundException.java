@@ -16,10 +16,6 @@ public class StationNotFoundException extends ServiceException {
     public static final HttpStatus status = HttpStatus.BAD_REQUEST;
     public static final String message = "역이 존재하지 않습니다.";
 
-    public StationNotFoundException(Long id) {
-        super(status, message.concat(" stationId : " + id));
-    }
-
     public StationNotFoundException() {
         super(status, message);
     }
