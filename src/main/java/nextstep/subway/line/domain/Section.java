@@ -70,8 +70,16 @@ public class Section {
         this.distance -= newDistance;
     }
 
+    public boolean equalsUpStation(Station station) {
+        return this.upStation.equals(station);
+    }
+
     public boolean equalsDownStation(Station station) {
         return this.downStation.equals(station);
+    }
+
+    public boolean hasUpStation() {
+        return null != this.upStation;
     }
 
     public boolean hasDownStation() {

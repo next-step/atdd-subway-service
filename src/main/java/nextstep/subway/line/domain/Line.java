@@ -5,6 +5,7 @@ import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
@@ -38,7 +39,27 @@ public class Line extends BaseEntity {
         this.color = line.getColor();
     }
 
-    public Station findUpTerminalStation() {
+    public List<Station> getStations() {
+        if (sections.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return getStationsSortedByUpToDown();
+    }
+
+    private List<Station> getStationsSortedByUpToDown() {
+        final List<Station> stations = new ArrayList<>();
+        Station station = findUpTerminalStation();
+        stations.add(station);
+
+        while (hasSectionHavingUpStation(station)) {
+            final Section nextSection = findSectionHavingUpStation(station);
+            station = nextSection.getDownStation();
+            stations.add(station);
+        }
+        return stations;
+    }
+
+    private Station findUpTerminalStation() {
         Station upStation = sections.get(0).getUpStation();
         while (hasSectionHavingDownStation(upStation)) {
             final Section preSection = findSectionHavingDownStation(upStation);
@@ -47,10 +68,25 @@ public class Line extends BaseEntity {
         return upStation;
     }
 
+    private boolean hasSectionHavingUpStation(Station station) {
+        return sections.stream()
+            .filter(Section::hasUpStation)
+            .anyMatch(it -> it.equalsUpStation(station));
+    }
+
     private boolean hasSectionHavingDownStation(Station station) {
         return sections.stream()
             .filter(Section::hasDownStation)
             .anyMatch(it -> it.equalsDownStation(station));
+    }
+
+    private Section findSectionHavingUpStation(Station station) {
+        return sections.stream()
+            .filter(it -> it.equalsUpStation(station))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException(
+                String.format("%s을 상행역으로 갖는 구간이 없습니다.", station.getName())
+            ));
     }
 
     private Section findSectionHavingDownStation(Station station) {
@@ -58,7 +94,7 @@ public class Line extends BaseEntity {
             .filter(it -> it.equalsDownStation(station))
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException(
-                String.format("%s역을 하행역으로 갖는 구간이 없습니다.", station.getName())
+                String.format("%s을 하행역으로 갖는 구간이 없습니다.", station.getName())
             ));
     }
 
