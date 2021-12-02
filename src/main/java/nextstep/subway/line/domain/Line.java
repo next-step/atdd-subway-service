@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -25,15 +24,8 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
-    // TODO : delete this
     public void addSection(Section section) {
         sections.add(section);
-        section.setLine(this);
-    }
-
-    // TODO : refactor this
-    public void toBeAddSection(Section section) {
-        sections.toBeAdd(section);
         section.setLine(this);
     }
 

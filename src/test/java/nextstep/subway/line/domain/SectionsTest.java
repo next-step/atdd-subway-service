@@ -5,7 +5,6 @@ import static nextstep.subway.station.StationFixture.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -117,7 +116,7 @@ class SectionsTest {
 		Sections sections = Sections.empty();
 
 		// when
-		sections.toBeAdd(강남역_양재역_구간());
+		sections.add(강남역_양재역_구간());
 
 		// then
 		assertThat(sections.getStations().getValues()).isEqualTo(Arrays.asList(
@@ -132,7 +131,7 @@ class SectionsTest {
 		Sections sections = Sections.of(Collections.singletonList(강남역_양재역_구간()));
 
 		// when & then
-		assertThatThrownBy(() -> sections.toBeAdd(정자역_광교역_구간()))
+		assertThatThrownBy(() -> sections.add(정자역_광교역_구간()))
 			.isInstanceOf(RuntimeException.class);
 	}
 
@@ -143,7 +142,7 @@ class SectionsTest {
 		Sections sections = Sections.of(Collections.singletonList(강남역_양재역_구간()));
 
 		// when & then
-		assertThatThrownBy(() -> sections.toBeAdd(강남역_양재역_구간()))
+		assertThatThrownBy(() -> sections.add(강남역_양재역_구간()))
 			.isInstanceOf(RuntimeException.class);
 	}
 
@@ -154,7 +153,7 @@ class SectionsTest {
 		Sections sections = Sections.of(Collections.singletonList(강남역_정자역_구간()));
 
 		// when
-		sections.toBeAdd(강남역_양재역_구간());
+		sections.add(강남역_양재역_구간());
 
 		// then
 		assertAll(
@@ -172,7 +171,7 @@ class SectionsTest {
 		Sections sections = Sections.of(Collections.singletonList(강남역_정자역_구간()));
 
 		// when
-		sections.toBeAdd(양재역_정자역_구간());
+		sections.add(양재역_정자역_구간());
 
 		// then
 		assertAll(
@@ -191,7 +190,7 @@ class SectionsTest {
 
 		// when & then
 		assertThatThrownBy(
-			() -> sections.toBeAdd(Section.of(강남역(), 양재역(), 강남역_정자역_구간().getDistance())))
+			() -> sections.add(Section.of(강남역(), 양재역(), 강남역_정자역_구간().getDistance())))
 			.isInstanceOf(RuntimeException.class);
 	}
 
@@ -203,7 +202,7 @@ class SectionsTest {
 
 		// when & then
 		assertThatThrownBy(
-			() -> sections.toBeAdd(Section.of(양재역(), 정자역(), 강남역_정자역_구간().getDistance())))
+			() -> sections.add(Section.of(양재역(), 정자역(), 강남역_정자역_구간().getDistance())))
 			.isInstanceOf(RuntimeException.class);
 	}
 
@@ -215,7 +214,7 @@ class SectionsTest {
 		Sections sections = Sections.of(Collections.singletonList(양재역_정자역_구간()));
 
 		// when
-		sections.toBeAdd(강남역_양재역_구간());
+		sections.add(강남역_양재역_구간());
 
 		// then
 		assertAll(
@@ -233,7 +232,7 @@ class SectionsTest {
 		Sections sections = Sections.of(Collections.singletonList(강남역_양재역_구간()));
 
 		// when
-		sections.toBeAdd(양재역_정자역_구간());
+		sections.add(양재역_정자역_구간());
 
 		// then
 		assertAll(

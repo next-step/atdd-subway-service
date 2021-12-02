@@ -16,10 +16,10 @@ public class UnitTest {
         String newName = "구분당선";
         String newColor = "GREEN";
 
-        Station upStation = Station.of("강남역");
-        Station downStation = Station.of("광교역");
-        Section section = Section.of(upStation, downStation, 10);
-        Line line = Line.of("신분당선", "RED", section);
+        Station upStation = Station.of(1L, "강남역");
+        Station downStation = Station.of(2L, "광교역");
+        Section section = Section.of(1L, upStation, downStation, 10);
+        Line line = Line.of(1L, "신분당선", "RED", section);
 
         // when
         line.update(newName, newColor);
