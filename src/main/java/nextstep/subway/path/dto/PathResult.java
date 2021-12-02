@@ -20,7 +20,7 @@ public class PathResult {
     public PathResult(List<Station> stations, int distance) {
         this.stations = stations;
         this.distance = distance;
-        this.fare = new Fare();
+        this.fare = Fare.DEFAULT_FARE;
     }
 
     public List<Station> getStations() {
