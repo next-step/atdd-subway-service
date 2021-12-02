@@ -6,6 +6,14 @@ public class Fare {
 
     private final int value;
 
+    public static Fare of(int lineFare) {
+        return DEFAULT_FARE.plus(lineFare);
+    }
+
+    private Fare plus(int lineFare) {
+        return new Fare(this.value + lineFare);
+    }
+
     public Fare(int value) {
         this.value = value;
     }
