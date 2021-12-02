@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.common.exception.distance.IllegalDistanceException;
+
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
 import java.util.Objects;
@@ -43,7 +45,7 @@ public class Distance {
 
     private void validate(int distance) {
         if (distance < MIN_DISTANCE) {
-            throw new IllegalArgumentException("거리는 1보다 작을 수 없습니다.");
+            throw new IllegalDistanceException();
         }
     }
 

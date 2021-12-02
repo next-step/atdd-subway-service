@@ -1,6 +1,6 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.common.exception.LineNotFoundException;
+import nextstep.subway.common.exception.line.LineNotFoundException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -28,7 +28,7 @@ public class LineService {
 
     private Line findLine(Long id) {
         return lineRepository.findById(id)
-                .orElseThrow(LineNotFoundException::new);
+                .orElseThrow(() -> new LineNotFoundException(id));
     }
 
     public List<LineResponse> findLines() {

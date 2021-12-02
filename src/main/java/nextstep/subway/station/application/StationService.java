@@ -1,6 +1,6 @@
 package nextstep.subway.station.application;
 
-import nextstep.subway.common.exception.StationNotFoundException;
+import nextstep.subway.common.exception.station.StationNotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
@@ -32,7 +32,7 @@ public class StationService {
 
     public Station findStation(Long id) {
         return stationRepository.findById(id)
-                .orElseThrow(StationNotFoundException::new);
+                .orElseThrow(() -> new StationNotFoundException(id));
     }
 
     public List<StationResponse> findAllStations() {

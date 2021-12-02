@@ -1,8 +1,9 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.common.exception.SectionNotCreateException;
-import nextstep.subway.common.exception.SectionNotDeleteException;
-import nextstep.subway.common.exception.StationNotFoundException;
+import nextstep.subway.common.exception.section.SectionDuplicateException;
+import nextstep.subway.common.exception.section.SectionNotCreateException;
+import nextstep.subway.common.exception.station.StationNotDeleteException;
+import nextstep.subway.common.exception.station.StationNotFoundException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -60,11 +61,11 @@ public class Sections {
 
     private void addValidate(Station upStation, Station downStation) {
         if (isExistStation(upStation) && isExistStation(downStation)) {
-            throw new SectionNotCreateException("이미 등록된 구간 입니다.");
+            throw new SectionDuplicateException();
         }
 
         if (isInvalidStations(upStation, downStation)) {
-            throw new SectionNotCreateException("등록할 수 없는 구간 입니다.");
+            throw new SectionNotCreateException();
         }
     }
 
@@ -96,11 +97,11 @@ public class Sections {
 
     private void removeValidate(Long stationId) {
         if (sections.size() <= MIN_SECTION_COUNT) {
-            throw new SectionNotDeleteException("더이상 역을 삭제할 수 없습니다.");
+            throw new StationNotDeleteException();
         }
 
         if (isNotExistStation(stationId)) {
-            throw new SectionNotDeleteException("삭제할 역이 존재하지 않습니다.");
+            throw new StationNotFoundException();
         }
     }
 
