@@ -26,7 +26,7 @@ class LineTest{
         역삼 = new Station("역삼");
         선릉 = new Station("선릉");
         삼성 = new Station("삼성");
-        line = new Line("2호선", "초록", 강남, 선릉, 10);
+        line = new Line("2호선", "초록", 강남, 선릉, 10, 0);
     }
 
     @DisplayName("상행역이 같은 역 추가")

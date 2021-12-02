@@ -1,15 +1,12 @@
 package nextstep.subway.station;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,7 +23,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStation() {
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
+        ExtractableResponse<Response> response = StationFactory.지하철역_생성_요청(강남역);
 
         // then
         지하철역_생성됨(response);
@@ -36,10 +33,10 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStationWithDuplicateName() {
         //given
-        지하철역_등록되어_있음(강남역);
+        StationFactory.지하철역_생성_요청(강남역);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
+        ExtractableResponse<Response> response = StationFactory.지하철역_생성_요청(강남역);
 
         // then
         지하철역_생성_실패됨(response);
@@ -49,11 +46,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void getStations() {
         // given
-        ExtractableResponse<Response> createResponse1 = 지하철역_등록되어_있음(강남역);
-        ExtractableResponse<Response> createResponse2 = 지하철역_등록되어_있음(역삼역);
+        ExtractableResponse<Response> createResponse1 = StationFactory.지하철역_생성_요청(강남역);
+        ExtractableResponse<Response> createResponse2 = StationFactory.지하철역_생성_요청(역삼역);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_목록_조회_요청();
+        ExtractableResponse<Response> response = StationFactory.지하철역_목록_조회_요청();
 
         // then
         지하철역_목록_응답됨(response);
@@ -64,48 +61,19 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteStation() {
         // given
-        ExtractableResponse<Response> createResponse = 지하철역_등록되어_있음(강남역);
+        ExtractableResponse<Response> createResponse = StationFactory.지하철역_생성_요청(강남역);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_제거_요청(createResponse);
+        ExtractableResponse<Response> response = StationFactory.지하철역_제거_요청(createResponse);
 
         // then
         지하철역_삭제됨(response);
     }
 
-    public static ExtractableResponse<Response> 지하철역_등록되어_있음(String name) {
-        return 지하철역_생성_요청(name);
-    }
+//    public static ExtractableResponse<Response> 지하철역_등록되어_있음(String name) {
+//        return 지하철역_생성_요청(name);
+//    }
 
-    public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
-        StationRequest stationRequest = new StationRequest(name);
-
-        return RestAssured
-                .given().log().all()
-                .body(stationRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/stations")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
-        return RestAssured
-                .given().log().all()
-                .when().get("/stations")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철역_제거_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
-
-        return RestAssured
-                .given().log().all()
-                .when().delete(uri)
-                .then().log().all()
-                .extract();
-    }
 
     public static void 지하철역_생성됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
