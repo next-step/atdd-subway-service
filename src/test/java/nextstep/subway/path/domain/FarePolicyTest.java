@@ -32,8 +32,8 @@ class FarePolicyTest {
     void instance() {
         assertThatNoException()
             .isThrownBy(() -> FarePolicy.of(
-                FareDistancePolicy.from(Distance.from(10)),
-                FareDiscountPolicy.from(LoginMember.guest()),
+                Distance.from(10),
+                LoginMember.guest(),
                 Sections.from(section("강남", "양재", 5)))
             );
     }
@@ -42,9 +42,9 @@ class FarePolicyTest {
     @MethodSource
     @DisplayName("거리 요금 정책, 할인 요금 정책, 구간들은 필수입니다.")
     void instance_nullArgument_thrownIllegalArgumentException(
-        FareDistancePolicy distancePolicy, FareDiscountPolicy discountPolicy, Sections sections) {
+        Distance distance, LoginMember loginMember, Sections sections) {
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> FarePolicy.of(distancePolicy, discountPolicy, sections))
+            .isThrownBy(() -> FarePolicy.of(distance, loginMember, sections))
             .withMessageEndingWith("필수입니다.");
     }
 
@@ -54,8 +54,8 @@ class FarePolicyTest {
     void fare(int distance, int expectedFare) {
         // given
         FarePolicy policy = FarePolicy.of(
-            FareDistancePolicy.from(Distance.from(distance)),
-            FareDiscountPolicy.from(LoginMember.guest()),
+            Distance.from(distance),
+            LoginMember.guest(),
             신분당선(0).sections());
 
         // when
@@ -71,8 +71,8 @@ class FarePolicyTest {
     void fare_perAge(int age, int expectedFare) {
         // given
         FarePolicy policy = FarePolicy.of(
-            FareDistancePolicy.from(Distance.from(50)),
-            FareDiscountPolicy.from(anyEmailMember(age)),
+            Distance.from(50),
+            anyEmailMember(age),
             신분당선(0).sections());
 
         // when
@@ -88,13 +88,15 @@ class FarePolicyTest {
     void fare_perExtraPare(int extraFare, int expectedFare) {
         // given
         FarePolicy policy = FarePolicy.of(
-            FareDistancePolicy.from(Distance.from(30)),
-            FareDiscountPolicy.from(LoginMember.guest()),
-            Lines.from(Arrays.asList(
-                신분당선(0),
-                이호선(500),
-                삼호선(extraFare)
-            )).sections()
+            Distance.from(30),
+            LoginMember.guest(),
+            Sections.from(Lines.from(
+                Arrays.asList(
+                    신분당선(0),
+                    이호선(500),
+                    삼호선(extraFare)
+                )
+            ).sectionList())
         );
 
         // when
@@ -108,17 +110,17 @@ class FarePolicyTest {
         return Stream.of(
             Arguments.of(
                 null,
-                FareDiscountPolicy.from(LoginMember.guest()),
+                LoginMember.guest(),
                 Sections.from(section("강남역", "양재역", 5))
             ),
             Arguments.of(
-                FareDistancePolicy.from(Distance.from(10)),
+                Distance.from(10),
                 null,
                 Sections.from(section("강남역", "양재역", 5))
             ),
             Arguments.of(
-                FareDistancePolicy.from(Distance.from(10)),
-                FareDiscountPolicy.from(LoginMember.guest()),
+                Distance.from(10),
+                LoginMember.guest(),
                 Sections.from(Collections.emptyList())
             )
         );

@@ -10,8 +10,6 @@ import nextstep.subway.common.domain.Email;
 import nextstep.subway.common.domain.Fare;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 @DisplayName("할인 요금 정책")
 class FareDiscountPolicyTest {
@@ -31,16 +29,37 @@ class FareDiscountPolicyTest {
             .withMessageEndingWith("필수입니다.");
     }
 
-    @ParameterizedTest(name = "[{index}] {0} 나이일 경우 2150원의 할인 금액은 {1}")
-    @DisplayName("연령대별 2150원에 대한 할인 요금 계산")
-    @CsvSource({"6,1250", "12,1250", "13,710", "19,0"})
-    void discountFare(int age, int expectedFare) {
+    @Test
+    @DisplayName("어린이는 350원을 공제한 금액의 50%할인")
+    void discountFare_child() {
         // when
-        Fare discountFare = FareDiscountPolicy.from(anyEmailMember(age))
+        Fare discountFare = FareDiscountPolicy.from(anyEmailMember(6))
             .discountFare(Fare.from(2150));
 
         // then
-        assertThat(discountFare).isEqualTo(Fare.from(expectedFare));
+        assertThat(discountFare).isEqualTo(Fare.from(1250));
+    }
+
+    @Test
+    @DisplayName("청소년은 350원을 공제한 금액의 20%할인")
+    void discountFare_youth() {
+        // when
+        Fare discountFare = FareDiscountPolicy.from(anyEmailMember(13))
+            .discountFare(Fare.from(2150));
+
+        // then
+        assertThat(discountFare).isEqualTo(Fare.from(710));
+    }
+
+    @Test
+    @DisplayName("성인은 할인되는 금액이 없다")
+    void discountFare_guest() {
+        // when
+        Fare discountFare = FareDiscountPolicy.from(anyEmailMember(19))
+            .discountFare(Fare.from(2150));
+
+        // then
+        assertThat(discountFare).isEqualTo(Fare.from(0));
     }
 
     private LoginMember anyEmailMember(int age) {
