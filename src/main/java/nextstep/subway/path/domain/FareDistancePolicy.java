@@ -20,11 +20,11 @@ final class FareDistancePolicy {
         this.distance = distance;
     }
 
-    public static FareDistancePolicy from(Distance distance) {
+    static FareDistancePolicy from(Distance distance) {
         return new FareDistancePolicy(distance);
     }
 
-    public Fare fare() {
+    Fare fare() {
         if (distance.lessThanOrEqual(DEFAULT_FARE_DISTANCE_STANDARD)) {
             return DEFAULT_FARE;
         }

@@ -19,7 +19,7 @@ final class FareDiscountPolicy {
         this.member = member;
     }
 
-    public static FareDiscountPolicy from(LoginMember member) {
+    static FareDiscountPolicy from(LoginMember member) {
         return new FareDiscountPolicy(member);
     }
 
