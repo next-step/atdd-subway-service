@@ -1,5 +1,6 @@
 package nextstep.subway.path.dto;
 
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -25,6 +26,10 @@ public class PathResponse {
 
     public static PathResponse of(PathResult pathResult, int fare) {
         return new PathResponse(pathResult.getStations(), pathResult.getDistance(), fare);
+    }
+
+    public static PathResponse of(PathResult pathResult, Fare fare) {
+        return PathResponse.of(pathResult, fare.getValue());
     }
 
     public List<StationResponse> getStations() {

@@ -4,6 +4,7 @@ import nextstep.exception.BusinessException;
 import nextstep.exception.ErrorCode;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -11,8 +12,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PathService {
-
-    private static final int DEFAULT_FARE = 1250;
 
     private final LineService lineService;
     private final StationService stationService;
@@ -31,7 +30,7 @@ public class PathService {
         Sections sections = lineService.getSections();
 
         sections.checkConnected(sourceStation, targetStation);
-        return PathResponse.of(pathFinder.findShortestPath(sections, sourceStation, targetStation), DEFAULT_FARE);
+        return PathResponse.of(pathFinder.findShortestPath(sections, sourceStation, targetStation), new Fare());
     }
 
     private void check(Long source, Long target) {
