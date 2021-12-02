@@ -49,6 +49,33 @@ npm run dev
 
 <br>
 
+## 🚩 구현 기능 목록
+### 인수테스트 기반 리팩터링
+- [ ] LineSectionAcceptanceTest 리팩터링
+    - [ ] API를 검증하기 보다는 시나리오, 흐름을 검증하는 테스트로 리팩터링 한다.
+```
+Feature: 지하철 구간 관련 기능
+Given:
+  지하철 역 등록되어 있다.
+  노선 	등록되어 있다.
+  지하철 노선에 1구간(지하철역 2개) 등록되어 있다.
+
+Scenario: 지하철 노선 구간 관리
+When: 노선에 새로운 구간 추가 요청
+Then: 노선에 구간 추가됨
+When: 지하철 노선에 등록된 역 목록 조회 요청
+Then: 추가한 역을 포함한 역목록이 조회됨
+When: 하행역에 대해 구간 삭제 요청
+Then: 구간 삭제됨
+When 지하철 노선에 등록된 역 목록 조회 요청
+Then: 삭제한  역이 포함되지 않은 역목록 조회됨
+
+```  
+- [ ] LineService 리팩터링 - 비지니스 로직을 도메인으로 옮기기
+    - [ ] 도메인으로 옮길 로직 찾기 - 스프링 빈을 사용하는 객체와 의존하는 로직을 제외하고 도메인으로 옮긴다.
+    - [ ] 도메인의 단위 테스트 작성
+    - [ ] 로직 옮기기
+
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
