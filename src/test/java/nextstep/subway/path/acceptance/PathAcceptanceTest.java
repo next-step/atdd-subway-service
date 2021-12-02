@@ -35,11 +35,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     /**
      * 교대역    --- *2호선* --- >  강남역
      * |            (10)         |
-     * *3호선* (3)   (8)         *신분당선* (10)
+     * *3호선* (10)   (25)         *신분당선* (10)
      * |                        |
      * v                       v
      * 선릉역  --- *3호선* --->  양재
-     *            (5)
+     *            (15)
      */
     @BeforeEach
     public void setUp() {
@@ -52,9 +52,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역, 양재역, 10));
         이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역, 강남역, 10));
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역, 양재역, 8));
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역, 양재역, 25));
 
-        지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 선릉역, 3);
+        지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 선릉역, 10);
     }
 
     @Test
@@ -63,7 +63,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 양재역);
 
         // then
-        최단_경로_조회됨(response, 8, Arrays.asList(교대역, 선릉역, 양재역));
+        최단_경로_조회됨(response, 20, Arrays.asList(교대역, 강남역, 양재역));
         요금_조회됨(response, 1250);
     }
 
