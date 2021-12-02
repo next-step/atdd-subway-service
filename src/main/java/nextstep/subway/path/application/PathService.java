@@ -1,9 +1,11 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.SectionException;
 import nextstep.subway.exception.error.ErrorCode;
 import nextstep.subway.line.domain.section.Section;
 import nextstep.subway.line.domain.section.SectionRepository;
+import nextstep.subway.path.domain.FareCalculate;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -11,6 +13,7 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -25,13 +28,16 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse findPath(Long sourceId, Long targetId) {
+    public PathResponse findPath(LoginMember loginMember, Long sourceId, Long targetId) {
         PathFinder pathFinder = getPathFinder();
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
 
-        return PathResponse.of(pathFinder.getDijkstraShortestPath(source, target),
-                pathFinder.getSumLineStationsDistance(source, target));
+        List<Station> dijkstraPath = pathFinder.getDijkstraShortestPath(source, target);
+        int sumDistance = pathFinder.getSumLineStationsDistance(source, target);
+        BigDecimal fareMoney = FareCalculate.getFareMoney(loginMember, pathFinder.getGraphPath(source, target), sumDistance);
+
+        return PathResponse.of(dijkstraPath, sumDistance, fareMoney);
     }
 
     private PathFinder getPathFinder() {

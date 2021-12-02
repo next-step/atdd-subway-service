@@ -7,10 +7,8 @@ import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class PathFinder {
     private final DijkstraShortestPath dijkstraShortestPath;
@@ -39,6 +37,10 @@ public class PathFinder {
                 .stream()
                 .mapToDouble(SectionEdge::getWeight)
                 .sum();
+    }
+
+    public GraphPath<Station, SectionEdge> getGraphPath(Station source, Station target) {
+        return dijkstraShortestPath.getPath(source, target);
     }
 
     private void validateLineStation(Station source, Station target) {
