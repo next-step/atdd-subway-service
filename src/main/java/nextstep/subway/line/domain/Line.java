@@ -66,6 +66,10 @@ public class Line extends BaseEntity {
     }
 
     public Price getExtreFare() {
+        if (this.extraFare == null) {
+            return Price.of(0);
+        }
+
         return this.extraFare;
     }
 
