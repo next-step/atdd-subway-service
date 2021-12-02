@@ -28,10 +28,10 @@ public class LineResponse {
     }
 
     public static LineResponse of(Line line) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), getStationsfrom(line), line.getCreatedDate(), line.getModifiedDate());
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), getStationsFrom(line), line.getCreatedDate(), line.getModifiedDate());
     }
 
-    private static List<StationResponse> getStationsfrom(Line line) {
+    private static List<StationResponse> getStationsFrom(Line line) {
         return line.getStations().stream()
             .map(StationResponse::of)
             .collect(Collectors.toList());
