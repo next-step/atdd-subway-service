@@ -132,18 +132,19 @@ public class Sections {
             return Collections.emptyList();
         }
 
-        List<Station> stations = new ArrayList<>();
-        Station station = findFirstStation();
-
-        while (Optional.ofNullable(station).isPresent()) {
-            stations.add(station);
-            station = findNextStation(station);
-        }
-
+        List<Station> stations = addOrderedStations(new ArrayList<>(), firstStation());
         return stations;
     }
 
-    private Station findFirstStation() {
+    private List<Station> addOrderedStations(List<Station> stations, Station station) {
+        stations.add(station);
+        if (!station.equals(lastStation())) {
+            return addOrderedStations(stations, getNextStation(station));
+        }
+        return stations;
+    }
+
+    private Station firstStation() {
         return sections.stream()
                 .filter(section -> !getDownStations().contains(section.getUpStation()))
                 .findFirst()
@@ -151,14 +152,26 @@ public class Sections {
                 .getUpStation();
     }
 
+    private Station lastStation() {
+        return sections.stream()
+                .filter(section -> !getUpStations().contains(section.getDownStation()))
+                .findFirst()
+                .orElseThrow(StationNotFoundException::new)
+                .getDownStation();
+    }
+
     private List<Station> getDownStations() {
         return sections.stream().map(Section::getDownStation).collect(Collectors.toList());
     }
 
-    private Station findNextStation(Station station) {
+    private List<Station> getUpStations() {
+        return sections.stream().map(Section::getUpStation).collect(Collectors.toList());
+    }
+
+    private Station getNextStation(Station station) {
         return sections.stream().filter(section -> section.upStationEqualTo(station))
                 .findFirst()
-                .orElse(new Section())
+                .orElseThrow(StationNotFoundException::new)
                 .getDownStation();
     }
 }
