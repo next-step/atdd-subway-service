@@ -94,6 +94,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 최단_경로_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getInt("distance")).isGreaterThan(0);
+        assertThat(response.jsonPath().getInt("fare")).isGreaterThan(0);
     }
 
     private void 최단_경로_응답_실패됨(ExtractableResponse<Response> response) {
