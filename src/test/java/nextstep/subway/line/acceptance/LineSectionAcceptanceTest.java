@@ -23,7 +23,7 @@ import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 구간 관련 기능")
-public class ToBeLineSectionAcceptanceTest extends AcceptanceTest {
+public class LineSectionAcceptanceTest extends AcceptanceTest {
 
 	/**
 	 * Feature: 지하철 구간 관련 기능
