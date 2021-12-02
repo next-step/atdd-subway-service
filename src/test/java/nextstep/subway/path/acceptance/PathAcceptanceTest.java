@@ -50,9 +50,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
         선릉역 = 지하철역_등록되어_있음("선릉역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역, 양재역, 10));
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역, 강남역, 10));
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역, 양재역, 25));
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역, 양재역, 10, 900));
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역, 강남역, 10, 500));
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역, 양재역, 25, 700));
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 선릉역, 10);
     }
@@ -64,7 +64,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단_경로_조회됨(response, 20, Arrays.asList(교대역, 강남역, 양재역));
-        요금_조회됨(response, 1250);
+        요금_조회됨(response, 2150);
     }
 
     private void 요금_조회됨(ExtractableResponse<Response> response, int fare) {

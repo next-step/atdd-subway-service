@@ -28,12 +28,13 @@ public class LineRequest {
         this.distance = distance;
     }
 
-    public LineRequest(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
+    public LineRequest(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int fare) {
         this.name = name;
         this.color = color;
         this.upStationId = upStation.getId();
         this.downStationId = downStation.getId();
         this.distance = distance;
+        this.fare = fare;
     }
 
     public LineRequest() {
