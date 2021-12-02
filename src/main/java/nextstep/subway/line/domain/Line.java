@@ -38,6 +38,30 @@ public class Line extends BaseEntity {
         this.color = line.getColor();
     }
 
+    public Station findUpTerminalStation() {
+        Station upStation = sections.get(0).getUpStation();
+        while (hasSectionHavingDownStation(upStation)) {
+            final Section preSection = findSectionHavingDownStation(upStation);
+            upStation = preSection.getUpStation();
+        }
+        return upStation;
+    }
+
+    private boolean hasSectionHavingDownStation(Station station) {
+        return sections.stream()
+            .filter(Section::hasDownStation)
+            .anyMatch(it -> it.equalsDownStation(station));
+    }
+
+    private Section findSectionHavingDownStation(Station station) {
+        return sections.stream()
+            .filter(it -> it.equalsDownStation(station))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException(
+                String.format("%s역을 하행역으로 갖는 구간이 없습니다.", station.getName())
+            ));
+    }
+
     public Long getId() {
         return id;
     }
