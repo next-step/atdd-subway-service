@@ -34,29 +34,14 @@ public class Sections {
     public void add(Section section) {
         addValidate(section.getUpStation(), section.getDownStation());
 
-        if (getStations().isEmpty()) {
-            sections.add(section);
-            return;
-        }
-
-        if (isExistStation(section.getUpStation())) {
+        if (!getStations().isEmpty()) {
             sections.stream()
-                    .filter(it -> it.upStationEqualTo(section.getUpStation()))
+                    .filter(it -> it.upStationEqualTo(section.getUpStation()) || it.downStationEqualTo(section.getDownStation()))
                     .findFirst()
-                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-
-            sections.add(section);
-            return;
+                    .ifPresent(it -> it.updateSection(section));
         }
 
-        if (isExistStation(section.getDownStation())) {
-            sections.stream()
-                    .filter(it -> it.downStationEqualTo(section.getDownStation()))
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
-
-            sections.add(section);
-        }
+        sections.add(section);
     }
 
     private void addValidate(Station upStation, Station downStation) {

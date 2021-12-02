@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.common.exception.distance.IllegalDistanceException;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
@@ -9,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * packageName : nextstep.subway.line.domain
@@ -46,6 +48,25 @@ public class LineTest {
 
         // then
         assertThat(lineResponse).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("유효한 거리 노선 객체 생성하기")
+    public void validLine() {
+        // when
+        Line line = Line.of("2호선", "그린", 강남역, 광교역, Distance.MIN_DISTANCE);
+
+        // then
+        assertThat(line).isNotNull();
+        assertThat(line.getSections().get(0).getDistance()).isEqualTo(Distance.of(1));
+    }
+
+    @Test
+    @DisplayName("유효하지 않은 거리 노선 객체 생성하기")
+    public void invalidLine() {
+        assertThatThrownBy(() -> Line.of("2호선", "그린", 강남역, 광교역, Distance.MIN_DISTANCE -1))
+                .isInstanceOf(IllegalDistanceException.class)
+                .hasMessageContaining("거리는 1보다 작을 수 없습니다.");
     }
 
 }

@@ -41,20 +41,23 @@ public class Section {
         return new Section(line, upStation, downStation, distance);
     }
 
-    public void updateUpStation(Station station, Distance newDistance) {
-        if (this.distance.isLessThanOrEqualTo(newDistance)) {
-            throw new DistanceNotAllowException();
+    public void updateSection(Section section) {
+        validateDistance(section.getDistance());
+
+        if (this.upStationEqualTo(section.getUpStation())) {
+            this.upStation = section.getDownStation();
         }
-        this.upStation = station;
-        this.distance = this.distance.minus(newDistance);
+
+        if (this.downStationEqualTo(section.getDownStation())) {
+            this.downStation = section.getUpStation();
+        }
+        this.distance = this.distance.minus(section.getDistance());
     }
 
-    public void updateDownStation(Station station, Distance newDistance) {
-        if (this.distance.isLessThanOrEqualTo(newDistance)) {
+    private void validateDistance(Distance distance) {
+        if (this.distance.isLessThanOrEqualTo(distance)) {
             throw new DistanceNotAllowException();
         }
-        this.downStation = station;
-        this.distance = this.distance.minus(newDistance);
     }
 
     public boolean downStationEqualTo(Station station) {
