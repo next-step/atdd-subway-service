@@ -1,4 +1,5 @@
 package nextstep.subway.path.domain;
+import nextstep.subway.fee.DiscountFeeByAge;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 
@@ -9,11 +10,13 @@ public class Path {
 
     private final Stations stations;
     private final int distance;
+    private final int fee;
 
 
-    public Path(Stations stations, int distance) {
+    public Path(Stations stations, int distance, int fee, int age) {
         this.stations = stations;
         this.distance = distance;
+        this.fee = DiscountFeeByAge.getFee(age, fee);
     }
 
     public List<Station> getStations() {
@@ -30,5 +33,9 @@ public class Path {
                 "stations=" + stations +
                 ", distance=" + distance +
                 '}';
+    }
+
+    public int getFee() {
+        return fee;
     }
 }
