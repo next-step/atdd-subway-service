@@ -16,7 +16,7 @@ class SectionTest {
     @DisplayName("상행 추가 업데이트 신규 구간의 거리가 기존 구간 길이 이상이면 실패")
     void updateUpStation_new_distance_greater_than_distance_fail() {
         // given
-        Section section = new Section(이호선, 잠실, 잠실나루, 100);
+        Section section = Section.of(이호선, 잠실, 잠실나루, 100);
 
         // then
         // when
@@ -28,7 +28,7 @@ class SectionTest {
     @DisplayName("하행 추가 업데이트 신규 구간의 거리가 기존 구간 길이 이상이면 실패")
     void updateDownStation_new_distance_greater_than_distance_fail() {
         // given
-        Section section = new Section(이호선, 잠실, 잠실나루, 100);
+        Section section = Section.of(이호선, 잠실, 잠실나루, 100);
 
         // then
         // when
@@ -39,7 +39,7 @@ class SectionTest {
     @Test
     void updateUpStation() {
         // given
-        Section section = new Section(이호선, 잠실, 잠실나루, 100);
+        Section section = Section.of(이호선, 잠실, 잠실나루, 100);
 
         // when
         section.updateUpStation(강변, 10);
@@ -53,7 +53,7 @@ class SectionTest {
     @Test
     void updateDownStation() {
         // given
-        Section section = new Section(이호선, 잠실, 잠실나루, 100);
+        Section section = Section.of(이호선, 잠실, 잠실나루, 100);
 
         // when
         section.updateDownStation(강변, 10);
