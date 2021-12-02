@@ -12,12 +12,16 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class SectionsTest {
 
-    private static final Line 이호선 = new Line("2호선", "green");
+    private static final int 이호선_추가_요금 = 500;
+    private static final int 삼호선_추가_요금 = 700;
+    private static final Line 이호선 = new Line("2호선", "green", 이호선_추가_요금);
+    private static final Line 삼호선 = new Line("3호선", "orange", 삼호선_추가_요금);
     private static final Station 강남역 = new Station("강남역");
     private static final Station 교대역 = new Station("교대역");
     private static final Station 역삼역 = new Station("역삼역");
     private static final Station 삼성역 = new Station("삼성역");
     private static final Station 잠실역 = new Station("잠실역");
+    private static final Station 고속버스터미널 = new Station("고속버스터미널");
 
     @Test
     void getStations_역들을_조회한다() {
@@ -195,6 +199,28 @@ public class SectionsTest {
         // when
         assertThatExceptionOfType(BusinessException.class)
                 .isThrownBy(() -> sections.checkConnected(강남역, 교대역));
+    }
+
+    @Test
+    void getMaxLineFare_최대_노선_추가_요금이_선택된다() {
+        // given
+        Sections sections = getSections();
+        sections.add(new Section(삼호선, 고속버스터미널, 교대역, 20));
+
+        // when
+        int maxFare = sections.getMaxLineFare();
+
+        // then
+        assertThat(maxFare).isEqualTo(삼호선_추가_요금);
+    }
+
+    @Test
+    void getMaxLineFare_구간이_없으면_기본_노선_추가_요금이_선택된다() {
+        // when
+        int maxFare = new Sections().getMaxLineFare();
+
+        // then
+        assertThat(maxFare).isEqualTo(0);
     }
 
     private Sections getSections() {
