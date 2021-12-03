@@ -12,7 +12,7 @@ public class Section {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "line_id")
     private Line line;
 
@@ -24,7 +24,8 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     protected Section() {
     }
@@ -33,7 +34,7 @@ public class Section {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = Distance.of(distance);
     }
 
     public static Section of(Line line, Station upStation, Station downStation, int distance) {
@@ -48,20 +49,14 @@ public class Section {
         return downStation;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new InvalidParameterException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+    public void updateUpStation(Station station, Distance distance) {
+        this.distance.minus(distance);
         this.upStation = station;
-        this.distance -= newDistance;
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new InvalidParameterException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+    public void updateDownStation(Station station, Distance distance) {
+        this.distance.minus(distance);
         this.downStation = station;
-        this.distance -= newDistance;
     }
 
     public boolean isSameUpStationAndDownStation(Section section) {
@@ -85,7 +80,7 @@ public class Section {
     }
 
     public Section newOfMerge(Section newDownSection) {
-        int newDistance = distance + newDownSection.distance;
-        return Section.of(line, upStation, newDownSection.downStation, newDistance);
+        distance.plus(newDownSection.distance);
+        return Section.of(line, upStation, newDownSection.downStation, distance.getDistance());
     }
 }

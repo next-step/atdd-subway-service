@@ -6,6 +6,7 @@ import static nextstep.subway.line.domain.StationFixtures.잠실;
 import static nextstep.subway.line.domain.StationFixtures.잠실나루;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import nextstep.subway.common.exception.InvalidParameterException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -19,8 +20,8 @@ class SectionTest {
 
         // then
         // when
-        assertThrows(RuntimeException.class,
-            () -> section.updateUpStation(강변, 1000));
+        assertThrows(InvalidParameterException.class,
+            () -> section.updateUpStation(강변, Distance.of(1000)));
     }
 
     @Test
@@ -31,7 +32,7 @@ class SectionTest {
 
         // then
         // when
-        assertThrows(RuntimeException.class,
-            () -> section.updateUpStation(강변, 1000));
+        assertThrows(InvalidParameterException.class,
+            () -> section.updateUpStation(강변, Distance.of(1000)));
     }
 }

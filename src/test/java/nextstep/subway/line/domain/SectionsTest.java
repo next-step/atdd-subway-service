@@ -8,8 +8,8 @@ import static nextstep.subway.line.domain.StationFixtures.잠실나루;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.security.InvalidParameterException;
 import java.util.List;
+import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -119,7 +119,7 @@ class SectionsTest {
         // given
         // when
         Section section1 = Section.of(line, 잠실, 잠실나루, 100);
-        Section section2 = Section.of(line, 잠실나루, 구의, 50);
+        Section section2 = Section.of(line, 잠실나루, 구의, 100);
         sections.add(section1);
         sections.add(section2);
 
