@@ -39,15 +39,15 @@ public class SectionFixture {
 		return Section.of(9L, 역삼역(), 선릉역(), 5);
 	}
 
-	public static Section 교대역_남부터미널역() {
+	public static Section 교대역_남부터미널역_구간() {
 		return Section.of(10L, 교대역(), 남부터미널역(), 5);
 	}
 
-	public static Section 남부터미널역_양재역() {
+	public static Section 남부터미널역_양재역_구간() {
 		return Section.of(11L, 남부터미널역(), 양재역(), 2);
 	}
 
-	public static Section 중앙역_한대앞역() {
+	public static Section 중앙역_한대앞역_구간() {
 		return Section.of(12L, 중앙역(), 한대앞역(), 2);
 	}
 }

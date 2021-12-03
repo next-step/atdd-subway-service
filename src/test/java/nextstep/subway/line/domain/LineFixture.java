@@ -27,14 +27,14 @@ public class LineFixture {
 
 	public static Line 삼호선() {
 		List<Section> sections = Arrays.asList(
-			SectionFixture.교대역_남부터미널역(),
-			SectionFixture.남부터미널역_양재역());
+			SectionFixture.교대역_남부터미널역_구간(),
+			SectionFixture.남부터미널역_양재역_구간());
 
 		return Line.of(4L, "3호선", "bg-orange-600", sections);
 	}
 
 	public static Line 사호선() {
-		List<Section> sections = Arrays.asList(SectionFixture.중앙역_한대앞역());
+		List<Section> sections = Arrays.asList(SectionFixture.중앙역_한대앞역_구간());
 
 		return Line.of(5L, "4호선", "bg-blue-600", sections);
 	}

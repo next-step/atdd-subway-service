@@ -92,7 +92,7 @@ public class PathFinderTest {
 				Stream.of(
 						강남역_역삼역_구간(),
 						강남역_양재역_구간(),
-						남부터미널역_양재역())
+						남부터미널역_양재역_구간())
 					.map(Section::getDistance)
 					.reduce(Integer::sum)
 					.get()
