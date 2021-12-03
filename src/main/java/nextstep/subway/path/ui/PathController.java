@@ -23,7 +23,7 @@ public class PathController {
 			new StationResponse(2L),
 			new StationResponse(3L),
 			new StationResponse(4L));
-		int distance = 22;
+		int distance = 17;
 		PathResponse body = new PathResponse(stations, distance);
 		return ResponseEntity.ok(body);
 	}

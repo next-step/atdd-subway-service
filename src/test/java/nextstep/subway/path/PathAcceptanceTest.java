@@ -28,14 +28,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	 *  교대역 --------3-----------강남역 --6---역삼역 --5---선릉역 (2호선)
 	 *     --\                   |
 	 *        -5-                |
-	 *           남부터미널역       4
+	 *           남부터미널역       2
 	 *                --         |
 	 *                  \-2-     |
 	 *                      \-- 양재역 (3호선)
 	 *                           |
 	 *                           |
 	 *                           |
-	 *                           7
+	 *                           4
 	 *                           |
 	 *                           |
 	 *                           |
@@ -56,12 +56,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		StationResponse 중앙역 = 지하철역_등록되어_있음("중앙역").as(StationResponse.class);
 		StationResponse 한대앞역 = 지하철역_등록되어_있음("한대앞역").as(StationResponse.class);
 
-		LineResponse 신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 4);
+		LineResponse 신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 2);
 		LineResponse 이호선 = 지하철_노선_등록되어_있음("2호선", "bg-green-600", 교대역, 강남역, 3);
 		LineResponse 삼호선 = 지하철_노선_등록되어_있음("3호선", "bg-orange-600", 교대역, 남부터미널역, 5);
 		LineResponse 사호선 = 지하철_노선_등록되어_있음("4호선", "bg-blue-600", 중앙역, 한대앞역, 2);
 
-		지하철_노선에_지하철역_등록되어_있음(신분당선, 양재역, 양재시민의숲역, 7);
+		지하철_노선에_지하철역_등록되어_있음(신분당선, 양재역, 양재시민의숲역, 4);
 		지하철_노선에_지하철역_등록되어_있음(이호선, 강남역, 역삼역, 6);
 		지하철_노선에_지하철역_등록되어_있음(이호선, 역삼역, 선릉역, 5);
 		지하철_노선에_지하철역_등록되어_있음(삼호선, 남부터미널역, 양재역, 2);
@@ -70,7 +70,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> 지하철_경로_조회_요청 = 지하철_경로_조회_요청(양재시민의숲역, 선릉역);
 		지하철_경로_조회됨(지하철_경로_조회_요청);
 		지하철_경로에_지하철역_순서_정렬됨(지하철_경로_조회_요청, Arrays.asList(양재시민의숲역, 양재역, 강남역, 역삼역, 선릉역));
-		지하철_경로에_거리가_조회됨(지하철_경로_조회_요청, 22);
+		지하철_경로에_거리가_조회됨(지하철_경로_조회_요청, 17);
 	}
 
 	public static ExtractableResponse<Response> 지하철_경로_조회_요청(

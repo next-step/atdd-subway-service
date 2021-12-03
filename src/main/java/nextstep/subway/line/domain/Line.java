@@ -38,12 +38,25 @@ public class Line extends BaseEntity {
         addSection(section);
     }
 
+    private Line(Long id, String name, String color, List<Section> sections) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+
+        this.sections = Sections.of(sections);
+        sections.forEach(s -> s.setLine(this));
+    }
+
     public static Line of(String name, String color, Section section) {
         return new Line(null, name, color, section);
     }
 
     public static Line of(Long id, String name, String color, Section section) {
         return new Line(id, name, color, section);
+    }
+
+    public static Line of(Long id, String name, String color, List<Section> sections) {
+        return new Line(id, name, color, sections);
     }
 
     public void addSection(Section section) {
