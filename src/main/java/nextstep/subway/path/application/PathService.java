@@ -28,7 +28,6 @@ public class PathService {
 
         List<Line> lines = lineRepository.findAll();
         PathFinder pathFinder = PathFinder.from(lines);
-        System.out.println("pathFinder = " + pathFinder);
         return pathFinder.getShortestPath(sourceStation, targetStation, age);
     }
 

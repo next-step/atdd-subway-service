@@ -46,9 +46,6 @@ public enum AdditionalFeeByDistance {
         int distance = (int) shortestPath.getWeight();
         int additionalFee = getAdditionalFee(shortestPath);
 
-        System.out.println("distance = " + distance);
-        System.out.println("additionalFee = " + additionalFee);
-
         AdditionalFeeByDistance additionalFeeByDistance =  Arrays.stream(values())
                                                                 .filter(value -> value.distanceType.test(distance))
                                                                 .findFirst()
@@ -59,7 +56,6 @@ public enum AdditionalFeeByDistance {
 
     private static int getAdditionalFee(GraphPath<Station, LineWeightedEdge> shortestPath) {
 
-        System.out.println("shortestPath = " + shortestPath.getEdgeList());
         return shortestPath.getEdgeList().stream()
                 .map(LineWeightedEdge::getLine)
                 .mapToInt(Line::getAdditionalFee)

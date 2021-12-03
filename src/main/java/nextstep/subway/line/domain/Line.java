@@ -114,8 +114,6 @@ public class Line extends BaseEntity {
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
 
-        System.out.println("isDownStationExisted = " + isDownStationExisted);
-        System.out.println("isUpStationExisted = " + isUpStationExisted);
         checkSectionExists(isUpStationExisted, isDownStationExisted);
         if (!stations.isEmpty()){
             checkStationAddable(isUpStationExisted, isDownStationExisted);

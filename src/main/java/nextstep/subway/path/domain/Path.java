@@ -27,6 +27,10 @@ public class Path {
         return distance;
     }
 
+    public int getFee() {
+        return fee;
+    }
+
     @Override
     public String toString() {
         return "Path{" +
@@ -35,7 +39,4 @@ public class Path {
                 '}';
     }
 
-    public int getFee() {
-        return fee;
-    }
 }
