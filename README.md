@@ -60,3 +60,12 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 - [ ] LineSectionAcceptanceTest 리팩터링
 - [ ] LineService 리팩터링
+
+### 기능목록
+
+- [ ] LineSectionAcceptanceTest 리팩터링
+  - [X] 지하철 구간 추가 테스트 새로 작성
+  - [X] 기존 구간 등록 테스트를 삭제한다
+  - [X] 지하철 구간 삭제 테스트 새로 작성
+  - [X] 기존 구간 삭제 테스트를 삭제한다
+  - [ ] INTERNAL_SERVER_ERROR 에러 반환을 BAD_REQUEST 반환으로 변경
