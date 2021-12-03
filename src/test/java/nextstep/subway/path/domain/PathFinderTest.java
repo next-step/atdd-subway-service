@@ -18,8 +18,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.PathAcceptanceTest;
 import nextstep.subway.station.domain.Station;
 
+/**
+ * @see PathAcceptanceTest
+ */
 @DisplayName("경로 파인더")
 public class PathFinderTest {
 
