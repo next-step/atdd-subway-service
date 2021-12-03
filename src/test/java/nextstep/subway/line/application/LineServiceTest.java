@@ -3,12 +3,11 @@ package nextstep.subway.line.application;
 import static nextstep.subway.line.domain.StationFixtures.잠실;
 import static nextstep.subway.line.domain.StationFixtures.잠실나루;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import com.google.common.collect.Lists;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +17,6 @@ import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.application.StationService;
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -96,5 +94,18 @@ class LineServiceTest {
         assertThrows(NotFoundException.class, () -> lineService.findLineById(1L));
     }
 
+    @Test
+    @DisplayName("노선 조회 `LineResponse` 검증")
+    void findLineById_to_LineResponse() {
+        // when
+        when(lineRepository.findById(any())).thenReturn(Optional.of(이호선));
+        LineResponse actual = lineService.findLineResponseById(any());
 
+        // then
+        assertAll(
+            () -> assertThat(actual).isNotNull(),
+            () -> assertThat(actual.getStations()).hasSize(이호선.getStations().size()),
+            () -> assertThat(actual.getName()).isEqualTo(이호선.getName())
+        );
+    }
 }
