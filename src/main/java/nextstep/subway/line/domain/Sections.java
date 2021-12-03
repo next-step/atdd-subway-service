@@ -157,7 +157,7 @@ public class Sections {
 		values.remove(section);
 	}
 
-	public void removeByStation(Station station) {
+	public void removeBy(Station station) {
 		throwOnLessThanTwoSections();
 		Optional<Section> frontSection = findByDownStation(station);
 		Optional<Section> backSection = findByUpStation(station);

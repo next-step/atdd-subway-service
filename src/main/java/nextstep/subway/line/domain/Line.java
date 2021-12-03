@@ -55,8 +55,8 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public void removeSectionByStation(Station station) {
-        sections.removeByStation(station);
+    public void removeSectionBy(Station station) {
+        sections.removeBy(station);
     }
 
     public Long getId() {
