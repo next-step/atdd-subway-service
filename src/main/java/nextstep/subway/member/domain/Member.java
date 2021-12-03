@@ -1,6 +1,5 @@
 package nextstep.subway.member.domain;
 
-import io.jsonwebtoken.lang.Assert;
 import java.util.Objects;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -11,6 +10,7 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.common.domain.Age;
 import nextstep.subway.common.domain.Email;
 import nextstep.subway.common.exception.AuthorizationException;
+import org.springframework.util.Assert;
 
 @Entity
 public class Member extends BaseEntity {

@@ -1,8 +1,10 @@
 package nextstep.subway.path;
 
+import static nextstep.subway.auth.acceptance.step.AuthAcceptanceStep.로그인_되어_있음;
 import static nextstep.subway.line.step.LineAcceptanceStep.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_등록되어_있음;
 import static nextstep.subway.line.step.LineSectionAcceptanceStep.지하철_역_못찾음;
+import static nextstep.subway.member.step.MemberAcceptanceStep.회원_생성을_요청;
 import static nextstep.subway.path.step.PathAcceptanceStep.지하철_역_최단_경로_포함됨;
 import static nextstep.subway.path.step.PathAcceptanceStep.지하철_최단_경로_실패됨;
 import static nextstep.subway.path.step.PathAcceptanceStep.지하철_최단_경로_조회;
@@ -53,7 +55,8 @@ class PathAcceptanceTest extends AcceptanceTest {
             new SectionRequest(교대역.getId(), 강남역.getId(), 10)));
 
         LineResponse 삼호선 = 지하철_노선_등록되어_있음(new LineCreateRequest("삼호선", "bg-red-600",
-            new SectionRequest(교대역.getId(), 양재역.getId(), 5)));
+            new SectionRequest(교대역.getId(), 양재역.getId(), 5),
+            1000));
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
 
@@ -66,7 +69,26 @@ class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
             () -> 지하철_최단_경로_조회됨(response),
-            () -> 지하철_역_최단_경로_포함됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 5)
+            () -> 지하철_역_최단_경로_포함됨(response, Arrays.asList(교대역, 남부터미널역, 양재역),
+                5, 2250)
+        );
+    }
+
+    @Test
+    @DisplayName("청소년 사용자 지하철 최단 경로 조회")
+    void paths_childMember() {
+        // given
+        회원_생성을_요청("email@email.com", "password", 13);
+        String 청소년_사용자 = 로그인_되어_있음("email@email.com", "password");
+
+        // when
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회(청소년_사용자, 교대역.getId(), 양재역.getId());
+
+        // then
+        assertAll(
+            () -> 지하철_최단_경로_조회됨(response),
+            () -> 지하철_역_최단_경로_포함됨(response, Arrays.asList(교대역, 남부터미널역, 양재역),
+                5, 1520)
         );
     }
 

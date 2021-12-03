@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import static nextstep.subway.line.step.LineStep.line;
 import static nextstep.subway.line.step.SectionStep.section;
 import static nextstep.subway.station.step.StationStep.station;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -8,7 +9,9 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.stream.Stream;
+import nextstep.subway.common.domain.Fare;
 import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.station.domain.Station;
@@ -21,6 +24,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 @DisplayName("구간들")
@@ -37,7 +41,7 @@ class SectionsTest {
     @DisplayName("초기 구간은 반드시 필수")
     void instance_nullSection_thrownIllegalArgumentException() {
         assertThatIllegalArgumentException()
-            .isThrownBy(() -> Sections.from(null))
+            .isThrownBy(() -> Sections.from((Section) null))
             .withMessage("초기 구간은 반드시 존재해야 합니다.");
     }
 
@@ -85,7 +89,7 @@ class SectionsTest {
     @Test
     @DisplayName("존재하지 않는 역들의 구간 추가")
     void add_notExistsStation_thrownNotFoundException() {
-        // when
+        // given
         Section 강남_정자_구간 = Section.of(
             station("강남"),
             station("정자"),
@@ -93,13 +97,46 @@ class SectionsTest {
 
         Sections sections = Sections.from(양재_광교_구간());
 
-        //when
+        // when
         ThrowingCallable addCall = () -> sections.add(강남_정자_구간);
 
-        //then
+        // then
         assertThatExceptionOfType(InvalidDataException.class)
             .isThrownBy(addCall)
             .withMessageEndingWith("등록할 수 없는 구간 입니다.");
+    }
+
+    @ParameterizedTest(name = "[{index}] 100, 500, {0} 추가 요금의 노선 구간들 중 가장 큰 추가 요금은 {1}")
+    @CsvSource({"50,500", "300,500", "1000,1000"})
+    @DisplayName("최대 추가 요금")
+    void maxExtraFare(int extraFare, int expected) {
+        // given
+        Sections sections = Lines.from(Arrays.asList(
+            anyLine(100),
+            anyLine(500),
+            anyLine(extraFare)
+        )).sections();
+
+        // when
+        Fare maxExtraFare = sections.maxExtraFare();
+
+        // then
+        assertThat(maxExtraFare).isEqualTo(Fare.from(expected));
+    }
+
+    @Test
+    @DisplayName("최대 추가 요금을 구하려면 구간들이 반드시 존재")
+    void maxExtraFare_empty_thrownInvalidDataException() {
+        // given
+        Sections emptySections = Sections.from(Collections.emptyList());
+
+        // when
+        ThrowingCallable maxExtraFareCallable = emptySections::maxExtraFare;
+
+        // then
+        assertThatExceptionOfType(InvalidDataException.class)
+            .isThrownBy(maxExtraFareCallable)
+            .withMessage("비어있는 구간들에서 추가 요금을 계산할 수 없습니다.");
     }
 
     @Nested
@@ -124,15 +161,15 @@ class SectionsTest {
         @Test
         @DisplayName("한 구간만 남아있는 경우 역 삭제")
         void removeStation_remainedLastSection_thrownInvalidDataException() {
-            //given
+            // given
             Sections 강남_양재_광교_구간들 = 강남_양재_광교_구간들();
             강남_양재_광교_구간들.removeStation(station("강남"));
 
-            //when
+            // when
             ThrowingCallable removeStationCall =
                 () -> 강남_양재_광교_구간들.removeStation(station("양재"));
 
-            //then
+            // then
             assertThatExceptionOfType(InvalidDataException.class)
                 .isThrownBy(removeStationCall)
                 .withMessageEndingWith("구간은 반드시 한 개 이상 존재해야 합니다.");
@@ -176,5 +213,9 @@ class SectionsTest {
 
     private Section 양재_광교_구간() {
         return section("양재", "광교", 20);
+    }
+
+    private Line anyLine(int extraFare) {
+        return line("any", "red", section("any1", "any2", 10), extraFare);
     }
 }

@@ -37,7 +37,7 @@ class StationAcceptanceTest extends AcceptanceTest {
     @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
     @Test
     void createStationWithDuplicateName() {
-        //given
+        // given
         지하철역_등록되어_있음(강남역);
 
         // when

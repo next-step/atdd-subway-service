@@ -1,9 +1,10 @@
 package nextstep.subway.path.domain;
 
-import io.jsonwebtoken.lang.Assert;
 import java.util.Objects;
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Stations;
+import org.springframework.util.Assert;
 
 public final class Path {
 
@@ -11,17 +12,20 @@ public final class Path {
 
     private final Stations stations;
     private final Distance distance;
+    private final Sections sections;
 
-    private Path(Stations stations, Distance distance) {
+    private Path(Stations stations, Distance distance, Sections sections) {
         Assert.notNull(stations, "지하철 역 경로는 필수입니다.");
         Assert.notNull(distance, "거리는 필수입니다.");
+        Assert.isTrue(isNotEmpty(sections), "지하철 구간들은 필수입니다.");
         validateSize(stations);
         this.stations = stations;
         this.distance = distance;
+        this.sections = sections;
     }
 
-    public static Path of(Stations stations, Distance distance) {
-        return new Path(stations, distance);
+    public static Path of(Stations stations, Distance distance, Sections sections) {
+        return new Path(stations, distance, sections);
     }
 
     public Stations stations() {
@@ -30,6 +34,14 @@ public final class Path {
 
     public Distance distance() {
         return distance;
+    }
+
+    public Sections sections() {
+        return sections;
+    }
+
+    private boolean isNotEmpty(Sections sections) {
+        return sections != null && sections.isNotEmpty();
     }
 
     private void validateSize(Stations stations) {

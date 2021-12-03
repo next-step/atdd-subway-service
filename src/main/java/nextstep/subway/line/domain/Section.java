@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import nextstep.subway.common.domain.Fare;
 import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.station.domain.Station;
 import org.springframework.util.Assert;
@@ -92,6 +93,13 @@ public class Section {
         return new Section(line, section.upStation, downStation, distance.sum(section.distance));
     }
 
+    Fare extraFare() {
+        if (line == null) {
+            throw new InvalidDataException(String.format("구간(%s)의 추가 요금을 구할 수 없습니다.", this));
+        }
+        return line.extraFare();
+    }
+
     private void validateMerge(Section section) {
         Assert.notNull(section, "합쳐지는 구간은 필수입니다.");
         if (doesNotHaveOverlappingStation(section)) {
@@ -153,7 +161,7 @@ public class Section {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, upStation, downStation, distance);
+        return Objects.hash(upStation, downStation);
     }
 
     @Override
@@ -165,10 +173,8 @@ public class Section {
             return false;
         }
         Section section = (Section) o;
-        return Objects.equals(id, section.id) && Objects
-            .equals(upStation, section.upStation) && Objects
-            .equals(downStation, section.downStation) && Objects
-            .equals(distance, section.distance);
+        return Objects.equals(upStation, section.upStation) && Objects
+            .equals(downStation, section.downStation);
     }
 
     @Override

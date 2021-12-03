@@ -1,6 +1,5 @@
 package nextstep.subway.favorite.domain;
 
-import io.jsonwebtoken.lang.Assert;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -10,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import nextstep.subway.station.domain.Station;
+import org.springframework.util.Assert;
 
 @Entity
 public class Favorite {
@@ -34,6 +34,7 @@ public class Favorite {
 
     private Favorite(Station source, Station target, long memberId) {
         validateStations(source, target);
+        Assert.isTrue(positive(memberId), "사용자 id는 양수여야 합니다.");
         this.source = source;
         this.target = target;
         this.memberId = memberId;
@@ -66,5 +67,9 @@ public class Favorite {
             throw new IllegalArgumentException(
                 String.format("출발역(%s)과 도착역(%s)은 달라야 합니다.", source, target));
         }
+    }
+
+    private boolean positive(long memberId) {
+        return memberId > 0;
     }
 }

@@ -1,9 +1,9 @@
 package nextstep.subway.auth.domain;
 
-import io.jsonwebtoken.lang.Assert;
 import nextstep.subway.common.domain.Age;
 import nextstep.subway.common.domain.Email;
 import nextstep.subway.common.exception.AuthorizationException;
+import org.springframework.util.Assert;
 
 public final class LoginMember {
 
@@ -37,14 +37,28 @@ public final class LoginMember {
         return id;
     }
 
-    private boolean isGuest() {
-        return this == GUEST_MEMBER;
+    public boolean isChild() {
+        if (isGuest()) {
+            return false;
+        }
+        return age.isChild();
+    }
+
+    public boolean isYouth() {
+        if (isGuest()) {
+            return false;
+        }
+        return age.isYouth();
     }
 
     private void validateGuest() {
         if (isGuest()) {
             throw new AuthorizationException("로그인이 필요합니다.");
         }
+    }
+
+    private boolean isGuest() {
+        return this == GUEST_MEMBER;
     }
 
     @Override

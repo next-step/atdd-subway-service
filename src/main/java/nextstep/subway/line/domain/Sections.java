@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import io.jsonwebtoken.lang.Assert;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,10 +10,12 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import nextstep.subway.common.domain.Fare;
 import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
+import org.springframework.util.Assert;
 
 @Embeddable
 public class Sections {
@@ -43,6 +44,10 @@ public class Sections {
     public static Sections from(Section section) {
         Assert.notNull(section, "초기 구간은 반드시 존재해야 합니다.");
         return new Sections(Collections.singletonList(section));
+    }
+
+    public static Sections from(List<Section> sections) {
+        return new Sections(sections);
     }
 
     static Sections empty() {
@@ -90,6 +95,25 @@ public class Sections {
 
     public List<Section> list() {
         return Collections.unmodifiableList(sections);
+    }
+
+    public boolean isNotEmpty() {
+        return !isEmpty();
+    }
+
+    public Fare maxExtraFare() {
+        if (isEmpty()) {
+            throw new InvalidDataException("비어있는 구간들에서 추가 요금을 계산할 수 없습니다.");
+        }
+        return Collections.max(
+            sections.stream()
+                .map(Section::extraFare)
+                .collect(Collectors.toList())
+        );
+    }
+
+    private boolean isEmpty() {
+        return sections.isEmpty();
     }
 
     private void remove(Station station) {
