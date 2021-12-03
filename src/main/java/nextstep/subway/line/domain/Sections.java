@@ -75,10 +75,16 @@ public class Sections {
 		}
 
 		List<Station> stations = new ArrayList<>();
+		Map<Station, Station> downStationByUpStation = getDownStationByUpStation();
 		Station upStation = findUpStation();
-		addStationsInOrder(stations, upStation);
+		addStationsInOrder(stations, downStationByUpStation, upStation);
 
 		return Stations.of(stations);
+	}
+
+	private Map<Station, Station> getDownStationByUpStation() {
+		return values.stream()
+			.collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
 	}
 
 	private Station findUpStation() {
@@ -93,14 +99,14 @@ public class Sections {
 			.orElseThrow(IllegalStateException::new);
 	}
 
-	private void addStationsInOrder(List<Station> stations, Station upStation) {
+	private void addStationsInOrder(
+		List<Station> stations,
+		Map<Station, Station> downStationByUpStation,
+		Station upStation
+	) {
 		while (upStation != null) {
 			stations.add(upStation);
-			Optional<Section> section = findByUpStation(upStation);
-			if (!section.isPresent()) {
-				break;
-			}
-			upStation = section.get().getDownStation();
+			upStation = downStationByUpStation.get(upStation);
 		}
 	}
 
