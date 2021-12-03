@@ -37,4 +37,12 @@ public class Sections {
             .distinct()
             .collect(Collectors.toList());
     }
+
+    public void remove(Section section) {
+        sections.remove(section);
+    }
+
+    public boolean contains(Section section) {
+        return sections.contains(section);
+    }
 }

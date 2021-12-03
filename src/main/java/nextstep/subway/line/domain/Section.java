@@ -2,12 +2,14 @@ package nextstep.subway.line.domain;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 
 @Entity
-public class Section implements Comparable<Section>{
+public class Section extends BaseEntity implements Comparable<Section>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,14 +29,30 @@ public class Section implements Comparable<Section>{
     @Embedded
     private Distance distance;
 
-    public Section() {
+    protected Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
-        this.line = line;
+    private Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = Distance.valueOf(distance);
+        this.distance = distance;
+        toLine(line);
+    }
+
+    public static Section of(Line line, Station upStation, Station downStation, int distance) {
+        return new Section(line, upStation, downStation, Distance.valueOf(distance));
+    }
+
+    public Section toLine(Line line) {
+        if (this.line != null) {
+            this.line.removeSection(this);
+        }
+
+        this.line = line;
+        if (!line.hasSection(this)) {
+            line.addSection(this);
+        }
+        return this;
     }
 
     public Long getId() {
@@ -86,5 +104,22 @@ public class Section implements Comparable<Section>{
         }
 
         return 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Section section = (Section) o;
+        return Objects.equals(id, section.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

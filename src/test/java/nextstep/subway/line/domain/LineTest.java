@@ -15,7 +15,7 @@ public class LineTest {
         //given
         Station 서울역 = new Station("서울역");
         Station 용산역 = new Station("용산역");
-        Line line = new Line("1호선", "blue", 서울역, 용산역, 3);
+        Line line = Line.of("1호선", "blue", 서울역, 용산역, 3);
 
         //when
         List<Station> stations = line.getStations();

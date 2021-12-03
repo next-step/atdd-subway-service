@@ -48,7 +48,7 @@ class LineServiceTest {
         // given 지하철 역 저장되어 있음
         seoulStation = new Station("서울역");
         yongsanStation = new Station("용산역");
-        line = new Line("1호선", "blue", seoulStation, yongsanStation, 10);
+        line = Line.of("1호선", "blue", seoulStation, yongsanStation, 10);
     }
 
     @Test
@@ -154,7 +154,7 @@ class LineServiceTest {
     @DisplayName("라인에 포함된 역 삭제")
     void removeLineStation() {
         Station addStation = new Station("남영역");
-        line.getSections().add(new Section(line, seoulStation, addStation, 4));
+        line.getSections().add(Section.of(line, seoulStation, addStation, 4));
 
         when(stationService.findById(ArgumentMatchers.anyLong()))
             .thenReturn(addStation);
