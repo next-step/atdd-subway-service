@@ -4,7 +4,6 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -60,9 +59,5 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
-    }
-
-    public List<Section> getSections() {
-        return sections.getSections();
     }
 }
