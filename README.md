@@ -71,3 +71,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [X] INTERNAL_SERVER_ERROR 에러 반환을 BAD_REQUEST 반환으로 변경
 - [ ] LineService 리팩터링
   - [X] Sections에 getStations() 메소드 추가
+  - [X] RuntimeException -> CustomException 변경
