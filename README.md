@@ -106,6 +106,69 @@ Feature: 지하철 구간 관련 기능
 
     - 기존 로직을 지우지 말고 새로운 로직을 만들어 수행
     - 정상 동작 확인 후 기존 로직 제거
+    
+## 2단계 - 경로 조회 기능
 
+### 요구사항
 
+#### 1. 최단 경로 조회 인수 테스트 만들기
 
+- mock 서버와 dto를 정의하여 인수 테스트 성공 시키기
+
+**요청 / 응답 포맷 참고**
+
+- 요청 포맷(Request)
+
+```
+HTTP/1.1 200 
+Request method:	GET
+Request URI:	http://localhost:55494/paths?source=1&target=6
+Headers: 	Accept=application/json
+		Content-Type=application/json; charset=UTF-8
+```
+
+- 응답 포맷(Response)
+
+```
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sat, 09 May 2020 14:54:11 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+{
+    "distance": 5,
+    "stations": [
+        {
+            "id": 3,
+            "name": "교대역",
+            "createdDate": "2021-12-03T16:51:50.659185",
+            "modifiedDate": "2021-12-03T16:51:50.659185"
+        },
+        {
+            "id": 4,
+            "name": "남부터미널역",
+            "createdDate": "2021-12-03T16:51:50.691795",
+            "modifiedDate": "2021-12-03T16:51:50.691795"
+        },
+        {
+            "id": 2,
+            "name": "양재역",
+            "createdDate": "2021-12-03T16:51:50.609985",
+            "modifiedDate": "2021-12-03T16:51:50.609985"
+        }
+    ]
+}
+```
+
+#### 2. 최단 경로 조회 기능 구현하기
+
+- 최단 경로 라이브러리 ```jgrapht``` 활용
+- 학습테스트를 통해 라이브러리 사용법을 익히고 구현하고자 하는 기능에 적용
+- 인수테스트를 기반으로 TDD 방식으로 도메인 기능을 구현
+- Happy 케이스 구현
+  - 출발역과 도착역이 같은 경우 예외처리하지 않고 ```distance:0 , stations:단일역``` 으로 리턴
+- 예외 케이스 구현
+  - 출발역과 도착역이 연결되어 있지 않은 경우
+  - 존재하지 않는 출발역이나 도착역을 조회할 경우
