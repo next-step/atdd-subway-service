@@ -13,11 +13,10 @@ import nextstep.subway.station.domain.Station;
 public class Sections {
     private static final int MIN_SIZE = 1;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections;
+    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Section> sections = new ArrayList<>();
 
     protected Sections () {
-        this.sections = new ArrayList<>();
     }
 
     public void add(Section section) {

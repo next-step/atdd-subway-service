@@ -13,12 +13,13 @@ import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.line.dto.LineUpdateRequest;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +37,7 @@ class LineServiceTest {
     LineRepository lineRepository;
 
     @Mock
-    StationService stationService;
+    StationRepository stationRepository;
 
     @InjectMocks
     LineService lineService;
@@ -57,10 +58,10 @@ class LineServiceTest {
     @DisplayName("라인 저장")
     void saveLine() {
 
-        when(stationService.findById(1L))
-            .thenReturn(seoulStation);
-        when(stationService.findById(2L))
-            .thenReturn(yongsanStation);
+        when(stationRepository.findById(1L))
+            .thenReturn(Optional.of(seoulStation));
+        when(stationRepository.findById(2L))
+            .thenReturn(Optional.of(yongsanStation));
         when(lineRepository.save(ArgumentMatchers.any()))
             .thenReturn(line);
         LineRequest lineRequest = new LineRequest("1호선", "blue", 1L, 2L, 3);
@@ -120,7 +121,7 @@ class LineServiceTest {
             assertThat(line.getColor()).isEqualTo("blue");
         });
 
-        LineRequest lineRequest = new LineRequest("2호선", "green");
+        LineUpdateRequest lineRequest = new LineUpdateRequest("2호선", "green");
 
         lineService.updateLine(1L, lineRequest);
 
@@ -135,10 +136,10 @@ class LineServiceTest {
     void addLineStation() {
         Station addStation = new Station("남영역");
 
-        when(stationService.findById(1L))
-            .thenReturn(seoulStation);
-        when(stationService.findById(2L))
-            .thenReturn(addStation);
+        when(stationRepository.findById(1L))
+            .thenReturn(Optional.of(seoulStation));
+        when(stationRepository.findById(2L))
+            .thenReturn(Optional.of(addStation));
         when(lineRepository.findById(ArgumentMatchers.any()))
             .thenReturn(Optional.of(line));
 
@@ -155,8 +156,8 @@ class LineServiceTest {
         Station addStation = new Station("남영역");
         Section.create(line, seoulStation, addStation, Distance.valueOf(5));
 
-        when(stationService.findById(ArgumentMatchers.anyLong()))
-            .thenReturn(addStation);
+        when(stationRepository.findById(ArgumentMatchers.anyLong()))
+            .thenReturn(Optional.of(addStation));
         when(lineRepository.findById(ArgumentMatchers.any()))
             .thenReturn(Optional.of(line));
 

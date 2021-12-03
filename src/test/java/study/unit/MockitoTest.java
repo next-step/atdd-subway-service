@@ -22,10 +22,10 @@ public class MockitoTest {
     void findAllLines() {
         // given
         LineRepository lineRepository = mock(LineRepository.class);
-        StationService stationService = mock(StationService.class);
+        StationRepository stationRepository = mock(StationRepository.class);
 
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(Line.of("1호선", "blue")));
-        LineService lineService = new LineService(lineRepository, stationService);
+        LineService lineService = new LineService(lineRepository, stationRepository);
 
         // when
         List<LineResponse> responses = lineService.findLines();
