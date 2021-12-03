@@ -71,18 +71,18 @@ When 지하철 노선에 등록된 역 목록 조회 요청
 Then: 삭제한  역이 포함되지 않은 역목록 조회됨
 
 ```  
-- [ ] LineService 리팩터링 - 비지니스 로직을 도메인으로 옮기기
-    - [ ] 도메인으로 옮길 로직 찾기 - 스프링 빈을 사용하는 객체와 의존하는 로직을 제외하고 도메인으로 옮긴다.
+- [x] LineService 리팩터링 - 비지니스 로직을 도메인으로 옮기기
+    - [x] 도메인으로 옮길 로직 찾기 - 스프링 빈을 사용하는 객체와 의존하는 로직을 제외하고 도메인으로 옮긴다.
         - [x] getStations
         - [x] List<StationResponse> -> StationResponses 일급컬렉션
         - [x] addLineStation 로직 -> Line, Sections 클래스..
-        - [ ] removeLineStation 로직 -> Line, Sections 클래스로..
-    - [ ] 도메인의 단위 테스트 작성
-    - [ ] 로직 옮기기 - 도메인 리팩터링
+        - [x] removeLineStation 로직 -> Line, Sections 클래스로..
+    - [x] 도메인의 단위 테스트 작성
+    - [x] 로직 옮기기 - 도메인 리팩터링
         - [x]  distance wrapping 하기
         - [x] sections 일급컬렉션으로 변경
         - [x] 연관관계 편의 메서드는. Section 쪽으로..
-        - [ ] 기본 생성자 접근 제한 (protected)
+        - [x] 기본 생성자 접근 제한 (protected)
 
 ## 📝 License
 

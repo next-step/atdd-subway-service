@@ -32,6 +32,10 @@ public final class Distance {
         return distance;
     }
 
+    public Distance plus(Distance other) {
+        return valueOf(this.distance + other.distance);
+    }
+
     /**
      * positive number
      *
@@ -58,12 +62,5 @@ public final class Distance {
     @Override
     public int hashCode() {
         return Objects.hash(distance);
-    }
-
-    @Override
-    public String toString() {
-        return "Distance{" +
-            "distance=" + distance +
-            '}';
     }
 }

@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -145,17 +146,14 @@ class LineServiceTest {
 
         lineService.addLineStation(1L, sectionRequest);
 
-        assertAll(() -> {
-            assertThat(line.getSections().size()).isEqualTo(2);
-            assertThat(line.getStations().size()).isEqualTo(3);
-        });
+        assertThat(line.getStations()).extracting(Station::getName).containsExactly("서울역", "남영역", "용산역");
     }
 
     @Test
     @DisplayName("라인에 포함된 역 삭제")
     void removeLineStation() {
         Station addStation = new Station("남영역");
-        line.getSections().add(Section.create(line, seoulStation, addStation, 4));
+        Section.create(line, seoulStation, addStation, Distance.valueOf(5));
 
         when(stationService.findById(ArgumentMatchers.anyLong()))
             .thenReturn(addStation);
@@ -164,10 +162,7 @@ class LineServiceTest {
 
         lineService.removeLineStation(1L, 2L);
 
-        assertAll(() -> {
-            assertThat(line.getSections().size()).isEqualTo(1);
-            assertThat(line.getStations().size()).isEqualTo(2);
-        });
+        assertThat(line.getStations()).extracting(Station::getName).containsExactly("서울역", "용산역");
     }
 
     private void assertSortedStations(List<StationResponse> stations, String... expected) {

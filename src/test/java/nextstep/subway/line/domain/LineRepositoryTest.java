@@ -30,10 +30,7 @@ public class LineRepositoryTest {
 
         Line line = lineRepository.save(Line.of("1호선", "blue", seoulStation, yongsanStation, 10));
 
-        assertAll(() -> {
-            assertThat(line.getSections().size()).isEqualTo(1);
-            assertThat(line.getStations()).extracting(Station::getName).containsExactly("서울역", "용산역");
-        });
+        assertThat(line.getStations()).extracting(Station::getName).containsExactly("서울역", "용산역");
     }
 
     @Test
