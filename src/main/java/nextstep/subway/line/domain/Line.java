@@ -25,7 +25,6 @@ public class Line extends BaseEntity {
     private final SectionGroup sectionGroup = new SectionGroup();
 
     protected Line() {
-
     }
 
     public Line(String name, String color) {

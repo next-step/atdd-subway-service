@@ -12,6 +12,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DataJpaTest
 class LineTest {
@@ -94,4 +95,64 @@ class LineTest {
         });
     }
 
+    @DisplayName("노선에 있는 역을 삭제할 경우 구간과 지하철의 크기가 줄어든다.")
+    @Test
+    void remove() {
+        // given
+        final Station firstStation = stationRepository.save(Station.of("1번"));
+        final Station secondStation = stationRepository.save(Station.of("2번"));
+        final Station thirdStation = stationRepository.save(Station.of("3번"));
+        final Line line = lineRepository.save(Line.of("노선이름", "색상", Arrays.asList(
+                Section.of(firstStation, secondStation, 10),
+                Section.of(secondStation, thirdStation, 10)
+        )));
+        final int removeBeforeSectionSize = line.getSections().size();
+        final int removeBeforeStationSize = line.getStations().size();
+        final int expectedSectionSize = removeBeforeSectionSize - 1;
+        final int expectedStationSize = removeBeforeStationSize - 1;
+        // when
+        line.removeLineStation(firstStation);
+        // then
+        assertAll(() -> {
+            assertEquals(line.getSections().size(), expectedSectionSize);
+            assertEquals(line.getStations().size(), expectedStationSize);
+        });
+    }
+
+    @DisplayName("종점이 제거될 경우 다음으로 오던 역이 종점이 됨")
+    @Test
+    void removeWithOuter() {
+        // given
+        final Station firstStation = stationRepository.save(Station.of("1번"));
+        final Station secondStation = stationRepository.save(Station.of("2번"));
+        final Station thirdStation = stationRepository.save(Station.of("3번"));
+        final Line line = lineRepository.save(Line.of("노선이름", "색상", Arrays.asList(
+                Section.of(firstStation, secondStation, 10),
+                Section.of(secondStation, thirdStation, 10)
+        )));
+        // when
+        line.removeLineStation(firstStation);
+        // then
+        assertEquals(line.getStations().get(0), secondStation);
+    }
+
+    @DisplayName("중간역이 제거될 경우 재배치를 함 노선에 A - B - C 역이 연결되어 있을 때 B역을 제거할 경우 A - C로 재배치 됨 거리는 두 구간의 거리의 합으로 정함")
+    @Test
+    void removeWithInner() {
+        // given
+        final Station firstStation = stationRepository.save(Station.of("1번"));
+        final Station secondStation = stationRepository.save(Station.of("2번"));
+        final Station thirdStation = stationRepository.save(Station.of("3번"));
+        final int firstSectionDistance = 10;
+        final int secondSectionDistance = 10;
+        final Line line = lineRepository.save(Line.of("노선이름", "색상", Arrays.asList(
+                Section.of(firstStation, secondStation, firstSectionDistance),
+                Section.of(secondStation, thirdStation, secondSectionDistance)
+        )));
+        // when
+        line.removeLineStation(secondStation);
+        // then
+        final Section section = line.getSections().get(0);
+        assertThat(section.matchDistance(firstSectionDistance + secondSectionDistance)).isTrue();
+    }
 }
