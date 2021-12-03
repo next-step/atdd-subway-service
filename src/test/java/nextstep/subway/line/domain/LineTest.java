@@ -21,6 +21,25 @@ class LineTest {
     @Autowired
     private StationRepository stationRepository;
 
+    @DisplayName("노선을 등록 할 수 있다.")
+    @Test
+    void save() {
+        // given
+        final Station firstStation = stationRepository.save(Station.of("1번"));
+        final Station secondStation = stationRepository.save(Station.of("2번"));
+        // when
+        final Line line = lineRepository.save(
+                Line.of("노선이름", "색상",
+                        Section.of(firstStation, secondStation, 10)
+                )
+        );
+        // then
+        assertAll(() -> {
+            assertThat(line.getId()).isNotNull();
+            assertThat(line.getSections().size()).isEqualTo(1);
+        });
+    }
+
     @DisplayName("역목록은 상행역 부터 하행역 순으로 정렬 되어야 한다.")
     @Test
     void getStations() {
