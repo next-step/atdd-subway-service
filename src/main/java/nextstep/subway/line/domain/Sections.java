@@ -20,6 +20,26 @@ public class Sections {
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private List<Section> values = new ArrayList<>();
 
+	protected Sections() {
+
+	}
+
+	private Sections(List<Section> sections) {
+		this.values = new ArrayList<>(sections);
+	}
+
+	public static Sections of(List<Section> sections) {
+		if (sections == null) {
+			return new Sections(new ArrayList<>());
+		}
+
+		return new Sections(sections);
+	}
+
+	public static Sections empty() {
+		return new Sections(new ArrayList<>());
+	}
+
 	public void add(Section section) {
 		throwOnBothStationsAlreadyRegistered(section);
 		throwOnBothStationsNotRegistered(section);
@@ -47,26 +67,6 @@ public class Sections {
 			&& stations.noneMatch(section.getDownStation())) {
 			throw new RuntimeException("등록할 수 없는 구간 입니다.");
 		}
-	}
-
-	protected Sections() {
-
-	}
-
-	private Sections(List<Section> sections) {
-		this.values = new ArrayList<>(sections);
-	}
-
-	public static Sections of(List<Section> sections) {
-		if (sections == null) {
-			return new Sections(new ArrayList<>());
-		}
-
-		return new Sections(sections);
-	}
-
-	public static Sections empty() {
-		return new Sections(new ArrayList<>());
 	}
 
 	public Stations getStations() {

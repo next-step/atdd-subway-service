@@ -25,11 +25,6 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
-    public void addSection(Section section) {
-        sections.add(section);
-        section.setLine(this);
-    }
-
     protected Line() {
 
     }
@@ -48,6 +43,11 @@ public class Line extends BaseEntity {
 
     public static Line of(Long id, String name, String color, Section section) {
         return new Line(id, name, color, section);
+    }
+
+    public void addSection(Section section) {
+        sections.add(section);
+        section.setLine(this);
     }
 
     public void update(String name, String color) {
