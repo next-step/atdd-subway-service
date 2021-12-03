@@ -1,10 +1,15 @@
 package nextstep.subway.line.application;
 
+import static nextstep.subway.line.domain.StationFixtures.잠실;
+import static nextstep.subway.line.domain.StationFixtures.잠실나루;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import com.google.common.collect.Lists;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -13,6 +18,7 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,24 +38,40 @@ class LineServiceTest {
     @Mock
     private StationService stationService;
 
+    private LineServiceV2 lineService;
+    private LineRequest request;
+    private Line 이호선;
+
+    @BeforeEach
+    void setUp() {
+        // given
+        lineService = new LineServiceV2(lineRepository, stationService);
+        request = new LineRequest("2호선", "RED", 1L, 2L, 100);
+        이호선 = new Line(request.getName(), request.getColor(), 잠실, 잠실나루,
+            request.getDistance());
+    }
+
     @Test
     @DisplayName("노선 생성시 상행종점, 하행종점 같이 생성됨")
     void saveLine() {
-        // given
-        LineServiceV2 lineService = new LineServiceV2(lineRepository, stationService);
-        Station 잠실 = new Station("잠실");
-        Station 잠실새내 = new Station("잠실새내");
-        LineRequest request = new LineRequest("2호선", "RED", 1L, 2L, 100);
-        Line line = new Line(request.getName(), request.getColor(), 잠실, 잠실새내,
-            request.getDistance());
-
-        when(lineRepository.save(any())).thenReturn(line);
-
         // when
+        when(lineRepository.save(any())).thenReturn(이호선);
         LineResponse response = lineService.saveLine(request);
 
         // then
-        assertThat(response.getStations()).extracting("name").containsExactly("잠실", "잠실새내");
+        assertThat(response.getStations()).extracting("name")
+            .containsExactly(잠실.getName(), 잠실나루.getName());
+    }
+
+    @Test
+    @DisplayName("노선 전체 조회")
+    void findLines() {
+        // when
+        when(lineRepository.findAll()).thenReturn(Collections.singletonList(이호선));
+        List<LineResponse> lines = lineService.findLines();
+
+        // then
+        assertThat(lines).hasSize(1);
     }
 
 }
