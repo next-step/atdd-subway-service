@@ -30,3 +30,8 @@
      - findLines
      - findLineResponseById 
      - addSection
+
+2. 세션 구간 추가 
+   - addLineStation
+   - 사용범위 
+     - service
