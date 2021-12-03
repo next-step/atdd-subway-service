@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -77,6 +78,10 @@ public class Line extends BaseEntity {
 
     public Stations getStations() {
         return sections.getStations();
+    }
+
+    public List<Station> getStationList() {
+        return sections.getStations().getValues();
     }
 
     @Override
