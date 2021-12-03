@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.application;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -15,6 +15,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.domain.Station;
 
 class PathFinderTest extends AcceptanceTest {

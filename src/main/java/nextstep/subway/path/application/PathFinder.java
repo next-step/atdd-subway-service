@@ -1,8 +1,9 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.application;
 
 import java.util.List;
 
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.domain.Station;
 
 public interface PathFinder {
