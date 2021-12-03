@@ -1,7 +1,5 @@
 package nextstep.subway.line.application;
 
-import static nextstep.subway.line.domain.StationFixtures.도곡;
-import static nextstep.subway.line.domain.StationFixtures.양재;
 import static nextstep.subway.line.domain.StationFixtures.잠실;
 import static nextstep.subway.line.domain.StationFixtures.잠실나루;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -42,7 +40,6 @@ class LineServiceTest {
 
     private LineService lineService;
     private LineRequest 이호선요청;
-    private LineRequest 삼호선요청;
     private Line 이호선;
 
     @BeforeEach
@@ -50,7 +47,6 @@ class LineServiceTest {
         // given
         lineService = new LineService(lineRepository, stationService);
         이호선요청 = new LineRequest("2호선", "RED", 1L, 2L, 100);
-        삼호선요청 = new LineRequest("3호선", "RED", 10L, 20L, 200);
         이호선 = new Line(이호선요청.getName(), 이호선요청.getColor(), 잠실, 잠실나루, 이호선요청.getDistance());
     }
 
@@ -117,12 +113,13 @@ class LineServiceTest {
     void updateLine() {
         // when
         when(lineRepository.findById(any())).thenReturn(Optional.of(이호선));
-        lineService.updateLine(any(), 삼호선요청);
+        LineRequest lineUpdateRequest = new LineRequest("3호선", "Block");
+        lineService.updateLine(any(), lineUpdateRequest);
 
         // then
         assertAll(
-            () -> assertThat(이호선.getName()).isEqualTo(삼호선요청.getName()),
-            () -> assertThat(이호선.getColor()).isEqualTo(삼호선요청.getColor())
+            () -> assertThat(이호선.getName()).isEqualTo(lineUpdateRequest.getName()),
+            () -> assertThat(이호선.getColor()).isEqualTo(lineUpdateRequest.getColor())
         );
     }
 }
