@@ -33,7 +33,8 @@ class LineServiceTest {
     private StationService stationService;
 
     @Test
-    void create() {
+    @DisplayName("노선 생성시 상행종점, 하행종점 같이 생성됨")
+    void saveLine() {
         // given
         LineServiceV2 lineService = new LineServiceV2(lineRepository, stationService);
         Station 잠실 = new Station("잠실");
