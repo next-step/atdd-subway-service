@@ -42,18 +42,18 @@ public class Sections {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        return mapStations(downStation, stations);
+        Station upStation = findUpStation();
+        return mapStations(upStation, stations);
     }
 
     public void remove(Station station) {
         validateDeleteSize();
 
         Optional<Section> downSection = sections.stream()
-            .filter(it -> it.isSameUpStation(station))
+            .filter(section -> section.isSameUpStation(station))
             .findFirst();
         Optional<Section> upSection = sections.stream()
-            .filter(it -> it.isSameDownStation(station))
+            .filter(section -> section.isSameDownStation(station))
             .findFirst();
 
         if (upSection.isPresent() && downSection.isPresent()) {
@@ -68,9 +68,9 @@ public class Sections {
         return sections.size();
     }
 
-    private List<Station> mapStations(Station downStation, List<Station> stations) {
-        stations.add(downStation);
-        Optional<Section> nextLineStation = findNextStation(downStation);
+    private List<Station> mapStations(Station upStation, List<Station> stations) {
+        stations.add(upStation);
+        Optional<Section> nextLineStation = findNextStation(upStation);
 
         return nextLineStation.map(section -> mapStations(section.getDownStation(), stations))
             .orElse(stations);
@@ -84,7 +84,7 @@ public class Sections {
     private Station findFirstUpStation(Station firstUpStation) {
         Station finalDownStation = firstUpStation;
         Optional<Section> nextLineStation = sections.stream()
-            .filter(it -> it.getDownStation() == firstUpStation)
+            .filter(section -> section.getDownStation() == firstUpStation)
             .findFirst();
 
         if (nextLineStation.isPresent()) {
@@ -94,41 +94,44 @@ public class Sections {
         return finalDownStation;
     }
 
-    private Optional<Section> findNextStation(Station finalDownStation) {
+    private Optional<Section> findNextStation(Station station) {
         return sections.stream()
-            .filter(it -> it.isSameUpStation(finalDownStation))
+            .filter(section -> section.isSameUpStation(station))
             .findFirst();
     }
 
-    private void updateUpStationIfSameUpStation(Section section) {
+    private void updateUpStationIfSameUpStation(Section newSection) {
         sections.stream()
-            .filter(it -> it.isSameUpStation(section.getUpStation()))
+            .filter(section -> section.isSameUpStation(newSection.getUpStation()))
             .findFirst()
-            .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+            .ifPresent(section -> section.updateUpStation(newSection.getDownStation(),
+                newSection.getDistance()));
     }
 
-    private void updateDownStationIfSameDownStation(Section section) {
+    private void updateDownStationIfSameDownStation(Section newSection) {
         sections.stream()
-            .filter(it -> it.isSameDownStation(section.getDownStation()))
+            .filter(section -> section.isSameDownStation(newSection.getDownStation()))
             .findFirst()
-            .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+            .ifPresent(section -> section.updateDownStation(newSection.getUpStation(),
+                newSection.getDistance()));
     }
 
     private void validateDuplicate(Section section) {
         if (isDuplicatedSection(section)) {
-            throw new InvalidParameterException("이미 등록된 구간 입니다.");
+            throw InvalidParameterException.SECTION_EXIST_EXCEPTION;
         }
     }
 
     private void validateAddAblePosition(Section section) {
         if (isAddAblePosition(section)) {
-            throw new InvalidParameterException("등록할 수 없는 구간 입니다.");
+            throw InvalidParameterException.SECTION_ADD_NO_POSITION_EXCEPTION;
         }
     }
 
     private boolean isAddAblePosition(Section section) {
         List<Station> stations = getStationsInOrder();
-        return !sections.isEmpty() && stations.stream().noneMatch(section::isSameUpStation)
+        return !sections.isEmpty()
+            && stations.stream().noneMatch(section::isSameUpStation)
             && stations.stream().noneMatch(section::isSameDownStation);
     }
 
@@ -144,7 +147,7 @@ public class Sections {
 
     private void validateDeleteSize() {
         if (sections.size() == MIN_LINE_STATION_SIZE) {
-            throw new InvalidParameterException("구간이 하나 일 경우 제거 할 수 없습니다.");
+            throw InvalidParameterException.SECTION_ONE_COUNT_CAN_NOT_REMOVE_EXCEPTION;
         }
     }
 

@@ -5,6 +5,11 @@ package nextstep.subway.common.exception;
  */
 public class NotFoundException extends DatabaseException {
 
+    public static final NotFoundException SECTION_NOT_FOUND_EXCEPTION = new NotFoundException(
+        "지하철 역을 찾을 수 없습니다.");
+    public static final NotFoundException LINE_NOT_FOUND_EXCEPTION = new NotFoundException(
+        "노선을 찾을 수 없습니다.");
+
     public NotFoundException() {
         super("Not Found Exception");
     }

@@ -5,6 +5,15 @@ package nextstep.subway.common.exception;
  */
 public class InvalidParameterException extends RuntimeException {
 
+    public static final InvalidParameterException SECTION_EXIST_EXCEPTION = new InvalidParameterException(
+        "이미 등록된 구간 입니다.");
+    public static final InvalidParameterException SECTION_ADD_NO_POSITION_EXCEPTION = new InvalidParameterException(
+        "등록할 수 없는 구간 입니다.");
+    public static final InvalidParameterException DISTANCE_RANGE_EXCEPTION = new InvalidParameterException(
+        "역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    public static final InvalidParameterException SECTION_ONE_COUNT_CAN_NOT_REMOVE_EXCEPTION = new InvalidParameterException(
+        "구간이 하나 일 경우 제거 할 수 없습니다.");
+
     public InvalidParameterException() {
     }
 

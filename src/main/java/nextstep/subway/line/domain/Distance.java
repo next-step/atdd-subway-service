@@ -37,7 +37,7 @@ public class Distance {
 
     private void validGreaterThan(Integer distance) {
         if (this.distance <= distance) {
-            throw new InvalidParameterException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw InvalidParameterException.DISTANCE_RANGE_EXCEPTION;
         }
     }
 }

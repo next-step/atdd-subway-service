@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -36,9 +35,7 @@ public class LineService {
     @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
-        return persistLines.stream()
-            .map(LineResponse::of)
-            .collect(Collectors.toList());
+        return LineResponse.ofList(persistLines);
     }
 
     @Transactional(readOnly = true)
@@ -71,13 +68,14 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(NotFoundException::new);
+        return lineRepository.findById(id)
+            .orElseThrow(() -> NotFoundException.LINE_NOT_FOUND_EXCEPTION);
     }
 
     @Transactional(readOnly = true)
     public Line mapLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+        Station upStation = stationService.findStationById(request.getUpStationId());
+        Station downStation = stationService.findStationById(request.getDownStationId());
         return new Line(request.getName(), request.getColor(), upStation, downStation,
             request.getDistance());
     }
