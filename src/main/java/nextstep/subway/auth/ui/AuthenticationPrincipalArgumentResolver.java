@@ -35,7 +35,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
             if (parameterAnnotation.required()) {
                 throw new AuthorizationException();
             }
-            return new LoginMember(null, null, 0);
+            return LoginMember.anonymous();
         }
 
         return authService.findMemberByToken(credentials);
