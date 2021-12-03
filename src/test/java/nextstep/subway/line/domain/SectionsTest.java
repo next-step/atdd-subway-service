@@ -42,4 +42,17 @@ class SectionsTest {
         Assertions.assertThat(stations).containsExactly(강남역, 신촌역, 역삼역);
     }
 
+    @Test
+    void 이미_포함된구간은_추가되지_않는다() {
+        // given
+        일호선.addSection(일호선_구간_강남역_신촌역);
+        일호선.addSection(일호선_구간_강남역_신촌역);
+
+        // when
+        List<Section> sections = 일호선.getSections();
+
+        // then
+        Assertions.assertThat(sections.size()).isEqualTo(1);
+    }
+
 }

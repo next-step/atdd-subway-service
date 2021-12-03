@@ -34,11 +34,15 @@ public class Section {
     public Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
-        this.line = line;
+    public Section(Station upStation, Station downStation, int distance) {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public Section(Line line, Station upStation, Station downStation, int distance) {
+        this(upStation, downStation, distance);
+        this.line = line;
     }
 
     public Section(Long id, Line line, Station upStation, Station downStation, int distance) {
