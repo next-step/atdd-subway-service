@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import static nextstep.subway.line.domain.StationFixtures.강변;
 import static nextstep.subway.line.domain.StationFixtures.구의;
+import static nextstep.subway.line.domain.StationFixtures.도곡;
 import static nextstep.subway.line.domain.StationFixtures.잠실;
 import static nextstep.subway.line.domain.StationFixtures.잠실나루;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,6 +22,7 @@ class SectionsTest {
 
     @BeforeEach
     void setUp() {
+        // given
         sections = Sections.of();
         line = new Line("2호선", "RED");
     }
@@ -42,14 +44,14 @@ class SectionsTest {
     @DisplayName("이미 등록된 구간 입니다.")
     void addSection_duplicate() {
         // given
-        Section addSection1 = Section.of(line, 잠실, 잠실나루, 100);
-        Section addSection2 = Section.of(line, 잠실, 잠실나루, 50);
+        Section section1 = Section.of(line, 잠실, 잠실나루, 100);
+        Section section2 = Section.of(line, 잠실, 잠실나루, 50);
 
         // when
-        sections.add(addSection1);
+        sections.add(section1);
 
         // then
-        assertThrows(InvalidParameterException.class, () -> sections.add(addSection2));
+        assertThrows(InvalidParameterException.class, () -> sections.add(section2));
     }
 
     @Test
@@ -57,38 +59,36 @@ class SectionsTest {
     void addSection_distance_over() {
         // given
         Line line = new Line("2호선", "RED");
-        Section addSection1 = Section.of(line, 잠실, 잠실나루, 100);
-        Section addSection2 = Section.of(line, 잠실, 강변, 200);
+        Section section1 = Section.of(line, 잠실, 잠실나루, 100);
+        Section section2 = Section.of(line, 잠실, 강변, 200);
 
         // when
-        sections.add(addSection1);
+        sections.add(section1);
 
         // then
-        assertThrows(InvalidParameterException.class, () -> sections.add(addSection2));
+        assertThrows(InvalidParameterException.class, () -> sections.add(section2));
     }
 
     @Test
     @DisplayName("상행, 하행 어디에도 속하지 않는 역은 추가 할 수 없음")
     void addSection_add_not_position() {
-        // given
         // when
-        Section addSection1 = Section.of(line, 잠실, 잠실나루, 100);
-        Section actual = Section.of(line, 강변, 구의, 100);
-        sections.add(addSection1);
+        Section section1 = Section.of(line, 잠실, 잠실나루, 100);
+        Section section2 = Section.of(line, 강변, 구의, 100);
+        sections.add(section1);
 
         // then
-        assertThrows(InvalidParameterException.class, () -> sections.add(actual));
+        assertThrows(InvalidParameterException.class, () -> sections.add(section2));
     }
 
     @Test
     @DisplayName("구간 중간에 역 추가")
     void addSection_add_inside() {
-        // given
         // when
-        Section section = Section.of(line, 잠실, 잠실나루, 100);
-        Section actual = Section.of(line, 잠실, 구의, 50);
-        sections.add(section);
-        sections.add(actual);
+        Section section1 = Section.of(line, 잠실, 잠실나루, 100);
+        Section section2 = Section.of(line, 잠실, 구의, 50);
+        sections.add(section1);
+        sections.add(section2);
 
         // then
 
@@ -100,12 +100,11 @@ class SectionsTest {
     @Test
     @DisplayName("상행 종점 이전 역 추가")
     void addSection_add_first_pre() {
-        // given
         // when
-        Section section = Section.of(line, 잠실, 잠실나루, 100);
-        Section actual = Section.of(line, 구의, 잠실, 50);
-        sections.add(section);
-        sections.add(actual);
+        Section section1 = Section.of(line, 잠실, 잠실나루, 100);
+        Section section2 = Section.of(line, 구의, 잠실, 50);
+        sections.add(section1);
+        sections.add(section2);
 
         // then
 
@@ -119,10 +118,10 @@ class SectionsTest {
     void addSection_add_last_next() {
         // given
         // when
-        Section section = Section.of(line, 잠실, 잠실나루, 100);
-        Section actual = Section.of(line, 잠실나루, 구의, 50);
-        sections.add(section);
-        sections.add(actual);
+        Section section1 = Section.of(line, 잠실, 잠실나루, 100);
+        Section section2 = Section.of(line, 잠실나루, 구의, 50);
+        sections.add(section1);
+        sections.add(section2);
 
         // then
 
@@ -147,19 +146,21 @@ class SectionsTest {
     @DisplayName("구간에서 역 한개 제거")
     void remove() {
         // given
-        Section section = Section.of(line, 잠실, 잠실나루, 100);
-        Section actual = Section.of(line, 잠실나루, 구의, 50);
-        sections.add(section);
-        sections.add(actual);
+        Section section1 = Section.of(line, 잠실, 잠실나루, 100);
+        Section section2 = Section.of(line, 잠실나루, 구의, 50);
+        Section section3 = Section.of(line, 구의, 도곡, 5);
+        sections.add(section1);
+        sections.add(section2);
+        sections.add(section3);
 
         // then
-        assertThat(sections.getStationsInOrder()).hasSize(3);
+        assertThat(sections.getStationsInOrder()).hasSize(4);
 
         // when
         sections.remove(잠실나루);
 
         // then
         List<Station> as = sections.getStationsInOrder();
-        assertThat(sections.getStationsInOrder()).hasSize(2);
+        assertThat(sections.getStationsInOrder()).hasSize(3);
     }
 }

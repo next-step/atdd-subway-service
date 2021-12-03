@@ -29,11 +29,6 @@ public class LineResponse {
         this.modifiedDate = modifiedDate;
     }
 
-    public static LineResponse of(Line line, List<StationResponse> stations) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations,
-            line.getCreatedDate(), line.getModifiedDate());
-    }
-
     public static LineResponse of(Line line) {
         List<StationResponse> stations = line.getStations()
             .stream()
