@@ -3,7 +3,11 @@ package nextstep.subway.path;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Arrays;
+
 import org.springframework.http.HttpStatus;
+
+import com.sun.tools.javac.util.List;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -33,7 +37,16 @@ public class PathStaticAcceptance {
 	}
 
 	public static void 지하철역_사이의_경로가_조회됨(ExtractableResponse<Response> response, StationResponse... stationResponses) {
-		assertThat(response.as(PathResponse.class).getStations()).containsExactly(stationResponses);
+		List<Long> responseList = response.as(PathResponse.class).getStations()
+			.stream()
+			.map(StationResponse::getId)
+			.collect(List.collector());
+
+		List<Long> stationsList = Arrays.stream(stationResponses)
+			.map(StationResponse::getId)
+			.collect(List.collector());
+
+		assertThat(responseList).containsAll(stationsList);
 	}
 
 	public static PathRequest 최단경로_조회_요청(Long source, Long target) {

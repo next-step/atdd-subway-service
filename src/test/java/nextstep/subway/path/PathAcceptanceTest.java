@@ -44,13 +44,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
 		남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-		신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(
-			LineResponse.class);
-		이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
-		삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 남부터미널역.getId(), 5)).as(
-			LineResponse.class);
+		신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10))
+			.as(LineResponse.class);
+		이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10))
+			.as(LineResponse.class);
+		삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5))
+			.as(LineResponse.class);
 
-		지하철_노선에_지하철역_등록되어_있음(삼호선, 남부터미널역, 양재역, 4);
+		지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
 	}
 
 	@DisplayName("지하철역 사이의 최단경로를 조회한다.")
@@ -63,7 +64,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		ExtractableResponse<Response> response = 지하철역_사이의_최단경로를_조회한다(강남역_남부터미널역_최단경로_조회_요청값);
 
 		// then
-		지하철역_사이의_최단경로가_조회됨(response, 14);
+		지하철역_사이의_최단경로가_조회됨(response, 12);
 		지하철역_사이의_경로가_조회됨(response, 강남역, 양재역, 남부터미널역);
 	}
 
