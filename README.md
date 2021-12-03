@@ -52,3 +52,27 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+
+## 1단계 - 인수 테스트 기반 리팩터링
+
+### 요구사항
+
+- LineSectionAcceptanceTest 리팩터링
+- LineService 리팩터링
+
+### 기능목록
+
+- [X] LineSectionAcceptanceTest 리팩터링
+  - [X] 지하철 구간 추가 테스트 새로 작성
+  - [X] 기존 구간 등록 테스트를 삭제한다
+  - [X] 지하철 구간 삭제 테스트 새로 작성
+  - [X] 기존 구간 삭제 테스트를 삭제한다
+  - [X] INTERNAL_SERVER_ERROR 에러 반환을 BAD_REQUEST 반환으로 변경
+- [X] LineService 리팩터링
+  - [X] Sections에 getStations() 메소드 추가
+  - [X] RuntimeException -> CustomException 변경
+  - [X] 구간 추가 기능을 Sections로 이전
+  - [X] 구간 삭제 기능을 Sections로 이전
+  - [X] 2depth 코드 리팩토링
+  - [X] Distance 도메인 생성
