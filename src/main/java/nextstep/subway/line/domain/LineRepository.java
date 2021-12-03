@@ -8,6 +8,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface LineRepository extends JpaRepository<Line, Long> {
 
-	@Query("select l from Line l where l.id in :lineIds")
-	List<Line> findAllByLineIds(@Param("lineIds") List<Long> lineIds);
+	@Query("select l from Line l "+
+	"where l.id in (select distinct sec.line.id from Section sec "
+		+ "where sec.upStation.id in :stationIds "
+		+ "or sec.downStation.id in :stationIds)")
+	List<Line> findAllExistStations(@Param("stationIds") List<Long> stationIds);
 }
