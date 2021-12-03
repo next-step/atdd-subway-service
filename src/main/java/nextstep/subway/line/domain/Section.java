@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import java.security.InvalidParameterException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -49,18 +48,22 @@ public class Section {
         return downStation;
     }
 
-    public void updateUpStation(Station station, Distance distance) {
+    public Integer getDistance() {
+        return distance.getDistance();
+    }
+
+    public void updateUpStation(Station station, Integer distance) {
         this.distance.minus(distance);
         this.upStation = station;
     }
 
-    public void updateDownStation(Station station, Distance distance) {
+    public void updateDownStation(Station station, Integer distance) {
         this.distance.minus(distance);
         this.downStation = station;
     }
 
     public boolean isSameUpStationAndDownStation(Section section) {
-        return upStation.equals(section.upStation) && downStation.equals(section.downStation);
+        return isSameUpStation(section.upStation) && isSameDownStation(section.downStation);
     }
 
     public boolean isSameUpStation(Station station) {
@@ -71,16 +74,8 @@ public class Section {
         return downStation.equals(station);
     }
 
-    public void updateDownStationOf(Section section) {
-        updateDownStation(section.upStation, section.distance);
-    }
-
-    public void updateUpStationOf(Section section) {
-        updateUpStation(section.downStation, section.distance);
-    }
-
-    public Section newOfMerge(Section newDownSection) {
-        distance.plus(newDownSection.distance);
-        return Section.of(line, upStation, newDownSection.downStation, distance.getDistance());
+    public Section newOfMerge(Section section) {
+        distance.plus(section.distance);
+        return Section.of(line, upStation, section.downStation, distance.getDistance());
     }
 }

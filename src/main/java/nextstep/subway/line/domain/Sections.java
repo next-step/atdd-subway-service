@@ -104,14 +104,14 @@ public class Sections {
         sections.stream()
             .filter(it -> it.isSameUpStation(section.getUpStation()))
             .findFirst()
-            .ifPresent(it -> it.updateUpStationOf(section));
+            .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
     }
 
     private void updateDownStationIfSameDownStation(Section section) {
         sections.stream()
             .filter(it -> it.isSameDownStation(section.getDownStation()))
             .findFirst()
-            .ifPresent(it -> it.updateDownStationOf(section));
+            .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
     }
 
     private void validateDuplicate(Section section) {
