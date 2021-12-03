@@ -17,6 +17,28 @@ public class Fare {
         return DEFAULT_FARE.plus(lineFare + distancePolicy.calculate(distance));
     }
 
+    public static Fare extra(int lineFare, int distance, int age) {
+        int ageFare = calculateAgeFare(age);
+        DistanceFarePolicy distancePolicy = new DistanceFarePolicy();
+
+        return Fare.of(ageFare)
+                .plus(lineFare)
+                .plus(distancePolicy.calculate(distance));
+    }
+
+    private static int calculateAgeFare(int age) {
+        if (age >= 6 && age < 13) {
+            return (int) ((1250 - 350) * 0.5);
+        }
+        if (age >= 13 && age < 19) {
+            return (int) ((1250 - 350) * 0.8);
+        }
+        if (age >= 19) {
+            return 1250;
+        }
+        return 0;
+    }
+
     private Fare(int value) {
         this.value = value;
     }
