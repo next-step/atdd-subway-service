@@ -10,6 +10,7 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -21,8 +22,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class LineService {
-    private LineRepository lineRepository;
-    private StationService stationService;
+    private final LineRepository lineRepository;
+    private final StationService stationService;
 
     public LineService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;
@@ -39,6 +40,7 @@ public class LineService {
         return LineResponse.of(persistLine, stations);
     }
 
+    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
@@ -51,11 +53,12 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-
+    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         List<StationResponse> stations = getStations(persistLine).stream()
