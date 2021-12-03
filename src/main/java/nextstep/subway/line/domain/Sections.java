@@ -150,6 +150,15 @@ public class Sections {
         }
     }
 
+    public int maxAddFare() {
+        return sections.stream()
+                .map(Section::getLine)
+                .map(Line::getAddFare)
+                .mapToInt(it -> it)
+                .max()
+                .orElse(0);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -11,10 +11,12 @@ public class Path {
 
     private final List<Station> stations;
     private final Distance distance;
+    private final int maxAddFare;
 
-    public Path(List<Station> stations, int distance) {
+    public Path(List<Station> stations, int distance, int maxAddFare) {
         this.stations = Collections.unmodifiableList(stations);
         this.distance = new Distance(distance);
+        this.maxAddFare = maxAddFare;
     }
 
     public List<Station> getStations() {
@@ -23,6 +25,10 @@ public class Path {
 
     public int getDistance() {
         return distance.getDistance();
+    }
+
+    public int getMaxAddFare() {
+        return maxAddFare;
     }
 
     @Override

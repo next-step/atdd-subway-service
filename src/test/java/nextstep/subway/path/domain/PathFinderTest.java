@@ -30,9 +30,9 @@ public class PathFinderTest {
         남부터미널역 = new Station("남부터미널역");
         부산역 = new Station("부산역");
 
-        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = new Line("이호선", "bg-green-600", 교대역, 강남역, 10);
-        삼호선 = new Line("삼호선", "bg-orange-600", 교대역, 양재역, 5);
+        신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, 10, 0);
+        이호선 = new Line("이호선", "bg-green-600", 교대역, 강남역, 10, 0);
+        삼호선 = new Line("삼호선", "bg-orange-600", 교대역, 양재역, 5, 0);
 
         삼호선.addSection(교대역, 남부터미널역, 3);
     }
@@ -47,7 +47,7 @@ public class PathFinderTest {
         Path path = pathFinder.findShortestPath(강남역, 남부터미널역);
 
         // then
-        assertThat(path).isEqualTo(new Path(Arrays.asList(강남역, 양재역, 남부터미널역), 12));
+        assertThat(path).isEqualTo(new Path(Arrays.asList(강남역, 양재역, 남부터미널역), 12, 0));
     }
 
     @Test

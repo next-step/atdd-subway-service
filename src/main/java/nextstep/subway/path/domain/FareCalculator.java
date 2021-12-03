@@ -2,16 +2,20 @@ package nextstep.subway.path.domain;
 
 public class FareCalculator {
 
-    private final int distance;
+    private final Path path;
 
-    public FareCalculator(int distance) {
-        this.distance = distance;
+    public FareCalculator(Path path) {
+        this.path = path;
     }
 
     public int calculate() {
-        int fare = DistancePolicy.BASE_FARE;
-        fare += DistancePolicy.MEDIUM.calculateFare(distance);
-        fare += DistancePolicy.LONG.calculateFare(distance);
-        return fare;
+        return fareByDistance(path.getDistance()) +
+                path.getMaxAddFare();
+    }
+
+    private int fareByDistance(int distance) {
+        return DistancePolicy.BASE_FARE +
+                DistancePolicy.MEDIUM.calculateFare(distance) +
+                DistancePolicy.LONG.calculateFare(distance);
     }
 }
