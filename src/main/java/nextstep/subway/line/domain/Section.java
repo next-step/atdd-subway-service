@@ -1,11 +1,13 @@
 package nextstep.subway.line.domain;
 
+import java.util.Arrays;
+import java.util.List;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 
 @Entity
-public class Section {
+public class Section implements Comparable<Section>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,7 +24,8 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
@@ -31,7 +34,7 @@ public class Section {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = Distance.valueOf(distance);
     }
 
     public Long getId() {
@@ -51,22 +54,37 @@ public class Section {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.get();
+    }
+
+    public List<Station> getUpDownStations() {
+        return Arrays.asList(upStation, downStation);
     }
 
     public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
+        update(station, this.downStation, distance.minus(newDistance));
     }
 
     public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        update(this.upStation, station, distance.minus(newDistance));
+    }
+
+    private void update(Station upStation, Station downStation, Distance distance) {
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
+    }
+
+    @Override
+    public int compareTo(Section o) {
+        if (this.upStation.equals(o.downStation)) {
+            return 1;
         }
-        this.downStation = station;
-        this.distance -= newDistance;
+
+        if (this.downStation.equals(o.upStation)) {
+            return -1;
+        }
+
+        return 0;
     }
 }
