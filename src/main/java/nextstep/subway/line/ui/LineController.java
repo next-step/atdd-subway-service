@@ -5,6 +5,7 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
