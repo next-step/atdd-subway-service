@@ -40,7 +40,6 @@ public class Section {
         return new Section(line, upStation, downStation, distance);
     }
 
-    @Deprecated
     public Station getUpStation() {
         return upStation;
     }
@@ -81,5 +80,9 @@ public class Section {
 
     public boolean equalDistance(int distance) {
         return this.distance == distance;
+    }
+
+    public boolean isNextStation(Station station) {
+        return this.upStation == station;
     }
 }

@@ -45,17 +45,18 @@ public class Line extends BaseEntity {
         this.sections.add(section);
     }
 
-    @Deprecated
+    public List<Station> getStations() {
+        return sections.getStationsInOrder();
+    }
+
     public Long getId() {
         return id;
     }
 
-    @Deprecated
     public String getName() {
         return name;
     }
 
-    @Deprecated
     public String getColor() {
         return color;
     }
@@ -73,4 +74,5 @@ public class Line extends BaseEntity {
         return Objects.equals(this.color, line.color)
             && Objects.equals(this.name, line.name);
     }
+
 }
