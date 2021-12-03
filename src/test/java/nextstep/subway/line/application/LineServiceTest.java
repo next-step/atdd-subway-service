@@ -40,7 +40,7 @@ class LineServiceTest {
     @Mock
     private StationService stationService;
 
-    private LineServiceV2 lineService;
+    private LineService lineService;
     private LineRequest 이호선요청;
     private LineRequest 삼호선요청;
     private Line 이호선;
@@ -49,7 +49,7 @@ class LineServiceTest {
     @BeforeEach
     void setUp() {
         // given
-        lineService = new LineServiceV2(lineRepository, stationService);
+        lineService = new LineService(lineRepository, stationService);
         이호선요청 = new LineRequest("2호선", "RED", 1L, 2L, 100);
         삼호선요청 = new LineRequest("3호선", "RED", 10L, 20L, 200);
         이호선 = new Line(이호선요청.getName(), 이호선요청.getColor(), 잠실, 잠실나루,
