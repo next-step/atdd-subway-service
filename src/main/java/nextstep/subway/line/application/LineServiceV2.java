@@ -45,6 +45,11 @@ public class LineServiceV2 {
         return LineResponse.of(persistLine);
     }
 
+    public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        Line persistLine = findLineById(id);
+        persistLine.update(lineUpdateRequest.toLine());
+    }
+
     @Transactional(readOnly = true)
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(NotFoundException::new);

@@ -8,5 +8,9 @@ public class StationFixtures {
     public static Station 잠실나루 = new Station("잠실나루");
     public static Station 강변 = new Station("강변");
     public static Station 구의 = new Station("구의");
+    public static Station 양재 = new Station("양재");
+    public static Station 매봉 = new Station("매봉");
+    public static Station 도곡 = new Station("도곡");
+
 
 }

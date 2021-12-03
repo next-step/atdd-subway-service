@@ -1,5 +1,7 @@
 package nextstep.subway.line.application;
 
+import static nextstep.subway.line.domain.StationFixtures.도곡;
+import static nextstep.subway.line.domain.StationFixtures.양재;
 import static nextstep.subway.line.domain.StationFixtures.잠실;
 import static nextstep.subway.line.domain.StationFixtures.잠실나루;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,16 +41,21 @@ class LineServiceTest {
     private StationService stationService;
 
     private LineServiceV2 lineService;
-    private LineRequest request;
+    private LineRequest 이호선요청;
+    private LineRequest 삼호선요청;
     private Line 이호선;
+    private Line 삼호선;
 
     @BeforeEach
     void setUp() {
         // given
         lineService = new LineServiceV2(lineRepository, stationService);
-        request = new LineRequest("2호선", "RED", 1L, 2L, 100);
-        이호선 = new Line(request.getName(), request.getColor(), 잠실, 잠실나루,
-            request.getDistance());
+        이호선요청 = new LineRequest("2호선", "RED", 1L, 2L, 100);
+        삼호선요청 = new LineRequest("3호선", "RED", 10L, 20L, 200);
+        이호선 = new Line(이호선요청.getName(), 이호선요청.getColor(), 잠실, 잠실나루,
+            이호선요청.getDistance());
+        삼호선 = new Line(이호선요청.getName(), 이호선요청.getColor(), 양재, 도곡,
+            이호선요청.getDistance());
     }
 
     @Test
@@ -56,7 +63,7 @@ class LineServiceTest {
     void saveLine() {
         // when
         when(lineRepository.save(any())).thenReturn(이호선);
-        LineResponse response = lineService.saveLine(request);
+        LineResponse response = lineService.saveLine(이호선요청);
 
         // then
         assertThat(response.getStations()).extracting("name")
@@ -106,6 +113,21 @@ class LineServiceTest {
             () -> assertThat(actual).isNotNull(),
             () -> assertThat(actual.getStations()).hasSize(이호선.getStations().size()),
             () -> assertThat(actual.getName()).isEqualTo(이호선.getName())
+        );
+    }
+
+    @Test
+    @DisplayName("노선 업데이트 데이터 검증")
+    void updateLine() {
+        // given
+        // when
+        when(lineRepository.findById(any())).thenReturn(Optional.of(이호선));
+        lineService.updateLine(any(), 삼호선요청);
+
+        // then
+        assertAll(
+            () -> assertThat(이호선.getName()).isEqualTo(삼호선요청.getName()),
+            () -> assertThat(이호선.getColor()).isEqualTo(삼호선요청.getColor())
         );
     }
 }
