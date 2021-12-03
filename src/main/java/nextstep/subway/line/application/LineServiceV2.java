@@ -74,7 +74,6 @@ public class LineServiceV2 {
         line.removeStation(station);
     }
 
-
     @Transactional(readOnly = true)
     public Line mapLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
