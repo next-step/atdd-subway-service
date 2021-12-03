@@ -10,7 +10,6 @@
 
 ### LineService 메소드 정리 
 1. 지하철 노선을 저장한다.
-
 2. 지하철 전체 목록을 조회한다. 
 3. 지하철 노선 하나를 조회한다. 
 4. 지하철 노선을 수정한다. 
@@ -19,3 +18,15 @@
 7. 지하철 섹션을 삭제한다. 
 8. 지하철 역을 조회한다. 
 9. 첫번째 역을 조회한다. 
+
+### 영향도 체크 
+
+1. 조회 기능
+   - 수정대상 
+     - findUpStation
+     - getStations
+   - 사용범위 
+     - saveLine 
+     - findLines
+     - findLineResponseById 
+     - addSection
