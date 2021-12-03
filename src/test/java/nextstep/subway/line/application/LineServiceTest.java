@@ -3,6 +3,7 @@ package nextstep.subway.line.application;
 import static nextstep.subway.line.domain.StationFixtures.잠실;
 import static nextstep.subway.line.domain.StationFixtures.잠실나루;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
@@ -73,5 +75,26 @@ class LineServiceTest {
         // then
         assertThat(lines).hasSize(1);
     }
+
+    @Test
+    @DisplayName("노선 조회")
+    void findLineById() {
+        // when
+        when(lineRepository.findById(any())).thenReturn(Optional.of(이호선));
+        Line actual = lineService.findLineById(1L);
+
+        // then
+        assertThat(actual).isNotNull();
+        assertThat(actual.getName()).isEqualTo(이호선.getName());
+    }
+
+    @Test
+    @DisplayName("없는 노선 조회 에러 발생")
+    void findLineById_notFoundException() {
+        // when
+        // then
+        assertThrows(NotFoundException.class, () -> lineService.findLineById(1L));
+    }
+
 
 }
