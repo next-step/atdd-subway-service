@@ -52,14 +52,13 @@ class PathFinderTest extends AcceptanceTest {
 	void findShortestPath() {
 		//given
 		List<Sections> lineSections = new ArrayList<>();
-		lineSections.add(new Sections(Arrays.asList(new Section(신분당선, 강남역, 양재역, 10))));
-		lineSections.add(new Sections(Arrays.asList(new Section(이호선, 교대역, 강남역, 10))));
-		lineSections.add(new Sections(Arrays.asList(
-			new Section(삼호선, 교대역, 남부터미널역, 3),
-			new Section(삼호선, 남부터미널역, 양재역, 2))));
+		신분당선.getSections().addSection(신분당선, 강남역, 양재역, 10);
+		이호선.getSections().addSection(이호선, 교대역, 강남역, 10);
+		삼호선.getSections().addSection(삼호선, 교대역, 남부터미널역, 3);
+		삼호선.getSections().addSection(삼호선, 남부터미널역, 양재역, 2);
 
 		// when
-		Path bestPath = pathFinder.findShortestPath(lineSections, 교대역, 양재역);
+		Path bestPath = pathFinder.findShortestPath(Arrays.asList(신분당선,이호선,삼호선), 교대역, 양재역);
 
 		//then
 		assertThat(bestPath.getDistance()).isEqualTo(5);

@@ -7,14 +7,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 
 @RestController
-@RequestMapping(value = "/paths",produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/paths", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PathController {
 
+	private PathService pathService;
+
+	public PathController(PathService pathService) {
+		this.pathService = pathService;
+	}
+
 	@GetMapping
-	public ResponseEntity<PathResponse> findShortestPath(@RequestParam("source") String source, @RequestParam("target") String target) {
-		return null;
+	public ResponseEntity<PathResponse> findShortestPath(@RequestParam("source") Long source,
+		@RequestParam("target") Long target) {
+		PathResponse pathResponse = pathService.findShortestPath(source, target);
+		return ResponseEntity.ok(pathResponse);
 	}
 }

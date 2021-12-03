@@ -2,7 +2,6 @@ package nextstep.subway.line.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -14,10 +13,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,7 +33,7 @@ public class LineService {
 		Line persistLine = lineRepository.save(
 			new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
 		Sections sections = persistLine.getSections();
-		List<StationResponse> stations = converToStationResponses(sections.getOrderedStations());
+		List<StationResponse> stations = StationService.converToStationResponses(sections.getOrderedStations());
 		return LineResponse.of(persistLine, stations);
 	}
 
@@ -47,7 +43,7 @@ public class LineService {
 		return persistLines.stream()
 			.map(line -> {
 				Sections sections = line.getSections();
-				List<StationResponse> stations = converToStationResponses(sections.getOrderedStations());
+				List<StationResponse> stations = StationService.converToStationResponses(sections.getOrderedStations());
 				return LineResponse.of(line, stations);
 			})
 			.collect(Collectors.toList());
@@ -60,7 +56,7 @@ public class LineService {
 	public LineResponse findLineResponseById(Long id) {
 		Line persistLine = findLineById(id);
 		Sections sections = persistLine.getSections();
-		List<StationResponse> stations = converToStationResponses(sections.getOrderedStations());
+		List<StationResponse> stations = StationService.converToStationResponses(sections.getOrderedStations());
 		return LineResponse.of(persistLine, stations);
 	}
 
@@ -89,9 +85,7 @@ public class LineService {
 		sections.removeStation(line, station);
 	}
 
-	private List<StationResponse> converToStationResponses(List<Station> stations) {
-		return stations.stream()
-			.map(it -> StationResponse.of(it))
-			.collect(Collectors.toList());
+	public List<Line> findAllExistStations(List<Station> stations){
+		return lineRepository.findAllExistStations(stations);
 	}
 }
