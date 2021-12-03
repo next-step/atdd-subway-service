@@ -64,7 +64,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단_경로_조회됨(response, 20, Arrays.asList(교대역, 강남역, 양재역));
-        요금_조회됨(response, 2150);
+        요금_조회됨(response, 2350);
     }
 
     private void 요금_조회됨(ExtractableResponse<Response> response, int fare) {

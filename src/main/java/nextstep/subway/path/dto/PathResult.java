@@ -15,7 +15,7 @@ public class PathResult {
     public PathResult(List<Station> stations, double distance, Sections sections) {
         this.stations = stations;
         this.distance = (int) distance;
-        this.fare = Fare.of(sections.getMaxLineFare());
+        this.fare = Fare.of(sections.getMaxLineFare(), this.distance);
     }
 
     public PathResult(List<Station> stations, int distance, int fare) {
