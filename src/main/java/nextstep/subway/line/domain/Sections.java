@@ -71,12 +71,8 @@ public class Sections {
         Station downStation = findUpStation();
         stations.add(downStation);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = findByUpStation(finalDownStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
+        Optional<Section> nextLineStation;
+        while ((nextLineStation = findByUpStation(downStation)).isPresent()) {
             downStation = nextLineStation.get().getDownStation();
             stations.add(downStation);
         }
@@ -86,12 +82,8 @@ public class Sections {
 
     private Station findUpStation() {
         Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = findByDownStation(finalDownStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
+        Optional<Section> nextLineStation;
+        while ((nextLineStation = findByDownStation(downStation)).isPresent()) {
             downStation = nextLineStation.get().getUpStation();
         }
 
