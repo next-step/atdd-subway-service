@@ -12,13 +12,17 @@ import org.springframework.http.MediaType;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class PathStep {
 
-    public static void 최단_경로_조회됨(ExtractableResponse<Response> response, int distance, List<StationResponse> stationResponses) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(response.as(PathResponse.class).getStations()).containsAll(stationResponses);
-        assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(distance);
+    public static void 최단_경로_조회됨(ExtractableResponse<Response> response, int distance, int fare, List<StationResponse> stationResponses) {
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.as(PathResponse.class).getStations()).containsAll(stationResponses),
+                () -> assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(distance),
+                () -> assertThat(response.as(PathResponse.class).getFare()).isEqualTo(fare)
+        );
     }
 
     public static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source, StationResponse target) {

@@ -69,8 +69,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 양재역);
 
         // then
-        최단_경로_조회됨(response, 20, Arrays.asList(교대역, 강남역, 양재역));
-        요금_조회됨(response, 2350);
+        최단_경로_조회됨(response, 20,2350, Arrays.asList(교대역, 강남역, 양재역));
     }
 
     @Test
@@ -83,12 +82,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 최단_경로_조회_요청(토큰, 교대역, 양재역);
 
         // then
-        최단_경로_조회됨(response, 20, Arrays.asList(교대역, 강남역, 양재역));
-        요금_조회됨(response, 1550);
-    }
-
-    private void 요금_조회됨(ExtractableResponse<Response> response, int fare) {
-        assertThat(response.as(PathResponse.class).getFare()).isEqualTo(fare);
+        최단_경로_조회됨(response, 20, 1550, Arrays.asList(교대역, 강남역, 양재역));
     }
 
     private static LineResponse 지하철_노선_등록되어_있음(LineRequest params) {
