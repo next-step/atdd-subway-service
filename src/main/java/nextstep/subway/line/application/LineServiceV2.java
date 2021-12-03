@@ -55,6 +55,10 @@ public class LineServiceV2 {
         return lineRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
+    public void deleteLineById(Long id) {
+        lineRepository.deleteById(id);
+    }
+
     @Transactional(readOnly = true)
     public Line mapLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());

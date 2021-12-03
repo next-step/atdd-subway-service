@@ -119,7 +119,6 @@ class LineServiceTest {
     @Test
     @DisplayName("노선 업데이트 데이터 검증")
     void updateLine() {
-        // given
         // when
         when(lineRepository.findById(any())).thenReturn(Optional.of(이호선));
         lineService.updateLine(any(), 삼호선요청);
