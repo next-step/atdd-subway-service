@@ -32,13 +32,13 @@ class PathTest {
 
 	@BeforeEach
 	void setUp() {
-		upStation1 = new Station("강남역");
-		downStation1 = new Station("광교역");
-		downStation2 = new Station("삼성역");
-		line1 = new Line("신분당선", "red");
-		line2 = new Line("이호선", "green");
-		section1 = new Section(line1, upStation1, downStation1, 10);
-		section2 = new Section(line2, downStation1, downStation2, 10);
+		upStation1 = Station.from("강남역");
+		downStation1 = Station.from("광교역");
+		downStation2 = Station.from("삼성역");
+		line1 = Line.of("신분당선", "red");
+		line2 = Line.of("이호선", "green");
+		section1 = Section.of(line1, upStation1, downStation1, 10);
+		section2 = Section.of(line2, downStation1, downStation2, 10);
 
 		line1.addSection(section1);
 		line2.addSection(section2);

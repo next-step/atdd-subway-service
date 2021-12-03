@@ -31,7 +31,7 @@ public class Path {
 		GraphPath<Station, DefaultWeightedEdge> shortestPath = generateShortestPath(lines, sourceStation,
 			targetStation);
 
-		return new Path(shortestPath.getVertexList(), new Distance((int)shortestPath.getWeight()));
+		return new Path(shortestPath.getVertexList(), Distance.from((int)shortestPath.getWeight()));
 	}
 
 	public List<Station> getStations() {

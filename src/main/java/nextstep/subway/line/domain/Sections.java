@@ -159,8 +159,10 @@ public class Sections {
 		Station newDownStation = reSettingUpLineStation.getDownStation();
 		reSettingUpLineStation.plusDistance(reSettingDownLineStation);
 		sections.add(
-			new Section(reSettingUpLineStation.getLine(), newUpStation, newDownStation,
-				reSettingUpLineStation.getDistance()));
+			Section.of(reSettingUpLineStation.getLine()
+				, newUpStation
+				, newDownStation
+				, reSettingUpLineStation.getDistance()));
 	}
 
 	public void validRemoveStation(Station removeStation) {
