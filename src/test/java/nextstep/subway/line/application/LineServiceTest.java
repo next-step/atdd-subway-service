@@ -27,7 +27,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@DisplayName("단위 테스트 - mockito의 MockitoExtension을 활용한 가짜 협력 객체 사용")
+@DisplayName("LineService 단위 테스트")
 @ExtendWith(MockitoExtension.class)
 class LineServiceTest {
 
@@ -44,7 +44,6 @@ class LineServiceTest {
     private LineRequest 이호선요청;
     private LineRequest 삼호선요청;
     private Line 이호선;
-    private Line 삼호선;
 
     @BeforeEach
     void setUp() {
@@ -52,10 +51,7 @@ class LineServiceTest {
         lineService = new LineService(lineRepository, stationService);
         이호선요청 = new LineRequest("2호선", "RED", 1L, 2L, 100);
         삼호선요청 = new LineRequest("3호선", "RED", 10L, 20L, 200);
-        이호선 = new Line(이호선요청.getName(), 이호선요청.getColor(), 잠실, 잠실나루,
-            이호선요청.getDistance());
-        삼호선 = new Line(이호선요청.getName(), 이호선요청.getColor(), 양재, 도곡,
-            이호선요청.getDistance());
+        이호선 = new Line(이호선요청.getName(), 이호선요청.getColor(), 잠실, 잠실나루, 이호선요청.getDistance());
     }
 
     @Test

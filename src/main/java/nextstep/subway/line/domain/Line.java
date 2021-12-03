@@ -61,11 +61,6 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    @Deprecated
-    public List<Section> getSections() {
-        return sections.getSections();
-    }
-
     public Integer sectionsCount() {
         return sections.count();
     }

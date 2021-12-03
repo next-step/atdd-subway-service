@@ -4,7 +4,6 @@ import static nextstep.subway.line.domain.LineFixtures.이호선;
 import static nextstep.subway.line.domain.StationFixtures.강변;
 import static nextstep.subway.line.domain.StationFixtures.잠실;
 import static nextstep.subway.line.domain.StationFixtures.잠실나루;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.DisplayName;
@@ -34,32 +33,5 @@ class SectionTest {
         // when
         assertThrows(RuntimeException.class,
             () -> section.updateUpStation(강변, 1000));
-    }
-
-    @Test
-    void updateUpStation() {
-        // given
-        Section section = Section.of(이호선, 잠실, 잠실나루, 100);
-
-        // when
-        section.updateUpStation(강변, 10);
-
-        // then
-        assertThat(section.equalUpStation(강변)).isTrue();
-        assertThat(section.equalDistance(90)).isTrue();
-    }
-
-
-    @Test
-    void updateDownStation() {
-        // given
-        Section section = Section.of(이호선, 잠실, 잠실나루, 100);
-
-        // when
-        section.updateDownStation(강변, 10);
-
-        // then
-        assertThat(section.equalDownStation(강변)).isTrue();
-        assertThat(section.equalDistance(90)).isTrue();
     }
 }

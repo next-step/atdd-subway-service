@@ -12,15 +12,15 @@ public class Section {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "line_id")
     private Line line;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "up_station_id")
     private Station upStation;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
@@ -48,11 +48,6 @@ public class Section {
         return downStation;
     }
 
-    @Deprecated
-    public int getDistance() {
-        return distance;
-    }
-
     public void updateUpStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
             throw new InvalidParameterException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
@@ -69,32 +64,8 @@ public class Section {
         this.distance -= newDistance;
     }
 
-    public boolean equalUpStation(Station station) {
-        return this.upStation.equals(station);
-    }
-
-    public boolean equalDownStation(Station station) {
-        return this.downStation.equals(station);
-    }
-
-    public boolean equalDistance(int distance) {
-        return this.distance == distance;
-    }
-
-    public boolean isNextStation(Station station) {
-        return this.upStation == station;
-    }
-
     public boolean isSameUpStationAndDownStation(Section section) {
-        return isSameUpStationOf(section) && isSameDownStationOf(section);
-    }
-
-    public boolean isSameUpStationOf(Section section) {
-        return upStation.equals(section.upStation);
-    }
-
-    public boolean isSameDownStationOf(Section section) {
-        return downStation.equals(section.downStation);
+        return upStation.equals(section.upStation) && downStation.equals(section.downStation);
     }
 
     public boolean isSameUpStation(Station station) {
@@ -110,18 +81,10 @@ public class Section {
     }
 
     public void updateUpStationOf(Section section) {
-        addStation(section.downStation, section.distance);
+        updateUpStation(section.downStation, section.distance);
     }
 
-    public void addStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new InvalidParameterException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
-    }
-
-    public Section mergeOfNew(Section newDownSection) {
+    public Section newOfMerge(Section newDownSection) {
         int newDistance = distance + newDownSection.distance;
         return Section.of(line, upStation, newDownSection.downStation, newDistance);
     }

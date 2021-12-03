@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import nextstep.subway.station.domain.Station;
 
@@ -15,7 +16,7 @@ public class Sections {
 
     private static final Integer MIN_LINE_STATION_SIZE = 1;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST,
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "line", cascade = {CascadeType.PERSIST,
         CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
 
@@ -31,15 +32,8 @@ public class Sections {
         validateAddAblePosition(section);
         updateUpStationIfSameUpStation(section);
         updateDownStationIfSameDownStation(section);
+
         sections.add(section);
-    }
-
-    public Integer count() {
-        return sections.size();
-    }
-
-    public List<Section> getSections() {
-        return sections;
     }
 
     public List<Station> getStationsInOrder() {
@@ -47,50 +41,77 @@ public class Sections {
             return Collections.emptyList();
         }
 
-        return mapStations();
-    }
-
-    private List<Station> mapStations() {
         List<Station> stations = new ArrayList<>();
         Station downStation = findUpStation();
-        stations.add(downStation);
+        return mapStations(downStation, stations);
+    }
 
-        while (downStation != null) {
-            Optional<Section> nextLineStation = findNextStation(downStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+    public void remove(Station station) {
+        validateDeleteSize();
+
+        Optional<Section> downSection = sections.stream()
+            .filter(it -> it.isSameUpStation(station))
+            .findFirst();
+        Optional<Section> upSection = sections.stream()
+            .filter(it -> it.isSameDownStation(station))
+            .findFirst();
+
+        if (upSection.isPresent() && downSection.isPresent()) {
+            addOfMerge(upSection.get(), downSection.get());
         }
 
-        return stations;
+        upSection.ifPresent(sections::remove);
+        downSection.ifPresent(sections::remove);
+    }
+
+    public Integer count() {
+        return sections.size();
+    }
+
+    private List<Station> mapStations(Station downStation, List<Station> stations) {
+        stations.add(downStation);
+        Optional<Section> nextLineStation = findNextStation(downStation);
+
+        return nextLineStation.map(section -> mapStations(section.getDownStation(), stations))
+            .orElse(stations);
     }
 
     private Station findUpStation() {
-        Station firstStation = getFirstStation();
-        while (firstStation != null) {
-            Station finalDownStation = firstStation;
-            Optional<Section> nextLineStation = sections.stream()
-                .filter(it -> it.getDownStation() == finalDownStation)
-                .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            firstStation = nextLineStation.get().getUpStation();
+        Station firstUpStation = getFirstUpStation();
+        return findFirstUpStation(firstUpStation);
+    }
+
+    private Station findFirstUpStation(Station firstUpStation) {
+        Station finalDownStation = firstUpStation;
+        Optional<Section> nextLineStation = sections.stream()
+            .filter(it -> it.getDownStation() == firstUpStation)
+            .findFirst();
+
+        if (nextLineStation.isPresent()) {
+            finalDownStation = findFirstUpStation(nextLineStation.get().getUpStation());
         }
 
-        return firstStation;
+        return finalDownStation;
     }
 
     private Optional<Section> findNextStation(Station finalDownStation) {
         return sections.stream()
-            .filter(it -> it.isNextStation(finalDownStation))
+            .filter(it -> it.isSameUpStation(finalDownStation))
             .findFirst();
     }
 
-    private Station getFirstStation() {
-        return sections.get(0).getUpStation();
+    private void updateUpStationIfSameUpStation(Section section) {
+        sections.stream()
+            .filter(it -> it.isSameUpStation(section.getUpStation()))
+            .findFirst()
+            .ifPresent(it -> it.updateUpStationOf(section));
+    }
+
+    private void updateDownStationIfSameDownStation(Section section) {
+        sections.stream()
+            .filter(it -> it.isSameDownStation(section.getDownStation()))
+            .findFirst()
+            .ifPresent(it -> it.updateDownStationOf(section));
     }
 
     private void validateDuplicate(Section section) {
@@ -105,21 +126,6 @@ public class Sections {
         }
     }
 
-    private void updateUpStationIfSameUpStation(Section section) {
-        sections.stream()
-            .filter(section::isSameUpStationOf)
-            .findFirst()
-            .ifPresent(it -> it.updateUpStationOf(section));
-    }
-
-    private void updateDownStationIfSameDownStation(Section section) {
-        sections.stream()
-            .filter(section::isSameDownStationOf)
-            .findFirst()
-            .ifPresent(it -> it.updateDownStationOf(section));
-    }
-
-
     private boolean isAddAblePosition(Section section) {
         List<Station> stations = getStationsInOrder();
         return !sections.isEmpty() && stations.stream().noneMatch(section::isSameUpStation)
@@ -131,28 +137,18 @@ public class Sections {
             .anyMatch(section::isSameUpStationAndDownStation);
     }
 
-    public void remove(Station station) {
-        validateDeleteSize();
 
-        Optional<Section> upSection = sections.stream()
-            .filter(it -> it.getUpStation() == station)
-            .findFirst();
-        Optional<Section> downLineStation = sections.stream()
-            .filter(it -> it.getDownStation() == station)
-            .findFirst();
-
-        if (upSection.isPresent() && downLineStation.isPresent()) {
-            Section newUpSection = downLineStation.get();
-            sections.add(newUpSection.mergeOfNew(upSection.get()));
-        }
-
-        upSection.ifPresent(sections::remove);
-        downLineStation.ifPresent(sections::remove);
+    private void addOfMerge(Section upSection, Section downSection) {
+        sections.add(upSection.newOfMerge(downSection));
     }
 
     private void validateDeleteSize() {
         if (sections.size() == MIN_LINE_STATION_SIZE) {
             throw new InvalidParameterException("구간이 하나 일 경우 제거 할 수 없습니다.");
         }
+    }
+
+    private Station getFirstUpStation() {
+        return sections.get(0).getUpStation();
     }
 }
