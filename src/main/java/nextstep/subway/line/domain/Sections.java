@@ -41,8 +41,8 @@ public class Sections {
 	}
 
 	public void add(Section section) {
-		throwOnBothStationsAlreadyRegistered(section);
-		throwOnBothStationsNotRegistered(section);
+		throwOnStationsBothRegistered(section);
+		throwOnStationsNeitherRegistered(section);
 
 		Station upStation = section.getUpStation();
 		Station downStation = section.getDownStation();
@@ -53,20 +53,27 @@ public class Sections {
 		values.add(section);
 	}
 
-	private void throwOnBothStationsAlreadyRegistered(Section section) {
+	private void throwOnStationsBothRegistered(Section section) {
 		Stations stations = getStations();
-		if (stations.anyMatch(section.getUpStation()) && stations.anyMatch(section.getDownStation())) {
+		if (isBothRegistered(section, stations)) {
 			throw new RuntimeException("이미 등록된 구간 입니다.");
 		}
 	}
 
-	private void throwOnBothStationsNotRegistered(Section section) {
+	private boolean isBothRegistered(Section section, Stations stations) {
+		return stations.anyMatch(section.getUpStation()) && stations.anyMatch(section.getDownStation());
+	}
+
+	private void throwOnStationsNeitherRegistered(Section section) {
 		Stations stations = getStations();
-		if (!stations.isEmpty()
-			&& stations.noneMatch(section.getUpStation())
-			&& stations.noneMatch(section.getDownStation())) {
+		if (!stations.isEmpty() && isNeitherRegistered(section, stations)) {
 			throw new RuntimeException("등록할 수 없는 구간 입니다.");
 		}
+	}
+
+	private boolean isNeitherRegistered(Section section, Stations stations) {
+		return stations.noneMatch(section.getUpStation())
+			&& stations.noneMatch(section.getDownStation());
 	}
 
 	public Stations getStations() {
