@@ -26,7 +26,6 @@ public class LineService {
         this.stationService = stationService;
     }
 
-
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
@@ -37,10 +36,8 @@ public class LineService {
     }
 
     public List<LineResponse> findLines() {
-        List<Line> persistLines = lineRepository.findAll();
-        return persistLines.stream()
-            .map(LineResponse::of)
-            .collect(Collectors.toList());
+        List<Line> findLine = lineRepository.findAll();
+        return LineResponse.ofList(findLine);
     }
 
     public Line findLineById(Long id) {

@@ -41,6 +41,12 @@ public class LineResponse {
             .collect(Collectors.toList());
     }
 
+    public static List<LineResponse> ofList(List<Line> findLine) {
+        return findLine.stream()
+            .map(LineResponse::of)
+            .collect(Collectors.toList());
+    }
+
     public Long getId() {
         return id;
     }
