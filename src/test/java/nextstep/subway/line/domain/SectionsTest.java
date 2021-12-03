@@ -1,15 +1,12 @@
 package nextstep.subway.line.domain;
 
-import static nextstep.subway.line.domain.LineTest.일호선;
 import static nextstep.subway.line.domain.SectionTest.일호선_구간_강남역_신촌역;
 import static nextstep.subway.line.domain.SectionTest.일호선_구간_신촌역_역삼역;
 import static nextstep.subway.line.domain.SectionTest.일호선_구간_역삼역_서울역;
 import static nextstep.subway.line.domain.SectionTest.일호선_구간_용산역_역삼역;
+import static nextstep.subway.line.domain.SectionTest.일호선_존재하지않는_용문역_양평역;
 import static nextstep.subway.line.domain.StationTest.강남역;
-import static nextstep.subway.line.domain.StationTest.신촌역;
-import static nextstep.subway.line.domain.StationTest.역삼역;
 
-import java.util.List;
 import nextstep.subway.station.domain.Station;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -30,29 +27,21 @@ class SectionsTest {
     }
 
     @Test
-    void 정렬된_역을_확인한다() {
-        // given
-        일호선.addSection(일호선_구간_강남역_신촌역);
-        일호선.addSection(일호선_구간_신촌역_역삼역);
-
-        // when
-        List<Station> stations = 일호선.getStations();
-
+    void 이미_등록된_구간_입니다() {
         // then
-        Assertions.assertThat(stations).containsExactly(강남역, 신촌역, 역삼역);
+        Assertions.assertThatThrownBy(() -> {
+                일호선_구간들.addLineStation(일호선_구간_신촌역_역삼역);
+            }).isInstanceOf(RuntimeException.class)
+            .hasMessageStartingWith("이미 등록된 구간 입니다.");
     }
 
     @Test
-    void 이미_포함된구간은_추가되지_않는다() {
-        // given
-        일호선.addSection(일호선_구간_강남역_신촌역);
-        일호선.addSection(일호선_구간_강남역_신촌역);
-
-        // when
-        List<Section> sections = 일호선.getSections();
-
+    void 등록할_수_없는_구간_입니다() {
         // then
-        Assertions.assertThat(sections.size()).isEqualTo(1);
+        Assertions.assertThatThrownBy(() -> {
+                일호선_구간들.addLineStation(일호선_존재하지않는_용문역_양평역);
+            }).isInstanceOf(RuntimeException.class)
+            .hasMessageStartingWith("등록할 수 없는 구간 입니다.");
     }
 
 }

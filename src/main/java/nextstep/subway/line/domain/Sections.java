@@ -35,10 +35,9 @@ public class Sections {
 
     private boolean isContains(Section... newSections) {
         List<Section> sections = asList(newSections);
-        boolean match = this.sections.stream()
+        return this.sections.stream()
             .anyMatch(savedSection -> sections.stream()
                 .anyMatch(section -> Objects.equals(section, savedSection)));
-        return match;
     }
 
     public void addSection(Section section) {
@@ -54,21 +53,14 @@ public class Sections {
         Station upStation = section.getUpStation();
         int distance = section.getDistance();
 
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+        boolean isUpStationExisted = matchStation(stations, upStation);
+        boolean isDownStationExisted = matchStation(stations, downStation);
 
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-            stations.stream().noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
+        validationAreadyRegistedSection(isUpStationExisted, isDownStationExisted);
+        validationIsNotRegistedSection(stations, downStation, upStation);
 
         if (stations.isEmpty()) {
-            sections
-                .add(new Section(upStation, downStation, distance));
+            sections.add(new Section(upStation, downStation, distance));
             return;
         }
 
@@ -90,6 +82,23 @@ public class Sections {
                 .add(new Section(upStation, downStation, distance));
         } else {
             throw new RuntimeException();
+        }
+    }
+
+    private boolean matchStation(List<Station> stations, Station upStation) {
+        return stations.stream().anyMatch(it -> it == upStation);
+    }
+
+    private void validationIsNotRegistedSection(List<Station> stations, Station downStation, Station upStation) {
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
+            stations.stream().noneMatch(it -> it == downStation)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void validationAreadyRegistedSection(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
         }
     }
 
