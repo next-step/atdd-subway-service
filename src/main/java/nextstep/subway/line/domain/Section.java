@@ -13,6 +13,7 @@ import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Section {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;

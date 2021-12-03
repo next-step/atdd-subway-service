@@ -19,8 +19,8 @@ import nextstep.subway.station.domain.Station;
 @Service
 @Transactional
 public class LineService {
-	private LineRepository lineRepository;
-	private StationService stationService;
+	private final LineRepository lineRepository;
+	private final StationService stationService;
 
 	public LineService(LineRepository lineRepository, StationService stationService) {
 		this.lineRepository = lineRepository;
@@ -36,23 +36,26 @@ public class LineService {
 		return LineResponse.from(persistLine);
 	}
 
+	@Transactional(readOnly = true)
 	public List<LineResponse> findLines() {
 		List<Line> persistLines = lineRepository.findAll();
 		return LineResponse.listOf(persistLines);
 	}
 
-	public Line findLineById(Long id) {
+	private Line findLineById(Long id) {
 		return lineRepository.findById(id)
 			.orElseThrow(() -> new LineException(ErrorCode.NO_SUCH_LINE_ERROR));
 	}
 
+	@Transactional(readOnly = true)
 	public LineResponse findLineResponseById(Long id) {
 		Line persistLine = findLineById(id);
 		return LineResponse.from(persistLine);
 	}
 
 	public void updateLine(Long id, LineRequest lineUpdateRequest) {
-		Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+		Line persistLine = lineRepository.findById(id)
+			.orElseThrow(RuntimeException::new);
 		persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
 	}
 

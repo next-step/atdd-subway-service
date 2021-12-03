@@ -29,8 +29,7 @@ public class Sections {
 		if (!sections.isEmpty()) {
 			validSameUpDownStation(section);
 			validIsNotInStations(section);
-			sections
-				.stream()
+			sections.stream()
 				.filter(inner -> !inner.isSameUpDownStation(section))
 				.findAny()
 				.ifPresent(inner -> inner.reSettingSection(section));

@@ -14,11 +14,15 @@ import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Line extends BaseEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@Column(unique = true)
+
+	@Column(unique = true, name = "name")
 	private String name;
+
+	@Column(name = "color")
 	private String color;
 
 	@Embedded
