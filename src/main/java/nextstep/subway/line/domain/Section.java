@@ -69,4 +69,13 @@ public class Section {
         this.downStation = station;
         this.distance -= newDistance;
     }
+
+    public void updateStation(Station upStation, Station downStation, int distance) {
+        if (this.upStation == upStation) {
+            updateUpStation(downStation, distance);
+            return;
+        }
+
+        updateDownStation(upStation, distance);
+    }
 }

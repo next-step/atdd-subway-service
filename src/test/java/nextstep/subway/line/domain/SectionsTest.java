@@ -9,7 +9,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class SectionsTest {
-    @DisplayName("정렬된 역을 가져온다")
+    @DisplayName("구간을 추가하고 정렬된 역을 가져온다")
     @Test
     void testGetStations() {
         // given

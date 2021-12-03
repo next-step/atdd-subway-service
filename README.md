@@ -72,3 +72,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [ ] LineService 리팩터링
   - [X] Sections에 getStations() 메소드 추가
   - [X] RuntimeException -> CustomException 변경
+  - [X] 구간 추가 기능을 Sections로 이전
