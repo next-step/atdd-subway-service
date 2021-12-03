@@ -6,6 +6,7 @@ import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.line.exception.NotExistLineException;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -50,7 +51,7 @@ public class LineService {
 	}
 
 	public Line findLineById(Long id) {
-		return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+		return lineRepository.findById(id).orElseThrow(NotExistLineException::new);
 	}
 
 	public LineResponse findLineResponseById(Long id) {
@@ -85,7 +86,7 @@ public class LineService {
 		sections.removeStation(line, station);
 	}
 
-	public List<Line> findAllExistStations(List<Station> stations){
+	public List<Line> findAllExistStations(List<Station> stations) {
 		return lineRepository.findAllExistStations(stations);
 	}
 }
