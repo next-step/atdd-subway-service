@@ -85,4 +85,41 @@ public class Section {
     public boolean isNextStation(Station station) {
         return this.upStation == station;
     }
+
+    public boolean isSameUpStationAndDownStation(Section section) {
+        return isSameUpStationOf(section) && isSameDownStationOf(section);
+    }
+
+    public boolean isSameUpStationOf(Section section) {
+        return upStation.equals(section.upStation);
+    }
+
+    public boolean isSameDownStationOf(Section section) {
+        return downStation.equals(section.downStation);
+    }
+
+    public boolean isSameUpStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean isSameDownStation(Station station) {
+        return downStation.equals(station);
+    }
+
+    public void updateDownStationOf(Section section) {
+        updateDownStation(section.upStation, section.distance);
+    }
+
+    public void updateUpStationOf(Section section) {
+        addStation(section.downStation, section.distance);
+    }
+
+    public void addStation(Station station, int newDistance) {
+        if (this.distance <= newDistance) {
+            throw new InvalidParameterException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+        this.upStation = station;
+        this.distance -= newDistance;
+    }
+
 }

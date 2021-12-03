@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,6 +25,10 @@ public class Sections {
     }
 
     public void add(Section section) {
+        validateDuplicate(section);
+        validateAddAblePosition(section);
+        updateUpStationIfSameUpStation(section);
+        updateDownStationIfSameDownStation(section);
         sections.add(section);
     }
 
@@ -84,5 +89,43 @@ public class Sections {
 
     private Station getFirstStation() {
         return sections.get(0).getUpStation();
+    }
+
+    private void validateDuplicate(Section section) {
+        if (isDuplicatedSection(section)) {
+            throw new InvalidParameterException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    private void validateAddAblePosition(Section section) {
+        if (isAddAblePosition(section)) {
+            throw new InvalidParameterException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void updateUpStationIfSameUpStation(Section section) {
+        sections.stream()
+            .filter(section::isSameUpStationOf)
+            .findFirst()
+            .ifPresent(it -> it.updateUpStationOf(section));
+    }
+
+    private void updateDownStationIfSameDownStation(Section section) {
+        sections.stream()
+            .filter(section::isSameDownStationOf)
+            .findFirst()
+            .ifPresent(it -> it.updateDownStationOf(section));
+    }
+
+
+    private boolean isAddAblePosition(Section section) {
+        List<Station> stations = getStationsInOrder();
+        return !sections.isEmpty() && stations.stream().noneMatch(section::isSameUpStation)
+            && stations.stream().noneMatch(section::isSameDownStation);
+    }
+
+    private boolean isDuplicatedSection(Section section) {
+        return sections.stream()
+            .anyMatch(section::isSameUpStationAndDownStation);
     }
 }
