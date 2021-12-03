@@ -51,8 +51,8 @@ npm run dev
 
 ## 🚩 구현 기능 목록
 ### 인수테스트 기반 리팩터링
-- [ ] LineSectionAcceptanceTest 리팩터링
-    - [ ] API를 검증하기 보다는 시나리오, 흐름을 검증하는 테스트로 리팩터링 한다.
+- [x] LineSectionAcceptanceTest 리팩터링
+    - [x] API를 검증하기 보다는 시나리오, 흐름을 검증하는 테스트로 리팩터링 한다.
 ```
 Feature: 지하철 구간 관련 기능
 Given:
