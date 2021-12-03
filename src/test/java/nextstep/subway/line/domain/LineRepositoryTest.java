@@ -66,7 +66,7 @@ class LineRepositoryTest {
 		sectionRepository.save(section2);
 		sectionRepository.save(section3);
 
-		List<Line> lines = lineRepository.findAllExistStations(Arrays.asList(신논현.getId(),강남역.getId()));
+		List<Line> lines = lineRepository.findAllExistStations(Arrays.asList(신논현,강남역));
 		System.out.println(lines);
 		assertThat(lines.size()).isEqualTo(1);
 		assertThat(lines).containsAll(Arrays.asList(신분당선));
