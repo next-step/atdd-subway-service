@@ -21,7 +21,7 @@ public class PathResult {
     public PathResult(List<Station> stations, int distance, int fare) {
         this.stations = stations;
         this.distance = distance;
-        this.fare = new Fare(fare);
+        this.fare = Fare.of(fare);
     }
 
     public List<Station> getStations() {
