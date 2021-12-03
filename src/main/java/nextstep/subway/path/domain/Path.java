@@ -28,8 +28,10 @@ public class Path {
 
 	public static Path of(List<Line> lines, Station sourceStation, Station targetStation) {
 		validSourceTargetStation(sourceStation, targetStation);
+		GraphPath<Station, DefaultWeightedEdge> shortestPath = generateShortestPath(lines, sourceStation,
+			targetStation);
 
-		return new Path();
+		return new Path(shortestPath.getVertexList(), new Distance((int)shortestPath.getWeight()));
 	}
 
 	public List<Station> getStations() {
@@ -50,6 +52,12 @@ public class Path {
 		}
 	}
 
+	private static GraphPath<Station, DefaultWeightedEdge> generateShortestPath(List<Line> lines
+		, Station sourceStation
+		, Station targetStation) {
+		return generateDijkstraShortestPath(generateWeightedMultigraphFromLines(lines), sourceStation, targetStation);
+	}
+
 	private static WeightedMultigraph<Station, DefaultWeightedEdge> generateWeightedMultigraphFromLines(
 		List<Line> lines) {
 		WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(
@@ -65,20 +73,19 @@ public class Path {
 
 	private static void addVertexFromLine(WeightedMultigraph<Station, DefaultWeightedEdge> graph, Line line) {
 		line.getStations()
-			.forEach(station -> graph.addVertex(station));
+			.forEach(graph::addVertex);
 	}
 
 	private static void setEdgeWeightFromLine(WeightedMultigraph<Station, DefaultWeightedEdge> graph,
 		Line line) {
 		line.getSections()
 			.forEach(section -> graph.setEdgeWeight(
-				graph.addEdge(section.getUpStation()
-					, section.getDownStation())
+				graph.addEdge(section.getUpStation(), section.getDownStation())
 				, section.getDistance())
 			);
 	}
 
-	private static GraphPath<Station, DefaultWeightedEdge> generateShortestPath(
+	private static GraphPath<Station, DefaultWeightedEdge> generateDijkstraShortestPath(
 		WeightedMultigraph<Station, DefaultWeightedEdge> graph, Station sourceStation, Station targetStation) {
 		DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 

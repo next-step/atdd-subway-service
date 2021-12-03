@@ -19,7 +19,7 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.exception.PathException;
 import nextstep.subway.station.domain.Station;
 
-@DisplayName("지하철 경로 관련 단위 테스트")
+@DisplayName("단위 테스트 - 지하철 경로")
 class PathTest {
 
 	private Station upStation1;
@@ -98,7 +98,7 @@ class PathTest {
 		WeightedMultigraph<Station, DefaultWeightedEdge> graph =
 			(WeightedMultigraph<Station, DefaultWeightedEdge>)method.invoke(new Path(), List.of(line1, line2));
 
-		Method generateShortestPathMethod = Path.class.getDeclaredMethod("generateShortestPath"
+		Method generateShortestPathMethod = Path.class.getDeclaredMethod("generateDijkstraShortestPath"
 			, WeightedMultigraph.class
 			, Station.class
 			, Station.class);
