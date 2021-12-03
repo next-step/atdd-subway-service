@@ -8,6 +8,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.domain.Station;
@@ -16,13 +17,13 @@ import nextstep.subway.station.domain.Station;
 public class DijkstraPathFinder implements PathFinder{
 
 	@Override
-	public Path findShortestPath(List<Sections> linesSections, Station departStation, Station arriveStation) {
+	public Path findShortestPath(List<Line> lines, Station departStation, Station arriveStation) {
 
 		WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-		linesSections.stream()
+		lines.stream()
+			.map(line -> line.getSections())
 			.flatMap(sections -> sections.getSections().stream())
 			.forEach(section -> {
-				System.out.println(section);
 				graph.addVertex(section.getUpStation());
 				graph.addVertex(section.getDownStation());
 				graph.setEdgeWeight(graph.addEdge(section.getUpStation(),section.getDownStation()),section.getDistance());
