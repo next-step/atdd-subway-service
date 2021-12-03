@@ -14,7 +14,7 @@ import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.domain.Station;
 
 @Component
-public class DijkstraPathFinder implements PathFinder{
+public class DijkstraPathFinder implements PathFinder {
 
 	@Override
 	public Path findShortestPath(List<Line> lines, Station departStation, Station arriveStation) {
@@ -26,7 +26,8 @@ public class DijkstraPathFinder implements PathFinder{
 			.forEach(section -> {
 				graph.addVertex(section.getUpStation());
 				graph.addVertex(section.getDownStation());
-				graph.setEdgeWeight(graph.addEdge(section.getUpStation(),section.getDownStation()),section.getDistance());
+				graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
+					section.getDistance());
 			});
 
 		DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);

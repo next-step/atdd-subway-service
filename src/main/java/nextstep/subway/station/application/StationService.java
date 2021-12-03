@@ -25,10 +25,7 @@ public class StationService {
 
     public List<StationResponse> findAllStations() {
         List<Station> stations = stationRepository.findAll();
-
-        return stations.stream()
-                .map(station -> StationResponse.of(station))
-                .collect(Collectors.toList());
+        return converToStationResponses(stations);
     }
 
     public void deleteStationById(Long id) {
@@ -41,5 +38,11 @@ public class StationService {
 
     public Station findById(Long id) {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+    }
+
+    public static List<StationResponse> converToStationResponses(List<Station> stations) {
+        return stations.stream()
+            .map(it -> StationResponse.of(it))
+            .collect(Collectors.toList());
     }
 }
