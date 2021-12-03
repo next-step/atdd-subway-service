@@ -68,6 +68,13 @@ public class LineServiceV2 {
         line.addSection(Section.of(line, upStation, downStation, request.getDistance()));
     }
 
+    public void removeLineStation(Long lineId, Long stationId) {
+        Line line = findLineById(lineId);
+        Station station = stationService.findStationById(stationId);
+        line.removeStation(station);
+    }
+
+
     @Transactional(readOnly = true)
     public Line mapLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());

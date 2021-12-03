@@ -44,7 +44,6 @@ public class Section {
         return upStation;
     }
 
-    @Deprecated
     public Station getDownStation() {
         return downStation;
     }
@@ -122,4 +121,8 @@ public class Section {
         this.distance -= newDistance;
     }
 
+    public Section mergeOfNew(Section newDownSection) {
+        int newDistance = distance + newDownSection.distance;
+        return Section.of(line, upStation, newDownSection.downStation, newDistance);
+    }
 }

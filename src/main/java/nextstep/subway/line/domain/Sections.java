@@ -13,6 +13,8 @@ import nextstep.subway.station.domain.Station;
 @Embeddable
 public class Sections {
 
+    private static final Integer MIN_LINE_STATION_SIZE = 1;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST,
         CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
@@ -127,5 +129,30 @@ public class Sections {
     private boolean isDuplicatedSection(Section section) {
         return sections.stream()
             .anyMatch(section::isSameUpStationAndDownStation);
+    }
+
+    public void remove(Station station) {
+        validateDeleteSize();
+
+        Optional<Section> upSection = sections.stream()
+            .filter(it -> it.getUpStation() == station)
+            .findFirst();
+        Optional<Section> downLineStation = sections.stream()
+            .filter(it -> it.getDownStation() == station)
+            .findFirst();
+
+        if (upSection.isPresent() && downLineStation.isPresent()) {
+            Section newUpSection = downLineStation.get();
+            sections.add(newUpSection.mergeOfNew(upSection.get()));
+        }
+
+        upSection.ifPresent(sections::remove);
+        downLineStation.ifPresent(sections::remove);
+    }
+
+    private void validateDeleteSize() {
+        if (sections.size() == MIN_LINE_STATION_SIZE) {
+            throw new InvalidParameterException("구간이 하나 일 경우 제거 할 수 없습니다.");
+        }
     }
 }

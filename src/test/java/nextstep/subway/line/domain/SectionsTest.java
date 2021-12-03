@@ -130,4 +130,36 @@ class SectionsTest {
         assertThat(stations).extracting("name")
             .containsExactly(잠실.getName(), 잠실나루.getName(), 구의.getName());
     }
+
+    @Test
+    @DisplayName("구간 하나일때 제거 실패")
+    void remove_fail() {
+        // given
+        Section section = Section.of(line, 잠실, 잠실나루, 100);
+        sections.add(section);
+
+        // when
+        // then
+        assertThrows(InvalidParameterException.class, () -> sections.remove(잠실));
+    }
+
+    @Test
+    @DisplayName("구간에서 역 한개 제거")
+    void remove() {
+        // given
+        Section section = Section.of(line, 잠실, 잠실나루, 100);
+        Section actual = Section.of(line, 잠실나루, 구의, 50);
+        sections.add(section);
+        sections.add(actual);
+
+        // then
+        assertThat(sections.getStationsInOrder()).hasSize(3);
+
+        // when
+        sections.remove(잠실나루);
+
+        // then
+        List<Station> as = sections.getStationsInOrder();
+        assertThat(sections.getStationsInOrder()).hasSize(2);
+    }
 }

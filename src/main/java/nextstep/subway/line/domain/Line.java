@@ -75,4 +75,8 @@ public class Line extends BaseEntity {
             && Objects.equals(this.name, line.name);
     }
 
+    public void removeStation(Station station) {
+        sections.remove(station);
+    }
+
 }
