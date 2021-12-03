@@ -18,12 +18,12 @@ public class Fare {
     }
 
     public static Fare extra(int lineFare, int distance, int age) {
-        int ageFare = calculateAgeFare(age);
+        AgeFarePolicy agePolicy = new AgeFarePolicy();
         DistanceFarePolicy distancePolicy = new DistanceFarePolicy();
 
-        return Fare.of(ageFare)
-                .plus(lineFare)
-                .plus(distancePolicy.calculate(distance));
+        return Fare.of(agePolicy.calculate(age))
+                .plus(distancePolicy.calculate(distance))
+                .plus(lineFare);
     }
 
     private static int calculateAgeFare(int age) {
