@@ -4,11 +4,13 @@ import static nextstep.subway.line.domain.StationFixtures.잠실;
 import static nextstep.subway.line.domain.StationFixtures.잠실나루;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class LineTest {
 
     @Test
+    @DisplayName("구간 기본정보 업데이트 후 값 검증")
     void update() {
         // given
         Line line = new Line("2호선", "RED");
@@ -22,6 +24,7 @@ class LineTest {
     }
 
     @Test
+    @DisplayName("최초 구간 추가 검증")
     void addSection() {
         // given
         Line line = new Line("2호선", "RED");
@@ -34,5 +37,16 @@ class LineTest {
         assertThat(line.sectionsCount()).isEqualTo(1);
     }
 
+    @Test
+    @DisplayName("노선 역 조회 순서 검증")
+    void getStations_up_down_ordering() {
+        // given
+        Line line = new Line("2호선", "RED", 잠실, 잠실나루, 100);
+
+        // when
+        // then
+        assertThat(line.getStations()).extracting("name")
+            .containsExactly(잠실.getName(), 잠실나루.getName());
+    }
 
 }
