@@ -1,8 +1,16 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.station.domain.Station;
+import java.util.Objects;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Section {
@@ -24,14 +32,27 @@ public class Section {
 
     private int distance;
 
-    public Section() {
+    public void setLine(Line line) {
+        this.line = line;
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
-        this.line = line;
+    protected Section() {
+
+    }
+
+    private Section(Long id, Station upStation, Station downStation, int distance) {
+        this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static Section of(Station upStation, Station downStation, int distance) {
+        return new Section(null, upStation, downStation, distance);
+    }
+
+    public static Section of(Long id, Station upStation, Station downStation, int distance) {
+        return new Section(id, upStation, downStation, distance);
     }
 
     public Long getId() {
@@ -68,5 +89,20 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Section section = (Section)o;
+        return id.equals(section.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
