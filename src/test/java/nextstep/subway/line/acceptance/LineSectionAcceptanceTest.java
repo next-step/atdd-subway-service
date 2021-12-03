@@ -2,26 +2,19 @@ package nextstep.subway.line.acceptance;
 
 import static nextstep.subway.line.acceptance.LineSectionStaticAcceptance.*;
 import static nextstep.subway.line.acceptance.LineStaticAcceptance.*;
-import static org.assertj.core.api.Assertions.*;
+import static nextstep.subway.station.StationsStaticAcceptance.*;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 구간 관련 기능")
@@ -37,10 +30,10 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 	public void setUp() {
 		super.setUp();
 
-		강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
-		양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
-		정자역 = StationAcceptanceTest.지하철역_등록되어_있음("정자역").as(StationResponse.class);
-		광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
+		강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
+		양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
+		정자역 = 지하철역_등록되어_있음("정자역").as(StationResponse.class);
+		광교역 = 지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
 		LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
 		신분당선 = 지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
