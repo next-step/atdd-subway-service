@@ -16,7 +16,6 @@ import java.util.Arrays;
 import static nextstep.subway.line.acceptance.testfactory.LineAcceptanceTestFactory.*;
 import static nextstep.subway.line.acceptance.testfactory.LineSectionTestFactory.*;
 import static nextstep.subway.station.testfactory.StationAcceptanceTestFactory.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 구간 관련 기능")
 public class LineSectionAcceptanceTest extends AcceptanceTest {
