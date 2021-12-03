@@ -82,3 +82,11 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         - Domain으로 옮길 로직 찾기
         - Domain의 단위 테스트 작성하기
         - 로직 옮기기
+
+### [2단계] - 경로 조회 기능
+- [X] 최단 경로 조회 인수 테스트 만들기
+  - [X] 성공 케이스
+  - [ ] 출발역과 도착역이 같은 경우
+  - [ ] 출발역과 도착역이 연결이 되어 있지 않은 경우
+  - [ ] 존재하지 않은 출발역이나 도착역을 조회 할 경우
+- [X] 최단 경로 조회 기능 구현하기

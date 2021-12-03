@@ -9,6 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class LineTest {
     public static final Line 신분당선 = new Line("신분당선", "bg-red-600");
+    public static final Line 수인분당선 = new Line("수인분당선", "bg-yellow-600");
     private Line LINE_2;
 
     @BeforeEach

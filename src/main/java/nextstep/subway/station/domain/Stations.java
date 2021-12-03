@@ -39,4 +39,5 @@ public class Stations {
     public int hashCode() {
         return Objects.hash(stations);
     }
+
 }

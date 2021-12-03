@@ -7,6 +7,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.line.dto.PathRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,12 +69,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void pathTest() {
         // when
         // 경로 조회를 요청함
-        Map<String, String> params = new HashMap<>();
-        params.put("source","1");
-        params.put("target","4");
+        PathRequest pathRequest = new PathRequest(강남역.getId(), 교대역.getId());
+
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
-                .body(params)
+                .body(pathRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths")
                 .then().log().all().extract();
