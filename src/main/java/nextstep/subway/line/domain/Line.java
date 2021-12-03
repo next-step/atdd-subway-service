@@ -28,24 +28,23 @@ public class Line extends BaseEntity {
 
     }
 
-    protected Line(String name, String color, List<Section> sections) {
-        this.name = name;
-        this.color = color;
-        sectionGroup.addAll(sections);
-    }
-
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
     }
 
+    protected Line(String name, String color, List<Section> sections) {
+        this(name, color);
+        sectionGroup.addAll(sections);
+    }
+
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this(name, color, new Section(upStation, downStation, distance));
+        this(name, color);
+        sectionGroup.addSection(Section.of(this, upStation, downStation, distance));
     }
 
     public Line(String name, String color, Section section) {
-        this.name = name;
-        this.color = color;
+        this(name, color);
         sectionGroup.add(section);
     }
 
@@ -84,5 +83,9 @@ public class Line extends BaseEntity {
 
     public void addSection(Section section) {
         sectionGroup.addSection(section);
+    }
+
+    public void removeLineStation(Station station) {
+        sectionGroup.removeLineStation(this, station);
     }
 }
