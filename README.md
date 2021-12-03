@@ -73,12 +73,16 @@ Then: 삭제한  역이 포함되지 않은 역목록 조회됨
 ```  
 - [ ] LineService 리팩터링 - 비지니스 로직을 도메인으로 옮기기
     - [ ] 도메인으로 옮길 로직 찾기 - 스프링 빈을 사용하는 객체와 의존하는 로직을 제외하고 도메인으로 옮긴다.
+        - [x] getStations
+        - [ ]  List<StationResponse> -> StationResponses 일급컬렉션
+        - [ ] addLineStation 로직 -> Line, Sections 클래스..
+        - [ ] removeLineStation 로직 -> Line, Sections 클래스로..
     - [ ] 도메인의 단위 테스트 작성
     - [ ] 로직 옮기기 - 도메인 리팩터링
-       - [ ] distance wrapping 하기
-       - [ ] sections 일급컬렉션으로 변경 
-       - [ ] 연관관계 편의 메서드는. Section 쪽으로.. 
-       - [ ] 기본 생성자 접근 제한 (protected)
+        - [x]  distance wrapping 하기
+        - [x] sections 일급컬렉션으로 변경
+        - [ ] 연관관계 편의 메서드는. Section 쪽으로..
+        - [ ] 기본 생성자 접근 제한 (protected)
 
 ## 📝 License
 
