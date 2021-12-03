@@ -9,7 +9,7 @@ public class PathResponse {
 	private int distance;
 	private List<StationResponse> stations;
 
-	public PathResponse() {
+	private PathResponse() {
 	}
 
 	public PathResponse(int distance, List<StationResponse> stationList) {
@@ -27,9 +27,5 @@ public class PathResponse {
 
 	public List<StationResponse> getStations() {
 		return stations;
-	}
-
-	public void setDistance(int distance) {
-		this.distance = distance;
 	}
 }
