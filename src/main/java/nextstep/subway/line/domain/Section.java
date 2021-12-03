@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.util.Objects;
 
 @Entity
 public class Section {
@@ -48,6 +49,10 @@ public class Section {
         return new Section(upStation, downStation, distance);
     }
 
+    public static Section of(Line line, Station upStation, Station downStation, int distance) {
+        return new Section(line, upStation, downStation, distance);
+    }
+
     public Long getId() {
         return id;
     }
@@ -82,5 +87,13 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public boolean matchAnyStation(final Station target) {
+        return Objects.equals(upStation, target) || Objects.equals(downStation, target);
+    }
+
+    public boolean matchDistance(final int distance) {
+        return this.distance == distance;
     }
 }

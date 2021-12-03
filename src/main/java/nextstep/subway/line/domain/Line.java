@@ -3,7 +3,12 @@ package nextstep.subway.line.domain;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.List;
 
 @Entity
@@ -35,12 +40,21 @@ public class Line extends BaseEntity {
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
+        this(name, color, new Section(upStation, downStation, distance));
+    }
+
+    public Line(String name, String color, Section section) {
         this.name = name;
         this.color = color;
-        sectionGroup.add(new Section(this, upStation, downStation, distance));
+        sectionGroup.add(section);
     }
+
     public static Line of(String name, String color, List<Section> sections) {
         return new Line(name, color, sections);
+    }
+
+    public static Line of(String name, String color, Section section) {
+        return new Line(name, color, section);
     }
 
     public void update(Line line) {
@@ -66,5 +80,9 @@ public class Line extends BaseEntity {
 
     public List<Station> getStations() {
         return this.sectionGroup.getStations();
+    }
+
+    public void addSection(Section section) {
+        sectionGroup.addSection(section);
     }
 }
