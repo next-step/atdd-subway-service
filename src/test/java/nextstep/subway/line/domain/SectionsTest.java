@@ -27,4 +27,25 @@ public class SectionsTest {
         // then
         assertThat(stations).containsExactly(광명역, 박달삼거리역, 안양역);
     }
+
+    @DisplayName("구간을 삭제한다")
+    @Test
+    void testDeleteSectionBy() {
+        // given
+        Station 광명역 = new Station("광명역");
+        Station 박달삼거리역 = new Station("박달삼거리역");
+        Station 안양역 = new Station("안양역");
+        Line line = new Line();
+        Sections sections = new Sections();
+        sections.add(line, 광명역, 박달삼거리역, 10);
+        sections.add(line, 박달삼거리역, 안양역, 10);
+
+        // when
+        sections.deleteSectionBy(line, 박달삼거리역);
+
+        // then
+        assertThat(sections.getStations())
+                .map(Station::getName)
+                .containsExactly("광명역", "안양역");
+    }
 }
