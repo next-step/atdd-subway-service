@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -18,7 +19,9 @@ public class Sections {
     }
 
     public void add(Section section) {
-        sections.add(section);
+        if (!contains(section)) {
+            sections.add(section);
+        }
     }
 
     public List<Section> getSections() {
@@ -29,13 +32,14 @@ public class Sections {
         return sections.isEmpty();
     }
 
-    public List<Station> getStations() {
-        return this.sections.stream()
+    public Stations getStations () {
+        return Stations.from(
+            this.sections.stream()
             .sorted()
             .map(section -> section.getUpDownStations())
             .flatMap(stations -> stations.stream())
             .distinct()
-            .collect(Collectors.toList());
+            .collect(Collectors.toList()));
     }
 
     public void remove(Section section) {
@@ -44,5 +48,31 @@ public class Sections {
 
     public boolean contains(Section section) {
         return sections.contains(section);
+    }
+
+    public void updateSection(Station upStation, Station downStation, int distance) {
+        updateByUpStation(upStation, downStation, distance);
+        updateByDownStation(upStation, downStation, distance);
+    }
+
+    private void updateByUpStation(Station upStation, Station downStation, int distance) {
+        sections.stream()
+            .filter(it -> it.isUpStation(upStation))
+            .findFirst()
+            .ifPresent(it -> it.updateUpStation(downStation, distance));
+    }
+
+    private void updateByDownStation(Station upStation, Station downStation, int distance) {
+        sections.stream()
+            .filter(it -> it.isDownStation(downStation))
+            .findFirst()
+            .ifPresent(it -> it.updateDownStation(upStation, distance));
+    }
+
+    @Override
+    public String toString() {
+        return "Sections{" +
+            "sections=" + sections +
+            '}';
     }
 }

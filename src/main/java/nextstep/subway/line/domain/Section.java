@@ -39,7 +39,7 @@ public class Section extends BaseEntity implements Comparable<Section>{
         toLine(line);
     }
 
-    public static Section of(Line line, Station upStation, Station downStation, int distance) {
+    public static Section create(Line line, Station upStation, Station downStation, int distance) {
         return new Section(line, upStation, downStation, Distance.valueOf(distance));
     }
 
@@ -55,14 +55,6 @@ public class Section extends BaseEntity implements Comparable<Section>{
         return this;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Line getLine() {
-        return line;
-    }
-
     public Station getUpStation() {
         return upStation;
     }
@@ -73,6 +65,14 @@ public class Section extends BaseEntity implements Comparable<Section>{
 
     public int getDistance() {
         return distance.get();
+    }
+
+    public boolean isUpStation(Station upStation) {
+        return this.upStation.equals(upStation);
+    }
+
+    public boolean isDownStation(Station station) {
+        return this.downStation.equals(station);
     }
 
     public List<Station> getUpDownStations() {
@@ -115,11 +115,24 @@ public class Section extends BaseEntity implements Comparable<Section>{
             return false;
         }
         Section section = (Section) o;
-        return Objects.equals(id, section.id);
+        return Objects.equals(id, section.id) && Objects.equals(line, section.line)
+            && Objects.equals(upStation, section.upStation) && Objects
+            .equals(downStation, section.downStation);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, line, upStation, downStation);
+    }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+            "id=" + id +
+            ", line=" + line +
+            ", upStation=" + upStation +
+            ", downStation=" + downStation +
+            ", distance=" + distance +
+            '}';
     }
 }

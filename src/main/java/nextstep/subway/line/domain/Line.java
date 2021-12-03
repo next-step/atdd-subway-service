@@ -34,7 +34,7 @@ public class Line extends BaseEntity {
     private Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        Section.of(this, upStation, downStation, distance);
+        Section.create(this, upStation, downStation, distance);
     }
 
     public static Line of(String name, String color) {
@@ -72,7 +72,7 @@ public class Line extends BaseEntity {
             return Arrays.asList();
         }
 
-        return this.sections.getStations();
+        return this.sections.getStations().get();
     }
 
     public void removeSection(Section section) {
@@ -86,4 +86,30 @@ public class Line extends BaseEntity {
     public void addSection(Section section) {
         sections.add(section);
     }
+
+    public void addLineStation(Station upStation, Station downStation, int distance) {
+        Stations stations = this.sections.getStations();
+
+        if (stations.isEmpty()) {
+            Section.create(this, upStation, downStation, distance);
+            return;
+        }
+
+        validateForAdded(upStation, downStation);
+
+        sections.updateSection(upStation, downStation, distance);
+        addSection(Section.create(this, upStation, downStation, distance));
+    }
+
+    private void validateForAdded(Station upStation, Station downStation) {
+        Stations stations = this.sections.getStations();
+        if (stations.anyMatch(upStation) && stations.anyMatch(downStation)) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!stations.isEmpty() && stations.noneMatch(upStation) && stations.noneMatch(downStation)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
 }

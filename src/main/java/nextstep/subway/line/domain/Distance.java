@@ -23,7 +23,7 @@ public final class Distance {
 
     public Distance minus(Integer newDistance) {
         if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요.");
         }
         return valueOf(this.distance - newDistance);
     }
@@ -58,5 +58,12 @@ public final class Distance {
     @Override
     public int hashCode() {
         return Objects.hash(distance);
+    }
+
+    @Override
+    public String toString() {
+        return "Distance{" +
+            "distance=" + distance +
+            '}';
     }
 }
