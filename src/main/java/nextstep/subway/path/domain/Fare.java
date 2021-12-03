@@ -6,11 +6,7 @@ public class Fare {
 
     private final int value;
 
-    public static Fare of(int lineFare) {
-        return DEFAULT_FARE.plus(lineFare);
-    }
-
-    public static Fare of(int lineFare, int distance) {
+    public static Fare extra(int lineFare, int distance) {
         int distanceFare = calculateOverFare(distance);
         return DEFAULT_FARE.plus(lineFare + distanceFare);
     }

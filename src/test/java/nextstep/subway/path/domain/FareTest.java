@@ -13,13 +13,13 @@ class FareTest {
 
     @Test
     void create_기본요금에서_추가요금을_더한다() {
-        assertThat(Fare.of(700).getValue()).isEqualTo(1950);
+        assertThat(Fare.extra(700, 0).getValue()).isEqualTo(1950);
     }
 
     @ParameterizedTest
     @MethodSource("거리별_추가요금")
     void create_거리별_추가요금을_더한다(int distance, int totalFare) {
-        Fare fare = Fare.of(0, distance);
+        Fare fare = Fare.extra(0, distance);
         assertThat(fare.getValue()).isEqualTo(totalFare);
     }
 
