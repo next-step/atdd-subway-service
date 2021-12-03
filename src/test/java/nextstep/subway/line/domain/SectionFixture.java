@@ -24,7 +24,7 @@ public class SectionFixture {
 	}
 
 	public static Section 양재역_양재시민의숲역_구간() {
-		return Section.of(6L, 강남역(), 양재시민의숲역(), 4);
+		return Section.of(6L, 양재역(), 양재시민의숲역(), 4);
 	}
 
 	public static Section 교대역_강남역_구간() {
