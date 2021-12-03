@@ -9,19 +9,18 @@ import java.util.List;
 public class PathResult {
 
     private final List<Station> stations;
+    private final Sections sections;
     private final int distance;
-    private final Fare fare;
+    private Fare fare;
 
     public PathResult(List<Station> stations, double distance, Sections sections) {
         this.stations = stations;
+        this.sections = sections;
         this.distance = (int) distance;
-        this.fare = Fare.extra(sections.getMaxLineFare(), this.distance);
     }
 
-    public PathResult(List<Station> stations, int distance, int fare) {
-        this.stations = stations;
-        this.distance = distance;
-        this.fare = Fare.of(fare);
+    public void calculateFare(int age) {
+        this.fare = Fare.extra(this.sections.getMaxLineFare(), this.distance, age);
     }
 
     public List<Station> getStations() {

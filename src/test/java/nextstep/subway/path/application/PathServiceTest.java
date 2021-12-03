@@ -41,10 +41,10 @@ class PathServiceTest {
         given(stationService.findById(source)).willReturn(교대역);
         given(stationService.findById(target)).willReturn(양재역);
         given(lineService.getSections()).willReturn(구간);
-        given(pathFinder.findShortestPath(구간, 교대역, 양재역)).willReturn(new PathResult(Arrays.asList(교대역, 선릉역, 양재역), 20, 0));
+        given(pathFinder.findShortestPath(구간, 교대역, 양재역)).willReturn(new PathResult(Arrays.asList(교대역, 선릉역, 양재역), 20, 구간));
 
         // when
-        PathResponse response = pathService.findShortestPath(source, target);
+        PathResponse response = pathService.findShortestPath(source, target, 20);
 
         // then
         assertAll(
@@ -56,6 +56,6 @@ class PathServiceTest {
     @Test
     void findShortestPath_출발역과_도착역이_같으면_에러를_발생한다() {
         assertThatExceptionOfType(BusinessException.class)
-                .isThrownBy(() -> pathService.findShortestPath(1L, 1L));
+                .isThrownBy(() -> pathService.findShortestPath(1L, 1L ,20));
     }
 }
