@@ -29,14 +29,13 @@ public class Sections {
         return sections.isEmpty();
     }
 
-    public Stations getStations () {
-        return Stations.from(
-            this.sections.stream()
+    public List<Station> getStations () {
+        return this.sections.stream()
             .sorted()
             .map(section -> section.getUpDownStations())
             .flatMap(stations -> stations.stream())
             .distinct()
-            .collect(Collectors.toList()));
+            .collect(Collectors.toList());
     }
 
     public void remove(Section section) {
@@ -46,6 +45,18 @@ public class Sections {
 
     public boolean contains(Section section) {
         return sections.contains(section);
+    }
+
+    public boolean anyMatchStation(Station station) {
+        return getStations().stream().anyMatch(it -> it.equals(station));
+    }
+
+    public boolean noneMatchStation(Station station) {
+        return getStations().stream().noneMatch(it -> it.equals(station));
+    }
+
+    public boolean isEmptyStation() {
+        return getStations().isEmpty();
     }
 
     public boolean isMinSize() {

@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.Column;
@@ -10,6 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
+import nextstep.subway.exception.CannotAddException;
+import nextstep.subway.exception.CannotDeleteException;
+import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -65,11 +67,11 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getStations() {
-        if (this.sections.isEmpty()) {
-            return Arrays.asList();
-        }
+//        if (this.sections.isEmpty()) {
+//            return Arrays.asList();
+//        }
 
-        return this.sections.getStations().get();
+        return this.sections.getStations();
     }
 
     public void removeSection(Section section) {
@@ -85,9 +87,7 @@ public class Line extends BaseEntity {
     }
 
     public void addLineStation(Station upStation, Station downStation, int distance) {
-        Stations stations = this.sections.getStations();
-
-        if (stations.isEmpty()) {
+        if (sections.isEmptyStation()) {
             Section.create(this, upStation, downStation, Distance.valueOf(distance));
             return;
         }
@@ -113,24 +113,23 @@ public class Line extends BaseEntity {
     }
 
     private void validateForAdded(Station upStation, Station downStation) {
-        Stations stations = this.sections.getStations();
-        if (stations.anyMatch(upStation) && stations.anyMatch(downStation)) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+        if (sections.anyMatchStation(upStation) && sections.anyMatchStation(downStation)) {
+            throw new CannotAddException("이미 등록된 구간 입니다.");
         }
 
-        if (!stations.isEmpty() && stations.noneMatch(upStation) && stations
-            .noneMatch(downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        if (!sections.isEmptyStation() && sections.noneMatchStation(upStation)
+            && sections.noneMatchStation(downStation)) {
+            throw new CannotAddException("등록할 수 없는 구간 입니다.");
         }
     }
 
     private void validateForRemove(Optional<Section> upLineStation, Optional<Section> downLineStation) {
         if (!upLineStation.isPresent() && !downLineStation.isPresent()) {
-            throw new RuntimeException("역이 포함된 구간이 없습니다.");
+            throw new NotFoundException("역이 포함된 구간이 없습니다.");
         }
 
         if (sections.isMinSize()) {
-            throw new RuntimeException("구간이 하나는 존재해야 합니다.");
+            throw new CannotDeleteException("구간이 하나는 존재해야 합니다.");
         }
 
     }
