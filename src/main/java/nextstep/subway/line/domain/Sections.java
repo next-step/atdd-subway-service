@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @Embeddable
 public class Sections {
 
+    private static final int DEFAULT_LINE_FARE = 0;
     private static final int MIN_REMOVABLE_SIZE = 1;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
@@ -146,5 +147,11 @@ public class Sections {
         if (!stations.contains(source) || !stations.contains(target)) {
             throw new BusinessException(ErrorCode.STATION_NOT_CONNECTED);
         }
+    }
+    public int getMaxLineFare() {
+        return sections.stream()
+                .map(Section::getLineFare)
+                .max(Integer::compare)
+                .orElse(DEFAULT_LINE_FARE);
     }
 }

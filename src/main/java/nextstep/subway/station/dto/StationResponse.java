@@ -46,7 +46,7 @@ public class StationResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         StationResponse that = (StationResponse) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(createdDate, that.createdDate) && Objects.equals(modifiedDate, that.modifiedDate);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
     }
 
     @Override

@@ -1,28 +1,31 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.SectionEdge;
 import nextstep.subway.path.dto.PathResult;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.stream.Collectors;
 
 public class DijkstraPath implements Path {
 
     private final DijkstraShortestPath dijkstra;
 
-    public DijkstraPath(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    public DijkstraPath(WeightedMultigraph<Station, SectionEdge> graph) {
         dijkstra = new DijkstraShortestPath(graph);
     }
 
     @Override
     public PathResult find(Station source, Station target) {
-        GraphPath path = dijkstra.getPath(source, target);
-        List<Station> shortestPath = path.getVertexList();
-        int totalDistance = (int) path.getWeight();
-        return new PathResult(shortestPath, totalDistance);
+        GraphPath<Station, SectionEdge> path = dijkstra.getPath(source, target);
+        Sections sections = new Sections(path.getEdgeList().stream()
+                .map(SectionEdge::getSection)
+                .collect(Collectors.toList()));
+
+        return new PathResult(path.getVertexList(), path.getWeight(), sections);
     }
+
 }

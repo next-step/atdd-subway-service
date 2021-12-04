@@ -5,6 +5,7 @@ import nextstep.exception.ErrorCode;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.dto.PathResult;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -22,14 +23,17 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse findShortestPath(Long source, Long target) {
+    public PathResponse findShortestPath(Long source, Long target, int age) {
         check(source, target);
         Station sourceStation = stationService.findById(source);
         Station targetStation = stationService.findById(target);
         Sections sections = lineService.getSections();
 
         sections.checkConnected(sourceStation, targetStation);
-        return PathResponse.of(pathFinder.findShortestPath(sections, sourceStation, targetStation));
+        PathResult pathResult = pathFinder.findShortestPath(sections, sourceStation, targetStation);
+        pathResult.calculateFare(age);
+
+        return PathResponse.of(pathResult);
     }
 
     private void check(Long source, Long target) {

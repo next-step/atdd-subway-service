@@ -5,6 +5,10 @@ public class LoginMember {
     private String email;
     private Integer age;
 
+    public static LoginMember anonymous() {
+        return new LoginMember(null, null, 20);
+    }
+
     public LoginMember() {
     }
 

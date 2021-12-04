@@ -2,18 +2,18 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.SectionEdge;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DijkstraGraph implements Graph {
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+    private final WeightedMultigraph<Station, SectionEdge> graph;
 
     public DijkstraGraph() {
-        graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        graph = new WeightedMultigraph(SectionEdge.class);
     }
 
     @Override
@@ -24,6 +24,9 @@ public class DijkstraGraph implements Graph {
     }
 
     private void addEdgeWeight(Section section) {
-        graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+        SectionEdge sectionEdge = graph.addEdge(section.getUpStation(), section.getDownStation());
+        sectionEdge.addSection(section);
+
+        graph.setEdgeWeight(sectionEdge, section.getDistance());
     }
 }

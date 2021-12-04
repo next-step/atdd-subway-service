@@ -52,6 +52,10 @@ public class Section {
         return line;
     }
 
+    public int getLineFare() {
+        return line.getFare();
+    }
+
     public Station getUpStation() {
         return upStation;
     }
