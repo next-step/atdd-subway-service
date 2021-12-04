@@ -71,6 +71,8 @@ class PathFinderTest {
         assertAll(
                 () -> assertThat(shortestPath.getPathSize())
                         .isEqualTo(3),
+                () -> assertThat(shortestPath.getDistance())
+                        .isEqualTo(5),
                 () -> 최단_경로_확인(shortestPath, Arrays.asList(교대역, 남부터미널역, 양재역))
         );
     }

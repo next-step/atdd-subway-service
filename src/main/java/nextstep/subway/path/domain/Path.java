@@ -6,14 +6,16 @@ import java.util.Collections;
 import java.util.List;
 
 public class Path {
-    List<Station> stations;
+    private final List<Station> stations;
+    private final int distance;
 
-    private Path(List<Station> stations) {
+    private Path(List<Station> stations, int distance) {
         this.stations = stations;
+        this.distance = distance;
     }
 
-    public static Path of(List<Station> stations) {
-        return new Path(stations);
+    public static Path of(List<Station> stations, int distance) {
+        return new Path(stations, distance);
     }
 
     public int getPathSize() {
@@ -22,5 +24,9 @@ public class Path {
 
     public List<Station> getStations() {
         return Collections.unmodifiableList(stations);
+    }
+
+    public int getDistance() {
+        return distance;
     }
 }

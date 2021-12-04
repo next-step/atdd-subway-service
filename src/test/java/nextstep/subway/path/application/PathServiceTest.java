@@ -91,6 +91,8 @@ class PathServiceTest {
         assertAll(
                 () -> assertThat(pathResponse.getStations().size())
                         .isEqualTo(3),
+                () -> assertThat(pathResponse.getDistance())
+                        .isEqualTo(5),
                 () -> 최단_경로_확인(pathResponse, Arrays.asList(교대역, 남부터미널역, 양재역))
         );
     }

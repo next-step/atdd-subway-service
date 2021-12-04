@@ -169,6 +169,9 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());
 
-        assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+        assertThat(pathResponse.getDistance())
+                .isEqualTo(7);
+        assertThat(stationIds)
+                .containsExactlyElementsOf(expectedStationIds);
     }
 }

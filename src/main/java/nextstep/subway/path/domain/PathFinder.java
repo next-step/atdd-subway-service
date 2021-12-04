@@ -4,11 +4,10 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.exception.PathFindException;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-
-import java.util.List;
 
 public class PathFinder {
 
@@ -42,14 +41,15 @@ public class PathFinder {
     public Path findShortestPath(Station source, Station target) {
         validateRequestStation(source, target);
 
-        return Path.of(findShortestPathByDijkstra(source, target));
+        return findShortestPathByDijkstra(source, target);
     }
 
-    private List<Station> findShortestPathByDijkstra(Station source, Station target) {
+    private Path findShortestPathByDijkstra(Station source, Station target) {
         try {
-            return new DijkstraShortestPath<>(graph)
-                    .getPath(source, target)
-                    .getVertexList();
+            GraphPath<Station, DefaultWeightedEdge> graphPath = new DijkstraShortestPath<>(graph)
+                    .getPath(source, target);
+
+            return Path.of(graphPath.getVertexList(), (int) graphPath.getWeight());
         } catch (NullPointerException nullPointerException) {
             throw new PathFindException("출발역과 도착역이 연결되어 있지 않습니다.");
         }
