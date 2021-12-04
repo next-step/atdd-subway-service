@@ -159,16 +159,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 경로_조회_실패됨_미연결(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(response.body().asString()).contains(PathNotFoundException.message);
+        assertThat(response.body()
+                .asString())
+                .contains(PathNotFoundException.message);
     }
 
     private void 경로_조회_실패됨_출발지_목적지_경로가_같음(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(response.body().asString()).contains(PathBeginIsEndException.message);
+        assertThat(response.body().asString())
+                .contains(PathBeginIsEndException.message);
     }
 
     private void 경로_조회_실패됨_역없음(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(response.body().asString()).contains(StationNotFoundException.message);
+        assertThat(response.body().asString())
+                .contains(StationNotFoundException.message);
     }
 }
