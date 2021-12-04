@@ -90,6 +90,11 @@ public class Section {
         this.distance -= newDistance;
     }
 
+    public void conCateSection(Section removeSection) {
+        this.downStation = removeSection.getDownStation();
+        this.distance += removeSection.distance;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -117,4 +122,5 @@ public class Section {
             ", distance=" + distance +
             '}';
     }
+
 }
