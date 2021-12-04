@@ -28,8 +28,8 @@ class PathFinderTest {
     private Station 교대역;
     private Station 남부터미널역;
     private Station 용산역;
-    private Station 신림역;
-    private Station 봉천역;
+    private Station 동작역;
+    private Station 이촌역;
     private Sections 전체_구간;
 
 
@@ -40,19 +40,20 @@ class PathFinderTest {
         교대역 = new Station("교대역");
         남부터미널역 = new Station("남부터미널역");
         용산역 = new Station("용산역");
-        신림역 = new Station("신림역");
-        봉천역 = new Station("봉천역");
+        동작역 = new Station("신림역");
+        이촌역 = new Station("이촌역");
 
         Line 신분당선 = new Line("신분당선", "bg-red-600");
-        Line 이호선 = new Line("신분당선", "bg-red-600");
-        Line 삼호선 = new Line("신분당선", "bg-red-600");
+        Line 이호선 = new Line("이호선", "bg-red-600");
+        Line 삼호선 = new Line("삼호선", "bg-red-600");
+        Line 사호선 = new Line("사호선", "bg-red-600");
 
         List<Section> sections = new ArrayList<>();
         sections.add(new Section(신분당선, 강남역, 양재역, 10));
         sections.add(new Section(이호선, 교대역, 강남역, 10));
-        sections.add(new Section(이호선, 신림역, 봉천역, 10));
         sections.add(new Section(삼호선, 교대역, 남부터미널역, 2));
         sections.add(new Section(삼호선, 남부터미널역, 양재역, 3));
+        sections.add(new Section(사호선, 동작역, 이촌역, 10));
 
         전체_구간 = Sections.of(sections);
     }
@@ -168,7 +169,7 @@ class PathFinderTest {
             PathFinder pathFinder = PathFinder.of(전체_구간);
 
             // when
-            ThrowableAssert.ThrowingCallable throwingCallable = () -> pathFinder.findShortestPath(신림역, 강남역);
+            ThrowableAssert.ThrowingCallable throwingCallable = () -> pathFinder.findShortestPath(동작역, 강남역);
 
             // then
             assertThatThrownBy(throwingCallable)
@@ -182,7 +183,7 @@ class PathFinderTest {
             PathFinder pathFinder = PathFinder.of(전체_구간);
 
             // when
-            ThrowableAssert.ThrowingCallable throwingCallable = () -> pathFinder.findShortestPath(강남역, 봉천역);
+            ThrowableAssert.ThrowingCallable throwingCallable = () -> pathFinder.findShortestPath(강남역, 이촌역);
 
             // then
             assertThatThrownBy(throwingCallable)
