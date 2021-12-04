@@ -41,3 +41,18 @@
      - removeLineStation
    - 사용범위 
      - lineService
+
+
+### 인수테스트 시나리오
+Feature: 지하철 구간 관련 기능
+
+
+Scenario: 지하철 구간을 관리
+    When 지하철 구간 등록 요청
+    Then 지하철 구간 등록됨
+    When 지하철 노선에 등록된 역 목록 조회 요청
+    Then 등록한 지하철 구간이 반영된 역 목록이 조회됨
+    When 지하철 구간 삭제 요청
+    Then 지하철 구간 삭제됨
+    When 지하철 노선에 등록된 역 목록 조회 요청
+    Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
