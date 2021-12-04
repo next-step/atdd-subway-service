@@ -24,11 +24,10 @@ public class PathFinder {
     }
 
     private PathFinder createGraph(Sections sections) {
-        PathFinder graph = new PathFinder();
-        graph.addGraphVertex(sections.getAllStationsBySections());
+        addGraphVertex(sections.getAllStationsBySections());
         sections.getSections()
                 .forEach(this::setSectionDistance);
-        return graph;
+        return this;
     }
 
     private void setSectionDistance(final Section section) {
@@ -44,5 +43,7 @@ public class PathFinder {
         return graph.addEdge(section.getUpStation(), section.getDownStation());
     }
 
-
+    public WeightedMultigraph<Station, DefaultWeightedEdge> getGraph() {
+        return graph;
+    }
 }

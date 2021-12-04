@@ -7,9 +7,6 @@ import nextstep.subway.exception.NotRemovableSectionsSize;
 import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
