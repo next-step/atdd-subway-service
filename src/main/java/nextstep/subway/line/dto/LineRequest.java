@@ -1,17 +1,17 @@
 package nextstep.subway.line.dto;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LineRequest {
     private String name;
     private String color;
     private Long upStationId;
     private Long downStationId;
     private int distance;
-
-    public LineRequest() {
-    }
 
     public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
         this.name = name;

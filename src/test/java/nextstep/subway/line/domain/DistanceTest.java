@@ -37,7 +37,8 @@ public class DistanceTest {
     @ValueSource(ints = {Integer.MIN_VALUE, -1, 0})
     public void invalidDistance(int candidate) {
         // then
-        assertThatThrownBy(() -> Distance.of(candidate)).isInstanceOf(IllegalDistanceException.class)
+        assertThatThrownBy(() -> Distance.of(candidate))
+                .isInstanceOf(IllegalDistanceException.class)
                 .hasMessageContaining("거리는 1보다 작을 수 없습니다.");
     }
 

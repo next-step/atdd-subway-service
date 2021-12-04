@@ -2,10 +2,11 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.common.exception.path.PathBeginIsEndException;
 import nextstep.subway.common.exception.path.PathNotFoundException;
-import nextstep.subway.common.exception.station.StationNotFoundException;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -23,33 +24,25 @@ import java.util.Objects;
  */
 @Component
 public class PathFinder {
-    public PathResponse getShortestPath(List<Line> lines, List<Station> stations, Long srcStationId, Long destStationId) {
+    public PathResponse getShortestPath(List<Line> lineList, List<Station> stationList, Long srcStationId, Long destStationId) {
         List<Station> result;
+
         if (Objects.equals(srcStationId, destStationId)) {
-            throw new PathBeginIsEndException();
+            throw new PathBeginIsEndException(srcStationId, destStationId);
         }
 
         try {
-            Station srcStation = stations.stream()
-                    .filter(it -> it.getId().equals(srcStationId))
-                    .findFirst()
-                    .orElseThrow(StationNotFoundException::new);
-
-            Station destStation = stations.stream()
-                    .filter(it -> it.getId().equals(destStationId))
-                    .findFirst()
-                    .orElseThrow(StationNotFoundException::new);
+            Stations stations = Stations.of(stationList);
+            Lines lines = Lines.of(lineList);
+            Station srcStation = stations.getStation(srcStationId);
+            Station destStation = stations.getStation(destStationId);
 
             WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
-            stations.stream().forEach(graph::addVertex);
-
-            lines.stream()
-                    .forEach(line -> line.getSections().stream()
-                            .forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance().intValue())));
+            stations.setVertex(graph);
+            lines.setEdge(graph);
 
             DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-
             result = dijkstraShortestPath.getPath(srcStation, destStation).getVertexList();
         } catch (NullPointerException npe) {
             throw new PathNotFoundException();

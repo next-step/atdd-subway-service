@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,19 +64,19 @@ public class PathSpringExtensionTest {
     @DisplayName("경로 조회")
     public void findPath() {
         // given
-        System.out.println(강남역.getId());
         List<Line> lines = Lists.newArrayList(
                 Line.of("1호선", "남색", 강남역, 역삼역, 5));
         List<Station> stations = Lists.newArrayList(강남역, 역삼역);
 
         when(lineRepository.findAll()).thenReturn(lines);
         when(stationRepository.findAll()).thenReturn(stations);
-        when(pathFinder.getShortestPath(lines, stations, 1L, 2L))
-                .thenReturn(PathResponse.of(Lists.newArrayList(new Station(""), new Station(""))));
+        when(pathFinder.getShortestPath(lines, stations, 강남역.getId(), 역삼역.getId()))
+                .thenReturn(PathResponse.of(
+                        Arrays.asList(new Station("강남역"), new Station("역삼역"))));
         PathService pathService = new PathService(pathFinder, stationRepository, lineRepository);
 
         //when
-        PathResponse response = pathService.getShortestPath(1L, 2L);
+        PathResponse response = pathService.getShortestPath(강남역.getId(), 역삼역.getId());
 
         //then
         assertThat(response.getStations()).hasSize(2);

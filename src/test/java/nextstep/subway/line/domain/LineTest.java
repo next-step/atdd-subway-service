@@ -58,13 +58,17 @@ public class LineTest {
 
         // then
         assertThat(line).isNotNull();
-        assertThat(line.getSections().get(0).getDistance()).isEqualTo(Distance.of(1));
+        assertThat(line.getSections()
+                .get(0)
+                .getDistance())
+                .isEqualTo(Distance.of(1)
+                );
     }
 
     @Test
     @DisplayName("유효하지 않은 거리 노선 객체 생성하기")
     public void invalidLine() {
-        assertThatThrownBy(() -> Line.of("2호선", "그린", 강남역, 광교역, Distance.MIN_DISTANCE -1))
+        assertThatThrownBy(() -> Line.of("2호선", "그린", 강남역, 광교역, Distance.MIN_DISTANCE - 1))
                 .isInstanceOf(IllegalDistanceException.class)
                 .hasMessageContaining("거리는 1보다 작을 수 없습니다.");
     }
