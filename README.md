@@ -137,6 +137,7 @@ Connection: keep-alive
 
 ### 기능목록
 
-- [ ] 경로를 검색하면 최단거리와 역 순서를 반환한다
+- [X] 경로를 검색하면 최단거리와 역 순서를 반환한다
   - [X] 인수테스트 작성
   - [X] 도메인 PathFinder 생성
+  - [X] Controller, Service 작성

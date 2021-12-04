@@ -16,9 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -71,7 +68,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private void 최단_거리와_정렬된_역이_반환됨(ExtractableResponse<Response> response, int distance, String ... stationNames) {
-        PathResponse pathResponse = response.jsonPath().getObject(".", PathResponse.class);
+        PathResponse pathResponse = response.jsonPath().getObject("", PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(distance);
         assertThat(pathResponse.getStations())
                 .map(StationResponse::getName)
@@ -79,14 +76,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 역_사이의_최단경로_요청(StationResponse source, StationResponse target) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("source", source.getId());
-        params.put("target", target.getId());
         return RestAssured
                 .given().log().all()
-                .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/path")
+                .when().get("/path?source={source}&target={target}", source.getId(), target.getId())
                 .then().log().all().extract();
     }
 }

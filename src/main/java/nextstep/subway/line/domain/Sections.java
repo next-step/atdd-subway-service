@@ -124,4 +124,9 @@ public class Sections {
                 .filter(it -> it.getUpStation() == station)
                 .findFirst();
     }
+
+    public boolean hasStation(Station station) {
+        return sections.stream()
+                .anyMatch(section -> section.hasStation(station));
+    }
 }

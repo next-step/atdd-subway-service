@@ -54,6 +54,10 @@ public class Section {
         distance = distance.minus(newDistance);
     }
 
+    public boolean hasStation(Station station) {
+        return upStation == station || downStation == station;
+    }
+
     public Long getId() {
         return id;
     }
