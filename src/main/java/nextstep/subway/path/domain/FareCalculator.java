@@ -11,8 +11,7 @@ public class FareCalculator {
     }
 
     public int calculate() {
-        int fare = fareByDistance(path.getDistance()) +
-                path.getMaxAddFare();
+        int fare = fareByDistance(path.getDistance()) + path.getMaxAddFare();
         return findAgePolicy().calculateDiscountedFare(fare);
     }
 
