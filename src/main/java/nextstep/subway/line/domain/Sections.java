@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
+import org.springframework.util.CollectionUtils;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -29,6 +30,14 @@ public class Sections {
 
     public static Sections of(List<Section> sections) {
         return new Sections(sections);
+    }
+
+    public List<Section> getAll() {
+        return Collections.unmodifiableList(sections);
+    }
+
+    public boolean isEmpty() {
+        return CollectionUtils.isEmpty(sections);
     }
 
     public List<Station> getOrderedStations() {
