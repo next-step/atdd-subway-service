@@ -3,7 +3,7 @@ package nextstep.subway.line.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
@@ -48,23 +48,15 @@ public class Sections {
     public void remove(Station station) {
         validateDeleteAbleSize();
 
-        Optional<Section> downSection = sections.stream()
-            .filter(section -> section.isSameUpStation(station))
-            .findFirst();
-        Optional<Section> upSection = sections.stream()
-            .filter(section -> section.isSameDownStation(station))
-            .findFirst();
+        Section sameUpStationSection = findSameUpStationSection(station);
+        Section sameDownStationSection = findSameDownStationSection(station);
 
-        if (upSection.isPresent() && downSection.isPresent()) {
-            addSectionOfMerge(upSection.get(), downSection.get());
+        if (Objects.nonNull(sameUpStationSection) && Objects.nonNull(sameDownStationSection)) {
+            sections.add(sameDownStationSection.newOfMerge(sameUpStationSection));
         }
 
-        upSection.ifPresent(sections::remove);
-        downSection.ifPresent(sections::remove);
-    }
-
-    private void addSectionOfMerge(Section upSection, Section downSection) {
-        sections.add(upSection.newOfMerge(downSection));
+        sections.remove(sameDownStationSection);
+        sections.remove(sameUpStationSection);
     }
 
     private Station findTopUpStation() {
@@ -74,12 +66,13 @@ public class Sections {
 
     private Station findTopUpStation(Station station) {
         Station finalUpStation = station;
-        Optional<Section> nextLineStation = sections.stream()
+        Section nextLineStation = sections.stream()
             .filter(section -> section.getDownStation() == station)
-            .findFirst();
+            .findFirst()
+            .orElse(null);
 
-        if (nextLineStation.isPresent()) {
-            finalUpStation = findTopUpStation(nextLineStation.get().getUpStation());
+        if (Objects.nonNull(nextLineStation)) {
+            finalUpStation = findTopUpStation(nextLineStation.getUpStation());
         }
 
         return finalUpStation;
@@ -87,10 +80,13 @@ public class Sections {
 
     private List<Station> mapStations(Station station, List<Station> stations) {
         stations.add(station);
-        Optional<Section> nextSection = findNextStation(station);
+        Section nextSection = findSameUpStationSection(station);
 
-        return nextSection.map(section -> mapStations(section.getDownStation(), stations))
-            .orElse(stations);
+        if (Objects.isNull(nextSection)) {
+            return stations;
+        }
+
+        return mapStations(nextSection.getDownStation(), stations);
     }
 
     private void relocationUpStationIfSameUpStation(Section newSection) {
@@ -100,10 +96,18 @@ public class Sections {
             .ifPresent(section -> section.relocationUpStation(newSection));
     }
 
-    private Optional<Section> findNextStation(Station station) {
+    private Section findSameUpStationSection(Station station) {
         return sections.stream()
             .filter(section -> section.isSameUpStation(station))
-            .findFirst();
+            .findFirst()
+            .orElse(null);
+    }
+
+    private Section findSameDownStationSection(Station station) {
+        return sections.stream()
+            .filter(section -> section.isSameDownStation(station))
+            .findFirst()
+            .orElse(null);
     }
 
     private boolean isAddAblePosition(Section section) {
