@@ -5,20 +5,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.jdbc.Sql;
 
-@DataJpaTest
-@Sql(scripts = "classpath:scripts/stationInitData.sql")
 public class LineTest {
-
-    @Autowired
-    StationRepository stationRepository;
 
     Station 서울역;
     Station 용산역;
@@ -26,8 +17,8 @@ public class LineTest {
 
     @BeforeEach
     void setUp() {
-        서울역 = stationRepository.findById(1L).get();
-        용산역 = stationRepository.findById(2L).get();
+        서울역 = new Station("서울역");
+        용산역 = new Station("용산역");
         line = Line.of("1호선", "blue", 서울역, 용산역, 10);
     }
 
@@ -45,7 +36,7 @@ public class LineTest {
     @Test
     @DisplayName("라인에 구간 추가")
     void addLineStation() {
-        Station 남영역 = stationRepository.findById(3L).get();
+        Station 남영역 = new Station("남영역");
 
         //when
         line.addLineStation(서울역, 남영역, 5);
@@ -80,8 +71,8 @@ public class LineTest {
     @DisplayName("연결된 역이 없는 구간 추가시 실패")
     void addLineStationNoIncludeFail() {
 
-        Station 강남역 = stationRepository.findById(4L).get();
-        Station 역삼역 = stationRepository.findById(5L).get();
+        Station 강남역 = new Station("강남역");
+        Station 역삼역 = new Station("역삼역");
 
         assertThatThrownBy(
             () -> line.addLineStation(강남역, 역삼역, 10))
@@ -93,7 +84,7 @@ public class LineTest {
     @DisplayName("노선에서 구간 삭제")
     void removeLineStation() {
 
-        Station 남영역 = stationRepository.findById(3L).get();
+        Station 남영역 = new Station("남영역");
         line.addLineStation(서울역, 남영역, 5);
 
         //when
@@ -117,7 +108,7 @@ public class LineTest {
     @DisplayName("노선에 포함되지 않은 역 삭제 시 실패")
     void removeLineStationNonIncludeFail() {
 
-        Station 강남역 = stationRepository.findById(4L).get();
+        Station 강남역 = new Station("강남역");
 
         assertThatThrownBy(() -> line.removeLineStation(강남역))
             .isInstanceOf(RuntimeException.class)

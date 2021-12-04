@@ -76,11 +76,17 @@ public class Section extends BaseEntity implements Comparable<Section>{
     }
 
     public boolean isUpStation(Station upStation) {
-        return this.upStation.equals(upStation);
+        System.out.println(upStation);
+        return this.upStation.equalsName(upStation);
     }
 
     public boolean isDownStation(Station station) {
-        return this.downStation.equals(station);
+        return this.downStation.equalsName(station);
+    }
+
+    public boolean equalsStations(Section section) {
+        return upStation.equalsName(section.upStation)
+            && downStation.equalsName(section.downStation);
     }
 
     public List<Station> getUpDownStations() {
@@ -103,11 +109,11 @@ public class Section extends BaseEntity implements Comparable<Section>{
 
     @Override
     public int compareTo(Section o) {
-        if (this.upStation.equals(o.downStation)) {
+        if (this.upStation.equalsName(o.downStation)) {
             return 1;
         }
 
-        if (this.downStation.equals(o.upStation)) {
+        if (this.downStation.equalsName(o.upStation)) {
             return -1;
         }
 
@@ -123,14 +129,11 @@ public class Section extends BaseEntity implements Comparable<Section>{
             return false;
         }
         Section section = (Section) o;
-        return Objects.equals(id, section.id) && Objects.equals(line, section.line)
-            && Objects.equals(upStation, section.upStation) && Objects
-            .equals(downStation, section.downStation);
+        return Objects.equals(id, section.id);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(id, line, upStation, downStation);
     }
-
 }

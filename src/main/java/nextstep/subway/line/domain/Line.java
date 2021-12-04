@@ -95,6 +95,7 @@ public class Line extends BaseEntity {
     }
 
     public void removeLineStation(Station station) {
+
         Optional<Section> upLineStation = sections.findByUpStation(station);
         Optional<Section> downLineStation = sections.findByDownStation(station);
 

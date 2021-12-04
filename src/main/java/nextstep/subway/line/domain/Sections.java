@@ -1,6 +1,9 @@
 package nextstep.subway.line.domain;
 
+import static nextstep.subway.utils.Utils.distinctByKey;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,8 +32,8 @@ public class Sections {
         return this.sections.stream()
             .sorted()
             .map(section -> section.getUpDownStations())
-            .flatMap(stations -> stations.stream())
-            .distinct()
+            .flatMap(Collection::stream)
+            .filter(distinctByKey(Station::getName))
             .collect(Collectors.toList());
     }
 
@@ -40,15 +43,16 @@ public class Sections {
     }
 
     public boolean contains(Section section) {
-        return sections.contains(section);
+        return sections.stream()
+            .anyMatch(it -> it.equalsStations(section));
     }
 
     public boolean anyMatchStation(Station station) {
-        return getStations().stream().anyMatch(it -> it.equals(station));
+        return getStations().stream().anyMatch(it -> it.equalsName(station));
     }
 
     public boolean noneMatchStation(Station station) {
-        return getStations().stream().noneMatch(it -> it.equals(station));
+        return getStations().stream().noneMatch(it -> it.equalsName(station));
     }
 
     public boolean isEmptyStation() {
@@ -72,8 +76,16 @@ public class Sections {
     }
 
     public void updateSection(Station upStation, Station downStation, int distance) {
-        updateByUpStation(upStation, downStation, distance);
-        updateByDownStation(upStation, downStation, distance);
+        boolean anyMatchUpStation = anyMatchStation(upStation);
+        boolean anyMatchDownStation = anyMatchStation(downStation);
+
+        if (anyMatchUpStation) {
+            updateByUpStation(upStation, downStation, distance);
+        }
+
+        if (anyMatchDownStation) {
+            updateByDownStation(upStation, downStation, distance);
+        }
     }
 
     private void updateByUpStation(Station upStation, Station downStation, int distance) {
@@ -85,4 +97,5 @@ public class Sections {
         findByDownStation(downStation)
             .ifPresent(it -> it.updateDownStation(upStation, distance));
     }
+
 }

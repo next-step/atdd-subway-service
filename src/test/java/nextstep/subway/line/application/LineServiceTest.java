@@ -154,12 +154,12 @@ class LineServiceTest {
     @DisplayName("라인에 포함된 역 삭제")
     void removeLineStation() {
         Station addStation = new Station("남영역");
-        Section.create(line, seoulStation, addStation, Distance.valueOf(5));
-
-        when(stationRepository.findById(ArgumentMatchers.anyLong()))
+        when(stationRepository.findById(2L))
             .thenReturn(Optional.of(addStation));
         when(lineRepository.findById(ArgumentMatchers.any()))
             .thenReturn(Optional.of(line));
+
+        line.addLineStation(seoulStation, addStation, 5);
 
         lineService.removeLineStation(1L, 2L);
 
