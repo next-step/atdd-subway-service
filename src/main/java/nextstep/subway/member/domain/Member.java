@@ -11,6 +11,7 @@ import javax.persistence.Id;
 
 @Entity
 public class Member extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,7 +19,7 @@ public class Member extends BaseEntity {
     private String password;
     private Integer age;
 
-    public Member() {
+    protected Member() {
     }
 
     public Member(String email, String password, Integer age) {
