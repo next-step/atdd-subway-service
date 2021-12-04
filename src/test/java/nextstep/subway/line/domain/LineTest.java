@@ -115,7 +115,6 @@ class LineTest {
         Section section2 = getSection(Station.of("양재", "양재시민의숲"), invalidDistance);
         line.addSection(section1);
 
-
         // when // then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> line.addSection(section2));
@@ -150,6 +149,54 @@ class LineTest {
 
         // then
         assertThat(stations).isEmpty();
+    }
+
+    @Test
+    @DisplayName("노선의 종점 구간을 제거한다.")
+    void removeTerminusSection() {
+        // given
+        line.addSection(getSection(Station.of("강남", "양재"), 3));
+        line.addSection(getSection(Station.of("양재", "양재시민의숲"), 3));
+        line.addSection(getSection(Station.of("양재시민의숲", "판교"), 3));
+
+        // when
+        line.removeSection(new Station("강남"));
+        line.removeSection(new Station("판교"));
+
+        // then
+        assertThat(line.getStations())
+                .extracting("name")
+                .containsExactly("양재", "양재시민의숲");
+    }
+
+    @DisplayName("노선의 중간에 있는 구간을 제거한다.")
+    @Test
+    void removeBetweenStations() {
+        // given
+        line.addSection(getSection(Station.of("강남", "양재"), 3));
+        line.addSection(getSection(Station.of("양재", "양재시민의숲"), 3));
+        line.addSection(getSection(Station.of("양재시민의숲", "판교"), 3));
+
+        // when
+        line.removeSection(new Station("양재"));
+        line.removeSection(new Station("양재시민의숲"));
+
+        // then
+        assertThat(line.getStations())
+                .extracting("name")
+                .containsExactly("강남", "판교");
+    }
+
+    @DisplayName("구간이 1개인 경우 제거 시 예외가 발생한다.")
+    @Test
+    void removeValidateSize() {
+        // given
+        Section section = getSection(Station.of("양재", "양재시민의숲"), 5);
+        line.addSection(section);
+
+        // when // then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> line.removeSection(new Station("양재시민의숲")));
     }
 
     private Section getSection(List<Station> stations, int distance) {

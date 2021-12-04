@@ -2,7 +2,6 @@ package nextstep.subway.line.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -12,11 +11,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
 public class LineService {
+
     private final LineRepository lineRepository;
     private final StationService stationService;
 
@@ -66,28 +65,8 @@ public class LineService {
     @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
-        Station station = stationService.findStationById(stationId);
-
-        if (line.getSections().size() <= 1) {
-            throw new RuntimeException();
-        }
-
-        Optional<Section> upLineStation = line.getSections().stream()
-                .filter(it -> it.getUpStation().equals(station))
-                .findFirst();
-        Optional<Section> downLineStation = line.getSections().stream()
-                .filter(it -> it.getDownStation().equals(station))
-                .findFirst();
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            line.addSection(new Section(newUpStation, newDownStation, newDistance));
-        }
-
-        upLineStation.ifPresent(line::removeSection);
-        downLineStation.ifPresent(line::removeSection);
+        Station station = stationService.findById(stationId);
+        line.removeSection(station);
     }
 
     private Line findLineById(Long id) {

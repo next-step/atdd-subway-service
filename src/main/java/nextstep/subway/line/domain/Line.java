@@ -66,8 +66,8 @@ public class Line extends BaseEntity {
                 .collect(Collectors.toList());
     }
 
-    public void removeSection(Section section) {
-        sections.remove(section);
+    public void removeSection(Station station) {
+        sections.remove(station);
     }
 
     public Long getId() {

@@ -76,6 +76,22 @@ public class Section {
         return upStation.equals(section.upStation) || downStation.equals(section.downStation);
     }
 
+    public boolean equalUpStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean equalDownStation(Station station) {
+        return downStation.equals(station);
+    }
+
+    public void mergeDistance(int deletedDistance) {
+        distance = new Distance(distance.getDistance() + deletedDistance);
+    }
+
+    public void changeDownStationLink(Station downStation) {
+        this.downStation = downStation;
+    }
+
     public Long getId() {
         return id;
     }

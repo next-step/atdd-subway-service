@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
+    private static final int MIN_SECTION_SIZE = 1;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -76,7 +77,37 @@ public class Sections {
         return sections.isEmpty();
     }
 
-    public void remove(Section section) {
-        sections.remove(section);
+    public void remove(Station station) {
+        if (sections.size() == MIN_SECTION_SIZE) {
+            throw new IllegalArgumentException("노선의 구간이" + MIN_SECTION_SIZE + "개 이하인 경우 구간을 삭제할 수 없습니다.");
+        }
+
+        removeUpSection(station);
+        removeDownSection(station);
+    }
+
+    private void removeUpSection(Station station) {
+        sections.stream()
+                .filter(section -> section.equalUpStation(station))
+                .findFirst()
+                .ifPresent(this::mergeRemove);
+    }
+
+    private void mergeRemove(Section deleteSection) {
+        sections.stream()
+                .filter(section -> section.equalDownStation(deleteSection.getUpStation()))
+                .findFirst()
+                .ifPresent(preSection -> {
+                    preSection.mergeDistance(preSection.getDistance());
+                    preSection.changeDownStationLink(deleteSection.getDownStation());
+                });
+        sections.remove(deleteSection);
+    }
+
+    private void removeDownSection(Station station) {
+        sections.stream()
+                .filter(section -> section.equalDownStation(station))
+                .findFirst()
+                .ifPresent(section -> sections.remove(section));
     }
 }
