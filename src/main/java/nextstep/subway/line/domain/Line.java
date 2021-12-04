@@ -39,21 +39,13 @@ public class Line extends BaseEntity {
         newSection.setLine(this);
     }
 
+    public void addSections(List<Section> newSections) {
+        newSections.forEach(this::addSection);
+    }
+
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getColor() {
-        return color;
     }
 
     public List<Section> getSections() {
@@ -80,5 +72,17 @@ public class Line extends BaseEntity {
 
     public void removeSection(Section section) {
         sections.remove(section);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
     }
 }

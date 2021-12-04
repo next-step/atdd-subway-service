@@ -3,7 +3,10 @@ package nextstep.subway.station.domain;
 import nextstep.subway.BaseEntity;
 
 import javax.persistence.*;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Entity
 public class Station extends BaseEntity {
@@ -18,6 +21,12 @@ public class Station extends BaseEntity {
 
     public Station(String name) {
         this.name = name;
+    }
+
+    public static List<Station> of(String... name) {
+        return Arrays.stream(name)
+                .map(Station::new)
+                .collect(Collectors.toList());
     }
 
     public Long getId() {

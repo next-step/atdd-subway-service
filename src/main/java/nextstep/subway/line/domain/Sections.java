@@ -20,7 +20,21 @@ public class Sections {
     }
 
     public void add(Section newSection) {
-        this.sections.add(newSection);
+        if (sections.isEmpty()) {
+            sections.add(newSection);
+            return;
+        }
+        addSection(newSection);
+    }
+
+    private void addSection(Section newSection) {
+        Section section = sections.stream()
+                .filter(oldSection -> oldSection.isNotDuplicate(newSection))
+                .findFirst()
+                .map(oldSection -> oldSection.divide(newSection))
+                .orElseThrow(() -> new IllegalArgumentException("구간을 연결할 상행역 또는 하행역이 존재해야 합니다."));
+
+        sections.add(section);
     }
 
     public List<Section> getSections() {
