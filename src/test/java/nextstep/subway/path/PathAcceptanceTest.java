@@ -1,5 +1,8 @@
 package nextstep.subway.path;
 
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -7,10 +10,12 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /***
  *
@@ -34,6 +39,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private StationResponse 양재시민의숲역;
     private StationResponse 역삼역;
+
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -65,6 +71,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("매봉역에서_교대역까지_최단경로_구하기")
     public void test() {
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .param("source", 양재시민의숲역.getId())
+                .param("target", 역삼역.getId())
+                .when()
+                .get(BASE_URI)
+                .then().log().all().extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
