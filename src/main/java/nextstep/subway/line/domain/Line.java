@@ -39,10 +39,6 @@ public class Line extends BaseEntity {
         newSection.setLine(this);
     }
 
-    public void addSections(List<Section> newSections) {
-        newSections.forEach(this::addSection);
-    }
-
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
