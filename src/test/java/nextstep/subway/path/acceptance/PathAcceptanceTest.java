@@ -159,8 +159,9 @@ class PathAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 최단_경로_확인(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
-        PathResponse line = response.as(PathResponse.class);
-        List<Long> stationIds = line.getStations().stream()
+        PathResponse pathResponse = response.as(PathResponse.class);
+        List<Long> stationIds = pathResponse.getStations()
+                .stream()
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());
 
