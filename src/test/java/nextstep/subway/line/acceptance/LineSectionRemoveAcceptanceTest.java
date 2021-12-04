@@ -87,7 +87,7 @@ public class LineSectionRemoveAcceptanceTest extends AcceptanceTest {
         List<StationResponse> expectedStations) {
         LineResponse line = response.as(LineResponse.class);
         List<Long> stationIds = line.getStations().stream()
-            .map(it -> it.getId())
+            .map(StationResponse::getId)
             .collect(Collectors.toList());
 
         List<Long> expectedStationIds = expectedStations.stream()
