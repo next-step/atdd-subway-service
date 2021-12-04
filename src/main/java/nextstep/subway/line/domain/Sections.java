@@ -10,12 +10,10 @@ import nextstep.subway.station.domain.Stations;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import javax.swing.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -147,27 +145,11 @@ public class Sections {
     }
 
     public PathResponse generatePaths(final Station source, final Station target) {
-        PathGraph graph = createGraph();
-
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph.getGraph());
-        GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(source, target);
-
-        return new PathResponse(graphPath);
+        PathFinder graph = new PathFinder().enrollPaths(this);
+        return new PathResponse(graph.findPaths(source, target));
     }
 
-    private PathGraph createGraph() {
-        PathGraph graph = new PathGraph();
-        graph.addGraphVertex(getAllStationsBySections());
-        sections.forEach(section ->
-                graph.setSectionDistance(
-                        graph.addSection(section),
-                        section.getDistance()
-                )
-        );
-        return graph;
-    }
-
-    private Stations getAllStationsBySections() {
+    public Stations getAllStationsBySections() {
         if (sections.isEmpty()) {
             return new Stations(Collections.emptyList());
         }
