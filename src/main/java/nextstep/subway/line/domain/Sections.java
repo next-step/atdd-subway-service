@@ -67,7 +67,7 @@ public class Sections {
     private Station findTopUpStation(Station station) {
         Station finalUpStation = station;
         Section nextLineStation = sections.stream()
-            .filter(section -> section.getDownStation() == station)
+            .filter(section -> section.isSameDownStation(station))
             .findFirst()
             .orElse(null);
 
@@ -110,13 +110,6 @@ public class Sections {
             .orElse(null);
     }
 
-    private boolean isAddAblePosition(Section section) {
-        List<Station> stations = getStationsInOrder();
-        return !sections.isEmpty()
-            && stations.stream().noneMatch(section::isSameUpStation)
-            && stations.stream().noneMatch(section::isSameDownStation);
-    }
-
     private boolean isDuplicatedSection(Section section) {
         return sections.stream()
             .anyMatch(section::isSameUpStationAndDownStation);
@@ -129,7 +122,7 @@ public class Sections {
     }
 
     private void validateAddAblePosition(Section section) {
-        if (isAddAblePosition(section)) {
+        if (isMatchedUpStationAndDownStationInSections(section)) {
             throw InvalidParameterException.SECTION_ADD_NO_POSITION_EXCEPTION;
         }
     }
@@ -138,6 +131,13 @@ public class Sections {
         if (sections.size() == MIN_LINE_STATION_SIZE) {
             throw InvalidParameterException.SECTION_ONE_COUNT_CAN_NOT_REMOVE_EXCEPTION;
         }
+    }
+
+    private boolean isMatchedUpStationAndDownStationInSections(Section section) {
+        List<Station> stations = getStationsInOrder();
+        return !sections.isEmpty()
+            && stations.stream().noneMatch(section::isSameUpStation)
+            && stations.stream().noneMatch(section::isSameDownStation);
     }
 
     private Station getSectionsFirstUpStation() {
