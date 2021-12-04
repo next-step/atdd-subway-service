@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.common.exception.section.SectionDuplicateException;
-import nextstep.subway.common.exception.section.SectionNotCreateException;
+import nextstep.subway.common.exception.section.SectionNoStationException;
 import nextstep.subway.common.exception.station.StationNotDeleteException;
 import nextstep.subway.common.exception.station.StationNotFoundException;
 import nextstep.subway.station.domain.Station;
@@ -50,7 +50,7 @@ public class Sections {
         }
 
         if (isInvalidStations(upStation, downStation)) {
-            throw new SectionNotCreateException();
+            throw new SectionNoStationException();
         }
     }
 

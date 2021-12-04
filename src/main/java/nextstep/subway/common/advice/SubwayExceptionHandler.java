@@ -14,15 +14,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
  * description : 공통 예외 핸들러
  */
 @RestControllerAdvice
-public class CommonAdvice {
+public class SubwayExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> handleIllegalArgsException(Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity.badRequest()
+                .body(e.getMessage());
     }
 
     @ExceptionHandler(ServiceException.class)
     public ResponseEntity<String> handleServiceException(ServiceException e) {
-        return ResponseEntity.status(e.getStatus()).body(e.getMessage());
+        return ResponseEntity.status(e.getStatus())
+                .body(e.getMessage());
     }
 }
