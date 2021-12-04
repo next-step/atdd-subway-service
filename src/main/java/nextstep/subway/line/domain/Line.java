@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.exception.IllegalLineArgumentException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.Column;
@@ -10,9 +11,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Line extends BaseEntity {
+    private static final String LINE_NAME_EMPTY_ERROR_MESSAGE = "노선의 이름값이 비어있습니다.";
+    private static final String LINE_COLOR_EMPTY_ERROR_MESSAGE = "노선의 색상값이 비어있습니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,29 +27,38 @@ public class Line extends BaseEntity {
     private String color;
 
     @Embedded
-    private final SectionGroup sectionGroup = new SectionGroup();
+    private SectionGroup sectionGroup;
 
     protected Line() {
     }
 
-    public Line(String name, String color) {
+    private Line(String name, String color) {
+
+        if (Objects.isNull(name)) {
+            throw new IllegalLineArgumentException(LINE_NAME_EMPTY_ERROR_MESSAGE);
+        }
+
+        if (Objects.isNull(color)) {
+            throw new IllegalLineArgumentException(LINE_COLOR_EMPTY_ERROR_MESSAGE);
+        }
+
         this.name = name;
         this.color = color;
     }
 
     protected Line(String name, String color, List<Section> sections) {
         this(name, color);
-        sectionGroup.addAll(sections);
+        this.sectionGroup = SectionGroup.of(sections);
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    protected Line(String name, String color, Station upStation, Station downStation, int distance) {
         this(name, color);
-        sectionGroup.addSection(Section.of(this, upStation, downStation, distance));
+        this.sectionGroup = SectionGroup.of(Section.of(this, upStation, downStation, distance));
     }
 
-    public Line(String name, String color, Section section) {
+    private Line(String name, String color, Section section) {
         this(name, color);
-        sectionGroup.add(section);
+        this.sectionGroup = SectionGroup.of(section);
     }
 
     public static Line of(String name, String color, List<Section> sections) {
@@ -55,9 +69,16 @@ public class Line extends BaseEntity {
         return new Line(name, color, section);
     }
 
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
+    public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
+        return new Line(name, color, upStation, downStation, distance);
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
+
+    public void updateColor(String color) {
+        this.color = color;
     }
 
     public Long getId() {

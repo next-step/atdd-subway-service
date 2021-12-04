@@ -6,6 +6,7 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.line.exception.NotFoundLineException;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,7 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        Line persistLine = lineRepository.save(Line.of(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
         return LineResponse.of(persistLine, persistLine.getStations());
     }
 
@@ -43,7 +44,7 @@ public class LineService {
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id).orElseThrow(NotFoundLineException::new);
     }
 
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
@@ -53,8 +54,9 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        Line persistLine = lineRepository.findById(id).orElseThrow(NotFoundLineException::new);
+        persistLine.updateColor(lineUpdateRequest.getColor());
+        persistLine.updateName(lineUpdateRequest.getName());
     }
 
     public void deleteLineById(Long id) {

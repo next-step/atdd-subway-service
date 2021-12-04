@@ -1,5 +1,8 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.exception.CanNotDeleteSectionException;
+import nextstep.subway.line.exception.CanNotRegisterSectionException;
+import nextstep.subway.line.exception.DuplicateSectionException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -13,11 +16,28 @@ import java.util.function.Predicate;
 
 @Embeddable
 public class SectionGroup {
+    private static final int REMOVE_MIN_SIZE = 1;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
 
     protected SectionGroup() {
+    }
+
+    private SectionGroup(List<Section> sections) {
+        this.sections.addAll(sections);
+    }
+
+    private SectionGroup(Section section) {
+        this.sections.add(section);
+    }
+
+    public static SectionGroup of(List<Section> sections) {
+        return new SectionGroup(sections);
+    }
+
+    public static SectionGroup of(Section section) {
+        return new SectionGroup(section);
     }
 
     public void add(Section section) {
@@ -33,10 +53,6 @@ public class SectionGroup {
 
     public List<Station> getStations() {
         return SectionGroupUptoDownSortUtils.sort(this.sections);
-    }
-
-    public void addAll(List<Section> sections) {
-        this.sections.addAll(sections);
     }
 
     public void addSection(Section section) {
@@ -82,18 +98,17 @@ public class SectionGroup {
 
     private void validateAddSection(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new DuplicateSectionException();
         }
 
         if (!sections.isEmpty() && !isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new CanNotRegisterSectionException();
         }
     }
 
     public void removeLineStation(Line line, Station station) {
-        if (sections.size() <= 1) {
-            throw new RuntimeException();
-        }
+        validateRemoveMinSize();
+
         Optional<Section> upSection = getSectionByUpStation(station);
         Optional<Section> downSection = getSectionByDownStation(station);
 
@@ -104,6 +119,12 @@ public class SectionGroup {
 
         upSection.ifPresent(sections::remove);
         downSection.ifPresent(sections::remove);
+    }
+
+    private void validateRemoveMinSize() {
+        if (sections.size() <= REMOVE_MIN_SIZE) {
+            throw new CanNotDeleteSectionException();
+        }
     }
 
     private Optional<Section> getSectionByDownStation(Station station) {
