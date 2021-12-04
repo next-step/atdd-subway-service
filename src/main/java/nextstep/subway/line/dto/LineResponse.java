@@ -1,10 +1,11 @@
 package nextstep.subway.line.dto;
 
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.station.dto.StationResponse;
+import java.time.*;
+import java.util.*;
+import java.util.stream.*;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import nextstep.subway.line.domain.*;
+import nextstep.subway.station.dto.*;
 
 public class LineResponse {
     private Long id;
@@ -17,7 +18,8 @@ public class LineResponse {
     public LineResponse() {
     }
 
-    public LineResponse(Long id, String name, String color, List<StationResponse> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public LineResponse(Long id, String name, String color, List<StationResponse> stations, LocalDateTime createdDate,
+        LocalDateTime modifiedDate) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -27,7 +29,28 @@ public class LineResponse {
     }
 
     public static LineResponse of(Line line, List<StationResponse> stations) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(),
+            line.getModifiedDate());
+    }
+
+    public static LineResponse of(Line line) {
+        return new LineResponse(
+            line.getId(),
+            line.getName(),
+            line.getColor(),
+            line.stations()
+                .stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList()),
+            line.getCreatedDate(),
+            line.getModifiedDate()
+        );
+    }
+
+    public static List<LineResponse> ofList(List<Line> lines) {
+        return lines.stream()
+            .map(LineResponse::of)
+            .collect(Collectors.toList());
     }
 
     public Long getId() {
