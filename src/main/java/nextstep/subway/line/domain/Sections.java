@@ -63,22 +63,19 @@ public class Sections {
         return !getStations().isEmpty() && !isExistStation(upStation) && !isExistStation(downStation);
     }
 
-    public void remove(Line line, Long stationId) {
+    public void remove(Long stationId) {
         removeValidate(stationId);
 
-        Optional<Section> upLineSection = getSectionInUpStation(stationId);
-        Optional<Section> downLineSection = getSectionInDownStation(stationId);
-
-        if (upLineSection.isPresent() && downLineSection.isPresent()) {
-            Distance newDistance = upLineSection.get()
-                    .getDistance()
-                    .plus(downLineSection.get().getDistance());
-
-            Section newSection = Section.of(line, downLineSection.get().getUpStation(), upLineSection.get().getDownStation(), newDistance);
-            sections.add(newSection);
+        if (lastStation().getId().equals(stationId)) {
+            sections.remove(lastSection());
+            return;
         }
-        upLineSection.ifPresent(it -> sections.remove(it));
-        downLineSection.ifPresent(it -> sections.remove(it));
+
+        Section section = getSection(stationId);
+        findPrevSection(section.getUpStation()).ifPresent(
+                prev -> prev.removeSection(section)
+        );
+        sections.remove(section);
     }
 
     private void removeValidate(Long stationId) {
@@ -145,6 +142,13 @@ public class Sections {
                 .getDownStation();
     }
 
+    private Section lastSection() {
+        return sections.stream()
+                .filter(section -> section.downStationEqualTo(lastStation()))
+                .findFirst()
+                .orElseThrow(StationNotFoundException::new);
+    }
+
     private List<Station> getDownStations() {
         return sections.stream()
                 .map(Section::getDownStation)
@@ -163,4 +167,18 @@ public class Sections {
                 .orElseThrow(StationNotFoundException::new)
                 .getDownStation();
     }
+
+    private Section getSection(Long stationId) {
+        return sections.stream()
+                .filter(section -> section.upStationEqualTo(stationId))
+                .findFirst()
+                .orElseThrow(StationNotFoundException::new);
+    }
+
+    private Optional<Section> findPrevSection(Station station) {
+        return sections.stream()
+                .filter(section -> section.downStationEqualTo(station))
+                .findFirst();
+    }
+
 }

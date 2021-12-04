@@ -61,7 +61,6 @@ public class SectionsTest {
         line.removeStation(마포역.getId());
 
         // then
-        assertThat(line.getSections()).hasSize(1);
         assertThat(line.getStations()).hasSize(2);
         assertThat(line.getStations()).containsExactly(강남역, 광교역);
     }
