@@ -139,7 +139,7 @@ class PathFinderTest {
             PathFinder pathFinder = PathFinder.of(전체_구간);
 
             // when
-            ThrowableAssert.ThrowingCallable throwingCallable = () -> pathFinder.findShortestPath(용산역, null);
+            ThrowableAssert.ThrowingCallable throwingCallable = () -> pathFinder.findShortestPath(용산역, 강남역);
 
             // then
             assertThatThrownBy(throwingCallable)
@@ -153,7 +153,7 @@ class PathFinderTest {
             PathFinder pathFinder = PathFinder.of(전체_구간);
 
             // when
-            ThrowableAssert.ThrowingCallable throwingCallable = () -> pathFinder.findShortestPath(null, 용산역);
+            ThrowableAssert.ThrowingCallable throwingCallable = () -> pathFinder.findShortestPath(강남역, 용산역);
 
             // then
             assertThatThrownBy(throwingCallable)
@@ -189,7 +189,7 @@ class PathFinderTest {
         }
 
     }
-    
+
     public static void 최단_경로_확인(Path shortestPath, List<Station> expectedStations) {
         assertThat(shortestPath.getStations())
                 .containsExactlyElementsOf(expectedStations);
