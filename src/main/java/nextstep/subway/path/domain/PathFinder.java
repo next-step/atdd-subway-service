@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.exception.PathFindException;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -32,6 +33,12 @@ public class PathFinder {
         return new PathFinder(graph);
     }
 
+    private static void validateNonEmpty(Sections sections) {
+        if (sections.isEmpty()) {
+            throw new PathFindException("빈 구간으로 조회할 수 없습니다.");
+        }
+    }
+
     public Path findShortestPath(Station source, Station target) {
         validateRequestStation(source, target);
 
@@ -44,27 +51,21 @@ public class PathFinder {
                     .getPath(source, target)
                     .getVertexList();
         } catch (NullPointerException nullPointerException) {
-            throw new IllegalArgumentException("출발역과 도착역이 연결되어 있지 않습니다.");
-        }
-    }
-
-    private static void validateNonEmpty(Sections sections) {
-        if (sections.isEmpty()) {
-            throw new IllegalArgumentException("빈 구간으로 조회할 수 없습니다.");
+            throw new PathFindException("출발역과 도착역이 연결되어 있지 않습니다.");
         }
     }
 
     private void validateRequestStation(Station source, Station target) {
         if (source == null) {
-            throw new IllegalArgumentException("출발역은 null 일 수 없습니다.");
+            throw new PathFindException("출발역은 null 일 수 없습니다.");
         }
 
         if (target == null) {
-            throw new IllegalArgumentException("도착역은 null 일 수 없습니다.");
+            throw new PathFindException("도착역은 null 일 수 없습니다.");
         }
 
         if (source.equals(target)) {
-            throw new IllegalArgumentException("출발역과 도착역은 같을 수 없습니다.");
+            throw new PathFindException("출발역과 도착역은 같을 수 없습니다.");
         }
 
         validateContainStation(source, target);
@@ -72,11 +73,11 @@ public class PathFinder {
 
     private void validateContainStation(Station source, Station target) {
         if (!graph.containsVertex(source)) {
-            throw new IllegalArgumentException("출발역이 전체 구간에 포함되지 않았습니다.");
+            throw new PathFindException("출발역이 전체 구간에 포함되지 않았습니다.");
         }
 
         if (!graph.containsVertex(target)) {
-            throw new IllegalArgumentException("도착역이 전체 구간에 포함되지 않았습니다.");
+            throw new PathFindException("도착역이 전체 구간에 포함되지 않았습니다.");
         }
     }
 }

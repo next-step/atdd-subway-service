@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.exception.PathFindException;
 import nextstep.subway.station.domain.Station;
 import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,7 +89,7 @@ class PathFinderTest {
 
             // then
             assertThatThrownBy(throwingCallable)
-                    .isInstanceOf(IllegalArgumentException.class);
+                    .isInstanceOf(PathFindException.class);
         }
         @DisplayName("출발역과_도착역이_같음")
         @Test
@@ -101,7 +102,7 @@ class PathFinderTest {
 
             // then
             assertThatThrownBy(throwingCallable)
-                    .isInstanceOf(IllegalArgumentException.class);
+                    .isInstanceOf(PathFindException.class);
         }
 
         @DisplayName("출발역이 null")
@@ -115,7 +116,7 @@ class PathFinderTest {
 
             // then
             assertThatThrownBy(throwingCallable)
-                    .isInstanceOf(IllegalArgumentException.class);
+                    .isInstanceOf(PathFindException.class);
         }
 
         @DisplayName("도착역이_null")
@@ -129,7 +130,7 @@ class PathFinderTest {
 
             // then
             assertThatThrownBy(throwingCallable)
-                    .isInstanceOf(IllegalArgumentException.class);
+                    .isInstanceOf(PathFindException.class);
         }
 
         @DisplayName("출발역이 전체 구간에 포함되지 않음")
@@ -143,7 +144,7 @@ class PathFinderTest {
 
             // then
             assertThatThrownBy(throwingCallable)
-                    .isInstanceOf(IllegalArgumentException.class);
+                    .isInstanceOf(PathFindException.class);
         }
 
         @DisplayName("도착역이 전체 구간에 포함되지 않음")
@@ -157,7 +158,7 @@ class PathFinderTest {
 
             // then
             assertThatThrownBy(throwingCallable)
-                    .isInstanceOf(IllegalArgumentException.class);
+                    .isInstanceOf(PathFindException.class);
         }
 
         @DisplayName("출발역과 도착역이 연결되어 있지 않음 - 출발역 기준")
@@ -171,7 +172,7 @@ class PathFinderTest {
 
             // then
             assertThatThrownBy(throwingCallable)
-                    .isInstanceOf(IllegalArgumentException.class);
+                    .isInstanceOf(PathFindException.class);
         }
 
         @DisplayName("출발역과 도착역이 연결되어 있지 않음 - 도착역 기준")
@@ -185,7 +186,7 @@ class PathFinderTest {
 
             // then
             assertThatThrownBy(throwingCallable)
-                    .isInstanceOf(IllegalArgumentException.class);
+                    .isInstanceOf(PathFindException.class);
         }
 
     }
