@@ -19,8 +19,8 @@ import nextstep.subway.station.domain.Station;
 @Service
 @Transactional
 public class LineService {
-	private LineRepository lineRepository;
-	private StationService stationService;
+	private final LineRepository lineRepository;
+	private final StationService stationService;
 
 	public LineService(LineRepository lineRepository, StationService stationService) {
 		this.lineRepository = lineRepository;
@@ -31,29 +31,32 @@ public class LineService {
 		Station upStation = stationService.findById(request.getUpStationId());
 		Station downStation = stationService.findById(request.getDownStationId());
 		Line persistLine = lineRepository.save(
-			new Line(request.getName(), request.getColor(), upStation, downStation,
+			Line.of(request.getName(), request.getColor(), upStation, downStation,
 				request.getDistance()));
 		return LineResponse.from(persistLine);
 	}
 
+	@Transactional(readOnly = true)
 	public List<LineResponse> findLines() {
 		List<Line> persistLines = lineRepository.findAll();
 		return LineResponse.listOf(persistLines);
 	}
 
-	public Line findLineById(Long id) {
+	private Line findLineById(Long id) {
 		return lineRepository.findById(id)
 			.orElseThrow(() -> new LineException(ErrorCode.NO_SUCH_LINE_ERROR));
 	}
 
+	@Transactional(readOnly = true)
 	public LineResponse findLineResponseById(Long id) {
 		Line persistLine = findLineById(id);
 		return LineResponse.from(persistLine);
 	}
 
 	public void updateLine(Long id, LineRequest lineUpdateRequest) {
-		Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-		persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+		Line persistLine = lineRepository.findById(id)
+			.orElseThrow(RuntimeException::new);
+		persistLine.update(lineUpdateRequest.toLine());
 	}
 
 	public void deleteLineById(Long id) {
@@ -64,7 +67,7 @@ public class LineService {
 		Line line = findLineById(lineId);
 		Station upStation = stationService.findStationById(request.getUpStationId());
 		Station downStation = stationService.findStationById(request.getDownStationId());
-		line.addSection(new Section(line, upStation, downStation, request.getDistance()));
+		line.addSection(Section.of(line, upStation, downStation, request.getDistance()));
 	}
 
 	public void removeLineStation(Long lineId, Long stationId) {

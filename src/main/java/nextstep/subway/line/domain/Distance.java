@@ -9,12 +9,16 @@ public class Distance {
 	@Column(name = "distance")
 	private int distance;
 
-	protected Distance() {
+	private Distance() {
 
 	}
 
-	public Distance(int distance) {
+	private Distance(int distance) {
 		this.distance = distance;
+	}
+
+	public static Distance from(int distance) {
+		return new Distance(distance);
 	}
 
 	public int getDistance() {

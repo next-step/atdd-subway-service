@@ -14,28 +14,40 @@ import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Line extends BaseEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@Column(unique = true)
+
+	@Column(unique = true, name = "name")
 	private String name;
+
+	@Column(name = "color")
 	private String color;
 
 	@Embedded
 	private Sections sections = new Sections();
 
-	public Line() {
+	private Line() {
 	}
 
-	public Line(String name, String color) {
+	private Line(String name, String color) {
 		this.name = name;
 		this.color = color;
 	}
 
-	public Line(String name, String color, Station upStation, Station downStation, int distance) {
-		this.name = name;
-		this.color = color;
-		sections.addSection(new Section(this, upStation, downStation, distance));
+	public static Line from() {
+		return new Line();
+	}
+
+	public static Line of(String name, String color) {
+		return new Line(name, color);
+	}
+
+	public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
+		Line line = new Line(name, color);
+		line.addSection(Section.of(line, upStation, downStation, distance));
+		return line;
 	}
 
 	public void update(Line line) {

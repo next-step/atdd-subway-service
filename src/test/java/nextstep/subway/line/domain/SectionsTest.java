@@ -18,7 +18,7 @@ import nextstep.subway.station.domain.Station;
 @DisplayName("단위 테스트 - 구간 일급 컬렉션 도메인")
 class SectionsTest {
 
-	private final Line 신분당선 = new Line();
+	private final Line 신분당선 = Line.from();
 	private Sections 신분당선_구간들;
 	private Station 강남역;
 	private Station 광교역;
@@ -30,12 +30,12 @@ class SectionsTest {
 	@BeforeEach
 	void setup() {
 		신분당선_구간들 = new Sections();
-		강남역 = new Station("강남역");
-		광교역 = new Station("광교역");
-		청계산입구역 = new Station("청계산입구역");
-		판교역 = new Station("판교역");
-		정자역 = new Station("정자역");
-		강남_정자_구간 = new Section(new Line(), 강남역, 정자역, 10);
+		강남역 = Station.from("강남역");
+		광교역 = Station.from("광교역");
+		청계산입구역 = Station.from("청계산입구역");
+		판교역 = Station.from("판교역");
+		정자역 = Station.from("정자역");
+		강남_정자_구간 = Section.of(Line.from(), 강남역, 정자역, 10);
 		신분당선_구간들.addSection(강남_정자_구간);
 	}
 
@@ -43,7 +43,7 @@ class SectionsTest {
 	@Test
 	void exceptionSameUpDownStation() throws Exception {
 		// given
-		Section section = new Section(신분당선, 강남역, 정자역, 10);
+		Section section = Section.of(신분당선, 강남역, 정자역, 10);
 		Method method = 신분당선_구간들.getClass().getDeclaredMethod("validSameUpDownStation", Section.class);
 		method.setAccessible(true);
 
@@ -57,7 +57,7 @@ class SectionsTest {
 	@Test
 	void exceptionIsNotInStations() throws Exception {
 		// given
-		Section section = new Section(신분당선, 청계산입구역, 판교역, 1);
+		Section section = Section.of(신분당선, 청계산입구역, 판교역, 1);
 		Method method = 신분당선_구간들.getClass().getDeclaredMethod("validIsNotInStations", Section.class);
 		method.setAccessible(true);
 
@@ -71,7 +71,7 @@ class SectionsTest {
 	@Test
 	void getUpStations() {
 		// given
-		Section section = new Section(신분당선, 판교역, 정자역, 4);
+		Section section = Section.of(신분당선, 판교역, 정자역, 4);
 		신분당선_구간들.addSection(section);
 
 		// when
@@ -88,7 +88,7 @@ class SectionsTest {
 	@Test
 	void getDownStations() {
 		// given
-		Section section = new Section(신분당선, 강남역, 판교역, 4);
+		Section section = Section.of(신분당선, 강남역, 판교역, 4);
 		신분당선_구간들.addSection(section);
 
 		// when
@@ -105,7 +105,7 @@ class SectionsTest {
 	@Test
 	void findFirstSection() throws Exception {
 		// given
-		Section section = new Section(신분당선, 판교역, 정자역, 4);
+		Section section = Section.of(신분당선, 판교역, 정자역, 4);
 		신분당선_구간들.addSection(section);
 		Method method = 신분당선_구간들.getClass().getDeclaredMethod("findFirstSection");
 		method.setAccessible(true);
@@ -121,7 +121,7 @@ class SectionsTest {
 	@Test
 	void findLastSection() throws Exception {
 		// given
-		Section section = new Section(신분당선, 정자역, 광교역, 4);
+		Section section = Section.of(신분당선, 정자역, 광교역, 4);
 		신분당선_구간들.addSection(section);
 		Method method = 신분당선_구간들.getClass().getDeclaredMethod("findLastSection");
 		method.setAccessible(true);
@@ -137,7 +137,7 @@ class SectionsTest {
 	@Test
 	void getStations() {
 		// given
-		Section section = new Section(신분당선, 판교역, 정자역, 4);
+		Section section = Section.of(신분당선, 판교역, 정자역, 4);
 		신분당선_구간들.addSection(section);
 
 		// when
@@ -152,7 +152,7 @@ class SectionsTest {
 	void validSectionsSize() {
 		//given // when // then
 		assertThatThrownBy(() -> {
-			신분당선_구간들.validRemoveStation(new Station("test"));
+			신분당선_구간들.validRemoveStation(Station.from("test"));
 		}).isInstanceOf(SectionException.class)
 			.hasMessageContaining(ErrorCode.VALID_CAN_NOT_REMOVE_LAST_STATION.getErrorMessage());
 	}
@@ -161,12 +161,12 @@ class SectionsTest {
 	@Test
 	void validStationInStations() {
 		// given
-		Station givenUpStation = new Station("강남역");
-		Station givenDownStation = new Station("양재역");
-		Section givenSection = new Section(신분당선, givenUpStation, givenDownStation, 3);
+		Station givenUpStation = Station.from("강남역");
+		Station givenDownStation = Station.from("양재역");
+		Section givenSection = Section.of(신분당선, givenUpStation, givenDownStation, 3);
 		신분당선_구간들.addSection(givenSection);
 
-		Station expectStation = new Station("합정역");
+		Station expectStation = Station.from("합정역");
 
 		// when // then
 		assertThatThrownBy(() -> {
@@ -179,9 +179,9 @@ class SectionsTest {
 	@Test
 	void isBetweenStations() throws Exception {
 		// given
-		Station givenUpStation = new Station("강남역");
-		Station givenDownStation = new Station("양재역");
-		Section givenSection = new Section(신분당선, givenUpStation, givenDownStation, 3);
+		Station givenUpStation = Station.from("강남역");
+		Station givenDownStation = Station.from("양재역");
+		Section givenSection = Section.of(신분당선, givenUpStation, givenDownStation, 3);
 		신분당선_구간들.addSection(givenSection);
 		Method method = 신분당선_구간들.getClass().getDeclaredMethod("isBetweenStations", Station.class);
 		method.setAccessible(true);

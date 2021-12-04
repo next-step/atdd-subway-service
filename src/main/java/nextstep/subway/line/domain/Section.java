@@ -13,6 +13,7 @@ import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Section {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -32,14 +33,22 @@ public class Section {
 	@Embedded
 	private Distance distance;
 
-	public Section() {
+	private Section() {
 	}
 
-	public Section(Line line, Station upStation, Station downStation, int distance) {
+	private Section(Line line, Station upStation, Station downStation, Distance distance) {
 		this.line = line;
 		this.upStation = upStation;
 		this.downStation = downStation;
-		this.distance = new Distance(distance);
+		this.distance = distance;
+	}
+
+	public static Section from() {
+		return new Section();
+	}
+
+	public static Section of(Line line, Station upStation, Station downStation, int distance) {
+		return new Section(line, upStation, downStation, Distance.from(distance));
 	}
 
 	public Long getId() {

@@ -29,8 +29,7 @@ public class Sections {
 		if (!sections.isEmpty()) {
 			validSameUpDownStation(section);
 			validIsNotInStations(section);
-			sections
-				.stream()
+			sections.stream()
 				.filter(inner -> !inner.isSameUpDownStation(section))
 				.findAny()
 				.ifPresent(inner -> inner.reSettingSection(section));
@@ -160,8 +159,10 @@ public class Sections {
 		Station newDownStation = reSettingUpLineStation.getDownStation();
 		reSettingUpLineStation.plusDistance(reSettingDownLineStation);
 		sections.add(
-			new Section(reSettingUpLineStation.getLine(), newUpStation, newDownStation,
-				reSettingUpLineStation.getDistance()));
+			Section.of(reSettingUpLineStation.getLine()
+				, newUpStation
+				, newDownStation
+				, reSettingUpLineStation.getDistance()));
 	}
 
 	public void validRemoveStation(Station removeStation) {

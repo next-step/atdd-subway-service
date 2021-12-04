@@ -19,10 +19,10 @@ class SectionTest {
 
 	@BeforeEach
 	void setUp() {
-		upStation = new Station("강남역");
-		downStation = new Station("광교역");
-		line = new Line("신분당선", "red");
-		section = new Section(line, upStation, downStation, 10);
+		upStation = Station.from("강남역");
+		downStation = Station.from("광교역");
+		line = Line.of("신분당선", "red");
+		section = Section.of(line, upStation, downStation, 10);
 
 		line.addSection(section);
 	}
@@ -51,7 +51,7 @@ class SectionTest {
 	@Test
 	void isSameUpDownStation() {
 		// given
-		Section expectSection = new Section(new Line(), upStation, downStation, 4);
+		Section expectSection = Section.of(Line.from(), upStation, downStation, 4);
 
 		// when
 		boolean isSameUpDownStation = section.isSameUpDownStation(expectSection);
@@ -64,8 +64,8 @@ class SectionTest {
 	@Test
 	void isInUpDownStation() {
 		// given
-		Section expectSection = new Section(new Line(), upStation, downStation, 4);
-		Station expectStation = new Station("테스트역");
+		Section expectSection = Section.of(Line.from(), upStation, downStation, 4);
+		Station expectStation = Station.from("테스트역");
 
 		// when
 		boolean isInUpStation = section.isInUpDownStation(expectSection.getUpStation());
@@ -84,9 +84,9 @@ class SectionTest {
 	@Test
 	void upStationBetweenStations() {
 		// given
-		Station expectUpStation = new Station("강남역");
-		Station expectDownStation = new Station("양재역");
-		Section expectSection = new Section(line, expectUpStation, expectDownStation, 2);
+		Station expectUpStation = Station.from("강남역");
+		Station expectDownStation = Station.from("양재역");
+		Section expectSection = Section.of(line, expectUpStation, expectDownStation, 2);
 
 		// when
 		section.reSettingSection(expectSection);
@@ -103,9 +103,9 @@ class SectionTest {
 	@Test
 	void downStationBetweenStations() {
 		// given
-		Station expectUpStation = new Station("정자역");
-		Station expectDownStation = new Station("광교역");
-		Section expectSection = new Section(line, expectUpStation, expectDownStation, 3);
+		Station expectUpStation = Station.from("정자역");
+		Station expectDownStation = Station.from("광교역");
+		Section expectSection = Section.of(line, expectUpStation, expectDownStation, 3);
 
 		// when
 		section.reSettingSection(expectSection);
@@ -122,9 +122,9 @@ class SectionTest {
 	@Test
 	void removeStationBetweenStations() {
 		// given
-		Station expectUpStation = new Station("정자역");
-		Station expectDownStation = new Station("광교역");
-		Section expectSection = new Section(line, expectUpStation, expectDownStation, 3);
+		Station expectUpStation = Station.from("정자역");
+		Station expectDownStation = Station.from("광교역");
+		Section expectSection = Section.of(line, expectUpStation, expectDownStation, 3);
 		section.reSettingSection(expectSection);
 
 		// when
