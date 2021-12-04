@@ -64,26 +64,26 @@ public class Sections {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
+        Station currentStation = findFirstStation();
+        stations.add(currentStation);
 
         Optional<Section> nextLineStation;
-        while ((nextLineStation = findByUpStation(downStation)).isPresent()) {
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        while ((nextLineStation = findByUpStation(currentStation)).isPresent()) {
+            currentStation = nextLineStation.get().getDownStation();
+            stations.add(currentStation);
         }
 
         return stations;
     }
 
-    private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
+    private Station findFirstStation() {
+        Station firstStation = sections.get(0).getUpStation();
         Optional<Section> nextLineStation;
-        while ((nextLineStation = findByDownStation(downStation)).isPresent()) {
-            downStation = nextLineStation.get().getUpStation();
+        while ((nextLineStation = findByDownStation(firstStation)).isPresent()) {
+            firstStation = nextLineStation.get().getUpStation();
         }
 
-        return downStation;
+        return firstStation;
     }
 
     public void deleteSectionBy(Line line, Station station) {
