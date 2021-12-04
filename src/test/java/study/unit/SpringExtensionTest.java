@@ -22,14 +22,15 @@ import static org.mockito.Mockito.when;
 public class SpringExtensionTest {
     @MockBean
     private LineRepository lineRepository;
+
     @MockBean
-    private StationService stationService;
+    private StationRepository stationRepository;
 
     @Test
     void findAllLines() {
         // given
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
-        LineService lineService = new LineService(lineRepository, stationService);
+        LineService lineService = new LineService(lineRepository, stationRepository);
 
         // when
         List<LineResponse> responses = lineService.findLines();
