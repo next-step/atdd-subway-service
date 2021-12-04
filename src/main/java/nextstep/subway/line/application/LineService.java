@@ -74,13 +74,13 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    private Station getUpStation(Long upStationId) {
+    public Station getUpStation(Long upStationId) {
         return stationRepository.findById(upStationId)
             .orElseThrow(() -> new NotFoundException(LINE));
     }
 
     @Transactional(readOnly = true)
-    private Station getDownStation(Long downStationId) {
+    public Station getDownStation(Long downStationId) {
         return stationRepository.findById(downStationId)
             .orElseThrow(() -> new NotFoundException(LINE));
     }
