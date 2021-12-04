@@ -46,9 +46,10 @@ public class Sections {
             throw new DuplicateBothStationException(upStation, downStation);
         }
 
-        if (!stations.isEmpty() &&
-                stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation)) {
+        boolean hasAnyMatchedStations = stations.isEmpty() ||
+                stations.stream().anyMatch(it -> it == upStation) ||
+                stations.stream().anyMatch(it -> it == downStation);
+        if (!hasAnyMatchedStations) {
             throw new NotMatchedStationException(upStation, downStation);
         }
     }
