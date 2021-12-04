@@ -89,6 +89,13 @@ public class Section extends BaseEntity implements Comparable<Section>{
             && downStation.equalsName(section.downStation);
     }
 
+    public boolean equalsLine(Line line) {
+        if (this.line == null) {
+            return false;
+        }
+        return this.line.equals(line);
+    }
+
     public List<Station> getUpDownStations() {
         return Arrays.asList(upStation, downStation);
     }
@@ -136,4 +143,6 @@ public class Section extends BaseEntity implements Comparable<Section>{
     public int hashCode() {
         return Objects.hash(id, line, upStation, downStation);
     }
+
+
 }

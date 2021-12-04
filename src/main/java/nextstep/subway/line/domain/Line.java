@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -80,6 +81,11 @@ public class Line extends BaseEntity {
 
     public void addSection(Section section) {
         sections.add(section);
+
+        if (!section.equalsLine(this)) {
+            section.toLine(this);
+        }
+
     }
 
     public void addLineStation(Station upStation, Station downStation, int distance) {
@@ -136,5 +142,22 @@ public class Line extends BaseEntity {
             Section.from(
                 this, downLineStation, upLineStation,
                 upLineStation.plusDistance(downLineStation)));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Line line = (Line) o;
+        return Objects.equals(id, line.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
