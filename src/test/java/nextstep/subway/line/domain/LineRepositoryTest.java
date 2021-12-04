@@ -3,7 +3,6 @@ package nextstep.subway.line.domain;
 import static nextstep.subway.line.domain.LineFixtures.이호선;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,5 +29,18 @@ class LineRepositoryTest {
 
         // then
         assertThat(actual).isFalse();
+    }
+
+    @Test
+    @DisplayName("지하철 역이름 유무 체크")
+    void existsByName() {
+        // given
+        Line persistLine = lineRepository.save(이호선);
+
+        // when
+        boolean actual = lineRepository.existsByName(persistLine.getName());
+
+        // then
+        assertThat(actual).isTrue();
     }
 }

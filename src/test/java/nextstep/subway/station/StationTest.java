@@ -3,7 +3,7 @@ package nextstep.subway.station;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.security.InvalidParameterException;
+import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
