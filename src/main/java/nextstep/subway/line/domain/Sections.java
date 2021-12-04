@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.*;
+import java.util.stream.*;
 
 import javax.persistence.*;
 
@@ -10,6 +11,7 @@ import nextstep.subway.station.domain.*;
 @Embeddable
 public class Sections {
     private static final String SECTION = "구간";
+    private static final int SECTION_SIZE_MIN = 1;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -28,28 +30,23 @@ public class Sections {
 
     public void addSection(Line line, Station upStation, Station downStation, Distance distance) {
         List<Station> stations = line.stations();
-        validate(upStation, downStation, stations);
+        validate(upStation, downStation);
 
         if (stations.isEmpty()) {
             sections.add(Section.of(line, upStation, downStation, distance));
-            return;
         }
 
         if (stations.contains(upStation)) {
             addLineBaseOfUpStation(distance, line, upStation, downStation);
-            return;
         }
 
         if (stations.contains(downStation)) {
             addLineBaseOfDownStation(distance, line, upStation, downStation);
-            return;
         }
-
-        throw new RuntimeException();
     }
 
     public void removeLineStation(Line line, Station station) {
-        if (sections.size() <= 1) {
+        if (sections.size() <= SECTION_SIZE_MIN) {
             throw new CannotRemoveException(SECTION);
         }
 
@@ -136,7 +133,12 @@ public class Sections {
         sections.add(Section.of(line, upStation, downStation, distance));
     }
 
-    private void validate(final Station upStation, final Station downStation, final List<Station> stations) {
+    private void validate(final Station upStation, final Station downStation) {
+        List<Station> stations = sections.stream()
+            .flatMap(e -> Stream.of(e.getUpStation(), e.getDownStation()))
+            .distinct()
+            .collect(Collectors.toList());
+
         if (isExistBothStation(upStation, downStation, stations)) {
             throw new CannotAddException(SECTION);
         }
