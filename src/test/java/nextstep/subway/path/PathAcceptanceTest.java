@@ -4,10 +4,18 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthFactory;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.FavoriteAcceptanceTest;
+import nextstep.subway.line.acceptance.LineFactory;
+import nextstep.subway.line.acceptance.LineSectionFactory;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.station.StationFactory;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +39,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
 
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private static final int AGE = 20;
+    private static String token;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -44,40 +56,36 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
-        교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
-        남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        강남역 = StationFactory.지하철역_생성_요청("강남역").as(StationResponse.class);
+        양재역 = StationFactory.지하철역_생성_요청("양재역").as(StationResponse.class);
+        교대역 = StationFactory.지하철역_생성_요청("교대역").as(StationResponse.class);
+        남부터미널역 = StationFactory.지하철역_생성_요청("남부터미널역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음(
-                        new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)
+        신분당선 = LineFactory.지하철_노선_생성_요청(
+                        new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 0)
                         ).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(
-                         new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)
+        이호선 = LineFactory.지하철_노선_생성_요청(
+                         new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, 0)
                         ).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(
-                        new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)
+        삼호선 = LineFactory.지하철_노선_생성_요청(
+                        new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5, 0)
                         ).as(LineResponse.class);
 
-        지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+        LineSectionFactory.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+
+        ExtractableResponse<Response> createResponse = AuthFactory.회원_생성을_요청(new MemberRequest(EMAIL, PASSWORD, AGE));
+        FavoriteAcceptanceTest.회원_생성됨(createResponse);
+
+        ExtractableResponse<Response> tokenResponse = AuthFactory.토큰을_요청함(new TokenRequest(EMAIL, PASSWORD));
+        token = tokenResponse.as(TokenResponse.class).getAccessToken();
     }
 
     @DisplayName("최단 경로를 조회한다")
     @Test
     void getShortestPath() {
 
-        ExtractableResponse<Response> response = 최단_경로를_조회(강남역.getId(), 남부터미널역.getId());
+        ExtractableResponse<Response> response = PathFactory.최단_경로를_조회(강남역.getId(), 남부터미널역.getId(), token);
         최단_경로를_조회하여_비교(response, 12);
-    }
-
-    private ExtractableResponse<Response> 최단_경로를_조회(long source, long target) {
-        return RestAssured
-                .given().log().all()
-                .queryParam("source", source)
-                .queryParam("target", target)
-                .when().get("/paths")
-                .then().log().all()
-                .extract();
     }
 
     private void 최단_경로를_조회하여_비교(ExtractableResponse response, int distance) {
@@ -87,47 +95,4 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(pathResponse.getDistance()).isEqualTo(distance);
     }
 
-    private ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
-        SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
-
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(sectionRequest)
-                .when().post("/lines/{lineId}/sections", line.getId())
-                .then().log().all()
-                .extract();
-    }
-
-
-    private ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest params) {
-        return 지하철_노선_생성_요청(params);
-    }
-
-    private ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(params)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
-    }
-
-
-    private ExtractableResponse<Response> 지하철역_등록되어_있음(String name) {
-        return 지하철역_생성_요청(name);
-    }
-
-    private ExtractableResponse<Response> 지하철역_생성_요청(String name) {
-        StationRequest stationRequest = new StationRequest(name);
-
-        return RestAssured
-                .given().log().all()
-                .body(stationRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/stations")
-                .then().log().all()
-                .extract();
-    }
 }

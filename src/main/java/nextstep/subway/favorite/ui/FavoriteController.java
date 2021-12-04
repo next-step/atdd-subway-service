@@ -25,8 +25,8 @@ public class FavoriteController {
 
     @PostMapping
     public ResponseEntity addFavorite(@AuthenticationPrincipal LoginMember member, @RequestBody FavoriteRequest request) {
-        Favorite favorite = favoriteService.add(member, request);
-        return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).body(favorite);
+        FavoriteResponse favoriteResponse = favoriteService.add(member, request);
+        return ResponseEntity.created(URI.create("/favorites/" + favoriteResponse.getId())).body(favoriteResponse);
     }
 
     @GetMapping
@@ -34,7 +34,6 @@ public class FavoriteController {
         List<FavoriteResponse> responseList = favoriteService.getFavorites(member).stream()
                                                             .map(favorite -> new FavoriteResponse(favorite.getId(), favorite.getSource(), favorite.getTarget()))
                                                             .collect(Collectors.toList());
-
         return ResponseEntity.ok().body(responseList);
     }
 
@@ -44,8 +43,4 @@ public class FavoriteController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity IllegalArgumentExceptionHandler() {
-        return ResponseEntity.badRequest().build();
-    }
 }

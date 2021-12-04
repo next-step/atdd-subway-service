@@ -30,20 +30,19 @@ public class Sections {
 
     public Optional<Section> getSectionDownStationSame(Station station) {
         return  this.sections.stream()
-                .filter(it -> it.getDownStation() == station)
+                .filter(it -> it.getDownStation().equals(station))
                 .findFirst();
     }
 
     public Optional<Section> getSectionUpStationSame(Station station) {
         return  this.sections.stream()
-                .filter(it -> it.getUpStation() == station)
+                .filter(it -> it.getUpStation().equals(station))
                 .findFirst();
     }
 
     public void updateUpStation(Station upStation, Station downStation, int distance) {
-
         this.sections.stream()
-                .filter(it -> it.getUpStation() == upStation)
+                .filter(it -> it.getUpStation().equals(upStation))
                 .findFirst()
                 .ifPresent(it -> it.updateUpStation(downStation, distance));
     }
@@ -51,7 +50,7 @@ public class Sections {
     public void updateDownStation(Station upStation, Station downStation, int distance) {
 
         this.sections.stream()
-                .filter(it -> it.getDownStation() == downStation)
+                .filter(it -> it.getDownStation().equals(downStation))
                 .findFirst()
                 .ifPresent(it -> it.updateDownStation(upStation, distance));
 
