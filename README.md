@@ -68,8 +68,12 @@ licensed.
 
 ### 1단계 - 인수 테스트 기반 리팩터링
 
-- [ ] LineSectionAcceptanceTest 리팩터링
+- [X] LineSectionAcceptanceTest 리팩터링
+- [X] LineSectionAddAcceptanceTest 라인 추가관련 분리
+- [X] LineSectionRemoveAcceptanceTest 라인 제거관련 분리
 - [X] LineService 리팩터링
+- [X] `@ControllerAdvice` 적용
+- [X] 상황별 예외처리
 - 테스트
     - [X] SectionTest
     - [X] SectionsTest
