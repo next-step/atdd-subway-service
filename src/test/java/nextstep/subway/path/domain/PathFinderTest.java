@@ -51,7 +51,7 @@ class PathFinderTest {
 
     @DisplayName("최단 경로를 조회한다.")
     @Test
-    void shortestTest() {
+    void findShortestTest() {
         // when
         GraphPath<Station, Section> path = pathFinder.getShortestPaths(강남역, 남부터미널역);
 
