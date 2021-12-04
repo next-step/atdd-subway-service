@@ -59,4 +59,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [X] 구간 인수 테스트 통합
   - [X] RestAssured http 메소 유틸로 추출
 - [ ] LineService 리팩터링 
-  - [X] 노선에서 역 목록 불러오기 
+  - [X] Sections 모델 추가
+  - [X] 노선에서 역 목록 불러오기
+  - [ ] 역 추가 함수
+  - [ ] 역 삭제 함수

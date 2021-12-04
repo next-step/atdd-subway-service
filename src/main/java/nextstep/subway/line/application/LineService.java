@@ -132,7 +132,7 @@ public class LineService {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
             int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            line.getSections().add(new Section(line, newUpStation, newDownStation, newDistance));
+            line.getSections().add(Section.of(line, newUpStation, newDownStation, newDistance));
         }
 
         upLineStation.ifPresent(it -> line.getSections().remove(it));
