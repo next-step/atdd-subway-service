@@ -56,13 +56,13 @@ public class Section {
     }
 
     public void updateUpStation(Station station, int newDistance) {
-        this.upStation = station;
-        this.distance.minus(newDistance);
+        upStation = station;
+        distance = distance.minus(newDistance);
     }
 
     public void updateDownStation(Station station, int newDistance) {
-        this.downStation = station;
-        this.distance.minus(newDistance);
+        downStation = station;
+        distance = distance.minus(newDistance);
     }
 
     public void updateStation(Station upStation, Station downStation, int distance) {
