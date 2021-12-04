@@ -94,18 +94,6 @@ public class Sections {
                 .noneMatch(station -> station.getId().equals(stationId));
     }
 
-    private Optional<Section> getSectionInDownStation(Long stationId) {
-        return sections.stream()
-                .filter(it -> it.getDownStation().getId().equals(stationId))
-                .findFirst();
-    }
-
-    private Optional<Section> getSectionInUpStation(Long stationId) {
-        return sections.stream()
-                .filter(it -> it.getUpStation().getId().equals(stationId))
-                .findFirst();
-    }
-
     public List<Section> getList() {
         return sections;
     }

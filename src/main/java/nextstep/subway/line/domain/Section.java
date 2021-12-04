@@ -57,10 +57,6 @@ public class Section {
         return downStation.equals(station);
     }
 
-    public boolean downStationEqualTo(Long stationId) {
-        return downStation.getId().equals(stationId);
-    }
-
     public boolean upStationEqualTo(Station station) {
         return upStation.equals(station);
     }
