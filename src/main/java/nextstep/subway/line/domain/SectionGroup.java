@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 @Embeddable
 public class SectionGroup {
@@ -93,22 +94,31 @@ public class SectionGroup {
         if (sections.size() <= 1) {
             throw new RuntimeException();
         }
+        Optional<Section> upSection = getSectionByUpStation(station);
+        Optional<Section> downSection = getSectionByDownStation(station);
 
-        Optional<Section> upLineStation = sections.stream()
-                .filter(it -> it.getUpStation() == station)
-                .findAny();
-        Optional<Section> downLineStation = sections.stream()
-                .filter(it -> it.getDownStation() == station)
-                .findAny();
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            add(new Section(line, newUpStation, newDownStation, newDistance));
+        final boolean isExistUpAndDown = upSection.isPresent() && downSection.isPresent();
+        if (isExistUpAndDown) {
+            add(Section.merge(line, upSection.get(), downSection.get()));
         }
 
-        upLineStation.ifPresent(sections::remove);
-        downLineStation.ifPresent(sections::remove);
+        upSection.ifPresent(sections::remove);
+        downSection.ifPresent(sections::remove);
+    }
+
+    private Optional<Section> getSectionByDownStation(Station station) {
+        final Predicate<Section> downStationFilter = it -> it.getDownStation() == station;
+        return getSectionByFilter(downStationFilter);
+    }
+
+    private Optional<Section> getSectionByUpStation(Station station) {
+        final Predicate<Section> upStationFilter = it -> it.getUpStation() == station;
+        return getSectionByFilter(upStationFilter);
+    }
+
+    private Optional<Section> getSectionByFilter(Predicate<Section> downStationFilter) {
+        return sections.stream()
+                .filter(downStationFilter)
+                .findAny();
     }
 }
