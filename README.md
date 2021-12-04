@@ -33,8 +33,24 @@
 
 - [X] Section, LineResponse, Line 클래스 정적팩토리 메서드 작성
 
+- [X] Distance 클래스 테스트 케이스 작성
 - [X] Line 클래스 테스트 케이스 작성
 - [X] Section 클래스 테스트 케이스 작성
+- [X] Sections 클래스 테스트 케이스 작성
+
+### 커멘트 사항 수정
+- [X] HTTP api 호출 메서드 추출
+- [X] 예외처리핸들러 공통 클래스(CommonExceptionHandler) 작성
+- [X] 가독성 증가를 위하여 변수를 선언하여 작성
+- [X] StationService가 아닌 StationRepository에 의존하도록 변경
+- [X] LineService에서 LineResponse를 만드는 부분을 해당객체서 역할 이전
+- [X] 읽기 전용 메서드에 `@Transactional(readOnly = true)` 추가
+- [X] 함수 재활용을 통한 코드 리팩터링
+- [X] 일급콜렉션 Sections를 만들고 Service Layer의 로직을 Sections으로 이전
+- [X] 스트림의 반복 변수 it를 의미있는 변수명으로 변경
+- [X] Optional을 안티패턴 제거 후 Optional답게 사용하기
+- [X] 거리 변수 객체로 포장 하기 
+- [X] 불필요한 AcceptanceTest를 상속부분 제거
 
 <br>
 
