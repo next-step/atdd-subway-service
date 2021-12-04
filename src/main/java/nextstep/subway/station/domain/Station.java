@@ -1,10 +1,10 @@
 package nextstep.subway.station.domain;
 
-import java.security.InvalidParameterException;
 import nextstep.subway.BaseEntity;
 
 import javax.persistence.*;
 import java.util.Objects;
+import nextstep.subway.common.exception.InvalidParameterException;
 
 @Entity
 public class Station extends BaseEntity {
@@ -35,7 +35,7 @@ public class Station extends BaseEntity {
 
     private void validEmpty(String name) {
         if (Objects.isNull(name) || name.isEmpty()) {
-            throw new InvalidParameterException("빈 값을 입력 할 수 없습니다.");
+            throw InvalidParameterException.NOT_EMPTY_EXCEPTION;
         }
     }
 

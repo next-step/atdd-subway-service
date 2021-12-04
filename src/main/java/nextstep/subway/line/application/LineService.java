@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -27,10 +28,12 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
+        validateDuplicateName(request.getName());
         Line persistLine = lineRepository.save(mapLine(request));
 
         return LineResponse.of(persistLine);
     }
+
 
     @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
@@ -80,5 +83,11 @@ public class LineService {
         Station downStation = stationService.findStationById(request.getDownStationId());
 
         return request.toLine(upStation, downStation);
+    }
+
+    private void validateDuplicateName(String name) {
+        if (lineRepository.existsByName(name)) {
+            throw InvalidParameterException.LINE_NAME_DUPLICATE_DATA_EXCEPTION;
+        }
     }
 }
