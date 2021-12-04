@@ -30,8 +30,7 @@ public class Sections {
     public void add(Section section) {
         validateDuplicate(section);
         validateAddAblePosition(section);
-        updateUpStationIfSameUpStation(section);
-        updateDownStationIfSameDownStation(section);
+        relocationUpStationIfSameUpStation(section);
 
         sections.add(section);
     }
@@ -42,12 +41,12 @@ public class Sections {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station upStation = findUpStation();
+        Station upStation = findTopUpStation();
         return mapStations(upStation, stations);
     }
 
     public void remove(Station station) {
-        validateDeleteSize();
+        validateDeleteAbleSize();
 
         Optional<Section> downSection = sections.stream()
             .filter(section -> section.isSameUpStation(station))
@@ -57,75 +56,54 @@ public class Sections {
             .findFirst();
 
         if (upSection.isPresent() && downSection.isPresent()) {
-            addOfMerge(upSection.get(), downSection.get());
+            addSectionOfMerge(upSection.get(), downSection.get());
         }
 
         upSection.ifPresent(sections::remove);
         downSection.ifPresent(sections::remove);
     }
 
-    public Integer count() {
-        return sections.size();
+    private void addSectionOfMerge(Section upSection, Section downSection) {
+        sections.add(upSection.newOfMerge(downSection));
     }
 
-    private List<Station> mapStations(Station upStation, List<Station> stations) {
-        stations.add(upStation);
-        Optional<Section> nextLineStation = findNextStation(upStation);
-
-        return nextLineStation.map(section -> mapStations(section.getDownStation(), stations))
-            .orElse(stations);
+    private Station findTopUpStation() {
+        Station firstUpStation = getSectionsFirstUpStation();
+        return findTopUpStation(firstUpStation);
     }
 
-    private Station findUpStation() {
-        Station firstUpStation = getFirstUpStation();
-        return findFirstUpStation(firstUpStation);
-    }
-
-    private Station findFirstUpStation(Station firstUpStation) {
-        Station finalDownStation = firstUpStation;
+    private Station findTopUpStation(Station station) {
+        Station finalUpStation = station;
         Optional<Section> nextLineStation = sections.stream()
-            .filter(section -> section.getDownStation() == firstUpStation)
+            .filter(section -> section.getDownStation() == station)
             .findFirst();
 
         if (nextLineStation.isPresent()) {
-            finalDownStation = findFirstUpStation(nextLineStation.get().getUpStation());
+            finalUpStation = findTopUpStation(nextLineStation.get().getUpStation());
         }
 
-        return finalDownStation;
+        return finalUpStation;
+    }
+
+    private List<Station> mapStations(Station station, List<Station> stations) {
+        stations.add(station);
+        Optional<Section> nextSection = findNextStation(station);
+
+        return nextSection.map(section -> mapStations(section.getDownStation(), stations))
+            .orElse(stations);
+    }
+
+    private void relocationUpStationIfSameUpStation(Section newSection) {
+        sections.stream()
+            .filter(section -> section.isSameUpStation(newSection.getUpStation()))
+            .findFirst()
+            .ifPresent(section -> section.relocationUpStation(newSection));
     }
 
     private Optional<Section> findNextStation(Station station) {
         return sections.stream()
             .filter(section -> section.isSameUpStation(station))
             .findFirst();
-    }
-
-    private void updateUpStationIfSameUpStation(Section newSection) {
-        sections.stream()
-            .filter(section -> section.isSameUpStation(newSection.getUpStation()))
-            .findFirst()
-            .ifPresent(section -> section.updateUpStation(newSection.getDownStation(),
-                newSection.getDistance()));
-    }
-
-    private void updateDownStationIfSameDownStation(Section newSection) {
-        sections.stream()
-            .filter(section -> section.isSameDownStation(newSection.getDownStation()))
-            .findFirst()
-            .ifPresent(section -> section.updateDownStation(newSection.getUpStation(),
-                newSection.getDistance()));
-    }
-
-    private void validateDuplicate(Section section) {
-        if (isDuplicatedSection(section)) {
-            throw InvalidParameterException.SECTION_EXIST_EXCEPTION;
-        }
-    }
-
-    private void validateAddAblePosition(Section section) {
-        if (isAddAblePosition(section)) {
-            throw InvalidParameterException.SECTION_ADD_NO_POSITION_EXCEPTION;
-        }
     }
 
     private boolean isAddAblePosition(Section section) {
@@ -140,18 +118,25 @@ public class Sections {
             .anyMatch(section::isSameUpStationAndDownStation);
     }
 
-
-    private void addOfMerge(Section upSection, Section downSection) {
-        sections.add(upSection.newOfMerge(downSection));
+    private void validateDuplicate(Section section) {
+        if (isDuplicatedSection(section)) {
+            throw InvalidParameterException.SECTION_EXIST_EXCEPTION;
+        }
     }
 
-    private void validateDeleteSize() {
+    private void validateAddAblePosition(Section section) {
+        if (isAddAblePosition(section)) {
+            throw InvalidParameterException.SECTION_ADD_NO_POSITION_EXCEPTION;
+        }
+    }
+
+    private void validateDeleteAbleSize() {
         if (sections.size() == MIN_LINE_STATION_SIZE) {
             throw InvalidParameterException.SECTION_ONE_COUNT_CAN_NOT_REMOVE_EXCEPTION;
         }
     }
 
-    private Station getFirstUpStation() {
+    private Station getSectionsFirstUpStation() {
         return sections.get(0).getUpStation();
     }
 }

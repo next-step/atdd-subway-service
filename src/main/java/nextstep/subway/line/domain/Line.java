@@ -61,10 +61,6 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public Integer sectionsCount() {
-        return sections.count();
-    }
-
     public boolean sameNameAndColor(Line line) {
         return Objects.equals(this.color, line.color)
             && Objects.equals(this.name, line.name);

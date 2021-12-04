@@ -52,14 +52,9 @@ public class Section {
         return distance.getDistance();
     }
 
-    public void updateUpStation(Station station, Integer distance) {
-        this.distance.minus(distance);
-        this.upStation = station;
-    }
-
-    public void updateDownStation(Station station, Integer distance) {
-        this.distance.minus(distance);
-        this.downStation = station;
+    public void relocationUpStation(Section newSection) {
+        this.distance.minus(newSection.getDistance());
+        this.upStation = newSection.downStation;
     }
 
     public boolean isSameUpStationAndDownStation(Section section) {
