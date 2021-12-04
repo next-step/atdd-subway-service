@@ -88,6 +88,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_찾기_실패_응답함(response);
     }
 
+    @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우")
+    @Test
+    void testHasNotStation() {
+        // when
+        ExtractableResponse<Response> response = 역_사이의_최단경로_요청(999999L, 강남역.getId());
+
+        // then
+        역_찾을_수_없음_응답(response);
+    }
+
+    private void 역_찾을_수_없음_응답(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
     private void 최단_경로_찾기_실패_응답함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -104,11 +118,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .containsExactly(stationNames);
     }
 
-    private ExtractableResponse<Response> 역_사이의_최단경로_요청(StationResponse source, StationResponse target) {
+    private ExtractableResponse<Response> 역_사이의_최단경로_요청(Long source, Long target) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/path?source={source}&target={target}", source.getId(), target.getId())
+                .when().get("/path?source={source}&target={target}", source, target)
                 .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> 역_사이의_최단경로_요청(StationResponse source, StationResponse target) {
+        return 역_사이의_최단경로_요청(source.getId(), target.getId());
     }
 }
