@@ -42,12 +42,11 @@ public class Section {
         if (isDuplicate(section)) {
             throw new IllegalArgumentException("같은 상행역과 하행역으로 등록된 구간이 이미 존재합니다.");
         }
-
         return isTerminusExtend(section) || isBetweenStations(section);
     }
 
     public Section divide(Section newSection) {
-        if (isBetweenStations(newSection) && distance.divisible(newSection)) {
+        if (isBetweenStations(newSection) && distance.divisible(newSection.getDistance())) {
             changeStationLink(newSection);
             distance = distance.minusDistance(newSection.distance);
         }
@@ -84,8 +83,8 @@ public class Section {
         return downStation.equals(station);
     }
 
-    public void mergeDistance(int deletedDistance) {
-        distance = new Distance(distance.getDistance() + deletedDistance);
+    public void mergeDistance(Distance deletedDistance) {
+        distance = distance.addDistance(deletedDistance);
     }
 
     public void changeDownStationLink(Station downStation) {
@@ -108,7 +107,7 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
-        return distance.getDistance();
+    public Distance getDistance() {
+        return distance;
     }
 }
