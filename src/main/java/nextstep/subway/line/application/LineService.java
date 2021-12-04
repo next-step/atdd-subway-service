@@ -35,7 +35,7 @@ public class LineService {
     @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
-        return LineResponse.ofList(persistLines);
+        return LineResponse.toList(persistLines);
     }
 
     @Transactional(readOnly = true)
@@ -57,6 +57,7 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
+        
         line.addSection(Section.of(line, upStation, downStation, request.getDistance()));
     }
 
@@ -76,7 +77,7 @@ public class LineService {
     public Line mapLine(LineRequest request) {
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        return new Line(request.getName(), request.getColor(), upStation, downStation,
-            request.getDistance());
+
+        return request.toLine(upStation, downStation);
     }
 }

@@ -39,7 +39,7 @@ public class LineResponse {
             line.getCreatedDate(), line.getModifiedDate());
     }
 
-    public static List<LineResponse> ofList(List<Line> lines) {
+    public static List<LineResponse> toList(List<Line> lines) {
         return lines.stream()
             .map(LineResponse::of)
             .collect(Collectors.toList());
