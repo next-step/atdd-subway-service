@@ -27,6 +27,10 @@ public class Sections {
         sections.add(section);
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
     public List<Station> getStations() {
         if (sections.isEmpty()) {
             return Collections.emptyList();

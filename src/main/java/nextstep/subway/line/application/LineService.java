@@ -14,6 +14,7 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.path.domain.PathSections;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -43,6 +44,14 @@ public class LineService {
         return persistLines.stream()
             .map(line -> LineResponse.of(line, convertToStationResponses(line.getStations())))
             .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public PathSections findAllSection() {
+        List<Line> persistLines = lineRepository.findAll();
+        return new PathSections(persistLines.stream()
+            .flatMap(line -> line.getSections().getSections().stream())
+            .collect(Collectors.toSet()));
     }
 
     @Transactional(readOnly = true)
