@@ -32,6 +32,12 @@
      - addSection
 
 2. 세션 구간 추가 
-   - addLineStation
+   - 수정대상 
+     - addLineStation
    - 사용범위 
-     - service
+     - lineService
+3. 삭제 
+   - 수정대상 
+     - removeLineStation
+   - 사용범위 
+     - lineService
