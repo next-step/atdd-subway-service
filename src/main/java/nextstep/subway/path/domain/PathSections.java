@@ -5,6 +5,11 @@ import static nextstep.subway.exception.ExceptionMessage.*;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
+
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
@@ -19,8 +24,23 @@ public class PathSections {
         return sections;
     }
 
-    public void getShortestPath(Station sourceStation, Station targetStation) {
+    public GraphPath<Station, Section> getShortestPath(Station sourceStation, Station targetStation) {
         validate(sourceStation, targetStation);
+        return getPath(sourceStation, targetStation);
+    }
+
+    private GraphPath<Station, Section> getPath(Station sourceStation, Station targetStation) {
+        Set<Station> stations = getAllStation();
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph =
+            new WeightedMultigraph(DefaultWeightedEdge.class);
+        for (Station station : stations) {
+            graph.addVertex(station);
+        }
+        for (Section section : sections) {
+            graph.setEdgeWeight(graph.addEdge(section.getUpStation(),
+                section.getDownStation()), section.getDistance());
+        }
+        return new DijkstraShortestPath(graph).getPath(sourceStation, targetStation);
     }
 
     private void validate(Station sourceStation, Station targetStation) {
@@ -41,7 +61,7 @@ public class PathSections {
         }
     }
 
-    public Set<Station> getAllStation() {
+    private Set<Station> getAllStation() {
         Set<Station> upStations = getUpStations();
         Set<Station> downStations = getDownStations();
         upStations.addAll(downStations);

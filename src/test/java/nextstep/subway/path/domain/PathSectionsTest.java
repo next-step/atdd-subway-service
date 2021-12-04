@@ -2,11 +2,15 @@ package nextstep.subway.path.domain;
 
 import static nextstep.subway.exception.ExceptionMessage.*;
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.jgrapht.GraphPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,5 +69,17 @@ class PathSectionsTest {
         assertThatThrownBy(() -> pathSections.getShortestPath(선릉역, 사당역))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage(NOT_EXIST_STATION.getMessage());
+    }
+
+    @DisplayName("최단 경로를 조회한다.")
+    @Test
+    void shortestTest() {
+        // when
+        GraphPath<Station, Section> path = pathSections.getShortestPath(강남역, 남부터미널역);
+
+        // then
+        List<Station> stations = path.getVertexList();
+        assertThat(stations).containsExactlyElementsOf(Arrays.asList(강남역, 양재역, 남부터미널역));
+        assertEquals(12, path.getWeight());
     }
 }
