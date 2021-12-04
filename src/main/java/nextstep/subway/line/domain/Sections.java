@@ -18,7 +18,8 @@ public class Sections {
 
     public static final int SECTION_LIMIT_SIZE = 1;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST,
+        CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
     public Sections(Section... sections) {
@@ -70,13 +71,15 @@ public class Sections {
         return stations.stream().noneMatch(predicate);
     }
 
-    private void validationAlreadyRegisteredSection(boolean isUpStationExisted, boolean isDownStationExisted) {
+    private void validationAlreadyRegisteredSection(boolean isUpStationExisted,
+        boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
     }
 
-    private void validationIsNotRegisteredSection(List<Station> stations, Station downStation, Station upStation) {
+    private void validationIsNotRegisteredSection(List<Station> stations, Station downStation,
+        Station upStation) {
         if (!stations.isEmpty()
             && matchNotStation(stations, isMatchUpStation(upStation))
             && matchNotStation(stations, isMatchDownStation(downStation))) {
@@ -118,20 +121,22 @@ public class Sections {
 
     public void removeLineStation(Station station) {
         validateLimitSize();
-
-        Optional<Section> upLineStation = findSections(isUpStation(station));
-        Optional<Section> downLineStation = findSections(isDownStation(station));
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance =
-                upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            sections.add(new Section(newUpStation, newDownStation, newDistance));
+        List<Station> stations = getStations();
+        Section removeSection = findRemoveSection(station);
+        if (matchStation(stations, station)) {
+            findSections(isDownStation(station))
+                .ifPresent(section -> section.conCateSection(removeSection));
         }
+        sections.remove(removeSection);
+    }
 
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
+    private Section findRemoveSection(Station station) {
+        return findSections(isUpStation(station)).orElseGet(()-> findLastSection(station));
+    }
+
+    private Section findLastSection(Station station) {
+        return findSections(isDownStation(station))
+            .orElseThrow(() -> new RuntimeException());
     }
 
     private void validateLimitSize() {
