@@ -21,6 +21,14 @@ public class LineRequest {
         this.distance = distance;
     }
 
+    public Line toLine() {
+        return new Line(name, color);
+    }
+
+    public Line toLine(Station upStation, Station downStation) {
+        return new Line(name, color, upStation, downStation, distance);
+    }
+
     public String getName() {
         return name;
     }
@@ -39,9 +47,5 @@ public class LineRequest {
 
     public int getDistance() {
         return distance;
-    }
-
-    public Line toLine(Station upStation, Station downStation) {
-        return new Line(name, color, upStation, downStation, distance);
     }
 }
