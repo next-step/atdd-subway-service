@@ -70,5 +70,5 @@ Feature: 지하철 구간 관련 기능
         Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
 
 ## 할 일
-- [ ] LineSectionAcceptanceTest 리팩터링
+- [x] LineSectionAcceptanceTest 리팩터링
 - [ ] LineService 리팩터링
