@@ -17,11 +17,6 @@ public class PathResponse {
     private PathResponse() {
     }
 
-    public PathResponse(List<StationResponse> stations, int distance) {
-        this.stations = stations;
-        this.distance = distance;
-    }
-
     public PathResponse(GraphPath<Station, DefaultWeightedEdge> graphPath) {
         this.stations = graphPath.getVertexList()
                 .stream()
