@@ -78,6 +78,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_찾기_실패_응답함(response);
     }
 
+    @DisplayName("출발역과 도착역이 같은 경우")
+    @Test
+    void testSameStation() {
+        // when
+        ExtractableResponse<Response> response = 역_사이의_최단경로_요청(강남역, 강남역);
+
+        // then
+        최단_경로_찾기_실패_응답함(response);
+    }
+
     private void 최단_경로_찾기_실패_응답함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
