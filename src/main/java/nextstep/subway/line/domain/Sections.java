@@ -24,7 +24,7 @@ public class Sections {
             sections.add(section);
         }
     }
-    
+
     public List<Station> getStations () {
         return this.sections.stream()
             .sorted()
