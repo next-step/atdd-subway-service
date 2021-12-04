@@ -24,11 +24,7 @@ public class Sections {
             sections.add(section);
         }
     }
-
-    public boolean isEmpty() {
-        return sections.isEmpty();
-    }
-
+    
     public List<Station> getStations () {
         return this.sections.stream()
             .sorted()

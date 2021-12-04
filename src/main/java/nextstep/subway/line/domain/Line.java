@@ -67,10 +67,6 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getStations() {
-//        if (this.sections.isEmpty()) {
-//            return Arrays.asList();
-//        }
-
         return this.sections.getStations();
     }
 
