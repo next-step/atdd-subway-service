@@ -6,7 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.path.ui.dto.PathResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -66,14 +66,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         //3호선 매봉역 - 양재역 - 교대역  (각 구간의 거리 3)
         LineResponse 삼호선 =
-                지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-orange-600", 매봉역.getId(), 양재역.getId(), 삼호선_거리_3)).as(LineResponse.class);
-        지하철_노선에_지하철역_등록_요청(삼호선, 양재역, 남부터미널역, 삼호선_거리_3);
+                지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-orange-600", 양재역.getId(), 매봉역.getId(), 삼호선_거리_3)).as(LineResponse.class);
+        지하철_노선에_지하철역_등록_요청(삼호선, 매봉역, 남부터미널역, 삼호선_거리_3);
         지하철_노선에_지하철역_등록_요청(삼호선, 남부터미널역, 교대역, 삼호선_거리_3);
     }
 
     @Test
     @DisplayName("매봉역에서_교대역까지_최단경로_구하기")
-    public void test() {
+    public void findShortPath() {
         // when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
@@ -86,6 +86,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         PathResponse pathResponse = response.jsonPath().getObject("", PathResponse.class);
-        assertThat(pathResponse.getStations()).hasSize(2);
+        assertThat(pathResponse.getStations()).hasSize(7);
     }
 }

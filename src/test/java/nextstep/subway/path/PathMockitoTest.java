@@ -1,14 +1,19 @@
 package nextstep.subway.path;
 
-import nextstep.subway.path.ui.application.PathFinder;
-import nextstep.subway.path.ui.application.PathService;
-import nextstep.subway.path.ui.dto.PathResponse;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.application.PathFinder;
+import nextstep.subway.path.application.PathService;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.station.domain.StationRepository;
+import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -22,23 +27,38 @@ import static org.mockito.Mockito.when;
  * description :
  */
 public class PathMockitoTest {
+    private Station 강남역 = mock(Station.class);
+    private Station 역삼역 = mock(Station.class);
+
+    @BeforeEach
+    void setUp() {
+        when(강남역.getName()).thenReturn("강남역");
+        when(강남역.getId()).thenReturn(1L);
+        when(역삼역.getName()).thenReturn("역삼역");
+        when(역삼역.getId()).thenReturn(2L);
+    }
 
     @Test
     @DisplayName("경로 조회")
     public void findPaths() throws Exception {
         //given
+        StationRepository stationRepository = mock(StationRepository.class);
+        LineRepository lineRepository = mock(LineRepository.class);
         PathFinder pathFinder = mock(PathFinder.class);
+        List<Line> lines = Lists.newArrayList(
+                Line.of("1호선", "남색", 강남역, 역삼역, 5));
+        List<Station> stations = Lists.newArrayList(new Station("강남역"), new Station("역삼역"));
 
-        when(pathFinder.getPath())
+        when(lineRepository.findAll()).thenReturn(lines);
+        when(stationRepository.findAll()).thenReturn(stations);
+        when(pathFinder.getShortestPath(lines, stations, 1L, 2L))
                 .thenReturn(PathResponse.of(
-                        Arrays.asList(
-                                StationResponse.of(new Station("강남역")),
-                                StationResponse.of(new Station("역삼역")))));
+                        Arrays.asList(new Station("강남역"), new Station("역삼역"))));
 
-        PathService pathService = new PathService(pathFinder);
+        PathService pathService = new PathService(pathFinder, stationRepository, lineRepository);
 
         // when
-        PathResponse response = pathService.getPath(1L, 2L);
+        PathResponse response = pathService.getShortestPath(1L, 2L);
 
         // then
         assertThat(response.getStations()).hasSize(2);

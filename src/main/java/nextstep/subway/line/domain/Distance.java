@@ -57,6 +57,10 @@ public class Distance {
         return Distance.of(distance - newDistance.distance);
     }
 
+    public int intValue() {
+        return distance;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

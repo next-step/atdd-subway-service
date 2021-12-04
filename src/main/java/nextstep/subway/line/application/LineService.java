@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import lombok.RequiredArgsConstructor;
 import nextstep.subway.common.exception.line.LineNotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -16,14 +17,10 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class LineService {
     private final LineRepository lineRepository;
     private final StationService stationService;
-
-    public LineService(LineRepository lineRepository, StationService stationService) {
-        this.lineRepository = lineRepository;
-        this.stationService = stationService;
-    }
 
     private Line findLine(Long id) {
         return lineRepository.findById(id)
