@@ -4,6 +4,9 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.common.exception.path.PathBeginIsEndException;
+import nextstep.subway.common.exception.path.PathNotFoundException;
+import nextstep.subway.common.exception.station.StationNotFoundException;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
@@ -40,11 +43,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private StationResponse 양재시민의숲역;
     private StationResponse 역삼역;
+    private final Long 존재하지않은역_ID = Long.MAX_VALUE;
+    private StationResponse 연결되지않은역;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-
         StationResponse 강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
         StationResponse 양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
         StationResponse 남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
@@ -53,6 +57,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         양재시민의숲역 = 지하철역_등록되어_있음("양재시민의숲역").as(StationResponse.class);
         역삼역 = 지하철역_등록되어_있음("역삼역").as(StationResponse.class);
+        연결되지않은역 = 지하철역_등록되어_있음("연결되지않은역").as(StationResponse.class);
 
         //신분당선 강남역 - 양재역 - 양재시민의숲역 (각 구간의 거리 10)
         LineResponse 신분당선 =
@@ -72,7 +77,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("매봉역에서_교대역까지_최단경로_구하기")
+    @DisplayName("양재시민의숲역에서_역삼역까지의 거리를 구한다.")
     public void findShortPath() {
         // when
         ExtractableResponse<Response> response = RestAssured
@@ -87,5 +92,81 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         PathResponse pathResponse = response.jsonPath().getObject("", PathResponse.class);
         assertThat(pathResponse.getStations()).hasSize(7);
+    }
+
+    @Test
+    @DisplayName("출발지와 목적지 경로를 같게 설정한다.")
+    public void pathBeginIsEnd() {
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .param("source", 양재시민의숲역.getId())
+                .param("target", 양재시민의숲역.getId())
+                .when()
+                .get(BASE_URI)
+                .then().log().all().extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.body().asString()).isEqualTo(PathBeginIsEndException.message);
+    }
+
+    @Test
+    @DisplayName("출발지 또는 목적지를 존재하지 않은 역으로 조회한다.")
+    public void pathNotExistStation() {
+        // when
+        ExtractableResponse<Response> 목적지가_미존재_응답 = RestAssured
+                .given().log().all()
+                .param("source", 양재시민의숲역.getId())
+                .param("target", 존재하지않은역_ID)
+                .when()
+                .get(BASE_URI)
+                .then().log().all().extract();
+
+        // then
+        assertThat(목적지가_미존재_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(목적지가_미존재_응답.body().asString()).isEqualTo(StationNotFoundException.message);
+
+        // when
+        ExtractableResponse<Response> 출발지_미존재_응답 = RestAssured
+                .given().log().all()
+                .param("source", 존재하지않은역_ID)
+                .param("target", 양재시민의숲역.getId())
+                .when()
+                .get(BASE_URI)
+                .then().log().all().extract();
+
+        // then
+        assertThat(출발지_미존재_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(출발지_미존재_응답.body().asString()).isEqualTo(StationNotFoundException.message);
+    }
+
+    @Test
+    @DisplayName("출발지와 목적지가 연결되어 있지 않음")
+    public void pathNotFound() {
+        // when
+        ExtractableResponse<Response> 출발지_목적지_미연결 = RestAssured
+                .given().log().all()
+                .param("source", 양재시민의숲역.getId())
+                .param("target", 연결되지않은역.getId())
+                .when()
+                .get(BASE_URI)
+                .then().log().all().extract();
+
+        // then
+        assertThat(출발지_목적지_미연결.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(출발지_목적지_미연결.body().asString()).isEqualTo(PathNotFoundException.message);
+
+        ExtractableResponse<Response> 반대의_경우 = RestAssured
+                .given().log().all()
+                .param("source", 연결되지않은역.getId())
+                .param("target", 양재시민의숲역.getId())
+                .when()
+                .get(BASE_URI)
+                .then().log().all().extract();
+
+        // then
+        assertThat(반대의_경우.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(반대의_경우.body().asString()).isEqualTo(PathNotFoundException.message);
     }
 }
