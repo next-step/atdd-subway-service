@@ -1,5 +1,6 @@
 package nextstep.subway.line.dto;
 
+import nextstep.subway.exception.NotFoundPathsException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.jgrapht.GraphPath;
@@ -18,6 +19,10 @@ public class PathResponse {
     }
 
     public PathResponse(GraphPath<Station, DefaultWeightedEdge> graphPath) {
+        if(Objects.isNull(graphPath)){
+            throw new NotFoundPathsException();
+        }
+
         this.stations = graphPath.getVertexList()
                 .stream()
                 .map(StationResponse::of)

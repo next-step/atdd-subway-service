@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.NotEnrollStationInGraphException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 import org.jgrapht.GraphPath;
@@ -19,8 +20,15 @@ public class PathFinder {
     }
 
     public GraphPath<Station, DefaultWeightedEdge> findPaths(final Station source, final Station target) {
+        if (isNotEnrolledStation(source) || isNotEnrolledStation(target)) {
+            throw new NotEnrollStationInGraphException();
+        }
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         return dijkstraShortestPath.getPath(source, target);
+    }
+
+    private boolean isNotEnrolledStation(final Station station) {
+        return !graph.containsVertex(station);
     }
 
     private PathFinder createGraph(Sections sections) {

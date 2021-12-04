@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.exception.NotFoundStationException;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.PathRequest;
@@ -62,6 +63,58 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ).as(LineResponse.class);
 
         지하철_구간_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+    }
+
+    @DisplayName("존재하지 않은 출발역이나 도착열을 조회 할 경우")
+    @Test
+    void notFoundStationException() {
+        // when
+        ExtractableResponse<Response> response = 경로_조회를_요청함(10L, 교대역.getId());
+
+        // then
+        경로_조회_실패됨(response);
+    }
+
+    @DisplayName("구간에 지하철역이 존재하지 않을 경우")
+    @Test
+    void notFoundStationInSections() {
+        // given
+        StationResponse 잠실역 = 지하철역_등록되어_있음("잠실역").as(StationResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = 경로_조회를_요청함(교대역.getId(), 잠실역.getId());
+
+        // then
+        경로_조회_실패됨(response);
+    }
+
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
+    @Test
+    void notLinkedStations() {
+        // given
+        StationResponse 잠실역 = 지하철역_등록되어_있음("잠실역").as(StationResponse.class);
+        StationResponse 천호역 = 지하철역_등록되어_있음("천호역").as(StationResponse.class);
+        지하철_구간_등록_요청(이호선, 잠실역, 천호역, 10);
+
+        // when
+        ExtractableResponse<Response> response = 경로_조회를_요청함(강남역.getId(), 천호역.getId());
+
+        // then
+        경로_조회_실패됨(response);
+    }
+
+    @DisplayName("출발역과 도착역이 같은 경우")
+    @Test
+    void equalsStations() {
+        // when
+        ExtractableResponse<Response> response = 경로_조회를_요청함(강남역.getId(), 강남역.getId());
+
+        // then
+        경로_조회_실패됨(response);
+    }
+
+    private void 경로_조회_실패됨(ExtractableResponse<Response> response) {
+        요청_결과_검증(response, HttpStatus.BAD_REQUEST);
     }
 
     @DisplayName("경로를 조회함")
