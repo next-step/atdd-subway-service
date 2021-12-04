@@ -173,7 +173,7 @@ Connection: keep-alive
 --- 
 #### 최단 경로 라이브러리
 - jgrapht 라이브러리를 활용하면 간편하게 최단거리를 조회할 수 있음
-- 정점(vertext)과 간선(edge), 그리고 가중치 개념을 이용
+- 정점(vertex)과 간선(edge), 그리고 가중치 개념을 이용
     - 정점 : 지하철역(Station)
     - 간선 : 지하철역 연결정보(Section)
     - 가중치 : 거리
