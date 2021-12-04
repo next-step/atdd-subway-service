@@ -80,12 +80,13 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(Section section) {
-        sections.add(section);
+        if (!hasSection(section)) {
+            sections.add(section);
+        }
 
         if (!section.equalsLine(this)) {
             section.toLine(this);
         }
-
     }
 
     public void addLineStation(Station upStation, Station downStation, int distance) {

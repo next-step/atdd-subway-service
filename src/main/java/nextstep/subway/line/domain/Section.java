@@ -59,9 +59,8 @@ public class Section extends BaseEntity implements Comparable<Section>{
         }
 
         this.line = line;
-        if (!line.hasSection(this)) {
-            line.addSection(this);
-        }
+        line.addSection(this);
+
         return this;
     }
 
@@ -141,7 +140,7 @@ public class Section extends BaseEntity implements Comparable<Section>{
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, line, upStation, downStation);
+        return Objects.hash(id);
     }
 
 
