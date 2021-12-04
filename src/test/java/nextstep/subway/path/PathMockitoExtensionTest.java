@@ -12,7 +12,6 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 /**
@@ -49,17 +47,11 @@ public class PathMockitoExtensionTest {
     @Mock
     private Station 역삼역;
 
-    @BeforeEach
-    void setUp() {
-        when(강남역.getId()).thenReturn(1L);
-        when(역삼역.getId()).thenReturn(2L);
-    }
-
     @Test
     @DisplayName("역 조회")
     void findStations() {
         when(stationRepository.findAll())
-                .thenReturn(Lists.newArrayList(new Station("강남역"), new Station("역삼역")));
+                .thenReturn(Lists.newArrayList(강남역, 역삼역));
 
         StationService stationService = new StationService(stationRepository);
 
@@ -74,7 +66,7 @@ public class PathMockitoExtensionTest {
         when(lineRepository.findAll())
                 .thenReturn(
                         Lists.newArrayList(
-                                Line.of("1호선", "남색", new Station("강남역"), new Station("역삼역"), 5)));
+                                Line.of("1호선", "남색", 강남역, 역삼역, 5)));
         StationService stationService = new StationService(stationRepository);
         LineService lineService = new LineService(lineRepository, stationService);
 
@@ -100,7 +92,7 @@ public class PathMockitoExtensionTest {
                 .thenReturn(lines);
 
         when(finder.getShortestPath(lines, stations, 강남역.getId(), 역삼역.getId()))
-                .thenReturn(PathResponse.of(stations));
+                .thenReturn(PathResponse.of(Lists.newArrayList(new Station(""), new Station(""))));
 
         PathService pathService = new PathService(finder, stationRepository, lineRepository);
 

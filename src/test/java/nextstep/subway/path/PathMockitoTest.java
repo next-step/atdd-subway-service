@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,6 +37,10 @@ public class PathMockitoTest {
         when(강남역.getId()).thenReturn(1L);
         when(역삼역.getName()).thenReturn("역삼역");
         when(역삼역.getId()).thenReturn(2L);
+        when(강남역.getCreatedDate()).thenReturn(LocalDateTime.now());
+        when(강남역.getModifiedDate()).thenReturn(LocalDateTime.now());
+        when(역삼역.getCreatedDate()).thenReturn(LocalDateTime.now());
+        when(역삼역.getModifiedDate()).thenReturn(LocalDateTime.now());
     }
 
     @Test
@@ -45,12 +50,16 @@ public class PathMockitoTest {
         StationRepository stationRepository = mock(StationRepository.class);
         LineRepository lineRepository = mock(LineRepository.class);
         PathFinder pathFinder = mock(PathFinder.class);
+
         List<Line> lines = Lists.newArrayList(
                 Line.of("1호선", "남색", 강남역, 역삼역, 5));
-        List<Station> stations = Lists.newArrayList(new Station("강남역"), new Station("역삼역"));
+
+        List<Station> stations = Lists.newArrayList(강남역, 역삼역);
+
 
         when(lineRepository.findAll()).thenReturn(lines);
         when(stationRepository.findAll()).thenReturn(stations);
+
         when(pathFinder.getShortestPath(lines, stations, 1L, 2L))
                 .thenReturn(PathResponse.of(
                         Arrays.asList(new Station("강남역"), new Station("역삼역"))));

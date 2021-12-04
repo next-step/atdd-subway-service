@@ -51,10 +51,10 @@ public class PathSpringExtensionTest {
     void setUp() {
         when(강남역.getName()).thenReturn("강남역");
         when(강남역.getId()).thenReturn(1L);
-        when(강남역.getCreatedDate()).thenReturn(LocalDateTime.now());
-        when(강남역.getModifiedDate()).thenReturn(LocalDateTime.now());
         when(역삼역.getName()).thenReturn("역삼역");
         when(역삼역.getId()).thenReturn(2L);
+        when(강남역.getCreatedDate()).thenReturn(LocalDateTime.now());
+        when(강남역.getModifiedDate()).thenReturn(LocalDateTime.now());
         when(역삼역.getCreatedDate()).thenReturn(LocalDateTime.now());
         when(역삼역.getModifiedDate()).thenReturn(LocalDateTime.now());
     }
@@ -67,12 +67,11 @@ public class PathSpringExtensionTest {
         List<Line> lines = Lists.newArrayList(
                 Line.of("1호선", "남색", 강남역, 역삼역, 5));
         List<Station> stations = Lists.newArrayList(강남역, 역삼역);
-        PathResponse expect = PathResponse.of(stations);
 
         when(lineRepository.findAll()).thenReturn(lines);
         when(stationRepository.findAll()).thenReturn(stations);
         when(pathFinder.getShortestPath(lines, stations, 1L, 2L))
-                .thenReturn(expect);
+                .thenReturn(PathResponse.of(Lists.newArrayList(new Station(""), new Station(""))));
         PathService pathService = new PathService(pathFinder, stationRepository, lineRepository);
 
         //when
