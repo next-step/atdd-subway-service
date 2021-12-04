@@ -13,18 +13,14 @@ import org.jgrapht.graph.WeightedMultigraph;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
-public class PathSections {
+public class PathFinder {
     private final Set<Section> sections;
 
-    public PathSections(Set<Section> sections) {
+    public PathFinder(Set<Section> sections) {
         this.sections = sections;
     }
 
-    public Set<Section> getSections() {
-        return sections;
-    }
-
-    public GraphPath<Station, Section> getShortestPath(Station sourceStation, Station targetStation) {
+    public GraphPath<Station, Section> getShortestPaths(Station sourceStation, Station targetStation) {
         validate(sourceStation, targetStation);
         return getPath(sourceStation, targetStation);
     }

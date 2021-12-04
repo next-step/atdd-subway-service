@@ -2,13 +2,16 @@ package nextstep.subway.path;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
 import io.restassured.RestAssured;
-import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -18,13 +21,6 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
-
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 @DisplayName("지하철 경로 조회")
 class PathAcceptanceTest extends AcceptanceTest {
@@ -67,11 +63,19 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("최단 경로를 조회한다.")
     @Test
-    void path() {
+    void getShortestPaths() {
         // when
         Map<String, String> params = new HashMap<>();
         params.put("source", 강남역.getId().toString());
         params.put("target", 남부터미널역.getId().toString());
+        ExtractableResponse<Response> response = 최단_경로_목록_요청(
+            params);
+
+        // then
+        최단_경로_목록_응답됨(response);
+    }
+
+    private ExtractableResponse<Response> 최단_경로_목록_요청(Map<String, String> params) {
         ExtractableResponse<Response> response = RestAssured
             .given().log().all()
             .params(params)
@@ -79,13 +83,10 @@ class PathAcceptanceTest extends AcceptanceTest {
             .when()
             .get("/paths")
             .then().log().all().extract();
+        return response;
+    }
 
-        // then
+    private void 최단_경로_목록_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        List<StationResponse> stations = response.as(new TypeRef<List<StationResponse>>() {
-        });
-
-        assertThat(stations).containsExactlyElementsOf(Arrays.asList(
-            강남역, 양재역, 남부터미널역));
     }
 }

@@ -3,6 +3,7 @@ package nextstep.subway.line.application;
 import static nextstep.subway.exception.ExceptionMessage.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -14,7 +15,6 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.path.domain.PathSections;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -47,11 +47,11 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public PathSections findAllSection() {
+    public Set<Section> findAllSection() {
         List<Line> persistLines = lineRepository.findAll();
-        return new PathSections(persistLines.stream()
+        return persistLines.stream()
             .flatMap(line -> line.getSections().getSections().stream())
-            .collect(Collectors.toSet()));
+            .collect(Collectors.toSet());
     }
 
     @Transactional(readOnly = true)

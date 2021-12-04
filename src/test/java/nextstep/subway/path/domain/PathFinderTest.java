@@ -19,9 +19,9 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
-class PathSectionsTest {
+class PathFinderTest {
 
-    private PathSections pathSections;
+    private PathFinder pathFinder;
     private Line 신분당선;
     private Line 이호선;
     private Line 삼호선;
@@ -46,14 +46,26 @@ class PathSectionsTest {
             .flatMap(line -> line.getSections().getSections().stream())
             .collect(Collectors.toSet());
 
-        pathSections = new PathSections(sections);
+        pathFinder = new PathFinder(sections);
+    }
+
+    @DisplayName("최단 경로를 조회한다.")
+    @Test
+    void shortestTest() {
+        // when
+        GraphPath<Station, Section> path = pathFinder.getShortestPaths(강남역, 남부터미널역);
+
+        // then
+        List<Station> stations = path.getVertexList();
+        assertThat(stations).containsExactlyElementsOf(Arrays.asList(강남역, 양재역, 남부터미널역));
+        assertEquals(12, path.getWeight());
     }
 
     @DisplayName("출발역과 도착역이 같은 경우 경로를 조회할 수 없다.")
     @Test
     void validateSameStations() {
         // when && then
-        assertThatThrownBy(() -> pathSections.getShortestPath(강남역, 강남역))
+        assertThatThrownBy(() -> pathFinder.getShortestPaths(강남역, 강남역))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage(SAME_STATION.getMessage());
     }
@@ -66,20 +78,8 @@ class PathSectionsTest {
         Station 사당역 = new Station("사당역");
 
         // when && then
-        assertThatThrownBy(() -> pathSections.getShortestPath(선릉역, 사당역))
+        assertThatThrownBy(() -> pathFinder.getShortestPaths(선릉역, 사당역))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage(NOT_EXIST_STATION.getMessage());
-    }
-
-    @DisplayName("최단 경로를 조회한다.")
-    @Test
-    void shortestTest() {
-        // when
-        GraphPath<Station, Section> path = pathSections.getShortestPath(강남역, 남부터미널역);
-
-        // then
-        List<Station> stations = path.getVertexList();
-        assertThat(stations).containsExactlyElementsOf(Arrays.asList(강남역, 양재역, 남부터미널역));
-        assertEquals(12, path.getWeight());
     }
 }
