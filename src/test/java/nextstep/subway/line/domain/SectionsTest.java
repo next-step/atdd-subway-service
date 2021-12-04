@@ -99,4 +99,55 @@ class SectionsTest {
         Assertions.assertThat(stations).containsExactly(강남역(), 신촌역(), 역삼역(), 서울역(), 용산역());
     }
 
+    @Test
+    void 전체구간이_하나인경우_삭제불가() {
+        // given
+        Sections 일호선_전체구간 = new Sections(일호선_구간_강남역_신촌역());
+
+        // then
+        Assertions.assertThatThrownBy(() -> {
+            일호선_전체구간.removeLineStation(강남역());
+        }).isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void 상행_구간_삭제() {
+        // given
+        Sections 일호선_전체구간 = new Sections(일호선_구간_강남역_신촌역(), 일호선_구간_신촌역_역삼역(), 일호선_구간_역삼역_서울역());
+
+        // when
+        일호선_전체구간.removeLineStation(강남역());
+
+        // then
+        List<Station> stations = 일호선_전체구간.getStations();
+        Assertions.assertThat(stations).containsExactly( 신촌역(), 역삼역(), 서울역());
+    }
+
+    @Test
+    void 중간_구간_삭제() {
+        // given
+        Sections 일호선_전체구간 = new Sections(일호선_구간_강남역_신촌역(), 일호선_구간_신촌역_역삼역(), 일호선_구간_역삼역_서울역());
+
+        // when
+        일호선_전체구간.removeLineStation(역삼역());
+
+        // then
+        List<Station> stations = 일호선_전체구간.getStations();
+        Assertions.assertThat(stations).containsExactly(강남역(), 신촌역(),  서울역());
+    }
+
+    @Test
+    void 하행_구간_삭제() {
+        // given
+        Sections 일호선_전체구간 = new Sections(일호선_구간_강남역_신촌역(), 일호선_구간_신촌역_역삼역(), 일호선_구간_역삼역_서울역());
+
+        // when
+        일호선_전체구간.removeLineStation(서울역());
+
+        // then
+        List<Station> stations = 일호선_전체구간.getStations();
+        Assertions.assertThat(stations).containsExactly(강남역(), 신촌역(), 역삼역());
+    }
+
+
 }

@@ -56,6 +56,9 @@ public class Line extends BaseEntity {
         this.sections.addLineStation(section);
     }
 
+    public void removeLineStation(Station station) {
+        sections.removeLineStation(station);
+    }
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
@@ -97,4 +100,5 @@ public class Line extends BaseEntity {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }

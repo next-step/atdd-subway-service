@@ -16,8 +16,9 @@ import nextstep.subway.station.domain.Station;
 @Embeddable
 public class Sections {
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST,
-        CascadeType.MERGE}, orphanRemoval = true)
+    public static final int SECTION_LIMIT_SIZE = 1;
+
+    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
     public Sections(Section... sections) {
@@ -115,6 +116,30 @@ public class Sections {
         return it -> it.getDownStation().equals(downStation);
     }
 
+    public void removeLineStation(Station station) {
+        validateLimitSize();
+
+        Optional<Section> upLineStation = findSections(isUpStation(station));
+        Optional<Section> downLineStation = findSections(isDownStation(station));
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance =
+                upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            sections.add(new Section(newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
+    private void validateLimitSize() {
+        if (sections.size() <= SECTION_LIMIT_SIZE) {
+            throw new RuntimeException();
+        }
+    }
+
     private Optional<Section> findSections(Predicate<Section> sectionPredicate) {
         return sections.stream()
             .filter(sectionPredicate)
@@ -177,4 +202,5 @@ public class Sections {
     public int hashCode() {
         return Objects.hash(sections);
     }
+
 }
