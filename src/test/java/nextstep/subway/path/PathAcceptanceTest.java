@@ -58,7 +58,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
                 new LineRequest("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 10))
             .as(LineResponse.class);
-        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
+        삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
                 new LineRequest("삼호선", "bg-orange-600", 교대역.getId(), 양재역.getId(), 5))
             .as(LineResponse.class);
 
