@@ -24,49 +24,6 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     private StationResponse 정자역;
     private StationResponse 광교역;
 
-    public static ExtractableResponse<Response> 지하철_노선에_지하철_구간_등록_요청(LineResponse line, StationResponse upStation,
-        StationResponse downStation, int distance) {
-        SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
-        return post(sectionRequest, "/lines/{lineId}/sections", line.getId());
-    }
-
-    public static void 지하철_노선에_지하철_구간_등록됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 지하철_노선에_지하철_구간_등록_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response,
-        List<StationResponse> expectedStations) {
-        LineResponse line = response.as(LineResponse.class);
-        List<Long> stationIds = line.getStations().stream()
-            .map(StationResponse::getId)
-            .collect(Collectors.toList());
-
-        List<Long> expectedStationIds = expectedStations.stream()
-            .map(StationResponse::getId)
-            .collect(Collectors.toList());
-
-        assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
-        return delete("/lines/{lineId}/sections?stationId={stationId}",
-            line.getId(),
-            station.getId()
-        );
-    }
-
-    public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
     @DisplayName("지하철 구간을 관리 시나리오(구간 등록 - 역 목록 조회 - 구간 삭제 - 역 목록 조회)가 수행하면, 해당 요청에 맞게 수행한다.")
     @Test
     void performScenario() {
@@ -106,7 +63,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         정자역 = 지하철역_등록되어_있음("정자역").as(StationResponse.class);
         광교역 = 지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
-        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        LineRequest lineRequest = LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
         신분당선 = 지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
@@ -179,6 +136,50 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
+    }
+
+
+    public static ExtractableResponse<Response> 지하철_노선에_지하철_구간_등록_요청(LineResponse line, StationResponse upStation,
+        StationResponse downStation, int distance) {
+        SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
+        return post(sectionRequest, "/lines/{lineId}/sections", line.getId());
+    }
+
+    public static void 지하철_노선에_지하철_구간_등록됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 지하철_노선에_지하철_구간_등록_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response,
+        List<StationResponse> expectedStations) {
+        LineResponse line = response.as(LineResponse.class);
+        List<Long> stationIds = line.getStations().stream()
+            .map(StationResponse::getId)
+            .collect(Collectors.toList());
+
+        List<Long> expectedStationIds = expectedStations.stream()
+            .map(StationResponse::getId)
+            .collect(Collectors.toList());
+
+        assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
+        return delete("/lines/{lineId}/sections?stationId={stationId}",
+            line.getId(),
+            station.getId()
+        );
+    }
+
+    public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
 }
