@@ -1,6 +1,5 @@
 package nextstep.subway.path;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -9,19 +8,16 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.PathRequest;
 import nextstep.subway.station.dto.StationResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_구간_등록_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @DisplayName("지하철 경로 조회")
@@ -69,7 +65,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void pathTest() {
         // when
         // 경로 조회를 요청함
-        PathRequest pathRequest = new PathRequest(강남역.getId(), 교대역.getId());
+        ExtractableResponse<Response> response = 경로_조회를_요청함(강남역.getId(), 교대역.getId());
+
+        // then
+        // 경로 조회됨
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private ExtractableResponse<Response> 경로_조회를_요청함(Long sourceId, Long targetId) {
+        PathRequest pathRequest = new PathRequest(sourceId, targetId);
 
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
@@ -77,10 +81,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths")
                 .then().log().all().extract();
-
-        // then
-        // 경로 조회됨
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        return response;
     }
 }
 
