@@ -71,4 +71,4 @@ Feature: 지하철 구간 관련 기능
 
 ## 할 일
 - [x] LineSectionAcceptanceTest 리팩터링
-- [ ] LineService 리팩터링
+- [x] LineService 리팩터링
