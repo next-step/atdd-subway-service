@@ -1,17 +1,15 @@
 package nextstep.subway.line;
 
-import nextstep.subway.AcceptanceTest;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.dto.LineRequest;
-import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import static nextstep.subway.station.StationAcceptanceTest.*;
+import static org.assertj.core.api.Assertions.*;
 
-import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.jupiter.api.*;
+
+import nextstep.subway.*;
+import nextstep.subway.line.domain.*;
+import nextstep.subway.line.dto.*;
+import nextstep.subway.station.domain.*;
+import nextstep.subway.station.dto.*;
 
 class LineTest extends AcceptanceTest {
     @DisplayName("디폴트 생성자를 호출하면 Line 객체를 반환한다.")
@@ -29,13 +27,17 @@ class LineTest extends AcceptanceTest {
     @DisplayName("이름, 색, 상행역, 하행역, 거리를 인자로 하는 생성자를 호출하면 Line 객체를 반환한다.")
     @Test
     void constructTest3() {
-        assertThat(new Line("신분당선", "bg-red-600", Station.from("강남역"), Station.from("광교역"), 10)).isInstanceOf(Line.class);
+        assertThat(
+            new Line("신분당선", "bg-red-600", Station.from("강남역"), Station.from("광교역"), Distance.from(10))).isInstanceOf(
+            Line.class);
     }
 
     @DisplayName("정적 팩토리 메서드 of로 이름, 색, 상행역, 하행역, 거리를 입력받으면 Line 객체를 반환한다.")
     @Test
     void staticFactoryMethodTest1() {
-        assertThat(Line.of("신분당선", "bg-red-600", Station.from("강남역"), Station.from("광교역"), 10)).isInstanceOf(Line.class);
+        assertThat(
+            Line.of("신분당선", "bg-red-600", Station.from("강남역"), Station.from("광교역"), Distance.from(10))).isInstanceOf(
+            Line.class);
     }
 
     @DisplayName("정적 팩토리 메서드 from으로 LineRequest를 입력받으면 Line 객체를 반환한다.")
@@ -43,7 +45,8 @@ class LineTest extends AcceptanceTest {
     void staticFactoryMethodTest2() {
         StationResponse 강남역응답 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
         StationResponse 광교역응답 = 지하철역_등록되어_있음("광교역").as(StationResponse.class);
-        assertThat(Line.from(new LineRequest("신분당선", "bg-red-600", 강남역응답.getId(), 광교역응답.getId(), 10))).isInstanceOf(Line.class);
+        assertThat(Line.from(new LineRequest("신분당선", "bg-red-600", 강남역응답.getId(), 광교역응답.getId(), 10))).isInstanceOf(
+            Line.class);
     }
 
     @DisplayName("Line객체를 입력받는 update함수를 호출하면 해당 객체의 속성인 노선이름과 노선색이 변경된다.")
@@ -61,8 +64,8 @@ class LineTest extends AcceptanceTest {
     void getStationsTest() {
         Station 강남역 = Station.from("강남역");
         Station 광교역 = Station.from("광교역");
-        Line line = Line.of("신분당선", "bg-red-600", 강남역, 광교역, 10);
-        assertThat(line.getStations()).containsExactly(강남역, 광교역);
+        Line line = Line.of("신분당선", "bg-red-600", 강남역, 광교역, Distance.from(10));
+        assertThat(line.stations()).containsExactly(강남역, 광교역);
     }
 
     @DisplayName("등록한 역이 있고, removeLineStation을 호출하여 역을 제거할 수 있다.")
@@ -71,11 +74,11 @@ class LineTest extends AcceptanceTest {
         Station 강남역 = Station.from("강남역");
         Station 양재역 = Station.from("양재역");
         Station 광교역 = Station.from("광교역");
-        Line line = Line.of("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        line.getSections().add(Section.of(line, 양재역, 광교역, 20));
+        Line line = Line.of("신분당선", "bg-red-600", 강남역, 양재역, Distance.from(10));
+        line.addSection(양재역, 광교역, Distance.from(20));
 
         line.removeLineStation(양재역);
-        assertThat(line.getStations()).containsExactly(강남역, 광교역);
+        assertThat(line.stations()).containsExactly(강남역, 광교역);
     }
 
     @DisplayName("등록한 구간이 한 개 존재하고, removeLineStation을 호출하여 예외를 던진다.")
@@ -83,7 +86,7 @@ class LineTest extends AcceptanceTest {
     void exceptionTest() {
         Station 강남역 = Station.from("강남역");
         Station 광교역 = Station.from("광교역");
-        Line line = Line.of("신분당선", "bg-red-600", 강남역, 광교역, 10);
+        Line line = Line.of("신분당선", "bg-red-600", 강남역, 광교역, Distance.from(10));
 
         assertThatThrownBy(() -> line.removeLineStation(강남역)).isInstanceOf(RuntimeException.class);
     }
