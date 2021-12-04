@@ -21,11 +21,6 @@ public class Sections {
         List<Station> stations = getStations();
         validateAddSection(upStation, downStation, stations);
 
-        if (stations.isEmpty()) {
-            sections.add(new Section(line, upStation, downStation, distance));
-            return;
-        }
-
         findOverlapSection(upStation, downStation)
                 .ifPresent(it -> it.updateStation(upStation, downStation, distance));
 
