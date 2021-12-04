@@ -139,4 +139,4 @@ Connection: keep-alive
 
 - [ ] 경로를 검색하면 최단거리와 역 순서를 반환한다
   - [X] 인수테스트 작성
-  - [ ] 기능 구현
+  - [X] 도메인 PathFinder 생성
