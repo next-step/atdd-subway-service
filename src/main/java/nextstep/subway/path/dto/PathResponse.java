@@ -24,7 +24,7 @@ public class PathResponse {
                 .stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
-        FareCalculator fareCalculator = new FareCalculator(path);
+        FareCalculator fareCalculator = new FareCalculator(path, 19);
         return new PathResponse(stationResponses, path.getDistance(), fareCalculator.calculate());
     }
 

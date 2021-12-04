@@ -25,17 +25,18 @@ public class FareCalculatorTest {
     @ParameterizedTest(name = "{displayName} - [{index}] {argumentsWithNames}")
     @CsvSource(
             value = {
-                    "10:0:1250", "11:0:1350", "15:0:1350", "16:0:1450", "50:0:2050", "51:0:2150", "58:0:2150", "59:0:2250",
-                    "10:1000:2250", "11:1000:2350", "15:1000:2350", "16:1000:2450", "50:1000:3050", "51:1000:3150",
-                    "58:1000:3150", "59:1000:3250"
+                    "10:0:5:0", "50:0:5:0", "65:0:5:0", "10:1000:5:0", "50:1000:5:0", "65:1000:5:0",
+                    "10:0:6:450", "50:0:6:850", "65:0:6:950", "10:1000:6:950", "50:1000:6:1350", "65:1000:6:1450",
+                    "10:0:13:720", "50:0:13:1360", "65:0:13:1520", "10:1000:13:1520", "50:1000:13:2160", "65:1000:13:2320",
+                    "10:0:19:1250", "50:0:19:2050", "65:0:19:2250", "10:1000:19:2250", "50:1000:19:3050", "65:1000:19:3250"
             },
             delimiter = ':'
     )
     @DisplayName("이용 요금을 계산한다.")
-    void calculate(int distance, int addFare, int expectedFare) {
+    void calculate(int distance, int addFare, int age, int expectedFare) {
         // given
         Path path = new Path(Arrays.asList(강남역, 역삼역), distance, addFare);
-        FareCalculator fareCalculator = new FareCalculator(path);
+        FareCalculator fareCalculator = new FareCalculator(path, age);
 
         // when
         int fare = fareCalculator.calculate();
