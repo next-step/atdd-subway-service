@@ -54,13 +54,32 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("경로를 검색하면 최단거리를 반환한다")
     @Test
-    void test() {
+    void testGetShortCut() {
         // when
         ExtractableResponse<Response> response = 역_사이의_최단경로_요청(교대역, 양재역);
 
         // then
         최단_경로_응답됨(response);
         최단_거리와_정렬된_역이_반환됨(response, 5, "교대역", "남부터미널역", "양재역");
+    }
+
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
+    @Test
+    void testNotLinked() {
+        // given
+        StationResponse 삼봉역 = StationAcceptanceTest.지하철역_등록되어_있음("삼봉역").as(StationResponse.class);
+        StationResponse 박달사거리역 = StationAcceptanceTest.지하철역_등록되어_있음("박달사거리역").as(StationResponse.class);
+        LineAcceptanceTest.지하철_노선_등록되어_있음("박달선", "bg-red-600", 삼봉역, 박달사거리역, 5);
+
+        // when
+        ExtractableResponse<Response> response = 역_사이의_최단경로_요청(강남역, 박달사거리역);
+
+        // then
+        최단_경로_찾기_실패_응답함(response);
+    }
+
+    private void 최단_경로_찾기_실패_응답함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private void 최단_경로_응답됨(ExtractableResponse<Response> response) {

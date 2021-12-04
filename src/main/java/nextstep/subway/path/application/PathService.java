@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.common.exception.ServiceException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.PathFinder;
@@ -30,6 +31,9 @@ public class PathService {
         Set<Line> lines = new HashSet<>(lineService.findLineByStation(source));
         lines.addAll(lineService.findLineByStation(target));
         GraphPath<Station, DefaultWeightedEdge> shortCut = PathFinder.findShortCut(lines, source, target);
+        if (shortCut == null) {
+            throw new ServiceException("최단 경로를 찾을 수 없습니다");
+        }
         return PathResponse.of(shortCut);
     }
 }
