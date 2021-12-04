@@ -27,7 +27,8 @@ class LineTest {
     @DisplayName("노선 역 조회 순서 검증")
     void getStations_up_down_ordering() {
         // given
-        Line line = new Line("2호선", "RED", 잠실, 잠실나루, 100);
+        Section section = Section.of(잠실, 잠실나루, 100);
+        Line line = new Line("2호선", "RED", section);
 
         // when
         // then

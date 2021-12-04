@@ -14,6 +14,7 @@ import java.util.Optional;
 import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.application.StationService;
@@ -47,7 +48,8 @@ class LineServiceTest {
         // given
         lineService = new LineService(lineRepository, stationService);
         이호선요청 = new LineRequest("2호선", "RED", 1L, 2L, 100);
-        이호선 = new Line(이호선요청.getName(), 이호선요청.getColor(), 잠실, 잠실나루, 이호선요청.getDistance());
+        Section 잠실잠실나루구간 = Section.of(잠실, 잠실나루, 이호선요청.getDistance());
+        이호선 = new Line(이호선요청.getName(), 이호선요청.getColor(), 잠실잠실나루구간);
     }
 
     @Test

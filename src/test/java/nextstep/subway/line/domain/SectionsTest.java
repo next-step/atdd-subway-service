@@ -31,7 +31,7 @@ class SectionsTest {
     @DisplayName("구간 추가 후 구간 갯수 검증")
     void add() {
         // given
-        Section section = Section.of(line, 잠실, 잠실나루, 100);
+        Section section = Section.of(잠실, 잠실나루, 100);
 
         // when
         sections.add(section);
@@ -45,8 +45,8 @@ class SectionsTest {
     @DisplayName("이미 등록된 구간 입니다.")
     void addSection_duplicate() {
         // given
-        Section section1 = Section.of(line, 잠실, 잠실나루, 100);
-        Section section2 = Section.of(line, 잠실, 잠실나루, 50);
+        Section section1 = Section.of(잠실, 잠실나루, 100);
+        Section section2 = Section.of(잠실, 잠실나루, 50);
 
         // when
         sections.add(section1);
@@ -60,8 +60,8 @@ class SectionsTest {
     void addSection_distance_over() {
         // given
         Line line = new Line("2호선", "RED");
-        Section section1 = Section.of(line, 잠실, 잠실나루, 100);
-        Section section2 = Section.of(line, 잠실, 강변, 200);
+        Section section1 = Section.of(잠실, 잠실나루, 100);
+        Section section2 = Section.of(잠실, 강변, 200);
 
         // when
         sections.add(section1);
@@ -74,8 +74,8 @@ class SectionsTest {
     @DisplayName("상행, 하행 어디에도 속하지 않는 역은 추가 할 수 없음")
     void addSection_add_not_position() {
         // when
-        Section section1 = Section.of(line, 잠실, 잠실나루, 100);
-        Section section2 = Section.of(line, 강변, 구의, 100);
+        Section section1 = Section.of(잠실, 잠실나루, 100);
+        Section section2 = Section.of(강변, 구의, 100);
         sections.add(section1);
 
         // then
@@ -86,8 +86,8 @@ class SectionsTest {
     @DisplayName("구간 중간에 역 추가")
     void addSection_add_inside() {
         // when
-        Section section1 = Section.of(line, 잠실, 잠실나루, 100);
-        Section section2 = Section.of(line, 잠실, 구의, 50);
+        Section section1 = Section.of(잠실, 잠실나루, 100);
+        Section section2 = Section.of(잠실, 구의, 50);
         sections.add(section1);
         sections.add(section2);
 
@@ -102,8 +102,8 @@ class SectionsTest {
     @DisplayName("상행 종점 이전 역 추가")
     void addSection_add_first_pre() {
         // when
-        Section section1 = Section.of(line, 잠실, 잠실나루, 100);
-        Section section2 = Section.of(line, 구의, 잠실, 50);
+        Section section1 = Section.of(잠실, 잠실나루, 100);
+        Section section2 = Section.of(구의, 잠실, 50);
         sections.add(section1);
         sections.add(section2);
 
@@ -119,8 +119,8 @@ class SectionsTest {
     void addSection_add_last_next() {
         // given
         // when
-        Section section1 = Section.of(line, 잠실, 잠실나루, 100);
-        Section section2 = Section.of(line, 잠실나루, 구의, 100);
+        Section section1 = Section.of(잠실, 잠실나루, 100);
+        Section section2 = Section.of(잠실나루, 구의, 100);
         sections.add(section1);
         sections.add(section2);
 
@@ -135,7 +135,7 @@ class SectionsTest {
     @DisplayName("구간 하나일때 제거 실패")
     void remove_fail() {
         // given
-        Section section = Section.of(line, 잠실, 잠실나루, 100);
+        Section section = Section.of(잠실, 잠실나루, 100);
         sections.add(section);
 
         // when
@@ -147,9 +147,9 @@ class SectionsTest {
     @DisplayName("구간에서 역 한개 제거")
     void remove() {
         // given
-        Section section1 = Section.of(line, 잠실, 잠실나루, 100);
-        Section section2 = Section.of(line, 잠실나루, 구의, 50);
-        Section section3 = Section.of(line, 구의, 도곡, 5);
+        Section section1 = Section.of(잠실, 잠실나루, 100);
+        Section section2 = Section.of(잠실나루, 구의, 50);
+        Section section3 = Section.of(구의, 도곡, 5);
         sections.add(section1);
         sections.add(section2);
         sections.add(section3);

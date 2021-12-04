@@ -36,8 +36,17 @@ public class Section {
         this.distance = Distance.of(distance);
     }
 
-    public static Section of(Line line, Station upStation, Station downStation, int distance) {
-        return new Section(line, upStation, downStation, distance);
+    public static Section of(Station upStation, Station downStation, int distance) {
+        return new Section(null, upStation, downStation, distance);
+    }
+
+    public void toLine(Line line) {
+        this.line = line;
+    }
+
+    public Section newOfMerge(Section section) {
+        distance.plus(section.distance);
+        return new Section(line, upStation, section.downStation, distance.getDistance());
     }
 
     public Station getUpStation() {
@@ -67,10 +76,5 @@ public class Section {
 
     public boolean isSameDownStation(Station station) {
         return downStation.equals(station);
-    }
-
-    public Section newOfMerge(Section section) {
-        distance.plus(section.distance);
-        return Section.of(line, upStation, section.downStation, distance.getDistance());
     }
 }
