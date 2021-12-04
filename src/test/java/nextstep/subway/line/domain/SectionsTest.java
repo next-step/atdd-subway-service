@@ -1,10 +1,10 @@
 package nextstep.subway.line.domain;
 
-import static nextstep.subway.line.domain.StationFixtures.강변;
-import static nextstep.subway.line.domain.StationFixtures.구의;
-import static nextstep.subway.line.domain.StationFixtures.도곡;
-import static nextstep.subway.line.domain.StationFixtures.잠실;
-import static nextstep.subway.line.domain.StationFixtures.잠실나루;
+import static nextstep.subway.station.StationFixtures.강변;
+import static nextstep.subway.station.StationFixtures.구의;
+import static nextstep.subway.station.StationFixtures.도곡;
+import static nextstep.subway.station.StationFixtures.잠실;
+import static nextstep.subway.station.StationFixtures.잠실나루;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -37,7 +37,8 @@ class SectionsTest {
         sections.add(section);
 
         // then
-        assertThat(sections.count()).isEqualTo(1);
+        assertThat(sections.getStationsInOrder()).extracting("name")
+            .containsExactly(잠실.getName(), 잠실나루.getName());
     }
 
     @Test

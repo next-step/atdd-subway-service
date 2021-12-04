@@ -1,7 +1,7 @@
 package nextstep.subway.line.application;
 
-import static nextstep.subway.line.domain.StationFixtures.잠실;
-import static nextstep.subway.line.domain.StationFixtures.잠실나루;
+import static nextstep.subway.station.StationFixtures.잠실;
+import static nextstep.subway.station.StationFixtures.잠실나루;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;

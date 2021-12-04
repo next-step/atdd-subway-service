@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain;
 
-import static nextstep.subway.line.domain.StationFixtures.잠실;
-import static nextstep.subway.line.domain.StationFixtures.잠실나루;
+import static nextstep.subway.station.StationFixtures.잠실;
+import static nextstep.subway.station.StationFixtures.잠실나루;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
@@ -21,20 +21,6 @@ class LineTest {
 
         // then
         assertThat(line.sameNameAndColor(updateLine)).isTrue();
-    }
-
-    @Test
-    @DisplayName("최초 구간 추가 검증")
-    void addSection() {
-        // given
-        Line line = new Line("2호선", "RED");
-        Section addSection = new Section(line, 잠실, 잠실나루, 100);
-
-        // when
-        line.addSection(addSection);
-
-        // then
-        assertThat(line.sectionsCount()).isEqualTo(1);
     }
 
     @Test
