@@ -35,6 +35,25 @@ public class Section {
         this.distance = new Distance(distance);
     }
 
+    public void updateStation(Station upStation, Station downStation, int distance) {
+        if (this.upStation == upStation) {
+            updateUpStation(downStation, distance);
+            return;
+        }
+
+        updateDownStation(upStation, distance);
+    }
+
+    private void updateUpStation(Station station, int newDistance) {
+        upStation = station;
+        distance = distance.minus(newDistance);
+    }
+
+    private void updateDownStation(Station station, int newDistance) {
+        downStation = station;
+        distance = distance.minus(newDistance);
+    }
+
     public Long getId() {
         return id;
     }
@@ -53,24 +72,5 @@ public class Section {
 
     public int getDistance() {
         return distance.value();
-    }
-
-    public void updateUpStation(Station station, int newDistance) {
-        upStation = station;
-        distance = distance.minus(newDistance);
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
-        downStation = station;
-        distance = distance.minus(newDistance);
-    }
-
-    public void updateStation(Station upStation, Station downStation, int distance) {
-        if (this.upStation == upStation) {
-            updateUpStation(downStation, distance);
-            return;
-        }
-
-        updateDownStation(upStation, distance);
     }
 }
