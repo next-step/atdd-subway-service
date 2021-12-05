@@ -1,4 +1,4 @@
-package nextstep.subway.path.ui;
+package nextstep.subway.path.application;
 
 import java.util.List;
 import java.util.NoSuchElementException;
