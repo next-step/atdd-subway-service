@@ -11,4 +11,9 @@ public class ExceptionAdvice {
     protected ResponseEntity handleDistanceTooLongException(DistanceTooLongException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+
+    @ExceptionHandler(LineNotFoundException.class)
+    protected ResponseEntity handleDistanceTooLongException(LineNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
 }
