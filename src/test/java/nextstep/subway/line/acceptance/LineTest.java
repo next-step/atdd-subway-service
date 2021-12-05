@@ -39,7 +39,6 @@ public class LineTest {
 
         //then
         assertThat(upStation.getName()).isEqualTo("강남역");
-
     }
 
     @DisplayName("지하철 노선에 구간을 추가한다. (중간역)")
