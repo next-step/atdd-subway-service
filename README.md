@@ -53,6 +53,11 @@ npm run dev
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
 
+## step3 요구사항
+- [ ] 토큰 발급 기능 인수 테스트
+- [ ] 인증
+  - [ ] 내 정보 조회
+  - [ ] 즐겨 찾기
 
 ## step2 요구사항
 - [X] 최단 경로 조회 인수 테스트 만들기
