@@ -130,7 +130,7 @@ public class PathFinderTest {
 
 		// when & then
 		assertThatThrownBy(() -> pathFinder.find(강남역(), 강남역()))
-			.isInstanceOf(CanNotFoundPathException.class);
+			.isInstanceOf(CanNotFindPathException.class);
 	}
 
 	@DisplayName("경로 찾기 실패 - 출발역과 도착역이 연결이 되어 있지 않은 경우")
@@ -145,7 +145,7 @@ public class PathFinderTest {
 
 		// when & then
 		assertThatThrownBy(() -> pathFinder.find(양재시민의숲역(), 중앙역()))
-			.isInstanceOf(CanNotFoundPathException.class);
+			.isInstanceOf(CanNotFindPathException.class);
 	}
 
 	@DisplayName("경로 찾기 실패 - 존재하지 않은 출발역이나 도착역을 조회 할 경우")
@@ -160,6 +160,6 @@ public class PathFinderTest {
 
 		// when & then
 		assertThatThrownBy(() -> pathFinder.find(강남역(), 존재하지않는역()))
-			.isInstanceOf(CanNotFoundPathException.class);
+			.isInstanceOf(CanNotFindPathException.class);
 	}
 }

@@ -15,6 +15,7 @@ import nextstep.subway.station.domain.Station;
 
 public class PathFinder {
 	private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+	private List<Station> stations;
 
 	private PathFinder(List<Line> lines) {
 		graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
@@ -24,7 +25,7 @@ public class PathFinder {
 	}
 
 	private void addVertexes(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Line> lines) {
-		List<Station> stations = lines.stream()
+		stations = lines.stream()
 			.map(Line::getStationList)
 			.distinct()
 			.flatMap(List::stream)
@@ -50,12 +51,31 @@ public class PathFinder {
 	}
 
 	public Path find(Station source, Station target) {
+		throwOnEqual(source, target);
+		throwOnNotExist(source, target);
+
 		ShortestPathAlgorithm<Station, DefaultWeightedEdge> shortestPathAlgorithm = new DijkstraShortestPath<>(graph);
 		GraphPath<Station, DefaultWeightedEdge> graphPath = shortestPathAlgorithm.getPath(source, target);
+		if (graphPath == null) {
+			throw new CanNotFindPathException("출발역과 도착역이 연결되어 있지 않습니다.");
+		}
 
-		List<Station> stations = graphPath.getVertexList();
-		int distance = (int)graphPath.getWeight();
+		return Path.of(graphPath.getVertexList(), (int)graphPath.getWeight());
+	}
 
-		return Path.of(stations, distance);
+	private void throwOnEqual(Station source, Station target) {
+		if (source.equals(target)) {
+			throw new CanNotFindPathException("출발역과 도착역은 동일할 수 없습니다.");
+		}
+	}
+
+	private void throwOnNotExist(Station source, Station target) {
+		if (!stations.contains(source)) {
+			throw new CanNotFindPathException("존재하지 않는 출발역입니다.");
+		}
+
+		if (!stations.contains(target)) {
+			throw new CanNotFindPathException("존재하지 않는 출발역입니다.");
+		}
 	}
 }
