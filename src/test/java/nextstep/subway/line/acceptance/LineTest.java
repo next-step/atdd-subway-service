@@ -28,10 +28,17 @@ public class LineTest {
     void findUpStationTest() {
 
         //given
+        Station 강남역 = new Station("강남역");
+        Station 교대역 = new Station("교대역");
+        Station 양재역 = new Station("양재역");
+        Station 광교역 = new Station("광교역");
 
         //when
+        Line line = new Line("신분당선", "red", 강남역, 교대역, 10);
+        Station upStation = line.findUpStation();
 
         //then
+        assertThat(upStation.getName()).isEqualTo("강남역");
 
     }
 
