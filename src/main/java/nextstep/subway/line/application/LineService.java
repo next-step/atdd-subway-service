@@ -3,6 +3,7 @@ package nextstep.subway.line.application;
 import static nextstep.subway.exception.ExceptionMessage.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -30,8 +31,8 @@ public class LineService {
 
     @Transactional
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+        Station upStation = stationService.findStationById(request.getUpStationId());
+        Station downStation = stationService.findStationById(request.getDownStationId());
         Line persistLine = lineRepository.save(request.toLine(upStation, downStation));
         List<StationResponse> stations = convertToStationResponses(persistLine.getStations());
         return LineResponse.of(persistLine, stations);
@@ -43,6 +44,14 @@ public class LineService {
         return persistLines.stream()
             .map(line -> LineResponse.of(line, convertToStationResponses(line.getStations())))
             .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Set<Section> findAllSection() {
+        List<Line> persistLines = lineRepository.findAll();
+        return persistLines.stream()
+            .flatMap(line -> line.getSections().getSections().stream())
+            .collect(Collectors.toSet());
     }
 
     @Transactional(readOnly = true)
