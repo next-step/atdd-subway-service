@@ -24,8 +24,8 @@ class SectionsTest {
         정자역 = new Station("정자역");
         광교역 = new Station("광교역");
 
-        강남_판교_구간 = new Section(null, 강남역, 판교역, 5);
-        정자_광교_구간 = new Section(null, 정자역, 광교역, 10);
+        강남_판교_구간 = Section.of(null, 강남역, 판교역, 5);
+        정자_광교_구간 = Section.of(null, 정자역, 광교역, 10);
     }
 
     @Test

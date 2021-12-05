@@ -38,7 +38,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.addSection(new Section(this, upStation, downStation, distance));
+        sections.addSection(Section.of(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {
@@ -63,7 +63,37 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(final Section section) {
-        sections.addSection(section);
+        List<Station> stations = getStations();
+        boolean isUpStationExisted = isStationExists(section.getUpStation());
+        boolean isDownStationExisted = isStationExists(section.getDownStation());
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!stations.isEmpty() && isStationNotExists(section.getUpStation()) &&
+            isStationNotExists(section.getDownStation())) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
+        if (stations.isEmpty()) {
+            sections.addSection(section);
+            return;
+        }
+
+        if (isUpStationExisted) {
+            getUpStationMatchSection(section.getUpStation())
+                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+
+            sections.addSection(section);
+        } else if (isDownStationExisted) {
+            getDownStationMathSection(section.getDownStation())
+                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+
+            sections.addSection(section);
+        } else {
+            throw new RuntimeException();
+        }
     }
 
     public List<Station> getStations() {
@@ -132,7 +162,7 @@ public class Line extends BaseEntity {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
             int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            addSection(new Section(this, newUpStation, newDownStation, newDistance));
+            sections.addSection(Section.of(this, newUpStation, newDownStation, newDistance));
         }
 
         upLineStation.ifPresent(it -> getSections().remove(it));
