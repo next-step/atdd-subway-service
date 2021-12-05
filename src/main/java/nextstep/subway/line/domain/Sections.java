@@ -21,11 +21,6 @@ public class Sections {
         List<Station> stations = getStations();
         validateAddSection(upStation, downStation, stations);
 
-        if (stations.isEmpty()) {
-            sections.add(new Section(line, upStation, downStation, distance));
-            return;
-        }
-
         findOverlapSection(upStation, downStation)
                 .ifPresent(it -> it.updateStation(upStation, downStation, distance));
 
@@ -51,9 +46,10 @@ public class Sections {
             throw new DuplicateBothStationException(upStation, downStation);
         }
 
-        if (!stations.isEmpty() &&
-                stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation)) {
+        boolean hasAnyMatchedStations = stations.isEmpty() ||
+                stations.stream().anyMatch(it -> it == upStation) ||
+                stations.stream().anyMatch(it -> it == downStation);
+        if (!hasAnyMatchedStations) {
             throw new NotMatchedStationException(upStation, downStation);
         }
     }
@@ -68,26 +64,26 @@ public class Sections {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
+        Station currentStation = findFirstStation();
+        stations.add(currentStation);
 
         Optional<Section> nextLineStation;
-        while ((nextLineStation = findByUpStation(downStation)).isPresent()) {
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        while ((nextLineStation = findByUpStation(currentStation)).isPresent()) {
+            currentStation = nextLineStation.get().getDownStation();
+            stations.add(currentStation);
         }
 
         return stations;
     }
 
-    private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
+    private Station findFirstStation() {
+        Station firstStation = sections.get(0).getUpStation();
         Optional<Section> nextLineStation;
-        while ((nextLineStation = findByDownStation(downStation)).isPresent()) {
-            downStation = nextLineStation.get().getUpStation();
+        while ((nextLineStation = findByDownStation(firstStation)).isPresent()) {
+            firstStation = nextLineStation.get().getUpStation();
         }
 
-        return downStation;
+        return firstStation;
     }
 
     public void deleteSectionBy(Line line, Station station) {
@@ -127,5 +123,10 @@ public class Sections {
         return sections.stream()
                 .filter(it -> it.getUpStation() == station)
                 .findFirst();
+    }
+
+    public boolean hasStation(Station station) {
+        return sections.stream()
+                .anyMatch(section -> section.hasStation(station));
     }
 }
