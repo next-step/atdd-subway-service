@@ -108,20 +108,20 @@ public class StationAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 지하철역_생성됨(ExtractableResponse response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        요청_결과_검증(response, HttpStatus.CREATED);
         assertThat(response.header("Location")).isNotBlank();
     }
 
     public static void 지하철역_생성_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        요청_결과_검증(response, HttpStatus.BAD_REQUEST);
     }
 
     public static void 지하철역_목록_응답됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        요청_결과_검증(response, HttpStatus.OK);
     }
 
     public static void 지하철역_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        요청_결과_검증(response, HttpStatus.NO_CONTENT);
     }
 
     public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {

@@ -97,7 +97,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        요청_결과_검증(response, HttpStatus.CREATED);
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
@@ -108,10 +108,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        요청_결과_검증(response, HttpStatus.OK);
     }
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        요청_결과_검증(response, HttpStatus.NO_CONTENT);
     }
 }

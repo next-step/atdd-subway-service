@@ -4,6 +4,7 @@ import nextstep.subway.exception.AlreadyAddSectionException;
 import nextstep.subway.exception.NotFoundSectionException;
 import nextstep.subway.exception.NotIncludeStationException;
 import nextstep.subway.exception.NotRemovableSectionsSize;
+import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 
@@ -22,6 +23,10 @@ public class Sections {
 
     public Sections() {
         sections = new ArrayList<>();
+    }
+
+    public Sections(List<Section> sections) {
+        this.sections = sections;
     }
 
     public void add(Section section) {
@@ -100,12 +105,6 @@ public class Sections {
                 .getUpStation();
     }
 
-    private List<Station> findDownStations() {
-        return sections.stream()
-                .map(Section::getDownStation)
-                .collect(Collectors.toList());
-    }
-
     public void removeByStation(Station station) {
         validateRemovableSize();
         Optional<Section> upLineSection = findByUpStation(station);
@@ -140,6 +139,35 @@ public class Sections {
         if (sections.size() < MIN_SECTIONS_SIZE) {
             throw new NotRemovableSectionsSize();
         }
+    }
+
+    public PathResponse generatePaths(final Station source, final Station target) {
+        PathFinder graph = new PathFinder().enrollPaths(this);
+        return new PathResponse(graph.findPaths(source, target));
+    }
+
+    public Stations getAllStationsBySections() {
+        if (sections.isEmpty()) {
+            return new Stations(Collections.emptyList());
+        }
+
+        List<Station> distinctStation = findDownStations();
+        distinctStation.addAll(findUpStations());
+        return new Stations(distinctStation.stream()
+                .distinct()
+                .collect(Collectors.toList()));
+    }
+
+    private List<Station> findDownStations() {
+        return sections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
+    }
+
+    private List<Station> findUpStations() {
+        return sections.stream()
+                .map(Section::getUpStation)
+                .collect(Collectors.toList());
     }
 
     @Override

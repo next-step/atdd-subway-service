@@ -66,11 +66,11 @@ public class Section {
             throw new SectionDistanceOverException();
         }
 
-        if(isEqualsDownStation(addSection.downStation)){
+        if (isEqualsDownStation(addSection.downStation)) {
             downStation = addSection.upStation;
         }
 
-        if(isEqualsUpStation(addSection.upStation)){
+        if (isEqualsUpStation(addSection.upStation)) {
             upStation = addSection.downStation;
         }
 

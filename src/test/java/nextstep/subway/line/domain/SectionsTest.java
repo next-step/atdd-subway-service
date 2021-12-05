@@ -1,12 +1,17 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
+import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static nextstep.subway.line.domain.LineTest.신분당선;
 import static nextstep.subway.station.domain.StationTest.*;
@@ -79,5 +84,25 @@ class SectionsTest {
         sections.removeByStation(양재역);
 
         assertThatThrownBy(() -> sections.removeByStation(사당역)).hasMessage("구간이 하나 이하인 노선은 제거할 수 없습니다.");
+    }
+
+    @DisplayName("모든 구간의 지하철역 조회")
+    @Test
+    void getAllStationsBySectionsTest() {
+        Stations actual = sections.getAllStationsBySections();
+
+        assertThat(actual.getStations()).contains(역삼역, 양재역, 사당역);
+        assertThat(actual.getStations()).hasSize(3);
+    }
+
+    @DisplayName("최단 경로 구하기")
+    @Test
+    void generatePathsTest() {
+        PathResponse pathResponse = sections.generatePaths(역삼역, 사당역);
+        List<StationResponse> expected = Stream.of(역삼역, 양재역, 사당역)
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
+        assertThat(pathResponse.getStations()).isEqualTo(expected);
+        assertThat(pathResponse.getDistance()).isEqualTo(15);
     }
 }
