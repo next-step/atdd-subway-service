@@ -1,8 +1,11 @@
 package nextstep.subway.station.ui;
 
+import nextstep.subway.common.exception.ErrorCode;
+import nextstep.subway.common.exception.ErrorResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,5 +38,11 @@ public class StationController {
     public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(value = {DataIntegrityViolationException.class})
+    protected ResponseEntity<ErrorResponse> handleStationNameDuplicateConflict() {
+        return ResponseEntity.badRequest()
+            .body(ErrorResponse.of(ErrorCode.STATION_NAME_DUPLICATE_DATA));
     }
 }
