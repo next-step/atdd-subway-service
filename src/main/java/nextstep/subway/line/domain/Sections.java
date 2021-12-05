@@ -116,4 +116,23 @@ public class Sections {
         return getStations().stream()
                 .anyMatch(st -> st.equals(station));
     }
+
+    public void removeSection(Line line, Station station) {
+        if (sections.size() <= 1) {
+            throw new RuntimeException();
+        }
+
+        Optional<Section> upLineStation = getUpStation(station);
+        Optional<Section> downLineStation = getDownStation(station);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            addSection(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> this.sections.remove(it));
+        downLineStation.ifPresent(it -> this.sections.remove(it));
+    }
 }
