@@ -1,7 +1,7 @@
-package nextstep.subway.path.application;
+package nextstep.subway.line.application;
 
-import nextstep.subway.path.dto.PathRequest;
-import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.line.dto.PathRequest;
+import nextstep.subway.line.dto.PathResponse;
 import org.springframework.stereotype.Service;
 
 @Service
