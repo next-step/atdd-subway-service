@@ -5,14 +5,14 @@ import nextstep.subway.auth.enumerate.AuthenticationType;
 public class LoginMember {
     private Long id;
     private String email;
-    private Integer age;
+    private int age;
     private AuthenticationType authenticationType;
 
     public LoginMember() {
         authenticationType = AuthenticationType.GUEST;
     }
 
-    public LoginMember(Long id, String email, Integer age) {
+    public LoginMember(Long id, String email, int age) {
         this.id = id;
         this.email = email;
         this.age = age;
@@ -27,7 +27,7 @@ public class LoginMember {
         return email;
     }
 
-    public Integer getAge() {
+    public int getAge() {
         return age;
     }
 

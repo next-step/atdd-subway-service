@@ -14,7 +14,7 @@ public class DiscountPolicyFactory {
         throw new IllegalAccessError("Factory클래스로 생성자가 허용되지 않습니다.");
     }
 
-    public static DiscountPolicy generate(Integer age) {
+    public static DiscountPolicy generate(int age) {
         if (age >= CHILD_START_AGE && age < CHILD_END_AGE) {
             return new ChildDiscountPolicy();
         }

@@ -19,6 +19,6 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(NotRegistedMemberException.class)
     public ResponseEntity<Void> handle(NotRegistedMemberException ex) {
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }

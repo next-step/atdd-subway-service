@@ -41,12 +41,10 @@ public class AuthService {
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        Optional<Member> member = memberRepository.findByEmail(email);
+        
+        Member member = memberRepository.findByEmail(email)
+                                        .orElseThrow(() -> new NotRegistedMemberException("등록되지 않은 사용자입니다."));
 
-        if (!member.isPresent()) {
-            throw new NotRegistedMemberException("등록되지 않은 사용자입니다.");
-        }
-
-        return new LoginMember(member.get().getId(), member.get().getEmail(), member.get().getAge());
+        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }

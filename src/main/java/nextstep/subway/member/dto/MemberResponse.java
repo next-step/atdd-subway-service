@@ -7,18 +7,18 @@ import nextstep.subway.member.domain.Member;
 public class MemberResponse {
     private Long id;
     private String email;
-    private Integer age;
+    private int age;
 
     public MemberResponse() {
     }
 
-    public MemberResponse(Long id, String email, Integer age) {
+    public MemberResponse(Long id, String email, int age) {
         this.id = id;
         this.email = email;
         this.age = age;
     }
 
-    public MemberResponse(String email, Integer age) {
+    public MemberResponse(String email, int age) {
         this.email = email;
         this.age = age;
     }

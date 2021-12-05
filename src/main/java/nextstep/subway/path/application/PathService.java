@@ -7,12 +7,12 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import nextstep.subway.line.application.LineService;
-import nextstep.subway.path.domain.FareCalculator;
 import nextstep.subway.path.dto.PathAnalysisKey;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathStationDto;
 import nextstep.subway.path.dto.ShortestPathInfo;
 import nextstep.subway.path.infrastructure.PathAnalysis;
+import nextstep.subway.policy.domain.FareCalculator;
 import nextstep.subway.policy.domain.Price;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -35,7 +35,7 @@ public class PathService {
         return createPathResponse(shortestPathInfo, totalFare);
     }
 
-    public PathResponse searchShortestPath(Long sourceStationId, Long targetStationId, Integer age) {
+    public PathResponse searchShortestPath(Long sourceStationId, Long targetStationId, int age) {
         ShortestPathInfo shortestPathInfo = findShortestPath(sourceStationId, targetStationId);
 
         Price discoutnAcceptedPrice = FareCalculator.calculate(shortestPathInfo.getDistance(), shortestPathInfo.getLines(), age);

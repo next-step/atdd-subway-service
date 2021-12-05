@@ -138,7 +138,7 @@ public class PathServiceTest {
     void search_shortestPathWithChildFare() {
         // given
         강남양재구간_교대강남구간_교대양재구간이등록됨();
-        Integer 나이 = 7;
+        int 나이 = 7;
 
         // when
         PathResponse pathResponse = 최단경로_운임비를_조회한다(교대역, 양재역, 나이);
@@ -152,7 +152,7 @@ public class PathServiceTest {
     void search_shortestPathWithYouthFare() {
         // given
         강남양재구간_교대강남구간_교대양재구간이등록됨();
-        Integer 나이 = 15;
+        int 나이 = 15;
 
         // when
         PathResponse pathResponse = 최단경로_운임비를_조회한다(교대역, 양재역, 나이);
@@ -166,7 +166,7 @@ public class PathServiceTest {
     void search_shortestPathWithNormalFare() {
         // given
         강남양재구간_교대강남구간_교대양재구간이등록됨();
-        Integer 나이 = 25;
+        int 나이 = 25;
 
         // when
         PathResponse pathResponse = 최단경로_운임비를_조회한다(교대역, 양재역, 나이);
@@ -175,7 +175,7 @@ public class PathServiceTest {
         최단경로_운임비가_조회됨(pathResponse, Price.of(1250));
     }
 
-    private PathResponse 최단경로_운임비를_조회한다(Station source, Station target, Integer age) {
+    private PathResponse 최단경로_운임비를_조회한다(Station source, Station target, int age) {
         return pathService.searchShortestPath(source.getId(), target.getId(), age);
     }
 

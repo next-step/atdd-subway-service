@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.policy.domain;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -6,7 +6,6 @@ import java.util.NoSuchElementException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.policy.DiscountPolicyFactory;
-import nextstep.subway.policy.domain.Price;
 import nextstep.subway.policy.price.DistancePricePolicy;
 import nextstep.subway.policy.price.LinePricePolicy;
 import nextstep.subway.policy.price.PricePolicy;
@@ -16,7 +15,7 @@ public class FareCalculator {
         throw new IllegalAccessError("이 클래스는 유틸 클래스입니다.");
     }
 
-    public static Price calculate(Distance distance, List<Line> lines, Integer age) {
+    public static Price calculate(Distance distance, List<Line> lines, int age) {
         Price totalFare = fareCalculate(distance, lines);
 
         return DiscountPolicyFactory.generate(age).apply(totalFare);
