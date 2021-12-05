@@ -15,7 +15,7 @@ public class Sections {
     protected Sections() {
     }
 
-    public void add(final Section section) {
+    public void addSection(final Section section) {
         sections.add(section);
     }
 

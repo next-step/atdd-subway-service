@@ -31,8 +31,8 @@ class SectionsTest {
     @Test
     void test_구간_추가_확인() {
         Sections sections = new Sections();
-        sections.add(강남_판교_구간);
-        sections.add(정자_광교_구간);
+        sections.addSection(강남_판교_구간);
+        sections.addSection(정자_광교_구간);
 
         assertAll(
             () -> assertThat(sections.getSections()).hasSize(2),
