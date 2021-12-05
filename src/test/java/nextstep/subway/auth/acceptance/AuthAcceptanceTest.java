@@ -1,7 +1,6 @@
 package nextstep.subway.auth.acceptance;
 
-import java.util.HashMap;
-import java.util.Map;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -13,20 +12,17 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.member.MemberAcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
-        MemberAcceptanceTest.회원_생성을_요청(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD, 10);
-
-        Map<String, String> params = new HashMap<>();
-        params.put("email", MemberAcceptanceTest.EMAIL);
-        params.put("password", MemberAcceptanceTest.PASSWORD);
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, 10);
 
         // when
-        ExtractableResponse<Response> response = 토큰_발급을_요청(params);
+        ExtractableResponse<Response> response = 토큰_발급을_요청(EMAIL, PASSWORD);
 
         // then
         토큰_발급_성공(response);
@@ -35,13 +31,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
-        // given
-        Map<String, String> params = new HashMap<>();
-        params.put("email", MemberAcceptanceTest.EMAIL);
-        params.put("password", MemberAcceptanceTest.PASSWORD);
-
         // when
-        ExtractableResponse<Response> response = 토큰_발급을_요청(params);
+        ExtractableResponse<Response> response = 토큰_발급을_요청(EMAIL, PASSWORD);
 
         // then
         토큰_발급_실패(response);
@@ -51,34 +42,33 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithWrongBearerAuth() {
         // when
-        ExtractableResponse<Response> response = RestAssured
-            .given().log().all()
-            .auth().oauth2("test123")
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .when()
-            .get("/members/me")
-            .then().log().all().extract();
+        ExtractableResponse<Response> response = 내_정보_조회_요청("test123");
 
         // then
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        토큰_인증_실패(response);
     }
 
-    private ExtractableResponse<Response> 토큰_발급을_요청(Map<String, String> params) {
-        ExtractableResponse<Response> response = RestAssured
+    public static ExtractableResponse<Response> 토큰_발급을_요청(String email, String password) {
+        TokenRequest tokenRequest = new TokenRequest(email, password);
+        return RestAssured
             .given().log().all()
-            .body(params)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .body(tokenRequest)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
             .post("/login/token")
             .then().log().all().extract();
-        return response;
     }
 
-    private void 토큰_발급_성공(ExtractableResponse<Response> response) {
+    public static void 토큰_발급_성공(ExtractableResponse<Response> response) {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     private void 토큰_발급_실패(ExtractableResponse<Response> response) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private void 토큰_인증_실패(ExtractableResponse<Response> response) {
         Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
