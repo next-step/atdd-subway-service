@@ -45,6 +45,10 @@ public class Line extends BaseEntity {
         this.color = line.getColor();
     }
 
+    public void removeStation(Station station) {
+        sections.remove(station);
+    }
+
     public void addSections(Section section) {
         sections.connect(section);
     }

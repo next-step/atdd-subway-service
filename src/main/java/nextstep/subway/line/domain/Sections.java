@@ -97,7 +97,8 @@ public class Sections {
             return;
         }
 
-        if (connectableByDownStation(downBoundSection, stations.contains(section.getDownStation()))) {
+        if (connectableByDownStation(downBoundSection,
+            stations.contains(section.getDownStation()))) {
             downBoundSection.connectByDownStation(section);
         }
     }
@@ -139,8 +140,80 @@ public class Sections {
             || stations.contains(section.getDownStation()));
     }
 
-    public int size() {
-        return this.sections.size();
+    public void remove(Station station) {
+        Section upBoundSection = upBoundSection(station);
+        Section downBoundSection = downBoundSection(station);
+
+        validateForRemove(station);
+
+        if (isStationInMiddleOfSection(upBoundSection, downBoundSection)) {
+            removeStationInMiddleOfSection(upBoundSection, downBoundSection);
+            return;
+        }
+
+        removeLastSection(upBoundSection, downBoundSection);
+    }
+
+    private void removeStationInMiddleOfSection(Section upBoundSection, Section downBoundSection) {
+        upBoundSection.updateForDelete(downBoundSection);
+        remove(downBoundSection);
+    }
+
+    private void removeLastSection(Section upBoundSection, Section downBoundSection) {
+        if (isDownBoundSection(upBoundSection, downBoundSection)) {
+            remove(upBoundSection); // 하행 종점을 삭제하는 경우
+        }
+
+        if (isUpBoundSection(upBoundSection, downBoundSection)) {
+            remove(downBoundSection); // 상행 종점을 삭제하는 경우
+        }
+    }
+
+    private void validateForRemove(Station station) {
+        validateExistStation(station);
+        validateLastSection();
+    }
+
+    private void validateExistStation(Station station) {
+        if (!isInStations(station)) {
+            throw new IllegalArgumentException("노선에 존재하지 않는 역입니다.");
+        }
+    }
+
+    private void validateLastSection() {
+        if (sections.size() <= 1) {
+            throw new IllegalArgumentException("마지막 구간은 삭제할 수 없습니다.");
+        }
+    }
+
+    private boolean isInStations(Station station) {
+        return getStations().contains(station);
+    }
+
+    private boolean isDownBoundSection(Section upBoundSection, Section downBoundSection) {
+        return !upBoundSection.isDummy() && downBoundSection.isDummy();
+    }
+
+    private boolean isUpBoundSection(Section upBoundSection, Section downBoundSection) {
+        return !downBoundSection.isDummy() && upBoundSection.isDummy();
+    }
+
+    private boolean isStationInMiddleOfSection(Section upBoundSection, Section downBoundSection) {
+        return !upBoundSection.isDummy() && !downBoundSection.isDummy();
+    }
+
+    private Section upBoundSection(Station station) {
+        return this.sections.stream()
+            .filter(section -> section.isEqualToDownStation(station))
+            .findFirst()
+            .orElse(Section.DUMMY_SECTION);
+    }
+
+    private Section downBoundSection(Station station) {
+        return this.sections.stream()
+            .filter(section -> section.isEqualToUpStation(station))
+            .findFirst()
+            .orElse(Section.DUMMY_SECTION);
     }
 
     public List<Section> getSections() {

@@ -62,4 +62,4 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [X] Sections 모델 추가
   - [X] 노선에서 역 목록 불러오기
   - [X] 역 추가 함수
-  - [ ] 역 삭제 함수
+  - [X] 역 삭제 함수

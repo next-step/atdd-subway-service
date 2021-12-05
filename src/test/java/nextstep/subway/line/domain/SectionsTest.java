@@ -174,4 +174,82 @@ class SectionsTest {
             )
             .withMessage("등록할 수 없는 구간 입니다.");
     }
+
+    @Test
+    @DisplayName("1->3->2 두 개의 구간이 있을 때, 3번역 삭제 테스트")
+    void 구간_삭제() {
+        // given
+        Sections sections = line.getSections();
+        sections.connect(Section.of(line, 강남역, 판교역, 3));
+
+        // when
+        sections.remove(Station.of("판교역"));
+
+        // then
+        assertThat(sections.getSections()).hasSize(1);
+        assertThat(sections.getSections().get(0).getUpStation()).isEqualTo(Station.of("강남역"));
+        assertThat(sections.getSections().get(0).getDownStation()).isEqualTo(Station.of("광교역"));
+        assertThat(sections.getSections().get(0).getDistance()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("1->2->3 두 개의 구간이 있을 때, 1번역 삭제 테스트")
+    void 상행_종점_구간_삭제() {
+        // given
+        Sections sections = line.getSections();
+        sections.connect(Section.of(line, 광교역, 판교역, 3));
+
+        // when
+        sections.remove(Station.of("강남역"));
+
+        // then
+        assertThat(sections.getSections()).hasSize(1);
+        assertThat(sections.getSections().get(0).getUpStation()).isEqualTo(Station.of("광교역"));
+        assertThat(sections.getSections().get(0).getDownStation()).isEqualTo(Station.of("판교역"));
+        assertThat(sections.getSections().get(0).getDistance()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("1->2->3 두 개의 구간이 있을 때, 3번역 삭제 테스트")
+    void 하행_종점_구간_삭제() {
+        // given
+        Sections sections = line.getSections();
+        sections.connect(Section.of(line, 광교역, 판교역, 3));
+
+        // when
+        sections.remove(Station.of("판교역"));
+
+        // then
+        assertThat(sections.getSections()).hasSize(1);
+        assertThat(sections.getSections().get(0).getUpStation()).isEqualTo(Station.of("강남역"));
+        assertThat(sections.getSections().get(0).getDownStation()).isEqualTo(Station.of("광교역"));
+        assertThat(sections.getSections().get(0).getDistance()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("노선에 없는 역 삭제시 예외 발생")
+    void 구간_삭제_예외1() {
+        // given
+        Sections sections = line.getSections();
+
+        // when, then
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> sections.remove(Station.of("양재역"))
+            )
+            .withMessage("노선에 존재하지 않는 역입니다.");
+    }
+
+    @Test
+    @DisplayName("마지막 구역만 있을 때, 삭제시 예외 발생")
+    void 구간_삭제_예외2() {
+        // given
+        Line line = Line.from("신분당선", "bg-red-600", 강남역, 광교역, 10);
+        Sections sections = line.getSections();
+
+        // when, then
+        assertThatIllegalArgumentException().isThrownBy(
+                () -> sections.remove(Station.of("강남역"))
+            )
+            .withMessage("마지막 구간은 삭제할 수 없습니다.");
+    }
 }

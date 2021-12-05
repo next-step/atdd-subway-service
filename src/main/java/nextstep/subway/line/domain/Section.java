@@ -82,6 +82,11 @@ public class Section {
         this.distance -= section.distance;
     }
 
+    public void updateForDelete(Section section) {
+        this.downStation = section.downStation;
+        this.distance += section.distance;
+    }
+
     public boolean isDummy() {
         return this == DUMMY_SECTION;
     }
