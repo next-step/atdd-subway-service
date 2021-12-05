@@ -23,15 +23,9 @@ public class PathService {
 
     public PathResponse findPathsBySection(PathRequest request) {
         Sections sections = new Sections(sectionRepository.findAll());
-        isEqualsStations(request);
+        request.isEqualsStations();
         Station sourceStation = stationRepository.findByIdElseThrow(request.getSource());
         Station targetStation = stationRepository.findByIdElseThrow(request.getTarget());
         return sections.generatePaths(sourceStation, targetStation);
-    }
-
-    private void isEqualsStations(PathRequest request) {
-        if (request.getSource().equals(request.getTarget())) {
-            throw new IsEqualsTwoStationsException();
-        }
     }
 }
