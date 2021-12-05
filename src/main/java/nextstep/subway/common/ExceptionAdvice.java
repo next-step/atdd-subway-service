@@ -16,4 +16,9 @@ public class ExceptionAdvice {
     protected ResponseEntity handleDistanceTooLongException(LineNotFoundException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+
+    @ExceptionHandler(SectionNotRemovableException.class)
+    protected ResponseEntity handleSectionNotRemovableException(SectionNotRemovableException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
 }

@@ -1,8 +1,10 @@
 package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
+import nextstep.subway.common.SectionNotRemovableException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,16 +31,11 @@ class SectionsTest {
     }
 
     @Test
-    void test_구간_추가_확인() {
+    void test_구간이_최소인_경우_제거_시도시_예외_발생() {
         Sections sections = new Sections();
         sections.addSection(강남_판교_구간);
-        sections.addSection(정자_광교_구간);
 
-        assertAll(
-            () -> assertThat(sections.getSections()).hasSize(2),
-            () -> assertThat(sections.getSections().get(0).getUpStation().getName()).isEqualTo(강남역.getName()),
-            () -> assertThat(sections.getSections().get(0).getDownStation().getName()).isEqualTo(판교역.getName()),
-            () -> assertThat(sections.getSections().get(0).getDistance()).isEqualTo(5)
-        );
+        assertThatThrownBy(() -> sections.removeStation(null, 강남역))
+            .isInstanceOf(SectionNotRemovableException.class);
     }
 }

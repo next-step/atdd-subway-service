@@ -7,12 +7,16 @@ import java.util.Optional;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import nextstep.subway.common.SectionNotRemovableException;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private static final int MINIMUM_SECTION_COUNT_LIMIT = 1;
+
+    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST,
+        CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
     protected Sections() {
@@ -35,9 +39,7 @@ public class Sections {
     }
 
     public void removeStation(final Line line, final Station station) {
-        if (sections.size() <= 1) {
-            throw new RuntimeException();
-        }
+        validateMinimumSectionSize();
 
         Optional<Section> upLineStation = getUpStationMatchSection(station);
         Optional<Section> downLineStation = getDownStationMathSection(station);
@@ -45,12 +47,20 @@ public class Sections {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
-            Distance newDistance = upLineStation.get().getDistance().add(downLineStation.get().getDistance());
+            Distance newDistance = upLineStation.get().getDistance()
+                .add(downLineStation.get().getDistance());
             sections.add(Section.of(line, newUpStation, newDownStation, newDistance.getDistance()));
         }
 
         upLineStation.ifPresent(it -> sections.remove(it));
         downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
+    private void validateMinimumSectionSize() {
+        if (sections.size() <= MINIMUM_SECTION_COUNT_LIMIT) {
+            throw new SectionNotRemovableException(
+                String.format("노선에는 최소 %d개의 구간이 있어야 합니다.", MINIMUM_SECTION_COUNT_LIMIT));
+        }
     }
 
     public Station findUpStation() {
@@ -117,12 +127,14 @@ public class Sections {
 
         if (isUpStationExisted) {
             getUpStationMatchSection(section.getUpStation())
-                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+                .ifPresent(
+                    it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
 
             sections.add(section);
         } else if (isDownStationExisted) {
             getDownStationMathSection(section.getDownStation())
-                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+                .ifPresent(
+                    it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
 
             sections.add(section);
         } else {
