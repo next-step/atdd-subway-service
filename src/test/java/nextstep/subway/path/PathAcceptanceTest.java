@@ -60,7 +60,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 거리가_5인_교대역_남부터미널역_양재역_경로_응답(PathResponse 교대역_양재역_경로) {
         assertThat(교대역_양재역_경로.getDistance()).isEqualTo(5);
-        assertThat(교대역_양재역_경로.getStations()).containsExactly(교대역, 남부터미널역, 양재역);
+        assertThat(교대역_양재역_경로.getStations()).extracting(StationResponse::getName)
+            .containsExactly(교대역.getName(), 남부터미널역.getName(), 양재역.getName());
     }
 
     private PathResponse 최단_경로_조회(StationResponse 출발역, StationResponse 도착역) {
