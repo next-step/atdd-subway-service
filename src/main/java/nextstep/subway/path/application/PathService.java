@@ -17,10 +17,12 @@ import java.util.Set;
 public class PathService {
     private final StationService stationService;
     private final LineService lineService;
+    private final PathFinder pathFinder;
 
-    public PathService(StationService stationService, LineService lineService) {
+    public PathService(StationService stationService, LineService lineService, PathFinder pathFinder) {
         this.stationService = stationService;
         this.lineService = lineService;
+        this.pathFinder = pathFinder;
     }
 
     public PathResponse getShortCut(Long sourceStationId, Long targetStationId) {
@@ -43,7 +45,7 @@ public class PathService {
     }
 
     private PathResult findShortCut(Station source, Station target, Set<Line> lines) {
-        PathResult shortCut = PathFinder.findShortCut(lines, source, target);
+        PathResult shortCut = pathFinder.findShortCut(lines, source, target);
         if (shortCut.isEmpty()) {
             throw new ServiceException("최단 경로를 찾을 수 없습니다");
         }

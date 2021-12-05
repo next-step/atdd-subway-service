@@ -3,8 +3,6 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathResult;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +32,7 @@ public class PathFinderTest {
         Set<Line> lines = new HashSet<>(Arrays.asList(신분당선, 이호선, 삼호선));
 
         // when
-        PathResult shortCut = PathFinder.findShortCut(lines, 교대역, 양재역);
+        PathResult shortCut = new DefaultPathFinder().findShortCut(lines, 교대역, 양재역);
 
         // then
         assertThat(shortCut.getWeight()).isEqualTo(5);
