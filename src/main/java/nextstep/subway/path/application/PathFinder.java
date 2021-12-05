@@ -13,6 +13,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,6 +28,8 @@ import java.util.Optional;
 @Component
 public class PathFinder {
     public PathResponse getShortestPath(List<Line> lineList, List<Station> stationList, Long srcStationId, Long destStationId) {
+        List<Station> result;
+
         if (Objects.equals(srcStationId, destStationId)) {
             throw new PathBeginIsEndException(srcStationId, destStationId);
         }
@@ -41,10 +44,12 @@ public class PathFinder {
         stations.setVertex(graph);
         lines.setEdge(graph);
 
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-
-        List<Station> result = Optional.ofNullable(dijkstraShortestPath.getPath(srcStation, destStation))
-                .orElseThrow(PathNotFoundException::new).getVertexList();
+        try {
+            DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+            result = dijkstraShortestPath.getPath(srcStation, destStation).getVertexList();
+        } catch(NullPointerException npe) {
+            throw new PathNotFoundException();
+        }
 
         return PathResponse.of(result);
     }
