@@ -3,6 +3,7 @@ package nextstep.subway.path;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.*;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.*;
 import static nextstep.subway.station.StationAcceptanceTest.*;
+import static nextstep.subway.station.StationFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
@@ -71,6 +72,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		지하철_경로_조회됨(지하철_경로_조회_요청);
 		지하철_경로에_지하철역_순서_정렬됨(지하철_경로_조회_요청, Arrays.asList(양재시민의숲역, 양재역, 강남역, 역삼역, 선릉역));
 		지하철_경로에_거리가_조회됨(지하철_경로_조회_요청, 17);
+
+		지하철_경로_조회_실패됨(지하철_경로_조회_요청(강남역, 강남역));
+		지하철_경로_조회_실패됨(지하철_경로_조회_요청(강남역, 한대앞역));
+		지하철_경로_조회_실패됨(지하철_경로_조회_요청(강남역.getId(), UNKNOWN_ID));
 	}
 
 	public static ExtractableResponse<Response> 지하철_경로_조회_요청(
@@ -86,9 +91,21 @@ public class PathAcceptanceTest extends AcceptanceTest {
 			.extract();
 	}
 
+	public static ExtractableResponse<Response> 지하철_경로_조회_요청(
+		Long sourceStationId,
+		Long targetStationId
+	) {
+		return RestAssured
+			.given().log().all()
+			.queryParam("source", sourceStationId)
+			.queryParam("target", targetStationId)
+			.when().get("/paths")
+			.then().log().all()
+			.extract();
+	}
+
 	private void 지하철_경로_조회됨(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-
 	}
 
 	private void 지하철_경로에_지하철역_순서_정렬됨(
@@ -116,5 +133,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		int actualDistance = path.getDistance();
 
 		assertThat(actualDistance).isEqualTo(expectedDistance);
+	}
+
+	private void 지하철_경로_조회_실패됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 }
