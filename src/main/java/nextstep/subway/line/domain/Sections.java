@@ -63,4 +63,57 @@ public class Sections {
     public void addSection(Section section) {
         this.sections.add(section);
     }
+
+    public void addSection(Line line, Station upStation, Station downStation, int distance) {
+        final boolean isUpStationExisted = existStation(upStation);
+        boolean isDownStationExisted = existStation(downStation);
+
+        notExistSectionValidator(isUpStationExisted, isDownStationExisted);
+        existUpStationAndDownStationValidator(upStation, downStation);
+
+        if (isUpStationExisted) {
+            getUpStation(upStation)
+                    .ifPresent(section -> section.updateUpStation(downStation, distance));
+        }
+
+        if (isDownStationExisted) {
+            getDownStation(downStation)
+                    .ifPresent(section -> section.updateDownStation(upStation, distance));
+        }
+
+        addSection(new Section(line, upStation, downStation, distance));
+    }
+
+    private void existUpStationAndDownStationValidator(final Station upStation, final Station downStation) {
+        final boolean stationsIsEmpty = getStations().isEmpty();
+        final boolean existUpStation = existStation(upStation);
+        final boolean existDownStation = existStation(downStation);
+
+        if (!stationsIsEmpty && !existUpStation && !existDownStation) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void notExistSectionValidator(final boolean isUpStationExisted, final boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    private Optional<Section> getUpStation(Station upStation) {
+        return sections.stream()
+                .filter(section -> section.getUpStation().equals(upStation))
+                .findFirst();
+    }
+
+    private Optional<Section> getDownStation(Station downStation) {
+        return sections.stream()
+                .filter(section -> section.getDownStation().equals(downStation))
+                .findFirst();
+    }
+
+    private boolean existStation(Station station) {
+        return getStations().stream()
+                .anyMatch(st -> st.equals(station));
+    }
 }
