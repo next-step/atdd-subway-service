@@ -19,14 +19,15 @@ class SectionsTest {
 
     private Sections sections;
     private Section 잠실_잠실나루_구간;
-    private Line line;
+    private Line 이호선;
 
     @BeforeEach
     void setUp() {
         // given
-        잠실_잠실나루_구간 = Section.of(잠실, 잠실나루, 100);
         sections = Sections.of();
-        line = new Line("2호선", "RED");
+        이호선 = new Line("2호선", "RED");
+        잠실_잠실나루_구간 = Section.of(이호선, 잠실, 잠실나루, 100);
+
     }
 
     @Test
@@ -44,7 +45,7 @@ class SectionsTest {
     @DisplayName("이미 등록된 구간 입니다.")
     void addSection_duplicate() {
         // given
-        Section 잠실_잠실나루_구간2 = Section.of(잠실, 잠실나루, 50);
+        Section 잠실_잠실나루_구간2 = Section.of(이호선, 잠실, 잠실나루, 50);
 
         // when
         sections.add(잠실_잠실나루_구간);
@@ -57,7 +58,7 @@ class SectionsTest {
     @DisplayName("추가구간 길이가 기존 구간길이보다 클 경우 에러")
     void addSection_distance_over() {
         // given
-        Section 잠실_강변_구간 = Section.of(잠실, 강변, 200);
+        Section 잠실_강변_구간 = Section.of(이호선, 잠실, 강변, 200);
 
         // when
         sections.add(잠실_잠실나루_구간);
@@ -70,7 +71,7 @@ class SectionsTest {
     @DisplayName("상행, 하행 어디에도 속하지 않는 역은 추가 할 수 없음")
     void addSection_add_not_position() {
         // when
-        Section 강변_구의_구간 = Section.of(강변, 구의, 100);
+        Section 강변_구의_구간 = Section.of(이호선, 강변, 구의, 100);
         sections.add(잠실_잠실나루_구간);
 
         // then
@@ -81,7 +82,7 @@ class SectionsTest {
     @DisplayName("구간 중간에 역 추가")
     void addSection_add_inside() {
         // when
-        Section 잠실_구의_구간 = Section.of(잠실, 구의, 50);
+        Section 잠실_구의_구간 = Section.of(이호선, 잠실, 구의, 50);
         sections.add(잠실_잠실나루_구간);
         sections.add(잠실_구의_구간);
 
@@ -96,7 +97,7 @@ class SectionsTest {
     @DisplayName("상행 종점 이전 역 추가")
     void addSection_add_first_pre() {
         // when
-        Section 구의_잠실_구간 = Section.of(구의, 잠실, 50);
+        Section 구의_잠실_구간 = Section.of(이호선, 구의, 잠실, 50);
         sections.add(잠실_잠실나루_구간);
         sections.add(구의_잠실_구간);
 
@@ -111,7 +112,7 @@ class SectionsTest {
     @DisplayName("하행 종점 다음 역 추가")
     void addSection_add_last_next() {
         // given
-        Section 잠실나루_구의_구간 = Section.of(잠실나루, 구의, 100);
+        Section 잠실나루_구의_구간 = Section.of(이호선, 잠실나루, 구의, 100);
 
         // when
         sections.add(잠실_잠실나루_구간);
@@ -139,8 +140,8 @@ class SectionsTest {
     @DisplayName("구간에서 역 한개 제거")
     void remove() {
         // given
-        Section 잠실나루_구의_구간 = Section.of(잠실나루, 구의, 50);
-        Section 구의_도곡_구간 = Section.of(구의, 도곡, 5);
+        Section 잠실나루_구의_구간 = Section.of(이호선, 잠실나루, 구의, 50);
+        Section 구의_도곡_구간 = Section.of(이호선, 구의, 도곡, 5);
         sections.add(잠실_잠실나루_구간);
         sections.add(잠실나루_구의_구간);
         sections.add(구의_도곡_구간);

@@ -31,19 +31,15 @@ public class Section {
     protected Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    private Section(Line line, Station upStation, Station downStation, int distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = Distance.of(distance);
     }
 
-    public static Section of(Station upStation, Station downStation, int distance) {
-        return new Section(null, upStation, downStation, distance);
-    }
-
-    public void toLine(Line line) {
-        this.line = line;
+    public static Section of(Line line, Station upStation, Station downStation, int distance) {
+        return new Section(line, upStation, downStation, distance);
     }
 
     public Section newOfMerge(Section section) {
