@@ -59,36 +59,39 @@ public class LineService {
 
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
+
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
+        Section section = new Section(line, upStation, downStation, request.getDistance());
+
         List<Station> stations = line.getStations();
-        boolean isUpStationExisted = line.isStationExists(upStation);
-        boolean isDownStationExisted = line.isStationExists(downStation);
+        boolean isUpStationExisted = line.isStationExists(section.getUpStation());
+        boolean isDownStationExisted = line.isStationExists(section.getDownStation());
 
         if (isUpStationExisted && isDownStationExisted) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
 
-        if (!stations.isEmpty() && line.isStationNotExists(upStation) &&
-            line.isStationNotExists(downStation)) {
+        if (!stations.isEmpty() && line.isStationNotExists(section.getUpStation()) &&
+            line.isStationNotExists(section.getDownStation())) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
 
         if (stations.isEmpty()) {
-            line.addSection(new Section(line, upStation, downStation, request.getDistance()));
+            line.addSection(section);
             return;
         }
 
         if (isUpStationExisted) {
-            line.getUpStationMatchSection(upStation)
-                    .ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
+            line.getUpStationMatchSection(section.getUpStation())
+                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
 
-            line.addSection(new Section(line, upStation, downStation, request.getDistance()));
+            line.addSection(section);
         } else if (isDownStationExisted) {
-            line.getDownStationMathSection(downStation)
-                    .ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
+            line.getDownStationMathSection(section.getDownStation())
+                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
 
-            line.addSection(new Section(line, upStation, downStation, request.getDistance()));
+            line.addSection(section);
         } else {
             throw new RuntimeException();
         }
@@ -99,5 +102,4 @@ public class LineService {
         Station station = stationService.findStationById(stationId);
         line.removeStation(station);
     }
-
 }
