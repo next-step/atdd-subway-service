@@ -49,7 +49,6 @@ public class Section {
             this.downStation = section.getUpStation();
         }
 
-        this.distance.checkAddSection(section);
         this.distance = this.distance.minus(section.getDistance());
     }
 

@@ -70,7 +70,7 @@ public class LineTest {
     public void invalidLine() {
         assertThatThrownBy(() -> Line.of("2호선", "그린", 강남역, 광교역, Distance.MIN_DISTANCE - 1))
                 .isInstanceOf(IllegalDistanceException.class)
-                .hasMessageContaining("거리는 1보다 작을 수 없습니다.");
+                .hasMessageContaining("거리는 1 이상이어야 합니다.");
     }
 
 }

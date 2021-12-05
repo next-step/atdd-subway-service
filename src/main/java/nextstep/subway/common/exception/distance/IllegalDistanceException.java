@@ -15,7 +15,7 @@ public class IllegalDistanceException extends ServiceException {
     private static final long serialVersionUID = 1L;
 
     public static final HttpStatus status = HttpStatus.BAD_REQUEST;
-    public static final String message = "거리는 %d보다 작을 수 없습니다.";
+    public static final String message = "거리는 %d 이상이어야 합니다.";
 
     public IllegalDistanceException() {
         super(status, String.format(message, Distance.MIN_DISTANCE));

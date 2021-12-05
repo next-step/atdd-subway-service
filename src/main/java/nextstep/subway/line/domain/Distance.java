@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.common.exception.distance.DistanceNotAllowException;
 import nextstep.subway.common.exception.distance.IllegalDistanceException;
 
 import javax.persistence.Embeddable;
@@ -31,12 +30,6 @@ public class Distance {
 
     public static Distance of(int distance) {
         return new Distance(distance);
-    }
-
-    public void checkAddSection(Section newSection) {
-        if (this.distance <= newSection.getDistance().distance) {
-            throw new DistanceNotAllowException();
-        }
     }
 
     private void validate(int distance) {
