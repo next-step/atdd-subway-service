@@ -1,8 +1,5 @@
-package nextstep.subway.line.acceptance;
+package nextstep.subway.line.domain;
 
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.exception.SectionException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,14 +28,14 @@ public class SectionsTest {
         양재시민의숲역 = new Station("양재시민의숲역");
         판교역 = new Station("판교역");
         신분당선 = new Line("신분당선", "red");
-        신분당선_구간.add(new Section(신분당선, 양재역, 판교역, 10));
+        신분당선_구간.add(new Section(신분당선, 양재역, 판교역, Distance.of(10)));
     }
 
     @DisplayName("이미 등록한 구간을 추가하는 경우 테스트")
     @Test
     void validate() {
         //given
-        Section 이미_등록한_구간 = new Section(신분당선, 양재역, 판교역, 3);
+        Section 이미_등록한_구간 = new Section(신분당선, 양재역, 판교역, Distance.of(3));
 
         //when//then
         assertThatThrownBy(() -> 신분당선_구간.add(이미_등록한_구간))
@@ -49,7 +46,7 @@ public class SectionsTest {
     @Test
     void validate2() {
         //given
-        Section 없는_구간 = new Section(신분당선, 강남역, 광교역, 13);
+        Section 없는_구간 = new Section(신분당선, 강남역, 광교역, Distance.of(13));
 
         //when//then
         assertThatThrownBy(() -> 신분당선_구간.add(없는_구간))
@@ -60,7 +57,7 @@ public class SectionsTest {
     @Test
     void addSection() {
         //given
-        Section 사이_구간 = new Section(신분당선, 양재역, 양재시민의숲역, 2);
+        Section 사이_구간 = new Section(신분당선, 양재역, 양재시민의숲역, Distance.of(2));
 
         //when
         신분당선_구간.add(사이_구간);
@@ -73,7 +70,7 @@ public class SectionsTest {
     @Test
     void addSection2() {
         //given
-        Section 상행_구간 = new Section(신분당선, 강남역, 양재역, 2);
+        Section 상행_구간 = new Section(신분당선, 강남역, 양재역, Distance.of(2));
 
         //when
         신분당선_구간.add(상행_구간);
@@ -86,7 +83,7 @@ public class SectionsTest {
     @Test
     void addSection3() {
         //given
-        Section 하행_구간 = new Section(신분당선, 판교역, 광교역, 2);
+        Section 하행_구간 = new Section(신분당선, 판교역, 광교역, Distance.of(2));
 
         //when
         신분당선_구간.add(하행_구간);
@@ -99,7 +96,7 @@ public class SectionsTest {
     @Test
     void removeSection() {
         //given
-        Section 사이_구간 = new Section(신분당선, 양재역, 양재시민의숲역, 2);
+        Section 사이_구간 = new Section(신분당선, 양재역, 양재시민의숲역, Distance.of(2));
         신분당선_구간.add(사이_구간);
         //when
         신분당선_구간.remove(신분당선, 양재시민의숲역);
@@ -111,7 +108,7 @@ public class SectionsTest {
     @Test
     void removeSection2() {
         //given
-        Section 사이_구간 = new Section(신분당선, 양재역, 양재시민의숲역, 2);
+        Section 사이_구간 = new Section(신분당선, 양재역, 양재시민의숲역, Distance.of(2));
         신분당선_구간.add(사이_구간);
         //when
         신분당선_구간.remove(신분당선, 양재역);
