@@ -1,12 +1,14 @@
 package nextstep.subway.line.domain;
 
 import static java.util.Arrays.asList;
+import static nextstep.subway.common.Message.MESSAGE_EQUALS_START_STATION_END_STATION;
+import static nextstep.subway.common.Message.MESSAGE_NOT_CONNECTED_START_STATION_AND_END_STATION;
+import static nextstep.subway.common.Message.MESSAGE_NOT_EXISTS_START_STATION_OR_END_STATION;
 import static nextstep.subway.line.domain.fixture.LineFixture.*;
 import static nextstep.subway.line.domain.fixture.SectionFixture.*;
 import static nextstep.subway.station.domain.StationFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 import nextstep.subway.line.dto.PathResponse;
@@ -18,44 +20,54 @@ class NavigationTest {
 
     @Test
     void 지하철노선이_없는경우_예외() {
+        // then
         Assertions.assertThatThrownBy(() -> {
             Navigation.of(null);
         }).isInstanceOf(RuntimeException.class);
     }
-    
+
     @Test
     void 출발역과_도착역이_같은_경우_예외() {
+        // then
         Assertions.assertThatThrownBy(() -> {
             Navigation navigation = Navigation.of(asList(일호선()));
             navigation.findFastPath(강남역(), 강남역());
-        }).isInstanceOf(RuntimeException.class);
-    }
-
-    @Test
-    void 출발역과_도착역이_연결이_되어_있지_않은_경우_예외() {
-        // given
-        List<Line> 전체노선 = createSubwayMap();
-
-        Assertions.assertThatThrownBy(() -> {
-            Navigation navigation = Navigation.of(전체노선);
-            navigation.findFastPath(강남역(), 오이도역());
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(RuntimeException.class)
+            .hasMessage(MESSAGE_EQUALS_START_STATION_END_STATION.getMessage());
     }
 
     @Test
     void 존재하지_않은_출발역이나_도착역을_조회_할_경우_예외() {
+        // given
         List<Line> 전체노선 = createSubwayMap();
+
+        // then
         Assertions.assertThatThrownBy(() -> {
             Navigation navigation = Navigation.of(전체노선);
             navigation.findFastPath(양평역(), 용문역());
-        }).isInstanceOf(IllegalArgumentException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(MESSAGE_NOT_EXISTS_START_STATION_OR_END_STATION.getMessage());
+    }
+
+    @Test
+    void 출발역과_도착역이_연결이_되어_있지_않은_경우_예외() {
+
+        // given
+        List<Line> 전체노선 = createSubwayMap();
+
+        // then
+        Assertions.assertThatThrownBy(() -> {
+                Navigation navigation = Navigation.of(전체노선);
+                navigation.findFastPath(강남역(), 오이도역());
+            }).isInstanceOf(IllegalArgumentException.class)
+            .hasMessage(MESSAGE_NOT_CONNECTED_START_STATION_AND_END_STATION.getMessage());
     }
 
 
     /**
-     * 
+     *
      * 사호선 사당역 ---------오이도역
-     * 
+     *
      *                                    합정역
      *                                     |(10)
      *                                  홍대입구역
@@ -109,7 +121,7 @@ class NavigationTest {
         사호선.addSection(사호선_구간_사당역_오이도역());
 
 
-        return asList(일호선, 이호선, 삼호선);
+        return asList(일호선, 이호선, 삼호선, 사호선);
     }
 
 }

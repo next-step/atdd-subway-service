@@ -1,11 +1,13 @@
 package nextstep.subway.line.domain;
 
-import java.util.ArrayList;
+import static nextstep.subway.common.Message.MESSAGE_EQUALS_START_STATION_END_STATION;
+import static nextstep.subway.common.Message.MESSAGE_NOT_CONNECTED_START_STATION_AND_END_STATION;
+import static nextstep.subway.common.Message.MESSAGE_NOT_EXISTS_START_STATION_OR_END_STATION;
+
 import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 import nextstep.subway.line.dto.PathResponse;
+import nextstep.subway.line.exception.LineNotFoundException;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.KShortestPaths;
@@ -25,9 +27,9 @@ public class Navigation {
 
     private Navigation(List<Line> lines) {
         if (lines.isEmpty()) {
-            throw new IllegalArgumentException("라인이 존재하지 않습니다.");
+            throw new LineNotFoundException();
         }
-        this.subwayMap = new WeightedMultigraph(DefaultWeightedEdge.class);
+        this.subwayMap = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         this.lines = lines;
     }
 
@@ -55,32 +57,33 @@ public class Navigation {
 
     public PathResponse findFastPath(final Station source, final Station target) {
         validateEqualsSourceAndTarget(source, target);
-        validateNotFoundStartStationAndEndStation(source, target);
+        validateNotExistsStartStationOrEndStation(source, target);
         return getStations(source, target);
     }
 
     void validateEqualsSourceAndTarget(Station source, Station target) {
         if (source.equals(target)) {
-            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
+            throw new IllegalArgumentException(MESSAGE_EQUALS_START_STATION_END_STATION.getMessage());
         }
     }
 
-    void validateNotFoundStartStationAndEndStation(Station source, Station target) {
-        if (!(subwayMap.containsVertex(source) && subwayMap.containsVertex(target))) {
-            throw new IllegalArgumentException("존재하지 않은 출발역이나 도착역을 조회 하였습니다.");
+    void validateNotExistsStartStationOrEndStation(Station source, Station target) {
+        if ((!subwayMap.containsVertex(source) || !subwayMap.containsVertex(target))) {
+            throw new IllegalArgumentException(MESSAGE_NOT_EXISTS_START_STATION_OR_END_STATION.getMessage());
         }
     }
 
     private PathResponse getStations(Station source, Station target) {
         List<GraphPath<Station, DefaultWeightedEdge>> paths = new KShortestPaths<>(subwayMap, 100)
             .getPaths(source, target);
-        validatePathIsNotEmpty(paths);
+        validateNotConnectedStation(paths);
         return findShotPath(paths);
     }
 
-    void validatePathIsNotEmpty(List<GraphPath<Station, DefaultWeightedEdge>> paths) {
+    void validateNotConnectedStation(List<GraphPath<Station, DefaultWeightedEdge>> paths) {
         if (paths.isEmpty()) {
-            throw new IllegalArgumentException("출발역과 도착역이 연결되어있지 않습니다.");
+            throw new IllegalArgumentException(
+                MESSAGE_NOT_CONNECTED_START_STATION_AND_END_STATION.getMessage());
         }
     }
 
