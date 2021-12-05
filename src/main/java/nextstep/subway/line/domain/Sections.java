@@ -60,7 +60,7 @@ public class Sections {
         return sections;
     }
 
-    public void addSections(Section section) {
+    public void addSection(Section section) {
         this.sections.add(section);
     }
 }
