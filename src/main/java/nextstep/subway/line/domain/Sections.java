@@ -1,5 +1,9 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.common.exception.AlreadyRegisteredSectionException;
+import nextstep.subway.common.exception.MinimumRemovableSectionSizeException;
+import nextstep.subway.common.exception.NoRegisteredStationsException;
+import nextstep.subway.common.exception.NotFoundEntityException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -17,8 +21,6 @@ import java.util.stream.Collectors;
 @Embeddable
 public class Sections {
     private static final int MINIMUM_REMOVABLE_SECTION_SIZE = 1;
-    private static final String ALREADY_REGISTERED_SECTION_MESSAGE = "이미 등록된 구간 입니다.";
-    private static final String NO_REGISTERED_STATIONS_MESSAGE = "등록할 수 없는 구간 입니다.";
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
@@ -61,14 +63,18 @@ public class Sections {
     }
 
     public void removeLineStation(Line line, Station station) {
-        if (sections.size() <= MINIMUM_REMOVABLE_SECTION_SIZE) {
-            throw new RuntimeException();
-        }
+        validateMinimumRemovableSectionSize();
 
         updateRemovableLineStation(line, station);
 
         removeUpLineStationIfExist(station);
         removeDownLineStationIfExist(station);
+    }
+
+    private void validateMinimumRemovableSectionSize() {
+        if (sections.size() <= MINIMUM_REMOVABLE_SECTION_SIZE) {
+            throw new MinimumRemovableSectionSizeException(sections.size());
+        }
     }
 
     private void removeUpLineStationIfExist(Station station) {
@@ -113,13 +119,13 @@ public class Sections {
 
     private void validateAddLineStation(List<Station> stations, Station upStation, Station downStation) {
         if (isStationExisted(stations, upStation) && isStationExisted(stations, downStation)) {
-            throw new RuntimeException(ALREADY_REGISTERED_SECTION_MESSAGE);
+            throw new AlreadyRegisteredSectionException();
         }
 
         if (!isEmpty() &&
                 isNoneMatchStation(stations, upStation) &&
                 isNoneMatchStation(stations, downStation)) {
-            throw new RuntimeException(NO_REGISTERED_STATIONS_MESSAGE);
+            throw new NoRegisteredStationsException();
         }
     }
 
@@ -176,7 +182,7 @@ public class Sections {
         return sections.stream()
                 .filter(section -> !downStations.contains(section.getUpStation()))
                 .findAny()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(NotFoundEntityException::new);
     }
 
     private Section findLastSection() {
@@ -187,13 +193,13 @@ public class Sections {
         return sections.stream()
                 .filter(section -> !upStations.contains(section.getDownStation()))
                 .findAny()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(NotFoundEntityException::new);
     }
 
     private Section findNextSection(Section currentSection) {
         return sections.stream()
                 .filter(section -> section.getUpStation() == currentSection.getDownStation())
                 .findAny()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(NotFoundEntityException::new);
     }
 }
