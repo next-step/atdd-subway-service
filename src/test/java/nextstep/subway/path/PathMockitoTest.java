@@ -2,12 +2,11 @@ package nextstep.subway.path;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.application.PathFinder;
+import nextstep.subway.path.domain.JGraphPathFinder;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
-import nextstep.subway.station.domain.Stations;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -50,7 +49,7 @@ public class PathMockitoTest {
         //given
         StationRepository stationRepository = mock(StationRepository.class);
         LineRepository lineRepository = mock(LineRepository.class);
-        PathFinder pathFinder = mock(PathFinder.class);
+        JGraphPathFinder pathFinder = mock(JGraphPathFinder.class);
 
         List<Line> lines = Lists.newArrayList(
                 Line.of("1호선", "남색", 강남역, 역삼역, 5));

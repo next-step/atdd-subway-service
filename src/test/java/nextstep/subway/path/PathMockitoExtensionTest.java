@@ -4,13 +4,12 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.path.application.PathFinder;
+import nextstep.subway.path.domain.JGraphPathFinder;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
-import nextstep.subway.station.domain.Stations;
 import nextstep.subway.station.dto.StationResponse;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +33,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class PathMockitoExtensionTest {
     @Mock
-    private PathFinder finder;
+    private JGraphPathFinder finder;
 
     @Mock
     private StationRepository stationRepository;
@@ -102,6 +101,5 @@ public class PathMockitoExtensionTest {
 
         // then
         assertThat(response.getStations()).hasSize(2);
-
     }
 }

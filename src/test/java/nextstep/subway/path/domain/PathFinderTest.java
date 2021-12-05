@@ -1,4 +1,4 @@
-package nextstep.subway.path.application;
+package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
@@ -118,7 +118,7 @@ class PathFinderTest {
         // given
         List<Line> lines = lineRepository.findAll();
         List<Station> stations = stationRepository.findAll();
-        PathFinder pathFinder = new PathFinder();
+        JGraphPathFinder pathFinder = new JGraphPathFinder();
 
         // when
         PathResponse response = pathFinder.getShortestPath(lines, stations, 왕십리_START.getId(), 고속터미널_END.getId());
@@ -133,7 +133,7 @@ class PathFinderTest {
         // given
         List<Line> lines = lineRepository.findAll();
         List<Station> stations = stationRepository.findAll();
-        PathFinder pathFinder = new PathFinder();
+        JGraphPathFinder pathFinder = new JGraphPathFinder();
 
         // when
         assertThatThrownBy(() -> pathFinder.getShortestPath(lines, stations, 왕십리_START.getId(), 왕십리_START.getId()))
@@ -147,7 +147,7 @@ class PathFinderTest {
         // given
         List<Line> lines = lineRepository.findAll();
         List<Station> stations = stationRepository.findAll();
-        PathFinder pathFinder = new PathFinder();
+        JGraphPathFinder pathFinder = new JGraphPathFinder();
 
         // when
         assertThatThrownBy(() -> pathFinder.getShortestPath(lines, stations, 왕십리_START.getId(), 경로없는역.getId()))
@@ -162,7 +162,7 @@ class PathFinderTest {
         Long 존재하지않은역 = Long.MAX_VALUE;
         List<Line> lines = lineRepository.findAll();
         List<Station> stations = stationRepository.findAll();
-        PathFinder pathFinder = new PathFinder();
+        JGraphPathFinder pathFinder = new JGraphPathFinder();
 
         // when
         assertThatThrownBy(() -> pathFinder.getShortestPath(lines, stations, 왕십리_START.getId(), 존재하지않은역))

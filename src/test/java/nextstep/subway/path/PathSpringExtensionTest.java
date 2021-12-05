@@ -2,7 +2,7 @@ package nextstep.subway.path;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.application.PathFinder;
+import nextstep.subway.path.domain.JGraphPathFinder;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -31,10 +31,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(org.springframework.test.context.junit.jupiter.SpringExtension.class)
 public class PathSpringExtensionTest {
     @MockBean
-    private Line line;
-
-    @MockBean
-    private PathFinder pathFinder;
+    private JGraphPathFinder pathFinder;
 
     @MockBean
     private StationRepository stationRepository;
