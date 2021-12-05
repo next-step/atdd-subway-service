@@ -143,31 +143,31 @@ public class Line extends BaseEntity {
     }
 
     private void addInnerSection(List<Station> stations, Station upStation, Station downStation, int distance) {
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
-
         if (stations.isEmpty()) {
             this.getSections().add(new Section(this, upStation, downStation, distance));
             return;
         }
 
-        if (isUpStationExisted) {
-            addUpdatedUpStation(upStation, downStation, distance);
-        }
-
-        if (isDownStationExisted) {
-            addUpdatedDownStation(upStation, downStation, distance);
-        }
+        addUpdatedUpStation(stations, upStation, downStation, distance);
+        addUpdatedDownStation(stations, upStation, downStation, distance);
     }
 
-    private void addUpdatedDownStation(Station upStation, Station downStation, int distance) {
+    private void addUpdatedDownStation(List<Station> stations, Station upStation, Station downStation, int distance) {
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+        if (!isDownStationExisted) {
+            return;
+        }
         if (checkExistDownSection(downStation)) {
             findDownSection(downStation).updateDownStation(upStation, distance);
         }
         this.getSections().add(new Section(this, upStation, downStation, distance));
     }
 
-    private void addUpdatedUpStation(Station upStation, Station downStation, int distance) {
+    private void addUpdatedUpStation(List<Station> stations, Station upStation, Station downStation, int distance) {
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
+        if (!isUpStationExisted) {
+            return;
+        }
         if (checkExistUpSection(upStation)) {
             findUpSection(upStation).updateUpStation(downStation, distance);
         }
