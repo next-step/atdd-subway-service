@@ -22,7 +22,7 @@ public class Line extends BaseEntity {
 
     private String color;
 
-    private int addFare;
+    private int addedFare;
 
     private Sections sections = new Sections();
 
@@ -34,10 +34,10 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance, int addFare) {
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int addedFare) {
         this.name = name;
         this.color = color;
-        this.addFare = addFare;
+        this.addedFare = addedFare;
         sections.addSection(this, upStation, downStation, new Distance(distance));
     }
 
@@ -66,8 +66,8 @@ public class Line extends BaseEntity {
         return sections.findStations();
     }
 
-    public int getAddFare() {
-        return addFare;
+    public int getAddedFare() {
+        return addedFare;
     }
 
     public void addSection(Station upStation, Station downStation, int distance) {

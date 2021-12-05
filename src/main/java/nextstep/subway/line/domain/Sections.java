@@ -150,10 +150,10 @@ public class Sections {
         }
     }
 
-    public int maxAddFare() {
+    public int maxAddedFare() {
         return sections.stream()
                 .map(Section::getLine)
-                .map(Line::getAddFare)
+                .map(Line::getAddedFare)
                 .mapToInt(it -> it)
                 .max()
                 .orElse(0);

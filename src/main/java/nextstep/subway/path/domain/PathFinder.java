@@ -35,7 +35,7 @@ public class PathFinder {
                 .stream()
                 .map(SubwayEdge::getSection)
                 .collect(Collectors.collectingAndThen(Collectors.toList(), Sections::new));
-        return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight(), sections.maxAddFare());
+        return new Path(shortestPath.getVertexList(), (int) shortestPath.getWeight(), sections.maxAddedFare());
     }
 
     private void addVertexes(List<Line> lines) {
