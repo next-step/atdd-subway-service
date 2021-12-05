@@ -1,6 +1,5 @@
 package nextstep.subway.path.dto;
 
-import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
  * date : 2021/12/04
  * description :
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class PathResponse {
     private List<StationResponse> stations;
 

@@ -1,10 +1,10 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.exception.EdgeCreateException;
 import nextstep.subway.path.exception.PathBeginIsEndException;
 import nextstep.subway.path.exception.PathNotFoundException;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.exception.StationNotFoundException;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -40,7 +40,7 @@ public class JGraphPathFinder implements PathFinder {
         try {
             DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
             result = dijkstraShortestPath.getPath(srcStation, destStation).getVertexList();
-        } catch(NullPointerException npe) {
+        } catch (NullPointerException npe) {
             throw new PathNotFoundException();
         }
 

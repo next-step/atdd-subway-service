@@ -1,6 +1,5 @@
 package nextstep.subway.station.dto;
 
-import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import nextstep.subway.station.domain.Station;
 
@@ -8,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class StationResponse {
     private Long id;
     private String name;

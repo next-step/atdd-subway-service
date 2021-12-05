@@ -1,6 +1,5 @@
 package nextstep.subway.station.dto;
 
-import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import nextstep.subway.station.domain.Station;
 
