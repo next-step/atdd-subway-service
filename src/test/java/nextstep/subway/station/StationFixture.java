@@ -3,6 +3,10 @@ package nextstep.subway.station;
 import nextstep.subway.station.domain.Station;
 
 public class StationFixture {
+	public static Station 존재하지않는역() {
+		return Station.of(0L, "존재하지않는역");
+	}
+
 	public static Station 강남역() {
 		return Station.of(1L, "강남역");
 	}
