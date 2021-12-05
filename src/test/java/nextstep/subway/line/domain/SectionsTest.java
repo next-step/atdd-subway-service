@@ -48,7 +48,7 @@ class SectionsTest {
         final Station 잠실역 = new Station("잠실역");
 
         // when
-        this.sections.addLineStation(호선2, 잠실역, 신사역, 5);
+        this.sections.addLineStation(호선2, 잠실역, 신사역, new Distance(5));
 
         // then
         assertThat(sections.getSections().size()).isEqualTo(2);
@@ -61,7 +61,7 @@ class SectionsTest {
         final Station 강남신사사이역 = new Station("강남신사사이역");
 
         // when
-        sections.addLineStation(호선2, 강남역, 강남신사사이역, 3);
+        sections.addLineStation(호선2, 강남역, 강남신사사이역, new Distance(3));
 
         // then
         assertThat(sections.getStations()).containsExactly(강남역, 강남신사사이역, 신사역);
@@ -71,7 +71,7 @@ class SectionsTest {
     @Test
     void addSectionBothStationsException() {
         assertThatThrownBy(() -> {
-            this.sections.addLineStation(호선2, 강남역, 신사역, 5);
+            this.sections.addLineStation(호선2, 강남역, 신사역, new Distance(5));
 
         }).isInstanceOf(RuntimeException.class);
     }
@@ -80,7 +80,7 @@ class SectionsTest {
     @Test
     void addSectionNoStationsException() {
         assertThatThrownBy(() -> {
-            this.sections.addLineStation(호선2, new Station("새로운 역1"), new Station("새로운 역2"), 5);
+            this.sections.addLineStation(호선2, new Station("새로운 역1"), new Station("새로운 역2"), new Distance(5));
 
         }).isInstanceOf(RuntimeException.class);
     }
@@ -90,7 +90,7 @@ class SectionsTest {
     void removeSection() {
         //given
         final Station 잠실역 = new Station("잠실역");
-        this.sections.addLineStation(호선2, 잠실역, 신사역, 5);
+        this.sections.addLineStation(호선2, 잠실역, 신사역, new Distance(5));
 
         // when
         this.sections.removeLineStation(호선2, 잠실역);

@@ -37,11 +37,11 @@ public class Sections {
         return sections.isEmpty();
     }
 
-    public void addToSections(Line line, Station upStation, Station downStation, int distance) {
-        sections.add(new Section(line, upStation, downStation, distance));
+    public void addToSections(Line line, Station upStation, Station downStation, Distance distance) {
+        sections.add(new Section(line, upStation, downStation, distance.getDistance()));
     }
 
-    public void addLineStation(Line line, Station upStation, Station downStation, int distance) {
+    public void addLineStation(Line line, Station upStation, Station downStation, Distance distance) {
         List<Station> stations = getStations();
         validateAddLineStation(stations, upStation, downStation);
 
@@ -95,7 +95,7 @@ public class Sections {
 
         Station newUpStation = downLineStation.get().getUpStation();
         Station newDownStation = upLineStation.get().getDownStation();
-        int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+        Distance newDistance = upLineStation.get().getDistance().add(downLineStation.get().getDistance());
         addToSections(line, newUpStation, newDownStation, newDistance);
     }
 
@@ -123,14 +123,14 @@ public class Sections {
         }
     }
 
-    private void updateUpStationIfExist(Station upStation, Station downStation, int distance) {
+    private void updateUpStationIfExist(Station upStation, Station downStation, Distance distance) {
         sections.stream()
                 .filter(it -> it.getUpStation() == upStation)
                 .findFirst()
                 .ifPresent(it -> it.updateUpStation(downStation, distance));
     }
 
-    private void updateDownStationIfExist(Station upStation, Station downStation, int distance) {
+    private void updateDownStationIfExist(Station upStation, Station downStation, Distance distance) {
         sections.stream()
                 .filter(it -> it.getDownStation() == downStation)
                 .findFirst()
