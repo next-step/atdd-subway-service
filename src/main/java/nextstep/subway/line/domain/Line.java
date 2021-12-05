@@ -44,6 +44,13 @@ public class Line extends BaseEntity {
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
+    public Line(String name, String color, Station upStation, Station downStation, Distance distance, Price extraFare) {
+        this.name = name;
+        this.color = color;
+        sections.add(new Section(this, upStation, downStation, distance));
+        this.extraFare = extraFare;
+    }
+
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
