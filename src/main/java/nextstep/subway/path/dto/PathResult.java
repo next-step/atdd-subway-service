@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class PathResult {
+    public static final PathResult EMPTY_PATH = new PathResult(Collections.emptyList(), 0d);
     private final List<Station> vertexList;
     private final double weight;
 
@@ -15,7 +16,7 @@ public class PathResult {
     }
 
     public static PathResult emptyPath() {
-        return new PathResult(Collections.emptyList(), 0d);
+        return EMPTY_PATH;
     }
 
     public boolean isEmpty() {
