@@ -75,7 +75,7 @@ public class PathFinder {
 		}
 
 		if (!stations.contains(target)) {
-			throw new CanNotFindPathException("존재하지 않는 출발역입니다.");
+			throw new CanNotFindPathException("존재하지 않는 도착역입니다.");
 		}
 	}
 }
