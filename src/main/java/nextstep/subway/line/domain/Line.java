@@ -111,4 +111,12 @@ public class Line extends BaseEntity {
             .filter(it -> it.getDownStation() == downStation)
             .findFirst();
     }
+
+    public boolean isStationNotExists(final Station station) {
+        return getStations().stream().noneMatch(it -> it == station);
+    }
+
+    public boolean isStationExists(final Station station) {
+        return getStations().stream().anyMatch(it -> it == station);
+    }
 }

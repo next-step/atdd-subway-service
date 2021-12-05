@@ -63,15 +63,15 @@ public class LineService {
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
         List<Station> stations = line.getStations();
-        boolean isUpStationExisted = isStationExists(stations, upStation);
-        boolean isDownStationExisted = isStationExists(stations, downStation);
+        boolean isUpStationExisted = line.isStationExists(upStation);
+        boolean isDownStationExisted = line.isStationExists(downStation);
 
         if (isUpStationExisted && isDownStationExisted) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
 
-        if (!stations.isEmpty() && isStationNotExists(stations, upStation) &&
-            isStationNotExists(stations, downStation)) {
+        if (!stations.isEmpty() && line.isStationNotExists(upStation) &&
+            line.isStationNotExists(downStation)) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
 
@@ -114,13 +114,5 @@ public class LineService {
 
         upLineStation.ifPresent(it -> line.getSections().remove(it));
         downLineStation.ifPresent(it -> line.getSections().remove(it));
-    }
-
-    private boolean isStationNotExists(final List<Station> stations, final Station station) {
-        return stations.stream().noneMatch(it -> it == station);
-    }
-
-    private boolean isStationExists(final List<Station> stations, final Station station) {
-        return stations.stream().anyMatch(it -> it == station);
     }
 }
