@@ -42,6 +42,8 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
+
+
     @DisplayName("지하철 구간을 등록한다.")
     @Test
     void addLineSection() {
