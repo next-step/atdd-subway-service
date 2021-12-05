@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
 import java.util.List;
+import java.util.Optional;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -29,17 +30,40 @@ public class PathService {
         List<Line> lines = lineRepository.findAll();
         Station sourceStation = findStationById(sourceStationId);
         Station targetStation = findStationById(targetStationId);
+        validateForShortestPath(sourceStation, targetStation);
 
         GraphPath<Station, DefaultWeightedEdge> path = getShortestPath(lines, sourceStation,
             targetStation);
+
         List<Station> shortestPath = path.getVertexList();
 
         return new PathResponse(StationResponse.of(shortestPath), (int) path.getWeight());
     }
 
+    private void validateForShortestPath(Station sourceStation, Station targetStation) {
+        if (sourceStation == null || targetStation == null) {
+            throw new IllegalArgumentException("출발역 또는 도착역이 존재하지 않습니다.");
+        }
+
+        if (sourceStation.equals(targetStation)) {
+            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
+        }
+    }
+
     private GraphPath<Station, DefaultWeightedEdge> getShortestPath(List<Line> lines,
         Station sourceStation, Station targetStation) {
 
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph =
+            createGraphFromLines(lines);
+
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath =
+            new DijkstraShortestPath<>(graph);
+
+        return Optional.ofNullable(dijkstraShortestPath.getPath(sourceStation, targetStation))
+            .orElseThrow(() -> new IllegalArgumentException("출발역과 도착역이 이어진 경로가 없습니다."));
+    }
+
+    private WeightedMultigraph<Station, DefaultWeightedEdge> createGraphFromLines(List<Line> lines) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
             DefaultWeightedEdge.class);
 
@@ -48,9 +72,7 @@ public class PathService {
             addSectionsToEdgeWithWeight(graph, line);
         }
 
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath =
-            new DijkstraShortestPath<>(graph);
-        return dijkstraShortestPath.getPath(sourceStation, targetStation);
+        return graph;
     }
 
     private void addSectionsToEdgeWithWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph,
@@ -70,7 +92,7 @@ public class PathService {
 
     public Station findStationById(Long id) {
         return stationRepository.findById(id).orElseThrow(
-            () -> new IllegalArgumentException("id에 해당하는 역이 없습니다."));
+            () -> new IllegalArgumentException("id에 해당하는 역이 없습니다. id=" + id));
     }
 
 }
