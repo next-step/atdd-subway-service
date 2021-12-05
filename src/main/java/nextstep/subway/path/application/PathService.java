@@ -5,10 +5,9 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.dto.PathResult;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -33,7 +32,7 @@ public class PathService {
         Set<Line> lines = new HashSet<>(lineService.findLineByStation(source));
         lines.addAll(lineService.findLineByStation(target));
 
-        GraphPath<Station, DefaultWeightedEdge> shortCut = findShortCut(source, target, lines);
+        PathResult shortCut = findShortCut(source, target, lines);
         return PathResponse.of(shortCut);
     }
 
@@ -43,9 +42,9 @@ public class PathService {
         }
     }
 
-    private GraphPath<Station, DefaultWeightedEdge> findShortCut(Station source, Station target, Set<Line> lines) {
-        GraphPath<Station, DefaultWeightedEdge> shortCut = PathFinder.findShortCut(lines, source, target);
-        if (shortCut == null) {
+    private PathResult findShortCut(Station source, Station target, Set<Line> lines) {
+        PathResult shortCut = PathFinder.findShortCut(lines, source, target);
+        if (shortCut.isEmpty()) {
             throw new ServiceException("최단 경로를 찾을 수 없습니다");
         }
         return shortCut;
