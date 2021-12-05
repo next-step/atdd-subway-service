@@ -1,9 +1,9 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.common.exception.section.SectionDuplicateException;
-import nextstep.subway.common.exception.section.SectionNotCreateException;
-import nextstep.subway.common.exception.station.StationNotDeleteException;
-import nextstep.subway.common.exception.station.StationNotFoundException;
+import nextstep.subway.line.exception.section.SectionDuplicateException;
+import nextstep.subway.line.exception.section.SectionNoStationException;
+import nextstep.subway.station.exception.StationNotDeleteException;
+import nextstep.subway.station.exception.StationNotFoundException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -50,7 +50,7 @@ public class Sections {
         }
 
         if (isInvalidStations(upStation, downStation)) {
-            throw new SectionNotCreateException();
+            throw new SectionNoStationException();
         }
     }
 
@@ -63,22 +63,19 @@ public class Sections {
         return !getStations().isEmpty() && !isExistStation(upStation) && !isExistStation(downStation);
     }
 
-    public void remove(Line line, Long stationId) {
+    public void remove(Long stationId) {
         removeValidate(stationId);
 
-        Optional<Section> upLineSection = getSectionInUpStation(stationId);
-        Optional<Section> downLineSection = getSectionInDownStation(stationId);
-
-        if (upLineSection.isPresent() && downLineSection.isPresent()) {
-            Distance newDistance = upLineSection.get()
-                    .getDistance()
-                    .plus(downLineSection.get().getDistance());
-
-            Section newSection = Section.of(line, downLineSection.get().getUpStation(), upLineSection.get().getDownStation(), newDistance);
-            sections.add(newSection);
+        if (lastStation().getId().equals(stationId)) {
+            sections.remove(lastSection());
+            return;
         }
-        upLineSection.ifPresent(it -> sections.remove(it));
-        downLineSection.ifPresent(it -> sections.remove(it));
+
+        Section section = getSection(stationId);
+        findPrevSection(section.getUpStation()).ifPresent(
+                prev -> prev.removeSection(section)
+        );
+        sections.remove(section);
     }
 
     private void removeValidate(Long stationId) {
@@ -95,18 +92,6 @@ public class Sections {
         return getStations()
                 .stream()
                 .noneMatch(station -> station.getId().equals(stationId));
-    }
-
-    private Optional<Section> getSectionInDownStation(Long stationId) {
-        return sections.stream()
-                .filter(it -> it.getDownStation().getId().equals(stationId))
-                .findFirst();
-    }
-
-    private Optional<Section> getSectionInUpStation(Long stationId) {
-        return sections.stream()
-                .filter(it -> it.getUpStation().getId().equals(stationId))
-                .findFirst();
     }
 
     public List<Section> getList() {
@@ -145,6 +130,13 @@ public class Sections {
                 .getDownStation();
     }
 
+    private Section lastSection() {
+        return sections.stream()
+                .filter(section -> section.downStationEqualTo(lastStation()))
+                .findFirst()
+                .orElseThrow(StationNotFoundException::new);
+    }
+
     private List<Station> getDownStations() {
         return sections.stream()
                 .map(Section::getDownStation)
@@ -163,4 +155,18 @@ public class Sections {
                 .orElseThrow(StationNotFoundException::new)
                 .getDownStation();
     }
+
+    private Section getSection(Long stationId) {
+        return sections.stream()
+                .filter(section -> section.upStationEqualTo(stationId))
+                .findFirst()
+                .orElseThrow(StationNotFoundException::new);
+    }
+
+    private Optional<Section> findPrevSection(Station station) {
+        return sections.stream()
+                .filter(section -> section.downStationEqualTo(station))
+                .findFirst();
+    }
+
 }

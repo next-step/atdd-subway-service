@@ -1,12 +1,11 @@
 package nextstep.subway.station.dto;
 
+import lombok.NoArgsConstructor;
 import nextstep.subway.station.domain.Station;
 
+@NoArgsConstructor
 public class StationRequest {
     private String name;
-
-    public StationRequest() {
-    }
 
     public StationRequest(String name) {
         this.name = name;

@@ -1,14 +1,14 @@
 package nextstep.subway.member.dto;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import nextstep.subway.member.domain.Member;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MemberResponse {
     private Long id;
     private String email;
     private Integer age;
-
-    public MemberResponse() {
-    }
 
     public MemberResponse(Long id, String email, Integer age) {
         this.id = id;

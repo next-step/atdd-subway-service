@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.common.exception.distance.IllegalDistanceException;
+import nextstep.subway.line.exception.distance.IllegalDistanceException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,8 +37,9 @@ public class DistanceTest {
     @ValueSource(ints = {Integer.MIN_VALUE, -1, 0})
     public void invalidDistance(int candidate) {
         // then
-        assertThatThrownBy(() -> Distance.of(candidate)).isInstanceOf(IllegalDistanceException.class)
-                .hasMessageContaining("거리는 1보다 작을 수 없습니다.");
+        assertThatThrownBy(() -> Distance.of(candidate))
+                .isInstanceOf(IllegalDistanceException.class)
+                .hasMessageContaining("거리는 1 이상이어야 합니다.");
     }
 
     @Test

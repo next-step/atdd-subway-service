@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.common.exception.distance.DistanceNotAllowException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -42,8 +41,6 @@ public class Section {
     }
 
     public void updateSection(Section section) {
-        validateDistance(section.getDistance());
-
         if (this.upStationEqualTo(section.getUpStation())) {
             this.upStation = section.getDownStation();
         }
@@ -51,13 +48,8 @@ public class Section {
         if (this.downStationEqualTo(section.getDownStation())) {
             this.downStation = section.getUpStation();
         }
-        this.distance = this.distance.minus(section.getDistance());
-    }
 
-    private void validateDistance(Distance distance) {
-        if (this.distance.isLessThanOrEqualTo(distance)) {
-            throw new DistanceNotAllowException();
-        }
+        this.distance = this.distance.minus(section.getDistance());
     }
 
     public boolean downStationEqualTo(Station station) {
@@ -66,6 +58,10 @@ public class Section {
 
     public boolean upStationEqualTo(Station station) {
         return upStation.equals(station);
+    }
+
+    public boolean upStationEqualTo(Long stationId) {
+        return upStation.getId().equals(stationId);
     }
 
     public Long getId() {
@@ -86,5 +82,10 @@ public class Section {
 
     public Distance getDistance() {
         return distance;
+    }
+
+    public void removeSection(Section section) {
+        this.downStation = section.downStation;
+        this.distance = this.distance.plus(section.getDistance());
     }
 }

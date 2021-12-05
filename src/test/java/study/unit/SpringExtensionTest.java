@@ -24,7 +24,9 @@ public class SpringExtensionTest {
     @MockBean
     private StationService stationService;
 
+
     @Test
+    @DisplayName("노선 조회")
     void findAllLines() {
         // given
         when(lineRepository.findAll()).thenReturn(Lists.newArrayList(Line.of("", "")));
@@ -36,4 +38,5 @@ public class SpringExtensionTest {
         // then
         assertThat(responses).hasSize(1);
     }
+
 }

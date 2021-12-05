@@ -72,6 +72,6 @@ public class Line extends BaseEntity {
     }
 
     public void removeStation(Long stationId) {
-        sections.remove(this, stationId);
+        sections.remove(stationId);
     }
 }

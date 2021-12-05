@@ -1,6 +1,7 @@
 package nextstep.subway.station.application;
 
-import nextstep.subway.common.exception.station.StationNotFoundException;
+import lombok.RequiredArgsConstructor;
+import nextstep.subway.station.exception.StationNotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
@@ -12,12 +13,9 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class StationService {
     private final StationRepository stationRepository;
-
-    public StationService(StationRepository stationRepository) {
-        this.stationRepository = stationRepository;
-    }
 
     @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
@@ -35,7 +33,7 @@ public class StationService {
                 .orElseThrow(StationNotFoundException::new);
     }
 
-    public List<StationResponse> findAllStations() {
+    public List<StationResponse> findStations() {
         return StationResponse.ofList(stationRepository.findAll());
     }
 }

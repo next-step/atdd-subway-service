@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.common.exception.distance.IllegalDistanceException;
+import nextstep.subway.line.exception.distance.IllegalDistanceException;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Transient;
@@ -48,6 +48,10 @@ public class Distance {
 
     public Distance minus(Distance newDistance) {
         return Distance.of(distance - newDistance.distance);
+    }
+
+    public int intValue() {
+        return distance;
     }
 
     @Override

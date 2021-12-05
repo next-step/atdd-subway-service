@@ -1,22 +1,22 @@
-package nextstep.subway.common.exception.station;
+package nextstep.subway.member.exception;
 
 import nextstep.subway.common.exception.ServiceException;
 import org.springframework.http.HttpStatus;
 
 /**
  * packageName : nextstep.subway.common.exception
- * fileName : StationNotFoundException
+ * fileName : MemberNotFoundException
  * author : haedoang
  * date : 2021/12/01
- * description : 역 없음 예외 클래스
+ * description : 회원 미존재 예외 클래스
  */
-public class StationNotFoundException extends ServiceException {
+public class MemberNotFoundException extends ServiceException {
     private static final long serialVersionUID = 1L;
 
     public static final HttpStatus status = HttpStatus.BAD_REQUEST;
-    public static final String message = "역이 존재하지 않습니다.";
+    public static final String message = "회원이 존재하지 않습니다.";
 
-    public StationNotFoundException() {
+    public MemberNotFoundException() {
         super(status, message);
     }
 }
