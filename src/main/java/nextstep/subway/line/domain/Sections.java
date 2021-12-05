@@ -125,14 +125,26 @@ public class Sections {
         Optional<Section> upLineStation = getUpStation(station);
         Optional<Section> downLineStation = getDownStation(station);
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            addSection(new Section(line, newUpStation, newDownStation, newDistance));
+        if (isBetweenStationRemove(upLineStation, downLineStation)) {
+            sectionRelocation(line, upLineStation.get(), downLineStation.get());
         }
 
+        isNotBetweenStationRemove(upLineStation, downLineStation);
+    }
+
+    private void isNotBetweenStationRemove(final Optional<Section> upLineStation, final Optional<Section> downLineStation) {
         upLineStation.ifPresent(it -> this.sections.remove(it));
         downLineStation.ifPresent(it -> this.sections.remove(it));
+    }
+
+    private boolean isBetweenStationRemove(final Optional<Section> upLineStation, final Optional<Section> downLineStation) {
+        return upLineStation.isPresent() && downLineStation.isPresent();
+    }
+
+    private void sectionRelocation(final Line line, final Section upLineStation, final Section downLineStation) {
+        Station newUpStation = downLineStation.getUpStation();
+        Station newDownStation = upLineStation.getDownStation();
+        int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
+        addSection(new Section(line, newUpStation, newDownStation, newDistance));
     }
 }
