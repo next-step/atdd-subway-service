@@ -19,7 +19,47 @@ public class Sections {
 	private List<Section> sections = new ArrayList<>();
 
 	public void add(Section section) {
+		connect(section.getUpStation(), section.getDownStation(), section.getDistance());
 		sections.add(section);
+	}
+
+	private void connect(Station upStation, Station downStation, int distance) {
+		if (sections.isEmpty()) {
+			return;
+		}
+		boolean isUpStationExisted = isExisted(upStation);
+		boolean isDownStationExisted = isExisted(downStation);
+		validateToConnect(isUpStationExisted, isDownStationExisted);
+
+		if (isUpStationExisted) {
+			updateUpStation(upStation, downStation, distance);
+		}
+		if (isDownStationExisted) {
+			updateDownStation(upStation, downStation, distance);
+		}
+	}
+
+	private boolean isExisted(Station station) {
+		return getStations().stream().anyMatch(it -> it == station);
+	}
+
+	private void validateToConnect(boolean isUpStationExisted, boolean isDownStationExisted) {
+		if (isUpStationExisted && isDownStationExisted) {
+			throw new IllegalArgumentException("이미 연결된 구간 입니다.");
+		}
+		if (!isUpStationExisted && !isDownStationExisted) {
+			throw new IllegalArgumentException("연결할 수 없는 구간 입니다.");
+		}
+	}
+
+	private void updateUpStation(Station upStation, Station downStation, int distance) {
+		findFirst(section -> section.equalsUpStation(upStation))
+			.ifPresent(it -> it.updateUpStation(downStation, distance));
+	}
+
+	private void updateDownStation(Station upStation, Station downStation, int distance) {
+		findFirst(section -> section.equalsDownStation(downStation))
+			.ifPresent(it -> it.updateDownStation(upStation, distance));
 	}
 
 	public List<Station> getStations() {
