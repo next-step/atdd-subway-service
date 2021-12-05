@@ -73,9 +73,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		지하철_경로에_지하철역_순서_정렬됨(지하철_경로_조회_요청, Arrays.asList(양재시민의숲역, 양재역, 강남역, 역삼역, 선릉역));
 		지하철_경로에_거리가_조회됨(지하철_경로_조회_요청, 17);
 
-		지하철_경로_조회_실패됨(지하철_경로_조회_요청(강남역, 강남역));
-		지하철_경로_조회_실패됨(지하철_경로_조회_요청(강남역, 한대앞역));
-		지하철_경로_조회_실패됨(지하철_경로_조회_요청(강남역.getId(), UNKNOWN_ID));
+		지하철_경로_조회_실패됨(지하철_경로_조회_요청(강남역, 강남역), HttpStatus.BAD_REQUEST);
+		지하철_경로_조회_실패됨(지하철_경로_조회_요청(강남역, 한대앞역), HttpStatus.BAD_REQUEST);
+		지하철_경로_조회_실패됨(지하철_경로_조회_요청(강남역.getId(), UNKNOWN_ID), HttpStatus.NOT_FOUND);
 	}
 
 	public static ExtractableResponse<Response> 지하철_경로_조회_요청(
@@ -135,7 +135,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		assertThat(actualDistance).isEqualTo(expectedDistance);
 	}
 
-	private void 지하철_경로_조회_실패됨(ExtractableResponse<Response> response) {
-		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+	private void 지하철_경로_조회_실패됨(ExtractableResponse<Response> response, HttpStatus expectedHttpStatus) {
+		assertThat(response.statusCode()).isEqualTo(expectedHttpStatus.value());
 	}
 }
