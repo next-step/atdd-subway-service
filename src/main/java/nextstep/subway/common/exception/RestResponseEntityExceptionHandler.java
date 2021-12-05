@@ -8,8 +8,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(value = {DatabaseException.class, InvalidParameterException.class})
-    protected ResponseEntity<Object> handleConflict() {
-        return ResponseEntity.badRequest().build();
+    @ExceptionHandler(value = DatabaseException.class)
+    protected ResponseEntity<ErrorResponse> handleDatabaseExceptionConflict(DatabaseException e) {
+        return ResponseEntity.badRequest().body(ErrorResponse.of(e.getErrorCode()));
+    }
+
+    @ExceptionHandler(value = InvalidParameterException.class)
+    protected ResponseEntity<ErrorResponse> handleInvalidParameterExceptionConflict(
+        InvalidParameterException e) {
+        return ResponseEntity.badRequest().body(ErrorResponse.of(e.getErrorCode()));
     }
 }

@@ -6,23 +6,13 @@ package nextstep.subway.common.exception;
  */
 public class DatabaseException extends RuntimeException {
 
-    public DatabaseException() {
+    private final ErrorCode errorCode;
+
+    public DatabaseException(ErrorCode errorCode) {
+        this.errorCode = errorCode;
     }
 
-    public DatabaseException(String message) {
-        super(message);
-    }
-
-    public DatabaseException(String message, Throwable cause, boolean enableSuppression,
-        boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
-
-    public DatabaseException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public DatabaseException(Throwable cause) {
-        super(cause);
+    public ErrorCode getErrorCode() {
+        return errorCode;
     }
 }

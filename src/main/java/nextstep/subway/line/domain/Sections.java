@@ -8,6 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import nextstep.subway.common.exception.ErrorCode;
 import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.station.domain.Station;
 
@@ -117,19 +118,19 @@ public class Sections {
 
     private void validateDuplicate(Section section) {
         if (isDuplicatedSection(section)) {
-            throw InvalidParameterException.SECTION_EXIST_EXCEPTION;
+            throw InvalidParameterException.of(ErrorCode.SECTION_EXIST);
         }
     }
 
     private void validateAddAblePosition(Section section) {
         if (isMatchedUpStationAndDownStationInSections(section)) {
-            throw InvalidParameterException.SECTION_ADD_NO_POSITION_EXCEPTION;
+            throw InvalidParameterException.of(ErrorCode.SECTION_ADD_NO_POSITION);
         }
     }
 
     private void validateDeleteAbleSize() {
         if (sections.size() == MIN_LINE_STATION_SIZE) {
-            throw InvalidParameterException.SECTION_ONE_COUNT_CAN_NOT_REMOVE_EXCEPTION;
+            throw InvalidParameterException.of(ErrorCode.SECTION_ONE_COUNT_CAN_NOT_REMOVE);
         }
     }
 

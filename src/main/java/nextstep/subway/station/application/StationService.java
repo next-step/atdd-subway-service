@@ -1,6 +1,6 @@
 package nextstep.subway.station.application;
 
-import nextstep.subway.common.exception.InvalidParameterException;
+import nextstep.subway.common.exception.ErrorCode;
 import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -20,9 +20,8 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        validateDuplicateName(stationRequest.getName());
-        
         Station persistStation = stationRepository.save(stationRequest.toStation());
+
         return StationResponse.of(persistStation);
     }
 
@@ -38,12 +37,6 @@ public class StationService {
 
     public Station findStationById(Long id) {
         return stationRepository.findById(id)
-            .orElseThrow(() -> NotFoundException.SECTION_NOT_FOUND_EXCEPTION);
-    }
-
-    private void validateDuplicateName(String name) {
-        if (stationRepository.existsByName(name)) {
-            throw InvalidParameterException.STATION_NAME_DUPLICATE_DATA_EXCEPTION;
-        }
+            .orElseThrow(() -> NotFoundException.of(ErrorCode.SECTION_NOT_FOUND));
     }
 }
