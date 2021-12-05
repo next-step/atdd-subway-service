@@ -7,14 +7,18 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 @Entity
 public class Line extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String name;
+
     private String color;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
@@ -42,7 +46,6 @@ public class Line extends BaseEntity {
     public void addSection(Station upStation, Station downStation, int distance) {
         boolean isUpStationExisted = isExisted(upStation);
         boolean isDownStationExisted = isExisted(downStation);
-
         validate(isUpStationExisted, isDownStationExisted);
 
         if (isUpStationExisted) {
@@ -51,7 +54,6 @@ public class Line extends BaseEntity {
         if (isDownStationExisted) {
             updateDownStation(upStation, downStation, distance);
         }
-
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
@@ -69,18 +71,42 @@ public class Line extends BaseEntity {
     }
 
     private void updateUpStation(Station upStation, Station downStation, int distance) {
-        sections.stream()
-            .filter(it -> it.equalsUpStation(upStation))
-            .findFirst()
-            .ifPresent(it -> it.updateUpStation(downStation, distance));
+		findFirst(section -> section.equalsUpStation(upStation))
+			.ifPresent(it -> it.updateUpStation(downStation, distance));
     }
 
     private void updateDownStation(Station upStation, Station downStation, int distance) {
-        sections.stream()
-            .filter(it -> it.equalsDownStation(downStation))
-            .findFirst()
-            .ifPresent(it -> it.updateDownStation(upStation, distance));
+		findFirst(section -> section.equalsDownStation(downStation))
+			.ifPresent(it -> it.updateDownStation(upStation, distance));
     }
+
+    public void delete(Station station) {
+		validateToDelete();
+        final Optional<Section> maybeUpSection = findFirst(section -> section.equalsUpStation(station));
+		final Optional<Section> maybeDownSection = findFirst(section -> section.equalsDownStation(station));
+        if (maybeUpSection.isPresent() && maybeDownSection.isPresent()) {
+			createSection(maybeUpSection.get(), maybeDownSection.get());
+        }
+        maybeUpSection.ifPresent(it -> sections.remove(it));
+        maybeDownSection.ifPresent(it -> sections.remove(it));
+    }
+
+	private void validateToDelete() {
+		if (sections.size() <= 1) {
+			throw new IllegalArgumentException("노선에서 유일한 구간의 역은 제거할 수 없습니다.");
+		}
+	}
+
+	private Optional<Section> findFirst(Predicate<? super Section> conditional) {
+		return sections.stream().filter(conditional).findFirst();
+	}
+
+	private void createSection(Section sectionToDeleteUpStation, Section sectionToDeleteDownStation) {
+		final Station upStation = sectionToDeleteDownStation.getUpStation();
+		final Station downStation = sectionToDeleteUpStation.getDownStation();
+		final int distance = sectionToDeleteUpStation.getDistance() + sectionToDeleteDownStation.getDistance();
+		sections.add(new Section(this, upStation, downStation, distance));
+	}
 
     public List<Station> getStations() {
         if (sections.isEmpty()) {
@@ -124,18 +150,14 @@ public class Line extends BaseEntity {
     }
 
     private Section findSectionHavingUpStation(Station station) {
-        return sections.stream()
-            .filter(it -> it.equalsUpStation(station))
-            .findFirst()
+        return findFirst(section -> section.equalsUpStation(station))
             .orElseThrow(() -> new IllegalArgumentException(
                 String.format("%s을 상행역으로 갖는 구간이 없습니다.", station.getName())
             ));
     }
 
     private Section findSectionHavingDownStation(Station station) {
-        return sections.stream()
-            .filter(it -> it.equalsDownStation(station))
-            .findFirst()
+        return findFirst(section -> section.equalsDownStation(station))
             .orElseThrow(() -> new IllegalArgumentException(
                 String.format("%s을 하행역으로 갖는 구간이 없습니다.", station.getName())
             ));
