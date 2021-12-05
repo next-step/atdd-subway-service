@@ -20,15 +20,14 @@ class LineTest {
         line.update(updateLine);
 
         // then
-        assertThat(line.sameNameAndColor(updateLine)).isTrue();
+        assertThat(line.isSameNameAndColor(updateLine)).isTrue();
     }
 
     @Test
     @DisplayName("노선 역 조회 순서 검증")
     void getStations_up_down_ordering() {
         // given
-        Section section = Section.of(잠실, 잠실나루, 100);
-        Line line = new Line("2호선", "RED", section);
+        Line line = new Line("2호선", "RED", 잠실, 잠실나루, 100);
 
         // when
         // then

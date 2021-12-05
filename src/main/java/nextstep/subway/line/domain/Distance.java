@@ -1,7 +1,9 @@
 package nextstep.subway.line.domain;
 
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import nextstep.subway.common.exception.ErrorCode;
 import nextstep.subway.common.exception.InvalidParameterException;
 
 @Embeddable
@@ -37,7 +39,24 @@ public class Distance {
 
     private void validGreaterThan(Integer distance) {
         if (this.distance <= distance) {
-            throw InvalidParameterException.DISTANCE_RANGE_EXCEPTION;
+            throw InvalidParameterException.of(ErrorCode.DISTANCE_RANGE);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Distance distance1 = (Distance) o;
+        return distance == distance1.distance;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(distance);
     }
 }

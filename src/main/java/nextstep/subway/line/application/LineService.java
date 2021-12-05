@@ -1,10 +1,9 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.common.exception.InvalidParameterException;
+import nextstep.subway.common.exception.ErrorCode;
 import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -28,7 +27,6 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        validateDuplicateName(request.getName());
         Line persistLine = lineRepository.save(mapLine(request));
 
         return LineResponse.of(persistLine);
@@ -61,8 +59,7 @@ public class LineService {
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
 
-        Section addSection = Section.of(upStation, downStation, request.getDistance());
-        line.addSection(addSection);
+        line.addSection(upStation, downStation, request.getDistance());
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
@@ -74,7 +71,7 @@ public class LineService {
     @Transactional(readOnly = true)
     public Line findLineById(Long id) {
         return lineRepository.findById(id)
-            .orElseThrow(() -> NotFoundException.LINE_NOT_FOUND_EXCEPTION);
+            .orElseThrow(() -> NotFoundException.of(ErrorCode.LINE_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
@@ -83,11 +80,5 @@ public class LineService {
         Station downStation = stationService.findStationById(request.getDownStationId());
 
         return request.toLine(upStation, downStation);
-    }
-
-    private void validateDuplicateName(String name) {
-        if (lineRepository.existsByName(name)) {
-            throw InvalidParameterException.LINE_NAME_DUPLICATE_DATA_EXCEPTION;
-        }
     }
 }

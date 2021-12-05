@@ -30,14 +30,14 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Line(String name, String color, Section section) {
+    public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        addSection(section);
+        addSection(upStation, downStation, distance);
     }
 
-    public void addSection(Section section) {
-        section.toLine(this);
+    public void addSection(Station upStation, Station downStation, int distance) {
+        Section section = Section.of(this, upStation, downStation, distance);
         this.sections.add(section);
     }
 
@@ -62,7 +62,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public boolean sameNameAndColor(Line line) {
+    public boolean isSameNameAndColor(Line line) {
         return Objects.equals(this.color, line.color)
             && Objects.equals(this.name, line.name);
     }

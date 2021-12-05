@@ -1,13 +1,15 @@
 package nextstep.subway.line.domain;
 
+import static nextstep.subway.line.domain.Section.DUMMY_SECTION;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
+import nextstep.subway.common.exception.ErrorCode;
 import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.station.domain.Station;
 
@@ -51,7 +53,7 @@ public class Sections {
         Section sameUpStationSection = findSameUpStationSection(station);
         Section sameDownStationSection = findSameDownStationSection(station);
 
-        if (Objects.nonNull(sameUpStationSection) && Objects.nonNull(sameDownStationSection)) {
+        if (!sameUpStationSection.isDummy() && !sameDownStationSection.isDummy()) {
             sections.add(sameDownStationSection.newOfMerge(sameUpStationSection));
         }
 
@@ -69,9 +71,9 @@ public class Sections {
         Section nextLineStation = sections.stream()
             .filter(section -> section.isSameDownStation(station))
             .findFirst()
-            .orElse(null);
+            .orElse(DUMMY_SECTION);
 
-        if (Objects.nonNull(nextLineStation)) {
+        if (!nextLineStation.isDummy()) {
             finalUpStation = findTopUpStation(nextLineStation.getUpStation());
         }
 
@@ -82,7 +84,7 @@ public class Sections {
         stations.add(station);
         Section nextSection = findSameUpStationSection(station);
 
-        if (Objects.isNull(nextSection)) {
+        if (nextSection.isDummy()) {
             return stations;
         }
 
@@ -100,14 +102,14 @@ public class Sections {
         return sections.stream()
             .filter(section -> section.isSameUpStation(station))
             .findFirst()
-            .orElse(null);
+            .orElse(DUMMY_SECTION);
     }
 
     private Section findSameDownStationSection(Station station) {
         return sections.stream()
             .filter(section -> section.isSameDownStation(station))
             .findFirst()
-            .orElse(null);
+            .orElse(DUMMY_SECTION);
     }
 
     private boolean isDuplicatedSection(Section section) {
@@ -117,23 +119,23 @@ public class Sections {
 
     private void validateDuplicate(Section section) {
         if (isDuplicatedSection(section)) {
-            throw InvalidParameterException.SECTION_EXIST_EXCEPTION;
+            throw InvalidParameterException.of(ErrorCode.SECTION_EXIST);
         }
     }
 
     private void validateAddAblePosition(Section section) {
-        if (isMatchedUpStationAndDownStationInSections(section)) {
-            throw InvalidParameterException.SECTION_ADD_NO_POSITION_EXCEPTION;
+        if (isAddAblePositionInSections(section)) {
+            throw InvalidParameterException.of(ErrorCode.SECTION_ADD_NO_POSITION);
         }
     }
 
     private void validateDeleteAbleSize() {
         if (sections.size() == MIN_LINE_STATION_SIZE) {
-            throw InvalidParameterException.SECTION_ONE_COUNT_CAN_NOT_REMOVE_EXCEPTION;
+            throw InvalidParameterException.of(ErrorCode.SECTION_ONE_COUNT_CAN_NOT_REMOVE);
         }
     }
 
-    private boolean isMatchedUpStationAndDownStationInSections(Section section) {
+    private boolean isAddAblePositionInSections(Section section) {
         List<Station> stations = getStationsInOrder();
         return !sections.isEmpty()
             && stations.stream().noneMatch(section::isSameUpStation)
