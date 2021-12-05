@@ -32,19 +32,18 @@ public class FavoriteService {
     }
 
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
-        Favorite favorite = favoriteRequest.toFavorite();
+        Favorite favorite = new Favorite(
+                findStationById(favoriteRequest.getSource()), findStationById(favoriteRequest.getTarget()));
         favorite.changeMember(findMemberById(loginMember.getId()));
         Favorite savedFavorite = favoriteRepository.save(favorite);
-        return FavoriteResponse.of(savedFavorite,
-                findStationById(savedFavorite.getSourceStationId()),
-                findStationById(savedFavorite.getTargetStationId()));
+        return FavoriteResponse.of(savedFavorite, savedFavorite.getSourceStation(), savedFavorite.getTargetStation());
     }
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         return favoriteRepository.findAllByMember(findMemberById(loginMember.getId()))
                 .stream()
-                .map(it -> FavoriteResponse.of(it, findStationById(it.getSourceStationId()), findStationById(it.getTargetStationId())))
+                .map(it -> FavoriteResponse.of(it, it.getSourceStation(), it.getTargetStation()))
                 .collect(Collectors.toList());
     }
 
