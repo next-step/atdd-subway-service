@@ -1,7 +1,5 @@
 package nextstep.subway.path.ui;
 
-import java.util.NoSuchElementException;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,11 +23,6 @@ public class PathController {
 	@GetMapping
 	public ResponseEntity<PathResponse> findPath(PathRequest pathRequest) {
 		return ResponseEntity.ok(pathService.findPath(pathRequest));
-	}
-
-	@ExceptionHandler(NoSuchElementException.class)
-	public ResponseEntity<Void> handleNoSuchElementException(NoSuchElementException e) {
-		return ResponseEntity.notFound().build();
 	}
 
 	@ExceptionHandler(CanNotFindPathException.class)

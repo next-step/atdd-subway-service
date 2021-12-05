@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.CanNotFindPathException;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathRequest;
@@ -28,8 +29,8 @@ public class PathService {
 
 	@Transactional(readOnly = true)
 	public PathResponse findPath(PathRequest request) {
-		Station source = stationRepository.findById(request.getSource()).orElseThrow(NoSuchElementException::new);
-		Station target = stationRepository.findById(request.getTarget()).orElseThrow(NoSuchElementException::new);
+		Station source = stationRepository.findById(request.getSource()).orElseThrow(CanNotFindPathException::new);
+		Station target = stationRepository.findById(request.getTarget()).orElseThrow(CanNotFindPathException::new);
 		List<Line> lines = lineRepository.findAll();
 
 		PathFinder pathFinder = PathFinder.of(lines);

@@ -75,7 +75,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 		지하철_경로_조회_실패됨(지하철_경로_조회_요청(강남역, 강남역), HttpStatus.BAD_REQUEST);
 		지하철_경로_조회_실패됨(지하철_경로_조회_요청(강남역, 한대앞역), HttpStatus.BAD_REQUEST);
-		지하철_경로_조회_실패됨(지하철_경로_조회_요청(강남역.getId(), UNKNOWN_ID), HttpStatus.NOT_FOUND);
+		지하철_경로_조회_실패됨(지하철_경로_조회_요청(강남역.getId(), UNKNOWN_ID), HttpStatus.BAD_REQUEST);
 	}
 
 	public static ExtractableResponse<Response> 지하철_경로_조회_요청(
