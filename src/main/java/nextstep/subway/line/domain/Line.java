@@ -53,4 +53,8 @@ public class Line extends BaseEntity {
     public List<Section> getSections() {
         return sections;
     }
+
+    public Station findUpStation() {
+        return new Station("강남역");
+    }
 }
