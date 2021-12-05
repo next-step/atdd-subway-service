@@ -4,6 +4,7 @@ import nextstep.subway.BaseEntity;
 
 import javax.persistence.*;
 import java.util.Objects;
+import nextstep.subway.line.domain.Sections;
 
 @Entity
 public class Station extends BaseEntity {

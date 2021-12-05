@@ -1,5 +1,6 @@
 package nextstep.subway.line.acceptance;
 
+import static java.util.stream.Collectors.toList;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -7,6 +8,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -73,8 +75,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철_경로를_조회(StationResponse upStation , StationResponse downStation) {
         return RestAssured
             .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .accept(MediaType.APPLICATION_JSON_VALUE)
             .param("source", upStation.getId())
             .param("target", downStation.getId())
             .when().get("/paths")
@@ -85,12 +85,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 가장_빠른_지하철노선_조회(ExtractableResponse<Response> response, StationResponse... stationResponse) {
+    public void 가장_빠른_지하철노선_조회(ExtractableResponse<Response> response, StationResponse... stationResponse) {
         List<StationResponse> stations = response.jsonPath()
             .getList("stations", StationResponse.class);
-        Integer distance = response.jsonPath().getObject("distance", Integer.class);
-
-        Assertions.assertThat(stations).containsExactly(stationResponse);
+        Double distance = response.jsonPath().getObject("distance", Double.class);
+        List<String> stationsName = stations.stream()
+            .map(StationResponse::getName)
+            .collect(toList());
+        Assertions.assertThat(stationsName).containsExactly("교대역", "강남역", "양재역");
         Assertions.assertThat(distance).isEqualTo(20);
     }
 }

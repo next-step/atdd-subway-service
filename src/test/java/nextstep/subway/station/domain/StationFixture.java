@@ -57,4 +57,16 @@ public class StationFixture {
     public static Station 충무로역() {
         return new Station(14L, "충무로역");
     }
+
+    public static Station 안국역() {
+        return new Station(15L, "안국역");
+    }
+
+    public static Station 사당역() {
+        return new Station(16L, "사당역");
+    }
+
+    public static Station 오이도역() {
+        return new Station(17L, "오이도역");
+    }
 }

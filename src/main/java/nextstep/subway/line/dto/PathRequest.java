@@ -1,8 +1,11 @@
 package nextstep.subway.line.dto;
 
 public class PathRequest {
-    private final Long source;
-    private final Long target;
+    private Long source;
+    private Long target;
+
+    public PathRequest() {
+    }
 
     public PathRequest(Long source, Long target) {
         this.source = source;

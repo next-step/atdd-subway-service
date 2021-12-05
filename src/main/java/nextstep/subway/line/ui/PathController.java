@@ -4,6 +4,7 @@ package nextstep.subway.line.ui;
 import nextstep.subway.line.application.PathService;
 import nextstep.subway.line.dto.PathRequest;
 import nextstep.subway.line.dto.PathResponse;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +22,8 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findStationPath(@RequestParam PathRequest pathRequest) {
-        PathResponse pathResponse = pathService.findStationPath(pathRequest);
+    public ResponseEntity<PathResponse> findStationPath(@RequestParam Long source, @RequestParam Long target ) {
+        PathResponse pathResponse = pathService.findStationPath(new PathRequest(source,target));
         return ResponseEntity.ok().body(pathResponse);
     }
 

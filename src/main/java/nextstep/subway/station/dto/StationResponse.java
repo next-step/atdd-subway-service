@@ -1,5 +1,7 @@
 package nextstep.subway.station.dto;
 
+import java.util.List;
+import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 
 import java.time.LocalDateTime;
