@@ -1,13 +1,12 @@
 package nextstep.subway.line.dto;
 
-import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class SectionRequest {
     private Long upStationId;
     private Long downStationId;

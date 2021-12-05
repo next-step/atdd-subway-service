@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class LineRequest {
     private String name;
     private String color;
