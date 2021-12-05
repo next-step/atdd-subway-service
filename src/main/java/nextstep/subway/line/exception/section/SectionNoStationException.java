@@ -1,22 +1,22 @@
-package nextstep.subway.common.exception.line;
+package nextstep.subway.line.exception.section;
 
 import nextstep.subway.common.exception.ServiceException;
 import org.springframework.http.HttpStatus;
 
 /**
  * packageName : nextstep.subway.common.exception
- * fileName : LineNotFoundException
+ * fileName : SectionNoStationException
  * author : haedoang
  * date : 2021/12/01
- * description : 노선 없음 Custom Exception
+ * description : 구간 생성 예외 클래스
  */
-public class LineNotFoundException extends ServiceException {
+public class SectionNoStationException extends ServiceException {
     private static final long serialVersionUID = 1L;
 
     public static final HttpStatus status = HttpStatus.BAD_REQUEST;
-    public static final String message = "노선이 존재하지 않습니다.";
+    public static final String message = "등록할 수 없는 구간 입니다.";
 
-    public LineNotFoundException() {
+    public SectionNoStationException() {
         super(status, message);
     }
 }

@@ -1,9 +1,9 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.common.exception.section.SectionDuplicateException;
-import nextstep.subway.common.exception.section.SectionNoStationException;
-import nextstep.subway.common.exception.station.StationNotDeleteException;
-import nextstep.subway.common.exception.station.StationNotFoundException;
+import nextstep.subway.line.exception.section.SectionDuplicateException;
+import nextstep.subway.line.exception.section.SectionNoStationException;
+import nextstep.subway.station.exception.StationNotDeleteException;
+import nextstep.subway.station.exception.StationNotFoundException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;

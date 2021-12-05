@@ -1,7 +1,7 @@
 package nextstep.subway.station.domain;
 
-import nextstep.subway.common.exception.station.StationDuplicateException;
-import nextstep.subway.common.exception.station.StationNotFoundException;
+import nextstep.subway.station.exception.StationDuplicateException;
+import nextstep.subway.station.exception.StationNotFoundException;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;

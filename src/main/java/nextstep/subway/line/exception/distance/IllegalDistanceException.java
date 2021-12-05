@@ -1,4 +1,4 @@
-package nextstep.subway.common.exception.distance;
+package nextstep.subway.line.exception.distance;
 
 import nextstep.subway.common.exception.ServiceException;
 import nextstep.subway.line.domain.Distance;

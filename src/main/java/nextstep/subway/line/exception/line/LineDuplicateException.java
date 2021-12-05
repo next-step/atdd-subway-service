@@ -1,22 +1,22 @@
-package nextstep.subway.common.exception.station;
+package nextstep.subway.line.exception.line;
 
 import nextstep.subway.common.exception.ServiceException;
 import org.springframework.http.HttpStatus;
 
 /**
  * packageName : nextstep.subway.common.exception
- * fileName : StationNotFoundException
+ * fileName : LineDuplicateException
  * author : haedoang
  * date : 2021/12/01
- * description : 역 없음 예외 클래스
+ * description : 중복 라인 예외처리
  */
-public class StationNotFoundException extends ServiceException {
+public class LineDuplicateException extends ServiceException {
     private static final long serialVersionUID = 1L;
 
     public static final HttpStatus status = HttpStatus.BAD_REQUEST;
-    public static final String message = "역이 존재하지 않습니다.";
+    public static final String message = "중복된 노선이 존재합니다.";
 
-    public StationNotFoundException() {
+    public LineDuplicateException() {
         super(status, message);
     }
 }

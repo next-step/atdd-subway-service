@@ -1,22 +1,22 @@
-package nextstep.subway.common.exception.line;
+package nextstep.subway.member.exception;
 
 import nextstep.subway.common.exception.ServiceException;
 import org.springframework.http.HttpStatus;
 
 /**
  * packageName : nextstep.subway.common.exception
- * fileName : LineDuplicateException
+ * fileName : MemberNotFoundException
  * author : haedoang
  * date : 2021/12/01
- * description : 중복 라인 예외처리
+ * description : 회원 미존재 예외 클래스
  */
-public class LineDuplicateException extends ServiceException {
+public class MemberNotFoundException extends ServiceException {
     private static final long serialVersionUID = 1L;
 
     public static final HttpStatus status = HttpStatus.BAD_REQUEST;
-    public static final String message = "중복된 노선이 존재합니다.";
+    public static final String message = "회원이 존재하지 않습니다.";
 
-    public LineDuplicateException() {
+    public MemberNotFoundException() {
         super(status, message);
     }
 }

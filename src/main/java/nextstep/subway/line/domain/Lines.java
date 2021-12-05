@@ -2,8 +2,8 @@ package nextstep.subway.line.domain;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import nextstep.subway.common.exception.line.LineDuplicateException;
-import nextstep.subway.common.exception.path.EdgeCreateException;
+import nextstep.subway.line.exception.line.LineDuplicateException;
+import nextstep.subway.path.exception.EdgeCreateException;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;

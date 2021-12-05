@@ -1,9 +1,9 @@
 package nextstep.subway.common;
 
 import nextstep.subway.common.exception.ServiceException;
-import nextstep.subway.common.exception.line.LineNotFoundException;
-import nextstep.subway.common.exception.member.MemberNotFoundException;
-import nextstep.subway.common.exception.station.StationNotFoundException;
+import nextstep.subway.line.exception.line.LineNotFoundException;
+import nextstep.subway.member.exception.MemberNotFoundException;
+import nextstep.subway.station.exception.StationNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

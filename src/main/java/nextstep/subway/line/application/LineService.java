@@ -1,7 +1,7 @@
 package nextstep.subway.line.application;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.subway.common.exception.line.LineNotFoundException;
+import nextstep.subway.line.exception.line.LineNotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;

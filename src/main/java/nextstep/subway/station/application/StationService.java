@@ -1,7 +1,7 @@
 package nextstep.subway.station.application;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.subway.common.exception.station.StationNotFoundException;
+import nextstep.subway.station.exception.StationNotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;

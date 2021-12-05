@@ -1,7 +1,7 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.common.exception.path.PathBeginIsEndException;
-import nextstep.subway.common.exception.path.PathNotFoundException;
+import nextstep.subway.path.exception.PathBeginIsEndException;
+import nextstep.subway.path.exception.PathNotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.dto.PathResponse;

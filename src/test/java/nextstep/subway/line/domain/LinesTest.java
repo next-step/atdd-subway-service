@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.common.exception.line.LineDuplicateException;
-import nextstep.subway.common.exception.path.EdgeCreateException;
+import nextstep.subway.line.exception.line.LineDuplicateException;
+import nextstep.subway.path.exception.EdgeCreateException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 import org.jgrapht.graph.DefaultWeightedEdge;
