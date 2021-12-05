@@ -7,6 +7,8 @@ import javax.persistence.*;
 @Entity
 public class Section {
 
+    public static final DummySection DUMMY_SECTION = new DummySection();
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -76,5 +78,17 @@ public class Section {
 
     public boolean isSameDownStation(Station station) {
         return downStation.equals(station);
+    }
+
+    public boolean isDummy() {
+        return false;
+    }
+
+    private static class DummySection extends Section {
+
+        @Override
+        public boolean isDummy() {
+            return true;
+        }
     }
 }
