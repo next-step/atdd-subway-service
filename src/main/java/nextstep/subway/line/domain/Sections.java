@@ -62,6 +62,31 @@ public class Sections {
 			.ifPresent(it -> it.updateDownStation(upStation, distance));
 	}
 
+	public void delete(Station station) {
+		validateToDelete();
+		final Optional<Section> maybeUpSection = findFirst(section -> section.equalsUpStation(station));
+		final Optional<Section> maybeDownSection = findFirst(section -> section.equalsDownStation(station));
+		if (maybeUpSection.isPresent() && maybeDownSection.isPresent()) {
+			createSection(maybeUpSection.get(), maybeDownSection.get());
+		}
+		maybeUpSection.ifPresent(it -> sections.remove(it));
+		maybeDownSection.ifPresent(it -> sections.remove(it));
+	}
+
+	private void validateToDelete() {
+		if (sections.size() <= 1) {
+			throw new IllegalArgumentException("노선에서 유일한 구간의 역은 제거할 수 없습니다.");
+		}
+	}
+
+	private void createSection(Section sectionToDeleteUpStation, Section sectionToDeleteDownStation) {
+		final Line line = sectionToDeleteUpStation.getLine();
+		final Station upStation = sectionToDeleteDownStation.getUpStation();
+		final Station downStation = sectionToDeleteUpStation.getDownStation();
+		final int distance = sectionToDeleteUpStation.getDistance() + sectionToDeleteDownStation.getDistance();
+		sections.add(new Section(line, upStation, downStation, distance));
+	}
+
 	public List<Station> getStations() {
 		if (sections.isEmpty()) {
 			return Collections.emptyList();

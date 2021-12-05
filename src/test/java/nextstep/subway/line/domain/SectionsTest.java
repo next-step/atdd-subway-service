@@ -79,6 +79,55 @@ class SectionsTest {
 			.isThrownBy(() -> sections.add(new Section(신분당선, 신분당선아닌역1, 신분당선아닌역2, 10)));
 	}
 
+	@DisplayName("구간제거/상행종착역")
+	@Test
+	void delete_upTerminal() {
+		final Sections sections = new Sections();
+		sections.add(new Section(신분당선, 강남역, 양재역, 4));
+		sections.add(new Section(신분당선, 양재역, 판교역, 6));
+		sections.add(new Section(신분당선, 판교역, 광교역, 3));
+
+		sections.delete(강남역);
+
+		assertThat(sections.getStations()).containsExactly(양재역, 판교역, 광교역);
+	}
+
+	@DisplayName("구간제거/하행종착역")
+	@Test
+	void delete_downTerminal() {
+		final Sections sections = new Sections();
+		sections.add(new Section(신분당선, 강남역, 양재역, 4));
+		sections.add(new Section(신분당선, 양재역, 판교역, 6));
+		sections.add(new Section(신분당선, 판교역, 광교역, 3));
+
+		sections.delete(광교역);
+
+		assertThat(sections.getStations()).containsExactly(강남역, 양재역, 판교역);
+	}
+
+	@DisplayName("구간제거/구간사이역")
+	@Test
+	void delete_between() {
+		final Sections sections = new Sections();
+		sections.add(new Section(신분당선, 강남역, 양재역, 4));
+		sections.add(new Section(신분당선, 양재역, 판교역, 6));
+		sections.add(new Section(신분당선, 판교역, 광교역, 3));
+
+		sections.delete(양재역);
+
+		assertThat(sections.getStations()).containsExactly(강남역, 판교역, 광교역);
+	}
+
+	@DisplayName("구간제거/유일한 구간의 역 제거시 실패")
+	@Test
+	void delete_the_only_1_remaining() {
+		final Sections sections = new Sections();
+		sections.add(new Section(신분당선, 강남역, 양재역, 4));
+
+		assertThatExceptionOfType(IllegalArgumentException.class)
+			.isThrownBy(() -> sections.delete(강남역));
+	}
+
 	@DisplayName("상행->하행 순으로 정렬된 모든 역의 목록 조회")
 	@Test
 	void getStations() {
