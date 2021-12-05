@@ -161,8 +161,8 @@ public class Line extends BaseEntity {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            sections.addSection(Section.of(this, newUpStation, newDownStation, newDistance));
+            Distance newDistance = upLineStation.get().getDistance().add(downLineStation.get().getDistance());
+            sections.addSection(Section.of(this, newUpStation, newDownStation, newDistance.getDistance()));
         }
 
         upLineStation.ifPresent(it -> getSections().remove(it));

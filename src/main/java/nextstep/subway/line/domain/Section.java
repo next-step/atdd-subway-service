@@ -64,22 +64,16 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
-        return distance.getDistance();
+    public Distance getDistance() {
+        return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance.getDistance() <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+    public void updateUpStation(Station station, Distance newDistance) {
         this.upStation = station;
         this.distance.subtract(newDistance);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance.getDistance() <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+    public void updateDownStation(Station station, Distance newDistance) {
         this.downStation = station;
         this.distance.subtract(newDistance);
     }
