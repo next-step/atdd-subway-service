@@ -20,6 +20,11 @@ public class Station extends BaseEntity {
         this.name = name;
     }
 
+    public Station(final long id, final String name) {
+        this(name);
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }
@@ -40,5 +45,10 @@ public class Station extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }
