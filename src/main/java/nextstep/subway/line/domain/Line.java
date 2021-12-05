@@ -46,7 +46,7 @@ public class Line extends BaseEntity {
     public void addSection(Station upStation, Station downStation, int distance) {
         boolean isUpStationExisted = isExisted(upStation);
         boolean isDownStationExisted = isExisted(downStation);
-        validate(isUpStationExisted, isDownStationExisted);
+        validateToAdd(isUpStationExisted, isDownStationExisted);
 
         if (isUpStationExisted) {
             updateUpStation(upStation, downStation, distance);
@@ -61,7 +61,7 @@ public class Line extends BaseEntity {
         return getStations().stream().anyMatch(it -> it == station);
     }
 
-    private void validate(boolean isUpStationExisted, boolean isDownStationExisted) {
+    private void validateToAdd(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
             throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
