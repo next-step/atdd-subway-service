@@ -1,6 +1,8 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.exception.InputDataErrorCode;
+import nextstep.subway.exception.InputDataErrorException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -159,18 +161,33 @@ public class Line extends BaseEntity {
         List<Station> orderedStations = new ArrayList<>();
 
         Section foundSection = findFirstSection();
+        Station lastStation = findLastStation();
         orderedStations.add(foundSection.getUpStation());
-
-        while (hasFoundSection(foundSection)) {
-            orderedStations.add(foundSection.getDownStation());
+        while (!isLastSection(foundSection, lastStation)) {
             Section finalFoundSection = foundSection;
+            orderedStations.add(finalFoundSection.getDownStation());
             foundSection = this.sections.stream()
                     .filter(it -> it.getUpStation() == finalFoundSection.getDownStation())
                     .findFirst()
-                    .orElse(null);
+                    .orElseThrow(() -> new InputDataErrorException(InputDataErrorCode.THERE_IS_NOT_SEARCHED_SECTION));
         }
+        orderedStations.add(lastStation);
         return orderedStations;
     }
+
+    private Station findLastStation() {
+        List<Station> upStations = findUpStations();
+        List<Station> downStations = findDownStations();
+        return downStations.stream()
+                .filter(it -> !upStations.contains(it))
+                .findFirst()
+                .orElseThrow(() -> new InputDataErrorException(InputDataErrorCode.THERE_IS_NOT_SEARCHED_STATION));
+    }
+
+    private boolean isLastSection(Section foundSection, Station lastStation) {
+        return foundSection.getDownStation().equals(lastStation);
+    }
+
 
     private boolean hasFoundSection(Section foundSection) {
         return Optional.ofNullable(foundSection).isPresent() && Optional.ofNullable(foundSection.getDownStation()).isPresent();
@@ -181,7 +198,7 @@ public class Line extends BaseEntity {
         return this.sections.stream()
                 .filter(it -> it.getUpStation() == firstStation)
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new InputDataErrorException(InputDataErrorCode.THERE_IS_NOT_SEARCHED_SECTION));
     }
 
     private Station findFirstStation() {
@@ -190,7 +207,7 @@ public class Line extends BaseEntity {
         return upStations.stream()
                 .filter(it -> !downStations.contains(it))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new InputDataErrorException(InputDataErrorCode.THERE_IS_NOT_SEARCHED_STATION));
     }
 
     private List<Station> findUpStations() {
