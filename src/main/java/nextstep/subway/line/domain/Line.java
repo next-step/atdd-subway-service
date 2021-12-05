@@ -9,7 +9,6 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Entity
@@ -83,31 +82,54 @@ public class Line extends BaseEntity {
 
     public void removeStation(Station station) {
         checkValidRemoveStation();
-
-        Optional<Section> upLineStation = this.getSections().stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = this.getSections().stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
-
-        changeRemoveSection(upLineStation, downLineStation);
-
-        upLineStation.ifPresent(it -> this.getSections().remove(it));
-        downLineStation.ifPresent(it -> this.getSections().remove(it));
+        changeRemoveSection(station);
     }
 
-    private void changeRemoveSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
-        if (hasBothUpDownStation(upLineStation, downLineStation)) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+    private boolean checkExistUpSection(Station station) {
+        return this.sections.stream()
+                .anyMatch(it -> it.getUpStation() == station);
+    }
+
+    private boolean checkExistDownSection(Station station) {
+        return this.sections.stream()
+                .anyMatch(it -> it.getDownStation() == station);
+    }
+
+    private Section findUpSection(Station station) {
+        return this.sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst()
+                .orElseThrow(() -> new InputDataErrorException(InputDataErrorCode.THERE_IS_NOT_SEARCHED_SECTION));
+    }
+
+    private Section findDownSection(Station station) {
+        return this.sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst()
+                .orElseThrow(() -> new InputDataErrorException(InputDataErrorCode.THERE_IS_NOT_SEARCHED_SECTION));
+    }
+
+    private void changeRemoveSection(Station station) {
+
+        boolean isExistUpStation = checkExistUpSection(station);
+        boolean isExistDownStation = checkExistDownSection(station);
+
+        if (isMiddleStation(isExistUpStation, isExistDownStation)) {
+            Section upLineStation = findUpSection(station);
+            Section downLineStation = findDownSection(station);
+            Station newUpStation = downLineStation.getUpStation();
+            Station newDownStation = upLineStation.getDownStation();
+            int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
+
             this.getSections().add(new Section(this, newUpStation, newDownStation, newDistance));
+
+            this.getSections().remove(upLineStation);
+            this.getSections().remove(downLineStation);
         }
     }
 
-    private boolean hasBothUpDownStation(Optional<Section> upLineStation, Optional<Section> downLineStation) {
-        return upLineStation.isPresent() && downLineStation.isPresent();
+    private boolean isMiddleStation(boolean isExistUpStation, boolean isExistDownStation) {
+        return isExistUpStation && isExistDownStation;
     }
 
     private void checkValidRemoveStation() {
@@ -139,20 +161,16 @@ public class Line extends BaseEntity {
     }
 
     private void addUpdatedDownStation(Station upStation, Station downStation, int distance) {
-        this.getSections().stream()
-                .filter(it -> it.getDownStation() == downStation)
-                .findFirst()
-                .ifPresent(it -> it.updateDownStation(upStation, distance));
-
+        if (checkExistDownSection(downStation)) {
+            findDownSection(downStation).updateDownStation(upStation, distance);
+        }
         this.getSections().add(new Section(this, upStation, downStation, distance));
     }
 
     private void addUpdatedUpStation(Station upStation, Station downStation, int distance) {
-        this.getSections().stream()
-                .filter(it -> it.getUpStation() == upStation)
-                .findFirst()
-                .ifPresent(it -> it.updateUpStation(downStation, distance));
-
+        if (checkExistUpSection(upStation)) {
+            findUpSection(upStation).updateUpStation(downStation, distance);
+        }
         this.getSections().add(new Section(this, upStation, downStation, distance));
     }
 
@@ -186,11 +204,6 @@ public class Line extends BaseEntity {
 
     private boolean isLastSection(Section foundSection, Station lastStation) {
         return foundSection.getDownStation().equals(lastStation);
-    }
-
-
-    private boolean hasFoundSection(Section foundSection) {
-        return Optional.ofNullable(foundSection).isPresent() && Optional.ofNullable(foundSection.getDownStation()).isPresent();
     }
 
     private Section findFirstSection() {
@@ -240,6 +253,6 @@ public class Line extends BaseEntity {
     private boolean hasSameUpDownStation(List<Station> stations, Station upStation, Station downStation) {
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
-        return isUpStationExisted && isDownStationExisted;
+        return isMiddleStation(isUpStationExisted, isDownStationExisted);
     }
 }
