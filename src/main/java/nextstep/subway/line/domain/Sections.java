@@ -26,7 +26,7 @@ public class Sections {
         return sections;
     }
 
-    public Optional<Section> getDownStationMathSection(final Station downStation) {
+    public Optional<Section> getDownStationMatchSection(final Station downStation) {
         return sections.stream()
             .filter(it -> it.getDownStation() == downStation)
             .findFirst();
@@ -42,7 +42,7 @@ public class Sections {
         validateMinimumSectionSize();
 
         Optional<Section> upLineStation = getUpStationMatchSection(station);
-        Optional<Section> downLineStation = getDownStationMathSection(station);
+        Optional<Section> downLineStation = getDownStationMatchSection(station);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
@@ -66,8 +66,7 @@ public class Sections {
     public Station findUpStation() {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
-            Optional<Section> nextLineStation = getDownStationMathSection(downStation
-            );
+            Optional<Section> nextLineStation = getDownStationMatchSection(downStation);
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -132,7 +131,7 @@ public class Sections {
 
             sections.add(section);
         } else if (isDownStationExisted) {
-            getDownStationMathSection(section.getDownStation())
+            getDownStationMatchSection(section.getDownStation())
                 .ifPresent(
                     it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
 
