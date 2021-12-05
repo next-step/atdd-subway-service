@@ -30,25 +30,42 @@ public class PathService {
         Station sourceStation = findStationById(sourceStationId);
         Station targetStation = findStationById(targetStationId);
 
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(
-            DefaultWeightedEdge.class);
-        for (Line line : lines) {
-            for (Station station : line.getStations()) {
-                graph.addVertex(station);
-            }
-
-            for (Section section : line.getSections().getSections()) {
-                graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
-                    section.getDistance());
-            }
-
-        }
-
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        GraphPath path = dijkstraShortestPath.getPath(sourceStation, targetStation);
+        GraphPath<Station, DefaultWeightedEdge> path = getShortestPath(lines, sourceStation,
+            targetStation);
         List<Station> shortestPath = path.getVertexList();
 
         return new PathResponse(StationResponse.of(shortestPath), (int) path.getWeight());
+    }
+
+    private GraphPath<Station, DefaultWeightedEdge> getShortestPath(List<Line> lines,
+        Station sourceStation, Station targetStation) {
+
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
+            DefaultWeightedEdge.class);
+
+        for (Line line : lines) {
+            addStationsToVertex(graph, line);
+            addSectionsToEdgeWithWeight(graph, line);
+        }
+
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath =
+            new DijkstraShortestPath<>(graph);
+        return dijkstraShortestPath.getPath(sourceStation, targetStation);
+    }
+
+    private void addSectionsToEdgeWithWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph,
+        Line line) {
+        for (Section section : line.getSections().getSections()) {
+            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
+                section.getDistance());
+        }
+    }
+
+    private void addStationsToVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph,
+        Line line) {
+        for (Station station : line.getStations()) {
+            graph.addVertex(station);
+        }
     }
 
     public Station findStationById(Long id) {
