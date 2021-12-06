@@ -82,7 +82,7 @@ npm run dev
   - [x] 삭제
 - [ ] 즐겨 찾기 기능
   - [ ] 조회
-  - [ ] 생성
+  - [x] 생성
   - [ ] 삭제
 
 ## ✏️ Code Review Process
