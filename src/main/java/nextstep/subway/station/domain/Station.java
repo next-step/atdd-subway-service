@@ -1,9 +1,12 @@
 package nextstep.subway.station.domain;
 
-import nextstep.subway.BaseEntity;
-
-import javax.persistence.*;
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import nextstep.subway.BaseEntity;
 
 @Entity
 public class Station extends BaseEntity {
@@ -13,7 +16,7 @@ public class Station extends BaseEntity {
     @Column(unique = true)
     private String name;
 
-    public Station() {
+    protected Station() {
     }
 
     public Station(String name) {
@@ -28,17 +31,28 @@ public class Station extends BaseEntity {
         return name;
     }
 
+    public boolean equalsName(Station other) {
+        return name.equals(other.name);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Station station = (Station) o;
-        return Objects.equals(id, station.id) &&
-                Objects.equals(name, station.name);
+        return Objects.equals(id, station.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Station{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            '}';
     }
 }
