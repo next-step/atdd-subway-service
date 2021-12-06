@@ -77,4 +77,8 @@ public class Section {
     public boolean equalsDownStation(Station downStation) {
         return this.downStation.equals(downStation);
     }
+
+    public boolean isLinkStation(Section currentSection) {
+        return this.upStation.equals(currentSection.getDownStation());
+    }
 }

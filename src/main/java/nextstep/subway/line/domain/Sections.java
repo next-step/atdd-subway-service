@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
@@ -19,41 +20,54 @@ public class Sections {
 
     public List<Station> getSortedStations() {
         if (sections.isEmpty()) {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
+        Set<Station> stations = new LinkedHashSet<>();
+        Section currentSection = findFirstSection();
+        Section endSection = findLastSection();
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        while (!currentSection.equals(endSection)) {
+            addStations(stations, currentSection);
+            currentSection = findNextSection(currentSection);
         }
+        addStations(stations, endSection);
 
-        return stations;
+        return new ArrayList<>(stations);
     }
 
-    private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-        return downStation;
+    private void addStations(Set<Station> stations, Section currentSection) {
+        stations.add(currentSection.getUpStation());
+        stations.add(currentSection.getDownStation());
+    }
+
+    private Section findFirstSection() {
+        Set<Station> downStations = sections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toCollection(HashSet::new));
+
+        return sections.stream()
+                .filter(section -> !downStations.contains(section.getUpStation()))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+    }
+
+    private Section findLastSection() {
+        Set<Station> upStations = sections.stream()
+                .map(Section::getUpStation)
+                .collect(Collectors.toCollection(HashSet::new));
+
+        return sections.stream()
+                .filter(section -> !upStations.contains(section.getDownStation()))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
+    }
+
+    private Section findNextSection(Section currentSection) {
+        return sections.stream()
+                .filter(section -> section.isLinkStation(currentSection))
+                .findFirst()
+                .orElseThrow(RuntimeException::new);
     }
 
     public List<Section> getSections() {
@@ -110,5 +124,29 @@ public class Sections {
         if (duplicateUpStation && duplicateDownStation) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
+    }
+
+
+    public void remove(Station targetStation) {
+        if (sections.size() <= 1) {
+            throw new RuntimeException();
+        }
+
+        Optional<Section> upLineStation = sections.stream()
+                .filter(it -> it.equalsUpStation(targetStation))
+                .findFirst();
+        Optional<Section> downLineStation = sections.stream()
+                .filter(it -> it.equalsDownStation(targetStation))
+                .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            sections.add(new Section(upLineStation.get().getLine(), newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
     }
 }
