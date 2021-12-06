@@ -5,15 +5,15 @@ import static nextstep.subway.station.StationAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -75,17 +75,18 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 		지하철_노선에_지하철역_순서_정렬됨(지하철_노선_조회_요청(신분당선), Arrays.asList(강남역, 정자역, 광교역));
 	}
 
-	public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation,
-		StationResponse downStation, int distance) {
+	public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(
+		LineResponse line,
+		StationResponse upStation,
+		StationResponse downStation,
+		int distance
+	) {
 		SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 
-		return RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(sectionRequest)
-			.when().post("/lines/{lineId}/sections", line.getId())
-			.then().log().all()
-			.extract();
+		Map<String, Object> pathParams = new HashMap<>();
+		pathParams.put("lineId", line.getId());
+
+		return post("/lines/{lineId}/sections", pathParams, sectionRequest);
 	}
 
 	public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록되어_있음(
@@ -120,11 +121,13 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 	}
 
 	public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
-		return RestAssured
-			.given().log().all()
-			.when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
-			.then().log().all()
-			.extract();
+		Map<String, Object> pathParams = new HashMap<>();
+		pathParams.put("lineId", line.getId());
+
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("stationId", station.getId());
+
+		return delete("/lines/{lineId}/sections", pathParams, queryParams);
 	}
 
 	public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> response) {

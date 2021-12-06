@@ -7,14 +7,15 @@ import static nextstep.subway.station.StationFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -161,26 +162,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		StationResponse sourceStation,
 		StationResponse targetStation
 	) {
-		return RestAssured
-			.given().log().all()
-			.queryParam("source", sourceStation.getId())
-			.queryParam("target", targetStation.getId())
-			.when().get("/paths")
-			.then().log().all()
-			.extract();
+		return 지하철_경로_조회_요청(sourceStation.getId(), targetStation.getId());
 	}
 
 	public static ExtractableResponse<Response> 지하철_경로_조회_요청(
 		Long sourceStationId,
 		Long targetStationId
 	) {
-		return RestAssured
-			.given().log().all()
-			.queryParam("source", sourceStationId)
-			.queryParam("target", targetStationId)
-			.when().get("/paths")
-			.then().log().all()
-			.extract();
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("source", sourceStationId);
+		queryParams.put("target", targetStationId);
+
+		return get("/paths", queryParams);
 	}
 
 	private void 지하철_경로_조회됨(ExtractableResponse<Response> response) {
