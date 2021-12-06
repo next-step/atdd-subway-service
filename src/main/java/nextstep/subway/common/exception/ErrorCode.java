@@ -10,6 +10,9 @@ public enum ErrorCode {
     LINE_NAME_DUPLICATE_DATA("노선 이름이 이미 존재합니다."),
     SECTION_NOT_FOUND("지하철 역을 찾을 수 없습니다."),
     LINE_NOT_FOUND("노선을 찾을 수 없습니다."),
+    PATH_NOT_CONNECT("조회 역이 연결되어 있지 않습니다."),
+    PATH_IN_OUT_SAME("출발지 도착지가 같을 수 없습니다."),
+    PATH_IN_OUT_NOT_FOUND("조회역을 찾을 수 없습니다."),
     ;
 
     private final String errorMessage;

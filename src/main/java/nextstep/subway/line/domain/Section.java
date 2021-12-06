@@ -80,6 +80,14 @@ public class Section {
         return false;
     }
 
+    public Long getUpStationId() {
+        return upStation.getId();
+    }
+
+    public Long getDownStationId() {
+        return downStation.getId();
+    }
+
     private static class DummySection extends Section {
 
         @Override

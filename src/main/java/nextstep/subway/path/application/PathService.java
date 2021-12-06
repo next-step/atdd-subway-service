@@ -8,9 +8,11 @@ import org.springframework.stereotype.Service;
 public class PathService {
 
     private final LineRepository lineRepository;
+    private final PathFactory pathFactory;
 
-    public PathService(LineRepository lineRepository) {
+    public PathService(LineRepository lineRepository, PathFactory pathSearch) {
         this.lineRepository = lineRepository;
+        this.pathFactory = pathSearch;
     }
 
     public PathResponse getShortestPath(Long source, Long target) {

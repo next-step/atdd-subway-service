@@ -20,7 +20,7 @@ public class Sections {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "line", cascade = {CascadeType.PERSIST,
         CascadeType.MERGE}, orphanRemoval = true)
-    private final List<Section> sections = new ArrayList<>();
+    private List<Section> sections = new ArrayList<>();
 
     protected Sections() {
     }
@@ -59,6 +59,10 @@ public class Sections {
 
         sections.remove(sameDownStationSection);
         sections.remove(sameUpStationSection);
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 
     private Station findTopUpStation() {

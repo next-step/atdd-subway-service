@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import java.util.Collections;
 import java.util.Objects;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
@@ -47,7 +48,7 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getStations() {
-        return sections.getStationsInOrder();
+        return Collections.unmodifiableList(sections.getStationsInOrder());
     }
 
     public Long getId() {
@@ -71,4 +72,8 @@ public class Line extends BaseEntity {
         sections.remove(station);
     }
 
+
+    public List<Section> getSections() {
+        return sections.getSections();
+    }
 }
