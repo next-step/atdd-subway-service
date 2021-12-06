@@ -30,6 +30,19 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 		로그인_됨(response);
 	}
 
+	@DisplayName("아이디와 비밀번호가 다를 경우 로그인에 실패한다.")
+	@Test
+	void loginFail() {
+		// given
+		회원_생성되어_있음(윤준석);
+
+		// when
+		ExtractableResponse<Response> response = 로그인_요청(윤준석.getEmail(), "wrong-password");
+
+		// then
+		로그인_실패됨(response);
+	}
+
 	private ExtractableResponse<Response> 로그인_요청(String email, String password) {
 		TokenRequest tokenRequest = new TokenRequest(email, password);
 		return post("/login/token", tokenRequest);
@@ -40,6 +53,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
 		TokenResponse token = response.as(TokenResponse.class);
 		assertThat(token).isNotNull();
+	}
+
+	private void 로그인_실패됨(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
 	}
 
 	@DisplayName("Bearer Auth")
