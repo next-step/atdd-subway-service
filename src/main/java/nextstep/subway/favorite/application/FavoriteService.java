@@ -5,35 +5,33 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
 public class FavoriteService {
     private StationService stationService;
     private FavoriteRepository favoriteRepository;
-    private MemberRepository memberRepository;
+    private MemberService memberService;
 
-    public FavoriteService(StationService stationService, FavoriteRepository favoriteRepository, MemberRepository memberRepository) {
+    public FavoriteService(StationService stationService, FavoriteRepository favoriteRepository, MemberService memberService) {
         this.stationService = stationService;
         this.favoriteRepository = favoriteRepository;
-        this.memberRepository = memberRepository;
+        this.memberService = memberService;
     }
 
     public FavoriteResponse create(LoginMember loginMember, FavoriteRequest favoriteRequest) {
         Station sourceStation = stationService.findById(Long.valueOf(favoriteRequest.getSource()));
         Station targetStation = stationService.findById(Long.valueOf(favoriteRequest.getTarget()));
 
-        Member member =  memberRepository.findById(loginMember.getId())
-                                            .orElseThrow(() -> new NoSuchElementException("조회되는 맴버가 없습니다."));
+        Member member =  memberService.findMemberEntity(loginMember.getId());
 
         Favorite createdFavorite = favoriteRepository.save(Favorite.of(sourceStation, targetStation, member));
         
@@ -41,8 +39,7 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findByMember(LoginMember loginMember) {
-        Member member =  memberRepository.findById(loginMember.getId())
-                                            .orElseThrow(() -> new NoSuchElementException("조회되는 맴버가 없습니다."));
+        Member member =  memberService.findMemberEntity(loginMember.getId());
 
         return favoriteRepository.findByMember(member).stream()
                                                         .map(FavoriteResponse::of)

@@ -20,10 +20,12 @@ import org.opentest4j.MultipleFailuresError;
 
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathStationDto;
+import nextstep.subway.policy.domain.Price;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 
@@ -51,6 +53,10 @@ public class PathServiceTest {
     private Section 교대_양재_구간;
     private Section 역삼_선릉_구간;
 
+    private Line 이호선;
+    private Line 삼호선;
+    private Line 신분당선;
+
     @BeforeEach
     public void setUp() {
         // given
@@ -60,10 +66,14 @@ public class PathServiceTest {
         역삼역 = new Station(4L, "역삼역");
         선릉역 = new Station(5L, "선릉역");
 
-        강남_양재_구간 = new Section(null, 강남역, 양재역, Distance.of(3));
-        교대_강남_구간 = new Section(null, 교대역, 강남역, Distance.of(1));
-        교대_양재_구간 = new Section(null, 교대역, 양재역, Distance.of(5));
-        역삼_선릉_구간 = new Section(null, 역삼역, 선릉역, Distance.of(10));
+        신분당선 = new Line("신분당선", "red lighten-1", 강남역, 양재역, Distance.of(10));
+        이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, Distance.of(10));
+        삼호선 = new Line("3호선", "orange darken-1", 교대역, 양재역, Distance.of(10));
+
+        강남_양재_구간 = new Section(신분당선, 강남역, 양재역, Distance.of(3));
+        교대_강남_구간 = new Section(이호선, 교대역, 강남역, Distance.of(1));
+        교대_양재_구간 = new Section(삼호선, 교대역, 양재역, Distance.of(5));
+        역삼_선릉_구간 = new Section(이호선, 역삼역, 선릉역, Distance.of(10));
     }
 
     @DisplayName("최단 경로를 조회한다.")
@@ -123,7 +133,63 @@ public class PathServiceTest {
         최단경로를_조회할수없을경우_에러가발생됨(강남역, 역삼역);
     }
 
-    private PathResponse 최단경로를_조회한다(Station source, Station target ) {
+    @DisplayName("최단 경로와 어린이 기준 운임비를 조회한다.")
+    @Test
+    void search_shortestPathWithChildFare() {
+        // given
+        강남양재구간_교대강남구간_교대양재구간이등록됨();
+        int 나이 = 7;
+
+        // when
+        PathResponse pathResponse = 최단경로_운임비를_조회한다(교대역, 양재역, 나이);
+
+        // then
+        최단경로_운임비가_조회됨(pathResponse, Price.of(450));
+    }
+
+    @DisplayName("최단 경로와 청소년이 기준 운임비를 조회한다.")
+    @Test
+    void search_shortestPathWithYouthFare() {
+        // given
+        강남양재구간_교대강남구간_교대양재구간이등록됨();
+        int 나이 = 15;
+
+        // when
+        PathResponse pathResponse = 최단경로_운임비를_조회한다(교대역, 양재역, 나이);
+
+        // then
+        최단경로_운임비가_조회됨(pathResponse, Price.of(720));
+    }
+
+    @DisplayName("최단 경로와 성년이 기준 운임비를 조회한다.")
+    @Test
+    void search_shortestPathWithNormalFare() {
+        // given
+        강남양재구간_교대강남구간_교대양재구간이등록됨();
+        int 나이 = 25;
+
+        // when
+        PathResponse pathResponse = 최단경로_운임비를_조회한다(교대역, 양재역, 나이);
+
+        // then
+        최단경로_운임비가_조회됨(pathResponse, Price.of(1250));
+    }
+
+    private PathResponse 최단경로_운임비를_조회한다(Station source, Station target, int age) {
+        return pathService.searchShortestPath(source.getId(), target.getId(), age);
+    }
+
+    private void 최단경로_운임비가_조회됨(PathResponse pathResponse, Price fare) throws MultipleFailuresError {
+        assertAll(
+            () -> Assertions.assertThat(pathResponse.getStations()).isEqualTo(List.of(PathStationDto.of(교대역),
+                                                                                PathStationDto.of(강남역),
+                                                                                PathStationDto.of(양재역))),
+            () -> Assertions.assertThat(pathResponse.getDistance()).isEqualTo(4),
+            () -> Assertions.assertThat(pathResponse.getFare()).isEqualTo(fare.value())
+        );
+    }
+
+    private PathResponse 최단경로를_조회한다(Station source, Station target) {
         return pathService.searchShortestPath(source.getId(), target.getId());
     }
 

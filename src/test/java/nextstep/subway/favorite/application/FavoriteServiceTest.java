@@ -19,6 +19,7 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.application.StationService;
@@ -31,7 +32,7 @@ public class FavoriteServiceTest extends AcceptanceTest  {
     StationService stationService; 
     
     @Mock
-    MemberRepository memberRepository;
+    MemberService memberService;
 
     @Mock
     FavoriteRepository favoriteRepository;
@@ -83,6 +84,8 @@ public class FavoriteServiceTest extends AcceptanceTest  {
     @Test
     void exception_createFavorite_notRegistedMember() {
         // when
+        when(memberService.findMemberEntity(loginMember.getId())).thenThrow(NoSuchElementException.class);
+
         // then
         Assertions.assertThatExceptionOfType(NoSuchElementException.class) 
                     .isThrownBy(() -> favoriteService.create(loginMember, favoriteRequest));
@@ -115,6 +118,8 @@ public class FavoriteServiceTest extends AcceptanceTest  {
     @Test
     void exception_searchFavoriteByMember_notRegistedMember() {
         // given
+        when(memberService.findMemberEntity(loginMember.getId())).thenThrow(NoSuchElementException.class);
+
         // when
         Assertions.assertThatExceptionOfType(NoSuchElementException.class) 
                     .isThrownBy(() -> favoriteService.findByMember(loginMember));
@@ -135,6 +140,6 @@ public class FavoriteServiceTest extends AcceptanceTest  {
     }
 
     private void 맴버_등록됨(LoginMember loginMember) {
-        when(memberRepository.findById(loginMember.getId())).thenReturn(Optional.of(expectedRegisteMember));
+        when(memberService.findMemberEntity(loginMember.getId())).thenReturn(expectedRegisteMember);
     }
 }

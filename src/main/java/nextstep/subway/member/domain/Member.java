@@ -17,12 +17,12 @@ public class Member extends BaseEntity {
     private Long id;
     private String email;
     private String password;
-    private Integer age;
+    private int age;
 
     public Member() {
     }
 
-    public Member(String email, String password, Integer age) {
+    public Member(String email, String password, int age) {
         this.email = email;
         this.password = password;
         this.age = age;

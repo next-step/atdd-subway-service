@@ -10,10 +10,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathAnalysisKey;
 import nextstep.subway.path.dto.ShortestPathInfo;
+import nextstep.subway.policy.domain.Price;
 import nextstep.subway.station.domain.Station;
 
 @DisplayName("경로분석 관련 기능")
@@ -67,5 +69,26 @@ public class PathAnalysisTest {
         // then
         Assertions.assertThatExceptionOfType(IllegalArgumentException.class)
                     .isThrownBy(() -> PathAnalysis.of(sections));
+    }
+
+    @DisplayName("노선이 다르나 거리가 같은 구간에대해 최단거리는 노선의 추가요금이 저렵한 구간을 선택하여 조회된다.")
+    @Test
+    void challenge_shortestPath() {
+        // given
+        Line 신분당선 = new Line("신분당선", "bg-red-600", 강남역, 양재역, Distance.of(10), Price.of(220));
+        Line 이호선 = new Line("이호선", "bg-red-600", 강남역, 양재역, Distance.of(10), Price.of(100));
+        Line 삼호선 = new Line("삼호선", "bg-red-600", 강남역, 양재역, Distance.of(10), Price.of(110));
+
+        Sections sections = 신분당선.getSections();
+        sections.add(이호선.getSections());
+        sections.add(삼호선.getSections());
+
+        PathAnalysis pathAnalysis = PathAnalysis.of(sections);
+
+        // when
+        ShortestPathInfo shortestPathInfo = pathAnalysis.findShortestPaths(강남역, 양재역);
+
+        // then
+        Assertions.assertThat(shortestPathInfo.getLines()).isEqualTo(List.of(이호선));
     }
 }

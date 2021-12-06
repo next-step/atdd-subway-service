@@ -96,7 +96,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // when
         ExtractableResponse<Response> searchMemberInfoResponseAfterDelete = 나의_회원정보_조회_요청(accessJwt);
         // then
-        AuthAcceptanceTest.인증_못받음(searchMemberInfoResponseAfterDelete);
+        없는_회원정보_조회됨(searchMemberInfoResponseAfterDelete);
+    }
+
+    private void 없는_회원정보_조회됨(ExtractableResponse<Response> response) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     private void 나의_회원정보_삭제됨(ExtractableResponse<Response> response) {
@@ -152,7 +156,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return response.as(TokenResponse.class).getAccessToken();
     }
 
-    public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, int age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return RestAssured
@@ -175,7 +179,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, int age) {
         String uri = response.header("Location");
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 

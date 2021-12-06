@@ -4,17 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.stereotype.Service;
 
 import nextstep.subway.line.application.LineService;
-import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathAnalysisKey;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathStationDto;
 import nextstep.subway.path.dto.ShortestPathInfo;
 import nextstep.subway.path.infrastructure.PathAnalysis;
+import nextstep.subway.policy.domain.FareCalculator;
+import nextstep.subway.policy.domain.Price;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 
@@ -29,6 +28,22 @@ public class PathService {
     }
 
     public PathResponse searchShortestPath(Long sourceStationId, Long targetStationId) {
+        ShortestPathInfo shortestPathInfo = findShortestPath(sourceStationId, targetStationId);
+
+        Price totalFare = FareCalculator.calculate(shortestPathInfo.getDistance(), shortestPathInfo.getLines());
+
+        return createPathResponse(shortestPathInfo, totalFare);
+    }
+
+    public PathResponse searchShortestPath(Long sourceStationId, Long targetStationId, int age) {
+        ShortestPathInfo shortestPathInfo = findShortestPath(sourceStationId, targetStationId);
+
+        Price discoutnAcceptedPrice = FareCalculator.calculate(shortestPathInfo.getDistance(), shortestPathInfo.getLines(), age);
+
+        return createPathResponse(shortestPathInfo, discoutnAcceptedPrice);
+    }
+
+    private ShortestPathInfo findShortestPath(Long sourceStationId, Long targetStationId) {
         vaildateShortestPath(sourceStationId, targetStationId);
 
         Station source = stationService.findById(sourceStationId);
@@ -37,8 +52,7 @@ public class PathService {
         PathAnalysis pathAnalysis = PathAnalysis.of(lineService.findAllSections());
 
         ShortestPathInfo shortestPathInfo = pathAnalysis.findShortestPaths(source, target);
-        
-        return createPathResponse(shortestPathInfo);
+        return shortestPathInfo;
     }
 
     private void vaildateShortestPath(Long sourceStationId, Long targetStationId) {
@@ -47,19 +61,18 @@ public class PathService {
         }
     }
 
-    private PathResponse createPathResponse(ShortestPathInfo shortestPathInfo) {
+    private PathResponse createPathResponse(ShortestPathInfo shortestPathInfo, Price fare) {
         List<Long> stationIds = convertPathAnalysisKeyToStationKey(shortestPathInfo);
 
         List<Station> stations = new ArrayList<>();
-        
+
         for (Long stationId : stationIds) {
             stations.add(stationService.findById(stationId));
         }
-        
 
         List<PathStationDto> pathStationDtos = convertPathAnaylysisKeyToPathStaionDto(stations);
 
-        return new PathResponse(pathStationDtos, shortestPathInfo.getDistance().value());
+        return new PathResponse(pathStationDtos, shortestPathInfo.getDistance().value(), fare.value());
     }
 
     private List<PathStationDto> convertPathAnaylysisKeyToPathStaionDto(List<Station> stations) {

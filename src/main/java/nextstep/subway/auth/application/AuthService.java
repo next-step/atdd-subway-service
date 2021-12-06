@@ -4,6 +4,8 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.common.exception.NotRegistedMemberException;
+import nextstep.subway.common.exception.UnauthoriedRequestException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 
@@ -30,17 +32,19 @@ public class AuthService {
     }
 
     public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
+        if (credentials == null || credentials.equals("null")) {
             return new LoginMember();
         }
 
-        String email = jwtTokenProvider.getPayload(credentials);
-        Optional<Member> member = memberRepository.findByEmail(email);
-
-        if (member.isPresent()) {
-            return new LoginMember(member.get().getId(), member.get().getEmail(), member.get().getAge());
+        if (!jwtTokenProvider.validateToken(credentials)) {
+            throw new UnauthoriedRequestException("인증되지 않은 사용자로 요청되었습니다.");
         }
 
-        return new LoginMember();
+        String email = jwtTokenProvider.getPayload(credentials);
+        
+        Member member = memberRepository.findByEmail(email)
+                                        .orElseThrow(() -> new NotRegistedMemberException("등록되지 않은 사용자입니다."));
+
+        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }

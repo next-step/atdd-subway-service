@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.enumerate.AuthenticationType;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 
@@ -21,15 +24,15 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> removeLineStation(@RequestParam Long source, @RequestParam Long target) {
-        PathResponse pathResponse;
-
+    public ResponseEntity<PathResponse> searchShortestPath(@AuthenticationPrincipal LoginMember loginMember, @RequestParam Long source, @RequestParam Long target) {
         try {
-            pathResponse = pathService.searchShortestPath(source, target);
+            if (loginMember.getAuthenticationType() != AuthenticationType.GUEST) {
+                return ResponseEntity.ok().body(pathService.searchShortestPath(source, target, loginMember.getAge()));
+            }
+
+            return ResponseEntity.ok().body(pathService.searchShortestPath(source, target));
         } catch (NoSuchElementException ex) {
             return ResponseEntity.notFound().build();
         }
-
-        return ResponseEntity.ok().body(pathResponse);
     } 
 }
