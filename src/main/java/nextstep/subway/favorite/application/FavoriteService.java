@@ -1,9 +1,12 @@
 package nextstep.subway.favorite.application;
 
+import static nextstep.subway.exception.ExceptionMessage.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -28,6 +31,7 @@ public class FavoriteService {
         this.memberService = memberService;
     }
 
+    @Transactional
     public FavoriteResponse createFavorite(Long memberId, FavoriteRequest request) {
         Member member = memberService.findById(memberId);
         Station source = stationService.findStationById(request.getSource());
@@ -37,9 +41,17 @@ public class FavoriteService {
         return FavoriteResponse.of(favorite);
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(Long memberId) {
         List<Favorite> favorites = favoriteRepository.findFavoritesById(memberId);
         return convertToFavoriteResponses(favorites);
+    }
+
+    @Transactional
+    public void deleteFavorite(Long memberId, Long id) {
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(id, memberId)
+            .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_DATA.getMessage()));
+        favoriteRepository.delete(favorite);
     }
 
     private List<FavoriteResponse> convertToFavoriteResponses(List<Favorite> favorites) {
