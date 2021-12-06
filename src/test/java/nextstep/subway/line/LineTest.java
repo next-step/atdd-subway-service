@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class LineTest {
 
@@ -20,7 +21,7 @@ public class LineTest {
         assertThat(line).isNotNull();
     }
 
-    @DisplayName("지하철 목록 조회 검증")
+    @DisplayName("라인에 있는 지하철 목록 조회 검증")
     @Test
     void getStations() {
         Station upStation = new Station(1L, "용마산역");
@@ -29,7 +30,10 @@ public class LineTest {
 
         List<Station> stations = line.getSortedStations();
 
-        assertThat(stations).isNotNull();
-        assertThat(stations).isEqualTo(Arrays.asList(upStation, downStation));
+        assertAll(
+                () -> assertThat(stations).isNotNull(),
+                () -> assertThat(stations).isEqualTo(Arrays.asList(upStation, downStation))
+        );
     }
+
 }

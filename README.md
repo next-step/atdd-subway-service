@@ -82,4 +82,7 @@ When 지하철 노선에 등록된 지하철역이 두개일 때 한 역을 삭�
 Then 지하철 구간 삭제 실패됨
 ~~~
 * [ ] LineService 리팩터링
-  * [ ] getStations() -> Line 도메인으로 이동
+  * [x] getStations() -> Line 도메인으로 이동
+  * [ ] 구역 추가 기능 적절한 도메인으로 이동
+  * [ ] 구역 제거 기능 적절한 도메인으로 이동
+  * [ ] RestControllerAdvice, ExceptionHandler 를 사용하여 에러 처리
