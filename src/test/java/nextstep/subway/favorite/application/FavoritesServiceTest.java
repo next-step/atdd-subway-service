@@ -44,7 +44,7 @@ public class FavoritesServiceTest {
 
     @DisplayName("소유자가 다른 즐겨찾기는 조회 할 수 없다")
     @Test
-    void testCantReadOtherFavorites() {
+    void testCantReadOthersFavorites() {
         // given
         Long favoritesId = 1L;
         LoginMember loginMember = new LoginMember(1L, "test", 22);
@@ -52,6 +52,20 @@ public class FavoritesServiceTest {
         Mockito.when(favoritesRepository.findById(anyLong())).thenReturn(Optional.of(new Favorites(favoritesId, owner, new Station(), new Station())));
         // when
         ThrowableAssert.ThrowingCallable throwingCallable = () -> favoritesService.findOne(loginMember, favoritesId);
+        // then
+        assertThatThrownBy(throwingCallable).isInstanceOf(ServiceException.class);
+    }
+
+    @DisplayName("소유자가 다른 즐겨찾기는 삭제 할 수 없다")
+    @Test
+    void testCantDeleteReadOthersFavorites() {
+        // given
+        Long favoritesId = 1L;
+        LoginMember loginMember = new LoginMember(1L, "test", 22);
+        Member owner = new Member(2L, "test", "test", 22);
+        Mockito.when(favoritesRepository.findById(anyLong())).thenReturn(Optional.of(new Favorites(favoritesId, owner, new Station(), new Station())));
+        // when
+        ThrowableAssert.ThrowingCallable throwingCallable = () -> favoritesService.deleteOne(loginMember, favoritesId);
         // then
         assertThatThrownBy(throwingCallable).isInstanceOf(ServiceException.class);
     }

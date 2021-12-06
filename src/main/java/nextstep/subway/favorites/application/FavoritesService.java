@@ -50,6 +50,9 @@ public class FavoritesService {
 
     public void deleteOne(LoginMember loginMember, Long id) {
         Favorites favorites = favoritesRepository.findById(id).orElseThrow(() -> new FavoritesNotFoundException(id));
+        if (!favorites.isOwner(loginMember.getId())) {
+            throw new ServiceException("다른 소유자의 즐겨찾기는 삭제할 수 없습니다.");
+        }
         favoritesRepository.delete(favorites);
     }
 }
