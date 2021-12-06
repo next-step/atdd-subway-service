@@ -28,7 +28,7 @@ public class Line extends BaseEntity {
 	@Embedded
 	private Sections sections = new Sections();
 
-	private Line() {
+	protected Line() {
 	}
 
 	private Line(String name, String color) {
