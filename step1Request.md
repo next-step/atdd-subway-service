@@ -9,7 +9,7 @@
     1. 노선 내 지하철 역 목록조회 로직 Sections로 이동
     2. RuntimeException -> IllegalArgumentException
     3. LineExceptionHandler 생성
-    4. 실패 인수테스트코드 작성
+    4. 실패하는 인수테스트코드 작성
   * 노선 수정
-  * 노선 삭제
+    1. 노선 조회부분 기존 메서드 재사용
 
