@@ -103,20 +103,19 @@ public class Sections {
     }
 
     public void addSection(Section section) {
-        List<Station> stations = getStations();
+        if (sections.isEmpty()) {
+            sections.add(section);
+            return;
+        }
+
         boolean isUpStationExisted = isStationExists(section.getUpStation());
         boolean isDownStationExisted = isStationExists(section.getDownStation());
 
         validateNotDuplicate(section);
 
-        if (!stations.isEmpty() && !isStationExists(section.getUpStation()) &&
+        if (!isStationExists(section.getUpStation()) &&
             !isStationExists(section.getDownStation())) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (stations.isEmpty()) {
-            sections.add(section);
-            return;
         }
 
         if (isUpStationExisted) {
