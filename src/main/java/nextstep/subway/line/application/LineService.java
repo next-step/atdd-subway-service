@@ -36,16 +36,9 @@ public class LineService {
         return LineResponse.of2(persistLine);
     }
 
-    public List<LineResponse> findLines() {
+    public List<LineResponse> findAllLines() {
         List<Line> persistLines = lineRepository.findAll();
-        return persistLines.stream()
-                .map(line -> {
-                    List<StationResponse> stations = getStations(line).stream()
-                            .map(it -> StationResponse.of(it))
-                            .collect(Collectors.toList());
-                    return LineResponse.of(line, stations);
-                })
-                .collect(Collectors.toList());
+        return LineResponse.listOf(persistLines);
     }
 
     public Line findLineById(Long id) {
