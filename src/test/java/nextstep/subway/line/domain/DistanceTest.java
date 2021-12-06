@@ -31,7 +31,7 @@ class DistanceTest {
     void minusValidate() {
         assertThatThrownBy(() -> Distance.valueOf(5).minus(Distance.valueOf(10)))
             .isInstanceOf(NotValidateException.class)
-            .hasMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요.");
+            .hasMessage("0 이상의 정수만 입력가능합니다.");
     }
 
     @DisplayName("길이 더하기 (4+5=10)")

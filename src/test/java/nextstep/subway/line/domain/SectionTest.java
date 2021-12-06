@@ -1,10 +1,12 @@
 package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import nextstep.subway.exception.NotValidateException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -84,5 +86,27 @@ public class SectionTest {
             assertThat(서울_용산.isDownStation(남영역)).isTrue();
             assertTrue(서울_용산.equalsDistance(5));
         });
+    }
+
+    @Test
+    @DisplayName("기존 구간보다 긴 길이로 수정 시 NotValidateException 발생")
+    void updateDownStationBySectionLongerFail() {
+        Section 남영_용산 = Section.create(남영역, 용산역, Distance.valueOf(12));
+        Section 서울_용산 = Section.create(서울역, 용산역, Distance.valueOf(10));
+
+        assertThatThrownBy(() -> 서울_용산.updateDownStationBySection(남영_용산))
+            .isInstanceOf(NotValidateException.class)
+            .hasMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요.");
+    }
+
+    @Test
+    @DisplayName("기존 구간와 같은 길이로 수정 시 NotValidateException 발생")
+    void updateDownStationBySectionSameFail() {
+        Section 남영_용산 = Section.create(남영역, 용산역, Distance.valueOf(10));
+        Section 서울_용산 = Section.create(서울역, 용산역, Distance.valueOf(10));
+
+        assertThatThrownBy(() -> 서울_용산.updateDownStationBySection(남영_용산))
+            .isInstanceOf(NotValidateException.class)
+            .hasMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요.");
     }
 }

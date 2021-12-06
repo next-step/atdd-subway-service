@@ -10,7 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import nextstep.subway.BaseEntity;
+import nextstep.subway.common.BaseEntity;
+import nextstep.subway.exception.NotValidateException;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -110,11 +111,19 @@ public class Section extends BaseEntity {
     }
 
     public void updateUpStationBySection(Section section){
-        update(section.downStation, this.downStation, distance.minus(section.distance));
+        update(section.downStation, this.downStation, minus(section));
     }
 
     public void updateDownStationBySection(Section section) {
-        update(this.upStation, section.upStation, distance.minus(section.distance));
+        update(this.upStation, section.upStation, minus(section));
+    }
+
+    private Distance minus(Section section) {
+        try {
+            return distance.minus(section.distance);
+        } catch (NotValidateException e) {
+            throw new NotValidateException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요.");
+        }
     }
 
     public void updateConnect(Section section) {

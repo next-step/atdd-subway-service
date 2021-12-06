@@ -26,12 +26,17 @@ public class LineTest {
     @Test
     @DisplayName("라인에 포함된 역목록 조회")
     void getStations() {
+        Station 남영역 = new Station("남영역");
+        Station 노량진역 = new Station("노량진역");
+
+        line.addLineStation(Section.create(서울역, 남영역, Distance.valueOf(5)));
+        line.addLineStation(Section.create(용산역, 노량진역, Distance.valueOf(8)));
 
         //when
         List<Station> stations = line.getStations();
 
         //then
-        assertThat(stations).extracting(Station::getName).containsExactly("서울역", "용산역");
+        assertThat(stations).extracting(Station::getName).containsExactly("서울역", "남영역", "용산역", "노량진역");
     }
 
     @Test
