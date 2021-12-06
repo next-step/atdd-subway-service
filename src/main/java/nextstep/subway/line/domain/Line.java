@@ -66,15 +66,22 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getStations() {
+        if (handleEmptyList(sections.isEmpty())) return Arrays.asList();
         List<Station> stations = new ArrayList<>();
         Station fistStation = findUpStation();
         stations.add(fistStation);
         Station upStation = fistStation;
-
         while (stations.size() != sections.size() + DIFFERENCE_SECTIONS_STATIONS_SIZE) {
             upStation = getUpStation(stations, upStation);
         }
         return stations;
+    }
+
+    private boolean handleEmptyList(boolean empty) {
+        if (empty) {
+            return true;
+        }
+        return false;
     }
 
     private Station getUpStation(List<Station> stations, Station upStation) {
@@ -118,7 +125,7 @@ public class Line extends BaseEntity {
                 .filter(section -> section.getDownStation()
                         .equals(station))
                 .findFirst();
-        if (removeMiddleStation(sameUpStation, sameDownStation)) return;
+        if (handleEmptyList(removeMiddleStation(sameUpStation, sameDownStation))) return;
         removeEndStation(sameUpStation, sameDownStation);
     }
 
