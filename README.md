@@ -83,6 +83,7 @@ Then 지하철 구간 삭제 실패됨
 ~~~
 * [ ] LineService 리팩터링
   * [x] getStations() -> Line 도메인으로 이동
+  * [x] Sections 일급콜렉션 생성
   * [ ] 구역 추가 기능 적절한 도메인으로 이동
   * [ ] 구역 제거 기능 적절한 도메인으로 이동
   * [ ] RestControllerAdvice, ExceptionHandler 를 사용하여 에러 처리

@@ -5,10 +5,7 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Embeddable
 public class Sections {
@@ -59,12 +56,46 @@ public class Sections {
         return downStation;
     }
 
-    public void add(Section section) {
-        sections.add(section);
+    public void add(Section newSection) {
+        List<Station> stations = getSortedStations();
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == newSection.getUpStation());
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == newSection.getDownStation());
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == newSection.getUpStation()) &&
+                stations.stream().noneMatch(it -> it == newSection.getDownStation())) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
+        if (stations.isEmpty()) {
+            sections.add(newSection);
+            return;
+        }
+
+        if (isUpStationExisted) {
+            sections.stream()
+                    .filter(it -> it.getUpStation() == newSection.getUpStation())
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
+
+            sections.add(newSection);
+        } else if (isDownStationExisted) {
+            sections.stream()
+                    .filter(it -> it.getDownStation() == newSection.getDownStation())
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
+
+            sections.add(newSection);
+        } else {
+            throw new RuntimeException();
+        }
     }
 
     public List<Section> getSections() {
-        return sections;
+        return Collections.unmodifiableList(sections);
     }
 
 }
