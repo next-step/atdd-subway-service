@@ -12,8 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.Locale;
-
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.ACCESS_TOKEN_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
