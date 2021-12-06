@@ -30,7 +30,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 	@DisplayName("즐겨찾기를 관리한다.")
 	@Test
-	void name() {
+	void manageFavorite() {
 		// Background
 		StationResponse 교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
 		StationResponse 강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
