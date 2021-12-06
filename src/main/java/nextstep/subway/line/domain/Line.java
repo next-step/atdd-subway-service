@@ -3,6 +3,8 @@ package nextstep.subway.line.domain;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.exception.DeleteOnlySectionException;
+import nextstep.subway.line.exception.DuplicatedSectionException;
+import nextstep.subway.line.exception.NoneMatchSectionException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -92,7 +94,6 @@ public class Line extends BaseEntity {
         stations.add(downStation);
         upStation = downStation;
         return upStation;
-
     }
 
     public Station findUpStation() {
@@ -104,15 +105,19 @@ public class Line extends BaseEntity {
                 .collect(Collectors.toList());
 
         upStations.removeAll(downStations);
-
         return upStations.get(0);
     }
 
     public void removeLineStation(Station station) {
         validateOnlySection();
-        Optional<Section> sameUpStation = sections.stream().filter(section -> section.getUpStation().equals(station)).findFirst();
-        Optional<Section> sameDownStation = sections.stream().filter(section -> section.getDownStation().equals(station)).findFirst();
-
+        Optional<Section> sameUpStation = sections.stream()
+                .filter(section -> section.getUpStation()
+                        .equals(station))
+                .findFirst();
+        Optional<Section> sameDownStation = sections.stream()
+                .filter(section -> section.getDownStation()
+                        .equals(station))
+                .findFirst();
         if (removeMiddleStation(sameUpStation, sameDownStation)) return;
         removeEndStation(sameUpStation, sameDownStation);
     }
@@ -142,4 +147,51 @@ public class Line extends BaseEntity {
         }
         return false;
     }
+
+    public void addSection(Section section) {
+        List<Station> stations = getStations();
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
+
+        validateDuplicatedSectionException(isUpStationExisted, isDownStationExisted);
+        validateNoneMatchSectionException(section, stations);
+        updateUpStationExisted(section, isUpStationExisted);
+        updateDownStationExisted(section, isDownStationExisted);
+        sections.add(section);
+    }
+
+    private void updateDownStationExisted(Section section, boolean isDownStationExisted) {
+        if (isDownStationExisted) {
+            sections.stream()
+                    .filter(it -> it.getDownStation() == section.getDownStation())
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+        }
+    }
+
+    private void updateUpStationExisted(Section section, boolean isUpStationExisted) {
+        if (isUpStationExisted) {
+            sections.stream()
+                    .filter(it -> it.getUpStation() == section.getUpStation())
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+
+        }
+    }
+
+    private void validateNoneMatchSectionException(Section section, List<Station> stations) {
+        if (!stations.isEmpty() && stations.stream()
+                .noneMatch(it -> it == section.getUpStation()) &&
+                stations.stream()
+                        .noneMatch(it -> it == section.getDownStation())) {
+            throw new NoneMatchSectionException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void validateDuplicatedSectionException(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new DuplicatedSectionException("이미 등록된 구간 입니다.");
+        }
+    }
+
 }
