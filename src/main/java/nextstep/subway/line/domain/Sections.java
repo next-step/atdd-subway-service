@@ -80,6 +80,7 @@ public class Sections {
         upStation = downStation;
         return upStation;
     }
+
     public void removeLineStation(Station station) {
         validateOnlySection();
         Optional<Section> sameUpStation = sections.stream()
