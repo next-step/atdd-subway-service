@@ -1,14 +1,27 @@
 package nextstep.subway.path.dto;
 
+import java.util.List;
+import nextstep.subway.station.dto.StationResponse;
+
 public class PathResponse {
 
-    String test;
+    List<StationResponse> stations;
+    Integer weight;
 
-    public PathResponse(String test) {
-        this.test = test;
+    public PathResponse(List<StationResponse> stations, Integer weight) {
+        this.stations = stations;
+        this.weight = weight;
     }
 
-    public String getTest() {
-        return test;
+    public static PathResponse of(List<StationResponse> stations, Integer distance) {
+        return new PathResponse(stations, distance);
+    }
+
+    public List<StationResponse> getStations() {
+        return stations;
+    }
+
+    public Integer getWeight() {
+        return weight;
     }
 }
