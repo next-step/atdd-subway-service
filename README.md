@@ -60,8 +60,6 @@
 - [X] 경로조회 데이터 처리를 담당하는 클래스 PathService의 작성
 - [X] 경로조회 관련 응답메시지를 담는 클래스(PathReponse) 작성
 
-<br>
-
 ## 🚀 Getting Started
 
 ### Install
