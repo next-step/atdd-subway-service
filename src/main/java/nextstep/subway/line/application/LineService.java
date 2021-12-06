@@ -1,6 +1,6 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.global.domain.FindFailedException;
+import nextstep.subway.common.domain.FindFailedException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
@@ -30,7 +30,7 @@ public class LineService {
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
         Line persistLine = lineRepository.save(
-                new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+                new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance(), request.getAddedFare()));
         return LineResponse.of(persistLine);
     }
 
