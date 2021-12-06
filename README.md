@@ -57,7 +57,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [X] 토큰 발급 기능 인수 테스트
 - [X] 유효하지 않은 토큰에 대한 처리
 - [ ] 인증
-  - [ ] 내 정보 조회
+  - [ ] 내 정보 조회 인수테스트 작성
   - [ ] 즐겨 찾기
 
 ## step2 요구사항
