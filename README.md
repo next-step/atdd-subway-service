@@ -54,32 +54,32 @@ npm run dev
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
 
 ## 1단계  - 인수 테스트 기반 리팩터링 요구사항
-* [ ] LineSectionAcceptanceTest 리팩터링
-* [ ] LineService 리팩터링
-
+* [x] LineSectionAcceptanceTest 리팩터링
 ~~~
 Feature: 지하철 구간 관련 기능
 
-  Background 
-    Given 지하철역 등록되어 있음
-    And 지하철 노선 등록되어 있음
-    And 지하철 노선에 지하철역 등록되어 있음
+Background
+Given 지하철역 등록되어 있음
+And 지하철 노선 등록되어 있음
+And 지하철 노선에 지하철역 등록되어 있음
 
-  Scenario: 지하철 구간을 관리 성공 검증
-    When 지하철 구간 등록 요청
-    Then 지하철 구간 등록됨
-    When 지하철 노선에 등록된 역 목록 조회 요청
-    Then 등록한 지하철 구간이 반영된 역 목록이 조회됨
-    When 지하철 구간 삭제 요청
-    Then 지하철 구간 삭제됨
-    When 지하철 노선에 등록된 역 목록 조회 요청
-    Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
-    
-  Scenario: 지하철 구간을 관리 실패 검증
-    When 지하철 중복된 구간 등록 요청
-    Then 지하철 구간 등록 실패됨
-    When 지하철 노선에 등록되지 않은 역을 기준으로 등록한다.
-    Then 지하철 구간 등록 실패됨
-    When 지하철 노선에 등록된 지하철역이 두개일 때 한 역을 삭제한다.
-    Then 지하철 구간 삭제 실패됨
+Scenario: 지하철 구간 관리 성공 검증
+When 지하철 구간 등록 요청
+Then 지하철 구간 등록됨
+When 지하철 노선에 등록된 역 목록 조회 요청
+Then 등록한 지하철 구간이 반영된 역 목록이 조회됨
+When 지하철 구간 삭제 요청
+Then 지하철 구간 삭제됨
+When 지하철 노선에 등록된 역 목록 조회 요청
+Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+
+Scenario: 지하철 구간 관리 실패 검증
+When 지하철 중복된 구간 등록 요청
+Then 지하철 구간 등록 실패됨
+When 지하철 노선에 등록되지 않은 역을 등록요청
+Then 지하철 구간 등록 실패됨
+When 지하철 노선에 등록된 지하철역이 두개일 때 한 역을 삭제 요청
+Then 지하철 구간 삭제 실패됨
 ~~~
+* [ ] LineService 리팩터링
+  * [ ] getStations() -> Line 도메인으로 이동
