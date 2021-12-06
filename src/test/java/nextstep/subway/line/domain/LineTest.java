@@ -70,7 +70,7 @@ class LineTest {
     }
 
     private Section makeSection(Line line, Station upStation, Station downStation, int distance) {
-        return new Section(line, upStation, downStation, distance);
+        return new Section(line, upStation, downStation, new Distance(distance));
     }
 
     private Line makeLine(String name, String color, Station upStation, Station downStation, int distance) {

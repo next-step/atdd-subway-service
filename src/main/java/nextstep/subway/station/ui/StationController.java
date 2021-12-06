@@ -1,5 +1,6 @@
 package nextstep.subway.station.ui;
 
+import nextstep.subway.exception.InputDataErrorException;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
@@ -38,6 +39,11 @@ public class StationController {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(InputDataErrorException.class)
+    public ResponseEntity handleIllegalArgsException(InputDataErrorException e) {
         return ResponseEntity.badRequest().build();
     }
 }
