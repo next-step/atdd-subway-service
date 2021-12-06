@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 @Entity
 public class Line extends BaseEntity {
+    public static final int DIFFERENCE_SECTIONS_STATIONS_SIZE = 1;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -60,7 +62,35 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getStations() {
-        return null;
+        List<Station> stations = new ArrayList<>();
+        Station fistStation = findUpStation();
+        stations.add(fistStation);
+        Station upStation = fistStation;
+
+        while (stations.size() != sections.size() + DIFFERENCE_SECTIONS_STATIONS_SIZE) {
+            upStation = getUpStation(stations, upStation);
+        }
+        return stations;
+    }
+
+    private Station getUpStation(List<Station> stations, Station upStation) {
+        for (Section section : sections) {
+            upStation = getDownStation(stations, upStation);
+        }
+        return upStation;
+    }
+
+    private Station getDownStation(List<Station> stations, Station upStation) {
+        Station finalUpStation = upStation;
+        Station downStation = sections.stream()
+                .filter(section1 -> Objects.equals(section1.getUpStation(), finalUpStation))
+                .map(Section::getDownStation)
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+        stations.add(downStation);
+        upStation = downStation;
+        return upStation;
+
     }
 
     public Station findUpStation() {
