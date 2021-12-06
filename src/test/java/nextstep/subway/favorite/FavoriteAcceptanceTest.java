@@ -26,11 +26,11 @@ import nextstep.subway.station.dto.StationResponse;
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
 
-    StationResponse 잠실역;
-    StationResponse 삼성역;
-    StationResponse 선릉역;
-    LineResponse 이호선;
-    String accessToken;
+    private StationResponse 잠실역;
+    private StationResponse 삼성역;
+    private StationResponse 선릉역;
+    private LineResponse 이호선;
+    private String accessToken;
 
     @BeforeEach
     public void setUp() {
