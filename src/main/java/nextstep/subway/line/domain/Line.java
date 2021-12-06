@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.exception.ExistedSectionException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -57,23 +58,12 @@ public class Line extends BaseEntity {
         return sections.list();
     }
 
-    private Station findFirstUpStation() {
-        return this.sections.findFirstUpStation();
+    private Station findDownStation(Station downStation) {
+        return this.sections.findDownStation(downStation);
     }
 
-    public Station findUpStation() {
-        Station downStation = this.findFirstUpStation();
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = findLineStation(it -> it.getDownStation() == finalDownStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
+    private Station findUpStation() {
+        return this.sections.findUpStation();
     }
 
     private boolean matchAnyStation(List<Station> stations, Station station) {
@@ -84,82 +74,52 @@ public class Line extends BaseEntity {
         return !matchAnyStation(stations, station);
     }
 
-    private Optional<Section> findLineStation(Predicate<Section> express) {
-        return this.getSections().stream()
-                .filter(express)
-                .findFirst();
-    }
-
     public void addLineStation(Station upStation, Station downStation, Integer distance) {
         List<Station> stations = this.getStations();
         boolean isUpStationExisted = matchAnyStation(stations, upStation);
         boolean isDownStationExisted = matchAnyStation(stations, downStation);
 
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
 
         if (!stations.isEmpty() && matchNoneStation(stations, upStation) &&
                 matchNoneStation(stations, downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
 
-        if (stations.isEmpty()) {
-            this.sections.add(new Section(this, upStation, downStation, distance));
-            return;
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new ExistedSectionException(upStation, downStation);
         }
 
         if(isUpStationExisted) {
-            findLineStation(it -> it.getUpStation() == upStation)
+            this.sections.findLineStation(it -> it.getUpStation() == upStation)
                     .ifPresent(it -> it.updateUpStation(downStation, distance));
             this.sections.add(new Section(this, upStation, downStation, distance));
             return;
         }
 
-        findLineStation(it -> it.getDownStation() == downStation)
+        this.sections.findLineStation(it -> it.getDownStation() == downStation)
             .ifPresent(it -> it.updateDownStation(upStation, distance));
         this.sections.add(new Section(this, upStation, downStation, distance));
     }
 
     public List<Station> getStations() {
         if (this.getSections().isEmpty()) {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
         List<Station> stations = new ArrayList<>();
         Station downStation = this.findUpStation();
-        stations.add(downStation);
+        Station finalDownStation = null;
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = findLineStation(it -> it.getUpStation() == finalDownStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
+        while(downStation != finalDownStation) {
             stations.add(downStation);
+            finalDownStation = downStation;
+            downStation = findDownStation(finalDownStation);
         }
 
         return stations;
     }
 
-    public void removeStation(Station station) {
-
-        if (this.getSections().size() <= 1) {
-            throw new RuntimeException();
-        }
-
-        Optional<Section> upLineStation = findLineStation(it -> it.getUpStation() == station);
-        Optional<Section> downLineStation = findLineStation(it -> it.getDownStation() == station);
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            this.getSections().add(new Section(this, newUpStation, newDownStation, newDistance));
-        }
-
-        upLineStation.ifPresent(it -> this.getSections().remove(it));
-        downLineStation.ifPresent(it -> this.getSections().remove(it));
+    public void removeSection(Station station) {
+        this.sections.remove(station);
     }
 }

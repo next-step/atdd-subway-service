@@ -1,14 +1,12 @@
 package nextstep.subway.line.acceptance;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -18,28 +16,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(MockitoExtension.class)
 public class LineTest {
-
-    @Mock
-    private StationRepository stationRepository;
-
-    @Mock
-    private LineRepository lineRepository;
-
-    @DisplayName("지하철 노선의 상행을 찾는다.")
-    @Test
-    void findUpStationTest() {
-
-        //given
-        Station 강남역 = new Station("강남역");
-        Station 교대역 = new Station("교대역");
-
-        //when
-        Line line = new Line("신분당선", "red", 강남역, 교대역, 10);
-        Station upStation = line.findUpStation();
-
-        //then
-        assertThat(upStation.getName()).isEqualTo("강남역");
-    }
 
     @DisplayName("지하철 노선에 구간을 추가한다. (중간역)")
     @Test
@@ -155,12 +131,15 @@ public class LineTest {
         line.addLineStation(양재역, 강남역, 5);
 
         //when
-        line.removeStation(강남역);
+        line.removeSection(강남역);
 
         //then
         assertThat(line.getStations().size()).isEqualTo(2);
         assertThat(line.getStations()).containsExactly(양재역, 교대역);
-        assertThat(line.getSections().stream().mapToInt(Section::getDistance).sum()).isEqualTo(15);
+        assertThat(line.getSections().stream()
+                .map(Section::getDistance)
+                .mapToInt(Distance::getValue)
+                .sum()).isEqualTo(15);
     }
 
     @DisplayName("지하철 노선에 구간을 제외한다. (상행역)")
@@ -175,12 +154,16 @@ public class LineTest {
         line.addLineStation(양재역, 강남역, 5);
 
         //when
-        line.removeStation(양재역);
+        line.removeSection(양재역);
 
         //then
         assertThat(line.getStations().size()).isEqualTo(2);
         assertThat(line.getStations()).containsExactly(강남역, 교대역);
-        assertThat(line.getSections().stream().mapToInt(Section::getDistance).sum()).isEqualTo(10);
+        assertThat(line.getSections().stream()
+                .map(Section::getDistance)
+                .mapToInt(Distance::getValue)
+                .sum())
+                .isEqualTo(10);
     }
 
 
@@ -196,12 +179,16 @@ public class LineTest {
         line.addLineStation(양재역, 강남역, 5);
 
         //when
-        line.removeStation(교대역);
+        line.removeSection(교대역);
 
         //then
         assertThat(line.getStations().size()).isEqualTo(2);
         assertThat(line.getStations()).containsExactly(양재역, 강남역);
-        assertThat(line.getSections().stream().mapToInt(Section::getDistance).sum()).isEqualTo(5);
+        assertThat(line.getSections().stream()
+                .map(Section::getDistance)
+                .mapToInt(Distance::getValue)
+                .sum())
+                .isEqualTo(5);
     }
 
     @DisplayName("지하철 노선에 구간이 1개 이하일 때 구간을 제외한다.")
@@ -214,6 +201,6 @@ public class LineTest {
         Line line = new Line("신분당선", "red", 강남역, 교대역, 10);
 
         //when
-        assertThatThrownBy(() -> line.removeStation(강남역)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> line.removeSection(강남역)).isInstanceOf(RuntimeException.class);
     }
 }

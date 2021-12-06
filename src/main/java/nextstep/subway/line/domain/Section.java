@@ -22,12 +22,20 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
+        this.line = line;
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = new Distance(distance);
+    }
+
+    public Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -50,23 +58,32 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    public void updateUpStation(Station station, int otherDistance) {
+        Distance newDistance = new Distance(otherDistance);
+        if(newDistance.isGraterOrEqual(this.distance)) {
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.upStation = station;
-        this.distance -= newDistance;
+        this.distance.subtract(newDistance);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    public void updateDownStation(Station station, int otherDistance) {
+        Distance newDistance = new Distance(otherDistance);
+        if(newDistance.isGraterOrEqual(this.distance)) {
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
         this.downStation = station;
-        this.distance -= newDistance;
+        this.distance.subtract(newDistance);
+    }
+
+    public Section combine(Section otherSection) {
+        if(this.upStation == otherSection.downStation) {
+            return new Section(this.line, otherSection.upStation, this.downStation, this.distance.add(otherSection.distance));
+        }
+        return new Section(this.line, this.upStation, otherSection.downStation, this.distance.add(otherSection.distance));
     }
 }
