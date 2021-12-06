@@ -3,6 +3,7 @@ package nextstep.subway.member.ui;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.ResponseEntity;
@@ -32,8 +33,7 @@ public class MemberController {
 
     @PutMapping("/members/{id}")
     public ResponseEntity<MemberResponse> updateMember(@PathVariable Long id, @RequestBody MemberRequest param) {
-        memberService.updateMember(id, param);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(MemberResponse.of(memberService.updateMember(id, param)));
     }
 
     @DeleteMapping("/members/{id}")
@@ -50,8 +50,8 @@ public class MemberController {
 
     @PutMapping("/members/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
-        memberService.updateMember(loginMember.getId(), param);
-        return ResponseEntity.ok().build();
+        Member member = memberService.updateMember(loginMember.getId(), param);
+        return ResponseEntity.ok().body(MemberResponse.of(member));
     }
 
     @DeleteMapping("/members/me")

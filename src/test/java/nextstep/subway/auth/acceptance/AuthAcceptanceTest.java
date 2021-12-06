@@ -21,13 +21,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         // given
-        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_등록됨(EMAIL, PASSWORD, AGE);
     }
 
     @DisplayName("Bearer Token 로그인 요청")
     @Test
     void myInfoWithBearerAuth() {
-
         // when
         ExtractableResponse<Response> response = ACCESS_TOKEN_요청(EMAIL, PASSWORD);
 
