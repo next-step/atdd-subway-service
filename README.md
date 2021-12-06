@@ -79,4 +79,17 @@ licensed.
     - [X] SectionsTest
     - [X] LineTest
     - [X] LineRepositoryTest
-    - [X] LineServiceTest 
+    - [X] LineServiceTest
+
+### 2단계 - 경로 조회 기능
+
+- `PathAcceptanceTest` 구현
+    - [ ] 정상 경로 조회
+    - [ ] 같은 역 경로 조회 실패
+    - [ ] 이어지지 않는 경로 조회 실패
+- `PathController` 구현
+    - [ ] 경로조회 라우터 추가
+- [ ] `PathService` 경로 조회 서비스 구현
+- [ ] `PathFactory` 인터페이스 활용하여 외부 모듈 의존역전시키기
+- infrastructure 패키지 분리
+    - [ ] `PathFactory` 구현체 구현
