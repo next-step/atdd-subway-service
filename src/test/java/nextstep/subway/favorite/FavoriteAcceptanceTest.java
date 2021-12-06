@@ -6,6 +6,8 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorites.dto.FavoritesRequest;
+import nextstep.subway.favorites.dto.FavoritesResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
@@ -19,8 +21,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -56,26 +59,45 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void testManageFavorites() {
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(사용자, 강남역.getId(), 양재역.getId());
-
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(사용자, 강남역.getId(), 양재역.getId());
         // then
-        즐겨찾기_생성됨(response);
+        즐겨찾기_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(사용자);
+        // then
+        Long createdFavoritesId = Long.valueOf(createResponse.header("Location").split("/")[2]);
+        즐겨찾기_목록이_조회된다(createdFavoritesId, findResponse);
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_생성_요청(TokenResponse tokenResponse, Long source, Long target) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("source", source);
-        params.put("target", target);
+    private void 즐겨찾기_목록이_조회된다(Long createdFavoritesId, ExtractableResponse<Response> findResponse) {
+        assertThat(findResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        List<FavoritesResponse> favoritesResponses = findResponse.jsonPath().getList(".", FavoritesResponse.class);
+        assertThat(favoritesResponses).hasSize(1)
+                .contains(new FavoritesResponse(createdFavoritesId, 강남역, 양재역));
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(TokenResponse tokenResponse) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header("Authorization", "Bearer " + tokenResponse.getAccessToken())
-                .body(params)
+                .when().get("/favorites")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_생성_요청(TokenResponse tokenResponse, Long source, Long target) {
+        FavoritesRequest request = new FavoritesRequest(source, target);
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", "Bearer " + tokenResponse.getAccessToken())
+                .body(request)
                 .when().post("/favorites")
                 .then().log().all().extract();
     }
 
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
-        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 }
