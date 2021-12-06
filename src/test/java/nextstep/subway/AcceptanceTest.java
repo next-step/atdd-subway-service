@@ -32,6 +32,18 @@ public class AcceptanceTest {
         return post(path, new HashMap<>(), body);
     }
 
+	protected static <T> ExtractableResponse<Response> post(String path, String accessToken, T body) {
+		return RestAssured
+			.given().log().all()
+			.auth().oauth2(accessToken)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(body)
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when().post(path)
+			.then().log().all()
+			.extract();
+	}
+
     protected static <T> ExtractableResponse<Response> post(
         String path,
         Map<String, ?> pathParams,
@@ -121,11 +133,19 @@ public class AcceptanceTest {
         String path,
         String accessToken
     ) {
+        return delete(path, accessToken, new HashMap<>());
+    }
+
+    protected static ExtractableResponse<Response> delete(
+        String path,
+        String accessToken,
+        Map<String, ?> pathParams
+    ) {
         return RestAssured
             .given().log().all()
             .auth().oauth2(accessToken)
             .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when().delete(path)
+            .when().delete(path, pathParams)
             .then().log().all()
             .extract();
     }

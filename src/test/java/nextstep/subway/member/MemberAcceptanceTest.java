@@ -52,8 +52,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMyInfo() {
         // Background
-        회원_생성되어_있음(윤준석);
-        TokenResponse token = 로그인_요청됨(윤준석).as(TokenResponse.class);
+        회원_등록되어_있음(윤준석);
+        TokenResponse token = 로그인_되어있음(윤준석).as(TokenResponse.class);
 
         // Scenario
         내_정보_조회됨(내_정보_조회_요청(token), 윤준석.getEmail(), 윤준석.getAge());
@@ -67,7 +67,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return post("/members", memberRequest);
     }
 
-    public static ExtractableResponse<Response> 회원_생성되어_있음(TestMember member) {
+    public static ExtractableResponse<Response> 회원_등록되어_있음(TestMember member) {
         return 회원_생성을_요청(member.getEmail(), member.getPassword(), member.getAge());
     }
 

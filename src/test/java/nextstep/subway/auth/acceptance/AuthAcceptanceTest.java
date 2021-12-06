@@ -22,7 +22,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	@Test
 	void login() {
 		// given
-		회원_생성되어_있음(윤준석);
+		회원_등록되어_있음(윤준석);
 
 		// when
 		ExtractableResponse<Response> response = 로그인_요청(윤준석.getEmail(), 윤준석.getPassword());
@@ -35,7 +35,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	@Test
 	void loginFail() {
 		// given
-		회원_생성되어_있음(윤준석);
+		회원_등록되어_있음(윤준석);
 
 		// when
 		ExtractableResponse<Response> response = 로그인_요청(윤준석.getEmail(), "wrong-password");
@@ -48,7 +48,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	@Test
 	void me() {
 		// given
-		회원_생성되어_있음(윤준석);
+		회원_등록되어_있음(윤준석);
 		TokenResponse token = 로그인_요청(윤준석.getEmail(), 윤준석.getPassword()).as(TokenResponse.class);
 
 		// when
@@ -62,7 +62,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	@Test
 	void meFail() {
 		// given
-		회원_생성되어_있음(윤준석);
+		회원_등록되어_있음(윤준석);
 		로그인_요청(윤준석.getEmail(), 윤준석.getPassword()).as(TokenResponse.class);
 
 		// when
@@ -77,7 +77,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 		return post("/login/token", tokenRequest);
 	}
 
-	public static ExtractableResponse<Response> 로그인_요청됨(TestMember testMember) {
+	public static ExtractableResponse<Response> 로그인_되어있음(TestMember testMember) {
 		return 로그인_요청(testMember.getEmail(), testMember.getPassword());
 	}
 
