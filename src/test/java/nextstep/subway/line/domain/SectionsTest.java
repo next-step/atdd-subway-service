@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import nextstep.subway.common.CannotSectionAddException;
 import nextstep.subway.common.DuplicateSectionException;
 import nextstep.subway.common.SectionNotRemovableException;
 import nextstep.subway.station.domain.Station;
@@ -47,5 +48,14 @@ class SectionsTest {
 
         assertThatThrownBy(() -> sections.addSection(강남_판교_구간))
             .isInstanceOf(DuplicateSectionException.class);
+    }
+
+    @Test
+    void test_상하행_종점이_하나도_일치하지않는_구간_등록하려고하면_예외_발생() {
+        Sections sections = new Sections();
+        sections.addSection(강남_판교_구간);
+
+        assertThatThrownBy(() -> sections.addSection(정자_광교_구간))
+            .isInstanceOf(CannotSectionAddException.class);
     }
 }

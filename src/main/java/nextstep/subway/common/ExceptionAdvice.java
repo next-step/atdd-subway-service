@@ -26,4 +26,9 @@ public class ExceptionAdvice {
     protected ResponseEntity handleDuplicationSectionException(DuplicateSectionException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+
+    @ExceptionHandler(CannotSectionAddException.class)
+    protected ResponseEntity handleCannotSectionAddException(CannotSectionAddException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
 }

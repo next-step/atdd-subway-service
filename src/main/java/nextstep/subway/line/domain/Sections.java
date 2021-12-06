@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import nextstep.subway.common.CannotSectionAddException;
 import nextstep.subway.common.DuplicateSectionException;
 import nextstep.subway.common.SectionNotRemovableException;
 import nextstep.subway.station.domain.Station;
@@ -98,40 +99,45 @@ public class Sections {
         return stations;
     }
 
-    public boolean isStationExists(final Station station) {
-        return getStations().stream().anyMatch(it -> it == station);
-    }
-
     public void addSection(Section section) {
         if (sections.isEmpty()) {
             sections.add(section);
             return;
         }
 
-        boolean isUpStationExisted = isStationExists(section.getUpStation());
-        boolean isDownStationExisted = isStationExists(section.getDownStation());
-
         validateNotDuplicate(section);
+        validateAddable(section);
 
-        if (!isStationExists(section.getUpStation()) &&
-            !isStationExists(section.getDownStation())) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
+        updateUpStationMatchSection(section);
+        updateDownStationMatchSection(section);
 
-        if (isUpStationExisted) {
-            getUpStationMatchSection(section.getUpStation())
-                .ifPresent(
-                    it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+        sections.add(section);
+    }
 
-            sections.add(section);
-        } else if (isDownStationExisted) {
-            getDownStationMatchSection(section.getDownStation())
-                .ifPresent(
-                    it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+    private void updateUpStationMatchSection(final Section targetSection) {
+        Optional<Section> matchSection = getUpStationMatchSection(targetSection.getUpStation());
+        matchSection.ifPresent(
+            it -> it.updateUpStation(targetSection.getDownStation(), targetSection.getDistance())
+        );
+    }
 
-            sections.add(section);
-        } else {
-            throw new RuntimeException();
+    private void updateDownStationMatchSection(final Section targetSection) {
+        Optional<Section> matchSection = getDownStationMatchSection(targetSection.getDownStation());
+        matchSection.ifPresent(
+            it -> it.updateDownStation(targetSection.getUpStation(), targetSection.getDistance())
+        );
+    }
+
+    private boolean isStationExists(final Station station) {
+        return sections.stream().anyMatch(section -> section.hasAnyMatchStation(station));
+    }
+
+    private void validateAddable(final Section section) {
+        boolean matchStationsNotExists =
+            !isStationExists(section.getUpStation()) && !isStationExists(section.getDownStation());
+
+        if (matchStationsNotExists) {
+            throw new CannotSectionAddException();
         }
     }
 

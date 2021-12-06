@@ -89,4 +89,8 @@ public class Section {
     public boolean hasSameDownStation(Section section) {
         return this.downStation == section.getDownStation();
     }
+
+    public boolean hasAnyMatchStation(Station station) {
+        return this.upStation == station || this.downStation == station;
+    }
 }
