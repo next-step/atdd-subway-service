@@ -1,5 +1,6 @@
 package nextstep.subway;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +28,10 @@ public class AcceptanceTest {
         databaseCleanup.execute();
     }
 
+    protected static <T> ExtractableResponse<Response> post(String path, T body) {
+        return post(path, new HashMap<>(), body);
+    }
+
     protected static <T> ExtractableResponse<Response> post(
         String path,
         Map<String, ?> pathParams,
@@ -41,16 +46,46 @@ public class AcceptanceTest {
             .extract();
     }
 
+    protected static ExtractableResponse<Response> get(String path) {
+        return get(path, new HashMap<>(), new HashMap<>());
+    }
+
     protected static ExtractableResponse<Response> get(
         String path,
+        Map<String, ?> pathParams,
         Map<String, ?> queryParams
     ) {
         return RestAssured
             .given().log().all()
             .queryParams(queryParams)
-            .when().get(path)
+            .when().get(path, pathParams)
             .then().log().all()
             .extract();
+    }
+
+    protected static <T> ExtractableResponse<Response> put(
+        String path,
+        T body
+    ) {
+        return put(path, new HashMap<>(), body);
+    }
+
+    protected static <T> ExtractableResponse<Response> put(
+        String path,
+        Map<String, ?> pathParams,
+        T body
+    ) {
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(body)
+            .when().put(path, pathParams)
+            .then().log().all()
+            .extract();
+    }
+
+    protected static ExtractableResponse<Response> delete(String path) {
+        return delete(path, new HashMap<>(), new HashMap<>());
     }
 
     protected static ExtractableResponse<Response> delete(

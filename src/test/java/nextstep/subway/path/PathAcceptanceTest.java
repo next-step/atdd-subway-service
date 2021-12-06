@@ -173,7 +173,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		queryParams.put("source", sourceStationId);
 		queryParams.put("target", targetStationId);
 
-		return get("/paths", queryParams);
+		return get("/paths", new HashMap<>(), queryParams);
 	}
 
 	private void 지하철_경로_조회됨(ExtractableResponse<Response> response) {

@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,32 +80,16 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
         StationRequest stationRequest = new StationRequest(name);
-
-        return RestAssured
-                .given().log().all()
-                .body(stationRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/stations")
-                .then().log().all()
-                .extract();
+        return post("/stations", new HashMap<>(), stationRequest);
     }
 
     public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
-        return RestAssured
-                .given().log().all()
-                .when().get("/stations")
-                .then().log().all()
-                .extract();
+        return get("/stations");
     }
 
     public static ExtractableResponse<Response> 지하철역_제거_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
-
-        return RestAssured
-                .given().log().all()
-                .when().delete(uri)
-                .then().log().all()
-                .extract();
+        return delete(uri);
     }
 
     public static void 지하철역_생성됨(ExtractableResponse response) {
