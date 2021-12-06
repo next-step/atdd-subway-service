@@ -74,4 +74,54 @@ public class Sections {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("다음 구간 없습니다."));
     }
+
+    void addLineSection(Section section) {
+        Station upStation = section.getUpStation();
+        Station downStation = section.getDownStation();
+        int distance = section.getDistance();
+        
+        List<Station> stations = getStationsInOrder();
+        boolean isUpStationExisted = isStationExisted(upStation, stations);
+        boolean isDownStationExisted = isStationExisted(downStation, stations);
+
+        validateStation(isUpStationExisted, isDownStationExisted);
+
+        if (isUpStationExisted) {
+            updateUpStation(upStation, downStation, distance);
+        }
+
+        if (isDownStationExisted) {
+            updateDownStation(upStation, downStation, distance);
+        }
+
+        sections.add(section);
+    }
+
+    private boolean isStationExisted(Station upStation, List<Station> stations) {
+        return stations.stream().anyMatch(it -> it == upStation);
+    }
+
+    private void validateStation(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!isUpStationExisted && !isDownStationExisted) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void updateUpStation(Station upStation, Station downStation, int distance) {
+        sections.stream()
+                .filter(it -> it.equalsUpStation(upStation))
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(downStation, distance));
+    }
+
+    private void updateDownStation(Station upStation, Station downStation, int distance) {
+        sections.stream()
+                .filter(it -> it.equalsDownStation(downStation))
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(upStation, distance));
+    }
 }
