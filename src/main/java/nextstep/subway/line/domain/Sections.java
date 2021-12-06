@@ -97,10 +97,6 @@ public class Sections {
         return stations;
     }
 
-    public boolean isStationNotExists(final Station station) {
-        return getStations().stream().noneMatch(it -> it == station);
-    }
-
     public boolean isStationExists(final Station station) {
         return getStations().stream().anyMatch(it -> it == station);
     }
@@ -114,8 +110,8 @@ public class Sections {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
 
-        if (!stations.isEmpty() && isStationNotExists(section.getUpStation()) &&
-            isStationNotExists(section.getDownStation())) {
+        if (!stations.isEmpty() && !isStationExists(section.getUpStation()) &&
+            !isStationExists(section.getDownStation())) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
 
