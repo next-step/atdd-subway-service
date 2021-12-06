@@ -1,6 +1,7 @@
 package nextstep.subway.common;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -30,5 +31,10 @@ public class SubwayExceptionHandler {
 	@ExceptionHandler(NotExistStationException.class)
 	public ResponseEntity handleNotExistStationException(NotExistStationException e) {
 		return ResponseEntity.badRequest().build();
+	}
+
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity handleIllegalArgumentException(IllegalArgumentException e) {
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	}
 }
