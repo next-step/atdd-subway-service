@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController()
-@RequestMapping("/path")
+@RequestMapping("/paths")
 public class PathController {
     private final PathService pathService;
 
