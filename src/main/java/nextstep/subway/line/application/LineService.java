@@ -2,6 +2,7 @@ package nextstep.subway.line.application;
 
 import static nextstep.subway.exception.ExceptionMessage.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -49,9 +50,11 @@ public class LineService {
     @Transactional(readOnly = true)
     public Set<Section> findAllSection() {
         List<Line> persistLines = lineRepository.findAll();
-        return persistLines.stream()
-            .flatMap(line -> line.getSections().getSections().stream())
-            .collect(Collectors.toSet());
+        Set<Section> allSection = new HashSet<>();
+        for (Line persistLine : persistLines) {
+            allSection = persistLine.putSections(allSection);
+        }
+        return allSection;
     }
 
     @Transactional(readOnly = true)
