@@ -32,4 +32,16 @@ public class FavoritesController {
         List<FavoritesResponse> result = favoritesService.getAll(loginMember);
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<FavoritesResponse> findOne(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id) {
+        FavoritesResponse result = favoritesService.findOne(loginMember, id);
+        return ResponseEntity.ok(result);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteOne(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long id) {
+        favoritesService.deleteOne(loginMember, id);
+        return ResponseEntity.noContent().build();
+    }
 }

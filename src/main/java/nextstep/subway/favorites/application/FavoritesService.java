@@ -6,7 +6,7 @@ import nextstep.subway.favorites.domain.Favorites;
 import nextstep.subway.favorites.domain.FavoritesRepository;
 import nextstep.subway.favorites.dto.FavoritesRequest;
 import nextstep.subway.favorites.dto.FavoritesResponse;
-import nextstep.subway.member.application.MemberService;
+import nextstep.subway.favorites.exception.FavoritesNotFoundException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.application.StationService;
@@ -38,5 +38,15 @@ public class FavoritesService {
     public List<FavoritesResponse> getAll(LoginMember loginMember) {
         Member owner = memberRepository.findById(loginMember.getId()).orElseThrow(() -> new ServiceException("사용자를 찾을 수 없습니다"));
         return FavoritesResponse.ofList(favoritesRepository.findByOwner(owner));
+    }
+
+    public FavoritesResponse findOne(LoginMember loginMember, Long id) {
+        Favorites favorites = favoritesRepository.findById(id).orElseThrow(() -> new FavoritesNotFoundException(id));
+        return FavoritesResponse.of(favorites);
+    }
+
+    public void deleteOne(LoginMember loginMember, Long id) {
+        Favorites favorites = favoritesRepository.findById(id).orElseThrow(() -> new FavoritesNotFoundException(id));
+        favoritesRepository.delete(favorites);
     }
 }
