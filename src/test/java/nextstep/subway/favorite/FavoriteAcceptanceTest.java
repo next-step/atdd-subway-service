@@ -97,9 +97,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	}
 
 	private ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse token, FavoriteResponse favoriteResponse) {
-		Map<String, Object> queryParams = new HashMap<>();
-		queryParams.put("favoriteId", favoriteResponse.getId());
-		return delete("/favorites/{favoriteId}", token.getAccessToken(), queryParams);
+		Map<String, Object> pathParams = new HashMap<>();
+		pathParams.put("favoriteId", favoriteResponse.getId());
+		return delete("/favorites/{favoriteId}", token.getAccessToken(), pathParams);
 	}
 
 	private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
