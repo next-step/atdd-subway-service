@@ -1,4 +1,4 @@
-package nextstep.subway;
+package nextstep.subway.common;
 
 import nextstep.subway.line.exception.LineException;
 import nextstep.subway.line.exception.SectionException;
