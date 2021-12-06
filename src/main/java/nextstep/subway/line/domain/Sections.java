@@ -18,7 +18,7 @@ public class Sections {
     }
 
     public List<Station> getSortedStations() {
-        if(sections.isEmpty()) {
+        if (sections.isEmpty()) {
             return Arrays.asList();
         }
 
@@ -56,46 +56,59 @@ public class Sections {
         return downStation;
     }
 
+    public List<Section> getSections() {
+        //return Collections.unmodifiableList(sections);
+        return sections;
+    }
+
     public void add(Section newSection) {
-        List<Station> stations = getSortedStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == newSection.getUpStation());
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == newSection.getDownStation());
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == newSection.getUpStation()) &&
-                stations.stream().noneMatch(it -> it == newSection.getDownStation())) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (stations.isEmpty()) {
+        if (sections.isEmpty()) {
             sections.add(newSection);
             return;
         }
+        validationAlreadyAdded(newSection);
+        validationNotAdded(newSection);
 
-        if (isUpStationExisted) {
+        updateStation(newSection);
+        sections.add(newSection);
+    }
+
+    private void updateStation(Section newSection) {
+        if (isUpStationExisted(newSection)) {
             sections.stream()
-                    .filter(it -> it.getUpStation() == newSection.getUpStation())
+                    .filter(section -> section.equalsUpStation(newSection.getUpStation()))
                     .findFirst()
-                    .ifPresent(it -> it.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
-
-            sections.add(newSection);
-        } else if (isDownStationExisted) {
+                    .ifPresent(section -> section.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
+        }
+        if (isDownStationExisted(newSection)) {
             sections.stream()
-                    .filter(it -> it.getDownStation() == newSection.getDownStation())
+                    .filter(section -> section.equalsDownStation(newSection.getDownStation()))
                     .findFirst()
-                    .ifPresent(it -> it.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
-
-            sections.add(newSection);
-        } else {
-            throw new RuntimeException();
+                    .ifPresent(section -> section.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
         }
     }
 
-    public List<Section> getSections() {
-        return Collections.unmodifiableList(sections);
+    private boolean isDownStationExisted(Section newSection) {
+        return getSortedStations().stream().anyMatch(station -> station.equals(newSection.getDownStation()));
     }
 
+    private boolean isUpStationExisted(Section newSection) {
+        return getSortedStations().stream().anyMatch(station -> station.equals(newSection.getUpStation()));
+    }
+
+    private void validationAlreadyAdded(Section newSection) {
+        if (isUpStationExisted(newSection) && isDownStationExisted(newSection)) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    private void validationNotAdded(Section newSection) {
+        boolean duplicateUpStation = getSortedStations().stream()
+                .noneMatch(station -> station.equals(newSection.getUpStation()));
+        boolean duplicateDownStation = getSortedStations().stream()
+                .noneMatch(station -> station.equals(newSection.getDownStation()));
+        if (duplicateUpStation && duplicateDownStation) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
 }
