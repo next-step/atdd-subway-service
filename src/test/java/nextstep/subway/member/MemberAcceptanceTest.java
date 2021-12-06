@@ -11,6 +11,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 
+@DisplayName("회원 관련 기능")
 public class MemberAcceptanceTest extends AcceptanceTest {
 	public static final String EMAIL = "email@email.com";
 	public static final String PASSWORD = "password";

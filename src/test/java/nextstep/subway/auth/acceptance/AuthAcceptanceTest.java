@@ -13,6 +13,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 
+@DisplayName("인증 관련 기능")
 public class AuthAcceptanceTest extends AcceptanceTest {
 
 	private static final String 잘못된_비밀번호 = "wrongPw";
