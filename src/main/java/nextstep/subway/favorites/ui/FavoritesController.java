@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/favorites")
@@ -24,5 +25,11 @@ public class FavoritesController {
     public ResponseEntity<Void> createFavorites(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoritesRequest favoritesRequest) {
         FavoritesResponse response = favoritesService.createFavorites(loginMember, favoritesRequest);
         return ResponseEntity.created(URI.create("/favorites/" + response.getId())).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<FavoritesResponse>> getAll(@AuthenticationPrincipal LoginMember loginMember) {
+        List<FavoritesResponse> result = favoritesService.getAll(loginMember);
+        return ResponseEntity.ok(result);
     }
 }

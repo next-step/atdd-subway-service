@@ -13,6 +13,8 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class FavoritesService {
     private final FavoritesRepository favoritesRepository;
@@ -31,5 +33,10 @@ public class FavoritesService {
         Member owner = memberRepository.findById(loginMember.getId()).orElseThrow(() -> new ServiceException("사용자를 찾을 수 없습니다"));
         Favorites persistFavorites = favoritesRepository.save(new Favorites(owner, upStation, downStation));
         return FavoritesResponse.of(persistFavorites);
+    }
+
+    public List<FavoritesResponse> getAll(LoginMember loginMember) {
+        Member owner = memberRepository.findById(loginMember.getId()).orElseThrow(() -> new ServiceException("사용자를 찾을 수 없습니다"));
+        return FavoritesResponse.ofList(favoritesRepository.findByOwner(owner));
     }
 }
