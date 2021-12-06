@@ -55,14 +55,14 @@ public class Sections {
         return this.sections.stream()
             .filter(section -> section.isEqualToUpStation(standardSection.getUpStation()))
             .findFirst()
-            .orElse(Section.DUMMY_SECTION);
+            .orElse(Section.EMPTY);
     }
 
     private Section downBoundSection(Section standardSection) {
         return this.sections.stream()
             .filter(section -> section.isEqualToDownStation(standardSection.getDownStation()))
             .findFirst()
-            .orElse(Section.DUMMY_SECTION);
+            .orElse(Section.EMPTY);
     }
 
     public List<Station> getStations() {
@@ -104,11 +104,11 @@ public class Sections {
     }
 
     private boolean connectableByUpStation(Section upBoundSection, boolean contains) {
-        return !upBoundSection.isDummy() && contains;
+        return !upBoundSection.isEmpty() && contains;
     }
 
     private boolean connectableByDownStation(Section downBoundSection, boolean contains) {
-        return !downBoundSection.isDummy() && contains;
+        return !downBoundSection.isEmpty() && contains;
     }
 
     public void validateForConnect(Section section) {
@@ -191,29 +191,29 @@ public class Sections {
     }
 
     private boolean isDownBoundSection(Section upBoundSection, Section downBoundSection) {
-        return !upBoundSection.isDummy() && downBoundSection.isDummy();
+        return !upBoundSection.isEmpty() && downBoundSection.isEmpty();
     }
 
     private boolean isUpBoundSection(Section upBoundSection, Section downBoundSection) {
-        return !downBoundSection.isDummy() && upBoundSection.isDummy();
+        return !downBoundSection.isEmpty() && upBoundSection.isEmpty();
     }
 
     private boolean isStationInMiddleOfSection(Section upBoundSection, Section downBoundSection) {
-        return !upBoundSection.isDummy() && !downBoundSection.isDummy();
+        return !upBoundSection.isEmpty() && !downBoundSection.isEmpty();
     }
 
     private Section upBoundSection(Station station) {
         return this.sections.stream()
             .filter(section -> section.isEqualToDownStation(station))
             .findFirst()
-            .orElse(Section.DUMMY_SECTION);
+            .orElse(Section.EMPTY);
     }
 
     private Section downBoundSection(Station station) {
         return this.sections.stream()
             .filter(section -> section.isEqualToUpStation(station))
             .findFirst()
-            .orElse(Section.DUMMY_SECTION);
+            .orElse(Section.EMPTY);
     }
 
     public List<Section> getSections() {
