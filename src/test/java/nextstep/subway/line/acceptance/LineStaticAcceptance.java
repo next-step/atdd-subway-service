@@ -16,6 +16,11 @@ import nextstep.subway.line.dto.LineResponse;
 
 public class LineStaticAcceptance {
 
+	public static LineRequest 지하철_노선_생성_요청값(String name, String color, Long upStationId, Long downStationId,
+		int distance) {
+		return new LineRequest(name, color, upStationId, downStationId, distance);
+	}
+
 	public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest params) {
 		return 지하철_노선_생성_요청(params);
 	}
