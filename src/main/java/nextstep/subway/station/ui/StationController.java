@@ -1,5 +1,7 @@
 package nextstep.subway.station.ui;
 
+import nextstep.subway.common.exception.ErrorCode;
+import nextstep.subway.common.exception.ErrorResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
@@ -13,14 +15,16 @@ import java.util.List;
 
 @RestController
 public class StationController {
-    private StationService stationService;
+
+    private final StationService stationService;
 
     public StationController(StationService stationService) {
         this.stationService = stationService;
     }
 
     @PostMapping("/stations")
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
+    public ResponseEntity<StationResponse> createStation(
+        @RequestBody StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
     }
@@ -31,13 +35,14 @@ public class StationController {
     }
 
     @DeleteMapping("/stations/{id}")
-    public ResponseEntity deleteStation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
-        return ResponseEntity.badRequest().build();
+    @ExceptionHandler(value = {DataIntegrityViolationException.class})
+    protected ResponseEntity<ErrorResponse> handleStationNameDuplicateConflict() {
+        return ResponseEntity.badRequest()
+            .body(ErrorResponse.of(ErrorCode.STATION_NAME_DUPLICATE_DATA));
     }
 }

@@ -6,6 +6,9 @@ import javax.persistence.*;
 
 @Entity
 public class Section {
+
+    public static final DummySection DUMMY_SECTION = new DummySection();
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,24 +25,26 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
-    public Section() {
+    protected Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    private Section(Line line, Station upStation, Station downStation, int distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = Distance.of(distance);
     }
 
-    public Long getId() {
-        return id;
+    public static Section of(Line line, Station upStation, Station downStation, int distance) {
+        return new Section(line, upStation, downStation, distance);
     }
 
-    public Line getLine() {
-        return line;
+    public Section newOfMerge(Section section) {
+        distance.plus(section.distance);
+        return new Section(line, upStation, section.downStation, distance.getDistance());
     }
 
     public Station getUpStation() {
@@ -50,23 +55,36 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
-        return distance;
+    public Integer getDistance() {
+        return distance.getDistance();
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
+    public void relocationUpStation(Section newSection) {
+        this.distance.minus(newSection.getDistance());
+        this.upStation = newSection.downStation;
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    public boolean isSameUpStationAndDownStation(Section section) {
+        return isSameUpStation(section.upStation) && isSameDownStation(section.downStation);
+    }
+
+    public boolean isSameUpStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean isSameDownStation(Station station) {
+        return downStation.equals(station);
+    }
+
+    public boolean isDummy() {
+        return false;
+    }
+
+    private static class DummySection extends Section {
+
+        @Override
+        public boolean isDummy() {
+            return true;
         }
-        this.downStation = station;
-        this.distance -= newDistance;
     }
 }

@@ -4,19 +4,25 @@ import nextstep.subway.BaseEntity;
 
 import javax.persistence.*;
 import java.util.Objects;
+import nextstep.subway.common.exception.ErrorCode;
+import nextstep.subway.common.exception.InvalidParameterException;
 
 @Entity
 public class Station extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String name;
 
-    public Station() {
+    protected Station() {
     }
 
     public Station(String name) {
+        validEmpty(name);
+
         this.name = name;
     }
 
@@ -28,17 +34,33 @@ public class Station extends BaseEntity {
         return name;
     }
 
+    private void validEmpty(String name) {
+        if (Objects.isNull(name) || name.isEmpty()) {
+            throw InvalidParameterException.of(ErrorCode.NOT_EMPTY);
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Station station = (Station) o;
-        return Objects.equals(id, station.id) &&
-                Objects.equals(name, station.name);
+
+        if (Objects.isNull(id)
+            && Objects.isNull(station.getId()
+        )) {
+            return Objects.equals(name, station.name);
+        }
+
+        return Objects.equals(id, station.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return getClass().hashCode();
     }
 }

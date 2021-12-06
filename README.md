@@ -13,6 +13,7 @@
 <br>
 
 # 지하철 노선도 미션
+
 [ATDD 강의](https://edu.nextstep.camp/c/R89PYi5H) 실습을 위한 지하철 노선도 애플리케이션
 
 <br>
@@ -20,25 +21,34 @@
 ## 🚀 Getting Started
 
 ### Install
+
 #### npm 설치
+
 ```
 cd frontend
 npm install
 ```
+
 > `frontend` 디렉토리에서 수행해야 합니다.
 
 ### Usage
+
 #### webpack server 구동
+
 ```
 npm run dev
 ```
+
 #### application 구동
+
 ```
 ./gradlew bootRun
 ```
+
 <br>
 
 ## ✏️ Code Review Process
+
 [텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
 
 <br>
@@ -51,4 +61,22 @@ npm run dev
 
 ## 📝 License
 
-This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md)
+licensed.
+
+## 인수 테스트 기반 TDD 미션
+
+### 1단계 - 인수 테스트 기반 리팩터링
+
+- [X] LineSectionAcceptanceTest 리팩터링
+- [X] LineSectionAddAcceptanceTest 라인 추가관련 분리
+- [X] LineSectionRemoveAcceptanceTest 라인 제거관련 분리
+- [X] LineService 리팩터링
+- [X] `@ControllerAdvice` 적용
+- [X] 상황별 예외처리
+- 테스트
+    - [X] SectionTest
+    - [X] SectionsTest
+    - [X] LineTest
+    - [X] LineRepositoryTest
+    - [X] LineServiceTest 
