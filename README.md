@@ -235,6 +235,6 @@ Date: Sun, 27 Dec 2020 04:32:26 GMT
 ### 기능 목록
 
 - 토큰 발급 기능 (로그인) 인수 테스트 만들기
-  - AuthAcceptanceTest 인수 테스트 만들기
+  - AuthAcceptanceTest 인수 테스트 작성
 - 인증 - 내 정보 조회 기능 완성하기
 - 인증 - 즐겨 찾기 기능 완성하기
