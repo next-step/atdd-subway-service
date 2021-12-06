@@ -34,7 +34,8 @@ public class AuthService {
         String id = jwtTokenProvider.getPayload(credentials);
 
         Member member = memberRepository.findById(Long.parseLong(id))
-                .orElseThrow(MemberNotFoundException::new);
+                .orElseThrow(AuthorizationException::new);
+
         return LoginMember.of(member);
     }
 }

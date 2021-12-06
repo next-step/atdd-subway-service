@@ -18,17 +18,17 @@ import org.springframework.http.MediaType;
 
 import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
     private TokenRequest 등록된_사용자_로그인_요청 = TokenRequest.of(EMAIL, PASSWORD);
-    private TokenRequest 등록되지_않은_사용자_로그인_요청 = TokenRequest.of(anyString(), anyString());
-    private TokenRequest 비밀번호_불일치_로그인_요청 = TokenRequest.of(EMAIL, anyString());
+    private TokenRequest 등록되지_않은_사용자_로그인_요청 = TokenRequest.of("", "");
+    private TokenRequest 비밀번호_불일치_로그인_요청 = TokenRequest.of(EMAIL, "");
     private static final String 유효하지_않은_토큰_회원_미존재 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJub3Rmb3VuZEBub3Rmb3VuZC5jb20iLCJpYXQiOjE2Mzg3NjQyMDIsImV4cCI6MTYzODc2NzgwMn0.JjTAu_iv-19kUHAnffR-v6Gmy0_sC1OtIB-PWD3pPfI";
     private static final String 유효하지_않은_토큰_만료됨 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDAwMDAwMDAsImV4cCI6MTYwMDAwMDAwMH0.MxezzXBO7gnocwzvzN522EutLv9t2mMnsot4XKt8fO0";
 
     private static final String LOGIN_TOKEN_URI = "/login/token";
     private static final String MEMBERS_ME_URI = "/members/me";
+    private String key;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
@@ -37,7 +37,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        key = MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE).header("Location").split("/")[2];
     }
 
     @DisplayName("로그인 기능을 구현한다")
@@ -48,7 +48,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         // then
         String 토큰 = 로그인을_성공하면_토큰을_발급받는다(response);
-        발급한_로그인_토큰이_이메일과_일치함(토큰, 등록된_사용자_로그인_요청);
+        발급한_로그인_토큰이_PK값과_일치함(토큰, key);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
@@ -93,9 +93,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private void 발급한_로그인_토큰이_이메일과_일치함(String token, TokenRequest request) {
+    private void 발급한_로그인_토큰이_PK값과_일치함(String token, String key) {
         String payload = jwtTokenProvider.getPayload(token);
-        assertThat(payload).isEqualTo(request.getEmail());
+        assertThat(payload).isEqualTo(key);
     }
 
     public static ExtractableResponse<Response> 로그인_요청함(TokenRequest request) {

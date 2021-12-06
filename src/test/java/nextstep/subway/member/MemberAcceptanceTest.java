@@ -66,28 +66,60 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // given
         String 토큰 = 로그인을_성공하면_토큰을_발급받는다(로그인_요청함(나의_로그인_요청));
 
-        // 내 정보를 조회한다.
+        // when 
         ExtractableResponse<Response> 내_정보_조회_요청 = 내_정보_조회함(토큰);
 
+        // then
         내_정보_조회됨(내_정보_조회_요청, 나의_로그인_요청);
 
-        // 내 정보를 수정한다.
-        ExtractableResponse<Response> 내_정보_수정_요청 = RestAssured.given().log().all()
-                .auth().oauth2(토큰)
+        // when
+        ExtractableResponse<Response> 내_정보_수정_요청 = 내_정보_수정_요청함(토큰);
+
+        // then 
+        내_정보_수정됨(내_정보_수정_요청);
+
+        // when
+        ExtractableResponse<Response> 수정된_내_정보_조회_요청 = 내_정보_조회함(토큰);
+
+        // then 
+        내_정보_조회됨(수정된_내_정보_조회_요청, 나의_수정된_정보);
+
+        // when
+        ExtractableResponse<Response> 내_정보_삭제_요청 = 내_정보_삭제_요청함(토큰);
+
+        // then 
+        내_정보_삭제됨(내_정보_삭제_요청);
+
+        // when 
+        ExtractableResponse<Response> 삭제된_내_정보_조회_요청 = 내_정보_조회함(토큰);
+
+        // then
+        조회_실패함(삭제된_내_정보_조회_요청);
+    }
+
+    private ExtractableResponse<Response> 내_정보_수정_요청함(String token) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(나의_수정된_정보)
                 .when().put(MY_INFO_URI)
                 .then().log().all().extract();
+    }
 
-        내_정보_수정됨(내_정보_수정_요청);
+    private ExtractableResponse<Response> 내_정보_삭제_요청함(String token) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete(MY_INFO_URI)
+                .then().log().all().extract();
+    }
 
-        ExtractableResponse<Response> 수정된_내_정보_조회_요청 = 내_정보_조회함(토큰);
+    private void 조회_실패함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 
-        내_정보_조회됨(수정된_내_정보_조회_요청, 나의_수정된_정보);
-
-        // 내 정보를 삭제한다.
-
-
+    private void 내_정보_삭제됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     private ExtractableResponse<Response> 내_정보_조회함(String token) {
