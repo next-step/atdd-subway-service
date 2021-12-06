@@ -7,6 +7,7 @@ import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
+import nextstep.subway.member.exception.MemberNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,12 +28,12 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            throw new AuthorizationException("토큰이 유효하지 않습니다.");
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(MemberNotFoundException::new);
 
         return LoginMember.of(member);
     }
