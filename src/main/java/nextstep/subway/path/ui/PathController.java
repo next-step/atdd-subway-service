@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
  * date : 2021/12/04
  * description : 경로 컨트롤러
  */
-
 @RestController
 @RequestMapping("paths")
 @RequiredArgsConstructor

@@ -2,7 +2,7 @@ package nextstep.subway.path;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.domain.JGraphPathFinder;
+import nextstep.subway.path.infrastructure.JGraphPathFinder;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;

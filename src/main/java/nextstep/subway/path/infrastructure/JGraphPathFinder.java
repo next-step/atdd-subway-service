@@ -1,6 +1,7 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.infrastructure;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.exception.EdgeCreateException;
 import nextstep.subway.path.exception.PathBeginIsEndException;
