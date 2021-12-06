@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import nextstep.subway.common.DuplicateSectionException;
 import nextstep.subway.common.SectionNotRemovableException;
 import nextstep.subway.station.domain.Station;
 
@@ -106,9 +107,7 @@ public class Sections {
         boolean isUpStationExisted = isStationExists(section.getUpStation());
         boolean isDownStationExisted = isStationExists(section.getDownStation());
 
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
+        validateNotDuplicate(section);
 
         if (!stations.isEmpty() && !isStationExists(section.getUpStation()) &&
             !isStationExists(section.getDownStation())) {
@@ -135,5 +134,15 @@ public class Sections {
         } else {
             throw new RuntimeException();
         }
+    }
+
+    private void validateNotDuplicate(final Section targetSection) {
+        sections.stream()
+            .filter(section -> section.getUpStation() == targetSection.getUpStation()
+                && section.getDownStation() == targetSection.getDownStation())
+            .findFirst()
+            .ifPresent(section -> {
+                throw new DuplicateSectionException();
+            });
     }
 }

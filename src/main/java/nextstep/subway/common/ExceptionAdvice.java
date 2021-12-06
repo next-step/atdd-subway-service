@@ -21,4 +21,9 @@ public class ExceptionAdvice {
     protected ResponseEntity handleSectionNotRemovableException(SectionNotRemovableException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
+
+    @ExceptionHandler(DuplicateSectionException.class)
+    protected ResponseEntity handleDuplicationSectionException(DuplicateSectionException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
 }
