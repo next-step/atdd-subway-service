@@ -1,5 +1,8 @@
 package nextstep.subway.favorite.application;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import nextstep.subway.favorite.domain.Favorite;
@@ -32,5 +35,18 @@ public class FavoriteService {
 
         Favorite favorite = favoriteRepository.save(request.toFavorite(member, source, target));
         return FavoriteResponse.of(favorite);
+    }
+
+    public List<FavoriteResponse> findFavorites(Long memberId) {
+        List<Favorite> favorites = favoriteRepository.findFavoritesById(memberId);
+        return convertToFavoriteResponses(favorites);
+    }
+
+    private List<FavoriteResponse> convertToFavoriteResponses(List<Favorite> favorites) {
+        List<FavoriteResponse> favoriteResponses = new ArrayList<>();
+        for (Favorite favorite : favorites) {
+            favoriteResponses.add(FavoriteResponse.of(favorite));
+        }
+        return favoriteResponses;
     }
 }
