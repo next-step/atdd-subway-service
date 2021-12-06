@@ -15,7 +15,7 @@ import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AuthAcceptanceTest extends AcceptanceTest {
+public class AuthAcceptanceTest extends AcceptanceTest {
 
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
@@ -36,7 +36,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 로그인_응답 = 로그인_요청(EMAIL, PASSWORD);
 
         // then
-        assertThat(로그인_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+        로그인_성공(로그인_응답);
 
         TokenResponse tokenResponse = 로그인_응답.as(TokenResponse.class);
         assertThat(tokenResponse.getAccessToken()).isNotBlank();
@@ -45,27 +45,27 @@ class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 토큰_로그인_응답 = 토큰_로그인_요청(tokenResponse.getAccessToken());
 
         // then
-        assertThat(토큰_로그인_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+        로그인_성공(토큰_로그인_응답);
     }
 
     @DisplayName("Bearer Auth 로그인 실패 - Email 불일치")
     @Test
     void myInfoWithBadBearerAuth_email() {
         // when
-        ExtractableResponse<Response> response = 로그인_요청(INVALID_EMAIL, PASSWORD);
+        ExtractableResponse<Response> 로그인_응답 = 로그인_요청(INVALID_EMAIL, PASSWORD);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        로그인_실패(로그인_응답);
     }
 
     @DisplayName("Bearer Auth 로그인 실패 - PW 불일치")
     @Test
     void myInfoWithBadBearerAuth_password() {
         // when
-        ExtractableResponse<Response> response = 로그인_요청(INVALID_EMAIL, INVALID_PASSWORD);
+        ExtractableResponse<Response> 로그인_응답 = 로그인_요청(INVALID_EMAIL, INVALID_PASSWORD);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        로그인_실패(로그인_응답);
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
@@ -75,13 +75,13 @@ class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 로그인_응답 = 로그인_요청(EMAIL, PASSWORD);
 
         // then
-        assertThat(로그인_응답.statusCode()).isEqualTo(HttpStatus.OK.value());
+        로그인_성공(로그인_응답);
 
         // when
         ExtractableResponse<Response> 토큰_로그인_응답 = 토큰_로그인_요청(INVALID_TOKEN);
 
         // then
-        assertThat(토큰_로그인_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        로그인_실패(토큰_로그인_응답);
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
@@ -103,5 +103,13 @@ class AuthAcceptanceTest extends AcceptanceTest {
                 .when().get("/members/me")
                 .then().log().all()
                 .extract();
+    }
+
+    public static void 로그인_성공(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 로그인_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
