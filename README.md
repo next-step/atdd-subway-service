@@ -60,9 +60,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - LineService 리팩터링
 
 ## 구현목록
-- [ ] LineSectionAcceptanceTest 리팩터링
+- [x] LineSectionAcceptanceTest 리팩터링
     - [x] 지하철 구간 관리 시나리오 추가
-    - [ ] AcceptanceTest 소스 정리
+    - [x] AcceptanceTest 소스 정리
 - [ ] LineService의 비즈니스 로직을 도메인으로 옮기기
     - [ ] Domain 단위 테스트 작성
     - [ ] Domain으로 로직 옮기기
