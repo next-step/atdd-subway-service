@@ -54,6 +54,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return post("/members", memberRequest);
     }
 
+    public static ExtractableResponse<Response> 회원_생성되어_있음(TestMember member) {
+        return 회원_생성을_요청(member.getEmail(), member.getPassword(), member.getAge());
+    }
+
     public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
         return get(uri);
