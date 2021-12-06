@@ -54,6 +54,8 @@ class LineTest {
     void removeLineStationTest() {
         _2호선.removeLineStation(역삼역);
         assertThat(_2호선.getStations()).containsExactlyElementsOf(Arrays.asList(강남역, 선릉역));
+        assertThat(getDistances(_2호선)
+                .containsAll(Arrays.asList(20)));
     }
 
     @DisplayName("구간을 추가한다")
@@ -91,8 +93,6 @@ class LineTest {
     }
 
     private List<Integer> getDistances(Line line) {
-        return line.getSections().stream()
-                .map(Section::getDistance)
-                .collect(Collectors.toList());
+        return line.getSections().getDistances();
     }
 }
