@@ -8,6 +8,7 @@ import nextstep.subway.exception.NotValidateException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("구간 길이 도메인 테스트")
 class DistanceTest {
 
     @DisplayName("Distance 생성 시 음수인 경우 실패")

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.jdbc.Sql;
 
+@DisplayName("노선 JPA 관련 기능 테스트")
 @DataJpaTest
 @Sql(scripts = "classpath:scripts/stationInitData.sql")
 public class LineRepositoryTest {

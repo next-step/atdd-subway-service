@@ -30,6 +30,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+@DisplayName("노선 서비스 클래스 테스트")
 @ExtendWith(MockitoExtension.class)
 class LineServiceTest {
 

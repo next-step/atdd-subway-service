@@ -46,7 +46,8 @@ public class Line extends BaseEntity {
         return new Line(name, color);
     }
 
-    public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
+    public static Line of(String name, String color, Station upStation, Station downStation,
+        int distance) {
         return new Line(name, color, upStation, downStation, distance);
     }
 
@@ -75,10 +76,8 @@ public class Line extends BaseEntity {
         sections.remove(section);
     }
 
-    public void addSection(Section section) {
-        if (!hasSection(section)) {
-            sections.add(section);
-        }
+    public void add(Section section) {
+        sections.add(section);
 
         if (!section.equalsLine(this)) {
             section.toLine(this);
@@ -87,13 +86,12 @@ public class Line extends BaseEntity {
 
     public void addLineStation(Section section) {
         if (sections.isEmptyStation()) {
-            addSection(section);
+            add(section);
             return;
         }
         validateForAdded(section);
-
         sections.updateSection(section);
-        addSection(section);
+        add(section);
     }
 
     public void removeLineStation(Station station) {
@@ -121,7 +119,8 @@ public class Line extends BaseEntity {
         }
     }
 
-    private void validateForRemove(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+    private void validateForRemove(Optional<Section> upLineStation,
+        Optional<Section> downLineStation) {
         if (!upLineStation.isPresent() && !downLineStation.isPresent()) {
             throw new NotFoundException("역이 포함된 구간이 없습니다.");
         }
@@ -133,14 +132,10 @@ public class Line extends BaseEntity {
     }
 
     private void addLineStationByRemove(Section upLineStation, Section downLineStation) {
-        addSection(
+        add(
             Section.from(
                 this, downLineStation, upLineStation,
                 upLineStation.plusDistance(downLineStation)));
-    }
-
-    private boolean hasSection(Section section) {
-        return sections.contains(section);
     }
 
     @Override

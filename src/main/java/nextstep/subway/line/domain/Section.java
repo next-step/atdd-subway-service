@@ -69,7 +69,7 @@ public class Section extends BaseEntity {
         }
 
         this.line = line;
-        line.addSection(this);
+        line.add(this);
 
         return this;
     }
@@ -98,6 +98,10 @@ public class Section extends BaseEntity {
 
     public boolean isUpStation(Station upStation) {
         return this.upStation.equalsName(upStation);
+    }
+
+    public boolean equalsDistance(int distance) {
+        return this.distance.equals(Distance.valueOf(distance));
     }
 
     public boolean isDownStation(Station station) {

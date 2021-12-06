@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import nextstep.subway.exception.CannotAddException;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -70,6 +71,16 @@ public class Sections {
         updateByDownStation(section);
     }
 
+    boolean isAlreadySection(Section section) {
+        return sections.stream()
+            .anyMatch(it -> it.equalsStations(section));
+    }
+
+    boolean isIncludeStationOfSection(Section section) {
+        return getStationStream()
+            .anyMatch(section::isIncludeStation);
+    }
+
     private void updateByUpStation(Section section) {
         sections.stream()
             .filter(it -> it.isUpStationOfSection(section))
@@ -120,13 +131,4 @@ public class Sections {
             .flatMap(Section::getUpDownStations);
     }
 
-    public boolean isAlreadySection(Section section) {
-        return sections.stream()
-            .anyMatch(it -> it.equalsStations(section));
-    }
-
-    public boolean isIncludeStationOfSection(Section section) {
-        return getStationStream()
-            .anyMatch(section::isIncludeStation);
-    }
 }

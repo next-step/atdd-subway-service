@@ -2,24 +2,27 @@ package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("구간 목록 클래스 테스트")
 public class SectionsTest {
+
+    private final Station 서울역 = new Station("서울역");
+    private final Station 남영역 = new Station("남영역");
+    private final Station 용산역 = new Station("용산역");
+    private final Station 노량진역 = new Station("노량진역");
 
 
     @Test
     @DisplayName("서울역-남영역-용산역-노량진역 으로 정렬된 목록 조회")
     void sortedSections() {
         // given
-        Station 서울역 = new Station("서울역");
-        Station 남영역 = new Station("남영역");
-        Station 용산역 = new Station("용산역");
-        Station 노량진역 = new Station("노량진역");
-
         Sections sections = new Sections();
         sections.add(Section.create(용산역, 노량진역, Distance.valueOf(10)));
         sections.add(Section.create(서울역, 남영역, Distance.valueOf(5)));
@@ -34,5 +37,57 @@ public class SectionsTest {
             assertThat(stations).extracting(Station::getName)
                 .containsExactly("서울역", "남영역", "용산역", "노량진역");
         });
+    }
+
+    @Test
+    @DisplayName("이미 존재하는 구간 체크")
+    void validateForAddedAlreadyExists() {
+        Sections sections = new Sections();
+        sections.add(Section.create(서울역, 남영역, Distance.valueOf(5)));
+
+        //when&then
+        assertTrue(sections.isAlreadySection(Section.create(서울역, 남영역, Distance.valueOf(10))));
+        assertFalse(sections.isAlreadySection(Section.create(서울역, 용산역, Distance.valueOf(5))));
+    }
+
+    @Test
+    @DisplayName("포함된 구간 체크")
+    void validateForAddedNotInclude() {
+        Sections sections = new Sections();
+        sections.add(Section.create(서울역, 남영역, Distance.valueOf(5)));
+
+        //when&then
+        assertFalse(sections.isIncludeStationOfSection(Section.create(용산역, 노량진역, Distance.valueOf(10))));
+        assertTrue(sections.isIncludeStationOfSection(Section.create(서울역, 용산역, Distance.valueOf(10))));
+    }
+
+    @Test
+    @DisplayName("구간 목록에서 기존 구간이 있는 경우 상행역 변경")
+    void updateUpStationBySection() {
+        Sections sections = new Sections();
+        sections.add(Section.create(서울역, 용산역, Distance.valueOf(10)));
+
+        //when
+        sections.updateSection(Section.create(서울역, 남영역, Distance.valueOf(5)));
+
+        List<Station> stations = sections.getSortedStations();
+        //then
+        assertThat(stations).extracting(Station::getName)
+            .containsExactly("남영역", "용산역");
+    }
+
+    @Test
+    @DisplayName("구간 목록에서 기존 구간이 있는 경우 하행역 변경")
+    void updateDownStationBySection() {
+        Sections sections = new Sections();
+        sections.add(Section.create(서울역, 용산역, Distance.valueOf(10)));
+
+        //when
+        sections.updateSection(Section.create(남영역, 용산역, Distance.valueOf(5)));
+
+        List<Station> stations = sections.getSortedStations();
+        //then
+        assertThat(stations).extracting(Station::getName)
+            .containsExactly("서울역", "남영역");
     }
 }
