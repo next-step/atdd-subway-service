@@ -41,7 +41,7 @@ public class Section extends BaseEntity {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
-        toLine(line);
+        setLine(line);
     }
 
     private Section(Station upStation, Station downStation, Distance distance) {
@@ -58,30 +58,19 @@ public class Section extends BaseEntity {
         return new Section(upStation, downStation, distance);
     }
 
-    public static Section from(Line line, Section upLineStation, Section downLineStation, Distance distance) {
-        return new Section(line, upLineStation.upStation, downLineStation.downStation, distance);
-    }
-
-    public Section toLine(Line line) {
-
+    public void setLine(Line line) {
         if (this.line != null) {
             this.line.removeSection(this);
         }
 
         this.line = line;
         line.add(this);
-
-        return this;
     }
 
     public void removeLine() {
         if (this.line != null) {
             this.line = null;
         }
-    }
-
-    public Distance plusDistance(Section other) {
-        return this.distance.plus(other.distance);
     }
 
     public boolean isIncludeStation(Station station) {
@@ -116,18 +105,6 @@ public class Section extends BaseEntity {
         return isDownStation(section.upStation);
     }
 
-    public boolean equalsStations(Section section) {
-        return upStation.equalsName(section.upStation)
-            && downStation.equalsName(section.downStation);
-    }
-
-    public boolean equalsLine(Line line) {
-        if (this.line == null) {
-            return false;
-        }
-        return this.line.equals(line);
-    }
-
     public Stream<Station> getUpDownStations() {
         return Stream.of(upStation, downStation);
     }
@@ -140,11 +117,36 @@ public class Section extends BaseEntity {
         update(this.upStation, section.upStation, distance.minus(section.distance));
     }
 
+    public void updateConnect(Section section) {
+        if (isTheUpLine(section)) {
+            update(this.upStation, section.downStation, this.distance.plus(section.distance));
+            return;
+        }
+
+        if (isTheDownLine(section)) {
+            update(section.upStation, this.downStation, this.distance.plus(section.distance));
+            return;
+        }
+    }
+
+    public boolean equalsStations(Section section) {
+        return upStation.equalsName(section.upStation)
+            && downStation.equalsName(section.downStation);
+    }
+
+    public boolean equalsLine(Line line) {
+        if (this.line == null) {
+            return false;
+        }
+        return this.line.equals(line);
+    }
+
     private void update(Station upStation, Station downStation, Distance distance) {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
+
 
     @Override
     public boolean equals(Object o) {

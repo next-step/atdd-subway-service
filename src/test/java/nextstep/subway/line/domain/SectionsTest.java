@@ -1,11 +1,14 @@
 package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import nextstep.subway.exception.CannotDeleteException;
+import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,8 +60,10 @@ public class SectionsTest {
         sections.add(Section.create(서울역, 남영역, Distance.valueOf(5)));
 
         //when&then
-        assertFalse(sections.isIncludeStationOfSection(Section.create(용산역, 노량진역, Distance.valueOf(10))));
-        assertTrue(sections.isIncludeStationOfSection(Section.create(서울역, 용산역, Distance.valueOf(10))));
+        assertFalse(
+            sections.isIncludeStationOfSection(Section.create(용산역, 노량진역, Distance.valueOf(10))));
+        assertTrue(
+            sections.isIncludeStationOfSection(Section.create(서울역, 용산역, Distance.valueOf(10))));
     }
 
     @Test
@@ -68,7 +73,7 @@ public class SectionsTest {
         sections.add(Section.create(서울역, 용산역, Distance.valueOf(10)));
 
         //when
-        sections.updateSection(Section.create(서울역, 남영역, Distance.valueOf(5)));
+        sections.updateOriginSectionByAdded(Section.create(서울역, 남영역, Distance.valueOf(5)));
 
         List<Station> stations = sections.getSortedStations();
         //then
@@ -83,11 +88,56 @@ public class SectionsTest {
         sections.add(Section.create(서울역, 용산역, Distance.valueOf(10)));
 
         //when
-        sections.updateSection(Section.create(남영역, 용산역, Distance.valueOf(5)));
+        sections.updateOriginSectionByAdded(Section.create(남영역, 용산역, Distance.valueOf(5)));
 
         List<Station> stations = sections.getSortedStations();
         //then
         assertThat(stations).extracting(Station::getName)
             .containsExactly("서울역", "남영역");
+    }
+
+    @Test
+    @DisplayName("구간 삭제")
+    void removeLineStation() {
+        // given
+        Sections sections = new Sections();
+        sections.add(Section.create(서울역, 남영역, Distance.valueOf(5)));
+        sections.add(Section.create(남영역, 용산역, Distance.valueOf(5)));
+
+        sections.removeLineStation(남영역);
+
+        List<Station> stations = sections.getSortedStations();
+
+        //then
+        assertAll(() -> {
+            assertThat(stations.size()).isEqualTo(2);
+            assertThat(stations).extracting(Station::getName)
+                .containsExactly("서울역", "용산역");
+        });
+    }
+
+    @Test
+    @DisplayName("구간 삭제 시 포함된 구간이 없는 경우 NotFoundException 발생")
+    void validateForRemoveNotInclude() {
+        // given
+        Sections sections = new Sections();
+        sections.add(Section.create(서울역, 남영역, Distance.valueOf(5)));
+        sections.add(Section.create(남영역, 용산역, Distance.valueOf(5)));
+
+        assertThatThrownBy(() -> sections.removeLineStation(노량진역))
+            .isInstanceOf(NotFoundException.class)
+            .hasMessage("역이 포함된 구간이 없습니다.");
+    }
+
+    @Test
+    @DisplayName("구간 삭제 시 구간이 하나밖에 없는 경우 CannotDeleteException 발생")
+    void validateForRemoveMinSize() {
+        // given
+        Sections sections = new Sections();
+        sections.add(Section.create(서울역, 남영역, Distance.valueOf(5)));
+
+        assertThatThrownBy(() -> sections.removeLineStation(서울역))
+            .isInstanceOf(CannotDeleteException.class)
+            .hasMessage("구간이 하나는 존재해야 합니다.");
     }
 }

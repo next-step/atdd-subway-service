@@ -11,11 +11,14 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import nextstep.subway.exception.CannotAddException;
+import nextstep.subway.exception.CannotDeleteException;
+import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
     private static final int MIN_SIZE = 1;
+    private static final int START_SECTION_INDEX = 0;
 
     @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -54,21 +57,23 @@ public class Sections {
         return sections.size() <= MIN_SIZE;
     }
 
-    public Optional<Section> findByUpStation(Station station) {
-        return sections.stream()
-            .filter(it -> it.isUpStation(station))
-            .findFirst();
-    }
-
-    public Optional<Section> findByDownStation(Station station) {
-        return sections.stream()
-            .filter(it -> it.isDownStation(station))
-            .findFirst();
-    }
-
-    public void updateSection(Section section) {
+    public void updateOriginSectionByAdded(Section section) {
         updateByUpStation(section);
         updateByDownStation(section);
+    }
+
+    public void removeLineStation(Station station) {
+        validateMinSize();
+        Section removeSection = sections.stream()
+            .filter(it -> it.isIncludeStation(station))
+            .findAny()
+            .orElseThrow(() -> new NotFoundException("역이 포함된 구간이 없습니다."));
+
+        remove(removeSection);
+
+        for (Section section: sections) {
+            section.updateConnect(removeSection);
+        }
     }
 
     boolean isAlreadySection(Section section) {
@@ -79,6 +84,22 @@ public class Sections {
     boolean isIncludeStationOfSection(Section section) {
         return getStationStream()
             .anyMatch(section::isIncludeStation);
+    }
+
+    public void validateForAdded(Section section) {
+        if (isAlreadySection(section)) {
+            throw new CannotAddException("이미 등록된 구간 입니다.");
+        }
+
+        if (!isIncludeStationOfSection(section)) {
+            throw new CannotAddException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void validateMinSize() {
+        if (isMinSize()) {
+            throw new CannotDeleteException("구간이 하나는 존재해야 합니다.");
+        }
     }
 
     private void updateByUpStation(Section section) {
@@ -114,7 +135,7 @@ public class Sections {
     }
 
     private Section findFirstSection() {
-        Section section = sections.get(0);
+        Section section = sections.get(START_SECTION_INDEX);
         Optional<Section>  optional = Optional.of(section);
         while (optional.isPresent()) {
             Section finalSection = section;

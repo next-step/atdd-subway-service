@@ -94,6 +94,7 @@ public class LineTest {
         //then
         assertThat(line.getStations()).extracting(Station::getName).containsExactly("서울역", "용산역");
 
+
     }
 
     @Test
@@ -108,7 +109,8 @@ public class LineTest {
     @Test
     @DisplayName("노선에 포함되지 않은 역 삭제 시 실패")
     void removeLineStationNonIncludeFail() {
-
+        Station 남영역 = new Station("남영역");
+        line.addLineStation(Section.create(서울역, 남영역, Distance.valueOf(5)));
         Station 강남역 = new Station("강남역");
 
         assertThatThrownBy(() -> line.removeLineStation(강남역))

@@ -2,7 +2,6 @@ package nextstep.subway.line.domain;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -10,9 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
-import nextstep.subway.exception.CannotAddException;
-import nextstep.subway.exception.CannotDeleteException;
-import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -46,8 +42,7 @@ public class Line extends BaseEntity {
         return new Line(name, color);
     }
 
-    public static Line of(String name, String color, Station upStation, Station downStation,
-        int distance) {
+    public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
         return new Line(name, color, upStation, downStation, distance);
     }
 
@@ -80,7 +75,7 @@ public class Line extends BaseEntity {
         sections.add(section);
 
         if (!section.equalsLine(this)) {
-            section.toLine(this);
+            section.setLine(this);
         }
     }
 
@@ -89,53 +84,14 @@ public class Line extends BaseEntity {
             add(section);
             return;
         }
-        validateForAdded(section);
-        sections.updateSection(section);
+
+        sections.validateForAdded(section);
+        sections.updateOriginSectionByAdded(section);
         add(section);
     }
 
     public void removeLineStation(Station station) {
-
-        Optional<Section> upLineStation = sections.findByUpStation(station);
-        Optional<Section> downLineStation = sections.findByDownStation(station);
-
-        validateForRemove(upLineStation, downLineStation);
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            addLineStationByRemove(upLineStation.get(), downLineStation.get());
-        }
-
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
-    }
-
-    private void validateForAdded(Section section) {
-        if (sections.isAlreadySection(section)) {
-            throw new CannotAddException("이미 등록된 구간 입니다.");
-        }
-
-        if (!sections.isIncludeStationOfSection(section)) {
-            throw new CannotAddException("등록할 수 없는 구간 입니다.");
-        }
-    }
-
-    private void validateForRemove(Optional<Section> upLineStation,
-        Optional<Section> downLineStation) {
-        if (!upLineStation.isPresent() && !downLineStation.isPresent()) {
-            throw new NotFoundException("역이 포함된 구간이 없습니다.");
-        }
-
-        if (sections.isMinSize()) {
-            throw new CannotDeleteException("구간이 하나는 존재해야 합니다.");
-        }
-
-    }
-
-    private void addLineStationByRemove(Section upLineStation, Section downLineStation) {
-        add(
-            Section.from(
-                this, downLineStation, upLineStation,
-                upLineStation.plusDistance(downLineStation)));
+        sections.removeLineStation(station);
     }
 
     @Override
