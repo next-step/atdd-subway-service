@@ -44,10 +44,7 @@ public class Sections {
     }
 
     private boolean handleEmptyList(boolean empty) {
-        if (empty) {
-            return true;
-        }
-        return false;
+        return empty;
     }
 
     public Station findUpStation() {
