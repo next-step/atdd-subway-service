@@ -52,6 +52,19 @@ public class AcceptanceTest {
 
     protected static ExtractableResponse<Response> get(
         String path,
+        String accessToken
+    ) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get(path)
+            .then().log().all()
+            .extract();
+    }
+
+    protected static ExtractableResponse<Response> get(
+        String path,
         Map<String, ?> pathParams,
         Map<String, ?> queryParams
     ) {
@@ -72,6 +85,22 @@ public class AcceptanceTest {
 
     protected static <T> ExtractableResponse<Response> put(
         String path,
+        String accessToken,
+        T body
+    ) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(body)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().put(path)
+            .then().log().all()
+            .extract();
+    }
+
+    protected static <T> ExtractableResponse<Response> put(
+        String path,
         Map<String, ?> pathParams,
         T body
     ) {
@@ -86,6 +115,19 @@ public class AcceptanceTest {
 
     protected static ExtractableResponse<Response> delete(String path) {
         return delete(path, new HashMap<>(), new HashMap<>());
+    }
+
+    protected static ExtractableResponse<Response> delete(
+        String path,
+        String accessToken
+    ) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().delete(path)
+            .then().log().all()
+            .extract();
     }
 
     protected static ExtractableResponse<Response> delete(

@@ -25,7 +25,7 @@ public class AuthService {
         Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(AuthorizationException::new);
         member.checkPassword(request.getPassword());
 
-        String token = jwtTokenProvider.createToken(request.getEmail());
+        String token = jwtTokenProvider.createToken(String.valueOf(member.getId()));
         return new TokenResponse(token);
     }
 
@@ -34,8 +34,8 @@ public class AuthService {
             throw new AuthorizationException();
         }
 
-        String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Long id = Long.parseLong(jwtTokenProvider.getPayload(credentials));
+        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }
