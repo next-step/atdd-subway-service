@@ -52,3 +52,15 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+
+## step1 요구사항
+- [X] LineSectionAcceptanceTest 리팩터링
+  - [X] 구간 인수 테스트 통합
+  - [X] RestAssured http 메소 유틸로 추출
+- [X] LineService 리팩터링 
+  - [X] Sections 모델 추가
+  - [X] 노선에서 역 목록 불러오기
+  - [X] 역 추가 함수
+  - [X] 역 삭제 함수
+  - [X] 응답 모델에 엔티티로부터 응답 모델로 변경 함수 추가
