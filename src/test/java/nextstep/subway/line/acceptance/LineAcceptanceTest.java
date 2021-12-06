@@ -129,7 +129,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 			.body(params)
 			.when().post("/lines")
 			.then().log().all()
-            .extract();
+			.extract();
 	}
 
 	public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
@@ -202,8 +202,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
 		assertThat(response.as(LineResponse.class)).isNotNull();
 	}
 
-	public static void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response,
-		List<ExtractableResponse<Response>> createdResponses) {
+	public static void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
 		List<Long> expectedLineIds = createdResponses.stream()
 			.map(it -> Long.parseLong(it.header("Location").split("/")[2]))
 			.collect(Collectors.toList());

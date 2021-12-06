@@ -34,21 +34,22 @@ public class LineService {
 		Station upStation = stationService.findById(request.getUpStationId());
 		Station downStation = stationService.findById(request.getDownStationId());
 		Line persistLine = lineRepository.save(request.toLine(upStation, downStation));
-		List<StationResponse> stations = persistLine.getStations().stream()
-			.map(StationResponse::of)
-			.collect(Collectors.toList());
+		List<StationResponse> stations = getStationResponses(persistLine);
 		return LineResponse.of(persistLine, stations);
 	}
 
 	public List<LineResponse> findLines() {
-		List<Line> persistLines = lineRepository.findAll();
-		return persistLines.stream()
+		return lineRepository.findAll().stream()
 			.map(line -> {
-				List<StationResponse> stations = getStations(line).stream()
-					.map(it -> StationResponse.of(it))
-					.collect(Collectors.toList());
+				List<StationResponse> stations = getStationResponses(line);
 				return LineResponse.of(line, stations);
 			})
+			.collect(Collectors.toList());
+	}
+
+	private List<StationResponse> getStationResponses(Line line) {
+		return line.getStations().stream()
+			.map(StationResponse::of)
 			.collect(Collectors.toList());
 	}
 
