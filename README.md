@@ -54,6 +54,14 @@ npm run dev
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
 
 
+## step2 요구사항
+- [X] 최단 경로 조회 인수 테스트 만들기
+- [X] 최단 경로 조회 기능 구현하기
+- [X] 예외 처리
+  - [X] 출발역과 도착역이 같은 경우
+  - [X] 출발역과 도착역이 연결이 되어 있지 않은 경우
+  - [X] 존재하지 않우 출발역이나 도착역을 조회한 경우
+
 ## step1 요구사항
 - [X] LineSectionAcceptanceTest 리팩터링
   - [X] 구간 인수 테스트 통합

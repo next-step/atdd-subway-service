@@ -12,7 +12,7 @@ import nextstep.subway.station.domain.Station;
 @Entity
 public class Section {
 
-    public static final Section DUMMY_SECTION = new Section();
+    public static final Section EMPTY = new Section();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -87,8 +87,8 @@ public class Section {
         this.distance += section.distance;
     }
 
-    public boolean isDummy() {
-        return this == DUMMY_SECTION;
+    public boolean isEmpty() {
+        return this == EMPTY;
     }
 
     public boolean isEqualToDownStation(Station station) {
