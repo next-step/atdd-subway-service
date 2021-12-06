@@ -37,8 +37,8 @@ public class Sections {
         while (isExistNextSection(station)) {
             Section nextSection = findNextSection(station);
             station = nextSection.getDownStation();
+            stations.add(station);
         }
-        stations.add(station);
         return stations;
     }
 
