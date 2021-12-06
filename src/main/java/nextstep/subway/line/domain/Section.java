@@ -77,4 +77,16 @@ public class Section {
         this.downStation = station;
         this.distance.subtract(newDistance);
     }
+
+    public boolean hasSameStations(final Section section) {
+        return hasSameUpStation(section) && hasSameDownStation(section);
+    }
+
+    public boolean hasSameUpStation(Section section) {
+        return this.upStation == section.getUpStation();
+    }
+
+    public boolean hasSameDownStation(Section section) {
+        return this.downStation == section.getDownStation();
+    }
 }

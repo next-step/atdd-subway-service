@@ -138,8 +138,7 @@ public class Sections {
 
     private void validateNotDuplicate(final Section targetSection) {
         sections.stream()
-            .filter(section -> section.getUpStation() == targetSection.getUpStation()
-                && section.getDownStation() == targetSection.getDownStation())
+            .filter(section -> section.hasSameStations(targetSection))
             .findFirst()
             .ifPresent(section -> {
                 throw new DuplicateSectionException();
