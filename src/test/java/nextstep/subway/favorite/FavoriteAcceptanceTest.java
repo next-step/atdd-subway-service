@@ -64,10 +64,39 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성됨(createResponse);
 
         // when
+        Long createdFavoritesId = Long.valueOf(createResponse.header("Location").split("/")[2]);
         ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청(사용자);
         // then
-        Long createdFavoritesId = Long.valueOf(createResponse.header("Location").split("/")[2]);
         즐겨찾기_목록이_조회된다(createdFavoritesId, findResponse);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(사용자, createdFavoritesId);
+        // then
+        즐겨찾기_삭제됨(createdFavoritesId, deleteResponse);
+    }
+
+    private void 즐겨찾기_삭제됨(Long createdFavoritesId, ExtractableResponse<Response> deleteResponse) {
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        ExtractableResponse<Response> findResponse2 = 즐겨찾기_조회_요청(사용자, createdFavoritesId);
+        assertThat(findResponse2.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse tokenResponse, Long id) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", "Bearer " + tokenResponse.getAccessToken())
+                .when().delete("/favorites/{id}", id)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_조회_요청(TokenResponse tokenResponse, Long id) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", "Bearer " + tokenResponse.getAccessToken())
+                .when().get("/favorites/{id}", id)
+                .then().log().all().extract();
     }
 
     private void 즐겨찾기_목록이_조회된다(Long createdFavoritesId, ExtractableResponse<Response> findResponse) {
