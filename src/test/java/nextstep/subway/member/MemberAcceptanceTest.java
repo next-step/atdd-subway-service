@@ -46,6 +46,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(createResponse);
+
         // then
         회원_정보_조회됨(findResponse, EMAIL, AGE);
 
@@ -145,7 +146,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(memberResponse.getEmail()).isEqualTo(request.getEmail());
     }
 
-    private TokenRequest 회원_등록되어_있음(String email, String password, int age) {
+    public static TokenRequest 회원_등록되어_있음(String email, String password, int age) {
         회원_생성을_요청(email, password, age);
         return new TokenRequest(email, password);
     }
