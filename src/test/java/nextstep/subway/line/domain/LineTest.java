@@ -39,7 +39,7 @@ public class LineTest {
         Station 남영역 = new Station("남영역");
 
         //when
-        line.addLineStation(서울역, 남영역, 5);
+        line.addLineStation(Section.create(서울역, 남영역, Distance.valueOf(5)));
 
         //then
         assertThat(line.getStations()).extracting(Station::getName).containsExactly("서울역", "남영역", "용산역");
@@ -51,7 +51,7 @@ public class LineTest {
     void noSectionLineAddStation() {
         Line line = Line.of("1호선", "blue");
 
-        line.addLineStation(서울역, 용산역, 10);
+        line.addLineStation(Section.create(서울역, 용산역, Distance.valueOf(5)));
 
         //then
         assertThat(line.getStations()).extracting(Station::getName).containsExactly("서울역", "용산역");
@@ -62,7 +62,7 @@ public class LineTest {
     void addLineStationExistsFail() {
 
         assertThatThrownBy(
-            () -> line.addLineStation(서울역, 용산역, 12))
+            () -> line.addLineStation(Section.create(서울역, 용산역, Distance.valueOf(12))))
             .isInstanceOf(RuntimeException.class)
             .hasMessage("이미 등록된 구간 입니다.");
     }
@@ -75,7 +75,7 @@ public class LineTest {
         Station 역삼역 = new Station("역삼역");
 
         assertThatThrownBy(
-            () -> line.addLineStation(강남역, 역삼역, 10))
+            () -> line.addLineStation(Section.create(강남역, 역삼역, Distance.valueOf(10))))
             .isInstanceOf(RuntimeException.class)
             .hasMessage("등록할 수 없는 구간 입니다.");
     }
@@ -85,7 +85,7 @@ public class LineTest {
     void removeLineStation() {
 
         Station 남영역 = new Station("남영역");
-        line.addLineStation(서울역, 남영역, 5);
+        line.addLineStation(Section.create(서울역, 남영역, Distance.valueOf(5)));
 
         //when
         line.removeLineStation(남영역);

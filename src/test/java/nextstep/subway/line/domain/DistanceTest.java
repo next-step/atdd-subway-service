@@ -21,14 +21,14 @@ class DistanceTest {
     @DisplayName("길이 빼기 (10-5=5)")
     @Test
     void minus() {
-        Distance minus = Distance.valueOf(10).minus(5);
+        Distance minus = Distance.valueOf(10).minus(Distance.valueOf(5));
         assertThat(minus.get()).isEqualTo(5);
     }
 
     @DisplayName("길이 빼기 시 오른쪽 변수가 더 많은 경우 NotValidateException 실패")
     @Test
     void minusValidate() {
-        assertThatThrownBy(() -> Distance.valueOf(5).minus(10))
+        assertThatThrownBy(() -> Distance.valueOf(5).minus(Distance.valueOf(10)))
             .isInstanceOf(NotValidateException.class)
             .hasMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요.");
     }

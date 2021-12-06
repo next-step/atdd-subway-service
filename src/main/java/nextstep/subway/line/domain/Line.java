@@ -68,15 +68,11 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getStations() {
-        return this.sections.getStations();
+        return this.sections.getSortedStations();
     }
 
     public void removeSection(Section section) {
         sections.remove(section);
-    }
-
-    public boolean hasSection(Section section) {
-        return sections.contains(section);
     }
 
     public void addSection(Section section) {
@@ -89,16 +85,15 @@ public class Line extends BaseEntity {
         }
     }
 
-    public void addLineStation(Station upStation, Station downStation, int distance) {
+    public void addLineStation(Section section) {
         if (sections.isEmptyStation()) {
-            Section.create(this, upStation, downStation, Distance.valueOf(distance));
+            addSection(section);
             return;
         }
+        validateForAdded(section);
 
-        validateForAdded(upStation, downStation);
-
-        sections.updateSection(upStation, downStation, distance);
-        addSection(Section.create(this, upStation, downStation, Distance.valueOf(distance)));
+        sections.updateSection(section);
+        addSection(section);
     }
 
     public void removeLineStation(Station station) {
@@ -116,13 +111,12 @@ public class Line extends BaseEntity {
         downLineStation.ifPresent(it -> sections.remove(it));
     }
 
-    private void validateForAdded(Station upStation, Station downStation) {
-        if (sections.anyMatchStation(upStation) && sections.anyMatchStation(downStation)) {
+    private void validateForAdded(Section section) {
+        if (sections.isAlreadySection(section)) {
             throw new CannotAddException("이미 등록된 구간 입니다.");
         }
 
-        if (!sections.isEmptyStation() && sections.noneMatchStation(upStation)
-            && sections.noneMatchStation(downStation)) {
+        if (!sections.isIncludeStationOfSection(section)) {
             throw new CannotAddException("등록할 수 없는 구간 입니다.");
         }
     }
@@ -143,6 +137,10 @@ public class Line extends BaseEntity {
             Section.from(
                 this, downLineStation, upLineStation,
                 upLineStation.plusDistance(downLineStation)));
+    }
+
+    private boolean hasSection(Section section) {
+        return sections.contains(section);
     }
 
     @Override

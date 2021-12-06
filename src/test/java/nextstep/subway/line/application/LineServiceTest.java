@@ -159,7 +159,7 @@ class LineServiceTest {
         when(lineRepository.findById(ArgumentMatchers.any()))
             .thenReturn(Optional.of(line));
 
-        line.addLineStation(seoulStation, addStation, 5);
+        line.addLineStation(Section.create(seoulStation, addStation, Distance.valueOf(5)));
 
         lineService.removeLineStation(1L, 2L);
 

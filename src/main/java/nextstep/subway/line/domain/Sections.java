@@ -3,10 +3,10 @@ package nextstep.subway.line.domain;
 import static nextstep.subway.utils.Utils.distinctByKey;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -28,11 +28,9 @@ public class Sections {
         }
     }
 
-    public List<Station> getStations () {
-        return this.sections.stream()
-            .sorted()
-            .map(section -> section.getUpDownStations())
-            .flatMap(Collection::stream)
+    public List<Station> getSortedStations() {
+        return getSortedSections().stream()
+            .flatMap(it -> it.getUpDownStations())
             .filter(distinctByKey(Station::getName))
             .collect(Collectors.toList());
     }
@@ -47,16 +45,8 @@ public class Sections {
             .anyMatch(it -> it.equalsStations(section));
     }
 
-    public boolean anyMatchStation(Station station) {
-        return getStations().stream().anyMatch(it -> it.equalsName(station));
-    }
-
-    public boolean noneMatchStation(Station station) {
-        return getStations().stream().noneMatch(it -> it.equalsName(station));
-    }
-
     public boolean isEmptyStation() {
-        return getStations().isEmpty();
+        return getStationStream().collect(Collectors.toList()).isEmpty();
     }
 
     public boolean isMinSize() {
@@ -75,27 +65,68 @@ public class Sections {
             .findFirst();
     }
 
-    public void updateSection(Station upStation, Station downStation, int distance) {
-        boolean anyMatchUpStation = anyMatchStation(upStation);
-        boolean anyMatchDownStation = anyMatchStation(downStation);
+    public void updateSection(Section section) {
+        updateByUpStation(section);
+        updateByDownStation(section);
+    }
 
-        if (anyMatchUpStation) {
-            updateByUpStation(upStation, downStation, distance);
+    private void updateByUpStation(Section section) {
+        sections.stream()
+            .filter(it -> it.isUpStationOfSection(section))
+            .findFirst()
+            .ifPresent(it -> it.updateUpStationBySection(section));
+    }
+
+    private void updateByDownStation(Section section) {
+        sections.stream()
+            .filter(it -> it.isDownStationOfSection(section))
+            .findFirst()
+            .ifPresent(it -> it.updateDownStationBySection(section));
+    }
+
+    private List<Section> getSortedSections() {
+        List<Section> list = new ArrayList<>();
+        Section section = findFirstSection();
+        list.add(section);
+
+        Optional<Section>  optional = Optional.of(section);
+        while (optional.isPresent()) {
+            Section finalSection = section;
+            optional = sections.stream()
+                .filter(finalSection::isTheUpLine)
+                .findFirst();
+            section = optional.orElse(finalSection);
+            optional.ifPresent(list::add);
         }
 
-        if (anyMatchDownStation) {
-            updateByDownStation(upStation, downStation, distance);
+        return list;
+    }
+
+    private Section findFirstSection() {
+        Section section = sections.get(0);
+        Optional<Section>  optional = Optional.of(section);
+        while (optional.isPresent()) {
+            Section finalSection = section;
+            optional = sections.stream()
+                .filter(finalSection::isTheDownLine)
+                .findFirst();
+            section = optional.orElse(finalSection);
         }
+        return section;
     }
 
-    private void updateByUpStation(Station upStation, Station downStation, int distance) {
-        findByUpStation(upStation)
-            .ifPresent(it -> it.updateUpStation(downStation, distance));
+    private Stream<Station> getStationStream() {
+        return sections.stream()
+            .flatMap(Section::getUpDownStations);
     }
 
-    private void updateByDownStation(Station upStation, Station downStation, int distance) {
-        findByDownStation(downStation)
-            .ifPresent(it -> it.updateDownStation(upStation, distance));
+    public boolean isAlreadySection(Section section) {
+        return sections.stream()
+            .anyMatch(it -> it.equalsStations(section));
     }
 
+    public boolean isIncludeStationOfSection(Section section) {
+        return getStationStream()
+            .anyMatch(section::isIncludeStation);
+    }
 }

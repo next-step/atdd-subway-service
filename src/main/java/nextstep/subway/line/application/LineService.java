@@ -2,8 +2,10 @@ package nextstep.subway.line.application;
 
 import java.util.List;
 import nextstep.subway.exception.NotFoundException;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.LineUpdateRequest;
@@ -60,7 +62,10 @@ public class LineService {
         Station upStation = findStation(request.getUpStationId());
         Station downStation = findStation(request.getDownStationId());
 
-        line.addLineStation(upStation, downStation, request.getDistance());
+        Section section =
+            Section.create(upStation, downStation, Distance.valueOf(request.getDistance()));
+
+        line.addLineStation(section);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {

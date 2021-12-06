@@ -22,11 +22,11 @@ public final class Distance {
         return new Distance(distance);
     }
 
-    public Distance minus(Integer newDistance) {
-        if (this.distance <= newDistance) {
+    public Distance minus(Distance other) {
+        if (this.distance <= other.distance) {
             throw new NotValidateException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요.");
         }
-        return valueOf(this.distance - newDistance);
+        return valueOf(this.distance - other.distance);
     }
 
     public Integer get() {
@@ -65,4 +65,11 @@ public final class Distance {
         return Objects.hash(distance);
     }
 
+
+    @Override
+    public String toString() {
+        return "Distance{" +
+            "distance=" + distance +
+            '}';
+    }
 }

@@ -1,8 +1,7 @@
 package nextstep.subway.line.domain;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -15,7 +14,7 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 @Entity
-public class Section extends BaseEntity implements Comparable<Section>{
+public class Section extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -45,8 +44,18 @@ public class Section extends BaseEntity implements Comparable<Section>{
         toLine(line);
     }
 
+    private Section(Station upStation, Station downStation, Distance distance) {
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
+    }
+
     public static Section create(Line line, Station upStation, Station downStation, Distance distance) {
         return new Section(line, upStation, downStation, distance);
+    }
+
+    public static Section create(Station upStation, Station downStation, Distance distance) {
+        return new Section(upStation, downStation, distance);
     }
 
     public static Section from(Line line, Section upLineStation, Section downLineStation, Distance distance) {
@@ -54,6 +63,7 @@ public class Section extends BaseEntity implements Comparable<Section>{
     }
 
     public Section toLine(Line line) {
+
         if (this.line != null) {
             this.line.removeSection(this);
         }
@@ -74,13 +84,32 @@ public class Section extends BaseEntity implements Comparable<Section>{
         return this.distance.plus(other.distance);
     }
 
+    public boolean isIncludeStation(Station station) {
+        return isUpStation(station) || isDownStation(station);
+    }
+
+    public boolean isDownStationOfSection(Section section) {
+        return this.downStation.equalsName(section.downStation);
+    }
+
+    public boolean isUpStationOfSection(Section section) {
+        return this.upStation.equalsName(section.upStation);
+    }
+
     public boolean isUpStation(Station upStation) {
-        System.out.println(upStation);
         return this.upStation.equalsName(upStation);
     }
 
     public boolean isDownStation(Station station) {
         return this.downStation.equalsName(station);
+    }
+
+    public boolean isTheDownLine(Section section) {
+        return isUpStation(section.downStation);
+    }
+
+    public boolean isTheUpLine(Section section) {
+        return isDownStation(section.upStation);
     }
 
     public boolean equalsStations(Section section) {
@@ -95,35 +124,22 @@ public class Section extends BaseEntity implements Comparable<Section>{
         return this.line.equals(line);
     }
 
-    public List<Station> getUpDownStations() {
-        return Arrays.asList(upStation, downStation);
+    public Stream<Station> getUpDownStations() {
+        return Stream.of(upStation, downStation);
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        update(station, this.downStation, distance.minus(newDistance));
+    public void updateUpStationBySection(Section section){
+        update(section.downStation, this.downStation, distance.minus(section.distance));
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        update(this.upStation, station, distance.minus(newDistance));
+    public void updateDownStationBySection(Section section) {
+        update(this.upStation, section.upStation, distance.minus(section.distance));
     }
 
     private void update(Station upStation, Station downStation, Distance distance) {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
-    }
-
-    @Override
-    public int compareTo(Section o) {
-        if (this.upStation.equalsName(o.downStation)) {
-            return 1;
-        }
-
-        if (this.downStation.equalsName(o.upStation)) {
-            return -1;
-        }
-
-        return 0;
     }
 
     @Override
@@ -141,6 +157,18 @@ public class Section extends BaseEntity implements Comparable<Section>{
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+
+    @Override
+    public String toString() {
+        return "Section{" +
+            "id=" + id +
+            ", line=" + line +
+            ", upStation=" + upStation +
+            ", downStation=" + downStation +
+            ", distance=" + distance +
+            '}';
     }
 
 
