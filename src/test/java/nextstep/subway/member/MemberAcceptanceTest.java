@@ -70,8 +70,12 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then
         내_정보_수정됨(updateResponse);
 
+        // given
+        ExtractableResponse<Response> newCreateTokenResponse = 토큰_발급을_요청(NEW_EMAIL, NEW_PASSWORD);
+        토큰_발급_성공(newCreateTokenResponse);
+        String newAccessToken = newCreateTokenResponse.as(TokenResponse.class).getAccessToken();
         // when
-        ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(accessToken);
+        ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(newAccessToken);
         // then
         내_정보_삭제됨(deleteResponse);
     }
