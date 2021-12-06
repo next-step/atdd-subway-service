@@ -56,25 +56,17 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithWrongBearerAuth() {
         // given
-        로그인_되어_있음("suhyun@email.com", "1234", 22);
+        MemberAcceptanceTest.회원_등록되어_있음(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD, MemberAcceptanceTest.AGE);
+        로그인_되어_있음(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD);
 
         // when
-        ExtractableResponse<Response> response = 내_정보_조회_요청("wrong_token");
+        ExtractableResponse<Response> response = MemberAcceptanceTest.내_정보_조회_요청("wrong_token");
 
         // then
         내_정보_조회_실패(response);
     }
 
-    private ExtractableResponse<Response> 내_정보_조회_요청(String accessToken) {
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header("Authorization", "Bearer " + accessToken)
-                .when().get("/members/me")
-                .then().log().all().extract();
-    }
-
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    private static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest tokenRequest = new TokenRequest(email, password);
         return RestAssured
                 .given().log().all()
@@ -84,17 +76,16 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private TokenResponse 로그인_되어_있음(String email, String password, Integer age) {
-        MemberResponse user = MemberAcceptanceTest.회원_등록되어_있음(email, password, age);
+    public static TokenResponse 로그인_되어_있음(String email, String password) {
         ExtractableResponse<Response> response = 로그인_요청(email, password);
         return 로그인_됨(response);
     }
 
-    private TokenResponse 로그인_됨(ExtractableResponse<Response> response) {
+    private static TokenResponse 로그인_됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         TokenResponse tokenResponse = response.jsonPath().getObject(".", TokenResponse.class);
-        ExtractableResponse<Response> myInfoResponse = 내_정보_조회_요청(tokenResponse.getAccessToken());
-        assertThat(myInfoResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        ExtractableResponse<Response> myInfoResponse = MemberAcceptanceTest.내_정보_조회_요청(tokenResponse.getAccessToken());
+        MemberAcceptanceTest.내_정보_조회됨(myInfoResponse);
         return tokenResponse;
     }
 
