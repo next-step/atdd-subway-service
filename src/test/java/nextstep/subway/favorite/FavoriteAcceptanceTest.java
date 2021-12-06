@@ -4,18 +4,22 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.favorites.dto.FavoriteRequest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청함;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인을_성공하면_토큰을_발급받는다;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Feature: 즐겨찾기를 관리한다.
@@ -37,37 +41,49 @@ import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록�
  */
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
+    private static final String BASE_URI = "/favorites";
     private String 토큰;
+    private StationResponse 인천;
+    private StationResponse 소요산;
 
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
-        일호선_등록되어_있음();
+        LineResponse 일호선 = 일호선_등록되어_있음();
+        인천 = 일호선.getStations().get(0);
+        소요산 = 일호선.getStations().get(1);
         토큰 = 로그인을_성공하면_토큰을_발급받는다(로그인_요청함(회원_등록되어_있음(EMAIL, PASSWORD, AGE)));
     }
 
-    @DisplayName("")
+    @DisplayName("즐겨찾기를 관리한다.")
     @Test
     void test() {
         // given
+        FavoriteRequest request = FavoriteRequest.of(인천.getId().toString(), 소요산.getId().toString());
 
         // when
-        RestAssured
+        ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
-                .when()
-                .then().log().all();
+                .auth().oauth2(토큰)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post(BASE_URI)
+                .then().log().all().extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
 
         // then
     }
 
-    private void 일호선_등록되어_있음() {
+    private LineResponse 일호선_등록되어_있음() {
         StationResponse 인천 = 지하철역_등록되어_있음("인천").as(StationResponse.class);
         StationResponse 소요산 = 지하철역_등록되어_있음("소요산").as(StationResponse.class);
 
         ExtractableResponse<Response> response = 지하철_노선_등록되어_있음(new LineRequest("일호선", "남색", 인천.getId(), 소요산.getId(), 100));
 
-        LineResponse lineResponse = response.jsonPath().getObject("", LineResponse.class);
+        return response.jsonPath().getObject("", LineResponse.class);
     }
 
 

@@ -2,21 +2,28 @@ package nextstep.subway.member.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.favorites.domain.Favorite;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String email;
+
     private String password;
+
     private Integer age;
+
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    private List<Favorite> favorites = new ArrayList<>();
 
     protected Member() {
     }
@@ -25,6 +32,22 @@ public class Member extends BaseEntity {
         this.email = email;
         this.password = password;
         this.age = age;
+    }
+
+    public void update(Member member) {
+        this.email = member.email;
+        this.password = member.password;
+        this.age = member.age;
+    }
+
+    public void checkPassword(String password) {
+        if (!StringUtils.equals(this.password, password)) {
+            throw new AuthorizationException();
+        }
+    }
+
+    public void addFavorite(Favorite favorite) {
+        this.favorites.add(favorite.by(this));
     }
 
     public Long getId() {
@@ -43,15 +66,7 @@ public class Member extends BaseEntity {
         return age;
     }
 
-    public void update(Member member) {
-        this.email = member.email;
-        this.password = member.password;
-        this.age = member.age;
-    }
-
-    public void checkPassword(String password) {
-        if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
-        }
+    public List<Favorite> getFavorites() {
+        return favorites;
     }
 }
