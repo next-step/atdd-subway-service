@@ -1,6 +1,6 @@
-package nextstep.subway.auth.infrastructure;
+package nextstep.subway.path.acceptance.infrastructure;
 
-import static nextstep.subway.path.domain.PathFixtures.*;
+import static nextstep.subway.path.acceptance.domain.PathFixtures.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;

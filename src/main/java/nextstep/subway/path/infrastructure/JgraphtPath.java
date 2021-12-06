@@ -11,7 +11,9 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 
+@Component
 public class JgraphtPath implements PathFactory {
 
     private final WeightedMultigraph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(

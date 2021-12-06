@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.acceptance.domain;
 
 import java.util.Arrays;
 import java.util.List;
