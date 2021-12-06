@@ -1,8 +1,6 @@
 package nextstep.subway.line.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import nextstep.subway.common.CannotSectionAddException;
 import nextstep.subway.common.DuplicateSectionException;
@@ -57,5 +55,14 @@ class SectionsTest {
 
         assertThatThrownBy(() -> sections.addSection(정자_광교_구간))
             .isInstanceOf(CannotSectionAddException.class);
+    }
+
+    @Test
+    void test_등록되어있지않은_역을_제거하려고하면_예외_발생() {
+        Sections sections = new Sections();
+        sections.addSection(강남_판교_구간);
+
+        assertThatThrownBy(() -> sections.removeStation(null, 광교역))
+            .isInstanceOf(SectionNotRemovableException.class);
     }
 }

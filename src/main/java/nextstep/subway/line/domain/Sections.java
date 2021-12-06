@@ -28,54 +28,19 @@ public class Sections {
         return sections;
     }
 
-    public Optional<Section> getDownStationMatchSection(final Station downStation) {
-        return sections.stream()
-            .filter(it -> it.getDownStation() == downStation)
-            .findFirst();
-    }
-
-    public Optional<Section> getUpStationMatchSection(final Station upStation) {
-        return sections.stream()
-            .filter(it -> it.getUpStation() == upStation)
-            .findFirst();
-    }
-
     public void removeStation(final Line line, final Station station) {
         validateMinimumSectionSize();
+        validateRemovable(station);
 
-        Optional<Section> upLineStation = getUpStationMatchSection(station);
-        Optional<Section> downLineStation = getDownStationMatchSection(station);
+        Optional<Section> upSection = getUpStationMatchSection(station);
+        Optional<Section> downSection = getDownStationMatchSection(station);
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            Distance newDistance = upLineStation.get().getDistance()
-                .add(downLineStation.get().getDistance());
-            sections.add(Section.of(line, newUpStation, newDownStation, newDistance.getDistance()));
+        if (upSection.isPresent() && downSection.isPresent()) {
+            sections.add(Section.merge(line, upSection.get(), downSection.get()));
         }
 
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
-    }
-
-    private void validateMinimumSectionSize() {
-        if (sections.size() <= MINIMUM_SECTION_COUNT_LIMIT) {
-            throw new SectionNotRemovableException(
-                String.format("노선에는 최소 %d개의 구간이 있어야 합니다.", MINIMUM_SECTION_COUNT_LIMIT));
-        }
-    }
-
-    public Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Optional<Section> nextLineStation = getDownStationMatchSection(downStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
+        upSection.ifPresent(it -> sections.remove(it));
+        downSection.ifPresent(it -> sections.remove(it));
     }
 
     public List<Station> getStations() {
@@ -112,6 +77,44 @@ public class Sections {
         updateDownStationMatchSection(section);
 
         sections.add(section);
+    }
+
+    private Station findUpStation() {
+        Station downStation = sections.get(0).getUpStation();
+        while (downStation != null) {
+            Optional<Section> nextLineStation = getDownStationMatchSection(downStation);
+            if (!nextLineStation.isPresent()) {
+                break;
+            }
+            downStation = nextLineStation.get().getUpStation();
+        }
+
+        return downStation;
+    }
+
+    private Optional<Section> getDownStationMatchSection(final Station downStation) {
+        return sections.stream()
+            .filter(it -> it.getDownStation() == downStation)
+            .findFirst();
+    }
+
+    private Optional<Section> getUpStationMatchSection(final Station upStation) {
+        return sections.stream()
+            .filter(it -> it.getUpStation() == upStation)
+            .findFirst();
+    }
+
+    private void validateRemovable(final Station station) {
+        if (!isStationExists(station)) {
+            throw new SectionNotRemovableException("노선에 등록되어 있지 않은 역을 제거할 수 없습니다.");
+        }
+    }
+
+    private void validateMinimumSectionSize() {
+        if (sections.size() <= MINIMUM_SECTION_COUNT_LIMIT) {
+            throw new SectionNotRemovableException(
+                String.format("노선에는 최소 %d개의 구간이 있어야 합니다.", MINIMUM_SECTION_COUNT_LIMIT));
+        }
     }
 
     private void updateUpStationMatchSection(final Section targetSection) {

@@ -48,6 +48,13 @@ public class Section {
         return new Section(line, upStation, downStation, distance);
     }
 
+    public static Section merge(final Line line, final Section upSection, final Section downSection) {
+        Station newUpStation = downSection.getUpStation();
+        Station newDownStation = upSection.getDownStation();
+        Distance newDistance = upSection.getDistance().add(downSection.getDistance());
+        return new Section(line, newUpStation, newDownStation, newDistance.getDistance());
+    }
+
     public Long getId() {
         return id;
     }
