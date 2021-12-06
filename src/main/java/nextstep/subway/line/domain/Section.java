@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Optional;
 
 @Entity
 public class Section {
@@ -32,6 +33,16 @@ public class Section {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public Section(Station upStation, Station downStation, int distance) {
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
+    }
+
+    public static Section mergeSections(Section sameUpStation, Section sameDownStation) {
+        return new Section(sameDownStation.upStation, sameUpStation.downStation, sameUpStation.distance + sameDownStation.distance);
     }
 
     public Long getId() {
@@ -68,5 +79,9 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public void setSameLine(Optional<Section> sameUpStation) {
+        this.line = sameUpStation.get().line;
     }
 }

@@ -42,4 +42,10 @@ class LineTest extends AcceptanceTest {
         assertThat(_2호선.getStations()).containsExactlyElementsOf(Arrays.asList(강남역, 역삼역, 선릉역));
     }
 
+    @DisplayName("역을 제거한다")
+    @Test
+    void removeLineStationTest() {
+        _2호선.removeLineStation(역삼역);
+        assertThat(_2호선.getStations()).containsExactlyElementsOf(Arrays.asList(강남역, 선릉역));
+    }
 }

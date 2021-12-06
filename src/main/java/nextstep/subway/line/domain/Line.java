@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.line.dto.LineRequest;
+import nextstep.subway.line.exception.DeleteOnlySectionException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 @Entity
 public class Line extends BaseEntity {
     public static final int DIFFERENCE_SECTIONS_STATIONS_SIZE = 1;
+    public static final int CANNOT_DELETE_SIZE = 1;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -104,5 +106,40 @@ public class Line extends BaseEntity {
         upStations.removeAll(downStations);
 
         return upStations.get(0);
+    }
+
+    public void removeLineStation(Station station) {
+        validateOnlySection();
+        Optional<Section> sameUpStation = sections.stream().filter(section -> section.getUpStation().equals(station)).findFirst();
+        Optional<Section> sameDownStation = sections.stream().filter(section -> section.getDownStation().equals(station)).findFirst();
+
+        if (removeMiddleStation(sameUpStation, sameDownStation)) return;
+        removeEndStation(sameUpStation, sameDownStation);
+    }
+
+    private void validateOnlySection() {
+        if (sections.size() == CANNOT_DELETE_SIZE) {
+            throw new DeleteOnlySectionException();
+        }
+    }
+
+    private void removeEndStation(Optional<Section> sameUpStation, Optional<Section> sameDownStation) {
+        if (!sameUpStation.isPresent()) {
+            sections.remove(sameDownStation.get());
+            return;
+        }
+        sections.remove(sameUpStation.get());
+    }
+
+    private boolean removeMiddleStation(Optional<Section> sameUpStation, Optional<Section> sameDownStation) {
+        if (sameUpStation.isPresent() && sameDownStation.isPresent()) {
+            sections.remove(sameUpStation.get());
+            sections.remove(sameDownStation.get());
+            Section newSection = Section.mergeSections(sameUpStation.get(), sameDownStation.get());
+            sections.add(newSection);
+            newSection.setSameLine(sameUpStation);
+            return true;
+        }
+        return false;
     }
 }
