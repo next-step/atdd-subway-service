@@ -27,7 +27,7 @@ public class LineTest {
         Station downStation = new Station(2L, "중곡역");
         Line line = new Line("7호선", "bg-red-600", upStation, downStation, 10);
 
-        List<Station> stations = line.getStations();
+        List<Station> stations = line.getSortedStations();
 
         assertThat(stations).isNotNull();
         assertThat(stations).isEqualTo(Arrays.asList(upStation, downStation));

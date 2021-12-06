@@ -61,8 +61,8 @@ public class Line extends BaseEntity {
         return sections;
     }
 
-    public List<Station> getStations() {
-        if(getSections().isEmpty()) {
+    public List<Station> getSortedStations() {
+        if(sections.isEmpty()) {
             return Arrays.asList();
         }
 
@@ -72,7 +72,7 @@ public class Line extends BaseEntity {
 
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = getSections().stream()
+            Optional<Section> nextLineStation = sections.stream()
                     .filter(it -> it.getUpStation() == finalDownStation)
                     .findFirst();
             if (!nextLineStation.isPresent()) {
@@ -86,10 +86,10 @@ public class Line extends BaseEntity {
     }
 
     private Station findUpStation() {
-        Station downStation = getSections().get(0).getUpStation();
+        Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = getSections().stream()
+            Optional<Section> nextLineStation = sections.stream()
                     .filter(it -> it.getDownStation() == finalDownStation)
                     .findFirst();
             if (!nextLineStation.isPresent()) {
@@ -97,7 +97,6 @@ public class Line extends BaseEntity {
             }
             downStation = nextLineStation.get().getUpStation();
         }
-
         return downStation;
     }
 }
