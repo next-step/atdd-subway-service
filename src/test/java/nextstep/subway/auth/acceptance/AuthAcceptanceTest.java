@@ -8,6 +8,7 @@ import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.MemberAcceptanceTest;
+import org.assertj.core.api.AbstractIntegerAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,14 +18,17 @@ import org.springframework.http.MediaType;
 
 import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
+    private TokenRequest 등록된_사용자_로그인_요청 = TokenRequest.of(EMAIL, PASSWORD);
+    private TokenRequest 등록되지_않은_사용자_로그인_요청 = TokenRequest.of(anyString(), anyString());
+    private TokenRequest 비밀번호_불일치_로그인_요청 = TokenRequest.of(EMAIL, anyString());
+    private static final String 유효하지_않은_토큰_회원_미존재 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJub3Rmb3VuZEBub3Rmb3VuZC5jb20iLCJpYXQiOjE2Mzg3NjQyMDIsImV4cCI6MTYzODc2NzgwMn0.JjTAu_iv-19kUHAnffR-v6Gmy0_sC1OtIB-PWD3pPfI";
+    private static final String 유효하지_않은_토큰_만료됨 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDAwMDAwMDAsImV4cCI6MTYwMDAwMDAwMH0.MxezzXBO7gnocwzvzN522EutLv9t2mMnsot4XKt8fO0";
+
     private static final String LOGIN_TOKEN_URI = "/login/token";
     private static final String MEMBERS_ME_URI = "/members/me";
-    private static final String NOT_EXIST_EMAIL = "NOT_EXIST@EMAIL.COM";
-    private static final String NOT_CORRECT_PASSWORD = "NOT_CORRECT_PASSWORD";
-    private static final String INVALID_TOKEN_NOT_FOUND = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJub3Rmb3VuZEBub3Rmb3VuZC5jb20iLCJpYXQiOjE2Mzg3NjQyMDIsImV4cCI6MTYzODc2NzgwMn0.JjTAu_iv-19kUHAnffR-v6Gmy0_sC1OtIB-PWD3pPfI";
-    private static final String INVALID_TOKEN_EXPIRED = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDAwMDAwMDAsImV4cCI6MTYwMDAwMDAwMH0.MxezzXBO7gnocwzvzN522EutLv9t2mMnsot4XKt8fO0";
 
     @Autowired
     JwtTokenProvider jwtTokenProvider;
@@ -36,81 +40,76 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         MemberAcceptanceTest.회원_생성을_요청(EMAIL, PASSWORD, AGE);
     }
 
-    @DisplayName("Bearer Auth")
+    @DisplayName("로그인 기능을 구현한다")
     @Test
     void myInfoWithBearerAuth() {
-        // given
-        TokenRequest request = TokenRequest.of(EMAIL, PASSWORD);
-
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
-                .when().post(LOGIN_TOKEN_URI)
-                .then().log().all().extract();
+        ExtractableResponse<Response> response = 로그인_요청함(등록된_사용자_로그인_요청);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-
-        // when
-        TokenResponse tokenResponse = response.jsonPath().getObject("", TokenResponse.class);
-        String payload = jwtTokenProvider.getPayload(tokenResponse.getAccessToken());
-
-        // then
-        assertThat(payload).isEqualTo(EMAIL);
+        로그인_됨(response, 등록된_사용자_로그인_요청);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
-        // given
-        TokenRequest 비밀번호불일치 = TokenRequest.of(EMAIL, NOT_CORRECT_PASSWORD);
+        // when
+        ExtractableResponse<Response> 비밀번호불일치_응답 = 로그인_요청함(비밀번호_불일치_로그인_요청);
+
+        // then
+        로그인_인증_실패함(비밀번호불일치_응답);
 
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(비밀번호불일치)
-                .when().post(LOGIN_TOKEN_URI)
-                .then().log().all().extract();
+        ExtractableResponse<Response> 존재하지않은_ID_응답 = 로그인_요청함(등록되지_않은_사용자_로그인_요청);
 
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        로그인_인증_실패함(존재하지않은_ID_응답);
+    }
 
-        // given
-        TokenRequest 존재하지않은_ID = TokenRequest.of(NOT_EXIST_EMAIL, NOT_CORRECT_PASSWORD);
-
-        // when
-        ExtractableResponse<Response> response2 = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(존재하지않은_ID)
-                .when().post(LOGIN_TOKEN_URI)
-                .then().log().all().extract();
-
-        assertThat(response2.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    private AbstractIntegerAssert<?> 로그인_인증_실패함(ExtractableResponse<Response> 비밀번호불일치_응답) {
+        return assertThat(비밀번호불일치_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
         // when
-        ExtractableResponse<Response> 회원_미존재 = RestAssured.given().log().all()
-                .auth().oauth2(INVALID_TOKEN_NOT_FOUND)
-                .when().get(MEMBERS_ME_URI)
-                .then().log().all().extract();
+        ExtractableResponse<Response> 유효하지_않은_토큰_회원_미존재_응답 = 토큰을_포함하여_마이페이지를_요청함(유효하지_않은_토큰_회원_미존재);
 
         // then
-        assertThat(회원_미존재.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        로그인_인증_실패함(유효하지_않은_토큰_회원_미존재_응답);
 
         // when
-        ExtractableResponse<Response> 토큰_만료됨 = RestAssured.given().log().all()
-                .auth().oauth2(INVALID_TOKEN_EXPIRED)
-                .when().get(MEMBERS_ME_URI)
-                .then().log().all().extract();
+        ExtractableResponse<Response> 유효하지_않은_토큰_만료됨_응답 = 토큰을_포함하여_마이페이지를_요청함(유효하지_않은_토큰_만료됨);
 
         // then
-        assertThat(토큰_만료됨.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        로그인_인증_실패함(유효하지_않은_토큰_만료됨_응답);
     }
 
+    private ExtractableResponse<Response> 토큰을_포함하여_마이페이지를_요청함(String invalidTokenNotFound) {
+        return RestAssured.given().log().all()
+                .auth().oauth2(invalidTokenNotFound)
+                .when().get(MEMBERS_ME_URI)
+                .then().log().all().extract();
+    }
+
+
+    private void 발급한_로그인_토큰이_이메일과_일치함(ExtractableResponse<Response> response, TokenRequest request) {
+        TokenResponse tokenResponse = response.jsonPath().getObject("", TokenResponse.class);
+        String payload = jwtTokenProvider.getPayload(tokenResponse.getAccessToken());
+        assertThat(payload).isEqualTo(request.getEmail());
+    }
+
+    private ExtractableResponse<Response> 로그인_요청함(TokenRequest request) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post(LOGIN_TOKEN_URI)
+                .then().log().all().extract();
+    }
+
+    private void 로그인_됨(ExtractableResponse<Response> response, TokenRequest request) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        발급한_로그인_토큰이_이메일과_일치함(response, request);
+    }
 }

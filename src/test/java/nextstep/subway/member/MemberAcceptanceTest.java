@@ -51,6 +51,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     }
 
+    public static Long 회원_등록되어_있음(MemberRequest request) {
+        ExtractableResponse<Response> response = 회원_생성을_요청(request.getEmail(), request.getPassword(), request.getAge());
+        return Long.parseLong(response.header("Location").split("/")[2]);
+    }
+
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
