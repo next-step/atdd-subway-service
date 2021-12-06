@@ -63,7 +63,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         토큰이_유효하지_않아_요청_실패(내_정보_응답);
     }
 
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         return post("/login/token", new TokenRequest(email, password));
     }
 

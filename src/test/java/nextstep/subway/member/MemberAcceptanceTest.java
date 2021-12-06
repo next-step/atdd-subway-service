@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +12,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
+import static nextstep.subway.utils.AcceptanceTestUtil.delete;
+import static nextstep.subway.utils.AcceptanceTestUtil.get;
+import static nextstep.subway.utils.AcceptanceTestUtil.put;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -48,6 +53,23 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        TokenResponse 토큰 = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
+
+        // when
+        ExtractableResponse<Response> 내_정보_조회_응답 = 내_정보_조회(토큰);
+        // then
+        회원_정보_조회됨(내_정보_조회_응답, EMAIL, AGE);
+
+        // when
+        내_정보_수정(토큰, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        // then
+        회원_정보_조회됨(내_정보_조회_응답, EMAIL, AGE);
+
+        // when
+        ExtractableResponse<Response> 내_정보_삭제_응답 = 내_정보_삭제(토큰);
+        회원_삭제됨(내_정보_삭제_응답);
 
     }
 
@@ -113,5 +135,19 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private ExtractableResponse<Response> 내_정보_조회(TokenResponse 토큰) {
+        return get("/members/me", 토큰.getAccessToken());
+    }
+
+    private ExtractableResponse<Response> 내_정보_수정(TokenResponse 토큰, String newEmail,
+        String newPassword, int newAge) {
+        return put("/members/me", 토큰.getAccessToken(),
+            new MemberRequest(newEmail, newPassword, newAge));
+    }
+
+    private ExtractableResponse<Response> 내_정보_삭제(TokenResponse 토큰) {
+        return delete("/members/me", 토큰.getAccessToken());
     }
 }
