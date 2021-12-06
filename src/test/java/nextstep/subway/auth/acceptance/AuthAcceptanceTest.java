@@ -19,21 +19,21 @@ import org.springframework.http.MediaType;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
 
-	private static String email = "test@email.com";
-	private static String password = "testpassword1234";
+	private static String EMAIL = "test@email.com";
+	private static String PASSWORD = "testpassword1234";
 
 	@BeforeEach
 	public void setUp() {
 		super.setUp();
 		// given
-		회원_생성을_요청(email, password, 20);
+		회원_생성을_요청(EMAIL, PASSWORD, 20);
 	}
 
 	@DisplayName("Bearer Auth")
 	@Test
 	void myInfoWithBearerAuth() {
 		// when
-        ExtractableResponse<Response> response = 로그인_요청(email, password);
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
 
 		// then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -43,7 +43,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 	@Test
 	void myInfoWithBadBearerAuth() {
         // when
-        ExtractableResponse<Response> response = 로그인_요청(email, "wrongPassword");
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, "wrongPassword");
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
