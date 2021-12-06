@@ -34,16 +34,12 @@ public class LineService {
 		Station upStation = stationService.findById(request.getUpStationId());
 		Station downStation = stationService.findById(request.getDownStationId());
 		Line persistLine = lineRepository.save(request.toLine(upStation, downStation));
-		List<StationResponse> stations = getStationResponses(persistLine);
-		return LineResponse.of(persistLine, stations);
+		return LineResponse.of(persistLine, getStationResponses(persistLine));
 	}
 
 	public List<LineResponse> findLines() {
 		return lineRepository.findAll().stream()
-			.map(line -> {
-				List<StationResponse> stations = getStationResponses(line);
-				return LineResponse.of(line, stations);
-			})
+			.map(line -> LineResponse.of(line, getStationResponses(line)))
 			.collect(Collectors.toList());
 	}
 
@@ -53,16 +49,14 @@ public class LineService {
 			.collect(Collectors.toList());
 	}
 
-	public Line findLineById(Long id) {
-		return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+	private Line findLineById(Long id) {
+		return lineRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("노선이 존재하지 않습니다."));
 	}
 
 	public LineResponse findLineResponseById(Long id) {
-		Line persistLine = findLineById(id);
-		List<StationResponse> stations = getStations(persistLine).stream()
-			.map(it -> StationResponse.of(it))
-			.collect(Collectors.toList());
-		return LineResponse.of(persistLine, stations);
+		Line findLine = findLineById(id);
+		return LineResponse.of(findLine, getStationResponses(findLine));
 	}
 
 	public void updateLine(Long id, LineRequest lineUpdateRequest) {

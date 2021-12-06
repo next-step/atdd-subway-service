@@ -91,6 +91,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
 		지하철_노선_응답됨(response, createResponse);
 	}
 
+	@DisplayName("없는 지하철 노선을 조회한다.")
+	@Test
+	void getLineFail() {
+		// when
+		ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청("/lines/3");
+
+		// then
+		지하철_노선_조회_실패(response);
+	}
+
 	@DisplayName("지하철 노선을 수정한다.")
 	@Test
 	void updateLine() {
@@ -202,7 +212,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
 		assertThat(response.as(LineResponse.class)).isNotNull();
 	}
 
-	public static void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
+	public static void 지하철_노선_조회_실패(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+		assertThat(response.asString()).isEqualTo("노선이 존재하지 않습니다.");
+	}
+
+	public static void 지하철_노선_목록_포함됨(ExtractableResponse<Response> response,
+		List<ExtractableResponse<Response>> createdResponses) {
 		List<Long> expectedLineIds = createdResponses.stream()
 			.map(it -> Long.parseLong(it.header("Location").split("/")[2]))
 			.collect(Collectors.toList());
