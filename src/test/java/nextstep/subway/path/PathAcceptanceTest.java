@@ -122,7 +122,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/path?source={source}&target={target}", source, target)
+                .when().get("/paths?source={source}&target={target}", source, target)
                 .then().log().all().extract();
     }
 

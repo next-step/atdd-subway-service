@@ -145,3 +145,106 @@ Connection: keep-alive
   - [X] 출발역과 도착역이 같은 경우
   - [X] 출발역과 도착역이 연결이 되어 있지 않은 경우 
   - [X] 존재하지 않은 출발역이나 도착역을 조회 할 경우
+
+## 3단계 - 인증을 통한 기능 구현
+
+### 요구사항
+
+- 토큰 발급 기능 (로그인) 인수 테스트 만들기
+- 인증 - 내 정보 조회 기능 완성하기
+- 인증 - 즐겨 찾기 기능 완성하기
+
+#### 즐겨찾기 기능 구현하기
+
+- 생성 요청/응답
+```http request
+POST /favorites HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY
+accept: */*
+content-type: application/json; charset=UTF-8
+content-length: 27
+host: localhost:50336
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/14.0.2)
+accept-encoding: gzip,deflate
+{
+    "source": "1",
+    "target": "3"
+}
+
+HTTP/1.1 201 Created
+Keep-Alive: timeout=60
+Connection: keep-alive
+Content-Length: 0
+Date: Sun, 27 Dec 2020 04:32:26 GMT
+Location: /favorites/1
+```
+- 목록 조회 요청/응답
+```http request
+GET /favorites HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY
+accept: application/json
+host: localhost:50336
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/14.0.2)
+accept-encoding: gzip,deflate
+
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sun, 27 Dec 2020 04:32:26 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive
+
+[
+    {
+        "id": 1,
+        "source": {
+            "id": 1,
+            "name": "강남역",
+            "createdDate": "2020-12-27T13:32:26.364439",
+            "modifiedDate": "2020-12-27T13:32:26.364439"
+        },
+        "target": {
+            "id": 3,
+            "name": "정자역",
+            "createdDate": "2020-12-27T13:32:26.486256",
+            "modifiedDate": "2020-12-27T13:32:26.486256"
+        }
+    }
+]
+```
+- 삭제 요청/응답
+```http request
+DELETE /favorites/1 HTTP/1.1
+authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDkwNDM1NDYsImV4cCI6MTYwOTA0NzE0Nn0.dwBfYOzG_4MXj48Zn5Nmc3FjB0OuVYyNzGqFLu52syY
+accept: */*
+host: localhost:50336
+connection: Keep-Alive
+user-agent: Apache-HttpClient/4.5.13 (Java/14.0.2)
+accept-encoding: gzip,deflate
+
+
+
+HTTP/1.1 204 No Content
+Keep-Alive: timeout=60
+Connection: keep-alive
+Date: Sun, 27 Dec 2020 04:32:26 GMT
+```
+
+### 기능 목록
+
+- [X] 토큰 발급 기능 (로그인) 인수 테스트 만들기
+  - [X] AuthAcceptanceTest 인수 테스트 작성
+  - [X] 로그인 사용자만 /member/me에 접근
+- [X] 인증 - 내 정보 조회 기능 완성하기
+- [X] 인증 - 즐겨 찾기 기능 완성하기
+  - [X] 즐겨찾기 생성 인수테스트 작성
+  - [X] 즐겨찾기 생성 구현
+  - [X] 즐겨찾기 목록 조회 인수테스트 작성
+  - [X] 즐겨찾기 목록 조회 구현
+  - [X] 즐겨찾기 삭제 인수테스트 작성
+  - [X] 즐겨찾기 삭제 구현
+  - [X] 예외상황 테스트 및 처리
+    - [X] 소유자가 다른 즐겨찾기는 조회 할 수 없다
+    - [X] 소유자가 다른 즐겨찾기는 삭제 할 수 없다
