@@ -4,6 +4,8 @@ import java.util.*;
 
 import javax.persistence.*;
 
+import org.jgrapht.graph.*;
+
 import nextstep.subway.*;
 import nextstep.subway.line.dto.*;
 import nextstep.subway.station.domain.*;
@@ -49,6 +51,11 @@ public class Line extends BaseEntity {
         this.color = line.getColor();
     }
 
+    public void update(String name, String color) {
+        this.name = name;
+        this.color = color;
+    }
+
     public Long getId() {
         return id;
     }
@@ -75,6 +82,21 @@ public class Line extends BaseEntity {
 
     public Sections sections() {
         return sections;
+    }
+
+    public List<Section> sectionsList() {
+        return sections.sections();
+    }
+
+    public void addVertexTo(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        stations().forEach(graph::addVertex);
+    }
+
+    public void setEdgeWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        sectionsList().forEach(section -> graph.setEdgeWeight(
+            graph.addEdge(section.getUpStation(), section.getDownStation()),
+            section.getDistance().distance())
+        );
     }
 
     @Override
