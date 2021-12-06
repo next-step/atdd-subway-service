@@ -49,16 +49,14 @@ public class Sections {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
+        Station station = findUpStation();
+        stations.add(station);
+        Optional<Section> matchSection = getUpStationMatchSection(station);
 
-        while (downStation != null) {
-            Optional<Section> nextLineStation = getUpStationMatchSection(downStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        while (matchSection.isPresent()) {
+            station = matchSection.get().getDownStation();
+            matchSection = getUpStationMatchSection(station);
+            stations.add(station);
         }
 
         return stations;
@@ -80,16 +78,15 @@ public class Sections {
     }
 
     private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Optional<Section> nextLineStation = getDownStationMatchSection(downStation);
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
+        Station station = sections.get(0).getUpStation();
+        Optional<Section> upSection = getDownStationMatchSection(station);
+
+        while (upSection.isPresent()) {
+            station = upSection.get().getUpStation();
+            upSection = getDownStationMatchSection(station);
         }
 
-        return downStation;
+        return station;
     }
 
     private Optional<Section> getDownStationMatchSection(final Station downStation) {
