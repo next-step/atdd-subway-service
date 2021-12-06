@@ -121,19 +121,15 @@ public class SectionsTest {
         );
     }
 
-    /*@DisplayName("상행이 포함된 구간을 제거하는 기능 검증")
+    @DisplayName("상행이 포함된 구간을 제거하는 기능 검증")
     @Test
     void removeAscendSection() {
-        Station upStation = new Station(1L, "건대역");
-        Station downStation = new Station(2L, "용마산역");
-        Line line = new Line("bg-red-600", "7호선");
-        Section.of(line, upStation, downStation, 10);
-
         Station newDownStation = new Station(3L, "뚝섬유원지역");
-        Section.of(line, upStation, newDownStation, 3);
+        Section nextSection = new Section(line, upStation, newDownStation, 3);
+        line.addSection(nextSection);
 
         //when
-        line.getSections().removeSection(upStation);
+        line.removeSection(upStation);
 
         //then
         assertThat(line.getSections().size()).isEqualTo(1);
@@ -142,13 +138,12 @@ public class SectionsTest {
     @DisplayName("하행이 포함된 구간을 제거하는 기능 검증")
     @Test
     void removeDescendSection() {
-        Section.of(line, upStation, downStation, 10);
-
         Station newDownStation = new Station(3L, "뚝섬유원지역");
-        Section.of(line, upStation, newDownStation, 3);
+        Section nextSection = new Section(line, upStation, newDownStation, 3);
+        line.addSection(nextSection);
 
         //when
-        line.getSections().removeSection(downStation);
+        line.removeSection(downStation);
 
         //then
         assertThat(line.getSections().size()).isEqualTo(1);
@@ -157,15 +152,9 @@ public class SectionsTest {
     @DisplayName("구간이 하나일때는 제거 안됨")
     @Test
     void removeValidSize() {
-        Station upStation = new Station(1L, "건대역");
-        Station downStation = new Station(2L, "용마산역");
-        Line line = new Line("bg-red-600", "7호선");
-        Section.of(line, upStation, downStation, 10);
 
         assertThatThrownBy(() -> {
-            line.getSections().removeSection(downStation);
-        }).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("하나 이상 구간일때만 제거 할 수 있습니다.");
-    }*/
-
+            line.removeSection(downStation);
+        }).isInstanceOf(RuntimeException.class);
+    }
 }

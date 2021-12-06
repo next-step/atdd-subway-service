@@ -35,5 +35,4 @@ public class LineTest {
                 () -> assertThat(stations).isEqualTo(Arrays.asList(upStation, downStation))
         );
     }
-
 }

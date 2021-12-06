@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 @Embeddable
 public class Sections {
 
+    private static final int MINIMUM_SIZE = 1;
+
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sections = new ArrayList<>();
 
@@ -71,8 +73,7 @@ public class Sections {
     }
 
     public List<Section> getSections() {
-        //return Collections.unmodifiableList(sections);
-        return sections;
+        return Collections.unmodifiableList(sections);
     }
 
     public void add(Section newSection) {
@@ -126,11 +127,8 @@ public class Sections {
         }
     }
 
-
     public void remove(Station targetStation) {
-        if (sections.size() <= 1) {
-            throw new RuntimeException();
-        }
+        validationSize();
 
         Optional<Section> upLineStation = sections.stream()
                 .filter(it -> it.equalsUpStation(targetStation))
@@ -140,13 +138,23 @@ public class Sections {
                 .findFirst();
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-            sections.add(new Section(upLineStation.get().getLine(), newUpStation, newDownStation, newDistance));
+            addSection(upLineStation, downLineStation);
         }
+        upLineStation.ifPresent(section -> sections.remove(section));
+        downLineStation.ifPresent(section -> sections.remove(section));
+    }
 
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
+    private void addSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        Line newLine = upLineStation.get().getLine();
+        Station newUpStation = downLineStation.get().getUpStation();
+        Station newDownStation = upLineStation.get().getDownStation();
+        int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+        sections.add(new Section(newLine, newUpStation, newDownStation, newDistance));
+    }
+
+    private void validationSize() {
+        if (sections.size() <= MINIMUM_SIZE) {
+            throw new RuntimeException();
+        }
     }
 }
