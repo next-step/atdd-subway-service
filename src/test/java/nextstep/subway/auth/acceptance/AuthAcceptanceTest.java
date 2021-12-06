@@ -47,7 +47,17 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithWrongBearerAuth() {
         // when
-        ExtractableResponse<Response> 내_정보_응답 = 내_정보_요청("유효하지 않은 토큰");
+        ExtractableResponse<Response> 내_정보_응답 = 내_정보_요청("invalid_token");
+
+        // then
+        토큰이_유효하지_않아_요청_실패(내_정보_응답);
+    }
+
+    @DisplayName("토큰없이 API 호출")
+    @Test
+    void myInfoWithoutBearerAuth() {
+        // when
+        ExtractableResponse<Response> 내_정보_응답 = 내_정보_요청();
 
         // then
         토큰이_유효하지_않아_요청_실패(내_정보_응답);
@@ -59,6 +69,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     private ExtractableResponse<Response> 내_정보_요청(String token) {
         return get("/members/me", token);
+    }
+
+    private ExtractableResponse<Response> 내_정보_요청() {
+        return get("/members/me");
     }
 
     private void 로그인_됨(ExtractableResponse<Response> 로그인_응답) {
