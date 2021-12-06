@@ -11,7 +11,9 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 public class PathFinder {
 	private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
@@ -26,7 +28,8 @@ public class PathFinder {
 
 	private void addVertexes(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Line> lines) {
 		stations = lines.stream()
-			.map(Line::getStationList)
+			.map(Line::getStations)
+			.map(Stations::getValues)
 			.distinct()
 			.flatMap(List::stream)
 			.collect(Collectors.toList());
@@ -36,7 +39,8 @@ public class PathFinder {
 
 	private void addEdges(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Line> lines) {
 		List<Section> sections = lines.stream()
-			.map(Line::getSectionList)
+			.map(Line::getSections)
+			.map(Sections::getValues)
 			.flatMap(List::stream)
 			.collect(Collectors.toList());
 
