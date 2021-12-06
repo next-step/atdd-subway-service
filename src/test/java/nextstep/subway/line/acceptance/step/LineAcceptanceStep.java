@@ -18,6 +18,12 @@ public class LineAcceptanceStep {
         return 지하철_노선_생성_요청(params);
     }
 
+    public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(String lineName, String color,
+        Long upStationId, Long downStationId, int distance) {
+        LineRequest params = new LineRequest(lineName, color, upStationId, downStationId, distance);
+        return 지하철_노선_생성_요청(params);
+    }
+
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
         return RestAssured
             .given().log().all()
