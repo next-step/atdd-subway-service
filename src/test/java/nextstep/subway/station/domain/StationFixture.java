@@ -37,4 +37,36 @@ public class StationFixture {
     public static Station 신림역() {
         return new Station(9L, "신림역");
     }
+
+    public static Station 홍대입구역() {
+        return new Station(10L, "홍대입구역");
+    }
+
+    public static Station 합정역() {
+        return new Station(11L, "합정역");
+    }
+
+    public static Station 종로3가역() {
+        return new Station(12L, "종로3가역");
+    }
+
+    public static Station 을지로3가역() {
+        return new Station(13L, "을지로3가역");
+    }
+
+    public static Station 충무로역() {
+        return new Station(14L, "충무로역");
+    }
+
+    public static Station 안국역() {
+        return new Station(15L, "안국역");
+    }
+
+    public static Station 사당역() {
+        return new Station(16L, "사당역");
+    }
+
+    public static Station 오이도역() {
+        return new Station(17L, "오이도역");
+    }
 }

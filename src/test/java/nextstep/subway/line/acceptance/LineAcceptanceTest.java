@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -117,8 +118,12 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_삭제됨(response);
     }
 
-    public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest params) {
-        return 지하철_노선_생성_요청(params);
+    public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest lineRequest) {
+        return 지하철_노선_생성_요청(lineRequest);
+    }
+
+    public static LineResponse 지하철_노선_등록되어_있음(String line, String color, StationResponse upStation, StationResponse downStation, int distance) {
+        return 지하철_노선_생성_요청(new LineRequest(line, color, upStation.getId(), downStation.getId(), distance)).as(LineResponse.class);
     }
 
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
