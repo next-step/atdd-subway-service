@@ -45,7 +45,7 @@ class LineTest extends AcceptanceTest {
     void staticFactoryMethodTest2() {
         StationResponse 강남역응답 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
         StationResponse 광교역응답 = 지하철역_등록되어_있음("광교역").as(StationResponse.class);
-        assertThat(Line.from(new LineRequest("신분당선", "bg-red-600", 강남역응답.getId(), 광교역응답.getId(), 10))).isInstanceOf(
+        assertThat(Line.from(LineRequest.of("신분당선", "bg-red-600", 강남역응답.getId(), 광교역응답.getId(), 10))).isInstanceOf(
             Line.class);
     }
 

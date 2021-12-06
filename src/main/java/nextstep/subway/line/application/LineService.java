@@ -52,9 +52,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        findLineById(id).update(
-            Line.from(lineUpdateRequest)
-        );
+        findLineById(id).update(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
     }
 
     public void deleteLineById(Long id) {
@@ -76,13 +74,13 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    private Station getUpStation(Long upStationId) {
+    public Station getUpStation(Long upStationId) {
         return stationRepository.findById(upStationId)
             .orElseThrow(() -> new NotFoundException(LINE));
     }
 
     @Transactional(readOnly = true)
-    private Station getDownStation(Long downStationId) {
+    public Station getDownStation(Long downStationId) {
         return stationRepository.findById(downStationId)
             .orElseThrow(() -> new NotFoundException(LINE));
     }
