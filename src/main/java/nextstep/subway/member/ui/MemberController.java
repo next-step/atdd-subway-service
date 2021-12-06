@@ -1,10 +1,15 @@
 package nextstep.subway.member.ui;
 
+import lombok.RequiredArgsConstructor;
+import nextstep.subway.auth.application.AuthService;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,12 +17,10 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("members")
+@RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
-
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
+    private final AuthService authService;
 
     @PostMapping
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
@@ -50,13 +53,14 @@ public class MemberController {
     }
 
     @PutMapping("me")
-    public ResponseEntity<Void> updateMemberOfMine(LoginMember loginMember, @RequestBody MemberRequest param) {
+    public ResponseEntity<TokenResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
         memberService.updateMember(loginMember.getId(), param);
-        return ResponseEntity.ok().build();
+        TokenResponse updateTokenResponse = authService.login(TokenRequest.of(param));
+        return ResponseEntity.ok().body(updateTokenResponse);
     }
 
     @DeleteMapping("me")
-    public ResponseEntity<Void> deleteMemberOfMine(LoginMember loginMember) {
+    public ResponseEntity<Void> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }

@@ -31,7 +31,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private static final String MEMBERS_ME_URI = "/members/me";
 
     @Autowired
-    JwtTokenProvider jwtTokenProvider;
+    private JwtTokenProvider jwtTokenProvider;
 
     @Override
     @BeforeEach
@@ -47,7 +47,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 로그인_요청함(등록된_사용자_로그인_요청);
 
         // then
-        로그인_됨(response, 등록된_사용자_로그인_요청);
+        String 토큰 = 로그인을_성공하면_토큰을_발급받는다(response);
+        발급한_로그인_토큰이_이메일과_일치함(토큰, 등록된_사용자_로그인_요청);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
@@ -92,14 +93,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-
-    private void 발급한_로그인_토큰이_이메일과_일치함(ExtractableResponse<Response> response, TokenRequest request) {
-        TokenResponse tokenResponse = response.jsonPath().getObject("", TokenResponse.class);
-        String payload = jwtTokenProvider.getPayload(tokenResponse.getAccessToken());
+    private void 발급한_로그인_토큰이_이메일과_일치함(String token, TokenRequest request) {
+        String payload = jwtTokenProvider.getPayload(token);
         assertThat(payload).isEqualTo(request.getEmail());
     }
 
-    private ExtractableResponse<Response> 로그인_요청함(TokenRequest request) {
+    public static ExtractableResponse<Response> 로그인_요청함(TokenRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -108,8 +107,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private void 로그인_됨(ExtractableResponse<Response> response, TokenRequest request) {
+    public static String 로그인을_성공하면_토큰을_발급받는다(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        발급한_로그인_토큰이_이메일과_일치함(response, request);
+        return response.jsonPath().getObject("", TokenResponse.class).getAccessToken();
     }
 }
