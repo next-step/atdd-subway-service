@@ -30,6 +30,15 @@ public class Favorites extends BaseEntity {
         this.downStation = downStation;
     }
 
+    public Favorites(Long id, Member owner, Station upStation, Station downStation) {
+        this(owner, upStation, downStation);
+        this.id = id;
+    }
+
+    public boolean isOwner(Long id) {
+        return id.equals(owner.getId());
+    }
+
     public Long getId() {
         return id;
     }

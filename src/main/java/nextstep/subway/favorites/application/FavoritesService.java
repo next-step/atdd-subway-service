@@ -42,6 +42,9 @@ public class FavoritesService {
 
     public FavoritesResponse findOne(LoginMember loginMember, Long id) {
         Favorites favorites = favoritesRepository.findById(id).orElseThrow(() -> new FavoritesNotFoundException(id));
+        if (!favorites.isOwner(loginMember.getId())) {
+            throw new ServiceException("다른 소유자의 즐겨찾기는 조회할 수 없습니다.");
+        }
         return FavoritesResponse.of(favorites);
     }
 
