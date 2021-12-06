@@ -20,6 +20,16 @@ public class AcceptanceTestUtil {
             .extract();
     }
 
+    public static ExtractableResponse<Response> get(String url, String token) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(token)
+            .when()
+            .get(url)
+            .then().log().all()
+            .extract();
+    }
+
     public static ExtractableResponse<Response> post(String url, Object body) {
         return RestAssured
             .given().log().all()
