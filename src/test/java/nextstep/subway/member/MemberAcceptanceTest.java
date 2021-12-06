@@ -53,10 +53,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void manageMyInfo() {
         // when
         ExtractableResponse<Response> 회원_생성_요청_응답 = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+
         // then
         회원_생성됨(회원_생성_요청_응답);
 
-        // 로그인
         // when
         ExtractableResponse<Response> 로그인_요청_응답 = AuthAcceptanceTest.로그인_요청(EMAIL, PASSWORD);
 
@@ -66,7 +66,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         TokenResponse tokenResponse = 로그인_요청_응답.as(TokenResponse.class);
         assertThat(tokenResponse.getAccessToken()).isNotBlank();
 
-        // 나의 정보 요청
         // when
         ExtractableResponse<Response> 내_정보_요청_응답 = 내_정보_조회_요청(tokenResponse.getAccessToken());
 
