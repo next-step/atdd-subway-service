@@ -20,7 +20,6 @@ import java.net.URI;
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
-    private final AuthService authService;
 
     @PostMapping
     public ResponseEntity<Void> createMember(@RequestBody MemberRequest request) {
@@ -53,10 +52,9 @@ public class MemberController {
     }
 
     @PutMapping("me")
-    public ResponseEntity<TokenResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
+    public ResponseEntity<Void> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
         memberService.updateMember(loginMember.getId(), param);
-        TokenResponse updateTokenResponse = authService.login(TokenRequest.of(param));
-        return ResponseEntity.ok().body(updateTokenResponse);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("me")

@@ -22,7 +22,7 @@ public class AuthService {
 
         member.checkPassword(request.getPassword());
 
-        String token = jwtTokenProvider.createToken(request.getEmail());
+        String token = jwtTokenProvider.createToken(String.valueOf(member.getId()));
         return new TokenResponse(token);
     }
 
@@ -31,10 +31,10 @@ public class AuthService {
             throw new AuthorizationException("토큰이 유효하지 않습니다.");
         }
 
-        String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(MemberNotFoundException::new);
+        String id = jwtTokenProvider.getPayload(credentials);
 
+        Member member = memberRepository.findById(Long.parseLong(id))
+                .orElseThrow(MemberNotFoundException::new);
         return LoginMember.of(member);
     }
 }

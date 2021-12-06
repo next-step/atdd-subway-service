@@ -5,7 +5,6 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
-import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -80,9 +79,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .when().put(MY_INFO_URI)
                 .then().log().all().extract();
 
-        String 변경된_토큰 = 내_정보_수정됨(내_정보_수정_요청);
+        내_정보_수정됨(내_정보_수정_요청);
 
-        ExtractableResponse<Response> 수정된_내_정보_조회_요청 = 내_정보_조회함(변경된_토큰);
+        ExtractableResponse<Response> 수정된_내_정보_조회_요청 = 내_정보_조회함(토큰);
 
         내_정보_조회됨(수정된_내_정보_조회_요청, 나의_수정된_정보);
 
@@ -98,9 +97,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .then().log().all().extract();
     }
 
-    private String 내_정보_수정됨(ExtractableResponse<Response> response) {
+    private void 내_정보_수정됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        return response.jsonPath().getObject("", TokenResponse.class).getAccessToken();
     }
 
     private void 내_정보_조회됨(ExtractableResponse<Response> response, TokenRequest request) {
