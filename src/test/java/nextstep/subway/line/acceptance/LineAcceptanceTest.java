@@ -38,7 +38,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLine() {
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+        ExtractableResponse<Response> response = 지하철_노선_등록되어_있음(lineRequest1);
 
         // then
         지하철_노선_생성됨(response);
@@ -51,7 +51,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_등록되어_있음(lineRequest1);
 
         // when
-        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+        ExtractableResponse<Response> response = 지하철_노선_등록되어_있음(lineRequest1);
 
         // then
         지하철_노선_생성_실패됨(response);
@@ -113,25 +113,15 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
 
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest params) {
-        return 지하철_노선_생성_요청(params);
-    }
-
-    public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
         return post(params, "/lines");
     }
 
     public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
-        return 지하철_노선_목록_조회_요청("/lines");
+        return get("/lines");
     }
 
     public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
-
-        return 지하철_노선_목록_조회_요청(uri);
-    }
-
-    private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(String uri) {
-        return get(uri);
+        return get(response.header("Location"));
     }
 
     public static ExtractableResponse<Response> 지하철_노선에_등록된_역_목록_조회_요청(LineResponse response) {
