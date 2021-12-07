@@ -10,19 +10,19 @@ import java.util.List;
 
 @Configuration
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
-    private final AuthService authService;
+  private final AuthService authService;
 
-    public AuthenticationPrincipalConfig(AuthService authService) {
-        this.authService = authService;
-    }
+  public AuthenticationPrincipalConfig(AuthService authService) {
+    this.authService = authService;
+  }
 
-    @Override
-    public void addArgumentResolvers(List argumentResolvers) {
-        argumentResolvers.add(createAuthenticationPrincipalArgumentResolver());
-    }
+  @Override
+  public void addArgumentResolvers(List argumentResolvers) {
+    argumentResolvers.add(createAuthenticationPrincipalArgumentResolver());
+  }
 
-    @Bean
-    public AuthenticationPrincipalArgumentResolver createAuthenticationPrincipalArgumentResolver() {
-        return new AuthenticationPrincipalArgumentResolver(authService);
-    }
+  @Bean
+  public AuthenticationPrincipalArgumentResolver createAuthenticationPrincipalArgumentResolver() {
+    return new AuthenticationPrincipalArgumentResolver(authService);
+  }
 }
