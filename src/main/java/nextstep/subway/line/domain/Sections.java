@@ -23,7 +23,7 @@ public class Sections {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
-    public Sections() {
+    protected Sections() {
     }
 
     public void add(Section newSection) {
@@ -36,9 +36,9 @@ public class Sections {
 
     private void addSection(Section newSection) {
         Section section = sections.stream()
-                .filter(oldSection -> oldSection.isNotDuplicate(newSection))
+                .filter(oldSection -> oldSection.isConnectable(newSection))
                 .findFirst()
-                .map(oldSection -> oldSection.divide(newSection))
+                .map(oldSection -> oldSection.merge(newSection))
                 .orElseThrow(() -> new InvalidSectionException(NOT_CONNECTABLE));
 
         sections.add(section);
@@ -57,7 +57,7 @@ public class Sections {
         return Collections.unmodifiableList(sortedSections);
     }
 
-    public Section findFirstSection() {
+    private Section findFirstSection() {
         List<Station> downStations = getDownStations();
 
         return sections.stream()
@@ -73,7 +73,7 @@ public class Sections {
                 .orElseThrow(() -> new SectionNotFoundException(BREAK_SECTION));
     }
 
-    public List<Station> getDownStations() {
+    private List<Station> getDownStations() {
         return sections.stream()
                 .map(Section::getDownStation)
                 .collect(Collectors.toList());
@@ -84,7 +84,7 @@ public class Sections {
     }
 
     public void remove(Station station) {
-        if (sections.size() == MIN_SECTION_SIZE) {
+        if (sections.size() <= MIN_SECTION_SIZE) {
             throw new InvalidSectionException(NOT_DELETE_MIN_SECTION_SIZE);
         }
 

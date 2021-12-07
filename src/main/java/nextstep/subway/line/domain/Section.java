@@ -28,7 +28,7 @@ public class Section {
     @Embedded
     private Distance distance;
 
-    public Section() {
+    protected Section() {
     }
 
     public Section(Station upStation, Station downStation, int distance) {
@@ -41,14 +41,14 @@ public class Section {
         this.line = line;
     }
 
-    public boolean isNotDuplicate(Section section) {
+    public boolean isConnectable(Section section) {
         if (isDuplicate(section)) {
             throw new InvalidSectionException(SECTION_DUPLICATION);
         }
         return isTerminusExtend(section) || isBetweenStations(section);
     }
 
-    public Section divide(Section newSection) {
+    public Section merge(Section newSection) {
         if (isBetweenStations(newSection) && distance.divisible(newSection.getDistance())) {
             changeStationLink(newSection);
             distance = distance.minus(newSection.distance);
@@ -74,7 +74,7 @@ public class Section {
         return upStation.equals(section.downStation) || downStation.equals(section.upStation);
     }
 
-    public boolean isBetweenStations(Section section) {
+    private boolean isBetweenStations(Section section) {
         return upStation.equals(section.upStation) || downStation.equals(section.downStation);
     }
 

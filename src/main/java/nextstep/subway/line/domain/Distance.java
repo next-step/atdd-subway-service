@@ -10,7 +10,7 @@ public class Distance {
 
     private int distance;
 
-    public Distance() {
+    protected Distance() {
     }
 
     public Distance(int distance) {
