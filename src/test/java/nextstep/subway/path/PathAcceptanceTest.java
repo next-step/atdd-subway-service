@@ -1,29 +1,23 @@
 package nextstep.subway.path;
 
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import nextstep.subway.AcceptanceTest;
+import static nextstep.subway.line.acceptance.LineAcceptanceTest.*;
+import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.*;
+import static nextstep.subway.station.StationAcceptanceTest.*;
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.*;
+import java.util.stream.*;
+
+import org.junit.jupiter.api.*;
+import org.springframework.http.*;
+
+import io.restassured.response.*;
+import nextstep.subway.*;
 import nextstep.subway.api.HttpMethod;
-import nextstep.subway.line.dto.LineRequest;
-import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
-import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
-import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철_구간_등록_요청;
-import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
-import static org.assertj.core.api.Assertions.assertThat;
+import nextstep.subway.line.dto.*;
+import nextstep.subway.path.dto.*;
+import nextstep.subway.station.domain.*;
+import nextstep.subway.station.dto.*;
 
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
