@@ -1,20 +1,26 @@
-package nextstep.subway.path.acceptance;
+package nextstep.subway.path.acceptance.application;
 
 import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.station.step.StationAcceptanceStep.지하철역_등록되어_있음;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 
@@ -56,12 +62,36 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
 
+
     @Test
     void 최단경로_조회() {
         // when
         ExtractableResponse<Response> response = 경로_조회(강남역.getId(), 남부터미널역.getId());
 
         // then
+        최단경로_조회_됨(response, Arrays.asList(강남역.getId(), 양재역.getId(), 남부터미널역.getId()));
+    }
+
+    @Test
+    void 같은_역_경로_조회_실패() {
+        // when
+        ExtractableResponse<Response> response = 경로_조회(강남역.getId(), 강남역.getId());
+
+        // then
+        경로_조회_실패됨(response);
+    }
+
+    @Test
+    void 이어지지_않는_경로_조회_실패() {
+        // when
+        ExtractableResponse<Response> response = 경로_조회(강남역.getId(), 천호역.getId());
+
+        // then
+        경로_조회_실패됨(response);
+    }
+
+    private void 경로_조회_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static ExtractableResponse<Response> 경로_조회(Long source, Long target) {
@@ -77,4 +107,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
             extract();
     }
 
+    private void 최단경로_조회_됨(ExtractableResponse<Response> response, List<Long> expected) {
+        PathResponse line = response.as(PathResponse.class);
+        List<Long> stationIds = line.getStations().stream()
+            .map(StationResponse::getId)
+            .collect(Collectors.toList());
+
+        assertThat(stationIds).containsExactlyElementsOf(expected);
+    }
 }
