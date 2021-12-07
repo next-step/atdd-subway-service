@@ -60,7 +60,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void test() {
         // given
-        FavoriteRequest request = FavoriteRequest.of(인천.getId().toString(), 소요산.getId().toString());
+        FavoriteRequest request = FavoriteRequest.of(인천.getId(), 소요산.getId());
 
         // when
         ExtractableResponse<Response> response = RestAssured

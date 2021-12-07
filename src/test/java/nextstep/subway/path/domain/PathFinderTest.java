@@ -1,10 +1,13 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.favorites.domain.Favorite;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.domain.MemberRepository;
+import nextstep.subway.member.exception.MemberNotFoundException;
 import nextstep.subway.path.exception.PathBeginIsEndException;
 import nextstep.subway.path.exception.PathNotFoundException;
 import nextstep.subway.path.infrastructure.JGraphPathFinder;
@@ -45,6 +48,7 @@ class PathFinderTest {
     private Station 왕십리_START;
     private Station 고속터미널_END;
     private Station 경로없는역;
+    private Member 사용자;
 
     @Autowired
     private StationRepository stationRepository;
@@ -52,12 +56,17 @@ class PathFinderTest {
     @Autowired
     private LineRepository lineRepository;
 
+    @Autowired
+    private MemberRepository memberRepository;
+
     @BeforeEach
     void setUp() {
         int DISTANCE_이호선 = 2;
         int DISTANCE_경의중앙선 = 20;
         int DISTANCE_삼호선 = 3;
         int DISTANCE_칠호선 = 7;
+
+        사용자 = memberRepository.save(new Member("haedoang@gmail.com", "12", 33));
 
         //2호선
         Station 성수 = new Station("성수");
@@ -122,11 +131,11 @@ class PathFinderTest {
         JGraphPathFinder pathFinder = new JGraphPathFinder();
 
         // when
-        PathResponse response = pathFinder.getShortestPath(lines, stations, 왕십리_START.getId(), 고속터미널_END.getId());
+        Path path = pathFinder.getShortestPath(lines, stations, 왕십리_START.getId(), 고속터미널_END.getId());
 
         // then
-        assertThat(response.getStations()).hasSize(7);
-        assertThat(response.distance()).isEqualTo(Distance.of(52));
+        assertThat(path.routes()).hasSize(7);
+        assertThat(path.distance()).isEqualTo(Distance.of(52));
     }
 
     @Test
@@ -170,5 +179,24 @@ class PathFinderTest {
         assertThatThrownBy(() -> pathFinder.getShortestPath(lines, stations, 왕십리_START.getId(), 존재하지않은역))
                 .isInstanceOf(StationNotFoundException.class)
                 .hasMessageContaining(StationNotFoundException.message);
+    }
+
+    @Test
+    @DisplayName("경로 찾기를 이용해서 즐겨찾기를 생성한다")
+    void transFavorite() {
+        // given
+        List<Line> lines = lineRepository.findAll();
+        List<Station> stations = stationRepository.findAll();
+        JGraphPathFinder pathFinder = new JGraphPathFinder();
+
+        // when
+        Path path = pathFinder.getShortestPath(lines, stations, 왕십리_START.getId(), 고속터미널_END.getId());
+        사용자.addFavorite(Favorite.of(path));
+
+        Member findMember = memberRepository.findById(사용자.getId()).orElseThrow(MemberNotFoundException::new);
+
+        // then
+        assertThat(findMember.getFavorites()).hasSize(1);
+        assertThat(findMember.getFavorites().get(0).getDistance()).isEqualTo(path.distance());
     }
 }

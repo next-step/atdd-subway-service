@@ -1,12 +1,13 @@
 package nextstep.subway.path;
 
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.path.infrastructure.JGraphPathFinder;
 import nextstep.subway.path.application.PathService;
-import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.infrastructure.JGraphPathFinder;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -21,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 /**
@@ -90,16 +92,17 @@ public class PathMockitoExtensionTest {
 
         when(lineRepository.findAll())
                 .thenReturn(lines);
-//
-//        when(finder.getShortestPath(lines, stations, 강남역.getId(), 역삼역.getId()))
-//                .thenReturn(PathResponse.of(Lists.newArrayList(new Station(""), new Station(""))));
+
+        when(finder.getShortestPath(lines, stations, 강남역.getId(), 역삼역.getId()))
+                .thenReturn(Path.of(new Station(""), new Station(""), stations, Distance.of(5)));
 
         PathService pathService = new PathService(finder, stationRepository, lineRepository);
 
         // when
-        PathResponse response = pathService.getShortestPath(강남역.getId(), 역삼역.getId());
+        Path response = pathService.getShortestPath(강남역.getId(), 역삼역.getId());
 
         // then
-        assertThat(response.getStations()).hasSize(2);
+        assertThat(response.routes()).hasSize(2);
+        assertThat(response.distance()).isEqualTo(Distance.of(5));
     }
 }

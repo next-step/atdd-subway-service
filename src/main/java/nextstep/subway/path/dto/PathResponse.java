@@ -1,12 +1,9 @@
 package nextstep.subway.path.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.NoArgsConstructor;
-import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,30 +20,24 @@ import java.util.stream.Collectors;
 public class PathResponse {
     private List<StationResponse> stations;
 
-    @JsonIgnore
-    private Distance distance;
-
-    private PathResponse(List<StationResponse> stations, Distance distance) {
+    private PathResponse(List<StationResponse> stations) {
         this.stations = new ArrayList<>(stations);
-        this.distance = distance;
     }
 
-    public static PathResponse of(List<Station> stations, Distance distance) {
+    public static PathResponse of(List<Station> stations) {
         List<StationResponse> stationResponses =
                 stations.stream()
                         .map(StationResponse::of)
                         .collect(Collectors.toList());
 
-        return new PathResponse(stationResponses, distance);
+        return new PathResponse(stationResponses);
+    }
+
+    public static PathResponse of(Path path) {
+        return PathResponse.of(path.routes());
     }
 
     public List<StationResponse> getStations() {
         return stations;
     }
-
-    public Distance distance() {
-        return distance;
-    }
-
-
 }

@@ -1,7 +1,9 @@
 package nextstep.subway.path;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.infrastructure.JGraphPathFinder;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
@@ -19,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 /**
@@ -67,15 +70,15 @@ public class PathSpringExtensionTest {
 
         when(lineRepository.findAll()).thenReturn(lines);
         when(stationRepository.findAll()).thenReturn(stations);
-//        when(pathFinder.getShortestPath(lines, stations, 강남역.getId(), 역삼역.getId()))
-//                .thenReturn(PathResponse.of(
-//                        Arrays.asList(new Station("강남역"), new Station("역삼역"))));
+        when(pathFinder.getShortestPath(lines, stations, 강남역.getId(), 역삼역.getId()))
+                .thenReturn(Path.of(new Station("강남역"), new Station("역삼역"), stations, Distance.of(5)));
         PathService pathService = new PathService(pathFinder, stationRepository, lineRepository);
 
         //when
-        PathResponse response = pathService.getShortestPath(강남역.getId(), 역삼역.getId());
+        Path path = pathService.getShortestPath(강남역.getId(), 역삼역.getId());
 
         //then
-        assertThat(response.getStations()).hasSize(2);
+        assertThat(path.routes()).hasSize(2);
+        assertThat(path.distance()).isEqualTo(Distance.of(5));
     }
 }

@@ -2,6 +2,7 @@ package nextstep.subway.path.ui;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.subway.path.application.PathService;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +26,7 @@ public class PathController {
     @GetMapping
     public ResponseEntity<PathResponse> getShortestPath(@RequestParam(name = "source") Long source,
                                                         @RequestParam(name = "target") Long target) {
-        PathResponse response = pathService.getShortestPath(source, target);
-        return ResponseEntity.ok().body(response);
+        PathResponse path = PathResponse.of(pathService.getShortestPath(source, target));
+        return ResponseEntity.ok().body(path);
     }
 }

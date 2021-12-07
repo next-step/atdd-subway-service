@@ -3,6 +3,9 @@ package nextstep.subway.favorites.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nextstep.subway.favorites.domain.Favorite;
+import nextstep.subway.station.domain.Station;
+import org.aspectj.apache.bcel.generic.LineNumberGen;
 
 /**
  * packageName : nextstep.subway.favorites.dto
@@ -15,10 +18,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class FavoriteRequest {
-    private String source;
-    private String target;
+    private Long sourceStationId;
+    private Long targetStationId;
 
-    public static FavoriteRequest of(String source, String target) {
-        return new FavoriteRequest(source, target);
+    public static FavoriteRequest of(Long sourceStationId, Long targetStationId) {
+        return new FavoriteRequest(sourceStationId, targetStationId);
     }
+
 }

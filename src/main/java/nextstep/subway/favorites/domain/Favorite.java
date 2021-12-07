@@ -1,7 +1,12 @@
 package nextstep.subway.favorites.domain;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.member.domain.Member;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -16,6 +21,7 @@ import static javax.persistence.FetchType.*;
  * description :
  */
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Favorite {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +46,14 @@ public class Favorite {
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
         this.distance = distance;
+    }
+
+    public static Favorite of(Station sourceStation, Station targetStation, Distance distance) {
+        return new Favorite(sourceStation, targetStation, distance);
+    }
+
+    public static Favorite of(Path path) {
+        return new Favorite(path.source(), path.target(), path.distance());
     }
 
     public Long getId() {
