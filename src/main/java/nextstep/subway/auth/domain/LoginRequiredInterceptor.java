@@ -12,17 +12,17 @@ import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
 
 @Component
-public class LoginCheckInterceptor implements HandlerInterceptor {
+public class LoginRequiredInterceptor implements HandlerInterceptor {
 	private final AuthService authService;
 
-	public LoginCheckInterceptor(AuthService authService) {
+	public LoginRequiredInterceptor(AuthService authService) {
 		this.authService = authService;
 	}
 
 	@Override
 	public boolean preHandle(HttpServletRequest req, HttpServletResponse res, Object handler) {
-		LoginCheck loginCheck = ((HandlerMethod)handler).getMethodAnnotation(LoginCheck.class);
-		if (loginCheck == null) {
+		LoginRequired loginRequired = ((HandlerMethod)handler).getMethodAnnotation(LoginRequired.class);
+		if (loginRequired == null) {
 			return true;
 		}
 

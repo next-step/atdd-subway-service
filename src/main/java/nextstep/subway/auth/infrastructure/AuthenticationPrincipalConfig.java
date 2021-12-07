@@ -1,7 +1,7 @@
 package nextstep.subway.auth.infrastructure;
 
 import nextstep.subway.auth.application.AuthService;
-import nextstep.subway.auth.domain.LoginCheckInterceptor;
+import nextstep.subway.auth.domain.LoginRequiredInterceptor;
 import nextstep.subway.auth.ui.AuthenticationPrincipalArgumentResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,14 +13,14 @@ import java.util.List;
 @Configuration
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     private final AuthService authService;
-    private final LoginCheckInterceptor loginCheckInterceptor;
+    private final LoginRequiredInterceptor loginRequiredInterceptor;
 
     public AuthenticationPrincipalConfig(
         AuthService authService,
-        LoginCheckInterceptor loginCheckInterceptor
+        LoginRequiredInterceptor loginRequiredInterceptor
     ) {
         this.authService = authService;
-        this.loginCheckInterceptor = loginCheckInterceptor;
+        this.loginRequiredInterceptor = loginRequiredInterceptor;
     }
 
     @Override
@@ -35,6 +35,6 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(loginCheckInterceptor);
+        registry.addInterceptor(loginRequiredInterceptor);
     }
 }
