@@ -60,7 +60,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 		StationResponse 양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
 		StationResponse 정자역 = 지하철역_등록되어_있음("정자역").as(StationResponse.class);
 		StationResponse 광교역 = 지하철역_등록되어_있음("광교역").as(StationResponse.class);
-		LineResponse 신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 20)).as(LineResponse.class);
+		LineResponse 신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 광교역, 20, 900);
 
 		// Scenario
 		지하철_노선에_지하철역_제외_실패됨(지하철_노선에_지하철역_제외_요청(신분당선, 강남역));

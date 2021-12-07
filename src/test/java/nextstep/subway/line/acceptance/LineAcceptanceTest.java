@@ -36,7 +36,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
-        신분당선_생성_요청 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        신분당선_생성_요청 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10, 900);
         구신분당선_생성_요청 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
     }
 
@@ -129,7 +129,18 @@ public class LineAcceptanceTest extends AcceptanceTest {
         StationResponse downStation,
         int distance
     ) {
-        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+        return 지하철_노선_등록되어_있음(name, color, upStation, downStation, distance, 0);
+    }
+
+    public static LineResponse 지하철_노선_등록되어_있음(
+        String name,
+        String color,
+        StationResponse upStation,
+        StationResponse downStation,
+        int distance,
+        int extraFare
+    ) {
+        LineRequest lineRequest = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, extraFare);
         return 지하철_노선_생성_요청(lineRequest).as(LineResponse.class);
     }
 
