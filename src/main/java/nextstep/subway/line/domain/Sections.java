@@ -119,28 +119,35 @@ public class Sections {
     }
 
     private List<Section> getSortedSections() {
-        if (sections.isEmpty()) {
-            return Collections.emptyList();
-        }
-
         List<Section> list = new ArrayList<>();
-        Section section = findFirstSection();
-        list.add(section);
+        Optional<Section> optionalFirstSection = findFirstSection();
 
-        Optional<Section>  optional = Optional.of(section);
-        while (optional.isPresent()) {
-            Section finalSection = section;
-            optional = sections.stream()
-                .filter(finalSection::isTheUpLine)
-                .findFirst();
-            section = optional.orElse(finalSection);
-            optional.ifPresent(list::add);
-        }
+        optionalFirstSection.ifPresent(it -> {
+            list.add(it);
+            list.addAll(sortedSection(it));
+        });
 
         return list;
     }
 
-    private Section findFirstSection() {
+    private List<Section> sortedSection(Section firstSection) {
+        List<Section> list = new ArrayList<>();
+        Optional<Section> optional = Optional.of(firstSection);
+        while (optional.isPresent()) {
+            Section finalSection = firstSection;
+            optional = sections.stream()
+                .filter(finalSection::isTheUpLine)
+                .findFirst();
+            firstSection = optional.orElse(finalSection);
+            optional.ifPresent(list::add);
+        }
+        return list;
+    }
+
+    private Optional<Section> findFirstSection() {
+        if (sections.isEmpty()) {
+            return Optional.empty();
+        }
         Section section = sections.get(START_SECTION_INDEX);
         Optional<Section>  optional = Optional.of(section);
         while (optional.isPresent()) {
@@ -150,7 +157,7 @@ public class Sections {
                 .findFirst();
             section = optional.orElse(finalSection);
         }
-        return section;
+        return Optional.of(section);
     }
 
     private Stream<Station> getStationStream() {
