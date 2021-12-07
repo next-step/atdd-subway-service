@@ -28,10 +28,10 @@ public class LineTest {
 
         //when
         Line line = new Line("신분당선", "red", 강남역, 교대역, 10);
-        line.addLineStation(강남역, 양재역, 6);
+        line.addSection(강남역, 양재역, 6);
 
         //then
-        List<Station> stations = line.getStations();
+        List<Station> stations = line.getStationsByOrder();
         assertThat(stations).containsExactly(강남역, 양재역, 교대역);
     }
 
@@ -46,10 +46,10 @@ public class LineTest {
 
         //when
         Line line = new Line("신분당선", "red", 강남역, 교대역, 10);
-        line.addLineStation(양재역, 강남역,6);
+        line.addSection(양재역, 강남역,6);
 
         //then
-        List<Station> stations = line.getStations();
+        List<Station> stations = line.getStationsByOrder();
         assertThat(stations).containsExactly(양재역, 강남역, 교대역);
     }
 
@@ -64,10 +64,10 @@ public class LineTest {
 
         //when
         Line line = new Line("신분당선", "red", 강남역, 교대역, 10);
-        line.addLineStation(교대역, 양재역, 6);
+        line.addSection(교대역, 양재역, 6);
 
         //then
-        List<Station> stations = line.getStations();
+        List<Station> stations = line.getStationsByOrder();
         assertThat(stations).containsExactly(강남역, 교대역, 양재역);
     }
     
@@ -82,7 +82,7 @@ public class LineTest {
         //when
         Line line = new Line("신분당선", "red", 강남역, 교대역, 10);
 
-        assertThatThrownBy(() -> line.addLineStation(강남역, 교대역, 6)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> line.addSection(강남역, 교대역, 6)).isInstanceOf(RuntimeException.class);
     }
 
     @DisplayName("지하철 노선이 구간 추가 시 상행과 하행이 존재하지 않을 때")
@@ -98,7 +98,7 @@ public class LineTest {
         //when
         Line line = new Line("신분당선", "red", 강남역, 교대역, 10);
 
-        assertThatThrownBy(() -> line.addLineStation(양재역, 광교역, 6)).isInstanceOf(RuntimeException.class);
+        assertThatThrownBy(() -> line.addSection(양재역, 광교역, 6)).isInstanceOf(RuntimeException.class);
     }
 
     @DisplayName("지하철 노선의 모든 지하철을 상행부터 하행 순으로 조회한다.")
@@ -110,10 +110,10 @@ public class LineTest {
         Station 교대역 = new Station("교대역");
         Station 양재역 = new Station("양재역");
         Line line = new Line("신분당선", "red", 강남역, 교대역, 10);
-        line.addLineStation(강남역, 양재역, 5);
+        line.addSection(강남역, 양재역, 5);
 
         //when
-        List<Station> stations = line.getStations();
+        List<Station> stations = line.getStationsByOrder();
 
         //then
         assertThat(stations).contains(강남역, 교대역, 양재역);
@@ -128,14 +128,14 @@ public class LineTest {
         Station 교대역 = new Station("교대역");
         Station 양재역 = new Station("양재역");
         Line line = new Line("신분당선", "red", 강남역, 교대역, 10);
-        line.addLineStation(양재역, 강남역, 5);
+        line.addSection(양재역, 강남역, 5);
 
         //when
         line.removeSection(강남역);
 
         //then
-        assertThat(line.getStations().size()).isEqualTo(2);
-        assertThat(line.getStations()).containsExactly(양재역, 교대역);
+        assertThat(line.getStationsByOrder().size()).isEqualTo(2);
+        assertThat(line.getStationsByOrder()).containsExactly(양재역, 교대역);
         assertThat(line.getSections().stream()
                 .map(Section::getDistance)
                 .mapToInt(Distance::getValue)
@@ -151,14 +151,14 @@ public class LineTest {
         Station 교대역 = new Station("교대역");
         Station 양재역 = new Station("양재역");
         Line line = new Line("신분당선", "red", 강남역, 교대역, 10);
-        line.addLineStation(양재역, 강남역, 5);
+        line.addSection(양재역, 강남역, 5);
 
         //when
         line.removeSection(양재역);
 
         //then
-        assertThat(line.getStations().size()).isEqualTo(2);
-        assertThat(line.getStations()).containsExactly(강남역, 교대역);
+        assertThat(line.getStationsByOrder().size()).isEqualTo(2);
+        assertThat(line.getStationsByOrder()).containsExactly(강남역, 교대역);
         assertThat(line.getSections().stream()
                 .map(Section::getDistance)
                 .mapToInt(Distance::getValue)
@@ -176,14 +176,14 @@ public class LineTest {
         Station 교대역 = new Station("교대역");
         Station 양재역 = new Station("양재역");
         Line line = new Line("신분당선", "red", 강남역, 교대역, 10);
-        line.addLineStation(양재역, 강남역, 5);
+        line.addSection(양재역, 강남역, 5);
 
         //when
         line.removeSection(교대역);
 
         //then
-        assertThat(line.getStations().size()).isEqualTo(2);
-        assertThat(line.getStations()).containsExactly(양재역, 강남역);
+        assertThat(line.getStationsByOrder().size()).isEqualTo(2);
+        assertThat(line.getStationsByOrder()).containsExactly(양재역, 강남역);
         assertThat(line.getSections().stream()
                 .map(Section::getDistance)
                 .mapToInt(Distance::getValue)
@@ -203,4 +203,5 @@ public class LineTest {
         //when
         assertThatThrownBy(() -> line.removeSection(강남역)).isInstanceOf(RuntimeException.class);
     }
+
 }

@@ -23,7 +23,7 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
-    public Line() {
+    protected Line() {
     }
 
     public Line(String name, String color) {
@@ -66,42 +66,16 @@ public class Line extends BaseEntity {
         return this.sections.findUpStation();
     }
 
-    private boolean matchAnyStation(List<Station> stations, Station station) {
-        return stations.stream().anyMatch(it -> it == station);
-    }
-
-    private boolean matchNoneStation(List<Station> stations, Station station) {
-        return !matchAnyStation(stations, station);
-    }
-
-    public void addLineStation(Station upStation, Station downStation, Integer distance) {
-        List<Station> stations = this.getStations();
-        boolean isUpStationExisted = matchAnyStation(stations, upStation);
-        boolean isDownStationExisted = matchAnyStation(stations, downStation);
-
-
-        if (!stations.isEmpty() && matchNoneStation(stations, upStation) &&
-                matchNoneStation(stations, downStation)) {
-            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new ExistedSectionException(upStation, downStation);
-        }
-
-        if(isUpStationExisted) {
-            this.sections.findLineStation(it -> it.getUpStation() == upStation)
-                    .ifPresent(it -> it.updateUpStation(downStation, distance));
+    public void addSection(Station upStation, Station downStation, Integer distance) {
+        if(this.sections.isEmpty()) {
             this.sections.add(new Section(this, upStation, downStation, distance));
             return;
         }
 
-        this.sections.findLineStation(it -> it.getDownStation() == downStation)
-            .ifPresent(it -> it.updateDownStation(upStation, distance));
-        this.sections.add(new Section(this, upStation, downStation, distance));
+        this.sections.add(this, upStation, downStation, distance);
     }
 
-    public List<Station> getStations() {
+    public List<Station> getStationsByOrder() {
         if (this.getSections().isEmpty()) {
             return Collections.emptyList();
         }
@@ -121,5 +95,18 @@ public class Line extends BaseEntity {
 
     public void removeSection(Station station) {
         this.sections.remove(station);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Line line = (Line) o;
+        return Objects.equals(name, line.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

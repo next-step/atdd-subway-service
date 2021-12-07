@@ -46,11 +46,11 @@ public class SectionTest {
         Station 교대역 = new Station("교대역");
         Station 강변역 = new Station("강변역");
 
-        신분당선.addLineStation(강남역, 교대역, 7);
-        신분당선.addLineStation(교대역, 강변역, 7);
+        신분당선.addSection(강남역, 교대역, 7);
+        신분당선.addSection(교대역, 강변역, 4);
 
         //when
-        List<Station> stations = 신분당선.getStations();
+        List<Station> stations = 신분당선.getStationsByOrder();
 
         //then
         assertThat(stations).isNotEmpty();
@@ -67,14 +67,29 @@ public class SectionTest {
         Station 교대역 = new Station("교대역");
         Station 강변역 = new Station("강변역");
 
-        신분당선.addLineStation(강남역, 교대역, 7);
-        신분당선.addLineStation(교대역, 강변역, 7);
-        
+        신분당선.addSection(강남역, 교대역, 7);
+        신분당선.addSection(교대역, 강변역, 3);
+        신분당선.getSections();
+
         //when
         신분당선.removeSection(강남역);
 
         //then
         assertThat(신분당선.getSections().size()).isEqualTo(1);
+    }
+
+    @DisplayName("Section 비교")
+    @Test
+    void correctSectionTest() {
+
+        Line 신분당선 = new Line("신분당선", "green");
+        Station 강남역 = new Station("강남역");
+        Station 교대역 = new Station("교대역");
+
+        Section section1 = new Section(신분당선, 강남역, 교대역, 7);
+        Section section2 = new Section(신분당선, 강남역, 교대역, 7);
+
+        assertThat(section1).isEqualTo(section2);
     }
 
 }
