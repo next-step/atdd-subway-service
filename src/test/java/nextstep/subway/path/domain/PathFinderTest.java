@@ -24,9 +24,9 @@ public class PathFinderTest {
         Station 양재역 = new Station("양재역");
         Station 교대역 = new Station("교대역");
 
-        Line 신분당선 = new Line("신분당선", "green", 강남역, 양재역, 10);
-        Line 이호선 = new Line("이호선", "green", 교대역, 강남역, 10);
-        Line 삼호선 = new Line("삼호선", "green", 교대역, 양재역, 5);
+        Line 신분당선 = new Line("신분당선", "green", 강남역, 양재역, 10, 600);
+        Line 이호선 = new Line("이호선", "green", 교대역, 강남역, 10, 700);
+        Line 삼호선 = new Line("삼호선", "green", 교대역, 양재역, 5, 900);
 
         삼호선.addSection(교대역, 남부터미널, 3);
 
@@ -38,7 +38,7 @@ public class PathFinderTest {
 
         // then
         assertThat(shortCut.getWeight()).isEqualTo(5);
-        assertThat(shortCut.getFare()).isEqualTo(1250);
+        assertThat(shortCut.getFare()).isEqualTo(2150);
         assertThat(shortCut.getVertexList())
                 .map(Station::getName)
                 .containsExactly("교대역", "남부터미널", "양재역");

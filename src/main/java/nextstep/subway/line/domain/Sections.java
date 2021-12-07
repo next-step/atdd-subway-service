@@ -129,4 +129,9 @@ public class Sections {
         return sections.stream()
                 .anyMatch(section -> section.hasStation(station));
     }
+
+    public boolean containsStation(List<Station> stations) {
+        return getStations().stream()
+                .anyMatch(stations::contains);
+    }
 }
