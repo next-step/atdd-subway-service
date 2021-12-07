@@ -76,7 +76,7 @@ public class SectionsTest {
 
         assertThatThrownBy(() -> {
             line.addSection(nextSection);
-        }).isInstanceOf(RuntimeException.class)
+        }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
     }
 
@@ -87,7 +87,7 @@ public class SectionsTest {
 
         assertThatThrownBy(() -> {
             line.addSection(nextSection);
-        }).isInstanceOf(RuntimeException.class)
+        }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("이미 등록된 구간 입니다.");
     }
 
@@ -100,7 +100,7 @@ public class SectionsTest {
 
         assertThatThrownBy(() -> {
             line.addSection(nextSection);
-        }).isInstanceOf(RuntimeException.class)
+        }).isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("등록할 수 없는 구간 입니다.");
     }
 
@@ -155,6 +155,7 @@ public class SectionsTest {
 
         assertThatThrownBy(() -> {
             line.removeSection(downStation);
-        }).isInstanceOf(RuntimeException.class);
+        }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("구간이 최소 하나는 있어야 합니다.");
     }
 }
