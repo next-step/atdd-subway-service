@@ -52,3 +52,22 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+TODO List
+
+1단계 - 인수 테스트 기반 리팩터링
+
+-[x] 인수테스트 리팩터링 
+- [x] 노선 구간 관리의 시나리오를 만들고, 시나리오 대로 동작하는지 테스트 
+- [x] LineService 리팩터링 
+- [x] 노선 역 정렬 로직 Line 객체 안으로 
+- [x] 노선 저장 리팩터링 
+- [x] 노선 조회 리팩터링 
+- [x] 노선 목록 조회 리팩터링 
+- [x] 노선 구간 추가 리팩터링 
+- [x] 노선 구간 삭제 리팩터링
+
+2단계 - 경로 조회 기능
+
+-[ ] 최단 경로 조회 인수 테스트 만들기 
+-[ ] 최단 경로 조회 기능 록구현하기
