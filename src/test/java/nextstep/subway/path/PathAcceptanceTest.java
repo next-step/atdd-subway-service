@@ -4,9 +4,12 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -63,6 +66,23 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_거리_경로를_응답(response, "교대역", "남부터미널역", "양재역");
         총_거리도_함께_응답(response, 5);
         지하철_이용_요금도_함께_응답함(response, 2150);
+    }
+
+    @DisplayName("로그인 하여 경로를 검색하면 연령별 요금 할인이 적용된다")
+    @Test
+    void testGetShortCutWithLogin() {
+        // given
+        MemberAcceptanceTest.회원_등록되어_있음(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD, 8);
+        TokenResponse 어린이 = AuthAcceptanceTest.로그인_되어_있음(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD);
+
+        // when
+        ExtractableResponse<Response> response = 역_사이의_최단경로_요청(어린이, 교대역, 양재역);
+
+        // then
+        최단_경로_응답됨(response);
+        최단_거리_경로를_응답(response, "교대역", "남부터미널역", "양재역");
+        총_거리도_함께_응답(response, 5);
+        지하철_이용_요금도_함께_응답함(response, 1250);
     }
 
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
@@ -134,6 +154,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths?source={source}&target={target}", source, target)
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> 역_사이의_최단경로_요청(TokenResponse tokenResponse, StationResponse source, StationResponse target) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", "Bearer " + tokenResponse.getAccessToken())
+                .when().get("/paths?source={source}&target={target}", source.getId(), target.getId())
                 .then().log().all().extract();
     }
 

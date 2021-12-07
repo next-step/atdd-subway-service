@@ -36,4 +36,12 @@ public class AuthService {
         Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
+
+    public LoginMember findMemberByTokenOrEmptyMember(String credentials) {
+        try {
+            return findMemberByToken(credentials);
+        } catch (Exception e) {
+            return LoginMember.emptyMember();
+        }
+    }
 }

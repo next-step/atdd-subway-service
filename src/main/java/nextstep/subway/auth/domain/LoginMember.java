@@ -14,6 +14,14 @@ public class LoginMember {
         this.age = age;
     }
 
+    public static LoginMember emptyMember() {
+        return new LoginMember();
+    }
+
+    public boolean isEmpty() {
+        return id == null;
+    }
+
     public Long getId() {
         return id;
     }

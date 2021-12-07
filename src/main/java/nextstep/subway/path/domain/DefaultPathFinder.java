@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResult;
@@ -24,19 +25,20 @@ public class DefaultPathFinder implements PathFinder {
         this.farePolicy = farePolicy;
     }
 
-    public PathResult findShortCut(Set<Line> lines, Station source, Station target) {
+    public PathResult findShortCut(Set<Line> lines, Station source, Station target, LoginMember loginMember) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         addStationToGraph(lines, graph);
         linkAllSections(lines, graph);
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         return Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
-                .map(path -> getPathResult(lines, path))
+                .map(path -> getPathResult(lines, path, loginMember))
                 .orElseGet(PathResult::emptyPath);
     }
 
-    private PathResult getPathResult(Set<Line> lines, GraphPath<Station, DefaultWeightedEdge> path) {
+    private PathResult getPathResult(Set<Line> lines, GraphPath<Station, DefaultWeightedEdge> path, LoginMember loginMember) {
+        int age = loginMember.isEmpty() ? 0 : loginMember.getAge();
         Set<Line> acrossLines = getAcrossLines(lines, path.getVertexList());
-        int fare = farePolicy.calculateOverFare(acrossLines, (int) path.getWeight());
+        int fare = farePolicy.calculateOverFare(acrossLines, (int) path.getWeight(), age);
         return new PathResult(path.getVertexList(), path.getWeight(), fare);
     }
 
