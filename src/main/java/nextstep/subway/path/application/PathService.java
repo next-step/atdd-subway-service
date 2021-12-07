@@ -36,7 +36,7 @@ public class PathService {
 		PathFinder pathFinder = PathFinder.of(lines);
 		Path path = pathFinder.find(source, target);
 		FarePolicy farePolicy = new FarePolicy();
-		int fare = farePolicy.calculate(path.getDistance());
+		int fare = farePolicy.calculateBy(path.getDistance(), path.getLines());
 
 		return PathResponse.of(path, fare);
 	}

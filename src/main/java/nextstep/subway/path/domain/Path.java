@@ -1,7 +1,9 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
@@ -24,7 +26,18 @@ public class Path {
 		return stations;
 	}
 
+	public List<Section> getSections() {
+		return sections;
+	}
+
 	public int getDistance() {
 		return distance;
+	}
+
+	public List<Line> getLines() {
+		return sections.stream()
+			.map(Section::getLine)
+			.distinct()
+			.collect(Collectors.toList());
 	}
 }
