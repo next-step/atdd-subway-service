@@ -17,19 +17,20 @@ import nextstep.subway.station.domain.Station;
 @Entity
 public class Favorite {
 
-	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="member_id")
+	@JoinColumn(name = "member_id")
 	private Member member;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="source_id")
+	@JoinColumn(name = "source_id")
 	private Station source;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="target_id")
+	@JoinColumn(name = "target_id")
 	private Station target;
 
 	protected Favorite() {
@@ -59,10 +60,10 @@ public class Favorite {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o){
+		if (this == o) {
 			return true;
 		}
-		if(!(o instanceof Favorite)){
+		if (!(o instanceof Favorite)) {
 			return false;
 		}
 

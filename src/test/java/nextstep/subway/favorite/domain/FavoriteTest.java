@@ -25,9 +25,9 @@ class FavoriteTest {
 	private Station target;
 
 	@BeforeEach
-	void setUp(){
+	void setUp() {
 		// given
-		member = new Member("email@email.com","password",30);
+		member = new Member("email@email.com", "password", 30);
 		source = new Station("강남역");
 		target = new Station("광교역");
 
@@ -38,13 +38,13 @@ class FavoriteTest {
 
 	@DisplayName("Favorite 생성")
 	@Test
-	public void constructFavorite(){
+	public void constructFavorite() {
 		// when
-		Favorite favorite = new Favorite(member,source,target);
+		Favorite favorite = new Favorite(member, source, target);
 		em.persist(favorite);
 
 		// then
-		Favorite findFavorite = em.find(Favorite.class,favorite.getId());
+		Favorite findFavorite = em.find(Favorite.class, favorite.getId());
 		assertThat(favorite).isEqualTo(findFavorite);
 	}
 }
