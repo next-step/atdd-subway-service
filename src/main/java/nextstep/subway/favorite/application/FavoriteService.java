@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -50,7 +51,7 @@ public class FavoriteService {
     @Transactional
     public void deleteFavorite(Long memberId, Long id) {
         Favorite favorite = favoriteRepository.findByIdAndMemberId(id, memberId)
-            .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_DATA.getMessage()));
+            .orElseThrow(() -> new BadRequestException(NOT_FOUND_DATA));
         favoriteRepository.delete(favorite);
     }
 

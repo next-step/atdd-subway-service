@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.station.domain.Station;
 
 class SectionsTest {
@@ -89,7 +90,7 @@ class SectionsTest {
 
         // when & then
         assertThatThrownBy(() -> sections.addSection(section))
-            .isInstanceOf(IllegalArgumentException.class)
+            .isInstanceOf(BadRequestException.class)
             .hasMessage(ALREADY_ADD_SECTION.getMessage());
     }
 
@@ -101,7 +102,7 @@ class SectionsTest {
 
         // when & then
         assertThatThrownBy(() -> sections.addSection(section))
-            .isInstanceOf(IllegalArgumentException.class)
+            .isInstanceOf(BadRequestException.class)
             .hasMessage(NOT_POSSIBLE_ADD_SECTION.getMessage());
     }
 
@@ -112,7 +113,7 @@ class SectionsTest {
         Station 삼성역 = new Station("삼성역");
         Section section = new Section(line, 잠실역, 삼성역, distance);
         assertThatThrownBy(() -> sections.addSection(section))
-            .isInstanceOf(IllegalArgumentException.class)
+            .isInstanceOf(BadRequestException.class)
             .hasMessage(LESS_THAN_DISTANCE_BETWEEN_STATION.getMessage());
     }
 
@@ -145,7 +146,7 @@ class SectionsTest {
 
         // when & then
         assertThatThrownBy(() -> sections.removeSection(교대역))
-            .isInstanceOf(IllegalArgumentException.class)
+            .isInstanceOf(BadRequestException.class)
             .hasMessage(NOT_REMOVE_SECTION_MIN_SIZE.getMessage());
     }
 
@@ -157,7 +158,7 @@ class SectionsTest {
 
         // when & then
         assertThatThrownBy(() -> sections.removeSection(신촌역))
-            .isInstanceOf(IllegalArgumentException.class)
+            .isInstanceOf(BadRequestException.class)
             .hasMessage(NON_EXIST_STATION_TO_SECTION.getMessage());
     }
 }

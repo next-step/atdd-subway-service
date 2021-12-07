@@ -5,6 +5,7 @@ import static nextstep.subway.exception.ExceptionMessage.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
@@ -44,6 +45,6 @@ public class MemberService {
     @Transactional(readOnly = true)
     public Member findById(Long id) {
         return memberRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_DATA.getMessage()));
+            .orElseThrow(() -> new BadRequestException(NOT_FOUND_DATA));
     }
 }

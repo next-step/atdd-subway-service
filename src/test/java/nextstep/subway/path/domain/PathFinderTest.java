@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -66,7 +67,7 @@ class PathFinderTest {
     void validateSameStations() {
         // when && then
         assertThatThrownBy(() -> pathFinder.getShortestPaths(강남역, 강남역))
-            .isInstanceOf(IllegalArgumentException.class)
+            .isInstanceOf(BadRequestException.class)
             .hasMessage(SAME_STATION.getMessage());
     }
 
@@ -79,7 +80,7 @@ class PathFinderTest {
 
         // when && then
         assertThatThrownBy(() -> pathFinder.getShortestPaths(선릉역, 사당역))
-            .isInstanceOf(IllegalArgumentException.class)
+            .isInstanceOf(BadRequestException.class)
             .hasMessage(NOT_EXIST_STATION.getMessage());
     }
 }

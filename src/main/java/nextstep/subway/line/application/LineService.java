@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -60,7 +61,7 @@ public class LineService {
     @Transactional(readOnly = true)
     public Line findLineById(Long id) {
         return lineRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_DATA.getMessage()));
+            .orElseThrow(() -> new BadRequestException(NOT_FOUND_DATA));
     }
 
     @Transactional(readOnly = true)
@@ -73,7 +74,7 @@ public class LineService {
     @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_DATA.getMessage()));
+            .orElseThrow(() -> new BadRequestException(NOT_FOUND_DATA));
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 

@@ -10,6 +10,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
@@ -46,14 +47,14 @@ public class PathFinder {
 
     private void validateSameStation(Station sourceStation, Station targetStation) {
         if (sourceStation.equals(targetStation)) {
-            throw new IllegalArgumentException(SAME_STATION.getMessage());
+            throw new BadRequestException(SAME_STATION);
         }
     }
 
     private void validateExistStation(Station sourceStation, Station targetStation) {
         Set<Station> allStation = getAllStation();
         if (!allStation.contains(sourceStation) || !allStation.contains(targetStation)) {
-            throw new IllegalArgumentException(NOT_EXIST_STATION.getMessage());
+            throw new BadRequestException(NOT_EXIST_STATION);
         }
     }
 

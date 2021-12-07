@@ -6,8 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import nextstep.subway.auth.application.AuthorizationException;
-
 @RestControllerAdvice
 public class ExceptionAdvice {
 
@@ -16,8 +14,8 @@ public class ExceptionAdvice {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<String> handleBadRequestException(BadRequestException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 

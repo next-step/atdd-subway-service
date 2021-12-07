@@ -8,6 +8,8 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.exception.AuthorizationException;
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 
@@ -23,7 +25,7 @@ public class AuthService {
 
     public TokenResponse login(TokenRequest request) {
         Member member = memberRepository.findByEmail(request.getEmail())
-            .orElseThrow(() -> new AuthorizationException(WRONG_AUTH.getMessage()));
+            .orElseThrow(() -> new AuthorizationException(WRONG_AUTH));
         member.checkPassword(request.getPassword());
 
         String token = jwtTokenProvider.createToken(request.getEmail());
@@ -32,12 +34,12 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new AuthorizationException(WRONG_TOKEN.getMessage());
+            throw new AuthorizationException(WRONG_TOKEN);
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email)
-            .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_DATA.getMessage()));
+            .orElseThrow(() -> new BadRequestException(NOT_FOUND_DATA));
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }
