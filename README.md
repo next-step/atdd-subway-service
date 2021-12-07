@@ -93,3 +93,26 @@ licensed.
 - [X] `PathFactory` 인터페이스 활용하여 외부 모듈 의존역전시키기
 - infrastructure 패키지 분리
     - [X] `PathFactory` 구현체 구현
+
+#### 인수 시나리오
+
+```
+Feature: 지하철 경로 조회
+  Background
+    Given 지하철역_등록되어_있음
+    And 지하철_노선_등록되어_있음
+
+  Scenario: 최단경로_조회
+    When 경로_조회
+    Then 최단경로_조회_됨
+    Then 최단경로_조회_길이_계산됨
+
+  Scenario: 같은_역_경로_조회_실패
+    When 경로_조회
+    Then 경로_조회_실패됨
+    
+  Scenario: 이어지지_않는_경로_조회_실패
+    When 경로_조회
+    Then 경로_조회_실패됨
+    
+```
