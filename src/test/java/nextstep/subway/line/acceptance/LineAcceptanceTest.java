@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("지하철 노선 관련 기능")
-public class LineAcceptanceTest extends AcceptanceTest {
+class LineAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("지하철 노선을 생성한다.")
     @Test

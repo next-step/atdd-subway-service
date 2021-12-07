@@ -1,164 +1,208 @@
 package nextstep.subway.line.acceptance;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.fixture.TestLineFactory;
+import nextstep.subway.fixture.TestSectionFactory;
+import nextstep.subway.fixture.TestStationFactory;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 구간 관련 기능")
-public class LineSectionAcceptanceTest extends AcceptanceTest {
-    private LineResponse 신분당선;
-    private StationResponse 강남역;
-    private StationResponse 양재역;
-    private StationResponse 정자역;
-    private StationResponse 광교역;
+class LineSectionAcceptanceTest extends AcceptanceTest {
 
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-
-        강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
-        정자역 = StationAcceptanceTest.지하철역_등록되어_있음("정자역").as(StationResponse.class);
-        광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
-
-        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
-    }
-
-    @DisplayName("지하철 구간을 등록한다.")
+    @DisplayName("노선에 새로운 상행 종점을 등록한다.")
     @Test
-    void addLineSection() {
-        // when
-        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
-
-        // then
-        ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-        지하철_노선에_지하철역_등록됨(response);
-        지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 양재역, 광교역));
-    }
-
-    @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
-    @Test
-    void addLineSection2() {
-        // when
-        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
-        지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 강남역, 5);
-
-        // then
-        ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-        지하철_노선에_지하철역_등록됨(response);
-        지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(정자역, 강남역, 양재역, 광교역));
-    }
-
-    @DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
-    @Test
-    void addLineSectionWithSameStation() {
-        // when
-        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 광교역, 3);
-
-        // then
-        지하철_노선에_지하철역_등록_실패됨(response);
-    }
-
-    @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록한다.")
-    @Test
-    void addLineSectionWithNoStation() {
-        // when
-        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 양재역, 3);
-
-        // then
-        지하철_노선에_지하철역_등록_실패됨(response);
-    }
-
-    @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
-    @Test
-    void removeLineSection1() {
+    void addUpSection() {
         // given
-        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
-        지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 정자역, 2);
+        StationResponse 잠실역 = TestStationFactory.지하철_역_생성_요청("잠실역").as(StationResponse.class);
+        StationResponse 잠실나루역 = TestStationFactory.지하철_역_생성_요청("잠실나루역").as(StationResponse.class);
+        LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("2호선", "bg-red-600", 잠실역.getId()
+                , 잠실나루역.getId(), 10)).as(LineResponse.class);
+        StationResponse 잠실새내역 = TestStationFactory.지하철_역_생성_요청("잠실새내역").as(StationResponse.class);
 
         // when
-        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+        ExtractableResponse<Response> response = TestSectionFactory.지하철_노선에_구간_등록_요청(이호선, 잠실새내역, 잠실역, 10);
 
         // then
-        지하철_노선에_지하철역_제외됨(removeResponse);
-        ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
-        지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 정자역, 광교역));
+        TestSectionFactory.지하철_노선에_구간_등록됨(response);
+
+        // when
+        ExtractableResponse<Response> lineResponse = TestLineFactory.지하철_노선_조회_요청(이호선.getId());
+
+        // then
+        TestLineFactory.지하철_노선_응답됨(lineResponse);
+        TestSectionFactory.지하철_노선에_지하철역_구간_목록_포함됨(lineResponse, 3);
+
     }
 
-    @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
+    @DisplayName("노선에 새로운 하행 종점을 등록한다.")
     @Test
-    void removeLineSection2() {
+    void addDownSection() {
+        // given
+        StationResponse 잠실역 = TestStationFactory.지하철_역_생성_요청("잠실역").as(StationResponse.class);
+        StationResponse 잠실나루역 = TestStationFactory.지하철_역_생성_요청("잠실나루역").as(StationResponse.class);
+        LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("2호선", "bg-red-600", 잠실역.getId()
+                , 잠실나루역.getId(), 10)).as(LineResponse.class);
+        StationResponse 강변역 = TestStationFactory.지하철_역_생성_요청("강변역").as(StationResponse.class);
+
         // when
-        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
+        ExtractableResponse<Response> response = TestSectionFactory.지하철_노선에_구간_등록_요청(이호선, 잠실나루역, 강변역, 10);
 
         // then
-        지하철_노선에_지하철역_제외_실패됨(removeResponse);
+        TestSectionFactory.지하철_노선에_구간_등록됨(response);
+
+        // when
+        ExtractableResponse<Response> lineResponse = TestLineFactory.지하철_노선_조회_요청(이호선.getId());
+
+        // then
+        TestLineFactory.지하철_노선_응답됨(lineResponse);
+        TestSectionFactory.지하철_노선에_지하철역_구간_목록_포함됨(lineResponse, 3);
     }
 
-    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
-        SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
+    @DisplayName("노선 사이에 역을 추가한다.")
+    @Test
+    void addMiddleSection() {
+        // given
+        StationResponse 잠실새내역 = TestStationFactory.지하철_역_생성_요청("잠실새내역").as(StationResponse.class);
+        StationResponse 잠실나루역 = TestStationFactory.지하철_역_생성_요청("잠실나루역").as(StationResponse.class);
+        LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("2호선", "bg-red-600", 잠실새내역.getId()
+                , 잠실나루역.getId(), 10)).as(LineResponse.class);
+        StationResponse 잠실역 = TestStationFactory.지하철_역_생성_요청("잠실역").as(StationResponse.class);
 
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(sectionRequest)
-                .when().post("/lines/{lineId}/sections", line.getId())
-                .then().log().all()
-                .extract();
+        // when
+        ExtractableResponse<Response> response = TestSectionFactory.지하철_노선에_구간_등록_요청(이호선, 잠실새내역, 잠실역, 5);
+
+        // then
+        TestSectionFactory.지하철_노선에_구간_등록됨(response);
+
+        // when
+        ExtractableResponse<Response> lineResponse = TestLineFactory.지하철_노선_조회_요청(이호선.getId());
+
+        // then
+        TestLineFactory.지하철_노선_응답됨(lineResponse);
+        TestSectionFactory.지하철_노선에_지하철역_구간_목록_포함됨(lineResponse, 3);
     }
 
-    public static void 지하철_노선에_지하철역_등록됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    @DisplayName("노선 사이에 역을 추가할 시 길이가 똑같으면 등록 실패한다.")
+    @Test
+    void addMiddleSection_예외() {
+        // given
+        StationResponse 잠실새내역 = TestStationFactory.지하철_역_생성_요청("잠실새내역").as(StationResponse.class);
+        StationResponse 잠실나루역 = TestStationFactory.지하철_역_생성_요청("잠실나루역").as(StationResponse.class);
+        LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("2호선", "bg-red-600", 잠실새내역.getId()
+                , 잠실나루역.getId(), 10)).as(LineResponse.class);
+        StationResponse 잠실역 = TestStationFactory.지하철_역_생성_요청("잠실역").as(StationResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = TestSectionFactory.지하철_노선에_구간_등록_요청(이호선, 잠실새내역, 잠실역, 10);
+
+        // then
+        TestSectionFactory.지하철_노선에_지하철역_구간_생성_실패됨(response);
     }
 
-    public static void 지하철_노선에_지하철역_등록_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    @DisplayName("노선에 상행역과 하행역이 이미 노선에 모두 등록되어 있다면 실패한다.")
+    @Test
+    void addUpDownSection_예외() {
+        // given
+        StationResponse 잠실새내역 = TestStationFactory.지하철_역_생성_요청("잠실새내역").as(StationResponse.class);
+        StationResponse 잠실나루역 = TestStationFactory.지하철_역_생성_요청("잠실나루역").as(StationResponse.class);
+        LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("2호선", "bg-red-600", 잠실새내역.getId()
+                , 잠실나루역.getId(), 10)).as(LineResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = TestSectionFactory.지하철_노선에_구간_등록_요청(이호선, 잠실새내역, 잠실나루역, 10);
+
+        // then
+        TestSectionFactory.지하철_노선에_지하철역_구간_생성_실패됨(response);
     }
 
-    public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
-        LineResponse line = response.as(LineResponse.class);
-        List<Long> stationIds = line.getStations().stream()
-                .map(it -> it.getId())
-                .collect(Collectors.toList());
+    @DisplayName("노선에 상행역과 하행역 둘 중 하나도 포함되어있지 않으면 실패한다.")
+    @Test
+    void addUpDownSection_예외2() {
+        // given
+        StationResponse 잠실새내역 = TestStationFactory.지하철_역_생성_요청("잠실새내역").as(StationResponse.class);
+        StationResponse 잠실나루역 = TestStationFactory.지하철_역_생성_요청("잠실나루역").as(StationResponse.class);
+        LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("2호선", "bg-red-600", 잠실새내역.getId()
+                , 잠실나루역.getId(), 10)).as(LineResponse.class);
 
-        List<Long> expectedStationIds = expectedStations.stream()
-                .map(it -> it.getId())
-                .collect(Collectors.toList());
+        // when
+        StationResponse 강변역 = TestStationFactory.지하철_역_생성_요청("강변역").as(StationResponse.class);
+        StationResponse 종합운동장역 = TestStationFactory.지하철_역_생성_요청("종합운동장역").as(StationResponse.class);
+        ExtractableResponse<Response> response = TestSectionFactory.지하철_노선에_구간_등록_요청(이호선, 강변역, 종합운동장역, 10);
 
-        assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
+        // then
+        TestSectionFactory.지하철_노선에_지하철역_구간_생성_실패됨(response);
     }
 
-    public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
-        return RestAssured
-                .given().log().all()
-                .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
-                .then().log().all()
-                .extract();
+    @DisplayName("노선에 종점이 제거되면 다음으로 오던 역이 종점이 된다.")
+    @Test
+    void removeMiddleSection() {
+        // given
+        StationResponse 잠실역 = TestStationFactory.지하철_역_생성_요청("잠실역").as(StationResponse.class);
+        StationResponse 잠실나루역 = TestStationFactory.지하철_역_생성_요청("잠실나루역").as(StationResponse.class);
+        LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("2호선", "bg-red-600", 잠실역.getId()
+                , 잠실나루역.getId(), 5)).as(LineResponse.class);
+        StationResponse 강변역 = TestStationFactory.지하철_역_생성_요청("강변역").as(StationResponse.class);
+
+        // when
+        ExtractableResponse<Response> response = TestSectionFactory.지하철_노선에_구간_등록_요청(이호선, 잠실나루역, 강변역, 5);
+
+        // then
+        TestSectionFactory.지하철_노선에_구간_등록됨(response);
+
+        // when
+        ExtractableResponse<Response> removeResponse = TestSectionFactory.지하철_노선_구간_삭제_요청(이호선, 잠실나루역);
+
+        // then
+        TestSectionFactory.지하철_노선_구간_삭제됨(removeResponse);
+
+        // when
+        ExtractableResponse<Response> lineResponse = TestLineFactory.지하철_노선_조회_요청(이호선.getId());
+
+        // then
+        TestLineFactory.지하철_노선_응답됨(lineResponse);
+        TestSectionFactory.지하철_노선에_지하철역_구간_목록_포함됨(lineResponse, 2);
     }
 
-    public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    @DisplayName("노선에 구간이 하나인 경우 삭제가 불가능하다.")
+    @Test
+    void removeSection_예외() {
+        // given
+        StationResponse 잠실역 = TestStationFactory.지하철_역_생성_요청("잠실역").as(StationResponse.class);
+        StationResponse 잠실나루역 = TestStationFactory.지하철_역_생성_요청("잠실나루역").as(StationResponse.class);
+        LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("2호선", "bg-red-600", 잠실역.getId()
+                , 잠실나루역.getId(), 5)).as(LineResponse.class);
+
+        // when
+        ExtractableResponse<Response> removeResponse = TestSectionFactory.지하철_노선_구간_삭제_요청(이호선, 잠실나루역);
+
+        // then
+        TestSectionFactory.지하철_노선_구간_삭제_실패됨(removeResponse);
     }
 
-    public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    @DisplayName("삭제할 역이 노선에 없는 경우 삭제가 불가능하다.")
+    @Test
+    void removeSection_예외3() {
+        // given
+        StationResponse 잠실역 = TestStationFactory.지하철_역_생성_요청("잠실역").as(StationResponse.class);
+        StationResponse 잠실나루역 = TestStationFactory.지하철_역_생성_요청("잠실나루역").as(StationResponse.class);
+        LineResponse 이호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("2호선", "bg-red-600", 잠실역.getId()
+                , 잠실나루역.getId(), 5)).as(LineResponse.class);
+        // 다른 노선
+        StationResponse 몽촌토성역 = TestStationFactory.지하철_역_생성_요청("몽촌토성역").as(StationResponse.class);
+        StationResponse 강동구청역 = TestStationFactory.지하철_역_생성_요청("강동구청역").as(StationResponse.class);
+        LineResponse 팔호선 = TestLineFactory.지하철_노선_생성_요청(LineRequest.of("8호선", "bg-green-600", 몽촌토성역.getId()
+                , 강동구청역.getId(), 5)).as(LineResponse.class);
+
+        // when
+        ExtractableResponse<Response> removeResponse = TestSectionFactory.지하철_노선_구간_삭제_요청(이호선, 몽촌토성역);
+
+        // then
+        TestSectionFactory.지하철_노선_구간_삭제_실패됨(removeResponse);
     }
 }
