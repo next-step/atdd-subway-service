@@ -1,17 +1,15 @@
 package nextstep.subway.favorites.domain;
 
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.path.domain.Path;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 
-import static javax.persistence.FetchType.*;
+import static javax.persistence.FetchType.LAZY;
 
 /**
  * packageName : nextstep.subway.favorites.domain
@@ -23,22 +21,21 @@ import static javax.persistence.FetchType.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Favorite {
-
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "SOURCE_STATION_ID")
     private Station sourceStation;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "TARGET_STATION_ID")
     private Station targetStation;
 
     @Embedded
     private Distance distance;
 
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
@@ -54,6 +51,11 @@ public class Favorite {
 
     public static Favorite of(Path path) {
         return new Favorite(path.source(), path.target(), path.distance());
+    }
+
+    public Favorite by(Member member) {
+        this.member = member;
+        return this;
     }
 
     public Long getId() {
@@ -76,19 +78,7 @@ public class Favorite {
         return member;
     }
 
-    public void setSourceStation(Station sourceStation) {
-        this.sourceStation = sourceStation;
-    }
-
-    public void setTargetStation(Station targetStation) {
-        this.targetStation = targetStation;
-    }
-
     public void setDistance(Distance distance) {
         this.distance = distance;
-    }
-    public Favorite by(Member member) {
-        this.member = member;
-        return this;
     }
 }

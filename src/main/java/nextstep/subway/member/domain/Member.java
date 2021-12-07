@@ -3,10 +3,10 @@ package nextstep.subway.member.domain;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.favorites.domain.Favorite;
+import nextstep.subway.member.exception.FavoriteNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +47,19 @@ public class Member extends BaseEntity {
     }
 
     public void addFavorite(Favorite favorite) {
-        this.favorites.add(favorite.by(this));
+        favorites.add(favorite.by(this));
+    }
+
+    public void removeFavorite(Long favoriteId) {
+        Favorite favorite = findFavorite(favoriteId);
+        favorites.remove(favorite);
+    }
+
+    private Favorite findFavorite(Long id) {
+        return favorites.stream()
+                    .filter(it -> it.getId().equals(id))
+                    .findFirst()
+                    .orElseThrow(FavoriteNotFoundException::new);
     }
 
     public Long getId() {
@@ -69,4 +81,6 @@ public class Member extends BaseEntity {
     public List<Favorite> getFavorites() {
         return favorites;
     }
+
+
 }

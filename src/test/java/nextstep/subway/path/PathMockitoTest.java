@@ -64,7 +64,7 @@ public class PathMockitoTest {
         when(stationRepository.findAll()).thenReturn(stations);
 
         when(pathFinder.getShortestPath(lines, stations, 1L, 2L))
-                .thenReturn(Path.of(new Station(""), new Station(""), stations, Distance.of(5)));
+                .thenReturn(Path.of(new Station("1"), new Station("2"), stations, Distance.of(5)));
 
         PathService pathService = new PathService(pathFinder, stationRepository, lineRepository);
 

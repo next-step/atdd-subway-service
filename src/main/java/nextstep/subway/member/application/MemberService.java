@@ -3,6 +3,7 @@ package nextstep.subway.member.application;
 import lombok.RequiredArgsConstructor;
 import nextstep.subway.favorites.domain.Favorite;
 import nextstep.subway.favorites.dto.FavoriteRequest;
+import nextstep.subway.favorites.dto.FavoriteResponse;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
@@ -12,6 +13,8 @@ import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.domain.Path;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -46,9 +49,26 @@ public class MemberService {
                 .orElseThrow(MemberNotFoundException::new);
     }
 
+    @Transactional
     public void addFavorite(Long id, FavoriteRequest request) {
+        Favorite favorite = getFavorite(request);
         Member member = findMemberById(id);
-        Path path = pathService.getShortestPath(request.getSourceStationId(), request.getTargetStationId());
-        member.addFavorite(Favorite.of(path));
+        member.addFavorite(favorite);
+    }
+
+    private Favorite getFavorite(FavoriteRequest request) {
+        Path path = pathService.getShortestPath(request.getSource(), request.getTarget());
+        return Favorite.of(path);
+    }
+
+    public List<FavoriteResponse> findFavorites(Long id) {
+        Member member = findMemberById(id);
+        return FavoriteResponse.ofList(member.getFavorites());
+    }
+
+    @Transactional
+    public void deleteFavorite(Long memberId, Long favoriteId) {
+        Member member = findMemberById(memberId);
+        member.removeFavorite(favoriteId);
     }
 }

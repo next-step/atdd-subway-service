@@ -22,7 +22,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 /**
@@ -94,7 +93,7 @@ public class PathMockitoExtensionTest {
                 .thenReturn(lines);
 
         when(finder.getShortestPath(lines, stations, 강남역.getId(), 역삼역.getId()))
-                .thenReturn(Path.of(new Station(""), new Station(""), stations, Distance.of(5)));
+                .thenReturn(Path.of(new Station("1"), new Station("2"), stations, Distance.of(5)));
 
         PathService pathService = new PathService(finder, stationRepository, lineRepository);
 
