@@ -48,7 +48,7 @@ public class Sections {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
+                    .filter(section -> section.getUpStation() == finalDownStation)
                     .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
@@ -65,7 +65,7 @@ public class Sections {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
+                    .filter(section -> section.getDownStation() == finalDownStation)
                     .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
@@ -90,28 +90,11 @@ public class Sections {
     void remove(Station station) {
         checkRemovableStation(station);
         
-        Optional<Section> upLineStation = getSections().stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = getSections().stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            Distance newDistance = upLineStation.get().getDistance().plus(downLineStation.get().getDistance());
-            getSections().add(Section.of(upLineStation.get().getLine(), newUpStation, newDownStation, newDistance));
-        }
-
-        upLineStation.ifPresent(it -> getSections().remove(it));
-        downLineStation.ifPresent(it -> getSections().remove(it));
-        
-        /*        if (removeIfCombinableStation(station)) {
+        if (removeIfCombinableStation(station)) {
             return;
         }
         
-        removeEdgeStation(station);*/
+        removeEdgeStation(station);
     }
     
     int count() {
@@ -124,20 +107,20 @@ public class Sections {
         }
 
         if (isUpStationExisted(section) && isDownStationExisted(section)) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
 
         if (!isUpStationExisted(section) && !isDownStationExisted(section)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
     }
     
     private boolean addIfSameUpStations(Section newSection) {
         if (isUpStationExisted(newSection)) {
             getSections().stream()
-                .filter(it -> it.getUpStation() == newSection.getUpStation())
+                .filter(section -> section.getUpStation().equals(newSection.getUpStation()))
                 .findFirst()
-                .ifPresent(it -> it.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
+                .ifPresent(section -> section.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
             sections.add(newSection);
             return true;
         }
@@ -147,9 +130,9 @@ public class Sections {
     private boolean addIfSameDownStations(Section newSection) {
         if (isDownStationExisted(newSection)) {
             getSections().stream()
-                .filter(it -> it.getDownStation() == newSection.getDownStation())
+                .filter(section -> section.getDownStation().equals(newSection.getDownStation()))
                 .findFirst()
-                .ifPresent(it -> it.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
+                .ifPresent(section -> section.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
             sections.add(newSection);
             return true;
         }
@@ -157,11 +140,11 @@ public class Sections {
     }
     
     private boolean isUpStationExisted(Section section) {
-        return getStations().stream().anyMatch(it -> it.equals(section.getUpStation()));
+        return getStations().stream().anyMatch(station -> station.equals(section.getUpStation()));
     }
     
     private boolean isDownStationExisted(Section section) {
-        return getStations().stream().anyMatch(it -> it.equals(section.getDownStation()));
+        return getStations().stream().anyMatch(station -> station.equals(section.getDownStation()));
     }
     
     private void checkRemovableStation(Station station) {

@@ -19,8 +19,10 @@ public class Line extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
     @Column(unique = true)
     private String name;
+    
     private String color;
 
     @Embedded
@@ -37,7 +39,7 @@ public class Line extends BaseEntity {
     private Line(String name, String color, Station upStation, Station downStation, Distance distance) {
         this.name = name;
         this.color = color;
-        this.sections.add(Section.of(this, upStation, downStation, distance));
+        addSection(Section.of(this, upStation, downStation, distance));
     }
     
     public static Line of(String name, String color) {
@@ -46,11 +48,6 @@ public class Line extends BaseEntity {
     
     public static Line of(String name, String color, Station upStation, Station downStation, Distance distance) {
         return new Line(name, color, upStation, downStation, distance);
-    }
-
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
     }
     
     public Long getId() {
@@ -68,9 +65,10 @@ public class Line extends BaseEntity {
     public Sections getSections() {
         return sections;
     }
-    
-    public List<Station> getStations() {
-        return sections.getStations();
+
+    public void update(Line line) {
+        this.name = line.getName();
+        this.color = line.getColor();
     }
     
     public void addSection(Section section) {
@@ -81,6 +79,11 @@ public class Line extends BaseEntity {
         sections.remove(station);
     }
     
+    public List<Station> getStations() {
+        return sections.getStations();
+    }
+    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
