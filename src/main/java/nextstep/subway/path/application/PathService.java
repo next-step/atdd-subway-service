@@ -1,36 +1,43 @@
 package nextstep.subway.path.application;
 
-import java.util.List;
+import nextstep.subway.common.exception.ErrorCode;
+import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.path.dto.PathResult;
+import nextstep.subway.path.dto.PathResultV2;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 @Service
 @Transactional
 public class PathService {
 
     private final LineRepository lineRepository;
-    private final PathFactory pathFactory;
+    private final StationRepository stationRepository;
+    private final PathSearch pathSearch;
 
-    public PathService(LineRepository lineRepository, PathFactory pathSearch) {
+    public PathService(LineRepository lineRepository, StationRepository stationRepository,
+        PathSearch pathSearch) {
         this.lineRepository = lineRepository;
-        this.pathFactory = pathSearch;
+        this.stationRepository = stationRepository;
+        this.pathSearch = pathSearch;
     }
 
     @Transactional(readOnly = true)
     public PathResponse getShortestPath(Long source, Long target) {
-        Path path = new Path(lineRepository.findAll(), source, target);
+        Station sourceStation = stationRepository.findById(source)
+            .orElseThrow(() -> NotFoundException.of(ErrorCode.NOT_EMPTY));
+        Station targetStation = stationRepository.findById(target)
+            .orElseThrow(() -> NotFoundException.of(ErrorCode.NOT_EMPTY));
 
-        PathResult pathSearchResult = this.pathFactory.findShortestPath(path.toPathEdges(),
-            path.getSource(), path.getTarget());
+        PathResultV2 pathSearchResult = this.pathSearch.findShortestPath(lineRepository.findAll(),
+            sourceStation, targetStation);
 
-        List<Station> stations = path.getStationsBy(pathSearchResult.getStationIds());
-
-        return PathResponse.of(StationResponse.toList(stations), pathSearchResult.getDistance());
+        return PathResponse.of(StationResponse.toList(pathSearchResult.getResult()),
+            pathSearchResult.getWeight());
     }
 }
