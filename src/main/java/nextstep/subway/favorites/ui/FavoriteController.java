@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorites.dto.FavoriteRequest;
+import nextstep.subway.member.application.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,14 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class FavoriteController {
+    private final MemberService memberService;
 
     @PostMapping
     public ResponseEntity<Void> saveFavorites(@AuthenticationPrincipal LoginMember member, @RequestBody FavoriteRequest request) {
-
-
-        System.out.println(member);
-        System.out.println(request);
-
+        memberService.addFavorite(member.getId(), request);
         return ResponseEntity.ok().build();
     }
 }

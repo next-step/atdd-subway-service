@@ -18,15 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * date : 2021/12/06
  * description :
  */
-@SpringBootTest
 public class FavoriteTest {
-    @BeforeEach
-    void setUp() {
-        /*Member member = memberRepository.save(new MemberRequest("haedoang@gmail.com", "11", 33).toMember());
-        Station 강남역 = stationRepository.save(new Station("강남역"));
-        Station 역삼역 = stationRepository.save(new Station("역삼역"));
-        Line 일호선 = lineRepository.save(Line.of("일호선", "남색", 강남역, 역삼역, 100));*/
-    }
 
     @Test
     @DisplayName("즐겨찾기를 생성한다.")

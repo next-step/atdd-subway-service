@@ -1,5 +1,6 @@
 package nextstep.subway.member.application;
 
+import nextstep.subway.favorites.dto.FavoriteRequest;
 import nextstep.subway.member.exception.MemberNotFoundException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
@@ -41,5 +42,8 @@ public class MemberService {
     private Member findMemberById(Long id) {
         return memberRepository.findById(id)
                 .orElseThrow(MemberNotFoundException::new);
+    }
+
+    public void addFavorite(Long id, FavoriteRequest request) {
     }
 }

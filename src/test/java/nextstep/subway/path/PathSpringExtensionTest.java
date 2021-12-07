@@ -67,9 +67,9 @@ public class PathSpringExtensionTest {
 
         when(lineRepository.findAll()).thenReturn(lines);
         when(stationRepository.findAll()).thenReturn(stations);
-        when(pathFinder.getShortestPath(lines, stations, 강남역.getId(), 역삼역.getId()))
-                .thenReturn(PathResponse.of(
-                        Arrays.asList(new Station("강남역"), new Station("역삼역"))));
+//        when(pathFinder.getShortestPath(lines, stations, 강남역.getId(), 역삼역.getId()))
+//                .thenReturn(PathResponse.of(
+//                        Arrays.asList(new Station("강남역"), new Station("역삼역"))));
         PathService pathService = new PathService(pathFinder, stationRepository, lineRepository);
 
         //when

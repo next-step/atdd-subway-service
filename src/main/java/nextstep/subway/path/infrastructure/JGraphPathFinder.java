@@ -1,5 +1,6 @@
 package nextstep.subway.path.infrastructure;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
@@ -8,6 +9,7 @@ import nextstep.subway.path.exception.PathBeginIsEndException;
 import nextstep.subway.path.exception.PathNotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.exception.StationNotFoundException;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * packageName : nextstep.subway.path.application
@@ -30,7 +33,6 @@ public class JGraphPathFinder implements PathFinder {
     public PathResponse getShortestPath(List<Line> lines, List<Station> stations, Long srcStationId, Long destStationId) {
         checkStationIds(srcStationId, destStationId);
 
-        List<Station> result;
         Station srcStation = getStation(stations, srcStationId);
         Station destStation = getStation(stations, destStationId);
 
@@ -40,12 +42,12 @@ public class JGraphPathFinder implements PathFinder {
 
         try {
             DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-            result = dijkstraShortestPath.getPath(srcStation, destStation).getVertexList();
+            GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(srcStation, destStation);
+
+            return PathResponse.of(path.getVertexList(), Distance.of((int) path.getWeight()));
         } catch (NullPointerException npe) {
             throw new PathNotFoundException();
         }
-
-        return PathResponse.of(result);
     }
 
     private void drawGraph(List<Line> lines, List<Station> stations, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {

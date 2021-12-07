@@ -126,6 +126,7 @@ class PathFinderTest {
 
         // then
         assertThat(response.getStations()).hasSize(7);
+        assertThat(response.distance()).isEqualTo(Distance.of(52));
     }
 
     @Test
