@@ -16,5 +16,9 @@
     1. 기존 구간별 제약조건에 따른 검증로직 Sections로 이동
     2. 구간추가 후 기존역 갱신 로직 Sectinos로 이동
     3. RuntimeException -> IllegalArgumentException
-  * 
+  * 노선 내 지하철역 삭제
+    1. 검증로직 Sections로 이동
+    2. 구간 내 지하철역 삭제 로직 Sections로 이동
+    3. Sections 테스트 코드 작성
+    4. RuntimeException -> IllegalArgumentException
 
