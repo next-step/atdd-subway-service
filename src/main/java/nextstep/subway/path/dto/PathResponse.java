@@ -4,13 +4,13 @@ import nextstep.subway.station.dto.StationResponse;
 
 import java.util.List;
 
-public class PathsResponse {
+public class PathResponse {
 
     private List<StationResponse> stations;
 
     private int distance;
 
-    public PathsResponse(List<StationResponse> stations, int distance) {
+    public PathResponse(List<StationResponse> stations, int distance) {
         this.stations = stations;
         this.distance = distance;
     }

@@ -8,7 +8,7 @@ import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.path.dto.PathsResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -72,7 +72,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
 
         //then
-        PathsResponse paths = pathsResponse.body().jsonPath().getObject(".", PathsResponse.class);
+        PathResponse paths = pathsResponse.body().jsonPath().getObject(".", PathResponse.class);
         assertThat(pathsResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(paths.getStations().stream().map(StationResponse::getName)).containsExactly("강남역", "양재역", "남부터미널역");
         assertThat(paths.getDistance()).isEqualTo(13);
