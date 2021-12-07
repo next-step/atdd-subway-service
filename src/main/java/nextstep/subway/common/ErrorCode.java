@@ -6,7 +6,10 @@ public enum ErrorCode {
 	NO_SUCH_LINE_ERROR("존재하지 않은 노선입니다."),
 	VALID_CAN_NOT_REMOVE_LAST_STATION("구간이 하나인 노선의 마지막 구간은 제거할 수 없습니다."),
 	VALID_CAN_NOT_REMOVE_NOT_IN_STATIONS("구간에 존재하지 않는 역은 제거할 수 없습니다."),
-	VALID_SAME_SOURCE_TARGET_STATION("출발역과 도착역이 같습니다.");
+	VALID_SAME_SOURCE_TARGET_STATION("출발역과 도착역이 같습니다."),
+	NO_SUCH_STATION_ERROR("존재하지 않는 역입니다."),
+	NO_SUCH_FAVORITE_ERROR("존재하지 않는 즐겨찾기입니다."),
+	VALID_CAN_NOT_REMOVE_FAVORITE("본인의 즐겨찾기만 삭제 가능합니다.");
 
 	private String errorMessage;
 
