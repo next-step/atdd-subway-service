@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -27,31 +28,50 @@ import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
+	private StationResponse 교대역;
+	private StationResponse 강남역;
+	private StationResponse 역삼역;
+	private StationResponse 선릉역;
+	private StationResponse 남부터미널역;
+	private StationResponse 양재역;
+	private StationResponse 양재시민의숲역;
+	private StationResponse 중앙역;
+	private StationResponse 한대앞역;
+	private LineResponse 신분당선;
+	private LineResponse 이호선;
+	private LineResponse 삼호선;
+	private LineResponse 사호선;
 
-	@DisplayName("즐겨찾기를 관리한다.")
-	@Test
-	void manageFavorite() {
+	@BeforeEach
+	public void setUp() {
+		super.setUp();
+
 		// Background
-		StationResponse 교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
-		StationResponse 강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
-		StationResponse 역삼역 = 지하철역_등록되어_있음("역삼역").as(StationResponse.class);
-		StationResponse 선릉역 = 지하철역_등록되어_있음("선릉역").as(StationResponse.class);
-		StationResponse 남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
-		StationResponse 양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
-		StationResponse 양재시민의숲역 = 지하철역_등록되어_있음("양재시민의숲역").as(StationResponse.class);
-		StationResponse 중앙역 = 지하철역_등록되어_있음("중앙역").as(StationResponse.class);
-		StationResponse 한대앞역 = 지하철역_등록되어_있음("한대앞역").as(StationResponse.class);
+		교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
+		강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
+		역삼역 = 지하철역_등록되어_있음("역삼역").as(StationResponse.class);
+		선릉역 = 지하철역_등록되어_있음("선릉역").as(StationResponse.class);
+		남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+		양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
+		양재시민의숲역 = 지하철역_등록되어_있음("양재시민의숲역").as(StationResponse.class);
+		중앙역 = 지하철역_등록되어_있음("중앙역").as(StationResponse.class);
+		한대앞역 = 지하철역_등록되어_있음("한대앞역").as(StationResponse.class);
 
-		LineResponse 신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 2);
-		LineResponse 이호선 = 지하철_노선_등록되어_있음("2호선", "bg-green-600", 교대역, 강남역, 3);
-		LineResponse 삼호선 = 지하철_노선_등록되어_있음("3호선", "bg-orange-600", 교대역, 남부터미널역, 5);
-		LineResponse 사호선 = 지하철_노선_등록되어_있음("4호선", "bg-blue-600", 중앙역, 한대앞역, 2);
+		신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 2);
+		이호선 = 지하철_노선_등록되어_있음("2호선", "bg-green-600", 교대역, 강남역, 3);
+		삼호선 = 지하철_노선_등록되어_있음("3호선", "bg-orange-600", 교대역, 남부터미널역, 5);
+		사호선 = 지하철_노선_등록되어_있음("4호선", "bg-blue-600", 중앙역, 한대앞역, 2);
 
 		지하철_노선에_지하철역_등록되어_있음(신분당선, 양재역, 양재시민의숲역, 4);
 		지하철_노선에_지하철역_등록되어_있음(이호선, 강남역, 역삼역, 6);
 		지하철_노선에_지하철역_등록되어_있음(이호선, 역삼역, 선릉역, 5);
 		지하철_노선에_지하철역_등록되어_있음(삼호선, 남부터미널역, 양재역, 2);
+	}
 
+	@DisplayName("즐겨찾기를 관리한다.")
+	@Test
+	void manageFavorite() {
+		// Background
 		회원_등록되어_있음(윤준석);
 		TokenResponse token = 로그인_되어있음(윤준석).as(TokenResponse.class);
 
