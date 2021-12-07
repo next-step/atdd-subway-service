@@ -77,10 +77,10 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [x] 흩어져 있는 테스트를 한 곳에 통합 시도
 - LineService 리팩터링
   - LineService의 비즈니스 로직을 도메인으로 옮기기
-    - [ ] Domain으로 옮길 로직 찾기
+    - [x] Domain으로 옮길 로직 찾기
       - 스프링 빈을 사용하는 객체와 의존하는 로직을 제외하고는 도메인으로 옮기기
       - 객체지향 생활체조 규칙 명심!
-    - [ ] Domain의 단위 테스트 작성
+    - [x] Domain의 단위 테스트 작성
       - 서비스 레이어에서 옮겨 올 로직의 기능을 테스트
       - SectionTest나 LineTest클래스가 생성될 수 있음
     - [ ] 로직 옮기기
