@@ -1,4 +1,4 @@
-package nextstep.subway.path.acceptance.step;
+package nextstep.subway.path.step;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,5 +45,14 @@ public class PathAcceptanceStep {
     public static void 최단경로_조회_길이_계산됨(ExtractableResponse<Response> response, int expected) {
         PathResponse line = response.as(PathResponse.class);
         assertThat(line).extracting("distance").isEqualTo(expected);
+    }
+
+    public static void 최단경로_조회_됨(PathResponse pathResponse, List<String> expected) {
+        assertThat(pathResponse.getStations()).extracting("name")
+            .containsExactlyElementsOf(expected);
+    }
+
+    public static void 최단경로_조회_길이_계산됨(PathResponse pathResponse, int distance) {
+        assertThat(pathResponse.getDistance()).isEqualTo(distance);
     }
 }

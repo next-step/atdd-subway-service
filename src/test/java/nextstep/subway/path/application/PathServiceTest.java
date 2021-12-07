@@ -2,11 +2,11 @@ package nextstep.subway.path.application;
 
 
 import static nextstep.subway.path.domain.PathFixtures.*;
-import static org.assertj.core.api.Assertions.assertThat;
+import static nextstep.subway.path.step.PathAcceptanceStep.최단경로_조회_길이_계산됨;
+import static nextstep.subway.path.step.PathAcceptanceStep.최단경로_조회_됨;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.List;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.infrastructure.JgraphtPath;
@@ -41,8 +41,8 @@ class PathServiceTest {
         PathResponse pathResponse = pathService.getShortestPath(강남.getId(), 남부터미널.getId());
 
         // then
-        경로_순서대로_조회됨(pathResponse, Arrays.asList(강남.getName(), 교대.getName(), 남부터미널.getName()));
-        경로_거리_조회됨(pathResponse, 12);
+        최단경로_조회_됨(pathResponse, Arrays.asList(강남.getName(), 교대.getName(), 남부터미널.getName()));
+        최단경로_조회_길이_계산됨(pathResponse, 12);
     }
 
 
@@ -53,16 +53,8 @@ class PathServiceTest {
         PathResponse pathResponse = pathService.getShortestPath(교대.getId(), 양재.getId());
 
         // then
-        경로_순서대로_조회됨(pathResponse, Arrays.asList(교대.getName(), 남부터미널.getName(), 양재.getName()));
-        경로_거리_조회됨(pathResponse, 5);
+        최단경로_조회_됨(pathResponse, Arrays.asList(교대.getName(), 남부터미널.getName(), 양재.getName()));
+        최단경로_조회_길이_계산됨(pathResponse, 5);
     }
 
-    private void 경로_순서대로_조회됨(PathResponse pathResponse, List<String> expected) {
-        assertThat(pathResponse.getStations()).extracting("name")
-            .containsExactlyElementsOf(expected);
-    }
-
-    private void 경로_거리_조회됨(PathResponse pathResponse, int distance) {
-        assertThat(pathResponse.getDistance()).isEqualTo(distance);
-    }
 }

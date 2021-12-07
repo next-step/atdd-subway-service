@@ -2,8 +2,8 @@ package nextstep.subway.path.acceptance;
 
 import static nextstep.subway.line.acceptance.step.LineAcceptanceStep.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.step.LineSectionAcceptanceStep.지하철_노선에_지하철역_등록_요청;
-import static nextstep.subway.path.acceptance.step.PathAcceptanceStep.*;
 import static nextstep.subway.station.step.StationAcceptanceStep.지하철역_등록되어_있음;
+import static nextstep.subway.path.step.PathAcceptanceStep.*;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
