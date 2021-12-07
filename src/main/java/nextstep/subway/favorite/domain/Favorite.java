@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.exception.FavoriteException;
 import nextstep.subway.station.domain.Station;
 import org.springframework.util.ObjectUtils;
@@ -46,6 +47,10 @@ public class Favorite extends BaseEntity {
 
     public static Favorite of(Long memberId, Station source, Station target) {
         return new Favorite(memberId, source, target);
+    }
+
+    public boolean isOwner(LoginMember loginMember) {
+        return memberId.equals(loginMember.getId());
     }
 
     public Long getId() {
