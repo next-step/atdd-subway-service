@@ -1,13 +1,12 @@
-package nextstep.subway.path.acceptance.infrastructure;
+package nextstep.subway.path.infrastructure;
 
-import static nextstep.subway.path.acceptance.domain.PathFixtures.*;
+import static nextstep.subway.path.domain.PathFixtures.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathEdge;
-import nextstep.subway.path.infrastructure.JgraphtPath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

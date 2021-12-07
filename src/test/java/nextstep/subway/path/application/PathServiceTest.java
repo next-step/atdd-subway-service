@@ -1,13 +1,13 @@
-package nextstep.subway.path.acceptance.application;
+package nextstep.subway.path.application;
 
 
-import static nextstep.subway.path.acceptance.domain.PathFixtures.*;
+import static nextstep.subway.path.domain.PathFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.List;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.application.PathFactory;
-import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.infrastructure.JgraphtPath;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,25 +36,33 @@ class PathServiceTest {
 
     @Test
     @DisplayName("`강남 - 남부터미널` 구간 경로조회")
-    void getShortestPath() {
+    void 경로조회1() {
         // when
         PathResponse pathResponse = pathService.getShortestPath(강남.getId(), 남부터미널.getId());
 
         // then
-        assertThat(pathResponse.getStations()).extracting("name")
-            .containsExactly(강남.getName(), 교대.getName(), 남부터미널.getName());
-        assertThat(pathResponse.getWeight()).isEqualTo(12);
+        경로_순서대로_조회됨(pathResponse, Arrays.asList(강남.getName(), 교대.getName(), 남부터미널.getName()));
+        경로_거리_조회됨(pathResponse, 12);
     }
+
 
     @Test
     @DisplayName("`교대 - 양재` 구간 경로조회")
-    void getShortestPath2() {
+    void 경로조회2() {
         // when
         PathResponse pathResponse = pathService.getShortestPath(교대.getId(), 양재.getId());
 
         // then
+        경로_순서대로_조회됨(pathResponse, Arrays.asList(교대.getName(), 남부터미널.getName(), 양재.getName()));
+        경로_거리_조회됨(pathResponse, 5);
+    }
+
+    private void 경로_순서대로_조회됨(PathResponse pathResponse, List<String> expected) {
         assertThat(pathResponse.getStations()).extracting("name")
-            .containsExactly(교대.getName(), 남부터미널.getName(), 양재.getName());
-        assertThat(pathResponse.getWeight()).isEqualTo(5);
+            .containsExactlyElementsOf(expected);
+    }
+
+    private void 경로_거리_조회됨(PathResponse pathResponse, int distance) {
+        assertThat(pathResponse.getDistance()).isEqualTo(distance);
     }
 }
