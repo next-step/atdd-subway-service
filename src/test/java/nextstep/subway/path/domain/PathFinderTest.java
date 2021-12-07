@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.exception.CanNotFindPathException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @DataJpaTest
 class PathFinderTest {
@@ -68,7 +70,7 @@ class PathFinderTest {
 
     @DisplayName("경로 찾기")
     @Test
-    void find() {
+    void findPathBetween() {
         // given
         Station source = 교대역;
         Station target = 양재역;
@@ -85,6 +87,39 @@ class PathFinderTest {
         assertThat(paths.getDistance()).isEqualTo(expectedDistance);
     }
 
+    @DisplayName("출발역과 도착역이 같은 경우")
+    @Test
+    void findPathFromEqualSourceAndTarget() {
+        // given
+        Station source = 교대역;
+        Station target = 교대역;
+        PathFinder pathFinder = PathFinder.of(Arrays.asList(
+                신분당선,
+                이호선,
+                삼호선));
+        // then
+        assertThatExceptionOfType(CanNotFindPathException.class).isThrownBy(() -> {
+            // when
+            pathFinder.findPathBetween(source, target);
+        }).withMessageContaining("출발역과 도착역을 일치합니다.");
+    }
+
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
+    @Test
+    void findPathFromNotConnect() {
+        // given
+        Station source = 교대역;
+        Station target = 지하철역_등록되어_있음("연결되지않은역");
+        PathFinder pathFinder = PathFinder.of(Arrays.asList(
+                신분당선,
+                이호선,
+                삼호선));
+        // then
+        assertThatExceptionOfType(CanNotFindPathException.class).isThrownBy(() -> {
+            // when
+            pathFinder.findPathBetween(source, target);
+        }).withMessageContaining("경로파인더의 등록되지 않은 역입니다.");
+    }
 
     private Line 지하철_노선_등록되어_있음(String name, String color, Station upStation, Station downStation, int distance) {
         return lineRepository.save(Line.of(name, color, upStation, downStation, distance));
