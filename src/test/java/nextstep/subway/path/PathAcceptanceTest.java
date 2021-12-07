@@ -68,7 +68,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		지하철역_사이의_경로가_조회됨(response, 강남역, 양재역, 남부터미널역);
 	}
 
-	@DisplayName("출발역과 도착역이 같은 경우 최단경로를 조회한다.")
+	@DisplayName("출발역과 도착역이 같은 경우 최단경로를 조회가 실패한다.")
 	@Test
 	void getShortestPathSameSourceTarget() {
 		// given
@@ -81,7 +81,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		지하철역_사이의_경로_조회가_실패됨(response);
 	}
 
-	@DisplayName("출발역과 도착역이 연결이 되어있지 않은 경로를 조회한다.")
+	@DisplayName("출발역과 도착역이 연결이 되어있지 않은 경로를 조회하면 실패한다.")
 	@Test
 	void getNotConnectPathTargetSource() {
 		// given
@@ -95,7 +95,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		지하철역_사이의_경로_조회가_실패됨(response);
 	}
 
-	@DisplayName("존재하지 않은 출발역이나 도착역으로 경로를 조회한다.")
+	@DisplayName("존재하지 않은 출발역이나 도착역으로 경로를 조회하면 실패한다.")
 	@Test
 	void getPathNullTargetSource() {
 		// given

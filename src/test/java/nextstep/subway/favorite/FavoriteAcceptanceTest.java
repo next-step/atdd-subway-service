@@ -93,7 +93,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		즐겨찾기_삭제됨(response);
 	}
 
-	@DisplayName("로그인된 사용자와 즐겨찾기 사용자가 다를때 삭제시 에러를 발생시킨다.")
+	@DisplayName("로그인된 사용자와 즐겨찾기 사용자가 다를때 삭제 실패한다.")
 	@Test
 	void deleteFavoriteAnotherOwner() {
 		// given
