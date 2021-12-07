@@ -92,6 +92,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		지하철_경로_조회됨(지하철_경로_조회_요청);
 		지하철_경로에_지하철역_순서_정렬됨(지하철_경로_조회_요청, Arrays.asList(양재시민의숲역, 양재역, 강남역, 역삼역, 선릉역));
 		지하철_경로에_거리가_조회됨(지하철_경로_조회_요청, 17);
+		지하철_경로에_요금이_조회됨(지하철_경로_조회_요청, 1450);
 	}
 
 	@DisplayName("출발역과 도착역이 같은 경우 경로를 찾을 수 없다.")
@@ -162,6 +163,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		int actualDistance = path.getDistance();
 
 		assertThat(actualDistance).isEqualTo(expectedDistance);
+	}
+
+	private void 지하철_경로에_요금이_조회됨(
+		ExtractableResponse<Response> response,
+		int expectedFare
+	) {
+		PathResponse path = response.as(PathResponse.class);
+		int actualFare = path.getFare();
+
+		assertThat(actualFare).isEqualTo(expectedFare);
 	}
 
 	private void 지하철_경로_조회_실패됨(ExtractableResponse<Response> response, HttpStatus expectedHttpStatus) {
