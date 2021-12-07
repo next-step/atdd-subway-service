@@ -32,6 +32,35 @@ public class SectionsTest {
     }
     
     @Test
+    @DisplayName("지하철역 목록을 순서대로 잘 조회하는지 확인")
+    void 지하철역_목록_조회() {
+        // given
+        Station secondUpStation = Station.from("봉천역");
+        Station secondDownStation = Station.from("서울대입구역");
+        Line line = Line.of("5호선", "초록색", secondUpStation, secondDownStation, Distance.from(50));
+        
+        Sections sections = line.getSections();
+        
+        Station thirdUpStation = Station.from("서울대입구역");
+        Station thirdDownStation = Station.from("낙성대역");
+        Section thirdSection = Section.of(line, thirdUpStation, thirdDownStation, Distance.from(20));
+        sections.add(thirdSection);
+        
+        Station firstUpStation = Station.from("신림역");
+        Station firstDownStation = Station.from("봉천역");
+        Section firstSection = Section.of(line, firstUpStation, firstDownStation, Distance.from(50));
+        sections.add(firstSection);
+        
+        Station fourthUpStation = Station.from("낙성대역");
+        Station fourthDownStation = Station.from("사당역");
+        Section fourthSection = Section.of(line, fourthUpStation, fourthDownStation, Distance.from(50));
+        sections.add(fourthSection);
+        
+        // when, then
+        assertThat(sections.getStations()).containsExactly(firstUpStation, firstDownStation, secondDownStation, thirdDownStation, fourthDownStation);
+    }
+    
+    @Test
     @DisplayName("구간 목록에 새 구간이 추가되는지 확인")
     void 구간_목록_새_구간_추가() {
         // given
@@ -71,6 +100,56 @@ public class SectionsTest {
         assertAll(
                 () -> assertThat(sections.count()).isEqualTo(1),
                 () -> assertThat(sections.getStations().size()).isEqualTo(2)
+                );
+    }
+    
+    @Test
+    @DisplayName("구간의 첫번째 지하철역이 제거되는지 확인")
+    void 첫번째역_제거_확인() {
+        // given
+        Station firstStation = Station.from("봉천역");
+        Station secondStation = Station.from("서울대입구역");
+        Line line = Line.of("2호선", "초록색", firstStation, secondStation, Distance.from(20));
+        
+        Sections sections = line.getSections();
+        
+        Station thirdStation = Station.from("낙성대역");
+        Section newSection = Section.of(line, secondStation, thirdStation, Distance.from(30));
+        sections.add(newSection);
+        
+        // when
+        sections.remove(firstStation);
+        
+        // then
+        assertAll(
+                () -> assertThat(sections.count()).isEqualTo(1),
+                () -> assertThat(sections.getStations().size()).isEqualTo(2),
+                () -> assertThat(sections.getSectionAt(0).getDistance()).isEqualTo(Distance.from(30))
+                );
+    }
+    
+    @Test
+    @DisplayName("구간의 마지막 지하철역이 제거되는지 확인")
+    void 마지막역_제거_확인() {
+        // given
+        Station firstStation = Station.from("봉천역");
+        Station secondStation = Station.from("서울대입구역");
+        Line line = Line.of("2호선", "초록색", firstStation, secondStation, Distance.from(20));
+        
+        Sections sections = line.getSections();
+        
+        Station thirdStation = Station.from("낙성대역");
+        Section newSection = Section.of(line, secondStation, thirdStation, Distance.from(30));
+        sections.add(newSection);
+        
+        // when
+        sections.remove(thirdStation);
+        
+        // then
+        assertAll(
+                () -> assertThat(sections.count()).isEqualTo(1),
+                () -> assertThat(sections.getStations().size()).isEqualTo(2),
+                () -> assertThat(sections.getSectionAt(0).getDistance()).isEqualTo(Distance.from(20))
                 );
     }
     

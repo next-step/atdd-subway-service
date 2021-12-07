@@ -48,7 +48,7 @@ public class Sections {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = sections.stream()
-                    .filter(section -> section.getUpStation() == finalDownStation)
+                    .filter(section -> section.getUpStation().equals(finalDownStation))
                     .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
@@ -65,7 +65,7 @@ public class Sections {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = sections.stream()
-                    .filter(section -> section.getDownStation() == finalDownStation)
+                    .filter(section -> section.getDownStation().equals(finalDownStation))
                     .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
@@ -99,6 +99,10 @@ public class Sections {
     
     int count() {
         return sections.size();
+    }
+    
+    Section getSectionAt(int index) {
+        return getSections().get(index); 
     }
     
     private void checkValidStations(Section section) {
