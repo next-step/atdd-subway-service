@@ -49,6 +49,28 @@ public class SectionsTest {
         assertThat(stations).containsAll(Arrays.asList(upStation, newStation, downStation));
     }
 
+    @DisplayName("노선 역 추가시 존재할 경우")
+    @Test
+    void addLineStationIsExistException() {
+        // When, Then
+        assertThatThrownBy(() ->
+                sections.addLineStations(new Section(line, upStation, downStation, 3)))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @DisplayName("노선 역 추가시 존재하지 않을 경우")
+    @Test
+    void addLineStationIsNotExistException() {
+        // Given
+        Station newStation = new Station("역삼역");
+        Station newStation2 = new Station("삼성역");
+
+        // When, Then
+        assertThatThrownBy(() ->
+                sections.addLineStations(new Section(line, newStation, newStation2, 3)))
+                .isInstanceOf(RuntimeException.class);
+    }
+
     @DisplayName("노선 역 제거")
     @Test
     void removeLineStation() {
