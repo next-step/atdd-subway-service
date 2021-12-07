@@ -1,13 +1,11 @@
 package nextstep.subway.path.application;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.subway.favorites.domain.Favorite;
+import nextstep.subway.favorites.dto.FavoriteRequest;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
@@ -34,5 +32,11 @@ public class PathService {
         List<Station> stations = stationRepository.findAll();
         List<Line> lines = lineRepository.findAll();
         return pathHandler.getShortestPath(lines, stations, srcStationId, destStationId);
+    }
+
+    public Path getShortestPath(FavoriteRequest request) {
+        List<Station> stations = stationRepository.findAll();
+        List<Line> lines = lineRepository.findAll();
+        return pathHandler.getShortestPath(lines, stations, request.getSource(), request.getTarget());
     }
 }

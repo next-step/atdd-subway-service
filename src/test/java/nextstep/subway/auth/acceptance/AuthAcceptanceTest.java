@@ -20,14 +20,15 @@ import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
-    private TokenRequest 등록된_사용자_로그인_요청 = TokenRequest.of(EMAIL, PASSWORD);
-    private TokenRequest 등록되지_않은_사용자_로그인_요청 = TokenRequest.of("", "");
-    private TokenRequest 비밀번호_불일치_로그인_요청 = TokenRequest.of(EMAIL, "");
-    private static final String 유효하지_않은_토큰_회원_미존재 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJub3Rmb3VuZEBub3Rmb3VuZC5jb20iLCJpYXQiOjE2Mzg3NjQyMDIsImV4cCI6MTYzODc2NzgwMn0.JjTAu_iv-19kUHAnffR-v6Gmy0_sC1OtIB-PWD3pPfI";
-    private static final String 유효하지_않은_토큰_만료됨 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDAwMDAwMDAsImV4cCI6MTYwMDAwMDAwMH0.MxezzXBO7gnocwzvzN522EutLv9t2mMnsot4XKt8fO0";
+    private final TokenRequest 등록된_사용자_로그인_요청 = TokenRequest.of(EMAIL, PASSWORD);
+    private final TokenRequest 등록되지_않은_사용자_로그인_요청 = TokenRequest.of("", "");
+    private final TokenRequest 비밀번호_불일치_로그인_요청 = TokenRequest.of(EMAIL, "");
+    private final String 유효하지_않은_토큰_회원_미존재 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJub3Rmb3VuZEBub3Rmb3VuZC5jb20iLCJpYXQiOjE2Mzg3NjQyMDIsImV4cCI6MTYzODc2NzgwMn0.JjTAu_iv-19kUHAnffR-v6Gmy0_sC1OtIB-PWD3pPfI";
+    private final String 유효하지_않은_토큰_만료됨 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlbWFpbEBlbWFpbC5jb20iLCJpYXQiOjE2MDAwMDAwMDAsImV4cCI6MTYwMDAwMDAwMH0.MxezzXBO7gnocwzvzN522EutLv9t2mMnsot4XKt8fO0";
 
     private static final String LOGIN_TOKEN_URI = "/login/token";
     private static final String MEMBERS_ME_URI = "/members/me";
+
     private String key;
 
     @Autowired
@@ -64,10 +65,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 존재하지않은_ID_응답 = 로그인_요청함(등록되지_않은_사용자_로그인_요청);
 
         로그인_인증_실패함(존재하지않은_ID_응답);
-    }
-
-    private AbstractIntegerAssert<?> 로그인_인증_실패함(ExtractableResponse<Response> 비밀번호불일치_응답) {
-        return assertThat(비밀번호불일치_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
@@ -109,6 +106,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     public static String 로그인을_성공하면_토큰을_발급받는다(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        return response.jsonPath().getObject("", TokenResponse.class).getAccessToken();
+        return response.jsonPath()
+                .getObject("", TokenResponse.class)
+                .getAccessToken();
     }
+
+    private AbstractIntegerAssert<?> 로그인_인증_실패함(ExtractableResponse<Response> 비밀번호불일치_응답) {
+        return assertThat(비밀번호불일치_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
 }

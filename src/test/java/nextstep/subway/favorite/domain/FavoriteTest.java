@@ -3,13 +3,13 @@ package nextstep.subway.favorite.domain;
 import nextstep.subway.favorites.domain.Favorite;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.exception.FavoriteDuplicatedException;
 import nextstep.subway.station.domain.Station;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * packageName : nextstep.subway.favorite.domain
@@ -37,4 +37,24 @@ public class FavoriteTest {
         assertThat(member.getFavorites()).hasSize(1);
         assertThat(favorite.getDistance()).isEqualTo(Distance.of(100));
     }
+
+    @Test
+    @DisplayName("즐겨찾기 중복 체크")
+    public void duplicate() {
+        //given
+        Favorite favorite = new Favorite(
+                new Station("강남역"),
+                new Station("역삼역"),
+                Distance.of(100)
+        );
+        //when
+        Member member = new Member("haedoang@gmail.com", "11", 33);
+        member.addFavorite(favorite);
+
+        assertThatThrownBy(() -> member.addFavorite(favorite))
+                .isInstanceOf(FavoriteDuplicatedException.class)
+                .hasMessageContaining(FavoriteDuplicatedException.message);
+
+    }
+
 }

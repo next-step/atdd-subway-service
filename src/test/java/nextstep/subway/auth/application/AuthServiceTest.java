@@ -1,10 +1,10 @@
 package nextstep.subway.auth.application;
 
-import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.domain.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

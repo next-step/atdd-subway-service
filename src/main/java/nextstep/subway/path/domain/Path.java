@@ -24,7 +24,7 @@ public class Path {
     private Distance distance;
 
     public Path(Station sourceStation, Station targetStation, List<Station> routes, Distance distance) {
-        if(Objects.equals(sourceStation, targetStation)) {
+        if (Objects.equals(sourceStation, targetStation)) {
             throw new StationDuplicateException();
         }
 

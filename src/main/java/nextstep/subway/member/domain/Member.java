@@ -3,6 +3,7 @@ package nextstep.subway.member.domain;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.favorites.domain.Favorite;
+import nextstep.subway.member.exception.FavoriteDuplicatedException;
 import nextstep.subway.member.exception.FavoriteNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,7 +24,7 @@ public class Member extends BaseEntity {
     private Integer age;
 
     @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Favorite> favorites = new ArrayList<>();
+    private final List<Favorite> favorites = new ArrayList<>();
 
     protected Member() {
     }
@@ -47,7 +48,22 @@ public class Member extends BaseEntity {
     }
 
     public void addFavorite(Favorite favorite) {
+        validateDuplicate(favorite);
         favorites.add(favorite.by(this));
+    }
+
+    private void validateDuplicate(Favorite favorite) {
+        if (isExistFavorite(favorite)) {
+            throw new FavoriteDuplicatedException();
+        }
+    }
+
+    private boolean isExistFavorite(Favorite favorite) {
+        if (!favorites.isEmpty()) {
+            return favorites.stream().allMatch(it -> it.getSourceStation().equals(favorite.getSourceStation()) &&
+                    it.getTargetStation().equals(favorite.getTargetStation()));
+        }
+        return false;
     }
 
     public void removeFavorite(Long favoriteId) {
@@ -57,9 +73,9 @@ public class Member extends BaseEntity {
 
     private Favorite findFavorite(Long id) {
         return favorites.stream()
-                    .filter(it -> it.getId().equals(id))
-                    .findFirst()
-                    .orElseThrow(FavoriteNotFoundException::new);
+                .filter(it -> it.getId().equals(id))
+                .findFirst()
+                .orElseThrow(FavoriteNotFoundException::new);
     }
 
     public Long getId() {

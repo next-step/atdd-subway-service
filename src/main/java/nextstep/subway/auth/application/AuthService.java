@@ -7,7 +7,6 @@ import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
-import nextstep.subway.member.exception.MemberNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service

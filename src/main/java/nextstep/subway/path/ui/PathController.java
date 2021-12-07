@@ -2,7 +2,6 @@ package nextstep.subway.path.ui;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.subway.path.application.PathService;
-import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -42,7 +42,6 @@ public class JGraphPathFinder implements PathFinder {
 
         try {
             GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(srcStation, destStation);
-
             return Path.of(srcStation, destStation, path.getVertexList(), Distance.of((int) path.getWeight()));
         } catch (NullPointerException npe) {
             throw new PathNotFoundException();
@@ -51,9 +50,7 @@ public class JGraphPathFinder implements PathFinder {
 
     private void drawGraph(List<Line> lines, List<Station> stations, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         drawVertex(stations, graph);
-
         checkVertexDrawn(graph);
-
         drawEdge(lines, graph);
     }
 

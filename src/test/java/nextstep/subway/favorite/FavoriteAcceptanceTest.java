@@ -87,6 +87,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 생성 예외 처리")
     @Test
     public void handlingAddFavorite() {
+        // given
+        즐겨찾기_추가함(출발지_ID, 목적지_ID, 사용자);
+
+        // when
+        ExtractableResponse<Response> 중복된_즐겨찾기_추가 = 즐겨찾기_추가함(출발지_ID, 목적지_ID, 사용자);
+
+        즐겨찾기_요청_실패함(중복된_즐겨찾기_추가);
+
         // when
         ExtractableResponse<Response> 존재하지_않은_역_즐겨찾기_등록 = 즐겨찾기_추가함(출발지_ID, 존재하지_않는_역_ID, 사용자);
 
@@ -99,6 +107,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         즐겨찾기_요청_실패함(연결되지_않은_역_즐겨찾기_등록);
     }
+
 
     @DisplayName("즐겨찾기 삭제 예외 처리")
     @Test
@@ -141,7 +150,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void 즐겨찾기_조회됨(ExtractableResponse<Response> response2) {
         assertThat(response2.statusCode()).isEqualTo(HttpStatus.OK.value());
-        List<FavoriteResponse> favorites = response2.jsonPath().getList(".", FavoriteResponse.class);
+        List<FavoriteResponse> favorites = response2.jsonPath()
+                .getList(".", FavoriteResponse.class);
+
         assertThat(favorites.size()).isGreaterThanOrEqualTo(0);
     }
 

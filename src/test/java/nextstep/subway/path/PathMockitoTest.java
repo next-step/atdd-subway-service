@@ -5,7 +5,6 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.domain.Path;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.infrastructure.JGraphPathFinder;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -15,11 +14,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -63,7 +62,7 @@ public class PathMockitoTest {
         when(lineRepository.findAll()).thenReturn(lines);
         when(stationRepository.findAll()).thenReturn(stations);
 
-        when(pathFinder.getShortestPath(lines, stations, 1L, 2L))
+        when(pathFinder.getShortestPath(anyList(), anyList(), anyLong(), anyLong()))
                 .thenReturn(Path.of(new Station("1"), new Station("2"), stations, Distance.of(5)));
 
         PathService pathService = new PathService(pathFinder, stationRepository, lineRepository);

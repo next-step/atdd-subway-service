@@ -29,10 +29,6 @@ public class MemberService {
         return MemberResponse.of(member);
     }
 
-    public MemberResponse findMember(Long id) {
-        return MemberResponse.of(findMemberById(id));
-    }
-
     @Transactional
     public void updateMember(Long id, MemberRequest param) {
         Member member = findMemberById(id);
@@ -44,11 +40,6 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
-    private Member findMemberById(Long id) {
-        return memberRepository.findById(id)
-                .orElseThrow(MemberNotFoundException::new);
-    }
-
     @Transactional
     public void addFavorite(Long id, FavoriteRequest request) {
         Favorite favorite = getFavorite(request);
@@ -56,19 +47,28 @@ public class MemberService {
         member.addFavorite(favorite);
     }
 
+    @Transactional
+    public void deleteFavorite(Long memberId, Long favoriteId) {
+        Member member = findMemberById(memberId);
+        member.removeFavorite(favoriteId);
+    }
+
+    public MemberResponse findMember(Long id) {
+        return MemberResponse.of(findMemberById(id));
+    }
+
+    private Member findMemberById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(MemberNotFoundException::new);
+    }
+
     private Favorite getFavorite(FavoriteRequest request) {
-        Path path = pathService.getShortestPath(request.getSource(), request.getTarget());
+        Path path = pathService.getShortestPath(request);
         return Favorite.of(path);
     }
 
     public List<FavoriteResponse> findFavorites(Long id) {
         Member member = findMemberById(id);
         return FavoriteResponse.ofList(member.getFavorites());
-    }
-
-    @Transactional
-    public void deleteFavorite(Long memberId, Long favoriteId) {
-        Member member = findMemberById(memberId);
-        member.removeFavorite(favoriteId);
     }
 }
