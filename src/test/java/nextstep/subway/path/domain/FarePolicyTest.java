@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 
 @DisplayName("요금 정책")
@@ -78,56 +79,67 @@ class FarePolicyTest {
 			));
 	}
 
-	@DisplayName("노선별 추가 요금 정책이 포함된 거리별 요금 정책을 계산한다.")
+	@DisplayName("노선별 추가 요금 정책과 연령별 요금 할인 정챌이 포함된 거리별 요금 정책을 계산한다.")
 	@ParameterizedTest
-	@MethodSource("calculateByDistanceAndLinesAndAgeMethodSource")
-	void calculateByDistanceAndLinesAndAge(int distance, List<Line> lines, int age, int expectedFare) {
+	@MethodSource("calculateByDistanceAndLinesAndLoginMemberMethodSource")
+	void calculateByDistanceAndLinesAndLoginMember(
+		int distance,
+		List<Line> lines,
+		LoginMember loginMember,
+		int expectedFare
+	) {
 		// given
 		FarePolicy farePolicy = new FarePolicy();
 
 		// when
-		int actualFare = farePolicy.calculateBy(distance, lines, age);
+		int actualFare = farePolicy.calculateBy(distance, lines, loginMember);
 
 		// then
 		assertThat(actualFare).isEqualTo(expectedFare);
 	}
 
-	private static List<Arguments> calculateByDistanceAndLinesAndAgeMethodSource() {
+	private static List<Arguments> calculateByDistanceAndLinesAndLoginMemberMethodSource() {
 		return Arrays.asList(
 			Arguments.of(
 				10,
 				Collections.singletonList(삼호선()),
-				6,
+				LoginMember.loggedIn(1L, "dummy@gmail.com", 6),
 				(int)((1250 - 350) * (1 - 0.5))
 			),
 			Arguments.of(
 				10,
 				Collections.singletonList(삼호선()),
-				12,
+				LoginMember.loggedIn(1L, "dummy@gmail.com", 12),
 				(int)((1250 - 350) * (1 - 0.5))
 			),
 			Arguments.of(
 				10,
 				Collections.singletonList(삼호선()),
-				13,
+				LoginMember.loggedIn(1L, "dummy@gmail.com", 13),
 				(int)((1250 - 350) * (1 - 0.2))
 			),
 			Arguments.of(
 				10,
 				Collections.singletonList(삼호선()),
-				18,
+				LoginMember.loggedIn(1L, "dummy@gmail.com", 18),
 				(int)((1250 - 350) * (1 - 0.2))
 			),
 			Arguments.of(
 				10,
 				Collections.singletonList(삼호선()),
-				19,
+				LoginMember.loggedIn(1L, "dummy@gmail.com", 19),
 				1250
 			),
 			Arguments.of(
 				10,
 				Collections.singletonList(삼호선()),
-				28,
+				LoginMember.loggedIn(1L, "dummy@gmail.com", 28),
+				1250
+			),
+			Arguments.of(
+				10,
+				Collections.singletonList(삼호선()),
+				LoginMember.notLoggedIn(),
 				1250
 			));
 	}

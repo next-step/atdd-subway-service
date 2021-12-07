@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import java.util.Comparator;
 import java.util.List;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 
 public class FarePolicy {
@@ -27,13 +28,13 @@ public class FarePolicy {
 		return calculateBy(distance) + maxExtraFare;
 	}
 
-	public int calculateBy(int distance, List<Line> lines, int age) {
+	public int calculateBy(int distance, List<Line> lines, LoginMember loginMember) {
 		int fare = calculateBy(distance, lines);
-		if (!FareDiscountAge.contains(age)) {
+		if (!loginMember.isLogin() || !FareDiscountAge.contains(loginMember.getAge())) {
 			return fare;
 		}
 
-		FareDiscountAge fareDiscountAge = FareDiscountAge.findBy(age);
+		FareDiscountAge fareDiscountAge = FareDiscountAge.findBy(loginMember.getAge());
 		return fareDiscountAge.getDiscountFare(fare);
 	}
 }
