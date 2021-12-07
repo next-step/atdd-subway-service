@@ -2,6 +2,8 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
 
+import java.util.Objects;
+
 import javax.persistence.*;
 
 @Entity
@@ -25,14 +27,18 @@ public class Section {
     @Embedded
     private Distance distance;
 
-    public Section() {
+    protected Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, Distance distance) {
+    private Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+    
+    public static Section of(Line line, Station upStation, Station downStation, Distance distance) {
+        return new Section(line, upStation, downStation, distance);
     }
 
     public Long getId() {
@@ -63,5 +69,18 @@ public class Section {
     public void updateDownStation(Station station, Distance newDistance) {
         this.downStation = station;
         this.distance = this.distance.minus(newDistance);
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Section section = (Section) o;
+        return Objects.equals(line, section.line) && Objects.equals(upStation, section.upStation) && Objects.equals(downStation, section.downStation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(line, upStation, downStation);
     }
 }
