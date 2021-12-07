@@ -54,21 +54,42 @@ npm run dev
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
 
 ## 구간 관련 기능
-Feature: 지하철 구간 관련 기능
-    Background
-        Given 지하철역 등록되어 있음
-        And 지하철 노선 등록되어 있음
-        And 지하철 노선에 지하철역 등록되어 있음
-    Scenario: 지하철 구간을 관리
-        When 지하철 구간 등록 요청
-        Then 지하철 구간 등록됨
-        When 지하철 노선에 등록된 역 목록 조회 요청
-        Then 등록한 지하철 구간이 반영된 역 목록이 조회됨
-        When 지하철 구간 삭제 요청
-        Then 지하철 구간 삭제됨
-        When 지하철 노선에 등록된 역 목록 조회 요청
-        Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+Feature: 지하철 구간 관련 기능  
+    Background  
+        Given 지하철역 등록되어 있음  
+        And 지하철 노선 등록되어 있음  
+        And 지하철 노선에 지하철역 등록되어 있음  
+    Scenario: 지하철 구간을 관리  
+        When 지하철 구간 등록 요청  
+        Then 지하철 구간 등록됨  
+        When 지하철 노선에 등록된 역 목록 조회 요청  
+        Then 등록한 지하철 구간이 반영된 역 목록이 조회됨  
+        When 지하철 구간 삭제 요청  
+        Then 지하철 구간 삭제됨  
+        When 지하철 노선에 등록된 역 목록 조회 요청  
+        Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨  
+
+## 경로 관련 시나리오
+Feature: 경로 관련 기능  
+    Background  
+        Given 지하철역 등록되어 있음  
+        And 지하철 노선 등록되어 있음  
+        And 지하철 노선에 지하철역 등록되어 있음  
+        And 지하철 구간 등록되어 있음  
+    Scenario: 지하철 최단경로 조회  
+        When 지하철 경로를 지하철 출발역, 도착역으로 경로 조회 요청  
+        Then 최단 경로를 반영한 경로(역들)가 조회됨  
+        When 출발역과 도착역이 같은 경로 조회 요청  
+        Then 최단_경로_조회_실패  
+        When 출발역과 도착역이 연결이 되어 있지 않은 경로 조회 요청  
+        Then 최단_경로_조회_실패  
+        When 존재하지 않은 출발역이나 도착역의 경로 조회 요청  
+        Then 최단_경로_조회_실패    
+
+
 
 ## 할 일
 - [x] LineSectionAcceptanceTest 리팩터링
 - [x] LineService 리팩터링
+- [ ] 최단 경로 조회 인수 테스트 만들기
+- [ ] 최단 경로 조회 기능 구현하기
