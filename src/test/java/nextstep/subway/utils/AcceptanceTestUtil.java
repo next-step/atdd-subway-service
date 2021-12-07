@@ -41,6 +41,18 @@ public class AcceptanceTestUtil {
             .extract();
     }
 
+    public static ExtractableResponse<Response> post(String url, String token, Object body) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(token)
+            .body(body)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .post(url)
+            .then().log().all()
+            .extract();
+    }
+
     public static ExtractableResponse<Response> put(String url, Object body) {
         return RestAssured
             .given().log().all()

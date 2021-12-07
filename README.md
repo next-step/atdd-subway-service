@@ -57,7 +57,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [X] 토큰 발급 기능 인수 테스트
 - [X] 유효하지 않은 토큰에 대한 처리
 - [X] 인증이 포함된 내 정보 조회 인수테스트 작성
-- [ ] 인증이 포함된 즐겨찾기 인수테스트 작성
+- [X] 인증이 포함된 즐겨찾기 인수테스트 작성
 - [ ] 즐겨찾기 기능 구현
   - [ ] 즐겨찾기 모델 설계 
   - [ ] 즐겨찾기 추가
