@@ -1,6 +1,5 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.exception.IsEqualsTwoStationsException;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.dto.PathRequest;
@@ -23,7 +22,6 @@ public class PathService {
 
     public PathResponse findPathsBySection(PathRequest request) {
         Sections sections = new Sections(sectionRepository.findAll());
-        request.isEqualsStations();
         Station sourceStation = stationRepository.findByIdElseThrow(request.getSource());
         Station targetStation = stationRepository.findByIdElseThrow(request.getTarget());
         return sections.generatePaths(sourceStation, targetStation);
