@@ -38,7 +38,7 @@ class LineServiceTest {
     LineRepository lineRepository;
 
     @Mock
-    StationRepository stationRepository;
+    StationService stationService;
 
     @InjectMocks
     LineService lineService;
@@ -59,10 +59,10 @@ class LineServiceTest {
     @DisplayName("라인 저장")
     void saveLine() {
 
-        when(stationRepository.findById(1L))
-            .thenReturn(Optional.of(seoulStation));
-        when(stationRepository.findById(2L))
-            .thenReturn(Optional.of(yongsanStation));
+        when(stationService.findStation(1L))
+            .thenReturn(seoulStation);
+        when(stationService.findStation(2L))
+            .thenReturn(yongsanStation);
         when(lineRepository.save(ArgumentMatchers.any()))
             .thenReturn(line);
         LineRequest lineRequest = new LineRequest("1호선", "blue", 1L, 2L, 3);
@@ -86,7 +86,7 @@ class LineServiceTest {
             .thenReturn(Arrays.asList(line));
 
         // 목록 조회
-        List<LineResponse> lines = lineService.findLines();
+        List<LineResponse> lines = lineService.findLineResponses();
 
         assertAll(() -> {
             assertThat(lines.size()).isEqualTo(1);
@@ -137,10 +137,10 @@ class LineServiceTest {
     void addLineStation() {
         Station addStation = new Station("남영역");
 
-        when(stationRepository.findById(1L))
-            .thenReturn(Optional.of(seoulStation));
-        when(stationRepository.findById(2L))
-            .thenReturn(Optional.of(addStation));
+        when(stationService.findStation(1L))
+            .thenReturn(seoulStation);
+        when(stationService.findStation(2L))
+            .thenReturn(addStation);
         when(lineRepository.findById(ArgumentMatchers.any()))
             .thenReturn(Optional.of(line));
 
@@ -155,8 +155,8 @@ class LineServiceTest {
     @DisplayName("라인에 포함된 역 삭제")
     void removeLineStation() {
         Station addStation = new Station("남영역");
-        when(stationRepository.findById(2L))
-            .thenReturn(Optional.of(addStation));
+        when(stationService.findStation(2L))
+            .thenReturn(addStation);
         when(lineRepository.findById(ArgumentMatchers.any()))
             .thenReturn(Optional.of(line));
 

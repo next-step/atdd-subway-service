@@ -30,11 +30,24 @@ public class PathAcceptanceTest extends AcceptanceTest {
     StationResponse 강남역;
     StationResponse 양재역;
     StationResponse 남부터미널역;
+    StationResponse 서초역;
+    StationResponse 양재시민의숲;
 
     LineResponse 신분당선;
     LineResponse 이호선;
     LineResponse 삼호선;
 
+    /**
+     * 서초역  --- *2호선* 5--- 교대역  --- *2호선* 10 -----  강남역
+     *                        |                          |
+     *                      *3호선* 3                 *신분당선* 10
+     *                        |                          |
+     *                      남부터미널역  --- *3호선* 2 --- 양재
+     *                                                  |
+     *                                               *신분당선* 4
+     *                                                  |
+     *                                               양재시민의숲
+     */
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -46,15 +59,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
         강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
         양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        서초역 = 지하철역_등록되어_있음("서초역").as(StationResponse.class);
+        양재시민의숲 = 지하철역_등록되어_있음("양재시민의숲").as(StationResponse.class);
 
         // 노선 등록되어 있음
         //신분당선 (강남-양재, 10)
         LineRequest lineRequest_신분당선 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10);
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest_신분당선).as(LineResponse.class);
+        지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 양재시민의숲, 4);
 
         //2호선 (교대-강남, 10)
         LineRequest lineRequest_이호선 = new LineRequest("이호선", "green", 교대역.getId(), 강남역.getId(), 10);
         이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest_이호선).as(LineResponse.class);
+        지하철_노선에_지하철역_등록_요청(이호선, 서초역, 교대역, 5);
 
         //3호선 (교대-남부터미널-양재, 3-2)
         LineRequest lineRequest_삼호선 = new LineRequest("삼호선", "orange", 교대역.getId(), 남부터미널역.getId(), 3);
@@ -74,14 +91,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("교대역-양재역 최단 거리 경로 조회")
-    void shortestPath_교대_양재() {
+    @DisplayName("서초역-양재시민의숲 최단 거리 경로 조회")
+    void shortestPath_서초역_양재시민의숲() {
         //when
-        ExtractableResponse<Response> response = 경로_조회_요청(교대역.getId(), 양재역.getId());
+        ExtractableResponse<Response> response = 경로_조회_요청(서초역.getId(), 양재시민의숲.getId());
 
         //then
         // 최단 경로 지하철 역 목록 조회됨 (교대역, 남부터미널역, 양재역), 5
-        최단_경로_지하철역_순서_정렬됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 5);
+        최단_경로_지하철역_순서_정렬됨(response, Arrays.asList(서초역, 교대역, 남부터미널역, 양재역, 양재시민의숲), 14);
 
     }
 

@@ -38,7 +38,6 @@ public class PathFinderTest {
      *                                                  |
      *                                               양재시민의숲
      */
-
     @BeforeEach
     void setUp() {
         교대역 = new Station("교대역");
