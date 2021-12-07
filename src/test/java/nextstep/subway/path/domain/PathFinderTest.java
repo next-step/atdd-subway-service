@@ -191,12 +191,13 @@ class PathFinderTest {
 
         // when
         Path path = pathFinder.getShortestPath(lines, stations, 왕십리_START.getId(), 고속터미널_END.getId());
-        사용자.addFavorite(Favorite.of(path));
+        Favorite favorite = Favorite.of(path);
+        사용자.addFavorite(favorite);
 
         Member findMember = memberRepository.findById(사용자.getId()).orElseThrow(MemberNotFoundException::new);
 
         // then
-        assertThat(findMember.getFavorites()).hasSize(1);
-        assertThat(findMember.getFavorites().get(0).getDistance()).isEqualTo(path.distance());
+        assertThat(findMember.getFavorites().getList()).hasSize(1);
+        assertThat(findMember.getFavorites().findFavorite(favorite).getDistance()).isEqualTo(path.distance());
     }
 }

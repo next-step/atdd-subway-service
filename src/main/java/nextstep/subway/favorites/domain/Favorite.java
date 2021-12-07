@@ -58,6 +58,10 @@ public class Favorite {
         return this;
     }
 
+    public boolean isDuplicate(Favorite target) {
+        return this.sourceStation.equals(target.sourceStation) && this.targetStation.equals(target.targetStation);
+    }
+
     public Long getId() {
         return id;
     }

@@ -2,7 +2,7 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.exception.StationDuplicateException;
+import nextstep.subway.station.exception.StationDuplicatedException;
 
 import java.util.List;
 import java.util.Objects;
@@ -25,7 +25,7 @@ public class Path {
 
     public Path(Station sourceStation, Station targetStation, List<Station> routes, Distance distance) {
         if (Objects.equals(sourceStation, targetStation)) {
-            throw new StationDuplicateException();
+            throw new StationDuplicatedException();
         }
 
         this.sourceStation = sourceStation;

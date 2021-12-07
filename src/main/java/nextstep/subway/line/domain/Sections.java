@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.line.exception.section.SectionDuplicateException;
+import nextstep.subway.line.exception.section.SectionDuplicatedException;
 import nextstep.subway.line.exception.section.SectionNoStationException;
 import nextstep.subway.station.exception.StationNotDeleteException;
 import nextstep.subway.station.exception.StationNotFoundException;
@@ -46,7 +46,7 @@ public class Sections {
 
     private void addValidate(Station upStation, Station downStation) {
         if (isExistStation(upStation) && isExistStation(downStation)) {
-            throw new SectionDuplicateException();
+            throw new SectionDuplicatedException();
         }
 
         if (isInvalidStations(upStation, downStation)) {

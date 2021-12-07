@@ -3,13 +3,10 @@ package nextstep.subway.member.domain;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.favorites.domain.Favorite;
-import nextstep.subway.member.exception.FavoriteDuplicatedException;
-import nextstep.subway.member.exception.FavoriteNotFoundException;
+import nextstep.subway.favorites.domain.Favorites;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class Member extends BaseEntity {
@@ -23,8 +20,8 @@ public class Member extends BaseEntity {
 
     private Integer age;
 
-    @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private final List<Favorite> favorites = new ArrayList<>();
+    @Embedded
+    private final Favorites favorites = new Favorites();
 
     protected Member() {
     }
@@ -48,34 +45,11 @@ public class Member extends BaseEntity {
     }
 
     public void addFavorite(Favorite favorite) {
-        validateDuplicate(favorite);
         favorites.add(favorite.by(this));
     }
 
-    private void validateDuplicate(Favorite favorite) {
-        if (isExistFavorite(favorite)) {
-            throw new FavoriteDuplicatedException();
-        }
-    }
-
-    private boolean isExistFavorite(Favorite favorite) {
-        if (!favorites.isEmpty()) {
-            return favorites.stream().allMatch(it -> it.getSourceStation().equals(favorite.getSourceStation()) &&
-                    it.getTargetStation().equals(favorite.getTargetStation()));
-        }
-        return false;
-    }
-
     public void removeFavorite(Long favoriteId) {
-        Favorite favorite = findFavorite(favoriteId);
-        favorites.remove(favorite);
-    }
-
-    private Favorite findFavorite(Long id) {
-        return favorites.stream()
-                .filter(it -> it.getId().equals(id))
-                .findFirst()
-                .orElseThrow(FavoriteNotFoundException::new);
+        favorites.remove(favoriteId);
     }
 
     public Long getId() {
@@ -94,9 +68,7 @@ public class Member extends BaseEntity {
         return age;
     }
 
-    public List<Favorite> getFavorites() {
+    public Favorites getFavorites() {
         return favorites;
     }
-
-
 }

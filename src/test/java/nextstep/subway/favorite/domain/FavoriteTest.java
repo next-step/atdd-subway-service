@@ -34,7 +34,7 @@ public class FavoriteTest {
         member.addFavorite(favorite);
 
         //then
-        assertThat(member.getFavorites()).hasSize(1);
+        assertThat(member.getFavorites().getList()).hasSize(1);
         assertThat(favorite.getDistance()).isEqualTo(Distance.of(100));
     }
 
