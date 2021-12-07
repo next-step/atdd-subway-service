@@ -64,6 +64,37 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		즐겨찾기_삭제됨(즐겨찾기_삭제_결과);
 	}
 
+	@DisplayName("없는 즐겨찾기 삭제를 요청하는 경우 예외")
+	@Test
+	public void deleteFavorite_exception1() {
+
+		// when
+		ExtractableResponse<Response> 즐겨찾기_삭제_결과 = 즐겨찾기_삭제_요청(사용자_인증_정보, "/favorites/10");
+
+		//then
+		즐겨찾기_삭제오류(즐겨찾기_삭제_결과);
+	}
+
+	@DisplayName("다른 사용자의 즐겨찾기를 삭제 요청하는 경우 예외")
+	@Test
+	public void deleteFavorite_exception2() {
+
+		//given
+		String otherEmail = "other@email.com";
+		String otherPassword = "test password";
+		MemberAcceptanceTest.회원_생성을_요청(otherEmail, otherPassword, 25);
+		String 다른사용자_인증정보 = AuthAcceptanceTest.로그인_요청(otherEmail, otherPassword)
+			.as(TokenResponse.class)
+			.getAccessToken();
+		ExtractableResponse<Response> 즐겨찾기_생성_결과 = 즐겨찾기_생성_요청(다른사용자_인증정보, 강남역, 정자역);
+
+		// when
+		ExtractableResponse<Response> 즐겨찾기_삭제_결과 = 즐겨찾기_삭제_요청(사용자_인증_정보, 즐겨찾기_생성_결과);
+
+		//then
+		즐겨찾기_삭제오류(즐겨찾기_삭제_결과);
+	}
+
 	public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, StationResponse source,
 		StationResponse target) {
 		FavoriteRequest favoriteRequest = new FavoriteRequest(source.getId(), target.getId());
@@ -92,6 +123,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 	public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, ExtractableResponse<Response> response) {
 		String uri = response.header("Location");
 
+		return 즐겨찾기_삭제_요청(accessToken, uri);
+	}
+
+	public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, String uri) {
 		return RestAssured
 			.given()
 			.log().all()
@@ -119,5 +154,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
 	public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+	}
+
+	private void 즐겨찾기_삭제오류(ExtractableResponse<Response> response) {
+		assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 	}
 }
