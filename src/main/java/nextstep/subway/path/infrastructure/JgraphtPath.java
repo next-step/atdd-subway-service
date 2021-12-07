@@ -43,13 +43,13 @@ public class JgraphtPath implements PathFactory {
             .distinct()
             .flatMap(Collection::stream)
             .forEach(graph::addVertex);
+
         pathEdges
             .forEach(this::setEdgeWeight);
     }
 
     private void setEdgeWeight(PathEdge pathEdge) {
-        graph.setEdgeWeight(
-            graph.addEdge(pathEdge.getSourceVertex(), pathEdge.getTargetVertex()),
+        graph.setEdgeWeight(graph.addEdge(pathEdge.getSourceVertex(), pathEdge.getTargetVertex()),
             pathEdge.getWeight());
     }
 

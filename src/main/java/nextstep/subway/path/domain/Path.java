@@ -70,15 +70,15 @@ public class Path {
             throw InvalidParameterException.of(ErrorCode.PATH_IN_OUT_SAME);
         }
 
-        if (isContains(source, target)) {
+        if (!isPathAllContains(source, target)) {
             throw InvalidParameterException.of(ErrorCode.PATH_IN_OUT_NOT_FOUND);
         }
     }
 
-    private boolean isContains(Long source, Long target) {
+    private boolean isPathAllContains(Long source, Long target) {
         return this.stations.stream()
             .filter(station -> isSameStation(source, target, station))
-            .count() != 2;
+            .count() == 2;
     }
 
     private boolean isSameStation(Long source, Long target, Station station) {

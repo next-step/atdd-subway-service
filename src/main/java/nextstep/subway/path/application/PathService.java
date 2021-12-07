@@ -29,7 +29,6 @@ public class PathService {
 
         List<Station> stations = path.getStationsBy(pathSearchResult.getStationIds());
 
-        return PathResponse.of(StationResponse.toList(stations),
-            pathSearchResult.getDistance());
+        return PathResponse.of(StationResponse.toList(stations), pathSearchResult.getDistance());
     }
 }
