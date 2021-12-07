@@ -4,7 +4,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Distance {
-    protected static final int MIN_DISTANCE = 0;
+    protected static final int MIN_DISTANCE = 1;
     private static final String SHORTER_THAN_MIN_DISTANCE = "지하철 구간 사이의 거리는 " + MIN_DISTANCE + "보다 커야 합니다.";
     private static final String LONG_DISTANCE_BETWEEN_SECTION = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
 
@@ -19,7 +19,7 @@ public class Distance {
     }
 
     private void validateDistance(int distance) {
-        if (distance <= MIN_DISTANCE) {
+        if (distance < MIN_DISTANCE) {
             throw new IllegalArgumentException(SHORTER_THAN_MIN_DISTANCE);
         }
     }
@@ -31,11 +31,11 @@ public class Distance {
         return true;
     }
 
-    public Distance addDistance(Distance newDistance) {
+    public Distance plus(Distance newDistance) {
         return new Distance(this.distance + newDistance.distance);
     }
 
-    public Distance minusDistance(Distance newDistance) {
+    public Distance minus(Distance newDistance) {
         return new Distance(this.distance - newDistance.distance);
     }
 

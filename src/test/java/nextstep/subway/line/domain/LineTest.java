@@ -94,14 +94,14 @@ class LineTest {
     }
 
     @Test
-    @DisplayName("구간 거리가 " + MIN_DISTANCE + "이하인 경우 예외가 발생한다.")
+    @DisplayName("구간 거리가 " + MIN_DISTANCE + "보다 작은 경우 예외가 발생한다.")
     void validateShortMinDistance() {
         // given
         List<Station> stations = Station.of("강남", "양재");
 
         // when // then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> getSection(stations, MIN_DISTANCE));
+                .isThrownBy(() -> getSection(stations, 0));
     }
 
     @DisplayName("구간 거리가 기존 역 사이의 거리보다 크거나 같은 경우 예외가 발생한다.")
