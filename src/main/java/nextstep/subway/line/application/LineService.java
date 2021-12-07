@@ -53,7 +53,7 @@ public class LineService {
         List<Line> persistLines = lineRepository.findAll();
         Set<Section> allSection = new HashSet<>();
         for (Line persistLine : persistLines) {
-            allSection = persistLine.putSections(allSection);
+            allSection = persistLine.collectNonDuplicatedSection(allSection);
         }
         return allSection;
     }

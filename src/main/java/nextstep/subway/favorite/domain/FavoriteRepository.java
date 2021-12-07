@@ -14,7 +14,7 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
         + "join fetch f.source s "
         + "join fetch f.target t "
         + "where m.id=:memberId")
-    List<Favorite> findFavoritesById(@Param("memberId") Long memberId);
+    List<Favorite> findFavoritesByMemberId(@Param("memberId") Long memberId);
 
     @Query("select f from Favorite f "
         + "inner join f.member m "

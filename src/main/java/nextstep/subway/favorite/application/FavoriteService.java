@@ -44,7 +44,7 @@ public class FavoriteService {
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(Long memberId) {
-        List<Favorite> favorites = favoriteRepository.findFavoritesById(memberId);
+        List<Favorite> favorites = favoriteRepository.findFavoritesByMemberId(memberId);
         return convertToFavoriteResponses(favorites);
     }
 

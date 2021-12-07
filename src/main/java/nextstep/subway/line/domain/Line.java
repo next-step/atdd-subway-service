@@ -74,7 +74,7 @@ public class Line extends BaseEntity {
         sections.removeSection(station);
     }
 
-    public Set<Section> putSections(Set<Section> allSection) {
+    public Set<Section> collectNonDuplicatedSection(Set<Section> allSection) {
         allSection.addAll(sections.getSections());
         return allSection;
     }
