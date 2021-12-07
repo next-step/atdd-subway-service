@@ -37,4 +37,9 @@ public class SubwayExceptionHandler {
 	public ResponseEntity handleIllegalArgumentException(IllegalArgumentException e) {
 		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	}
+
+	@ExceptionHandler(IllegalStateException.class)
+	public ResponseEntity handleIllegalStateException(IllegalStateException e) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+	}
 }
