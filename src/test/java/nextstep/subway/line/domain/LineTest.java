@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.CannotDeleteException;
+import nextstep.subway.exception.CannotUpdateException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -80,7 +82,7 @@ public class LineTest {
     void addLineSection_Exception1() {
         assertThatThrownBy(() -> {
             신분당선.addLineSection(강남역, 양재역, 10);
-        }).isInstanceOf(RuntimeException.class).hasMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }).isInstanceOf(CannotUpdateException.class).hasMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
     }
 
     @DisplayName("상행역과 하행역이 이미 노선에 모두 등록되어 있다면 추가할 수 없음")
@@ -88,7 +90,7 @@ public class LineTest {
     void addLineSection_Exception2() {
         assertThatThrownBy(() -> {
             신분당선.addLineSection(강남역, 광교역, 5);
-        }).isInstanceOf(RuntimeException.class).hasMessage("이미 등록된 구간 입니다.");
+        }).isInstanceOf(CannotUpdateException.class).hasMessage("이미 등록된 구간 입니다.");
     }
 
     @DisplayName("상행역과 하행역 둘 중 하나도 포함되어있지 않으면 추가할 수 없음")
@@ -96,7 +98,7 @@ public class LineTest {
     void addLineSection_Exception3() {
         assertThatThrownBy(() -> {
             신분당선.addLineSection(신사역, 수원역, 5);
-        }).isInstanceOf(RuntimeException.class).hasMessage("등록할 수 없는 구간 입니다.");
+        }).isInstanceOf(CannotUpdateException.class).hasMessage("등록할 수 없는 구간 입니다.");
     }
 
     @DisplayName("노선의 구간 제거 - 노선과 노선 사이의 역을 제거")
@@ -146,7 +148,7 @@ public class LineTest {
     void removeLineSectionException() {
         assertThatThrownBy(() -> {
             신분당선.removeLineSection(강남역);
-        }).isInstanceOf(RuntimeException.class)
+        }).isInstanceOf(CannotDeleteException.class)
                 .hasMessage("구간이 하나인 노선은 역을 제거할 수 없음");
     }
 }

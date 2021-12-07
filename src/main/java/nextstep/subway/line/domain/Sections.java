@@ -1,5 +1,8 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.CannotDeleteException;
+import nextstep.subway.exception.CannotUpdateException;
+import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -60,7 +63,7 @@ public class Sections {
         return sections.stream()
                 .filter(section -> section.equalsDownStation(upStation))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("이전 구간 없습니다."));
+                .orElseThrow(() -> new NotFoundException("이전 구간 없습니다."));
     }
 
     private boolean isExistNextSection(Station downStation) {
@@ -72,7 +75,7 @@ public class Sections {
         return sections.stream()
                 .filter(section -> section.equalsUpStation(downStation))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("다음 구간 없습니다."));
+                .orElseThrow(() -> new NotFoundException("다음 구간 없습니다."));
     }
 
     void addLineSection(Line line, Station upStation, Station downStation, int distance) {
@@ -99,11 +102,11 @@ public class Sections {
 
     private void validateStation(boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new CannotUpdateException("이미 등록된 구간 입니다.");
         }
 
         if (!isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new CannotUpdateException("등록할 수 없는 구간 입니다.");
         }
     }
 
@@ -139,7 +142,7 @@ public class Sections {
 
     private void validateRemoveSection() {
         if (sections.size() <= 1) {
-            throw new RuntimeException("구간이 하나인 노선은 역을 제거할 수 없음");
+            throw new CannotDeleteException("구간이 하나인 노선은 역을 제거할 수 없음");
         }
     }
 
