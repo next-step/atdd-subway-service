@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResult;
+import nextstep.subway.path.policy.FarePolicy;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -15,13 +16,19 @@ import java.util.stream.Collectors;
 
 @Component
 public class DefaultPathFinder implements PathFinder {
+    private final FarePolicy farePolicy;
+
+    public DefaultPathFinder(FarePolicy farePolicy) {
+        this.farePolicy = farePolicy;
+    }
+
     public PathResult findShortCut(Set<Line> lines, Station source, Station target) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         addStationToGraph(lines, graph);
         linkAllSections(lines, graph);
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         return Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
-                .map(path -> new PathResult(path.getVertexList(), path.getWeight()))
+                .map(path -> new PathResult(path.getVertexList(), path.getWeight(), farePolicy.calculateOverFare((int) path.getWeight())))
                 .orElseGet(PathResult::emptyPath);
     }
 

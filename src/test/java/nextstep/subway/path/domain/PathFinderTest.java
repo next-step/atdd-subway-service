@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathResult;
+import nextstep.subway.path.policy.DefaultFarePolicy;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,12 +31,14 @@ public class PathFinderTest {
         삼호선.addSection(교대역, 남부터미널, 3);
 
         Set<Line> lines = new HashSet<>(Arrays.asList(신분당선, 이호선, 삼호선));
+        DefaultFarePolicy farePolicy = new DefaultFarePolicy();
 
         // when
-        PathResult shortCut = new DefaultPathFinder().findShortCut(lines, 교대역, 양재역);
+        PathResult shortCut = new DefaultPathFinder(farePolicy).findShortCut(lines, 교대역, 양재역);
 
         // then
         assertThat(shortCut.getWeight()).isEqualTo(5);
+        assertThat(shortCut.getFare()).isEqualTo(1250);
         assertThat(shortCut.getVertexList())
                 .map(Station::getName)
                 .containsExactly("교대역", "남부터미널", "양재역");

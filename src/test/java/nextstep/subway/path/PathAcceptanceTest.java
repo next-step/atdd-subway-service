@@ -60,7 +60,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단_경로_응답됨(response);
-        최단_거리와_정렬된_역이_반환됨(response, 5, "교대역", "남부터미널역", "양재역");
+        최단_거리_경로를_응답(response, "교대역", "남부터미널역", "양재역");
+        총_거리도_함께_응답(response, 5);
+        지하철_이용_요금도_함께_응답함(response, 1250);
     }
 
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
@@ -110,12 +112,21 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private void 최단_거리와_정렬된_역이_반환됨(ExtractableResponse<Response> response, int distance, String ... stationNames) {
+    private void 최단_거리_경로를_응답(ExtractableResponse<Response> response, String ... stationNames) {
         PathResponse pathResponse = response.jsonPath().getObject("", PathResponse.class);
-        assertThat(pathResponse.getDistance()).isEqualTo(distance);
         assertThat(pathResponse.getStations())
                 .map(StationResponse::getName)
                 .containsExactly(stationNames);
+    }
+
+    private void 총_거리도_함께_응답(ExtractableResponse<Response> response, int distance) {
+        PathResponse pathResponse = response.jsonPath().getObject("", PathResponse.class);
+        assertThat(pathResponse.getDistance()).isEqualTo(distance);
+    }
+
+    private void 지하철_이용_요금도_함께_응답함(ExtractableResponse<Response> response, int fare) {
+        PathResponse pathResponse = response.jsonPath().getObject("", PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(fare);
     }
 
     private ExtractableResponse<Response> 역_사이의_최단경로_요청(Long source, Long target) {
