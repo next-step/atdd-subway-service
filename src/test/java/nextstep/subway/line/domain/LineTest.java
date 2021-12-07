@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static nextstep.subway.line.domain.Distance.MIN_DISTANCE;
@@ -16,10 +17,20 @@ import static org.assertj.core.api.Assertions.*;
 @DisplayName("지하철 노선 기능")
 class LineTest {
 
+    private Station 강남;
+    private Station 양재;
+    private Station 양재시민의숲;
+    private Station 청계산입구;
+    private Station 판교;
     private Line line;
 
     @BeforeEach
     void setUp() {
+        강남 = new Station(1L, "강남");
+        양재 = new Station(2L, "양재");
+        양재시민의숲 = new Station(3L, "양재시민의숲");
+        청계산입구 = new Station(4L, "청계산입구");
+        판교 = new Station(5L, "판교");
         line = new Line("신분당선", "bg-red-600");
     }
 
@@ -27,21 +38,19 @@ class LineTest {
     @Test
     void addTerminusExtend() {
         // given
-        line.addSection(getSection(Station.of("양재", "판교"), 10));
-        Section upStationExtend = getSection(Station.of("강남", "양재"), 3);
-        Section downStationExtend = getSection(Station.of("판교", "광교"), 5);
+        line.addSection(getSection(Arrays.asList(양재, 양재시민의숲), 4));
 
         // when
-        line.addSection(upStationExtend);
-        line.addSection(downStationExtend);
+        line.addSection(getSection(Arrays.asList(강남, 양재), 3));
+        line.addSection(getSection(Arrays.asList(양재시민의숲, 판교), 5));
 
         // then
         assertThat(line.getSections())
                 .extracting("upStation.name", "downStation.name", "distance.distance")
                 .containsExactly(
                         tuple("강남", "양재", 3),
-                        tuple("양재", "판교", 10),
-                        tuple("판교", "광교", 5)
+                        tuple("양재", "양재시민의숲", 4),
+                        tuple("양재시민의숲", "판교", 5)
                 );
     }
 
@@ -49,9 +58,9 @@ class LineTest {
     @Test
     void addBetweenStations() {
         // given
-        line.addSection(getSection(Station.of("강남", "청계산입구"), 9));
-        Section newUpSection = getSection(Station.of("강남", "양재"), 3);
-        Section newDownSection = getSection(Station.of("양재시민의숲", "청계산입구"), 4);
+        line.addSection(getSection(Arrays.asList(강남, 청계산입구), 9));
+        Section newUpSection = getSection(Arrays.asList(강남, 양재), 3);
+        Section newDownSection = getSection(Arrays.asList(양재시민의숲, 청계산입구), 4);
 
         // when
         line.addSection(newUpSection);
@@ -71,8 +80,8 @@ class LineTest {
     @DisplayName("연결 가능한 구간이 없는 경우 예외가 발생한다.")
     void validateNotConnectable() {
         // given
-        Section section1 = getSection(Station.of("강남", "양재"), 5);
-        Section section2 = getSection(Station.of("판교", "광교"), 5);
+        Section section1 = getSection(Arrays.asList(강남, 양재), 5);
+        Section section2 = getSection(Arrays.asList(청계산입구, 판교), 5);
         line.addSection(section1);
 
         // when // then
@@ -84,8 +93,8 @@ class LineTest {
     @DisplayName("구간이 중복되는 경우 예외가 발생한다.")
     void validateDuplication() {
         // given
-        Section section1 = getSection(Station.of("강남", "양재"), 5);
-        Section section2 = getSection(Station.of("강남", "양재"), 5);
+        Section section1 = getSection(Arrays.asList(강남, 양재), 5);
+        Section section2 = getSection(Arrays.asList(강남, 양재), 5);
         line.addSection(section1);
 
         // when // then
@@ -96,12 +105,9 @@ class LineTest {
     @Test
     @DisplayName("구간 거리가 " + MIN_DISTANCE + "보다 작은 경우 예외가 발생한다.")
     void validateShortMinDistance() {
-        // given
-        List<Station> stations = Station.of("강남", "양재");
-
-        // when // then
+        // given // when // then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> getSection(stations, 0));
+                .isThrownBy(() -> getSection(Arrays.asList(강남, 양재), 0));
     }
 
     @DisplayName("구간 거리가 기존 역 사이의 거리보다 크거나 같은 경우 예외가 발생한다.")
@@ -110,8 +116,8 @@ class LineTest {
     void validateLongDistanceBetweenSection(int invalidDistance) {
         // given
         int distance = 5;
-        Section section1 = getSection(Station.of("강남", "양재시민의숲"), distance);
-        Section section2 = getSection(Station.of("양재", "양재시민의숲"), invalidDistance);
+        Section section1 = getSection(Arrays.asList(강남, 양재시민의숲), distance);
+        Section section2 = getSection(Arrays.asList(양재, 양재시민의숲), invalidDistance);
         line.addSection(section1);
 
         // when // then
@@ -123,10 +129,10 @@ class LineTest {
     @DisplayName("노선에 속한 지하철 역이 상행역 부터 하행역 순으로 정렬된다.")
     void sortLineStations() {
         // given
-        line.addSection(getSection(Station.of("양재시민의숲", "판교"), 10));
-        line.addSection(getSection(Station.of("청계산입구", "판교"), 5));
-        line.addSection(getSection(Station.of("강남", "양재시민의숲"), 10));
-        line.addSection(getSection(Station.of("강남", "양재"), 5));
+        line.addSection(getSection(Arrays.asList(양재시민의숲, 판교), 10));
+        line.addSection(getSection(Arrays.asList(청계산입구, 판교), 5));
+        line.addSection(getSection(Arrays.asList(강남, 양재시민의숲), 10));
+        line.addSection(getSection(Arrays.asList(강남, 양재), 5));
 
         // when
         List<Station> stations = line.getStations();
@@ -154,13 +160,13 @@ class LineTest {
     @DisplayName("노선의 종점 구간을 제거한다.")
     void removeTerminusSection() {
         // given
-        line.addSection(getSection(Station.of("강남", "양재"), 3));
-        line.addSection(getSection(Station.of("양재", "양재시민의숲"), 3));
-        line.addSection(getSection(Station.of("양재시민의숲", "판교"), 3));
+        line.addSection(getSection(Arrays.asList(강남, 양재), 3));
+        line.addSection(getSection(Arrays.asList(양재, 양재시민의숲), 3));
+        line.addSection(getSection(Arrays.asList(양재시민의숲, 판교), 3));
 
         // when
-        line.removeSection(new Station("강남"));
-        line.removeSection(new Station("판교"));
+        line.removeSection(강남);
+        line.removeSection(판교);
 
         // then
         assertThat(line.getSections())
@@ -174,12 +180,12 @@ class LineTest {
     @Test
     void removeBetweenStations() {
         // given
-        line.addSection(getSection(Station.of("강남", "양재"), 3));
-        line.addSection(getSection(Station.of("양재", "양재시민의숲"), 3));
-        line.addSection(getSection(Station.of("양재시민의숲", "판교"), 3));
+        line.addSection(getSection(Arrays.asList(강남, 양재), 3));
+        line.addSection(getSection(Arrays.asList(양재, 양재시민의숲), 3));
+        line.addSection(getSection(Arrays.asList(양재시민의숲, 판교), 3));
 
         // when
-        line.removeSection(new Station("양재시민의숲"));
+        line.removeSection(양재시민의숲);
 
         // then
         assertThat(line.getSections())
@@ -194,11 +200,10 @@ class LineTest {
     @Test
     void removeValidateSize() {
         // given
-        Section section = getSection(Station.of("양재", "양재시민의숲"), 5);
-        line.addSection(section);
+        line.addSection(getSection(Arrays.asList(양재, 양재시민의숲), 5));
 
         // when // then
-        assertThatThrownBy(() -> line.removeSection(new Station("양재시민의숲")))
+        assertThatThrownBy(() -> line.removeSection(양재시민의숲))
                 .isInstanceOf(InvalidSectionException.class);
     }
 

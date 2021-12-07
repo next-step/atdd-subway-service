@@ -3,10 +3,7 @@ package nextstep.subway.station.domain;
 import nextstep.subway.BaseEntity;
 
 import javax.persistence.*;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Entity
 public class Station extends BaseEntity {
@@ -23,10 +20,9 @@ public class Station extends BaseEntity {
         this.name = name;
     }
 
-    public static List<Station> of(String... name) {
-        return Arrays.stream(name)
-                .map(Station::new)
-                .collect(Collectors.toList());
+    public Station(Long id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
     public Long getId() {
@@ -46,12 +42,11 @@ public class Station extends BaseEntity {
             return false;
         }
         Station station = (Station) o;
-        return Objects.equals(id, station.id) &&
-                Objects.equals(name, station.name);
+        return Objects.equals(id, station.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id);
     }
 }
