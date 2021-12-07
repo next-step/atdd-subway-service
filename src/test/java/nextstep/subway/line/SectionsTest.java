@@ -100,7 +100,7 @@ public class SectionsTest {
 
         assertThatThrownBy(() -> {
             line.addSection(nextSection);
-        }).isInstanceOf(IllegalStateException.class)
+        }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("등록할 수 없는 구간 입니다.");
     }
 
