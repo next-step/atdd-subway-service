@@ -30,6 +30,10 @@ public class Section {
     public Section() {
     }
 
+    public Section(Line line, Station upStation, Station downStation, int distance) {
+        this(line, upStation, downStation, new Distance(distance));
+    }
+
     public Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
@@ -57,6 +61,10 @@ public class Section {
         return distance;
     }
 
+    public int getDistanceValue() {
+        return distance.distance();
+    }
+
     public void updateUpStation(Station station, Distance newDistance) {
         checkInputDistanceThanDistanceBetweenStations(this.distance, newDistance);
         this.upStation = station;
@@ -75,7 +83,7 @@ public class Section {
         }
     }
 
-    public List<Station> getStations(){
+    public List<Station> getStations() {
         return Arrays.asList(upStation, downStation);
     }
 }
