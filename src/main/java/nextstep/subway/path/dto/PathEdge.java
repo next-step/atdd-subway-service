@@ -5,9 +5,9 @@ import java.util.List;
 
 public class PathEdge {
 
-    Long sourceVertex;
-    Long targetVertex;
-    Integer weight;
+    private final Long sourceVertex;
+    private final Long targetVertex;
+    private final Integer weight;
 
     private PathEdge(Long sourceVertex, Long targetVertex, Integer weight) {
         this.sourceVertex = sourceVertex;

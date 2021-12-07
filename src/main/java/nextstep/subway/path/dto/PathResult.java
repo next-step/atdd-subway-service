@@ -4,8 +4,8 @@ import java.util.List;
 
 public class PathResult {
 
-    List<Long> stationIds;
-    Integer distance;
+    private final List<Long> stationIds;
+    private final Integer distance;
 
     public PathResult(List<Long> stationIds, Integer distance) {
         this.stationIds = stationIds;
