@@ -102,3 +102,80 @@ Scenario: 지하철 구간을 관리
 - [x] 출발역과 도착역이 같은 경우
 - [x] 출발역과 도착역이 연결이 되어 있지 않은 경우
 - [x] 존재하지 않은 출발역이나 도착역을 조회 할 경우
+
+
+# 3단계 인증을 통한 기능 구현 
+
+## 요구사항
+- [ ] 토큰 발급 기능 (로그인) 인수 테스트 만들기
+- [ ] `인증` - 내 정보 조회 기능 완성하기 
+- [ ] `인증` - 즐겨 찾기 기능 완성하기
+
+## 요구사항 설명
+- [ ] AuthAcceptanceTest 인수테스트 작성하기
+  - [ ] 이메일과 패스워드 통해 로그인
+- [ ] Bearer Auth 유효하지 않은 토큰 인수 테스트
+- [ ] 유효하지 않은 토큰으로 `/members/me` 요청을 보낼 경우에 대한 예외 처리
+- [ ] `/members/me` 로 요청시 기능 수행
+  - [ ] 로그인 후 발급 받은 토큰을 포함해서 요청 하기
+  - [ ] 내 정보 조회 
+  - [ ] 내 정보 수정 
+  - [ ] 내 정보 삭제
+
+## 시나리오 
+
+### 로그인 
+```integrationperformancetest
+  Feature 로그인 기능 
+  Background  
+    given 회원이 등록되어있음
+    given 로그인 요청
+
+  Scenario 회원정보가_있는경우_토큰_발급
+      then 로그인 됨 
+      then 토큰 생성됨
+
+  Scenario 유효하지 않는 토큰인 경우 실패 
+      then 토큰 생성 실패
+
+  Scenario  내 정보 조회하기
+      then  토큰_생성됨
+      
+      when  내 정보 조회하기
+      then  내 정보 조회됨
+      
+   Scenario  내 정보 수정하기
+      then  로그인 됨
+      when  내 정보 조회하기
+      then  로그인 정보 변경됨
+      
+   Scenario 내 정보 삭제하기
+      then  로그인 됨
+      when  내 정보 삭제하기 
+      then  로그인 삭제됨
+      when  로그인 요청
+      then  토큰 생성 실패
+```  
+
+
+### 즐겨찾기 
+```integrationperformancetest
+  Feature 즐겨찾기를 관리한다.
+
+  Background 
+    Given 지하철역 등록되어 있음
+    And 지하철 노선 등록되어 있음
+    And 지하철 노선에 지하철역 등록되어 있음
+    And 회원 등록되어 있음
+    And 로그인 되어있음
+
+  Scenario 즐겨찾기를 관리
+    When 즐겨찾기 생성을 요청
+    Then 즐겨찾기 생성됨
+    When 즐겨찾기 목록 조회 요청
+    Then 즐겨찾기 목록 조회됨
+    When 즐겨찾기 삭제 요청
+    Then 즐겨찾기 삭제됨
+```
+
+
