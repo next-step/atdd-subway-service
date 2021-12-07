@@ -91,5 +91,5 @@ Feature: 경로 관련 기능
 ## 할 일
 - [x] LineSectionAcceptanceTest 리팩터링
 - [x] LineService 리팩터링
-- [ ] 최단 경로 조회 인수 테스트 만들기
-- [ ] 최단 경로 조회 기능 구현하기
+- [x] 최단 경로 조회 인수 테스트 만들기
+- [x] 최단 경로 조회 기능 구현하기
