@@ -3,6 +3,8 @@ package nextstep.subway.path.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import nextstep.subway.exception.InvalidArgumentException;
@@ -18,14 +20,40 @@ import org.junit.jupiter.api.Test;
 @DisplayName("지하철 경로 찾기 테스트")
 public class PathFinderTest {
 
-    Station 교대역;
-    Station 강남역;
-    Station 양재역;
-    Station 남부터미널역;
-    Station 양재시민의숲;
-    Station 서초역;
-    Station 고속터미널;
-    Station 반포역;
+    private static final Station 교대역 = mock(Station.class);
+    private static final Station 강남역= mock(Station.class);
+    private static final Station 양재역= mock(Station.class);
+    private static final Station 남부터미널역= mock(Station.class);
+    private static final Station 양재시민의숲= mock(Station.class);
+    private static final Station 서초역= mock(Station.class);
+    private static final Station 고속터미널= mock(Station.class);
+    private static final Station 반포역= mock(Station.class);
+
+    static {
+        when(교대역.getId()).thenReturn(1L);
+        when(교대역.getName()).thenReturn("교대역");
+
+        when(강남역.getId()).thenReturn(2L);
+        when(강남역.getName()).thenReturn("강남역");
+
+        when(양재역.getId()).thenReturn(3L);
+        when(양재역.getName()).thenReturn("양재역");
+
+        when(남부터미널역.getId()).thenReturn(4L);
+        when(남부터미널역.getName()).thenReturn("남부터미널역");
+
+        when(양재시민의숲.getId()).thenReturn(5L);
+        when(양재시민의숲.getName()).thenReturn("양재시민의숲");
+
+        when(서초역.getId()).thenReturn(6L);
+        when(서초역.getName()).thenReturn("서초역");
+
+        when(고속터미널.getId()).thenReturn(7L);
+        when(고속터미널.getName()).thenReturn("고속터미널");
+
+        when(반포역.getId()).thenReturn(8L);
+        when(반포역.getName()).thenReturn("반포역");
+    }
 
     Line 신분당선;
     Line 이호선;
@@ -50,15 +78,6 @@ public class PathFinderTest {
      */
     @BeforeEach
     void setUp() {
-        교대역 = new Station("교대역");
-        강남역 = new Station("강남역");
-        양재역 = new Station("양재역");
-        남부터미널역 = new Station("남부터미널역");
-        양재시민의숲 = new Station("양재시민의숲");
-        서초역 = new Station("서초역");
-        고속터미널 = new Station("고속터미널");
-        반포역 = new Station("반포역");
-
         신분당선 = Line.of("신분당선", "red", 강남역, 양재역, 10);
         신분당선.addLineStation(Section.create(양재역, 양재시민의숲, Distance.valueOf(4)));
 
@@ -76,6 +95,7 @@ public class PathFinderTest {
     @Test
     @DisplayName("교대역-양재역 지하철 최단 경로 조회")
     void getShortestList_교대역_양재역() {
+
         PathFinder graph = PathFinder.of(Arrays.asList(신분당선, 이호선, 삼호선));
 
         Path shortestPath = graph.findShortestPath(교대역, 양재역);
@@ -90,6 +110,7 @@ public class PathFinderTest {
     @Test
     @DisplayName("서초역_양재시민의숲 지하철 최단 경로 조회")
     void getShortestList_서초역_양재시민의숲() {
+        when(강남역.getId()).thenReturn(1L);
         PathFinder graph = PathFinder.of(Arrays.asList(신분당선, 이호선, 삼호선));
 
         Path shortestPath = graph.findShortestPath(서초역, 양재시민의숲);

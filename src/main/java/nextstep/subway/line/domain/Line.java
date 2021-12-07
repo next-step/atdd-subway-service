@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -65,6 +66,7 @@ public class Line extends BaseEntity {
     }
 
     public List<Station> getStations() {
+
         return this.sections.getSortedStations();
     }
 
@@ -116,13 +118,4 @@ public class Line extends BaseEntity {
         return Objects.hash(id);
     }
 
-    @Override
-    public String toString() {
-        return "Line{" +
-            "id=" + id +
-            ", name='" + name + '\'' +
-            ", color='" + color + '\'' +
-            ", sections=" + sections +
-            '}';
-    }
 }

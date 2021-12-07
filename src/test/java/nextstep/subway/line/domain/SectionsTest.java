@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import nextstep.subway.exception.CannotDeleteException;
@@ -16,11 +18,23 @@ import org.junit.jupiter.api.Test;
 @DisplayName("구간 목록 클래스 테스트")
 public class SectionsTest {
 
-    private final Station 서울역 = new Station("서울역");
-    private final Station 남영역 = new Station("남영역");
-    private final Station 용산역 = new Station("용산역");
-    private final Station 노량진역 = new Station("노량진역");
+    private static final Station 서울역 = mock(Station.class);
+    private static final Station 남영역 = mock(Station.class);
+    private static final Station 용산역 = mock(Station.class);
+    private static final Station 노량진역 = mock(Station.class);
+    static {
+        when(서울역.getId()).thenReturn(1L);
+        when(서울역.getName()).thenReturn("서울역");
 
+        when(남영역.getId()).thenReturn(2L);
+        when(남영역.getName()).thenReturn("남영역");
+
+        when(용산역.getId()).thenReturn(3L);
+        when(용산역.getName()).thenReturn("용산역");
+
+        when(노량진역.getId()).thenReturn(4L);
+        when(노량진역.getName()).thenReturn("노량진역");
+    }
 
     @Test
     @DisplayName("서울역-남영역-용산역-노량진역 으로 정렬된 목록 조회")
@@ -45,25 +59,29 @@ public class SectionsTest {
     @Test
     @DisplayName("이미 존재하는 구간 체크")
     void validateForAddedAlreadyExists() {
+
+        final Line line = mock(Line.class);
+
         Sections sections = new Sections();
-        sections.add(Section.create(서울역, 남영역, Distance.valueOf(5)));
+        sections.add(Section.create(line, 서울역, 남영역, Distance.valueOf(5)));
 
         //when&then
-        assertTrue(sections.isAlreadySection(Section.create(서울역, 남영역, Distance.valueOf(10))));
-        assertFalse(sections.isAlreadySection(Section.create(서울역, 용산역, Distance.valueOf(5))));
+        assertTrue(sections.isAlreadySection(Section.create(line, 서울역, 남영역, Distance.valueOf(10))));
+        assertFalse(sections.isAlreadySection(Section.create(line, 서울역, 용산역, Distance.valueOf(5))));
     }
 
     @Test
     @DisplayName("포함된 구간 체크")
     void validateForAddedNotInclude() {
+        final Line line = mock(Line.class);
         Sections sections = new Sections();
-        sections.add(Section.create(서울역, 남영역, Distance.valueOf(5)));
+        sections.add(Section.create(line, 서울역, 남영역, Distance.valueOf(5)));
 
         //when&then
         assertFalse(
-            sections.isIncludeStationOfSection(Section.create(용산역, 노량진역, Distance.valueOf(10))));
+            sections.isIncludeStationOfSection(Section.create(line, 용산역, 노량진역, Distance.valueOf(10))));
         assertTrue(
-            sections.isIncludeStationOfSection(Section.create(서울역, 용산역, Distance.valueOf(10))));
+            sections.isIncludeStationOfSection(Section.create(line, 서울역, 용산역, Distance.valueOf(10))));
     }
 
     @Test

@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import nextstep.subway.common.BaseEntity;
-import nextstep.subway.exception.NotValidateException;
+import nextstep.subway.exception.InvalidArgumentException;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -74,28 +74,40 @@ public class Section extends BaseEntity {
         }
     }
 
+    public Station getUpStation() {
+        return upStation;
+    }
+
+    public Station getDownStation() {
+        return downStation;
+    }
+
+    public Distance getDistance() {
+        return distance;
+    }
+
     public boolean isIncludeStation(Station station) {
         return isUpStation(station) || isDownStation(station);
     }
 
     public boolean isDownStationOfSection(Section section) {
-        return this.downStation.equalsName(section.downStation);
+        return this.downStation.equals(section.downStation);
     }
 
     public boolean isUpStationOfSection(Section section) {
-        return this.upStation.equalsName(section.upStation);
-    }
-
-    public boolean isUpStation(Station upStation) {
-        return this.upStation.equalsName(upStation);
+        return this.upStation.equals(section.upStation);
     }
 
     public boolean equalsDistance(int distance) {
         return this.distance.equals(Distance.valueOf(distance));
     }
 
+    public boolean isUpStation(Station upStation) {
+        return this.upStation.equals(upStation);
+    }
+
     public boolean isDownStation(Station station) {
-        return this.downStation.equalsName(station);
+        return this.downStation.equals(station);
     }
 
     public boolean isTheDownLine(Section section) {
@@ -118,14 +130,6 @@ public class Section extends BaseEntity {
         update(this.upStation, section.upStation, minus(section));
     }
 
-    private Distance minus(Section section) {
-        try {
-            return distance.minus(section.distance);
-        } catch (NotValidateException e) {
-            throw new NotValidateException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요.");
-        }
-    }
-
     public void updateConnect(Section section) {
         if (isTheUpLine(section)) {
             update(this.upStation, section.downStation, this.distance.plus(section.distance));
@@ -138,16 +142,23 @@ public class Section extends BaseEntity {
         }
     }
 
-    public boolean equalsStations(Section section) {
-        return upStation.equalsName(section.upStation)
-            && downStation.equalsName(section.downStation);
-    }
-
-    public boolean equalsLine(Line line) {
+    protected boolean equalsLine(Line line) {
         if (this.line == null) {
             return false;
         }
         return this.line.equals(line);
+    }
+
+    protected boolean equalsSection(Section section) {
+        return upStation.equals(section.upStation) && downStation.equals(section.downStation);
+    }
+
+    private Distance minus(Section section) {
+        try {
+            return distance.minus(section.distance);
+        } catch (InvalidArgumentException e) {
+            throw new InvalidArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요.");
+        }
     }
 
     private void update(Station upStation, Station downStation, Distance distance) {
@@ -156,6 +167,9 @@ public class Section extends BaseEntity {
         this.distance = distance;
     }
 
+    private Long getId() {
+        return id;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -166,7 +180,7 @@ public class Section extends BaseEntity {
             return false;
         }
         Section section = (Section) o;
-        return Objects.equals(id, section.id);
+        return Objects.equals(getId(), section.getId());
     }
 
     @Override
@@ -184,17 +198,5 @@ public class Section extends BaseEntity {
             ", downStation=" + downStation +
             ", distance=" + distance +
             '}';
-    }
-
-    public Station getUpStation() {
-        return upStation;
-    }
-
-    public Station getDownStation() {
-        return downStation;
-    }
-
-    public Distance getDistance() {
-        return distance;
     }
 }

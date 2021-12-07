@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import static nextstep.subway.utils.Utils.distinctByKey;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,7 +48,7 @@ public class Sections {
 
     public boolean contains(Section section) {
         return sections.stream()
-            .anyMatch(it -> it.equalsStations(section));
+            .anyMatch(it -> it.equalsSection(section));
     }
 
     public boolean isEmptyStation() {
@@ -79,7 +80,7 @@ public class Sections {
 
     boolean isAlreadySection(Section section) {
         return sections.stream()
-            .anyMatch(it -> it.equalsStations(section));
+            .anyMatch(it -> it.equalsSection(section));
     }
 
     boolean isIncludeStationOfSection(Section section) {
@@ -118,6 +119,10 @@ public class Sections {
     }
 
     private List<Section> getSortedSections() {
+        if (sections.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         List<Section> list = new ArrayList<>();
         Section section = findFirstSection();
         list.add(section);
