@@ -64,7 +64,7 @@ public class PathFinder {
 			throw new CanNotFindPathException("출발역과 도착역이 연결되어 있지 않습니다.");
 		}
 
-		return Path.of(graphPath.getVertexList(), (int)graphPath.getWeight());
+		return Path.of(graphPath.getVertexList(), (int)graphPath.getWeight(), new FarePolicyByDistance());
 	}
 
 	private void throwOnEqual(Station source, Station target) {
