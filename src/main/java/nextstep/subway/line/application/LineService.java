@@ -1,5 +1,15 @@
 package nextstep.subway.line.application;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -9,19 +19,11 @@ import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class LineService {
-    private LineRepository lineRepository;
+    private final LineRepository lineRepository;
     private StationService stationService;
 
     public LineService(LineRepository lineRepository, StationService stationService) {
@@ -32,7 +34,7 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, Distance.from(request.getDistance())));
         List<StationResponse> stations = getStations(persistLine).stream()
                 .map(it -> StationResponse.of(it))
                 .collect(Collectors.toList());
@@ -91,7 +93,7 @@ public class LineService {
         }
 
         if (stations.isEmpty()) {
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+            line.getSections().add(new Section(line, upStation, downStation, Distance.from(request.getDistance())));
             return;
         }
 
@@ -99,16 +101,16 @@ public class LineService {
             line.getSections().stream()
                     .filter(it -> it.getUpStation() == upStation)
                     .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
+                    .ifPresent(it -> it.updateUpStation(downStation, Distance.from(request.getDistance())));
 
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+            line.getSections().add(new Section(line, upStation, downStation, Distance.from(request.getDistance())));
         } else if (isDownStationExisted) {
             line.getSections().stream()
                     .filter(it -> it.getDownStation() == downStation)
                     .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
+                    .ifPresent(it -> it.updateDownStation(upStation, Distance.from(request.getDistance())));
 
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+            line.getSections().add(new Section(line, upStation, downStation, Distance.from(request.getDistance())));
         } else {
             throw new RuntimeException();
         }
@@ -131,7 +133,7 @@ public class LineService {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            Distance newDistance = upLineStation.get().getDistance().plus(downLineStation.get().getDistance());
             line.getSections().add(new Section(line, newUpStation, newDownStation, newDistance));
         }
 
