@@ -14,10 +14,14 @@ import nextstep.subway.station.domain.Station;
 @Embeddable
 public class Sections {
 
-	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST,
+		CascadeType.MERGE}, orphanRemoval = true, fetch = FetchType.EAGER)
 	private List<Section> sections = new ArrayList<>();
 
-	public void add(Section... sections) {
+	protected Sections() {
+	}
+
+	public Sections(Section... sections) {
 		for (Section section : sections) {
 			this.sections.add(section);
 		}
@@ -75,6 +79,65 @@ public class Sections {
 				.orElse(finalFistSection);
 		}
 		return firstSection;
+	}
+
+	public void addSection(Section section) {
+		validateStationsExisted(section);
+		validateStationNonMatch(section);
+
+		if (getStations().isEmpty()) {
+			sections.add(section);
+			return;
+		}
+
+		if (isUpStationExisted(section)) {
+			updateUpStation(section);
+			sections.add(section);
+			return;
+		}
+
+		if (isDownStationExisted(section)) {
+			updateDownStation(section);
+			sections.add(section);
+			return;
+		}
+	}
+
+	private void updateDownStation(Section addSection) {
+		sections.stream()
+			.filter(section -> section.getDownStation().equals(addSection.getDownStation()))
+			.findFirst()
+			.ifPresent(section -> section.updateDownStation(addSection.getUpStation(), addSection.getDistance()));
+	}
+
+	private void updateUpStation(Section addSection) {
+		sections.stream()
+			.filter(section -> section.getUpStation().equals(addSection.getUpStation()))
+			.findFirst()
+			.ifPresent(section -> section.updateUpStation(addSection.getDownStation(), addSection.getDistance()));
+	}
+
+	private boolean isDownStationExisted(Section section) {
+		return getStations().stream()
+			.anyMatch(station -> station.equals(section.getDownStation()));
+	}
+
+	private boolean isUpStationExisted(Section section) {
+		return getStations().stream()
+			.anyMatch(station -> station.equals(section.getUpStation()));
+	}
+
+	private void validateStationNonMatch(Section section) {
+		if (getStations().stream()
+			.noneMatch(station -> station.equals(section.getUpStation()) || station.equals(section.getDownStation()))) {
+			throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
+		}
+	}
+
+	private void validateStationsExisted(Section section) {
+		if (getStations().containsAll(Arrays.asList(section.getUpStation(), section.getDownStation()))) {
+			throw new IllegalArgumentException("이미 등록된 구간 입니다.");
+		}
 	}
 
 }
