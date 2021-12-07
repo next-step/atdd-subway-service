@@ -5,6 +5,7 @@ import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +20,7 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findPathBetween(PathRequest pathRequest) {
+    public ResponseEntity<PathResponse> findPathBetween(@RequestBody PathRequest pathRequest) {
         return ResponseEntity.ok(pathService.findPathBetween(pathRequest));
     }
 }
