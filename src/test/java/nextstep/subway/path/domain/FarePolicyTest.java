@@ -27,7 +27,7 @@ class FarePolicyTest {
 	})
 	void calculate(int distance, int expectedFare) {
 		// given
-		FarePolicy farePolicy = new FarePolicyByDistance();
+		FarePolicy farePolicy = new FarePolicy();
 
 		// when
 		int actualFare = farePolicy.calculate(distance);

@@ -1,7 +1,6 @@
 package nextstep.subway.path.application;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +9,6 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.CanNotFindPathException;
 import nextstep.subway.path.domain.FarePolicy;
-import nextstep.subway.path.domain.FarePolicyByDistance;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathRequest;
@@ -37,7 +35,7 @@ public class PathService {
 
 		PathFinder pathFinder = PathFinder.of(lines);
 		Path path = pathFinder.find(source, target);
-		FarePolicy farePolicy = new FarePolicyByDistance();
+		FarePolicy farePolicy = new FarePolicy();
 		int fare = farePolicy.calculate(path.getDistance());
 
 		return PathResponse.of(path, fare);
