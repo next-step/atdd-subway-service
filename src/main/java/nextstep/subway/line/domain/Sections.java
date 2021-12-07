@@ -50,6 +50,26 @@ public class Sections {
         return stations;
     }
 
+    public void addLineStations(Section section) {
+        List<Station> stations = getStations();
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
+
+        validateIsAllContainsStations(isUpStationExisted, isDownStationExisted);
+
+        validateIsNotAllContainsStations(section, stations);
+
+        if (isUpStationExisted) {
+            addDownStation(section);
+            return;
+        }
+        if (isDownStationExisted) {
+            addUpStation(section);
+            return;
+        }
+        sections.add(section);
+    }
+
     private Station findUpStation() {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
@@ -64,5 +84,36 @@ public class Sections {
         }
 
         return downStation;
+    }
+
+    private void validateIsAllContainsStations(boolean isUpStationExisted, boolean isDownStationExisted) {
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    private void validateIsNotAllContainsStations(Section section, List<Station> stations) {
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
+                stations.stream().noneMatch(it -> it == section.getDownStation())) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    private void addDownStation(Section section) {
+        sections.stream()
+                .filter(it -> it.getUpStation() == section.getUpStation())
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+
+        sections.add(section);
+    }
+
+    private void addUpStation(Section section) {
+        sections.stream()
+                .filter(it -> it.getDownStation() == section.getDownStation())
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+
+        sections.add(section);
     }
 }
