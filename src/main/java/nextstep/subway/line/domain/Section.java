@@ -1,10 +1,9 @@
 package nextstep.subway.line.domain;
 
-import java.util.*;
+import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-
-import nextstep.subway.station.domain.*;
+import java.util.Objects;
 
 @Entity
 public class Section {
@@ -61,6 +60,10 @@ public class Section {
         return distance;
     }
 
+    public int distance() {
+        return distance.distance();
+    }
+
     public void updateUpStation(Station station, Distance newDistance) {
         this.upStation = station;
         distance = distance.subtract(newDistance);
@@ -77,7 +80,7 @@ public class Section {
             return true;
         if (!(o instanceof Section))
             return false;
-        Section section = (Section)o;
+        Section section = (Section) o;
         return line.equals(section.line) && upStation.equals(section.upStation) && downStation.equals(
             section.downStation)
             && distance.equals(section.distance);
