@@ -1,5 +1,6 @@
 package nextstep.subway.member.ui;
 
+import nextstep.subway.auth.domain.LoginCheck;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
@@ -43,12 +44,14 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
+    @LoginCheck
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         MemberResponse member = memberService.findMember(loginMember.getId());
         return ResponseEntity.ok().body(member);
     }
 
+    @LoginCheck
     @PutMapping("/members/me")
     public ResponseEntity<MemberResponse> updateMemberOfMine(
         @AuthenticationPrincipal LoginMember loginMember,
@@ -58,6 +61,7 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
+    @LoginCheck
     @DeleteMapping("/members/me")
     public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         memberService.deleteMember(loginMember.getId());
