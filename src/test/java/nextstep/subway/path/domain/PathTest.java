@@ -1,13 +1,12 @@
-package nextstep.subway.path.acceptance.domain;
+package nextstep.subway.path.domain;
 
 
-import static nextstep.subway.path.acceptance.domain.PathFixtures.전체구간;
+import static nextstep.subway.path.domain.PathFixtures.전체구간;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
 import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.domain.Path;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

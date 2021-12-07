@@ -29,14 +29,6 @@ public class JgraphtPath implements PathFactory {
         return getPathSearchResult(source, target);
     }
 
-    private PathResult getPathSearchResult(Long source, Long target) {
-        GraphPath<Long, DefaultWeightedEdge> graphPath = getGraphPath(source, target);
-
-        List<Long> result = getVertexList(graphPath);
-        int weight = (int) graphPath.getWeight();
-        return PathResult.of(result, weight);
-    }
-
     private void graphMapping(List<PathEdge> pathEdges) {
         pathEdges.stream()
             .map(PathEdge::getAllVertex)
@@ -46,6 +38,14 @@ public class JgraphtPath implements PathFactory {
 
         pathEdges
             .forEach(this::setEdgeWeight);
+    }
+
+    private PathResult getPathSearchResult(Long source, Long target) {
+        GraphPath<Long, DefaultWeightedEdge> graphPath = getGraphPath(source, target);
+
+        List<Long> result = getVertexList(graphPath);
+        int weight = (int) graphPath.getWeight();
+        return PathResult.of(result, weight);
     }
 
     private void setEdgeWeight(PathEdge pathEdge) {

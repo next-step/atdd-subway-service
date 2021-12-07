@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -16,9 +17,9 @@ import nextstep.subway.station.domain.Station;
 public class Path {
 
     private final List<Line> lines;
+    private List<Station> stations;
     private final Long source;
     private final Long target;
-    private List<Station> stations;
 
     public Path(List<Line> lines, Long source, Long target) {
         this.lines = lines;
@@ -35,7 +36,7 @@ public class Path {
         return lines.stream()
             .map(Line::getSections)
             .flatMap(Collection::stream)
-            .map(this::mapPathEdge)
+            .map(this::toPathEdge)
             .collect(Collectors.toList());
     }
 
@@ -45,7 +46,7 @@ public class Path {
             result.add(getStationBy(stationId));
         }
 
-        return result;
+        return Collections.unmodifiableList(result);
     }
 
     public Long getSource() {
@@ -76,16 +77,17 @@ public class Path {
     }
 
     private boolean isPathAllContains(Long source, Long target) {
+        int allMatchCount = 2;
         return this.stations.stream()
             .filter(station -> isSameStation(source, target, station))
-            .count() == 2;
+            .count() == allMatchCount;
     }
 
     private boolean isSameStation(Long source, Long target, Station station) {
         return Objects.equals(station.getId(), source) || Objects.equals(station.getId(), target);
     }
 
-    private PathEdge mapPathEdge(Section section) {
+    private PathEdge toPathEdge(Section section) {
         return PathEdge.of(section.getUpStationId(), section.getDownStationId(),
             section.getDistance());
     }

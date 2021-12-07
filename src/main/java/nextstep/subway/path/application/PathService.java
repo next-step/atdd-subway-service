@@ -8,8 +8,10 @@ import nextstep.subway.path.dto.PathResult;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class PathService {
 
     private final LineRepository lineRepository;
@@ -20,7 +22,7 @@ public class PathService {
         this.pathFactory = pathSearch;
     }
 
-
+    @Transactional(readOnly = true)
     public PathResponse getShortestPath(Long source, Long target) {
         Path path = new Path(lineRepository.findAll(), source, target);
 
