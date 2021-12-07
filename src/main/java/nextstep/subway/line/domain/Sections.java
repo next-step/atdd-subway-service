@@ -42,38 +42,36 @@ public class Sections {
         }
 
         List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(section -> section.getUpStation().equals(finalDownStation))
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
+        Section firstSection = getFirstSection();
+        stations.add(firstSection.getUpStation());
+        
+        Station nextStation = firstSection.getDownStation();
+        stations.add(firstSection.getDownStation());
+        for (int i = 0; i < sections.size()-1; i++) {
+            nextStation =  getNextStation(nextStation);
+            stations.add(nextStation);
         }
-
+        
         return stations;
     }
     
-    private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(section -> section.getDownStation().equals(finalDownStation))
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
+    private Section getFirstSection() {
+        List<Station> downStations = sections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
+        
+        return sections.stream()
+                .filter(section -> !downStations.contains(section.getUpStation()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("첫 구간이 없습니다."));
+    }
+    
+    private Station getNextStation(Station downStation) {
+        return sections.stream()
+                .filter(section -> downStation.equals(section.getUpStation()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("역이 연결되지 않았습니다."))
+                .getDownStation();
     }
     
     void add(Section newSection) {
