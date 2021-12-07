@@ -224,8 +224,6 @@ Connection: keep-alive
 }
 ```
 
-
-
 #### 2. 인증 - 내 정보 조회 기능 완성하기
 
 - 인수 테스트
@@ -272,6 +270,11 @@ public ResponseEntity<MemberResponse> deleteMemberOfMine(LoginMember loginMember
 
 - 세부 요구사항
   - 즐겨찾기 기능을 완성하기
+    - 즐겨찾기 생성
+    - 즐겨찾기 목록 조회
+    - 즐겨찾기 삭제
+      - 없는 즐겨찾기를 삭제 요청하는 경우 예외
+      - 사용자의 즐겨찾기가 아닌 경우 예외
   - 인증을 포함하여 전체 ATDD 사이클을 경험할 수 있도록 기능을 구현하기
 
 - 인수 조건
