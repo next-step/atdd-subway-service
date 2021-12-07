@@ -1,6 +1,7 @@
 package nextstep.subway.common.exception;
 
 public enum ErrorCode {
+    DATABASE_CONSTRAINT_VIOLATION("고유값이 이미 존재합니다."),
     SECTION_EXIST("이미 등록된 구간 입니다."),
     SECTION_ADD_NO_POSITION("등록할 수 없는 구간 입니다."),
     DISTANCE_RANGE("역과 역 사이의 거리보다 좁은 거리를 입력해주세요."),

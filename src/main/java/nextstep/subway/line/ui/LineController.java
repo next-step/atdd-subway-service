@@ -65,10 +65,4 @@ public class LineController {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.ok().build();
     }
-
-    @ExceptionHandler(value = {DataIntegrityViolationException.class})
-    protected ResponseEntity<ErrorResponse> handleLineNameDuplicateConflict() {
-        return ResponseEntity.badRequest()
-            .body(ErrorResponse.of(ErrorCode.LINE_NAME_DUPLICATE_DATA));
-    }
 }

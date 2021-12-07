@@ -14,7 +14,7 @@ class JgraphtPathTest {
 
     @Test
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
-    void getShortestPath3() {
+    void 출발역_도착역_연결되어_있지_않음_실패() {
         // given
         Path path = new Path(전체구간(), 교대.getId(), 천호.getId());
         List<PathEdge> pathEdges = path.toPathEdges();

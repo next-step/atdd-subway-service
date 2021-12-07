@@ -39,10 +39,4 @@ public class StationController {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
     }
-
-    @ExceptionHandler(value = {DataIntegrityViolationException.class})
-    protected ResponseEntity<ErrorResponse> handleStationNameDuplicateConflict() {
-        return ResponseEntity.badRequest()
-            .body(ErrorResponse.of(ErrorCode.STATION_NAME_DUPLICATE_DATA));
-    }
 }
