@@ -71,6 +71,23 @@ public class Section {
         this.distance = this.distance.minus(newDistance);
     }
     
+    public void combine(Section combineSection) {
+        this.downStation = combineSection.getDownStation();
+        this.distance = this.distance.plus(combineSection.getDistance());
+    }
+    
+    public boolean isSameUpStation(Station station) {
+        return this.upStation.equals(station);
+    }
+    
+    public boolean isSameDownStation(Station station) {
+        return this.downStation.equals(station);
+    }
+    
+    public boolean isContainStation(Station station) {
+        return isSameUpStation(station) || isSameDownStation(station);
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
