@@ -1,7 +1,10 @@
 package nextstep.subway.path;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.*;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.*;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.*;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.TestMember.*;
 import static nextstep.subway.station.StationAcceptanceTest.*;
 import static nextstep.subway.station.StationFixture.*;
 import static org.assertj.core.api.Assertions.*;
@@ -20,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
@@ -106,6 +110,36 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		지하철_경로에_요금이_조회됨(지하철_경로_조회_요청, 2350);
 	}
 
+	@DisplayName("경로를 찾는다. (연령별 요금할인을 받는 경우(청소년))")
+	@Test
+	void findPathWithTeenageDiscount() {
+		// Background
+		회원_등록되어_있음(루피);
+		TokenResponse token = 로그인_되어있음(루피).as(TokenResponse.class);
+
+		// Scenario
+		ExtractableResponse<Response> 지하철_경로_조회_요청 = 지하철_경로_조회_요청(token, 교대역, 양재역);
+		지하철_경로_조회됨(지하철_경로_조회_요청);
+		지하철_경로에_지하철역_순서_정렬됨(지하철_경로_조회_요청, Arrays.asList(교대역, 남부터미널역, 양재역));
+		지하철_경로에_거리가_조회됨(지하철_경로_조회_요청, 4);
+		지하철_경로에_요금이_조회됨(지하철_경로_조회_요청, (int)((1250 - 350) * (1 - 0.2)));
+	}
+
+	@DisplayName("경로를 찾는다. (연령별 요금할인을 받는 경우(어린이))")
+	@Test
+	void findPathWithChildDiscount() {
+		// Background
+		회원_등록되어_있음(노진구);
+		TokenResponse token = 로그인_되어있음(노진구).as(TokenResponse.class);
+
+		// Scenario
+		ExtractableResponse<Response> 지하철_경로_조회_요청 = 지하철_경로_조회_요청(token, 교대역, 양재역);
+		지하철_경로_조회됨(지하철_경로_조회_요청);
+		지하철_경로에_지하철역_순서_정렬됨(지하철_경로_조회_요청, Arrays.asList(교대역, 남부터미널역, 양재역));
+		지하철_경로에_거리가_조회됨(지하철_경로_조회_요청, 4);
+		지하철_경로에_요금이_조회됨(지하철_경로_조회_요청, (int)((1250 - 350) * (1 - 0.5)));
+	}
+
 	@DisplayName("출발역과 도착역이 같은 경우 경로를 찾을 수 없다.")
 	@Test
 	void findPathFailOnSame() {
@@ -143,6 +177,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		queryParams.put("target", targetStationId);
 
 		return get("/paths", new HashMap<>(), queryParams);
+	}
+
+	public static ExtractableResponse<Response> 지하철_경로_조회_요청(
+		TokenResponse token,
+		StationResponse sourceStation,
+		StationResponse targetStation
+	) {
+		return 지하철_경로_조회_요청(token, sourceStation.getId(), targetStation.getId());
+	}
+
+	public static ExtractableResponse<Response> 지하철_경로_조회_요청(
+		TokenResponse token,
+		Long sourceStationId,
+		Long targetStationId
+	) {
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("source", sourceStationId);
+		queryParams.put("target", targetStationId);
+
+		return get("/paths", token.getAccessToken(), new HashMap<>(), queryParams);
 	}
 
 	private void 지하철_경로_조회됨(ExtractableResponse<Response> response) {
