@@ -48,4 +48,19 @@ public class SectionsTest {
         List<Station> stations = sections.getStations();
         assertThat(stations).containsAll(Arrays.asList(upStation, newStation, downStation));
     }
+
+    @DisplayName("노선 역 제거")
+    @Test
+    void removeLineStation() {
+        // Given
+        Station newStation = new Station("역삼역");
+        sections.addLineStations(new Section(line, upStation, newStation, 3));
+
+        // When
+        sections.removeLineStation(newStation);
+
+        // Then
+        List<Station> stations = sections.getStations();
+        assertThat(stations).containsAll(Arrays.asList(upStation, downStation));
+    }
 }
