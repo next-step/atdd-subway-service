@@ -20,7 +20,9 @@ public class PathFinder {
     private final UndirectedGraph<Station, DefaultWeightedEdge> graph;
 
     public PathFinder(List<Line> lines) {
-        final UndirectedWeightedGraphBuilderBase<Station, DefaultWeightedEdge, ? extends WeightedMultigraph<Station, DefaultWeightedEdge>, ?> builder = WeightedMultigraph.builder(DefaultWeightedEdge.class);
+        final UndirectedWeightedGraphBuilderBase
+                <Station, DefaultWeightedEdge, ? extends WeightedMultigraph<Station, DefaultWeightedEdge>, ?> builder
+                = WeightedMultigraph.builder(DefaultWeightedEdge.class);
 
         buildVertex(lines, builder);
         buildEdge(lines, builder);
@@ -28,16 +30,19 @@ public class PathFinder {
         this.graph = builder.buildUnmodifiable();
     }
 
-    private void buildEdge(List<Line> lines, UndirectedWeightedGraphBuilderBase<Station, DefaultWeightedEdge, ? extends WeightedMultigraph<Station, DefaultWeightedEdge>, ?> builder) {
+    private void buildEdge(List<Line> lines, UndirectedWeightedGraphBuilderBase
+            <Station, DefaultWeightedEdge, ? extends WeightedMultigraph<Station, DefaultWeightedEdge>, ?> builder) {
         List<Section> sections = lines.stream()
                 .map(Line::getSections)
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
 
-        sections.forEach(section -> builder.addEdge(section.getUpStation(), section.getDownStation(), section.getDistance()));
+        sections.forEach(section ->
+                builder.addEdge(section.getUpStation(), section.getDownStation(), section.getDistance()));
     }
 
-    private void buildVertex(List<Line> lines, UndirectedWeightedGraphBuilderBase<Station, DefaultWeightedEdge, ? extends WeightedMultigraph<Station, DefaultWeightedEdge>, ?> builder) {
+    private void buildVertex(List<Line> lines, UndirectedWeightedGraphBuilderBase
+            <Station, DefaultWeightedEdge, ? extends WeightedMultigraph<Station, DefaultWeightedEdge>, ?> builder) {
         final List<Station> stations = lines.stream()
                 .map(Line::getStations)
                 .distinct()
@@ -58,10 +63,12 @@ public class PathFinder {
             throw new CanNotFindPathException(SOURCE_AND_TARGET_SAME_ERROR_MESSAGE);
         }
         if (!graph.containsVertex(source)) {
-            throw new CanNotFindPathException(String.format(STATION_NOT_CONTAINS_ERROR_MESSAGE_FORMAT, source.getName()));
+            throw new CanNotFindPathException
+                    (String.format(STATION_NOT_CONTAINS_ERROR_MESSAGE_FORMAT, source.getName()));
         }
         if (!graph.containsVertex(target)) {
-            throw new CanNotFindPathException(String.format(STATION_NOT_CONTAINS_ERROR_MESSAGE_FORMAT, target.getName()));
+            throw new CanNotFindPathException
+                    (String.format(STATION_NOT_CONTAINS_ERROR_MESSAGE_FORMAT, target.getName()));
         }
     }
 
