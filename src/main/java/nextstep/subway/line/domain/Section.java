@@ -61,7 +61,7 @@ public class Section {
     }
 
     public boolean upStationEqualTo(Long stationId) {
-        return upStation.getId().equals(stationId);
+        return upStation.equals(stationId);
     }
 
     public Long getId() {

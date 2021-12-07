@@ -8,6 +8,7 @@ import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -21,7 +22,8 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Favorite {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToOne(cascade = CascadeType.PERSIST)
@@ -56,6 +58,10 @@ public class Favorite {
     public Favorite by(Member member) {
         this.member = member;
         return this;
+    }
+
+    public boolean equals(Long id) {
+        return Objects.equals(this.id, id);
     }
 
     public boolean isDuplicate(Favorite target) {

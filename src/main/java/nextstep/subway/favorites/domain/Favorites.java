@@ -48,7 +48,7 @@ public class Favorites {
 
     public Favorite findFavorite(Long id) {
         return favorites.stream()
-                .filter(it -> it.getId().equals(id))
+                .filter(it -> it.equals(id))
                 .findFirst()
                 .orElseThrow(FavoriteNotFoundException::new);
     }

@@ -21,6 +21,10 @@ public class Station extends BaseEntity {
         this.name = name;
     }
 
+    public boolean equals(Long id) {
+        return Objects.equals(this.id, id);
+    }
+
     public Long getId() {
         return id;
     }

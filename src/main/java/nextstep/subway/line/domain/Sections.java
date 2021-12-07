@@ -2,9 +2,9 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.line.exception.section.SectionDuplicatedException;
 import nextstep.subway.line.exception.section.SectionNoStationException;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.exception.StationNotDeleteException;
 import nextstep.subway.station.exception.StationNotFoundException;
-import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -66,7 +66,7 @@ public class Sections {
     public void remove(Long stationId) {
         removeValidate(stationId);
 
-        if (lastStation().getId().equals(stationId)) {
+        if (lastStation().equals(stationId)) {
             sections.remove(lastSection());
             return;
         }
@@ -91,7 +91,7 @@ public class Sections {
     private boolean isNotExistStation(Long stationId) {
         return getStations()
                 .stream()
-                .noneMatch(station -> station.getId().equals(stationId));
+                .noneMatch(station -> station.equals(stationId));
     }
 
     public List<Section> getList() {
@@ -168,5 +168,4 @@ public class Sections {
                 .filter(section -> section.downStationEqualTo(station))
                 .findFirst();
     }
-
 }
