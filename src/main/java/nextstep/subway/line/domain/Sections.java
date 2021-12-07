@@ -20,10 +20,6 @@ public class Sections {
     protected Sections() {
     }
 
-    public void add(Section section) {
-        sections.add(section);
-    }
-
     public List<Section> getSections() {
         return sections;
     }
@@ -79,6 +75,11 @@ public class Sections {
     }
 
     void addLineSection(Line line, Station upStation, Station downStation, int distance) {
+        if (this.sections.isEmpty()) {
+            this.sections.add(new Section(line, upStation, downStation, distance));
+            return;
+        }
+
         List<Station> stations = getStationsInOrder();
         boolean isUpStationExisted = isStationExisted(upStation, stations);
         boolean isDownStationExisted = isStationExisted(downStation, stations);
@@ -129,7 +130,7 @@ public class Sections {
         Section downStationSection = getDownStationSection(station);
         Section upStationSection = getUpStationSection(station);
 
-        if(downStationSection != null && upStationSection != null) {
+        if (downStationSection != null && upStationSection != null) {
             Station newUpStation = downStationSection.getUpStation();
             Station newDownStation = upStationSection.getDownStation();
             int newDistance = upStationSection.getDistance() + downStationSection.getDistance();
