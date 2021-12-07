@@ -37,25 +37,24 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
-        List<Line> persistLines = lineRepository.findAll();
-        return persistLines.stream()
+        return lineRepository.findAll()
+                .stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(id + "에 해당하는 노선이 없습니다."));
     }
 
-
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        return LineResponse.of(findLineById(id));
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = findLineById(id);
         persistLine.update(Line.of(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
