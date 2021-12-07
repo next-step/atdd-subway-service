@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -108,6 +109,29 @@ public class Line extends BaseEntity {
         } else {
             throw new RuntimeException();
         }
+    }
+    
+    public void removeSection(Station station) {
+        if (getSections().getSections().size() <= 1) {
+            throw new RuntimeException();
+        }
+
+        Optional<Section> upLineStation = getSections().getSections().stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+        Optional<Section> downLineStation = getSections().getSections().stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            Distance newDistance = upLineStation.get().getDistance().plus(downLineStation.get().getDistance());
+            getSections().add(Section.of(this, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> getSections().getSections().remove(it));
+        downLineStation.ifPresent(it -> getSections().getSections().remove(it));
     }
     
     @Override
