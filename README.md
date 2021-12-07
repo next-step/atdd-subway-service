@@ -17,6 +17,27 @@
 
 <br>
 
+### 커멘트 사항 수정
+- [X] HTTP api 호출 메서드 추출
+- [X] 예외처리핸들러 공통 클래스(CommonExceptionHandler) 작성
+- [X] 가독성 증가를 위하여 변수를 선언하여 작성
+- [X] StationService가 아닌 StationRepository에 의존하도록 변경
+- [X] LineService에서 LineResponse를 만드는 부분을 해당객체서 역할 이전
+- [X] 읽기 전용 메서드에 `@Transactional(readOnly = true)` 추가
+- [X] 함수 재활용을 통한 코드 리팩터링
+- [X] 일급콜렉션 Sections를 만들고 Service Layer의 로직을 Sections으로 이전
+- [X] 스트림의 반복 변수 it를 의미있는 변수명으로 변경
+- [X] Optional을 안티패턴 제거 후 Optional답게 사용하기
+- [X] 거리 변수 객체로 포장 하기 
+- [X] 불필요한 AcceptanceTest를 상속부분 제거
+- [X] LineAcceptanceTest 중복 코드 제거
+- [X] Sections클래스의 addSection 함수 내 분기문 이후 예외를 던지는 패턴 제거
+- [X] PathAcceptanceTest의 최단 경로 역목록 검증
+- [X] PathAcceptanceTest의 역 주석에 거리 표기
+- [X] 최단경로 계산 라이브러리 사용을 인터페이스와 구현체를 분리하기
+- [X] Line 클래스의 디미터 법칙에 따른 수정
+- [X] PathService에 테스트 케이스 작성
+
 ### 미션 1 요구사항
 - [X] LineService 리팩터링
   - [X] Domain으로 옮길 로직 찾기
@@ -38,20 +59,6 @@
 - [X] Section 클래스 테스트 케이스 작성
 - [X] Sections 클래스 테스트 케이스 작성
 
-### 커멘트 사항 수정
-- [X] HTTP api 호출 메서드 추출
-- [X] 예외처리핸들러 공통 클래스(CommonExceptionHandler) 작성
-- [X] 가독성 증가를 위하여 변수를 선언하여 작성
-- [X] StationService가 아닌 StationRepository에 의존하도록 변경
-- [X] LineService에서 LineResponse를 만드는 부분을 해당객체서 역할 이전
-- [X] 읽기 전용 메서드에 `@Transactional(readOnly = true)` 추가
-- [X] 함수 재활용을 통한 코드 리팩터링
-- [X] 일급콜렉션 Sections를 만들고 Service Layer의 로직을 Sections으로 이전
-- [X] 스트림의 반복 변수 it를 의미있는 변수명으로 변경
-- [X] Optional을 안티패턴 제거 후 Optional답게 사용하기
-- [X] 거리 변수 객체로 포장 하기 
-- [X] 불필요한 AcceptanceTest를 상속부분 제거
-
 ### 미션 2 요구사항
 - [X] 경로를 의미하는 클래스(Path) 작성
 - [X] 최소경로를 구하는 역할을 담당하는 클래스(PathFinder) 작성
@@ -59,6 +66,11 @@
 - [X] 경로조회 URL처리를 담당하는 클래스 PathController의 작성
 - [X] 경로조회 데이터 처리를 담당하는 클래스 PathService의 작성
 - [X] 경로조회 관련 응답메시지를 담는 클래스(PathReponse) 작성
+
+### 미션 3 요구사항
+- [X] 토큰 발급 기능 (로그인) 인수 테스트 만들기
+- [X] 인증 - 내 정보 조회 기능 완성하기
+- [X] 인증 - 즐겨 찾기 기능 완성하기
 
 <br>
 
