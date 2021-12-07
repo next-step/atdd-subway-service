@@ -16,7 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 
-@DisplayName("지하철 경로 조회")
+@DisplayName("지하철 경로 조회 관련 기능")
 class PathAcceptanceTest extends AcceptanceTest {
 
     private LineResponse 신분당선;

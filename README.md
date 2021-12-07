@@ -97,7 +97,7 @@ licensed.
 #### 인수 시나리오
 
 ```
-Feature: 지하철 경로 조회
+Feature: 지하철 경로 조회 관련 기능
   Background
     Given 지하철역_등록되어_있음
     And 지하철_노선_등록되어_있음

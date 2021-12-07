@@ -17,7 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@DisplayName("경로조회 단위 테스트")
+@DisplayName("경로조회 서비스 단위 테스트")
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
 
@@ -36,7 +36,7 @@ class PathServiceTest {
 
     @Test
     @DisplayName("`강남 - 남부터미널` 구간 경로조회")
-    void 경로조회1() {
+    void 경로조회_케이스1() {
         // when
         PathResponse pathResponse = pathService.getShortestPath(강남.getId(), 남부터미널.getId());
 
@@ -48,7 +48,7 @@ class PathServiceTest {
 
     @Test
     @DisplayName("`교대 - 양재` 구간 경로조회")
-    void 경로조회2() {
+    void 경로조회_케이스2() {
         // when
         PathResponse pathResponse = pathService.getShortestPath(교대.getId(), 양재.getId());
 
