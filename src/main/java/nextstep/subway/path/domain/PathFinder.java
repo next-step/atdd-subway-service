@@ -13,13 +13,13 @@ public class PathFinder {
     private final WeightedMultigraph<Station, SectionEdge> graph;
     private final DijkstraShortestPath dijkstraShortestPath;
 
-    private PathFinder(List<Line> lines) {
+    private PathFinder() {
         graph = new WeightedMultigraph(SectionEdge.class);
         dijkstraShortestPath = new DijkstraShortestPath(graph);
     }
 
     public static PathFinder of(List<Line> lines) {
-        return new PathFinder(lines).createGraph(lines);
+        return new PathFinder().createGraph(lines);
     }
 
     public Path findShortestPath(Station fromStation, Station toStation) {
