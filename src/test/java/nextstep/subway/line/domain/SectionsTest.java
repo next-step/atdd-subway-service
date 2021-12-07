@@ -85,4 +85,13 @@ public class SectionsTest {
         List<Station> stations = sections.getStations();
         assertThat(stations).containsAll(Arrays.asList(upStation, downStation));
     }
+
+    @DisplayName("노선 역 제거시 구간이 1개일 경우")
+    @Test
+    void removeLineStationIsOneSectionException() {
+        // When, Then
+        assertThatThrownBy(() ->
+                sections.removeLineStation(upStation))
+                .isInstanceOf(RuntimeException.class);
+    }
 }
