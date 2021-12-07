@@ -1,11 +1,14 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.application.exception.InvalidSectionException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 
 @Entity
 public class Section {
+    private static final String SECTION_DUPLICATION = "같은 상행역과 하행역으로 등록된 구간이 이미 존재합니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,16 +25,73 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
-    public Section() {
+    protected Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
-        this.line = line;
+    public Section(Station upStation, Station downStation, int distance) {
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = new Distance(distance);
+    }
+
+    public void setLine(Line line) {
+        this.line = line;
+    }
+
+    public boolean isConnectable(Section section) {
+        if (isDuplicate(section)) {
+            throw new InvalidSectionException(SECTION_DUPLICATION);
+        }
+        return isTerminusExtend(section) || isBetweenStations(section);
+    }
+
+    public Section merge(Section newSection) {
+        if (isBetweenStations(newSection) && distance.divisible(newSection.getDistance())) {
+            changeStationLink(newSection);
+            distance = distance.minus(newSection.distance);
+        }
+        return newSection;
+    }
+
+    private void changeStationLink(Section newSection) {
+        if (upStation.equals(newSection.upStation)) {
+            upStation = newSection.downStation;
+        }
+
+        if (downStation.equals(newSection.downStation)) {
+            downStation = newSection.upStation;
+        }
+    }
+
+    private boolean isDuplicate(Section section) {
+        return upStation.equals(section.upStation) && downStation.equals(section.downStation);
+    }
+
+    private boolean isTerminusExtend(Section section) {
+        return upStation.equals(section.downStation) || downStation.equals(section.upStation);
+    }
+
+    private boolean isBetweenStations(Section section) {
+        return upStation.equals(section.upStation) || downStation.equals(section.downStation);
+    }
+
+    public boolean equalUpStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean equalDownStation(Station station) {
+        return downStation.equals(station);
+    }
+
+    public void mergeDistance(Distance deletedDistance) {
+        distance = distance.plus(deletedDistance);
+    }
+
+    public void changeDownStationLink(Station downStation) {
+        this.downStation = downStation;
     }
 
     public Long getId() {
@@ -50,23 +110,7 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
-    }
-
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
     }
 }
