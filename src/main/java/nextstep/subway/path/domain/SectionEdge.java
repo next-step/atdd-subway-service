@@ -5,10 +5,10 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-public class SectionEdge extends DefaultWeightedEdge {
-    Station source;
-    Station target;
-    private Distance distance;
+public final class SectionEdge extends DefaultWeightedEdge {
+    private final Station source;
+    private final Station target;
+    private final Distance distance;
 
     private SectionEdge(Section section) {
         this.source = section.getUpStation();

@@ -20,10 +20,11 @@ public class PathFinder {
         return new PathFinder(lines).createGraph(lines);
     }
 
-    public List<Station> findShortestPath(Station fromStation, Station toStation) {
+    public Path findShortestPath(Station fromStation, Station toStation) {
         GraphPath path = dijkstraShortestPath.getPath(fromStation, toStation);
-        return path.getVertexList();
+        return Path.from(path);
     }
+
 
     private PathFinder createGraph(List<Line> lines) {
         for (Line line: lines) {
