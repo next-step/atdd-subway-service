@@ -39,6 +39,7 @@ public class Sections {
         List<Station> stations = line.stations();
         validate(upStation, downStation);
 
+
         if (!stations.isEmpty()) {
             addIfExistUpStation(line, upStation, downStation, distance, stations);
             addIfExistDownStation(line, upStation, downStation, distance, stations);

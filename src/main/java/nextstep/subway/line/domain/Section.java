@@ -1,9 +1,11 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.station.domain.Station;
+import java.util.*;
 
 import javax.persistence.*;
 import java.util.Objects;
+
+import nextstep.subway.station.domain.*;
 
 @Entity
 public class Section {
