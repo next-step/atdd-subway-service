@@ -60,8 +60,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void getShortestPathTest() {
 
-        int source = 3;
-        int target = 6;
+        long source = 강남역.getId();
+        long target = 남부터미널역.getId();
 
         //when
         ExtractableResponse<Response> pathsResponse = RestAssured.given().log().all()
