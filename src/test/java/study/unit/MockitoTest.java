@@ -18,19 +18,19 @@ import static org.mockito.Mockito.when;
 
 @DisplayName("단위 테스트 - mockito를 활용한 가짜 협력 객체 사용")
 public class MockitoTest {
-    @Test
-    void findAllLines() {
-        // given
-        LineRepository lineRepository = mock(LineRepository.class);
-        StationService stationService = mock(StationService.class);
+  @Test
+  void findAllLines() {
+    // given
+    LineRepository lineRepository = mock(LineRepository.class);
+    StationService stationService = mock(StationService.class);
 
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
-        LineService lineService = new LineService(lineRepository, stationService);
+    when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
+    LineService lineService = new LineService(lineRepository, stationService);
 
-        // when
-        List<LineResponse> responses = lineService.findLines();
+    // when
+    List<LineResponse> responses = lineService.findLines();
 
-        // then
-        assertThat(responses).hasSize(1);
-    }
+    // then
+    assertThat(responses).hasSize(1);
+  }
 }

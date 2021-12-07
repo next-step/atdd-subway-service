@@ -9,7 +9,8 @@ public class Distance {
   @Column
   private int distance;
 
-  public Distance() {}
+  public Distance() {
+  }
 
   public Distance(int distance) {
     this.distance = distance;
