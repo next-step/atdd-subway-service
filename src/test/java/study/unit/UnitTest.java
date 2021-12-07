@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 @DisplayName("단위 테스트")
 public class UnitTest {
     @Test
@@ -19,7 +22,7 @@ public class UnitTest {
         Station upStation = Station.of(1L, "강남역");
         Station downStation = Station.of(2L, "광교역");
         Section section = Section.of(1L, upStation, downStation, 10);
-        Line line = Line.of(1L, "신분당선", "RED", section);
+        Line line = Line.of(1L, "신분당선", "RED", 900, Collections.singletonList(section));
 
         // when
         line.update(newName, newColor);

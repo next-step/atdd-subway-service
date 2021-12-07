@@ -26,7 +26,7 @@ public class MockitoTest {
         LineRepository lineRepository = mock(LineRepository.class);
         StationService stationService = mock(StationService.class);
 
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(Line.of("신분당선", "red lighten-1", Section.of(강남역(), 광교역(), 20))));
+        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(Line.of("신분당선", "red lighten-1", 900, Section.of(강남역(), 광교역(), 20))));
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when
