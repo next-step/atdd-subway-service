@@ -92,4 +92,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 		// then
 		즐겨찾기_삭제됨(response);
 	}
+
+	@DisplayName("로그인된 사용자와 즐겨찾기 사용자가 다를때 삭제시 에러를 발생시킨다.")
+	@Test
+	void deleteFavoriteAnotherOwner() {
+		// given
+		FavoriteRequest 즐겨찾기_생성_요청값_1 = 즐겨찾기_요청값_생성(강남역.getId(), 광교역.getId());
+		FavoriteRequest 즐겨찾기_생성_요청값_2 = 즐겨찾기_요청값_생성(양재역.getId(), 판교역.getId());
+		FavoriteResponse 즐겨찾기 = 즐겨찾기_생성_요청(로그인_토큰.getAccessToken(), 즐겨찾기_생성_요청값_1).as(FavoriteResponse.class);
+		즐겨찾기_생성_요청(로그인_토큰.getAccessToken(), 즐겨찾기_생성_요청값_2);
+
+		회원_생성을_요청("another", "pw", 21);
+		TokenResponse 다른사용자_로그인_토큰 = 로그인_요청(로그인_요청값_생성("another", "pw")).as(TokenResponse.class);
+
+		// when
+		ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(다른사용자_로그인_토큰.getAccessToken(), 즐겨찾기.getId());
+
+		// then
+		즐겨찾기_삭제_실패됨(response);
+	}
 }
