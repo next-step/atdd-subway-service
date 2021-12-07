@@ -66,7 +66,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [X] 접근제어자 수정
     - [X] 정적 메소드 활용
     - [X] sections 일급콜렉션 사용
-    - [X] 구간 제거 기능 추가
+    - [X] 구간 추가 기능 추가
     - [X] 구간 삭제 기능 추가
     - [X] Validation 추가
   - Section
