@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 @Transactional
 public class FavoriteService {
-    private static final String STATION = "역";
+    private static final String STATION = "역"; 
     private static final String FAVORITE = "즐겨찾기";
 
     private final FavoriteRepository favoriteRepository;
