@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -25,11 +26,6 @@ public class Sections {
 		for (Section section : sections) {
 			this.sections.add(section);
 		}
-	}
-
-	// 리팩토링 용 삭제 해야함
-	public List<Section> value() {
-		return sections;
 	}
 
 	public List<Station> getStations() {
@@ -140,4 +136,60 @@ public class Sections {
 		}
 	}
 
+	public void remove(Line line, Station station) {
+		validateSectionsSize();
+		Optional<Section> upSection = findOptionalUpSection(station);
+		Optional<Section> downSection = findOptionalDownSection(station);
+
+		if (isMiddleStation(station)) {
+			Station newUpStation = getUpStation(downSection);
+			Station newDownStation = getDownStation(upSection);
+			int newSectionDistance = getNewSectionDistance(station);
+			sections.add(new Section(line, newUpStation, newDownStation, newSectionDistance));
+		}
+
+		upSection.ifPresent(section -> sections.remove(section));
+		downSection.ifPresent(section -> sections.remove(section));
+	}
+
+	private int getNewSectionDistance(Station station) {
+		return sections.stream()
+			.filter(section -> section.getUpStation().equals(station) || section.getDownStation().equals(station))
+			.mapToInt(Section::getDistance)
+			.sum();
+	}
+
+	private Station getUpStation(Optional<Section> optionalSection) {
+		return optionalSection.orElseThrow(() -> new IllegalArgumentException("구간이 존재하지 않습니다."))
+		.getUpStation();
+	}
+
+	private Station getDownStation(Optional<Section> optionalSection) {
+		return optionalSection.orElseThrow(() -> new IllegalArgumentException("구간이 존재하지 않습니다."))
+			.getDownStation();
+	}
+
+	private Optional<Section> findOptionalDownSection(Station station) {
+		return sections.stream()
+			.filter(it -> it.getDownStation().equals(station))
+			.findFirst();
+	}
+
+	private Optional<Section> findOptionalUpSection(Station station) {
+		return sections.stream()
+			.filter(section -> section.getUpStation().equals(station))
+			.findFirst();
+	}
+
+	private boolean isMiddleStation(Station station) {
+		return sections.stream()
+			.filter(section -> section.getDownStation().equals(station) || section.getUpStation().equals(station))
+			.count() == 2;
+	}
+
+	private void validateSectionsSize() {
+		if (this.sections.size() <= 1) {
+			throw new IllegalArgumentException("삭제 후 노선 내 구간은 1개 이상 존재해야 합니다.");
+		}
+	}
 }
