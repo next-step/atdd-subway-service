@@ -1,6 +1,9 @@
 package nextstep.subway.domain.line.domain;
 
 import nextstep.subway.domain.station.domain.Station;
+import nextstep.subway.global.exception.NoRegisterSectionException;
+import nextstep.subway.global.exception.SectionAlreadyRegisterException;
+import nextstep.subway.global.exception.SectionNoRegistrationException;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -80,7 +83,7 @@ public class Sections {
         final boolean existDownStation = existStation(downStation);
 
         if (!stationsIsEmpty && !existUpStation && !existDownStation) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new SectionNoRegistrationException();
         }
     }
 
@@ -89,7 +92,7 @@ public class Sections {
         boolean isDownStationExisted = existStation(downStation);
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new SectionAlreadyRegisterException();
         }
     }
 
@@ -112,7 +115,7 @@ public class Sections {
 
     public void removeSection(Line line, Station station) {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new NoRegisterSectionException();
         }
 
         Optional<Section> upLineStation = getUpStation(station);

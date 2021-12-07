@@ -6,6 +6,7 @@ import nextstep.subway.domain.auth.dto.TokenResponse;
 import nextstep.subway.domain.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.domain.member.domain.Member;
 import nextstep.subway.domain.member.domain.MemberRepository;
+import nextstep.subway.global.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,7 +33,7 @@ public class AuthService {
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow(EntityNotFoundException::new);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }

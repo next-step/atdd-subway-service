@@ -1,13 +1,15 @@
 package nextstep.subway.domain.line.domain;
 
 import nextstep.subway.domain.station.domain.Station;
+import nextstep.subway.global.exception.SectionAlreadyRegisterException;
+import nextstep.subway.global.exception.SectionDistanceFewerThanMaximum;
+import nextstep.subway.global.exception.SectionNoRegistrationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LineTest {
@@ -85,7 +87,7 @@ class LineTest {
         final Line line = new Line("신분당선", "bg-red-600", upStation, downStation, new Distance(10));
 
         // when
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(SectionDistanceFewerThanMaximum.class, () -> {
             line.addSection(upStation, new Station("양재역"), new Distance(10));
         });
     }
@@ -99,7 +101,7 @@ class LineTest {
         final Line line = new Line("신분당선", "bg-red-600", upStation, downStation, new Distance(10));
 
         // when
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(SectionAlreadyRegisterException.class, () -> {
             line.addSection(upStation, downStation, new Distance(5));
         });
     }
@@ -113,7 +115,7 @@ class LineTest {
         final Line line = new Line("신분당선", "bg-red-600", upStation, downStation, new Distance(10));
 
         // when
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(SectionNoRegistrationException.class, () -> {
             line.addSection(new Station("판교"), new Station("정자"), new Distance(5));
         });
     }

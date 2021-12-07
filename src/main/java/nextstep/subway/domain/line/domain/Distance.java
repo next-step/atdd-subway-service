@@ -1,5 +1,8 @@
 package nextstep.subway.domain.line.domain;
 
+import nextstep.subway.global.exception.SectionDistanceFewerThanMaximum;
+import nextstep.subway.global.exception.SectionDistanceLessThanMinimumException;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -16,7 +19,7 @@ public class Distance {
 
     public Distance(final int distance) {
         if (distance < MINIMUM_DISTANCE) {
-            throw new RuntimeException(String.format("역과 역 사이의 거리는 최소 %d 이상입니다.", MINIMUM_DISTANCE));
+            throw new SectionDistanceLessThanMinimumException();
         }
         this.distance = distance;
     }
@@ -35,7 +38,7 @@ public class Distance {
 
     public Distance minus(int newDistance) {
         if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new SectionDistanceFewerThanMaximum();
         }
         return new Distance(this.distance - newDistance);
     }

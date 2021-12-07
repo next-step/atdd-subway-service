@@ -4,6 +4,7 @@ import nextstep.subway.domain.member.domain.Member;
 import nextstep.subway.domain.member.domain.MemberRepository;
 import nextstep.subway.domain.member.dto.MemberRequest;
 import nextstep.subway.domain.member.dto.MemberResponse;
+import nextstep.subway.global.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,12 +21,12 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         member.update(param.toMember());
     }
 
