@@ -37,7 +37,7 @@ class PathAcceptanceTest extends AcceptanceTest {
      * |                                      |
      * *3호선*  3M                            *신분당선* 10M
      * |                                      |
-     * 남부터미널역  --- *3호선* 3M    ---   양재역
+     * 남부터미널역  --- *3호선* 5M    ---   양재역
      */
     @BeforeEach
     public void setUp() {
@@ -59,10 +59,10 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void pathTest() {
         // given
-        final int 예상최단거리 = 6;
-        final List<StationResponse> 예상경로 = Arrays.asList(강남역, 남부터미널역, 양재역);
+        final int 예상최단거리 = 8;
+        final List<StationResponse> 예상경로 = Arrays.asList(교대역, 남부터미널역, 양재역);
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역, 양재역);
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 양재역);
         // then
         경로_조회_응답됨(response);
         경로_조회와_예상_경로와_일치함(response, 예상경로);
@@ -94,6 +94,4 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .when().get("/paths")
                 .then().log().all().extract();
     }
-
-
 }
