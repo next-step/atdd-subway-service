@@ -1,26 +1,27 @@
 package nextstep.subway.path.dto;
 
 import java.util.List;
+import nextstep.subway.station.domain.Station;
 
 public class PathResult {
 
-    private final List<Long> stationIds;
-    private final Integer distance;
+    private final List<Station> result;
+    private final int weight;
 
-    public PathResult(List<Long> stationIds, Integer distance) {
-        this.stationIds = stationIds;
-        this.distance = distance;
+    public PathResult(List<Station> result, int weight) {
+        this.result = result;
+        this.weight = weight;
     }
 
-    public static PathResult of(List<Long> stationIds, Integer distance) {
-        return new PathResult(stationIds, distance);
+    public static PathResult of(List<Station> result, int weight) {
+        return new PathResult(result, weight);
     }
 
-    public List<Long> getStationIds() {
-        return stationIds;
+    public List<Station> getResult() {
+        return result;
     }
 
-    public Integer getDistance() {
-        return distance;
+    public int getWeight() {
+        return weight;
     }
 }

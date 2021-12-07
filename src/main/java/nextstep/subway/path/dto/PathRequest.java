@@ -19,6 +19,10 @@ public class PathRequest {
         if (Objects.isNull(source) || Objects.isNull(target)) {
             throw InvalidParameterException.of(ErrorCode.NOT_EMPTY);
         }
+
+        if (source.equals(target)) {
+            throw InvalidParameterException.of(ErrorCode.PATH_IN_OUT_SAME);
+        }
     }
 
     public Long getSource() {

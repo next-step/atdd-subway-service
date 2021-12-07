@@ -4,7 +4,7 @@ import nextstep.subway.common.exception.ErrorCode;
 import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.path.dto.PathResultV2;
+import nextstep.subway.path.dto.PathResult;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
@@ -34,7 +34,7 @@ public class PathService {
         Station targetStation = stationRepository.findById(target)
             .orElseThrow(() -> NotFoundException.of(ErrorCode.NOT_EMPTY));
 
-        PathResultV2 pathSearchResult = this.pathSearch.findShortestPath(lineRepository.findAll(),
+        PathResult pathSearchResult = this.pathSearch.findShortestPath(lineRepository.findAll(),
             sourceStation, targetStation);
 
         return PathResponse.of(StationResponse.toList(pathSearchResult.getResult()),
