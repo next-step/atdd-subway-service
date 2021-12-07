@@ -1,18 +1,14 @@
 package nextstep.subway.line.domain;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
@@ -26,8 +22,8 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Sections sections = new Sections();
 
     protected Line() {
     }
@@ -40,7 +36,7 @@ public class Line extends BaseEntity {
     private Line(String name, String color, Station upStation, Station downStation, Distance distance) {
         this.name = name;
         this.color = color;
-        sections.add(Section.of(this, upStation, downStation, distance));
+        this.sections.add(Section.of(this, upStation, downStation, distance));
     }
     
     public static Line of(String name, String color) {
@@ -56,46 +52,6 @@ public class Line extends BaseEntity {
         this.color = line.getColor();
     }
     
-    public List<Station> getStations() {
-        if (getSections().isEmpty()) {
-            return Arrays.asList();
-        }
-
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = getSections().stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
-
-        return stations;
-    }
-    
-    private Station findUpStation() {
-        Station downStation = getSections().get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = getSections().stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
-    }
-
     public Long getId() {
         return id;
     }
@@ -108,8 +64,12 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
+    public Sections getSections() {
         return sections;
+    }
+    
+    public List<Station> getStations() {
+        return sections.getStations();
     }
     
     @Override

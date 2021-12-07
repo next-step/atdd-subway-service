@@ -85,14 +85,14 @@ public class LineService {
         }
 
         if (isUpStationExisted) {
-            line.getSections().stream()
+            line.getSections().getSections().stream()
                     .filter(it -> it.getUpStation() == upStation)
                     .findFirst()
                     .ifPresent(it -> it.updateUpStation(downStation, Distance.from(request.getDistance())));
 
             line.getSections().add(Section.of(line, upStation, downStation, Distance.from(request.getDistance())));
         } else if (isDownStationExisted) {
-            line.getSections().stream()
+            line.getSections().getSections().stream()
                     .filter(it -> it.getDownStation() == downStation)
                     .findFirst()
                     .ifPresent(it -> it.updateDownStation(upStation, Distance.from(request.getDistance())));
@@ -106,14 +106,14 @@ public class LineService {
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
-        if (line.getSections().size() <= 1) {
+        if (line.getSections().getSections().size() <= 1) {
             throw new RuntimeException();
         }
 
-        Optional<Section> upLineStation = line.getSections().stream()
+        Optional<Section> upLineStation = line.getSections().getSections().stream()
                 .filter(it -> it.getUpStation() == station)
                 .findFirst();
-        Optional<Section> downLineStation = line.getSections().stream()
+        Optional<Section> downLineStation = line.getSections().getSections().stream()
                 .filter(it -> it.getDownStation() == station)
                 .findFirst();
 
@@ -124,8 +124,8 @@ public class LineService {
             line.getSections().add(Section.of(line, newUpStation, newDownStation, newDistance));
         }
 
-        upLineStation.ifPresent(it -> line.getSections().remove(it));
-        downLineStation.ifPresent(it -> line.getSections().remove(it));
+        upLineStation.ifPresent(it -> line.getSections().getSections().remove(it));
+        downLineStation.ifPresent(it -> line.getSections().getSections().remove(it));
     }
 
 
