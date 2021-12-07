@@ -62,21 +62,14 @@ public class Sections {
     }
 
     public void addSection(Line line, Station upStation, Station downStation, int distance) {
-        final boolean isUpStationExisted = existStation(upStation);
-        boolean isDownStationExisted = existStation(downStation);
-
-        notExistSectionValidator(isUpStationExisted, isDownStationExisted);
+        notExistSectionValidator(upStation, downStation);
         existUpStationAndDownStationValidator(upStation, downStation);
 
-        if (isUpStationExisted) {
-            getUpStation(upStation)
-                    .ifPresent(section -> section.updateUpStation(downStation, distance));
-        }
+        getUpStation(upStation)
+                .ifPresent(section -> section.updateUpStation(downStation, distance));
 
-        if (isDownStationExisted) {
-            getDownStation(downStation)
-                    .ifPresent(section -> section.updateDownStation(upStation, distance));
-        }
+        getDownStation(downStation)
+                .ifPresent(section -> section.updateDownStation(upStation, distance));
 
         addSection(new Section(line, upStation, downStation, distance));
     }
@@ -91,7 +84,10 @@ public class Sections {
         }
     }
 
-    private void notExistSectionValidator(final boolean isUpStationExisted, final boolean isDownStationExisted) {
+    private void notExistSectionValidator(Station upStation, Station downStation) {
+        final boolean isUpStationExisted = existStation(upStation);
+        boolean isDownStationExisted = existStation(downStation);
+
         if (isUpStationExisted && isDownStationExisted) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
@@ -122,20 +118,13 @@ public class Sections {
         Optional<Section> upLineStation = getUpStation(station);
         Optional<Section> downLineStation = getDownStation(station);
 
-        if (isBetweenStationRemove(upLineStation, downLineStation)) {
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
             sectionRelocation(line, upLineStation.get(), downLineStation.get());
         }
 
-        isNotBetweenStationRemove(upLineStation, downLineStation);
-    }
-
-    private void isNotBetweenStationRemove(final Optional<Section> upLineStation, final Optional<Section> downLineStation) {
         upLineStation.ifPresent(it -> this.sections.remove(it));
         downLineStation.ifPresent(it -> this.sections.remove(it));
-    }
 
-    private boolean isBetweenStationRemove(final Optional<Section> upLineStation, final Optional<Section> downLineStation) {
-        return upLineStation.isPresent() && downLineStation.isPresent();
     }
 
     private void sectionRelocation(final Line line, final Section upLineStation, final Section downLineStation) {
