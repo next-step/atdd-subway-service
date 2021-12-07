@@ -98,4 +98,55 @@ public class LineTest {
             신분당선.addLineSection(신사역, 수원역, 5);
         }).isInstanceOf(RuntimeException.class).hasMessage("등록할 수 없는 구간 입니다.");
     }
+
+    @DisplayName("노선의 구간 제거 - 노선과 노선 사이의 역을 제거")
+    @Test
+    void removeLineSection() {
+        //given
+        신분당선.addLineSection(신사역, 강남역, 5);
+
+        //when
+        신분당선.removeLineSection(강남역);
+
+        //then
+        assertThat(신분당선.getStationsInOrder()).isEqualTo(Arrays.asList(신사역, 광교역));
+        assertThat(신분당선.getSections().get(0).getDistance()).isEqualTo(15);
+    }
+
+    @DisplayName("노선의 구간 제거 - 상행 종점역 제거")
+    @Test
+    void removeLineSection2() {
+        //given
+        신분당선.addLineSection(신사역, 강남역, 5);
+
+        //when
+        신분당선.removeLineSection(신사역);
+
+        //then
+        assertThat(신분당선.getStationsInOrder()).isEqualTo(Arrays.asList(강남역, 광교역));
+        assertThat(신분당선.getSections().get(0).getDistance()).isEqualTo(10);
+    }
+
+    @DisplayName("노선의 구간 제거 - 하행 종점역 제거")
+    @Test
+    void removeLineSection3() {
+        //given
+        신분당선.addLineSection(광교역, 수원역, 5);
+
+        //when
+        신분당선.removeLineSection(수원역);
+
+        //then
+        assertThat(신분당선.getStationsInOrder()).isEqualTo(Arrays.asList(강남역, 광교역));
+        assertThat(신분당선.getSections().get(0).getDistance()).isEqualTo(10);
+    }
+
+    @DisplayName("구간이 하나인 노선은 역을 제거할 수 없음")
+    @Test
+    void removeLineSectionException() {
+        assertThatThrownBy(() -> {
+            신분당선.removeLineSection(강남역);
+        }).isInstanceOf(RuntimeException.class)
+                .hasMessage("구간이 하나인 노선은 역을 제거할 수 없음");
+    }
 }

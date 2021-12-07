@@ -73,36 +73,6 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_순서_정렬됨(response5, Arrays.asList(정자역, 강남역, 광교역));
     }
 
-    @DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
-    @Test
-    void addLineSectionWithSameStation() {
-        // when
-        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 광교역, 3);
-
-        // then
-        지하철_노선에_지하철역_등록_실패됨(response);
-    }
-
-    @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록한다.")
-    @Test
-    void addLineSectionWithNoStation() {
-        // when
-        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 양재역, 3);
-
-        // then
-        지하철_노선에_지하철역_등록_실패됨(response);
-    }
-
-    @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
-    @Test
-    void removeLineSection2() {
-        // when
-        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
-
-        // then
-        지하철_노선에_지하철역_제외_실패됨(removeResponse);
-    }
-
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 
@@ -117,10 +87,6 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선에_지하철역_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 지하철_노선에_지하철역_등록_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
@@ -146,9 +112,5 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철_노선에_지하철역_제외됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    public static void 지하철_노선에_지하철역_제외_실패됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }

@@ -75,11 +75,7 @@ public class Sections {
                 .orElseThrow(() -> new IllegalArgumentException("다음 구간 없습니다."));
     }
 
-    void addLineSection(Section section) {
-        Station upStation = section.getUpStation();
-        Station downStation = section.getDownStation();
-        int distance = section.getDistance();
-        
+    void addLineSection(Line line, Station upStation, Station downStation, int distance) {
         List<Station> stations = getStationsInOrder();
         boolean isUpStationExisted = isStationExisted(upStation, stations);
         boolean isDownStationExisted = isStationExisted(downStation, stations);
@@ -94,7 +90,7 @@ public class Sections {
             updateDownStation(upStation, downStation, distance);
         }
 
-        sections.add(section);
+        sections.add(new Section(line, upStation, downStation, distance));
     }
 
     private boolean isStationExisted(Station upStation, List<Station> stations) {
@@ -123,5 +119,43 @@ public class Sections {
                 .filter(it -> it.equalsDownStation(downStation))
                 .findFirst()
                 .ifPresent(it -> it.updateDownStation(upStation, distance));
+    }
+
+    void removeLineSection(Line line, Station station) {
+        validateRemoveSection();
+        Section downStationSection = getDownStationSection(station);
+        Section upStationSection = getUpStationSection(station);
+
+        if(downStationSection != null && upStationSection != null) {
+            Station newUpStation = downStationSection.getUpStation();
+            Station newDownStation = upStationSection.getDownStation();
+            int newDistance = upStationSection.getDistance() + downStationSection.getDistance();
+            sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+
+        sections.remove(downStationSection);
+        sections.remove(upStationSection);
+    }
+
+    private void validateRemoveSection() {
+        if (sections.size() <= 1) {
+            throw new RuntimeException("구간이 하나인 노선은 역을 제거할 수 없음");
+        }
+    }
+
+    private Section getDownStationSection(Station station) {
+        Section downStationSection = sections.stream()
+                .filter(it -> it.equalsDownStation(station))
+                .findFirst()
+                .orElse(null);
+        return downStationSection;
+    }
+
+    private Section getUpStationSection(Station station) {
+        Section upStationSection = sections.stream()
+                .filter(it -> it.equalsUpStation(station))
+                .findFirst()
+                .orElse(null);
+        return upStationSection;
     }
 }
