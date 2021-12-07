@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.application.exception.InvalidSectionException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -75,8 +76,8 @@ class LineTest {
         line.addSection(section1);
 
         // when // then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> line.addSection(section2));
+        assertThatThrownBy(() -> line.addSection(section2))
+                .isInstanceOf(InvalidSectionException.class);
     }
 
     @Test
@@ -88,8 +89,8 @@ class LineTest {
         line.addSection(section1);
 
         // when // then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> line.addSection(section2));
+        assertThatThrownBy(() -> line.addSection(section2))
+                .isInstanceOf(InvalidSectionException.class);
     }
 
     @Test
@@ -197,8 +198,8 @@ class LineTest {
         line.addSection(section);
 
         // when // then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> line.removeSection(new Station("양재시민의숲")));
+        assertThatThrownBy(() -> line.removeSection(new Station("양재시민의숲")))
+                .isInstanceOf(InvalidSectionException.class);
     }
 
     private Section getSection(List<Station> stations, int distance) {

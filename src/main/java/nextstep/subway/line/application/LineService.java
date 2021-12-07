@@ -1,7 +1,9 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.line.application.exception.LineNotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.dto.LineEditRequest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -44,7 +46,7 @@ public class LineService {
     }
 
     @Transactional
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
+    public void updateLine(Long id, LineEditRequest lineUpdateRequest) {
         Line persistLine = findLineById(id);
         persistLine.update(lineUpdateRequest.toLine());
     }
@@ -70,6 +72,7 @@ public class LineService {
     }
 
     private Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id)
+                .orElseThrow(() -> new LineNotFoundException("노선을 찾을 수 없습니다."));
     }
 }

@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.application.exception.InvalidSectionException;
+import nextstep.subway.line.application.exception.SectionNotFoundException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -13,6 +15,10 @@ import java.util.stream.Collectors;
 @Embeddable
 public class Sections {
     private static final int MIN_SECTION_SIZE = 1;
+    private static final String NOT_CONNECTABLE = "구간을 연결할 상행역 또는 하행역이 존재해야 합니다.";
+    private static final String NOT_FOUND_TERMINUS = "상행 종점역을 찾을 수 없습니다.";
+    private static final String BREAK_SECTION = "이어지는 구간을 찾을 수 없습니다.";
+    private static final String NOT_DELETE_MIN_SECTION_SIZE = "노선의 구간이" + MIN_SECTION_SIZE + "개 이하인 경우 구간을 삭제할 수 없습니다.";
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -33,7 +39,7 @@ public class Sections {
                 .filter(oldSection -> oldSection.isNotDuplicate(newSection))
                 .findFirst()
                 .map(oldSection -> oldSection.divide(newSection))
-                .orElseThrow(() -> new IllegalArgumentException("구간을 연결할 상행역 또는 하행역이 존재해야 합니다."));
+                .orElseThrow(() -> new InvalidSectionException(NOT_CONNECTABLE));
 
         sections.add(section);
     }
@@ -57,14 +63,14 @@ public class Sections {
         return sections.stream()
                 .filter(section -> !downStations.contains(section.getUpStation()))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("상행 종점역을 찾을 수 없습니다."));
+                .orElseThrow(() -> new SectionNotFoundException(NOT_FOUND_TERMINUS));
     }
 
     private Section findNextStation(Station downStation) {
         return sections.stream()
                 .filter(section -> section.getUpStation().equals(downStation))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("이어지는 구간을 찾을 수 없습니다."));
+                .orElseThrow(() -> new SectionNotFoundException(BREAK_SECTION));
     }
 
     public List<Station> getDownStations() {
@@ -79,7 +85,7 @@ public class Sections {
 
     public void remove(Station station) {
         if (sections.size() == MIN_SECTION_SIZE) {
-            throw new IllegalArgumentException("노선의 구간이" + MIN_SECTION_SIZE + "개 이하인 경우 구간을 삭제할 수 없습니다.");
+            throw new InvalidSectionException(NOT_DELETE_MIN_SECTION_SIZE);
         }
 
         removeUpSection(station);

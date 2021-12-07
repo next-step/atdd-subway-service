@@ -1,11 +1,14 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.application.exception.InvalidSectionException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 
 @Entity
 public class Section {
+    private static final String SECTION_DUPLICATION = "같은 상행역과 하행역으로 등록된 구간이 이미 존재합니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -40,7 +43,7 @@ public class Section {
 
     public boolean isNotDuplicate(Section section) {
         if (isDuplicate(section)) {
-            throw new IllegalArgumentException("같은 상행역과 하행역으로 등록된 구간이 이미 존재합니다.");
+            throw new InvalidSectionException(SECTION_DUPLICATION);
         }
         return isTerminusExtend(section) || isBetweenStations(section);
     }
