@@ -20,35 +20,6 @@ public class Sections {
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private List<Section> values = new ArrayList<>();
 
-	public void add(Section section) {
-		throwOnBothStationsAlreadyRegistered(section);
-		throwOnBothStationsNotRegistered(section);
-
-		Station upStation = section.getUpStation();
-		Station downStation = section.getDownStation();
-
-		findByUpStation(upStation).ifPresent(it -> it.updateUpStation(downStation, section.getDistance()));
-		findByDownStation(downStation).ifPresent(it -> it.updateDownStation(upStation, section.getDistance()));
-
-		values.add(section);
-	}
-
-	private void throwOnBothStationsAlreadyRegistered(Section section) {
-		Stations stations = getStations();
-		if (stations.anyMatch(section.getUpStation()) && stations.anyMatch(section.getDownStation())) {
-			throw new RuntimeException("이미 등록된 구간 입니다.");
-		}
-	}
-
-	private void throwOnBothStationsNotRegistered(Section section) {
-		Stations stations = getStations();
-		if (!stations.isEmpty()
-			&& stations.noneMatch(section.getUpStation())
-			&& stations.noneMatch(section.getDownStation())) {
-			throw new RuntimeException("등록할 수 없는 구간 입니다.");
-		}
-	}
-
 	protected Sections() {
 
 	}
@@ -69,16 +40,58 @@ public class Sections {
 		return new Sections(new ArrayList<>());
 	}
 
+	public void add(Section section) {
+		throwOnStationsBothRegistered(section);
+		throwOnStationsNeitherRegistered(section);
+
+		Station upStation = section.getUpStation();
+		Station downStation = section.getDownStation();
+
+		findByUpStation(upStation).ifPresent(it -> it.updateUpStation(downStation, section.getDistance()));
+		findByDownStation(downStation).ifPresent(it -> it.updateDownStation(upStation, section.getDistance()));
+
+		values.add(section);
+	}
+
+	private void throwOnStationsBothRegistered(Section section) {
+		Stations stations = getStations();
+		if (isBothRegistered(section, stations)) {
+			throw new RuntimeException("이미 등록된 구간 입니다.");
+		}
+	}
+
+	private boolean isBothRegistered(Section section, Stations stations) {
+		return stations.anyMatch(section.getUpStation()) && stations.anyMatch(section.getDownStation());
+	}
+
+	private void throwOnStationsNeitherRegistered(Section section) {
+		Stations stations = getStations();
+		if (!stations.isEmpty() && isNeitherRegistered(section, stations)) {
+			throw new RuntimeException("등록할 수 없는 구간 입니다.");
+		}
+	}
+
+	private boolean isNeitherRegistered(Section section, Stations stations) {
+		return stations.noneMatch(section.getUpStation())
+			&& stations.noneMatch(section.getDownStation());
+	}
+
 	public Stations getStations() {
 		if (values.isEmpty()) {
 			return Stations.empty();
 		}
 
 		List<Station> stations = new ArrayList<>();
+		Map<Station, Station> downStationByUpStation = getDownStationByUpStation();
 		Station upStation = findUpStation();
-		addStationsInOrder(stations, upStation);
+		addStationsInOrder(stations, downStationByUpStation, upStation);
 
 		return Stations.of(stations);
+	}
+
+	private Map<Station, Station> getDownStationByUpStation() {
+		return values.stream()
+			.collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
 	}
 
 	private Station findUpStation() {
@@ -93,14 +106,14 @@ public class Sections {
 			.orElseThrow(IllegalStateException::new);
 	}
 
-	private void addStationsInOrder(List<Station> stations, Station upStation) {
+	private void addStationsInOrder(
+		List<Station> stations,
+		Map<Station, Station> downStationByUpStation,
+		Station upStation
+	) {
 		while (upStation != null) {
 			stations.add(upStation);
-			Optional<Section> section = findByUpStation(upStation);
-			if (!section.isPresent()) {
-				break;
-			}
-			upStation = section.get().getDownStation();
+			upStation = downStationByUpStation.get(upStation);
 		}
 	}
 
@@ -157,7 +170,7 @@ public class Sections {
 		values.remove(section);
 	}
 
-	public void removeByStation(Station station) {
+	public void removeBy(Station station) {
 		throwOnLessThanTwoSections();
 		Optional<Section> frontSection = findByDownStation(station);
 		Optional<Section> backSection = findByUpStation(station);

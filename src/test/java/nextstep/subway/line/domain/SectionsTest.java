@@ -252,7 +252,7 @@ class SectionsTest {
 				양재역_정자역_구간()));
 
 		// when
-		sections.removeByStation(강남역());
+		sections.removeBy(강남역());
 
 		// then
 		assertAll(
@@ -271,7 +271,7 @@ class SectionsTest {
 			양재역_정자역_구간()));
 
 		// when
-		sections.removeByStation(양재역());
+		sections.removeBy(양재역());
 
 		// then
 		assertAll(
@@ -290,7 +290,7 @@ class SectionsTest {
 			양재역_정자역_구간()));
 
 		// when
-		sections.removeByStation(정자역());
+		sections.removeBy(정자역());
 
 		// then
 		assertAll(
@@ -307,7 +307,7 @@ class SectionsTest {
 		Sections sections = Sections.of(Collections.singletonList(강남역_양재역_구간()));
 
 		// when & then
-		assertThatThrownBy(() -> sections.removeByStation(강남역()))
+		assertThatThrownBy(() -> sections.removeBy(강남역()))
 			.isInstanceOf(RuntimeException.class);
 	}
 }
