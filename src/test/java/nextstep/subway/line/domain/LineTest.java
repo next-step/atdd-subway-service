@@ -18,7 +18,7 @@ class LineTest {
         //given
         final Station upStation = new Station("강남역");
         final Station downStation = new Station("광교역");
-        final Line line = new Line("신분당선", "bg-red-600", upStation, downStation, 10);
+        final Line line = new Line("신분당선", "bg-red-600", upStation, downStation, new Distance(10));
 
         //when
         final List<Station> stations = line.getStations();
@@ -34,10 +34,10 @@ class LineTest {
         // given
         final Station upStation = new Station("강남역");
         final Station downStation = new Station("광교역");
-        final Line line = new Line("신분당선", "bg-red-600", upStation, downStation, 10);
+        final Line line = new Line("신분당선", "bg-red-600", upStation, downStation, new Distance(10));
 
         // when
-        line.addSection(upStation, new Station("양재역"), 5);
+        line.addSection(upStation, new Station("양재역"), new Distance(5));
 
         // then
         final List<Station> stations = line.getStations();
@@ -50,10 +50,10 @@ class LineTest {
         // given
         final Station upStation = new Station("양재역");
         final Station downStation = new Station("광교역");
-        final Line line = new Line("신분당선", "bg-red-600", upStation, downStation, 10);
+        final Line line = new Line("신분당선", "bg-red-600", upStation, downStation, new Distance(10));
 
         // when
-        line.addSection(new Station("강남역"), upStation, 5);
+        line.addSection(new Station("강남역"), upStation, new Distance(5));
 
         // then
         final List<Station> stations = line.getStations();
@@ -66,10 +66,10 @@ class LineTest {
         // given
         final Station upStation = new Station("강남역");
         final Station downStation = new Station("양재역");
-        final Line line = new Line("신분당선", "bg-red-600", upStation, downStation, 10);
+        final Line line = new Line("신분당선", "bg-red-600", upStation, downStation, new Distance(10));
 
         // when
-        line.addSection(downStation, new Station("광교역"), 5);
+        line.addSection(downStation, new Station("광교역"), new Distance(5));
 
         // then
         final List<Station> stations = line.getStations();
@@ -82,11 +82,11 @@ class LineTest {
         // given
         final Station upStation = new Station("강남역");
         final Station downStation = new Station("광교역");
-        final Line line = new Line("신분당선", "bg-red-600", upStation, downStation, 10);
+        final Line line = new Line("신분당선", "bg-red-600", upStation, downStation, new Distance(10));
 
         // when
         assertThrows(RuntimeException.class, () -> {
-            line.addSection(upStation, new Station("양재역"), 10);
+            line.addSection(upStation, new Station("양재역"), new Distance(10));
         });
     }
 
@@ -96,11 +96,11 @@ class LineTest {
         // given
         final Station upStation = new Station("강남역");
         final Station downStation = new Station("광교역");
-        final Line line = new Line("신분당선", "bg-red-600", upStation, downStation, 10);
+        final Line line = new Line("신분당선", "bg-red-600", upStation, downStation, new Distance(10));
 
         // when
         assertThrows(RuntimeException.class, () -> {
-            line.addSection(upStation, downStation, 5);
+            line.addSection(upStation, downStation, new Distance(5));
         });
     }
 
@@ -110,11 +110,11 @@ class LineTest {
         // given
         final Station upStation = new Station("강남역");
         final Station downStation = new Station("광교역");
-        final Line line = new Line("신분당선", "bg-red-600", upStation, downStation, 10);
+        final Line line = new Line("신분당선", "bg-red-600", upStation, downStation, new Distance(10));
 
         // when
         assertThrows(RuntimeException.class, () -> {
-            line.addSection(new Station("판교"), new Station("정자"), 5);
+            line.addSection(new Station("판교"), new Station("정자"), new Distance(5));
         });
     }
 
@@ -124,9 +124,9 @@ class LineTest {
         // given
         final Station upStation = new Station("강남역");
         final Station downStation = new Station("광교역");
-        final Line line = new Line("신분당선", "bg-red-600", upStation, downStation, 10);
+        final Line line = new Line("신분당선", "bg-red-600", upStation, downStation, new Distance(10));
         final Station newStation = new Station("양재역");
-        line.addSection(upStation, newStation, 5);
+        line.addSection(upStation, newStation, new Distance(5));
 
         // when
         line.removeSection(newStation);

@@ -61,7 +61,7 @@ public class Sections {
         this.sections.add(section);
     }
 
-    public void addSection(Line line, Station upStation, Station downStation, int distance) {
+    public void addSection(Line line, Station upStation, Station downStation, Distance distance) {
         notExistSectionValidator(upStation, downStation);
         existUpStationAndDownStationValidator(upStation, downStation);
 
@@ -130,7 +130,7 @@ public class Sections {
     private void sectionRelocation(final Line line, final Section upLineStation, final Section downLineStation) {
         Station newUpStation = downLineStation.getUpStation();
         Station newDownStation = upLineStation.getDownStation();
-        int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
+        final Distance newDistance = upLineStation.plusDistance(downLineStation);
         addSection(new Section(line, newUpStation, newDownStation, newDistance));
     }
 }
