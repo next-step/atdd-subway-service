@@ -69,4 +69,16 @@ public class Section {
         this.downStation = station;
         this.distance -= newDistance;
     }
+
+    public boolean equalsUpStation(Station upStation) {
+        return this.upStation.equals(upStation);
+    }
+
+    public boolean equalsDownStation(Station downStation) {
+        return this.downStation.equals(downStation);
+    }
+
+    public boolean isLinkStation(Section currentSection) {
+        return this.upStation.equals(currentSection.getDownStation());
+    }
 }
