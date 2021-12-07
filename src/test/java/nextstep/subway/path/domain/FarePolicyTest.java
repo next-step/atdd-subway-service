@@ -4,6 +4,7 @@ import static nextstep.subway.line.domain.LineFixture.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -72,7 +73,61 @@ class FarePolicyTest {
 			),
 			Arguments.of(
 				10,
-				Arrays.asList(삼호선()),
+				Collections.singletonList(삼호선()),
+				1250
+			));
+	}
+
+	@DisplayName("노선별 추가 요금 정책이 포함된 거리별 요금 정책을 계산한다.")
+	@ParameterizedTest
+	@MethodSource("calculateByDistanceAndLinesAndAgeMethodSource")
+	void calculateByDistanceAndLinesAndAge(int distance, List<Line> lines, int age, int expectedFare) {
+		// given
+		FarePolicy farePolicy = new FarePolicy();
+
+		// when
+		int actualFare = farePolicy.calculateBy(distance, lines, age);
+
+		// then
+		assertThat(actualFare).isEqualTo(expectedFare);
+	}
+
+	private static List<Arguments> calculateByDistanceAndLinesAndAgeMethodSource() {
+		return Arrays.asList(
+			Arguments.of(
+				10,
+				Collections.singletonList(삼호선()),
+				6,
+				(int)((1250 - 350) * (1 - 0.5))
+			),
+			Arguments.of(
+				10,
+				Collections.singletonList(삼호선()),
+				12,
+				(int)((1250 - 350) * (1 - 0.5))
+			),
+			Arguments.of(
+				10,
+				Collections.singletonList(삼호선()),
+				13,
+				(int)((1250 - 350) * (1 - 0.2))
+			),
+			Arguments.of(
+				10,
+				Collections.singletonList(삼호선()),
+				18,
+				(int)((1250 - 350) * (1 - 0.2))
+			),
+			Arguments.of(
+				10,
+				Collections.singletonList(삼호선()),
+				19,
+				1250
+			),
+			Arguments.of(
+				10,
+				Collections.singletonList(삼호선()),
+				28,
 				1250
 			));
 	}

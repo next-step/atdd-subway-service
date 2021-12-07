@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.CanNotFindPathException;
@@ -28,7 +29,7 @@ public class PathService {
 	}
 
 	@Transactional(readOnly = true)
-	public PathResponse findPath(PathRequest request) {
+	public PathResponse findPath(PathRequest request, LoginMember loginMember) {
 		Station source = stationRepository.findById(request.getSource()).orElseThrow(CanNotFindPathException::new);
 		Station target = stationRepository.findById(request.getTarget()).orElseThrow(CanNotFindPathException::new);
 		List<Line> lines = lineRepository.findAll();
@@ -36,7 +37,12 @@ public class PathService {
 		PathFinder pathFinder = PathFinder.of(lines);
 		Path path = pathFinder.find(source, target);
 		FarePolicy farePolicy = new FarePolicy();
-		int fare = farePolicy.calculateBy(path.getDistance(), path.getLines());
+		int fare;
+		if (loginMember.isLogin()) {
+			fare = farePolicy.calculateBy(path.getDistance(), path.getLines(), loginMember.getAge());
+		} else {
+			fare = farePolicy.calculateBy(path.getDistance(), path.getLines());
+		}
 
 		return PathResponse.of(path, fare);
 	}

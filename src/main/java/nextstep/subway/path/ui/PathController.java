@@ -27,7 +27,7 @@ public class PathController {
 		@AuthenticationPrincipal LoginMember loginMember,
 		PathRequest pathRequest
 	) {
-		return ResponseEntity.ok(pathService.findPath(pathRequest));
+		return ResponseEntity.ok(pathService.findPath(pathRequest, loginMember));
 	}
 
 	@ExceptionHandler(CanNotFindPathException.class)

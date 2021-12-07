@@ -26,4 +26,14 @@ public class FarePolicy {
 
 		return calculateBy(distance) + maxExtraFare;
 	}
+
+	public int calculateBy(int distance, List<Line> lines, int age) {
+		int fare = calculateBy(distance, lines);
+		if (!FareDiscountAge.contains(age)) {
+			return fare;
+		}
+
+		FareDiscountAge fareDiscountAge = FareDiscountAge.findBy(age);
+		return fareDiscountAge.getDiscountFare(fare);
+	}
 }
