@@ -11,7 +11,6 @@ public class Distance {
     protected Distance() {
     }
 
-
     private Distance(int distance) {
         validateDistance(distance);
         this.distance = distance;
