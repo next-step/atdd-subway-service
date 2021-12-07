@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.common.BaseEntity;
+import nextstep.subway.path.domain.SectionEdge;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -67,6 +68,10 @@ public class Line extends BaseEntity {
         return this.sections.getSortedStations();
     }
 
+    public List<SectionEdge> getSectionEdges() {
+        return sections.getSectionEdges();
+    }
+
     public void removeSection(Section section) {
         sections.remove(section);
     }
@@ -109,5 +114,15 @@ public class Line extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Line{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", color='" + color + '\'' +
+            ", sections=" + sections +
+            '}';
     }
 }

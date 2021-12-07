@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import nextstep.subway.exception.CannotAddException;
 import nextstep.subway.exception.CannotDeleteException;
 import nextstep.subway.exception.NotFoundException;
+import nextstep.subway.path.domain.SectionEdge;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -150,6 +151,12 @@ public class Sections {
     private Stream<Station> getStationStream() {
         return sections.stream()
             .flatMap(Section::getUpDownStations);
+    }
+
+    public List<SectionEdge> getSectionEdges() {
+        return sections.stream()
+            .map(it -> SectionEdge.from(it))
+            .collect(Collectors.toList());
     }
 
 }
