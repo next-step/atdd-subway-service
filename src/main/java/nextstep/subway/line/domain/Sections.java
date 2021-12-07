@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
@@ -23,37 +24,37 @@ public class Sections {
 
         List<Station> stations = new ArrayList<>();
         Station downStation = findUpStation();
-        stations.add(downStation);
 
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
+        while (!stations.contains(downStation)) {
             stations.add(downStation);
+            downStation = findDownStation(downStation);
         }
 
         return stations;
     }
 
     private Station findUpStation() {
-        Station downStation = this.sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
+        final List<Station> upStations = this.sections.stream()
+                .map(Section::getUpStation)
+                .collect(Collectors.toList());
+        final List<Station> downStations = this.sections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
 
-        return downStation;
+        upStations.removeAll(downStations);
+
+        return upStations.get(0);
+    }
+
+    private Station findDownStation(Station upStation) {
+        final Optional<Section> station = this.sections.stream()
+                .filter(section -> section.getUpStation().equals(upStation))
+                .findFirst();
+
+        if (station.isPresent()) {
+            return station.get().getDownStation();
+        }
+        return upStation;
     }
 
     public void addSection(Section section) {
