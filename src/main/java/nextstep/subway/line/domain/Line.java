@@ -72,6 +72,44 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
     
+    public void addSection(Section section) {
+        List<Station> stations = getStations();
+        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == section.getUpStation());
+        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == section.getDownStation());
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == section.getUpStation()) &&
+                stations.stream().noneMatch(it -> it == section.getDownStation())) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
+        if (stations.isEmpty()) {
+            getSections().add(Section.of(this, section.getUpStation(), section.getDownStation(), section.getDistance()));
+            return;
+        }
+
+        if (isUpStationExisted) {
+            getSections().getSections().stream()
+                    .filter(it -> it.getUpStation() == section.getUpStation())
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+
+            getSections().add(Section.of(this, section.getUpStation(), section.getDownStation(), section.getDistance()));
+        } else if (isDownStationExisted) {
+            getSections().getSections().stream()
+                    .filter(it -> it.getDownStation() == section.getDownStation())
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+
+            getSections().add(Section.of(this, section.getUpStation(), section.getDownStation(), section.getDistance()));
+        } else {
+            throw new RuntimeException();
+        }
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
