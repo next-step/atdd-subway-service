@@ -113,10 +113,7 @@ public class Sections {
             .filter(it -> it.isUpStationOfSection(section))
             .findFirst();
         optional.ifPresent(it -> it.updateUpStationBySection(section));
-        if (optional.isPresent()) {
-            return true;
-        }
-        return false;
+        return optional.isPresent();
     }
 
     private void updateByDownStation(Section section) {
