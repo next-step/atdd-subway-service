@@ -143,20 +143,19 @@ Scenario: 지하철 구간을 관리
 
 ### 나의 정보관리
 ```integrationperformancetest
-
-  Scenario  내 정보 조회하기
-      given  토큰_로그인됨
+  Feature 나의 정보를 관리한다.
+  Scenario  나의 정보를 관리 
+      given 회원생성을 요청
+      given 토큰_생성_됨
      
-      when  내 정보 조회하기
+      when  내 정보 조회 요청
       then  내 정보 조회됨
       
-      when  내 정보 수정하기
-      then  변경된 내 정보확인
+      when  내 정보 수정 요청
+      then  변경된 내 정보 검증
       
-      when  내 정보 삭제하기 
-      then  로그인 삭제됨
-     
-      then  토큰 생성 실패
+      when  내 정보 삭제 요청 
+      then  삭제된_유저_로그인_안됨
 ```
 
 
