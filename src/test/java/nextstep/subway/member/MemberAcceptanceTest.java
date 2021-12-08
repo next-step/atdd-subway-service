@@ -1,5 +1,6 @@
 package nextstep.subway.member;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어_있음;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -54,8 +55,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // Given: 회원 등록되어 있음.
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
         // And: 로그인 되어있음. (token)
-        ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
-        String accessToken = response.as(TokenResponse.class).getAccessToken();
+        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
 
         // When: 나의 정보 조회 요청
         ExtractableResponse<Response> memberResponse = 내정보_조회_요청(accessToken);
