@@ -30,10 +30,9 @@ public class PathFinderTest {
         List<Line> lines = Arrays.asList(line);
 
         PathFinder pathFinder = PathFinder.of(lines);
-        Path path = PathFinder.of(lines).findPathBetweenStations(upStation, downStation);
+        Path path = pathFinder.findPathBetweenStations(upStation, downStation);
 
         assertThat(path.getStations().size()).isEqualTo(2);
         assertThat(path.getDistance()).isEqualTo(10);
-
     }
 }
