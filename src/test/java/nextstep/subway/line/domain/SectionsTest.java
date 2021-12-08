@@ -131,7 +131,7 @@ class SectionsTest {
 
         assertThat(이호선구간목록.getSections()).hasSize(2);
 
-        이호선구간목록.merge(강변역, 이호선);
+        이호선구간목록.merge(강변역);
 
         assertAll(
                 () -> assertThat(이호선구간목록.getSections()).hasSize(1),
@@ -148,7 +148,7 @@ class SectionsTest {
 
         assertThat(sections.getSections()).hasSize(1);
 
-        assertThatThrownBy(() -> sections.merge(강변역, 이호선))
+        assertThatThrownBy(() -> sections.merge(강변역))
                 .isInstanceOf(OneSectionDeleteException.class)
                 .hasMessage("구간이 하나인 경우 삭제할 수 없습니다.");
     }
@@ -161,7 +161,7 @@ class SectionsTest {
 
         final Sections sections = Sections.from(다른이호선.getSections());
 
-        assertThatThrownBy(() -> sections.merge(잠실역, 다른이호선))
+        assertThatThrownBy(() -> sections.merge(잠실역))
                 .isInstanceOf(NoSectionDeleteException.class)
                 .hasMessage("등록된 구간이 없어서 삭제할 수 없습니다.");
     }
