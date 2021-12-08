@@ -8,6 +8,7 @@ public class PathResponse {
 
 	private int distance;
 	private List<StationResponse> stations;
+	private long price;
 
 	private PathResponse() {
 	}
@@ -27,5 +28,9 @@ public class PathResponse {
 
 	public List<StationResponse> getStations() {
 		return stations;
+	}
+
+	public long getPrice() {
+		return price;
 	}
 }
