@@ -74,7 +74,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 회원_등록되어_있음(String email, String password, int age) {
-        회원_생성을_요청(email, password, age).as(MemberResponse.class);
+        회원_생성을_요청(email, password, age);
     }
 
     public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
