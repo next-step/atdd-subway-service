@@ -114,13 +114,14 @@ Optional을 매개변수로 넘기면 그 메소드 안에서도 다시 ifPresen
 ## 2단계 - 경로 조회 기능
 * [ ] 최단 경로 조회 인수 테스트 만들기
 * [x] HappyPath 인수 테스트
+* [ ] 예외 상황 인수 테스트
 * 예외 상황
   * [ ] 출발역과 도착역이 같은 경우
   * [ ] 출발역과 도착역이 연결이 되어 있지 않은 경우
   * [ ] 존재하지 않은 출발역이나 도착역을 조회 할 경우
 * [ ] 최단 경로 조회 기능 구현하기
   * [x] 각 sourceId,targetId 로 sourceStation, targetStation 찾고 findLines로 Stations 찾기
-  * [ ] PathFinder 테스트코드 작성
-  * [ ] PathFinder 경로 조회 기능
-  * [ ] jgrapht 라이브러리를 활용하기 
-  * [ ] 외부 라이브러리 테스트 작성
+  * [x] PathFinder 테스트코드 작성
+  * [ ] 가짜 협력 객체로 테스트 작성
+  * [x] PathFinder 경로 조회 기능
+  * [x] jgrapht 라이브러리를 활용하기

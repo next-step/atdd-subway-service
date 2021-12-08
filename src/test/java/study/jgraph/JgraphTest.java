@@ -5,6 +5,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.alg.shortestpath.KShortestPaths;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class JgraphTest {
         assertThat(shortestPath.size()).isEqualTo(3);
     }
 
+    @DisplayName("경로들을 생성함")
     @Test
     public void getKShortestPaths() {
         String source = "v3";

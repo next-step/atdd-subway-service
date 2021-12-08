@@ -1,6 +1,7 @@
 package nextstep.subway.path.ui;
 
 import nextstep.subway.path.application.PathService;
+import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<PathResponse> findPaths(@RequestParam(name = "source") Long sourceId, @RequestParam(name = "target") Long targetId) {
-        return ResponseEntity.ok().body(pathService.findPaths(sourceId, targetId));
+    public ResponseEntity<PathResponse> findPaths(PathRequest request) {
+        return ResponseEntity.ok().body(pathService.findPaths(request.getSource(), request.getTarget()));
     }
 }
