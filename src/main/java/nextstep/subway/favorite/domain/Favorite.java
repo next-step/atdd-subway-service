@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import nextstep.subway.BaseEntity;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -31,6 +32,16 @@ public class Favorite extends BaseEntity {
     private Station target;
 
     protected Favorite() {
+    }
+
+    private Favorite(Member member, Station source, Station target) {
+        this.member = member;
+        this.source = source;
+        this.target = target;
+    }
+
+    public static Favorite of(LoginMember member, Station source, Station target) {
+        return new Favorite(Member.of(member.getId()), source, target);
     }
 
     public Long getId() {

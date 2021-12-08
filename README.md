@@ -60,7 +60,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [X] 인증이 포함된 즐겨찾기 인수테스트 작성
 - [ ] 즐겨찾기 기능 구현
   - [X] 즐겨찾기 모델 설계 
-  - [ ] 즐겨찾기 추가
+  - [X] 즐겨찾기 추가
   - [ ] 즐겨찾기 목록 조회
   - [ ] 즐겨찾기 삭제
 
