@@ -15,6 +15,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
@@ -65,6 +66,41 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         최단_경로_조회_됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 5L);
     }
+
+    @DisplayName("최단 경로를 조회한다. 실패 검증")
+    @Test
+    void failsPaths() {
+        ExtractableResponse<Response> 출발역과_도착역이_같음 = 최단_경로_조회_요청(교대역, 교대역);
+
+        최단_경로_조회_실패(출발역과_도착역이_같음);
+
+        StationResponse 용마산역 = StationAcceptanceTest.지하철역_등록되어_있음("용마산역").as(StationResponse.class);
+        StationResponse 중곡역 = StationAcceptanceTest.지하철역_등록되어_있음("중곡역").as(StationResponse.class);
+        LineResponse 칠호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("칠호선", "bg-red-600", 용마산역.getId(), 중곡역.getId(), 5)).as(LineResponse.class);
+        ExtractableResponse<Response> 출발역과_도착역이_연결이_안되어있음 = 최단_경로_조회_요청(용마산역, 교대역);
+
+        최단_경로_조회_실패(출발역과_도착역이_연결이_안되어있음);
+
+        ExtractableResponse<Response> 존재하지_않은_출발역_도착역 = 최단_경로_조회_요청(-1L, 0L);
+
+        최단_경로_조회_실패(존재하지_않은_출발역_도착역);
+    }
+
+    private void 최단_경로_조회_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    private static ExtractableResponse<Response> 최단_경로_조회_요청(Long sourceId, Long targetId) {
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={source}&target={target}", sourceId, targetId)
+                .then().log().all()
+                .extract();
+
+    }
+
 
     private static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse sourceStation, StationResponse targetStation) {
         PathRequest pathRequest = new PathRequest(sourceStation.getId(), targetStation.getId());
