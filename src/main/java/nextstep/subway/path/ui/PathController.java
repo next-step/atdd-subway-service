@@ -1,6 +1,6 @@
-package nextstep.subway.path.dto.ui;
+package nextstep.subway.path.ui;
 
-import nextstep.subway.path.dto.application.PathService;
+import nextstep.subway.path.application.PathService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +18,6 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity findPaths(@RequestParam Long source, @RequestParam Long target) {
-        pathService.findPaths(source, target);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(pathService.findPaths(source, target));
     }
 }

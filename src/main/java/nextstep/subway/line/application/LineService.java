@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 @Transactional
 public class LineService {
-    private static final String STATION_NOT_FOUND_MESSAGE = "역이 없습니다.";
+    public static final String STATION_NOT_FOUND_MESSAGE = "역이 없습니다.";
     public static final String LINE_NOT_FOUND_MESSAGE = "노선이 없습니다.";
     private LineRepository lineRepository;
     private StationRepository stationRepository;

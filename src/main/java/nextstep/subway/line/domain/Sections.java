@@ -164,4 +164,8 @@ public class Sections {
                 .findFirst()
                 .isPresent();
     }
+
+    public List<Section> getSections() {
+        return sections;
+    }
 }

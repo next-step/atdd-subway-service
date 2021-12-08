@@ -38,4 +38,8 @@ public class Distance {
     public Distance minus(Distance distance) {
         return Distance.of(this.value - distance.value);
     }
+
+    public int getValue() {
+        return value;
+    }
 }

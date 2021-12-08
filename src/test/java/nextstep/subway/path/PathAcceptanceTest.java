@@ -8,14 +8,17 @@ import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.path.dto.PathRequest;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -56,13 +59,32 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void getPaths() {
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> 조회_요청 = 최단_경로_조회_요청(강남역, 남부터미널역);
 
         // then
-        최단_경로_응답됨(response);
+        최단_경로_응답됨(조회_요청);
+        최단_경로_조회됨(조회_요청, Arrays.asList(강남역, 양재역, 남부터미널역));
+        최단_경로_계산됨(조회_요청, 12);
+    }
+
+    private void 최단_경로_계산됨(ExtractableResponse<Response> response, int expectedDistance) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse).extracting("distance").isEqualTo(expectedDistance);
+    }
+
+    private void 최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        List<Long> stationIds = pathResponse.getStations().stream()
+                .map(station -> station.getId())
+                .collect(Collectors.toList());
+        List<Long> expectedStationIds = expectedStations.stream()
+                .map(station -> station.getId())
+                .collect(Collectors.toList());
+        assertThat(stationIds).isEqualTo(expectedStationIds);
     }
 
     private void 최단_경로_응답됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
