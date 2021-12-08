@@ -29,7 +29,7 @@ public class SpringExtensionTest {
     @DisplayName("노선 조회")
     void findAllLines() {
         // given
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(Line.of("", "")));
+        when(lineRepository.findLines()).thenReturn(Lists.newArrayList(Line.of("", "")));
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when

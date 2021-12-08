@@ -19,6 +19,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,7 +66,7 @@ public class PathMockitoExtensionTest {
     @Test
     @DisplayName("노선 조회")
     void findLines() {
-        when(lineRepository.findAll()).thenReturn(
+        when(lineRepository.findLines()).thenReturn(
                 Lists.newArrayList(
                         Line.of("1호선", "남색", 강남역, 역삼역, 5)
                 )

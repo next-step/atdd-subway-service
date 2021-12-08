@@ -26,18 +26,18 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.PERSIST, fetch = LAZY)
     @JoinColumn(name = "SOURCE_STATION_ID")
     private Station sourceStation;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.PERSIST, fetch = LAZY)
     @JoinColumn(name = "TARGET_STATION_ID")
     private Station targetStation;
 
     @Embedded
     private Distance distance;
 
-    @ManyToOne(fetch = LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
 
