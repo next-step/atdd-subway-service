@@ -16,42 +16,61 @@
 
 [ATDD 강의](https://edu.nextstep.camp/c/R89PYi5H) 실습을 위한 지하철 노선도 애플리케이션
 
-## 경로 조회 구현 목록
+## 🚀 3단계 - 인증을 통한 기능 구현
 
-- [x] 최단 경로 조회 인수 테스트 만들기 `ATDD`
-    ```
-    Feature: 지하철 경로 조회
-    Given:
-    지하철 역 등록되어 있다.
-    노선 등록되어 있다.
-    노선에 지하철 역 등록되어 있다.
-    
-    Scenario: 지하철 최단 경로 조회
-    When: 최단 경로 조회 요청
-    Then: 경로 조회와 예상 경로와 일치함
-    Then: 경조 조회가 예상 거리와 일치함
-    ```
-- [x] 경로 조회 서비스 구현
-  - [x] [예외케이스] : 존재하지 않은 출발역이나 도착역을 조회 할 경우
-- [x] 경로 조회 도메인 (PassFinder) Happy 케이스 테스트 및 기능 구현 `TDD`
-- [x] 경로 조회 도메인 (PassFinder) 예외 케이스 테스트
-    - [x] 출발역과 도착역이 같은 경우
-    - [x] 출발역과 도착역이 연결이 되어 있지 않은 경우
-    
+- [ ] **토큰 발급 기능 (로그인) 인수 테스트 만들기**
+  - [ ] 이메일과 패스워드를 이용하여 요청 시 `accessToken` 을 응답하는 기능을 구현하기
+  - [ ] `AuthAcceptanceTest` 을 만족하도록 구현하면 됨
+  - [ ] `AuthAcceptanceTest` 에서 제시하는 예외 케이스도 함께 고려하여 구현하기
+  - [ ] 유효하지 않은 토큰으로 `/members/me` 요청을 보낼 경우에 대한 예외 처리
+- [ ] **인증 - 내 정보 조회 기능 완성하기**
+  - [ ] `MemberAcceptanceTest 클래스의 `manageMyInfo` 메서드에 인수 테스트를 추가하기
+  - [ ] 내 정보 조회, 수정, 삭제 기능을 `/members/me` 라는 URI 요청으로 동작하도록 검증
+  - [ ] 로그인 후 발급 받은 토큰을 포함해서 요청 하기
+  - [ ] `/members/me` 요청 시 토큰을 확인하여 로그인 정보를 받아올 수 있도록 하기
+  - [ ] `@AuthenticationPrincipal` 과 `AuthenticationPrincipalArgumentResolver`을 활용하기
+  - [ ] 아래의 기능이 제대로 동작하도록 구현하기
+  ```@GetMapping("/members/me")
+  public ResponseEntity<MemberResponse> findMemberOfMine(LoginMember loginMember) {
+  MemberResponse member = memberService.findMember(loginMember.getId());
+  return ResponseEntity.ok().body(member);
+  }
+  
+  @PutMapping("/members/me")
+  public ResponseEntity<MemberResponse> updateMemberOfMine(LoginMember loginMember, @RequestBody MemberRequest param) {
+  memberService.updateMember(loginMember.getId(), param);
+  return ResponseEntity.ok().build();
+  }
+  
+  @DeleteMapping("/members/me")
+  public ResponseEntity<MemberResponse> deleteMemberOfMine(LoginMember loginMember) {
+  memberService.deleteMember(loginMember.getId());
+  return ResponseEntity.noContent().build();
+  }
+  ```
 
-### Outside In 경우
+- [ ] 인증 - **즐겨 찾기 기능 완성하기**
+  - 즐겨찾기 기능을 완성하기
+  - 인증을 포함하여 전체 ATDD 사이클을 경험할 수 있도록 기능을 구현하기
 
-- 컨트롤러 레이어 구현 이후 서비스 레이어 구현 시 서비스 테스트 우선 작성 후 기능 구현
-- 서비스 테스트 내부에서 도메인들간의 로직의 흐름을 검증, 이 때 사용되는 도메인은 mock 객체를 활용
-- 외부 라이브러리를 활용한 로직을 검증할 때는 가급적 실제 객체를 활용
-- Happy 케이스에 대한 부분만 구현( Side 케이스에 대한 구현은 다음 단계에서 진행)
+  ```
+  Feature: 즐겨찾기를 관리한다.
 
-### Inside Out 경우
+  Background 
+    Given 지하철역 등록되어 있음
+    And 지하철 노선 등록되어 있음
+    And 지하철 노선에 지하철역 등록되어 있음
+    And 회원 등록되어 있음
+    And 로그인 되어있음
 
-- 도메인 설계 후 도메인 테스트를 시작으로 기능 구현 시작
-- 해당 도메인의 단위 테스트를 통해 도메인의 역할과 경계를 설계
-- 도메인의 구현이 끝나면 해당 도메인과 관계를 맺는 객체에 대해 기능 구현 시작
-
+  Scenario: 즐겨찾기를 관리
+    When 즐겨찾기 생성을 요청
+    Then 즐겨찾기 생성됨
+    When 즐겨찾기 목록 조회 요청
+    Then 즐겨찾기 목록 조회됨
+    When 즐겨찾기 삭제 요청
+    Then 즐겨찾기 삭제됨
+  ```
 <br>
 
 ## 🚀 Getting Started
