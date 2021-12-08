@@ -9,7 +9,7 @@ import nextstep.subway.station.domain.Station;
 public class PathFinder {
     private final StationGraph stationGraph;
 
-    public PathFinder(StationGraph stationGraph) {
+    private PathFinder(StationGraph stationGraph) {
         this.stationGraph = stationGraph;
     }
 

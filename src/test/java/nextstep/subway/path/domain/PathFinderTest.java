@@ -3,8 +3,6 @@ package nextstep.subway.path.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import nextstep.subway.exception.InvalidArgumentException;
@@ -21,25 +19,14 @@ import org.junit.jupiter.api.Test;
 @DisplayName("지하철 경로 찾기 테스트")
 public class PathFinderTest {
 
-    private static final Station 교대역 = spy(new Station("교대역"));
-    private static final Station 강남역= spy(new Station("강남역"));
-    private static final Station 양재역= spy(new Station("양재역"));
-    private static final Station 남부터미널역= spy(new Station("남부터미널역"));
-    private static final Station 양재시민의숲= spy(new Station("양재시민의숲"));
-    private static final Station 서초역= spy(new Station("서초역"));
-    private static final Station 고속터미널= spy(new Station("고속터미널"));
-    private static final Station 반포역= spy(new Station("반포역"));
-
-    static {
-        when(교대역.getId()).thenReturn(1L);
-        when(강남역.getId()).thenReturn(2L);
-        when(양재역.getId()).thenReturn(3L);
-        when(남부터미널역.getId()).thenReturn(4L);
-        when(양재시민의숲.getId()).thenReturn(5L);
-        when(서초역.getId()).thenReturn(6L);
-        when(고속터미널.getId()).thenReturn(7L);
-        when(반포역.getId()).thenReturn(8L);
-    }
+    private final Station 교대역 = new Station("교대역");
+    private final Station 강남역= new Station("강남역");
+    private final Station 양재역= new Station("양재역");
+    private final Station 남부터미널역= new Station("남부터미널역");
+    private final Station 양재시민의숲= new Station("양재시민의숲");
+    private final Station 서초역= new Station("서초역");
+    private final Station 고속터미널= new Station("고속터미널");
+    private final Station 반포역= new Station("반포역");
 
     Line 신분당선;
     Line 이호선;
