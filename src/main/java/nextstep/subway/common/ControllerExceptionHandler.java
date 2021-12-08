@@ -1,5 +1,6 @@
 package nextstep.subway.common;
 
+import nextstep.subway.exception.AuthorizationException;
 import nextstep.subway.exception.BusinessException;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.exception.dto.ErrorResponse;
@@ -25,5 +26,10 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.valueOf(e.getMessage()));
+    }
+
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthorizationException(AuthorizationException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }

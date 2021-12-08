@@ -141,12 +141,14 @@ Scenario: 나의 정보를 관리한다. (조회, 수정, 삭제)
   Then: 나의 정보 조회됨
   When: 나의 정보 수정 요청
   Then: 나의 정보 수정됨
+  When: 나의 정보 조회 요청
+  Then: 나의 정보 조회됨
   When: 나의 정보 삭제 요청
   Then: 나의 정보 삭제됨
 ```
-- [ ] 토큰을 통한 인증 구현
-    - [ ] 토큰 유효성 검증 후 사용자 정보 입력 (`@AuthenticationPrincipal` , `AuthenticationPrincipalArgumentResolver`)
-    - [ ] 기능에 어노테이션 달기 -> 기능 구현 확인  
+- [x] 토큰을 통한 인증 구현
+    - [x] 토큰 유효성 검증 후 사용자 정보 입력 (`@AuthenticationPrincipal` , `AuthenticationPrincipalArgumentResolver`)
+    - [x] 기능에 어노테이션 달기 -> 기능 구현 확인  
 
 - [ ] 인증 - 즐겨 찾기 기능 완성하기
     - [ ]  인수 테스트

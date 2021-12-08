@@ -1,20 +1,20 @@
 package nextstep.subway.member;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.토큰발급;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -53,9 +53,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void manageMyInfo() {
         // Given: 회원 등록되어 있음.
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        //    And: 로그인 되어있음. (token)
+        // And: 로그인 되어있음. (token)
         ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
-        String accessToken = 토큰발급(response);
+        String accessToken = response.as(TokenResponse.class).getAccessToken();
 
         // When: 나의 정보 조회 요청
         ExtractableResponse<Response> memberResponse = 내정보_조회_요청(accessToken);
@@ -67,6 +67,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // Then: 나의 정보 수정됨
         내정보_수정됨(updateResponse);
+
+        // When: 나의 정보 조회 요청
+        memberResponse = 내정보_조회_요청(accessToken);
+        // Then: 나의 정보 조회됨
+        내정보_조회됨(memberResponse, NEW_EMAIL, NEW_AGE);
 
         // When: 나의 정보 삭제 요청
         ExtractableResponse<Response> deleteResponse = 내정보_삭제_요청(accessToken);
