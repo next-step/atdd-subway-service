@@ -184,7 +184,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private static List<Long> getIdsByStationResponses(List<StationResponse> stations) {
+    public static List<Long> getIdsByStationResponses(List<StationResponse> stations) {
         return stations.stream()
             .map(it -> it.getId())
             .collect(Collectors.toList());

@@ -2,7 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.Objects;
 import javax.persistence.Embeddable;
-import nextstep.subway.exception.NotValidateException;
+import nextstep.subway.exception.InvalidArgumentException;
 
 @Embeddable
 public final class Distance {
@@ -23,9 +23,6 @@ public final class Distance {
     }
 
     public Distance minus(Distance other) {
-        if (this.distance <= other.distance) {
-            throw new NotValidateException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요.");
-        }
         return valueOf(this.distance - other.distance);
     }
 
@@ -43,8 +40,8 @@ public final class Distance {
      * @param distance
      */
     private void validate(Integer distance) {
-        if (distance < DISTANCE_MIN_NUMBER) {
-            throw new NotValidateException(DISTANCE_MIN_NUMBER+" 이상의 정수만 입력가능합니다.");
+        if (distance <= DISTANCE_MIN_NUMBER) {
+            throw new InvalidArgumentException(DISTANCE_MIN_NUMBER+" 이상의 정수만 입력가능합니다.");
         }
     }
 

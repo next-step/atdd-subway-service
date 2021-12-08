@@ -39,6 +39,10 @@ public class Sections {
             .collect(Collectors.toList());
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
     public void remove(Section section) {
         section.removeLine();
         sections.remove(section);
@@ -46,7 +50,7 @@ public class Sections {
 
     public boolean contains(Section section) {
         return sections.stream()
-            .anyMatch(it -> it.equalsStations(section));
+            .anyMatch(it -> it.equalsSection(section));
     }
 
     public boolean isEmptyStation() {
@@ -58,8 +62,10 @@ public class Sections {
     }
 
     public void updateOriginSectionByAdded(Section section) {
-        updateByUpStation(section);
-        updateByDownStation(section);
+        boolean upStationUpdated = updateByUpStation(section);
+        if (!upStationUpdated) {
+            updateByDownStation(section);
+        }
     }
 
     public void removeLineStation(Station station) {
@@ -78,7 +84,7 @@ public class Sections {
 
     boolean isAlreadySection(Section section) {
         return sections.stream()
-            .anyMatch(it -> it.equalsStations(section));
+            .anyMatch(it -> it.equalsSection(section));
     }
 
     boolean isIncludeStationOfSection(Section section) {
@@ -102,11 +108,15 @@ public class Sections {
         }
     }
 
-    private void updateByUpStation(Section section) {
-        sections.stream()
+    private boolean updateByUpStation(Section section) {
+        Optional<Section> optional = sections.stream()
             .filter(it -> it.isUpStationOfSection(section))
-            .findFirst()
-            .ifPresent(it -> it.updateUpStationBySection(section));
+            .findFirst();
+        optional.ifPresent(it -> it.updateUpStationBySection(section));
+        if (optional.isPresent()) {
+            return true;
+        }
+        return false;
     }
 
     private void updateByDownStation(Section section) {
@@ -118,23 +128,34 @@ public class Sections {
 
     private List<Section> getSortedSections() {
         List<Section> list = new ArrayList<>();
-        Section section = findFirstSection();
-        list.add(section);
+        Optional<Section> optionalFirstSection = findFirstSection();
 
-        Optional<Section>  optional = Optional.of(section);
-        while (optional.isPresent()) {
-            Section finalSection = section;
-            optional = sections.stream()
-                .filter(finalSection::isTheUpLine)
-                .findFirst();
-            section = optional.orElse(finalSection);
-            optional.ifPresent(list::add);
-        }
+        optionalFirstSection.ifPresent(it -> {
+            list.add(it);
+            list.addAll(sortedSection(it));
+        });
 
         return list;
     }
 
-    private Section findFirstSection() {
+    private List<Section> sortedSection(Section firstSection) {
+        List<Section> list = new ArrayList<>();
+        Optional<Section> optional = Optional.of(firstSection);
+        while (optional.isPresent()) {
+            Section finalSection = firstSection;
+            optional = sections.stream()
+                .filter(finalSection::isTheUpLine)
+                .findFirst();
+            firstSection = optional.orElse(finalSection);
+            optional.ifPresent(list::add);
+        }
+        return list;
+    }
+
+    private Optional<Section> findFirstSection() {
+        if (sections.isEmpty()) {
+            return Optional.empty();
+        }
         Section section = sections.get(START_SECTION_INDEX);
         Optional<Section>  optional = Optional.of(section);
         while (optional.isPresent()) {
@@ -144,7 +165,7 @@ public class Sections {
                 .findFirst();
             section = optional.orElse(finalSection);
         }
-        return section;
+        return Optional.of(section);
     }
 
     private Stream<Station> getStationStream() {

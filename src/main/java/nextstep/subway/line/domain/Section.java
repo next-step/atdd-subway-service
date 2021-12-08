@@ -10,7 +10,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import nextstep.subway.BaseEntity;
+import nextstep.subway.common.BaseEntity;
+import nextstep.subway.exception.CannotAddException;
+import nextstep.subway.exception.InvalidArgumentException;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -73,24 +75,36 @@ public class Section extends BaseEntity {
         }
     }
 
+    public Station getUpStation() {
+        return upStation;
+    }
+
+    public Station getDownStation() {
+        return downStation;
+    }
+
+    public Distance getDistance() {
+        return distance;
+    }
+
     public boolean isIncludeStation(Station station) {
         return isUpStation(station) || isDownStation(station);
     }
 
     public boolean isDownStationOfSection(Section section) {
-        return this.downStation.equalsName(section.downStation);
+        return isDownStation(section.downStation);
     }
 
     public boolean isUpStationOfSection(Section section) {
-        return this.upStation.equalsName(section.upStation);
-    }
-
-    public boolean isUpStation(Station upStation) {
-        return this.upStation.equalsName(upStation);
+        return isUpStation(section.upStation);
     }
 
     public boolean equalsDistance(int distance) {
         return this.distance.equals(Distance.valueOf(distance));
+    }
+
+    public boolean isUpStation(Station upStation) {
+        return this.upStation.equalsName(upStation);
     }
 
     public boolean isDownStation(Station station) {
@@ -110,11 +124,11 @@ public class Section extends BaseEntity {
     }
 
     public void updateUpStationBySection(Section section){
-        update(section.downStation, this.downStation, distance.minus(section.distance));
+        update(section.downStation, this.downStation, minus(section));
     }
 
     public void updateDownStationBySection(Section section) {
-        update(this.upStation, section.upStation, distance.minus(section.distance));
+        update(this.upStation, section.upStation, minus(section));
     }
 
     public void updateConnect(Section section) {
@@ -129,16 +143,23 @@ public class Section extends BaseEntity {
         }
     }
 
-    public boolean equalsStations(Section section) {
-        return upStation.equalsName(section.upStation)
-            && downStation.equalsName(section.downStation);
-    }
-
-    public boolean equalsLine(Line line) {
+    protected boolean equalsLine(Line line) {
         if (this.line == null) {
             return false;
         }
         return this.line.equals(line);
+    }
+
+    protected boolean equalsSection(Section section) {
+        return isUpStation(section.upStation) && isDownStation(section.downStation);
+    }
+
+    private Distance minus(Section section) {
+        try {
+            return distance.minus(section.distance);
+        } catch (InvalidArgumentException e) {
+            throw new CannotAddException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요.");
+        }
     }
 
     private void update(Station upStation, Station downStation, Distance distance) {
@@ -147,6 +168,9 @@ public class Section extends BaseEntity {
         this.distance = distance;
     }
 
+    private Long getId() {
+        return id;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -157,7 +181,7 @@ public class Section extends BaseEntity {
             return false;
         }
         Section section = (Section) o;
-        return Objects.equals(id, section.id);
+        return Objects.equals(getId(), section.getId());
     }
 
     @Override
@@ -176,6 +200,4 @@ public class Section extends BaseEntity {
             ", distance=" + distance +
             '}';
     }
-
-
 }

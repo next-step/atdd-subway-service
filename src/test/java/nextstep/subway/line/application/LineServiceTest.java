@@ -1,9 +1,9 @@
 package nextstep.subway.line.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -19,7 +19,6 @@ import nextstep.subway.line.dto.LineUpdateRequest;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -38,7 +37,7 @@ class LineServiceTest {
     LineRepository lineRepository;
 
     @Mock
-    StationRepository stationRepository;
+    StationService stationService;
 
     @InjectMocks
     LineService lineService;
@@ -49,9 +48,9 @@ class LineServiceTest {
 
     @BeforeEach
     public void setUp() {
-        // given 지하철 역 저장되어 있음
         seoulStation = new Station("서울역");
         yongsanStation = new Station("용산역");
+        // given 지하철 역 저장되어 있음
         line = Line.of("1호선", "blue", seoulStation, yongsanStation, 10);
     }
 
@@ -59,10 +58,10 @@ class LineServiceTest {
     @DisplayName("라인 저장")
     void saveLine() {
 
-        when(stationRepository.findById(1L))
-            .thenReturn(Optional.of(seoulStation));
-        when(stationRepository.findById(2L))
-            .thenReturn(Optional.of(yongsanStation));
+        when(stationService.findStation(1L))
+            .thenReturn(seoulStation);
+        when(stationService.findStation(2L))
+            .thenReturn(yongsanStation);
         when(lineRepository.save(ArgumentMatchers.any()))
             .thenReturn(line);
         LineRequest lineRequest = new LineRequest("1호선", "blue", 1L, 2L, 3);
@@ -81,12 +80,13 @@ class LineServiceTest {
     @Test
     @DisplayName("라인 목록 조회")
     void findLines() {
-        //given 라인 저장되어 있음
+        //given 노선, 지하철 역 저장되어 있음
+
         when(lineRepository.findAll())
             .thenReturn(Arrays.asList(line));
 
         // 목록 조회
-        List<LineResponse> lines = lineService.findLines();
+        List<LineResponse> lines = lineService.findLineResponses();
 
         assertAll(() -> {
             assertThat(lines.size()).isEqualTo(1);
@@ -97,6 +97,7 @@ class LineServiceTest {
     @Test
     @DisplayName("라인 ID로 한건 조회")
     void findLineResponseById() {
+
         //given 라인 저장되어 있음
         when(lineRepository.findById(1L))
             .thenReturn(Optional.of(line));
@@ -137,10 +138,10 @@ class LineServiceTest {
     void addLineStation() {
         Station addStation = new Station("남영역");
 
-        when(stationRepository.findById(1L))
-            .thenReturn(Optional.of(seoulStation));
-        when(stationRepository.findById(2L))
-            .thenReturn(Optional.of(addStation));
+        when(stationService.findStation(1L))
+            .thenReturn(seoulStation);
+        when(stationService.findStation(2L))
+            .thenReturn(addStation);
         when(lineRepository.findById(ArgumentMatchers.any()))
             .thenReturn(Optional.of(line));
 
@@ -155,8 +156,9 @@ class LineServiceTest {
     @DisplayName("라인에 포함된 역 삭제")
     void removeLineStation() {
         Station addStation = new Station("남영역");
-        when(stationRepository.findById(2L))
-            .thenReturn(Optional.of(addStation));
+
+        when(stationService.findStation(2L))
+            .thenReturn(addStation);
         when(lineRepository.findById(ArgumentMatchers.any()))
             .thenReturn(Optional.of(line));
 

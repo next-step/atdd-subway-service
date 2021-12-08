@@ -2,6 +2,7 @@ package nextstep.subway.station.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
@@ -38,6 +39,7 @@ public class StationService {
 
     @Transactional(readOnly = true)
     public Station findStation(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+        return stationRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("해당하는 지하철역이 없습니다."));
     }
 }
