@@ -75,7 +75,8 @@ public class LineService {
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id)
             .orElseThrow(() -> new BadRequestException(NOT_FOUND_DATA));
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor(),
+            lineUpdateRequest.getSurcharge()));
     }
 
     @Transactional
