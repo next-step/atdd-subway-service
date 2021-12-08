@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -64,7 +65,7 @@ public class Section {
 
     public void updateUpStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
-            throw new IllegalArgumentException(LESS_THAN_DISTANCE_BETWEEN_STATION.getMessage());
+            throw new BadRequestException(LESS_THAN_DISTANCE_BETWEEN_STATION);
         }
         this.upStation = station;
         this.distance -= newDistance;
@@ -72,7 +73,7 @@ public class Section {
 
     public void updateDownStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
-            throw new IllegalArgumentException(LESS_THAN_DISTANCE_BETWEEN_STATION.getMessage());
+            throw new BadRequestException(LESS_THAN_DISTANCE_BETWEEN_STATION);
         }
         this.downStation = station;
         this.distance -= newDistance;

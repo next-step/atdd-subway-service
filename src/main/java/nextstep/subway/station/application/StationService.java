@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
@@ -44,6 +45,6 @@ public class StationService {
     @Transactional(readOnly = true)
     public Station findStationById(Long id) {
         return stationRepository.findById(id).orElseThrow(
-            () -> new IllegalArgumentException(NOT_FOUND_DATA.getMessage()));
+            () -> new BadRequestException(NOT_FOUND_DATA));
     }
 }

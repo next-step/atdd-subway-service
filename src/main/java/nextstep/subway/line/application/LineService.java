@@ -2,6 +2,7 @@ package nextstep.subway.line.application;
 
 import static nextstep.subway.exception.ExceptionMessage.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -49,15 +51,17 @@ public class LineService {
     @Transactional(readOnly = true)
     public Set<Section> findAllSection() {
         List<Line> persistLines = lineRepository.findAll();
-        return persistLines.stream()
-            .flatMap(line -> line.getSections().getSections().stream())
-            .collect(Collectors.toSet());
+        Set<Section> allSection = new HashSet<>();
+        for (Line persistLine : persistLines) {
+            allSection = persistLine.collectNonDuplicatedSection(allSection);
+        }
+        return allSection;
     }
 
     @Transactional(readOnly = true)
     public Line findLineById(Long id) {
         return lineRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_DATA.getMessage()));
+            .orElseThrow(() -> new BadRequestException(NOT_FOUND_DATA));
     }
 
     @Transactional(readOnly = true)
@@ -70,7 +74,7 @@ public class LineService {
     @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_DATA.getMessage()));
+            .orElseThrow(() -> new BadRequestException(NOT_FOUND_DATA));
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 

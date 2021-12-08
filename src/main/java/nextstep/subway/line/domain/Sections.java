@@ -13,6 +13,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -92,7 +93,7 @@ public class Sections {
         return sections.stream()
             .filter(section -> section.getUpStation().equals(station))
             .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException(NON_EXIST_STATION_TO_SECTION.getMessage()));
+            .orElseThrow(() -> new BadRequestException(NON_EXIST_STATION_TO_SECTION));
     }
 
     private Section extractFirstSection() {
@@ -100,7 +101,7 @@ public class Sections {
         return sections.stream()
             .filter(section -> !downStations.contains(section.getUpStation()))
             .findFirst()
-            .orElseThrow(() -> new IllegalArgumentException(NON_EXIST_STATION_TO_SECTION.getMessage()));
+            .orElseThrow(() -> new BadRequestException(NON_EXIST_STATION_TO_SECTION));
     }
 
     private Set<Station> extractAllStations() {
@@ -140,14 +141,14 @@ public class Sections {
     private void validateDuplicate(Section section, Set<Station> allStations) {
         if (allStations.contains(section.getUpStation())
             && allStations.contains(section.getDownStation())) {
-            throw new IllegalArgumentException(ALREADY_ADD_SECTION.getMessage());
+            throw new BadRequestException(ALREADY_ADD_SECTION);
         }
     }
 
     private void validateNonExist(Section section, Set<Station> allStations) {
         if (!allStations.contains(section.getUpStation())
             && !allStations.contains(section.getDownStation())) {
-            throw new IllegalArgumentException(NOT_POSSIBLE_ADD_SECTION.getMessage());
+            throw new BadRequestException(NOT_POSSIBLE_ADD_SECTION);
         }
     }
 
@@ -158,13 +159,13 @@ public class Sections {
 
     private void validateRemoveSectionSize() {
         if (sections.size() <= SECTION_MIN_COUNT) {
-            throw new IllegalArgumentException(NOT_REMOVE_SECTION_MIN_SIZE.getMessage());
+            throw new BadRequestException(NOT_REMOVE_SECTION_MIN_SIZE);
         }
     }
 
     private void validateExistStation(Station station) {
         if (!extractAllStations().contains(station)) {
-            throw new IllegalArgumentException(NON_EXIST_STATION_TO_SECTION.getMessage());
+            throw new BadRequestException(NON_EXIST_STATION_TO_SECTION);
         }
     }
 
