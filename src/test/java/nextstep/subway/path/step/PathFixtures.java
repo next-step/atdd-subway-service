@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.step;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +13,7 @@ public class PathFixtures {
     public static Station 남부터미널 = new Station(4L, "남부터미널");
     public static Station 천호 = new Station(5L, "천호");
     public static Station 강동구청 = new Station(6L, "강동구청");
+    public static Station 없는역 = new Station(7L, "없는역");
 
     public static List<Line> 전체구간() {
         Line 이호선 = new Line("이호선", "red");

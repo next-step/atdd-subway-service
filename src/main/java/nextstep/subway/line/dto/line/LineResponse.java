@@ -1,4 +1,4 @@
-package nextstep.subway.line.dto;
+package nextstep.subway.line.dto.line;
 
 import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;

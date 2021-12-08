@@ -1,8 +1,8 @@
-package nextstep.subway.path.ui;
+package nextstep.subway.line.ui;
 
-import nextstep.subway.path.application.PathService;
-import nextstep.subway.path.dto.PathRequest;
-import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.line.application.PathService;
+import nextstep.subway.line.dto.path.PathRequest;
+import nextstep.subway.line.dto.path.PathResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
