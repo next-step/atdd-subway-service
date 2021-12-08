@@ -13,11 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static nextstep.subway.member.MemberAcceptanceTest.내_정보_조회_요청;
-import static nextstep.subway.member.MemberAcceptanceTest.회원_등록되어_있음;
+import static nextstep.subway.member.acceptance.MemberTestApi.회원_등록되어_있음;
+import static nextstep.subway.member.acceptance.MyMemberTestApi.내_정보_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AuthAcceptanceTest extends AcceptanceTest {
+public class AuthAcceptanceTest extends AcceptanceTest {
 
     MemberRequest 비회원;
 
@@ -59,6 +59,21 @@ class AuthAcceptanceTest extends AcceptanceTest {
         토큰_인증_실패(response);
     }
 
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
+        final TokenRequest tokenRequest = new TokenRequest(email, password);
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(tokenRequest)
+                .when().post("/login/token")
+                .then().log().all()
+                .extract();
+    }
+
+    public static TokenResponse 로그인_되어_있음(String email, String password) {
+        return 로그인_요청(email, password).as(TokenResponse.class);
+    }
+
     private void 토큰_인증_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
@@ -71,16 +86,4 @@ class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(TokenResponse.class).getAccessToken()).isNotNull();
     }
-
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
-        final TokenRequest tokenRequest = new TokenRequest(email, password);
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tokenRequest)
-                .when().post("/login/token")
-                .then().log().all()
-                .extract();
-    }
-
 }

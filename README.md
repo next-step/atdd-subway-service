@@ -23,13 +23,13 @@
   - [x] `AuthAcceptanceTest` 을 만족하도록 구현하면 됨
   - [x] `AuthAcceptanceTest` 에서 제시하는 예외 케이스도 함께 고려하여 구현하기
   - [x] 유효하지 않은 토큰으로 `/members/me` 요청을 보낼 경우에 대한 예외 처리
-- [ ] **인증 - 내 정보 조회 기능 완성하기**
-  - [ ] `MemberAcceptanceTest 클래스의 `manageMyInfo` 메서드에 인수 테스트를 추가하기
-  - [ ] 내 정보 조회, 수정, 삭제 기능을 `/members/me` 라는 URI 요청으로 동작하도록 검증
-  - [ ] 로그인 후 발급 받은 토큰을 포함해서 요청 하기
-  - [ ] `/members/me` 요청 시 토큰을 확인하여 로그인 정보를 받아올 수 있도록 하기
-  - [ ] `@AuthenticationPrincipal` 과 `AuthenticationPrincipalArgumentResolver`을 활용하기
-  - [ ] 아래의 기능이 제대로 동작하도록 구현하기
+- [x] **인증 - 내 정보 조회 기능 완성하기**
+  - [x] `MemberAcceptanceTest 클래스의 `manageMyInfo` 메서드에 인수 테스트를 추가하기
+  - [x] 내 정보 조회, 수정, 삭제 기능을 `/members/me` 라는 URI 요청으로 동작하도록 검증
+  - [x] 로그인 후 발급 받은 토큰을 포함해서 요청 하기
+  - [x] `/members/me` 요청 시 토큰을 확인하여 로그인 정보를 받아올 수 있도록 하기
+  - [x] `@AuthenticationPrincipal` 과 `AuthenticationPrincipalArgumentResolver`을 활용하기
+  - [x] 아래의 기능이 제대로 동작하도록 구현하기
   ```@GetMapping("/members/me")
   public ResponseEntity<MemberResponse> findMemberOfMine(LoginMember loginMember) {
   MemberResponse member = memberService.findMember(loginMember.getId());
