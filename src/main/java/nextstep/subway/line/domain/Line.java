@@ -75,7 +75,7 @@ public class Line extends BaseEntity {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = sections.stream()
-                .filter(it -> it.getUpStation() == finalDownStation)
+                .filter(it -> it.hasUpStation(finalDownStation))
                 .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
@@ -92,7 +92,7 @@ public class Line extends BaseEntity {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = sections.stream()
-                .filter(it -> it.getDownStation() == finalDownStation)
+                .filter(it -> it.hasDownStation(finalDownStation))
                 .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;

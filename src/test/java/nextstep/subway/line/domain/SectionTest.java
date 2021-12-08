@@ -26,6 +26,36 @@ class SectionTest {
         판교역 = new Station("판교역");
     }
 
+    @DisplayName("상위 구간과 하단 구간을 하나로 합친다")
+    @Test
+    void combine() {
+        Section upSection = new Section(신분당선, 강남역, 양재역, 10);
+        Section downSection = new Section(신분당선, 양재역, 판교역, 10);
+
+        Section actual = Section.combine(upSection, downSection);
+
+        assertThat(actual)
+            .isEqualTo(new Section(신분당선, 강남역, 판교역, 20));
+    }
+
+    @DisplayName("전달받은 역이 하행인지 확인한다")
+    @Test
+    void hasDownStation() {
+        Section section = new Section(신분당선, 강남역, 판교역, 10);
+
+        assertThat(section.hasDownStation(판교역)).isTrue();
+        assertThat(section.hasDownStation(강남역)).isFalse();
+    }
+
+    @DisplayName("전달받은 역이 상행인지 확인한다")
+    @Test
+    void hasUpStation() {
+        Section section = new Section(신분당선, 강남역, 판교역, 10);
+
+        assertThat(section.hasUpStation(강남역)).isTrue();
+        assertThat(section.hasUpStation(판교역)).isFalse();
+    }
+
     @DisplayName("상행 역 업데이트")
     @Test
     void updateUpStation() {

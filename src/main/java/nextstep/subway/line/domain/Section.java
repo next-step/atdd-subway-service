@@ -2,11 +2,16 @@ package nextstep.subway.line.domain;
 
 import java.util.Objects;
 
-import nextstep.subway.common.exception.SubwayErrorCode;
-import nextstep.subway.common.exception.SubwayException;
-import nextstep.subway.station.domain.Station;
+import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
-import javax.persistence.*;
+import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Section {
@@ -44,6 +49,18 @@ public class Section {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static Section combine(Section upLineStation, Section downLineStation) {
+        return Section.combine(downLineStation.getLine(), upLineStation, downLineStation);
+    }
+
+    public static Section combine(Line line, Section upLineStation, Section downLineStation) {
+        Station newUpStation = upLineStation.upStation;
+        Station newDownStation = downLineStation.downStation;
+        Distance newDistance = upLineStation.distance.add(downLineStation.distance);
+
+        return new Section(line, newUpStation, newDownStation, newDistance);
     }
 
     public Long getId() {
@@ -95,5 +112,13 @@ public class Section {
     @Override
     public int hashCode() {
         return Objects.hash(id, line, upStation, downStation, distance);
+    }
+
+    public boolean hasUpStation(Station station) {
+        return this.upStation == station;
+    }
+
+    public boolean hasDownStation(Station station) {
+        return this.downStation == station;
     }
 }

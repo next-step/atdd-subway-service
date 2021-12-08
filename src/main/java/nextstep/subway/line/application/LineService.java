@@ -1,6 +1,12 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.line.domain.Distance;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -10,12 +16,6 @@ import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -109,14 +109,14 @@ public class LineService {
 
         if (isUpStationExisted) {
             line.getSections().stream()
-                    .filter(it -> it.getUpStation() == upStation)
+                .filter(it -> it.hasUpStation(upStation))
                     .findFirst()
                     .ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
 
             line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
         } else if (isDownStationExisted) {
             line.getSections().stream()
-                    .filter(it -> it.getDownStation() == downStation)
+                    .filter(it -> it.hasDownStation(downStation))
                     .findFirst()
                     .ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
 
@@ -132,17 +132,15 @@ public class LineService {
         }
 
         Optional<Section> upLineStation = line.getSections().stream()
-                .filter(it -> it.getUpStation() == station)
+            .filter(it -> it.hasUpStation(station))
                 .findFirst();
         Optional<Section> downLineStation = line.getSections().stream()
-                .filter(it -> it.getDownStation() == station)
+            .filter(it -> it.hasDownStation(station))
                 .findFirst();
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            Distance newDistance = upLineStation.get().getDistance().add(downLineStation.get().getDistance());
-            line.getSections().add(new Section(line, newUpStation, newDownStation, newDistance));
+            Section section = Section.combine(downLineStation.get(), upLineStation.get());
+            line.getSections().add(section);
         }
 
         upLineStation.ifPresent(it -> line.getSections().remove(it));
