@@ -49,18 +49,18 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBadBearerAuth() {
         // When: 로그인 요청 shinmj@email.com/password
-        ExtractableResponse<Response> response = 로그인_요청("shinmj@email.com", PASSWORD);
+        ExtractableResponse<Response> emailFailResponse = 로그인_요청("shinmj@email.com", PASSWORD);
 
         // Then: 로그인 실패
-        로그인_실패함(response);
+        로그인_실패함(emailFailResponse);
 
         // When: 로그인 요청 email@email.com/password11
-        response = 로그인_요청(EMAIL, "password11");
+        ExtractableResponse<Response> passwordFailResponse = 로그인_요청(EMAIL, "password11");
         // Then: 로그인 실패
-        로그인_실패함(response);
+        로그인_실패함(passwordFailResponse);
 
         // When: 로그인 요청 shinmj@email.com/password11
-        response = 로그인_요청("shinmj@email.com", "password11");
+        ExtractableResponse<Response> response = 로그인_요청("shinmj@email.com", "password11");
         // Then: 로그인 실패
         로그인_실패함(response);
     }
@@ -96,6 +96,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     public static void 로그인_실패함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    public static String 토큰발급(ExtractableResponse<Response> response) {
+        return response
+            .body().as(TokenResponse.class)
+            .getAccessToken();
     }
 
 }
