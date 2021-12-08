@@ -56,7 +56,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ## 1단계
 #### 기능 요구사항
-- [ ] LineSectionAcceptanceTest 리팩터링
-    - [ ] 지하철 구간을 관리하는 테스트로 통합
-    - [ ] static 메서드 분리
+- [X] LineSectionAcceptanceTest 리팩터링
+    - [X] 지하철 구간을 관리하는 테스트로 통합
+    - [X] static 메서드 분리
 - [ ] LineService 리팩터링
+    - [ ] 서비스 내의 비즈니스 로직 line 도메인으로 이동
