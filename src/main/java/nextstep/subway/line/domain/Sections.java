@@ -32,7 +32,9 @@ public class Sections {
     }
 
     public List<Station> getStations() {
-        if (handleEmptyList(sections.isEmpty())) return Arrays.asList();
+        if (handleEmptyList(sections.isEmpty())) {
+            return Arrays.asList();
+        }
         List<Station> stations = new ArrayList<>();
         Station fistStation = findUpStation();
         stations.add(fistStation);
@@ -88,7 +90,9 @@ public class Sections {
                 .filter(section -> section.getDownStation()
                         .equals(station))
                 .findFirst();
-        if (handleEmptyList(removeMiddleStation(sameUpStation, sameDownStation))) return;
+        if (handleEmptyList(removeMiddleStation(sameUpStation, sameDownStation))) {
+            return;
+        }
         removeEndStation(sameUpStation, sameDownStation);
     }
 
