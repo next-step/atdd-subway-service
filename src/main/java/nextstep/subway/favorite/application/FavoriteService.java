@@ -36,8 +36,12 @@ public class FavoriteService {
         return FavoriteResponse.of(favorite);
     }
 
-    public void deleteFavorite(LoginMember loginMember, Long id) {
-
+    public void deleteFavorite(LoginMember loginMember, final Long id) {
+        final Member member = memberService.findById(loginMember.getId());
+        if (!favoriteRepository.existsByIdAndMember(id, member)) {
+            throw new IllegalArgumentException("해당 유저의 즐겨찾기가 존재하지 않습니다.");
+        }
+        favoriteRepository.deleteById(id);
     }
 
     @Transactional(readOnly = true)

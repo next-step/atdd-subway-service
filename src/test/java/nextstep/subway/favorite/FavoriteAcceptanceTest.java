@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -55,20 +56,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // Then
         즐겨찾기_목록_조회됨(listResponse);
 
-//        // given
-//        Long 생성된_즐겨찾기_아이디 = createResponse.as(FavoriteResponse.class).getId();
-//        // When
-//        final ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(생성된_즐겨찾기_아이디);
-//        // Then
-//        즐겨찾기_삭제됨(deleteResponse);
+        // given
+        Long 생성된_즐겨찾기_아이디 = createResponse.as(FavoriteResponse.class).getId();
+        System.out.println("생성된_즐겨찾기_아이디 :: " + 생성된_즐겨찾기_아이디);
+        // When
+        final ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(토큰, 생성된_즐겨찾기_아이디);
+        // Then
+        즐겨찾기_삭제됨(deleteResponse);
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(Long id) {
+    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(TokenResponse tokenResponse, Long id) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .pathParam("id", id)
-                .when().delete("/favorites/:id")
+                .when().delete("/favorites/{id}")
                 .then().log().all()
                 .extract();
     }

@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 class FavoriteTest {
@@ -52,7 +54,7 @@ class FavoriteTest {
         // when
         final Optional<Favorite> optionalFavorite = favoriteRepository.findById(favorite.getId());
         // then
-        assertThat(optionalFavorite.isPresent()).isTrue();
+        assertTrue(optionalFavorite.isPresent());
         assertThat(optionalFavorite.get().getId()).isEqualTo(favorite.getId());
     }
 
@@ -72,5 +74,35 @@ class FavoriteTest {
         final List<Favorite> favoriteList = favoriteRepository.findAllByMemberId(member.getId());
         // then
         assertThat(favoriteList).containsExactlyInAnyOrderElementsOf(expectedList);
+    }
+
+    @DisplayName("아이디와 유저로 부터 즐겨찾기 존재를 확인한다.")
+    @Test
+    void existsByIdAndMember() {
+        // given
+        final Station firstStation = stationRepository.save(Station.of("1번"));
+        final Station secondStation = stationRepository.save(Station.of("2번"));
+        final Member member = memberRepository.save(new Member("email@email.com", "password", 12));
+        final Favorite favorite = favoriteRepository.save(Favorite.of(member, firstStation, secondStation));
+        // when
+        final boolean exists = favoriteRepository.existsByIdAndMember(favorite.getId(), member);
+        // then
+        assertThat(exists).isTrue();
+    }
+
+    @Test
+    void delete() {
+        // given
+        final Station firstStation = stationRepository.save(Station.of("1번"));
+        final Station secondStation = stationRepository.save(Station.of("2번"));
+        final Member member = memberRepository.save(new Member("email@email.com", "password", 12));
+        final Favorite favorite = favoriteRepository.save(Favorite.of(member, firstStation, secondStation));
+        // when
+        favoriteRepository.deleteById(favorite.getId());
+        entityManager.flush();
+        entityManager.clear();
+        // then
+        final Optional<Favorite> optionalFavorite = favoriteRepository.findById(favorite.getId());
+        assertFalse(optionalFavorite.isPresent());
     }
 }
