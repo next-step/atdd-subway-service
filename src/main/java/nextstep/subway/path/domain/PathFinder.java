@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import nextstep.subway.exception.InvalidArgumentException;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
@@ -35,7 +36,7 @@ public class PathFinder {
     private PathFinder createGraph(List<Line> lines) {
         for (Line line: lines) {
             addVertex(line.getStations());
-            addEdgeWeight(line.getSectionEdges());
+            addEdgeWeight(SectionEdge.fromList(line.getSections()));
         }
         return this;
     }

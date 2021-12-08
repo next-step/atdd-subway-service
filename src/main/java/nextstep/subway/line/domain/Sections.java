@@ -3,7 +3,6 @@ package nextstep.subway.line.domain;
 import static nextstep.subway.utils.Utils.distinctByKey;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,7 +13,6 @@ import javax.persistence.OneToMany;
 import nextstep.subway.exception.CannotAddException;
 import nextstep.subway.exception.CannotDeleteException;
 import nextstep.subway.exception.NotFoundException;
-import nextstep.subway.path.domain.SectionEdge;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -39,6 +37,10 @@ public class Sections {
             .flatMap(it -> it.getUpDownStations())
             .filter(distinctByKey(Station::getName))
             .collect(Collectors.toList());
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 
     public void remove(Section section) {
@@ -169,12 +171,6 @@ public class Sections {
     private Stream<Station> getStationStream() {
         return sections.stream()
             .flatMap(Section::getUpDownStations);
-    }
-
-    public List<SectionEdge> getSectionEdges() {
-        return sections.stream()
-            .map(it -> SectionEdge.from(it))
-            .collect(Collectors.toList());
     }
 
 }

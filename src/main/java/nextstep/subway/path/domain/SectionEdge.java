@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -18,6 +20,12 @@ public final class SectionEdge extends DefaultWeightedEdge {
 
     public static SectionEdge from(Section section) {
         return new SectionEdge(section);
+    }
+
+    public static List<SectionEdge> fromList(List<Section> sections) {
+        return sections.stream()
+            .map(it -> SectionEdge.from(it))
+            .collect(Collectors.toList());
     }
 
     @Override

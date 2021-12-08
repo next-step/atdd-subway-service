@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
@@ -10,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.common.BaseEntity;
-import nextstep.subway.path.domain.SectionEdge;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -70,8 +68,8 @@ public class Line extends BaseEntity {
         return this.sections.getSortedStations();
     }
 
-    public List<SectionEdge> getSectionEdges() {
-        return sections.getSectionEdges();
+    public List<Section> getSections() {
+        return sections.getSections();
     }
 
     public void removeSection(Section section) {
