@@ -31,9 +31,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     private String key;
 
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-
     @Override
     @BeforeEach
     public void setUp() {
@@ -49,7 +46,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
         // then
         String 토큰 = 로그인을_성공하면_토큰을_발급받는다(response);
-        발급한_로그인_토큰이_PK값과_일치함(토큰, key);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
@@ -88,11 +84,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .auth().oauth2(invalidTokenNotFound)
                 .when().get(MEMBERS_ME_URI)
                 .then().log().all().extract();
-    }
-
-    private void 발급한_로그인_토큰이_PK값과_일치함(String token, String key) {
-        String payload = jwtTokenProvider.getPayload(token);
-        assertThat(payload).isEqualTo(key);
     }
 
     public static ExtractableResponse<Response> 로그인_요청함(TokenRequest request) {
