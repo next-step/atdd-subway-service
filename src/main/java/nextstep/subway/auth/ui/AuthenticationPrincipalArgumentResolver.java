@@ -12,7 +12,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import javax.servlet.http.HttpServletRequest;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private AuthService authService;
+    private final AuthService authService;
 
     public AuthenticationPrincipalArgumentResolver(AuthService authService) {
         this.authService = authService;
@@ -26,6 +26,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
+        System.out.println("credentials :: " + credentials);
         return authService.findMemberByToken(credentials);
     }
 }

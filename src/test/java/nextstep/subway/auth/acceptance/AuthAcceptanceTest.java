@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.member.MemberAcceptanceTest.내_정보_조회_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,13 +42,30 @@ class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 로그인 실패")
     @Test
     void myInfoWithBadBearerAuth() {
+        // when
+        ExtractableResponse<Response> response = 로그인_요청(비회원.getEmail(), 비회원.getPassword());
+        // then
+        로그인_실패(response);
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+        // given
+        String 유효하지않은_토큰 = "유효하지않은토큰이라눙!";
+        // when
+        ExtractableResponse<Response> response = 내_정보_조회_요청(유효하지않은_토큰);
+        // then
+        토큰_인증_실패(response);
     }
 
+    private void 토큰_인증_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private void 로그인_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 
     private void 로그인_됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
