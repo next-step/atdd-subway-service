@@ -40,7 +40,7 @@ public class Sections {
 	}
 
 	private boolean isExisted(Station station) {
-		return getStations().stream().anyMatch(it -> it == station);
+		return getStations().stream().anyMatch(existentStation -> existentStation == station);
 	}
 
 	private void validateToConnect(boolean isUpStationExisted, boolean isDownStationExisted) {
@@ -54,12 +54,12 @@ public class Sections {
 
 	private void updateUpStation(Station upStation, Station downStation, int distance) {
 		findFirst(section -> section.equalsUpStation(upStation))
-			.ifPresent(it -> it.updateUpStation(downStation, distance));
+			.ifPresent(section -> section.updateUpStation(downStation, distance));
 	}
 
 	private void updateDownStation(Station upStation, Station downStation, int distance) {
 		findFirst(section -> section.equalsDownStation(downStation))
-			.ifPresent(it -> it.updateDownStation(upStation, distance));
+			.ifPresent(section -> section.updateDownStation(upStation, distance));
 	}
 
 	public void delete(Station station) {
@@ -119,13 +119,13 @@ public class Sections {
 	private boolean hasSectionHavingUpStation(Station station) {
 		return sections.stream()
 			.filter(Section::hasUpStation)
-			.anyMatch(it -> it.equalsUpStation(station));
+			.anyMatch(section -> section.equalsUpStation(station));
 	}
 
 	private boolean hasSectionHavingDownStation(Station station) {
 		return sections.stream()
 			.filter(Section::hasDownStation)
-			.anyMatch(it -> it.equalsDownStation(station));
+			.anyMatch(section -> section.equalsDownStation(station));
 	}
 
 	private Section findSectionHavingUpStation(Station station) {
