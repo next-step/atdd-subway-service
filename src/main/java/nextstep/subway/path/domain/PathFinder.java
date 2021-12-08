@@ -6,27 +6,28 @@ import nextstep.subway.path.exception.PathFindException;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathFinder {
 
-    private final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath;
+    private final DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath;
 
-    private PathFinder(DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath) {
+    private PathFinder(DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath) {
         this.dijkstraShortestPath = dijkstraShortestPath;
     }
 
     public static PathFinder of(Sections sections) {
         validateNonEmpty(sections);
 
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph<>(SectionEdge.class);
 
         for (Section section : sections.getAll()) {
             graph.addVertex(section.getUpStation());
             graph.addVertex(section.getDownStation());
 
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+            SectionEdge sectionEdge = SectionEdge.of(section);
+            graph.addEdge(section.getUpStation(), section.getDownStation(), sectionEdge);
+            graph.setEdgeWeight(sectionEdge, section.getDistance());
         }
 
         return new PathFinder(new DijkstraShortestPath<>(graph));
@@ -38,18 +39,36 @@ public class PathFinder {
         }
     }
 
-    public Path findShortestPath(Station source, Station target) {
+    public Path findShortestPath(AgeType ageType, Station source, Station target) {
         validateRequestStation(source, target);
 
-        try {
-            GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(source, target);
+        GraphPath<Station, SectionEdge> graphPath = getShortestPath(source, target);
+        int price = PriceCalculator.process(ageType, (int) graphPath.getWeight(), findAdditionalPrice(graphPath));
 
-            return Path.of(graphPath.getVertexList(), (int) graphPath.getWeight());
+        return Path.of(graphPath.getVertexList(), (int) graphPath.getWeight(), price);
+    }
+
+    private GraphPath<Station, SectionEdge> getShortestPath(Station source, Station target) {
+        GraphPath<Station, SectionEdge> graphPath;
+        try {
+            graphPath = dijkstraShortestPath.getPath(source, target);
         } catch (IllegalArgumentException illegalArgumentException) {
             throw new PathFindException("출발역 또는 도착역이 전체 구간에 포함되지 않았습니다.");
-        } catch (NullPointerException nullPointerException) {
+        }
+
+        if (graphPath == null) {
             throw new PathFindException("출발역과 도착역이 연결되어 있지 않습니다.");
         }
+
+        return graphPath;
+    }
+
+    private int findAdditionalPrice(GraphPath<Station, SectionEdge> graphPath) {
+        return graphPath.getEdgeList()
+                .stream()
+                .map(SectionEdge::getAdditionalPrice)
+                .max(Integer::compareTo)
+                .orElse(0);
     }
 
     private void validateRequestStation(Station source, Station target) {

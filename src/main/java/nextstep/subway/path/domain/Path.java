@@ -8,14 +8,20 @@ import java.util.List;
 public class Path {
     private final List<Station> stations;
     private final int distance;
+    private final int price;
 
-    private Path(List<Station> stations, int distance) {
+    private Path(List<Station> stations, int distance, int price) {
         this.stations = stations;
         this.distance = distance;
+        this.price = price;
+    }
+
+    public static Path of(List<Station> stations, int distance, int price) {
+        return new Path(stations, distance, price);
     }
 
     public static Path of(List<Station> stations, int distance) {
-        return new Path(stations, distance);
+        return new Path(stations, distance, 0);
     }
 
     public int getPathSize() {
@@ -28,5 +34,9 @@ public class Path {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getPrice() {
+        return price;
     }
 }
