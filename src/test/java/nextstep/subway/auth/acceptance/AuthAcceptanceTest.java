@@ -4,6 +4,7 @@ import nextstep.subway.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("로그인 관련 기능")
 public class AuthAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("Bearer Auth")
