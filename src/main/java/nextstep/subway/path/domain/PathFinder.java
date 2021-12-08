@@ -17,7 +17,7 @@ public class PathFinder {
     private List<Line> lines;
     private WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
-    public PathFinder(List<Line> lines, WeightedMultigraph graph) {
+    private PathFinder(List<Line> lines, WeightedMultigraph graph) {
         this.lines = lines;
         this.graph = graph;
     }
