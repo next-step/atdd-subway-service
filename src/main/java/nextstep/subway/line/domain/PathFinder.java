@@ -10,7 +10,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-import java.util.Objects;
+import java.util.Optional;
 
 public class PathFinder {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
@@ -26,12 +26,14 @@ public class PathFinder {
     public GraphPath<Station, DefaultWeightedEdge> findPaths(final Station source, final Station target) {
         isNotEnrolledStations(source, target);
         isEqualsTwoStations(source, target);
+        return findPathsToOptional(source, target).orElseThrow(NotFoundPathsException::new);
+    }
+
+    private Optional<GraphPath<Station, DefaultWeightedEdge>> findPathsToOptional(final Station source, final Station target) {
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, DefaultWeightedEdge> findPath = dijkstraShortestPath.getPath(source, target);
 
-        isNotFoundPaths(findPath);
-
-        return findPath;
+        return Optional.ofNullable(findPath);
     }
 
     public void isNotEnrolledStations(final Station source, final Station target) {
@@ -49,13 +51,6 @@ public class PathFinder {
             throw new IsEqualsTwoStationsException();
         }
     }
-
-    public void isNotFoundPaths(final GraphPath<Station, DefaultWeightedEdge> path) {
-        if(Objects.isNull(path)){
-            throw new NotFoundPathsException();
-        }
-    }
-
 
     private PathFinder createGraph(Sections sections) {
         addGraphVertex(sections.getAllStationsBySections());

@@ -94,12 +94,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성_실패됨(response);
     }
 
-    @DisplayName("등록되지 않는 즐겨찾기를 삭제했을 경우")
-    @Test
-    void notFoundFavorite() {
-
-    }
-
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(Long source, Long target) {
         PathRequest saveRequest = new PathRequest(source, target);
         return RestAssured

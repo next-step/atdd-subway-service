@@ -7,6 +7,8 @@ import nextstep.subway.exception.NotRemovableSectionsSize;
 import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
+import org.jgrapht.GraphPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -143,7 +145,8 @@ public class Sections {
 
     public PathResponse generatePaths(final Station source, final Station target) {
         PathFinder graph = new PathFinder().enrollPaths(this);
-        return new PathResponse(graph.findPaths(source, target));
+        GraphPath<Station, DefaultWeightedEdge> paths = graph.findPaths(source, target);
+        return new PathResponse(paths);
     }
 
     public Stations getAllStationsBySections() {

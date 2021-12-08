@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 public class PathResponse {
     private List<StationResponse> stations;
     private int distance;
+    private Fare fare;
 
     private PathResponse() {
     }
@@ -24,6 +25,7 @@ public class PathResponse {
                 .collect(Collectors.toList());
 
         this.distance = (int) graphPath.getWeight();
+        this.fare = Fare.ofByDistance(this.distance);
     }
 
     public List<StationResponse> getStations() {
@@ -32,6 +34,10 @@ public class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getFare() {
+        return fare.getFare();
     }
 
     @Override

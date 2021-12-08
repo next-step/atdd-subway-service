@@ -16,6 +16,8 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    @Embedded
+    private Surcharge surcharge;
 
     @Embedded
     private final Sections sections = new Sections();
@@ -26,11 +28,13 @@ public class Line extends BaseEntity {
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
+        this.surcharge = Surcharge.nonSurcharge();
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
+        this.surcharge = Surcharge.nonSurcharge();
         addSection(new Section(this, upStation, downStation, distance));
     }
 
