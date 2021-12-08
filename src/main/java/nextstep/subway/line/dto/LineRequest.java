@@ -5,6 +5,7 @@ import nextstep.subway.line.domain.Line;
 public class LineRequest extends SectionRequest{
     private String name;
     private String color;
+    private int surcharge;
 
     public LineRequest() {
     }
@@ -13,6 +14,14 @@ public class LineRequest extends SectionRequest{
         super(upStationId, downStationId, distance);
         this.name = name;
         this.color = color;
+        this.surcharge = 0;
+    }
+
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, int surcharge) {
+        super(upStationId, downStationId, distance);
+        this.name = name;
+        this.color = color;
+        this.surcharge = surcharge;
     }
 
     public String getName() {
@@ -23,7 +32,11 @@ public class LineRequest extends SectionRequest{
         return color;
     }
 
+    public int getSurcharge() {
+        return surcharge;
+    }
+
     public Line toLine() {
-        return new Line(name, color);
+        return new Line(name, color, surcharge);
     }
 }
