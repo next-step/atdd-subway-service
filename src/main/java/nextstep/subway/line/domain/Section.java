@@ -31,7 +31,7 @@ public class Section {
 
     private Section(Line line, Station upStation, Station downStation, int distance) {
         validateDuplicate(upStation, downStation);
-        this.line = Objects.requireNonNull(line, "노선의 정보가 입력되지 않았습니다.");;
+        this.line = Objects.requireNonNull(line, "노선의 정보가 입력되지 않았습니다.");
         this.upStation = Objects.requireNonNull(upStation, "종점역 정보가 입력되지 않았습니다.");
         this.downStation = Objects.requireNonNull(downStation, "종점역 정보가 입력되지 않았습니다.");
         this.distance = Distance.from(distance);
