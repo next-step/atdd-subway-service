@@ -4,6 +4,8 @@ import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.*;
+
 
 @Entity
 public class Section {
@@ -11,15 +13,15 @@ public class Section {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = LAZY)
     @JoinColumn(name = "line_id")
     private Line line;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = LAZY)
     @JoinColumn(name = "up_station_id")
     private Station upStation;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = LAZY)
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
@@ -61,7 +63,7 @@ public class Section {
     }
 
     public boolean upStationEqualTo(Long stationId) {
-        return upStation.getId().equals(stationId);
+        return upStation.equals(stationId);
     }
 
     public Long getId() {

@@ -13,7 +13,9 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -22,13 +24,13 @@ public class LineService {
     private final LineRepository lineRepository;
     private final StationService stationService;
 
-    private Line findLine(Long id) {
-        return lineRepository.findById(id)
-                .orElseThrow(LineNotFoundException::new);
+    public List<LineResponse> findLines() {
+        return LineResponse.ofList(lineRepository.findLines());
     }
 
-    public List<LineResponse> findLines() {
-        return LineResponse.ofList(lineRepository.findAll());
+    public Line findLine(Long id) throws LineNotFoundException {
+        return lineRepository.findLine(id)
+                .orElseThrow(LineNotFoundException::new);
     }
 
     public LineResponse findLineResponseById(Long id) {

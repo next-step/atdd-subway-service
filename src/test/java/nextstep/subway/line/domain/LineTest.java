@@ -1,7 +1,7 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.line.exception.distance.IllegalDistanceException;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.line.exception.distance.IllegalDistanceException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

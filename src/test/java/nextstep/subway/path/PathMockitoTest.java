@@ -1,10 +1,11 @@
 package nextstep.subway.path;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.domain.JGraphPathFinder;
 import nextstep.subway.path.application.PathService;
-import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.infrastructure.JGraphPathFinder;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.assertj.core.util.Lists;
@@ -13,10 +14,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -60,16 +62,16 @@ public class PathMockitoTest {
         when(lineRepository.findAll()).thenReturn(lines);
         when(stationRepository.findAll()).thenReturn(stations);
 
-        when(pathFinder.getShortestPath(lines, stations, 1L, 2L))
-                .thenReturn(PathResponse.of(
-                        Arrays.asList(new Station("강남역"), new Station("역삼역"))));
+        when(pathFinder.getShortestPath(anyList(), anyList(), anyLong(), anyLong()))
+                .thenReturn(Path.of(new Station("1"), new Station("2"), stations, Distance.of(5)));
 
         PathService pathService = new PathService(pathFinder, stationRepository, lineRepository);
 
         // when
-        PathResponse response = pathService.getShortestPath(1L, 2L);
+        Path response = pathService.getShortestPath(1L, 2L);
 
         // then
-        assertThat(response.getStations()).hasSize(2);
+        assertThat(response.routes()).hasSize(2);
+        assertThat(response.distance()).isEqualTo(Distance.of(5));
     }
 }

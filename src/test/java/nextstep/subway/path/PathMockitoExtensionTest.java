@@ -1,12 +1,13 @@
 package nextstep.subway.path;
 
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.path.domain.JGraphPathFinder;
 import nextstep.subway.path.application.PathService;
-import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.infrastructure.JGraphPathFinder;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -18,9 +19,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 /**
@@ -50,8 +54,7 @@ public class PathMockitoExtensionTest {
     @Test
     @DisplayName("역 조회")
     void findStations() {
-        when(stationRepository.findAll())
-                .thenReturn(Lists.newArrayList(강남역, 역삼역));
+        when(stationRepository.findAll()).thenReturn(Lists.newArrayList(강남역, 역삼역));
 
         StationService stationService = new StationService(stationRepository);
 
@@ -63,10 +66,12 @@ public class PathMockitoExtensionTest {
     @Test
     @DisplayName("노선 조회")
     void findLines() {
-        when(lineRepository.findAll())
-                .thenReturn(
-                        Lists.newArrayList(
-                                Line.of("1호선", "남색", 강남역, 역삼역, 5)));
+        when(lineRepository.findLines()).thenReturn(
+                Lists.newArrayList(
+                        Line.of("1호선", "남색", 강남역, 역삼역, 5)
+                )
+        );
+
         StationService stationService = new StationService(stationRepository);
         LineService lineService = new LineService(lineRepository, stationService);
 
@@ -81,25 +86,26 @@ public class PathMockitoExtensionTest {
     void findPaths() throws Exception {
         // given
         List<Line> lines = Lists.newArrayList(
-                Line.of("1호선", "남색", 강남역, 역삼역, 5));
+                Line.of("1호선", "남색", 강남역, 역삼역, 5)
+        );
 
         List<Station> stations = Lists.newArrayList(강남역, 역삼역);
 
-        when(stationRepository.findAll())
-                .thenReturn(stations);
+        when(stationRepository.findAll()).thenReturn(stations);
 
-        when(lineRepository.findAll())
-                .thenReturn(lines);
+        when(lineRepository.findAll()).thenReturn(lines);
 
-        when(finder.getShortestPath(lines, stations, 강남역.getId(), 역삼역.getId()))
-                .thenReturn(PathResponse.of(Lists.newArrayList(new Station(""), new Station(""))));
+        when(finder.getShortestPath(anyList(), anyList(), anyLong(), anyLong())).thenReturn(
+                Path.of(new Station("1"), new Station("2"), stations, Distance.of(5))
+        );
 
         PathService pathService = new PathService(finder, stationRepository, lineRepository);
 
         // when
-        PathResponse response = pathService.getShortestPath(강남역.getId(), 역삼역.getId());
+        Path response = pathService.getShortestPath(강남역.getId(), 역삼역.getId());
 
         // then
-        assertThat(response.getStations()).hasSize(2);
+        assertThat(response.routes()).hasSize(2);
+        assertThat(response.distance()).isEqualTo(Distance.of(5));
     }
 }

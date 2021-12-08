@@ -1,30 +1,24 @@
 package nextstep.subway.member.application;
 
-import nextstep.subway.member.exception.MemberNotFoundException;
+import lombok.RequiredArgsConstructor;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import nextstep.subway.member.exception.MemberNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-
-    public MemberService(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
-    }
 
     @Transactional
     public MemberResponse createMember(MemberRequest request) {
         Member member = memberRepository.save(request.toMember());
         return MemberResponse.of(member);
-    }
-
-    public MemberResponse findMember(Long id) {
-        return MemberResponse.of(findMemberById(id));
     }
 
     @Transactional
@@ -36,6 +30,10 @@ public class MemberService {
     @Transactional
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public MemberResponse findMember(Long id) {
+        return MemberResponse.of(findMemberById(id));
     }
 
     private Member findMemberById(Long id) {

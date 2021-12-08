@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,7 +31,7 @@ public class MockitoExtensionTest {
     @DisplayName("노선 조회")
     void findAllLines() {
         // given
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(Line.of("", "")));
+        when(lineRepository.findLines()).thenReturn(Lists.newArrayList(Line.of("", "")));
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when

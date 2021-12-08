@@ -1,6 +1,7 @@
 package nextstep.subway.path.dto;
 
 import lombok.NoArgsConstructor;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -30,6 +31,10 @@ public class PathResponse {
                         .collect(Collectors.toList());
 
         return new PathResponse(stationResponses);
+    }
+
+    public static PathResponse of(Path path) {
+        return PathResponse.of(path.routes());
     }
 
     public List<StationResponse> getStations() {

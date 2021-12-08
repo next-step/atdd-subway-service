@@ -4,19 +4,22 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String email;
+
     private String password;
+
     private Integer age;
+
+    @Embedded
+    private final Favorites favorites = new Favorites();
 
     protected Member() {
     }
@@ -25,6 +28,26 @@ public class Member extends BaseEntity {
         this.email = email;
         this.password = password;
         this.age = age;
+    }
+
+    public void update(Member member) {
+        this.email = member.email;
+        this.password = member.password;
+        this.age = member.age;
+    }
+
+    public void checkPassword(String password) {
+        if (!StringUtils.equals(this.password, password)) {
+            throw new AuthorizationException();
+        }
+    }
+
+    public void addFavorite(Favorite favorite) {
+        favorites.add(favorite.by(this));
+    }
+
+    public void removeFavorite(Long favoriteId) {
+        favorites.remove(favoriteId);
     }
 
     public Long getId() {
@@ -43,15 +66,7 @@ public class Member extends BaseEntity {
         return age;
     }
 
-    public void update(Member member) {
-        this.email = member.email;
-        this.password = member.password;
-        this.age = member.age;
-    }
-
-    public void checkPassword(String password) {
-        if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
-        }
+    public Favorites getFavorites() {
+        return favorites;
     }
 }

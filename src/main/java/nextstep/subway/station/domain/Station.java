@@ -10,7 +10,7 @@ public class Station extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @Column(unique = true)
     private String name;
 
@@ -19,6 +19,10 @@ public class Station extends BaseEntity {
 
     public Station(String name) {
         this.name = name;
+    }
+
+    public boolean equals(Long id) {
+        return Objects.equals(this.id, id);
     }
 
     public Long getId() {

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
  * date : 2021/12/04
  * description : 경로 컨트롤러
  */
-
 @RestController
 @RequestMapping("paths")
 @RequiredArgsConstructor
@@ -26,7 +25,7 @@ public class PathController {
     @GetMapping
     public ResponseEntity<PathResponse> getShortestPath(@RequestParam(name = "source") Long source,
                                                         @RequestParam(name = "target") Long target) {
-        PathResponse response = pathService.getShortestPath(source, target);
-        return ResponseEntity.ok().body(response);
+        PathResponse path = PathResponse.of(pathService.getShortestPath(source, target));
+        return ResponseEntity.ok().body(path);
     }
 }
