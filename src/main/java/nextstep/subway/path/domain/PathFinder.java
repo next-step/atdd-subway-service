@@ -4,19 +4,17 @@ import java.util.List;
 import nextstep.subway.exception.InvalidArgumentException;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.domain.jgrapht.WeightedMultiStationGraph;
 import nextstep.subway.station.domain.Station;
 
 public class PathFinder {
     private final StationGraph stationGraph;
 
-    private PathFinder(StationGraph stationGraph) {
+    public PathFinder(StationGraph stationGraph) {
         this.stationGraph = stationGraph;
     }
 
-    public static PathFinder createWeightedMultiStationGraph(List<Line> lines) {
-        return new PathFinder(new WeightedMultiStationGraph().createGraph(lines));
+    public static PathFinder create(StationGraph stationGraph, List<Line> lines) {
+        return new PathFinder(stationGraph.createGraph(lines));
     }
 
     public Path findShortestPath(Station fromStation, Station toStation) {
