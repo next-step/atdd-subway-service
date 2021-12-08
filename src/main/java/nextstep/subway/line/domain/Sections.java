@@ -60,8 +60,10 @@ public class Sections {
     }
 
     public void updateOriginSectionByAdded(Section section) {
-        updateByUpStation(section);
-        updateByDownStation(section);
+        boolean upStationUpdated = updateByUpStation(section);
+        if (!upStationUpdated) {
+            updateByDownStation(section);
+        }
     }
 
     public void removeLineStation(Station station) {
@@ -104,11 +106,15 @@ public class Sections {
         }
     }
 
-    private void updateByUpStation(Section section) {
-        sections.stream()
+    private boolean updateByUpStation(Section section) {
+        Optional<Section> optional = sections.stream()
             .filter(it -> it.isUpStationOfSection(section))
-            .findFirst()
-            .ifPresent(it -> it.updateUpStationBySection(section));
+            .findFirst();
+        optional.ifPresent(it -> it.updateUpStationBySection(section));
+        if (optional.isPresent()) {
+            return true;
+        }
+        return false;
     }
 
     private void updateByDownStation(Section section) {

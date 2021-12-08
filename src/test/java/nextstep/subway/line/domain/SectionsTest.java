@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.List;
 import nextstep.subway.exception.CannotDeleteException;
@@ -18,23 +17,10 @@ import org.junit.jupiter.api.Test;
 @DisplayName("구간 목록 클래스 테스트")
 public class SectionsTest {
 
-    private static final Station 서울역 = mock(Station.class);
-    private static final Station 남영역 = mock(Station.class);
-    private static final Station 용산역 = mock(Station.class);
-    private static final Station 노량진역 = mock(Station.class);
-    static {
-        when(서울역.getId()).thenReturn(1L);
-        when(서울역.getName()).thenReturn("서울역");
-
-        when(남영역.getId()).thenReturn(2L);
-        when(남영역.getName()).thenReturn("남영역");
-
-        when(용산역.getId()).thenReturn(3L);
-        when(용산역.getName()).thenReturn("용산역");
-
-        when(노량진역.getId()).thenReturn(4L);
-        when(노량진역.getName()).thenReturn("노량진역");
-    }
+    private static final Station 서울역 = new Station("서울역");
+    private static final Station 남영역 = new Station("남영역");
+    private static final Station 용산역 = new Station("용산역");
+    private static final Station 노량진역 = new Station("노량진역");
 
     @Test
     @DisplayName("서울역-남영역-용산역-노량진역 으로 정렬된 목록 조회")
@@ -107,7 +93,6 @@ public class SectionsTest {
 
         //when
         sections.updateOriginSectionByAdded(Section.create(남영역, 용산역, Distance.valueOf(5)));
-
         List<Station> stations = sections.getSortedStations();
         //then
         assertThat(stations).extracting(Station::getName)

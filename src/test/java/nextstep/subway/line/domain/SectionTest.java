@@ -5,10 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-import nextstep.subway.exception.InvalidArgumentException;
+import nextstep.subway.exception.CannotAddException;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,19 +14,9 @@ import org.junit.jupiter.api.Test;
 @DisplayName("구간 도메인 테스트")
 public class SectionTest {
 
-    private static final Station 서울역 = mock(Station.class);
-    private static final Station 남영역 = mock(Station.class);
-    private static final Station 용산역 = mock(Station.class);
-    static {
-        when(서울역.getId()).thenReturn(1L);
-        when(서울역.getName()).thenReturn("서울역");
-
-        when(남영역.getId()).thenReturn(2L);
-        when(남영역.getName()).thenReturn("남영역");
-
-        when(용산역.getId()).thenReturn(3L);
-        when(용산역.getName()).thenReturn("용산역");
-    }
+    private static final Station 서울역 = new Station("서울역");
+    private static final Station 남영역 = new Station("남영역");
+    private static final Station 용산역 = new Station("용산역");
 
     @Test
     @DisplayName("상행-하행 구분 테스트")
@@ -81,7 +69,7 @@ public class SectionTest {
         final Section 서울_용산 = Section.create(서울역, 용산역, Distance.valueOf(10));
 
         assertThatThrownBy(() -> 서울_용산.updateDownStationBySection(남영_용산))
-            .isInstanceOf(InvalidArgumentException.class)
+            .isInstanceOf(CannotAddException.class)
             .hasMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요.");
     }
 
@@ -92,7 +80,7 @@ public class SectionTest {
         final Section 서울_용산 = Section.create(서울역, 용산역, Distance.valueOf(10));
 
         assertThatThrownBy(() -> 서울_용산.updateDownStationBySection(남영_용산))
-            .isInstanceOf(InvalidArgumentException.class)
+            .isInstanceOf(CannotAddException.class)
             .hasMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요.");
     }
 }

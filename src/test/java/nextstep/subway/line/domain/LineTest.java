@@ -2,8 +2,6 @@ package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.List;
 import nextstep.subway.station.domain.Station;
@@ -13,28 +11,15 @@ import org.junit.jupiter.api.Test;
 @DisplayName("노선 도메인 테스트")
 public class LineTest {
 
-    private static final Station 서울역 = mock(Station.class);
-    private static final Station 용산역 = mock(Station.class);
-    static {
-        when(서울역.getId()).thenReturn(1L);
-        when(서울역.getName()).thenReturn("서울역");
-
-        when(용산역.getId()).thenReturn(2L);
-        when(용산역.getName()).thenReturn("용산역");
-    }
+    private final Station 서울역 = new Station("서울역");
+    private final Station 용산역 = new Station("용산역");
     final Line line = Line.of("1호선", "blue", 서울역, 용산역, 10);
 
     @Test
     @DisplayName("라인에 포함된 역목록 조회")
     void getStations() {
-        final Station 남영역 = mock(Station.class);
-        final Station 노량진역 = mock(Station.class);
-
-        when(남영역.getId()).thenReturn(3L);
-        when(남영역.getName()).thenReturn("남영역");
-
-        when(노량진역.getId()).thenReturn(4L);
-        when(노량진역.getName()).thenReturn("노량진역");
+        final Station 남영역 = new Station("남영역");
+        final Station 노량진역 = new Station("노량진역");
 
         line.addLineStation(Section.create(서울역, 남영역, Distance.valueOf(5)));
         line.addLineStation(Section.create(용산역, 노량진역, Distance.valueOf(8)));
@@ -49,10 +34,7 @@ public class LineTest {
     @Test
     @DisplayName("라인에 구간 추가")
     void addLineStation() {
-        final Station 남영역 = mock(Station.class);
-
-        when(남영역.getId()).thenReturn(3L);
-        when(남영역.getName()).thenReturn("남영역");
+        final Station 남영역 = new Station("남영역");
 
         //when
         line.addLineStation(Section.create(서울역, 남영역, Distance.valueOf(5)));
@@ -86,10 +68,8 @@ public class LineTest {
     @Test
     @DisplayName("연결된 역이 없는 구간 추가시 실패")
     void addLineStationNoIncludeFail() {
-        final Station 강남역 = mock(Station.class);
-        final Station 역삼역 = mock(Station.class);
-        when(강남역.getId()).thenReturn(3L);
-        when(역삼역.getId()).thenReturn(4L);
+        final Station 강남역 = new Station("강남역");
+        final Station 역삼역 = new Station("역삼역");
 
         assertThatThrownBy(
             () -> line.addLineStation(Section.create(강남역, 역삼역, Distance.valueOf(10))))
@@ -101,8 +81,7 @@ public class LineTest {
     @DisplayName("노선에서 구간 삭제")
     void removeLineStation() {
 
-        final Station 남영역 = mock(Station.class);
-        when(남영역.getId()).thenReturn(3L);
+        final Station 남영역 = new Station("남영역");
 
         line.addLineStation(Section.create(서울역, 남영역, Distance.valueOf(5)));
 
@@ -127,12 +106,8 @@ public class LineTest {
     @Test
     @DisplayName("노선에 포함되지 않은 역 삭제 시 실패")
     void removeLineStationNonIncludeFail() {
-        final Station 남영역 = mock(Station.class);
-        final Station 강남역 = mock(Station.class);
-
-        when(남영역.getId()).thenReturn(3L);
-        when(강남역.getId()).thenReturn(4L);
-
+        final Station 남영역 = new Station("남영역");
+        final Station 강남역 = new Station("강남역");
         line.addLineStation(Section.create(서울역, 남영역, Distance.valueOf(5)));
 
         assertThatThrownBy(() -> line.removeLineStation(강남역))

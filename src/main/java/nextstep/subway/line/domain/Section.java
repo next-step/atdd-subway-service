@@ -92,11 +92,11 @@ public class Section extends BaseEntity {
     }
 
     public boolean isDownStationOfSection(Section section) {
-        return this.downStation.equals(section.downStation);
+        return isDownStation(section.downStation);
     }
 
     public boolean isUpStationOfSection(Section section) {
-        return this.upStation.equals(section.upStation);
+        return isUpStation(section.upStation);
     }
 
     public boolean equalsDistance(int distance) {
@@ -104,11 +104,11 @@ public class Section extends BaseEntity {
     }
 
     public boolean isUpStation(Station upStation) {
-        return this.upStation.equals(upStation);
+        return this.upStation.equalsName(upStation);
     }
 
     public boolean isDownStation(Station station) {
-        return this.downStation.equals(station);
+        return this.downStation.equalsName(station);
     }
 
     public boolean isTheDownLine(Section section) {
@@ -151,7 +151,7 @@ public class Section extends BaseEntity {
     }
 
     protected boolean equalsSection(Section section) {
-        return upStation.equals(section.upStation) && downStation.equals(section.downStation);
+        return isUpStation(section.upStation) && isDownStation(section.downStation);
     }
 
     private Distance minus(Section section) {

@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -43,14 +42,14 @@ class LineServiceTest {
     @InjectMocks
     LineService lineService;
 
-    @Mock
     private Station seoulStation;
-    @Mock
     private Station yongsanStation;
     private Line line;
 
     @BeforeEach
     public void setUp() {
+        seoulStation = new Station("서울역");
+        yongsanStation = new Station("용산역");
         // given 지하철 역 저장되어 있음
         line = Line.of("1호선", "blue", seoulStation, yongsanStation, 10);
     }
@@ -58,9 +57,6 @@ class LineServiceTest {
     @Test
     @DisplayName("라인 저장")
     void saveLine() {
-
-        when(seoulStation.getName()).thenReturn("서울역");
-        when(yongsanStation.getName()).thenReturn("용산역");
 
         when(stationService.findStation(1L))
             .thenReturn(seoulStation);
@@ -86,9 +82,6 @@ class LineServiceTest {
     void findLines() {
         //given 노선, 지하철 역 저장되어 있음
 
-        when(seoulStation.getName()).thenReturn("서울역");
-        when(yongsanStation.getName()).thenReturn("용산역");
-
         when(lineRepository.findAll())
             .thenReturn(Arrays.asList(line));
 
@@ -104,9 +97,6 @@ class LineServiceTest {
     @Test
     @DisplayName("라인 ID로 한건 조회")
     void findLineResponseById() {
-
-        when(seoulStation.getName()).thenReturn("서울역");
-        when(yongsanStation.getName()).thenReturn("용산역");
 
         //given 라인 저장되어 있음
         when(lineRepository.findById(1L))
@@ -146,11 +136,7 @@ class LineServiceTest {
     @Test
     @DisplayName("라인에 구간 추가")
     void addLineStation() {
-        Station addStation = mock(Station.class);
-
-        when(seoulStation.getName()).thenReturn("서울역");
-        when(yongsanStation.getName()).thenReturn("용산역");
-        when(addStation.getName()).thenReturn("남영역");
+        Station addStation = new Station("남영역");
 
         when(stationService.findStation(1L))
             .thenReturn(seoulStation);
@@ -169,10 +155,7 @@ class LineServiceTest {
     @Test
     @DisplayName("라인에 포함된 역 삭제")
     void removeLineStation() {
-        Station addStation = mock(Station.class);
-
-        when(seoulStation.getName()).thenReturn("서울역");
-        when(yongsanStation.getName()).thenReturn("용산역");
+        Station addStation = new Station("남영역");
 
         when(stationService.findStation(2L))
             .thenReturn(addStation);
