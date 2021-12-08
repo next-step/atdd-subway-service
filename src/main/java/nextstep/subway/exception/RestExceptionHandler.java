@@ -12,6 +12,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class RestExceptionHandler {
 
+    @ExceptionHandler(InvalidRequestException.class)
+    public ResponseEntity<ErrorResponse> handlePathFindException(InvalidRequestException invalidRequestException) {
+        ErrorResponse errorResponse = new ErrorResponse(invalidRequestException.getMessage());
+
+        return ResponseEntity.badRequest()
+                .body(errorResponse);
+    }
+
     @ExceptionHandler(PathFindException.class)
     public ResponseEntity<ErrorResponse> handlePathFindException(PathFindException pathFindException) {
         ErrorResponse errorResponse = new ErrorResponse(pathFindException.getMessage());
