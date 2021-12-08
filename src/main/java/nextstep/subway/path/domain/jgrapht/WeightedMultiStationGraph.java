@@ -40,7 +40,7 @@ public class WeightedMultiStationGraph implements StationGraph {
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
         if (path == null ) {
-            throw new NotFoundException("점접이 없습니다.");
+            throw new NotFoundException("접점이 없습니다.");
         }
         return Path.of(path.getVertexList(), Double.valueOf(path.getWeight()).intValue());
     }
