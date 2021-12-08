@@ -1,5 +1,8 @@
 package nextstep.subway.path;
 
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.dto.LineRequest;
@@ -13,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,14 +65,25 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("최단거리 테스트")
-    void shortestPathTest(){
-        PathResponse pathResponse = pathService.findPath(교대역.getId(), 양재역.getId());
+    void shortestPathTest() {
+        ExtractableResponse<Response> response = 최단_거리_요청(교대역.getId(), 양재역.getId());
+        PathResponse pathResponse = response.as(PathResponse.class);
+
         assertThat(pathResponse.getDistance()).isEqualTo(5);
         List<String> stationNames = pathResponse.getStations().stream()
-                        .map(it-> it.getName())
-                                .collect(Collectors.toList());
+                .map(it -> it.getName())
+                .collect(Collectors.toList());
         assertThat(stationNames).contains("교대역", "남부터미널역", "양재역");
 
+    }
+
+    public static ExtractableResponse<Response> 최단_거리_요청(Long sourceId, Long targetId) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={sourceId}&target={targetId}", sourceId, targetId)
+                .then().log().all()
+                .extract();
     }
 
     private void 지하철_노선에_지하철역_등록되어_있음(LineResponse lineResponse, StationResponse upStation, StationResponse downStation, int distance) {

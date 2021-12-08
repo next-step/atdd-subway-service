@@ -12,7 +12,7 @@ public class PathResponse {
     private List<StationResponse> stations;
     private Distance distance;
 
-    protected PathResponse() {
+    public PathResponse() {
 
     }
 
