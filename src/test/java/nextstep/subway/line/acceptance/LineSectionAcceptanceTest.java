@@ -42,6 +42,35 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
+    @DisplayName("지하철 구간을 관리한다.")
+    @Test
+    void managerLineSection() {
+
+        // when
+        ExtractableResponse<Response> 등록Response = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
+
+        // then
+        지하철_노선에_지하철역_등록됨(등록Response);
+
+        // when
+        ExtractableResponse<Response> 등록조회Response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+
+        // then
+        지하철_노선에_지하철역_순서_정렬됨(등록조회Response, Arrays.asList(강남역, 양재역, 광교역));
+
+        // when
+        ExtractableResponse<Response> 제외Response = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+
+        // then
+        지하철_노선에_지하철역_제외됨(제외Response);
+        
+        // when
+        ExtractableResponse<Response> 제외조회Response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+
+        // then
+        지하철_노선에_지하철역_순서_정렬됨(제외조회Response, Arrays.asList(강남역, 광교역));
+    }
+
     @DisplayName("지하철 구간을 등록한다.")
     @Test
     void addLineSection() {
