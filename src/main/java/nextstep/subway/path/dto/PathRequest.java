@@ -1,4 +1,4 @@
-package nextstep.subway.path;
+package nextstep.subway.path.dto;
 
 public class PathRequest {
     private Long source;
