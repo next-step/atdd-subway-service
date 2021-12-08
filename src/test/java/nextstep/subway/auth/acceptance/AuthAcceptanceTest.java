@@ -62,7 +62,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBadBearerAuth_password() {
         // when
-        ExtractableResponse<Response> 로그인_응답 = 로그인_요청(INVALID_EMAIL, INVALID_PASSWORD);
+        ExtractableResponse<Response> 로그인_응답 = 로그인_요청(EMAIL, INVALID_PASSWORD);
 
         // then
         로그인_실패(로그인_응답);
