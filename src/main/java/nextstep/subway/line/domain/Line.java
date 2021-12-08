@@ -1,7 +1,6 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.common.constant.Constants;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -77,15 +76,7 @@ public class Line extends BaseEntity {
     }
 
     public void removeSectionByStationId(final Station station) {
-        this.sections.merge(station, this);
-    }
-
-    public boolean isOneSection() {
-        return this.sections.getSections().size() == Constants.INT_ONE;
-    }
-
-    public boolean isNoSection() {
-        return this.sections.getSections().size() == Constants.INT_ZERO;
+        this.sections.merge(station);
     }
 
     @Override

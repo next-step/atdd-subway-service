@@ -1,7 +1,6 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.common.exception.*;
-import nextstep.subway.common.message.Message;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -16,6 +15,9 @@ import java.util.stream.Stream;
 
 @Embeddable
 public class Sections {
+    private static final int INT_ONE = 1;
+    private static final int INT_ZERO = 0;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "line_id")
     private List<Section> sections;
@@ -99,10 +101,10 @@ public class Sections {
         Station upStation = section.getUpStation();
         Station downStation = section.getDownStation();
         if (line.isContainStation(upStation) && line.isContainStation(downStation)) {
-            throw new RegisterAllIncludeException(Message.NOT_REGISTER_ALL_INCLUDE.getMessage());
+            throw new RegisterAllIncludeException();
         }
         if (line.isContainStation(upStation) == false && line.isContainStation(downStation) == false) {
-            throw new RegisterNotAllIncludeException(Message.NOT_REGISTER_NOT_ALL_INCLUDE.getMessage());
+            throw new RegisterNotAllIncludeException();
         }
     }
 
@@ -121,8 +123,8 @@ public class Sections {
                 .collect(Collectors.toList());
     }
 
-    public void merge(Station station, Line line) {
-        validateDeleteSection(line);
+    public void merge(Station station) {
+        validateDeleteSection();
 
         final Section downSection = getDownSection(station);
         final Section upSection = getUpSection(station);
@@ -134,22 +136,31 @@ public class Sections {
         return sections.stream()
                 .filter(section -> section.isDownStationEquals(station))
                 .findFirst()
-                .orElseThrow(() -> new NotFoundException(Message.NOT_FIND_STATION.getMessage()));
+                .orElseThrow(() -> new NotFoundException());
     }
 
     private Section getUpSection(Station station) {
         return sections.stream()
                 .filter(section -> section.isUpStationEquals(station))
                 .findFirst()
-                .orElseThrow(() -> new NotFoundException(Message.NOT_FIND_STATION.getMessage()));
+                .orElseThrow(() -> new NotFoundException());
     }
 
-    private void validateDeleteSection(Line line) {
-        if(line.isOneSection()) {
-            throw new OneSectionDeleteException(Message.NOT_ONE_SECTION_DELETE.getMessage());
+    private void validateDeleteSection() {
+        if(isOneSection()) {
+            throw new OneSectionDeleteException();
         }
-        if(line.isNoSection()) {
-            throw new NoSectionDeleteException(Message.NOT_NO_SECTION_DELETE.getMessage());
+        if(isNoSection()) {
+            throw new NoSectionDeleteException();
         }
     }
+
+    private boolean isOneSection() {
+        return this.sections.size() == INT_ONE;
+    }
+
+    private boolean isNoSection() {
+        return this.sections.size() == INT_ZERO;
+    }
+
 }
