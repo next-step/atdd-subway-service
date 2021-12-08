@@ -1,9 +1,9 @@
-package nextstep.subway.favorites.domain;
+package nextstep.subway.member.domain;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import nextstep.subway.BaseEntity;
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.member.domain.Member;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.domain.Station;
 
@@ -21,7 +21,7 @@ import static javax.persistence.FetchType.LAZY;
  */
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Favorite {
+public class Favorite extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -56,6 +56,7 @@ public class Favorite {
     }
 
     public Favorite by(Member member) {
+        member.getFavorites().validateDuplicate(this);
         this.member = member;
         return this;
     }
@@ -86,9 +87,5 @@ public class Favorite {
 
     public Member getMember() {
         return member;
-    }
-
-    public void setDistance(Distance distance) {
-        this.distance = distance;
     }
 }

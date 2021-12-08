@@ -1,6 +1,6 @@
 package nextstep.subway.favorite.domain;
 
-import nextstep.subway.favorites.domain.Favorite;
+import nextstep.subway.member.domain.Favorite;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.exception.FavoriteDuplicatedException;
@@ -56,5 +56,4 @@ public class FavoritesTest {
         assertThatThrownBy(() -> 사용자.addFavorite(favorite)).isInstanceOf(FavoriteDuplicatedException.class)
                 .hasMessageContaining(FavoriteDuplicatedException.message);
     }
-
 }

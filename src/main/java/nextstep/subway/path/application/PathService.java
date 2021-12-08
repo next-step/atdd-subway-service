@@ -1,7 +1,7 @@
 package nextstep.subway.path.application;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.subway.favorites.dto.FavoriteRequest;
+import nextstep.subway.member.dto.FavoriteRequest;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.Path;

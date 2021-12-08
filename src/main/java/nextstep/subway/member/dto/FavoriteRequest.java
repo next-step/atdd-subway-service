@@ -1,4 +1,4 @@
-package nextstep.subway.favorites.dto;
+package nextstep.subway.member.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

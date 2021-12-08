@@ -4,8 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.favorites.dto.FavoriteRequest;
-import nextstep.subway.favorites.dto.FavoriteResponse;
+import nextstep.subway.member.dto.FavoriteRequest;
+import nextstep.subway.member.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
@@ -166,7 +166,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 즐겨찾기_추가됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isNotNull();
     }
 
     private ExtractableResponse<Response> 즐겨찾기_추가함(Long source, Long target, String token) {
@@ -200,5 +201,4 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         return response.jsonPath().getObject("", LineResponse.class);
     }
-
 }

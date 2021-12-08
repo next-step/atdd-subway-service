@@ -1,9 +1,9 @@
-package nextstep.subway.favorites.dto;
+package nextstep.subway.member.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import nextstep.subway.favorites.domain.Favorite;
-import nextstep.subway.favorites.domain.Favorites;
+import nextstep.subway.member.domain.Favorite;
+import nextstep.subway.member.domain.Favorites;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -34,8 +34,8 @@ public class FavoriteResponse {
         return new FavoriteResponse(favorite.getId(), favorite.getSourceStation(), favorite.getTargetStation());
     }
 
-    public static List<FavoriteResponse> ofList(Favorites favorites) {
-        return favorites.getList()
+    public static List<FavoriteResponse> ofList(List<Favorite> favorites) {
+        return favorites
                 .stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
