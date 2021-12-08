@@ -1,4 +1,4 @@
-package nextstep.subway.path.dto;
+package nextstep.subway.line.dto.path;
 
 import java.util.Objects;
 import nextstep.subway.common.exception.ErrorCode;

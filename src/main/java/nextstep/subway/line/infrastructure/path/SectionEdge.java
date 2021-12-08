@@ -1,10 +1,11 @@
-package nextstep.subway.path.infrastructure;
+package nextstep.subway.line.infrastructure.path;
 
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
@@ -25,8 +26,9 @@ public class SectionEdge extends DefaultWeightedEdge {
             section.getDistance());
     }
 
-    public static List<SectionEdge> toList(List<Section> sections) {
-        return sections.stream()
+    public static List<SectionEdge> toList(Sections sections) {
+        return sections.getSections()
+            .stream()
             .map(SectionEdge::of)
             .collect(Collectors.toList());
     }

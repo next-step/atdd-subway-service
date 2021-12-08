@@ -1,9 +1,10 @@
-package nextstep.subway.path.application;
+package nextstep.subway.line.application;
 
-import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.domain.Path;
-import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.path.dto.PathResult;
+import nextstep.subway.line.domain.Lines;
+import nextstep.subway.line.infrastructure.line.LineRepository;
+import nextstep.subway.line.domain.Path;
+import nextstep.subway.line.dto.path.PathResponse;
+import nextstep.subway.line.dto.path.PathResult;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -31,7 +32,8 @@ public class PathService {
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
 
-        Path path = Path.of(lineRepository.findAll(), sourceStation, targetStation);
+        Lines lines = new Lines(lineRepository.findAll());
+        Path path = lines.toPath(sourceStation, targetStation);
         PathResult pathSearchResult = this.pathSearch.findShortestPath(path);
 
         return PathResponse.of(StationResponse.toList(pathSearchResult.getResult()),

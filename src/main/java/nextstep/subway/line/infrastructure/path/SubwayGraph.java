@@ -1,4 +1,4 @@
-package nextstep.subway.path.infrastructure;
+package nextstep.subway.line.infrastructure.path;
 
 
 import java.util.Collection;

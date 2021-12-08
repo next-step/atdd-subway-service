@@ -4,7 +4,7 @@ import static nextstep.subway.station.StationFixtures.잠실;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
+import nextstep.subway.station.infrastructure.StationRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

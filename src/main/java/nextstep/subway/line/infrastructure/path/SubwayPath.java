@@ -1,11 +1,11 @@
-package nextstep.subway.path.infrastructure;
+package nextstep.subway.line.infrastructure.path;
 
 
 import java.util.List;
 import java.util.Optional;
 import nextstep.subway.common.exception.ErrorCode;
 import nextstep.subway.common.exception.InvalidParameterException;
-import nextstep.subway.path.dto.PathResult;
+import nextstep.subway.line.dto.path.PathResult;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;

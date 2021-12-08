@@ -7,9 +7,11 @@ import static nextstep.subway.path.step.PathAcceptanceStep.최단경로_조회_�
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.path.infrastructure.PathSearchImpl;
+import nextstep.subway.line.application.PathSearch;
+import nextstep.subway.line.application.PathService;
+import nextstep.subway.line.infrastructure.line.LineRepository;
+import nextstep.subway.line.dto.path.PathResponse;
+import nextstep.subway.line.infrastructure.path.PathSearchImpl;
 import nextstep.subway.station.application.StationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

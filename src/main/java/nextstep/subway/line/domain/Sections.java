@@ -25,8 +25,16 @@ public class Sections {
     protected Sections() {
     }
 
+    private Sections(List<Section> sections) {
+        this.sections = sections;
+    }
+
     public static Sections of() {
         return new Sections();
+    }
+
+    public static Sections of(List<Section> sections) {
+        return new Sections(sections);
     }
 
     public void add(Section section) {
@@ -148,5 +156,10 @@ public class Sections {
 
     private Station getSectionsFirstUpStation() {
         return sections.get(0).getUpStation();
+    }
+
+    public boolean isContainStation(Station station) {
+        return !findSameUpStationSection(station).isDummy() || !findSameDownStationSection(
+            station).isDummy();
     }
 }
