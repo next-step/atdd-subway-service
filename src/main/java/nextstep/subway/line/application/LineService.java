@@ -1,7 +1,6 @@
 package nextstep.subway.line.application;
 
 import nextstep.subway.common.exception.NotFoundException;
-import nextstep.subway.common.message.Message;
 import nextstep.subway.line.domain.*;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -17,10 +16,10 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class LineService {
-    private LineRepository lineRepository;
-    private StationService stationService;
+    private final LineRepository lineRepository;
+    private final StationService stationService;
 
-    public LineService(LineRepository lineRepository, StationService stationService) {
+    public LineService(final LineRepository lineRepository, final StationService stationService) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
     }
@@ -39,21 +38,21 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public LineResponse findLineResponseById(Long id) {
+    public LineResponse findLineResponseById(final Long id) {
         final Line persistLine = findLineById(id);
         return LineResponse.from(persistLine);
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
+    public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
         final Line persistLine = findLineById(id);
         persistLine.update(Line.of(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
-    public void deleteLineById(Long id) {
+    public void deleteLineById(final Long id) {
         lineRepository.deleteById(id);
     }
 
-    public void addLineStation(Long lineId, SectionRequest request) {
+    public void addLineStation(final Long lineId, final SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
@@ -61,7 +60,7 @@ public class LineService {
         line.addSection(section);
     }
 
-    public void removeLineStation(Long lineId, Long stationId) {
+    public void removeLineStation(final Long lineId, final Long stationId) {
         final Line line = findLineById(lineId);
         final Station station = stationService.findStationById(stationId);
         line.removeSectionByStationId(station);
@@ -69,7 +68,7 @@ public class LineService {
 
     private Line findLineById(final Long lineid) {
         return lineRepository.findById(lineid)
-                .orElseThrow(() -> new NotFoundException(Message.NOT_FIND_LINE.getMessage()));
+                .orElseThrow(NotFoundException::new);
     }
 
 }

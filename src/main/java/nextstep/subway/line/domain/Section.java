@@ -71,44 +71,44 @@ public class Section {
         this.line = line;
     }
 
-    public boolean isUpStationAndTargetDownStationEquals(Section targetSection) {
+    public boolean isUpStationAndTargetDownStationEquals(final Section targetSection) {
         return this.upStation.equals(targetSection.downStation);
     }
 
-    public boolean isDownStationEquals(Section targetSection) {
+    public boolean isDownStationEquals(final Section targetSection) {
         return this.downStation.equals(targetSection.downStation);
     }
 
-    public boolean isDownStationAndTargetUpStationEquals(Section targetSection) {
+    public boolean isDownStationAndTargetUpStationEquals(final Section targetSection) {
         return this.downStation.equals(targetSection.upStation);
     }
 
-    public boolean isUpStationEquals(Section targetSection) {
+    public boolean isUpStationEquals(final Section targetSection) {
         return this.upStation.equals(targetSection.upStation);
     }
 
-    public void changeDownStation(Section targetSection) {
+    public void changeDownStation(final Section targetSection) {
         this.downStation = targetSection.downStation;
     }
 
-    public void changeUpStation(Section targetSection) {
+    public void changeUpStation(final Section targetSection) {
         this.upStation = targetSection.upStation;
     }
 
-    public boolean isDownStationEquals(Station station) {
+    public boolean isDownStationEquals(final Station station) {
         return this.downStation.equals(station);
     }
 
-    public boolean isUpStationEquals(Station station) {
+    public boolean isUpStationEquals(final Station station) {
         return this.upStation.equals(station);
     }
 
-    public void merge(Section targetSection) {
+    public void merge(final Section targetSection) {
         this.downStation = targetSection.downStation;
         this.distance = this.distance.plus(targetSection.distance);
     }
 
-    public void minusDistance(Section targetSection) {
+    public void minusDistance(final Section targetSection) {
         this.distance = this.distance.minus(targetSection.distance);
     }
 }

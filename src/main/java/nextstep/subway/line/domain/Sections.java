@@ -8,7 +8,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -25,23 +25,23 @@ public class Sections {
     protected Sections() {
     }
 
-    private Sections(List<Section> sections) {
+    private Sections(final List<Section> sections) {
         this.sections = sections;
     }
 
-    public static Sections from(List<Section> sectionList) {
+    public static Sections from(final List<Section> sectionList) {
         return new Sections(sectionList);
     }
 
-    public static Sections from(Section section) {
-        return new Sections(Arrays.asList(section));
+    public static Sections from(final Section section) {
+        return new Sections(Collections.singletonList(section));
     }
 
     public static Sections empty() {
         return Sections.from(new ArrayList<>());
     }
 
-    public void add(Section targetSection, Line line) {
+    public void add(final Section targetSection, final Line line) {
         validateStationsContains(targetSection, line);
         targetSection.addLine(line);
 
@@ -53,7 +53,7 @@ public class Sections {
         }
     }
 
-    private boolean addUpStationAndMiddlStation(Section targetSection, Section original) {
+    private boolean addUpStationAndMiddlStation(final Section targetSection, final Section original) {
         if (original.isUpStationAndTargetDownStationEquals(targetSection)) {
             addSectionOriginalIndex(targetSection, original);
             return true;
@@ -61,7 +61,7 @@ public class Sections {
         return false;
     }
 
-    private boolean addDownStation(Section targetSection, Section original) {
+    private boolean addDownStation(final Section targetSection, final Section original) {
         if (original.isDownStationEquals(targetSection)) {
             original.minusDistance(targetSection);
             original.changeDownStation(targetSection);
@@ -71,7 +71,7 @@ public class Sections {
         return false;
     }
 
-    private boolean addDownStationAndMiddleStation(Section targetSection, Section original) {
+    private boolean addDownStationAndMiddleStation(final Section targetSection, final Section original) {
         if (original.isDownStationAndTargetUpStationEquals(targetSection)) {
             addSectionBehindOfOriginal(targetSection, original);
             return true;
@@ -79,7 +79,7 @@ public class Sections {
         return false;
     }
 
-    private boolean addUpStation(Section targetSection, Section original) {
+    private boolean addUpStation(final Section targetSection, final Section original) {
         if(original.isUpStationEquals(targetSection)) {
             addSectionOriginalIndex(targetSection, original);
             original.minusDistance(targetSection);
@@ -89,21 +89,21 @@ public class Sections {
         return false;
     }
 
-    private void addSectionBehindOfOriginal(Section targetSection, Section original) {
+    private void addSectionBehindOfOriginal(final Section targetSection, final Section original) {
         sections.add(sections.indexOf(original) + 1, targetSection);
     }
 
-    private void addSectionOriginalIndex(Section targetSection, Section original) {
+    private void addSectionOriginalIndex(final Section targetSection, final Section original) {
         sections.add(sections.indexOf(original), targetSection);
     }
 
-    private void validateStationsContains(Section section, Line line) {
+    private void validateStationsContains(final Section section, final Line line) {
         Station upStation = section.getUpStation();
         Station downStation = section.getDownStation();
         if (line.isContainStation(upStation) && line.isContainStation(downStation)) {
             throw new RegisterAllIncludeException();
         }
-        if (line.isContainStation(upStation) == false && line.isContainStation(downStation) == false) {
+        if (!line.isContainStation(upStation) && !line.isContainStation(downStation)) {
             throw new RegisterNotAllIncludeException();
         }
     }
@@ -112,7 +112,7 @@ public class Sections {
         return this.sections;
     }
 
-    public boolean contains(Station station) {
+    public boolean contains(final Station station) {
         return getStations().contains(station);
     }
 
@@ -123,7 +123,7 @@ public class Sections {
                 .collect(Collectors.toList());
     }
 
-    public void merge(Station station) {
+    public void merge(final Station station) {
         validateDeleteSection();
 
         final Section downSection = getDownSection(station);
@@ -132,18 +132,18 @@ public class Sections {
         this.sections.remove(upSection);
     }
 
-    private Section getDownSection(Station station) {
+    private Section getDownSection(final Station station) {
         return sections.stream()
                 .filter(section -> section.isDownStationEquals(station))
                 .findFirst()
-                .orElseThrow(() -> new NotFoundException());
+                .orElseThrow(NotFoundException::new);
     }
 
-    private Section getUpSection(Station station) {
+    private Section getUpSection(final Station station) {
         return sections.stream()
                 .filter(section -> section.isUpStationEquals(station))
                 .findFirst()
-                .orElseThrow(() -> new NotFoundException());
+                .orElseThrow(NotFoundException::new);
     }
 
     private void validateDeleteSection() {

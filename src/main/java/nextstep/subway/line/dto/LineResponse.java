@@ -18,7 +18,8 @@ public class LineResponse {
     public LineResponse() {
     }
 
-    public LineResponse(Long id, String name, String color, List<StationResponse> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public LineResponse(final Long id, final String name, final String color, final List<StationResponse> stations
+            , final LocalDateTime createdDate, final LocalDateTime modifiedDate) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -27,7 +28,7 @@ public class LineResponse {
         this.modifiedDate = modifiedDate;
     }
 
-    public static LineResponse from(Line line) {
+    public static LineResponse from(final Line line) {
         List<StationResponse> stations = line.getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
