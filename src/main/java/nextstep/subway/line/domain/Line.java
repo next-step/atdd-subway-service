@@ -1,14 +1,14 @@
 package nextstep.subway.line.domain;
 
-import java.util.*;
+import nextstep.subway.BaseEntity;
+import nextstep.subway.line.dto.LineRequest;
+import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 
 import javax.persistence.*;
-
-import org.jgrapht.graph.*;
-
-import nextstep.subway.*;
-import nextstep.subway.line.dto.*;
-import nextstep.subway.station.domain.*;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Line extends BaseEntity {
@@ -95,7 +95,7 @@ public class Line extends BaseEntity {
     public void setEdgeWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         sectionsList().forEach(section -> graph.setEdgeWeight(
             graph.addEdge(section.getUpStation(), section.getDownStation()),
-            section.getDistance().distance())
+            section.distance())
         );
     }
 
@@ -105,7 +105,7 @@ public class Line extends BaseEntity {
             return true;
         if (!(o instanceof Line))
             return false;
-        Line line = (Line)o;
+        Line line = (Line) o;
         return Objects.equals(name, line.name) && Objects.equals(color, line.color);
     }
 

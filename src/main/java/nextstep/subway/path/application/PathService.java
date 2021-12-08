@@ -1,13 +1,16 @@
 package nextstep.subway.path.application;
 
-import java.util.*;
-
-import org.springframework.stereotype.*;
-
-import nextstep.subway.common.exception.*;
-import nextstep.subway.line.domain.*;
-import nextstep.subway.path.domain.*;
-import nextstep.subway.station.domain.*;
+import nextstep.subway.common.exception.NotFoundException;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.DijkstraAlgorithm;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 @Service
 public class PathService {
@@ -21,14 +24,18 @@ public class PathService {
         this.lineRepository = lineRepository;
     }
 
-    public Path shortPath(long source, long target) {
-        Station startStation = stationRepository.findById(source)
-            .orElseThrow(() -> new NotFoundException(STATION));
-        Station endStation = stationRepository.findById(target)
-            .orElseThrow(() -> new NotFoundException(STATION));
+    @Transactional
+    public Path shortestPath(long source, long target) {
+        Station startStation = findStation(source);
+        Station endStation = findStation(target);
 
         List<Line> lines = lineRepository.findAll();
-        PathFinder pathFinder = PathFinder.from(lines);
+        PathFinder pathFinder = PathFinder.from(lines, new DijkstraAlgorithm());
         return pathFinder.shortestPath(startStation, endStation);
+    }
+
+    private Station findStation(long id) {
+        return stationRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException(STATION));
     }
 }

@@ -27,6 +27,16 @@ public class Member extends BaseEntity {
         this.age = age;
     }
 
+    private Member(Long id, String email, Integer age) {
+        this.id = id;
+        this.email = email;
+        this.age = age;
+    }
+
+    public static Member of(Long id, String email, Integer age) {
+        return new Member(id, email, age);
+    }
+
     public Long getId() {
         return id;
     }

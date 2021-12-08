@@ -1,13 +1,20 @@
 package nextstep.subway.line.domain;
 
-import java.util.*;
-import java.util.stream.*;
+import nextstep.subway.common.exception.CannotAddException;
+import nextstep.subway.common.exception.CannotRemoveException;
+import nextstep.subway.station.domain.Station;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Embeddable;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import nextstep.subway.common.exception.*;
-import nextstep.subway.station.domain.*;
-
+@SuppressWarnings("ALL")
 @Embeddable
 public class Sections {
     private static final String SECTION = "구간";
@@ -32,14 +39,24 @@ public class Sections {
         List<Station> stations = line.stations();
         validate(upStation, downStation);
 
-        if (stations.isEmpty()) {
-            sections.add(Section.of(line, upStation, downStation, distance));
-        }
 
+        if (!stations.isEmpty()) {
+            addIfExistUpStation(line, upStation, downStation, distance, stations);
+            addIfExistDownStation(line, upStation, downStation, distance, stations);
+            return;
+        }
+        sections.add(Section.of(line, upStation, downStation, distance));
+    }
+
+    private void addIfExistUpStation(Line line, Station upStation, Station downStation, Distance distance,
+                                     List<Station> stations) {
         if (stations.contains(upStation)) {
             addLineBaseOfUpStation(distance, line, upStation, downStation);
         }
+    }
 
+    private void addIfExistDownStation(Line line, Station upStation, Station downStation, Distance distance,
+                                       List<Station> stations) {
         if (stations.contains(downStation)) {
             addLineBaseOfDownStation(distance, line, upStation, downStation);
         }
@@ -89,7 +106,7 @@ public class Sections {
     }
 
     private void addSectionIfExistBothStations(Line line, final Optional<Section> upLineStation,
-        final Optional<Section> downLineStation) {
+                                               final Optional<Section> downLineStation) {
         downLineStation.ifPresent(downLineSection -> upLineStation.ifPresent(upLineSection -> {
             Section section = Section.of(line,
                 downLineSection.getUpStation(),
@@ -113,7 +130,7 @@ public class Sections {
     }
 
     private void addLineBaseOfUpStation(final Distance distance, final Line line, final Station upStation,
-        final Station downStation) {
+                                        final Station downStation) {
         sections.stream()
             .filter(section -> section.getUpStation() == upStation)
             .findFirst()
@@ -124,7 +141,7 @@ public class Sections {
     }
 
     private void addLineBaseOfDownStation(final Distance distance, final Line line, final Station upStation,
-        final Station downStation) {
+                                          final Station downStation) {
         sections.stream()
             .filter(section -> section.getDownStation() == downStation)
             .findFirst()
