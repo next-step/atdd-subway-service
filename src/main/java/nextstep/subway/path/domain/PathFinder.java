@@ -16,7 +16,7 @@ public class PathFinder {
     }
 
     public static PathFinder createWeightedMultiStationGraph(List<Line> lines) {
-        return new PathFinder(new WeightedMultiStationGraph()).createGraph(lines);
+        return new PathFinder(new WeightedMultiStationGraph().createGraph(lines));
     }
 
     public Path findShortestPath(Station fromStation, Station toStation) {
@@ -25,26 +25,6 @@ public class PathFinder {
             return stationGraph.getShortestPath(fromStation, toStation);
         }catch (NotFoundException e) {
             throw new InvalidArgumentException("출발역과 도착역이 연결되어 있지 않습니다.");
-        }
-    }
-
-    private PathFinder createGraph(List<Line> lines) {
-        for (Line line: lines) {
-            addVertex(line.getStations());
-            addEdgeWeight(line.getSections());
-        }
-        return this;
-    }
-
-    private  void addVertex(List<Station> stations) {
-        for (Station s: stations) {
-            stationGraph.addVertex(s);
-        }
-    }
-
-    private void addEdgeWeight(List<Section> sections) {
-        for (Section se: sections) {
-            stationGraph.addEdgeWithDistance(se.getUpStation(), se.getDownStation(), se.getDistance().get());
         }
     }
 
