@@ -12,8 +12,6 @@ import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,34 +31,22 @@ public class LineService {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
-        List<StationResponse> stations = persistLine.getStations().stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
+        List<StationResponse> stations = makeStationResponses(persistLine);
         return LineResponse.of(persistLine, stations);
     }
 
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
-        return persistLines.stream()
-                .map(line -> {
-                    List<StationResponse> stations = line.getStations().stream()
-                            .map(it -> StationResponse.of(it))
-                            .collect(Collectors.toList());
-                    return LineResponse.of(line, stations);
-                })
-                .collect(Collectors.toList());
+        return makeLineResponses(persistLines);
     }
 
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        List<StationResponse> stations = persistLine.getStations().stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
+        List<StationResponse> stations = makeStationResponses(persistLine);
         return LineResponse.of(persistLine, stations);
     }
 
@@ -77,6 +63,31 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
+        addLineStation(request, line, upStation, downStation);
+    }
+
+    public void removeLineStation(Long lineId, Long stationId) {
+        Line line = findLineById(lineId);
+        Station station = stationService.findStationById(stationId);
+        removeLineStation(line, station);
+    }
+
+    private List<StationResponse> makeStationResponses(Line line) {
+        return line.getStations().stream()
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
+    }
+
+    private List<LineResponse> makeLineResponses(List<Line> lines) {
+        return lines.stream()
+            .map(line -> {
+                List<StationResponse> stations = makeStationResponses(line);
+                return LineResponse.of(line, stations);
+            })
+            .collect(Collectors.toList());
+    }
+
+    private void addLineStation(SectionRequest request, Line line, Station upStation, Station downStation) {
         List<Station> stations = line.getStations();
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
@@ -114,9 +125,7 @@ public class LineService {
         }
     }
 
-    public void removeLineStation(Long lineId, Long stationId) {
-        Line line = findLineById(lineId);
-        Station station = stationService.findStationById(stationId);
+    private void removeLineStation(Line line, Station station) {
         if (line.getSections().size() <= 1) {
             throw new RuntimeException();
         }
