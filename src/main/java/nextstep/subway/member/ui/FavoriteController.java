@@ -22,6 +22,7 @@ import java.util.List;
 @RequestMapping("favorites")
 @RestController
 @RequiredArgsConstructor
+//TODO : Member와 Favorite 연관 관계 재설정하기
 public class FavoriteController {
     private final FavoriteService favoriteService;
 
