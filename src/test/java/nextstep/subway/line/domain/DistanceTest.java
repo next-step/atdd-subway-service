@@ -33,7 +33,7 @@ public class DistanceTest {
     @Test
     void subtract() {
         Distance result = new Distance(10)
-            .subtract(9);
+            .subtract(new Distance(9));
 
         assertThat(result)
             .isEqualTo(new Distance(1));
@@ -43,9 +43,10 @@ public class DistanceTest {
     @Test
     void subtract_error() {
         Distance distance = new Distance(10);
+        Distance distance2 = new Distance(10);
 
         assertThatExceptionOfType(SubwayException.class)
-            .isThrownBy(() ->  distance.subtract(10))
+            .isThrownBy(() ->  distance.subtract(distance2))
             .withMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
     }
 }

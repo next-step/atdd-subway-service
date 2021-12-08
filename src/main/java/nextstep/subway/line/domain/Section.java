@@ -83,12 +83,12 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
+    public void updateUpStation(Station station, Distance newDistance) {
         this.distance = this.distance.subtract(newDistance);
         this.upStation = station;
     }
 
-    public void updateDownStation(Station station, int newDistance) {
+    public void updateDownStation(Station station, Distance newDistance) {
         this.distance = this.distance.subtract(newDistance);
         this.downStation = station;
     }

@@ -30,11 +30,11 @@ public class Distance {
         return new Distance(this.value + distance.value);
     }
 
-    public Distance subtract(int distance) {
-        if (this.value <= distance) {
+    public Distance subtract(Distance distance) {
+        if (this.value <= distance.value) {
             throw new SubwayException(SubwayErrorCode.NOT_LOWER_THAN_ORIGINAL_DISTANCE);
         }
-        return new Distance(this.value - distance);
+        return new Distance(this.value - distance.value);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -61,7 +60,7 @@ class SectionTest {
     void updateUpStation() {
         Section section = new Section(신분당선, 강남역, 판교역, 10);
 
-        section.updateUpStation(양재역, 2);
+        section.updateUpStation(양재역, new Distance(2));
 
         assertThat(section).isEqualTo(new Section(신분당선, 양재역, 판교역, 8));
     }
@@ -70,9 +69,10 @@ class SectionTest {
     @Test
     void updateUpStation_error() {
         Section section = new Section(신분당선, 강남역, 판교역, 10);
+        Distance distance = new Distance(10);
 
         assertThatExceptionOfType(SubwayException.class)
-            .isThrownBy(() ->  section.updateUpStation(양재역, 10))
+            .isThrownBy(() -> section.updateUpStation(양재역, distance))
             .withMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
     }
 
@@ -81,7 +81,7 @@ class SectionTest {
     void updateDownStation() {
         Section section = new Section(신분당선, 강남역, 판교역, 10);
 
-        section.updateDownStation(양재역, 2);
+        section.updateDownStation(양재역, new Distance(2));
 
         assertThat(section).isEqualTo(new Section(신분당선, 강남역, 양재역, 8));
     }
@@ -90,9 +90,10 @@ class SectionTest {
     @Test
     void updateDownStation_error() {
         Section section = new Section(신분당선, 강남역, 판교역, 10);
+        Distance distance = new Distance(10);
 
         assertThatExceptionOfType(SubwayException.class)
-            .isThrownBy(() ->  section.updateDownStation(양재역, 10))
+            .isThrownBy(() -> section.updateDownStation(양재역, distance))
             .withMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
     }
 

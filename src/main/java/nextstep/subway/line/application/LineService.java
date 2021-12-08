@@ -70,7 +70,7 @@ public class LineService {
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
-        removeLineStation(line, station);
+        line.removeLineStation(station);
     }
 
     private List<StationResponse> makeStationResponses(Line line) {
@@ -89,61 +89,7 @@ public class LineService {
     }
 
     private void addLineStation(SectionRequest request, Line line, Station upStation, Station downStation) {
-        List<Station> stations = line.getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (stations.isEmpty()) {
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
-            return;
-        }
-
-        if (isUpStationExisted) {
-            line.getSections().stream()
-                .filter(it -> it.hasUpStation(upStation))
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
-
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
-        } else if (isDownStationExisted) {
-            line.getSections().stream()
-                    .filter(it -> it.hasDownStation(downStation))
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
-
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
-        } else {
-            throw new RuntimeException();
-        }
-    }
-
-    private void removeLineStation(Line line, Station station) {
-        if (line.getSections().size() <= 1) {
-            throw new RuntimeException();
-        }
-
-        Optional<Section> upLineStation = line.getSections().stream()
-            .filter(it -> it.hasUpStation(station))
-                .findFirst();
-        Optional<Section> downLineStation = line.getSections().stream()
-            .filter(it -> it.hasDownStation(station))
-                .findFirst();
-
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Section section = Section.combine(downLineStation.get(), upLineStation.get());
-            line.getSections().add(section);
-        }
-
-        upLineStation.ifPresent(it -> line.getSections().remove(it));
-        downLineStation.ifPresent(it -> line.getSections().remove(it));
+        Section section = new Section(line, upStation, downStation, request.getDistance());
+        line.addStation(section);
     }
 }
