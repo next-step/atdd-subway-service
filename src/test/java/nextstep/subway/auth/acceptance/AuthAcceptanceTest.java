@@ -70,6 +70,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static TokenResponse 회원_등록_후_로그인_되어_있음(String email, String password, int age) {
+        회원_등록되어_있음(email, password, age);
+        return 로그인_되어_있음(email, password);
+    }
+
     public static TokenResponse 로그인_되어_있음(String email, String password) {
         return 로그인_요청(email, password).as(TokenResponse.class);
     }
