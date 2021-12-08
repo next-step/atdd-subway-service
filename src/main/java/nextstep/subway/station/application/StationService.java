@@ -3,7 +3,7 @@ package nextstep.subway.station.application;
 import nextstep.subway.common.exception.ErrorCode;
 import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
+import nextstep.subway.station.infrastructure.StationRepository;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;

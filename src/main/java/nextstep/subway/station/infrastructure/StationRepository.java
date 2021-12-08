@@ -1,5 +1,6 @@
-package nextstep.subway.station.domain;
+package nextstep.subway.station.infrastructure;
 
+import nextstep.subway.station.domain.Station;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

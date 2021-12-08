@@ -7,14 +7,20 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import java.util.stream.Collectors;
-import nextstep.subway.line.dto.LineRequest;
-import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.line.dto.line.LineRequest;
+import nextstep.subway.line.dto.line.LineResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class LineAcceptanceStep {
 
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest params) {
+        return 지하철_노선_생성_요청(params);
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(String lineName, String color,
+        Long upStationId, Long downStationId, int distance) {
+        LineRequest params = new LineRequest(lineName, color, upStationId, downStationId, distance);
         return 지하철_노선_생성_요청(params);
     }
 

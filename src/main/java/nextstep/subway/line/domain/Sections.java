@@ -20,13 +20,21 @@ public class Sections {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "line", cascade = {CascadeType.PERSIST,
         CascadeType.MERGE}, orphanRemoval = true)
-    private final List<Section> sections = new ArrayList<>();
+    private List<Section> sections = new ArrayList<>();
 
     protected Sections() {
     }
 
+    private Sections(List<Section> sections) {
+        this.sections = sections;
+    }
+
     public static Sections of() {
         return new Sections();
+    }
+
+    public static Sections of(List<Section> sections) {
+        return new Sections(sections);
     }
 
     public void add(Section section) {
@@ -59,6 +67,10 @@ public class Sections {
 
         sections.remove(sameDownStationSection);
         sections.remove(sameUpStationSection);
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 
     private Station findTopUpStation() {
@@ -144,5 +156,10 @@ public class Sections {
 
     private Station getSectionsFirstUpStation() {
         return sections.get(0).getUpStation();
+    }
+
+    public boolean isContainStation(Station station) {
+        return !findSameUpStationSection(station).isDummy() || !findSameDownStationSection(
+            station).isDummy();
     }
 }

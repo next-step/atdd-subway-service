@@ -1,5 +1,6 @@
 package nextstep.subway.common.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,5 +18,11 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     protected ResponseEntity<ErrorResponse> handleInvalidParameterExceptionConflict(
         InvalidParameterException e) {
         return ResponseEntity.badRequest().body(ErrorResponse.of(e.getErrorCode()));
+    }
+
+    @ExceptionHandler(value = {DataIntegrityViolationException.class})
+    protected ResponseEntity<ErrorResponse> handleLineNameDuplicateConflict() {
+        return ResponseEntity.badRequest()
+            .body(ErrorResponse.of(ErrorCode.DATABASE_CONSTRAINT_VIOLATION));
     }
 }

@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import static nextstep.subway.line.domain.LineFixtures.이호선;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import nextstep.subway.line.infrastructure.line.LineRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
