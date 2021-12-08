@@ -46,13 +46,17 @@ public class Line extends BaseEntity {
         return new Line(name, color, upStation, downStation, distance);
     }
 
+    public void update(Line line) {
+        this.name = line.getName();
+        this.color = line.getColor();
+    }
+
     public void addSection(Station upStation, Station downStation, int distance) {
         sections.add(Section.of(this, upStation, downStation, distance));
     }
 
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
+    public void removeSection(Station removeStation) {
+        sections.remove(removeStation);
     }
 
     public Long getId() {
@@ -89,9 +93,5 @@ public class Line extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getName(), getColor(), getSections());
-    }
-
-    public void removeSection(Station removeStation) {
-        sections.remove(removeStation);
     }
 }
