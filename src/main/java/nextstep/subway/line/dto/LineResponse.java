@@ -38,6 +38,12 @@ public class LineResponse {
             line.getCreatedDate(), line.getModifiedDate());
     }
 
+    public static List<LineResponse> ofList(List<Line> lines) {
+        return lines.stream()
+            .map(line -> LineResponse.of(line, line.getStations()))
+            .collect(Collectors.toList());
+    }
+
     public Long getId() {
         return id;
     }

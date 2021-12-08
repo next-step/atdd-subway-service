@@ -1,7 +1,6 @@
 package nextstep.subway.line.application;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import nextstep.subway.common.LineNotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -35,9 +34,7 @@ public class LineService {
 
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
-        return persistLines.stream()
-            .map(line -> LineResponse.of(line, line.getStations()))
-            .collect(Collectors.toList());
+        return LineResponse.ofList(persistLines);
     }
 
     public Line findLineById(Long id) {
