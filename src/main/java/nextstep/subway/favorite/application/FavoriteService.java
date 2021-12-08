@@ -4,7 +4,7 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
-import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.*;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -27,14 +27,16 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
-    public Favorite saveFavorite(LoginMember member, FavoriteRequest favoriteRequest) {
-        return favoriteRepository.save(
+    public FavoriteResponse saveFavorite(LoginMember member, FavoriteRequest favoriteRequest) {
+        Favorite favorite = favoriteRepository.save(
             Favorite.of(
                 Member.of(member.getId(), member.getEmail(), member.getAge()),
                 findStationById(favoriteRequest.getSource()),
                 findStationById(favoriteRequest.getTarget())
             )
         );
+
+        return FavoriteResponse.from(favorite);
     }
 
     private Station findStationById(final Long id) {

@@ -5,8 +5,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
-import nextstep.subway.favorite.domain.Favorite;
-import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.*;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +21,7 @@ public class FavoriteServiceTest extends AcceptanceTest {
     FavoriteService favoriteService;
     private StationResponse 강남역;
     private StationResponse 정자역;
-    private Favorite favorite;
+    private FavoriteResponse favoriteResponse;
     private LoginMember loginMember;
 
     @BeforeEach
@@ -41,15 +40,15 @@ public class FavoriteServiceTest extends AcceptanceTest {
         loginMember = new LoginMember(id, MY_EMAIL, MY_AGE);
 
         // And 즐겨찾기 추가
-        favorite = favoriteService.saveFavorite(loginMember, FavoriteRequest.of(강남역.getId(), 정자역.getId()));
+        favoriteResponse = favoriteService.saveFavorite(loginMember, FavoriteRequest.of(강남역.getId(), 정자역.getId()));
     }
 
     @DisplayName("즐겨찾기를 저장 서비스를 호출하면, DB에 해당 데이터가 저장된다.")
     @Test
     void saveFavoriteTest() {
-        assertThat(favorite.getId()).isNotNull();
-        assertThat(favorite.getSourceStation().getName()).isEqualTo(강남역.getName());
-        assertThat(favorite.getTargetStation().getName()).isEqualTo(정자역.getName());
+        assertThat(favoriteResponse.getId()).isNotNull();
+        assertThat(favoriteResponse.getSourceStation().getName()).isEqualTo(강남역.getName());
+        assertThat(favoriteResponse.getTargetStation().getName()).isEqualTo(정자역.getName());
     }
 
     @DisplayName("사용자 정보를 입력 받아 즐겨찾기 목록을 조회하면 즐겨찾기 콜렉션을 반환한다.")
