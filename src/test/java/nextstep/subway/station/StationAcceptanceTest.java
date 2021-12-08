@@ -79,17 +79,17 @@ public class StationAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
         StationRequest stationRequest = new StationRequest(name);
 
-        return ApiRequest.postRequest("/stations", stationRequest);
+        return ApiRequest.post("/stations", stationRequest);
     }
 
     public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
-        return ApiRequest.getRequest("/stations");
+        return ApiRequest.get("/stations");
     }
 
     public static ExtractableResponse<Response> 지하철역_제거_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
 
-        return ApiRequest.deleteRequest(uri);
+        return ApiRequest.delete(uri);
     }
 
     public static void 지하철역_생성됨(ExtractableResponse response) {

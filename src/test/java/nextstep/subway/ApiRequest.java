@@ -9,7 +9,7 @@ public class ApiRequest {
     private ApiRequest() {
     }
 
-    public static ExtractableResponse<Response> getRequest(String uri) {
+    public static ExtractableResponse<Response> get(String uri) {
         return RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -18,7 +18,7 @@ public class ApiRequest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> postRequest(String uri, Object params) {
+    public static ExtractableResponse<Response> post(String uri, Object params) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -28,7 +28,7 @@ public class ApiRequest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> putRequest(String uri, Object params) {
+    public static ExtractableResponse<Response> put(String uri, Object params) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -38,7 +38,7 @@ public class ApiRequest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> deleteRequest(String uri) {
+    public static ExtractableResponse<Response> delete(String uri) {
         return RestAssured
                 .given().log().all()
                 .when().delete(uri)

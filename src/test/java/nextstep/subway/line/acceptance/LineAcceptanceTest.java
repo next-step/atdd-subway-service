@@ -121,7 +121,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 지하철_노선_생성_요청(LineRequest params) {
-        return ApiRequest.postRequest("/lines", params);
+        return ApiRequest.post("/lines", params);
     }
 
     public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
@@ -135,23 +135,23 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     private static ExtractableResponse<Response> 지하철_노선_목록_조회_요청(String uri) {
-        return ApiRequest.getRequest(uri);
+        return ApiRequest.get(uri);
     }
 
     public static ExtractableResponse<Response> 지하철_노선_조회_요청(LineResponse response) {
-        return ApiRequest.getRequest("/lines/" + response.getId());
+        return ApiRequest.get("/lines/" + response.getId());
     }
 
     public static ExtractableResponse<Response> 지하철_노선_수정_요청(ExtractableResponse<Response> response, LineRequest params) {
         String uri = response.header("Location");
 
-        return ApiRequest.putRequest(uri, params);
+        return ApiRequest.put(uri, params);
     }
 
     public static ExtractableResponse<Response> 지하철_노선_제거_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
 
-        return ApiRequest.deleteRequest(uri);
+        return ApiRequest.delete(uri);
     }
 
     public static void 지하철_노선_생성됨(ExtractableResponse response) {

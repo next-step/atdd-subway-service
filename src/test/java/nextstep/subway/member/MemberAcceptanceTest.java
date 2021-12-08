@@ -53,25 +53,25 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
-        return ApiRequest.postRequest("/members", memberRequest);
+        return ApiRequest.post("/members", memberRequest);
     }
 
     public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
 
-        return ApiRequest.getRequest(uri);
+        return ApiRequest.get(uri);
     }
 
     public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
         String uri = response.header("Location");
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
-        return ApiRequest.putRequest(uri, memberRequest);
+        return ApiRequest.put(uri, memberRequest);
     }
 
     public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
-        return ApiRequest.deleteRequest(uri);
+        return ApiRequest.delete(uri);
     }
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {

@@ -9,7 +9,6 @@ import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.assertj.core.api.ListAssert;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,7 +78,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 지하철_경로를_지하철_출발역_도착역으로_경로_조회_요청(StationResponse source, StationResponse target) {
-        return ApiRequest.getRequest("/paths?source=" + source.getId() + "&target=" + target.getId());
+        return ApiRequest.get("/paths?source=" + source.getId() + "&target=" + target.getId());
     }
 
     public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
