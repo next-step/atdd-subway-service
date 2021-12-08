@@ -48,4 +48,8 @@ public class FavoriteService {
         return stationRepository.findById(stationId)
             .orElseThrow(() -> new IllegalArgumentException("id에 해당하는 역이 없습니다. id=" + stationId));
     }
+
+    public void deleteFavorite(Long favoriteId) {
+        favoriteRepository.deleteById(favoriteId);
+    }
 }
