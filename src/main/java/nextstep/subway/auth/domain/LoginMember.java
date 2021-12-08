@@ -1,5 +1,7 @@
 package nextstep.subway.auth.domain;
 
+import nextstep.subway.member.domain.Member;
+
 public class LoginMember {
     private Long id;
     private String email;
