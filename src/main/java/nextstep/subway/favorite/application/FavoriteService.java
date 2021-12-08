@@ -6,6 +6,7 @@ import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.favorite.exception.FavoriteException;
+import nextstep.subway.path.application.PathService;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -18,10 +19,12 @@ import java.util.stream.Collectors;
 @Transactional
 public class FavoriteService {
 
+    private final PathService pathService;
     private final StationService stationService;
     private final FavoriteRepository favoriteRepository;
 
-    public FavoriteService(StationService stationService, FavoriteRepository favoriteRepository) {
+    public FavoriteService(PathService pathService, StationService stationService, FavoriteRepository favoriteRepository) {
+        this.pathService = pathService;
         this.stationService = stationService;
         this.favoriteRepository = favoriteRepository;
     }
@@ -29,6 +32,8 @@ public class FavoriteService {
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest favoriteRequest) {
         Station sourceStation = stationService.findStationById(favoriteRequest.getSource());
         Station targetStation = stationService.findStationById(favoriteRequest.getTarget());
+
+        pathService.findPath(loginMember, favoriteRequest.getSource(), favoriteRequest.getTarget());
 
         Favorite favorite = favoriteRepository.save(Favorite.of(loginMember.getId(), sourceStation, targetStation));
 
