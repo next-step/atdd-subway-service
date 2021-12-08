@@ -59,7 +59,6 @@ public class PathMockitoTest {
     @DisplayName("거리 찾는 테스트")
     void findPath() {
         //given
-        Path path = new Path(dangsanStation, sunyudoStation);
         List<Station> stations = Arrays.asList(dangsanStation, sunyudoStation);
         List<StationResponse> stationResponses = stations.stream()
                 .map(it -> StationResponse.of(it))
@@ -74,6 +73,7 @@ public class PathMockitoTest {
         //then
         assertThat(stationBasket.size()).isEqualTo(2);
         assertThat(stationBasket.stream()
-                .map(it->it.getName()).collect(Collectors.toList())).contains("당산역","선유도역");
+                .map(it -> it.getName()).collect(Collectors.toList())).contains("당산역", "선유도역");
+        assertThat(pathResponse.getDistance()).isEqualTo(10);
     }
 }

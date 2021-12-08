@@ -5,13 +5,19 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
+import nextstep.subway.path.application.PathService;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
-import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @DisplayName("지하철 경로 조회")
@@ -28,7 +34,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private LineService lineService;
 
     @Autowired
-    private StationService stationService;
+    private PathService pathService;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -56,6 +62,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("최단거리 테스트")
     void shortestPathTest(){
+        PathResponse pathResponse = pathService.findPath(교대역.getId(), 양재역.getId());
+        assertThat(pathResponse.getDistance()).isEqualTo(5);
+        List<String> stationNames = pathResponse.getStations().stream()
+                        .map(it-> it.getName())
+                                .collect(Collectors.toList());
+        assertThat(stationNames).contains("교대역", "남부터미널역", "양재역");
 
     }
 

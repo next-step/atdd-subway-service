@@ -21,19 +21,19 @@ public class PathResponse {
         this.distance = distance;
     }
 
-    public static PathResponse of(List<Station> stations) {
+    public static PathResponse of(List<Station> stations, Distance distance) {
         List<StationResponse> stationResponses = stations.stream()
                 .map(it -> StationResponse.of(it))
                 .collect(Collectors.toList());
 
-        return new PathResponse(stationResponses, new Distance(1));
+        return new PathResponse(stationResponses, distance);
     }
 
     public List<StationResponse> getStations() {
         return stations;
     }
 
-    public Distance getDistance() {
-        return distance;
+    public int getDistance() {
+        return distance.distance();
     }
 }

@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.exception.InputDataErrorCode;
 import nextstep.subway.exception.InputDataErrorException;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -12,8 +13,10 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 public class Path {
     private WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
@@ -30,7 +33,7 @@ public class Path {
         return lines.stream()
                 .flatMap(it -> it.getStations().stream())
                 .distinct()
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     public void addVertex(List<Line> lines) {
@@ -44,7 +47,7 @@ public class Path {
                         .forEach(section -> addEdgeWeight(section)));
     }
 
-    public List<Station> findShortestPath(List<Line> lines){
+    public List<Station> findShortestPath(List<Line> lines) {
         checkValidateStation(lines);
         addVertex(lines);
         addEdge(lines);
@@ -56,8 +59,52 @@ public class Path {
         List<String> vertexList = shortestPaths.getVertexList();
         return vertexList.stream()
                 .map(it -> new Station(it))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
+
+    public Distance findShortestPathDistance(List<Line> lines) {
+        List<Station> shortestStations = findShortestPath(lines);
+        List<Section> foundSections = findSection(lines, shortestStations);
+        int distanceSum = foundSections.stream().
+                mapToInt(it -> it.getDistance().distance()).sum();
+        return new Distance(distanceSum);
+    }
+
+    private List<Section> findAllSections(List<Line> lines) {
+        List<Section> allSections = new ArrayList<>();
+        for (Line line : lines) {
+            allSections.addAll(line.getSections());
+        }
+        return allSections;
+    }
+
+    private List<Section> findSection(List<Line> lines, List<Station> shortestStations) {
+
+        List<Section> allSections = findAllSections(lines);
+        List<Section> foundSections = new ArrayList<>();
+        for (int i = 0; i < shortestStations.size() - 1; i++) {
+            searchFoundSections(shortestStations, allSections, foundSections, i);
+        }
+        return foundSections;
+    }
+
+    private void searchFoundSections(List<Station> shortestStations, List<Section> allSections, List<Section> foundSections, int i) {
+        for (Section section : allSections) {
+            addFoundSections(shortestStations, foundSections, i, section);
+        }
+    }
+
+    private void addFoundSections(List<Station> shortestStations, List<Section> foundSections, int i, Section section) {
+        if (isMatchSection(shortestStations, i, section)) {
+            foundSections.add(section);
+        }
+    }
+
+    private boolean isMatchSection(List<Station> shortestStations, int i, Section section) {
+        return section.getUpStation().getName().equals(shortestStations.get(i).getName())
+                && section.getDownStation().getName().equals(shortestStations.get(i + 1).getName());
+    }
+
 
     private void addEdgeWeight(Section section) {
         DefaultWeightedEdge defaultWeightedEdge = graph.addEdge(section.getUpStation().getName(), section.getDownStation().getName());
@@ -88,6 +135,6 @@ public class Path {
     private boolean isMatchSourceAndTarget(List<Station> stations) {
         return stations.stream()
                 .filter(it -> it.equals(source) || it.equals(target))
-                .collect(Collectors.toList()).size() == 2;
+                .collect(toList()).size() == 2;
     }
 }

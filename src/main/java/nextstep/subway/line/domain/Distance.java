@@ -14,7 +14,7 @@ public class Distance {
     private int distance;
 
     protected Distance() {
-        distance = 0;
+
     }
 
     public Distance(int distance) {

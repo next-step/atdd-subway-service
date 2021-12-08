@@ -36,6 +36,6 @@ public class PathService {
         List<Line> allLines = lineRepository.findAll();
         Path path = new Path(sourceStation, targetStation);
 
-        return PathResponse.of(path.findShortestPath(allLines));
+        return PathResponse.of(path.findShortestPath(allLines), path.findShortestPathDistance(allLines));
     }
 }
