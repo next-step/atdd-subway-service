@@ -36,8 +36,8 @@ public class Line extends BaseEntity {
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
-    public static Line of(LineRequest request, Station upStation, Station downStation) {
-        return new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance());
+    public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
+        return new Line(name, color, upStation, downStation, distance);
     }
 
     public void update(Line line) {
