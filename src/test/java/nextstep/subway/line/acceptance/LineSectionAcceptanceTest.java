@@ -149,13 +149,9 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(),
             distance);
 
-        return RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(sectionRequest)
-            .when().post("/lines/{lineId}/sections", line.getId())
-            .then().log().all()
-            .extract();
+        String uri = String.format("/lines/%d/sections", line.getId());
+
+        return RestTestApi.post(uri, sectionRequest);
     }
 
     public static void 지하철_역_목록_조회됨(ExtractableResponse<Response> response) {
@@ -186,12 +182,9 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
     public static ExtractableResponse<Response> 지하철_구간_삭제_요청(LineResponse line,
         StationResponse station) {
-        return RestAssured
-            .given().log().all()
-            .when()
-            .delete("/lines/{lineId}/sections?stationId={stationId}", line.getId(), station.getId())
-            .then().log().all()
-            .extract();
+        String uri = String.format("/lines/%d/sections?stationId=%d", line.getId(), station.getId());
+
+        return RestTestApi.delete(uri);
     }
 
     public static void 지하철_구간_삭제됨(ExtractableResponse<Response> response) {
