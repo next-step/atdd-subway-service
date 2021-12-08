@@ -1,14 +1,14 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.common.constant.Constants;
 import nextstep.subway.common.exception.RegisterDistanceException;
-import nextstep.subway.common.message.Message;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
 public class Distance {
+    private static final int INT_ZERO = 0;
+
     @Column
     private int distance;
 
@@ -26,7 +26,7 @@ public class Distance {
 
     public Distance minus(Distance targetDistance) {
         if (isLessThanOrEqualTo(targetDistance)) {
-            throw new RegisterDistanceException(Message.NOT_REGISTER_SECTION_DISTANCE.getMessage());
+            throw new RegisterDistanceException();
         }
         return Distance.of(this.distance - targetDistance.distance);
     }
@@ -36,8 +36,8 @@ public class Distance {
     }
 
     private static void validate(int distance) {
-        if( distance <= Constants.INT_ZERO ) {
-            throw new RegisterDistanceException(Message.NOT_REGISTER_SECTION_DISTANCE.getMessage());
+        if(distance <= INT_ZERO) {
+            throw new RegisterDistanceException();
         }
     }
 
