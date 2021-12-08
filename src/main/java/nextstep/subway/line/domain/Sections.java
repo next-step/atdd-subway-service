@@ -74,7 +74,7 @@ public class Sections {
                 .filter(section1 -> Objects.equals(section1.getUpStation(), finalUpStation))
                 .map(Section::getDownStation)
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 지하철 역이 없습니다"));
         stations.add(downStation);
         upStation = downStation;
         return upStation;
