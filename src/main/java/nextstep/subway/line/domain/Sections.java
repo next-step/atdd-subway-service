@@ -13,9 +13,17 @@ import java.util.*;
 @Embeddable
 public class Sections {
     public static final int MIN_SECTION_COUNT = 1;
+    public static final int DEFAULT_EXTRA_FARE = 0;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
+
+    public Sections() {
+    }
+
+    public Sections(List<Section> sections) {
+        this.sections = sections;
+    }
 
     public void add(Line line, Station upStation, Station downStation, int distance) {
         List<Station> stations = getStations();
@@ -133,5 +141,13 @@ public class Sections {
     public boolean containsStation(List<Station> stations) {
         return getStations().stream()
                 .anyMatch(stations::contains);
+    }
+
+    public int getMaxExtraFare() {
+        return sections.stream()
+                .map(Section::getLine)
+                .map(Line::getExtraFare)
+                .max(Integer::compareTo)
+                .orElse(DEFAULT_EXTRA_FARE);
     }
 }

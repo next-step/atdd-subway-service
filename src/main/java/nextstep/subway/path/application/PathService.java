@@ -15,9 +15,7 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class PathService {
@@ -51,18 +49,12 @@ public class PathService {
     }
 
     private int getFare(LoginMember loginMember, Set<Line> lines, PathResult shortCut) {
-        int fare = farePolicy.calculateOverFare(getAcrossLines(lines, shortCut.getVertexList()), (int) shortCut.getWeight());
+        int fare = farePolicy.calculateFare(shortCut.getMaxExtraFare(), (int) shortCut.getWeight());
         if (!loginMember.isEmpty()) {
             DiscountPolicy discountPolicy = discountPolicyByAgeResolver.resolve(loginMember.getAge());
             fare = discountPolicy.apply(fare);
         }
         return fare;
-    }
-
-    private Set<Line> getAcrossLines(Set<Line> lines, List<Station> vertexList) {
-        return lines.stream()
-                .filter(line -> line.containsStation(vertexList))
-                .collect(Collectors.toSet());
     }
 
     private void validateParameters(Long sourceStationId, Long targetStationId) {

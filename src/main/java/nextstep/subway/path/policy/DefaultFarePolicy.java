@@ -1,9 +1,6 @@
 package nextstep.subway.path.policy;
 
-import nextstep.subway.line.domain.Line;
 import org.springframework.stereotype.Component;
-
-import java.util.Set;
 
 @Component
 public class DefaultFarePolicy implements FarePolicy {
@@ -12,12 +9,8 @@ public class DefaultFarePolicy implements FarePolicy {
     private static final FareSection[] distanceTable = {FareSection.FIRST, FareSection.SECOND};
 
     @Override
-    public int calculateOverFare(Set<Line> lines, int distance) {
-        int maxFare = lines.stream()
-                .map(Line::getExtraFare)
-                .max(Integer::compareTo)
-                .orElse(0);
-        return maxFare + accumulateFare(distanceTable.length - 1, distance, DEFAULT_FARE);
+    public int calculateFare(int extraFare, int distance) {
+        return extraFare + accumulateFare(distanceTable.length - 1, distance, DEFAULT_FARE);
     }
 
     private int accumulateFare(int index, int distance, int fare) {
