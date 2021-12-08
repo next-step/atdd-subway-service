@@ -15,6 +15,8 @@ import nextstep.subway.station.domain.Station;
 @Embeddable
 public class Sections {
 
+	public static final int SECTIONS_MIN_SIZE_INCLUSIVE = 1;
+
 	@OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
 	private List<Section> sections = new ArrayList<>();
 
@@ -74,7 +76,7 @@ public class Sections {
 	}
 
 	private void validateToDelete() {
-		if (sections.size() <= 1) {
+		if (sections.size() <= SECTIONS_MIN_SIZE_INCLUSIVE) {
 			throw new IllegalArgumentException("노선에서 유일한 구간의 역은 제거할 수 없습니다.");
 		}
 	}
