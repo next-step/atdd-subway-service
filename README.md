@@ -56,11 +56,11 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 # 기능 목록 정리
 ## 1단계 - 인수 테스트 기반 리팩터링리
 - 공통
-  - [ ] 공통 상수 생성
-  - [ ] 커스텀 익셉션 생성
-  - [ ] 공통 메시지 생성
-  - [ ] 공통 에러 응답 생성
-  - [ ] 공통 에러 핸들러 생성
+  - [X] 공통 상수 생성
+  - [X] 커스텀 익셉션 생성
+  - [X] 공통 메시지 생성
+  - [X] 공통 에러 응답 생성
+  - [X] 공통 에러 핸들러 생성
 - LineService 리팩터링
   - Line
     - [X] 접근제어자 수정
