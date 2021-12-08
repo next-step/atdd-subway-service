@@ -129,14 +129,20 @@ Scenario: 지하철 구간을 관리
   Feature 로그인 기능 
   Background  
     given 회원이 등록되어있음
-    given 로그인 요청
 
   Scenario 회원정보가_있는경우_토큰_발급
+      when 로그인_요청
+      
       then 로그인 됨 
       then 토큰 생성됨
 
-  Scenario 유효하지 않는 토큰인 경우 실패 
+  Scenario 유효하지 않는 토큰인 경우 실패
+      when 로그인_요청 
       then 토큰 생성 실패
+```  
+
+### 로그인 후 시나리오 변경 
+```integrationperformancetest
 
   Scenario  내 정보 조회하기
       then  토큰_생성됨
@@ -155,7 +161,7 @@ Scenario: 지하철 구간을 관리
       then  로그인 삭제됨
       when  로그인 요청
       then  토큰 생성 실패
-```  
+```
 
 
 ### 즐겨찾기 
