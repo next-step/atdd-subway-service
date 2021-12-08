@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import nextstep.subway.common.exception.SubwayException;
@@ -34,20 +33,19 @@ public class DistanceTest {
     @Test
     void subtract() {
         Distance result = new Distance(10)
-            .subtract(new Distance(5));
+            .subtract(9);
 
         assertThat(result)
-            .isEqualTo(new Distance(5));
+            .isEqualTo(new Distance(1));
     }
 
-    @DisplayName("거리가 작거나 같은지 확인")
-    @ParameterizedTest
-    @CsvSource(value = {"9,false", "10,true", "11,true"})
-    void isLowerOrEqualThan(int distance, boolean expected) {
-        boolean result = new Distance(10)
-            .isLowerOrEqualThan(new Distance(distance));
+    @DisplayName("거리 빼기 에러")
+    @Test
+    void subtract_error() {
+        Distance distance = new Distance(10);
 
-        assertThat(result)
-            .isEqualTo(expected);
+        assertThatExceptionOfType(SubwayException.class)
+            .isThrownBy(() ->  distance.subtract(10))
+            .withMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
     }
 }
