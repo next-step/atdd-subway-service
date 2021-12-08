@@ -5,6 +5,7 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.favorite.exception.NotFoundFavoriteException;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
@@ -32,14 +33,14 @@ public class FavoriteService {
         final Station source = stationService.findById(request.getSource());
         final Station target = stationService.findById(request.getTarget());
         final Member member = memberService.findById(loginMember.getId());
-        Favorite favorite = favoriteRepository.save(Favorite.of(member, source, target));
+        final Favorite favorite = favoriteRepository.save(Favorite.of(member, source, target));
         return FavoriteResponse.of(favorite);
     }
 
     public void deleteFavorite(LoginMember loginMember, final Long id) {
         final Member member = memberService.findById(loginMember.getId());
         if (!favoriteRepository.existsByIdAndMember(id, member)) {
-            throw new IllegalArgumentException("해당 유저의 즐겨찾기가 존재하지 않습니다.");
+            throw new NotFoundFavoriteException();
         }
         favoriteRepository.deleteById(id);
     }

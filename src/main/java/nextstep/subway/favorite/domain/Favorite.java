@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.favorite.exception.IllegalFavoriteArgumentException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -22,6 +23,9 @@ import static java.util.Objects.isNull;
         @Index(unique = true, name = "member_id_source_id_target_id_unique_index", columnList = "member_id,source_id,target_id")
 })
 public class Favorite extends BaseEntity {
+    private static final String NOT_FOUND_USER_ERROR_MESSAGE = "즐겨찾기할 유저가 존재하지 않습니다.";
+    private static final String NOT_FOUND_SOURCE_ERROR_MESSAGE = "즐겨찾기할 출발역이 존재하지 않습니다.";
+    private static final String NOT_FOUND_TARGET_ERROR_MESSAGE = "즐겨찾기할 도착역이 존재하지 않습니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,13 +59,13 @@ public class Favorite extends BaseEntity {
 
     private void validate(Member member, Station source, Station target) {
         if (isNull(member)) {
-            throw new IllegalArgumentException("즐겨찾기할 유저가 존재하지 않습니다.");
+            throw new IllegalFavoriteArgumentException(NOT_FOUND_USER_ERROR_MESSAGE);
         }
         if (isNull(source)) {
-            throw new IllegalArgumentException("즐겨찾기할 출발역이 존재하지 않습니다.");
+            throw new IllegalFavoriteArgumentException(NOT_FOUND_SOURCE_ERROR_MESSAGE);
         }
         if (isNull(target)) {
-            throw new IllegalArgumentException("즐겨찾기할 도착역이 존재하지 않습니다.");
+            throw new IllegalFavoriteArgumentException(NOT_FOUND_TARGET_ERROR_MESSAGE);
         }
     }
 

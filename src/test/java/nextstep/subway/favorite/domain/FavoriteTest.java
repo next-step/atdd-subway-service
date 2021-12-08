@@ -90,6 +90,7 @@ class FavoriteTest {
         assertThat(exists).isTrue();
     }
 
+    @DisplayName("즐겨찾기를 삭제한다.")
     @Test
     void delete() {
         // given
