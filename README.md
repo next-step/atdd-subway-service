@@ -107,6 +107,72 @@ Then: 최단 경로의 지하철역 목록 조회됨
         - [x] 출발역과 도착역이 연결되어 있지 않은 경우
         - [x] 존재하지 않은 출발역이나 도착역을 조회 할 경우
 
+### 인증을 통한 기능 구현
+- [x] 토큰 발급 기능 (로그인) 인수테스트 만들기
+```
+Feature: 인증 기능
+
+Background:
+  Given: 회원 등록되어 있음. email@email.com/password
+
+Scenario: 로그인을 시도한다.
+  When: 로그인 요청
+  Then: 로그인 됨
+
+Scenario: 이메일 혹은 비밀번호 달라서 로그인 시도 실패
+  When: 로그인 요청 shinmj@email.com/password
+  Then: 로그인 실패
+  When: 로그인 요청 email@email.com/password11
+  Then: 로그인 실패
+
+Scenario: 유효하지 않은 토큰으로 내정보 조회 
+  When: 내정보 조회 요청 Bearer invalidToken
+  Then: 조회 실패
+```
+- [ ] 인증. - 내 정보 조회 기능 완성하기
+    - [x] 인수 테스트 작성
+```
+Feature: 내정보 조회 기능
+
+Scenario: 나의 정보를 관리한다. (조회, 수정, 삭제)
+  Given: 회원 등록되어 있음.
+    And: 로그인 되어있음. (token)
+  When: 나의 정보 조회 요청
+  Then: 나의 정보 조회됨
+  When: 나의 정보 수정 요청
+  Then: 나의 정보 수정됨
+  When: 나의 정보 삭제 요청
+  Then: 나의 정보 삭제됨
+```
+- [ ] 토큰을 통한 인증 구현
+    - [ ] 토큰 유효성 검증 후 사용자 정보 입력 (`@AuthenticationPrincipal` , `AuthenticationPrincipalArgumentResolver`)
+    - [ ] 기능에 어노테이션 달기 -> 기능 구현 확인  
+
+- [ ] 인증 - 즐겨 찾기 기능 완성하기
+    - [ ]  인수 테스트
+```
+Feature: 즐겨찾기를 관리한다.
+
+Background:
+ Given: 지하철 역 등록되어 있음
+   And: 지하철 노선 등록되어 있음
+   And: 지하철 노선에 지하철 역 등록되어 있음
+   And: 회원 등록되어 있음
+   And: 로그인 되어 있음
+
+Scenario: 즐겨찾기를 관리한다.
+  When: 즐겨 찾기 생성을 요청
+  Then: 즐겨 찾기 생성됨
+  When: 즐겨 찾기 목록 조회 요청
+  Then: 즐겨 찾기 목록 조회됨
+  When: 즐겨 찾기 삭제 요청
+  Then: 즐겨 찾기 삭제됨
+```
+- [ ] 기능 구현 TDD
+    - [ ] 구간으로 관리  From- To
+    - [ ] `member` 와 다대일 단방향 연관관계, 즐겨찾기가 n !   
+
+    
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.

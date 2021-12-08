@@ -95,7 +95,6 @@ public class PathFinderTest {
     @Test
     @DisplayName("서초역_양재시민의숲 지하철 최단 경로 조회")
     void getShortestList_서초역_양재시민의숲() {
-
         PathFinder graph = PathFinder.create(stationGraph, Arrays.asList(신분당선, 이호선, 삼호선));
 
         Path shortestPath = graph.findShortestPath(서초역, 양재시민의숲);
