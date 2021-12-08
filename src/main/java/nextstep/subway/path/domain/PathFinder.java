@@ -15,7 +15,7 @@ public class PathFinder {
         this.stationGraph = stationGraph;
     }
 
-    public static PathFinder createWeightMultiGraph(List<Line> lines) {
+    public static PathFinder createWeightedMultiStationGraph(List<Line> lines) {
         return new PathFinder(new WeightedMultiStationGraph()).createGraph(lines);
     }
 

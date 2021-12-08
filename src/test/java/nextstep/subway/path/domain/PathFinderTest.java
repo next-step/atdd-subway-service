@@ -81,7 +81,7 @@ public class PathFinderTest {
     @DisplayName("교대역-양재역 지하철 최단 경로 조회")
     void getShortestList_교대역_양재역() {
 
-        PathFinder graph = PathFinder.createWeightMultiGraph(Arrays.asList(신분당선, 이호선, 삼호선));
+        PathFinder graph = PathFinder.createWeightedMultiStationGraph(Arrays.asList(신분당선, 이호선, 삼호선));
 
         Path shortestPath = graph.findShortestPath(교대역, 양재역);
 
@@ -96,7 +96,7 @@ public class PathFinderTest {
     @DisplayName("서초역_양재시민의숲 지하철 최단 경로 조회")
     void getShortestList_서초역_양재시민의숲() {
         when(강남역.getId()).thenReturn(1L);
-        PathFinder graph = PathFinder.createWeightMultiGraph(Arrays.asList(신분당선, 이호선, 삼호선));
+        PathFinder graph = PathFinder.createWeightedMultiStationGraph(Arrays.asList(신분당선, 이호선, 삼호선));
 
         Path shortestPath = graph.findShortestPath(서초역, 양재시민의숲);
 
@@ -111,7 +111,7 @@ public class PathFinderTest {
     @DisplayName("최단 경로 조회 시 출발역과 도착역이 같은 경우 InvalidArgumentException 발생")
     void getShortestListSameFromToFail() {
 
-        PathFinder graph = PathFinder.createWeightMultiGraph(Arrays.asList(신분당선));
+        PathFinder graph = PathFinder.createWeightedMultiStationGraph(Arrays.asList(신분당선));
 
         assertThatThrownBy(() -> graph.findShortestPath(양재역, 양재역))
             .isInstanceOf(InvalidArgumentException.class)
@@ -122,7 +122,7 @@ public class PathFinderTest {
     @DisplayName("출발역과 도착역이 연결되어 있지 경우 InvalidArgumentException 발생")
     void getShortestListConnectedFail() {
 
-        PathFinder graph = PathFinder.createWeightMultiGraph(Arrays.asList(신분당선, 칠호선));
+        PathFinder graph = PathFinder.createWeightedMultiStationGraph(Arrays.asList(신분당선, 칠호선));
 
         assertThatThrownBy(() -> graph.findShortestPath(반포역, 강남역))
             .isInstanceOf(InvalidArgumentException.class)
@@ -133,7 +133,7 @@ public class PathFinderTest {
     @DisplayName("출발역, 도착역이 존재하지 않는 경우 NotFoundException 발생")
     void getShortestListNoFoundStationFail() {
 
-        PathFinder graph = PathFinder.createWeightMultiGraph(Arrays.asList(이호선, 삼호선));
+        PathFinder graph = PathFinder.createWeightedMultiStationGraph(Arrays.asList(이호선, 삼호선));
 
         assertThatThrownBy(() -> graph.findShortestPath(양재시민의숲, 강남역))
             .isInstanceOf(NotFoundException.class)

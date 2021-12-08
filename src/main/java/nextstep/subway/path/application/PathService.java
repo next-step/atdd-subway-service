@@ -29,7 +29,7 @@ public class PathService {
         Station targetStation = stationService.findStation(target);
         List<Line> lines = lineService.findLines();
 
-        PathFinder pathFinder = PathFinder.createWeightMultiGraph(lines);
+        PathFinder pathFinder = PathFinder.createWeightedMultiStationGraph(lines);
         Path shortestPath = pathFinder.findShortestPath(sourceStation, targetStation);
 
         return PathResponse.of(shortestPath);
