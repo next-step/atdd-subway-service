@@ -26,6 +26,10 @@ public class Distance {
         return new Distance(distance1 + distance2);
     }
 
+    public static Distance of(double distance) {
+        return new Distance((int) distance);
+    }
+
     public Distance minus(int distance) {
         if (isLessThanOrEqualTo(distance)) {
             throw new TooLongDistanceException();
