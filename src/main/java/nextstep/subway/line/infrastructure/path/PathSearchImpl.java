@@ -11,9 +11,8 @@ public class PathSearchImpl implements PathSearch {
 
     @Override
     public PathResult findShortestPath(Path path) {
-//        SubwayGraph subwayGraph = new SubwayGraph(SectionEdge.toList(path.getSections()));
-        SubwayGraph subwayGraph = new SubwayGraph(SectionEdge.toList(path.getSections()));
-        SubwayPath subwayPath = new SubwayPath(subwayGraph, path.getSource(), path.getTarget());
-        return subwayPath.getShortestPath();
+        SubwayGraph subwayGraph = SubwayGraph.of(path.getSections());
+        SubwayPath subwayPath = SubwayPath.of(subwayGraph);
+        return subwayPath.getShortestPath(path.getSource(), path.getTarget());
     }
 }

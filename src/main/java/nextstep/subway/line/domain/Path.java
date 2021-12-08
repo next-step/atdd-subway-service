@@ -1,9 +1,6 @@
 package nextstep.subway.line.domain;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import nextstep.subway.common.exception.ErrorCode;
 import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.station.domain.Station;
@@ -25,13 +22,6 @@ public class Path {
 
     public static Path of(Sections sections, Station source, Station target) {
         return new Path(sections, source, target);
-    }
-
-    private static List<Section> toSections(List<Line> lines) {
-        return lines.stream()
-            .map(Line::getSections)
-            .flatMap(Collection::stream)
-            .collect(Collectors.toList());
     }
 
     public Sections getSections() {

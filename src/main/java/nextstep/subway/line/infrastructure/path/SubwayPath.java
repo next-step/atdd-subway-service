@@ -1,6 +1,5 @@
 package nextstep.subway.line.infrastructure.path;
 
-
 import java.util.List;
 import java.util.Optional;
 import nextstep.subway.common.exception.ErrorCode;
@@ -12,32 +11,27 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 public class SubwayPath {
 
-    private final GraphPath<Station, SectionEdge> graphPath;
+    private final DijkstraShortestPath<Station, SectionEdge> path;
 
-    public SubwayPath(SubwayGraph subwayGraph, Station source, Station target) {
-        this.graphPath = createPath(subwayGraph, source, target);
+    public SubwayPath(DijkstraShortestPath<Station, SectionEdge> path) {
+        this.path = path;
     }
 
-    public PathResult getShortestPath() {
+    public static SubwayPath of(SubwayGraph subwayGraph) {
+        return new SubwayPath(new DijkstraShortestPath<>(subwayGraph));
+    }
+
+    public PathResult getShortestPath(Station source, Station target) {
+        GraphPath<Station, SectionEdge> graphPath = createPath(source, target);
+
         List<Station> result = graphPath.getVertexList();
         int weight = (int) graphPath.getWeight();
 
         return PathResult.of(result, weight);
     }
 
-    private GraphPath<Station, SectionEdge> createPath(SubwayGraph subwayGraph, Station source,
-        Station target) {
-        isPathContains(subwayGraph, source, target);
-
-        DijkstraShortestPath<Station, SectionEdge> path = new DijkstraShortestPath<>(subwayGraph);
-
+    private GraphPath<Station, SectionEdge> createPath(Station source, Station target) {
         return Optional.ofNullable(path.getPath(source, target))
             .orElseThrow(() -> InvalidParameterException.of(ErrorCode.PATH_NOT_CONNECT));
-    }
-
-    private void isPathContains(SubwayGraph subwayGraph, Station source, Station target) {
-        if (!subwayGraph.containsVertex(source) || !subwayGraph.containsVertex(target)) {
-            throw InvalidParameterException.of(ErrorCode.PATH_IN_OUT_NOT_FOUND);
-        }
     }
 }
