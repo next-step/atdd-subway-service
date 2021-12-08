@@ -114,4 +114,14 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    public static ExtractableResponse<Response> 내정보_조회_요청(String credentials) {
+        return RestAssured.given().log().all()
+            .auth().oauth2(credentials)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .get("/members/me")
+            .then().log().all()
+            .extract();
+    }
 }

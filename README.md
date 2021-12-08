@@ -122,13 +122,13 @@ Scenario: 로그인을 시도한다.
 
 Scenario: 이메일 혹은 비밀번호 달라서 로그인 시도 실패
   When: 로그인 요청 shinmj@email.com/password
-  Then: 등록되지 않은 회원입니다. 로그인 실패
+  Then: 로그인 실패
   When: 로그인 요청 email@email.com/password11
-  Then: 비밀번호가 다릅니다. 로그인 실패
+  Then: 로그인 실패
 
 Scenario: 유효하지 않은 토큰으로 내정보 조회 
   When: 내정보 조회 요청 Bearer invalidToken
-  Then: 권한이 없습니다. 조회 실패
+  Then: 조회 실패
 ```
 - [ ] 인증. - 내 정보 조회 기능 완성하기
     - [ ] 인수 테스트 작성
