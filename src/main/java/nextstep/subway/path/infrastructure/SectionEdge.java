@@ -3,18 +3,19 @@ package nextstep.subway.path.infrastructure;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class SectionEdge extends DefaultWeightedEdge {
 
-    private final Station station;
+    private final Station source;
     private final Station target;
     private final double weight;
 
     private SectionEdge(Station source, Station target, Integer weight) {
-        this.station = source;
+        this.source = source;
         this.target = target;
         this.weight = weight;
     }
@@ -24,13 +25,19 @@ public class SectionEdge extends DefaultWeightedEdge {
             section.getDistance());
     }
 
+    public static List<SectionEdge> toList(List<Section> sections) {
+        return sections.stream()
+            .map(SectionEdge::of)
+            .collect(Collectors.toList());
+    }
+
     public List<Station> getVertexes() {
-        return Arrays.asList(station, target);
+        return Arrays.asList(source, target);
     }
 
     @Override
     public Station getSource() {
-        return station;
+        return source;
     }
 
     @Override
