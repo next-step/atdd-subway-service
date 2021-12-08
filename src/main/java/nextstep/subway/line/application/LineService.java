@@ -38,6 +38,7 @@ public class LineService {
         return LineResponse.ofList(persistLines);
     }
 
+    @Transactional(readOnly = true)
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(LineNotFoundException::new);
     }
@@ -69,6 +70,7 @@ public class LineService {
         line.deleteSection(station);
     }
 
+    @Transactional(readOnly = true)
     private Station findStationById(Long id) {
         return stationRepository.findById(id).orElseThrow(StationNotFoundException::new);
     }
