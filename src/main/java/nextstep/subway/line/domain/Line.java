@@ -61,8 +61,8 @@ public class Line extends BaseEntity {
         this.sections.addSection(section);
     }
 
-    public boolean isLessThanOrEqual(int size) {
-        return this.sections.isLessThanOrEqual(size);
+    public void remove(Station station) {
+        this.sections.remove(this, station);
     }
 
     public Long getId() {
