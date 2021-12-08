@@ -81,7 +81,7 @@ public class Section {
         this.distance -= newDistance;
     }
 
-    public void setSameLine(Optional<Section> sameUpStation) {
+    public void updateSameLineFromStation(Optional<Section> sameUpStation) {
         this.line = sameUpStation.get().line;
     }
 }

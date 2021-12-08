@@ -112,7 +112,7 @@ public class Sections {
             sections.remove(sameDownStation.get());
             Section newSection = Section.mergeSections(sameUpStation.get(), sameDownStation.get());
             sections.add(newSection);
-            newSection.setSameLine(sameUpStation);
+            newSection.updateSameLineFromStation(sameUpStation);
             return true;
         }
         return false;
