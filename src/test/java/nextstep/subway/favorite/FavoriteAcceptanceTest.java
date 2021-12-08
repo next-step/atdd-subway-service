@@ -35,7 +35,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
     private StationResponse 양재역;
     private StationResponse 광교역;
-    private MemberResponse 회원;
     private TokenResponse 토큰;
 
     @BeforeEach
@@ -51,7 +50,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         신분당선 = 지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
 
-        회원 = 회원_생성을_요청("email@email.com", "password", 20).as(MemberResponse.class);
+        회원_생성을_요청("email@email.com", "password", 20);
         토큰 = 로그인_요청("email@email.com", "password").as(TokenResponse.class);
     }
 
@@ -69,7 +68,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_응답);
 
         // when
-        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(토큰, 즐겨찾기_목록_조회_응답);
+        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(토큰, 즐겨찾기_생성_응답);
         // then
         즐겨찾기_목록_삭제됨(즐겨찾기_삭제_응답);
 
