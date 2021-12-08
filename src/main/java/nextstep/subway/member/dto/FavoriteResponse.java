@@ -34,8 +34,8 @@ public class FavoriteResponse {
         return new FavoriteResponse(favorite.getId(), favorite.getSourceStation(), favorite.getTargetStation());
     }
 
-    public static List<FavoriteResponse> ofList(List<Favorite> favorites) {
-        return favorites
+    public static List<FavoriteResponse> ofList(Favorites favorites) {
+        return favorites.getList()
                 .stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());

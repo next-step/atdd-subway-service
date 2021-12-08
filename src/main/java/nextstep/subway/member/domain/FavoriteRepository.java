@@ -1,8 +1,7 @@
 package nextstep.subway.member.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
+import org.springframework.data.jpa.repository.Query;
 
 /**
  * packageName : nextstep.subway.favorites.domain
@@ -12,5 +11,6 @@ import java.util.List;
  * description :
  */
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
-    List<Favorite> findByMemberId(Long memberId);
+    @Query(value = "select f from Favorite f where f.sourceStation.id =?1 and f.targetStation.id =?2 and f.member.id = ?3")
+    Favorite findFavorite(Long source, Long target, Long memberId);
 }

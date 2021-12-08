@@ -56,7 +56,6 @@ public class Favorite extends BaseEntity {
     }
 
     public Favorite by(Member member) {
-        member.getFavorites().validateDuplicate(this);
         this.member = member;
         return this;
     }

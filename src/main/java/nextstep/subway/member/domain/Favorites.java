@@ -2,7 +2,6 @@ package nextstep.subway.member.domain;
 
 import nextstep.subway.member.exception.FavoriteDuplicatedException;
 import nextstep.subway.member.exception.FavoriteNotFoundException;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -20,8 +19,7 @@ import java.util.List;
 @Embeddable
 public class Favorites {
 
-    @OneToMany(mappedBy = "member")
-            //, cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "member", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Favorite> favorites = new ArrayList<>();
 
     public void validateDuplicate(Favorite favorite) {

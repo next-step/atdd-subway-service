@@ -1,12 +1,12 @@
 package nextstep.subway.member.application;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.subway.member.domain.*;
+import nextstep.subway.member.domain.Favorite;
+import nextstep.subway.member.domain.FavoriteRepository;
+import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.FavoriteRequest;
 import nextstep.subway.member.dto.FavoriteResponse;
-import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.member.dto.MemberResponse;
-import nextstep.subway.member.exception.FavoriteNotFoundException;
 import nextstep.subway.member.exception.MemberNotFoundException;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.domain.Path;
@@ -26,27 +26,15 @@ public class FavoriteService {
     @Transactional
     public FavoriteResponse addFavorite(Long id, FavoriteRequest request) {
         Member member = findMemberById(id);
-        Favorite favorite = getFavorite(request).by(member);
-
-        //FIXME 1) Favorite 기준으로 저장하기.
-        favoriteRepository.save(favorite);
-
-        //FIXME 2) Member 기준으로 저장하기. 영속성 전이 때문에 Favorite의 Key를 Presentation 계층에 전달하기 위해서 flush()가 필요함.
-        //member.addFavorite(favorite);
-        //memberRepository.flush();
-        return FavoriteResponse.of(favorite);
+        member.addFavorite(getFavorite(request));
+        final Favorite persistFavorite = favoriteRepository.findFavorite(request.getSource(), request.getTarget(), id);
+        return FavoriteResponse.of(persistFavorite);
     }
 
     @Transactional
     public void deleteFavorite(Long memberId, Long favoriteId) {
-        favoriteRepository.delete(
-                favoriteRepository.findById(favoriteId)
-                        .orElseThrow(FavoriteNotFoundException::new)
-        );
-
-        //FIXME member 기준으로 삭제하기
-        //Member member = findMemberById(memberId);
-        //member.removeFavorite(favoriteId);
+        Member member = findMemberById(memberId);
+        member.removeFavorite(favoriteId);
     }
 
     private Member findMemberById(Long id) {
@@ -60,12 +48,7 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavorites(Long id) {
-        return FavoriteResponse.ofList(favoriteRepository.findByMemberId(id));
+        Member member = findMemberById(id);
+        return FavoriteResponse.ofList(member.getFavorites());
     }
-
-    //FIXME member 기준으로 즐겨찾기를 조회하기
-//    public List<FavoriteResponse> findFavorites(Long id) {
-//        Member member = findMemberById(id);
-//        return FavoriteResponse.ofList(member.getFavorites());
-//    }
 }
