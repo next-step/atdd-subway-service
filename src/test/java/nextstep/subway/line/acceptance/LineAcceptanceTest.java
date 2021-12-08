@@ -111,6 +111,4 @@ public class LineAcceptanceTest extends AcceptanceTest {
         // then
         지하철_노선_삭제됨(response);
     }
-
-
 }
