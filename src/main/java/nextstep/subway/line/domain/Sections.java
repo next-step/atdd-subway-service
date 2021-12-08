@@ -9,9 +9,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
+
+    private static final int REMOVE_SECTION_MIN_SIZE = 1;
+    private static final int NOT_BETWEEN_SECTION = 1;
+    private static final int BETWEEN_SECTION = 2;
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
@@ -38,6 +43,13 @@ public class Sections {
         sections.add(section);
     }
 
+    public void remove(Station removeStation) {
+        validateRemove();
+        List<Section> findSections = findSections(removeStation);
+        removeSectionNotBetweenSections(findSections);
+        removeSectionBetweenSections(findSections);
+    }
+
     public List<Section> getOrderedSections() {
         if (sections.isEmpty()) {
             return sections;
@@ -54,6 +66,34 @@ public class Sections {
 
         Station firstUpStation = findFirstUpStation();
         return makeOrderedStations(firstUpStation);
+    }
+
+    private void validateRemove() {
+        if (sections.size() <= REMOVE_SECTION_MIN_SIZE) {
+            throw new RuntimeException("구간을 제거할 수 없습니다.");
+        }
+    }
+
+    private List<Section> findSections(Station removeStation) {
+        return getOrderedSections().stream()
+                .filter(section -> section.hasSameUpStation(removeStation)
+                        || section.hasSameDownStation(removeStation))
+                .collect(Collectors.toList());
+    }
+
+    private void removeSectionNotBetweenSections(List<Section> findSections) {
+        if (findSections.size() == NOT_BETWEEN_SECTION) {
+            sections.remove(findSections.get(0));
+        }
+    }
+
+    private void removeSectionBetweenSections(List<Section> findSections) {
+        if (findSections.size() == BETWEEN_SECTION) {
+            Section upSection = findSections.get(0);
+            Section downSection = findSections.get(1);
+            upSection.merge(downSection);
+            sections.remove(downSection);
+        }
     }
 
     private void modifyIfSameUpStationExisted(Section section) {

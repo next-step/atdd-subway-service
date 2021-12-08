@@ -75,6 +75,11 @@ public class Section {
         this.distance -= newDistance;
     }
 
+    public void merge(Section removeSection) {
+        this.downStation = removeSection.getDownStation();
+        this.distance = this.distance + removeSection.distance;
+    }
+
     public boolean hasSameDownStation(Station otherStation) {
         return this.downStation == otherStation;
     }

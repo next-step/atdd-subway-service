@@ -90,4 +90,8 @@ public class Line extends BaseEntity {
     public int hashCode() {
         return Objects.hash(getId(), getName(), getColor(), getSections());
     }
+
+    public void removeSection(Station removeStation) {
+        sections.remove(removeStation);
+    }
 }
