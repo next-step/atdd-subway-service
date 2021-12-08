@@ -33,11 +33,11 @@ class FavoriteTest {
     @Test
     void save() {
         // given
-        final Station firstStation = stationRepository.save(Station.of("1번"));
-        final Station secondStation = stationRepository.save(Station.of("2번"));
+        final Station source = stationRepository.save(Station.of("1번"));
+        final Station target = stationRepository.save(Station.of("2번"));
         final Member member = memberRepository.save(new Member("email@email.com", "password", 12));
         // when
-        final Favorite favorite = favoriteRepository.save(Favorite.of(member, firstStation, secondStation));
+        final Favorite favorite = favoriteRepository.save(Favorite.of(member, source, target));
         // then
         assertThat(favorite.getId()).isNotNull();
     }
@@ -46,10 +46,10 @@ class FavoriteTest {
     @Test
     void findById() {
         // given
-        final Station firstStation = stationRepository.save(Station.of("1번"));
-        final Station secondStation = stationRepository.save(Station.of("2번"));
+        final Station source = stationRepository.save(Station.of("1번"));
+        final Station target = stationRepository.save(Station.of("2번"));
         final Member member = memberRepository.save(new Member("email@email.com", "password", 12));
-        final Favorite favorite = favoriteRepository.save(Favorite.of(member, firstStation, secondStation));
+        final Favorite favorite = favoriteRepository.save(Favorite.of(member, source, target));
         entityManager.clear();
         // when
         final Optional<Favorite> optionalFavorite = favoriteRepository.findById(favorite.getId());
@@ -80,10 +80,10 @@ class FavoriteTest {
     @Test
     void existsByIdAndMember() {
         // given
-        final Station firstStation = stationRepository.save(Station.of("1번"));
-        final Station secondStation = stationRepository.save(Station.of("2번"));
+        final Station source = stationRepository.save(Station.of("1번"));
+        final Station target = stationRepository.save(Station.of("2번"));
         final Member member = memberRepository.save(new Member("email@email.com", "password", 12));
-        final Favorite favorite = favoriteRepository.save(Favorite.of(member, firstStation, secondStation));
+        final Favorite favorite = favoriteRepository.save(Favorite.of(member, source, target));
         // when
         final boolean exists = favoriteRepository.existsByIdAndMember(favorite.getId(), member);
         // then
@@ -94,10 +94,10 @@ class FavoriteTest {
     @Test
     void delete() {
         // given
-        final Station firstStation = stationRepository.save(Station.of("1번"));
-        final Station secondStation = stationRepository.save(Station.of("2번"));
+        final Station source = stationRepository.save(Station.of("1번"));
+        final Station target = stationRepository.save(Station.of("2번"));
         final Member member = memberRepository.save(new Member("email@email.com", "password", 12));
-        final Favorite favorite = favoriteRepository.save(Favorite.of(member, firstStation, secondStation));
+        final Favorite favorite = favoriteRepository.save(Favorite.of(member, source, target));
         // when
         favoriteRepository.deleteById(favorite.getId());
         entityManager.flush();
@@ -105,5 +105,19 @@ class FavoriteTest {
         // then
         final Optional<Favorite> optionalFavorite = favoriteRepository.findById(favorite.getId());
         assertFalse(optionalFavorite.isPresent());
+    }
+
+    @DisplayName("즐겨찾기 중복을 확인한다.")
+    @Test
+    void duplicate() {
+        // given
+        final Station source = stationRepository.save(Station.of("1번"));
+        final Station target = stationRepository.save(Station.of("2번"));
+        final Member member = memberRepository.save(new Member("email@email.com", "password", 12));
+        favoriteRepository.save(Favorite.of(member, source, target));
+        // when
+        final boolean exists = favoriteRepository.existsByMemberAndSourceAndTarget(member, source, target);
+        // when
+        assertThat(exists).isTrue();
     }
 }
