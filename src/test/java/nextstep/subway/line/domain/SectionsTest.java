@@ -31,19 +31,6 @@ class SectionsTest {
         sections.getSections().add(강남_신사_구간);
     }
 
-    @DisplayName("구간 목록을 저장한다")
-    @Test
-    void createSections() {
-        // when
-        final List<Section> sections = this.sections.getSections();
-
-        // then
-        assertAll(
-                () -> assertThat(sections.get(0).getUpStation()).isEqualTo(new Station("강남역")),
-                () -> assertThat(sections.get(0).getDownStation()).isEqualTo(new Station("신사역"))
-        );
-    }
-
     @DisplayName("구간을 추가한다")
     @Test
     void addLineStation() {

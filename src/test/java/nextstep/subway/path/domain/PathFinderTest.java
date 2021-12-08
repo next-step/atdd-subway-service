@@ -5,8 +5,11 @@ import nextstep.subway.common.exception.NotFoundEntityException;
 import nextstep.subway.common.exception.UnconnectedStationException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
+import org.jgrapht.GraphPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,12 +65,13 @@ class PathFinderTest {
     @Test
     void findShortestPathSuccess() {
         PathFinder pathFinder = new PathFinder(강남역, 남부터미널역, 구간들);
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = pathFinder.findShortestPath();
+
         assertAll(
-                () -> assertThat(pathFinder.findShortestPath()).isNotNull(),
-                () -> assertThat(pathFinder.findShortestPath().getStations()).containsExactlyElementsOf(
-                        StationResponse.listOf(Arrays.asList(강남역, 양재역, 남부터미널역))
-                ),
-                () -> assertThat(pathFinder.findShortestPath().getWeight()).isEqualTo(12.0)
+                () -> assertThat(shortestPath).isNotNull(),
+                () -> assertThat(shortestPath.getVertexList()).containsExactlyElementsOf(
+                        Arrays.asList(강남역, 양재역, 남부터미널역)),
+                () -> assertThat(shortestPath.getWeight()).isEqualTo(12.0)
         );
     }
 
@@ -76,6 +80,7 @@ class PathFinderTest {
     void findShortestPathExceptionSameStation() {
         assertThatThrownBy(() -> {
             PathFinder pathFinder = new PathFinder(강남역, 강남역, 구간들);
+
         }).isInstanceOf(CyclePathException.class)
         .hasMessageContaining("출발역과 종착역이 같습니다.");
     }
@@ -86,6 +91,7 @@ class PathFinderTest {
         assertThatThrownBy(() -> {
             PathFinder pathFinder = new PathFinder(강남역, 이촌역, 구간들);
             pathFinder.findShortestPath();
+
         }).isInstanceOf(UnconnectedStationException.class)
                 .hasMessageContaining("출발역과 도착역이 연결되어 있지 않습니다.");
     }
@@ -96,6 +102,7 @@ class PathFinderTest {
         assertThatThrownBy(() -> {
             PathFinder pathFinder = new PathFinder(강남역, 새로운역1, 구간들);
             pathFinder.findShortestPath();
+
         }).isInstanceOf(NotFoundEntityException.class)
                 .hasMessageContaining("Entity를 찾지 못했습니다.");
     }

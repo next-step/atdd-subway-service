@@ -17,12 +17,6 @@ class DistanceTest {
        distance = new Distance(5);
     }
 
-    @DisplayName("거리를 생성할 수 있다")
-    @Test
-    void createDistance() {
-        assertThat(distance.getDistance()).isEqualTo(5);
-    }
-
     @DisplayName("거리를 더할 수 있다")
     @Test
     void addDistance() {
@@ -44,7 +38,6 @@ class DistanceTest {
     void subtractDistanceException() {
         assertThatThrownBy(() -> {
             final Distance newDistance = distance.subtract(new Distance(5));
-            System.out.println(newDistance);
 
         }).isInstanceOf(RuntimeException.class)
         .hasMessageContaining("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");

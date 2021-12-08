@@ -18,12 +18,6 @@ class MemberPasswordTest {
         memberPassword = new MemberPassword("this is random password");
     }
 
-    @DisplayName("회원 비밀번호를 생성할 수 있다")
-    @Test
-    void createMemberPassword() {
-        assertThat(memberPassword.getPassword()).isEqualTo("this is random password");
-    }
-
     @DisplayName("회원 비밀번호를 확인할 수 있다")
     @Test
     void checkMemberPassword() {

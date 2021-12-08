@@ -5,8 +5,8 @@ import nextstep.subway.common.exception.NotFoundEntityException;
 import nextstep.subway.common.exception.UnconnectedStationException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
@@ -46,7 +46,7 @@ public class PathFinder {
         return sections;
     }
 
-    public PathResponse findShortestPath() {
+    public GraphPath<Station, DefaultWeightedEdge> findShortestPath() {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         addVertexes(graph, getAllStations());
         addEdges(graph, sections);
@@ -54,7 +54,7 @@ public class PathFinder {
         DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
         validateFindShortestPath(sourceStation, targetStation, shortestPath);
 
-        return new PathResponse(shortestPath.getPath(sourceStation, targetStation));
+        return shortestPath.getPath(sourceStation, targetStation);
     }
 
     private void validateFindShortestPath(Station sourceStation, Station targetStation, DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath) {

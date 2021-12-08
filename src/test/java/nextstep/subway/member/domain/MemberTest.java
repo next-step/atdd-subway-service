@@ -16,16 +16,6 @@ class MemberTest {
         member = new Member("test@domain.com", "randomPassword!!@#", 31);
     }
 
-    @DisplayName("회원을 생성할 수 있다")
-    @Test
-    void createMember() {
-        assertAll(
-                () -> assertThat(member.getEmail()).isEqualTo("test@domain.com"),
-                () -> assertThat(member.getPassword()).isEqualTo("randomPassword!!@#"),
-                () -> assertThat(member.getAge()).isEqualTo(31)
-        );
-    }
-
     @DisplayName("회원을 수정할 수 있다")
     @Test
     void updateMember() {
