@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -29,7 +30,7 @@ public class FavoriteService {
 
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteRequest request) {
         final Station source = stationService.findById(request.getSource());
-        final Station target = stationService.findById(request.getSource());
+        final Station target = stationService.findById(request.getTarget());
         final Member member = memberService.findById(loginMember.getId());
         Favorite favorite = favoriteRepository.save(Favorite.of(member, source, target));
         return FavoriteResponse.of(favorite);
@@ -41,6 +42,9 @@ public class FavoriteService {
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findAll(LoginMember loginMember) {
-        return null;
+        return favoriteRepository.findAllByMemberId(loginMember.getId())
+                .stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
     }
 }

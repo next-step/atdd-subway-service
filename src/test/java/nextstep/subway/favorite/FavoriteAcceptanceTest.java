@@ -46,14 +46,15 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     void manageFavorite() {
         // When
         ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(토큰, new FavoriteRequest(양재역.getId(), 교대역.getId()));
+        ExtractableResponse<Response> createResponse2 = 즐겨찾기_생성을_요청(토큰, new FavoriteRequest(교대역.getId(), 남부터미널역.getId()));
         // Then
         즐겨찾기_생성됨(createResponse);
 
         // When
-//        final ExtractableResponse<Response> listResponse = 즐겨찾기_목록_조회_요청();
-//        // Then
-//        즐겨찾기_목록_조회됨(listResponse);
-//
+        final ExtractableResponse<Response> listResponse = 즐겨찾기_목록_조회_요청(토큰);
+        // Then
+        즐겨찾기_목록_조회됨(listResponse);
+
 //        // given
 //        Long 생성된_즐겨찾기_아이디 = createResponse.as(FavoriteResponse.class).getId();
 //        // When
@@ -72,10 +73,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청() {
+    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(TokenResponse tokenResponse) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .when().get("/favorites")
                 .then().log().all()
                 .extract();

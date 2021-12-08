@@ -9,12 +9,18 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import java.util.Objects;
 
 import static java.util.Objects.isNull;
 
 @Entity
+@Table(indexes = {
+        @Index(unique = true, name = "member_id_source_id_target_id_unique_index", columnList = "member_id,source_id,target_id")
+})
 public class Favorite extends BaseEntity {
 
     @Id
@@ -25,11 +31,11 @@ public class Favorite extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false, updatable = false)
     private Member member;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "source_id", nullable = false)
     private Station source;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_id", nullable = false)
     private Station target;
 
@@ -73,5 +79,20 @@ public class Favorite extends BaseEntity {
 
     public Station getTarget() {
         return target;
+    }
+
+    @Override
+    public boolean equals(Object target) {
+        if (this == target) return true;
+        if (target == null || getClass() != target.getClass()) return false;
+
+        Favorite favorite = (Favorite) target;
+
+        return id != null ? id.equals(favorite.id) : favorite.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
