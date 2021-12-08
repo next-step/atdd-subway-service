@@ -32,6 +32,18 @@ public class AcceptanceTest {
         return post(path, new HashMap<>(), body);
     }
 
+	protected static <T> ExtractableResponse<Response> post(String path, String accessToken, T body) {
+		return RestAssured
+			.given().log().all()
+			.auth().oauth2(accessToken)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.body(body)
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when().post(path)
+			.then().log().all()
+			.extract();
+	}
+
     protected static <T> ExtractableResponse<Response> post(
         String path,
         Map<String, ?> pathParams,
@@ -48,6 +60,19 @@ public class AcceptanceTest {
 
     protected static ExtractableResponse<Response> get(String path) {
         return get(path, new HashMap<>(), new HashMap<>());
+    }
+
+    protected static ExtractableResponse<Response> get(
+        String path,
+        String accessToken
+    ) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get(path)
+            .then().log().all()
+            .extract();
     }
 
     protected static ExtractableResponse<Response> get(
@@ -72,6 +97,22 @@ public class AcceptanceTest {
 
     protected static <T> ExtractableResponse<Response> put(
         String path,
+        String accessToken,
+        T body
+    ) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(body)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().put(path)
+            .then().log().all()
+            .extract();
+    }
+
+    protected static <T> ExtractableResponse<Response> put(
+        String path,
         Map<String, ?> pathParams,
         T body
     ) {
@@ -86,6 +127,27 @@ public class AcceptanceTest {
 
     protected static ExtractableResponse<Response> delete(String path) {
         return delete(path, new HashMap<>(), new HashMap<>());
+    }
+
+    protected static ExtractableResponse<Response> delete(
+        String path,
+        String accessToken
+    ) {
+        return delete(path, accessToken, new HashMap<>());
+    }
+
+    protected static ExtractableResponse<Response> delete(
+        String path,
+        String accessToken,
+        Map<String, ?> pathParams
+    ) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().delete(path, pathParams)
+            .then().log().all()
+            .extract();
     }
 
     protected static ExtractableResponse<Response> delete(
