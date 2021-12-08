@@ -20,7 +20,12 @@ public class Line extends BaseEntity {
 
     @Column(unique = true)
     private String name;
+
+    @Column
     private String color;
+
+    @Column
+    private int additionalPrice = 0;
 
     @Embedded
     private Sections sections = new Sections();
@@ -33,9 +38,22 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
+    public Line(String name, String color, int additionalPrice) {
+        this.name = name;
+        this.color = color;
+        this.additionalPrice = additionalPrice;
+    }
+
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
+        sections = Sections.of(Collections.singletonList(new Section(this, upStation, downStation, distance)));
+    }
+
+    public Line(String name, String color, int additionalPrice, Station upStation, Station downStation, int distance) {
+        this.name = name;
+        this.color = color;
+        this.additionalPrice = additionalPrice;
         sections = Sections.of(Collections.singletonList(new Section(this, upStation, downStation, distance)));
     }
 
@@ -54,6 +72,10 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public int getAdditionalPrice() {
+        return additionalPrice;
     }
 
     public List<Station> getOrderedStations() {

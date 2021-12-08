@@ -22,8 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineAcceptanceTest extends AcceptanceTest {
-    private StationResponse 강남역;
-    private StationResponse 광교역;
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
 
@@ -32,11 +30,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         // given
-        강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
+        StationResponse 강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
+        StationResponse 광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
+        lineRequest1 = new LineRequest("신분당선", "bg-red-600", 500, 강남역.getId(), 광교역.getId(), 10);
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 800, 강남역.getId(), 광교역.getId(), 15);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -87,14 +85,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_노선_목록_조회_요청(createResponse);
 
         // then
-        지하철_노선_응답됨(response, createResponse);
+        지하철_노선_응답됨(response);
     }
 
     @DisplayName("지하철 노선을 수정한다.")
     @Test
     void updateLine() {
         // given
-        String name = "신분당선";
         ExtractableResponse<Response> createResponse = 지하철_노선_등록되어_있음(lineRequest1);
 
         // when
@@ -181,7 +178,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 지하철_노선_생성됨(ExtractableResponse response) {
+    public static void 지하철_노선_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
     }
@@ -194,7 +191,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 지하철_노선_응답됨(ExtractableResponse<Response> response, ExtractableResponse<Response> createdResponse) {
+    public static void 지하철_노선_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(LineResponse.class)).isNotNull();
     }
