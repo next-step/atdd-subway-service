@@ -1,10 +1,8 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResult;
-import nextstep.subway.path.policy.FarePolicy;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -12,40 +10,24 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
 public class DefaultPathFinder implements PathFinder {
-    private final FarePolicy farePolicy;
-
-    public DefaultPathFinder(FarePolicy farePolicy) {
-        this.farePolicy = farePolicy;
-    }
-
-    public PathResult findShortCut(Set<Line> lines, Station source, Station target, LoginMember loginMember) {
+    public PathResult findShortCut(Set<Line> lines, Station source, Station target) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         addStationToGraph(lines, graph);
         linkAllSections(lines, graph);
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         return Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
-                .map(path -> getPathResult(lines, path, loginMember))
+                .map(this::getPathResult)
                 .orElseGet(PathResult::emptyPath);
     }
 
-    private PathResult getPathResult(Set<Line> lines, GraphPath<Station, DefaultWeightedEdge> path, LoginMember loginMember) {
-        int age = loginMember.isEmpty() ? 0 : loginMember.getAge();
-        Set<Line> acrossLines = getAcrossLines(lines, path.getVertexList());
-        int fare = farePolicy.calculateOverFare(acrossLines, (int) path.getWeight(), age);
-        return new PathResult(path.getVertexList(), path.getWeight(), fare);
-    }
-
-    private Set<Line> getAcrossLines(Set<Line> lines, List<Station> vertexList) {
-        return lines.stream()
-                .filter(line -> line.containsStation(vertexList))
-                .collect(Collectors.toSet());
+    private PathResult getPathResult(GraphPath<Station, DefaultWeightedEdge> path) {
+        return new PathResult(path.getVertexList(), path.getWeight());
     }
 
     private void linkAllSections(Set<Line> lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {

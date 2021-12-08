@@ -62,27 +62,34 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 역_사이의_최단경로_요청(교대역, 양재역);
 
         // then
-        최단_경로_응답됨(response);
-        최단_거리_경로를_응답(response, "교대역", "남부터미널역", "양재역");
-        총_거리도_함께_응답(response, 5);
-        지하철_이용_요금도_함께_응답함(response, 2150);
+        최단거리와_이용요금을_함께_응답함(response, 2150);
     }
 
     @DisplayName("로그인 하여 경로를 검색하면 연령별 요금 할인이 적용된다")
     @Test
     void testGetShortCutWithLogin() {
         // given
-        MemberAcceptanceTest.회원_등록되어_있음(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD, 8);
-        TokenResponse 어린이 = AuthAcceptanceTest.로그인_되어_있음(MemberAcceptanceTest.EMAIL, MemberAcceptanceTest.PASSWORD);
+        MemberAcceptanceTest.회원_등록되어_있음("child@email.com", MemberAcceptanceTest.PASSWORD, 8);
+        MemberAcceptanceTest.회원_등록되어_있음("youth@email.com", MemberAcceptanceTest.PASSWORD, 13);
+        MemberAcceptanceTest.회원_등록되어_있음("adult@email.com", MemberAcceptanceTest.PASSWORD, 19);
+        TokenResponse 어린이 = AuthAcceptanceTest.로그인_되어_있음("child@email.com", MemberAcceptanceTest.PASSWORD);
+        TokenResponse 청소년 = AuthAcceptanceTest.로그인_되어_있음("youth@email.com", MemberAcceptanceTest.PASSWORD);
+        TokenResponse 성인 = AuthAcceptanceTest.로그인_되어_있음("adult@email.com", MemberAcceptanceTest.PASSWORD);
 
         // when
-        ExtractableResponse<Response> response = 역_사이의_최단경로_요청(어린이, 교대역, 양재역);
-
+        ExtractableResponse<Response> childResponse = 역_사이의_최단경로_요청(어린이, 교대역, 양재역);
         // then
-        최단_경로_응답됨(response);
-        최단_거리_경로를_응답(response, "교대역", "남부터미널역", "양재역");
-        총_거리도_함께_응답(response, 5);
-        지하철_이용_요금도_함께_응답함(response, 1250);
+        최단거리와_이용요금을_함께_응답함(childResponse, 1250);
+
+        // when
+        ExtractableResponse<Response> youthResponse = 역_사이의_최단경로_요청(청소년, 교대역, 양재역);
+        // then
+        최단거리와_이용요금을_함께_응답함(youthResponse, 1790);
+
+        // when
+        ExtractableResponse<Response> adultResponse = 역_사이의_최단경로_요청(성인, 교대역, 양재역);
+        // then
+        최단거리와_이용요금을_함께_응답함(adultResponse, 2150);
     }
 
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
@@ -118,6 +125,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         역_찾을_수_없음_응답(response);
+    }
+
+    private void 최단거리와_이용요금을_함께_응답함(ExtractableResponse<Response> adultResponse, int fare) {
+        최단_경로_응답됨(adultResponse);
+        최단_거리_경로를_응답(adultResponse, "교대역", "남부터미널역", "양재역");
+        총_거리도_함께_응답(adultResponse, 5);
+        지하철_이용_요금도_함께_응답함(adultResponse, fare);
     }
 
     private void 역_찾을_수_없음_응답(ExtractableResponse<Response> response) {

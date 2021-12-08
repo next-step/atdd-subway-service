@@ -26,18 +26,4 @@ public class DefaultFarePolicyTest {
         // then
         assertThat(fare).isEqualTo(expectedFare + 200);
     }
-
-    @DisplayName("연령별 할인이 적용된 추가요금을 계산한다")
-    @ParameterizedTest
-    @CsvSource(value = {"11:12:850", "11:18:1150", "11:19:1350"}, delimiter = ':')
-    void testCalculateOverFareDiscount(int distance, int age, int expectedFare) {
-        // given
-        Line lineNumberOne = new Line("1호선", "파랑");
-        Line lineNumberTwo = new Line("2호선", "초록");
-        Set<Line> lines = new HashSet<>(Arrays.asList(lineNumberOne, lineNumberTwo));
-        // when
-        int fare = new DefaultFarePolicy().calculateOverFare(lines, distance, age);
-        // then
-        assertThat(fare).isEqualTo(expectedFare);
-    }
 }
