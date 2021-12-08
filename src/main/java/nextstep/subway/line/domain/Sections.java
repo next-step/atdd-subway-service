@@ -16,7 +16,7 @@ public class Sections {
     public static final int DIFFERENCE_SECTIONS_STATIONS_SIZE = 1;
     public static final int CANNOT_DELETE_SIZE = 1;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "line", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
     public void add(Section section) {
