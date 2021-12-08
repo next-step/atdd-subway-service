@@ -170,13 +170,20 @@ Scenario: 지하철 구간을 관리
     And 회원 등록되어 있음
     And 로그인 되어있음
 
-  Scenario 즐겨찾기를 관리
+  Scenario 즐겨찾기를 생성
     When 즐겨찾기 생성을 요청
     Then 즐겨찾기 생성됨
+  
+  Scenario 즐겨찾기를 목록조회
     When 즐겨찾기 목록 조회 요청
     Then 즐겨찾기 목록 조회됨
+    
+  Scenario 즐겨찾기를 삭제
     When 즐겨찾기 삭제 요청
     Then 즐겨찾기 삭제됨
+  Scenario 본인이 즐겨찾기 하지 않은경우 삭제불가 
+    When 즐겨찾기 삭제 요청
+    Then 즐겨찾기_삭제실패
 ```
 
 
