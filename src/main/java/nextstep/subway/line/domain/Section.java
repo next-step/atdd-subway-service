@@ -42,7 +42,7 @@ public class Section {
     }
 
     public static Section mergeSections(Section sameUpStation, Section sameDownStation) {
-        return new Section(sameDownStation.upStation, sameUpStation.downStation, sameUpStation.distance + sameDownStation.distance);
+        return new Section(sameUpStation.line, sameDownStation.upStation, sameUpStation.downStation, sameUpStation.distance + sameDownStation.distance);
     }
 
     public Long getId() {
