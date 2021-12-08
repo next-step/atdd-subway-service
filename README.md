@@ -61,7 +61,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [X] static 메서드 분리
 - [ ] LineService 리팩터링
     - [X] 서비스 내의 비즈니스 로직 line 도메인으로 이동
-    - [ ] 거리 역할 클래스 추가
+    - [X] 거리 역할 클래스 추가
+    - [ ] line 클래스 도메인 로직 추가
+    - [ ] 구간 클래스 도메인 로직 추가
     - [ ] 구간 목록 역할 클래스 추가
     - [ ] 역 목록 역할 클래스 추가
 - [ ] 공통 에러처리
