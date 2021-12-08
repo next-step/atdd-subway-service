@@ -66,11 +66,11 @@ public class Sections {
 		validateToDelete();
 		final Optional<Section> maybeUpSection = findFirst(section -> section.equalsUpStation(station));
 		final Optional<Section> maybeDownSection = findFirst(section -> section.equalsDownStation(station));
-		if (maybeUpSection.isPresent() && maybeDownSection.isPresent()) {
-			createSection(maybeUpSection.get(), maybeDownSection.get());
-		}
-		maybeUpSection.ifPresent(it -> sections.remove(it));
-		maybeDownSection.ifPresent(it -> sections.remove(it));
+		maybeUpSection.ifPresent(upSection ->
+			maybeDownSection.ifPresent(downSection -> sections.add(createSection(upSection, downSection)))
+		);
+		maybeUpSection.ifPresent(section -> sections.remove(section));
+		maybeDownSection.ifPresent(section -> sections.remove(section));
 	}
 
 	private void validateToDelete() {
@@ -79,12 +79,12 @@ public class Sections {
 		}
 	}
 
-	private void createSection(Section sectionToDeleteUpStation, Section sectionToDeleteDownStation) {
+	private Section createSection(Section sectionToDeleteUpStation, Section sectionToDeleteDownStation) {
 		final Line line = sectionToDeleteUpStation.getLine();
 		final Station upStation = sectionToDeleteDownStation.getUpStation();
 		final Station downStation = sectionToDeleteUpStation.getDownStation();
 		final int distance = sectionToDeleteUpStation.getDistance() + sectionToDeleteDownStation.getDistance();
-		sections.add(new Section(line, upStation, downStation, distance));
+		return new Section(line, upStation, downStation, distance);
 	}
 
 	public List<Station> getStations() {
