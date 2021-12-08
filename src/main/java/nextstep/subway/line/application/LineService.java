@@ -76,7 +76,7 @@ public class LineService {
         line.removeLineStation(station);
     }
 
-    public Line findLineById(Long id) {
+    private Line findLineById(Long id) {
         return lineRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("해당하는 노선이 없습니다."));
     }

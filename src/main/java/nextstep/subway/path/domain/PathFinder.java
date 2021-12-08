@@ -6,6 +6,7 @@ import nextstep.subway.exception.InvalidArgumentException;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
@@ -24,9 +25,11 @@ public class PathFinder {
 
     public Path findShortestPath(Station fromStation, Station toStation) {
         validate(fromStation, toStation);
-        return Path.from(Optional
-            .ofNullable(dijkstraShortestPath.getPath(fromStation, toStation))
-            .orElseThrow(() -> new InvalidArgumentException("출발역과 도착역이 연결되어 있지 않습니다.")));
+        GraphPath graphPath = dijkstraShortestPath.getPath(fromStation, toStation);
+        if (graphPath == null ) {
+            throw new InvalidArgumentException("출발역과 도착역이 연결되어 있지 않습니다.");
+        }
+        return Path.from(graphPath);
     }
 
     private PathFinder createGraph(List<Line> lines) {
