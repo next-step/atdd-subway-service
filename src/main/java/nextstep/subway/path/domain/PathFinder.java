@@ -2,12 +2,13 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class PathFinder {
 
@@ -41,10 +42,28 @@ public class PathFinder {
     }
 
     public Path findPathBetweenStations(Station sourceStation, Station targetStation) {
+        validationSameStation(sourceStation, targetStation);
+
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        List<Station> stationsPath = dijkstraShortestPath.getPath(sourceStation, targetStation).getVertexList();
-        Long distance = (long)dijkstraShortestPath.getPath(sourceStation, targetStation).getWeight();
+        GraphPath graphPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
+
+        validationNotConnect(graphPath);
+
+        List<Station> stationsPath = graphPath.getVertexList();
+        Long distance = (long) dijkstraShortestPath.getPath(sourceStation, targetStation).getWeight();
+
         return new Path(stationsPath, distance);
     }
 
+    private void validationNotConnect(GraphPath graphPath) {
+        if(Objects.isNull(graphPath)) {
+            throw new IllegalArgumentException("출발역과 도착역이 이어져 있지 않습니다.");
+        }
+    }
+
+    private void validationSameStation(Station sourceStation, Station targetStation) {
+        if (sourceStation.equals(targetStation)) {
+            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
+        }
+    }
 }
