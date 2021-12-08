@@ -71,6 +71,9 @@ class SectionsTest {
 		// when
 		sections.addSection(new Section(null, new Station("평택역"), new Station("두정역"), 10));
 		//then
+		for (Station station : sections.getStations()) {
+			System.out.println(station.getName());
+		}
 		assertThat(sections.getStations()).containsExactly(new Station("평택역"), new Station("두정역"), new Station("천안역")
 			, new Station("봉명역"), new Station("쌍용역"));
 	}
