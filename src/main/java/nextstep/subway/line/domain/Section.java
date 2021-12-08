@@ -30,9 +30,10 @@ public class Section {
     }
 
     private Section(Line line, Station upStation, Station downStation, int distance) {
-        this.line = line;
-        this.upStation = upStation;
-        this.downStation = downStation;
+        validateDuplicate(upStation, downStation);
+        this.line = Objects.requireNonNull(line, "노선의 정보가 입력되지 않았습니다.");;
+        this.upStation = Objects.requireNonNull(upStation, "종점역 정보가 입력되지 않았습니다.");
+        this.downStation = Objects.requireNonNull(downStation, "종점역 정보가 입력되지 않았습니다.");
         this.distance = Distance.from(distance);
     }
 
@@ -68,12 +69,6 @@ public class Section {
         this.distance.minus(addSection.distance);
     }
 
-    private void validateDistance(Section addSection) {
-        if (this.distance.isLessThanEqualTo(addSection.distance)) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-    }
-
     public void merge(Section removeSection) {
         this.downStation = removeSection.getDownStation();
         this.distance.plus(removeSection.distance);
@@ -85,6 +80,18 @@ public class Section {
 
     public boolean hasSameUpStation(Station otherStation) {
         return this.upStation == otherStation;
+    }
+
+    private void validateDuplicate(Station upStation, Station downStation) {
+        if (upStation.equals(downStation)) {
+            throw new RuntimeException("상행선과 하행선은 같을 수 없습니다.");
+        }
+    }
+
+    private void validateDistance(Section addSection) {
+        if (this.distance.isLessThanEqualTo(addSection.distance)) {
+            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
     }
 
     @Override

@@ -6,6 +6,8 @@ import org.assertj.core.api.ThrowableAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Arrays;
 import java.util.List;
@@ -44,6 +46,20 @@ class SectionsTest {
     }
 
     @Test
+    void 구간들_생성_시_종점역_정보가_없을_경우_생성_실패() {
+        Sections actual = Sections.of(
+                Section.of(신분당선, 강남역, 양재역, 10)
+        );
+
+        // when
+        ThrowableAssert.ThrowingCallable throwingCallable = () -> actual.add(Section.of(신분당선, 양재역, null, 8));
+
+        // then
+        Assertions.assertThatExceptionOfType(NullPointerException.class)
+                .isThrownBy(throwingCallable);
+    }
+
+    @Test
     void 구간들의_지하철역을_정렬하여_조회한다() {
         // given
         Sections sections = Sections.of(
@@ -59,6 +75,22 @@ class SectionsTest {
         Assertions.assertThat(actual)
                 .hasSize(4)
                 .containsExactlyElementsOf(Arrays.asList(강남역, 양재역, 양재시민의숲, 청계산입구));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {10, 11})
+    void 기존_구간의_사이_길이_보다_크거나_같으면_등록할_수_없다(int distance) {
+        // given
+        Sections sections = Sections.of(
+                Section.of(신분당선, 강남역, 양재시민의숲, 10)
+        );
+
+        // when
+        ThrowableAssert.ThrowingCallable throwingCallable = () -> sections.add(Section.of(신분당선, 강남역, 양재역, distance));
+
+        // then
+        Assertions.assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(throwingCallable);
     }
 
     @Test
