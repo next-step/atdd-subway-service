@@ -33,7 +33,7 @@ public class Section {
 	@Embedded
 	private Distance distance;
 
-	private Section() {
+	protected Section() {
 	}
 
 	private Section(Line line, Station upStation, Station downStation, Distance distance) {
