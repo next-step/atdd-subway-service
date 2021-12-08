@@ -14,32 +14,59 @@ import org.springframework.stereotype.Component;
 
 import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.path.dto.PathStationResponse;
+import nextstep.subway.path.dto.PathFinderResponse;
 import nextstep.subway.station.domain.Station;
 
 @Component
 public class GraphPathFinder implements PathFinder {
 
     @Override
-    public PathResponse getShortestPaths(Set<Section> sections, Station sourceStation, Station targetStation) {
+    public PathFinderResponse getShortestPaths(Set<Section> sections, Station sourceStation, Station targetStation) {
         validate(sections, sourceStation, targetStation);
-        GraphPath<Station, Section> findPath = getPath(sections, sourceStation, targetStation);
-        return convertPathResponse(findPath.getVertexList(), findPath.getWeight());
+        GraphPath<Station, SubwayWeightedEdge> findPath = getPath(sections, sourceStation, targetStation);
+        return new PathFinderResponse(findPath.getVertexList(), (int)findPath.getWeight(),
+            getMaxLineSurcharge(findPath.getEdgeList()));
     }
 
-    private GraphPath<Station, Section> getPath(Set<Section> sections, Station sourceStation, Station targetStation) {
+    private GraphPath<Station, SubwayWeightedEdge> getPath(Set<Section> sections, Station sourceStation,
+        Station targetStation) {
         Set<Station> stations = getAllStation(sections);
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph =
-            new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, SubwayWeightedEdge> graph =
+            new WeightedMultigraph(SubwayWeightedEdge.class);
+
+        addVertexToGraph(stations, graph);
+        setEdgeWeightToGraph(sections, graph);
+
+        return new DijkstraShortestPath(graph).getPath(sourceStation, targetStation);
+    }
+
+    private void setEdgeWeightToGraph(Set<Section> sections,
+        WeightedMultigraph<Station, SubwayWeightedEdge> graph) {
+        for (Section section : sections) {
+            SubwayWeightedEdge subwayWeightedEdge = createEdge(graph, section);
+            graph.setEdgeWeight(subwayWeightedEdge, section.getDistance());
+        }
+    }
+
+    private SubwayWeightedEdge createEdge(WeightedMultigraph<Station, SubwayWeightedEdge> graph,
+        Section section) {
+        SubwayWeightedEdge subwayWeightedEdge = graph.addEdge(section.getUpStation(),
+            section.getDownStation());
+        subwayWeightedEdge.setSurcharge(section.getLine().getSurcharge());
+        return subwayWeightedEdge;
+    }
+
+    private void addVertexToGraph(Set<Station> stations, WeightedMultigraph<Station, SubwayWeightedEdge> graph) {
         for (Station station : stations) {
             graph.addVertex(station);
         }
-        for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation(),
-                section.getDownStation()), section.getDistance());
-        }
-        return new DijkstraShortestPath(graph).getPath(sourceStation, targetStation);
+    }
+
+    private int getMaxLineSurcharge(List<SubwayWeightedEdge> edges) {
+        return edges.stream()
+            .map(SubwayWeightedEdge::getSurcharge)
+            .max(Integer::compare)
+            .orElse(0);
     }
 
     private void validate(Set<Section> sections, Station sourceStation, Station targetStation) {
@@ -79,13 +106,16 @@ public class GraphPathFinder implements PathFinder {
             .collect(Collectors.toSet());
     }
 
-    private PathResponse convertPathResponse(List<Station> stations, double weight) {
-        return new PathResponse(convertPathStationResponses(stations), (int)weight);
+    public static class SubwayWeightedEdge extends DefaultWeightedEdge {
+        private int surcharge;
+
+        public void setSurcharge(int surcharge) {
+            this.surcharge = surcharge;
+        }
+
+        public int getSurcharge() {
+            return surcharge;
+        }
     }
 
-    private List<PathStationResponse> convertPathStationResponses(List<Station> stations) {
-        return stations.stream()
-            .map(station -> PathStationResponse.of(station.getId(), station.getName(), station.getCreatedDate()))
-            .collect(Collectors.toList());
-    }
 }
