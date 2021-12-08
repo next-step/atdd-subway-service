@@ -52,8 +52,11 @@ public class PathService {
 
     private int getFare(LoginMember loginMember, Set<Line> lines, PathResult shortCut) {
         int fare = farePolicy.calculateOverFare(getAcrossLines(lines, shortCut.getVertexList()), (int) shortCut.getWeight());
-        DiscountPolicy discountPolicy = discountPolicyByAgeResolver.resolve(loginMember.getAge());
-        return discountPolicy.apply(fare);
+        if (!loginMember.isEmpty()) {
+            DiscountPolicy discountPolicy = discountPolicyByAgeResolver.resolve(loginMember.getAge());
+            fare = discountPolicy.apply(fare);
+        }
+        return fare;
     }
 
     private Set<Line> getAcrossLines(Set<Line> lines, List<Station> vertexList) {

@@ -1,6 +1,7 @@
 package nextstep.subway.auth.domain;
 
 public class LoginMember {
+    public static final LoginMember EMPTY_LOGIN_MEMBER = new LoginMember();
     private Long id;
     private String email;
     private Integer age;
@@ -15,7 +16,7 @@ public class LoginMember {
     }
 
     public static LoginMember emptyMember() {
-        return new LoginMember();
+        return EMPTY_LOGIN_MEMBER;
     }
 
     public boolean isEmpty() {
