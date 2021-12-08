@@ -23,7 +23,8 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     protected Section() {
     }
@@ -32,7 +33,7 @@ public class Section {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = Distance.from(distance);
     }
 
     public static Section of(Line line, Station upStation, Station downStation, int distance) {
@@ -55,29 +56,27 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
-        return distance;
+    public void changeUpStationToAddSectionDownStation(Section addSection) {
+        validateDistance(addSection);
+        this.upStation = addSection.getDownStation();
+        this.distance.minus(addSection.distance);
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
+    public void changeDownStationToRemoveSectionUpStation(Section addSection) {
+        validateDistance(addSection);
+        this.downStation = addSection.getUpStation();
+        this.distance.minus(addSection.distance);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
+    private void validateDistance(Section addSection) {
+        if (this.distance.isLessThanEqualTo(addSection.distance)) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.downStation = station;
-        this.distance -= newDistance;
     }
 
     public void merge(Section removeSection) {
         this.downStation = removeSection.getDownStation();
-        this.distance = this.distance + removeSection.distance;
+        this.distance.plus(removeSection.distance);
     }
 
     public boolean hasSameDownStation(Station otherStation) {
@@ -93,15 +92,15 @@ public class Section {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Section section = (Section) o;
-        return getDistance() == section.getDistance()
-                && Objects.equals(getId(), section.getId())
+        return Objects.equals(getId(), section.getId())
                 && Objects.equals(getLine(), section.getLine())
                 && Objects.equals(getUpStation(), section.getUpStation())
-                && Objects.equals(getDownStation(), section.getDownStation());
+                && Objects.equals(getDownStation(), section.getDownStation())
+                && Objects.equals(distance, section.distance);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getLine(), getUpStation(), getDownStation(), getDistance());
+        return Objects.hash(getId(), getLine(), getUpStation(), getDownStation(), distance);
     }
 }

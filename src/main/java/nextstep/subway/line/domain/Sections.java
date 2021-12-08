@@ -29,7 +29,7 @@ public class Sections {
         this.sections = sections;
     }
 
-    public static Sections of(Section... sections) {
+    static Sections of(Section... sections) {
         return new Sections(new ArrayList<>(Arrays.asList(sections)));
     }
 
@@ -101,7 +101,7 @@ public class Sections {
             sections.stream()
                     .filter(it -> it.hasSameUpStation(section.getUpStation()))
                     .findFirst()
-                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+                    .ifPresent(it -> it.changeUpStationToAddSectionDownStation(section));
         }
     }
 
@@ -110,7 +110,7 @@ public class Sections {
             sections.stream()
                     .filter(it -> it.hasSameDownStation(section.getDownStation()))
                     .findFirst()
-                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+                    .ifPresent(it -> it.changeDownStationToRemoveSectionUpStation(section));
         }
     }
 
