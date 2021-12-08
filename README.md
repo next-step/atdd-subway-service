@@ -141,25 +141,21 @@ Scenario: 지하철 구간을 관리
       then 토큰 생성 실패
 ```  
 
-### 로그인 후 시나리오 변경 
+### 나의 정보관리
 ```integrationperformancetest
 
   Scenario  내 정보 조회하기
-      then  토큰_생성됨
-      
+      given  토큰_로그인됨
+     
       when  내 정보 조회하기
       then  내 정보 조회됨
       
-   Scenario  내 정보 수정하기
-      then  로그인 됨
-      when  내 정보 조회하기
-      then  로그인 정보 변경됨
+      when  내 정보 수정하기
+      then  변경된 내 정보확인
       
-   Scenario 내 정보 삭제하기
-      then  로그인 됨
       when  내 정보 삭제하기 
       then  로그인 삭제됨
-      when  로그인 요청
+     
       then  토큰 생성 실패
 ```
 
