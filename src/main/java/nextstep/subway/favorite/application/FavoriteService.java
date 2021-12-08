@@ -1,5 +1,8 @@
 package nextstep.subway.favorite.application;
 
+import static java.util.stream.Collectors.toList;
+
+import java.util.List;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -31,6 +34,14 @@ public class FavoriteService {
             Favorite.of(member, sourceStation, targetStation));
 
         return FavoriteResponse.of(favorite);
+    }
+
+    @Transactional(readOnly = true)
+    public List<FavoriteResponse> findFavorites(LoginMember member) {
+        return favoriteRepository.findAllByMemberId(member.getId())
+            .stream()
+            .map(FavoriteResponse::of)
+            .collect(toList());
     }
 
     public Station readStationById(Long stationId) {
