@@ -37,6 +37,7 @@ public class LineService {
         return LineResponse.of(persistLine, stations);
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()

@@ -44,14 +44,16 @@ public class Path {
                         .forEach(section -> addEdgeWeight(section)));
     }
 
-    public List<Station> findShortesetPath(List<Line> lines){
+    public List<Station> findShortestPath(List<Line> lines){
         checkValidateStation(lines);
         addVertex(lines);
         addEdge(lines);
+
         DijkstraShortestPath<String, DefaultEdge> dijkstraAlg = new DijkstraShortestPath(graph);
-        ShortestPathAlgorithm.SingleSourcePaths<String, DefaultEdge> shortestPaths = dijkstraAlg.getPaths(source.getName());
-        GraphPath<String, DefaultEdge> path2 = shortestPaths.getPath(target.getName());
-        List<String> vertexList = path2.getVertexList();
+        ShortestPathAlgorithm.SingleSourcePaths<String, DefaultEdge> singleSourcePaths = dijkstraAlg.getPaths(source.getName());
+
+        GraphPath<String, DefaultEdge> shortestPaths = singleSourcePaths.getPath(target.getName());
+        List<String> vertexList = shortestPaths.getVertexList();
         return vertexList.stream()
                 .map(it -> new Station(it))
                 .collect(Collectors.toList());
@@ -63,9 +65,17 @@ public class Path {
     }
 
     private void checkValidationSourceAndTarget(Station source, Station target) {
+        if (isNotExistStations(source, target)) {
+            throw new InputDataErrorException(InputDataErrorCode.THERE_IS_NOT_SEARCHED_STATION);
+        }
+
         if (source.equals(target)) {
             throw new InputDataErrorException(InputDataErrorCode.THERE_IS_SAME_STATIONS);
         }
+    }
+
+    private boolean isNotExistStations(Station source, Station target) {
+        return source == null || target == null;
     }
 
     public void checkValidateStation(List<Line> lines) {

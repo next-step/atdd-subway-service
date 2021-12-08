@@ -22,8 +22,59 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PathTest {
 
     @Test
+    @DisplayName("path stations 불러오는 테스트")
+    void searchAllStationsTest() {
+        Station dangsanStation = new Station("당산역");
+        Station hapJeongStation = new Station("합정역");
+        Station ehwaStation = new Station("이대역");
+
+        Line twoLine = new Line("2호선", "green", dangsanStation, ehwaStation, 10);
+        Section section = new Section(twoLine, dangsanStation, hapJeongStation, 3);
+        twoLine.addSection(section);
+
+        Station sunyudoStation = new Station("선유도역");
+        Station shinMokDongStation = new Station("신목동역");
+
+        Line nineLine = new Line("9호선", "gold", dangsanStation, sunyudoStation, 20);
+        Section nineSection = new Section(nineLine, sunyudoStation, shinMokDongStation, 3);
+        nineLine.addSection(nineSection);
+
+        Path path = new Path(dangsanStation, sunyudoStation);
+        List<Station> stations = path.stations(Arrays.asList(twoLine, nineLine));
+
+        assertThat(stations.size()).isEqualTo(5);
+        assertThat(stations).contains(dangsanStation, hapJeongStation, ehwaStation, sunyudoStation, shinMokDongStation);
+
+    }
+
+    @Test
+    @DisplayName("최단거리 테스트")
+    void searchShortestPathTest() {
+        Station dangsanStation = new Station("당산역");
+        Station hapJeongStation = new Station("합정역");
+        Station ehwaStation = new Station("이대역");
+
+        Line twoLine = new Line("2호선", "green", dangsanStation, ehwaStation, 10);
+
+        Section section = new Section(twoLine, dangsanStation, hapJeongStation, 3);
+        twoLine.addSection(section);
+
+        Station sunyudoStation = new Station("선유도역");
+        Station shinMokDongStation = new Station("신목동역");
+        Line nineLine = new Line("9호선", "gold", dangsanStation, sunyudoStation, 20);
+        Section nineSection = new Section(nineLine, sunyudoStation, shinMokDongStation, 3);
+        nineLine.addSection(nineSection);
+
+        Path path = new Path(dangsanStation, sunyudoStation);
+        List<Line> lines = Arrays.asList(twoLine, nineLine);
+        List<Station> stationPaths = path.findShortestPath(lines);
+        checkValidateStation(stationPaths, "당산역", "선유도역");
+
+    }
+
+    @Test
     @DisplayName("시작역과 도착역이 같을때 예외처리")
-    void sameStartAndEndStationTest(){
+    void sameStartAndEndStationTest() {
         Station dangsanStation = new Station("당산역");
         Station hapJeongStation = new Station("합정역");
         Station ehwaStation = new Station("이대역");
@@ -40,90 +91,55 @@ class PathTest {
     }
 
     @Test
-    @DisplayName("path stations 불러오는 테스트")
-    void searchAllStationsTest(){
-        Station dangsanStation = new Station("당산역");
-        Station hapJeongStation = new Station("합정역");
-        Station ehwaStation = new Station("이대역");
-
-        Line twoLine = new Line("2호선", "green", dangsanStation, ehwaStation, 10);
-
-
-        Section section = new Section(twoLine, dangsanStation, hapJeongStation, 3);
-        twoLine.addSection(section);
-
-        Station sunyudoStation = new Station("선유도역");
-        Station shinMokDongStation = new Station("신목동역");
-
-        Line nineLine = new Line("9호선", "gold", dangsanStation, sunyudoStation, 20);
-
-        Section nineSection = new Section(nineLine, sunyudoStation, shinMokDongStation, 3);
-        nineLine.addSection(nineSection);
-
-        Path path = new Path(dangsanStation, sunyudoStation);
-        List<Station> stations = path.stations(Arrays.asList(twoLine, nineLine));
-
-        assertThat(stations.size()).isEqualTo(5);
-        assertThat(stations).contains(dangsanStation, hapJeongStation, ehwaStation, sunyudoStation, shinMokDongStation);
-
-    }
-
-    @Test
-    @DisplayName("최단거리 테스트")
-    void searchShortestPathTest(){
-        Station dangsanStation = new Station("당산역");
-        Station hapJeongStation = new Station("합정역");
-        Station ehwaStation = new Station("이대역");
-
-        Line twoLine = new Line("2호선", "green", dangsanStation, ehwaStation, 10);
-
-        Section section = new Section(twoLine, dangsanStation, hapJeongStation, 3);
-        twoLine.addSection(section);
-
-        Station sunyudoStation = new Station("선유도역");
-        Station shinMokDongStation = new Station("신목동역");
-
-        Line nineLine = new Line("9호선", "gold", dangsanStation, sunyudoStation, 20);
-
-        Section nineSection = new Section(nineLine, sunyudoStation, shinMokDongStation, 3);
-        nineLine.addSection(nineSection);
-
-        Path path = new Path(dangsanStation, sunyudoStation);
-        List<Line> lines = Arrays.asList(twoLine, nineLine);
-        List<Station> stationPaths = path.findShortesetPath(lines);
-        checkValidateStation(stationPaths, "당산역", "선유도역");
-
-    }
-
-    @Test
-    @DisplayName("최단거리 source와 target이 Line에 속하지 않은 역이 있을 경우 테스트")
-    void searchStationNotBelongtoLineTest(){
+    @DisplayName("최단거리 source와 target이 Line에 속하지 않는 역이 있을 경우 테스트")
+    void searchStationNotBelongtoLineTest() {
         Station dangsanStation = new Station("당산역");
         Station hapJeongStation = new Station("합정역");
         Station ehwaStation = new Station("이대역");
         Station seoulStation = new Station("서울역");
 
         Line twoLine = new Line("2호선", "green", dangsanStation, ehwaStation, 10);
-
         Section section = new Section(twoLine, dangsanStation, hapJeongStation, 3);
         twoLine.addSection(section);
 
         Station sunyudoStation = new Station("선유도역");
         Station shinMokDongStation = new Station("신목동역");
-
         Line nineLine = new Line("9호선", "gold", dangsanStation, sunyudoStation, 20);
-
         Section nineSection = new Section(nineLine, sunyudoStation, shinMokDongStation, 3);
         nineLine.addSection(nineSection);
 
         Path path = new Path(dangsanStation, seoulStation);
         List<Line> lines = Arrays.asList(twoLine, nineLine);
         Assertions.assertThatThrownBy(() -> {
-                    path.findShortesetPath(lines);
+                    path.findShortestPath(lines);
                 }).isInstanceOf(InputDataErrorException.class)
                 .hasMessageContaining(InputDataErrorCode.IT_CAN_NOT_SEARCH_SOURCE_AND_TARGET_ON_LINE.errorMessage());
     }
 
+    @Test
+    @DisplayName("source역과 target역이 둘중 하나라도 존재하지 않을 경우 예외 테스트 ")
+    void searchNotExistSourceAndTargetStationTest() {
+        Station dangsanStation = new Station("당산역");
+        Station hapJeongStation = new Station("합정역");
+        Station ehwaStation = new Station("이대역");
+        Station seoulStation = new Station("서울역");
+
+        Line twoLine = new Line("2호선", "green", dangsanStation, ehwaStation, 10);
+        Section section = new Section(twoLine, dangsanStation, hapJeongStation, 3);
+        twoLine.addSection(section);
+
+        Station sunyudoStation = new Station("선유도역");
+        Station shinMokDongStation = new Station("신목동역");
+        Line nineLine = new Line("9호선", "gold", dangsanStation, sunyudoStation, 20);
+
+        Section nineSection = new Section(nineLine, sunyudoStation, shinMokDongStation, 3);
+        nineLine.addSection(nineSection);
+
+        Assertions.assertThatThrownBy(() -> {
+                    Path path = new Path(null, seoulStation);
+                }).isInstanceOf(InputDataErrorException.class)
+                .hasMessageContaining(InputDataErrorCode.THERE_IS_NOT_SEARCHED_STATION.errorMessage());
+    }
 
 
     @Test
