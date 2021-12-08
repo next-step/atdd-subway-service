@@ -2,20 +2,19 @@ package nextstep.subway.path.domain;
 
 import java.util.List;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
 
 public final class Path {
 
     private final List<Station> stations;
     private final Integer totalDistance;
 
-    private Path(GraphPath<Station, SectionEdge> graphPath) {
-        this.stations = graphPath.getVertexList();
-        this.totalDistance = Double.valueOf(graphPath.getWeight()).intValue();
+    private Path(List<Station> stations, Integer totalDistance) {
+        this.stations = stations;
+        this.totalDistance = totalDistance;
     }
 
-    public static Path from(GraphPath graphPath) {
-        return new Path(graphPath);
+    public static Path of(List<Station> stations, Integer totalDistance) {
+        return new Path(stations, totalDistance);
     }
 
     public List<Station> getStations() {

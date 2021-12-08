@@ -3,7 +3,6 @@ package nextstep.subway.path.application;
 import java.util.List;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
@@ -30,7 +29,7 @@ public class PathService {
         Station targetStation = stationService.findStation(target);
         List<Line> lines = lineService.findLines();
 
-        PathFinder pathFinder = PathFinder.of(lines);
+        PathFinder pathFinder = PathFinder.createWeightMultiGraph(lines);
         Path shortestPath = pathFinder.findShortestPath(sourceStation, targetStation);
 
         return PathResponse.of(shortestPath);

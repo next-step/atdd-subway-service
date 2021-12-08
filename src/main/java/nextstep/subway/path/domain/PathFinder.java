@@ -1,56 +1,50 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import nextstep.subway.exception.InvalidArgumentException;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.jgrapht.WeightedMultiStationGraph;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathFinder {
-    private final WeightedMultigraph<Station, SectionEdge> graph;
-    private final DijkstraShortestPath dijkstraShortestPath;
+    private final StationGraph stationGraph;
 
-    private PathFinder() {
-        graph = new WeightedMultigraph(SectionEdge.class);
-        dijkstraShortestPath = new DijkstraShortestPath(graph);
+    private PathFinder(StationGraph stationGraph) {
+        this.stationGraph = stationGraph;
     }
 
-    public static PathFinder of(List<Line> lines) {
-        return new PathFinder().createGraph(lines);
+    public static PathFinder createWeightMultiGraph(List<Line> lines) {
+        return new PathFinder(new WeightedMultiStationGraph()).createGraph(lines);
     }
 
     public Path findShortestPath(Station fromStation, Station toStation) {
         validate(fromStation, toStation);
-        GraphPath graphPath = dijkstraShortestPath.getPath(fromStation, toStation);
-        if (graphPath == null ) {
+        try {
+            return stationGraph.getShortestPath(fromStation, toStation);
+        }catch (NotFoundException e) {
             throw new InvalidArgumentException("출발역과 도착역이 연결되어 있지 않습니다.");
         }
-        return Path.from(graphPath);
     }
 
     private PathFinder createGraph(List<Line> lines) {
         for (Line line: lines) {
             addVertex(line.getStations());
-            addEdgeWeight(SectionEdge.fromList(line.getSections()));
+            addEdgeWeight(line.getSections());
         }
         return this;
     }
 
     private  void addVertex(List<Station> stations) {
         for (Station s: stations) {
-            graph.addVertex(s);
+            stationGraph.addVertex(s);
         }
     }
 
-    private void addEdgeWeight(List<SectionEdge> sectionEdges) {
-        for (SectionEdge se: sectionEdges) {
-            graph.addEdge(se.getSource(), se.getTarget(), se);
-            graph.setEdgeWeight(se, se.getDistance());
+    private void addEdgeWeight(List<Section> sections) {
+        for (Section se: sections) {
+            stationGraph.addEdgeWithDistance(se.getUpStation(), se.getDownStation(), se.getDistance().get());
         }
     }
 
@@ -66,7 +60,7 @@ public class PathFinder {
     }
 
     private void validContains(Station fromStation, Station toStation) {
-        if (!(graph.containsVertex(fromStation) && graph.containsVertex(toStation))) {
+        if (!(stationGraph.containsVertex(fromStation) && stationGraph.containsVertex(toStation))) {
             throw new NotFoundException("출발역 또는 도착역이 존재하지 않습니다.");
         }
     }
