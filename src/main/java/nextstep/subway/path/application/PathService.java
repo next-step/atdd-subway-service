@@ -9,6 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.price.PathPrice;
+import nextstep.subway.path.domain.price.PathPriceCalculator;
+import nextstep.subway.path.domain.route.PathRoute;
+import nextstep.subway.path.domain.price.PriceCalculator;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -33,7 +37,13 @@ public class PathService {
 		Station arriveStation = stationService.findById(target);
 
 		List<Line> lines = lineService.findAllExistStations(Arrays.asList(departStation, arriveStation));
-		Path bestPath = pathFinder.findShortestPath(lines, departStation, arriveStation);
-		return PathResponse.of(bestPath);
+		PathRoute shortestPathRoute = pathFinder.findShortestPath(lines, departStation, arriveStation);
+		PathPrice pathPrice =PathPrice.calculatePriceFromPath(getPriceCalculator(),shortestPathRoute.getDistance());
+		Path path = new Path(shortestPathRoute,pathPrice);
+		return PathResponse.of(path);
+	}
+
+	private PriceCalculator getPriceCalculator(){
+		return new PathPriceCalculator();
 	}
 }

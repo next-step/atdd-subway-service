@@ -4,8 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import nextstep.subway.path.domain.Path;
-import nextstep.subway.path.domain.PathPrice;
-import nextstep.subway.station.application.StationService;
+import nextstep.subway.path.domain.route.PathRoute;
 import nextstep.subway.station.dto.StationResponse;
 
 public class PathResponse {
@@ -24,12 +23,13 @@ public class PathResponse {
 	}
 
 	public static PathResponse of(Path path) {
-		List<StationResponse> stationResponses = path.getStationsRoute()
+		PathRoute pathRoute = path.getPathRoute();
+		List<StationResponse> stationResponses = pathRoute.getStationsRoute()
 			.stream()
 			.map(StationResponse::of)
 			.collect(Collectors.toList());
 
-		return new PathResponse(path.getDistance(), stationResponses, path.getPrice());
+		return new PathResponse(pathRoute.getDistance(), stationResponses, path.getPrice());
 	}
 
 	public int getDistance() {

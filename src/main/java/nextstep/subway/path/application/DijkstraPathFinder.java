@@ -9,7 +9,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.route.PathRoute;
 import nextstep.subway.path.exception.NotFoundPathException;
 import nextstep.subway.station.domain.Station;
 
@@ -17,7 +17,7 @@ import nextstep.subway.station.domain.Station;
 public class DijkstraPathFinder implements PathFinder {
 
 	@Override
-	public Path findShortestPath(List<Line> lines, Station departStation, Station arriveStation) {
+	public PathRoute findShortestPath(List<Line> lines, Station departStation, Station arriveStation) {
 
 		WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 		lines.stream()
@@ -33,7 +33,8 @@ public class DijkstraPathFinder implements PathFinder {
 		DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
 		GraphPath path = dijkstraShortestPath.getPath(departStation, arriveStation);
 		validateExistPath(path);
-		return Path.getShortestPath((int)path.getWeight(), path.getVertexList());
+
+		return new PathRoute((int)path.getWeight(), path.getVertexList());
 	}
 
 	private void validateExistPath(GraphPath path) {
