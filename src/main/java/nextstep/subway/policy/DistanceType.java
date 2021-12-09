@@ -1,4 +1,4 @@
-package nextstep.subway.line.dto;
+package nextstep.subway.policy;
 
 import nextstep.subway.exception.InvalidDistanceRangeException;
 
@@ -24,18 +24,18 @@ public enum DistanceType {
         this.beforeType = beforeType;
     }
 
-    private boolean isDistance(int distance) {
-        return this.start < distance && this.end >= distance;
-    }
-
-    public static DistanceType calculatorDistanceType(int distance) {
+    public static DistanceType calculatorDistanceType(final int distance) {
         return Arrays.stream(values())
                 .filter(distanceType -> distanceType.isDistance(distance))
                 .findFirst()
                 .orElseThrow(InvalidDistanceRangeException::new);
     }
 
-    public int calculatorAdditionalFare(int distance) {
+    private boolean isDistance(final int distance) {
+        return this.start < distance && this.end >= distance;
+    }
+
+    public int calculatorAdditionalFare(final int distance) {
         int totalFare = 0;
         totalFare = calculate(distance);
 
@@ -48,8 +48,8 @@ public enum DistanceType {
         return totalFare;
     }
 
-    private int calculate(int distance) {
+    private int calculate(final int distance) {
         int overDistance = distance - start;
-        return (int)((Math.floor((double) (overDistance - 1) / range) + 1) * fare);
+        return (int) ((Math.floor((double) (overDistance - 1) / range) + 1) * fare);
     }
 }

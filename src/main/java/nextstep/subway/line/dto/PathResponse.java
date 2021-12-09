@@ -2,6 +2,7 @@ package nextstep.subway.line.dto;
 
 import nextstep.subway.line.domain.SectionGraph;
 import nextstep.subway.line.domain.Surcharge;
+import nextstep.subway.policy.AgeType;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.jgrapht.GraphPath;
@@ -21,13 +22,18 @@ public class PathResponse {
     }
 
     public PathResponse(SectionGraph graphPath, int surcharge) {
+        this(graphPath, surcharge, AgeType.ADULT);
+    }
+
+    public PathResponse(SectionGraph graphPath, int surcharge, AgeType ageType) {
         this.stations = graphPath.getStations()
                 .stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
 
         this.distance = graphPath.getTotalDistance();
-        this.fare = Fare.ofByDistance(this.distance, new Surcharge(surcharge));
+        Fare fare = Fare.ofByDistance(this.distance, new Surcharge(surcharge));
+        this.fare = fare.discountByAge(ageType);
     }
 
     public List<StationResponse> getStations() {

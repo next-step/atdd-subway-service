@@ -143,10 +143,9 @@ public class Sections {
         }
     }
 
-    public PathResponse generatePaths(final Station source, final Station target) {
+    public SectionGraph generatePaths(final Station source, final Station target) {
         PathFinder graph = new PathFinder().enrollPaths(this);
-        SectionGraph paths = graph.findPaths(source, target);
-        return new PathResponse(paths, selectMaxSurcharge(paths));
+        return graph.findPaths(source, target);
     }
 
     public int selectMaxSurcharge(final SectionGraph paths) {

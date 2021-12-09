@@ -2,8 +2,7 @@ package nextstep.subway.auth.domain;
 
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.member.domain.Member;
-
-import java.util.Objects;
+import nextstep.subway.policy.AgeType;
 
 public class LoginMember {
     private Long id;
@@ -27,7 +26,7 @@ public class LoginMember {
     }
 
     public Long getId() {
-        if (memberType.isGuest()) {
+        if (isGuest()) {
             throw new AuthorizationException();
         }
         return id;
@@ -43,5 +42,9 @@ public class LoginMember {
 
     public Member toMember() {
         return new Member();
+    }
+
+    public boolean isGuest() {
+        return memberType.isGuest();
     }
 }

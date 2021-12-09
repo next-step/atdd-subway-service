@@ -1,6 +1,7 @@
-package nextstep.subway.line.dto;
+package nextstep.subway.policy;
 
 import nextstep.subway.exception.InvalidDistanceRangeException;
+import nextstep.subway.policy.DistanceType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

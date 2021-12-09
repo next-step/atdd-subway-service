@@ -22,6 +22,6 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity<PathResponse> findPaths(@AuthenticationPrincipal LoginMember loginMember, @RequestBody PathRequest request) {
-        return ResponseEntity.ok(pathService.findPathsBySection(request));
+        return ResponseEntity.ok(pathService.findPathsBySection(loginMember, request));
     }
 }
