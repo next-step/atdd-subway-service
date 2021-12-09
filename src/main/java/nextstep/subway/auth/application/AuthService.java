@@ -19,7 +19,8 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(AuthorizationException::new);
+        Member member = memberRepository.findByEmail(request.getEmail())
+                .orElseThrow(AuthorizationException::new);
         member.checkPassword(request.getPassword());
 
         String token = jwtTokenProvider.createToken(request.getEmail());
@@ -32,7 +33,8 @@ public class AuthService {
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(RuntimeException::new);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }

@@ -145,9 +145,18 @@ public class Sections {
 
     public PathResponse generatePaths(final Station source, final Station target) {
         PathFinder graph = new PathFinder().enrollPaths(this);
-        GraphPath<Station, DefaultWeightedEdge> paths = graph.findPaths(source, target);
-        return new PathResponse(paths);
+        SectionGraph paths = graph.findPaths(source, target);
+        return new PathResponse(paths, selectMaxSurcharge(paths));
     }
+
+    public int selectMaxSurcharge(final SectionGraph paths) {
+        return sections.stream().filter(
+                paths::containsSection)
+                .map(Section::getSurcharge)
+                .max(Integer::compareTo)
+                .orElse(0);
+    }
+
 
     public Stations getAllStationsBySections() {
         if (sections.isEmpty()) {

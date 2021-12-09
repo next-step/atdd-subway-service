@@ -1,5 +1,7 @@
 package nextstep.subway.line.dto;
 
+import nextstep.subway.line.domain.SectionGraph;
+import nextstep.subway.line.domain.Surcharge;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.jgrapht.GraphPath;
@@ -18,14 +20,14 @@ public class PathResponse {
     private PathResponse() {
     }
 
-    public PathResponse(GraphPath<Station, DefaultWeightedEdge> graphPath) {
-        this.stations = graphPath.getVertexList()
+    public PathResponse(SectionGraph graphPath, int surcharge) {
+        this.stations = graphPath.getStations()
                 .stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
 
-        this.distance = (int) graphPath.getWeight();
-        this.fare = Fare.ofByDistance(this.distance);
+        this.distance = graphPath.getTotalDistance();
+        this.fare = Fare.ofByDistance(this.distance, new Surcharge(surcharge));
     }
 
     public List<StationResponse> getStations() {

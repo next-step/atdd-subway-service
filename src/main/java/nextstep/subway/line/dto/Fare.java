@@ -1,5 +1,7 @@
 package nextstep.subway.line.dto;
 
+import nextstep.subway.line.domain.Surcharge;
+
 import java.util.Objects;
 
 public class Fare {
@@ -11,10 +13,10 @@ public class Fare {
         this.Fare = fare;
     }
 
-    public static Fare ofByDistance(final int distance) {
+    public static Fare ofByDistance(final int distance, final Surcharge surcharge) {
         DistanceType distanceType = DistanceType.calculatorDistanceType(distance);
         int additionalFare = distanceType.calculatorAdditionalFare(distance);
-        return new Fare(DEFAULT_FARE + additionalFare);
+        return new Fare(DEFAULT_FARE + additionalFare + surcharge.getSurcharge());
     }
 
     public int getFare() {

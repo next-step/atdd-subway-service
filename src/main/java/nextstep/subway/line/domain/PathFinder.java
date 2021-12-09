@@ -23,10 +23,11 @@ public class PathFinder {
         return createGraph(sections);
     }
 
-    public GraphPath<Station, DefaultWeightedEdge> findPaths(final Station source, final Station target) {
+    public SectionGraph findPaths(final Station source, final Station target) {
         isNotEnrolledStations(source, target);
         isEqualsTwoStations(source, target);
-        return findPathsToOptional(source, target).orElseThrow(NotFoundPathsException::new);
+        return new SectionGraph(findPathsToOptional(source, target)
+                .orElseThrow(NotFoundPathsException::new));
     }
 
     private Optional<GraphPath<Station, DefaultWeightedEdge>> findPathsToOptional(final Station source, final Station target) {

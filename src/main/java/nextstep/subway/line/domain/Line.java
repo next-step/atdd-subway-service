@@ -16,7 +16,9 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
-    private int surcharge;
+
+    @Embedded
+    private Surcharge surcharge = Surcharge.nonSurcharge();
 
     @Embedded
     private final Sections sections = new Sections();
@@ -27,26 +29,24 @@ public class Line extends BaseEntity {
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
-        this.surcharge = 0;
     }
 
     public Line(String name, String color, int surcharge) {
         this.name = name;
         this.color = color;
-        this.surcharge = surcharge;
+        this.surcharge.changeSurcharge(surcharge);
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        this.surcharge = 0;
         addSection(new Section(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
-        this.surcharge = line.getSurcharge();
+        this.surcharge.changeSurcharge(line.getSurcharge());
     }
 
     public Long getId() {
@@ -62,7 +62,7 @@ public class Line extends BaseEntity {
     }
 
     public int getSurcharge() {
-        return surcharge;
+        return surcharge.getSurcharge();
     }
 
     public List<Section> getSections() {
@@ -88,11 +88,12 @@ public class Line extends BaseEntity {
         Line line = (Line) o;
         return Objects.equals(id, line.id)
                 && Objects.equals(name, line.name)
-                && Objects.equals(color, line.color);
+                && Objects.equals(color, line.color)
+                && Objects.equals(surcharge, line.surcharge);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, color);
+        return Objects.hash(id, name, color, surcharge);
     }
 }

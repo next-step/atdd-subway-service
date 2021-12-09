@@ -52,13 +52,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음(
-                new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)
+                new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 500)
         ).as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(
                 new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)
         ).as(LineResponse.class);
         삼호선 = 지하철_노선_등록되어_있음(
-                new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)
+                new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5, 200)
         ).as(LineResponse.class);
 
         지하철_구간_등록_요청(삼호선, 교대역, 남부터미널역, 3);
@@ -123,15 +123,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 경로_조회를_요청함(강남역.getId(), 남부터미널역.getId());
 
         // then
-        경로_조회됨(response, Arrays.asList(강남역, 양재역, 남부터미널역), 12, 1350);
+        경로_조회됨(response, Arrays.asList(강남역, 양재역, 남부터미널역), 12, 1850);
     }
 
-    private void 경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> stations, int distance, int Fare) {
+    private void 경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> stations, int distance, int fare) {
         요청_결과_검증(response, HttpStatus.OK);
         PathResponse paths = response.as(PathResponse.class);
         assertThat(paths.getStations()).isEqualTo(stations);
         assertThat(paths.getDistance()).isEqualTo(distance);
-        assertThat(paths.getFare()).isEqualTo(Fare);
+        assertThat(paths.getFare()).isEqualTo(fare);
     }
 
     private ExtractableResponse<Response> 경로_조회를_요청함(Long sourceId, Long targetId) {

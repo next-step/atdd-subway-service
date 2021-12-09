@@ -56,6 +56,10 @@ public class Section {
         return distance;
     }
 
+    public int getSurcharge() {
+        return line.getSurcharge();
+    }
+
     public boolean isIncludeSection(Section addSection) {
         return isEqualsUpStation(addSection.upStation)
                 || isEqualsDownStation(addSection.downStation);
@@ -92,10 +96,7 @@ public class Section {
         if (!(o instanceof Section)) return false;
         Section section = (Section) o;
         return distance == section.distance
-                && Objects.equals(id, section.id)
-                && Objects.equals(line, section.line)
-                && Objects.equals(upStation, section.upStation)
-                && Objects.equals(downStation, section.downStation);
+                && Objects.equals(id, section.id);
     }
 
     @Override
