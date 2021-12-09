@@ -2,19 +2,19 @@ package nextstep.subway.path.domain.price;
 
 import java.util.Arrays;
 
-public enum SectionPricePolicy {
+public enum PathPricePolicy {
 
 	NONE(null, 0, 0, 0),
 	BASIC(NONE, 10, 10, 1250),
 	MIDDLE(BASIC, 50, 5, 100),
 	HIGHEST(MIDDLE, Integer.MAX_VALUE, 8, 100);
 
-	private SectionPricePolicy preSectionPolicy;
+	private PathPricePolicy preSectionPolicy;
 	private int upperDistanceBound;
 	private int perDistance;
 	private int pricePerDistance;
 
-	SectionPricePolicy(SectionPricePolicy preSectionPolicy, int upperDistance, int perDistance, int pricePerDistance) {
+	PathPricePolicy(PathPricePolicy preSectionPolicy, int upperDistance, int perDistance, int pricePerDistance) {
 		this.preSectionPolicy = preSectionPolicy;
 		this.upperDistanceBound = upperDistance;
 		this.perDistance = perDistance;
@@ -25,23 +25,7 @@ public enum SectionPricePolicy {
 		return upperDistanceBound;
 	}
 
-	public static int calculatePrice(int pathDistance) {
-		if (pathDistance <= 0) {
-			return 0;
-		}
-
-		SectionPricePolicy[] policies = SectionPricePolicy.values();
-
-		/* 각 구간별 금액 구하기 */
-		int price = Arrays.stream(policies)
-			.skip(1)
-			.mapToInt(policy -> policy.calculateSectionPrice(pathDistance))
-			.sum();
-
-		return price;
-	}
-
-	private int calculateSectionPrice(int pathDistance) {
+	public int calculateSectionPrice(int pathDistance) {
 		int sectionDistance =calculateSectionDistance(pathDistance);
 		return sectionDistance <= 0 ? 0 :
 			(int)Math.ceil((double)sectionDistance / perDistance) * pricePerDistance;

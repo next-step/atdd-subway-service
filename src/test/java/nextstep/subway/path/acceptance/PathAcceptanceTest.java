@@ -2,6 +2,7 @@ package nextstep.subway.path.acceptance;
 
 import static nextstep.subway.line.acceptance.testfactory.LineAcceptanceTestFactory.*;
 import static nextstep.subway.line.acceptance.testfactory.LineSectionTestFactory.*;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static nextstep.subway.station.testfactory.StationAcceptanceTestFactory.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -12,6 +13,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
@@ -20,6 +23,8 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -81,9 +86,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	void getShortestPathWithLineExtraPrice() {
 
 		// given
-		신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10,1000).as(LineResponse.class);
+		신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 1000).as(LineResponse.class);
 		이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10).as(LineResponse.class);
-		삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5,1000).as(LineResponse.class);
+		삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5, 1000).as(LineResponse.class);
 
 		지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
 
@@ -134,6 +139,37 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		assertThat(response.getDistance()).isEqualTo(51);
 		assertThat(response.getStations()).containsExactlyElementsOf(Arrays.asList(교대역, 남부터미널역, 양재역));
 		assertThat(response.getPrice()).isEqualTo(2150);
+	}
+
+
+	@DisplayName("청소년 요금 할인 적용")
+	@CsvSource(value = {"email@email.com, password1, 13, 720","email2@email.com, password1, 19, 1250",
+		"email3@email.com, password3, 6, 450"})
+	@ParameterizedTest
+	void getShortestPathWithAgeDiscount(String email, String password, int age, int price) {
+
+		//given
+		신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 20).as(LineResponse.class);
+		이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 20).as(LineResponse.class);
+		삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 10).as(LineResponse.class);
+
+		지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+
+		String 사용자_토큰 = 사용자_생성(email,password,age);
+
+		// when
+		PathResponse response = 최단거리_경로_요청(교대역, 양재역,사용자_토큰).as(PathResponse.class);
+
+		// then
+		assertThat(response.getDistance()).isEqualTo(10);
+		assertThat(response.getStations()).containsExactlyElementsOf(Arrays.asList(교대역, 남부터미널역, 양재역));
+		assertThat(response.getPrice()).isEqualTo(price);
+	}
+
+	private String 사용자_생성(String email, String password, int age) {
+		회원_생성을_요청(email, password, age);
+		TokenResponse tokenResponse = AuthAcceptanceTest.로그인_요청(email, password).as(TokenResponse.class);
+		return tokenResponse.getAccessToken();
 	}
 
 	@DisplayName("출발역과 도착역이 같은 경우")
@@ -200,6 +236,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
 	public ExtractableResponse<Response> 최단거리_경로_요청(StationResponse departStation, StationResponse arriveStation) {
 		return RestAssured
 			.given().log().all()
+			.accept(MediaType.APPLICATION_JSON_VALUE)
+			.when().get(BASE_PATH + "?source={departStationId}&target={arriveStationId}",
+				departStation.getId(), arriveStation.getId())
+			.then().log().all()
+			.extract();
+	}
+
+	public ExtractableResponse<Response> 최단거리_경로_요청(StationResponse departStation, StationResponse arriveStation,
+		String accessToken) {
+		return RestAssured
+			.given().log().all()
+			.auth().oauth2(accessToken)
 			.accept(MediaType.APPLICATION_JSON_VALUE)
 			.when().get(BASE_PATH + "?source={departStationId}&target={arriveStationId}",
 				departStation.getId(), arriveStation.getId())

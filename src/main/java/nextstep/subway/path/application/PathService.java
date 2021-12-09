@@ -6,11 +6,12 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.price.PathPrice;
-import nextstep.subway.path.domain.price.PathPriceCalculator;
+import nextstep.subway.path.domain.price.BasicPriceCalculator;
 import nextstep.subway.path.domain.route.PathRoute;
 import nextstep.subway.path.domain.price.PriceCalculator;
 import nextstep.subway.path.dto.PathResponse;
@@ -32,19 +33,20 @@ public class PathService {
 		this.stationService = stationService;
 	}
 
-	public PathResponse findShortestPath(Long source, Long target) {
+	public PathResponse findShortestPath(LoginMember loginMember, Long source, Long target) {
 		Station departStation = stationService.findById(source);
 		Station arriveStation = stationService.findById(target);
 
 		List<Line> lines = lineService.findAllExistStations(Arrays.asList(departStation, arriveStation));
 		PathRoute shortestPathRoute = pathFinder.findShortestPath(lines, departStation, arriveStation);
-		PathPrice pathPrice =PathPrice.calculatePriceFromPath(getPriceCalculator(),shortestPathRoute.getDistance());
+		PathPrice pathPrice =PathPrice.calculatePrice(shortestPathRoute.getDistance(),getPriceCalculator(), loginMember.getAge());
+
 		pathPrice.addLineExtraPrice(shortestPathRoute.getUsedLines());
 		Path path = new Path(shortestPathRoute,pathPrice);
 		return PathResponse.of(path);
 	}
 
 	private PriceCalculator getPriceCalculator(){
-		return new PathPriceCalculator();
+		return new BasicPriceCalculator();
 	}
 }
