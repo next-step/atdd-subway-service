@@ -3,6 +3,7 @@ package nextstep.subway.path.application;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.member.domain.Age;
 import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.Paths;
@@ -44,7 +45,7 @@ public class PathService {
         if (loginMember.isGuestUser()) {
             return paths.calculateFare();
         }
-        return paths.calculateFare(loginMember.getAge());
+        return paths.calculateFare(Age.of(loginMember.getAge()));
     }
 
     private Station getTargetStation(Long target) {

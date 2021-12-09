@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.member.domain.Age;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -11,7 +12,7 @@ class AgeDiscountPolicyTest {
     @CsvSource({"1250,13,720", "1350,14,800", "1450,15,880", "1550,16,960", "1650,17,1040", "1750,18,1120"})
     void discountYouth(int fare, int age, int expectedFare) {
         // when
-        final Fare discountedFare = AgeDiscountPolicy.discount(Fare.of(fare), age);
+        final Fare discountedFare = AgeDiscountPolicy.discount(Fare.of(fare), Age.of(age));
         // then
         assertTrue(discountedFare.match(expectedFare));
     }
@@ -20,7 +21,7 @@ class AgeDiscountPolicyTest {
     @CsvSource({"1250,6,450", "1350,7,500", "1450,8,550", "1550,9,600", "1650,10,650", "1750,11,700", "1850,12,750"})
     void discountChild(int fare, int age, int expectedFare) {
         // when
-        final Fare discountedFare = AgeDiscountPolicy.discount(Fare.of(fare), age);
+        final Fare discountedFare = AgeDiscountPolicy.discount(Fare.of(fare), Age.of(age));
         // then
         assertTrue(discountedFare.match(expectedFare));
     }
