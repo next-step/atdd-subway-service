@@ -9,9 +9,6 @@ import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +16,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 public class Path {
-    private WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+    private SubwayGraph subwayGraph = new SubwayGraph(SectionEdge.class);
     private Station source;
     private Station target;
 
@@ -38,28 +35,56 @@ public class Path {
 
     public void addVertex(List<Line> lines) {
         this.stations(lines)
-                .forEach(station -> graph.addVertex(station.getName()));
+                .forEach(station -> subwayGraph.addVertex(station));
     }
 
     public void addEdge(List<Line> lines) {
         lines.stream()
                 .forEach(it -> it.getSections()
-                        .forEach(section -> addEdgeWeight(section)));
+                        .forEach(section -> {
+                            SectionEdge sectionEdge = new SectionEdge(section);
+                            subwayGraph.addEdge(section.getUpStation(), section.getDownStation(), sectionEdge);
+                            subwayGraph.setEdgeWeight(sectionEdge, section.getDistanceValue());
+                        }));
     }
 
     public List<Station> findShortestPath(List<Line> lines) {
-        checkValidateStation(lines);
         addVertex(lines);
         addEdge(lines);
+        checkValidateStation(lines);
+        return findShortestVertexInPath();
+    }
 
-        DijkstraShortestPath<String, DefaultEdge> dijkstraAlg = new DijkstraShortestPath(graph);
-        ShortestPathAlgorithm.SingleSourcePaths<String, DefaultEdge> singleSourcePaths = dijkstraAlg.getPaths(source.getName());
+    private List<Station> findShortestVertexInPath() {
+        return findShortestPaths().getVertexList();
+    }
 
-        GraphPath<String, DefaultEdge> shortestPaths = singleSourcePaths.getPath(target.getName());
-        List<String> vertexList = shortestPaths.getVertexList();
-        return vertexList.stream()
-                .map(it -> new Station(it))
-                .collect(toList());
+    private void checkValidateStation(List<Line> lines) {
+        List<Station> stations = this.stations(lines);
+        if (!isMatchSourceAndTarget(stations)) {
+            throw new InputDataErrorException(InputDataErrorCode.IT_CAN_NOT_SEARCH_SOURCE_AND_TARGET_ON_LINE);
+        }
+
+        if (isNotConnectSourceAndTargetStation()) {
+            throw new InputDataErrorException(InputDataErrorCode.IT_DO_NOT_CONNECT_STATIONS_EACH_OTHER);
+        }
+    }
+
+    private boolean isNotConnectSourceAndTargetStation() {
+
+        GraphPath<Station, SectionEdge> shortestPaths = findShortestPaths();
+        return isEmptyPaths(shortestPaths);
+    }
+
+    private boolean isEmptyPaths(GraphPath<Station, SectionEdge> shortestPaths) {
+        return shortestPaths == null;
+    }
+
+    private GraphPath<Station, SectionEdge> findShortestPaths() {
+        DijkstraShortestPath<Station, SectionEdge> dijkstraAlg = new DijkstraShortestPath(subwayGraph);
+        ShortestPathAlgorithm.SingleSourcePaths<Station, SectionEdge> singleSourcePaths = dijkstraAlg.getPaths(source);
+        GraphPath<Station, SectionEdge> shortestPaths = singleSourcePaths.getPath(target);
+        return shortestPaths;
     }
 
     public Distance findShortestPathDistance(List<Line> lines) {
@@ -105,12 +130,6 @@ public class Path {
                 && section.getDownStation().getName().equals(shortestStations.get(i + 1).getName());
     }
 
-
-    private void addEdgeWeight(Section section) {
-        DefaultWeightedEdge defaultWeightedEdge = graph.addEdge(section.getUpStation().getName(), section.getDownStation().getName());
-        graph.setEdgeWeight(defaultWeightedEdge, section.getDistanceValue());
-    }
-
     private void checkValidationSourceAndTarget(Station source, Station target) {
         if (isNotExistStations(source, target)) {
             throw new InputDataErrorException(InputDataErrorCode.THERE_IS_NOT_SEARCHED_STATION);
@@ -123,13 +142,6 @@ public class Path {
 
     private boolean isNotExistStations(Station source, Station target) {
         return source == null || target == null;
-    }
-
-    public void checkValidateStation(List<Line> lines) {
-        List<Station> stations = this.stations(lines);
-        if (!isMatchSourceAndTarget(stations)) {
-            throw new InputDataErrorException(InputDataErrorCode.IT_CAN_NOT_SEARCH_SOURCE_AND_TARGET_ON_LINE);
-        }
     }
 
     private boolean isMatchSourceAndTarget(List<Station> stations) {
