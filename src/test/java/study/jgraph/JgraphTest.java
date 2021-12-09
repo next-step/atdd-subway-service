@@ -34,6 +34,36 @@ public class JgraphTest {
     }
 
     @Test
+    public void getDijkstraShortestPathWithLabelEdge() {
+        String source = "v3";
+        String target = "v1";
+        WeightedMultigraph<String, CustomWeightEdge> graph = new WeightedMultigraph(CustomWeightEdge.class);
+        graph.addVertex("v1");
+        graph.addVertex("v2");
+        graph.addVertex("v3");
+        // DefaultWeightedEdge defaultWeightedEdge = graph.addEdge("v1", "v2");
+        // graph.setEdgeWeight(, 2);
+        CustomWeightEdge line1 = new CustomWeightEdge("line1");
+        graph.addEdge("v2", "v3", line1);
+        graph.setEdgeWeight(line1,2);
+
+        CustomWeightEdge line2 = new CustomWeightEdge("line2");
+        graph.addEdge("v1", "v3", line2);
+        graph.setEdgeWeight(line2,100);
+
+        CustomWeightEdge line3 = new CustomWeightEdge("line3");
+        graph.addEdge("v1", "v2", line3);
+        graph.setEdgeWeight(line3,2);
+
+        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+
+
+
+        GraphPath path = dijkstraShortestPath.getPath(source, target);
+        assertThat(path.getWeight()).isEqualTo(4.0);
+    }
+
+    @Test
     public void getShortestPathWhenSourceAndTargetSame() {
         String source = "v3";
         String target = "v3";
