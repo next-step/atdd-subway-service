@@ -1,5 +1,7 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.common.ErrorCode;
+import nextstep.subway.exception.NotFoundApiException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -42,7 +44,8 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id)
+                .orElseThrow(() -> new NotFoundApiException(ErrorCode.NOT_FOUND_LINE_ID));
     }
 
     public LineResponse findLineResponseById(Long id) {
