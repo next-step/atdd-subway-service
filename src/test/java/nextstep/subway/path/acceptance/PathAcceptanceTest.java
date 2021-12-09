@@ -76,6 +76,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		assertThat(response.getPrice()).isEqualTo(1250);
 	}
 
+	@DisplayName("추가 요금있는 노선 이용시 과금 적용")
+	@Test
+	void getShortestPathWithLineExtraPrice() {
+
+		// given
+		신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10,1000).as(LineResponse.class);
+		이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10).as(LineResponse.class);
+		삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5,1000).as(LineResponse.class);
+
+		지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+
+		// when
+		PathResponse response = 최단거리_경로_요청(교대역, 양재역).as(PathResponse.class);
+
+		// then
+		assertThat(response.getDistance()).isEqualTo(5);
+		assertThat(response.getStations()).containsExactlyElementsOf(Arrays.asList(교대역, 남부터미널역, 양재역));
+		assertThat(response.getPrice()).isEqualTo(2250);
+	}
+
 	@DisplayName("두 지하철 역 사이의 최단거리 경로 조회(10km<거리<=50km)")
 	@Test
 	void getShortestPath2() {

@@ -39,6 +39,7 @@ public class PathService {
 		List<Line> lines = lineService.findAllExistStations(Arrays.asList(departStation, arriveStation));
 		PathRoute shortestPathRoute = pathFinder.findShortestPath(lines, departStation, arriveStation);
 		PathPrice pathPrice =PathPrice.calculatePriceFromPath(getPriceCalculator(),shortestPathRoute.getDistance());
+		pathPrice.addLineExtraPrice(shortestPathRoute.getUsedLines());
 		Path path = new Path(shortestPathRoute,pathPrice);
 		return PathResponse.of(path);
 	}

@@ -77,4 +77,5 @@ public class Section {
     public boolean isEqualToDownStation(Station station){
         return this.downStation.equals(station);
     }
+
 }
