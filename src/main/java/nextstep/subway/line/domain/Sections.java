@@ -76,10 +76,12 @@ public class Sections {
     
     void add(Section newSection) {
         checkValidStations(newSection);
-        if (addIfSameUpStations(newSection)) {
+        if (isSameUpStations(newSection)) {
+            sections.add(newSection);
             return;
         }
-        if (addIfSameDownStations(newSection)) {
+        if (isSameDownStations(newSection)) {
+            sections.add(newSection);
             return;
         }
         sections.add(newSection);
@@ -117,25 +119,23 @@ public class Sections {
         }
     }
     
-    private boolean addIfSameUpStations(Section newSection) {
+    private boolean isSameUpStations(Section newSection) {
         if (isUpStationExisted(newSection)) {
             getSections().stream()
                 .filter(section -> section.getUpStation().equals(newSection.getUpStation()))
                 .findFirst()
                 .ifPresent(section -> section.updateUpStation(newSection.getDownStation(), newSection.getDistance()));
-            sections.add(newSection);
             return true;
         }
         return false;
     }
     
-    private boolean addIfSameDownStations(Section newSection) {
+    private boolean isSameDownStations(Section newSection) {
         if (isDownStationExisted(newSection)) {
             getSections().stream()
                 .filter(section -> section.getDownStation().equals(newSection.getDownStation()))
                 .findFirst()
                 .ifPresent(section -> section.updateDownStation(newSection.getUpStation(), newSection.getDistance()));
-            sections.add(newSection);
             return true;
         }
         return false;
