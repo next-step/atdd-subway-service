@@ -2,8 +2,10 @@ package nextstep.subway.favorite.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.Optional;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
@@ -47,9 +49,12 @@ public class FavoriteRepositoryTest {
 
         Favorite persist = favoriteRepository.save(Favorite.of(서울역, 용산역, member));
 
+        Optional<Favorite> find = favoriteRepository.findById(persist.getId());
+
         assertAll(() -> {
-            assertThat(persist.getSource()).isEqualTo(서울역);
-            assertThat(persist.getTarget()).isEqualTo(용산역);
+            assertTrue(find.isPresent());
+            assertThat(find.get().getSource()).isEqualTo(서울역);
+            assertThat(find.get().getTarget()).isEqualTo(용산역);
         });
     }
 
@@ -74,7 +79,11 @@ public class FavoriteRepositoryTest {
     void delete() {
         Favorite persist = favoriteRepository.save(Favorite.of(서울역, 용산역, member));
 
-        favoriteRepository.delete(persist);
+        Optional<Favorite> find = favoriteRepository.findById(persist.getId());
+
+        assertTrue(find.isPresent());
+
+        favoriteRepository.delete(find.get());
 
         List<Favorite> favorites = favoriteRepository.findAllByOwnerId(member.getId());
 

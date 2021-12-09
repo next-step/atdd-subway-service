@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.domain;
 
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -9,6 +10,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import nextstep.subway.exception.AuthorizationException;
+import nextstep.subway.exception.CannotAddException;
+import nextstep.subway.exception.CannotDeleteException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -58,6 +62,29 @@ public class Favorite {
         return source.equalsName(other.source)
             && target.equalsName(other.target)
             && owner.equals(other.owner);
+    }
+
+    public void validateIncludeFavorite(List<Favorite> favorites) {
+        if (includeFavorite(favorites)) {
+            throw new CannotAddException("이미 등록된 즐겨찾기 입니다.");
+        }
+    }
+
+    public void validateDelete(Member member) {
+        if (!isOwner(member)) {
+            throw new CannotDeleteException("다른사람의 즐겨찾기는 삭제할 수 없습니다.");
+        }
+    }
+
+    protected boolean isOwner(Member member) {
+        return this.owner.equals(member);
+    }
+
+    protected boolean includeFavorite(List<Favorite> favorites) {
+        return favorites.stream()
+            .filter(it -> equalsFavorite(it))
+            .findFirst()
+            .isPresent();
     }
 
     @Override

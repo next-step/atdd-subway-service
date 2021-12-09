@@ -129,7 +129,7 @@ Scenario: 유효하지 않은 토큰으로 내정보 조회
   When: 내정보 조회 요청 Bearer invalidToken
   Then: 조회 실패
 ```
-- [ ] 인증. - 내 정보 조회 기능 완성하기
+- [x] 인증. - 내 정보 조회 기능 완성하기
     - [x] 인수 테스트 작성
 ```
 Feature: 내정보 조회 기능
@@ -150,7 +150,7 @@ Scenario: 나의 정보를 관리한다. (조회, 수정, 삭제)
     - [x] 토큰 유효성 검증 후 사용자 정보 입력 (`@AuthenticationPrincipal` , `AuthenticationPrincipalArgumentResolver`)
     - [x] 기능에 어노테이션 달기 -> 기능 구현 확인  
 
-- [ ] 인증 - 즐겨 찾기 기능 완성하기
+- [x] 인증 - 즐겨 찾기 기능 완성하기
     - [x]  인수 테스트
 ```
 Feature: 즐겨찾기를 관리한다.
@@ -169,12 +169,15 @@ Scenario: 즐겨찾기를 관리한다.
   Then: 즐겨 찾기 목록 조회됨
   When: 즐겨 찾기 삭제 요청
   Then: 즐겨 찾기 삭제됨
+  When: 즐겨 찾기 목록 조회 요청
+  Then: 즐겨 찾기 목록 조회됨
 ```
-- [ ] 기능 구현 TDD
-    - [ ] 구간으로 관리  From- To
-    - [ ] `member` 와 다대일 단방향 연관관계, 즐겨찾기가 n !   
-    - [ ] 예외 케이스
-        - [ ]  같은 from-to 등록 안됨
+- [x] 기능 구현 TDD
+    - [x] 구간으로 관리  From- To
+    - [x] `member` 와 다대일 단방향 연관관계, 즐겨찾기가 n !   
+    - [x] 예외 케이스
+        - [x]  같은 from-to 등록 안됨
+        - [x] 다른사람의 즐겨찾기는 삭제할 수 없음
     
 ## 📝 License
 
