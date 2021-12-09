@@ -61,12 +61,11 @@ public class Sections {
 
         if (isUpStationExisted) {
             addDownStation(section);
-            return;
         }
         if (isDownStationExisted) {
             addUpStation(section);
-            return;
         }
+
         sections.add(section);
     }
 
@@ -104,8 +103,6 @@ public class Sections {
                 .filter(it -> it.getUpStation() == section.getUpStation())
                 .findFirst()
                 .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
-
-        sections.add(section);
     }
 
     private void addUpStation(Section section) {
@@ -113,8 +110,6 @@ public class Sections {
                 .filter(it -> it.getDownStation() == section.getDownStation())
                 .findFirst()
                 .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
-
-        sections.add(section);
     }
 
     public void removeLineStation(Station station) {
