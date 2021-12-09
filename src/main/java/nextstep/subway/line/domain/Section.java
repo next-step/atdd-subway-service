@@ -2,7 +2,13 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Section {
@@ -32,6 +38,10 @@ public class Section {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static Section of(Line line, Station upStation, Station downStation, int distance) {
+        return new Section(line, upStation, downStation, distance);
     }
 
     public Long getId() {

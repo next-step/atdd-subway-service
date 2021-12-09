@@ -1,6 +1,7 @@
 package nextstep.subway.line.dto;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.station.domain.Stations;
 import nextstep.subway.station.dto.StationResponse;
 
 import java.time.LocalDateTime;
@@ -24,6 +25,11 @@ public class LineResponse {
         this.stations = stations;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
+    }
+
+    public static LineResponse of(Line line) {
+        Stations stations = line.getStations();
+        return of(line, stations.toResponse());
     }
 
     public static LineResponse of(Line line, List<StationResponse> stations) {
