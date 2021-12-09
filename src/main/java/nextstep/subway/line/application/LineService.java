@@ -16,16 +16,17 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class LineService {
-    private LineRepository lineRepository;
-    private StationService stationService;
+    private final LineRepository lineRepository;
+    private final StationService stationService;
 
     public LineService(LineRepository lineRepository, StationService stationService) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
@@ -41,24 +42,12 @@ public class LineService {
             .collect(Collectors.toList());
     }
 
-    public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.from(persistLine);
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
-    }
-
-    public void deleteLineById(Long id) {
-        lineRepository.deleteById(id);
-    }
-
+    @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
@@ -68,9 +57,25 @@ public class LineService {
         line.addStation(section);
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.removeLineStation(station);
+    }
+
+    private Line findLineById(Long id) {
+        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+    }
+
+    @Transactional
+    public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    }
+
+    @Transactional
+    public void deleteLineById(Long id) {
+        lineRepository.deleteById(id);
     }
 }

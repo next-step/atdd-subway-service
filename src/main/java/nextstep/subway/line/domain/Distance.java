@@ -10,6 +10,7 @@ import nextstep.subway.common.exception.SubwayException;
 @Embeddable
 public class Distance {
     private static final int MIN_DISTANCE = 1;
+
     private int value;
 
     protected Distance() {

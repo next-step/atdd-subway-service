@@ -59,14 +59,6 @@ public class Sections {
         return new Stations(stations);
     }
 
-    private Station findUpStation(Station downStation) {
-        Optional<Section> nextLineStation = findDownLineStation(downStation);
-        if (!nextLineStation.isPresent()) {
-            return downStation;
-        }
-        return findUpStation(nextLineStation.get().getUpStation());
-    }
-
     private List<Station> makeStations(Station downStation) {
         List<Station> stations = new ArrayList<>();
         stations.add(downStation);
@@ -76,7 +68,8 @@ public class Sections {
             return stations;
         }
 
-        stations.addAll(makeStations(nextLineStation.get().getDownStation()));
+        Station station = nextLineStation.get().getDownStation();
+        stations.addAll(makeStations(station));
         return stations;
     }
 
@@ -91,14 +84,8 @@ public class Sections {
             sections.add(section);
         }
 
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
-    }
-
-    private Optional<Section> findDownLineStation(Station station) {
-        return sections.stream()
-            .filter(it -> it.hasDownStation(station))
-            .findFirst();
+        upLineStation.ifPresent(section -> sections.remove(section));
+        downLineStation.ifPresent(section -> sections.remove(section));
     }
 
     private void validateRemoveStation() {
@@ -107,9 +94,25 @@ public class Sections {
         }
     }
 
+    private Station findUpStation(Station downStation) {
+        Optional<Section> nextLineStation = findDownLineStation(downStation);
+        if (!nextLineStation.isPresent()) {
+            return downStation;
+        }
+
+        Station upStation = nextLineStation.get().getUpStation();
+        return findUpStation(upStation);
+    }
+
+    private Optional<Section> findDownLineStation(Station station) {
+        return sections.stream()
+            .filter(section -> section.hasDownStation(station))
+            .findFirst();
+    }
+
     private Optional<Section> findUpLineStation(Station station) {
         return sections.stream()
-            .filter(it -> it.hasUpStation(station))
+            .filter(section -> section.hasUpStation(station))
             .findFirst();
     }
 
@@ -130,7 +133,8 @@ public class Sections {
         boolean isUpStationExisted = stations.containsStation(section.getUpStation());
         if (isUpStationExisted) {
             findUpLineStation(section.getUpStation())
-                .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+                .ifPresent(upLineStation -> upLineStation
+                    .updateUpStation(section.getDownStation(), section.getDistance()));
         }
     }
 
@@ -138,7 +142,8 @@ public class Sections {
         boolean isDownStationExisted = stations.containsStation(section.getDownStation());
         if (isDownStationExisted) {
             findDownLineStation(section.getDownStation())
-                .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+                .ifPresent(downLineStation -> downLineStation
+                    .updateDownStation(section.getUpStation(), section.getDistance()));
         }
     }
 
