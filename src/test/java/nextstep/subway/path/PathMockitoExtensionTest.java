@@ -4,9 +4,11 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.SubwayFare;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.infrastructure.JGraphPathFinder;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -19,7 +21,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -102,10 +103,11 @@ public class PathMockitoExtensionTest {
         PathService pathService = new PathService(finder, stationRepository, lineRepository);
 
         // when
-        Path response = pathService.getShortestPath(강남역.getId(), 역삼역.getId());
+        final PathResponse pathResponse = PathResponse.of(pathService.getShortestPath(강남역.getId(), 역삼역.getId()));
 
         // then
-        assertThat(response.routes()).hasSize(2);
-        assertThat(response.distance()).isEqualTo(Distance.of(5));
+        assertThat(pathResponse.getStations()).hasSize(2);
+        assertThat(pathResponse.getDistance()).isEqualTo(5);
+        assertThat(pathResponse.getFare()).isEqualTo(SubwayFare.BASE_RATE);
     }
 }

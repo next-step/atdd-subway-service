@@ -84,15 +84,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("양재시민의숲역에서_역삼역까지의 거리를 구한다.")
     public void findShortPath() {
-        // given
-        int expect = 7;
+        //given
+        int expectDistance = 25;
+        int expectFare = 1_550;
 
         // when
         ExtractableResponse<Response> response = 최단거리_조회_요청함(양재시민의숲역_ID, 역삼역_ID);
 
         // then
         PathResponse pathResponse = 최단거리_조회_응답됨(response);
-        최단거리를_수동으로_검증(pathResponse, expect);
+        최단거리를_응답됨(pathResponse, expectDistance);
+        지하철_이용_요금_응답됨(pathResponse, expectFare);
     }
 
     @Test
@@ -136,8 +138,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         경로_조회_실패됨_역없음(출발지_미존재_응답);
     }
 
-    private void 최단거리를_수동으로_검증(PathResponse pathResponse, int expect) {
-        assertThat(pathResponse.getStations()).hasSize(expect);
+    private void 최단거리를_응답됨(PathResponse pathResponse, int expect) {
+        assertThat(pathResponse.getDistance()).isEqualTo(expect);
+    }
+
+    private void 지하철_이용_요금_응답됨(PathResponse pathResponse, int expect) {
+        assertThat(pathResponse.getFare()).isNotNull();
+        assertThat(pathResponse.getFare()).isEqualTo(expect);
     }
 
     private PathResponse 최단거리_조회_응답됨(ExtractableResponse<Response> response) {

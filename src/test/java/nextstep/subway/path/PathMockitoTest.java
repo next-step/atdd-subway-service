@@ -3,8 +3,10 @@ package nextstep.subway.path;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.SubwayFare;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.infrastructure.JGraphPathFinder;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -68,10 +70,12 @@ public class PathMockitoTest {
         PathService pathService = new PathService(pathFinder, stationRepository, lineRepository);
 
         // when
-        Path response = pathService.getShortestPath(1L, 2L);
+        Path path = pathService.getShortestPath(1L, 2L);
+        final PathResponse pathResponse = PathResponse.of(path);
 
         // then
-        assertThat(response.routes()).hasSize(2);
-        assertThat(response.distance()).isEqualTo(Distance.of(5));
+        assertThat(pathResponse.getStations()).hasSize(2);
+        assertThat(pathResponse.getDistance()).isEqualTo(5);
+        assertThat(pathResponse.getFare()).isEqualTo(SubwayFare.BASE_RATE);
     }
 }

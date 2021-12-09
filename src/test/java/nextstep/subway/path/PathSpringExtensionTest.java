@@ -3,8 +3,10 @@ package nextstep.subway.path;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.SubwayFare;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.infrastructure.JGraphPathFinder;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -75,9 +77,11 @@ public class PathSpringExtensionTest {
 
         //when
         Path path = pathService.getShortestPath(강남역.getId(), 역삼역.getId());
+        final PathResponse pathResponse = PathResponse.of(path);
 
         //then
-        assertThat(path.routes()).hasSize(2);
-        assertThat(path.distance()).isEqualTo(Distance.of(5));
+        assertThat(pathResponse.getStations()).hasSize(2);
+        assertThat(pathResponse.getDistance()).isEqualTo(5);
+        assertThat(pathResponse.getFare()).isEqualTo(SubwayFare.BASE_RATE);
     }
 }
