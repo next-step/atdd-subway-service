@@ -1,5 +1,7 @@
 package nextstep.subway;
 
+import org.springframework.http.HttpStatus;
+
 public class ErrorResponse {
 
     private final int statusCode;
@@ -16,5 +18,9 @@ public class ErrorResponse {
 
     public String getMessage() {
         return message;
+    }
+
+    public HttpStatus toHttpStatus(){
+        return HttpStatus.valueOf(statusCode);
     }
 }

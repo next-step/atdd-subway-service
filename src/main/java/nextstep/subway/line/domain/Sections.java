@@ -62,14 +62,14 @@ public class Sections {
         return sections.stream()
                 .filter(section -> !upStations.contains(section.getDownStation()))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new IllegalArgumentException("구간이 존재하지 않습니다."));
     }
 
     private Section findNextSection(Section currentSection) {
         return sections.stream()
                 .filter(section -> section.isLinkStation(currentSection))
                 .findFirst()
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(() -> new IllegalArgumentException("구간이 존재하지 않습니다."));
     }
 
     public List<Section> getSections() {
@@ -113,7 +113,7 @@ public class Sections {
 
     private void validationAlreadyAdded(Section newSection) {
         if (isUpStationExisted(newSection) && isDownStationExisted(newSection)) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException("이미 등록된 구간 입니다.");
         }
     }
 
@@ -123,7 +123,7 @@ public class Sections {
         boolean duplicateDownStation = getSortedStations().stream()
                 .noneMatch(station -> station.equals(newSection.getDownStation()));
         if (duplicateUpStation && duplicateDownStation) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException("등록할 수 없는 구간 입니다.");
         }
     }
 
@@ -138,23 +138,23 @@ public class Sections {
                 .findFirst();
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            addSection(upLineStation, downLineStation);
+            addSection(upLineStation.get(), downLineStation.get());
         }
         upLineStation.ifPresent(section -> sections.remove(section));
         downLineStation.ifPresent(section -> sections.remove(section));
     }
 
-    private void addSection(Optional<Section> upLineStation, Optional<Section> downLineStation) {
-        Line newLine = upLineStation.get().getLine();
-        Station newUpStation = downLineStation.get().getUpStation();
-        Station newDownStation = upLineStation.get().getDownStation();
-        int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+    private void addSection(Section upSection, Section downSection) {
+        Line newLine = upSection.getLine();
+        Station newUpStation = downSection.getUpStation();
+        Station newDownStation = upSection.getDownStation();
+        int newDistance = upSection.getDistance() + downSection.getDistance();
         sections.add(new Section(newLine, newUpStation, newDownStation, newDistance));
     }
 
     private void validationSize() {
         if (sections.size() <= MINIMUM_SIZE) {
-            throw new RuntimeException();
+            throw new IllegalArgumentException("구간이 최소 하나는 있어야 합니다.");
         }
     }
 }
