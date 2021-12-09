@@ -42,7 +42,7 @@ public final class Distance {
      */
     private void validate(Integer distance) {
         if (distance <= DISTANCE_MIN_NUMBER) {
-            throw new InvalidArgumentException(DISTANCE_MIN_NUMBER + " 이상의 정수만 입력가능합니다.");
+            throw new InvalidArgumentException(String.format("%s 이상의 정수만 입력가능합니다.", DISTANCE_MIN_NUMBER));
         }
     }
 
