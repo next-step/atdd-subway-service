@@ -55,6 +55,12 @@ public class LineResponse {
         return modifiedDate;
     }
 
+    public static List<LineResponse> ofList(List<Line> persistLines) {
+        return persistLines.stream()
+                .map(line -> LineResponse.of(line))
+                .collect(Collectors.toList());
+    }
+
     private static List<StationResponse> getStations(Line line) {
         return line.getStations().stream()
                 .map(station -> StationResponse.of(station))
