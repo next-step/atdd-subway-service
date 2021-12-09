@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.PathFinder;
@@ -28,7 +29,7 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPathBetween(PathRequest pathRequest) {
+    public PathResponse findPathBetween(LoginMember loginMember, PathRequest pathRequest) {
         final Station sourceStation = getSourceStation(pathRequest.getSource());
         final Station targetStation = getTargetStation(pathRequest.getTarget());
         final List<Line> allLines = lineRepository.findAll();

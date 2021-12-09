@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
@@ -15,10 +16,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.회원_등록_후_로그인_되어_있음;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -60,10 +61,12 @@ class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void pathTest() {
         // given
+        final TokenResponse 일반회원_토큰 = 회원_등록_후_로그인_되어_있음("doyoung@email.com", "doyoung-passrod", 21);
         final int 예상최단거리 = 8;
         final List<StationResponse> 예상경로 = Arrays.asList(교대역, 남부터미널역, 양재역);
+        final int 예상요금 = 0;
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(일반회원_토큰, 교대역, 양재역);
         // then
         경로_조회_응답됨(response);
         경로_조회와_예상_경로와_일치함(response, 예상경로);
@@ -92,11 +95,12 @@ class PathAcceptanceTest extends AcceptanceTest {
         assertThat(pathResponse.getDistance()).isEqualTo(distance);
     }
 
-    private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source, StationResponse target) {
+    private ExtractableResponse<Response> 최단_경로_조회_요청(TokenResponse tokenResponse, StationResponse source, StationResponse target) {
         PathRequest pathRequest = new PathRequest(source.getId(), target.getId());
         return RestAssured
                 .given().log().all()
                 .body(pathRequest)
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths")
                 .then().log().all().extract();
