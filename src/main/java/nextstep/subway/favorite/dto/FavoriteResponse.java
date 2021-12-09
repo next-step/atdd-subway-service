@@ -7,12 +7,9 @@ import nextstep.subway.station.dto.StationResponse;
 
 public class FavoriteResponse {
 
-    private Long id;
-    private StationResponse source;
-    private StationResponse target;
-
-    public FavoriteResponse() {
-    }
+    final private Long id;
+    final private StationResponse source;
+    final private StationResponse target;
 
     private FavoriteResponse(Long id, StationResponse source,
         StationResponse target) {

@@ -44,30 +44,6 @@ public class FavoriteTest {
     }
 
     @Test
-    @DisplayName("즐겨찾기 목록에 포함된 즐겨찾기인지 확인")
-    void includeFavorite() {
-       final List<Favorite> favorites = Arrays.asList(Favorite.of(서울역, 용산역, 사용자), Favorite.of(남영역, 용산역, 사용자));
-
-        assertAll(() -> {
-            assertTrue(Favorite.of(서울역, 용산역, 사용자).includeFavorite(favorites));
-            assertTrue(Favorite.of(남영역, 용산역, 사용자).includeFavorite(favorites));
-            assertFalse(Favorite.of(용산역, 서울역, 사용자).includeFavorite(favorites));
-            assertFalse(Favorite.of(남영역, 서울역, 사용자).includeFavorite(favorites));
-            assertFalse(Favorite.of(서울역, 용산역, 신명진).includeFavorite(favorites));
-        });
-    }
-
-    @Test
-    @DisplayName("즐겨찾기 목록에 포함되어 있는 경우 CannotAddException")
-    void validateIncludeFavorite() {
-        final List<Favorite> favorites = Arrays.asList(Favorite.of(서울역, 용산역, 사용자), Favorite.of(남영역, 용산역, 사용자));
-
-        assertThatThrownBy(() -> Favorite.of(서울역, 용산역, 사용자).validateIncludeFavorite(favorites))
-            .isInstanceOf(CannotAddException.class)
-            .hasMessage("이미 등록된 즐겨찾기 입니다.");
-    }
-
-    @Test
     @DisplayName("다른사람의 즐겨찾기 삭제 시도 시 CannotDeleteException")
     void validateDelete() {
 

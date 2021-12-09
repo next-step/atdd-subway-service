@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import java.util.List;
+import nextstep.subway.exception.CannotAddException;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -37,7 +38,7 @@ public class FavoriteService {
         List<Favorite> favorites = favoriteRepository.findAllByOwnerId(memberId);
 
         Favorite favorite = Favorite.of(sourceStation, targetStation, loginMember);
-        favorite.validateIncludeFavorite(favorites);
+        validateIncludeFavorite(favorite, favorites);
         Favorite persist = favoriteRepository.save(favorite);
 
         return FavoriteResponse.of(persist);
@@ -62,5 +63,17 @@ public class FavoriteService {
     private Favorite findFavorite(Long favoriteId) {
         return favoriteRepository.findById(favoriteId)
             .orElseThrow(NotFoundException::new);
+    }
+
+
+    private void validateIncludeFavorite(Favorite favorite, List<Favorite> favorites) {
+        if (includeFavorite(favorite, favorites)) {
+            throw new CannotAddException("이미 등록된 즐겨찾기 입니다.");
+        }
+    }
+
+    private boolean includeFavorite(Favorite favorite, List<Favorite> favorites) {
+        return favorites.stream()
+            .anyMatch(favorite::equalsFavorite);
     }
 }

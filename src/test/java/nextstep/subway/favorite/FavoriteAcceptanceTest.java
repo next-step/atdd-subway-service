@@ -3,6 +3,10 @@ package nextstep.subway.favorite;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_되어_있음;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.내정보_삭제_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.내정보_삭제됨;
+import static nextstep.subway.member.MemberAcceptanceTest.내정보_조회_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.내정보_조회됨;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -124,6 +128,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         findResponse = 즐겨찾기_목록조회_요청(accessToken);
         // Then: 즐겨 찾기 목록 조회됨
         즐겨찾기_목록조회됨(findResponse, Arrays.asList(서초역_강남역));
+
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, StationResponse source, StationResponse target) {

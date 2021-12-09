@@ -1,11 +1,8 @@
 package nextstep.subway.auth.dto;
 
 public class TokenRequest {
-    private String email;
-    private String password;
-
-    public TokenRequest() {
-    }
+    final private String email;
+    final private String password;
 
     public TokenRequest(String email, String password) {
         this.email = email;

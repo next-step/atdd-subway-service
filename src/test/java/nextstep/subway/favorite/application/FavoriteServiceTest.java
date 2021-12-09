@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -8,6 +9,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.exception.CannotAddException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -80,4 +82,17 @@ class FavoriteServiceTest {
         });
     }
 
+    @Test
+    @DisplayName("즐겨찾기 중보인 경우 CannotAddException")
+    void validateSaveFail() {
+        when(stationService.findStation(1L)).thenReturn(서울역);
+        when(stationService.findStation(2L)).thenReturn(용산역);
+        when(memberService.findMember(1L)).thenReturn(owner);
+        when(favoriteRepository.findAllByOwnerId(1L)).thenReturn(Arrays.asList(Favorite.of(서울역, 용산역, owner)));
+
+        FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
+        assertThatThrownBy(() -> favoriteService.saveFavorite(1L, favoriteRequest))
+            .isInstanceOf(CannotAddException.class)
+            .hasMessage("이미 등록된 즐겨찾기 입니다.");
+    }
 }

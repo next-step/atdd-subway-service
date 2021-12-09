@@ -5,14 +5,11 @@ import nextstep.subway.station.domain.Station;
 
 public class LineRequest {
 
-    private String name;
-    private String color;
-    private Long upStationId;
-    private Long downStationId;
-    private int distance;
-
-    public LineRequest() {
-    }
+    final private String name;
+    final private String color;
+    final private Long upStationId;
+    final private Long downStationId;
+    final private int distance;
 
     public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
         this.name = name;

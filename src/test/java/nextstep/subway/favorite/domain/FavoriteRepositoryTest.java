@@ -89,4 +89,28 @@ public class FavoriteRepositoryTest {
 
         assertThat(favorites.size()).isEqualTo(0);
     }
+
+    @Test
+    void deleteMember() {
+        member = memberRepository.findById(1L).get();
+        Favorite persist = favoriteRepository.save(Favorite.of(서울역, 용산역, member));
+
+        Optional<Favorite> find = favoriteRepository.findById(persist.getId());
+
+        assertTrue(find.isPresent());
+
+//        favoriteRepository.deleteAll();
+        try {
+            memberRepository.deleteAll();
+        }catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+
+        List<Member> all = memberRepository.findAll();
+
+        System.out.println(all.size());
+
+
+    }
 }
