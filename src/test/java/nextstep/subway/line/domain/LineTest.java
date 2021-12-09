@@ -3,7 +3,6 @@ package nextstep.subway.line.domain;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,8 +26,8 @@ class LineTest {
     void getStations() {
         Line line = new Line("신분당선", "red", 강남역, 광교역, 100);
 
-        List<Station> stations = line.getStations();
+        Stations stations = line.getStations();
 
-        assertThat(stations).isEqualTo(Arrays.asList(강남역, 광교역));
+        assertThat(stations).isEqualTo(new Stations(Arrays.asList(강남역, 광교역)));
     }
 }

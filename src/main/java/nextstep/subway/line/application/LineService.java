@@ -76,7 +76,7 @@ public class LineService {
     }
 
     private List<StationResponse> makeStationResponses(Line line) {
-        return line.getStations().stream()
+        return line.getStations().getStations().stream()
             .map(StationResponse::of)
             .collect(Collectors.toList());
     }

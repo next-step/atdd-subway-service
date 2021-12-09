@@ -1,7 +1,6 @@
 package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,16 +40,17 @@ public class Sections {
         return sections;
     }
 
-    public List<Station> getStations() {
+    public Stations getStations() {
         if (sections.isEmpty()) {
-            return Collections.emptyList();
+            return new Stations();
         }
 
         Station station = sections.get(0).getUpStation();
 
         Station upStation = findUpStation(station);
 
-        return makeStations(upStation);
+        List<Station> stations = makeStations(upStation);
+        return new Stations(stations);
     }
 
     private Station findUpStation(Station downStation) {
@@ -108,39 +108,32 @@ public class Sections {
     }
 
     public void addStation(Section section) {
-        List<Station> stations = getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(section::hasUpStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(section::hasDownStation);
+        Stations stations = getStations();
 
-        checkAllStationExists(isUpStationExisted, isDownStationExisted);
-        checkContainsAnyStation(isUpStationExisted, isDownStationExisted);
+        stations.checkCanAddStation(section);
 
-        addSection(section);
-
-        if (stations.isEmpty()) {
-            return;
+        if (stations.isNotEmpty()) {
+            updateUpStationIfExists(section, stations);
+            updateDownStationIfExists(section, stations);
         }
 
+        addSection(section);
+    }
+
+    private void updateUpStationIfExists(Section section, Stations stations) {
+        boolean isUpStationExisted = stations.containsStation(section.getUpStation());
         if (isUpStationExisted) {
             findUpLineStation(section.getUpStation())
                 .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
         }
+    }
 
+    private void updateDownStationIfExists(Section section, Stations stations) {
+        boolean isDownStationExisted = stations.containsStation(section.getDownStation());
         if (isDownStationExisted) {
             findDownLineStation(section.getDownStation())
                 .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
         }
     }
 
-    private void checkAllStationExists(boolean isUpStationExisted, boolean isDownStationExisted) {
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new SubwayException(SubwayErrorCode.ALREADY_REGISTERED_SECTION);
-        }
-    }
-
-    private void checkContainsAnyStation(boolean isUpStationExisted, boolean isDownStationExisted) {
-        if (!isUpStationExisted && !isDownStationExisted) {
-            throw new SubwayException(SubwayErrorCode.INVALID_LINE_SECTION);
-        }
-    }
 }
