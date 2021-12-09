@@ -42,10 +42,14 @@ public class Section {
     }
 
     public boolean isConnectable(Section section) {
+        validateDuplication(section);
+        return isTerminusExtend(section) || isBetweenStations(section);
+    }
+
+    private void validateDuplication(Section section) {
         if (isDuplicate(section)) {
             throw new InvalidSectionException(SECTION_DUPLICATION);
         }
-        return isTerminusExtend(section) || isBetweenStations(section);
     }
 
     public Section merge(Section newSection) {
