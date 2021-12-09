@@ -1,7 +1,6 @@
 package nextstep.subway.line.application;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -31,7 +30,8 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
+        Line persistLine = lineRepository.save(
+            new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
         List<StationResponse> stations = makeStationResponses(persistLine);
         return LineResponse.of(persistLine, stations);
     }
@@ -64,7 +64,9 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        addLineStation(request, line, upStation, downStation);
+
+        Section section = new Section(line, upStation, downStation, request.getDistance());
+        line.addStation(section);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
@@ -86,10 +88,5 @@ public class LineService {
                 return LineResponse.of(line, stations);
             })
             .collect(Collectors.toList());
-    }
-
-    private void addLineStation(SectionRequest request, Line line, Station upStation, Station downStation) {
-        Section section = new Section(line, upStation, downStation, request.getDistance());
-        line.addStation(section);
     }
 }
