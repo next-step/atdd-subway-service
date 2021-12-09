@@ -71,7 +71,7 @@ public class PathTest {
         assertThat(path.getStations().stream().map(Station::getName)).containsExactly("강남역", "교대역", "남부터미널역");
     }
 
-    @DisplayName("최단 경로 찾기")
+    @DisplayName("출발역과 도착역이 같을 때 최단경로 찾기")
     @Test
     void findShortestPathIfCorrectSourceAndTargetTest() {
 
@@ -92,6 +92,27 @@ public class PathTest {
         //when
         PathFinder pathFinder = PathFinder.of(lines);
         assertThatThrownBy(() -> pathFinder.find(강남역, 강남역)).isInstanceOf(IllegalStateException.class);
+    }
+
+    @DisplayName("출발역과 도착역이 연결되지 않을 때 최단경로 찾기")
+    @Test
+    void findShortestPathIfLinkSourceAndTargetTest() {
+
+        //given
+        Station 강남역 = new Station("강남역");
+        Station 양재역 = new Station("양재역");
+        Station 교대역 = new Station("교대역");
+        Station 남부터미널역 = new Station("남부터미널역");
+
+        Line 이호선 = new Line("이호선", "red", 교대역, 강남역, 10);
+        Line 삼호선 = new Line("삼호선", "red", 남부터미널역, 양재역, 5);
+
+
+        List<Line> lines = Arrays.asList(이호선, 삼호선);
+
+        //when
+        PathFinder pathFinder = PathFinder.of(lines);
+        assertThatThrownBy(() -> pathFinder.find(강남역, 남부터미널역)).isInstanceOf(IllegalStateException.class);
     }
 
     @DisplayName("최단 경로 찾기 - 서비스 Layer")

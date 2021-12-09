@@ -9,6 +9,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
@@ -51,6 +52,10 @@ public class PathFinder {
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(this.graph);
         GraphPath path = dijkstraShortestPath.getPath(source, target);
+
+        if(Objects.isNull(path)) {
+            throw new IllegalStateException("출발역과 도착역이 연결되지 않았습니다.");
+        }
         List<Station> shortest = path.getVertexList();
         double weight = path.getWeight();
 
