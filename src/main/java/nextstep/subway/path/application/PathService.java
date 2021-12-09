@@ -9,9 +9,12 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.CanNotFindPathException;
-import nextstep.subway.path.domain.FarePolicy;
+import nextstep.subway.path.domain.FareCalculator;
+import nextstep.subway.path.domain.MostExpensiveLineOverchargeFarePolicy;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.PerAgeMemberDiscountFarePolicy;
+import nextstep.subway.path.domain.PerOverchargeFareSectionDistanceBasedFarePolicy;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -36,9 +39,16 @@ public class PathService {
 
 		PathFinder pathFinder = PathFinder.of(lines);
 		Path path = pathFinder.find(source, target);
-		FarePolicy farePolicy = new FarePolicy();
-		int fare = farePolicy.calculateBy(path.getDistance(), path.getLines(), loginMember);
+		FareCalculator fareCalculator = getFareCalculator();
+		int fare = fareCalculator.calculate(path.getDistance(), path.getLines(), loginMember);
 
 		return PathResponse.of(path, fare);
+	}
+
+	private FareCalculator getFareCalculator() {
+		return new FareCalculator(
+			new PerOverchargeFareSectionDistanceBasedFarePolicy(),
+			new MostExpensiveLineOverchargeFarePolicy(),
+			new PerAgeMemberDiscountFarePolicy());
 	}
 }
