@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import nextstep.subway.exception.CannotDeleteException;
+import nextstep.subway.exception.InvalidArgumentException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -34,6 +35,7 @@ public class Favorite {
     }
 
     private Favorite(Station source, Station target, Member owner) {
+        validateEqualStation(source, target);
         this.source = source;
         this.target = target;
         this.owner = owner;
@@ -69,6 +71,12 @@ public class Favorite {
 
     protected boolean isOwner(Member member) {
         return this.owner.equals(member);
+    }
+
+    private void validateEqualStation(Station source, Station target) {
+        if (source.equalsName(target)) {
+            throw new InvalidArgumentException("출발역과 도착역이 같습니다.");
+        }
     }
 
     @Override
