@@ -24,6 +24,22 @@ public enum SubwayFare {
     private int charges;
     private String desc;
 
+    SubwayFare(int minDistance, int maxDistance, boolean useExtraCharge, int per, int charges, String desc) {
+        this.minDistance = minDistance;
+        this.maxDistance = maxDistance;
+        this.useExtraCharge = useExtraCharge;
+        this.per = per;
+        this.charges = charges;
+        this.desc = desc;
+    }
+
+    public static SubwayFare of(Distance distance) {
+        return Arrays.stream(SubwayFare.values())
+                .filter(it -> it.includes(distance))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
     public int toChargeDistance(Distance distance) {
         if (isUntil50Km()) {
             return isExceed(distance) ? maxChargeDistance() : chargeDistance(distance);
@@ -69,26 +85,10 @@ public enum SubwayFare {
         return this == OVER_50KM;
     }
 
-    SubwayFare(int minDistance, int maxDistance, boolean useExtraCharge, int per, int charges, String desc) {
-        this.minDistance = minDistance;
-        this.maxDistance = maxDistance;
-        this.useExtraCharge = useExtraCharge;
-        this.per = per;
-        this.charges = charges;
-        this.desc = desc;
-    }
-
     public static int rateInquiry(Distance distance) {
         return Arrays.stream(SubwayFare.values())
                 .mapToInt(it -> it.useExtraCharge ? it.calculateOverFare(distance) : BASE_RATE)
                 .sum();
-    }
-
-    public static SubwayFare of(Distance distance) {
-        return Arrays.stream(SubwayFare.values())
-                .filter(it -> it.includes(distance))
-                .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
     }
 
     private int calculateOverFare(Distance distance) {

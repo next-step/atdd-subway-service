@@ -97,7 +97,7 @@ public class PathMockitoExtensionTest {
         when(lineRepository.findAll()).thenReturn(lines);
 
         when(finder.getShortestPath(anyList(), anyList(), anyLong(), anyLong())).thenReturn(
-                Path.of(new Station("1"), new Station("2"), stations, Distance.of(5))
+                Path.of(new Station("강남역"), new Station("역삼역"), stations, Distance.of(5))
         );
 
         PathService pathService = new PathService(finder, stationRepository, lineRepository);
