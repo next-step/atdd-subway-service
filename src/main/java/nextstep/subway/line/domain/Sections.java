@@ -1,10 +1,7 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.line.application.exception.InvalidSectionException;
-import nextstep.subway.line.application.exception.SectionNotFoundException;
 import nextstep.subway.station.domain.Station;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
@@ -12,15 +9,17 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static javax.persistence.CascadeType.*;
+import static nextstep.subway.line.application.exception.InvalidSectionException.CAN_NOT_DELETE;
+import static nextstep.subway.line.application.exception.InvalidSectionException.NOT_CONNECTABLE;
+import static nextstep.subway.line.application.exception.SectionNotFoundException.BREAK_SECTION;
+import static nextstep.subway.line.application.exception.SectionNotFoundException.NOT_FOUND_TERMINUS;
+
 @Embeddable
 public class Sections {
     private static final int MIN_SECTION_SIZE = 1;
-    private static final String NOT_CONNECTABLE = "구간을 연결할 상행역 또는 하행역이 존재해야 합니다.";
-    private static final String NOT_FOUND_TERMINUS = "상행 종점역을 찾을 수 없습니다.";
-    private static final String BREAK_SECTION = "이어지는 구간을 찾을 수 없습니다.";
-    private static final String NOT_DELETE_MIN_SECTION_SIZE = "노선의 구간이" + MIN_SECTION_SIZE + "개 이하인 경우 구간을 삭제할 수 없습니다.";
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "line", cascade = {PERSIST, MERGE, REMOVE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
     protected Sections() {
@@ -39,7 +38,7 @@ public class Sections {
                 .filter(oldSection -> oldSection.isConnectable(newSection))
                 .findFirst()
                 .map(oldSection -> oldSection.merge(newSection))
-                .orElseThrow(() -> new InvalidSectionException(NOT_CONNECTABLE));
+                .orElseThrow(() -> NOT_CONNECTABLE);
 
         sections.add(section);
     }
@@ -63,14 +62,14 @@ public class Sections {
         return sections.stream()
                 .filter(section -> !downStations.contains(section.getUpStation()))
                 .findFirst()
-                .orElseThrow(() -> new SectionNotFoundException(NOT_FOUND_TERMINUS));
+                .orElseThrow(() -> NOT_FOUND_TERMINUS);
     }
 
     private Section findNextStation(Station downStation) {
         return sections.stream()
                 .filter(section -> section.getUpStation().equals(downStation))
                 .findFirst()
-                .orElseThrow(() -> new SectionNotFoundException(BREAK_SECTION));
+                .orElseThrow(() -> BREAK_SECTION);
     }
 
     private List<Station> getDownStations() {
@@ -85,7 +84,7 @@ public class Sections {
 
     public void remove(Station station) {
         if (sections.size() <= MIN_SECTION_SIZE) {
-            throw new InvalidSectionException(NOT_DELETE_MIN_SECTION_SIZE);
+            throw CAN_NOT_DELETE;
         }
 
         removeUpSection(station);

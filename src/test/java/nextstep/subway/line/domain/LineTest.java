@@ -106,8 +106,8 @@ class LineTest {
     @DisplayName("구간 거리가 " + MIN_DISTANCE + "보다 작은 경우 예외가 발생한다.")
     void validateShortMinDistance() {
         // given // when // then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> getSection(Arrays.asList(강남, 양재), 0));
+        assertThatThrownBy(() -> getSection(Arrays.asList(강남, 양재), 0))
+                .isInstanceOf(InvalidSectionException.class);
     }
 
     @DisplayName("구간 거리가 기존 역 사이의 거리보다 크거나 같은 경우 예외가 발생한다.")
@@ -121,8 +121,8 @@ class LineTest {
         line.addSection(section1);
 
         // when // then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> line.addSection(section2));
+        assertThatThrownBy(() -> line.addSection(section2))
+                .isInstanceOf(InvalidSectionException.class);
     }
 
     @Test

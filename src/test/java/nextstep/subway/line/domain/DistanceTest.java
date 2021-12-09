@@ -1,10 +1,10 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.application.exception.InvalidSectionException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("구간의 거리")
 class DistanceTest {
@@ -13,8 +13,8 @@ class DistanceTest {
     @Test
     void validateDistance() {
         // given when then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Distance(0));
+        assertThatThrownBy(() -> new Distance(0))
+                .isInstanceOf(InvalidSectionException.class);
     }
 
     @DisplayName("새로운 거리가 기존 구간의 거리가 긴 경우 예외가 발생한다.")
@@ -25,8 +25,8 @@ class DistanceTest {
         Distance newDistance = new Distance(6);
 
         // when then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> distance.divisible(newDistance));
+        assertThatThrownBy(() -> distance.divisible(newDistance))
+                .isInstanceOf(InvalidSectionException.class);
     }
 
     @DisplayName("구간에 거리를 더한다.")
