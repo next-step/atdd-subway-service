@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 public class Fare {
+    private static final String MIN_FARE_ERROR_MESSAGE = "운임 요금은 %s 보다 커야 합니다.";
     public static final int BASIC_FARE = 1250;
     public static final int MIN_FARE = 450;
 
@@ -17,7 +18,7 @@ public class Fare {
 
     private void validate(int fare) {
         if (fare < MIN_FARE) {
-            throw new IllegalArgumentException(String.format("운임 요금은 %s 보다 커야 합니다.", MIN_FARE));
+            throw new IllegalArgumentException(String.format(MIN_FARE_ERROR_MESSAGE, MIN_FARE));
         }
     }
 
