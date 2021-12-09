@@ -160,17 +160,19 @@ public class Sections {
     }
     
     private boolean removeIfCombinableStation(Station station) {
-        Optional<Section> upSection = sections.stream()
+        Section upSection = sections.stream()
                 .filter(section -> station.equals(section.getDownStation()))
-                .findFirst();
+                .findFirst()
+                .orElse(null);
 
-        Optional<Section> downSection = sections.stream()
-                        .filter(section -> station.equals(section.getUpStation()))
-                        .findFirst();
+        Section downSection = sections.stream()
+                .filter(section -> station.equals(section.getUpStation()))
+                .findFirst()
+                .orElse(null);
         
-        if (upSection.isPresent() && downSection.isPresent()) {
-            upSection.get().combine(downSection.get());
-            sections.removeIf(section -> section.equals(downSection.get()));
+        if (upSection != null && downSection != null) {
+            upSection.combine(downSection);
+            sections.removeIf(section -> section.equals(downSection));
             return true;
         }
         return false;
