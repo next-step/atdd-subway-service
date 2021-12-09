@@ -3,15 +3,22 @@ package nextstep.subway.member;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Arrays;
+import java.util.function.Function;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.http.HttpStatus.OK;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -20,6 +27,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String NEW_PASSWORD = "newpassword";
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
+    public static final String UNKNOWN_EMAIL = "unknownEmail";
+    public static final String UNKNOWN_PASSWORD = "unknownPassword";
+    public static final int UNKNOWN_AGE = 0;
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
@@ -48,8 +58,32 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        final ExtractableResponse<Response> createToken = 토큰_생성_됨(EMAIL, PASSWORD);
+        final String accessToken = createToken.jsonPath().getString("accessToken");
 
+        // when
+        ExtractableResponse<Response> responseMine = 내_정보_조회요청(accessToken);
+
+        // then
+        응답_정상(responseMine);
+
+        // when
+        ExtractableResponse<Response> updateMine = 내_정보_수정_요청(accessToken,
+            new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE));
+
+        // then
+        응답_정상(updateMine);
+        String updatedAccessToken = 변경된_내_정보_검증();
+
+        // when
+        내_정보_삭제_요청(updatedAccessToken);
+
+        // then
+        삭제된_유저_로그인_안됨();
     }
+
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
@@ -108,10 +142,60 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(OK.value());
     }
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+
+    public static ExtractableResponse<Response> 내_정보_조회요청(String accessToken) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
+
+    public static ExtractableResponse<Response> 내_정보_수정_요청(String accessToken, MemberRequest memberRequest) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(memberRequest)
+            .when().put("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_삭제_요청(String accessToken) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .when().delete("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
+    public void 응답_정상(ExtractableResponse<Response> responseMine) {
+        Assertions.assertThat(responseMine.statusCode()).isEqualTo(OK.value());
+    }
+
+    private String 변경된_내_정보_검증() {
+        ExtractableResponse<Response> updatedToken = 토큰_생성_됨(NEW_EMAIL, NEW_PASSWORD);
+        final String accessToken = updatedToken.jsonPath().getString("accessToken");
+        ExtractableResponse<Response> updatedMine = 내_정보_조회요청(accessToken);
+        회원_정보_조회됨(updatedMine, NEW_EMAIL, NEW_AGE);
+        return accessToken;
+    }
+
+    private void 삭제된_유저_로그인_안됨() {
+        ExtractableResponse<Response> loginResponse = 로그인_요청(EMAIL, PASSWORD);
+        토큰_생성_실패(loginResponse);
+    }
+
 }

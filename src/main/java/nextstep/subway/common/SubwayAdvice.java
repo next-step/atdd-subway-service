@@ -1,8 +1,10 @@
 package nextstep.subway.common;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import javax.persistence.EntityNotFoundException;
+import nextstep.subway.auth.application.AuthorizationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -25,4 +27,10 @@ public class SubwayAdvice {
     public ResponseEntity<ErrorResponse> standardException(Exception e) {
         return new ResponseEntity<>(ErrorResponse.of(e.getMessage()), BAD_REQUEST);
     }
+
+    @ExceptionHandler(value = {AuthorizationException.class})
+    public ResponseEntity<ErrorResponse> tokenException(Exception e) {
+        return new ResponseEntity<>(ErrorResponse.of(e.getMessage()), UNAUTHORIZED);
+    }
+
 }
