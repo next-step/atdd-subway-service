@@ -49,15 +49,11 @@ public class Section {
     }
 
     public static Section combine(Section upLineStation, Section downLineStation) {
-        return Section.combine(downLineStation.getLine(), upLineStation, downLineStation);
-    }
-
-    private static Section combine(Line line, Section upLineStation, Section downLineStation) {
         Station newUpStation = upLineStation.upStation;
         Station newDownStation = downLineStation.downStation;
         Distance newDistance = upLineStation.distance.add(downLineStation.distance);
 
-        return new Section(line, newUpStation, newDownStation, newDistance);
+        return new Section(downLineStation.getLine(), newUpStation, newDownStation, newDistance);
     }
 
     public Long getId() {
