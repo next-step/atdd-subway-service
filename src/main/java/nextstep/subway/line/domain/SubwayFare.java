@@ -41,12 +41,14 @@ public enum SubwayFare {
 
     public int findChargeDistance(Distance distance) {
         int given = distance.intValue();
-        if (isUntil50Km()) {
-            return OVER_50KM.includes(distance) ? maxDistance - minDistance : UNTIL_50KM.includes(distance) ? given - minDistance : 0;
+
+        if (isUntil50Km() && !UNTIL_10KM.includes(distance)) {
+            return OVER_50KM.includes(distance) ? maxDistance - minDistance : given - minDistance;
         }
-        if (isOver50Km()) {
-            return OVER_50KM.includes(distance) ? given - minDistance : 0;
+        if (isOver50Km() && OVER_50KM.includes(distance)) {
+            return given - minDistance;
         }
+
         return 0;
     }
 
@@ -74,7 +76,6 @@ public enum SubwayFare {
 
     private int calculateOverFare(Distance distance) {
         int chargeDistance = findChargeDistance(distance);
-
-        return chargeDistance > 0 ? (int) ((Math.ceil((chargeDistance - 1) / per) + 1) * charges) : 0;
+        return chargeDistance > 0 ? (int) ((Math.ceil((chargeDistance) / per) + 1) * charges) : 0;
     }
 }
