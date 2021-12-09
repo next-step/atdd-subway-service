@@ -10,12 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
-
 import nextstep.subway.station.domain.Station;
 
 @Entity
-public class Section extends DefaultWeightedEdge {
+public class Section {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -74,11 +72,6 @@ public class Section extends DefaultWeightedEdge {
     }
 
     public int getDistance() {
-        return distance;
-    }
-
-    @Override
-    protected double getWeight() {
         return distance;
     }
 

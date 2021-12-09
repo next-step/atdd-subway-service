@@ -15,17 +15,17 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 
 public class PathFinder {
-	private final WeightedMultigraph<Station, Section> graph;
+	private final WeightedMultigraph<Station, SectionEdge> graph;
 	private List<Station> stations;
 
 	private PathFinder(List<Line> lines) {
-		graph = new WeightedMultigraph<>(Section.class);
+		graph = new WeightedMultigraph<>(SectionEdge.class);
 
 		addVertexes(graph, lines);
 		addEdges(graph, lines);
 	}
 
-	private void addVertexes(WeightedMultigraph<Station, Section> graph, List<Line> lines) {
+	private void addVertexes(WeightedMultigraph<Station, SectionEdge> graph, List<Line> lines) {
 		stations = lines.stream()
 			.map(Line::getStations)
 			.map(Stations::getValues)
@@ -36,16 +36,17 @@ public class PathFinder {
 		stations.forEach(graph::addVertex);
 	}
 
-	private void addEdges(WeightedMultigraph<Station, Section> graph, List<Line> lines) {
-		List<Section> sections = lines.stream()
+	private void addEdges(WeightedMultigraph<Station, SectionEdge> graph, List<Line> lines) {
+		List<SectionEdge> sectionEdges = lines.stream()
 			.map(Line::getSections)
 			.map(Sections::getValues)
 			.flatMap(List::stream)
+			.map(SectionEdge::of)
 			.collect(Collectors.toList());
 
-		sections.forEach(section -> {
-			graph.addEdge(section.getUpStation(), section.getDownStation(), section);
-			graph.setEdgeWeight(section, section.getDistance());
+		sectionEdges.forEach(sectionEdge -> {
+			graph.addEdge(sectionEdge.getSource(), sectionEdge.getTarget(), sectionEdge);
+			graph.setEdgeWeight(sectionEdge, sectionEdge.getWeight());
 		});
 	}
 
@@ -54,16 +55,21 @@ public class PathFinder {
 	}
 
 	public Path find(Station source, Station target) {
-		throwOnEqual(source, target);
-		throwOnNotExist(source, target);
-
-		ShortestPathAlgorithm<Station, Section> shortestPathAlgorithm = new DijkstraShortestPath<>(graph);
-		GraphPath<Station, Section> graphPath = shortestPathAlgorithm.getPath(source, target);
+		throwOnInvalid(source, target);
+		ShortestPathAlgorithm<Station, SectionEdge> shortestPathAlgorithm = new DijkstraShortestPath<>(graph);
+		GraphPath<Station, SectionEdge> graphPath = shortestPathAlgorithm.getPath(source, target);
 		if (graphPath == null) {
 			throw new CanNotFindPathException("출발역과 도착역이 연결되어 있지 않습니다.");
 		}
 
-		return Path.of(graphPath.getVertexList(), graphPath.getEdgeList(), (int)graphPath.getWeight());
+		List<Station> stations = graphPath.getVertexList();
+		List<Section> sections = SectionEdge.toSections(graphPath.getEdgeList());
+		return Path.of(stations, sections, (int)graphPath.getWeight());
+	}
+
+	private void throwOnInvalid(Station source, Station target) {
+		throwOnEqual(source, target);
+		throwOnNotExist(source, target);
 	}
 
 	private void throwOnEqual(Station source, Station target) {
