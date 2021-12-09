@@ -69,3 +69,14 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
       - Then: 지하철 구간 삭제됨
       - When: 지하철 노선에 등록된 역 목록 조회 요청
       - Then: 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+
+## 2단계 - 경로 조회 기능
+### 최단 경로 조회 인수 테스트
+- Feature: 최단 경로 조회 기능
+  - Background:
+    - Given: 지하철역 등록되어 있음
+    - And: 지하철 노선 등록되어 있음
+    - And: 지하철 노선에 지하철역 등록되어 있음
+  - Scenario: 최단 경로 조회
+    - When: 최단 경로 조회 요청
+    - Then: 최단 경로 조회됨
