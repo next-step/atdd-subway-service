@@ -22,7 +22,7 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findPathBetween(@AuthenticationPrincipal LoginMember loginMember, @RequestBody PathRequest pathRequest) {
+    public ResponseEntity<PathResponse> findPathBetween(@AuthenticationPrincipal(required = false) LoginMember loginMember, @RequestBody PathRequest pathRequest) {
         return ResponseEntity.ok(pathService.findPathBetween(loginMember, pathRequest));
     }
 }

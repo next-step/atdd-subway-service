@@ -22,8 +22,12 @@ public class Paths {
         return new Paths(graphPath);
     }
 
-    public int calculateFare() {
+    public Fare calculateFare() {
         return DistanceFareCalculator.calculateOverFare(distance);
+    }
+
+    public Fare calculateFare(int age) {
+        return AgeDiscountPolicy.discount(DistanceFareCalculator.calculateOverFare(distance), age);
     }
 
     public List<Station> getStations() {

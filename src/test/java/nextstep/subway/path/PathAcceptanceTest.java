@@ -57,16 +57,32 @@ class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
 
-    @DisplayName("지하철 최단 경로 조회")
+    @DisplayName("회원: 지하철 최단 경로 조회")
     @Test
-    void pathTest() {
+    void pathTestWithMember() {
         // given
-        final TokenResponse 일반회원_토큰 = 회원_등록_후_로그인_되어_있음("doyoung@email.com", "doyoung-passrod", 21);
+        final TokenResponse 일반회원_토큰 = 회원_등록_후_로그인_되어_있음("doyoung@email.com", "doyoung-passrod", 6);
         final int 예상최단거리 = 8;
         final List<StationResponse> 예상경로 = Arrays.asList(교대역, 남부터미널역, 양재역);
-        final int 예상요금 = 0;
+        final int 예상요금 = 450;
         // when
         ExtractableResponse<Response> response = 최단_경로_조회_요청(일반회원_토큰, 교대역, 양재역);
+        // then
+        경로_조회_응답됨(response);
+        경로_조회와_예상_경로와_일치함(response, 예상경로);
+        경로_조회가_예상_거리와_일치함(response, 예상최단거리);
+        지하철_이용_요금가_예상_요금과_일치함(response, 예상요금);
+    }
+
+    @DisplayName("비회원: 지하철 최단 경로 조회")
+    @Test
+    void pathTestWithAnonymous() {
+        // given
+        final int 예상최단거리 = 8;
+        final List<StationResponse> 예상경로 = Arrays.asList(교대역, 남부터미널역, 양재역);
+        final int 예상요금 = 1250;
+        // when
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 양재역);
         // then
         경로_조회_응답됨(response);
         경로_조회와_예상_경로와_일치함(response, 예상경로);
@@ -101,6 +117,16 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .given().log().all()
                 .body(pathRequest)
                 .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths")
+                .then().log().all().extract();
+    }
+
+    private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source, StationResponse target) {
+        PathRequest pathRequest = new PathRequest(source.getId(), target.getId());
+        return RestAssured
+                .given().log().all()
+                .body(pathRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths")
                 .then().log().all().extract();

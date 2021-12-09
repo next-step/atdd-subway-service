@@ -3,6 +3,7 @@ package nextstep.subway.path.application;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.Paths;
 import nextstep.subway.path.dto.PathRequest;
@@ -35,8 +36,15 @@ public class PathService {
         final List<Line> allLines = lineRepository.findAll();
         final Paths paths = PathFinder.of(allLines)
                 .findPathBetween(sourceStation, targetStation);
-        // TODO fare calculate
-        return PathResponse.of(paths.getStations(), paths.getDistance(), 0);
+        final Fare fare = getFareByPathsAndLoginMember(paths, loginMember);
+        return PathResponse.of(paths.getStations(), paths.getDistance(), fare);
+    }
+
+    private Fare getFareByPathsAndLoginMember(Paths paths, LoginMember loginMember) {
+        if (loginMember.isGuestUser()) {
+            return paths.calculateFare();
+        }
+        return paths.calculateFare(loginMember.getAge());
     }
 
     private Station getTargetStation(Long target) {
