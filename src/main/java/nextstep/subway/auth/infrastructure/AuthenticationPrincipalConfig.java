@@ -1,12 +1,13 @@
 package nextstep.subway.auth.infrastructure;
 
-import nextstep.subway.auth.application.AuthService;
-import nextstep.subway.auth.ui.AuthenticationPrincipalArgumentResolver;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.List;
+import nextstep.subway.auth.application.AuthService;
+import nextstep.subway.auth.ui.AuthenticationPrincipalArgumentResolver;
 
 @Configuration
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {

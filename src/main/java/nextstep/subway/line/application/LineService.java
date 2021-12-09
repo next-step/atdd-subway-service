@@ -1,6 +1,7 @@
 package nextstep.subway.line.application;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -64,14 +65,14 @@ public class LineService {
         line.removeLineStation(station);
     }
 
-    private Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
     @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        Line persistLine = findLineById(id);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    }
+
+    private Line findLineById(Long id) {
+        return lineRepository.findById(id).orElseThrow(NoSuchElementException::new);
     }
 
     @Transactional

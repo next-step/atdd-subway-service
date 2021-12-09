@@ -20,9 +20,7 @@ class StationsTest {
     private Station 판교역;
     private Station 광교역;
 
-    private Section 강남_판교_구간;
     private Section 강남_양재_구간;
-    private Section 양재_판교_구간;
     private Section 퍈교_광교_구간;
 
     @BeforeEach
@@ -33,9 +31,7 @@ class StationsTest {
         판교역 = new Station("판교역");
         광교역 = new Station("광교약");
 
-        강남_판교_구간 = new Section(신분당선, 강남역, 판교역, 10);
         강남_양재_구간 = new Section(신분당선, 강남역, 양재역, 8);
-        양재_판교_구간 = new Section(신분당선, 양재역, 판교역, 2);
         퍈교_광교_구간 = new Section(신분당선, 판교역, 광교역, 2);
     }
 
