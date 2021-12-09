@@ -24,8 +24,6 @@ public class Section {
 	@JoinColumn(name = "down_station_id")
 	private Station downStation;
 
-	// private int distance;
-
 	@Embedded
 	private Distance distance;
 
@@ -80,12 +78,12 @@ public class Section {
 		this.distance.decrease(section.distance);
 	}
 
-	public boolean equalsDownStation(Section section) {
-		return this.downStation.equals(section.getDownStation());
+	public boolean equalsDownStation(Station station) {
+		return this.downStation.equals(station);
 	}
 
-	public boolean equalsUpStation(Section section) {
-		return this.upStation.equals(section.getUpStation());
+	public boolean equalsUpStation(Station station) {
+		return this.upStation.equals(station);
 	}
 
 	@Override
