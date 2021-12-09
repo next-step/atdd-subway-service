@@ -29,7 +29,7 @@ public class PathService {
         Station targetStation = stationRepository.findByIdElseThrow(request.getTarget());
         SectionGraph graph = sections.generatePaths(sourceStation, targetStation);
 
-        if(loginMember.isGuest()){
+        if (loginMember.isGuest()) {
             return new PathResponse(graph, sections.selectMaxSurcharge(graph));
         }
 

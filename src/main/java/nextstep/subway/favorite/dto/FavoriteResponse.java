@@ -1,7 +1,6 @@
 package nextstep.subway.favorite.dto;
 
 import nextstep.subway.favorite.domain.Favorite;
-import nextstep.subway.line.dto.Fare;
 import nextstep.subway.station.dto.StationResponse;
 
 public class FavoriteResponse {

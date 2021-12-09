@@ -4,11 +4,8 @@ import nextstep.subway.exception.AlreadyAddSectionException;
 import nextstep.subway.exception.NotFoundSectionException;
 import nextstep.subway.exception.NotIncludeStationException;
 import nextstep.subway.exception.NotRemovableSectionsSize;
-import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;

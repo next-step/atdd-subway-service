@@ -2,7 +2,7 @@ package nextstep.subway.line.dto;
 
 import nextstep.subway.line.domain.Line;
 
-public class LineRequest extends SectionRequest{
+public class LineRequest extends SectionRequest {
     private String name;
     private String color;
     private int surcharge;

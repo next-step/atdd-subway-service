@@ -3,10 +3,7 @@ package nextstep.subway.line.dto;
 import nextstep.subway.line.domain.SectionGraph;
 import nextstep.subway.line.domain.Surcharge;
 import nextstep.subway.policy.AgeType;
-import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.ArrayList;
 import java.util.List;

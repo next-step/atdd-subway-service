@@ -33,7 +33,7 @@ public enum AgeType {
     }
 
     public int discount(int fare) {
-        if(this.equals(ADULT)){
+        if (this.equals(ADULT)) {
             return fare;
         }
 

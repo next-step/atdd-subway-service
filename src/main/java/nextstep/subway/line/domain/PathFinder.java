@@ -38,7 +38,7 @@ public class PathFinder {
     }
 
     public void isNotEnrolledStations(final Station source, final Station target) {
-        if(isNotEnrolledStation(source) || isNotEnrolledStation(target)){
+        if (isNotEnrolledStation(source) || isNotEnrolledStation(target)) {
             throw new NotEnrollStationInGraphException();
         }
     }
@@ -48,7 +48,7 @@ public class PathFinder {
     }
 
     public void isEqualsTwoStations(final Station source, final Station target) {
-        if(source.equals(target)){
+        if (source.equals(target)) {
             throw new IsEqualsTwoStationsException();
         }
     }

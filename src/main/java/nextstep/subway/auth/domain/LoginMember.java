@@ -2,7 +2,6 @@ package nextstep.subway.auth.domain;
 
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.policy.AgeType;
 
 public class LoginMember {
     private Long id;

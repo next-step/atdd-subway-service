@@ -30,7 +30,7 @@ public class AuthService {
     }
 
     public LoginMember findMemberByToken(String credentials) {
-        if(isGuestMember(credentials)){
+        if (isGuestMember(credentials)) {
             return LoginMember.guest();
         }
 
