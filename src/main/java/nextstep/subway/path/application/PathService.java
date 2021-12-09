@@ -1,9 +1,11 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.member.domain.Age;
+import nextstep.subway.path.domain.DistanceFareCalculator;
 import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.Paths;
@@ -32,16 +34,20 @@ public class PathService {
 
     @Transactional(readOnly = true)
     public PathResponse findPathBetween(LoginMember loginMember, PathRequest pathRequest) {
-        final Station sourceStation = getSourceStation(pathRequest.getSource());
-        final Station targetStation = getTargetStation(pathRequest.getTarget());
-        final List<Line> allLines = lineRepository.findAll();
-        final Paths paths = PathFinder.of(allLines)
-                .findPathBetween(sourceStation, targetStation);
-        final Fare fare = getFareByPathsAndLoginMember(paths, loginMember);
+        final Paths paths = findPathBetween(pathRequest);
+        final Fare fare = calcFareByPathsAndLoginMember(paths, loginMember);
         return PathResponse.of(paths.getStations(), paths.getDistance(), fare);
     }
 
-    private Fare getFareByPathsAndLoginMember(Paths paths, LoginMember loginMember) {
+    private Paths findPathBetween(PathRequest pathRequest) {
+        final Station sourceStation = getSourceStation(pathRequest.getSource());
+        final Station targetStation = getTargetStation(pathRequest.getTarget());
+        final List<Line> allLines = lineRepository.findAll();
+        return PathFinder.of(allLines)
+                .findPathBetween(sourceStation, targetStation);
+    }
+
+    private Fare calcFareByPathsAndLoginMember(Paths paths, LoginMember loginMember) {
         if (loginMember.isGuestUser()) {
             return paths.calculateFare();
         }
