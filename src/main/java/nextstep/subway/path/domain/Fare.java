@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 public class Fare {
     public static final int BASIC_FARE = 1250;
+    public static final int MIN_FARE = 450;
 
     private final int fare;
 
@@ -15,8 +16,8 @@ public class Fare {
     }
 
     private void validate(int fare) {
-        if (fare < BASIC_FARE) {
-            throw new IllegalArgumentException("기본운임 요금보다 작을 수 없습니다.");
+        if (fare < MIN_FARE) {
+            throw new IllegalArgumentException(String.format("운임 요금은 %s 보다 커야 합니다.", MIN_FARE));
         }
     }
 
@@ -30,5 +31,13 @@ public class Fare {
 
     public boolean match(int target) {
         return this.fare == target;
+    }
+
+    public Fare minus(int amount) {
+        return new Fare(this.fare - amount);
+    }
+
+    public Fare apply(double amount) {
+        return new Fare((int) (this.fare * amount));
     }
 }

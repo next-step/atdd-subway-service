@@ -2,8 +2,10 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
 
+import static nextstep.subway.path.domain.Fare.BASIC_FARE;
+
 public class DistanceFareCalculator {
-    public static final int BASIC_FARE = 1250;
+
     private static final int LARGE_DIVIDE_UNIT = 8;
     private static final int MEDIUM_DIVIDE_UNIT = 5;
     private static final int EXTRA_FARE = 100;
@@ -12,20 +14,20 @@ public class DistanceFareCalculator {
     private DistanceFareCalculator() {
     }
 
-    public static int calculateOverFare(Distance distance) {
+    public static Fare calculateOverFare(Distance distance) {
         if (distance.isShortRange()) {
-            return BASIC_FARE;
+            return Fare.ofBasic();
         }
 
         if (distance.isMediumRange()) {
             final int mediumFare = calculateMediumRangeFare(distance);
-            return BASIC_FARE + mediumFare;
+            return Fare.of(BASIC_FARE + mediumFare);
         }
 
         if (distance.isLargeRange()) {
             final int maxMediumRangeFare = calculateMediumRangeFare(Distance.ofMaxMedium());
             final int largeRangeFare = calculateLargeRangeFare(distance);
-            return BASIC_FARE + maxMediumRangeFare + largeRangeFare;
+            return Fare.of(BASIC_FARE + maxMediumRangeFare + largeRangeFare);
         }
 
         throw new IllegalArgumentException(ILLEGAL_DISTANCE_ERROR_MESSAGE);
