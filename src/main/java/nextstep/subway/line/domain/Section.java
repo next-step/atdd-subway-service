@@ -22,16 +22,81 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
-        this.line = line;
+    Section(Station downStation) {
+        this.downStation = downStation;
+    }
+
+    Section(int distance) {
+        this.distance = new Distance(distance);
+    }
+
+    Section(Station upStation, Station downStation) {
         this.upStation = upStation;
         this.downStation = downStation;
+    }
+
+    Section(Station upStation, Station downStation, int distance) {
+        this(upStation, downStation);
+        this.distance = new Distance(distance);
+    }
+
+    public Section(Line line, Station upStation, Station downStation) {
+        this(upStation, downStation);
+        this.line = line;
+    }
+
+    public Section(Line line, Station upStation, Station downStation, int distance) {
+        this(line, upStation, downStation);
+        this.distance = new Distance(distance);
+    }
+
+    public Section(Line line, Station upStation, Station downStation, Distance distance) {
+        this(line, upStation, downStation);
         this.distance = distance;
+    }
+
+    public static Section of(Line line, Station upStation, Station downStation, int distance) {
+        return new Section(line, upStation, downStation, distance);
+    }
+
+    public static Section of(Line line, Station upStation, Station downStation, Distance distance) {
+        return new Section(line, upStation, downStation, distance);
+    }
+
+    public boolean isEqualsDownStation(Station station) {
+        return this.downStation == station;
+    }
+
+    public boolean isEqualsUpStation(Station station) {
+        return this.upStation == station;
+    }
+
+    public boolean isEqualsUpStation(Section section) {
+        return this.upStation == section.upStation;
+    }
+
+    public void updateUpStation(Section section) {
+        this.upStation = section.downStation;
+        this.distance = this.distance.minus(section.distance);
+    }
+
+    public boolean isEqualsDownStation(Section section) {
+        return this.downStation == section.downStation;
+    }
+
+    public void updateDownStation(Section section) {
+        this.downStation = section.upStation;
+        this.distance = this.distance.minus(section.distance);
+    }
+
+    public Distance plusDistance(Section section) {
+        return this.distance.plus(section.distance);
     }
 
     public Long getId() {
@@ -50,23 +115,7 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
-    }
-
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
     }
 }
