@@ -17,17 +17,20 @@ import java.util.List;
 public class PathService {
     private StationService stationService;
     private LineService lineService;
+    private PathFinder pathFinder;
 
-    public PathService(StationService stationService, LineService lineService) {
+    public PathService(StationService stationService, LineService lineService, PathFinder pathFinder) {
         this.stationService = stationService;
         this.lineService = lineService;
+        this.pathFinder = pathFinder;
     }
 
     public PathResponse findPaths(Long sourceId, Long targetId) {
         Station sourceStation = stationService.findStationById(sourceId);
         Station targetStation = stationService.findStationById(targetId);
         List<Line> lines = lineService.findLines();
-        Path path = PathFinder.of(lines).findPathBetweenStations(sourceStation, targetStation);
+
+        Path path = pathFinder.findPath(lines, sourceStation, targetStation);
         return PathResponse.of(path);
     }
 }
