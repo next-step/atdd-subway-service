@@ -162,7 +162,7 @@ public class Sections {
 		if (isMiddleStation(removeSections)) {
 			Station newUpStation = getNewUpStation(removeSections, station);
 			Station newDownStation = getNewDownStation(removeSections, station);
-			int newSectionDistance = getNewSectionDistance(removeSections);
+			Distance newSectionDistance = getNewSectionDistance(removeSections);
 			sections.add(new Section(line, newUpStation, newDownStation, newSectionDistance));
 		}
 		removeSections.stream()
@@ -175,10 +175,11 @@ public class Sections {
 			.collect(Collectors.toList());
 	}
 
-	private int getNewSectionDistance(List<Section> sections) {
+	private Distance getNewSectionDistance(List<Section> sections) {
 		return sections.stream()
-			.mapToInt(Section::getDistance)
-			.sum();
+			.map(Section::getDistance)
+			.reduce((d1, d2) -> d1.increase(d2))
+			.orElse(Distance.DUMMY_DISTANCE);
 	}
 
 	private Station getNewUpStation(List<Section> sections, Station station) {
