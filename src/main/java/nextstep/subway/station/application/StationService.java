@@ -31,8 +31,8 @@ public class StationService {
         List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
-                .map(StationResponse::from)
-                .collect(Collectors.toList());
+            .map(StationResponse::from)
+            .collect(Collectors.toList());
     }
 
     @Transactional
