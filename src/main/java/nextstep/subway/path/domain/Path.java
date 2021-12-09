@@ -8,10 +8,16 @@ public class Path {
 
 	private int distance;
 	private List<Station> stations;
+	private PathPrice price;
 
-	public Path(int distance, List<Station> stations) {
+	private Path(int distance, List<Station> stations, PathPrice price) {
 		this.distance = distance;
 		this.stations = stations;
+		this.price = price;
+	}
+
+	public static Path getShortestPath(int distance, List<Station> stations) {
+		return new Path(distance, stations, PathPrice.calculatePriceFromPath(distance));
 	}
 
 	public int getDistance() {
@@ -20,5 +26,9 @@ public class Path {
 
 	public List<Station> getStationsRoute() {
 		return stations;
+	}
+
+	public int getPrice() {
+		return price.getPrice();
 	}
 }

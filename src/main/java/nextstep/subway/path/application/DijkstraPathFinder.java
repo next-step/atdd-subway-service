@@ -33,7 +33,7 @@ public class DijkstraPathFinder implements PathFinder {
 		DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
 		GraphPath path = dijkstraShortestPath.getPath(departStation, arriveStation);
 		validateExistPath(path);
-		return new Path((int)path.getWeight(), path.getVertexList());
+		return Path.getShortestPath((int)path.getWeight(), path.getVertexList());
 	}
 
 	private void validateExistPath(GraphPath path) {

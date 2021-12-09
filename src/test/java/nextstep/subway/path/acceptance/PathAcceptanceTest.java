@@ -83,7 +83,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		//given
 		신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 20).as(LineResponse.class);
 		이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 20).as(LineResponse.class);
-		삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 6).as(LineResponse.class);
+		삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 11).as(LineResponse.class);
 
 		지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 5);
 
@@ -103,7 +103,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		//given
 		신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 70).as(LineResponse.class);
 		이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 50).as(LineResponse.class);
-		삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 25).as(LineResponse.class);
+		삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 51).as(LineResponse.class);
 
 		지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 26);
 
@@ -111,7 +111,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		PathResponse response = 최단거리_경로_요청(교대역, 양재역).as(PathResponse.class);
 
 		// then
-		assertThat(response.getDistance()).isEqualTo(5);
+		assertThat(response.getDistance()).isEqualTo(51);
 		assertThat(response.getStations()).containsExactlyElementsOf(Arrays.asList(교대역, 남부터미널역, 양재역));
 		assertThat(response.getPrice()).isEqualTo(2150);
 	}

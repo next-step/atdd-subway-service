@@ -34,7 +34,6 @@ public class PathService {
 
 		List<Line> lines = lineService.findAllExistStations(Arrays.asList(departStation, arriveStation));
 		Path bestPath = pathFinder.findShortestPath(lines, departStation, arriveStation);
-		return PathResponse.of(bestPath.getDistance(),
-			StationService.converToStationResponses(bestPath.getStationsRoute()));
+		return PathResponse.of(bestPath);
 	}
 }
