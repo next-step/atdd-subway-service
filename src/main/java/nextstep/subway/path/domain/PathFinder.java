@@ -45,6 +45,10 @@ public class PathFinder {
 
     public PathResult find(Station source, Station target) {
 
+        if(source == target) {
+            throw new IllegalStateException("출발역과 도착역이 같습니다.");
+        }
+
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(this.graph);
         GraphPath path = dijkstraShortestPath.getPath(source, target);
         List<Station> shortest = path.getVertexList();
