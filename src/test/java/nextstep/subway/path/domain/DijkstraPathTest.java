@@ -9,13 +9,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("지하철 경로 기능")
-class PathTest {
+class DijkstraPathTest {
+
     private Station 강남;
     private Station 선릉;
     private Station 교대;
@@ -28,7 +28,7 @@ class PathTest {
     private Line 이호선;
     private Line 삼호선;
 
-    private Path path;
+    private DijkstraPath dijkstraPath;
 
     /**
      * 교대역 ------- (2) ---- 강남역 ---- (3) --- 선릉
@@ -57,7 +57,7 @@ class PathTest {
         삼호선.addSection(new Section(남부터미널, 양재, 2));
         삼호선.addSection(new Section(양재, 매봉, 4));
 
-        path = new Path(Arrays.asList(이호선, 삼호선));
+        dijkstraPath = new DijkstraPath(Arrays.asList(이호선, 삼호선));
     }
 
 
@@ -67,14 +67,15 @@ class PathTest {
         // given
         // 양재 -> 강남 : (양재-6-강남) 6 / (양재-2-남부터미널-1-교대-2-강남) 5
         Line 신분당선 = new Line("신분당선", "bg-red-600", 강남, 양재, 6);
-        path = new Path(Arrays.asList(이호선, 삼호선, 신분당선));
+        dijkstraPath = new DijkstraPath(Arrays.asList(이호선, 삼호선, 신분당선));
 
         // when
-        List<Station> stations = path.shortestDistance(양재, 강남);
+        Path path = dijkstraPath.shortestPath(양재, 강남);
 
         // then
-        assertThat(stations).extracting("name")
+        assertThat(path.getStations()).extracting("name")
                 .containsExactly("양재", "남부터미널", "교대", "강남");
+        assertThat(path.getDistance()).isEqualTo(5);
     }
 
     @Test
@@ -83,21 +84,22 @@ class PathTest {
         // given
         // 양재 -> 강남 : (양재-5-강남) 5 / (양재-2-남부터미-1-교대-2-강남) 5
         Line 신분당선 = new Line("신분당선", "bg-red-600", 강남, 양재, 5);
-        path = new Path(Arrays.asList(이호선, 삼호선, 신분당선));
+        dijkstraPath = new DijkstraPath(Arrays.asList(이호선, 삼호선, 신분당선));
 
         // when
-        List<Station> stations = path.shortestDistance(양재, 강남);
+        Path path = dijkstraPath.shortestPath(양재, 강남);
 
         // then
-        assertThat(stations).extracting("name")
+        assertThat(path.getStations()).extracting("name")
                 .containsExactly("양재", "강남");
+        assertThat(path.getDistance()).isEqualTo(5);
     }
 
     @Test
     @DisplayName("출발역과 도착역이 같은 경우 예외가 발생한다.")
     void validateSameDepartureArrival() {
         // given when then
-        assertThatThrownBy(() -> path.shortestDistance(교대, 교대))
+        assertThatThrownBy(() -> dijkstraPath.shortestPath(교대, 교대))
                 .isInstanceOf(InvalidPathException.class);
     }
 
@@ -105,7 +107,7 @@ class PathTest {
     @DisplayName("지하철 노선에 존재하지 않는 역인 경우 예외가 발생한다.")
     void validateNotExist() {
         // given when then
-        assertThatThrownBy(() -> path.shortestDistance(new Station("서초"), 교대))
+        assertThatThrownBy(() -> dijkstraPath.shortestPath(new Station("서초"), 교대))
                 .isInstanceOf(InvalidPathException.class);
     }
 
@@ -114,10 +116,10 @@ class PathTest {
     void validateNotConnectable() {
         // given
         Line 사호선 = new Line("사호선", "bg-sky-600", 이수, 사당, 3);
-        path = new Path(Arrays.asList(이호선, 삼호선, 사호선));
+        dijkstraPath = new DijkstraPath(Arrays.asList(이호선, 삼호선, 사호선));
 
         // when then
-        assertThatThrownBy(() -> path.shortestDistance(강남, 사당))
+        assertThatThrownBy(() -> dijkstraPath.shortestPath(강남, 사당))
                 .isInstanceOf(InvalidPathException.class);
     }
 }

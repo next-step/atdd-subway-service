@@ -120,7 +120,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
         And 출발역과 도착역이 같지 않음
         And 출발역과 도착역이 연결이 되어 있음
         When 최단 경로 조회 요청
-        Then 최단 경로 구간 목록 조회됨
+        Then 최단 경로 조회됨
   
       Scenario: 최단 경로 조회 예외 발생
         Given 출발역이나 도착역이 등록되어 있지 않음

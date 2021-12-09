@@ -48,7 +48,7 @@ class PathAcceptanceTest extends AcceptanceTest {
      *
      * 양재 -> 교대 : (양재-8-강남-2-교대) 10 / (양재-5-남부터미널-2-교대) 7
      * 매봉 -> 강남 : (매봉-6-양재-8-강남) 14 / (매봉-6-양재-5-남부터미널-2-교대-2-강남) 15
-     * 선릉 -> 매봉 : (선릉-2-강남-2-교대-2-남부터미널-5-양재-6-매봉) 17 / (선릉-2-강남-8-양재-6-매봉) 14
+     * 선릉 -> 매봉 : (선릉-2-강남-2-교대-2-남부터미널-5-양재-6-매봉) 17 / (선릉-2-강남-8-양재-6-매봉) 16
      */
     @BeforeEach
     public void setUp() {
@@ -80,14 +80,17 @@ class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response1 = 최단_경로_조회_요청(양재, 교대);
         최단_경로_조회됨(response1);
         최단_경로_구간_목록_일치됨(response1, Arrays.asList(양재, 남부터미널, 교대));
+        최단_경로_거리_일치됨(response1, 7);
 
         ExtractableResponse<Response> response2 = 최단_경로_조회_요청(매봉, 강남);
         최단_경로_조회됨(response2);
         최단_경로_구간_목록_일치됨(response2, Arrays.asList(매봉, 양재, 강남));
+        최단_경로_거리_일치됨(response2, 14);
 
         ExtractableResponse<Response> response3 = 최단_경로_조회_요청(선릉, 매봉);
         최단_경로_조회됨(response3);
         최단_경로_구간_목록_일치됨(response3, Arrays.asList(선릉, 강남, 양재, 매봉));
+        최단_경로_거리_일치됨(response3, 16);
     }
 
     @Test
@@ -122,6 +125,11 @@ class PathAcceptanceTest extends AcceptanceTest {
     private void 최단_경로_구간_목록_일치됨(ExtractableResponse<Response> response, List<StationResponse> excepted) {
         assertThat(response.jsonPath().getList("stations.name", String.class))
                 .isEqualTo(getStationNames(excepted));
+    }
+
+    private void 최단_경로_거리_일치됨(ExtractableResponse<Response> response, int distance) {
+        assertThat(response.jsonPath().getObject("distance", Integer.class))
+                .isEqualTo(distance);
     }
 
     private void 최단_경로_조회_실패됨(ExtractableResponse<Response> response) {
