@@ -116,4 +116,8 @@ public class Section {
     public Distance getDistance() {
         return distance;
     }
+
+    public int getWeight() {
+        return distance.getDistance();
+    }
 }
