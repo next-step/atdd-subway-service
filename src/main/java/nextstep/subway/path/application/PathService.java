@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.PathFinder;
@@ -29,7 +30,7 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse getShortestPaths(Long source, Long target) {
+    public PathResponse getShortestPaths(Long source, Long target, LoginMember loginMember) {
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
         Set<Section> allSection = lineService.findAllSection();
