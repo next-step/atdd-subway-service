@@ -1,11 +1,18 @@
 package nextstep.subway.line.domain;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import nextstep.subway.station.domain.Station;
-
-import javax.persistence.*;
 
 @Entity
 public class Section {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,16 +29,30 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
-    public Section() {
+    protected Section() {
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    private Section(final Line line, final Station upStation, final Station downStation,
+        final int distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = Distance.of(distance);
+    }
+
+    public static Section of(final Line line, final Station upStation, final Station downStation,
+        final int distance) {
+        return new Section(line, upStation, downStation, distance);
+    }
+
+    public static Section merge(final Line line, final Section upSection, final Section downSection) {
+        Station newUpStation = downSection.getUpStation();
+        Station newDownStation = upSection.getDownStation();
+        Distance newDistance = upSection.getDistance().add(downSection.getDistance());
+        return new Section(line, newUpStation, newDownStation, newDistance.getDistance());
     }
 
     public Long getId() {
@@ -50,23 +71,33 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+    public void updateUpStation(Station station, Distance newDistance) {
         this.upStation = station;
-        this.distance -= newDistance;
+        this.distance.subtract(newDistance);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+    public void updateDownStation(Station station, Distance newDistance) {
         this.downStation = station;
-        this.distance -= newDistance;
+        this.distance.subtract(newDistance);
+    }
+
+    public boolean hasSameStations(final Section section) {
+        return hasSameUpStation(section) && hasSameDownStation(section);
+    }
+
+    public boolean hasSameUpStation(Section section) {
+        return this.upStation == section.getUpStation();
+    }
+
+    public boolean hasSameDownStation(Section section) {
+        return this.downStation == section.getDownStation();
+    }
+
+    public boolean hasAnyMatchStation(Station station) {
+        return this.upStation == station || this.downStation == station;
     }
 }
