@@ -23,6 +23,10 @@ public class Distance {
 		}
 	}
 
+	public Distance plus(int distance) {
+		return new Distance(this.distance + distance);
+	}
+
 	public Distance minus(int distance) {
 		return new Distance(this.distance - distance);
 	}
