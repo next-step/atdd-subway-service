@@ -12,7 +12,6 @@ class DistanceTest {
 	public void createDistanceTest() {
 		//when
 		Distance distance = Distance.of(10);
-
 		//then
 		assertThat(distance).isNotNull();
 		assertThat(distance).isEqualTo(Distance.of(10));

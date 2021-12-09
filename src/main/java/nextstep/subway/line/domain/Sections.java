@@ -187,7 +187,7 @@ public class Sections {
 		return sections.stream()
 			.filter(section -> section.equalsDownStation(station))
 			.findFirst()
-			.orElseThrow(() -> new IllegalArgumentException("구간이 존재하지 않습니다."))
+			.orElse(Section.DUMMY_SECTION)
 			.getUpStation();
 	}
 
@@ -195,7 +195,7 @@ public class Sections {
 		return sections.stream()
 			.filter(section -> section.equalsUpStation(station))
 			.findFirst()
-			.orElseThrow(() -> new IllegalArgumentException("구간이 존재하지 않습니다."))
+			.orElse(Section.DUMMY_SECTION)
 			.getDownStation();
 	}
 

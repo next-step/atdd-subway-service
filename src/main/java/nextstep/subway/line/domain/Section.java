@@ -8,6 +8,8 @@ import javax.persistence.*;
 
 @Entity
 public class Section {
+	public static final Section DUMMY_SECTION = new Section();
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
