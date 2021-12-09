@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.member.domain.Age;
 import nextstep.subway.station.domain.Station;
@@ -23,12 +24,11 @@ public class Paths {
         return new Paths(graphPath);
     }
 
-    public Fare calculateFare() {
-        return DistanceFareCalculator.calculateOverFare(distance);
-    }
-
-    public Fare calculateFare(Age age) {
-        return AgeDiscountPolicy.discount(DistanceFareCalculator.calculateOverFare(distance), age);
+    public Fare calculateFare(LoginMember loginMember) {
+        if (loginMember.isGuestUser()) {
+            return DistanceFareCalculator.calculateOverFare(distance);
+        }
+        return AgeDiscountPolicy.discount(DistanceFareCalculator.calculateOverFare(distance), Age.of(loginMember.getAge()));
     }
 
     public List<Station> getStations() {
@@ -38,7 +38,7 @@ public class Paths {
         return stations;
     }
 
-    public int getDistance() {
-        return distance.getDistance();
+    public Distance getDistance() {
+        return distance;
     }
 }

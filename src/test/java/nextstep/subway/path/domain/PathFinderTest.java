@@ -17,6 +17,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 class PathFinderTest {
@@ -84,7 +85,7 @@ class PathFinderTest {
         final Paths paths = pathFinder.findPathBetween(source, target);
         // then
         assertThat(paths.getStations()).containsExactlyElementsOf(expectedStations);
-        assertThat(paths.getDistance()).isEqualTo(expectedDistance);
+        assertTrue(paths.getDistance().match(expectedDistance));
     }
 
     @DisplayName("출발역과 도착역이 같은 경우")

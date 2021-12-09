@@ -35,8 +35,7 @@ public class PathService {
     @Transactional(readOnly = true)
     public PathResponse findPathBetween(LoginMember loginMember, PathRequest pathRequest) {
         final Paths paths = findPathBetween(pathRequest);
-        final Fare fare = calcFareByPathsAndLoginMember(paths, loginMember);
-        return PathResponse.of(paths.getStations(), paths.getDistance(), fare);
+        return PathResponse.of(paths.getStations(), paths.getDistance(), paths.calculateFare(loginMember));
     }
 
     private Paths findPathBetween(PathRequest pathRequest) {
@@ -45,13 +44,6 @@ public class PathService {
         final List<Line> allLines = lineRepository.findAll();
         return PathFinder.of(allLines)
                 .findPathBetween(sourceStation, targetStation);
-    }
-
-    private Fare calcFareByPathsAndLoginMember(Paths paths, LoginMember loginMember) {
-        if (loginMember.isGuestUser()) {
-            return paths.calculateFare();
-        }
-        return paths.calculateFare(Age.of(loginMember.getAge()));
     }
 
     private Station getTargetStation(Long target) {
