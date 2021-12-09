@@ -65,6 +65,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
     - [x] 역 목록 조회 로직 Line 도메인으로 이동
 
-    - [ ] 구간 추가 로직 Sections 도메인으로 이동
+    - [x] 구간 추가 로직 Sections 도메인으로 이동
 
     - [ ] 구간 제거 로직 Sections 도메인으로 이동

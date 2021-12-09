@@ -1,6 +1,9 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.common.ErrorCode;
+import nextstep.subway.exception.NotAcceptableApiException;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -19,8 +22,11 @@ public class Sections {
         return sections;
     }
 
-    public void add(Section section) {
-        sections.add(section);
+    public boolean add(Section section) {
+        if (sections.isEmpty()) {
+            return sections.add(section);
+        }
+        return insertBetweenSection(section);
     }
 
     public boolean isEmpty() {
@@ -49,5 +55,73 @@ public class Sections {
                 .filter(section -> section.getDownStation() == station)
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException(String.format("다음 구간이 없습니다. (sectionId: %d)", station.getId())));
+    }
+
+    private Stations getStations() {
+        Stations stations = new Stations();
+        for (Section section : sections) {
+            stations.add(section.getUpStation());
+            stations.add(section.getDownStation());
+        }
+        return stations;
+    }
+
+    private boolean insertBetweenSection(Section section) {
+        validate(section);
+        return isUpdateUpStation(section) || isUpdateDownStation(section);
+    }
+
+    private void validate(Section section) {
+        Station upStation = section.getUpStation();
+        Station downStation = section.getDownStation();
+        Stations stations = getStations();
+
+        boolean isUpStationExisted = stations.contains(upStation);
+        boolean isDownStationExisted = stations.contains(downStation);
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new NotAcceptableApiException(ErrorCode.DUPLICATE_SECTION);
+        }
+        if (stations.isNotEmpty() && stations.notContains(upStation) && stations.notContains(downStation)) {
+            throw new NotAcceptableApiException(ErrorCode.CAN_NOT_ADD_SECTION);
+        }
+    }
+
+    private boolean isUpdateUpStation(Section section) {
+        if (getStations().contains(section.getUpStation())) {
+            updateUpStation(section);
+            return sections.add(section);
+        }
+        return false;
+    }
+
+    private boolean isUpdateDownStation(Section section) {
+        if (getStations().contains(section.getDownStation())) {
+            updateDownStation(section);
+            return sections.add(section);
+        }
+        return false;
+    }
+
+    private void updateUpStation(Section section) {
+        Station upStation = section.getUpStation();
+        Station downStation = section.getDownStation();
+        int distance = section.getDistance();
+
+        sections.stream()
+                .filter(it -> it.getUpStation().equals(upStation))
+                .findFirst()
+                .ifPresent(it -> it.updateUpStation(downStation, distance));
+    }
+
+    private void updateDownStation(Section section) {
+        Station upStation = section.getUpStation();
+        Station downStation = section.getDownStation();
+        int distance = section.getDistance();
+
+        sections.stream()
+                .filter(it -> it.getDownStation().equals(downStation))
+                .findFirst()
+                .ifPresent(it -> it.updateDownStation(upStation, distance));
     }
 }

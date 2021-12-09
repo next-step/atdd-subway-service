@@ -88,6 +88,11 @@ public class Line extends BaseEntity {
         return stations;
     }
 
+    public void addSection(Station upStation, Station downStation, int distance) {
+        Section newSection = Section.of(this, upStation, downStation, distance);
+        getSections().add(newSection);
+    }
+
     private Station findUpStation() {
         Station station = getFirstSection().getUpStation();
 

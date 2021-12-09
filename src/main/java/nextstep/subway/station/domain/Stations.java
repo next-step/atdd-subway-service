@@ -33,4 +33,12 @@ public class Stations {
     public boolean notContains(Station station) {
         return !contains(station);
     }
+
+    public boolean isEmpty() {
+        return stations.isEmpty();
+    }
+
+    public boolean isNotEmpty() {
+        return !isEmpty();
+    }
 }

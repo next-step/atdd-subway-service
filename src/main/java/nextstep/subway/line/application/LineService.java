@@ -65,41 +65,9 @@ public class LineService {
         Line line = findLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        List<Station> stations = line.getStations().getStations();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
+        int distance = request.getDistance();
 
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-
-        if (stations.isEmpty()) {
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
-            return;
-        }
-
-        if (isUpStationExisted) {
-            line.getSections().getSections().stream()
-                    .filter(it -> it.getUpStation() == upStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
-
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
-        } else if (isDownStationExisted) {
-            line.getSections().getSections().stream()
-                    .filter(it -> it.getDownStation() == downStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
-
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
-        } else {
-            throw new RuntimeException();
-        }
+        line.addSection(upStation, downStation, distance);
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
@@ -116,15 +84,15 @@ public class LineService {
                 .filter(it -> it.getDownStation() == station)
                 .findFirst();
 
+        upLineStation.ifPresent(it -> line.getSections().getSections().remove(it));
+        downLineStation.ifPresent(it -> line.getSections().getSections().remove(it));
+
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
             int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
             line.getSections().add(new Section(line, newUpStation, newDownStation, newDistance));
         }
-
-        upLineStation.ifPresent(it -> line.getSections().getSections().remove(it));
-        downLineStation.ifPresent(it -> line.getSections().getSections().remove(it));
     }
 
     private Line toLine(LineRequest request) {
