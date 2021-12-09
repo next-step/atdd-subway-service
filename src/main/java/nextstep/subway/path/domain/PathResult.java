@@ -8,10 +8,10 @@ import java.util.List;
 
 public class PathResult {
 
-    private Distance distance;
-    private List<Station> stations;
+    private final Distance distance;
+    private final List<Station> stations;
 
-    public PathResult(List<Station> stations, double distance) {
+    public PathResult(final List<Station> stations, final double distance) {
         this.stations = stations;
         this.distance = new Distance((int) distance);
     }

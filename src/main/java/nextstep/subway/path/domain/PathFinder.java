@@ -7,58 +7,36 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
+@Component
 public class PathFinder {
 
-    private List<Line> lines;
-    private WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+    private final Graph graph;
 
-    private PathFinder(List<Line> lines, WeightedMultigraph graph) {
-        this.lines = lines;
+    public PathFinder() {
+        this.graph = new DijkstraGraph();
+    }
+
+    public PathFinder(final Graph graph) {
         this.graph = graph;
     }
 
-    public static PathFinder of(List<Line> lines) {
-        PathFinder pathFinder = new PathFinder(lines, new WeightedMultigraph(DefaultWeightedEdge.class));
-        pathFinder.initGraph();
-        return pathFinder;
-    }
+//    public static PathFinder of() {
+//        PathFinder pathFinder = new PathFinder(new DijkstraGraph());
+//        return pathFinder;
+//    }
 
-    private void initGraph() {
-
-        List<Station> stations = this.lines.stream()
-                .flatMap(l -> l.getStationsByOrder().stream())
-                .collect(toList());
-
-        stations.forEach(s -> graph.addVertex(s));
-
-        List<Section> sections = this.lines.stream()
-                .flatMap(l -> l.getSections().stream())
-                .collect(toList());
-
-        sections.forEach(s -> graph.setEdgeWeight(graph.addEdge(s.getUpStation(), s.getDownStation()), s.getDistance().getValue()));
-    }
-
-    public PathResult find(Station source, Station target) {
+    public PathResult find(List<Line> lines, Station source, Station target) {
 
         if(source == target) {
             throw new IllegalStateException("출발역과 도착역이 같습니다.");
         }
 
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(this.graph);
-        GraphPath path = dijkstraShortestPath.getPath(source, target);
-
-        if(Objects.isNull(path)) {
-            throw new IllegalStateException("출발역과 도착역이 연결되지 않았습니다.");
-        }
-        List<Station> shortest = path.getVertexList();
-        double weight = path.getWeight();
-
-        return new PathResult(shortest, weight);
+        return this.graph.find(lines, source, target);
     }
 }

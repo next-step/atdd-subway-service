@@ -1,6 +1,7 @@
 package nextstep.subway.path.ui;
 
 import nextstep.subway.path.application.PathService;
+import nextstep.subway.path.dto.PathResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +20,8 @@ public class PathController {
     }
 
     @GetMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity findShortestPath(@RequestParam long source,
-                                           @RequestParam long target) {
+    public ResponseEntity<PathResponse> findShortestPath(@RequestParam long source,
+                                                         @RequestParam long target) {
 
         return ResponseEntity.ok(pathService.findShortestPath(source, target));
     }

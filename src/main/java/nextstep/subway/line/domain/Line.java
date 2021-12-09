@@ -63,7 +63,14 @@ public class Line extends BaseEntity {
     }
 
     private Station findUpStation() {
-        return this.sections.findUpStation();
+        Station upStation = this.sections.findUpStation();
+        Station finalDownStation = null;
+
+        while(upStation != finalDownStation) {
+            finalDownStation = upStation;
+            upStation = this.sections.findUpStation(finalDownStation);
+        }
+        return upStation;
     }
 
     public void addSection(Station upStation, Station downStation, Integer distance) {
