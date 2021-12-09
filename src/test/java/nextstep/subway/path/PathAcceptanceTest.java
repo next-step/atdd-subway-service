@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.domain.ShortestPathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,12 +13,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -62,11 +67,24 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 최단_경로_조회_요청(교대역, 양재역);
 
         // then
-        최단_경로가_조회됨(response);
+        최단_경로_조회_성공함(response, 5, 교대역.getName(), 남부터미널역.getName(), 양재역.getName());
     }
 
-    private void 최단_경로가_조회됨(ExtractableResponse<Response> response) {
+    private void 최단_경로_조회_성공함(ExtractableResponse<Response> response, int distance, String... stationNames) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        최단_경로_조회_응답_데이터_확인됨(response, distance, stationNames);
+    }
+
+    private void 최단_경로_조회_응답_데이터_확인됨(ExtractableResponse<Response> response, int distance, String[] stationNames) {
+        ShortestPathResponse shortestPathResponse = response.as(ShortestPathResponse.class);
+        List<String> stations = shortestPathResponse.getStations()
+                .stream()
+                .map(s -> s.getName())
+                .collect(Collectors.toList());
+
+        assertThat(stations).containsExactly(stationNames);
+        assertThat(shortestPathResponse.getDistance()).isEqualTo(distance);
     }
 
     private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse sourceStation, StationResponse targetStation) {

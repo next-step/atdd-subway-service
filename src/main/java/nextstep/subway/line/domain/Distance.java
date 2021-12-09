@@ -1,5 +1,9 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
