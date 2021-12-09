@@ -5,6 +5,7 @@ import java.util.Optional;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -26,10 +27,10 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findShortestPath(Long sourceStationId, Long targetStationId) {
+    public PathResponse findShortestPath(PathRequest request) {
         List<Line> lines = lineRepository.findAll();
-        Station sourceStation = findStationById(sourceStationId);
-        Station targetStation = findStationById(targetStationId);
+        Station sourceStation = findStationById(request.getSource());
+        Station targetStation = findStationById(request.getTarget());
         validateForShortestPath(sourceStation, targetStation);
 
         GraphPath<Station, DefaultWeightedEdge> path = getShortestPath(lines, sourceStation,
