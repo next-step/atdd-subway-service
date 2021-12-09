@@ -73,7 +73,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - 최단 경로 조회 기능 구현하기
 
 ## 구현목록
-- [ ] 최단 경로 조회 인수 테스트 추가
+- [x] 최단 경로 조회 인수 테스트 추가
     - [ ] mock 서버와 dto를 정의하여 인수테스트 성공 시키기
 - [ ] 최단 경로 조회 기능 추가
 * Outside In
