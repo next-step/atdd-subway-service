@@ -7,6 +7,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.dto.StationResponse;
 
 public class LineResponse {
+
     private Long id;
     private String name;
     private String color;
@@ -17,7 +18,8 @@ public class LineResponse {
     public LineResponse() {
     }
 
-    public LineResponse(Long id, String name, String color, List<StationResponse> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public LineResponse(Long id, String name, String color, List<StationResponse> stations,
+        LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.name = name;
         this.color = color;

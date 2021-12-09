@@ -92,7 +92,6 @@ public class Line extends BaseEntity {
 
         sections.validateForAdded(section);
         sections.updateOriginSectionByAdded(section);
-        System.out.println(section);
         add(section);
     }
 

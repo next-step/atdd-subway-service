@@ -1,7 +1,6 @@
 package nextstep.subway.favorite.application;
 
 import java.util.List;
-import nextstep.subway.exception.AuthorizationException;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -55,8 +54,6 @@ public class FavoriteService {
 
         Member member = memberService.findMember(memberId);
 
-        System.out.println(member);
-        System.out.println(favorite);
         favorite.validateDelete(member);
 
         favoriteRepository.delete(favorite);

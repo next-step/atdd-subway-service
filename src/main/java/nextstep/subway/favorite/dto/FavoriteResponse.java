@@ -28,7 +28,7 @@ public class FavoriteResponse {
 
     public static List<FavoriteResponse> ofList(List<Favorite> favorites){
         return favorites.stream()
-            .map(it -> FavoriteResponse.of(it))
+            .map(FavoriteResponse::of)
             .collect(Collectors.toList());
     }
 

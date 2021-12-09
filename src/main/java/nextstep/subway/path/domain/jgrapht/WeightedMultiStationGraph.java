@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class WeightedMultiStationGraph implements StationGraph {
+
     private WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
     public WeightedMultiStationGraph() {
@@ -23,7 +24,7 @@ public class WeightedMultiStationGraph implements StationGraph {
 
     @Override
     public StationGraph createGraph(List<Line> lines) {
-        for (Line line: lines) {
+        for (Line line : lines) {
             addVertex(line.getStations());
             addEdgeWeight(line.getSections());
         }
@@ -37,23 +38,25 @@ public class WeightedMultiStationGraph implements StationGraph {
 
     @Override
     public Path getShortestPath(Station source, Station target) {
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath =
+            new DijkstraShortestPath<>(graph);
         GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(source, target);
-        if (path == null ) {
+        if (path == null) {
             throw new NotFoundException("접점이 없습니다.");
         }
         return Path.of(path.getVertexList(), Double.valueOf(path.getWeight()).intValue());
     }
 
-    private  void addVertex(List<Station> stations) {
-        for (Station s: stations) {
+    private void addVertex(List<Station> stations) {
+        for (Station s : stations) {
             graph.addVertex(s);
         }
     }
 
     private void addEdgeWeight(List<Section> sections) {
-        for (Section s: sections) {
-            graph.setEdgeWeight(graph.addEdge(s.getUpStation(), s.getDownStation()), s.getDistance().get());
+        for (Section s : sections) {
+            graph.setEdgeWeight(graph.addEdge(s.getUpStation(), s.getDownStation()),
+                s.getDistance().get());
         }
     }
 }

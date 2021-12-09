@@ -4,6 +4,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
 public class LineRequest {
+
     private String name;
     private String color;
     private Long upStationId;

@@ -72,13 +72,4 @@ public class Member extends BaseEntity {
         return Objects.hash(id);
     }
 
-    @Override
-    public String toString() {
-        return "Member{" +
-            "id=" + id +
-            ", email='" + email + '\'' +
-            ", password='" + password + '\'' +
-            ", age=" + age +
-            '}';
-    }
 }

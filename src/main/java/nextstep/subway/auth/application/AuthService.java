@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
+
     private MemberRepository memberRepository;
     private JwtTokenProvider jwtTokenProvider;
 
@@ -20,8 +21,8 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(
-            AuthorizationException::new);
+        Member member = memberRepository.findByEmail(request.getEmail())
+            .orElseThrow(AuthorizationException::new);
         member.checkPassword(request.getPassword());
 
         String token = jwtTokenProvider.createToken(String.valueOf(member.getId()));
@@ -34,7 +35,8 @@ public class AuthService {
         }
 
         String memberId = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findById(Long.valueOf(memberId)).orElseThrow(AuthorizationException::new);
+        Member member = memberRepository.findById(Long.valueOf(memberId))
+            .orElseThrow(AuthorizationException::new);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }

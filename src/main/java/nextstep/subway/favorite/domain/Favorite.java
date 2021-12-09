@@ -10,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import nextstep.subway.exception.AuthorizationException;
 import nextstep.subway.exception.CannotAddException;
 import nextstep.subway.exception.CannotDeleteException;
 import nextstep.subway.member.domain.Member;
@@ -82,9 +81,7 @@ public class Favorite {
 
     protected boolean includeFavorite(List<Favorite> favorites) {
         return favorites.stream()
-            .filter(it -> equalsFavorite(it))
-            .findFirst()
-            .isPresent();
+            .anyMatch(this::equalsFavorite);
     }
 
     @Override
