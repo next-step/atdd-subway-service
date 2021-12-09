@@ -22,9 +22,4 @@ public class PathController {
         PathResponse path = pathService.findPath(sourceId, targetId);
         return ResponseEntity.ok(path);
     }
-
-    @ExceptionHandler(InvalidPathException.class)
-    public ResponseEntity handler(InvalidPathException e) {
-        return ResponseEntity.badRequest().build();
-    }
 }
