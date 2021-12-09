@@ -22,6 +22,10 @@ public class Paths {
         return new Paths(graphPath);
     }
 
+    public int calculateFare() {
+        return DistanceFareCalculator.calculateOverFare(distance);
+    }
+
     public List<Station> getStations() {
         if (stations.isEmpty()) {
             return Collections.emptyList();
