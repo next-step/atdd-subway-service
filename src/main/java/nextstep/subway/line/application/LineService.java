@@ -14,7 +14,6 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 
 @Service
 @Transactional
@@ -32,13 +31,14 @@ public class LineService {
         Station downStation = stationService.findById(request.getDownStationId());
         Line persistLine = lineRepository.save(
             new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
-        List<StationResponse> stations = makeStationResponses(persistLine);
-        return LineResponse.of(persistLine, stations);
+        return LineResponse.from(persistLine);
     }
 
     public List<LineResponse> findLines() {
-        List<Line> persistLines = lineRepository.findAll();
-        return makeLineResponses(persistLines);
+        return lineRepository.findAll()
+            .stream()
+            .map(LineResponse::from)
+            .collect(Collectors.toList());
     }
 
     public Line findLineById(Long id) {
@@ -47,8 +47,7 @@ public class LineService {
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        List<StationResponse> stations = makeStationResponses(persistLine);
-        return LineResponse.of(persistLine, stations);
+        return LineResponse.from(persistLine);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
@@ -73,20 +72,5 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.removeLineStation(station);
-    }
-
-    private List<StationResponse> makeStationResponses(Line line) {
-        return line.getStations().getStations().stream()
-            .map(StationResponse::of)
-            .collect(Collectors.toList());
-    }
-
-    private List<LineResponse> makeLineResponses(List<Line> lines) {
-        return lines.stream()
-            .map(line -> {
-                List<StationResponse> stations = makeStationResponses(line);
-                return LineResponse.of(line, stations);
-            })
-            .collect(Collectors.toList());
     }
 }

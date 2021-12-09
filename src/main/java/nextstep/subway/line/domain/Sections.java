@@ -40,7 +40,13 @@ public class Sections {
         return sections;
     }
 
-    public Stations getStations() {
+    public List<Station> getStations() {
+        Stations stations = makeStations();
+
+        return stations.getStations();
+    }
+
+    private Stations makeStations() {
         if (sections.isEmpty()) {
             return new Stations();
         }
@@ -108,7 +114,7 @@ public class Sections {
     }
 
     public void addStation(Section section) {
-        Stations stations = getStations();
+        Stations stations = makeStations();
 
         stations.checkCanAddStation(section);
 

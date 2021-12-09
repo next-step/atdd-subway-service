@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,10 +45,10 @@ public class SectionsTest {
         Sections sections = Sections.from(
             Arrays.asList(강남_양재_구간, 양재_판교_구간));
 
-        Stations stations = sections.getStations();
+        List<Station> stations = sections.getStations();
 
         assertThat(stations)
-            .isEqualTo(new Stations(Arrays.asList(강남역, 양재역, 판교역)));
+            .isEqualTo(Arrays.asList(강남역, 양재역, 판교역));
     }
 
     @DisplayName("구간에서 역 목록을 가져온다")
@@ -56,10 +57,10 @@ public class SectionsTest {
         Sections sections = Sections.from(
             Arrays.asList(강남_양재_구간, 양재_판교_구간));
 
-        Stations stations = sections.getStations();
+        List<Station> stations = sections.getStations();
 
         assertThat(stations)
-            .isEqualTo(new Stations(Arrays.asList(강남역, 양재역, 판교역)));
+            .isEqualTo(Arrays.asList(강남역, 양재역, 판교역));
     }
 
     @DisplayName("하행역을 포함하는 구간을 추가했을 때 업데이트 성공")
@@ -70,7 +71,7 @@ public class SectionsTest {
 
         sections.addStation(양재_판교_구간);
 
-        assertThat(sections.getStations()).isEqualTo(new Stations(Arrays.asList(강남역, 양재역, 판교역)));
+        assertThat(sections.getStations()).isEqualTo(Arrays.asList(강남역, 양재역, 판교역));
     }
 
     @DisplayName("상행역을 포함하는 구간을 추가했을 때 업데이트 성공")
@@ -81,7 +82,7 @@ public class SectionsTest {
 
         sections.addStation(강남_양재_구간);
 
-        assertThat(sections.getStations()).isEqualTo(new Stations(Arrays.asList(강남역, 양재역, 판교역)));
+        assertThat(sections.getStations()).isEqualTo(Arrays.asList(강남역, 양재역, 판교역));
     }
 
     @DisplayName("상행역과 하행역이 이미 노선에 모두 등록되어 있다면 추가 실패")
@@ -114,7 +115,7 @@ public class SectionsTest {
 
         sections.removeStation(판교역);
 
-        assertThat(sections.getStations()).isEqualTo(new Stations(Arrays.asList(강남역, 양재역)));
+        assertThat(sections.getStations()).isEqualTo(Arrays.asList(강남역, 양재역));
     }
 
     @DisplayName("중간역이 제거될 경우 재배치를 함")
@@ -125,7 +126,7 @@ public class SectionsTest {
 
         sections.removeStation(양재역);
 
-        assertThat(sections.getStations()).isEqualTo(new Stations(Arrays.asList(강남역, 판교역)));
+        assertThat(sections.getStations()).isEqualTo(Arrays.asList(강남역, 판교역));
     }
 
     @DisplayName("구간이 하나일 때 삭제 에러")

@@ -59,7 +59,7 @@ public class Line extends BaseEntity {
         return sections;
     }
 
-    public Stations getStations() {
+    public List<Station> getStations() {
         return sections.getStations();
     }
 
