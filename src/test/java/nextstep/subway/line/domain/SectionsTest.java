@@ -46,7 +46,7 @@ public class SectionsTest {
     @DisplayName("이미 존재하는 구간 체크")
     void validateForAddedAlreadyExists() {
 
-        final Line line = mock(Line.class);
+        final Line line = Line.of("1호선", "blue");
 
         Sections sections = new Sections();
         sections.add(Section.create(line, 서울역, 남영역, Distance.valueOf(5)));
@@ -59,7 +59,7 @@ public class SectionsTest {
     @Test
     @DisplayName("포함된 구간 체크")
     void validateForAddedNotInclude() {
-        final Line line = mock(Line.class);
+        final Line line = Line.of("1호선", "blue");
         Sections sections = new Sections();
         sections.add(Section.create(line, 서울역, 남영역, Distance.valueOf(5)));
 

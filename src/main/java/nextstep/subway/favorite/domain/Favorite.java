@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.domain;
 
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,13 +19,13 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, optional = false)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, optional = false)
     private Station source;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, optional = false)
     private Station target;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "owner_id")
     private Member owner;
 
@@ -51,5 +52,38 @@ public class Favorite {
 
     public Station getTarget() {
         return target;
+    }
+
+    public boolean equalsFavorite(Favorite other) {
+        return source.equalsName(other.source)
+            && target.equalsName(other.target)
+            && owner.equals(other.owner);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Favorite other = (Favorite) o;
+        return id.equals(other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Favorite{" +
+            "id=" + id +
+            ", source=" + source +
+            ", target=" + target +
+            ", owner=" + owner +
+            '}';
     }
 }
