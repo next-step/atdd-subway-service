@@ -1,6 +1,7 @@
-package nextstep.subway;
+package nextstep.subway.common;
 
 import nextstep.subway.line.exception.LineException;
+import nextstep.subway.line.exception.PathException;
 import nextstep.subway.line.exception.SectionException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,11 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(PathException.class)
+    public ResponseEntity pathExceptionHandler(PathException e) {
         return ResponseEntity.badRequest().build();
     }
 }

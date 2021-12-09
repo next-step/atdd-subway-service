@@ -16,12 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class LineService {
-    private static final String STATION_NOT_FOUND_MESSAGE = "역이 없습니다.";
+    public static final String STATION_NOT_FOUND_MESSAGE = "역이 없습니다.";
     public static final String LINE_NOT_FOUND_MESSAGE = "노선이 없습니다.";
     private LineRepository lineRepository;
     private StationRepository stationRepository;
@@ -46,9 +45,7 @@ public class LineService {
     @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
-        return persistLines.stream()
-                .map(line -> LineResponse.from(line))
-                .collect(Collectors.toList());
+        return LineResponse.ofList(persistLines);
     }
 
     @Transactional(readOnly = true)
@@ -61,9 +58,7 @@ public class LineService {
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         Sections sections = persistLine.getSections();
-        List<StationResponse> stations = sections.getOrderedStations(persistLine).stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
+        List<StationResponse> stations = StationResponse.ofList(sections.getOrderedStations(persistLine));
         return LineResponse.of(persistLine, stations);
     }
 
