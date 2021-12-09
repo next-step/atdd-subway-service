@@ -16,16 +16,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.omg.CosNaming.NamingContextPackage.NotFound;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -73,16 +68,6 @@ public class PathTest {
         //then
         assertThat(path.getDistance()).isEqualTo(new Distance(12));
         assertThat(path.getStations().stream().map(Station::getName)).containsExactly("강남역", "교대역", "남부터미널역");
-    }
-
-    @DisplayName("최단 경로 찾기 - 서비스 Layer")
-    @Test
-    void findShortestPathServiceInSideOutTest() {
-
-        //given
-
-        //when
-        //then
     }
 
     @DisplayName("최단 경로 찾기 - 서비스 Layer")
