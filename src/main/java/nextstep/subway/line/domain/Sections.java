@@ -36,10 +36,6 @@ public class Sections {
         return this.sections.add(section);
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
     public List<Station> getStations() {
         Stations stations = makeStations();
 

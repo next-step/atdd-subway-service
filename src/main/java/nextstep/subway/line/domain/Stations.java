@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,7 +21,7 @@ public class Stations {
     }
 
     public List<Station> getStations() {
-        return stations;
+        return Collections.unmodifiableList(stations);
     }
 
     public boolean containsStation(Station station) {
