@@ -43,20 +43,20 @@ public class SubwayFareTest {
         Distance distance60 = Distance.of(60);
 
         // then
-        assertThat(UNTIL_10KM.findChargeDistance(distance10)).isEqualTo(0);
-        assertThat(UNTIL_10KM.findChargeDistance(distance50)).isEqualTo(0);
-        assertThat(UNTIL_10KM.findChargeDistance(distance55)).isEqualTo(0);
-        assertThat(UNTIL_10KM.findChargeDistance(distance60)).isEqualTo(0);
+        assertThat(UNTIL_10KM.toChargeDistance(distance10)).isEqualTo(0);
+        assertThat(UNTIL_10KM.toChargeDistance(distance50)).isEqualTo(0);
+        assertThat(UNTIL_10KM.toChargeDistance(distance55)).isEqualTo(0);
+        assertThat(UNTIL_10KM.toChargeDistance(distance60)).isEqualTo(0);
 
-        assertThat(UNTIL_50KM.findChargeDistance(distance10)).isEqualTo(0);
-        assertThat(UNTIL_50KM.findChargeDistance(distance50)).isEqualTo(39);
-        assertThat(UNTIL_50KM.findChargeDistance(distance55)).isEqualTo(39);
-        assertThat(UNTIL_50KM.findChargeDistance(distance60)).isEqualTo(39);
+        assertThat(UNTIL_50KM.toChargeDistance(distance10)).isEqualTo(0);
+        assertThat(UNTIL_50KM.toChargeDistance(distance50)).isEqualTo(39);
+        assertThat(UNTIL_50KM.toChargeDistance(distance55)).isEqualTo(39);
+        assertThat(UNTIL_50KM.toChargeDistance(distance60)).isEqualTo(39);
 
-        assertThat(OVER_50KM.findChargeDistance(distance10)).isEqualTo(0);
-        assertThat(OVER_50KM.findChargeDistance(distance50)).isEqualTo(0);
-        assertThat(OVER_50KM.findChargeDistance(distance55)).isEqualTo(4);
-        assertThat(OVER_50KM.findChargeDistance(distance60)).isEqualTo(9);
+        assertThat(OVER_50KM.toChargeDistance(distance10)).isEqualTo(0);
+        assertThat(OVER_50KM.toChargeDistance(distance50)).isEqualTo(0);
+        assertThat(OVER_50KM.toChargeDistance(distance55)).isEqualTo(4);
+        assertThat(OVER_50KM.toChargeDistance(distance60)).isEqualTo(9);
     }
 
 

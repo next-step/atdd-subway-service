@@ -15,6 +15,7 @@ public enum SubwayFare {
     OVER_50KM(51, Integer.MAX_VALUE, true, 8, 100, "50km 초과");
 
     public static final int BASE_RATE = 1_250;
+    public static final int NO_CHARGE = 0;
 
     private int minDistance;
     private int maxDistance;
@@ -23,8 +24,37 @@ public enum SubwayFare {
     private int charges;
     private String desc;
 
+    public int toChargeDistance(Distance distance) {
+        if (isUntil50Km()) {
+            return isExceed(distance) ? maxChargeDistance() : chargeDistance(distance);
+        }
+
+        if (isOver50Km()) {
+            return chargeDistance(distance);
+        }
+        return NO_CHARGE;
+    }
+
     public boolean includes(Distance distance) {
         return this.minDistance <= distance.intValue() && this.maxDistance >= distance.intValue();
+    }
+
+    public int maxChargeDistance() {
+        if (isUntil10Km()) {
+            return NO_CHARGE;
+        }
+        return maxDistance - minDistance;
+    }
+
+    public int chargeDistance(Distance distance) {
+        if (!includes(distance)) {
+            return NO_CHARGE;
+        }
+        return distance.intValue() - minDistance;
+    }
+
+    public boolean isExceed(Distance distance) {
+        return this.maxDistance < distance.intValue();
     }
 
     public boolean isUntil10Km() {
@@ -37,19 +67,6 @@ public enum SubwayFare {
 
     public boolean isOver50Km() {
         return this == OVER_50KM;
-    }
-
-    public int findChargeDistance(Distance distance) {
-        int given = distance.intValue();
-
-        if (isUntil50Km() && !UNTIL_10KM.includes(distance)) {
-            return OVER_50KM.includes(distance) ? maxDistance - minDistance : given - minDistance;
-        }
-        if (isOver50Km() && OVER_50KM.includes(distance)) {
-            return given - minDistance;
-        }
-
-        return 0;
     }
 
     SubwayFare(int minDistance, int maxDistance, boolean useExtraCharge, int per, int charges, String desc) {
@@ -75,7 +92,7 @@ public enum SubwayFare {
     }
 
     private int calculateOverFare(Distance distance) {
-        int chargeDistance = findChargeDistance(distance);
-        return chargeDistance > 0 ? (int) ((Math.ceil((chargeDistance) / per) + 1) * charges) : 0;
+        int chargeDistance = toChargeDistance(distance);
+        return chargeDistance == NO_CHARGE ? NO_CHARGE : (int) ((Math.ceil((chargeDistance) / per) + 1) * charges);
     }
 }
