@@ -59,12 +59,11 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [X] LineSectionAcceptanceTest 리팩터링
     - [X] 지하철 구간을 관리하는 테스트로 통합
     - [X] static 메서드 분리
-- [ ] LineService 리팩터링
+- [X] LineService 리팩터링
     - [X] 서비스 내의 비즈니스 로직 line 도메인으로 이동
     - [X] 거리 역할 클래스 추가
-    - [ ] line 클래스 도메인 로직 추가
     - [X] 구간 클래스 도메인 로직 추가
     - [X] 구간 목록 역할 클래스 추가
     - [X] 역 목록 역할 클래스 추가
-    - [ ] 역 응답 목록 클래스 추가
-- [ ] 공통 에러처리
+    - [X] 역 응답 목록 클래스 추가
+- [X] 공통 에러처리
