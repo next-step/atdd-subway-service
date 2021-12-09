@@ -20,6 +20,7 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity<PathResponse> findShortestPath(PathRequest request) {
+        request.validateIfSourceEqualTarget();
         return ResponseEntity.ok(pathService.findShortestPath(request));
     }
 

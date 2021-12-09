@@ -31,7 +31,7 @@ public class PathService {
         List<Line> lines = lineRepository.findAll();
         Station sourceStation = findStationById(request.getSource());
         Station targetStation = findStationById(request.getTarget());
-        validateForShortestPath(sourceStation, targetStation);
+        validateIfExistStations(sourceStation, targetStation);
 
         GraphPath<Station, DefaultWeightedEdge> path = getShortestPath(lines, sourceStation,
             targetStation);
@@ -41,13 +41,9 @@ public class PathService {
         return new PathResponse(StationResponse.of(shortestPath), (int) path.getWeight());
     }
 
-    private void validateForShortestPath(Station sourceStation, Station targetStation) {
+    private void validateIfExistStations(Station sourceStation, Station targetStation) {
         if (sourceStation == null || targetStation == null) {
             throw new IllegalArgumentException("출발역 또는 도착역이 존재하지 않습니다.");
-        }
-
-        if (sourceStation.equals(targetStation)) {
-            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
         }
     }
 

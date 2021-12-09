@@ -13,6 +13,12 @@ public class PathRequest {
         this.target = target;
     }
 
+    public void validateIfSourceEqualTarget() {
+        if (source.equals(target)) {
+            throw new IllegalArgumentException("출발역과 도착역이 같습니다.");
+        }
+    }
+
     public Long getSource() {
         return source;
     }

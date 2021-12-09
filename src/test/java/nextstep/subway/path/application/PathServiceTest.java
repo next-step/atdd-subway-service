@@ -98,20 +98,6 @@ class PathServiceTest {
             .containsExactly("남부터미널역", "양재역", "강남역");
     }
 
-    @DisplayName("출발역과 도착역이 같은 경우 예외 발생")
-    @Test
-    void 최단경로조회_예외1() {
-        // given
-        when(stationRepository.findById(any())).thenReturn(Optional.of(양재역));
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(신분당선, 이호선, 삼호선));
-
-        // when, then
-        assertThatIllegalArgumentException().isThrownBy(
-                () -> pathService.findShortestPath(new PathRequest(1L, 1L))
-            )
-            .withMessage("출발역과 도착역이 같습니다.");
-    }
-
     @DisplayName("출발역이 없는 역일 경우 예외 발생")
     @Test
     void 최단경로조회_예외2_1() {
