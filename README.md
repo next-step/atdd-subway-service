@@ -16,61 +16,37 @@
 
 [ATDD 강의](https://edu.nextstep.camp/c/R89PYi5H) 실습을 위한 지하철 노선도 애플리케이션
 
-## 🚀 3단계 - 인증을 통한 기능 구현
+## 🚀 4단계 - 요금 조회
 
-- [x] **토큰 발급 기능 (로그인) 인수 테스트 만들기**
-  - [x] 이메일과 패스워드를 이용하여 요청 시 `accessToken` 을 응답하는 기능을 구현하기
-  - [x] `AuthAcceptanceTest` 을 만족하도록 구현하면 됨
-  - [x] `AuthAcceptanceTest` 에서 제시하는 예외 케이스도 함께 고려하여 구현하기
-  - [x] 유효하지 않은 토큰으로 `/members/me` 요청을 보낼 경우에 대한 예외 처리
-- [x] **인증 - 내 정보 조회 기능 완성하기**
-  - [x] `MemberAcceptanceTest 클래스의 `manageMyInfo` 메서드에 인수 테스트를 추가하기
-  - [x] 내 정보 조회, 수정, 삭제 기능을 `/members/me` 라는 URI 요청으로 동작하도록 검증
-  - [x] 로그인 후 발급 받은 토큰을 포함해서 요청 하기
-  - [x] `/members/me` 요청 시 토큰을 확인하여 로그인 정보를 받아올 수 있도록 하기
-  - [x] `@AuthenticationPrincipal` 과 `AuthenticationPrincipalArgumentResolver`을 활용하기
-  - [x] 아래의 기능이 제대로 동작하도록 구현하기
-  ```@GetMapping("/members/me")
-  public ResponseEntity<MemberResponse> findMemberOfMine(LoginMember loginMember) {
-  MemberResponse member = memberService.findMember(loginMember.getId());
-  return ResponseEntity.ok().body(member);
-  }
+요구사항
+
+- [ ] 경로 조회 시 거리 기준 요금 정보 포함하기
+- [ ] 노선별 추가 요금 정책 추가
+  - 기본운임(10㎞ 이내) : 기본운임 1,250원
+  - 이용 거리초과 시 추가운임 부과
+    - 10km초과∼50km까지(5km마다 100원)
+    - 50km초과 시 (8km마다 100원)
+- [ ] 연령별 할인 정책 추가
+  - 청소년: 운임에서 350원을 공제한 금액의 20%할인
+  - 어린이: 운임에서 350원을 공제한 금액의 50%할인
+  ```
+  - 청소년: 13세 이상~19세 미만
+  - 어린이: 6세 이상~ 13세 미만
+  ```
   
-  @PutMapping("/members/me")
-  public ResponseEntity<MemberResponse> updateMemberOfMine(LoginMember loginMember, @RequestBody MemberRequest param) {
-  memberService.updateMember(loginMember.getId(), param);
-  return ResponseEntity.ok().build();
-  }
+  ```
+  Feature: 지하철 경로 검색
   
-  @DeleteMapping("/members/me")
-  public ResponseEntity<MemberResponse> deleteMemberOfMine(LoginMember loginMember) {
-  memberService.deleteMember(loginMember.getId());
-  return ResponseEntity.noContent().build();
-  }
+    Scenario: 두 역의 최단 거리 경로를 조회
+      Given 지하철역이 등록되어있음
+      And 지하철 노선이 등록되어있음
+      And 지하철 노선에 지하철역이 등록되어있음
+      When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+      Then 최단 거리 경로를 응답
+      And 총 거리도 함께 응답함
+      And ** 지하철 이용 요금도 함께 응답함 **
   ```
 
-- [x] 인증 - **즐겨 찾기 기능 완성하기**
-  - 즐겨찾기 기능을 완성하기
-  - 인증을 포함하여 전체 ATDD 사이클을 경험할 수 있도록 기능을 구현하기
-
-  ```
-  Feature: 즐겨찾기를 관리한다.
-
-  Background 
-    Given 지하철역 등록되어 있음
-    And 지하철 노선 등록되어 있음
-    And 지하철 노선에 지하철역 등록되어 있음
-    And 회원 등록되어 있음
-    And 로그인 되어있음
-
-  Scenario: 즐겨찾기를 관리
-    When 즐겨찾기 생성을 요청
-    Then 즐겨찾기 생성됨
-    When 즐겨찾기 목록 조회 요청
-    Then 즐겨찾기 목록 조회됨
-    When 즐겨찾기 삭제 요청
-    Then 즐겨찾기 삭제됨
-  ```
 <br>
 
 ## 🚀 Getting Started
