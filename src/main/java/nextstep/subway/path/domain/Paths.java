@@ -2,7 +2,6 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.member.domain.Age;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -25,10 +24,11 @@ public class Paths {
     }
 
     public Fare calculateFare(LoginMember loginMember) {
+        final Fare fare = DistanceFareCalculator.calculateOverFare(distance);
         if (loginMember.isGuestUser()) {
-            return DistanceFareCalculator.calculateOverFare(distance);
+            return fare;
         }
-        return AgeDiscountPolicy.discount(DistanceFareCalculator.calculateOverFare(distance), Age.of(loginMember.getAge()));
+        return AgeDiscountPolicy.discount(fare, loginMember.getAge());
     }
 
     public List<Station> getStations() {

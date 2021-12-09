@@ -4,6 +4,7 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,7 +18,8 @@ public class Member extends BaseEntity {
     private Long id;
     private String email;
     private String password;
-    private Integer age;
+    @Embedded
+    private Age age;
 
     public Member() {
     }
@@ -25,7 +27,7 @@ public class Member extends BaseEntity {
     public Member(String email, String password, Integer age) {
         this.email = email;
         this.password = password;
-        this.age = age;
+        this.age = Age.of(age);
     }
 
     public Long getId() {
@@ -36,12 +38,8 @@ public class Member extends BaseEntity {
         return email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public Integer getAge() {
-        return age;
+        return age.getAge();
     }
 
     public void update(Member member) {

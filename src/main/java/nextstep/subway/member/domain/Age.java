@@ -40,4 +40,8 @@ public class Age {
     public boolean isYouth() {
         return age >= YOUTH_MIN_AGE && age <= YOUTH_MAX_AGE;
     }
+
+    public int getAge() {
+        return age;
+    }
 }
