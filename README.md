@@ -52,3 +52,44 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+# 기능 목록 정리
+## 1단계 - 인수 테스트 기반 리팩터링리
+- 공통
+  - [X] 공통 상수 생성
+  - [X] 커스텀 익셉션 생성
+  - [X] 공통 메시지 생성
+  - [X] 공통 에러 응답 생성
+  - [X] 공통 에러 핸들러 생성
+- LineService 리팩터링
+  - Line
+    - [X] 접근제어자 수정
+    - [X] 정적 메소드 활용
+    - [X] sections 일급콜렉션 사용
+    - [X] 구간 추가 기능 추가
+    - [X] 구간 삭제 기능 추가
+    - [X] Validation 추가
+  - Section
+    - [X] 접근제어자 수정
+    - [X] 정적 메소드 활용
+    - [X] distance 분리 추가
+    - [X] 상행역, 하행역 동일 여부 체크 로직 추가
+    - [X] merge 기능 추가
+  - Sections 
+    - [X] 접근제어자 수정
+    - [X] 정적 메소드 활용
+    - [X] 일급콜렉션 생성
+    - [X] merge 기능 추가
+    - [X] 노선의 속한 구간에 상행, 하행역 동일 체크 로직 추가
+    - [X] validation 기능 추가
+  - Distance
+    - [X] validataion 기능 추가
+    - [X] 거리 더하기, 빼기 기능 추가
+- LineSectionAcceptanceTest 리팩터링
+  - [X] 텍스트 픽스쳐 생성
+  - [X] 중복 테스트 제거 
+  - [X] 전체 시나리오 나열
+  - [X] 도메인 테스트 생성
+    - [X] LineTest
+    - [X] SectionTest
+    - [X] SectionsTest
