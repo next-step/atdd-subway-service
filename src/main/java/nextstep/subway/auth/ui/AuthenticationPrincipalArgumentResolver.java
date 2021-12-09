@@ -27,7 +27,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 	}
 
 	@Override
-	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+	public LoginMember resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
 		NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 		String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
 
@@ -37,6 +37,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 			throw new AuthorizationException();
 		}
 
-		return authService.findMemberByToken(credentials);
+		return loginMember;
 	}
 }
