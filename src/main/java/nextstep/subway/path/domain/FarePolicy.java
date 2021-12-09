@@ -1,6 +1,5 @@
 package nextstep.subway.path.domain;
 
-import java.util.Comparator;
 import java.util.List;
 
 import nextstep.subway.auth.domain.LoginMember;
@@ -10,31 +9,19 @@ public class FarePolicy {
 	private static final int BASIC_FARE = 1250;
 
 	public int calculateBy(int distance) {
-		if (!OverFareSection.contains(distance)) {
-			return BASIC_FARE;
-		}
-
-		OverFareSection overFareSection = OverFareSection.findBy(distance);
-		int totalOverFare = overFareSection.calculateTotalOverFare(distance);
-		return BASIC_FARE + totalOverFare;
+		DistanceBasedFarePolicy policy = new PerOverchargeFareSectionDistanceBasedFarePolicy();
+		return policy.calculate(BASIC_FARE, distance);
 	}
 
 	public int calculateBy(int distance, List<Line> lines) {
-		Integer maxExtraFare = lines.stream()
-			.map(Line::getExtraFare)
-			.max(Comparator.comparingInt(o -> o))
-			.orElseThrow(IllegalStateException::new);
-
-		return calculateBy(distance) + maxExtraFare;
+		LineOverchargeFarePolicy policy = new MostExpensiveLineOverchargeFarePolicy();
+		int fare = calculateBy(distance);
+		return policy.overcharge(fare, lines);
 	}
 
 	public int calculateBy(int distance, List<Line> lines, LoginMember loginMember) {
+		MemberDiscountFarePolicy policy = new PerAgeMemberDiscountFarePolicy();
 		int fare = calculateBy(distance, lines);
-		if (!loginMember.isLogin() || !FareDiscountAge.contains(loginMember.getAge())) {
-			return fare;
-		}
-
-		FareDiscountAge fareDiscountAge = FareDiscountAge.findBy(loginMember.getAge());
-		return fareDiscountAge.getDiscountFare(fare);
+		return policy.discount(fare, loginMember);
 	}
 }

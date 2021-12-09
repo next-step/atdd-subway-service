@@ -79,7 +79,7 @@ class FarePolicyTest {
 			));
 	}
 
-	@DisplayName("노선별 추가 요금 정책과 연령별 요금 할인 정챌이 포함된 거리별 요금 정책을 계산한다.")
+	@DisplayName("노선별 추가 요금 정책과 연령별 요금 할인 정책이 포함된 거리별 요금 정책을 계산한다.")
 	@ParameterizedTest
 	@MethodSource("calculateByDistanceAndLinesAndLoginMemberMethodSource")
 	void calculateByDistanceAndLinesAndLoginMember(
