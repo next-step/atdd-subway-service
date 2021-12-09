@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -66,12 +67,18 @@ class PathAcceptanceTest extends AcceptanceTest {
         // then
         경로_조회_응답됨(response);
         경로_조회와_예상_경로와_일치함(response, 예상경로);
-        경조_조회가_예상_거리와_일치함(response, 예상최단거리);
+        경로_조회가_예상_거리와_일치함(response, 예상최단거리);
+        지하철_이용_요금가_예상_요금과_일치함(response, 예상요금);
     }
 
     private void 경로_조회_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(PathResponse.class)).isNotNull();
+    }
+
+    private void 지하철_이용_요금가_예상_요금과_일치함(ExtractableResponse<Response> response, int expectedFare) {
+        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(pathResponse.getFare()).isEqualTo(expectedFare);
     }
 
     private void 경로_조회와_예상_경로와_일치함(ExtractableResponse<Response> response, List<StationResponse> expectedPaths) {
@@ -80,7 +87,7 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     }
 
-    private void 경조_조회가_예상_거리와_일치함(ExtractableResponse<Response> response, int distance) {
+    private void 경로_조회가_예상_거리와_일치함(ExtractableResponse<Response> response, int distance) {
         PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(distance);
     }

@@ -34,7 +34,8 @@ public class PathService {
         final List<Line> allLines = lineRepository.findAll();
         final Paths paths = PathFinder.of(allLines)
                 .findPathBetween(sourceStation, targetStation);
-        return PathResponse.of(paths.getStations(), paths.getDistance());
+        // TODO fare calculate
+        return PathResponse.of(paths.getStations(), paths.getDistance(), 0);
     }
 
     private Station getTargetStation(Long target) {
