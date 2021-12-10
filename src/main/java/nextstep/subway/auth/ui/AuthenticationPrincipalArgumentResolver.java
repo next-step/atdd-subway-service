@@ -1,15 +1,16 @@
 package nextstep.subway.auth.ui;
 
-import nextstep.subway.auth.application.AuthService;
-import nextstep.subway.auth.domain.AuthenticationPrincipal;
-import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import javax.servlet.http.HttpServletRequest;
+import nextstep.subway.auth.application.AuthService;
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
     private AuthService authService;

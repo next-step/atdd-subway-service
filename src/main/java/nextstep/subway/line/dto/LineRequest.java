@@ -9,9 +9,6 @@ public class LineRequest {
     private Long downStationId;
     private int distance;
 
-    public LineRequest() {
-    }
-
     public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
         this.name = name;
         this.color = color;
@@ -38,9 +35,5 @@ public class LineRequest {
 
     public int getDistance() {
         return distance;
-    }
-
-    public Line toLine() {
-        return new Line(name, color);
     }
 }
