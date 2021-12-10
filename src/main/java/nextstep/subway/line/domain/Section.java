@@ -39,6 +39,14 @@ public class Section {
         this.distance = distance;
     }
 
+    public Section(
+        final Station upStation,
+        final Station downStation,
+        final int distance
+    ) {
+        this(null, upStation, downStation, distance);
+    }
+
     public void attachToLine(final Line line) {
         this.line = line;
     }

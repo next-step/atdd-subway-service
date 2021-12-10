@@ -22,21 +22,32 @@ public class LineService {
 
     private final LineRepository lineRepository;
     private final StationService stationService;
+    private final SectionService sectionService;
 
-    public LineService(LineRepository lineRepository, StationService stationService) {
+    public LineService(
+        final LineRepository lineRepository,
+        final StationService stationService,
+        final SectionService sectionService
+    ) {
         this.lineRepository = lineRepository;
         this.stationService = stationService;
+        this.sectionService = sectionService;
     }
 
     @Transactional
-    public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(
-            new Line(request.getName(), request.getColor(), upStation, downStation,
-                request.getDistance()));
+    public LineResponse saveLine(final LineRequest request) {
+        checkLineNameIsUnique(request.getName());
+        final Line persistLine = lineRepository.save(request.toLine());
+        sectionService.addSection(
+            persistLine.getId(),
+            new SectionRequest(
+                request.getUpStationId(),
+                request.getDownStationId(),
+                request.getDistance()
+            )
+        );
         List<StationResponse> stations = getStations(persistLine).stream()
-            .map(it -> StationResponse.of(it))
+            .map(StationResponse::of)
             .collect(Collectors.toList());
         return LineResponse.of(persistLine, stations);
     }
@@ -175,8 +186,8 @@ public class LineService {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = line.getSections().stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
+                .filter(it -> it.getDownStation() == finalDownStation)
+                .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
             }
@@ -184,5 +195,11 @@ public class LineService {
         }
 
         return downStation;
+    }
+
+    private void checkLineNameIsUnique(final String requestedName) {
+        if (lineRepository.existsByName(requestedName)) {
+            throw new IllegalArgumentException("이미 존재하는 지하철 노선 이름으로 지하철 노선을 생성할 수 없습니다.");
+        }
     }
 }
