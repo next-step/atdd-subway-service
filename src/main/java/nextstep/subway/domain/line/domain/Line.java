@@ -53,6 +53,10 @@ public class Line extends BaseEntity {
         return this.sections.getStations();
     }
 
+    public List<Section> getSections() {
+        return sections.getSections();
+    }
+
     public void addSection(Station upStation, Station downStation, Distance distance) {
         this.sections.addSection(this, upStation, downStation, distance);
     }

@@ -136,4 +136,8 @@ public class Sections {
         final Distance newDistance = upLineStation.plusDistance(downLineStation);
         addSection(new Section(line, newUpStation, newDownStation, newDistance));
     }
+
+    public List<Section> getSections() {
+        return sections;
+    }
 }

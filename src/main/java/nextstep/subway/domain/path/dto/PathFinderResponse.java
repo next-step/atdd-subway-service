@@ -49,5 +49,9 @@ public class PathFinderResponse {
             this.name = name;
             this.createdAt = createdAt;
         }
+
+        public static Station of(nextstep.subway.domain.station.domain.Station station) {
+            return new Station(station.getId(), station.getName(), station.getCreatedDate());
+        }
     }
 }

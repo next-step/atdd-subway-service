@@ -2,19 +2,19 @@ package nextstep.subway.domain.path.dto;
 
 public class PathFinderRequest {
 
-    private int source;
-    private int target;
+    private Long source;
+    private Long target;
 
-    public PathFinderRequest(final int source, final int target) {
+    public PathFinderRequest(final Long source, final Long target) {
         this.source = source;
         this.target = target;
     }
 
-    public int getSource() {
+    public Long getSource() {
         return source;
     }
 
-    public int getTarget() {
+    public Long getTarget() {
         return target;
     }
 }

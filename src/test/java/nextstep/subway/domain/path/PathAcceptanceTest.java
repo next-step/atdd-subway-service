@@ -15,9 +15,9 @@ import nextstep.subway.domain.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -25,14 +25,11 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
 
 
 @DisplayName("지하철 경로 조회")
 class PathAcceptanceTest extends AcceptanceTest {
 
-    @MockBean
-    private PathService pathService;
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
@@ -49,7 +46,8 @@ class PathAcceptanceTest extends AcceptanceTest {
      *  |                       |
      * 남부터미널역 --- *3호선* --- 양재
      */
-
+// 교대 - 강남 - 양재 : 20
+// 교대 - 남부터미널역 - 양재 : 8
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -69,11 +67,6 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("최단 경로 조회")
     @Test
     void shortestRouteInquiry() {
-        final List<PathFinderResponse.Station> stations = Arrays.asList(new PathFinderResponse.Station(교대역.getId(), 교대역.getName(), LocalDateTime.now()),
-                new PathFinderResponse.Station(남부터미널역.getId(), 남부터미널역.getName(), LocalDateTime.now()),
-                new PathFinderResponse.Station(양재역.getId(), 양재역.getName(), LocalDateTime.now()));
-        Mockito.when(pathService.findPaths(any())).thenReturn(new PathFinderResponse(stations, 8));
-
         // when
         final ExtractableResponse<Response> response = 최단_경로_조회_요청();
 
@@ -85,14 +78,14 @@ class PathAcceptanceTest extends AcceptanceTest {
         final PathFinderResponse pathFinderResponse = response.as(PathFinderResponse.class);
         assertAll(() -> {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(pathFinderResponse.getStations().size()).isEqualTo(3);
             assertThat(pathFinderResponse.getStations()).extracting("name").containsExactly("교대역","남부터미널역","양재역");
-            assertThat(pathFinderResponse.getDistance()).isEqualTo(8);
+            assertThat(pathFinderResponse.getDistance()).isEqualTo(5);
         });
     }
 
     private ExtractableResponse<Response> 최단_경로_조회_요청() {
         return RestAssured.given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
                 .queryParam("source", 교대역.getId())
                 .queryParam("target", 양재역.getId())
                 .get("/paths")
