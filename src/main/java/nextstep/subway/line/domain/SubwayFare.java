@@ -11,7 +11,9 @@ import java.util.Arrays;
  */
 public enum SubwayFare {
     UNTIL_10KM(Distance.MIN_DISTANCE, 10, false, 0, 0, "10km 이내"),
+
     UNTIL_50KM(11, 50, true, 5, 100, "10km ~ 50km 이내"),
+
     OVER_50KM(51, Integer.MAX_VALUE, true, 8, 100, "50km 초과");
 
     public static final int BASE_RATE = 1_250;
@@ -38,52 +40,6 @@ public enum SubwayFare {
                 .filter(it -> it.includes(distance))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
-    }
-
-
-    public int toChargeDistance(Distance distance) {
-        if (isUntil50Km()) {
-            return isExceed(distance) ? maxChargeDistance() : chargeDistance(distance);
-        }
-
-        if (isOver50Km()) {
-            return chargeDistance(distance);
-        }
-        return NO_CHARGE;
-    }
-
-    public boolean includes(Distance distance) {
-        return this.minDistance <= distance.intValue() && this.maxDistance >= distance.intValue();
-    }
-
-    public int maxChargeDistance() {
-        if (isUntil10Km()) {
-            return NO_CHARGE;
-        }
-        return maxDistance - minDistance;
-    }
-
-    public int chargeDistance(Distance distance) {
-        if (!includes(distance)) {
-            return NO_CHARGE;
-        }
-        return distance.intValue() - minDistance;
-    }
-
-    public boolean isExceed(Distance distance) {
-        return this.maxDistance < distance.intValue();
-    }
-
-    public boolean isUntil10Km() {
-        return this == UNTIL_10KM;
-    }
-
-    public boolean isUntil50Km() {
-        return this == UNTIL_50KM;
-    }
-
-    public boolean isOver50Km() {
-        return this == OVER_50KM;
     }
 
     public static int rateInquiry(Distance distance) {
@@ -117,6 +73,50 @@ public enum SubwayFare {
         return (fare - user.getDeductibleAmount()) * (100 - user.getDiscountRate()) / 100;
     }
 
+    public int toChargeDistance(Distance distance) {
+        if (isUntil50Km()) {
+            return isExceed(distance) ? maxChargeDistance() : chargeDistance(distance);
+        }
+
+        if (isOver50Km()) {
+            return chargeDistance(distance);
+        }
+        return NO_CHARGE;
+    }
+
+    public boolean includes(Distance distance) {
+        return minDistance <= distance.intValue() && maxDistance >= distance.intValue();
+    }
+
+    public int maxChargeDistance() {
+        if (isUntil10Km()) {
+            return NO_CHARGE;
+        }
+        return maxDistance - minDistance;
+    }
+
+    public int chargeDistance(Distance distance) {
+        if (!includes(distance)) {
+            return NO_CHARGE;
+        }
+        return distance.intValue() - minDistance;
+    }
+
+    public boolean isExceed(Distance distance) {
+        return this.maxDistance < distance.intValue();
+    }
+
+    public boolean isUntil10Km() {
+        return this == UNTIL_10KM;
+    }
+
+    public boolean isUntil50Km() {
+        return this == UNTIL_50KM;
+    }
+
+    public boolean isOver50Km() {
+        return this == OVER_50KM;
+    }
 
     private int calculateOverFare(Distance distance) {
         int chargeDistance = toChargeDistance(distance);

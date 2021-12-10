@@ -3,7 +3,6 @@ package nextstep.subway.favorite.domain;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
-import nextstep.subway.member.exception.FavoriteDuplicatedException;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;

@@ -48,7 +48,6 @@ public class Favorite extends BaseEntity {
         if(Objects.equals(sourceStation, targetStation)) {
             throw new PathBeginIsEndException();
         }
-
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
         this.distance = distance;
@@ -66,14 +65,6 @@ public class Favorite extends BaseEntity {
         this.member = member;
         return this;
     }
-
-//    public boolean equals(Long id) {
-//        return Objects.equals(this.id, id);
-//    }
-//
-//    public boolean isDuplicate(Favorite target) {
-//        return this.sourceStation.equals(target.sourceStation) && this.targetStation.equals(target.targetStation);
-//    }
 
     public Long getId() {
         return id;
