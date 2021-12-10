@@ -3,8 +3,8 @@ package nextstep.subway.line.domain;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import nextstep.subway.common.exception.CommonErrorCode;
 import nextstep.subway.common.exception.InvalidParameterException;
+import nextstep.subway.line.application.exception.SectionErrorCode;
 
 @Embeddable
 public class Distance {
@@ -39,7 +39,7 @@ public class Distance {
 
     private void validGreaterThan(Integer distance) {
         if (this.distance <= distance) {
-            throw InvalidParameterException.of(CommonErrorCode.DISTANCE_RANGE);
+            throw InvalidParameterException.of(SectionErrorCode.DISTANCE_RANGE);
         }
     }
 

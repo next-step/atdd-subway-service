@@ -3,6 +3,7 @@ package nextstep.subway.line.dto.path;
 import java.util.Objects;
 import nextstep.subway.common.exception.CommonErrorCode;
 import nextstep.subway.common.exception.InvalidParameterException;
+import nextstep.subway.line.application.exception.PathErrorCode;
 
 public class PathRequest {
 
@@ -21,7 +22,7 @@ public class PathRequest {
         }
 
         if (source.equals(target)) {
-            throw InvalidParameterException.of(CommonErrorCode.PATH_IN_OUT_SAME);
+            throw InvalidParameterException.of(PathErrorCode.PATH_IN_OUT_SAME);
         }
     }
 
