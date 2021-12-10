@@ -8,11 +8,14 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.exception.AppException;
+import nextstep.subway.exception.ErrorCode;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.line.dto.LineUpdateRequest;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -39,17 +42,18 @@ public class LineService {
 		return LineResponse.ofList(lineRepository.findAll());
 	}
 
-	public Line findLineById(Long id) {
-		return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+	private Line findLineById(Long id) {
+		return lineRepository.findById(id).orElseThrow(() ->
+			new AppException(ErrorCode.NOT_FOUND, "노선({id})을 찾을 수 없습니다", id));
 	}
 
 	public LineResponse findLineResponseById(Long id) {
 		return LineResponse.of(findLineById(id));
 	}
 
-	public void updateLine(Long id, LineRequest lineUpdateRequest) {
-		Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-		persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+	public void updateLine(Long id, LineUpdateRequest lineUpdateRequest) {
+		Line persistLine = findLineById(id);
+		persistLine.update(lineUpdateRequest.toLine());
 	}
 
 	public void deleteLineById(Long id) {
