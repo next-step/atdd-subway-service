@@ -1,6 +1,6 @@
 package nextstep.subway.path.domain;
 
-public enum PathSector {
+enum PathSector {
     SECOND(50, 8, 100),
     FIRST(10, 5, 100);
 
