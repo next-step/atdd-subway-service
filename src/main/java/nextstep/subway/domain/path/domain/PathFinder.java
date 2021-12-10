@@ -49,8 +49,7 @@ public class PathFinder {
     public List<Station> findShortestRoute(List<Station> stations, Long source, Long target) {
         existStationValidator(stations, source, target);
         sameDepartureAndArrivalStationValidator(source, target);
-        final List<Long> vertexList = dijkstraShortestPath.getPath(source, target).getVertexList();
-        stationConnectedValidator(source, target, vertexList);
+        final List<Long> vertexList = getVertex(source, target);
         return getShortestStations(stations, vertexList);
     }
 
@@ -66,8 +65,10 @@ public class PathFinder {
                 .orElseThrow(() -> new StationNotFoundException(String.format("stationId : %d", stationId)));
     }
 
-    private void stationConnectedValidator(final Long source, final Long target, final List<Long> vertexList) {
-        if (vertexList == null) {
+    private List<Long> getVertex(final Long source, final Long target) {
+        try {
+            return dijkstraShortestPath.getPath(source, target).getVertexList();
+        }catch (IllegalArgumentException e) {
             throw new NotConnectedStation(String.format("departure : %d, arrival : %d", source, target));
         }
     }
@@ -81,11 +82,7 @@ public class PathFinder {
     private List<Station> getShortestStations(final List<Station> stations, final List<Long> vertexList) {
         final List<Station> result = new ArrayList<>();
         for (int i = 0; i< vertexList.size(); i++) {
-            int finalIndex = i;
-            Station station = stations.stream()
-                    .filter(st -> st.getId().equals(vertexList.get(finalIndex)))
-                    .findFirst()
-                    .orElseThrow(() -> new StationNotFoundException(String.format("stationId : %d", finalIndex)));
+            Station station = getStation(stations, vertexList.get(i));
             result.add(station);
         }
         return result;

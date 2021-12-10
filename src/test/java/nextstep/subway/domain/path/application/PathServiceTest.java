@@ -6,6 +6,7 @@ import nextstep.subway.domain.line.domain.Line;
 import nextstep.subway.domain.line.domain.LineRepository;
 import nextstep.subway.domain.path.dto.PathFinderRequest;
 import nextstep.subway.domain.path.dto.PathFinderResponse;
+import nextstep.subway.domain.path.exception.NotConnectedStation;
 import nextstep.subway.domain.path.exception.SameDepartureAndArrivalStationException;
 import nextstep.subway.domain.path.exception.StationNotFoundException;
 import nextstep.subway.domain.station.application.StationService;
@@ -81,6 +82,25 @@ class PathServiceTest {
         // when
         final PathFinderRequest pathFinderRequest = new PathFinderRequest(교대역.getId(), 교대역.getId());
         assertThrows(SameDepartureAndArrivalStationException.class,
+                () -> pathService.findPaths(pathFinderRequest));
+    }
+
+    @Test
+    @DisplayName("출발역과 도착역 미연결")
+    void stationNotConnected() {
+        // given
+        final Station 강남역 = new Station(1L, "강남역");
+        final Station 양재역 = new Station(2L, "양재역");
+        final Station 교대역 = new Station(3L, "교대역");
+        final Station 남부터미널역 = new Station(4L, "남부터미널역");
+        final Line 이호선 = new Line("이호선", "bg-green-400", 교대역, 강남역, new Distance(10));
+
+        when(lineService.findAll()).thenReturn(Arrays.asList(이호선));
+        when(stationService.findAll()).thenReturn(Arrays.asList(강남역,양재역,교대역,남부터미널역));
+
+        // when
+        final PathFinderRequest pathFinderRequest = new PathFinderRequest(교대역.getId(), 남부터미널역.getId());
+        assertThrows(NotConnectedStation.class,
                 () -> pathService.findPaths(pathFinderRequest));
     }
 
