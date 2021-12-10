@@ -84,6 +84,14 @@ public class Section implements Comparable<Section> {
         return 0;
     }
 
+    public void updateStation(Station upStation, Station downStation, int distance) {
+        if (this.upStation.equals(upStation)) {
+            updateUpStation(downStation, distance);
+            return;
+        }
+        updateDownStation(upStation, distance);
+    }
+
     @Override
     public int compareTo(Section o) {
         if (this.upStation.equals(o.downStation)) {
