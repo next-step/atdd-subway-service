@@ -36,7 +36,7 @@ public class PathService {
         lines.addAll(lineService.findLineByStation(target));
 
         PathResult shortCut = pathFinder.findShortCut(lines, source, target);
-        int fare = fareCalculator.getFare(loginMember, lines, shortCut);
+        int fare = fareCalculator.getFare(loginMember, shortCut);
 
         return PathResponse.of(shortCut, fare);
     }

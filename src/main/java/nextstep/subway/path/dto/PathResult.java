@@ -6,12 +6,10 @@ import nextstep.subway.path.domain.SubwayWeightedEdge;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class PathResult {
-    public static final PathResult EMPTY_PATH = new PathResult(Collections.emptyList(), 0d, new Sections());
     private final List<Station> vertexList;
     private final double weight;
     private final Sections sections;
@@ -28,14 +26,6 @@ public class PathResult {
                 .map(SubwayWeightedEdge::getSection)
                 .collect(Collectors.toList());
         return new PathResult(path.getVertexList(), path.getWeight(), new Sections(sections));
-    }
-
-    public static PathResult emptyPath() {
-        return EMPTY_PATH;
-    }
-
-    public boolean isEmpty() {
-        return vertexList.isEmpty();
     }
 
     public int getMaxExtraFare() {
