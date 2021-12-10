@@ -10,7 +10,7 @@ public class MemberRequest {
     public MemberRequest() {
     }
 
-    public MemberRequest(String email, String password, Integer age) {
+    public MemberRequest(final String email, final String password, final Integer age) {
         this.email = email;
         this.password = password;
         this.age = age;
