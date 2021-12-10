@@ -3,6 +3,7 @@ package nextstep.subway.line.application;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
@@ -50,26 +51,22 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
-        List<Line> persistLines = lineRepository.findAll();
-        return persistLines.stream()
+        final List<Line> lines = lineRepository.findAll();
+        return lines.stream()
             .map(LineResponse::of)
             .collect(Collectors.toList());
     }
 
-    private Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
-
     @Transactional(readOnly = true)
-    public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+    public LineResponse findLineById(final Long id) {
+        final Line line = getLineById(id);
+        return LineResponse.of(line);
     }
 
     @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(RuntimeException::new);
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        final Line line = getLineById(id);
+        line.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     @Transactional
@@ -77,9 +74,14 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
+    private Line getLineById(final Long id) {
+        return lineRepository.findById(id)
+            .orElseThrow(NoSuchElementException::new);
+    }
+
     @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
-        Line line = findLineById(lineId);
+        Line line = getLineById(lineId);
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
         List<Station> stations = getStations(line);
@@ -121,7 +123,7 @@ public class LineService {
 
     @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = findLineById(lineId);
+        Line line = getLineById(lineId);
         Station station = stationService.findStationById(stationId);
         if (line.getSections().size() <= 1) {
             throw new RuntimeException();
