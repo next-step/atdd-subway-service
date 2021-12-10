@@ -1,19 +1,21 @@
 package nextstep.subway.auth.infrastructure;
 
-import nextstep.subway.auth.application.AuthService;
-import nextstep.subway.auth.ui.AuthenticationPrincipalArgumentResolver;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import java.util.*;
 
-import java.util.List;
+import org.springframework.context.annotation.*;
+import org.springframework.web.servlet.config.annotation.*;
+
+import nextstep.subway.auth.application.*;
+import nextstep.subway.auth.ui.*;
 
 @Configuration
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     private final AuthService authService;
+    private final AuthReadService authReadService;
 
-    public AuthenticationPrincipalConfig(AuthService authService) {
+    public AuthenticationPrincipalConfig(AuthService authService, AuthReadService authReadService) {
         this.authService = authService;
+        this.authReadService = authReadService;
     }
 
     @Override
@@ -23,6 +25,6 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
 
     @Bean
     public AuthenticationPrincipalArgumentResolver createAuthenticationPrincipalArgumentResolver() {
-        return new AuthenticationPrincipalArgumentResolver(authService);
+        return new AuthenticationPrincipalArgumentResolver(authService, authReadService);
     }
 }

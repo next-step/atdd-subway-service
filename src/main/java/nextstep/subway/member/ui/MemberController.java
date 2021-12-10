@@ -1,21 +1,22 @@
 package nextstep.subway.member.ui;
 
-import nextstep.subway.auth.domain.AuthenticationPrincipal;
-import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.member.application.MemberService;
-import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.member.dto.MemberResponse;
-import org.springframework.http.ResponseEntity;
+import java.net.*;
+
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
+import nextstep.subway.auth.domain.*;
+import nextstep.subway.member.application.*;
+import nextstep.subway.member.dto.*;
 
 @RestController
 public class MemberController {
     private final MemberService memberService;
+    private final MemberReadService memberReadService;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, MemberReadService memberReadService) {
         this.memberService = memberService;
+        this.memberReadService = memberReadService;
     }
 
     @PostMapping("/members")
@@ -26,7 +27,7 @@ public class MemberController {
 
     @GetMapping("/members/{id}")
     public ResponseEntity<MemberResponse> findMember(@PathVariable Long id) {
-        MemberResponse member = memberService.findMember(id);
+        MemberResponse member = memberReadService.findMember(id);
         return ResponseEntity.ok().body(member);
     }
 
@@ -44,12 +45,13 @@ public class MemberController {
 
     @GetMapping("/members/me")
     public ResponseEntity<MemberResponse> findMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
-        MemberResponse member = memberService.findMember(loginMember.getId());
+        MemberResponse member = memberReadService.findMember(loginMember.getId());
         return ResponseEntity.ok().body(member);
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember,
+        @RequestBody MemberRequest param) {
         memberService.updateMember(loginMember.getId(), param);
         return ResponseEntity.ok().build();
     }

@@ -1,22 +1,22 @@
 package nextstep.subway.station.ui;
 
-import nextstep.subway.station.application.StationService;
-import nextstep.subway.station.dto.StationRequest;
-import nextstep.subway.station.dto.StationResponse;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import java.net.*;
+import java.util.*;
+
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
-import java.util.List;
+import nextstep.subway.station.application.*;
+import nextstep.subway.station.dto.*;
 
 @RestController
 public class StationController {
-    private StationService stationService;
+    private final StationService stationService;
+    private final StationReadService stationReadService;
 
-    public StationController(StationService stationService) {
+    public StationController(StationService stationService, StationReadService stationReadService) {
         this.stationService = stationService;
+        this.stationReadService = stationReadService;
     }
 
     @PostMapping("/stations")
@@ -27,11 +27,11 @@ public class StationController {
 
     @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(stationService.findAllStations());
+        return ResponseEntity.ok().body(stationReadService.findAllStations());
     }
 
     @DeleteMapping("/stations/{id}")
-    public ResponseEntity deleteStation(@PathVariable Long id) {
+    public ResponseEntity<StationResponse> deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
     }
