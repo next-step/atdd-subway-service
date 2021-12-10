@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Section {
@@ -14,11 +15,11 @@ public class Section {
     @JoinColumn(name = "line_id")
     private Line line;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "up_station_id")
     private Station upStation;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
@@ -63,8 +64,8 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
-        return this.distance.getDistance();
+    public Distance getDistance() {
+        return this.distance;
     }
 
     public void addLine(Line line) {
@@ -110,5 +111,18 @@ public class Section {
 
     public void minusDistance(final Section targetSection) {
         this.distance = this.distance.minus(targetSection.distance);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Section section = (Section) o;
+        return Objects.equals(id, section.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
