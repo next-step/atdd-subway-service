@@ -36,14 +36,14 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavorites(Long memberId) {
-        List<Favorite> favorites = favoriteRepository.findByMemberId(memberId);
-        return favorites.stream()
+        return favoriteRepository.findByMemberId(memberId)
+                .stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public void deleteFavorite(Long id, Long id1) {
-
+    public void deleteFavorite(Long favoriteId) {
+        favoriteRepository.deleteById(favoriteId);
     }
 }

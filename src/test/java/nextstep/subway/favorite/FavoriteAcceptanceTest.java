@@ -62,8 +62,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> listResponse = 즐겨찾기_목록_조회_요청(사용자토큰);
         즐겨찾기_목록_조회_됨(listResponse);
 
-        /*ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_조회요청(사용자토큰, addResponse);
-        즐겨찾기_삭제_됨(deleteResponse);*/
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_조회요청(사용자토큰, addResponse);
+        즐겨찾기_삭제_됨(deleteResponse);
     }
 
     private void 즐겨찾기_삭제_됨(ExtractableResponse<Response> deleteResponse) {
