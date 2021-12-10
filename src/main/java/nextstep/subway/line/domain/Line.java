@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -25,6 +26,8 @@ public class Line extends BaseEntity {
 	@Column(name = "color")
 	private String color;
 
+	private BigDecimal extraPrice;
+
 	@Embedded
 	private Sections sections = new Sections();
 
@@ -34,6 +37,13 @@ public class Line extends BaseEntity {
 	private Line(String name, String color) {
 		this.name = name;
 		this.color = color;
+		this.extraPrice = BigDecimal.ZERO;
+	}
+
+	private Line(String name, String color, BigDecimal extraPrice) {
+		this.name = name;
+		this.color = color;
+		this.extraPrice = extraPrice == null ? BigDecimal.ZERO : extraPrice;
 	}
 
 	public static Line from() {
@@ -44,8 +54,19 @@ public class Line extends BaseEntity {
 		return new Line(name, color);
 	}
 
+	public static Line of(String name, String color, int extraPrice) {
+		return new Line(name, color, new BigDecimal(extraPrice));
+	}
+
 	public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
 		Line line = new Line(name, color);
+		line.addSection(Section.of(line, upStation, downStation, distance));
+		return line;
+	}
+
+	public static Line of(String name, String color, Station upStation, Station downStation, int distance,
+		int extraPrice) {
+		Line line = new Line(name, color, new BigDecimal(extraPrice));
 		line.addSection(Section.of(line, upStation, downStation, distance));
 		return line;
 	}
@@ -65,6 +86,10 @@ public class Line extends BaseEntity {
 
 	public String getColor() {
 		return color;
+	}
+
+	public BigDecimal getExtraPrice() {
+		return extraPrice;
 	}
 
 	public List<Section> getSections() {
