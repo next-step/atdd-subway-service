@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
@@ -22,6 +23,14 @@ public class Paths {
         return new Paths(graphPath);
     }
 
+    public Fare calculateFare(LoginMember loginMember) {
+        final Fare fare = DistanceFareCalculator.calculateOverFare(distance);
+        if (loginMember.isGuestUser()) {
+            return fare;
+        }
+        return AgeDiscountPolicy.discount(fare, loginMember.getAge());
+    }
+
     public List<Station> getStations() {
         if (stations.isEmpty()) {
             return Collections.emptyList();
@@ -29,7 +38,7 @@ public class Paths {
         return stations;
     }
 
-    public int getDistance() {
-        return distance.getDistance();
+    public Distance getDistance() {
+        return distance;
     }
 }

@@ -1,5 +1,7 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
@@ -20,7 +22,7 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findPathBetween(@RequestBody PathRequest pathRequest) {
-        return ResponseEntity.ok(pathService.findPathBetween(pathRequest));
+    public ResponseEntity<PathResponse> findPathBetween(@AuthenticationPrincipal(required = false) LoginMember loginMember, @RequestBody PathRequest pathRequest) {
+        return ResponseEntity.ok(pathService.findPathBetween(loginMember, pathRequest));
     }
 }

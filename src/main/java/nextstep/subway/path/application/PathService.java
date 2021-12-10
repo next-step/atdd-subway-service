@@ -1,7 +1,12 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.member.domain.Age;
+import nextstep.subway.path.domain.DistanceFareCalculator;
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.Paths;
 import nextstep.subway.path.dto.PathRequest;
@@ -28,13 +33,17 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findPathBetween(PathRequest pathRequest) {
+    public PathResponse findPathBetween(LoginMember loginMember, PathRequest pathRequest) {
+        final Paths paths = findPathBetween(pathRequest);
+        return PathResponse.of(paths.getStations(), paths.getDistance(), paths.calculateFare(loginMember));
+    }
+
+    private Paths findPathBetween(PathRequest pathRequest) {
         final Station sourceStation = getSourceStation(pathRequest.getSource());
         final Station targetStation = getTargetStation(pathRequest.getTarget());
         final List<Line> allLines = lineRepository.findAll();
-        final Paths paths = PathFinder.of(allLines)
+        return PathFinder.of(allLines)
                 .findPathBetween(sourceStation, targetStation);
-        return PathResponse.of(paths.getStations(), paths.getDistance());
     }
 
     private Station getTargetStation(Long target) {

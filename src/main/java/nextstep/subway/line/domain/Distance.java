@@ -7,6 +7,8 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Distance {
+    public static final int SHORT_DISTANCE = 10;
+    public static final int MEDIUM_DISTANCE = 50;
 
     @Column
     private int distance;
@@ -30,6 +32,10 @@ public class Distance {
         return new Distance((int) distance);
     }
 
+    public static Distance ofMaxMedium() {
+        return new Distance(MEDIUM_DISTANCE);
+    }
+
     public Distance minus(int distance) {
         if (isLessThanOrEqualTo(distance)) {
             throw new TooLongDistanceException();
@@ -47,5 +53,21 @@ public class Distance {
 
     public int getDistance() {
         return distance;
+    }
+
+    public boolean isShortRange() {
+        return this.distance <= SHORT_DISTANCE;
+    }
+
+    public boolean isMediumRange() {
+        return this.distance > SHORT_DISTANCE && this.distance <= MEDIUM_DISTANCE;
+    }
+
+    public boolean isLargeRange() {
+        return this.distance > MEDIUM_DISTANCE;
+    }
+
+    public int intValue() {
+        return this.distance;
     }
 }

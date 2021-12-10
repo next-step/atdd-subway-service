@@ -1,11 +1,13 @@
 package nextstep.subway.auth.domain;
 
-import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.domain.Age;
 
 public class LoginMember {
+    public static final GuestMember GUEST_MEMBER = new GuestMember();
+
     private Long id;
     private String email;
-    private Integer age;
+    private Age age;
 
     public LoginMember() {
     }
@@ -13,7 +15,7 @@ public class LoginMember {
     public LoginMember(Long id, String email, Integer age) {
         this.id = id;
         this.email = email;
-        this.age = age;
+        this.age = Age.of(age);
     }
 
     public Long getId() {
@@ -24,7 +26,18 @@ public class LoginMember {
         return email;
     }
 
-    public Integer getAge() {
+    public Age getAge() {
         return age;
+    }
+
+    public boolean isGuestUser() {
+        return false;
+    }
+
+    private static class GuestMember extends LoginMember {
+        @Override
+        public boolean isGuestUser() {
+            return true;
+        }
     }
 }
