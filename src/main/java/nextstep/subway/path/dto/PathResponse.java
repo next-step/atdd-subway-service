@@ -41,7 +41,7 @@ public class PathResponse {
     }
 
     private int calculateFare(Distance distance, User user, ExtraCharge extraCharge) {
-        if(user instanceof Stranger) {
+        if (user instanceof Stranger) {
             return SubwayFare.rateInquiry(distance, extraCharge);
         }
         return SubwayFare.rateInquiry(distance, SubwayUser.of(user.getAge()), extraCharge);

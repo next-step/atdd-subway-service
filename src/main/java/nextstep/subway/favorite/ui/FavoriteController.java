@@ -1,11 +1,11 @@
-package nextstep.subway.member.ui;
+package nextstep.subway.favorite.ui;
 
 import lombok.RequiredArgsConstructor;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.User;
-import nextstep.subway.member.application.FavoriteService;
-import nextstep.subway.member.dto.FavoriteRequest;
-import nextstep.subway.member.dto.FavoriteResponse;
+import nextstep.subway.favorite.application.FavoriteService;
+import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +22,6 @@ import java.util.List;
 @RequestMapping("favorites")
 @RestController
 @RequiredArgsConstructor
-//TODO : Member와 Favorite 연관 관계 재설정하기
 public class FavoriteController {
     private final FavoriteService favoriteService;
 

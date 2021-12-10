@@ -1,7 +1,5 @@
 package nextstep.subway.common.util;
 
-import org.springframework.stereotype.Component;
-
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**

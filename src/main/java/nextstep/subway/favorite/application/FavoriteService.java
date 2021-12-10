@@ -1,12 +1,14 @@
-package nextstep.subway.member.application;
+package nextstep.subway.favorite.application;
 
 import lombok.RequiredArgsConstructor;
-import nextstep.subway.member.domain.Favorite;
-import nextstep.subway.member.domain.FavoriteRepository;
+import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.favorite.domain.FavoriteRepository;
+import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
-import nextstep.subway.member.dto.FavoriteRequest;
-import nextstep.subway.member.dto.FavoriteResponse;
+import nextstep.subway.member.exception.FavoriteDuplicatedException;
+import nextstep.subway.member.exception.FavoriteNotFoundException;
 import nextstep.subway.member.exception.MemberNotFoundException;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.domain.Path;
@@ -25,17 +27,18 @@ public class FavoriteService {
 
     @Transactional
     public FavoriteResponse addFavorite(Long id, FavoriteRequest request) {
-        Member member = findMemberById(id);
-        member.addFavorite(getFavorite(request));
-        memberRepository.save(member);
-        final Favorite persistFavorite = favoriteRepository.findFavorite(request.getSource(), request.getTarget(), id);
-        return FavoriteResponse.of(persistFavorite);
+        final Favorite favorite = getFavorite(request).by(findMemberById(id));
+        validateDuplicate(request, id);
+        favoriteRepository.save(favorite);
+        return FavoriteResponse.of(favorite);
     }
 
     @Transactional
     public void deleteFavorite(Long memberId, Long favoriteId) {
-        Member member = findMemberById(memberId);
-        member.removeFavorite(favoriteId);
+        favoriteRepository.delete(
+                favoriteRepository.findById(favoriteId)
+                        .orElseThrow(FavoriteNotFoundException::new)
+        );
     }
 
     private Member findMemberById(Long id) {
@@ -50,6 +53,12 @@ public class FavoriteService {
 
     public List<FavoriteResponse> findFavorites(Long id) {
         Member member = findMemberById(id);
-        return FavoriteResponse.ofList(member.getFavorites());
+        return FavoriteResponse.ofList(favoriteRepository.findByMemberId(member.getId()));
+    }
+
+    private void validateDuplicate(FavoriteRequest request, Long id) {
+        if (favoriteRepository.findFavorite(request.getSource(), request.getTarget(), id).isPresent()) {
+            throw new FavoriteDuplicatedException();
+        }
     }
 }

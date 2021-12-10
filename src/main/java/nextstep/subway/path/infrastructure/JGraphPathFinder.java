@@ -80,7 +80,7 @@ public class JGraphPathFinder implements PathFinder {
 
     private void checkStationIds(Long srcStationId, Long destStationId) {
         if (Objects.equals(srcStationId, destStationId)) {
-            throw new PathBeginIsEndException(srcStationId, destStationId);
+            throw new PathBeginIsEndException();
         }
     }
 }

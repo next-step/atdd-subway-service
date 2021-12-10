@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import nextstep.subway.auth.domain.User;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.member.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;

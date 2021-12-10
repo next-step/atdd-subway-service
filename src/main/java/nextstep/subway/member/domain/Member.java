@@ -18,8 +18,8 @@ public class Member extends BaseEntity {
 
     private Integer age;
 
-    @Embedded
-    private final Favorites favorites = new Favorites();
+//    @Embedded
+//    private final Favorites favorites = new Favorites();
 
     protected Member() {
     }
@@ -41,14 +41,14 @@ public class Member extends BaseEntity {
             throw new AuthorizationException();
         }
     }
-
-    public void addFavorite(Favorite favorite) {
-        favorites.add(favorite.by(this));
-    }
-
-    public void removeFavorite(Long favoriteId) {
-        favorites.remove(favoriteId);
-    }
+//
+//    public void addFavorite(Favorite favorite) {
+//        favorites.add(favorite.by(this));
+//    }
+//
+//    public void removeFavorite(Long favoriteId) {
+//        favorites.remove(favoriteId);
+//    }
 
     public Long getId() {
         return id;
@@ -66,7 +66,7 @@ public class Member extends BaseEntity {
         return age;
     }
 
-    public Favorites getFavorites() {
-        return favorites;
-    }
+//    public Favorites getFavorites() {
+//        return favorites;
+//    }
 }

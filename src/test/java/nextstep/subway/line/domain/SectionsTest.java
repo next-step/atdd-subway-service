@@ -57,6 +57,7 @@ public class SectionsTest {
         // when
         line.addSection(Section.of(line, 강남역, 마포역, Distance.of(1)));
 
+        // then
         assertThat(line.getSections()).hasSize(2);
         assertThat(line.getStations()).hasSize(3);
         assertThat(line.getStations()).containsExactly(강남역, 마포역, 광교역);
