@@ -26,6 +26,7 @@ public class LineResponse {
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
     }
+
     public static LineResponse of(Line line) {
         List<StationResponse> stations = line.getSortedStations()
                 .stream()
