@@ -26,13 +26,13 @@ public enum PathPricePolicy {
 	}
 
 	public int calculateSectionPrice(int pathDistance) {
-		int sectionDistance =calculateSectionDistance(pathDistance);
+		int sectionDistance = calculateSectionDistance(pathDistance);
 		return sectionDistance <= 0 ? 0 :
 			(int)Math.ceil((double)sectionDistance / perDistance) * pricePerDistance;
 	}
 
-	private int calculateSectionDistance(int pathDistance){
-		if(pathDistance<= preSectionPolicy.getUpperDistanceBound()){
+	private int calculateSectionDistance(int pathDistance) {
+		if (pathDistance <= preSectionPolicy.getUpperDistanceBound()) {
 			return 0;
 		}
 		int sectionDistance = pathDistance <= upperDistanceBound ? pathDistance : upperDistanceBound;

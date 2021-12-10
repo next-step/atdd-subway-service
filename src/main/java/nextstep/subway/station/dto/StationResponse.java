@@ -6,57 +6,58 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class StationResponse {
-    private Long id;
-    private String name;
-    private LocalDateTime createdDate;
-    private LocalDateTime modifiedDate;
+	private Long id;
+	private String name;
+	private LocalDateTime createdDate;
+	private LocalDateTime modifiedDate;
 
-    public static StationResponse of(Station station) {
-        return new StationResponse(station.getId(), station.getName(), station.getCreatedDate(), station.getModifiedDate());
-    }
+	public static StationResponse of(Station station) {
+		return new StationResponse(station.getId(), station.getName(), station.getCreatedDate(),
+			station.getModifiedDate());
+	}
 
-    public StationResponse() {
-    }
+	public StationResponse() {
+	}
 
-    public StationResponse(Long id, String name, LocalDateTime createdDate, LocalDateTime modifiedDate) {
-        this.id = id;
-        this.name = name;
-        this.createdDate = createdDate;
-        this.modifiedDate = modifiedDate;
-    }
+	public StationResponse(Long id, String name, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+		this.id = id;
+		this.name = name;
+		this.createdDate = createdDate;
+		this.modifiedDate = modifiedDate;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
+	public LocalDateTime getCreatedDate() {
+		return createdDate;
+	}
 
-    public LocalDateTime getModifiedDate() {
-        return modifiedDate;
-    }
+	public LocalDateTime getModifiedDate() {
+		return modifiedDate;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o){
-            return true;
-        }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
 
-        if (!(o instanceof StationResponse)){
-            return false;
-        }
+		if (!(o instanceof StationResponse)) {
+			return false;
+		}
 
-        StationResponse that = (StationResponse)o;
-        return Objects.equals(getId(), that.getId()) && Objects.equals(getName(), that.getName());
-    }
+		StationResponse that = (StationResponse)o;
+		return Objects.equals(getId(), that.getId()) && Objects.equals(getName(), that.getName());
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getName());
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hash(getId(), getName());
+	}
 }

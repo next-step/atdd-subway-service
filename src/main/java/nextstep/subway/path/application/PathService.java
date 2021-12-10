@@ -39,14 +39,15 @@ public class PathService {
 
 		List<Line> lines = lineService.findAllExistStations(Arrays.asList(departStation, arriveStation));
 		PathRoute shortestPathRoute = pathFinder.findShortestPath(lines, departStation, arriveStation);
-		PathPrice pathPrice =PathPrice.calculatePrice(shortestPathRoute.getDistance(),getPriceCalculator(), loginMember.getAge());
+		PathPrice pathPrice = PathPrice.calculatePrice(shortestPathRoute.getDistance(), getPriceCalculator(),
+			loginMember.getAge());
 
 		pathPrice.addLineExtraPrice(shortestPathRoute.getUsedLines());
-		Path path = new Path(shortestPathRoute,pathPrice);
+		Path path = new Path(shortestPathRoute, pathPrice);
 		return PathResponse.of(path);
 	}
 
-	private PriceCalculator getPriceCalculator(){
+	private PriceCalculator getPriceCalculator() {
 		return new BasicPriceCalculator();
 	}
 }

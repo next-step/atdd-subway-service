@@ -42,8 +42,8 @@ public class DijkstraPathFinder implements PathFinder {
 
 		return new PathRoute((int)path.getWeight(), path.getVertexList(),
 			edges.stream()
-			.map(SectionWeightEdge::getSection)
-			.collect(Collectors.toList()));
+				.map(SectionWeightEdge::getSection)
+				.collect(Collectors.toList()));
 	}
 
 	private void validateExistPath(GraphPath path) {

@@ -33,9 +33,9 @@ public class PathRoute {
 		return sections;
 	}
 
-	public Set<Line> getUsedLines(){
+	public Set<Line> getUsedLines() {
 		return sections.stream()
-			.map(it->it.getLine())
+			.map(it -> it.getLine())
 			.collect(Collectors.toSet());
 	}
 }

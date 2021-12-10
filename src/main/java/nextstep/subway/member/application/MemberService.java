@@ -4,36 +4,37 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberService {
-    private MemberRepository memberRepository;
+	private MemberRepository memberRepository;
 
-    public MemberService(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
-    }
+	public MemberService(MemberRepository memberRepository) {
+		this.memberRepository = memberRepository;
+	}
 
-    public MemberResponse createMember(MemberRequest request) {
-        Member member = memberRepository.save(request.toMember());
-        return MemberResponse.of(member);
-    }
+	public MemberResponse createMember(MemberRequest request) {
+		Member member = memberRepository.save(request.toMember());
+		return MemberResponse.of(member);
+	}
 
-    public Member findMember(Long id) {
-        return memberRepository.findById(id).orElseThrow(RuntimeException::new);
-    }
+	public Member findMember(Long id) {
+		return memberRepository.findById(id).orElseThrow(RuntimeException::new);
+	}
 
-    public MemberResponse findMemberResponse(Long id) {
-        return MemberResponse.of(findMember(id));
-    }
+	public MemberResponse findMemberResponse(Long id) {
+		return MemberResponse.of(findMember(id));
+	}
 
-    public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        member.update(param.toMember());
-    }
+	public void updateMember(Long id, MemberRequest param) {
+		Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+		member.update(param.toMember());
+	}
 
-    public void deleteMember(Long id) {
-        memberRepository.deleteById(id);
-    }
+	public void deleteMember(Long id) {
+		memberRepository.deleteById(id);
+	}
 }

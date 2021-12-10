@@ -141,9 +141,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 		assertThat(response.getPrice()).isEqualTo(2150);
 	}
 
-
 	@DisplayName("청소년 요금 할인 적용")
-	@CsvSource(value = {"email@email.com, password1, 13, 720","email2@email.com, password1, 19, 1250",
+	@CsvSource(value = {"email@email.com, password1, 13, 720", "email2@email.com, password1, 19, 1250",
 		"email3@email.com, password3, 6, 450"})
 	@ParameterizedTest
 	void getShortestPathWithAgeDiscount(String email, String password, int age, int price) {
@@ -155,10 +154,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
 		지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
 
-		String 사용자_토큰 = 사용자_생성(email,password,age);
+		String 사용자_토큰 = 사용자_생성(email, password, age);
 
 		// when
-		PathResponse response = 최단거리_경로_요청(교대역, 양재역,사용자_토큰).as(PathResponse.class);
+		PathResponse response = 최단거리_경로_요청(교대역, 양재역, 사용자_토큰).as(PathResponse.class);
 
 		// then
 		assertThat(response.getDistance()).isEqualTo(10);
