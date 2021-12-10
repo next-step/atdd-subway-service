@@ -126,6 +126,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+
         // then
         지하철_노선에_지하철역_제외됨(removeResponse);
         ExtractableResponse<Response> removeResultResponse = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
