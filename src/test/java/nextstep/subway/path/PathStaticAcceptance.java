@@ -20,8 +20,18 @@ public class PathStaticAcceptance {
 
 	private static final String PATHS_PATH = "/paths";
 
-	public static ExtractableResponse<Response> 지하철역_사이의_최단경로를_조회한다(PathRequest params) {
+	public static ExtractableResponse<Response> 비회원이_지하철역_사이의_최단경로를_조회한다(PathRequest params) {
 		return RestAssured.given().log().all()
+			.param("source", params.getSource())
+			.param("target", params.getTarget())
+			.when().get(PATHS_PATH)
+			.then().log().all()
+			.extract();
+	}
+
+	public static ExtractableResponse<Response> 회원이_지하철역_사이의_최단경로를_조회한다(String token, PathRequest params) {
+		return RestAssured.given().log().all()
+			.auth().oauth2(token)
 			.param("source", params.getSource())
 			.param("target", params.getTarget())
 			.when().get(PATHS_PATH)
@@ -55,6 +65,10 @@ public class PathStaticAcceptance {
 
 	public static void 지하철역_사이의_경로_조회가_실패됨(ExtractableResponse<Response> response) {
 		assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+	}
+
+	public static void 지하철역_사이의_이용_요금이_조회됨(ExtractableResponse<Response> response, int price) {
+		assertThat(response.as(PathResponse.class).getPrice()).isEqualTo(price);
 	}
 
 }
