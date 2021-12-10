@@ -28,6 +28,11 @@ public class Section {
     private Distance distance;
 
     public Section() {
+
+    }
+
+    public Section(Line line, Station upStation, Station downStation, int distance) {
+        this(line, upStation, downStation, new Distance(distance));
     }
 
     public Section(Line line, Station upStation, Station downStation, Distance distance) {
@@ -57,6 +62,10 @@ public class Section {
         return distance;
     }
 
+    public int getDistanceValue() {
+        return distance.distance();
+    }
+
     public void updateUpStation(Station station, Distance newDistance) {
         checkInputDistanceThanDistanceBetweenStations(this.distance, newDistance);
         this.upStation = station;
@@ -69,13 +78,13 @@ public class Section {
         this.distance = this.distance.minus(newDistance);
     }
 
+    public List<Station> getStations() {
+        return Arrays.asList(upStation, downStation);
+    }
+
     private void checkInputDistanceThanDistanceBetweenStations(Distance distance, Distance newDistance) {
         if (distance.distance() <= newDistance.distance()) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-    }
-
-    public List<Station> getStations(){
-        return Arrays.asList(upStation, downStation);
     }
 }

@@ -1,15 +1,10 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.exception.InputDataErrorCode;
-import nextstep.subway.exception.InputDataErrorException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
 public class Line extends BaseEntity {
@@ -56,6 +51,10 @@ public class Line extends BaseEntity {
 
     public List<Station> getStations() {
         return this.sections.getStations();
+    }
+
+    public List<Section> getSections(){
+        return this.sections.sections();
     }
 
     public void addSection(Section section) {
