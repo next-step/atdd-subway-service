@@ -11,7 +11,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 class SectionTest {
-
     private static Station 잠실역 = null;
     private static Station 잠실나루 = null;
     private static Station 강변역 = null;
@@ -72,7 +71,7 @@ class SectionTest {
 
         첫번째구간.minusDistance(두번째구간);
 
-        assertThat(첫번째구간.getDistance()).isEqualTo(5);
+        assertThat(첫번째구간.getDistance()).isEqualTo(Distance.of(5));
     }
 
     @DisplayName("등록된 구간의 길와 추가할 구간의 길이가 같거나 크면 실패한다.")
@@ -119,7 +118,7 @@ class SectionTest {
 
         assertAll(
                 () -> assertThat(첫번째구간.getDownStation()).isEqualTo(강변역),
-                () -> assertThat(첫번째구간.getDistance()).isEqualTo(20)
+                () -> assertThat(첫번째구간.getDistance()).isEqualTo(Distance.of(20))
         );
     }
 }
