@@ -1,6 +1,7 @@
 package nextstep.subway.domain.path.domain;
 
 import nextstep.subway.domain.line.domain.Line;
+import nextstep.subway.domain.path.exception.NotConnectedStation;
 import nextstep.subway.domain.path.exception.SameDepartureAndArrivalStationException;
 import nextstep.subway.domain.station.domain.Station;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -47,7 +48,14 @@ public class PathFinder {
     public List<Station> findShortestRoute(List<Station> stations, Long source, Long target) {
         sameDepartureAndArrivalStationValidator(source, target);
         final List<Long> vertexList = dijkstraShortestPath.getPath(source, target).getVertexList();
+        stationConnectedValidator(source, target, vertexList);
         return getShortestStations(stations, vertexList);
+    }
+
+    private void stationConnectedValidator(final Long source, final Long target, final List<Long> vertexList) {
+        if (vertexList == null) {
+            throw new NotConnectedStation(String.format("departure : %d, arrival : %d", source, target));
+        }
     }
 
     private void sameDepartureAndArrivalStationValidator(final Long source, final Long target) {

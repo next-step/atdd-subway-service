@@ -16,7 +16,8 @@ public enum ErrorCode {
     NO_REGISTER_SECTION(400, "S005", "등록된 구간이 없습니다."),
 
     // Path
-    SAME_DEPARTURE_AND_ARRIVAL_STATION(400, "P001", "출발역과 도착역이 동일합니다.");
+    SAME_DEPARTURE_AND_ARRIVAL_STATION(400, "P001", "출발역과 도착역이 동일합니다."),
+    NOT_CONNECTED_STATION(400, "P002", "출발역과 도착역이 연결되어 있지 않습니다.");
 
     private final String code;
     private final String message;
