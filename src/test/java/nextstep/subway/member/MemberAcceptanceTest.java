@@ -51,7 +51,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     void manageMyInfo() {
         // given
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        String accessToken = getAccessToken(AuthAcceptanceTest.로그인_요청(EMAIL, PASSWORD));
+        String accessToken = 로그인_토큰_가져오기(AuthAcceptanceTest.로그인_요청(EMAIL, PASSWORD));
 
 
         ExtractableResponse<Response> myInfoResponse = 나의_정보_조회_요청(accessToken);
@@ -62,7 +62,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> updateResponse = 나의_정보_수정_요청(accessToken, new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE));
 
         나의_정보_수정됨(updateResponse);
-        accessToken = getAccessToken(AuthAcceptanceTest.로그인_요청(NEW_EMAIL, NEW_PASSWORD));
+        accessToken = 로그인_토큰_가져오기(AuthAcceptanceTest.로그인_요청(NEW_EMAIL, NEW_PASSWORD));
         나의_정보_수정_검증(accessToken);
 
         ExtractableResponse<Response> deleteResponse = 나의_정보_삭제_요청(accessToken);
@@ -89,7 +89,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private String getAccessToken(ExtractableResponse<Response> createToken) {
+    public static String 로그인_토큰_가져오기(ExtractableResponse<Response> createToken) {
         return createToken.jsonPath().getString("accessToken");
     }
 
