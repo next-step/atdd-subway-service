@@ -3,7 +3,6 @@ package nextstep.subway.line.domain;
 import java.util.*;
 
 import javax.persistence.*;
-import java.util.Objects;
 
 import nextstep.subway.station.domain.*;
 
@@ -82,7 +81,7 @@ public class Section {
             return true;
         if (!(o instanceof Section))
             return false;
-        Section section = (Section) o;
+        Section section = (Section)o;
         return line.equals(section.line) && upStation.equals(section.upStation) && downStation.equals(
             section.downStation)
             && distance.equals(section.distance);
