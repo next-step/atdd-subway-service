@@ -31,6 +31,62 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final int MY_AGE = 22;
     public static final int MY_NEW_AGE = 23;
 
+    @DisplayName("회원 정보를 관리한다.")
+    @Test
+    void manageMember() {
+        // when
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        // then
+        회원_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(createResponse);
+        // then
+        회원_정보_조회됨(findResponse, EMAIL, AGE);
+
+        // when
+        ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        // then
+        회원_정보_수정됨(updateResponse);
+
+        // when
+        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
+        // then
+        회원_삭제됨(deleteResponse);
+    }
+
+    @DisplayName("나의 정보를 관리한다.")
+    @Test
+    void manageMyInfo() {
+        // 생성
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(MY_EMAIL, MY_PASSWORD, MY_AGE);
+        회원_생성됨(createResponse);
+
+        ExtractableResponse<Response> loginResponse = 로그인_요청(MY_EMAIL, MY_PASSWORD);
+        로그인_됨(loginResponse);
+
+        TokenResponse tokenResponse = loginResponse.as(TokenResponse.class);
+
+        // 조회
+        ExtractableResponse<Response> findResponse = 토큰_기반_조회_요청(tokenResponse);
+        회원_정보_조회됨(findResponse, MY_EMAIL, MY_AGE);
+
+        // 수정
+        ExtractableResponse<Response> updateResponse = 토큰_기반_수정_요청(tokenResponse, MY_NEW_EMAIL, MY_NEW_PASSWORD, MY_NEW_AGE);
+        회원_정보_수정됨(updateResponse);
+
+        // 재로그인
+        ExtractableResponse<Response> reLoginResponse = 로그인_요청(MY_NEW_EMAIL, MY_NEW_PASSWORD);
+        TokenResponse newTokenResponse = reLoginResponse.as(TokenResponse.class);
+        ExtractableResponse<Response> newFindResponse = 토큰_기반_조회_요청(newTokenResponse);
+        회원_정보_조회됨(newFindResponse, MY_NEW_EMAIL, MY_NEW_AGE);
+
+        // 삭제
+        ExtractableResponse<Response> deleteResponse = 토큰_기반_삭제_요청(newTokenResponse);
+        회원_삭제됨(deleteResponse);
+    }
+
+
     private static ExtractableResponse<Response> 토큰_기반_조회_요청(TokenResponse tokenResponse) {
         return RestAssured
             .given().log().all()
@@ -126,60 +182,5 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    @DisplayName("회원 정보를 관리한다.")
-    @Test
-    void manageMember() {
-        // when
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        // then
-        회원_생성됨(createResponse);
-
-        // when
-        ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(createResponse);
-        // then
-        회원_정보_조회됨(findResponse, EMAIL, AGE);
-
-        // when
-        ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
-        // then
-        회원_정보_수정됨(updateResponse);
-
-        // when
-        ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
-        // then
-        회원_삭제됨(deleteResponse);
-    }
-
-    @DisplayName("나의 정보를 관리한다.")
-    @Test
-    void manageMyInfo() {
-        // 생성
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(MY_EMAIL, MY_PASSWORD, MY_AGE);
-        회원_생성됨(createResponse);
-
-        ExtractableResponse<Response> loginResponse = 로그인_요청(MY_EMAIL, MY_PASSWORD);
-        로그인_됨(loginResponse);
-
-        TokenResponse tokenResponse = loginResponse.as(TokenResponse.class);
-
-        // 조회
-        ExtractableResponse<Response> findResponse = 토큰_기반_조회_요청(tokenResponse);
-        회원_정보_조회됨(findResponse, MY_EMAIL, MY_AGE);
-
-        // 수정
-        ExtractableResponse<Response> updateResponse = 토큰_기반_수정_요청(tokenResponse, MY_NEW_EMAIL, MY_NEW_PASSWORD, MY_NEW_AGE);
-        회원_정보_수정됨(updateResponse);
-
-        // 재로그인
-        ExtractableResponse<Response> reLoginResponse = 로그인_요청(MY_NEW_EMAIL, MY_NEW_PASSWORD);
-        TokenResponse newTokenResponse = reLoginResponse.as(TokenResponse.class);
-        ExtractableResponse<Response> newFindResponse = 토큰_기반_조회_요청(newTokenResponse);
-        회원_정보_조회됨(newFindResponse, MY_NEW_EMAIL, MY_NEW_AGE);
-
-        // 삭제
-        ExtractableResponse<Response> deleteResponse = 토큰_기반_삭제_요청(newTokenResponse);
-        회원_삭제됨(deleteResponse);
     }
 }
