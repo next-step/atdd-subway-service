@@ -10,7 +10,7 @@ import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.domain.jgrapht.WeightedMultiStationGraph;
+import nextstep.subway.path.infrastructure.WeightedMultiStationGraph;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

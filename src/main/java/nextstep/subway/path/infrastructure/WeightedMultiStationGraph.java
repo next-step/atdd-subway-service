@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain.jgrapht;
+package nextstep.subway.path.infrastructure;
 
 import java.util.List;
 import nextstep.subway.exception.NotFoundException;
