@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 class FavoriteTest {
 
     @Test
-    void 유저가_동일하다면_즐겨찾기_삭제가능() {
+    void 유저가_동일_하지_않다면_즐겨찾기_삭제가능() {
         // given
         Member 사용자1 = 사용자1();
         Member 사용자2 = 사용자2();

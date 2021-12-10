@@ -2,9 +2,7 @@ package nextstep.subway.favorite.domain;
 
 import java.util.Objects;
 import javax.persistence.Embeddable;
-import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.common.CanNotDeleteException;
-import nextstep.subway.member.domain.Member;
 
 @Embeddable
 public class MemberId {
@@ -18,11 +16,17 @@ public class MemberId {
     protected MemberId() {
     }
 
+
     public void equalsId(MemberId memberId) {
         if (!this.memberId.equals(memberId.memberId)) {
             throw new CanNotDeleteException();
         }
     }
+
+    public boolean hasMember() {
+        return !Objects.isNull(memberId);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
