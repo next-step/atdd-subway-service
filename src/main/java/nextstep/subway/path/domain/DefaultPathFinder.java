@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.common.exception.ServiceException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.PathResult;
@@ -15,13 +16,20 @@ import java.util.stream.Collectors;
 @Component
 public class DefaultPathFinder implements PathFinder {
     public PathResult findShortCut(Set<Line> lines, Station source, Station target) {
+        validateParameters(source, target);
         WeightedMultigraph<Station, SubwayWeightedEdge> graph = new WeightedMultigraph<>(SubwayWeightedEdge.class);
         addStationToGraph(lines, graph);
         linkAllSections(lines, graph);
         DijkstraShortestPath<Station, SubwayWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         return Optional.ofNullable(dijkstraShortestPath.getPath(source, target))
                 .map(PathResult::of)
-                .orElseGet(PathResult::emptyPath);
+                .orElseThrow(() -> new ServiceException("최단 경로를 찾을 수 없습니다"));
+    }
+
+    private void validateParameters(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new ServiceException("출발지와 목적지가 같습니다.");
+        }
     }
 
     private void linkAllSections(Set<Line> lines, WeightedMultigraph<Station, SubwayWeightedEdge> graph) {
