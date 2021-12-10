@@ -30,10 +30,10 @@ public class Section {
 
 	private int distance;
 
-	public Section() {
+	protected Section() {
 	}
 
-	public Section(Long id, Line line, Station upStation, Station downStation, int distance) {
+	private Section(Long id, Line line, Station upStation, Station downStation, int distance) {
 		this.id = id;
 		this.line = line;
 		this.upStation = upStation;

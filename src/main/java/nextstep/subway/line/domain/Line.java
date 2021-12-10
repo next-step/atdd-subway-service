@@ -24,24 +24,13 @@ public class Line extends BaseEntity {
 	@Embedded
 	private Sections sections = Sections.of();
 
-	public Line() {
+	protected Line() {
 	}
 
-	public Line(Long id, String name, String color) {
+	private Line(Long id, String name, String color) {
 		this.id = id;
 		this.name = name;
 		this.color = color;
-	}
-
-	public Line(String name, String color) {
-		this.name = name;
-		this.color = color;
-	}
-
-	public Line(String name, String color, Station upStation, Station downStation, int distance) {
-		this.name = name;
-		this.color = color;
-		sections.add(Section.of(this, upStation, downStation, distance));
 	}
 
 	public static Line of(String name, String color, Station upStation, Station downStation, int distance) {
