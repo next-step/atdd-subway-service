@@ -65,7 +65,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ## 2단계 - 경로 조회 기능
 
-- 최단 경로 조회 인수테스트 만들기
+- [x] 최단 경로 조회 인수테스트 만들기
 - 최단 경로 조회 기능 구현하기
 - 예외 상황 구현하기
   - 출발역과 도착역이 같은 경우
