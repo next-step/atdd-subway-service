@@ -13,7 +13,6 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,22 +45,14 @@ public class LineService {
                 request.getDistance()
             )
         );
-        List<StationResponse> stations = getStations(persistLine).stream()
-            .map(StationResponse::of)
-            .collect(Collectors.toList());
-        return LineResponse.of(persistLine, stations);
+        return LineResponse.of(persistLine);
     }
 
     @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
-            .map(line -> {
-                List<StationResponse> stations = getStations(line).stream()
-                    .map(it -> StationResponse.of(it))
-                    .collect(Collectors.toList());
-                return LineResponse.of(line, stations);
-            })
+            .map(LineResponse::of)
             .collect(Collectors.toList());
     }
 
@@ -72,10 +63,7 @@ public class LineService {
     @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        List<StationResponse> stations = getStations(persistLine).stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
-        return LineResponse.of(persistLine, stations);
+        return LineResponse.of(persistLine);
     }
 
     @Transactional
