@@ -10,9 +10,11 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.SubwayFee;
 import nextstep.subway.path.dto.PathFinderResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathStationResponse;
+import nextstep.subway.path.dto.SubwayFeeRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 
@@ -34,13 +36,17 @@ public class PathService {
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
         Set<Section> allSection = lineService.findAllSection();
-        PathFinderResponse pathFinderResponse =
-            pathFinder.getShortestPaths(allSection, sourceStation, targetStation);
-        return convertPathResponse(pathFinderResponse.getStations(), pathFinderResponse.getDistance());
+        PathFinderResponse pathFinderResponse = pathFinder.getShortestPaths(allSection, sourceStation, targetStation);
+        int subwayUsageFee = new SubwayFee().getSubwayUsageFee(SubwayFeeRequest.of(
+            pathFinderResponse.getDistance(), pathFinderResponse.getMaxLineSurcharge(),
+            loginMember.isGuest(), loginMember.getAgeType()));
+
+        return convertPathResponse(pathFinderResponse.getStations(), pathFinderResponse.getDistance(),
+            subwayUsageFee);
     }
 
-    private PathResponse convertPathResponse(List<Station> stations, double weight) {
-        return new PathResponse(convertPathStationResponses(stations), (int)weight);
+    private PathResponse convertPathResponse(List<Station> stations, double weight, int subwayFee) {
+        return new PathResponse(convertPathStationResponses(stations), (int)weight, subwayFee);
     }
 
     private List<PathStationResponse> convertPathStationResponses(List<Station> stations) {

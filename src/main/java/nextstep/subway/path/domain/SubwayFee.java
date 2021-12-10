@@ -1,13 +1,10 @@
 package nextstep.subway.path.domain;
 
-import org.springframework.stereotype.Component;
-
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.domain.discount.AdolescentDiscountPolicy;
 import nextstep.subway.path.domain.discount.KidDiscountPolicy;
 import nextstep.subway.path.dto.SubwayFeeRequest;
 
-@Component
 public class SubwayFee {
     private static final int ZERO_DISTANCE = 0;
     private static final int BASIC_DISTANCE = 10;
@@ -38,6 +35,9 @@ public class SubwayFee {
     }
 
     private int calculateSubwayFee(int distance, int maxLineSurcharge) {
+        if (distance == FREE_FEE) {
+            return FREE_FEE;
+        }
         return calculateSubwayDistanceFee(distance) + maxLineSurcharge;
     }
 
