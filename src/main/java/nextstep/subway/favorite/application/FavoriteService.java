@@ -7,8 +7,6 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.member.application.MemberService;
-import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -20,24 +18,19 @@ public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
     private final StationService stationService;
-    private final MemberService memberService;
 
-    public FavoriteService(FavoriteRepository favoriteRepository,
-        StationService stationService,
-        MemberService memberService) {
+    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService) {
         this.favoriteRepository = favoriteRepository;
         this.stationService = stationService;
-        this.memberService = memberService;
     }
 
     public FavoriteResponse saveFavorite(Long memberId, FavoriteRequest favoriteRequest) {
         Station sourceStation = stationService.findStation(favoriteRequest.getSource());
         Station targetStation = stationService.findStation(favoriteRequest.getTarget());
-        Member loginMember = memberService.findMember(memberId);
 
         List<Favorite> favorites = favoriteRepository.findAllByOwnerId(memberId);
 
-        Favorite favorite = Favorite.of(sourceStation, targetStation, loginMember);
+        Favorite favorite = Favorite.of(sourceStation, targetStation, memberId);
         validateIncludeFavorite(favorite, favorites);
         Favorite persist = favoriteRepository.save(favorite);
 
@@ -52,10 +45,7 @@ public class FavoriteService {
 
     public void deleteFavorite(Long memberId, Long favoriteId) {
         Favorite favorite = findFavorite(favoriteId);
-
-        Member member = memberService.findMember(memberId);
-
-        favorite.validateDelete(member);
+        favorite.validateDelete(memberId);
 
         favoriteRepository.delete(favorite);
     }
@@ -64,7 +54,6 @@ public class FavoriteService {
         return favoriteRepository.findById(favoriteId)
             .orElseThrow(NotFoundException::new);
     }
-
 
     private void validateIncludeFavorite(Favorite favorite, List<Favorite> favorites) {
         if (includeFavorite(favorite, favorites)) {

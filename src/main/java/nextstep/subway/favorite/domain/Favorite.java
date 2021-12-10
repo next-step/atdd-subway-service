@@ -7,11 +7,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import nextstep.subway.exception.CannotDeleteException;
 import nextstep.subway.exception.InvalidArgumentException;
-import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -27,22 +25,20 @@ public class Favorite {
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, optional = false)
     private Station target;
 
-    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "owner_id")
-    private Member owner;
+    private Long ownerId;
 
     protected Favorite() {
     }
 
-    private Favorite(Station source, Station target, Member owner) {
+    private Favorite(Station source, Station target, Long ownerId) {
         validateEqualStation(source, target);
         this.source = source;
         this.target = target;
-        this.owner = owner;
+        this.ownerId = ownerId;
     }
 
-    public static Favorite of(Station source, Station target, Member owner) {
-        return new Favorite(source, target, owner);
+    public static Favorite of(Station source, Station target, Long ownerId) {
+        return new Favorite(source, target, ownerId);
     }
 
     public Long getId() {
@@ -60,17 +56,17 @@ public class Favorite {
     public boolean equalsFavorite(Favorite other) {
         return source.equalsName(other.source)
             && target.equalsName(other.target)
-            && owner.equals(other.owner);
+            && isOwner(other.ownerId);
     }
 
-    public void validateDelete(Member member) {
-        if (!isOwner(member)) {
+    public void validateDelete(Long ownerId) {
+        if (!isOwner(ownerId)) {
             throw new CannotDeleteException("다른사람의 즐겨찾기는 삭제할 수 없습니다.");
         }
     }
 
-    protected boolean isOwner(Member member) {
-        return this.owner.equals(member);
+    protected boolean isOwner(Long ownerId) {
+        return this.ownerId.equals(ownerId);
     }
 
     private void validateEqualStation(Station source, Station target) {
@@ -102,7 +98,7 @@ public class Favorite {
             "id=" + id +
             ", source=" + source +
             ", target=" + target +
-            ", owner=" + owner +
+            ", ownerId=" + ownerId +
             '}';
     }
 }

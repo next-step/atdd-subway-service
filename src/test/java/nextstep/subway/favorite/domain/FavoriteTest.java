@@ -7,36 +7,30 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import nextstep.subway.exception.CannotDeleteException;
 import nextstep.subway.exception.InvalidArgumentException;
-import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
+@DisplayName("즐겨찾기 도메인 테스트")
 public class FavoriteTest {
     final Station 서울역 = new Station("서울역");
     final Station 용산역 = new Station("용산역");
 
-    final Member 사용자 = new Member("email@email.com", "password", 20);
-    final Member 신명진 = new Member("shinmj@email.com", "password", 20);
-
-    @BeforeEach
-    void setUp() {
-        ReflectionTestUtils.setField(사용자, "id", 1L);
-        ReflectionTestUtils.setField(신명진, "id", 2L);
-    }
+    final Long 사용자_ID = 1L;
+    final Long 신명진_ID = 2L;
 
     @Test
     @DisplayName("같은 즐겨찾기인지 확인")
     void equalsFavorite() {
 
-        final Favorite favorite = Favorite.of(서울역, 용산역, 사용자);
+        final Favorite favorite = Favorite.of(서울역, 용산역, 사용자_ID);
 
         assertAll(() -> {
-            assertTrue(favorite.equalsFavorite(Favorite.of(서울역, 용산역, 사용자)));
-            assertFalse(favorite.equalsFavorite(Favorite.of(용산역, 서울역, 사용자)));
-            assertFalse(favorite.equalsFavorite(Favorite.of(서울역, 용산역, 신명진)));
+            assertTrue(favorite.equalsFavorite(Favorite.of(서울역, 용산역, 사용자_ID)));
+            assertFalse(favorite.equalsFavorite(Favorite.of(용산역, 서울역, 사용자_ID)));
+            assertFalse(favorite.equalsFavorite(Favorite.of(서울역, 용산역, 신명진_ID)));
         });
     }
 
@@ -44,7 +38,7 @@ public class FavoriteTest {
     @DisplayName("다른사람의 즐겨찾기 삭제 시도 시 CannotDeleteException")
     void validateDelete() {
 
-        assertThatThrownBy(() -> Favorite.of(서울역, 용산역, 사용자).validateDelete(신명진))
+        assertThatThrownBy(() -> Favorite.of(서울역, 용산역, 사용자_ID).validateDelete(신명진_ID))
             .isInstanceOf(CannotDeleteException.class)
             .hasMessage("다른사람의 즐겨찾기는 삭제할 수 없습니다.");
     }
@@ -52,7 +46,7 @@ public class FavoriteTest {
     @Test
     @DisplayName("출발역과 도착역이 같은 경우 InvalidArgumentException")
     void validateEqualStation() {
-        assertThatThrownBy(() -> Favorite.of(서울역, 서울역, 신명진))
+        assertThatThrownBy(() -> Favorite.of(서울역, 서울역, 사용자_ID))
             .isInstanceOf(InvalidArgumentException.class)
             .hasMessage("출발역과 도착역이 같습니다.");
     }

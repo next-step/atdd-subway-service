@@ -103,7 +103,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("즐겨찾기를 관리한다.")
-    void name() {
+    void manageFavorite() {
         // When: 즐겨 찾기 생성을 요청 서초역_강남역
         ExtractableResponse<Response> 서초역_강남역 = 즐겨찾기_생성_요청(accessToken, 서초역, 강남역);
         // Then: 즐겨 찾기 생성됨

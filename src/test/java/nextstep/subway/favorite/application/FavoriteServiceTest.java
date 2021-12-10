@@ -14,8 +14,6 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.member.application.MemberService;
-import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +23,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+@DisplayName("즐겨찾기 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 class FavoriteServiceTest {
 
@@ -34,15 +33,11 @@ class FavoriteServiceTest {
     @Mock
     StationService stationService;
 
-    @Mock
-    MemberService memberService;
-
     @InjectMocks
     FavoriteService favoriteService;
 
     final Station 서울역 = new Station("서울역");
     final Station 용산역 = new Station("용산역");
-    final Member owner = new Member("email@email.com", "password", 20);
 
     @Test
     @DisplayName("즐겨찾기 저장")
@@ -50,9 +45,8 @@ class FavoriteServiceTest {
 
         when(stationService.findStation(1L)).thenReturn(서울역);
         when(stationService.findStation(2L)).thenReturn(용산역);
-        when(memberService.findMember(1L)).thenReturn(owner);
         when(favoriteRepository.findAllByOwnerId(1L)).thenReturn(Arrays.asList());
-        when(favoriteRepository.save(any(Favorite.class))).thenReturn(Favorite.of(서울역, 용산역, owner));
+        when(favoriteRepository.save(any(Favorite.class))).thenReturn(Favorite.of(서울역, 용산역, 1L));
 
         FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
         FavoriteResponse favoriteResponse = favoriteService.saveFavorite(1L, favoriteRequest);
@@ -69,7 +63,7 @@ class FavoriteServiceTest {
         Station 남영역 = new Station("남영역");
 
         when(favoriteRepository.findAllByOwnerId(1L))
-            .thenReturn(Arrays.asList(Favorite.of(서울역, 용산역, owner), Favorite.of(남영역, 용산역, owner)));
+            .thenReturn(Arrays.asList(Favorite.of(서울역, 용산역, 1L), Favorite.of(남영역, 용산역, 1L)));
 
         List<FavoriteResponse> favoriteResponseList = favoriteService.findFavoriteResponseList(1L);
         List<String> favoriteNames = favoriteResponseList.stream()
@@ -87,8 +81,7 @@ class FavoriteServiceTest {
     void validateSaveFail() {
         when(stationService.findStation(1L)).thenReturn(서울역);
         when(stationService.findStation(2L)).thenReturn(용산역);
-        when(memberService.findMember(1L)).thenReturn(owner);
-        when(favoriteRepository.findAllByOwnerId(1L)).thenReturn(Arrays.asList(Favorite.of(서울역, 용산역, owner)));
+        when(favoriteRepository.findAllByOwnerId(1L)).thenReturn(Arrays.asList(Favorite.of(서울역, 용산역, 1L)));
 
         FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
         assertThatThrownBy(() -> favoriteService.saveFavorite(1L, favoriteRequest))

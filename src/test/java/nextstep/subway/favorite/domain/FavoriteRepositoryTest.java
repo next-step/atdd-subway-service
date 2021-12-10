@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Optional;
-import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,26 +26,21 @@ public class FavoriteRepositoryTest {
     @Autowired
     StationRepository stationRepository;
 
-    @Autowired
-    MemberRepository memberRepository;
-
     Station 서울역;
     Station 용산역;
-    Member member;
+    final Long ownerId = 1L;
 
     @BeforeEach
     void setUp() {
         서울역 = stationRepository.findById(1L).get();
         용산역 = stationRepository.findById(2L).get();
-
-        member = memberRepository.findById(1L).get();
     }
 
     @Test
     @DisplayName("즐겨찾기 저장")
     void save() {
 
-        Favorite persist = favoriteRepository.save(Favorite.of(서울역, 용산역, member));
+        Favorite persist = favoriteRepository.save(Favorite.of(서울역, 용산역, ownerId));
 
         Optional<Favorite> find = favoriteRepository.findById(persist.getId());
 
@@ -62,10 +55,10 @@ public class FavoriteRepositoryTest {
     @DisplayName("사용자 id로 즐겨찾기 목록 조회")
     void findAllByOwner() {
         Station 남영역 = stationRepository.findById(3L).get();
-        favoriteRepository.save(Favorite.of(서울역, 용산역, member));
-        favoriteRepository.save(Favorite.of(서울역, 남영역, member));
+        favoriteRepository.save(Favorite.of(서울역, 용산역, ownerId));
+        favoriteRepository.save(Favorite.of(서울역, 남영역, ownerId));
 
-        List<Favorite> favorites = favoriteRepository.findAllByOwnerId(member.getId());
+        List<Favorite> favorites = favoriteRepository.findAllByOwnerId(ownerId);
 
         assertAll(() -> {
             assertThat(favorites.size()).isEqualTo(2);
@@ -77,7 +70,7 @@ public class FavoriteRepositoryTest {
     @Test
     @DisplayName("즐겨찾기 삭제")
     void delete() {
-        Favorite persist = favoriteRepository.save(Favorite.of(서울역, 용산역, member));
+        Favorite persist = favoriteRepository.save(Favorite.of(서울역, 용산역, ownerId));
 
         Optional<Favorite> find = favoriteRepository.findById(persist.getId());
 
@@ -85,7 +78,7 @@ public class FavoriteRepositoryTest {
 
         favoriteRepository.delete(find.get());
 
-        List<Favorite> favorites = favoriteRepository.findAllByOwnerId(member.getId());
+        List<Favorite> favorites = favoriteRepository.findAllByOwnerId(ownerId);
 
         assertThat(favorites.size()).isEqualTo(0);
     }

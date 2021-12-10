@@ -22,6 +22,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+@DisplayName("인증 관련 서비스 테스트")
 @ExtendWith(MockitoExtension.class)
 public class AuthServiceTest {
     public static final String EMAIL = "email@email.com";
