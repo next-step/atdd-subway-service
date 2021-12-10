@@ -56,7 +56,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 ## step4 요구사항
 - [ ] 경로 조회 시 거리 기준 요금 정보 포함
   - [X] 인수테스트 작성
-  - [ ] 거리별 요즘 정책 구현
+  - [X] 거리별 요즘 정책 구현
 - [ ] 노선별 추가 요금 정책 추가
 - [ ] 로그인 사용자인 경우 연령별 할인 정책 추가
 
