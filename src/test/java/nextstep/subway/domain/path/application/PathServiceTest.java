@@ -6,6 +6,7 @@ import nextstep.subway.domain.line.domain.Line;
 import nextstep.subway.domain.line.domain.LineRepository;
 import nextstep.subway.domain.path.dto.PathFinderRequest;
 import nextstep.subway.domain.path.dto.PathFinderResponse;
+import nextstep.subway.domain.path.exception.SameDepartureAndArrivalStationException;
 import nextstep.subway.domain.station.application.StationService;
 import nextstep.subway.domain.station.domain.Station;
 import nextstep.subway.domain.station.domain.StationRepository;
@@ -22,6 +23,7 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
@@ -62,7 +64,22 @@ class PathServiceTest {
             assertThat(pathFinderResponse.getStations()).extracting("name").containsExactly("교대역","남부터미널역","양재역");
             assertThat(pathFinderResponse.getDistance()).isEqualTo(5);
         });
+    }
 
+    @Test
+    @DisplayName("출발역과 도착역이 동일")
+    void sameDepartureAndArrivalStation() {
+        // given
+        final Station 강남역 = new Station(1L, "강남역");
+        final Station 교대역 = new Station(3L, "교대역");
+        final Line 이호선 = new Line("이호선", "bg-green-400", 교대역, 강남역, new Distance(10));
 
+        when(lineService.findAll()).thenReturn(Arrays.asList(이호선));
+        when(stationService.findAll()).thenReturn(Arrays.asList(강남역,교대역));
+
+        // when
+        final PathFinderRequest pathFinderRequest = new PathFinderRequest(교대역.getId(), 교대역.getId());
+        assertThrows(SameDepartureAndArrivalStationException.class,
+                () -> pathService.findPaths(pathFinderRequest));
     }
 }

@@ -13,7 +13,10 @@ public enum ErrorCode {
     DISTANCE_FEWER_THAN_MAXIMUM(400, "S002", "역과 역 사이의 거리보다 좁은 거리를 입력해주세요"),
     SECTION_NO_REGISTRATION(400, "S003", "등록할 수 없는 구간 입니다."),
     SECTION_ALREADY_REGISTER(400, "S004", "이미 등록된 구간 입니다."),
-    NO_REGISTER_SECTION(400, "S005", "등록된 구간이 없습니다.");
+    NO_REGISTER_SECTION(400, "S005", "등록된 구간이 없습니다."),
+
+    // Path
+    SAME_DEPARTURE_AND_ARRIVAL_STATION(400, "P001", "출발역과 도착역이 동일합니다.");
 
     private final String code;
     private final String message;
