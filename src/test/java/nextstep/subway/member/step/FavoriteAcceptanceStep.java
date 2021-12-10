@@ -40,9 +40,9 @@ public class FavoriteAcceptanceStep {
     }
 
 
-    public static ExtractableResponse<Response> 즐겨찾기_생성_됨(String token, Integer sourceId,
-        Integer targetId) {
-        Map<String, Integer> params = new HashMap<>();
+    public static ExtractableResponse<Response> 즐겨찾기_생성_됨(String token, Long sourceId,
+        Long targetId) {
+        Map<String, Long> params = new HashMap<>();
         params.put("source", sourceId);
         params.put("target", targetId);
 
@@ -57,13 +57,13 @@ public class FavoriteAcceptanceStep {
             .extract();
     }
 
-    public static void 즐겨찾기_조회_정상(ExtractableResponse<Response> response, Integer expectedSourceId,
-        Integer expectedTargetId) {
+    public static void 즐겨찾기_조회_정상(ExtractableResponse<Response> response, Long expectedSourceId,
+        Long expectedTargetId) {
         List<Integer> sourceIds = response.jsonPath().getList("source.id");
         List<Integer> targetIds = response.jsonPath().getList("target.id");
 
-        assertThat(sourceIds).contains(expectedSourceId);
-        assertThat(targetIds).contains(expectedTargetId);
+        assertThat(sourceIds).contains(expectedSourceId.intValue());
+        assertThat(targetIds).contains(expectedTargetId.intValue());
     }
 
     public static void 즐거찾기_추가_정상(ExtractableResponse<Response> 즐겨찾기_추가_응답) {

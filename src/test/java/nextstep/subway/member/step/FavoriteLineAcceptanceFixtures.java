@@ -9,11 +9,11 @@ import nextstep.subway.station.dto.StationResponse;
 
 public class FavoriteLineAcceptanceFixtures {
 
-    private static LineResponse 신분당선;
-    private static StationResponse 강남역;
-    private static StationResponse 양재역;
-    private static StationResponse 정자역;
-    private static StationResponse 광교역;
+    public static LineResponse 신분당선;
+    public static StationResponse 강남역;
+    public static StationResponse 양재역;
+    public static StationResponse 정자역;
+    public static StationResponse 광교역;
 
     public static void 노선등록되어있음() {
         강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);

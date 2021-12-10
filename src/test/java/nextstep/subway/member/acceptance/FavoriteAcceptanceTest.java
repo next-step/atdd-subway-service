@@ -2,6 +2,8 @@ package nextstep.subway.member.acceptance;
 
 import static nextstep.subway.member.step.FavoriteAcceptanceStep.*;
 import static nextstep.subway.member.step.FavoriteAuthAcceptanceFixtures.*;
+import static nextstep.subway.member.step.FavoriteLineAcceptanceFixtures.강남역;
+import static nextstep.subway.member.step.FavoriteLineAcceptanceFixtures.광교역;
 import static nextstep.subway.member.step.FavoriteLineAcceptanceFixtures.노선등록되어있음;
 
 import io.restassured.response.ExtractableResponse;
@@ -32,8 +34,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기를 관리")
     void 즐겨찾기_관리() {
         // given
-        Integer sourceId = 1;
-        Integer targetId = 2;
+        Long sourceId = 강남역.getId();
+        Long targetId = 광교역.getId();
 
         // when
         ExtractableResponse<Response> 즐겨찾기_추가_응답 = 즐겨찾기_생성_됨(token, sourceId, targetId);
