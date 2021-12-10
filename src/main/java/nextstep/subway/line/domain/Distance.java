@@ -24,16 +24,16 @@ public class Distance {
         return distance;
     }
 
-    public void plus(Distance distance) {
-        this.distance = this.distance + distance.value();
+    public Distance plus(Distance otherDistance) {
+        return new Distance(this.distance + otherDistance.value());
     }
 
-    public void minus(Distance distance) {
-        this.distance = this.distance - distance.value();
+    public Distance minus(Distance otherDistance) {
+        return new Distance(this.distance - otherDistance.value());
     }
 
-    public boolean isLessThanEqualTo(Distance distance) {
-        return this.distance <= distance.value();
+    public boolean isLessThanEqualTo(Distance otherDistance) {
+        return this.distance <= otherDistance.value();
     }
 
     private void validateDistance(int distance) {
@@ -43,18 +43,11 @@ public class Distance {
     }
 
     @Override
-    public String toString() {
-        return "Distance{" +
-                "distance=" + distance +
-                '}';
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Distance distance1 = (Distance) o;
-        return distance == distance1.distance;
+        Distance other = (Distance) o;
+        return distance == other.distance;
     }
 
     @Override

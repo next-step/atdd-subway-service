@@ -37,7 +37,7 @@ class DistanceTest {
         Distance otherDistance = Distance.from(15);
 
         // when
-        distance.plus(otherDistance);
+        distance = distance.plus(otherDistance);
 
         // then
         Assertions.assertThat(distance.value()).isEqualTo(25);
@@ -50,9 +50,23 @@ class DistanceTest {
         Distance otherDistance = Distance.from(10);
 
         // when
-        distance.minus(otherDistance);
+        distance = distance.minus(otherDistance);
 
         // then
         Assertions.assertThat(distance.value()).isEqualTo(5);
+    }
+
+    @Test
+    void 거리는_음수가_될_수_없다() {
+        // given
+        Distance distance = Distance.from(10);
+        Distance otherDistance = Distance.from(15);
+
+        // when
+        ThrowableAssert.ThrowingCallable throwingCallable = () -> distance.minus(otherDistance);
+
+        // then
+        Assertions.assertThatExceptionOfType(RuntimeException.class)
+                .isThrownBy(throwingCallable);
     }
 }

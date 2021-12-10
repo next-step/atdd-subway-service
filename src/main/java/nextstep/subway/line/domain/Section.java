@@ -60,18 +60,18 @@ public class Section {
     public void changeUpStationToAddSectionDownStation(Section addSection) {
         validateDistance(addSection);
         this.upStation = addSection.getDownStation();
-        this.distance.minus(addSection.distance);
+        this.distance = this.distance.minus(addSection.distance);
     }
 
     public void changeDownStationToRemoveSectionUpStation(Section addSection) {
         validateDistance(addSection);
         this.downStation = addSection.getUpStation();
-        this.distance.minus(addSection.distance);
+        this.distance = this.distance.minus(addSection.distance);
     }
 
     public void merge(Section removeSection) {
         this.downStation = removeSection.getDownStation();
-        this.distance.plus(removeSection.distance);
+        this.distance = this.distance.plus(removeSection.distance);
     }
 
     public boolean hasSameDownStation(Station otherStation) {
