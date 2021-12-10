@@ -1,5 +1,6 @@
 package nextstep.subway.member.domain;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,15 +23,20 @@ public class Member extends BaseEntity {
 
 	private String password;
 
-	private Integer age;
+	@Embedded
+	private Age age;
 
 	protected Member() {
 	}
 
-	public Member(String email, String password, Integer age) {
+	private Member(String email, String password, Age age) {
 		this.email = email;
 		this.password = password;
 		this.age = age;
+	}
+
+	public static Member from(String email, String password, Integer age) {
+		return new Member(email, password, Age.from(age));
 	}
 
 	public Long getId() {
@@ -45,8 +51,12 @@ public class Member extends BaseEntity {
 		return password;
 	}
 
-	public Integer getAge() {
+	public Age getAge() {
 		return age;
+	}
+
+	public Integer getIntAge() {
+		return age.getAge();
 	}
 
 	public void update(Member member) {
