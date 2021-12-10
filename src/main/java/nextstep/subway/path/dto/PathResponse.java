@@ -7,8 +7,11 @@ import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.dto.StationResponse;
 
 public class PathResponse {
-	private final List<StationResponse> stations;
-	private final double distance;
+	private List<StationResponse> stations;
+	private double distance;
+
+	private PathResponse() { // deserialize
+	}
 
 	private PathResponse(List<StationResponse> stations, double distance) {
 		this.stations = stations;
