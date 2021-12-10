@@ -1,29 +1,40 @@
 package nextstep.subway.line.domain;
 
-import static java.util.Arrays.*;
+import static java.util.Arrays.stream;
 import static nextstep.subway.line.domain.Fare.NOT_BENEFIT;
-import static nextstep.subway.line.domain.FareRuleDistance.DistanceConstant.EIGHT;
-import static nextstep.subway.line.domain.FareRuleDistance.DistanceConstant.FIFTY;
-import static nextstep.subway.line.domain.FareRuleDistance.DistanceConstant.FIVE;
-import static nextstep.subway.line.domain.FareRuleDistance.DistanceConstant.ONE;
-import static nextstep.subway.line.domain.FareRuleDistance.DistanceConstant.ONE_HUNDRED_PERCENT;
-import static nextstep.subway.line.domain.FareRuleDistance.DistanceConstant.TEN;
+;
 
-import java.util.Arrays;
+import static nextstep.subway.line.domain.FareRuleDistance.FareRuleDistanceConstant.DISTANCE_ONE;
+import static nextstep.subway.line.domain.FareRuleDistance.FareRuleDistanceConstant.FARE_ONE;
+import static nextstep.subway.line.domain.FareRuleDistance.FareRuleDistanceConstant.FIFTY;
+import static nextstep.subway.line.domain.FareRuleDistance.FareRuleDistanceConstant.MAX_TEN;
+import static nextstep.subway.line.domain.FareRuleDistance.FareRuleDistanceConstant.MIN_TEN;
+import static nextstep.subway.line.domain.FareRuleDistance.FareRuleDistanceConstant.MIN_ZERO;
+import static nextstep.subway.line.domain.FareRuleDistance.FareRuleDistanceConstant.ONE_HUNDRED_PERCENT;
+import static nextstep.subway.line.domain.FareRuleDistance.FareRuleDistanceConstant.PER_DISTANCE_EIGHT;
+import static nextstep.subway.line.domain.FareRuleDistance.FareRuleDistanceConstant.PER_DISTANCE_FIVE;
+
 import java.util.function.Function;
 
+
+
 public enum FareRuleDistance {
-    DEFAULT(new Distance(0), new Distance(10), s -> NOT_BENEFIT),
-    FIVE_KM(new Distance(TEN), new Distance(FIFTY),
-        distance -> Fare.ceil(distance.subtract(new Distance(ONE))
-                                      .divide(FIVE))
-                                    .add(ONE)
+    /**
+     * 
+     * 실제이동걸리 = 기본거리를 제외한 거리 
+     * ((Fare.ceil((실제이동거리 - 1) / 몇키로마다) + 1) * 100);
+     */
+    DEFAULT(MIN_ZERO, MAX_TEN, s -> NOT_BENEFIT),
+    FIVE_KM(MIN_TEN, FIFTY,
+        distance -> Fare.ceil(distance.subtract(DISTANCE_ONE)
+                                      .divide(PER_DISTANCE_FIVE))
+                                    .add(FARE_ONE)
                                     .multiply(ONE_HUNDRED_PERCENT)),
 
-    EIGHT_KM(new Distance(FIFTY), new Distance(Double.MAX_VALUE),
-        distance -> Fare.ceil(distance.subtract(new Distance(ONE))
-                                      .divide(EIGHT))
-                                      .add(ONE)
+    EIGHT_KM(FIFTY, FareRuleDistanceConstant.MAX_VALUE,
+        distance -> Fare.ceil(distance.subtract(DISTANCE_ONE)
+                                      .divide(PER_DISTANCE_EIGHT))
+                                      .add(FARE_ONE)
                                       .multiply(ONE_HUNDRED_PERCENT));
 
     private final Distance start;
@@ -57,12 +68,20 @@ public enum FareRuleDistance {
         return start.greaterThan(distance) && end.lessThenOrEquals(distance);
     }
 
-    protected static class DistanceConstant {
-        public static final int ONE = 1;
-        public static final int FIVE = 5;
-        public static final int EIGHT = 8;
-        public static final double TEN = 10;
-        public static final double FIFTY = 50;
-        public static final int ONE_HUNDRED_PERCENT = 100;
+    protected static class FareRuleDistanceConstant {
+
+        public static final Distance PER_DISTANCE_FIVE = new Distance(5);
+        public static final Distance PER_DISTANCE_EIGHT = new Distance(8);
+
+        public static final Distance MIN_ZERO = new Distance(0);
+        public static final Distance MAX_TEN = new Distance(10);
+        public static final Distance MIN_TEN = new Distance(10);
+        public static final Distance FIFTY = new Distance(50);
+        public static final Distance MAX_VALUE = new Distance(Integer.MAX_VALUE);
+
+        public static final Fare ONE_HUNDRED_PERCENT = new Fare(100);
+        public static final Fare FARE_ONE = new Fare(1L);
+
+        public static final Distance DISTANCE_ONE = new Distance(1);
     }
 }

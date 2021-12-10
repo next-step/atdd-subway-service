@@ -42,8 +42,8 @@ public class Distance {
         return new Distance(result);
     }
 
-    public Distance divide(int val) {
-        final double result = this.distance / val;
+    public Distance divide(Distance divide) {
+        final double result = this.distance / divide.distance;
         return new Distance(result);
     }
 

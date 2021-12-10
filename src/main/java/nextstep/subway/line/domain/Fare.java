@@ -43,8 +43,8 @@ public class Fare {
         return new Fare(result);
     }
 
-    public Fare multiply(int val) {
-        final long result = this.fare * val;
+    public Fare multiply(Fare multiply) {
+        final long result = this.fare * multiply.fare;
         return new Fare(result);
     }
 
