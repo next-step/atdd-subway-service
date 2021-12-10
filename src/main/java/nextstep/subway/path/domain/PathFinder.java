@@ -22,7 +22,6 @@ public class PathFinder {
 		sections.stream().forEach(section -> graph.setEdgeWeight(
 			graph.addEdge(section.getUpStationId(), section.getDownStationId()), section.getDistanceValue()));
 		return new PathFinder();
-
 	}
 
 	public List<Long> findShortestPathVertexes(int source, int target) {

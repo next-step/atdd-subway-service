@@ -100,7 +100,6 @@ public class Section {
 		return this.upStation.equals(station);
 	}
 
-
 	public boolean isDummy() {
 		return this == DUMMY_SECTION;
 	}

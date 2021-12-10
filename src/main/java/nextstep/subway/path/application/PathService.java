@@ -32,13 +32,14 @@ public class PathService {
 		validateStartStationEqualsEndStation(source, target);
 		validateNoneStation(source, target);
 		PathFinder pathFinder = PathFinder.create(stationService.findAll(), sectionService.findAll());
-		List<StationResponse> stationResponses = extractStationResponses(pathFinder.findShortestPathVertexes(source, target));
+		List<StationResponse> stationResponses = extractStationResponses(
+			pathFinder.findShortestPathVertexes(source, target));
 		Distance distance = pathFinder.findShortestPathDistance(source, target);
 		return PathResponse.of(stationResponses, distance);
 	}
 
 	private void validateNoneStation(int source, int target) {
-		if(!isExisted(source, target)){
+		if (!isExisted(source, target)) {
 			throw new IllegalArgumentException("출발역과 도착역 모두 존재해야 합니다.");
 		}
 	}

@@ -2,11 +2,15 @@ package nextstep.subway.line.domain;
 
 import java.util.Objects;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Embeddable;
 
 @Embeddable
+@Access(AccessType.FIELD)
 public class Distance {
-	public static final Distance DUMMY_DISTANCE = new Distance(0);
+	public static final Distance DUMMY_DISTANCE = new Distance();
+
 	private final int distance;
 
 	protected Distance() {
@@ -41,7 +45,7 @@ public class Distance {
 		return distance;
 	}
 
-	public boolean equalDummy() {
+	public boolean isDummy() {
 		return this == DUMMY_DISTANCE;
 	}
 

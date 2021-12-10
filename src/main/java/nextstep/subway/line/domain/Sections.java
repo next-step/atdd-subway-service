@@ -172,7 +172,7 @@ public class Sections {
 			newSectionDistance = getNewSectionDistance(removeSections);
 		}
 
-		if (!newUpSection.isDummy() && !newDownSection.isDummy() && !newSectionDistance.equalDummy()) {
+		if (!newUpSection.isDummy() && !newDownSection.isDummy() && !newSectionDistance.isDummy()) {
 			sections.add(new Section(line, newUpSection.getUpStation(), newDownSection.getDownStation(), newSectionDistance));
 		}
 
