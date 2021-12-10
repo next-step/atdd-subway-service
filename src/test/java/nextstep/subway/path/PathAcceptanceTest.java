@@ -18,6 +18,7 @@ import io.restassured.*;
 import io.restassured.response.*;
 import nextstep.subway.*;
 import nextstep.subway.auth.dto.*;
+import nextstep.subway.fare.*;
 import nextstep.subway.line.dto.*;
 import nextstep.subway.path.dto.*;
 import nextstep.subway.station.domain.*;
@@ -33,6 +34,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
     private String 일반토큰;
+    private FareCalculator fareCalculator;
 
     /**
      *                 10
@@ -55,13 +57,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // And 지하철 노선이 등록되어있음
         신분당선 = 지하철_노선_등록되어_있음(
-            LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10))
+            LineRequest.of("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 900))
             .as(LineResponse.class);
         이호선 = 지하철_노선_등록되어_있음(
-            LineRequest.of("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10))
+            LineRequest.of("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, 0))
             .as(LineResponse.class);
         삼호선 = 지하철_노선_등록되어_있음(
-            LineRequest.of("삼호선", "bg-red-600", 남부터미널역.getId(), 양재역.getId(), 5))
+            LineRequest.of("삼호선", "bg-red-600", 남부터미널역.getId(), 양재역.getId(), 5, 0))
             .as(LineResponse.class);
 
         // And 지하철 노선에 지하철역이 등록되어있음
@@ -69,13 +71,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         회원_생성됨(회원_생성을_요청(일반_아이디_생성_요청));
         일반토큰 = 로그인_요청(일반_아이디_생성_요청).as(TokenResponse.class).getAccessToken();
+
     }
 
     @DisplayName("지하철 최단 경로를 조회한다.")
     @Test
     void shortestPathTest() {
         // When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
-        ExtractableResponse<Response> response = 최단_경로_조회(강남역.getId(), 남부터미널역.getId(), 일반토큰);
+        ExtractableResponse<Response> response = 최단_경로_조회(강남역.getId(), 남부터미널역.getId());
 
         // Then 최단 거리 경로를 응답
         정답_응답_확인(response);
@@ -88,10 +91,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_이용_요금_응답_확인(response);
     }
 
-    public static ExtractableResponse<Response> 최단_경로_조회(Long source, Long target, String token) {
+    public static ExtractableResponse<Response> 최단_경로_조회(Long source, Long target) {
         return RestAssured
             .given().log().all()
-            .auth().oauth2(token)
             .get("/paths?source={source}&target={target}", source, target)
             .then().log().all()
             .extract()
@@ -99,7 +101,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private void 지하철_이용_요금_응답_확인(ExtractableResponse<Response> response) {
-        assertThat(response.as(PathResponse.class).getFare()).isEqualTo(1350);
+        PathResponse pathResponse = response.as(PathResponse.class);
+        fareCalculator = FareCalculator.from(pathResponse.getTotalDistance(), pathResponse.getLines(), 일반_아이디_생성_요청.getAge());
+        assertThat(fareCalculator.totalFare()).isEqualTo(Fare.from(1350));
     }
 
     private void 정답_응답_확인(ExtractableResponse<Response> response) {
