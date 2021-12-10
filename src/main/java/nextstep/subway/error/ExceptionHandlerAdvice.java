@@ -1,6 +1,5 @@
 package nextstep.subway.error;
 
-import nextstep.subway.error.ErrorResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +20,8 @@ public class ExceptionHandlerAdvice {
         return ResponseEntity.badRequest().build();
     }
 
-    @ExceptionHandler(CommonException.class)
-    public ResponseEntity<ErrorResponse> handleCommonException(CommonException e) {
+    @ExceptionHandler(SubwayException.class)
+    public ResponseEntity<ErrorResponse> handleCommonException(SubwayException e) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
         return new ResponseEntity(errorResponse, errorResponse.toHttpStatus());
     }

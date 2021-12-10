@@ -1,6 +1,6 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.error.CommonException;
+import nextstep.subway.error.SubwayException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,7 +48,7 @@ public class PathFinderTest {
 
         assertThatThrownBy(() -> {
             pathFinder.findPath(lines, upStation, upStation);
-        }).isInstanceOf(CommonException.class)
+        }).isInstanceOf(SubwayException.class)
                 .hasMessageContaining("출발역과 도착역이 같습니다.");
     }
 
@@ -62,7 +62,7 @@ public class PathFinderTest {
 
         assertThatThrownBy(() -> {
             pathFinder.findPath(lines, upStation, notConnectUpStation);
-        }).isInstanceOf(CommonException.class)
+        }).isInstanceOf(SubwayException.class)
                 .hasMessageContaining("출발역과 도착역이 이어져 있지 않습니다.");
     }
 }

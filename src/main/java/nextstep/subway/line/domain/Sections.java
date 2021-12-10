@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.error.CommonException;
+import nextstep.subway.error.SubwayException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -63,14 +63,14 @@ public class Sections {
         return sections.stream()
                 .filter(section -> !upStations.contains(section.getDownStation()))
                 .findFirst()
-                .orElseThrow(() -> new CommonException("구간이 존재하지 않습니다."));
+                .orElseThrow(() -> new SubwayException("구간이 존재하지 않습니다."));
     }
 
     private Section findNextSection(Section currentSection) {
         return sections.stream()
                 .filter(section -> section.isLinkStation(currentSection))
                 .findFirst()
-                .orElseThrow(() -> new CommonException("구간이 존재하지 않습니다."));
+                .orElseThrow(() -> new SubwayException("구간이 존재하지 않습니다."));
     }
 
     public List<Section> getSections() {
@@ -114,7 +114,7 @@ public class Sections {
 
     private void validationAlreadyAdded(Section newSection) {
         if (isUpStationExisted(newSection) && isDownStationExisted(newSection)) {
-            throw new CommonException("이미 등록된 구간 입니다.");
+            throw new SubwayException("이미 등록된 구간 입니다.");
         }
     }
 
@@ -124,7 +124,7 @@ public class Sections {
         boolean duplicateDownStation = getSortedStations().stream()
                 .noneMatch(station -> station.equals(newSection.getDownStation()));
         if (duplicateUpStation && duplicateDownStation) {
-            throw new CommonException("등록할 수 없는 구간 입니다.");
+            throw new SubwayException("등록할 수 없는 구간 입니다.");
         }
     }
 
@@ -155,7 +155,7 @@ public class Sections {
 
     private void validationSize() {
         if (sections.size() <= MINIMUM_SIZE) {
-            throw new CommonException("구간이 최소 하나는 있어야 합니다.");
+            throw new SubwayException("구간이 최소 하나는 있어야 합니다.");
         }
     }
 }
