@@ -36,10 +36,9 @@ public class Sections {
     }
 
     public void addSection(Line line, Station upStation, Station downStation, Distance distance) {
-        List<Station> stations = line.stations();
         validate(upStation, downStation);
 
-
+        List<Station> stations = stations();
         if (!stations.isEmpty()) {
             addIfExistUpStation(line, upStation, downStation, distance, stations);
             addIfExistDownStation(line, upStation, downStation, distance, stations);
