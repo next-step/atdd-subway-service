@@ -41,8 +41,7 @@ public class JgraphTest {
         graph.addVertex("v1");
         graph.addVertex("v2");
         graph.addVertex("v3");
-        // DefaultWeightedEdge defaultWeightedEdge = graph.addEdge("v1", "v2");
-        // graph.setEdgeWeight(, 2);
+
         CustomWeightEdge line1 = new CustomWeightEdge("line1");
         graph.addEdge("v2", "v3", line1);
         graph.setEdgeWeight(line1,2);
@@ -56,8 +55,6 @@ public class JgraphTest {
         graph.setEdgeWeight(line3,2);
 
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-
-
 
         GraphPath path = dijkstraShortestPath.getPath(source, target);
         assertThat(path.getWeight()).isEqualTo(4.0);
@@ -150,6 +147,4 @@ public class JgraphTest {
                     assertThat(it.getVertexList()).endsWith(target);
                 });
     }
-
-
 }
