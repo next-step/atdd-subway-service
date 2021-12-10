@@ -1,7 +1,7 @@
 package nextstep.subway.exception.dto;
 
 public class ErrorResponse {
-    private String message;
+    private final String message;
 
     private ErrorResponse(String message) {
         this.message = message;

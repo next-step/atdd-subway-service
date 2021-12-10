@@ -3,9 +3,9 @@ package nextstep.subway.member.dto;
 import nextstep.subway.member.domain.Member;
 
 public class MemberResponse {
-    final private Long id;
-    final private String email;
-    final private Integer age;
+    private final Long id;
+    private final String email;
+    private final Integer age;
 
     public MemberResponse(Long id, String email, Integer age) {
         this.id = id;

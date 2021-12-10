@@ -8,12 +8,12 @@ import nextstep.subway.station.dto.StationResponse;
 
 public class LineResponse {
 
-    final private Long id;
-    final private String name;
-    final private String color;
-    final private List<StationResponse> stations;
-    final private LocalDateTime createdDate;
-    final private LocalDateTime modifiedDate;
+    private final Long id;
+    private final String name;
+    private final String color;
+    private final List<StationResponse> stations;
+    private final LocalDateTime createdDate;
+    private final LocalDateTime modifiedDate;
 
     public LineResponse(Long id, String name, String color, List<StationResponse> stations,
         LocalDateTime createdDate, LocalDateTime modifiedDate) {
